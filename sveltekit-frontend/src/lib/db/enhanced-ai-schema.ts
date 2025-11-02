@@ -1,9 +1,9 @@
-import type { AIResponse } from '$lib/types';
-import type { User } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
+import type { User } }from '$lib/types';
 // Enhanced AI Schema with GRPO-thinking, recommendation engine, and temporal scoring
 // Extends existing chat-schema.ts with advanced AI reasoning pipeline support
-import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal, real, vector } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal, real, vector } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
 // AI Responses with GRPO-thinking context and embeddings
 export const aiResponses = pgTable('ai_responses', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -12,7 +12,7 @@ export const aiResponses = pgTable('ai_responses', {
   response: text('response').notNull(),
   // GRPO-thinking structured reasoning (formatted for feedback)
   thinkingContent: text('thinking_content'), // Raw <|thinking|> content
-  thinkingStructured: jsonb('thinking_structured').default(sql`'{}'::jsonb`), // Parsed reasoning steps
+  thinkingStructured: jsonb('thinking_structured').default(sql`'{} }::jsonb`), // Parsed reasoning steps
   reasoningSteps: jsonb('reasoning_steps').default(sql`'[]'::jsonb`), // Step-by-step array
   // Embeddings (using nomic-embed-text via Ollama - optimized to 384D for performance)
   queryEmbedding: vector('query_embedding', { dimensions: 384 }), // pgvector for query
@@ -41,7 +41,7 @@ export const aiResponses = pgTable('ai_responses', {
   lastAccessed: timestamp('last_accessed').defaultNow(),
   lastUpdated: timestamp('last_updated').defaultNow(),
   // Metadata for advanced features
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
   tags: jsonb('tags').default(sql`'[]'::jsonb`), // Searchable tags array
   // Quality indicators
   isValidated: boolean('is_validated').default(false), // Human verified
@@ -88,7 +88,7 @@ export const grpoFeedback = pgTable('grpo_feedback', {
   relevance: integer('relevance'), // Query relevance (1-5)
   // Context for feedback
   feedbackType: text('feedback_type').notNull(), // 'rating', 'comparison', 'correction'
-  sessionContext: jsonb('session_context').default(sql`'{}'::jsonb`),
+  sessionContext: jsonb('session_context').default(sql`'{} }::jsonb`),
   // User providing feedback
   userId: uuid('user_id'),
   userRole: text('user_role'), // lawyer, paralegal, judge, etc.
@@ -165,10 +165,10 @@ export const RECOMMENDATION_WEIGHTS = {
   CONTEXT_RELEVANCE: 0.25,
   USER_PREFERENCE: 0.2,
   USAGE_COUNT: 0.05
-} as const;
+} }as const;
 // Temporal decay function parameters
-export const TEMPORAL_DECAY = {
- , HALF_LIFE_DAYS: 30, // Score halves every, 30 days
+export const TEMPORAL_DECAY = { HALF_LIFE_DAYS: 30, // Score halves every, 30 days
   MIN_SCORE: 0.1, // Minimum temporal score
   MAX_SCORE: 1.0, // Maximum temporal score
-} as const;
+} }as const;
+

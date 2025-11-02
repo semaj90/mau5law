@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/connection';
-import { passwordResetTokens, users } from '../../../../../drizzle/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import { z } from 'zod';
-import { hash } from '@node-rs/argon2';
+import type { User } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db/connection';
+import { passwordResetTokens, users } }from '../../../../../drizzle/schema';
+import { eq, and, sql } }from 'drizzle-orm';
+import { z } }from 'zod';
+import { hash } }from '@node-rs/argon2';
 import crypto from 'crypto';
 
 // Password reset request schema
@@ -34,17 +34,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     let requestData;
     try {
       requestData = await request.json();
-    } catch {
+    } }catch {
       throw error(400, 'Invalid JSON in request body');
-    }
+    } }
 
     // Check if this is a token confirmation or email request
     if ('token' in requestData && 'newPassword' in requestData) {
       return handlePasswordReset(requestData, getClientAddress, startTime);
-    }
+    } }
 
     const validatedData = ResetPasswordRequestSchema.parse(requestData);
-    const { email } = validatedData;
+    const { email } }= validatedData;
 
     // Find user by email
     const [user] = await db
@@ -69,9 +69,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'X-Processing-Time': '${Math.round(performance.now() - startTime)}ms' }'` }'`
+            'X-Processing-Time': '${Math.round(performance.now() - startTime)}ms' } }` } }`
       );
-    }
+    } }
 
     // Generate secure reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // In production, send email here
     // await sendPasswordResetEmail(email, resetToken);
 
-    console.log(`🔑 Password reset requested from ${getClientAddress()}: ${email} (${user.id})`);
+    console.log(`🔑 Password reset requested from ${getClientAddress()}: ${email} }(${user.id})`);
 
     return json(
       {
@@ -108,11 +108,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
+          'X-Processing-Time': '${Math.round(processingTime)}ms' } }` } }`
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Password reset request error:', err);'
+    console.error('Password reset request error:', err);
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Password reset request failed' : 'Internal server error',
@@ -125,15 +125,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }'`
+        'X-Error': 'true` } }`
     });
-  }
+  } }
 };
 
 // Handle password reset with token
 async function handlePasswordReset(requestData: any, getClientAddress: () => string, startTime: number) {
   const validatedData = ResetPasswordConfirmSchema.parse(requestData);
-  const { token, newPassword } = validatedData;
+  const { token, newPassword } }= validatedData;
 
   // Hash the token to find in database
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
@@ -147,12 +147,12 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
     })
     .from(passwordResetTokens)
     .innerJoin(users, eq(passwordResetTokens.userId, users.id))
-    .where(and(eq(passwordResetTokens.tokenHash, tokenHash), sql`${passwordResetTokens.expiresAt} > NOW()`))
+    .where(and(eq(passwordResetTokens.tokenHash, tokenHash), sql`${passwordResetTokens.expiresAt} }> NOW()`))
     .limit(1);
 
   if (!resetRecord) {
     throw error(400, 'Invalid or expired reset token');
-  }
+  } }
 
   // Hash the new password
   const passwordHash = await hash(newPassword, {
@@ -188,6 +188,7 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
+        'X-Processing-Time': '${Math.round(processingTime)}ms' } }` } }`
   );
-}
+} }
+

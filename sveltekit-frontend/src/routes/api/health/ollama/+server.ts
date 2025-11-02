@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -23,32 +23,32 @@ export const GET: RequestHandler = async () => {
           service: 'ollama',
           message: 'Ollama service is running',
           details: {
-           , url: ollamaUrl,
+  url: ollamaUrl,
             models: data.models?.length || 0,
             available: true
           },
           timestamp: new Date().toISOString()
         });
-      } else {
+      } }else {
         throw new Error(`HTTP ${response.status}`);
-      }
-    } catch (fetchError: any) {
+      } }
+    } }catch (fetchError: any) {
       return json(
         {
           status: 'unavailable',
           service: 'ollama',
           message: 'Ollama service not reachable',
           details: {
-           , url: ollamaUrl,
+  url: ollamaUrl,
             error: fetchError.message,
             available: false
           },
           timestamp: new Date().toISOString()
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         status: 'error',
@@ -56,7 +56,8 @@ export const GET: RequestHandler = async () => {
         error: error.message || 'Health check failed',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

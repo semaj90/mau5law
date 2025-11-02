@@ -5,12 +5,13 @@ declare module, 'chart.js' {
   export class Chart {
     constructor(ctx: any, config?: any);
     destroy(): void;
-  }
+  } }
   export default Chart;
-}
+} }
 
 // Minimal module declaration for chart.js auto bundle used via dynamic import
 declare module, 'chart.js/auto' {
   const Chart: any;
   export default Chart;
-}
+} }
+

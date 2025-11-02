@@ -2,7 +2,7 @@
  * Dynamic Routing Test Page - Load Function
  * Basic data loading for the routing test page
  */
-import type { PageLoad } from './$types.js';
+import type { PageLoad } }from './$types.js';
 
 export const load: PageLoad = async ({ params, url, route }) => {
   // Basic page data without complex routing imports
@@ -13,10 +13,10 @@ export const load: PageLoad = async ({ params, url, route }) => {
     params,
     timestamp: new Date().toISOString(),
     currentPath: url.pathname,
-    features: {
-     , basicRouting: true,
+    features: { basicRouting: true,
       navigation: true,
       routeConfig: true
-    }
+    } }
   };
 };
+

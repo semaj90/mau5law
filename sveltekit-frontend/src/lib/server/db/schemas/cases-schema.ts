@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Cases Database Schema
  *
@@ -8,9 +8,9 @@ import type { Case } from '$lib/types';
  * - Detective mode state persistence
  * - Citation and reference management
  */
-import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
-import { sql } from 'drizzle-orm';
+import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, index, uniqueIndex } }from 'drizzle-orm/pg-core';
+import { relations } }from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';
 // Case Management Tables
 export const cases = pgTable(
   'cases',
@@ -51,7 +51,7 @@ export const cases = pgTable(
       .notNull()
       .default('standard'),
     // Metadata and custom fields
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     tags: text('tags')
       .array()
       .default(sql`ARRAY[]::text[]`),
@@ -119,7 +119,7 @@ export const evidence = pgTable(
     authenticated: boolean('authenticated').notNull().default(false),
     // Analysis and processing
     analyzed: boolean('analyzed').notNull().default(false),
-    analysisResults: jsonb('analysis_results').default(sql`'{}'::jsonb`),
+    analysisResults: jsonb('analysis_results').default(sql`'{} }::jsonb`),
     ocrText: text('ocr_text'),
     // Detective mode enhancements
     detectiveNotes: text('detective_notes'),
@@ -149,7 +149,7 @@ export const evidence = pgTable(
     dateReceived: timestamp('date_received'),
     dateAnalyzed: timestamp('date_analyzed'),
     // Metadata and custom fields
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     // Archive status
     archived: boolean('archived').notNull().default(false),
     // Audit fields
@@ -167,7 +167,7 @@ export const evidence = pgTable(
       checksumIdx: index('evidence_checksum_idx').on(table.checksum)
     };
     return idxs;
-  }
+  } }
 );
 // Case Timeline and Events
 export const caseTimeline = pgTable(
@@ -200,7 +200,7 @@ export const caseTimeline = pgTable(
     relatedEntityId: uuid('related_entity_id'),
     relatedEntityType: text('related_entity_type'),
     // Event metadata
-    eventData: jsonb('event_data').default(sql`'{}'::jsonb`),
+    eventData: jsonb('event_data').default(sql`'{} }::jsonb`),
     importance: text('importance', {
       enum: ['low', 'medium', 'high', 'critical']
     })
@@ -272,7 +272,7 @@ export const citations = pgTable(
     dateCreated: timestamp('date_created').notNull().defaultNow(),
     dateModified: timestamp('date_modified').notNull().defaultNow(),
     // Metadata
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     tags: text('tags')
       .array()
       .default(sql`ARRAY[]::text[]`),
@@ -343,7 +343,7 @@ export const caseNotes = pgTable(
     dateCreated: timestamp('date_created').notNull().defaultNow(),
     dateModified: timestamp('date_modified').notNull().defaultNow(),
     // Metadata and tags
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     tags: text('tags')
       .array()
       .default(sql`ARRAY[]::text[]`),
@@ -410,3 +410,4 @@ export type Citation = typeof citations.$inferSelect;
 export type NewCitation = typeof citations.$inferInsert;
 export type CaseNote = typeof caseNotes.$inferSelect;
 export type NewCaseNote = typeof caseNotes.$inferInsert;
+

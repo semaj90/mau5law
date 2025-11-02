@@ -1,5 +1,5 @@
-import type { PageLoad } from './$types.js';
-import { error } from '@sveltejs/kit';
+import type { PageLoad } }from './$types.js';
+import { error } }from '@sveltejs/kit';
 export const load: PageLoad = async ({ fetch, url, depends }) => {
   // Dependency tracking for cache invalidation
   depends('laws:quicklinks');
@@ -7,8 +7,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
   try {
     // Quick access links for major legal resources
     const quickLinks = [
-      {,
-        id: 'ca-civil-code',
+      { id: 'ca-civil-code',
         title: 'California Civil Code',
         description: "California's comprehensive civil laws covering contracts, property, and personal rights",'
         jurisdiction: 'california',
@@ -103,13 +102,13 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
     return {
       quickLinks,
       laws,
-      meta: {
-       , title: 'Legal Resources - Laws & Regulations',
+      meta: { title: 'Legal Resources - Laws & Regulations',
         description: 'Browse California and state laws with AI-powered search and summaries'
-      }
+      } }
     };
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Failed to load laws page data:', err);
     error(500, 'Failed to load page data');
-  }
+  } }
 };
+

@@ -5,12 +5,12 @@
 function createPrimitive() {
   return {
     open: false,
-    options: {} as { [key: string]: any },
+    options: {} }as { [key: string]: any },
     openModal: () => {},
     closeModal: () => {},
-    toggle: () => {}
-  } as: any;
-}
+    toggle: () => {} }
+  } }as: any;
+} }
 export const melt = (..._args: any[]) => ({}) as: any;
 export const createDialog = (..._args: any[]) => createPrimitive();
 export const createPopover = (..._args: any[]) => createPrimitive();
@@ -33,3 +33,4 @@ export default {
   createToolbar,
   createResizable
 };
+

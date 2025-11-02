@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 type OCRPage = {
   page?: number;
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     throw error(400, 'Invalid JSON body');
   });
 
-  const { ocrData } = payload as { ocrData?: OCRData };
+  const { ocrData } }= payload as { ocrData?: OCRData };
   if (!ocrData) throw error(400, 'No OCR data provided');
 
   const text = typeof ocrData.text === 'string' ? ocrData.text : '';
@@ -38,17 +38,17 @@ export const POST: RequestHandler = async ({ request }) => {
     convertedAt: new Date().toISOString(),
     data: structuredData,
     stats: {
-     , jsonSize: JSON.stringify(structuredData).length,
+  jsonSize: JSON.stringify(structuredData).length,
       sections: structuredData.document.structure.sections.length,
       chunks: structuredData.document.vectorization.chunks.length,
       concepts: structuredData.document.legalAnalysis.concepts.length
-    }
+    } }
   });
 };
 
 function buildStructuredDocument(ocrData: OCRData, text: string) {
-  return { document: {, metadata: {
-       , filename: ocrData.filename ?? 'unknown',
+  return { document: { metadata: {
+  filename: ocrData.filename ?? 'unknown',
         processedAt: ocrData.extractedAt ?? new Date().toISOString(),
         totalPages: ocrData.pages ?? ocrData.pageResults?.length ?? 0,
         totalCharacters: ocrData.totalCharacters ?? text.length,
@@ -56,7 +56,7 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         processingMethod: ocrData.processingStats ?? null
       },
       content: {
-       , fullText: text,
+  fullText: text,
         pages: (ocrData.pageResults ?? []).map((page, index) => ({
           pageNumber: page.page ?? index + 1,
           text: page.text ?? '',
@@ -67,7 +67,7 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         }))
       },
       legalAnalysis: {
-       , concepts: ocrData.legalConcepts ?? [],
+  concepts: ocrData.legalConcepts ?? [],
         citations: ocrData.citations ?? [],
         documentType: classifyDocumentType(text),
         jurisdiction: extractJurisdiction(text),
@@ -76,50 +76,50 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         amounts: extractMonetaryAmounts(text)
       },
       structure: {
-       , sections: identifyDocumentSections(text),
+  sections: identifyDocumentSections(text),
         headings: extractHeadings(text),
         paragraphs: splitParagraphs(text),
         tableOfContents: generateTableOfContents(text)
       },
       vectorization: {
-       , embeddings: generateEmbeddingIds(text),
+  embeddings: generateEmbeddingIds(text),
         chunks: chunkTextForEmbedding(text),
         semanticSections: identifySemanticSections(text)
       },
       qualityMetrics: {
-       , confidence: ocrData.averageConfidence ?? 0,
+  confidence: ocrData.averageConfidence ?? 0,
         completeness: calculateCompleteness(ocrData),
         readability: calculateReadabilityScore(text),
         legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts ?? [])
-      }
-    }
+      } }
+    } }
   };
-}
+} }
 
 function extractSections(text: string) {
   if (!text) return [];
   const lines = text.split('\n');
   const sections: Array<{ title: string; content: string; startLine: number; endLine: number }> = [];
-  let current: { title: string; content: string;, startLine: number } | null = null;
+  let current: { title: string; content: string; startLine: number } }| null = null;
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
     if (isHeaderLine(trimmed)) {
       if (current && current.content.trim()) {
         sections.push({ ...current, endLine: index });
-      }
+      } }
       current = { title: trimmed, content: '', startLine: index };
-    } else if (current) {
+    } }else if (current) {
       current.content += `${trimmed}\n`;
-    }
+    } }
   });
 
   if (current && current.content.trim()) {
     sections.push({ ...current, endLine: lines.length });
-  }
+  } }
 
   return sections;
-}
+} }
 
 function isHeaderLine(line: string): boolean {
   if (!line) return false;
@@ -131,7 +131,7 @@ function isHeaderLine(line: string): boolean {
     /^EXHIBIT\s+[A-Z]/i,
   ];
   return headerPatterns.some((pattern) => pattern.test(line));
-}
+} }
 
 function classifyDocumentType(text: string): string {
   if (!text) return, 'unknown';
@@ -147,15 +147,15 @@ function classifyDocumentType(text: string): string {
   };
   for (const [type, pattern] of Object.entries(classifiers)) {
     if (pattern.test(text)) return type;
-  }
+  } }
   return, 'unknown';
-}
+} }
 
 function extractJurisdiction(text: string): string {
   if (!text) return, 'unspecified';
   const match = text.match(/(?:state|commonwealth|district) of [A-Za-z\s]+/i);
   return match ? match[0] : 'unspecified';
-}
+} }
 
 function extractParties(text: string): string[] {
   if (!text) return [];
@@ -170,10 +170,10 @@ function extractParties(text: string): string[] {
         .map((value) => value?.trim())
         .filter(Boolean)
         .forEach((party) => parties.add(party));
-    }
-  }
+    } }
+  } }
   return Array.from(parties);
-}
+} }
 
 function extractDates(text: string): string[] {
   if (!text) return [];
@@ -182,13 +182,13 @@ function extractDates(text: string): string[] {
   );
   const isoMatches = text.match(/\b\d{4}-\d{2}-\d{2}\b/g);
   return Array.from(new Set([...(matches ?? []), ...(isoMatches ?? [])]));
-}
+} }
 
 function extractMonetaryAmounts(text: string): string[] {
   if (!text) return [];
   const matches = text.match(/\$[\d,]+(?:\.\d{2})?/g);
   return Array.from(new Set(matches ?? []));
-}
+} }
 
 function identifyDocumentSections(text: string) {
   const commonSections = [
@@ -208,7 +208,7 @@ function identifyDocumentSections(text: string) {
       position: text.toLowerCase().indexOf(name.toLowerCase())
     }))
     .sort((a, b) => a.position - b.position);
-}
+} }
 
 function extractHeadings(text: string): string[] {
   return text
@@ -216,7 +216,7 @@ function extractHeadings(text: string): string[] {
     .map((line) => line.trim())
     .filter((line) => line.length > 0 && isHeaderLine(line))
     .slice(0, 20);
-}
+} }
 
 function generateTableOfContents(text: string) {
   return extractHeadings(text).map((heading, index) => ({
@@ -224,25 +224,25 @@ function generateTableOfContents(text: string) {
     title: heading,
     order: index + 1
   }));
-}
+} }
 
 function determineHeadingLevel(heading: string): number {
   if (/^\d+\.\s+/.test(heading)) return 1;
   if (/^\d+\.\d+\s+/.test(heading)) return 2;
   if (/^[A-Z]{3}/.test(heading)) return 1;
   return 2;
-}
+} }
 
 function splitParagraphs(text: string): string[] {
   return text
     .split(/\n\s*\n/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
-}
+} }
 
 function generateEmbeddingIds(text: string): string[] {
   return chunkTextForEmbedding(text).map((_, index) => `embedding_${index}`);
-}
+} }
 
 function chunkTextForEmbedding(text: string, maxChunkSize = 512): string[] {
   if (!text) return [];
@@ -254,20 +254,20 @@ function chunkTextForEmbedding(text: string, maxChunkSize = 512): string[] {
     if (current.length + sentence.length > maxChunkSize && current) {
       chunks.push(current.trim());
       current = sentence;
-    } else {
+    } }else {
       current += sentence;
-    }
+    } }
   });
 
   if (current.trim()) chunks.push(current.trim());
   return chunks;
-}
+} }
 
 function identifySemanticSections(text: string) {
   const patterns = [
     { type: 'legal_obligation', pattern: /(?:shall|must|required to|obligated to)/gi },
     { type: 'conditional_clause', pattern: /(?:if|unless|provided that|subject to)/gi },
-    { type: 'definition', pattern: /(?:means|defined as|refers to)/gi }
+    { type: 'definition', pattern: /(?:means|defined as|refers to)/gi } }
   ];
   return patterns
     .map(({ type, pattern }) => {
@@ -279,7 +279,7 @@ function identifySemanticSections(text: string) {
       };
     })
     .filter((entry) => entry.count > 0);
-}
+} }
 
 function calculateCompleteness(ocrData: OCRData): number {
   let score = 0;
@@ -288,7 +288,7 @@ function calculateCompleteness(ocrData: OCRData): number {
   if ((ocrData.citations ?? []).length > 0) score += 25;
   if ((ocrData.totalCharacters ?? 0) > 1000) score += 25;
   return Math.min(score, 100);
-}
+} }
 
 function calculateReadabilityScore(text: string): number {
   if (!text) return 0;
@@ -296,7 +296,7 @@ function calculateReadabilityScore(text: string): number {
   const words = text.split(/\s+/).filter(Boolean).length;
   const averageWordsPerSentence = words / Math.max(sentences, 1);
   return Math.max(0, 100 - Math.min(averageWordsPerSentence * 2, 100));
-}
+} }
 
 function calculateLegalSpecificity(concepts: string[]): number {
   if (concepts.length === 0) return 0;
@@ -305,4 +305,5 @@ function calculateLegalSpecificity(concepts: string[]): number {
     specificTerms.some((term) => concept.toLowerCase().includes(term)),
   ).length;
   return Math.min((count / concepts.length) * 100, 100);
-}
+} }
+

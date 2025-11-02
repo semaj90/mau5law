@@ -1,6 +1,6 @@
-import { json } from "@sveltejs/kit"
-import { z } from "zod"
-import type { RequestHandler } from './$types';
+import { json } }from "@sveltejs/kit"
+import { z } }from "zod"
+import type { RequestHandler } }from './$types';
 import crypto from "crypto"
 
 // Validation schemas
@@ -14,7 +14,7 @@ const evidenceNodeSchema = z.object({
   filePath: z.string().optional(),
   fileSize: z.number().optional(),
   metadata: z.object({
-   , x: z.number(),
+  x: z.number(),
     y: z.number(),
     width: z.number(),
     height: z.number(),
@@ -37,38 +37,38 @@ function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const user = locals.user;
     if (!user) {
       return json({ error: 'Authentication required' }, { status: 401 });
-    }
+    } }
 
     const body = (await request.json()) as ApiRequestBody;
-    const { action = 'save_node', data } = body;
+    const { action = 'save_node', data } }= body;
 
     switch (action) {
       case, 'save_node':
         return await saveEvidenceNode(data, user.id);
       case, 'save_canvas_state':
         return await saveCanvasState(data, user.id);
-      default: return json({, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (err: any) {
-    console.error('Save API error:', getErrorMessage(err));'
+      default: return json({ error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (err: any) {
+    console.error('Save API error:', getErrorMessage(err));
     return json(
       {
         error: 'Failed to save evidence',
         details: getErrorMessage(err)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Save individual evidence node
@@ -102,14 +102,14 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<Response
       evidence: evidenceData,
       message: 'Evidence saved successfully'
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     if (err instanceof z.ZodError) {
       return json({ error: 'Validation failed', details: err.errors }, { status: 400 });
-    }
+    } }
     // rethrow to be handled by outer POST if needed
     throw err;
-  }
-}
+  } }
+} }
 
 // Save canvas state (no inner try/catch — outer POST handles errors)
 async function saveCanvasState(canvasData: CanvasPayload, userId: string): Promise<Response> {
@@ -125,7 +125,7 @@ async function saveCanvasState(canvasData: CanvasPayload, userId: string): Promi
     canvasState: canvasStateData,
     message: 'Canvas state saved successfully'
   });
-}
+} }
 
 // GET endpoint for loading evidence
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const user = locals.user
     if (!user) {
       return json({ error: "Authentication required" }, { status: 401 })
-    }
+    } }
     const action = url.searchParams.get("action")
     const caseId = url.searchParams.get("caseId")
     switch (action) {
@@ -141,16 +141,16 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return json({ success: true, evidence: [], caseId });
       case, "load_canvas_state":
         return json({ success: true, canvasState: null, caseId });
-      default: return json({, error: "Invalid action" }, { status: 400 })
-    }
-  } catch (err: any) {
+      default: return json({ error: "Invalid action" }, { status: 400 })
+    } }
+  } }catch (err: any) {
     console.error("Load API error:", getErrorMessage(err))"
     return json(
       {
         error: 'Failed to load evidence',
         details: getErrorMessage(err)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 }

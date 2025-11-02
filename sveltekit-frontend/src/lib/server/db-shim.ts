@@ -12,23 +12,23 @@ export type QueryResultRow = Record<string, unknown>;
 export type QueryResult = { rows: QueryResultRow[] };
 
 // Minimal client/pool interfaces to reduce widespread `any` usage when migrating from node-postgres
-export interface ClientLike {, query: (textOrConfig: string | {, text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
+export interface ClientLike { query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   release?: () => void;
-}
+} }
 
-export interface PoolLike { connect: () => Promise<ClientLike>;, query: (textOrConfig: string | {, text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
+export interface PoolLike { connect: () => Promise<ClientLike>;, query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   end?: () => Promise<void>;
-}
+} }
 
 interface SqlWithClose {
   end?: () => Promise<void>;
   close?: () => Promise<void>;
-}
+} }
 const sqlClient = sql as ReturnType<typeof postgres> & SqlWithClose;
 
 // Shared query normalization logic to DRY up code
 async function runQuery(
-  textOrConfig: string | {, text: string; values?: any[] },
+  textOrConfig: string | { text: string; values?: any[] },
   params?: any[]
 ): Promise<QueryResult> {
   const text = typeof textOrConfig === 'string' ? textOrConfig : textOrConfig.text;
@@ -39,31 +39,31 @@ async function runQuery(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resultRaw = await sql.unsafe(text, values as: unknown, as: any[]);
 
-  // Normalize various possible result shapes into { rows: [...] }
+  // Normalize various possible result shapes into { rows: [...] } }
   let, rows: QueryResultRow[] = [];
 
   if (!resultRaw) {
     rows = [];
-  } else if (Array.isArray(resultRaw)) {
+  } }else if (Array.isArray(resultRaw)) {
     // postgres-js returns an array of rows
     rows = resultRaw as QueryResultRow[];
-  } else if ((resultRaw as { rows?: any[] })?.rows && Array.isArray((resultRaw as { rows: any[] }).rows)) {
+  } }else if ((resultRaw as { rows?: any[] })?.rows && Array.isArray((resultRaw as { rows: any[] }).rows)) {
     // node-postgres-like result shape
     rows = (resultRaw as { rows: QueryResultRow[] }).rows;
-  } else if ((resultRaw as { 0?: any })?.[0]) {
+  } }else if ((resultRaw as { 0?: any })?.[0]) {
     // array-like objects
     rows = Array.from(resultRaw as Iterable<QueryResultRow>);
-  } else {
+  } }else {
     // fallback: try to coerce single-row: object into array
     if (typeof resultRaw === 'object' && resultRaw !== null) {
       rows = [resultRaw as QueryResultRow];
-    } else {
+    } }else {
       rows = [];
-    }
-  }
+    } }
+  } }
 
   return { rows };
-}
+} }
 
 // Minimal pool shim to satisfy code paths that expect node-postgres Pool API
 export const poolShim: PoolLike = {
@@ -73,18 +73,19 @@ export const poolShim: PoolLike = {
       query: runQuery,
       release: () => {
         // postgres-js manages connections internally; nothing to release
-      }
-    } as ClientLike;
+      } }
+    } }as ClientLike;
   },
   query: runQuery,
   // Optional: allow graceful shutdown for test/cleanup scenarios
   async end() {
     if (typeof sqlClient.end === 'function') {
       await sqlClient.end!();
-    } else if (typeof sqlClient.close === 'function') {
+    } }else if (typeof sqlClient.close === 'function') {
       await sqlClient.close!();
-    }
-  }
+    } }
+  } }
 };
 
 export default sql;
+

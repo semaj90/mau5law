@@ -1,36 +1,36 @@
-import type { SearchResult } from '$lib/types';
-import { db } from '$lib/server/db';
-import { evidence, vectorMetadata, embeddingCache } from '$lib/server/db/schema-postgres-enhanced';
-import { ollamaService, as originalOllamaService } from './ollamaService.js';
-import { eq, sql } from 'drizzle-orm';
-import type { DocumentProcessingOptions } from '$lib/schemas/upload';
+import type { SearchResult } }from '$lib/types';
+import { db } }from '$lib/server/db';
+import { evidence, vectorMetadata, embeddingCache } }from '$lib/server/db/schema-postgres-enhanced';
+import { ollamaService, as originalOllamaService } }from './ollamaService.js';
+import { eq, sql } }from 'drizzle-orm';
+import type { DocumentProcessingOptions } }from '$lib/schemas/upload';
 
 // Define the expected interface for OllamaService
 interface IOllamaService {
   analyzeDocument(content: string, type: 'summary' | 'entities' | 'sentiment' | 'classification'): Promise<string>;
   embedDocument(
     content: string,
-    options: {, documentId: string; chunkSize?: number; chunkOverlap?: number }
-  ): Promise<{ chunks: Array<{ content: string; embedding: number[];, metadata: Record<string, unknown> }> }>;
+    options: { documentId: string; chunkSize?: number; chunkOverlap?: number } }
+  ): Promise<{ chunks: Array<{ content: string; embedding: number[]; metadata: Record<string, unknown> }> }>;
   generateEmbedding(text: string): Promise<number[]>;
-}
+} }
 
 // Assert the type of ollamaService
 const ollamaService: IOllamaService = originalOllamaService as IOllamaService;
 
-export interface PipelineResult {, success: boolean;, documentId: string;
+export interface PipelineResult { success: boolean;, documentId: string;
   summary?: string;
   entities?: string[];
   sentiment?: string;
   classification?: string;
-  embeddings?: {, count: number;, dimension: number;
+  embeddings?: { count: number;, dimension: number;
   };
   error?: string;
-}
-export interface SearchResult {, id: string;, content: string;
+} }
+export interface SearchResult { id: string;, content: string;
   score: number;
   metadata: { [key: string]: any };
-}
+} }
 
 export class AIPipeline {
   /**
@@ -39,8 +39,7 @@ export class AIPipeline {
   async processDocument(
    , documentId: string,
     content: string,
-    options: DocumentProcessingOptions = {
-     , extractText: true,
+    options: DocumentProcessingOptions = { extractText: true,
       generateEmbeddings: true,
       generateSummary: true,
       extractEntities: true,
@@ -48,10 +47,9 @@ export class AIPipeline {
       classifyDocument: true,
       chunkSize: 1000,
       chunkOverlap: 200
-    }
+    } }
   ): Promise<PipelineResult> {
-    const result: PipelineResult = {
-     , success: false,
+    const result: PipelineResult = { success: false,
       documentId
     };
     try {
@@ -65,15 +63,15 @@ export class AIPipeline {
           options.chunkOverlap || 200
         );
         result.embeddings = embeddingResult;
-      }
+      } }
       // 3. Generate summary if requested
       if (options.generateSummary) {
         result.summary = await ollamaService.analyzeDocument(content, 'summary');
         // Store summary embedding for case-level search
         if (result.summary) {
           await this.storeSummaryVector(documentId, result.summary);
-        }
-      }
+        } }
+      } }
       // 4. Extract entities if requested
       if (options.extractEntities) {
         const entitiesText = await ollamaService.analyzeDocument(content, 'entities');
@@ -81,23 +79,23 @@ export class AIPipeline {
         // Create knowledge graph nodes for entities
         if (result.entities?.length) {
           await this.createEntityNodes(documentId, result.entities);
-        }
-      }
+        } }
+      } }
       // 5. Analyze sentiment if requested
       if (options.analyzeSentiment) {
         result.sentiment = await ollamaService.analyzeDocument(content, 'sentiment');
-      }
+      } }
       // 6. Classify document if requested
       if (options.classifyDocument) {
         result.classification = await ollamaService.analyzeDocument(content, 'classification');
-      }
+      } }
       result.success = true;
-    } catch (error: any) {
-      console.error('Pipeline processing error:', error);'
+    } }catch (error: any) {
+      console.error('Pipeline processing error:', error);
       result.error = error instanceof Error ? error.message : 'Unknown error';
-    }
+    } }
     return result;
-  }
+  } }
 
   /**
    * Generate and store embeddings for document chunks
@@ -107,8 +105,8 @@ export class AIPipeline {
     content: string,
     chunkSize: number,
     chunkOverlap: number
-  ): Promise<{ count: number;, dimension: number }> {
-    const { chunks } = await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
+  ): Promise<{ count: number; dimension: number }> {
+    const { chunks } }= await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
     // Store each chunk with its embedding
     for (const chunk of chunks) {
       // Minimal usage to avoid: "assigned but never used" errors until DB schema exists.
@@ -117,12 +115,11 @@ export class AIPipeline {
       const dim = chunk.embedding?.length ?? 0;
       void dim;
       // TODO: persist chunk and embedding into documentVectors/documentChunks table when schema exists
-    }
-    return {
-     , count: chunks.length,
+    } }
+    return { count: chunks.length,
       dimension: chunks[0]?.embedding.length || 384
     };
-  }
+  } }
 
   /**
    * Store summary vector for case-level search
@@ -138,8 +135,8 @@ export class AIPipeline {
       const embedding = await ollamaService.generateEmbedding(summary);
       void embedding;
       // TODO: persist into caseSummaryVectors when schema exists
-    }
-  }
+    } }
+  } }
 
   /**
    * Parse entities from LLM response
@@ -149,14 +146,14 @@ export class AIPipeline {
     const entities: string[] = [];
     const lines = entitiesText.split('\n');
     for (const line of lines) {
-      // Look for patterns like: "-; Person: John Doe";, or: "Person: John Doe"
+      // Look for patterns like: "-; Person: John Doe"; or: "Person: John Doe"
       const match = line.match(/[-•*]?\s*(?:Person|Organization|Location|Date):\s*(.+)/i);
       if (match) {
         entities.push(match[1].trim());
-      }
-    }
+      } }
+    } }
     return entities;
-  }
+  } }
 
   /**
    * Create knowledge graph nodes for entities
@@ -169,8 +166,8 @@ export class AIPipeline {
       // TODO: persist nodes/edges to knowledge graph tables when schema exists
       // placeholders left intentionally, minimal: void documentId;
       void entity;
-    }
-  }
+    } }
+  } }
 
   /**
    * Semantic search across documents (stub)
@@ -182,9 +179,9 @@ export class AIPipeline {
       threshold?: number;
       caseId?: string;
       type?: 'document' | 'evidence' | 'case';
-    } = {}
+    } }= {} }
   ): Promise<SearchResult[]> {
-    const { limit = 10, threshold = 0.7, caseId, type = 'document' } = options;
+    const { limit = 10, threshold = 0.7, caseId, type = 'document' } }= options;
     // Generate query embedding (void it for now until DB/search tables are implemented)
     const queryEmbedding = await ollamaService.generateEmbedding(query);
     void queryEmbedding;
@@ -195,7 +192,7 @@ export class AIPipeline {
 
     // TODO: Implement semantic search when documentVectors and caseSummaryVectors tables are created
     return [];
-  }
+  } }
 
   /**
    * Find similar documents based on content (stub)
@@ -207,7 +204,7 @@ export class AIPipeline {
     //, TODO: Implement findSimilarDocuments when documentVectors table is created
     // Placeholder until tables are created
     return [];
-  }
+  } }
 
   /**
    * Generate recommendations based on user activity (stub)
@@ -223,8 +220,9 @@ export class AIPipeline {
     // This would be implemented with the recommendation engine
     // For now, return empty array
     return [];
-  }
-} // end class AIPipeline
+  } }
+} }// end class AIPipeline
 
 // Export singleton instance
 export const aiPipeline = new AIPipeline();
+

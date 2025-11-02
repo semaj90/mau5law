@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
+import { writable } }from 'svelte/store';
+import { aiRecommendationEngine } }from '$lib/services/ai-recommendation-engine';
 
 export const recommendations = writable<any[]>([]);
 export const partialRecommendations = writable<any[]>([]);
@@ -24,9 +24,10 @@ export const runQuery = async (query: string) => {
 		engineState.set('success');
 		// ensure partials reflect final results
 		partialRecommendations.set(aiRecommendationEngine.getPartialRecommendations());
-	} catch (err) {
+	} }catch (err) {
 		console.error('runQuery error', err);
 		errorMessage.set('Failed to fetch recommendations.');
 		engineState.set('failure');
-	}
+	} }
 };
+

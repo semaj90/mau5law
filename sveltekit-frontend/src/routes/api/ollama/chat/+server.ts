@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { Message } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 /*
  * Ollama Chat API Endpoint
  * Handles streaming and non-streaming chat requests with legal context
  */
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
+import { ollamaChatStream } }from '$lib/services/ollamaChatStream';
 // GET method for health check and model info
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
       if (!healthCheck.ok) {
         throw new Error('Ollama service unavailable');
-      }
+      } }
       const version = await healthCheck.json();
       return json({
         success: true,
@@ -26,12 +26,12 @@ export const GET: RequestHandler = async ({ url }) => {
         model: 'legal:latest',
         version: version.version || 'unknown',
         endpoints: {
-         , chat: '/api/ollama/chat',
+  chat: '/api/ollama/chat',
           stream: '/api/ollama/chat?stream=true'
         },
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     if (action === 'models') {
       const modelsResponse = await fetch('http://localhost:11434/api/tags');
       const modelsData = await modelsResponse.json();
@@ -41,16 +41,16 @@ export const GET: RequestHandler = async ({ url }) => {
         default: 'legal:latest',
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     return json(
       {
         success: false,
         error: 'Invalid action. Use ?action=health or ?action=models'
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (error: any) {
-    console.error('Ollama GET error:', error);'
+  } }catch (error: any) {
+    console.error('Ollama GET error:', error);
     return json(
       {
         success: false,
@@ -58,9 +58,9 @@ export const GET: RequestHandler = async ({ url }) => {
         error: error.message,
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       conversationId,
       useVectorSearch: reqUseVectorSearch,
       context = []
-    } = body;
+    } }= body;
     // Environment-backed defaults (check your .env for these keys)
     // OLLAMA_MODEL, OLLAMA_TEMPERATURE, OLLAMA_MAX_TOKENS, OLLAMA_STREAM, OLLAMA_USE_VECTOR_SEARCH
     const model = import.meta.env.OLLAMA_MODEL ?? reqModel ?? 'legal:latest';
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
         : (import.meta.env.OLLAMA_USE_VECTOR_SEARCH ?? 'true') === 'true';
     if (!message) {
       return json({ error: 'Message is required' }, { status: 400 });
-    }
+    } }
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder();
@@ -110,28 +110,28 @@ export const POST: RequestHandler = async ({ request }) => {
             for await (const chunk of streamGenerator) {
               const data = `data: ${JSON.stringify(chunk)}\n\n`;
               controller.enqueue(encoder.encode(data));
-            }
+            } }
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
-          } catch (error: any) {
-            console.error('Streaming error:', error);'
+          } }catch (error: any) {
+            console.error('Streaming error:', error);
             const errorChunk = {
               text: 'An error occurred while processing your request.',
-              metadata: {, type: 'error', error: error.message }
+              metadata: { type: 'error', error: error.message } }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
-          }
-        }
+          } }
+        } }
       });
       return new Response(readable, {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*` }'`
+          'Access-Control-Allow-Origin': '*` } }`
       });
-    }
+    } }
     // For non-streaming responses
     let fullResponse = '';
     let sources: any[] = [];
@@ -149,11 +149,11 @@ export const POST: RequestHandler = async ({ request }) => {
     for await (const chunk of streamGenerator) {
       if (chunk.metadata?.type === 'sources') {
         sources = chunk.metadata.sources || [];
-      } else if (chunk.metadata?.type === 'text') {
+      } }else if (chunk.metadata?.type === 'text') {
         fullResponse += chunk.text;
         confidence = chunk.metadata.confidence || 0;
-      }
-    }
+      } }
+    } }
     return json({
       success: true,
       response: fullResponse,
@@ -163,17 +163,18 @@ export const POST: RequestHandler = async ({ request }) => {
         sources,
         conversationId,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('Chat API error:', error);'
+  } }catch (error: any) {
+    console.error('Chat API error:', error);
     return json(
       {
         success: false,
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

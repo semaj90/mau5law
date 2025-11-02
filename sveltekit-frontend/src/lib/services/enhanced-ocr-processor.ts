@@ -6,24 +6,24 @@
 import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
-import { EventEmitter } from "events";
-import { createWorker } from "tesseract.js"; // only import factory; avoid importing conflicting Worker type
+import { EventEmitter } }from "events";
+import { createWorker } }from "tesseract.js"; // only import factory; avoid importing conflicting Worker type
 
 // Concrete extended worker interface declaring the runtime methods we call.
 // Do not extend a potentially conflicting: 'Worker' DOM type — declare the useful API surface explicitly.
-interface TesseractExtendedWorker {, load: () => Promise<void>;, loadLanguage: (lang: string) => Promise<void>;
+interface TesseractExtendedWorker { load: () => Promise<void>;, loadLanguage: (lang: string) => Promise<void>;
   initialize: (lang: string) => Promise<void>;
-  recognize: (image: string | Buffer) => Promise<{ data: { text?: string; confidence?: number } }>;
+  recognize: (image: string | Buffer) => Promise<{ data: { text?: string; confidence?: number } }}>;
   // simplified type for parameters map
   setParameters?: (params: Record<string, string | number>) => Promise<void>;
   terminate?: () => Promise<void>;
   // other optional runtime methods may exist, but are not needed here
-}
+} }
 
 export interface OCRResult { text: string;, confidence: number;
   pages: number;
   processingTime: number;
-  metadata: {, filename: string;, fileSize: number;
+  metadata: { filename: string;, fileSize: number;
     mimeType: string;
     pageCount?: number;
     language?: string;
@@ -31,12 +31,12 @@ export interface OCRResult { text: string;, confidence: number;
     legalEntities?: string[];
     confidentialityLevel?: 'public' | 'confidential' | 'privileged';
   };
-  analysisResults?: {, legalKeywords: string[];, documentStructure: string[];
+  analysisResults?: { legalKeywords: string[];, documentStructure: string[];
     confidenceBySection: number[];
     extractedDates: string[];
     extractedNumbers: string[];
   };
-}
+} }
 
 export interface ProcessingOptions {
   language?: string;
@@ -49,21 +49,21 @@ export interface ProcessingOptions {
   enableLegalAnalysis?: boolean;
   enableEntityExtraction?: boolean;
   confidentialityDetection?: boolean;
-}
+} }
 
-export interface OCRWorkerConfig {, id: string;, worker: TesseractExtendedWorker; // use extended type with optional helpers
+export interface OCRWorkerConfig { id: string;, worker: TesseractExtendedWorker; // use extended type with optional helpers
   status: 'idle' | 'busy' | 'error';
   language: string;
   processedPages: number;
   errors: number;
-}
+} }
 
 // Define a new interface for OCR tasks to simplify the processingQueue type
-export interface OCRTask {, imagePath: string;, options: ProcessingOptions;
+export interface OCRTask { imagePath: string;, options: ProcessingOptions;
   pageIndex: number;
- , resolve: (value: {, text: string;, confidence: number }) => void;
+ , resolve: (value: { text: string; confidence: number }) => void;
   reject: (reason?: any) => void;
-}
+} }
 
 export class EnhancedOCRProcessor extends EventEmitter {
   private workers: OCRWorkerConfig[] = [];
@@ -109,7 +109,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       'negligence',
     ]);
     this.initializeWorkers().catch((err: any) => this.emit('error', err));
-  }
+  } }
 
   private async initializeWorkers(): Promise<void> {
     try {
@@ -120,8 +120,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         await workerInstance.load();
         await workerInstance.loadLanguage('eng');
         await workerInstance.initialize('eng');
-        const cfg: OCRWorkerConfig = {
-         , id: `worker-${i}`,
+        const cfg: OCRWorkerConfig = { id: `worker-${i}`,
           worker: workerInstance,
           status: 'idle',
           language: 'eng',
@@ -129,21 +128,21 @@ export class EnhancedOCRProcessor extends EventEmitter {
           errors: 0
         };
         this.workers.push(cfg);
-      }
+      } }
       this.initialized = true;
-      this.emit('initialized', `${this.workers.length} OCR workers ready`);
+      this.emit('initialized', `${this.workers.length} }OCR workers ready`);
       this.runQueue(); // Start processing the queue
-    } catch (error: any) {
+    } }catch (error: any) {
       this.emit('error', `Failed to initialize OCR workers: ${String(error)}`);
       throw error;
-    }
-  }
+    } }
+  } }
 
   // New method to run the processing queue
   private async runQueue(): Promise<void> {
     if (this.queueRunning) {
       return;
-    }
+    } }
     this.queueRunning = true;
     while (this.processingQueue.length > 0) {
       // Dequeue the task first
@@ -152,7 +151,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         // Added explicit check for: undefined task
         // This should ideally not happen if length > 0, but provides robustness
         break;
-      }
+      } }
       const workerCfg = this.getAvailableWorker();
 
       if (!workerCfg) {
@@ -160,20 +159,20 @@ export class EnhancedOCRProcessor extends EventEmitter {
         this.processingQueue.unshift(task); // Put it back at the front of the queue
         await new Promise(resolve => setTimeout(resolve, 100));
         continue;
-      }
+      } }
 
       workerCfg.status = 'busy';
       try {
         const result = await this.processImagePageNow(task.imagePath, task.options, task.pageIndex);
         task.resolve(result);
-      } catch (error: any) {
+      } }catch (error: any) {
         task.reject(error);
-      } finally {
+      } }finally {
         workerCfg.status = 'idle';
-      }
-    }
+      } }
+    } }
     this.queueRunning = $state(false);
-  }
+  } }
 
   async processFile(filePath: string, options: ProcessingOptions = {}): Promise<OCRResult> {
     const startTime = Date.now();
@@ -186,9 +185,9 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
       if (mimeType === 'application/pdf') {
         result = await this.processPDFEnhanced(filePath, options);
-      } else {
+      } }else {
         result = await this.processImageEnhanced(filePath, options);
-      }
+      } }
 
       result.processingTime = Date.now() - startTime;
       const updatedMetadata = {
@@ -212,16 +211,16 @@ export class EnhancedOCRProcessor extends EventEmitter {
         result.metadata.documentType = await this.detectDocumentType(result.text || '');
         if (options.confidentialityDetection) {
           result.metadata.confidentialityLevel = await this.detectConfidentiality(result.text || '');
-        }
-      }
+        } }
+      } }
 
       this.emit('processing:complete', result);
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       this.emit('processing:error', { filename, error: String(error) });
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async processPDFEnhanced(filePath: string, options: ProcessingOptions): Promise<OCRResult> {
     try {
@@ -239,13 +238,13 @@ export class EnhancedOCRProcessor extends EventEmitter {
             resultsText.push(s.value.text || '');
             confidenceBySection.push(s.value.confidence || 0);
             totalConfidence += s.value.confidence || 0;
-          } else {
+          } }else {
             resultsText.push('');
             confidenceBySection.push(0);
             this.emit('page:error', { error: s.reason });
-          }
-        }
-      } else {
+          } }
+        } }
+      } }else {
         for (let i = 0; i < pageImages.length; i++) {
           try {
             const res = await this.processImagePageEnhanced(pageImages[i], options, i);
@@ -253,105 +252,100 @@ export class EnhancedOCRProcessor extends EventEmitter {
             confidenceBySection.push(res.confidence || 0);
             totalConfidence += res.confidence || 0;
             this.emit('page:processed', { page: i + 1, total: pageImages.length, confidence: res.confidence || 0 });
-          } catch (err: any) {
+          } }catch (err: any) {
             // Explicitly type err
             this.emit('page:error', { page: i + 1, error: String(err) });
             resultsText.push('');
             confidenceBySection.push(0);
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       await this.cleanupImages(pageImages); // Call the new method
 
       // Assign the result to a variable with an explicit type to help the compiler
       // and use explicit property assignment for: 'confidenceBySection'.
-      const ocrResult: OCRResult = {
-       , text: resultsText.join('\n\n'),
+      const ocrResult: OCRResult = { text: resultsText.join('\n\n'),
         confidence: pageImages.length > 0 ? totalConfidence / pageImages.length : 0,
         pages: pageImages.length,
         processingTime: 0,
-        metadata: {
-         , filename: path.basename(filePath),
+        metadata: { filename: path.basename(filePath),
           fileSize: 0,
           mimeType: 'application/pdf',
           pageCount: pageImages.length,
           language: options.language || 'eng` },'`
-        analysisResults: {
-         , legalKeywords: [],
+        analysisResults: { legalKeywords: [],
           documentStructure: [],
           confidenceBySection: confidenceBySection, // Explicitly assign the variable
           extractedDates: [],
           extractedNumbers: []
-        }
+        } }
       };
       return ocrResult;
-    } catch (error: any) {
+    } }catch (error: any) {
       throw new Error(`Enhanced PDF processing failed: ${String(error)}`);
-    }
-  }
+    } }
+  } }
 
   private async processImageEnhanced(filePath: string, options: ProcessingOptions): Promise<OCRResult> {
     let processedImagePath = filePath;
     try {
       if (options.enhanceImage) {
         processedImagePath = await this.enhanceImageForLegal(filePath, options);
-      }
+      } }
       const result = await this.processImagePageEnhanced(processedImagePath, options, 0);
 
       if (processedImagePath !== filePath) {
         await fs.unlink(processedImagePath).catch(() => {
           /* ignore */
         });
-      }
+      } }
 
       return {
         text: result.text || '',
         confidence: result.confidence || 0,
         pages: 1,
         processingTime: 0,
-        metadata: {
-         , filename: path.basename(filePath),
+        metadata: { filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
           language: options.language || 'eng` },'`
-        analysisResults: {
-         , legalKeywords: [],
+        analysisResults: { legalKeywords: [],
           documentStructure: [],
           confidenceBySection: [result.confidence || 0],
           extractedDates: [],
           extractedNumbers: []
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       throw new Error(`Enhanced image processing failed: ${String(error)}`);
-    }
-  }
+    } }
+  } }
 
   private async processImagePageEnhanced(
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string;, confidence: number }> {
+  ): Promise<{ text: string; confidence: number }> {
     if (!this.initialized) {
       return new Promise((resolve, reject) => {
         this.processingQueue.push({ imagePath, options, pageIndex, resolve, reject });
         this.runQueue(); // Ensure queue processing starts if not already
       });
-    }
+    } }
     return this.processImagePageNow(imagePath, options, pageIndex);
-  }
+  } }
 
   private async processImagePageNow(
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string;, confidence: number }> {
+  ): Promise<{ text: string; confidence: number }> {
     const workerCfg = this.getAvailableWorker();
     if (!workerCfg) {
       // This case should ideally be handled by the queue, but as a fallback
       throw new Error('No OCR workers available (queue logic failed or not initialized)');
-    }
+    } }
     workerCfg.status = 'busy';
     try {
       const worker = workerCfg.worker;
@@ -361,19 +355,19 @@ export class EnhancedOCRProcessor extends EventEmitter {
           tessedit_pageseg_mode: (options.psm ?? 6) as: number,
           tessedit_ocr_engine_mode: (options.oem ?? 3) as: number,
           preserve_interword_spaces: '1` });'`
-      }
+      } }
       if (options.language && options.language !== workerCfg.language) {
         await worker.loadLanguage(options.language);
         await worker.initialize(options.language);
         workerCfg.language = options.language;
-      }
+      } }
 
-      const { data } = await worker.recognize(imagePath);
+      const { data } }= await worker.recognize(imagePath);
       const text = this.cleanLegalText(data?.text || '');
       const confidence = typeof data?.confidence === 'number' ? data.confidence : 0;
       workerCfg.processedPages++;
       return { text, confidence };
-    } catch (error: any) {
+    } }catch (error: any) {
       workerCfg.errors++;
       workerCfg.status = 'error';
       if (workerCfg.errors > 5) {
@@ -381,10 +375,10 @@ export class EnhancedOCRProcessor extends EventEmitter {
           // call optional terminate if available
           if (workerCfg.worker.terminate) {
             await workerCfg.worker.terminate();
-          }
-        } catch (e: any) {
+          } }
+        } }catch (e: any) {
           /* ignore */
-        }
+        } }
         try {
           const newWorkerInstance = (await createWorker()) as: unknown as TesseractExtendedWorker;
           await newWorkerInstance.load();
@@ -393,17 +387,17 @@ export class EnhancedOCRProcessor extends EventEmitter {
           workerCfg.worker = newWorkerInstance;
           workerCfg.status = 'idle';
           workerCfg.errors = 0;
-        } catch (resetError: any) {
+        } }catch (resetError: any) {
           this.emit('worker:reset:failed', { workerId: workerCfg.id, error: String(resetError) });
-        }
-      }
+        } }
+      } }
       throw new Error(`OCR failed for page ${pageIndex}: ${String(error)}`);
-    } finally {
+    } }finally {
       if (workerCfg.status !== 'error') {
         workerCfg.status = 'idle';
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private async enhanceImageForLegal(imagePath: string, options: ProcessingOptions): Promise<string> {
     const enhancedPath = path.join(this.tempDir, `enhanced_legal_${Date.now()}_${path.basename(imagePath)}.jpg`);
@@ -416,10 +410,10 @@ export class EnhancedOCRProcessor extends EventEmitter {
         .jpeg({ quality: options.outputQuality ?? 98, mozjpeg: true })
         .toFile(enhancedPath);
       return enhancedPath;
-    } catch (error: any) {
+    } }catch (error: any) {
       throw new Error(`Legal image enhancement failed: ${String(error)}`);
-    }
-  }
+    } }
+  } }
 
   private cleanLegalText(text: string): string {
     return text
@@ -428,7 +422,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       .replace(/\n\s*\n/g, '\n')
       .replace(new RegExp('[^\\w\\s.:!?\'"(){}$%&/*+=<>|\\\\@#^_`~-]', 'g'), '')"`
       .trim();
-  }
+  } }
 
   private async performLegalAnalysis(
     text: string
@@ -442,7 +436,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     const extractedDates = this.extractDates(text);
     const extractedNumbers = this.extractNumbers(text);
     return { legalKeywords, documentStructure, extractedDates, extractedNumbers };
-  }
+  } }
 
   private async detectDocumentType(text: string): Promise<'legal' | 'contract' | 'evidence' | 'general'> {
     const lower = text.toLowerCase();
@@ -450,7 +444,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return, 'evidence';
     if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return, 'legal';
     return, 'general';
-  }
+  } }
 
   private getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
@@ -466,13 +460,13 @@ export class EnhancedOCRProcessor extends EventEmitter {
       case, '.tif':
         return, 'image/tiff';
       default: return, 'application/octet-stream';
-    }
-  }
+    } }
+  } }
 
   private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
-    // Renamed: 'options';, to: '_options'
+    // Renamed: 'options'; to: '_options'
     // This is a mock implementation. In a real scenario, you'd use a library'
-    // like: 'pdf-poppler';, or: 'imagemagick' to convert PDF pages to images.
+    // like: 'pdf-poppler'; or: 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
     const numPages = 3; // Simulate a 3-page PDF
     const imagePaths: string[] = [];
@@ -481,32 +475,32 @@ export class EnhancedOCRProcessor extends EventEmitter {
       // Create a dummy image file
       await fs.writeFile(tempImagePath, Buffer.from('dummy image data')); // Placeholder for actual image data
       imagePaths.push(tempImagePath);
-    }
+    } }
     return imagePaths;
-  }
+  } }
 
   private async cleanupImages(imagePaths: string[]): Promise<void> {
     await Promise.all(
       imagePaths.map(async p => {
         try {
           await fs.unlink(p);
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn(`Failed to delete temporary image ${p}: ${String(error)}`);
-        }
+        } }
       })
     );
-  }
+  } }
 
   private async detectConfidentiality(text: string): Promise<'public' | 'confidential' | 'privileged'> {
     const lower = text.toLowerCase();
     if (lower.includes('attorney-client privilege') || lower.includes('privileged communication')) {
       return, 'privileged';
-    }
+    } }
     if (lower.includes('confidential') || lower.includes('proprietary information')) {
       return, 'confidential';
-    }
+    } }
     return, 'public';
-  }
+  } }
 
   private extractDocumentStructure(text: string): string[] {
     // Simple heuristic: look for common headings or patterns
@@ -523,26 +517,26 @@ export class EnhancedOCRProcessor extends EventEmitter {
           /^[A-Z]\.\s/.test(trimmed)) // Lettered list item
       ) {
         structure.push(trimmed);
-      }
+      } }
     });
     return structure;
-  }
+  } }
 
   private extractDates(text: string): string[] {
     const dateRegex =
-      /\b(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{2,4}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4})\b/gi;
+      /\b(\d{1,2} }-/.]\d{1,2} }-/.]\d{2,4}|\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{2,4}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4})\b/gi;
     const matches = text.match(dateRegex);
     return matches ? Array.from(new Set(matches)) : [];
-  }
+  } }
 
   private extractNumbers(text: string): string[] {
     const numberRegex =
-      /(?:\b\d{3}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}\b|\b[A-Z]{2}\s\d{2}\b)/gi;
+      /(?:\b\d{3}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2} }-/.]\d{1,2} }-/.]\d{2,4}\b|\b[A-Z]{2}\s\d{2}\b)/gi;
     const matches = text.match(numberRegex);
     return matches ? Array.from(new Set(matches)) : [];
-  }
+  } }
 
   private getAvailableWorker(): OCRWorkerConfig | undefined {
     return this.workers.find(worker => worker.status === 'idle');
-  }
+  } }
 }

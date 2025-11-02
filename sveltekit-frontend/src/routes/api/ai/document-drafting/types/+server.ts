@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -21,14 +21,13 @@ import type { Document } from '$lib/types';
  * Document Types API
  * GET /api/ai/document-drafting/types - Get available document types
  */
-import { json } from '@sveltejs/kit'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } }from './$types.js'
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentTypes = [
-      {,
-        id: 'motion_to_suppress',
+      { id: 'motion_to_suppress',
         name: 'Motion to Suppress Evidence',
         category: 'litigation',
         description: 'Legal motion challenging the admissibility of evidence based on constitutional violations',
@@ -36,10 +35,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '15-20 minutes',
         icon: '⚖️',
         requiredFields: [
-          {, name: 'caseTitle', type: 'text', required: true, label: 'Case Title' },
+          { name: 'caseTitle', type: 'text', required: true, label: 'Case Title' },
           { name: 'jurisdiction', type: 'select', required: true, label: 'Jurisdiction', options: ['Federal', 'State'] },
           { name: 'evidenceDescription', type: 'textarea', required: true, label: 'Evidence Description' },
-          { name: 'constitutionalBasis', type: 'select', required: true, label: 'Constitutional Basis', options: ['Fourth Amendment', 'Fifth Amendment', 'Sixth Amendment'] }
+          { name: 'constitutionalBasis', type: 'select', required: true, label: 'Constitutional Basis', options: ['Fourth Amendment', 'Fifth Amendment', 'Sixth Amendment'] } }
         ]
       },
       {
@@ -51,10 +50,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '20-25 minutes',
         icon: '🤝',
         requiredFields: [
-          {, name: 'defendantName', type: 'text', required: true, label: 'Defendant Name' },
+          { name: 'defendantName', type: 'text', required: true, label: 'Defendant Name' },
           { name: 'charges', type: 'textarea', required: true, label: 'Original Charges' },
           { name: 'pleaTerms', type: 'textarea', required: true, label: 'Plea Terms' },
-          { name: 'mitigationFactors', type: 'textarea', required: false, label: 'Mitigation Factors' }
+          { name: 'mitigationFactors', type: 'textarea', required: false, label: 'Mitigation Factors' } }
         ]
       },
       {
@@ -66,9 +65,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '10-15 minutes',
         icon: '🔍',
         requiredFields: [
-          {, name: 'requestType', type: 'select', required: true, label: 'Request Type', options: ['Documents', 'Depositions', 'Expert Reports', 'Electronic Evidence'] },
+          { name: 'requestType', type: 'select', required: true, label: 'Request Type', options: ['Documents', 'Depositions', 'Expert Reports', 'Electronic Evidence'] },
           { name: 'relevanceStatement', type: 'textarea', required: true, label: 'Relevance Statement' },
-          { name: 'timeframe', type: 'text', required: false, label: 'Time Frame' }
+          { name: 'timeframe', type: 'text', required: false, label: 'Time Frame' } }
         ]
       },
       {
@@ -80,10 +79,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '30-40 minutes',
         icon: '🎯',
         requiredFields: [
-          {, name: 'caseTheme', type: 'text', required: true, label: 'Case Theme' },
+          { name: 'caseTheme', type: 'text', required: true, label: 'Case Theme' },
           { name: 'keyFacts', type: 'textarea', required: true, label: 'Key Facts' },
           { name: 'legalTheory', type: 'textarea', required: true, label: 'Legal Theory' },
-          { name: 'anticipatedDefense', type: 'textarea', required: false, label: 'Anticipated Defense Arguments' }
+          { name: 'anticipatedDefense', type: 'textarea', required: false, label: 'Anticipated Defense Arguments' } }
         ]
       },
       {
@@ -95,10 +94,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '25-35 minutes',
         icon: '📝',
         requiredFields: [
-          {, name: 'convictionDetails', type: 'textarea', required: true, label: 'Conviction Details' },
+          { name: 'convictionDetails', type: 'textarea', required: true, label: 'Conviction Details' },
           { name: 'mitigationArguments', type: 'textarea', required: true, label: 'Mitigation Arguments' },
           { name: 'characterReferences', type: 'textarea', required: false, label: 'Character References' },
-          { name: 'recommendedSentence', type: 'text', required: true, label: 'Recommended Sentence' }
+          { name: 'recommendedSentence', type: 'text', required: true, label: 'Recommended Sentence' } }
         ]
       },
       {
@@ -110,28 +109,28 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         estimatedTime: '20-30 minutes',
         icon: '📋',
         requiredFields: [
-          {, name: 'briefType', type: 'select', required: true, label: 'Brief Type', options: ['Motion Brief', 'Appellate Brief', 'Summary Judgment Brief', 'Response Brief'] },
+          { name: 'briefType', type: 'select', required: true, label: 'Brief Type', options: ['Motion Brief', 'Appellate Brief', 'Summary Judgment Brief', 'Response Brief'] },
           { name: 'legalIssues', type: 'textarea', required: true, label: 'Legal Issues' },
           { name: 'precedents', type: 'textarea', required: false, label: 'Key Precedents' },
-          { name: 'arguments', type: 'textarea', required: true, label: 'Main Arguments' }
+          { name: 'arguments', type: 'textarea', required: true, label: 'Main Arguments' } }
         ]
-      }
+      } }
     ]
     return json({
-     , success: true,
+  success: true,
       documentTypes,
       meta: {
-       , total: documentTypes.length,
+  total: documentTypes.length,
         categories: Array.from(new Set(documentTypes.map(dt => dt.category))),
         complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity)))
-      }
+      } }
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching document types:', error)
     return json(
       { success: false, message: 'Failed to fetch document types' },)
-      { status: 500 }
+      { status: 500 } }
     )
-  }
-}
+  } }
+} }
 export const GET = redisOptimized.documentProcessing(originalGETHandler);

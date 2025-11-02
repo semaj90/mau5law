@@ -2,13 +2,13 @@
  * Unified Inference Integration
  * Connects your, 3 custom inference systems with the tensor cache
  */
-import { gpuTensorCacheService } from '$lib/services/gpu-tensor-cache-worker';
-import { webASMInferenceService } from '$lib/services/webasm-inference-service';
+import { gpuTensorCacheService } }from '$lib/services/gpu-tensor-cache-worker';
+import { webASMInferenceService } }from '$lib/services/webasm-inference-service';
 
 interface InferenceConfig { preferredEngine: 'fastapi' | 'go-gpu' | 'webasm';, fallbackOrder: string[];
   cacheStrategy: 'aggressive' | 'balanced' | 'minimal';
  , lodPreference: number[]; // [0, 1, 2] priority order
-}
+} }
 interface UnifiedInferenceRequest {
   text: string;
   caseId?: string;
@@ -16,23 +16,23 @@ interface UnifiedInferenceRequest {
   sessionId: string;
   operation: 'embedding' | 'similarity' | 'classification' | 'legal-analysis';
   priority: 'low' | 'normal' | 'high' | 'critical';
-}
-interface InferenceResult {, result: Float32Array | string;, engine: string;
+} }
+interface InferenceResult { result: Float32Array | string;, engine: string;
   cacheHit: boolean;
   processingTime: number;
   tensorId?: string;
   lodLevel: number;
-  metadata: {, model: string;, confidence: number;
+  metadata: { model: string;, confidence: number;
    , source: 'gpu' | 'ram' | 'redis' | 'computed';
   };
-}
+} }
 
 // new small helper types to satisfy TS without changing the worker implementation
 type GPUStoredData = Float32Array | number[];
 interface GPUCacheCompat {
   getTensor?: (key: string, lodLevel?: number) => Promise<Float32Array | GPUStoredData | null>;
   storeTensor?: (key: string, data: GPUStoredData, shape: number[], opts?: Record<string, unknown>) => Promise<void>;
-}
+} }
 
 interface QuicCacheEntry {
   tensor_id?: string;
@@ -41,10 +41,10 @@ interface QuicCacheEntry {
   engine?: string;
   confidence?: number;
   timestamp?: number;
-}
+} }
 
 // Add typed contracts for the webasm service and result
-type WasmPayload = { model: string;, input: Float32Array; batchSize?: number; [key: string]: any };
+type WasmPayload = { model: string; input: Float32Array; batchSize?: number; [key: string]: any };
 
 interface WebAsmResult {
   output?: Float32Array | number[];
@@ -54,13 +54,13 @@ interface WebAsmResult {
   tensor_id?: string;
   confidence?: number;
   [key: string]: any;
-}
+} }
 
 interface WebAsmService {
   runInference?: (payload: WasmPayload) => Promise<WebAsmResult>;
   infer?: (payload: WasmPayload) => Promise<WebAsmResult>;
   execute?: (payload: WasmPayload) => Promise<WebAsmResult>;
-}
+} }
 
 /**
  * Unified inference orchestrator that coordinates your, 3 inference systems
@@ -70,19 +70,18 @@ export class UnifiedInferenceEngine {
   private fastApiEndpoint = 'http://localhost:8000';
   private goGpuEndpoint = 'http://localhost:8097';
   private quicAuthEndpoint = 'https://localhost:4433';
-  private defaultConfig: InferenceConfig = {
-   , preferredEngine: 'go-gpu',
+  private defaultConfig: InferenceConfig = { preferredEngine: 'go-gpu',
     fallbackOrder: ['fastapi', 'webasm'],
     cacheStrategy: 'balanced',
     lodPreference: [0, 1, 2], // Try full quality first
   };
-  constructor(private config: InferenceConfig = this.defaultConfig) {}
+  constructor(private config: InferenceConfig = this.defaultConfig) {} }
   /**
    * Main inference orchestration method
    * Intelligently routes requests across your, 3 inference systems
    */
   async runInference(request: UnifiedInferenceRequest): Promise<InferenceResult> {
-    console.log(`🧠 Running ${request.operation} inference for case ${request.caseId}`);
+    console.log(`🧠 Running ${request.operation} }inference for case ${request.caseId}`);
     const cacheKey = this.generateCacheKey(request);
     const cachedResult = await this.tryGetFromCache(cacheKey, request);
     if (cachedResult) {
@@ -91,7 +90,7 @@ export class UnifiedInferenceEngine {
         cacheHit: true,
         processingTime: 0
       };
-    }
+    } }
     const startTime = performance.now();
     let result: InferenceResult;
     try {
@@ -107,16 +106,16 @@ export class UnifiedInferenceEngine {
           break;
         default:
           throw new Error('No inference engine available');
-      }
+      } }
       result.processingTime = performance.now() - startTime;
       result.cacheHit = $state(false);
       await this.cacheInferenceResult(cacheKey, result, request);
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Primary inference failed, trying fallback:`, error);
       return await this.tryFallbackInference(request);
-    }
-  }
+    } }
+  } }
   /**
    * Go GPU Inference Server integration
    * Your high-performance server with Ollama + SIMD acceleration
@@ -125,12 +124,11 @@ export class UnifiedInferenceEngine {
     const payload = {
       text: request.text,
       model: this.selectGemmaModel(request.operation),
-      config: {
-       , case_id: request.caseId,
+      config: { case_id: request.caseId,
         document_id: request.documentId,
         operation: request.operation,
         enable_caching: true
-      }
+      } }
     };
     const response = await fetch(`${this.goGpuEndpoint}/inference`, {
       method: 'POST',
@@ -151,13 +149,12 @@ export class UnifiedInferenceEngine {
       processingTime: Number(metadata.processing_time ?? 0),
       lodLevel: 0,
       tensorId: data.tensor_id,
-      metadata: {
-       , model: metadata.model ?? 'unknown',
+      metadata: { model: metadata.model ?? 'unknown',
         confidence: Number(data.confidence ?? 0.85),
         source: metadata.cached ? 'redis' : 'computed'
-      }
+      } }
     };
-  }
+  } }
   /**
    * FastAPI Tensor Service integration
    * Your Python service with Gemma embeddings + multi-slice generation
@@ -180,8 +177,8 @@ export class UnifiedInferenceEngine {
     if (Array.isArray(data.slices)) {
       for (const sliceId of data.slices) {
         await this.cacheTensorSlice(sliceId, request).catch(() => undefined);
-      }
-    }
+      } }
+    } }
     const embeddings = Array.isArray(data.embeddings) ? new Float32Array(data.embeddings) : new Float32Array([]);
     return {
       result: embeddings,
@@ -190,42 +187,40 @@ export class UnifiedInferenceEngine {
       processingTime: Number(data.metadata?.processing_time ?? 0),
       tensorId: data.tensor_id,
       lodLevel: 0,
-      metadata: {
-       , model: data.metadata?.model ?? 'embeddinggemma:latest',
+      metadata: { model: data.metadata?.model ?? 'embeddinggemma:latest',
         confidence: Number(data.confidence ?? 0.9),
-        source: `computed` }
+        source: `computed` } }
     };
-  }
+  } }
   /**
    * WebAssembly inference integration
    * Your browser-side WASM models with SIMD optimization
    */
   private async runWebAsmInference(request: UnifiedInferenceRequest): Promise<InferenceResult> {
     // safe wrapper around various possible webASM service APIs
-    let wasmResult: WebAsmResult = {, output: new Float32Array([]), inferenceTime: 0 };
+    let wasmResult: WebAsmResult = { output: new Float32Array([]), inferenceTime: 0 };
     try {
       const svc = webASMInferenceService as: unknown as WebAsmService | undefined;
-      const payload: WasmPayload = {
-       , model: this.getWasmModelName(request.operation),
+      const payload: WasmPayload = { model: this.getWasmModelName(request.operation),
         input: this.tokenizeForWasm(request.text),
         batchSize: 1
       };
 
       if (typeof svc?.runInference === 'function') {
         wasmResult = await svc.runInference(payload);
-      } else if (typeof svc?.infer === 'function') {
+      } }else if (typeof svc?.infer === 'function') {
         wasmResult = await svc.infer(payload);
-      } else if (typeof svc?.execute === 'function') {
+      } }else if (typeof svc?.execute === 'function') {
         wasmResult = await svc.execute(payload);
-      } else {
+      } }else {
         console.warn(
           'webASMInferenceService missing known methods (runInference|infer|execute). Falling back to empty result.'
         );
-      }
-    } catch (_err: any) {
+      } }
+    } }catch (_err: any) {
       console.warn('WASM inference failed:', _err);
       wasmResult = { output: new Float32Array([]), inferenceTime: 0 };
-    }
+    } }
 
     const rawOutput = wasmResult.output ?? wasmResult.data ?? new Float32Array([]);
     const output =
@@ -238,27 +233,26 @@ export class UnifiedInferenceEngine {
       cacheHit: false,
       processingTime: inferenceTime,
       lodLevel: 0,
-      metadata: {
-       , model: this.getWasmModelName(request.operation),
+      metadata: { model: this.getWasmModelName(request.operation),
         confidence: 0.8,
-        source: `computed` }
+        source: `computed` } }
     };
-  }
+  } }
   /**
    * Intelligent engine selection based on request characteristics
    */
   private selectOptimalEngine(request: UnifiedInferenceRequest): string {
     if (request.priority === 'critical' || request.text.length > 10000) {
       return, 'go-gpu';
-    }
+    } }
     if (request.operation === 'embedding') {
       return, 'fastapi';
-    }
+    } }
     if (request.operation === 'similarity' || (typeof navigator !== 'undefined' && !navigator.onLine)) {
       return, 'webasm';
-    }
+    } }
     return this.config.preferredEngine;
-  }
+  } }
   /**
    * Cache integration with your tensor cache system
    */
@@ -282,15 +276,14 @@ export class UnifiedInferenceEngine {
             cacheHit: true,
             processingTime: 0,
             lodLevel,
-            metadata: {
-             , model: 'cached',
+            metadata: { model: 'cached',
               confidence: this.getLodConfidence(lodLevel),
-              source: `gpu` }
+              source: `gpu` } }
           };
-        }
-      } catch (e) {
+        } }
+      } }catch (e) {
         console.warn('GPU cache read failed:', e);
-      }
+      } }
       const redisResult = await this.checkQuicCache(lodCacheKey, request.sessionId);
       if (redisResult?.data) {
         console.log(`📡 Cache hit from Redis (LoD ${lodLevel})`);
@@ -310,9 +303,9 @@ export class UnifiedInferenceEngine {
             caseId: request.caseId,
             priority: request.priority
           });
-        } catch (e) {
+        } }catch (e) {
           console.warn('Promote to GPU cache failed:', e);
-        }
+        } }
         const normalized =
           redisResult.data instanceof Float32Array
             ? redisResult.data
@@ -323,15 +316,14 @@ export class UnifiedInferenceEngine {
           cacheHit: true,
           processingTime: 0,
           lodLevel,
-          metadata: {
-           , model: 'cached',
+          metadata: { model: 'cached',
             confidence: this.getLodConfidence(lodLevel),
-            source: `redis` }
+            source: `redis` } }
         };
-      }
-    }
+      } }
+    } }
     return: null;
-  }
+  } }
   /**
    * Cache inference results across all appropriate tiers
    */
@@ -354,9 +346,9 @@ export class UnifiedInferenceEngine {
         priority: request.priority,
         tags: [request.operation, result.engine]
       });
-    } catch (e) {
+    } }catch (e) {
       console.warn('GPU cache store failed:', e);
-    }
+    } }
     try {
       await this.storeInQuicCache(
         cacheKey,
@@ -369,11 +361,11 @@ export class UnifiedInferenceEngine {
         },
         request.sessionId
       );
-    } catch (e) {
+    } }catch (e) {
       console.warn('QUIC metadata store failed:', e);
-    }
-    console.log(`💾 Cached ${request.operation} result: ${cacheKey}`);
-  }
+    } }
+    console.log(`💾 Cached ${request.operation} }result: ${cacheKey}`);
+  } }
   /**
    * Fallback inference strategy
    */
@@ -390,18 +382,18 @@ export class UnifiedInferenceEngine {
             return await this.runGoGpuInference(request);
           default:
             continue;
-        }
-      } catch (error) {
-        console.warn(`⚠️ Fallback ${engine} also failed: ', error);'` }
-    }
+        } }
+      } }catch (error) {
+        console.warn(`⚠️ Fallback ${engine} }also failed: ', error);'` } }
+    } }
     throw new Error('All inference engines failed');
-  }
+  } }
   /**
    * Helper methods
    */
   private generateCacheKey(request: UnifiedInferenceRequest): string {
     const textHash = this.hashString(request.text);
-    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'` }
+    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'` } }
   private selectGemmaModel(operation: string): string {
     switch (operation) {
       case, 'embedding':
@@ -411,8 +403,8 @@ export class UnifiedInferenceEngine {
       case, 'classification':
         return, 'gemma3-legal:latest';
      , default: return, 'gemma3-legal:latest';
-    }
-  }
+    } }
+  } }
   private getWasmModelName(operation: string): string {
     switch (operation) {
       case, 'embedding':
@@ -420,11 +412,11 @@ export class UnifiedInferenceEngine {
       case, 'similarity':
         return, 'wasm-similarity-model';
       default: return, 'wasm-general-model';
-    }
-  }
+    } }
+  } }
   private getLodConfidence(lodLevel: number): number {
     return [0.95, 0.85, 0.75][lodLevel] || 0.7;
-  }
+  } }
   private async checkQuicCache(cacheKey: string, sessionId: string): Promise<QuicCacheEntry | null> {
     try {
       const response = await fetch(`${this.quicAuthEndpoint}/tensor/get`, {
@@ -433,17 +425,17 @@ export class UnifiedInferenceEngine {
           'Content-Type': 'application/json',
           'X-Session-ID': sessionId
         },
-        body: JSON.stringify({, tensor_id: cacheKey })
+        body: JSON.stringify({ tensor_id: cacheKey })
       });
       if (response.ok) {
         const parsed = (await response.json()) as QuicCacheEntry;
         return parsed;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('QUIC cache check failed:', error);
-    }
+    } }
     return: null;
-  }
+  } }
   private async storeInQuicCache(cacheKey: string, data: Record<string, unknown>, sessionId: string): Promise<void> {
     try {
       await fetch(`${this.quicAuthEndpoint}/tensor/store`, {
@@ -452,41 +444,41 @@ export class UnifiedInferenceEngine {
           'Content-Type': 'application/json',
           'X-Session-ID': sessionId
         },
-        body: JSON.stringify({
-         , tensor_id: cacheKey,
+        body: JSON.stringify({ tensor_id: cacheKey,
           data
         })
       });
-    } catch (error) {
+    } }catch (error) {
       console.warn('QUIC cache store failed:', error);
-    }
-  }
+    } }
+  } }
   private async cacheTensorSlice(sliceId: string, _request: UnifiedInferenceRequest): Promise<void> {
     console.log(`📦 Caching tensor slice: ${sliceId}`);
-  }
+  } }
   private tokenizeForWasm(text: string): Float32Array {
     const tokens = text.toLowerCase().split(/\s+/).slice(0, 512);
     const tokenIds = tokens.map(token => this.simpleHash(token) % 50000);
     return new Float32Array(tokenIds);
-  }
+  } }
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash | 0;
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   private simpleHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash | 0;
-    }
+    } }
     return Math.abs(hash);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const unifiedInferenceEngine = new UnifiedInferenceEngine();
+

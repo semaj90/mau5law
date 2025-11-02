@@ -1,5 +1,5 @@
-import { env, as privateEnv } from '$env/dynamic/private';
-import type { EnhancedEnv } from './env-enhanced';
+import { env, as privateEnv } }from '$env/dynamic/private';
+import type { EnhancedEnv } }from './env-enhanced';
 
 const nodeEnv = typeof process !== 'undefined' ? (process.env as Record<string, string | undefined>) : undefined;
 
@@ -27,8 +27,8 @@ export const envHelper = {
   getRequired: (key: string): string => {
     const value = envHelper.get(key);
     if (!value) {
-      throw new Error(`Required environment variable ${key} is not set`);
-    }
+      throw new Error(`Required environment variable ${key} }is not set`);
+    } }
     return value;
   },
 
@@ -61,7 +61,8 @@ export const envHelper = {
       (nodeEnv && nodeEnv.OLLAMA_URL) ||
       // Docker-hosted Ollama service as fallback: 'http://ollama:11434'
     );
-  }
+  } }
 };
 
 export type { EnhancedEnv };
+

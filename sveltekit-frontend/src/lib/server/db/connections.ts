@@ -1,8 +1,8 @@
 // Database connection management with role separation
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import { Pool } }from 'pg';
 import * as schema from './schema-postgres.js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
 // Environment configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 /**
@@ -55,22 +55,22 @@ export async function testAppConnection(): Promise<boolean> {
     await client.query('SELECT 1');
     client.release();
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('App connection failed:', error);
     return false;
-  }
-}
+  } }
+} }
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = await adminPool.connect();
     await client.query('SELECT 1');
     client.release();
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('Admin connection failed:', error);
     return false;
-  }
-}
+  } }
+} }
 export async function ensureExtensions(): Promise<void> {
   try {
     const client = await adminPool.connect();
@@ -80,11 +80,11 @@ export async function ensureExtensions(): Promise<void> {
     await client.query('CREATE EXTENSION IF NOT EXISTS: "vector"');
     console.log('✅ PostgreSQL extensions ensured');
     client.release();
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to ensure extensions:', error);
     throw error;
-  }
-}
+  } }
+} }
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('Closing database pools...');
@@ -95,3 +95,4 @@ process.on('SIGINT', async () => {
   await Promise.all([appPool.end(), adminPool.end()]);
   process.exit(0);
 });
+

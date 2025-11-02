@@ -12,10 +12,10 @@ export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
     dotProduct += aVal * bVal;
     normA += aVal * aVal;
     normB += bVal * bVal;
-  }
+  } }
   if (normA == 0.0 || normB == 0.0) return 0.0;
   return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB));
-}
+} }
 // Euclidean distance calculation
 export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return <f32>Infinity;
@@ -25,9 +25,9 @@ export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
     const bVal = load<f32>(bPtr + (i << 2));
     const diff = aVal - bVal;
     sum += diff * diff;
-  }
+  } }
   return Mathf.sqrt(sum);
-}
+} }
 // Dot product calculation
 export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return, 0.0;
@@ -36,9 +36,9 @@ export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
     result += aVal * bVal;
-  }
+  } }
   return result;
-}
+} }
 // Manhattan distance
 export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return <f32>Infinity;
@@ -47,9 +47,9 @@ export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
     sum += Mathf.abs(aVal - bVal);
-  }
+  } }
   return sum;
-}
+} }
 // Vector normalization in place
 export function normalize(vectorPtr: usize, length: i32): void {
   if (length <= 0) return;
@@ -58,7 +58,7 @@ export function normalize(vectorPtr: usize, length: i32): void {
   for (let i = 0; i < length; i++) {
     const val = load<f32>(vectorPtr + (i << 2));
     norm += val * val;
-  }
+  } }
   norm = Mathf.sqrt(norm);
   if (norm == 0.0) return;
   // Normalize in place
@@ -66,8 +66,8 @@ export function normalize(vectorPtr: usize, length: i32): void {
     const addr = vectorPtr + (i << 2);
     const val = load<f32>(addr);
     store<f32>(addr, val / norm);
-  }
-}
+  } }
+} }
 // Batch vector similarity computation
 export function computeBatchSimilarity(
   queryPtr: usize,
@@ -95,17 +95,17 @@ export function computeBatchSimilarity(
         break;
       default:
         result = 0.0;
-    }
+    } }
     store<f32>(resultsPtr + (i << 2), result);
-  }
-}
+  } }
+} }
 // Simple hash function for text to embedding
 export function hashEmbedding(textPtr: usize, textLen: i32, embeddingPtr: usize, embeddingDim: i32): void {
   if (textLen <= 0 || embeddingDim <= 0) return;
   // Clear the embedding first
   for (let i = 0; i < embeddingDim; i++) {
     store<f32>(embeddingPtr + (i << 2), 0.0);
-  }
+  } }
   let hash: u32 = 2166136261; // FNV offset basis
   for (let i = 0; i < textLen; i++) {
     const char = load<u8>(textPtr + i);
@@ -115,10 +115,10 @@ export function hashEmbedding(textPtr: usize, textLen: i32, embeddingPtr: usize,
     const addr = embeddingPtr + (idx << 2);
     const currentVal = load<f32>(addr);
     store<f32>(addr, currentVal + 1.0);
-  }
+  } }
   // Normalize the embedding
   normalize(embeddingPtr, embeddingDim);
-}
+} }
 
 // Add lightweight aliases so TypeScript tooling recognizes AssemblyScript primitive names
 // These aliases keep the file compatible with AS intent while avoiding TS: "Cannot find name" errors

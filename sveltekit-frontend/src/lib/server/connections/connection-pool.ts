@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /**
  * Centralized Connection Pool for QUIC/HTTP3 Concurrent Requests
  *
@@ -14,11 +14,11 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  *
  *, Date: 2025-10-17
  */
-import { Redis } from 'ioredis';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import neo4j, { Driver } from 'neo4j-driver';
-import amqp, { Connection, Channel } from 'amqplib';
-import { VECTOR_CONFIG } from '../config/vector-config';
+import { Redis } }from 'ioredis';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import neo4j, { Driver } }from 'neo4j-driver';
+import amqp, { Connection, Channel } }from 'amqplib';
+import { VECTOR_CONFIG } }from '../config/vector-config';
 // ============================================================================
 // Redis Connection Pool
 // ============================================================================
@@ -32,16 +32,15 @@ const MAX_REDIS_ATTEMPTS = 3;
 export async function ensureRedisInstance(): Promise<Redis> {
 	if (redisInstance && redisInstance.status === 'ready') {
 		return redisInstance;
-	}
+	} }
 	if (redisConnectionAttempts >= MAX_REDIS_ATTEMPTS) {
 		throw new Error('Redis: Max connection attempts reached');
-	}
+	} }
 	try {
 		redisConnectionAttempts++;
 		const redisUrl = process.env.REDIS_URL || VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL;
 		const redisPassword = process.env.REDIS_PASSWORD;
-		const redisConfig: any = {
-		, retryStrategy: (times: number) => {
+		const redisConfig: any = { retryStrategy: (times: number) => {
 				if (times > 3) return: null; // Stop retrying
 				return Math.min(times * 50, 2000); // Exponential backoff
 			},
@@ -50,7 +49,7 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		// Only add password if explicitly set
 		if (redisPassword) {
 			redisConfig.password = redisPassword;
-		}
+		} }
 		// Add remaining config options
 		redisConfig.enableReadyCheck = true;
 		redisConfig.lazyConnect = $state(false);
@@ -63,12 +62,12 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		console.log('✅ Redis connection established');
 		redisConnectionAttempts = 0;
 		return redisInstance;
-	} catch (error) {
+	} }catch (error) {
 		console.error('❌ Redis connection failed:', error);
 		redisInstance = null;
 		throw error;
-	}
-}
+	} }
+} }
 /**
  * Close Redis connection (for cleanup)
  */
@@ -77,8 +76,8 @@ export async function closeRedis(): Promise<void> {
 		await redisInstance.quit();
 		redisInstance = null;
 		console.log('Redis connection closed');
-	}
-}
+	} }
+} }
 // ============================================================================
 // Qdrant Connection Pool
 // ============================================================================
@@ -90,7 +89,7 @@ let qdrantInstance: QdrantClient | null = null;
 export function ensureQdrantInstance(): QdrantClient {
 	if (qdrantInstance) {
 		return qdrantInstance;
-	}
+	} }
 	const url = process.env.QDRANT_URL || VECTOR_CONFIG.DOCKER_SERVICES.QDRANT_URL;
 	const apiKey = process.env.QDRANT_API_KEY;
 	qdrantInstance = new QdrantClient({
@@ -100,7 +99,7 @@ export function ensureQdrantInstance(): QdrantClient {
 	});
 	console.log('✅ Qdrant client initialized');
 	return qdrantInstance;
-}
+} }
 /**
  * Test Qdrant connection health
  */
@@ -109,11 +108,11 @@ export async function healthCheckQdrant(): Promise<boolean> {
 		const client = ensureQdrantInstance();
 		await client.getCollections();
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.error('Qdrant health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
 // ============================================================================
 // Neo4j Connection Pool
 // ============================================================================
@@ -125,7 +124,7 @@ let neo4jDriverInstance: Driver | null = null;
 export function ensureNeo4jDriver(): Driver {
 	if (neo4jDriverInstance) {
 		return neo4jDriverInstance;
-	}
+	} }
 	const uri = process.env.NEO4J_URI || 'bolt://localhost:7687';
 	const user = process.env.NEO4J_USER || 'neo4j';
 	const password = process.env.NEO4J_PASSWORD || 'password';
@@ -136,11 +135,11 @@ export function ensureNeo4jDriver(): Driver {
 			maxConnectionPoolSize: 50,
 			connectionAcquisitionTimeout: 30000,
 			maxTransactionRetryTime: 15000
-		}
+		} }
 	);
 	console.log('✅ Neo4j driver initialized');
 	return neo4jDriverInstance;
-}
+} }
 /**
  * Close Neo4j driver (for cleanup)
  */
@@ -149,8 +148,8 @@ export async function closeNeo4j(): Promise<void> {
 		await neo4jDriverInstance.close();
 		neo4jDriverInstance = null;
 		console.log('Neo4j driver closed');
-	}
-}
+	} }
+} }
 /**
  * Test Neo4j connection health
  */
@@ -161,11 +160,11 @@ export async function healthCheckNeo4j(): Promise<boolean> {
 		await session.run('RETURN 1');
 		await session.close();
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.error('Neo4j health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
 // ============================================================================
 // RabbitMQ Connection Pool
 // ============================================================================
@@ -180,10 +179,10 @@ const MAX_RABBIT_ATTEMPTS = 3;
 export async function ensureRabbitConnection(): Promise<Connection> {
 	if (rabbitConnectionInstance && rabbitConnectionInstance.connection) {
 		return rabbitConnectionInstance;
-	}
+	} }
 	if (rabbitConnectionAttempts >= MAX_RABBIT_ATTEMPTS) {
 		throw new Error('RabbitMQ: Max connection attempts reached');
-	}
+	} }
 	try {
 		rabbitConnectionAttempts++;
 		const url = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
@@ -193,7 +192,7 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 		});
 		// Handle connection errors
 		rabbitConnectionInstance.on('error', (err) => {
-			console.error('RabbitMQ connection error:', err);'
+			console.error('RabbitMQ connection error:', err);
 			rabbitConnectionInstance = null;
 			rabbitChannelInstance = null;
 		});
@@ -205,12 +204,12 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 		console.log('✅ RabbitMQ connection established');
 		rabbitConnectionAttempts = 0;
 		return rabbitConnectionInstance;
-	} catch (error) {
+	} }catch (error) {
 		console.error('❌ RabbitMQ connection failed:', error);
 		rabbitConnectionInstance = null;
 		throw error;
-	}
-}
+	} }
+} }
 /**
  * Get or create RabbitMQ channel (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -218,12 +217,12 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 export async function ensureRabbitChannel(): Promise<Channel> {
 	if (rabbitChannelInstance) {
 		return rabbitChannelInstance;
-	}
+	} }
 	const connection = await ensureRabbitConnection();
 	rabbitChannelInstance = await connection.createChannel();
 	// Handle channel errors
 	rabbitChannelInstance.on('error', (err) => {
-		console.error('RabbitMQ channel error:', err);'
+		console.error('RabbitMQ channel error:', err);
 		rabbitChannelInstance = null;
 	});
 	rabbitChannelInstance.on('close', () => {
@@ -232,7 +231,7 @@ export async function ensureRabbitChannel(): Promise<Channel> {
 	});
 	console.log('✅ RabbitMQ channel created');
 	return rabbitChannelInstance;
-}
+} }
 /**
  * Close RabbitMQ connection (for cleanup)
  */
@@ -240,13 +239,13 @@ export async function closeRabbitMQ(): Promise<void> {
 	if (rabbitChannelInstance) {
 		await rabbitChannelInstance.close();
 		rabbitChannelInstance = null;
-	}
+	} }
 	if (rabbitConnectionInstance) {
 		await rabbitConnectionInstance.close();
 		rabbitConnectionInstance = null;
 		console.log('RabbitMQ connection closed');
-	}
-}
+	} }
+} }
 /**
  * Test RabbitMQ connection health
  */
@@ -254,11 +253,11 @@ export async function healthCheckRabbitMQ(): Promise<boolean> {
 	try {
 		await ensureRabbitConnection();
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.error('RabbitMQ health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
 // ============================================================================
 // Global Health Check
 // ============================================================================
@@ -282,7 +281,7 @@ export async function healthCheckAll(): Promise<{ redis: boolean;, qdrant: bool
 		neo4j: neo4j.status === 'fulfilled' && neo4j.value,
 		rabbitmq: rabbitmq.status === 'fulfilled' && rabbitmq.value
 	};
-}
+} }
 // ============================================================================
 // Graceful Shutdown
 // ============================================================================
@@ -298,7 +297,7 @@ export async function closeAllConnections(): Promise<void> {
 		closeRabbitMQ()
 	]);
 	console.log('All connections closed');
-}
+} }
 // Handle process termination
 if (typeof process !== 'undefined') {
 	process.on('SIGINT', async () => {
@@ -309,7 +308,7 @@ if (typeof process !== 'undefined') {
 		await closeAllConnections();
 		process.exit(0);
 	});
-}
+} }
 // ============================================================================
 // Exports (only factory functions, no instances)
 // ============================================================================
@@ -320,3 +319,4 @@ export type {
 	Connection as RabbitConnection,
 	Channel as RabbitChannel
 };
+

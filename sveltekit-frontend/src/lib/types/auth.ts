@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Authentication Types
  * Standardized types for user sessions and authentication
@@ -8,18 +8,18 @@ export interface SessionUser { id: string;, email: string;
   name: string | null;
   role: string;
   isActive: boolean;
-}
+} }
 export interface UserSession {
   user: SessionUser | null;
-}
-export interface SessionValidationResult {, user: SessionUser | null;, isValid: boolean;
-}
+} }
+export interface SessionValidationResult { user: SessionUser | null;, isValid: boolean;
+} }
 // Type guards for safe type checking
 
 // Small helper to, narrow: unknown -> record so we can access properties safely
 function isRecord(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
-}
+} }
 
 export function isSessionUser(user: any): user is SessionUser {
   if (!isRecord(user)) return false;
@@ -31,41 +31,41 @@ export function isSessionUser(user: any): user is SessionUser {
     typeof user.role === 'string' &&
     typeof user.isActive === 'boolean'
   );
-}
+} }
 
 export function hasValidSession(
-  locals: { user?: any } & { [key: string]: any }
-): locals is { user: SessionUser } {
+  locals: { user?: any } }& { [key: string]: any } }
+): locals is { user: SessionUser } }{
   return !!locals.user && isSessionUser(locals.user);
-}
+} }
 
-export function validateUserSession(locals: { user?: any } & { [key: string]: any }): SessionUser {
+export function validateUserSession(locals: { user?: any } }& { [key: string]: any }): SessionUser {
   if (!locals.user || !isSessionUser(locals.user)) {
     throw new Error('Authentication required');
-  }
+  } }
   // locals.user is now narrowed to SessionUser
   const user = locals.user;
   if (!user.isActive) {
     throw new Error('Account is inactive');
-  }
+  } }
   return user;
-}
+} }
 // Additional types for full CRUD system
 export interface LoginCredentials { email: string;, password: string;
-}
-export interface RegisterData {, email: string;, password: string;
+} }
+export interface RegisterData { email: string;, password: string;
   firstName: string;
   lastName: string;
-}
-export interface Case {, id: string;, userId: string;
+} }
+export interface Case { id: string;, userId: string;
   title: string;
   description: string;
   caseNumber: string;
   status: string;
   createdAt: string;
   updatedAt: string;
-}
-export interface DocumentMetadata {, id: string;, caseId: string;
+} }
+export interface DocumentMetadata { id: string;, caseId: string;
   userId: string;
   originalFilename: string;
   fileSize: number;
@@ -77,12 +77,13 @@ export interface DocumentMetadata {, id: string;, caseId: string;
   uploadStatus: string;
   processingStatus: string;
   createdAt: string;
-}
-export interface Evidence {, id: string;, caseId: string;
+} }
+export interface Evidence { id: string;, caseId: string;
   documentId?: string;
   evidenceType: string;
   title: string;
   description: string;
   relevanceScore: number;
  , createdAt: string;
-}
+} }
+

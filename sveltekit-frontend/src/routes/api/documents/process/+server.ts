@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 /*
  * Unified Document Processing API
  * Endpoint for complete document processing pipeline
@@ -9,8 +9,8 @@ import {
   unifiedDocumentProcessor,
   type DocumentProcessingConfig,
   type ProcessingResult
-} from '$lib/services/unified-document-processor.js';
-import { json, error } from '@sveltejs/kit';
+} }from '$lib/services/unified-document-processor.js';
+import { json, error } }from '@sveltejs/kit';
 
 // small helper to safely extract error info from: unknown
 function extractErrorInfo(err: any) {
@@ -20,12 +20,12 @@ function extractErrorInfo(err: any) {
     let status: number | undefined = undefined;
     if (typeof maybeStatus === 'number' && Number.isFinite(maybeStatus)) {
       status = maybeStatus;
-    } else if (typeof maybeStatus === 'string') {
+    } }else if (typeof maybeStatus === 'string') {
       const parsed = Number(maybeStatus);
       if (Number.isFinite(parsed)) status = parsed;
-    }
+    } }
     return { message: err.message, stack: err.stack, status };
-  }
+  } }
   if (err && typeof err === 'object') {
     try {
       const obj = err as Record<string, unknown>;
@@ -34,17 +34,17 @@ function extractErrorInfo(err: any) {
       let status: number | undefined = undefined;
       if (typeof obj.status === 'number' && Number.isFinite(obj.status)) {
         status = obj.status;
-      } else if (typeof obj.status === 'string') {
+      } }else if (typeof obj.status === 'string') {
         const n = Number(obj.status);
         if (Number.isFinite(n)) status = n;
-      }
+      } }
       return { message, stack, status };
-    } catch {
+    } }catch {
       return { message: String(err), stack: undefined, status: undefined };
-    }
-  }
-  return {, message: String(err), stack: undefined, status: undefined };
-}
+    } }
+  } }
+  return { message: String(err), stack: undefined, status: undefined };
+} }
 
 // Helper to safely compute processingTime from an: unknown ProcessingResult item
 const getProcessingTimeFromUnknown = (item: any): number => {
@@ -60,7 +60,7 @@ const getProcessingTimeFromUnknown = (item: any): number => {
   if (typeof pt === 'string') {
     const n = Number(pt);
     return Number.isFinite(n) ? n : 0;
-  }
+  } }
   return 0;
 };
 
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     if (!query) {
       throw error(400, 'Query parameter: "q" is required');
-    }
+    } }
     console.log(`🔍 Semantic search query: "${query}"`);
     const results = await unifiedDocumentProcessor.semanticSearch(query, {
       caseId: caseId || undefined,
@@ -82,20 +82,20 @@ export const GET: RequestHandler = async ({ url }) => {
       limit,
       threshold
     });
-    console.log(`✅ Search completed: ${results.results.length} results found`);
+    console.log(`✅ Search completed: ${results.results.length} }results found`);
     return json({
       success: true,
       query,
       results: results.results,
       metadata: {
-       , resultCount: results.results.length,
+  resultCount: results.results.length,
         processingTime: results.processingTime,
         threshold,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
-    const { message, stack, status } = extractErrorInfo(err);
+  } }catch (err: any) {
+    const { message, stack, status } }= extractErrorInfo(err);
     console.error('❌ Semantic search failed:', message);
     return json(
       {
@@ -105,9 +105,9 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       {
         status: status || 500
-      }
+      } }
     );
-  }
+  } }
 };
 // Health check endpoint
 export const OPTIONS: RequestHandler = async () => {
@@ -118,17 +118,17 @@ export const OPTIONS: RequestHandler = async () => {
       health,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
-    const { message } = extractErrorInfo(err);
+  } }catch (err: any) {
+    const { message } }= extractErrorInfo(err);
     return json(
       {
         success: false,
         error: message || 'Health check failed` },'`
       {
         status: 500
-      }
+      } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -141,20 +141,20 @@ export const POST: RequestHandler = async ({ request }) => {
     for (const entry of fileEntries) {
       if (entry instanceof File) {
         files.push(entry);
-      }
-    }
+      } }
+    } }
     // Single file upload
     const singleFile = formData.get('file') as File;
     if (singleFile && !files.length) {
       files.push(singleFile);
-    }
+    } }
     if (files.length === 0) {
       throw error(400, 'No files provided');
-    }
+    } }
 
     // --- Changed: extract metadata first so priority can be used in config ---
     const metadata = {
-     , caseId: String(formData.get('caseId') || ''),
+  caseId: String(formData.get('caseId') || ''),
       documentType: String(formData.get('documentType') || 'general'),
       description: String(formData.get('description') || ''),
       tags: String(formData.get('tags') || '')
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!metadata.caseId) {
       throw error(400, 'Case ID is required');
-    }
+    } }
 
     // Helper to parse: boolean-like form values safely
     const parseBool = (val: FormDataEntryValue | null, def = false): boolean => {
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const v = val.trim().toLowerCase();
         if (v === 'true') return true;
         if (v === 'false') return false;
-      }
+      } }
       return def;
     };
 
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (raw <= 5) return, 'medium';
         if (raw <= 8) return, 'high';
         return, 'critical';
-      }
+      } }
       const s = String(raw).trim().toLowerCase();
       if (s === 'low' || s === 'medium' || s === 'high' || s === 'critical') return s;
       return, 'medium';
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
         s === 'auto'
       ) {
         return s as ModelName;
-      }
+      } }
       return, 'gemma3-legal:latest';
     };
 
@@ -234,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Extract configuration (added missing properties and fixed: boolean parsing)
     const config: DocumentProcessingConfig = {
-     , enableOCR: parseBool(formData.get('enableOCR'), true),
+  enableOCR: parseBool(formData.get('enableOCR'), true),
       enableEmbeddings: parseBool(formData.get('enableEmbeddings'), true),
       enableSummarization: parseBool(formData.get('enableSummarization'), true),
       enableMinIOStorage: parseBool(formData.get('enableMinIOStorage'), false),
@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
       chunkSize: parseInt(String(formData.get('chunkSize') || '1000')),
       confidence: parseFloat(String(formData.get('confidence') || '0.7'))
     };
-    console.log(`📁 Processing ${files.length} file(s) for case ${metadata.caseId}`);
+    console.log(`📁 Processing ${files.length} }file(s) for case ${metadata.caseId}`);
     console.log(
       `⚙️ Config: OCR=${config.enableOCR}, Embeddings=${config.enableEmbeddings}, Summarization=${config.enableSummarization}`
     );
@@ -261,20 +261,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const getTotalProcessingTime = (res: ProcessingResult): number => {
       if (Array.isArray(res)) {
         return res.reduce((sum, r) => sum + getProcessingTimeFromUnknown(r), 0);
-      }
+      } }
       return getProcessingTimeFromUnknown(res);
     };
 
     if (files.length === 1) {
       // Single file processing
       results = await unifiedDocumentProcessor.processDocument(files[0], config, metadata);
-    } else {
+    } }else {
       // Batch processing: use batchProcess if available, otherwise process in parallel
       const udp = unifiedDocumentProcessor as: unknown;
       type UnifiedWithBatch = {
         // Use the imported ProcessingResult type (already imported at the top of the file)
         batchProcess?: (;
-          files: File[]; config: DocumentProcessingConfig;, metadata: any
+          files: File[]; config: DocumentProcessingConfig; metadata: any
         ) => Promise<ProcessingResult[]>;
       };
       if ((udp as UnifiedWithBatch).batchProcess) {
@@ -284,27 +284,27 @@ export const POST: RequestHandler = async ({ request }) => {
           config,
           metadata
         )) as: unknown as ProcessingResult;
-      } else {
+      } }else {
         //, fallback: process each file concurrently
         const processed = await Promise.all(
           files.map(f => unifiedDocumentProcessor.processDocument(f, config, metadata))
         );
         // processed is ProcessingResult[]; cast to the imported ProcessingResult type
         results = processed as: unknown as ProcessingResult;
-      }
-    }
+      } }
+    } }
     console.log('✅ Document processing completed successfully');
     return json({
       success: true,
       results,
       metadata: {
-       , filesProcessed: files.length,
+  filesProcessed: files.length,
         processingTime: getTotalProcessingTime(results),
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
-    const { message, stack, status } = extractErrorInfo(err);
+  } }catch (err: any) {
+    const { message, stack, status } }= extractErrorInfo(err);
     console.error('❌ Document processing failed:', message);
     return json(
       {
@@ -314,7 +314,8 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       {
         status: status || 500
-      }
+      } }
     );
-  }
+  } }
 };
+

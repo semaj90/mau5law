@@ -8,20 +8,20 @@ export const multiAgentOrchestrator = {
       id: workflowId,
       status: 'completed',
       progress: 100,
-      results: { [key,: strin,g]: any }
-    }
+      results: { [key,: strin,g]: any } }
+    } }
   },
   async listWorkflows() {
     return {
       workflows: [],
       total: 0
-    }
+    } }
   },
   async listActiveWorkflows() {
     return {
       workflows: [],
       total: 0
-    }
+    } }
   },
   async startWorkflow(type: string, config: any) {
     return {
@@ -29,21 +29,21 @@ export const multiAgentOrchestrator = {
       status: 'started',
       type,
       config
-    }
+    } }
   },
   async executeAgent(agentType: string, prompt: string, options: any = {}) {
     return {
-      result: `Agent ${agentType} executed with prompt: ${prompt}`,
+      result: `Agent ${agentType} }executed with prompt: ${prompt}`,
       success: true,
       options
-    }
+    } }
   },
   async createWorkflow(data: any) {
-    return { success: true, workflowId: 'workflow_${Date.now()}' }'` },'`
+    return { success: true, workflowId: 'workflow_${Date.now()} } } }` },'`
   async executeWorkflow(workflowId: string, data?: any) {
-    return { success: true, results: { [key,: strin,g]: any } }
+    return { success: true, results: { [key,: strin,g]: any } }} }
   },
   async cancelWorkflow(workflowId: string) {
-    return { success: true, cancelled: true }
-  }
+    return { success: true, cancelled: true } }
+  } }
 }

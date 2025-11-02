@@ -2,10 +2,10 @@
  * Enhanced Health Check API
  * Includes migration status, service health, and system metrics
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
-import { env } from '$env/dynamic/private';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { DatabaseMigrator } }from '$lib/database/migrations/migration-system';
+import { env } }from '$env/dynamic/private';
 export const GET: RequestHandler = async ({ url }) => {
   const detailed = url.searchParams.get('detailed') === 'true';
   const checkMigrations = url.searchParams.get('migrations') !== 'false';
@@ -15,17 +15,17 @@ export const GET: RequestHandler = async ({ url }) => {
     uptime: process.uptime(),
     version: '1.0.0',
     services: {
-     , api: 'healthy',
+  api: 'healthy',
       database: 'unknown',
       migrations: 'unknown',
       backgroundJobs: 'unknown',
       aiServices: 'unknown'
     },
     metrics: {
-     , memoryUsage: process.memoryUsage(),
+  memoryUsage: process.memoryUsage(),
       nodeVersion: process.version,
       platform: process.platform
-    }
+    } }
   };
   try {
     // Check database connection
@@ -45,15 +45,15 @@ export const GET: RequestHandler = async ({ url }) => {
             lastMigration: migrationStatus.lastMigration,
             systemHealthy: migrationStatus.systemHealthy
           };
-        }
+        } }
         await migrator.close();
-      } catch (error) {
+      } }catch (error) {
         console.error('Database health check failed:', error);
         healthCheck.services.database = 'error';
         healthCheck.services.migrations = 'error';
         healthCheck.status = 'degraded';
-      }
-    }
+      } }
+    } }
     // Check background jobs (if job queue table exists)
     try {
       if (env.DATABASE_URL) {
@@ -71,13 +71,13 @@ export const GET: RequestHandler = async ({ url }) => {
             threshold: 100,
             status: healthCheck.services.backgroundJobs
           };
-        }
+        } }
         await migrator.close();
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       // Background jobs table might not exist yet
       healthCheck.services.backgroundJobs = 'unknown';
-    }
+    } }
     // Check AI services (Ollama)
     try {
       const response = await fetch('http://localhost:11434/api/tags', {
@@ -92,22 +92,22 @@ export const GET: RequestHandler = async ({ url }) => {
             modelsAvailable: models.models?.length || 0,
             models: models.models?.map((m: any) => m.name) || []
           };
-        }
-      } else {
+        } }
+      } }else {
         healthCheck.services.aiServices = 'degraded';
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       healthCheck.services.aiServices = 'error';
-    }
+    } }
     // Determine overall status
     const serviceStatuses = Object.values(healthCheck.services);
     if (serviceStatuses.includes('error')) {
       healthCheck.status = 'error';
-    } else if (serviceStatuses.includes('degraded')) {
+    } }else if (serviceStatuses.includes('degraded')) {
       healthCheck.status = 'degraded';
-    } else if (serviceStatuses.includes('unknown')) {
+    } }else if (serviceStatuses.includes('unknown')) {
       healthCheck.status = 'partial';
-    }
+    } }
     // Add system load metrics if detailed
     if (detailed) {
       (healthCheck as: any).systemMetrics = {
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
         freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
         cpuUsage: process.cpuUsage ? process.cpuUsage() : null
       };
-    }
+    } }
     return json(healthCheck, {
       status:
         healthCheck.status === 'healthy'
@@ -124,21 +124,22 @@ export const GET: RequestHandler = async ({ url }) => {
             ? 206
             : 500
     });
-  } catch (error) {
-    console.error('Health check error:', error);'
+  } }catch (error) {
+    console.error('Health check error:', error);
     return json(
       {
         status: 'error',
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         services: {
-         , api: 'error',
+  api: 'error',
           database: 'unknown',
           migrations: 'unknown',
           backgroundJobs: 'unknown',
-          aiServices: 'unknown` }'`
+          aiServices: 'unknown` } }`
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -12,7 +12,8 @@ export interface CommonProps {
   'aria-controls'?: string;
   // Accept arbitrary data-* or aria-* attributes with a single combined template-literal index signature
   [attr: `data-${string}` | `aria-${string}`]: any;
-}
+} }
 // Utility to merge class + className while preserving optional chaining.
 export function mergeClass(base?: string, extra?: string): string | undefined;
 export function mergeClass(base?: string, extra?: string): string | undefined;
+

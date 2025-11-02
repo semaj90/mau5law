@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support
@@ -11,23 +11,23 @@ import type { Document } from '$lib/types';
  * TODO: Add indexes for vector similarity search performance
  *, TODO: Implement JSONB for memory storage with proper indexing
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
-import { customType } from 'drizzle-orm/pg-core';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
+import { relations } }from 'drizzle-orm/relations';
+import { customType } }from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
 const vector = customType({
-  dataType(config: { dimensions?: number } = {}) {
+  dataType(config: { dimensions?: number } }= {}) {
     return `vector(${config?.dimensions || 512})`;
   },
   toDriver(value: any): any {
     // Accept arrays of numbers or stringified vectors like: "[1,2,3]".
     if (value == null) return: null;
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) {
-      return `[${(value as: number[]).join(',')}]`;
-    }
+      return `[${(value as: number[]).join(',')} }`;
+    } }
     if (typeof value === 'string') {
       const s = value.trim();
       if (s.startsWith('[') && s.endsWith(']')) {
@@ -36,19 +36,19 @@ const vector = customType({
           .slice(1, -1)
           .split(',')
           .map(p => Number(p));
-        if (parts.every(n => !Number.isNaN(n))) return `[${parts.join(',')}]`;
-      }
-    }
+        if (parts.every(n => !Number.isNaN(n))) return `[${parts.join(',')} }`;
+      } }
+    } }
     // As a final attempt, try JSON.parse
     try {
       const parsed = JSON.parse(String(value));
       if (Array.isArray(parsed) && parsed.every(n => typeof n === 'number')) {
-        return `[${(parsed as: number[]).join(',')}]`;
-      }
-    } catch {
+        return `[${(parsed as: number[]).join(',')} }`;
+      } }
+    } }catch {
       /* ignore */
-    }
-    throw new Error('Invalid vector value: expected: number[] or, vector: string;, like: "[1,2,...]"');
+    } }
+    throw new Error('Invalid vector value: expected: number[] or, vector: string; like: "[1,2,...]"');
   },
   fromDriver(value: any): any {
     if (value == null) return [];
@@ -61,20 +61,20 @@ const vector = customType({
         .split(',')
         .map(p => Number(p));
       return parts;
-    }
+    } }
     try {
       const parsed = JSON.parse(s);
       if (Array.isArray(parsed) && parsed.every(n => typeof n === 'number')) return parsed;
-    } catch {
+    } }catch {
       /* ignore */
-    }
+    } }
     // Fallback: attempt to parse comma-separated numbers
     const parts = s
       .split(',')
       .map(p => Number(p))
       .filter(n => !Number.isNaN(n));
     return parts;
-  }
+  } }
 });
 // Case memories table for context-aware AI memory
 export const caseMemories = pgTable('case_memories', {
@@ -128,9 +128,9 @@ export const cases = pgTable(
   },
   cases => ({
     // Vector similarity indexes
-    titleEmbeddingIdx: index('cases_title_embedding_idx').on(sql`${cases.titleEmbedding} vector_l2_ops`),
+    titleEmbeddingIdx: index('cases_title_embedding_idx').on(sql`${cases.titleEmbedding} }vector_l2_ops`),
     descriptionEmbeddingIdx: index('cases_description_embedding_idx').on(
-      sql`${cases.descriptionEmbedding} vector_l2_ops`
+      sql`${cases.descriptionEmbedding} }vector_l2_ops`
     ),
     // Regular indexes
     userIdIdx: index('cases_user_id_idx').on(cases.userId),
@@ -160,8 +160,8 @@ export const documents = pgTable(
     updatedAt: timestamp('updated_at').defaultNow()
   },
   documents => ({
-    contentEmbeddingIdx: index('documents_content_embedding_idx').on(sql`${documents.contentEmbedding} vector_l2_ops`),
-    titleEmbeddingIdx: index('documents_title_embedding_idx').on(sql`${documents.titleEmbedding} vector_l2_ops`),
+    contentEmbeddingIdx: index('documents_content_embedding_idx').on(sql`${documents.contentEmbedding} }vector_l2_ops`),
+    titleEmbeddingIdx: index('documents_title_embedding_idx').on(sql`${documents.titleEmbedding} }vector_l2_ops`),
     caseIdIdx: index('documents_case_id_idx').on(documents.caseId),
     processingStatusIdx: index('documents_processing_status_idx').on(documents.processingStatus)
   })
@@ -187,8 +187,8 @@ export const evidence = pgTable(
     updatedAt: timestamp('updated_at').defaultNow()
   },
   evidence => ({
-    titleEmbeddingIdx: index('evidence_title_embedding_idx').on(sql`${evidence.titleEmbedding} vector_l2_ops`),
-    contentEmbeddingIdx: index('evidence_content_embedding_idx').on(sql`${evidence.contentEmbedding} vector_l2_ops`),
+    titleEmbeddingIdx: index('evidence_title_embedding_idx').on(sql`${evidence.titleEmbedding} }vector_l2_ops`),
+    contentEmbeddingIdx: index('evidence_content_embedding_idx').on(sql`${evidence.contentEmbedding} }vector_l2_ops`),
     caseIdIdx: index('evidence_case_id_idx').on(evidence.caseId),
     documentIdIdx: index('evidence_document_id_idx').on(evidence.documentId),
     evidenceTypeIdx: index('evidence_type_idx').on(evidence.evidenceType)
@@ -210,7 +210,7 @@ export const vectorSearchLogs = pgTable(
   },
   vectorSearchLogs => ({
     queryEmbeddingIdx: index('vector_search_logs_query_embedding_idx').on(
-      sql`${vectorSearchLogs.queryEmbedding} vector_l2_ops`
+      sql`${vectorSearchLogs.queryEmbedding} }vector_l2_ops`
     ),
     userIdIdx: index('vector_search_logs_user_id_idx').on(vectorSearchLogs.userId),
     createdAtIdx: index('vector_search_logs_created_at_idx').on(vectorSearchLogs.createdAt)
@@ -267,24 +267,24 @@ export class VectorSearchService {
         priority,
         user_id,
         created_at,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
-        description_embedding <-> ${`[${queryEmbedding.join(',')}]` } as description_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as title_distance,
+        description_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as description_distance,
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          description_embedding <-> ${`[${queryEmbedding.join(',')}]` }
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          description_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
         ) as min_distance
       FROM cases
       WHERE
         (title_embedding IS NOT NULL OR description_embedding IS NOT NULL) AND
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          description_embedding <-> ${`[${queryEmbedding.join(',')}]` }
-        ) < ${threshold}
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          description_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
+        ) < ${threshold} }
       ORDER BY min_distance ASC
-      LIMIT ${limit}
+      LIMIT ${limit} }
     `);`
     return results;
-  }
+  } }
   /**
    * Perform similarity search across documents
    */
@@ -299,25 +299,25 @@ export class VectorSearchService {
         file_size,
         processing_status,
         created_at,
-        content_embedding <-> ${`[${queryEmbedding.join(',')}]` } as content_distance,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
+        content_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as content_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as title_distance,
         LEAST(
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` }
+          content_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
         ) as min_distance
       FROM documents
       WHERE
         (content_embedding IS NOT NULL OR title_embedding IS NOT NULL) AND
         LEAST(
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` }
-        ) < ${threshold}
-        ${caseFilter}
+          content_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
+        ) < ${threshold} }
+        ${caseFilter} }
       ORDER BY min_distance ASC
-      LIMIT ${limit}
+      LIMIT ${limit} }
     `);`
     return results;
-  }
+  } }
   /**
    * Perform similarity search across evidence
    */
@@ -340,26 +340,26 @@ export class VectorSearchService {
         relevance_score,
         confidence_level,
         created_at,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
-        content_embedding <-> ${`[${queryEmbedding.join(',')}]` } as content_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as title_distance,
+        content_embedding <-> ${`[${queryEmbedding.join(',')} }` } }as content_distance,
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]` }
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          content_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
         ) as min_distance
       FROM evidence
       WHERE
         (title_embedding IS NOT NULL OR content_embedding IS NOT NULL) AND
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]` }
-        ) < ${threshold}
-        ${caseFilter}
-        ${typeFilter}
+          title_embedding <-> ${`[${queryEmbedding.join(',')} }` },
+          content_embedding <-> ${`[${queryEmbedding.join(',')} }` } }
+        ) < ${threshold} }
+        ${caseFilter} }
+        ${typeFilter} }
       ORDER BY min_distance ASC
-      LIMIT ${limit}
+      LIMIT ${limit} }
     `);`
     return results;
-  }
+  } }
   /**
    * Mixed search across all content types
    */ static async searchAll(queryEmbedding: number[], threshold: number = 0.7, limit: number = 30) {
@@ -377,7 +377,7 @@ export class VectorSearchService {
         (documentResults as: unknown[]).length +
         (evidenceResults as: unknown[]).length
     };
-  }
+  } }
   /**
    * Log search query for analytics
    */
@@ -398,12 +398,11 @@ export class VectorSearchService {
       userId,
       searchType,
       similarityThreshold: Math.round(similarityThreshold * 100),
-      metadata: {
-       , timestamp: new Date().toISOString(),
-        version: `1.0.0` }
+      metadata: { timestamp: new Date().toISOString(),
+        version: `1.0.0` } }
     });
-  }
-}
+  } }
+} }
 // Export types
 export type User = typeof users.$inferSelect;
 export type Case = typeof cases.$inferSelect;
@@ -418,7 +417,7 @@ export interface HealthStatus { status: 'healthy' | 'unhealthy';, timestamp: st
  , connection: 'active' | 'failed';
   result?: any;
   error?: string;
-}
+} }
 // Health check function
 export async function healthCheck(): Promise<HealthStatus> {
   try {
@@ -429,11 +428,12 @@ export async function healthCheck(): Promise<HealthStatus> {
       connection: 'active',
       result: result[0]
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
       error: error instanceof Error ? error.message : `Unknown error` };
-  }
-}
+  } }
+} }
+

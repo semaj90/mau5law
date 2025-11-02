@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 /*
  * Kernel Splicing Attention API
  * Advanced CUDA attention mechanism with kernel splicing
  * Optimized for RTX, 3060 Ti with <1ms, processing
  */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
+import { productionServiceClient } }from '$lib/services/productionServiceClient';
+import { dimensionalCache } }from '$lib/ai/dimensional-cache-engine';
 interface AttentionRequest { jobId: string;, text: string;
   type: 'attention' | 'multi-head' | 'flash-attention' | 'kernel-splicing';
   useCache?: boolean;
@@ -17,8 +17,8 @@ interface AttentionRequest { jobId: string;, text: string;
     sequence_length?: number;
     batch_size?: number;
   };
-}
-interface AttentionResponse {, jobId: string;, status: 'success' | 'error';
+} }
+interface AttentionResponse { jobId: string;, status: 'success' | 'error';
   output: number[];
   attention: number[];
   cached: boolean;
@@ -32,20 +32,20 @@ interface AttentionResponse {, jobId: string;, status: 'success' | 'error';
     kernelSplicing?: boolean;
     flashAttention?: boolean;
   };
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AttentionRequest = await request.json();
-    const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} } = body;
+    const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} }} }= body;
     if (!jobId || !text) {
       return json(
         {
           success: false,
           error: 'jobId and text are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const startTime = performance.now();
     // Check cache first if enabled
     const cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`;
@@ -55,10 +55,10 @@ export const, POST: RequestHandler = async ({ request }) => {
       try {
         result = await dimensionalCache.get(cacheKey);
         cached = !!result;
-      } catch (err) {
+      } }catch (err) {
         console.warn('Cache lookup failed:', err);
-      }
-    }
+      } }
+    } }
     if (!cached) {
       // Process with advanced CUDA attention
       try {
@@ -74,7 +74,7 @@ export const, POST: RequestHandler = async ({ request }) => {
             break;
           default:
             result = await processBasicAttention(text, options);
-        }
+        } }
         // Cache the result
         if (useCache && result) {
           try {
@@ -87,7 +87,7 @@ export const, POST: RequestHandler = async ({ request }) => {
                     processTime?: any;
                     embeddings?: any;
                     attentionWeights?: any;
-                  }
+                  } }
                 ).output || []
               ),
               attentionWeights: new Float32Array(
@@ -98,7 +98,7 @@ export const, POST: RequestHandler = async ({ request }) => {
                     processTime?: any;
                     embeddings?: any;
                     attentionWeights?: any;
-                  }
+                  } }
                 ).attention || []
               ),
               metadata: {
@@ -113,15 +113,15 @@ export const, POST: RequestHandler = async ({ request }) => {
                     processTime?: any;
                     embeddings?: any;
                     attentionWeights?: any;
-                  }
+                  } }
                 ).processTime
-              }
+              } }
             });
-          } catch (err) {
+          } }catch (err) {
             console.warn('Cache store failed:', err);
-          }
-        }
-      } catch (error: any) {
+          } }
+        } }
+      } }catch (error: any) {
         return json(
           {
             success: false,
@@ -131,10 +131,10 @@ export const, POST: RequestHandler = async ({ request }) => {
             processTime: performance.now() - startTime,
             timestamp: Date.now()
           },
-          { status: 500 }
+          { status: 500 } }
         );
-      }
-    }
+      } }
+    } }
     const totalTime = performance.now() - startTime;
     const response: AttentionResponse = {
       jobId,
@@ -143,7 +143,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         result?.output || result?.embeddings
           ? Array.from(
               (
-                result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }
+                result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any } }
               ).embeddings.slice(0, 768)
             )
           : [],
@@ -151,7 +151,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         result?.attention || result?.attentionWeights
           ? Array.from(
               (
-                result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }
+                result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any } }
               ).attentionWeights.slice(0, 64)
             )
           : [],
@@ -161,27 +161,27 @@ export const, POST: RequestHandler = async ({ request }) => {
       memoryUsage: result?.memoryUsage || '2.1GB',
       confidence: result?.confidence || 0.95,
       metadata: {
-       , heads: options.heads || 8,
+  heads: options.heads || 8,
         dimensions: options.dimensions || 768,
         kernelSplicing: type === 'kernel-splicing',
         flashAttention: type === 'flash-attention'
-      }
+      } }
     };
     return json({
-     , success: true,
+  success: true,
       ...response,
       timestamp: Date.now()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async () => {
   try {
@@ -191,17 +191,17 @@ export const GET: RequestHandler = async () => {
       service: 'attention-processing',
       status: 'operational',
       gpu: {
-       , model: 'NVIDIA GeForce RTX, 3060 Ti',
+  model: 'NVIDIA GeForce RTX, 3060 Ti',
         memory: '8GB',
         utilization: '87%',
         temperature: '72°C` },'`
       cache: {
-       , size: stats.size,
+  size: stats.size,
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage
       },
       performance: {
-       , kernelSplicing: '<1ms',
+  kernelSplicing: '<1ms',
         flashAttention: '<5ms',
         multiHead: '<10ms',
         basic: `<15ms` },
@@ -215,21 +215,21 @@ export const GET: RequestHandler = async () => {
         'T5-style encoder-decoder',
       ],
       endpoints: {
-       , process: '/api/attention (POST)',
+  process: '/api/attention (POST)',
         status: `/api/attention (GET)` },
       supportedTypes: ['attention', 'multi-head', 'flash-attention', 'kernel-splicing'],
       timestamp: Date.now()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Helper functions for different attention types
 async function processKernelSplicingAttention(text: string, options: any): Promise<any> {
@@ -243,7 +243,7 @@ async function processKernelSplicingAttention(text: string, options: any): Promi
     confidence: 0.98,
     kernelSplicing: true
   };
-}
+} }
 async function processFlashAttention(text: string, options: any): Promise<any> {
   // Simulate flash attention processing
   const processTime = Math.random() * 0.005;
@@ -255,7 +255,7 @@ async function processFlashAttention(text: string, options: any): Promise<any> {
     confidence: 0.96,
     flashAttention: true
   };
-}
+} }
 async function processMultiHeadAttention(text: string, options: any): Promise<any> {
   // Simulate multi-head attention processing
   const processTime = Math.random() * 0.01;
@@ -269,7 +269,7 @@ async function processMultiHeadAttention(text: string, options: any): Promise<an
     multiHead: true,
     heads: 8
   };
-}
+} }
 async function processBasicAttention(text: string, options: any): Promise<any> {
   // Simulate basic attention processing
   const processTime = Math.random() * 0.015;
@@ -280,4 +280,5 @@ async function processBasicAttention(text: string, options: any): Promise<any> {
     memoryUsage: '2.0GB',
     confidence: 0.92
   };
-}
+} }
+

@@ -4,13 +4,13 @@
  * PUT /api/v1/citations/[id] - Update specific citation
  * DELETE /api/v1/citations/[id] - Delete specific citation
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { db } from, '$lib/server/db/unified-client';
-import { citations } from, '$lib/server/db/schemas/cases-schema';
-import { eq } from, 'drizzle-orm';
-import { z } from, 'zod';
-import InferModel from, 'drizzle-orm';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { db } }from '$lib/server/db/unified-client';
+import { citations } }from '$lib/server/db/schemas/cases-schema';
+import { eq } }from 'drizzle-orm';
+import { z } }from 'zod';
+import InferModel from 'drizzle-orm';
 
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid citation ID format');
@@ -33,7 +33,7 @@ const UpdateCitationSchema = z.object({
 
 // Add lightweight types for locals shape to avoid `any`
 type UserShape = { id?: string | number };
-type LocalsShape = { user?: UserShape; session?: { user?: UserShape } };
+type LocalsShape = { user?: UserShape; session?: { user?: UserShape } }};
 
 // Helper to safely get user id from locals
 function getUserIdFromLocals(locals: any): string | null {
@@ -42,24 +42,24 @@ function getUserIdFromLocals(locals: any): string | null {
   if (l?.user?.id) return String(l.user.id);
   if (l?.session?.user?.id) return String(l.session.user.id);
   return: null;
-}
+} }
 
 /*
  * GET /api/v1/citations/[id]
  * Get a specific citation by ID
  */
-export const, GET: RequestHandler = async ({ params, locals }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Get citation from database
     const [citation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!citation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));'` }'`
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));'` } }`
     return json({
       success: true,
       data: {
@@ -67,12 +67,12 @@ export const, GET: RequestHandler = async ({ params, locals }) => {
       },
       meta: {
         // use safe helper
-       , userId: getUserIdFromLocals(locals),
+  userId: getUserIdFromLocals(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Citation GET error:', err);'
+  } }catch (err: any) {
+    console.error('Citation GET error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -82,7 +82,7 @@ export const, GET: RequestHandler = async ({ params, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const msg = err instanceof Error ? err.message : String(err);
     return error(
       500,
@@ -92,7 +92,7 @@ export const, GET: RequestHandler = async ({ params, locals }) => {
         details: msg
       })
     );
-  }
+  } }
 };
 
 /*
@@ -103,8 +103,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+    } }
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Parse request body
@@ -118,21 +118,21 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       // map: any extended types to, 'other' (e.g. 'constitutional', 'secondary')
       // Use a mutable view for assignment
       (inputData as Record<string, unknown>).citationType = 'other';
-    }
+    } }
 
     // Build sanitized update payload containing only provided fields
     const sanitizedUpdate: Record<string, unknown> = {};
     Object.entries(inputData as Record<string, unknown>).forEach(([k, v]) => {
       if (v !== undefined) {
         sanitizedUpdate[k] = v;
-      }
+      } }
     });
 
     // Check if citation exists
     const [existingCitation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!existingCitation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
-    }
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+    } }
 
     // Update citation (use a typed cast instead of `any`)
     const [updatedCitation] = await db
@@ -144,18 +144,18 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     return json({
       success: true,
       data: {
-       , citation: updatedCitation,
+  citation: updatedCitation,
         message: 'Citation updated successfully'
       },
       meta: {
-       , userId: getUserIdFromLocals(locals),
+  userId: getUserIdFromLocals(locals),
         citationId,
         timestamp: new Date().toISOString(),
         action: 'citation_updated'
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Citation PUT error:', err);'
+  } }catch (err: any) {
+    console.error('Citation PUT error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -165,7 +165,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const msg = err instanceof Error ? err.message : String(err);
     return error(
       500,
@@ -175,7 +175,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         details: msg
       })
     );
-  }
+  } }
 };
 
 /*
@@ -186,33 +186,33 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` } }`
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Check if citation exists
     const [existingCitation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!existingCitation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
-    }
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+    } }
     // Delete citation
     await db.delete(citations).where(eq(citations.id, citationId));
     return json({
       success: true,
       data: {
-       , message: 'Citation deleted successfully',
+  message: 'Citation deleted successfully',
         deletedCitation: {
-         , id: citationId,
+  id: citationId,
           title: existingCitation.title
-        }
+        } }
       },
       meta: {
-       , userId: getUserIdFromLocals(locals),
+  userId: getUserIdFromLocals(locals),
         deletedCitationId: citationId,
         timestamp: new Date().toISOString(),
-        action: `citation_deleted` }
+        action: `citation_deleted` } }
     });
-  } catch (err: any) {
-    console.error('Citation DELETE error:', err);'
+  } }catch (err: any) {
+    console.error('Citation DELETE error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -222,7 +222,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const msg = err instanceof Error ? err.message : String(err);
     return error(
       500,
@@ -232,5 +232,5 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         details: msg
       })
     );
-  }
+  } }
 };

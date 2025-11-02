@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getOllamaEndpoint } }from '$lib/utils/ollama-endpoint';
 
 type Metadata = Record<string, unknown>;
 
@@ -9,33 +9,33 @@ interface GemmaEmbeddingResult {
   error?: string;
   model?: string;
   processingTime?: number;
-}
+} }
 interface GemmaBatchResult {
   success: boolean;
   results?: GemmaEmbeddingResult[];
-  summary?: {, total: number;, successful: number;
+  summary?: { total: number;, successful: number;
     failed: number;
     totalProcessingTime: number;
   };
   error?: string;
-}
-interface GemmaHealthResult {, success: boolean;, available: boolean;
+} }
+interface GemmaHealthResult { success: boolean;, available: boolean;
   model?: string;
   version?: string;
   error?: string;
-}
+} }
 interface GemmaModelInfo {
   success: boolean;
-  modelInfo?: {, name: string;, family: string;
+  modelInfo?: { name: string;, family: string;
     parameterSize: string;
     quantization: string;
     dimensions: number;
     capabilities: string[];
   };
   error?: string;
-}
+} }
 
-interface ModelHierarchy {, bestModel: string;, modelsStatus: Array<{, model: string;, priority: number;
+interface ModelHierarchy { bestModel: string;, modelsStatus: Array<{ model: string;, priority: number;
     available: boolean;
     type: string;
     speed: string;
@@ -45,7 +45,7 @@ interface ModelHierarchy {, bestModel: string;, modelsStatus: Array<{, model: s
   hasGemmaModels: boolean;
   hasFallback: boolean;
   recommendation: string;
-}
+} }
 
 export class GemmaEmbeddingService {
   private ollamaHost: string;
@@ -62,7 +62,7 @@ export class GemmaEmbeddingService {
 
   constructor(
     ollamaHost?: string,
-    primaryModel: string = 'embeddinggemma:latest', // Or: 'gemma3-legal:latest';, fallbackModel: string = 'nomic-embed-text:latest',
+    primaryModel: string = 'embeddinggemma:latest', // Or: 'gemma3-legal:latest'; fallbackModel: string = 'nomic-embed-text:latest',
     timeout: number = 10000 // 10 seconds
   ) {
     // prefer supplied host, otherwise use central helper (safe for server-only usage)
@@ -72,7 +72,7 @@ export class GemmaEmbeddingService {
     this.timeout = timeout;
     // Initial refresh of models, but don't await in constructor'
     this.refreshAvailableModels().catch(e => console.error('Failed to refresh models on init:', e));
-  }
+  } }
 
   /**
    * Refresh available models from Ollama
@@ -87,7 +87,7 @@ export class GemmaEmbeddingService {
       });
       if (response.ok) {
         const data = await response.json();
-        // data.models might be: string[] or {, name: string }[]
+        // data.models might be: string[] or { name: string } }]
         if (Array.isArray(data?.models)) {
           // Helper to safely extract a model name from: unknown entries
           const extractModelName = (entry: any): string => {
@@ -95,36 +95,36 @@ export class GemmaEmbeddingService {
             if (entry && typeof entry === 'object') {
               const obj = entry as Record<string, unknown>;
               if ('name' in obj && typeof obj.name === 'string') return obj.name;
-            }
+            } }
             return String(entry);
           };
 
           this.availableModels = data.models.map((m: any) => extractModelName(m));
-        }
-      }
-    } catch (error: any) {
+        } }
+      } }
+    } }catch (error: any) {
       console.warn('Could not refresh available models:', error instanceof Error ? error.message : String(error));
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
+    } }
+  } }
   private getBestAvailableModel(): string {
     // First try to find the best model from our hierarchy
     for (const model of this.modelHierarchy) {
       if (this.availableModels.includes(model)) {
         return model;
-      }
-    }
+      } }
+    } }
     // If no models from hierarchy found, use primary or fallback
     if (this.availableModels.includes(this.primaryModel)) {
       return this.primaryModel;
-    }
+    } }
     if (this.availableModels.includes(this.fallbackModel)) {
       return this.fallbackModel;
-    }
+    } }
     // Last resort - return primary model (will fail gracefully if not available)
     return this.primaryModel;
-  }
+  } }
   /**
    * Generate a single embedding for a given text
    */
@@ -135,12 +135,12 @@ export class GemmaEmbeddingService {
       const selectedModel = this.getBestAvailableModel();
       if (!selectedModel) {
         throw new Error('No available embedding models found.');
-      }
+      } }
       const modelsToTry = [selectedModel];
       // Add fallback models if primary fails
       if (selectedModel !== this.fallbackModel && this.availableModels.includes(this.fallbackModel)) {
         modelsToTry.push(this.fallbackModel);
-      }
+      } }
       let lastError: any = null;
       // Try models in order of preference
       for (const model of modelsToTry) {
@@ -159,22 +159,22 @@ export class GemmaEmbeddingService {
             signal: controller.signal
           });
           if (!response.ok) {
-            throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
-          }
+            throw new Error(`Ollama API error: ${response.status} }${response.statusText}`);
+          } }
           const data = await response.json();
           const processingTime = Date.now() - startTime;
           // Extract embedding from Ollama response
           let embedding: number[] = [];
           if (Array.isArray(data?.embeddings) && Array.isArray(data.embeddings)) {
             embedding = data.embeddings as: number[];
-          } else if (Array.isArray(data?.embedding)) {
+          } }else if (Array.isArray(data?.embedding)) {
             embedding = data.embedding as: number[];
-          } else {
+          } }else {
             throw new Error('Invalid embedding response format');
-          }
+          } }
           const isGemmaModel = model.includes('gemma');
           const modelType = isGemmaModel ? 'gemma' : 'nomic';
-          console.log(`✅ Successfully generated embedding using ${model} (${embedding.length}D)`);
+          console.log(`✅ Successfully generated embedding using ${model} }(${embedding.length}D)`);
           return {
             success: true,
             embedding,
@@ -190,58 +190,57 @@ export class GemmaEmbeddingService {
             model,
             processingTime
           };
-        } catch (err: any) {
+        } }catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`❌ Model ${model} failed:`, msg);
+          console.warn(`❌ Model ${model} }failed:`, msg);
           lastError = err;
           // try next model
-        } finally {
+        } }finally {
           clearTimeout(t);
-        }
-      }
+        } }
+      } }
       // All models failed
       return {
         success: false,
-        error: `All embedding models failed. Last;, error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
-        metadata: {
-         , modelsAttempted: modelsToTry,
+        error: `All embedding models failed. Last; error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+        metadata: { modelsAttempted: modelsToTry,
           ...metadata
         },
         model: selectedModel,
         processingTime: Date.now() - startTime
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: `Embedding generation;, failed: ${msg}`,
+        error: `Embedding generation; failed: ${msg}`,
         metadata,
         model: this.getBestAvailableModel(),
         processingTime: Date.now() - startTime
       };
-    }
-  }
+    } }
+  } }
   /**
    * Generate batch embeddings with optimized processing
    */
   async generateBatchEmbeddings(
-    documents: Array<{ id?: string;, text: string; metadata?: Metadata }>,
-    options: { batchSize?: number; concurrency?: number } = {}
+    documents: Array<{ id?: string; text: string; metadata?: Metadata }>,
+    options: { batchSize?: number; concurrency?: number } }= {} }
   ): Promise<GemmaBatchResult> {
     const startTime = Date.now();
-    const { batchSize = 10, concurrency = 3 } = options;
+    const { batchSize = 10, concurrency = 3 } }= options;
     try {
       if (!documents || !Array.isArray(documents) || documents.length === 0) {
         return {
           success: false,
           error: `Documents array is required and cannot be empty` };
-      }
+      } }
       const results: GemmaEmbeddingResult[] = [];
-      const batches: Array<Array<{ id?: string;, text: string; metadata?: Metadata }>> = [];
+      const batches: Array<Array<{ id?: string; text: string; metadata?: Metadata }>> = [];
       // Create batches
       for (let i = 0; i < documents.length; i += batchSize) {
         batches.push(documents.slice(i, i + batchSize));
-      }
+      } }
       // Process batches with controlled concurrency
       for (let i = 0; i < batches.length; i += concurrency) {
         const currentBatches = batches.slice(i, i + concurrency);
@@ -252,43 +251,42 @@ export class GemmaEmbeddingService {
           return batchResults.map(r => {
             if (r.status === 'fulfilled') {
               return r.value as GemmaEmbeddingResult;
-            } else {
+            } }else {
               // r.reason may be: unknown
               const reason = (r as PromiseRejectedResult).reason;
               return {
                 success: false,
                 error: reason instanceof Error ? reason.message : String(reason)
-              } as GemmaEmbeddingResult;
-            }
+              } }as GemmaEmbeddingResult;
+            } }
           });
         });
         const resolvedBatches = await Promise.all(batchPromises);
         resolvedBatches.forEach(batch => results.push(...batch));
-      }
+      } }
       const successful = results.filter(r => r.success).length;
       const failed = results.length - successful;
       const totalProcessingTime = Date.now() - startTime;
       return {
         success: true,
         results,
-        summary: {
-         , total: documents.length,
+        summary: { total: documents.length,
           successful,
           failed,
           totalProcessingTime
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       return {
         success: false,
-        error: `Batch processing;, failed: ${error instanceof Error ? error.message : String(error)}` };
-    }
-  }
+        error: `Batch processing; failed: ${error instanceof Error ? error.message : String(error)}` };
+    } }
+  } }
   /**
    * Health check for Gemma embedding service with hierarchy info
    */
   async healthCheck(): Promise<
-    GemmaHealthResult & { modelHierarchy?: ModelHierarchy; modelInfo?: GemmaModelInfo['modelInfo'] }
+    GemmaHealthResult & { modelHierarchy?: ModelHierarchy; modelInfo?: GemmaModelInfo['modelInfo'] } }
   > {
     try {
       // Test Ollama connectivity
@@ -300,20 +298,20 @@ export class GemmaEmbeddingService {
           method: 'GET',
           signal: controller.signal
         });
-      } catch (err) {
+      } }catch (err) {
         // ensure timeout cleared and rethrow to be handled by outer catch
         clearTimeout(timeoutId);
         throw err;
-      } finally {
+      } }finally {
         clearTimeout(timeoutId);
-      }
+      } }
 
       if (!versionResponse.ok) {
         return {
           success: false,
           available: false,
-          error: `Ollama not;, responding: ${versionResponse.status}` };
-      }
+          error: `Ollama not; responding: ${versionResponse.status}` };
+      } }
 
       const versionData = await versionResponse.json();
 
@@ -356,7 +354,7 @@ export class GemmaEmbeddingService {
           method: 'POST',
           headers: {
             'Content-Type': `application/json` },
-          body: JSON.stringify({, name: this.primaryModel }),
+          body: JSON.stringify({ name: this.primaryModel }),
           signal: ctrl.signal
         }).finally(() => clearTimeout(t));
         if (resp.ok) {
@@ -370,13 +368,13 @@ export class GemmaEmbeddingService {
             dimensions: this.estimateDimensions(details?.family, data?.name),
             capabilities: ['text-embedding', 'semantic-search', 'document-analysis']
           };
-        } else {
+        } }else {
           // non-fatal: log and continue
           console.warn(`Model info request returned ${resp.status}`);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.warn('Could not fetch model info:', err instanceof Error ? err.message : String(err));
-      }
+      } }
 
       return {
         success: true,
@@ -390,14 +388,14 @@ export class GemmaEmbeddingService {
             ? `No embedding models available. Install, models: ${this.modelHierarchy.join(', ')}`
             : undefined
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
         available: false,
-        error: `Model info retrieval;, failed: ${msg}` };
-    }
-  }
+        error: `Model info retrieval; failed: ${msg}` };
+    } }
+  } }
   /**
    * Retrieve detailed information about the specified model
    */
@@ -409,41 +407,39 @@ export class GemmaEmbeddingService {
         method: 'POST',
         headers: {
           'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , name: modelName
+        body: JSON.stringify({ name: modelName
         }),
         signal: controller.signal
       });
       if (!response.ok) {
-        throw new Error(`Model info request failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Model info request failed: ${response.status} }${response.statusText}`);
+      } }
       const data = await response.json();
       const details = data?.details || {};
       return {
         success: true,
-        modelInfo: {
-         , name: data?.name || modelName,
+        modelInfo: { name: data?.name || modelName,
           family: details?.family || 'unknown',
           parameterSize: details?.parameter_size || 'unknown',
           quantization: details?.quantization_level || 'unknown',
           dimensions: this.estimateDimensions(details?.family, data?.name),
           capabilities: ['text-embedding', 'semantic-search', 'document-analysis']
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: 'Model info retrieval;, failed: ${msg}' };
-    } finally {
+        error: 'Model info retrieval; failed: ${msg} } };
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
+    } }
+  } }
   /**
    * Estimate embedding dimensions based on model family or name
    */
   private estimateDimensions(family?: string, modelName?: string): number {
-    const dimensionMap: { [key: string]: number } = {
+    const dimensionMap: { [key: string]: number } }= {
       'nomic-bert': 768,
       'gemma3': 4096, // This is for the LLM, not the embedding model
     };
@@ -452,39 +448,39 @@ export class GemmaEmbeddingService {
       if (modelName.includes('embeddinggemma')) return 384; // Changed from 1536 to, 384
       if (modelName.includes('gemma3-legal')) return 384; // Changed from 1536 to, 384
       if (modelName.includes('nomic-embed-text')) return 768;
-    }
+    } }
     // Check by family
     if (family && dimensionMap[family]) {
       return dimensionMap[family];
-    }
+    } }
     // Default for nomic-embed-text
     return 768;
-  }
+  } }
   /**
    * Get performance characteristics for different models
    */
   getModelPerformance(modelName: string): { speed: 'fast' | 'medium' | 'slow';, quality: 'high' | 'medium' | 'good';
     dimensions: number;
    , type: 'gemma' | 'nomic' | 'other';
-  } {
+  } }{
     if (modelName.includes('embeddinggemma')) {
       return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to, 384
-    }
+    } }
     if (modelName.includes('gemma3-legal')) {
       return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to, 384
-    }
+    } }
     if (modelName.includes('nomic-embed-text')) {
-      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };'` }'`
-    return {, speed: 'medium', quality: 'medium', dimensions: 768, type: `other` };
-  }
+      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };'` } }`
+    return { speed: 'medium', quality: 'medium', dimensions: 768, type: `other` };
+  } }
   /**
    * Test embedding generation with sample text
    */
   async testEmbeddingGeneration(): Promise<GemmaEmbeddingResult> {
     const testText = 'This is a test legal document for embedding generation validation.`;'`
     return await this.generateEmbedding(testText, { test: true, purpose: `validation` });
-  }
-}
+  } }
+} }
 // Export singleton instance (lazy to avoid accessing process.env during client-side bundling)
 let _gemmaEmbeddingService: GemmaEmbeddingService | null = null;
 
@@ -495,6 +491,7 @@ let _gemmaEmbeddingService: GemmaEmbeddingService | null = null;
 export function getGemmaEmbeddingService(): GemmaEmbeddingService {
   if (!_gemmaEmbeddingService) {
     _gemmaEmbeddingService = new GemmaEmbeddingService();
-  }
+  } }
   return _gemmaEmbeddingService;
-}
+} }
+

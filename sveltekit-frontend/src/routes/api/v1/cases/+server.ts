@@ -3,11 +3,11 @@
  * GET /api/v1/cases - List user's cases (with pagination)'
  * POST /api/v1/cases - Create new case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, CreateCaseSchema, type CreateCaseData } from '$lib/server/services/user-scoped-crud';
-import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod';
+import { CasesCRUDService, CreateCaseSchema, type CreateCaseData } }from '$lib/server/services/user-scoped-crud';
+import { queueCaseSynthesis } }from '$lib/server/services/background-job-queue';
+import { z } }from 'zod';
 // Query parameters schema for GET requests
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Parse query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         success: z.literal(true),
         data: z.array(CaseItemSchema),
         pagination: z.object({
-         , page: z.number(),
+  page: z.number(),
           limit: z.number(),
           total: z.number(),
           totalPages: z.number(),
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: (result as { items?: any; pagination?: any }).items,
       pagination: {
-       , page: (result as { items?: any; pagination?: any }).pagination.page,
+  page: (result as { items?: any; pagination?: any }).pagination.page,
         limit: (result as { items?: any; pagination?: any }).pagination.limit,
         total: (result as { items?: any; pagination?: any }).pagination.totalCount,
         totalPages: (result as { items?: any; pagination?: any }).pagination.totalPages,
@@ -81,9 +81,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     const validated = CasesListResponse.safeParse(payload);
     if (!validated.success) {
@@ -95,9 +95,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           code: 'RESPONSE_VALIDATION_FAILED'
         })
       );
-    }
+    } }
     return json(payload);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching cases:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         details: err.message
       })
     );
-  }
+  } }
 };
 /*
  * POST /api/v1/cases
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Parse request body
     const body = await request.json();
     const validatedData = CreateCaseSchema.parse(body) as CreateCaseData;
@@ -141,11 +141,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Queue background synthesis
     try {
       const jobId = await queueCaseSynthesis(caseId, getUserId(locals));
-      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
-    } catch (queueError) {
+      console.log(`[Cases API] Queued synthesis job ${jobId} }for case ${caseId}`);
+    } }catch (queueError) {
       console.error('Failed to queue case synthesis:', queueError);
       // Don't fail the request, just log the error'
-    }
+    } }
     return json(
       {
         success: true,
@@ -155,11 +155,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId: getUserId(locals),
           timestamp: new Date().toISOString(),
           synthesisQueued: true
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error creating case:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -170,9 +170,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));'` }'`
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));'` } }`
     return error(
       500,
       makeHttpErrorPayload({
@@ -181,5 +181,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         details: err.message
       })
     );
-  }
+  } }
 };
+

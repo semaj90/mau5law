@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } }from 'zod';
 
 export const StorePayload = z.object({
   text: z.string().min(1),
@@ -10,3 +10,4 @@ export const SearchPayload = z.object({
   queryVector: z.array(z.number()).optional(),
   limit: z.number().int().positive().optional()
 });
+

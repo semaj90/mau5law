@@ -1,11 +1,11 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable } }from 'svelte/store';
 // Interface for the structured profile data (Who, What, Why, How)
 export interface POIProfile {
   who: string; // Biography, background, identity
   what: string; // Known involvement, actions, evidence
   why: string; // Motivations, connections, reasons
   how: string; // Methods, capabilities, resources
-}
+} }
 export interface POIData { id: string;, caseId: string;
   name: string;
   aliases: string[];
@@ -20,8 +20,8 @@ export interface POIData { id: string;, caseId: string;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
-}
-export class POI {, id: string;, caseId: string;
+} }
+export class POI { id: string;, caseId: string;
   name: Writable<string>;
   aliases: Writable<string[]>;
   profileImageUrl: Writable<string | undefined>;
@@ -52,18 +52,18 @@ export class POI {, id: string;, caseId: string;
     this.createdBy = data.createdBy;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
-  }
+  } }
   // Method to update the profile from a form
   updateProfile(newData: Partial<POIProfile>) {
     this.profileData.update(p => ({ ...p, ...newData }));
     this.isDirty = true;
-  }
+  } }
   // Method to update position when dragged
   updatePosition(newX: number, newY: number) {
     this.posX.set(newX);
     this.posY.set(newY);
     this.isDirty = true;
-  }
+  } }
   // Method to update basic info
   updateInfo(updates: {
     name?: string;
@@ -82,7 +82,7 @@ export class POI {, id: string;, caseId: string;
     if (updates.status !== undefined) this.status.set(updates.status);
     if (updates.tags !== undefined) this.tags.set(updates.tags);
     this.isDirty = true;
-  }
+  } }
   // Get plain data for API calls
   toPlainObject(): POIData {
     return {
@@ -102,15 +102,16 @@ export class POI {, id: string;, caseId: string;
       createdAt: this.createdAt,
       updatedAt: new Date()
     };
-  }
+  } }
   // Helper to get current value from writable store
   private getValueFromStore<T>(store: Writable<T>): T {
     let value: T;
     store.subscribe(v => (value = v))();
     return value!;
-  }
+  } }
   // Reset dirty flag after successful save
   markClean() {
     this.isDirty = $state(false);
-  }
-}
+  } }
+} }
+

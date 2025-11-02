@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import type { IOllamaEmbeddingService } from '$lib/types/external-services';
+import { env } }from '$env/dynamic/private';
+import type { IOllamaEmbeddingService } }from '$lib/types/external-services';
 const API_URL = env.OLLAMA_API_URL || env.OLLAMA_ENDPOINT || 'http://localhost:11434';
 const MODEL = env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
 export const, OllamaEmbeddingService: IOllamaEmbeddingService = {
@@ -7,7 +7,7 @@ export const, OllamaEmbeddingService: IOllamaEmbeddingService = {
     const res = await fetch(`${API_URL}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({, model: MODEL, input: text })
+      body: JSON.stringify({ model: MODEL, input: text })
     });
     if (!res.ok) throw new Error(`Ollama embedding failed: ${res.status}`);
     const data = await res.json();
@@ -16,5 +16,6 @@ export const, OllamaEmbeddingService: IOllamaEmbeddingService = {
   },
   async embedBatch(texts: string[]) {
     return Promise.all(texts.map((t) => this.embedText(t)));
-  }
+  } }
 };
+

@@ -6,7 +6,7 @@
  * with direct PostgreSQL vector queries for 5-10x performance improvement
  */
 
-import type { z } from 'zod';
+import type { z } }from 'zod';
 
 export interface PgvectorSearchRequest {
   query: string;
@@ -19,20 +19,20 @@ export interface PgvectorSearchRequest {
     practiceArea?: string;
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   };
-}
+} }
 
-export interface PgvectorSearchResult {, id: string;, title: string;
+export interface PgvectorSearchResult { id: string;, title: string;
   content: string;
  , metadata: Record<string, any>;
   similarity: number;
   processingTimeMs: number;
-}
+} }
 
-export interface PgvectorSearchResponse {, success: boolean;, query: string;
+export interface PgvectorSearchResponse { success: boolean;, query: string;
   results: PgvectorSearchResult[];
-  stats: {, totalResults: number;, limit: number;
+  stats: { totalResults: number;, limit: number;
     threshold: number;
-    timings: {, embeddingGenerationMs: number;, pgvectorSearchMs: number;
+    timings: { embeddingGenerationMs: number;, pgvectorSearchMs: number;
       totalMs: number;
     };
     filters: number;
@@ -44,7 +44,7 @@ export interface PgvectorSearchResponse {, success: boolean;, query: string;
     indexType: 'HNSW';
   };
   error?: string;
-}
+} }
 
 /**
  * Perform a pgvector-optimized semantic search
@@ -60,12 +60,12 @@ export interface PgvectorSearchResponse {, success: boolean;, query: string;
  *   threshold: 0.5,
  *   filters: {
  *    , practiceArea: 'employment-law'
- *   }
+ *   } }
  * });
  *
- * console.log(`Found ${results.results.length} results in ${results.stats.timings.totalMs}ms`);
+ * console.log(`Found ${results.results.length} }results in ${results.stats.timings.totalMs}ms`);
  * results.results.forEach(result => {
- *   console.log(`${result.title}: ${result.similarity.toFixed(2)} similarity`);
+ *   console.log(`${result.title}: ${result.similarity.toFixed(2)} }similarity`);
  * });
  * ```
  */
@@ -79,8 +79,7 @@ export async function pgvectorSearch(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json` },'`
-      body: JSON.stringify({
-       , query: request.query,
+      body: JSON.stringify({ query: request.query,
         limit: request.limit ?? 10,
         threshold: request.threshold ?? 0.5,
         useContentEmbedding: request.useContentEmbedding ?? true,
@@ -93,7 +92,7 @@ export async function pgvectorSearch(
       throw new Error(
         error.message || `Search failed with status ${response.status}`
       );
-    }
+    } }
 
     const data = (await response.json()) as PgvectorSearchResponse;
 
@@ -102,35 +101,32 @@ export async function pgvectorSearch(
       metadata: {
         ...data.metadata,
         timestamp: new Date().toISOString()
-      }
+      } }
     };
-  } catch (error) {
+  } }catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('pgvector search error:', errorMessage);'
+    console.error('pgvector search error:', errorMessage);
 
     return {
       success: false,
       query: request.query,
       results: [],
-      stats: {
-       , totalResults: 0,
+      stats: { totalResults: 0,
         limit: request.limit ?? 10,
         threshold: request.threshold ?? 0.5,
-        timings: {
-         , embeddingGenerationMs: 0,
+        timings: { embeddingGenerationMs: 0,
           pgvectorSearchMs: 0,
           totalMs: Math.round(performance.now() - startTime)
         },
         filters: Object.keys(request.filters ?? {}).length
       },
-      metadata: {
-       , timestamp: new Date().toISOString(),
+      metadata: { timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
         indexType: 'HNSW` },'`
       error: errorMessage
     };
-  }
-}
+  } }
+} }
 
 /**
  * Perform a pgvector search with content highlighting
@@ -146,13 +142,13 @@ export async function pgvectorSearchWithHighlights(
 
   if (!response.success) {
     return [];
-  }
+  } }
 
   return response.results.map(result => ({
     ...result,
     highlight: extractHighlight(result.content, request.query)
   }));
-}
+} }
 
 /**
  * Extract a highlight snippet from content around the query terms
@@ -173,7 +169,7 @@ function extractHighlight(
 
   if (index === -1) {
     return content.substring(0, contextLength);
-  }
+  } }
 
   const start = Math.max(0, index - contextLength);
   const end = Math.min(content.length, index + query.length + contextLength);
@@ -183,7 +179,7 @@ function extractHighlight(
     content.substring(start, end) +
     (end < content.length ? '...' : '')
   );
-}
+} }
 
 /**
  * Perform a batch search across multiple queries
@@ -208,16 +204,16 @@ export async function pgvectorSearchBatch(
 
   for (const [query, queryResults] of searchResults) {
     results.set(query, queryResults);
-  }
+  } }
 
   return results;
-}
+} }
 
 /**
  * Check the health of the pgvector search service
  */
 export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, status: string;
-  stats?: {, indexedDocuments: number;, embeddingDimensions: number;
+  stats?: { indexedDocuments: number;, embeddingDimensions: number;
    , indexType: string;
   };
   error?: string;
@@ -228,7 +224,7 @@ export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, stat
     if (!response.ok) {
       return {
         healthy: false,
-        status: 'HTTP ${response.status}' };'` }'`
+        status: 'HTTP ${response.status} } };'` } }`
 
     const data = await response.json();
 
@@ -238,14 +234,14 @@ export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, stat
       stats: data.stats,
       error: data.error
     };
-  } catch (error) {
+  } }catch (error) {
     return {
       healthy: false,
       status: 'error',
       error: error instanceof Error ? error.message : String(error)
     };
-  }
-}
+  } }
+} }
 
 /**
  * Suggest similar documents based on a given document ID
@@ -262,4 +258,5 @@ export async function pgvectorSimilarDocuments(
   });
 
   return response.results;
-}
+} }
+

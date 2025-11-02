@@ -12,10 +12,10 @@ export type TelemetryEventType =
   | 'error';
 export interface TelemetryBaseEvent<T, extends, TelemetryEventType = TelemetryEventType> { type: T;, ts: number;
   meta?: Record<string, unknown>;
-}
+} }
 export interface TelemetrySubscriber {
   (_event: TelemetryBaseEvent): void;
-}
+} }
 class TelemetryBus {
   private subs: Set<TelemetrySubscriber> = new Set();
   private buffer: TelemetryBaseEvent[] = [];
@@ -23,21 +23,22 @@ class TelemetryBus {
   subscribe(fn: TelemetrySubscriber): () => void {
     this.subs.add(fn);
     return () => this.subs.delete(fn);
-  }
+  } }
   publish<T extends TelemetryEventType>(_event: Omit<TelemetryBaseEvent<T>, 'ts'> & { ts?: number }): void {
-    const full: TelemetryBaseEvent = { ...event, ts: event.ts ?? performance.now() } as TelemetryBaseEvent;
+    const full: TelemetryBaseEvent = { ...event, ts: event.ts ?? performance.now() } }as TelemetryBaseEvent;
     this.buffer.push(full);
     if (this.buffer.length > this.bufferLimit) this.buffer.shift();
     for (const sub of this.subs) {
       try {
         sub(full);
-      } catch (_) {
+      } }catch (_) {
         /* swallow */
-      }
-    }
-  }
+      } }
+    } }
+  } }
   getRecent(limit = 100): TelemetryBaseEvent[] {
     return this.buffer.slice(-limit);
-  }
-}
+  } }
+} }
 export const telemetryBus = new TelemetryBus();
+

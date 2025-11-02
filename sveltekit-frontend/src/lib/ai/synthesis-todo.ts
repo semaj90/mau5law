@@ -1,7 +1,7 @@
-import { synthesizeMultiLLMOutput, type SynthesisResult } from './custom-reranker.js';
-import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries } from '$lib/api/client';
+import { synthesizeMultiLLMOutput, type SynthesisResult } }from './custom-reranker.js';
+import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries } }from '$lib/api/client';
 // TODOs and stub mocks for multi-LLM synthesis pipeline integration
-import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData } from './types.js';
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData } }from './types.js';
 // Example usage with real API calls
 export async function runSynthesisExample(): Promise<SynthesisResult> {
   const llmOutputs = await fetchLLMOutputs();
@@ -17,7 +17,7 @@ export async function runSynthesisExample(): Promise<SynthesisResult> {
   // Stub: Log output for dev feedback
   console.log('Synthesis, result:', result);
   return result;
-}
+} }
 export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
   // Example: Full pipeline wiring with API calls
   const llmOutputs = await fetchLLMOutputs();
@@ -33,7 +33,7 @@ export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
   // Stub: Log output for dev feedback
   console.log('Full synthesis pipeline, result:', result);
   return result;
-}
+} }
 // TODOs for full pipeline wiring:
 // CONTEXT7 FULL STACK PIPELINE TODOS
 // 1. Backend: PostgreSQL + Drizzle ORM + pgvector
@@ -102,4 +102,5 @@ export async function phase10SemanticAudit(_query: string): Promise<unknown> {
     status: 'stub',
     message: 'Phase, 10 semantic audit integration pending.'
   };
-}
+} }
+

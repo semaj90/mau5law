@@ -11,9 +11,9 @@
  * Complements your server-side, "tricubic tensor" PostgreSQL system
  */
 import Dexie from 'dexie';
-import type { Table } from 'dexie';
-import { writable } from 'svelte/store';
-import { liveQuery } from 'dexie';
+import type { Table } }from 'dexie';
+import { writable } }from 'svelte/store';
+import { liveQuery } }from 'dexie';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -32,7 +32,7 @@ export interface ChatMessage {
     sources?: string[];
     ragContext?: boolean;
   };
-}
+} }
 export interface DocumentCache {
   id?: number;
   documentId: string;
@@ -50,7 +50,7 @@ export interface DocumentCache {
     jurisdiction?: string;
     documentType?: string;
   };
-}
+} }
 export interface SearchHistory {
   id?: number;
   query: string;
@@ -62,10 +62,10 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     jurisdiction?: string[];
   };
-}
+} }
 // New small helper types to avoid `any`
 type QueryResultItem = {
   id?: string | number;
@@ -117,14 +117,14 @@ export interface VectorSearchCache {
   expiresAt: Date;
   lodLevel: number;
   hitCount: number; // Track cache usage
-}
+} }
 export interface UserAnnotation {
   id?: number;
   documentId: string;
   chunkId?: string;
   text: string;
   note: string;
-  position?: {, start: number;, end: number;
+  position?: { start: number;, end: number;
     page?: number;
   };
   tags: string[];
@@ -132,7 +132,7 @@ export interface UserAnnotation {
   userId?: string;
   createdAt: Date;
   updatedAt: Date;
-}
+} }
 export interface LegalEntity {
   id?: number;
   name: string;
@@ -145,7 +145,7 @@ export interface LegalEntity {
     documentId: string;
     chunkId?: string;
     context: string;
-  }[];
+  } }];
   metadata: {
     jurisdiction?: string;
     dates?: string[];
@@ -153,21 +153,21 @@ export interface LegalEntity {
     importance?: number;
   };
   lastUpdated: Date;
-}
+} }
 export interface GraphVisualizationData {
   id?: number;
   graphId: string;
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
   nodes: GraphNode[]; // was Array<any>
   edges: GraphEdge[]; // was Array<any>
-  layout: {, algorithm: string;, parameters: Record<string, unknown>; // was: any
+  layout: { algorithm: string;, parameters: Record<string, unknown>; // was: any
     dimensions: 2 | 3;
   };
   cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
-}
+} }
 export interface AIAnalysisCache {
   id?: number;
   contentHash: string;
@@ -179,26 +179,26 @@ export interface AIAnalysisCache {
   processingTime: number;
   timestamp: Date;
   expiresAt: Date;
-}
+} }
 export interface UserPreferences {
   id?: number;
   userId?: string;
-  preferences: {, theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
+  preferences: { theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
     defaultSearchType: 'vector' | 'hybrid' | 'text';
-    cacheSettings: {, maxDocuments: number;, maxSearchResults: number;
+    cacheSettings: { maxDocuments: number;, maxSearchResults: number;
       cacheExpiry: number; // hours
     };
-    visualization: {, defaultGraphType: string;, showLabels: boolean;
+    visualization: { defaultGraphType: string;, showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
     };
-    ai: {, preferredModel: string;, temperature: number;
+    ai: { preferredModel: string;, temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
     };
   };
  , lastUpdated: Date;
-}
+} }
 // ============================================================================
 // DATABASE CLASS
 // ============================================================================
@@ -245,8 +245,8 @@ export class LegalAIClientDB extends Dexie {
       mods.updatedAt = new Date();
       return mods;
     });
-  }
-}
+  } }
+} }
 // ============================================================================
 // DATABASE INSTANCE & UTILITIES
 // ============================================================================
@@ -263,7 +263,7 @@ export class LegalDBUtils {
     // Remove expired AI analysis cache
     await legalDB.aiAnalysisCache.where('expiresAt').below(now).delete();
     console.log('[ClientDB] Cleaned up expired cache entries');
-  }
+  } }
   /**
    * Manage document cache size (LRU eviction)
    */
@@ -277,19 +277,18 @@ export class LegalDBUtils {
         .toArray();
       const idsToDelete = oldDocuments.map(doc => doc.id!);
       await legalDB.documentCache.bulkDelete(idsToDelete);
-      console.log(`[ClientDB] Evicted ${idsToDelete.length} old cached documents`);
-    }
-  }
+      console.log(`[ClientDB] Evicted ${idsToDelete.length} }old cached documents`);
+    } }
+  } }
   /**
    * Get database statistics
    */
   static async getStorageStats(): Promise<{ totalRecords: number;, storageUsed: string;
     tables: Array<{ name: string; count: number }>;
   }> {
-    const stats: {, totalRecords: number;, storageUsed: string;
+    const stats: { totalRecords: number;, storageUsed: string;
       tables: Array<{ name: string; count: number }>;
-    } = {
-     , totalRecords: 0,
+    } }= { totalRecords: 0,
       storageUsed: 'Unknown',
       tables: []
     };
@@ -316,10 +315,10 @@ export class LegalDBUtils {
         const count = await table.count();
         stats.tables.push({ name: tableName, count });
         stats.totalRecords += count;
-      } else {
+      } }else {
         stats.tables.push({ name: tableName, count: 0 });
-      }
-    }
+      } }
+    } }
 
     // Estimate storage usage (if available) with safe guards and typed estimate result
     if (typeof navigator !== 'undefined' && 'storage' in navigator) {
@@ -327,13 +326,13 @@ export class LegalDBUtils {
       if (navStorage && typeof navStorage.estimate === 'function') {
         const estimate = await navStorage.estimate();
         if (estimate && typeof estimate.usage === 'number') {
-          stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2)} MB`;
-        }
-      }
-    }
+          stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2)} }MB`;
+        } }
+      } }
+    } }
 
     return stats;
-  }
+  } }
   /**
    * Create content hash for caching
    */
@@ -344,9 +343,9 @@ export class LegalDBUtils {
       const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   /**
    * Intelligent cache cleanup based on usage patterns
    */
@@ -369,8 +368,8 @@ export class LegalDBUtils {
     const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     await legalDB.graphVisualizationData.where('lastAccessed').below(oneMonthAgo).delete();
     console.log('[ClientDB] Intelligent cleanup completed');
-  }
-}
+  } }
+} }
 // ============================================================================
 // REACTIVE STORES FOR SVELTE
 // ============================================================================
@@ -404,14 +403,14 @@ export const annotationsCount = liveQuery(async () => {
 type StorageTableStat = { name: string; count: number };
 type StorageStats = { totalRecords: number; storageUsed: string; tables: StorageTableStat[] };
 
-export const storageStats = writable<StorageStats>({, totalRecords: 0, storageUsed: 'Unknown', tables: [] });
+export const storageStats = writable<StorageStats>({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 // Update storage stats periodically
 if (typeof window !== 'undefined') {
   setInterval(async () => {
     const stats = await LegalDBUtils.getStorageStats();
     storageStats.set(stats);
   }, 30000); // Update every, 30 seconds
-}
+} }
 // ============================================================================
 // INITIALIZATION & CLEANUP
 // ============================================================================

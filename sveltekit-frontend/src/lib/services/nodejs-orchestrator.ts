@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Node.js Multi-Core Orchestration Service - Gemma3-Legal GGUF Only
  * Manages worker clusters with ONLY gemma3-legal and nomic-embed-text models
  * Optimized for Windows RTX, 3060 Ti GPU coordination + FlashAttention2
  */
-import { writable, derived, type Writable } from "svelte/store";
-import { browser } from "$app/environment";
-import { flashAttention2Service } from './flashattention2-rtx3060.js';
+import { writable, derived, type Writable } }from "svelte/store";
+import { browser } }from "$app/environment";
+import { flashAttention2Service } }from './flashattention2-rtx3060.js';
 // Worker Types - ONLY gemma3-legal GGUF and nomic-embed supported
 export type WorkerType = 'GEMMA3_LEGAL_GGUF' | 'NOMIC_EMBED' | 'DOCUMENT_PROCESSING' | 'WEB_GPU_RTX3060' | 'SERVICE_WORKER';
 // Worker Configuration - Enforces specific models
@@ -20,15 +20,15 @@ export interface WorkerConfig { type: WorkerType;, id: string;
   model: 'gemma3-legal' | 'nomic-embed-text'; // Enforced model constraint
   ggufPath?: string; // GGUF file path for gemma3-legal
   ollamaUrl: string; // Ollama endpoint for model
-}
+} }
 // GPU Error Processing Configuration
-export interface GPUErrorProcessingConfig {, enableFlashAttention: boolean;, rtx3060Optimization: boolean;
+export interface GPUErrorProcessingConfig { enableFlashAttention: boolean;, rtx3060Optimization: boolean;
   errorBatchSize: number;
   attentionSequenceLength: number;
   memoryOptimization: 'speed' | 'memory' | 'balanced';
-}
+} }
 // Task Definition with GPU Error Processing
-export interface Task {, id: string;, type: WorkerType;
+export interface Task { id: string;, type: WorkerType;
   payload: any;
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   timeout: number;
@@ -40,9 +40,9 @@ export interface Task {, id: string;, type: WorkerType;
   gpuRequired?: boolean;
   model?: 'gemma3-legal' | 'nomic-embed-text'; // Required model specification
   errorData?: any; // For GPU error processing tasks
-}
+} }
 // Worker Status with GPU metrics
-export interface WorkerStatus {, id: string;, type: WorkerType;
+export interface WorkerStatus { id: string;, type: WorkerType;
   status: 'IDLE' | 'BUSY' | 'ERROR' | 'SHUTDOWN';
   currentTask?: string;
   tasksCompleted: number;
@@ -55,9 +55,9 @@ export interface WorkerStatus {, id: string;, type: WorkerType;
   errors: number;
   model: string; // Current model being used
   ggufLoaded?: boolean; // Whether GGUF model is loaded
-}
+} }
 // Orchestration Metrics with GPU Error Processing
-export interface OrchestrationMetrics {, totalWorkers: number;, activeWorkers: number;
+export interface OrchestrationMetrics { totalWorkers: number;, activeWorkers: number;
   totalTasks: number;
   completedTasks: number;
   failedTasks: number;
@@ -71,7 +71,7 @@ export interface OrchestrationMetrics {, totalWorkers: number;, activeWorkers: 
   gemma3LegalTasks: number;
   nomicEmbedTasks: number;
   flashAttentionTasks: number;
-}
+} }
 /**
  * Node.js Multi-Core Orchestration Service - Gemma3-Legal GGUF Only
  */
@@ -132,7 +132,7 @@ export class NodeJSOrchestrator {
       ...config
     };
     this.initialize();
-  }
+  } }
   /**
    * Initialize the orchestration system with gemma3-legal GGUF enforcement
    */
@@ -144,7 +144,7 @@ export class NodeJSOrchestrator {
       if (this.gpuErrorConfig.enableFlashAttention) {
         await flashAttention2Service.initialize();
         console.log('✅ FlashAttention2 RTX, 3060 Ti initialized');
-      }
+      } }
       // Setup gemma3-legal GGUF only worker configurations
       this.setupGemma3LegalWorkerConfigs();
       // Create worker cluster
@@ -161,10 +161,10 @@ export class NodeJSOrchestrator {
         flashAttentionEnabled: this.gpuErrorConfig.enableFlashAttention
       }));
       console.log('✅ Node.js Orchestrator (Gemma3-Legal GGUF) initialized successfully');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Orchestrator initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Setup gemma3-legal GGUF only worker configurations
    */
@@ -247,13 +247,13 @@ export class NodeJSOrchestrator {
         priority: 'HIGH',
         model: 'gemma3-legal',
         ollamaUrl: 'http://localhost:11434'
-      }
+      } }
     ];
     configs.forEach(config => {
       this.workerConfigs.set(config.id, config);
     });
-    console.log(`🔧 Configured ${configs.length} workers (Gemma3-Legal GGUF only)`);
-  }
+    console.log(`🔧 Configured ${configs.length} }workers (Gemma3-Legal GGUF only)`);
+  } }
   /**
    * Submit GPU-accelerated error processing task
    */
@@ -264,8 +264,7 @@ export class NodeJSOrchestrator {
   ): Promise<string> {
     const task: Omit<Task, 'id' | 'timestamp' | 'retryCount'> = {
       type: 'WEB_GPU_RTX3060',
-      payload: {
-       , operation: 'ERROR_ANALYSIS_FLASHATTENTION',
+      payload: { operation: 'ERROR_ANALYSIS_FLASHATTENTION',
         errorData,
         codeContext,
         config: this.gpuErrorConfig
@@ -281,7 +280,7 @@ export class NodeJSOrchestrator {
     const taskId = await this.submitTask(task);
     this.flashAttentionTasksCount++;
     return taskId;
-  }
+  } }
   /**
    * Submit Gemma3-Legal GGUF inference task
    */
@@ -309,7 +308,7 @@ export class NodeJSOrchestrator {
     const taskId = await this.submitTask(task);
     this.gemma3LegalTasksCount++;
     return taskId;
-  }
+  } }
   /**
    * Submit nomic embedding task
    */
@@ -331,7 +330,7 @@ export class NodeJSOrchestrator {
     const taskId = await this.submitTask(task);
     this.nomicEmbedTasksCount++;
     return taskId;
-  }
+  } }
   /**
    * Create worker cluster with model enforcement
    */
@@ -342,9 +341,9 @@ export class NodeJSOrchestrator {
       if (!this.isValidModelConfig(config)) {
         console.warn(`⚠️ Skipping worker ${workerId}: Invalid model configuration`);
         continue;
-      }
+      } }
       workerPromises.push(this.createWorker(workerId, config));
-    }
+    } }
     await Promise.allSettled(workerPromises);
     this.orchestrationStatus.update(status => ({
       ...status,
@@ -353,20 +352,20 @@ export class NodeJSOrchestrator {
       gemma3LegalActive: this.hasActiveWorkerType('GEMMA3_LEGAL_GGUF'),
       nomicEmbedActive: this.hasActiveWorkerType('NOMIC_EMBED')
     }));
-  }
+  } }
   /**
    * Validate model configuration
    */
   private isValidModelConfig(config: WorkerConfig): boolean {
     const validModels = ['gemma3-legal', 'nomic-embed-text'];
     return validModels.includes(config?.model || "unknown");
-  }
+  } }
   /**
    * Check if worker type is active
    */
   private hasActiveWorkerType(type: WorkerType): boolean {
     return Array.from(this.workerConfigs.values()).some(config => config.type === type);
-  }
+  } }
   /**
    * Create individual worker with model-specific configuration
    */
@@ -380,7 +379,7 @@ export class NodeJSOrchestrator {
         this.handleWorkerMessage(workerId, event.data);
       });
       worker.onerror = (error) => {
-        console.error(`Worker ${workerId} error: ', error);'`
+        console.error(`Worker ${workerId} }error: ', error);'`
         this.handleWorkerError(workerId, error);
       };
       // Initialize worker with model constraints
@@ -390,7 +389,7 @@ export class NodeJSOrchestrator {
           ...config,
           enforceModel: true,
           allowedModels: ['gemma3-legal', 'nomic-embed-text']
-        }
+        } }
       });
       this.workers.set(workerId, worker);
       // Initialize worker status
@@ -411,17 +410,17 @@ export class NodeJSOrchestrator {
           ggufLoaded: config.type === 'GEMMA3_LEGAL_GGUF' });'`'`
         return newStatuses;
       });
-      console.log(`✅ Worker ${workerId} (${config.type}) created with model: ${config?.model || "unknown"}`);
-    } catch (error: any) {
+      console.log(`✅ Worker ${workerId} }(${config.type}) created with model: ${config?.model || "unknown"}`);
+    } }catch (error: any) {
       console.error(`❌ Failed to create worker ${workerId}:`, error);
-    }
-  }
+    } }
+  } }
   /**
    * Generate worker script with model enforcement
    */
   private generateWorkerScript(config: WorkerConfig): string {
     const baseScript = `
-      // ${config.type} Worker - ${config.id} - Model: ${config?.model || "unknown"}
+      // ${config.type} }Worker - ${config.id} }- Model: ${config?.model || "unknown"} }
       let workerConfig = null;
       let tasksProcessed = 0;
       let, processingTimes: any[] = [];
@@ -431,32 +430,31 @@ export class NodeJSOrchestrator {
         const allowedModels = ['gemma3-legal', 'nomic-embed-text'];
         if (!allowedModels.includes(requestedModel)) {
           throw new Error('Invalid model: Only gemma3-legal and nomic-embed-text are allowed');
-        }
+        } }
         return true;
-      }
+      } }
       // Performance monitoring
       function updatePerformance(processingTime) {
         tasksProcessed++;
         processingTimes.push(processingTime);
         if (processingTimes.length > 100) {
           processingTimes.shift();
-        }
+        } }
         const avgTime = processingTimes.reduce((a, b) => a + b, 0) / processingTimes.length;
         const memoryUsage = (performance).memory?.usedJSHeapSize || 0;
         self.postMessage({
           type: 'STATUS_UPDATE',
-          data: {
-           , tasksCompleted: tasksProcessed,
+          data: { tasksCompleted: tasksProcessed,
             averageProcessingTime: avgTime,
             memoryUsage: Math.floor(memoryUsage / 1024 / 1024), // MB
             lastActivity: Date.now(),
             model: workerConfig?.model || 'unknown',
             ggufLoaded: modelLoaded
-          }
+          } }
         });
-      }
+      } }
       self.onmessage = async function(e) {
-        const { type, data, taskId } = e.data;
+        const { type, data, taskId } }= e.data;
         const startTime = performance.now();
         try {
           switch (type) {
@@ -464,13 +462,13 @@ export class NodeJSOrchestrator {
               workerConfig = data;
               validateModel(workerConfig?.model || "unknown");
               modelLoaded = true;
-              self.postMessage({ type: 'INITIALIZED', workerId: '${config.id}', model: workerConfig?.model || "unknown" });
+              self.postMessage({ type: 'INITIALIZED', workerId: '${config.id} }, model: workerConfig?.model || "unknown" });
               break;
             case, 'PROCESS_TASK':
               // Enforce model constraint
               if (data?.model && data?.model !== workerConfig?.model) {
                 throw new Error(\`Model mismatch: Expected \${workerConfig?.model}, got \${data?.model}\`);
-              }
+              } }
               const result = await processTask(data);
               const processingTime = performance.now() - startTime;
               self.postMessage({
@@ -485,28 +483,27 @@ export class NodeJSOrchestrator {
             case, 'GET_STATUS':
               self.postMessage({
                 type: 'STATUS_RESPONSE',
-                data: {
-                 , tasksCompleted: tasksProcessed,
+                data: { tasksCompleted: tasksProcessed,
                   memoryUsage: (performance).memory?.usedJSHeapSize || 0,
                   isReady: workerConfig !== null && modelLoaded,
                   model: workerConfig?.model || 'none',
                   ggufLoaded: modelLoaded
-                }
+                } }
               });
               break;
-          }
-        } catch (error: any) {
+          } }
+        } }catch (error: any) {
           self.postMessage({
             type: 'TASK_ERROR',
             taskId: taskId,
             error: error.message || 'Unknown error',
-            model: workerConfig?.model || 'unknown' });'' }
-      }
+            model: workerConfig?.model || 'unknown' });'' } }
+      } }
     `;`
     // Add type-specific processing logic
     const typeSpecificScript = this.getTypeSpecificScript(config.type, config);
     return baseScript + typeSpecificScript;
-  }
+  } }
   /**
    * Get type-specific worker script with model enforcement
    */
@@ -515,30 +512,28 @@ export class NodeJSOrchestrator {
       case, 'GEMMA3_LEGAL_GGUF':
         return `
           async function processTask(data): Promise<any> {
-            const { prompt, maxTokens, temperature, model } = data;
+            const { prompt, maxTokens, temperature, model } }= data;
             // Enforce gemma3-legal only
             if (model !== 'gemma3-legal') {
               throw new Error('Only gemma3-legal model is allowed for legal inference');
-            }
+            } }
             // GGUF inference via Ollama
             const response = await fetch('${config.ollamaUrl}/api/generate', {
               method: 'POST',
               headers: { 'Content-Type': `application/json' },'`
-              body: JSON.stringify({
-               , model: 'gemma3-legal',
+              body: JSON.stringify({ model: 'gemma3-legal',
                 prompt: prompt,
                 stream: false,
-                options: {
-                 , temperature: temperature || 0.7,
+                options: { temperature: temperature || 0.7,
                   num_predict: maxTokens || 512,
                   num_ctx: 2048,
                   num_gpu: 35 // RTX, 3060 Ti layers
-                }
+                } }
               })
             });
             if (!response.ok) {
               throw new Error(\`Gemma3-Legal inference failed: \${response.status}\`);
-            }
+            } }
             const result = await response.json();
             return {
               text: result.response,
@@ -548,28 +543,27 @@ export class NodeJSOrchestrator {
               tokensPerSecond: result.eval_duration ? (result.eval_count / (result.eval_duration / 1000000000)) : 0,
               totalDuration: result.total_duration || 0
             };
-          }
+          } }
         `;`
       case, 'NOMIC_EMBED':
         return `
           async function processTask(data): Promise<any> {
-            const { text, model } = data;
+            const { text, model } }= data;
             // Enforce nomic-embed-text only
             if (model !== 'nomic-embed-text') {
               throw new Error('Only nomic-embed-text model is allowed for embeddings');
-            }
+            } }
             // Nomic embedding via Ollama
             const response = await fetch('${config.ollamaUrl}/api/embeddings', {
               method: 'POST',
               headers: { 'Content-Type': `application/json' },'`
-              body: JSON.stringify({
-               , model: 'nomic-embed-text',
+              body: JSON.stringify({ model: 'nomic-embed-text',
                 prompt: text
               })
             });
             if (!response.ok) {
               throw new Error(\`Nomic embedding failed: \${response.status}\`);
-            }
+            } }
             const result = await response.json();
             return {
               embedding: result.embedding,
@@ -577,19 +571,18 @@ export class NodeJSOrchestrator {
               dimensions: result.embedding?.length || 768,
               textLength: text.length
             };
-          }
+          } }
         `;`
       case, 'WEB_GPU_RTX3060':
         return `
           async function processTask(data): Promise<any> {
-            const { operation, errorData, codeContext, config } = data;
+            const { operation, errorData, codeContext, config } }= data;
             if (operation === 'ERROR_ANALYSIS_FLASHATTENTION') {
               // Simulate FlashAttention2 error processing
               await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
               return {
                 operation: 'ERROR_ANALYSIS_FLASHATTENTION',
-                errorAnalysis: {
-                 , totalErrors: Array.isArray(errorData) ? errorData.length : 1,
+                errorAnalysis: { totalErrors: Array.isArray(errorData) ? errorData.length : 1,
                   prioritizedErrors: Array.isArray(errorData) ? errorData.slice(0, 10) : [errorData],
                   attentionWeights: new Array(Math.min(100, codeContext.length)).fill(0).map(() => Math.random()),
                   fixSuggestions: [
@@ -599,28 +592,26 @@ export class NodeJSOrchestrator {
                   ],
                   confidence: 0.85 + Math.random() * 0.1
                 },
-                gpu: {
-                 , rtx3060Ti: true,
+                gpu: { rtx3060Ti: true,
                   flashAttention2: true,
                   memoryUsed: Math.floor(Math.random() * 2048) + 512,
                   processingUnits: Math.floor(Math.random() * 1024) + 256
                 },
                 model: `gemma3-legal` };
-            }
-            return {, processed: true, operation, model: `gemma3-legal' };'`
-          }
+            } }
+            return { processed: true, operation, model: `gemma3-legal' };'`
+          } }
         `;`
       case, 'DOCUMENT_PROCESSING':
         return `
           async function processTask(data): Promise<any> {
-            const { document, operation, model } = data;
+            const { document, operation, model } }= data;
             // Use gemma3-legal for document analysis
             if (operation === 'LEGAL_ANALYSIS') {
               const response = await fetch('${config.ollamaUrl}/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': `application/json' },'`
-                body: JSON.stringify({
-                 , model: 'gemma3-legal',
+                body: JSON.stringify({ model: 'gemma3-legal',
                   prompt: \`Analyze this legal document for key legal concepts, obligations, and risks: \${document.substring(0, 1000)}\`,
                   stream: false
                 })
@@ -632,24 +623,24 @@ export class NodeJSOrchestrator {
                 documentLength: document.length,
                 processingType: operation
               };
-            }
-            return {, processed: true, operation, model: `gemma3-legal` };
-          }
+            } }
+            return { processed: true, operation, model: `gemma3-legal` };
+          } }
         `;`
      , default: return `
           async function processTask(data): Promise<any> {
             await new Promise(resolve => setTimeout(resolve, 100));
             return { processed: true, data, model: `gemma3-legal` };
-          }
-        `;' }'`
-  }
+          } }
+        `;' } }`
+  } }
   /**
    * Handle worker messages with model validation
    */
   private handleWorkerMessage(workerId: string, message: any): void {
     switch (message.type) {
       case, 'INITIALIZED':
-        console.log(`✅ Worker ${workerId} initialized with model: ${message?.model || "unknown"}`);
+        console.log(`✅ Worker ${workerId} }initialized with model: ${message?.model || "unknown"}`);
         break;
       case, 'TASK_COMPLETE':
         this.handleTaskComplete(workerId, message);
@@ -660,8 +651,8 @@ export class NodeJSOrchestrator {
       case, 'STATUS_UPDATE':
         this.updateWorkerStatus(workerId, message.data);
         break;
-    }
-  }
+    } }
+  } }
   /**
    * Handle task completion with model tracking
    */
@@ -681,14 +672,14 @@ export class NodeJSOrchestrator {
         status: 'COMPLETED',
         duration: message.processingTime,
         timestamp: Date.now(),
-        workerInfo: `${workerId} (${task.type})`,
-        model: message?.model || task?.model || 'unknown' }'`'`
+        workerInfo: `${workerId} }(${task.type})`,
+        model: message?.model || task?.model || 'unknown' } }`'`
     ]);
     // Update worker status to idle
     this.updateWorkerStatus(workerId, { status: `IDLE' });'`
     // Process next task
     this.processNextTask();
-  }
+  } }
   /**
    * Handle task error with model info
    */
@@ -699,7 +690,7 @@ export class NodeJSOrchestrator {
       // Retry the task
       task.retryCount++;
       this.taskQueue.unshift(task); // High priority for retry
-    } else {
+    } }else {
       // Task failed permanently
       this.activeTasks.delete(message.taskId);
       this.failedTasks.push(task);
@@ -713,20 +704,20 @@ export class NodeJSOrchestrator {
           status: 'FAILED',
           duration: Date.now() - task.timestamp,
           timestamp: Date.now(),
-          workerInfo: `${workerId} (${task.type}) - ${message.error}`,
-          model: message?.model || task?.model || 'unknown' }'`'`
+          workerInfo: `${workerId} }(${task.type}) - ${message.error}`,
+          model: message?.model || task?.model || 'unknown' } }`'`
       ]);
-    }
+    } }
     // Update worker status
     this.updateWorkerStatus(workerId, { status: 'IDLE', errors: 1 });
     // Process next task
     this.processNextTask();
-  }
+  } }
   /**
    * Handle worker error with recreation
    */
   private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`Worker ${workerId} crashed: `, error);
+    console.error(`Worker ${workerId} }crashed: `, error);
     // Mark worker as error state
     this.updateWorkerStatus(workerId, { status: `ERROR' });'`
     // Try to recreate worker
@@ -735,8 +726,8 @@ export class NodeJSOrchestrator {
       setTimeout(() => {
         this.createWorker(workerId, config);
       }, 5000);
-    }
-  }
+    } }
+  } }
   /**
    * Update worker status
    */
@@ -746,10 +737,10 @@ export class NodeJSOrchestrator {
       const current = newStatuses.get(workerId);
       if (current) {
         newStatuses.set(workerId, { ...current, ...updates });
-      }
+      } }
       return newStatuses;
     });
-  }
+  } }
   /**
    * Start task processor
    */
@@ -757,7 +748,7 @@ export class NodeJSOrchestrator {
     setInterval(() => {
       this.processNextTask();
     }, 100); // Check every 100ms
-  }
+  } }
   /**
    * Process next task in queue with model validation
    */
@@ -770,7 +761,7 @@ export class NodeJSOrchestrator {
       const bPriority = priorityOrder[b.priority];
       if (aPriority !== bPriority) {
         return bPriority - aPriority;
-      }
+      } }
       return a.timestamp - b.timestamp;
     });
     // Find available worker for the task
@@ -793,15 +784,15 @@ export class NodeJSOrchestrator {
           status: 'BUSY',
           currentTask: task.id
         });
-      }
-    }
+      } }
+    } }
     // Update orchestration status
     this.orchestrationStatus.update(status => ({
       ...status,
       queueLength: this.taskQueue.length,
       activeTasks: this.activeTasks.size
     }));
-  }
+  } }
   /**
    * Find available worker for task type and model
    */
@@ -815,15 +806,15 @@ export class NodeJSOrchestrator {
         // Validate model match
         if (requiredModel && config?.model !== requiredModel) {
           continue;
-        }
+        } }
         const status = currentStatuses.get(workerId);
         if (status && status.status === 'IDLE') {
           return workerId;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return: null;
-  }
+  } }
   /**
    * Start monitoring with model metrics
    */
@@ -832,7 +823,7 @@ export class NodeJSOrchestrator {
     setInterval(() => {
       this.updateMetrics();
     }, 2000);
-  }
+  } }
   /**
    * Update orchestration metrics with model tracking
    */
@@ -862,7 +853,7 @@ export class NodeJSOrchestrator {
       nomicEmbedTasks: this.nomicEmbedTasksCount,
       flashAttentionTasks: this.flashAttentionTasksCount
     });
-  }
+  } }
   /**
    * Calculate average task time
    */
@@ -875,7 +866,7 @@ export class NodeJSOrchestrator {
       totalTime = recentEntries.reduce((sum, entry) => sum + entry.duration, 0);
     })();
     return recentTasks.length > 0 ? totalTime / recentTasks.length : 0;
-  }
+  } }
   /**
    * Calculate memory utilization
    */
@@ -883,7 +874,7 @@ export class NodeJSOrchestrator {
     const totalMemory = Array.from(statuses.values())
       .reduce((sum, status) => sum + status.memoryUsage, 0);
     return Math.min(100, totalMemory / 1024); // Convert to GB and cap at 100%
-  }
+  } }
   /**
    * Calculate CPU utilization
    */
@@ -892,7 +883,7 @@ export class NodeJSOrchestrator {
       .filter(status => status.status === 'BUSY').length;
     const totalCores = navigator.hardwareConcurrency || 8;
     return (activeCores / totalCores) * 100;
-  }
+  } }
   /**
    * Calculate GPU utilization for RTX, 3060 Ti
    */
@@ -904,7 +895,7 @@ export class NodeJSOrchestrator {
       }).length;
     // RTX, 3060 Ti has roughly, 4352 CUDA cores, estimate utilization
     return Math.min(100, gpuWorkers * 30); // Conservative estimate
-  }
+  } }
   /**
    * Register service worker
    */
@@ -914,11 +905,11 @@ export class NodeJSOrchestrator {
         const registration = await navigator.serviceWorker.register('/service-worker.js');
         this.serviceWorkerRegistration = registration;
         console.log('✅ Service Worker registered');
-      } catch (error: any) {
+      } }catch (error: any) {
         console.warn('⚠️ Service Worker registration failed:', error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Public API: Submit task with model validation
    */
@@ -926,7 +917,7 @@ export class NodeJSOrchestrator {
     // Validate model constraint
     if (task?.model && !['gemma3-legal', 'nomic-embed-text'].includes(task?.model)) {
       throw new Error(`Invalid model: ${task?.model}. Only gemma3-legal and nomic-embed-text are allowed.`);
-    }
+    } }
     const fullTask: Task = {
       ...task,
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -936,7 +927,7 @@ export class NodeJSOrchestrator {
     this.taskQueue.push(fullTask);
     this.totalTasks++;
     return fullTask.id;
-  }
+  } }
   /**
    * Get task status
    */
@@ -946,7 +937,7 @@ export class NodeJSOrchestrator {
     if (this.failedTasks.some(t => t.id === taskId)) return, 'FAILED';
     if (this.taskQueue.some(t => t.id === taskId)) return, 'QUEUED';
     return, 'NOT_FOUND';
-  }
+  } }
   /**
    * Get system status with model info
    */
@@ -956,22 +947,20 @@ export class NodeJSOrchestrator {
     return {
       initialized: true,
       workers: Array.from(currentStatuses.values()),
-      models: {, gemma3Legal: {, active: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.status === 'BUSY').length,
+      models: { gemma3Legal: { active: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.status === 'BUSY').length,
           total: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal').length,
           ggufLoaded: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.ggufLoaded).length
         },
-        nomicEmbed: {
-         , active: Array.from(currentStatuses.values()).filter(s => s.model === 'nomic-embed-text' && s.status === 'BUSY').length,
+        nomicEmbed: { active: Array.from(currentStatuses.values()).filter(s => s.model === 'nomic-embed-text' && s.status === 'BUSY').length,
           total: Array.from(currentStatuses.values()).filter(s => s.model === 'nomic-embed-text').length
-        }
+        } }
       },
-      gpu: {
-       , flashAttentionEnabled: this.gpuErrorConfig.enableFlashAttention,
+      gpu: { flashAttentionEnabled: this.gpuErrorConfig.enableFlashAttention,
         rtx3060Optimization: this.gpuErrorConfig.rtx3060Optimization,
         errorProcessingEnabled: true
-      }
+      } }
     };
-  }
+  } }
   /**
    * Shutdown orchestrator
    */
@@ -983,12 +972,12 @@ export class NodeJSOrchestrator {
     // Unregister service worker
     if (this.serviceWorkerRegistration) {
       await this.serviceWorkerRegistration.unregister();
-    }
+    } }
     // Clear queues
     this.taskQueue = [];
     this.activeTasks.clear();
-  }
-}
+  } }
+} }
 /**
  * Factory function for Svelte integration with Gemma3-Legal enforcement
  */
@@ -996,42 +985,37 @@ export function createNodeJSOrchestrator(config?: Partial<GPUErrorProcessingConf
   const orchestrator = new NodeJSOrchestrator(config);
   return {
     orchestrator,
-    stores: {
-     , orchestrationStatus: orchestrator.orchestrationStatus,
+    stores: { orchestrationStatus: orchestrator.orchestrationStatus,
       workerStatuses: orchestrator.workerStatuses,
       metrics: orchestrator.metrics,
       taskHistory: orchestrator.taskHistory
     },
     // Derived stores
-    derived: {
-     , systemHealth: derived(
+    derived: { systemHealth: derived(
         [orchestrator.metrics, orchestrator.orchestrationStatus],
         ([$metrics, $status]) => ({
           overall: $status.initialized && $metrics.activeWorkers > 0 ? 'HEALTHY' : 'DEGRADED',
           efficiency: $metrics.throughputPerSecond > 0 ? Math.min(100, $metrics.throughputPerSecond * 10) : 0,
           loadBalance: $metrics.totalWorkers > 0 ? ($metrics.activeWorkers / $metrics.totalWorkers) * 100 : 0,
           errorRate: $metrics.errorRate * 100,
-          modelStatus: {
-           , gemma3Legal: $status.gemma3LegalActive,
+          modelStatus: { gemma3Legal: $status.gemma3LegalActive,
             nomicEmbed: $status.nomicEmbedActive,
             flashAttention: $status.flashAttentionEnabled
-          }
+          } }
         })
       ),
       performance: derived(orchestrator.metrics, ($metrics) => ({
         tasksPerMinute: $metrics.throughputPerSecond * 60,
         averageLatency: $metrics.averageTaskTime,
-        resourceUtilization: {
-         , cpu: $metrics.cpuUtilization,
+        resourceUtilization: { cpu: $metrics.cpuUtilization,
           memory: $metrics.memoryUtilization,
           gpu: $metrics.gpuUtilization
         },
         efficiency: Math.min(100, ($metrics.throughputPerSecond / 10) * 100),
-        modelBreakdown: {
-         , gemma3Legal: $metrics.gemma3LegalTasks,
+        modelBreakdown: { gemma3Legal: $metrics.gemma3LegalTasks,
           nomicEmbed: $metrics.nomicEmbedTasks,
           flashAttention: $metrics.flashAttentionTasks
-        }
+        } }
       }))
     },
     // API methods with model constraints
@@ -1042,7 +1026,7 @@ export function createNodeJSOrchestrator(config?: Partial<GPUErrorProcessingConf
     getSystemStatus: orchestrator.getSystemStatus.bind(orchestrator),
     shutdown: orchestrator.shutdown.bind(orchestrator)
   };
-}
+} }
 // Global orchestrator instance with GPU error processing
 export const nodeJSOrchestrator = new NodeJSOrchestrator({
   enableFlashAttention: true,

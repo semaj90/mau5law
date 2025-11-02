@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getRedisMetricsCache } from '$lib/server/cache/redis-metrics';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getRedisMetricsCache } }from '$lib/server/cache/redis-metrics';
 
 /**
  * GET /api/admin/cache-metrics
@@ -15,16 +15,16 @@ export const GET: RequestHandler = async () => {
       ...insights,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to get cache metrics:', error);
     return json(
       {
         error: 'Failed to retrieve cache metrics',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async () => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json();
+    const { action } }= await request.json();
     const cache = getRedisMetricsCache();
 
     switch (action) {
@@ -56,20 +56,21 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Cache test completed',
           testResult: {
-           , written: 'test-value',
+  written: 'test-value',
             retrieved,
-            match: retrieved === 'test-value' }'`'`
+            match: retrieved === 'test-value' } }`'`
         });
 
-      default: return json({, error: 'Invalid action., Use: reset, test' }, { status: 400 });
-    }
-  } catch (error) {
+      default: return json({ error: 'Invalid action., Use: reset, test' }, { status: 400 });
+    } }
+  } }catch (error) {
     console.error('Cache metrics action failed:', error);
     return json(
       {
         error: 'Failed to perform action',
         details: error instanceof Error ? error.message : `Unknown error' },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

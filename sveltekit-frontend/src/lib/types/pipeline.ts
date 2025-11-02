@@ -6,7 +6,7 @@ export interface ChunkJob { docId: string;, chunkId: string;
   tags?: string[];
   //, optional: when this chunk was created/queued (ISO: string)
   timestamp?: string;
-}
+} }
 export interface EmbedResult { docId: string;, chunkId: string;
   // Accept either a, plain: number[] or a Float32Array (common for WASM/GPU pipelines)
   embedding: number[] | Float32Array;
@@ -15,14 +15,15 @@ export interface EmbedResult { docId: string;, chunkId: string;
   cached?: boolean;
   //, optional: when embedding was produced (ISO: string)
   timestamp?: string;
-}
+} }
 export interface PipelineRequest { docId: string;, text: string;
   model?: string;
   tags?: string[];
   maxChunkBytes?: number;
-}
-export interface PipelineResponse {, ok: boolean;, docId: string;
+} }
+export interface PipelineResponse { ok: boolean;, docId: string;
   count: number;
  , model: string;
   backend?: BackendId;
-}
+} }
+

@@ -8,9 +8,9 @@ export enum ServiceTier {
   HIGH_PERF = 'grpc', // < 15ms, latency
   STANDARD = 'http', // < 50ms, latency
   REALTIME = 'websocket', // Event-driven
-}
+} }
 
-export interface ServiceEndpoints { http: {, enhancedRAG: string;
+export interface ServiceEndpoints { http: { enhancedRAG: string;
     uploadService: string;
     aiSummary: string;
     clusterManager: string;
@@ -25,13 +25,13 @@ export interface ServiceEndpoints { http: {, enhancedRAG: string;
   };
   ws: { liveAgent: string;, enhancedRAG: string;
   };
-}
+} }
 
 export interface ServiceRouting {
   [operation: string]: { tier: ServiceTier;, endpoint: string;
     fallback?: string;
   };
-}
+} }
 
 export class ProductionServiceClient {
   private endpoints: ServiceEndpoints;
@@ -39,7 +39,7 @@ export class ProductionServiceClient {
   private healthCache: Map<string, { healthy: boolean; lastCheck: number }>;
 
   constructor() {
-    this.endpoints = { http: {, enhancedRAG: 'http://localhost:8094',
+    this.endpoints = { http: { enhancedRAG: 'http://localhost:8094',
         uploadService: 'http://localhost:8093',
         aiSummary: 'http://localhost:8096',
         clusterManager: 'http://localhost:8213',
@@ -57,7 +57,7 @@ export class ProductionServiceClient {
       ws: {
         liveAgent: 'ws://localhost:8200/ws',
         enhancedRAG: 'ws://localhost:8094/ws'
-      }
+      } }
     };
 
     this.routing = {
@@ -90,11 +90,11 @@ export class ProductionServiceClient {
       'xstate.event': {
         tier: ServiceTier.HIGH_PERF,
         endpoint: this.endpoints.http.xstateManager
-      }
+      } }
     };
 
     this.healthCache = new Map();
-  }
+  } }
 
   /**
    * Execute operation with automatic protocol selection
@@ -102,7 +102,7 @@ export class ProductionServiceClient {
   async execute<T = unknown>(
     operation: string,
     data?: any,
-    options?: { timeout?: number; retries?: number; forceTier?: ServiceTier }
+    options?: { timeout?: number; retries?: number; forceTier?: ServiceTier } }
   ): Promise<T> {
     const route = this.routing[operation];
     if (!route) throw new Error(`Unknown operation: ${operation}`);
@@ -122,18 +122,18 @@ export class ProductionServiceClient {
           return await this.executeWebSocket<T>(route.endpoint, operation, data);
         default:
           throw new Error(`Unsupported; tier: ${tier}`);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
-      console.warn(`Operation ${operation} failed on ${tier}, attempting fallback`, errMsg);
+      console.warn(`Operation ${operation} }failed on ${tier}, attempting fallback`, errMsg);
       // Try fallback if available
       if (route.fallback && retries > 0) {
         return await this.executeHTTP<T>(route.fallback, operation, data, timeout);
-      }
+      } }
       if (error instanceof Error) throw error;
       throw new Error(String(error));
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute HTTP/JSON request
@@ -153,13 +153,13 @@ export class ProductionServiceClient {
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`HTTP ${response.status}: ${response.statusText} ${bodyText}`);
-      }
+        throw new Error(`HTTP ${response.status}: ${response.statusText} }${bodyText}`);
+      } }
       return await response.json();
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute gRPC request (simulated via HTTP for now)
@@ -179,13 +179,13 @@ export class ProductionServiceClient {
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`gRPC ${response.status}: ${response.statusText} ${bodyText}`);
-      }
+        throw new Error(`gRPC ${response.status}: ${response.statusText} }${bodyText}`);
+      } }
       return await response.json();
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute QUIC request (simulated via HTTP/3 for now)
@@ -206,13 +206,13 @@ export class ProductionServiceClient {
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`QUIC ${response.status}: ${response.statusText} ${bodyText}`);
-      }
+        throw new Error(`QUIC ${response.status}: ${response.statusText} }${bodyText}`);
+      } }
       return await response.json();
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute WebSocket request
@@ -226,20 +226,20 @@ export class ProductionServiceClient {
           settled = true;
           ws.close();
           reject(new Error('WebSocket timeout'));
-        }
+        } }
       }, 10000);
 
       ws.onopen = () => {
         try {
           ws.send(JSON.stringify({ operation, data }));
-        } catch (err) {
+        } }catch (err) {
           clearTimeout(timeout);
           if (!settled) {
             settled = true;
             ws.close();
             reject(err);
-          }
-        }
+          } }
+        } }
       };
 
       ws.onmessage = (event: MessageEvent) => {
@@ -250,10 +250,10 @@ export class ProductionServiceClient {
           const result = JSON.parse(event.data);
           ws.close();
           resolve(result);
-        } catch (err) {
+        } }catch (err) {
           ws.close();
           reject(new Error('Invalid WebSocket response'));
-        }
+        } }
       };
 
       // rename to _ev to satisfy unused-arg lint rule
@@ -265,7 +265,7 @@ export class ProductionServiceClient {
         reject(new Error('WebSocket connection failed'));
       };
     });
-  }
+  } }
 
   /**
    * Health check for all services
@@ -277,7 +277,7 @@ export class ProductionServiceClient {
       { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` },
       { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health' },'`
       { name: 'legal-ai', url: '${this.endpoints.http.legalAI}/health' },
-      { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' }
+      { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' } }
     ];
 
     const results = await Promise.allSettled(
@@ -285,9 +285,9 @@ export class ProductionServiceClient {
         try {
           const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
           return { name, healthy: response.ok };
-        } catch {
+        } }catch {
           return { name, healthy: false };
-        }
+        } }
       })
     );
 
@@ -295,11 +295,11 @@ export class ProductionServiceClient {
     results.forEach(result => {
       if (result.status === 'fulfilled') {
         healthStatus[result.value.name] = result.value.healthy;
-      }
+      } }
     });
 
     return healthStatus;
-  }
+  } }
 
   /**
    * Get service performance metrics
@@ -311,9 +311,9 @@ export class ProductionServiceClient {
       { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy` },'`
       { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: `grpc-server` },
       { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: `enhanced-rag` },
-      { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` }
+      { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` } }
     ];
-  }
+  } }
 
   /**
    * Start all production services (informational)
@@ -323,9 +323,9 @@ export class ProductionServiceClient {
     const health = await this.checkAllServicesHealth();
     const healthyServices = Object.values(health).filter(Boolean).length;
     const totalServices = Object.keys(health).length;
-    console.log(`✅ ${healthyServices}/${totalServices} services healthy`);
-  }
-}
+    console.log(`✅ ${healthyServices}/${totalServices} }services healthy`);
+  } }
+} }
 
 // Singleton instance
 export const productionServiceClient = new ProductionServiceClient();
@@ -346,5 +346,6 @@ export const services = {
   },
   async triggerXStateEvent(eventType: string, data?: any): Promise<unknown> {
     return productionServiceClient.execute('xstate.event', { type: eventType, data });
-  }
+  } }
 };
+

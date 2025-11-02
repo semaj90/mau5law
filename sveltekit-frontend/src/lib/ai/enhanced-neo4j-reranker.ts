@@ -1,59 +1,59 @@
-import { QdrantService } from './qdrant-service.js';
-import type { DocumentEmbedding } from './som-rag-system.js';
+import { QdrantService } }from './qdrant-service.js';
+import type { DocumentEmbedding } }from './som-rag-system.js';
 // use named imports: driver factory and auth helper
-import { driver, as neo4jDriverFactory, auth } from 'neo4j-driver';
-import type { Driver, Record as Neo4jRecord } from 'neo4j-driver';
+import { driver, as neo4jDriverFactory, auth } }from 'neo4j-driver';
+import type { Driver, Record as Neo4jRecord } }from 'neo4j-driver';
 export type UserContext = {
   user_id: string;
   case_id?: string;
   role: 'prosecutor' | 'detective' | 'admin';
   search_intent: 'evidence' | 'precedent' | 'analysis';
 };
-export interface EntityRelationship {, source_entity: string;, target_entity: string;
+export interface EntityRelationship { source_entity: string;, target_entity: string;
   relationship_type: 'references' | 'contradicts' | 'supports' | 'contains';
   confidence: number;
   legal_weight: number;
   source_document: string;
-}
-export interface ConfidenceScores {, legal_relevance: number;, factual_accuracy: number;
+} }
+export interface ConfidenceScores { legal_relevance: number;, factual_accuracy: number;
   chain_of_custody: number;
   precedent_strength: number;
   overall_confidence: number;
-}
-export interface AuditEntry {, timestamp: number;, action: 'query' | 'rerank' | 'search' | 'score_adjustment';
+} }
+export interface AuditEntry { timestamp: number;, action: 'query' | 'rerank' | 'search' | 'score_adjustment';
   user_id: string;
   query_hash: string;
   score_before?: number;
   score_after?: number;
   reasoning: string;
-}
-export interface Neo4jPathContext {, document_id: string;, case_id: string;
+} }
+export interface Neo4jPathContext { document_id: string;, case_id: string;
   evidence_chain: string[];
   legal_precedents: string[];
   entity_relationships: EntityRelationship[];
   confidence_scores: ConfidenceScores;
   audit_trail: AuditEntry[];
-}
-export interface EnhancedRerankerConfig {, enable_neo4j_paths: boolean;, enable_boolean_patterns: boolean;
+} }
+export interface EnhancedRerankerConfig { enable_neo4j_paths: boolean;, enable_boolean_patterns: boolean;
   accuracy_threshold: number;
   max_path_depth: number;
   legal_weight_multiplier: number;
   audit_enabled: boolean;
   neo4j_bolt_url?: string; // added optional property
-}
-export interface RerankingResult {, document_id: string;, original_score: number;
+} }
+export interface RerankingResult { document_id: string;, original_score: number;
   enhanced_score: number;
   neo4j_boost: number;
   boolean_pattern_match: boolean[][];
   confidence_metrics: ConfidenceScores;
   path_context: Neo4jPathContext;
  , explanation: string;
-}
+} }
 interface Neo4jRelationshipSegment {
-  start?: { properties?: { id?: string } };
-  end?: { properties?: { id?: string } };
+  start?: { properties?: { id?: string } }};
+  end?: { properties?: { id?: string } }};
   type?: string;
-}
+} }
 // add a safer local type for segments / relationship-like shapes
 type SegmentLike = {
   start?: { properties?: Record<string, unknown> };
@@ -82,7 +82,7 @@ export class EnhancedNeo4jReranker {
       audit_enabled: false,
       ...config
     };
-  }
+  } }
   async initialize(): Promise<void> {
     await this.qdrantService.ensureCollection();
     const boltUrl = this.config.neo4j_bolt_url || process.env.NEO4J_BOLT_URL;
@@ -97,17 +97,17 @@ export class EnhancedNeo4jReranker {
         const session = this.neo4jDriver.session();
         try {
           await session.run('RETURN 1');
-        } finally {
+        } }finally {
           await session.close();
-        }
+        } }
         console.log('✅ Neo4j driver initialized');
-      } catch (e) {
+      } }catch (e) {
         console.warn('Neo4j not available or driver not installed; continuing with mock path context', String(e));
         this.neo4jDriver = null;
-      }
-    }
+      } }
+    } }
     this.isInitialized = true;
-  }
+  } }
   async enhancedRerank(
     query: string,
     documents: Array<DocumentEmbedding | unknown>,
@@ -133,7 +133,7 @@ export class EnhancedNeo4jReranker {
           path_context: path,
           explanation: 'computed'
         });
-      } catch (err) {
+      } }catch (err) {
         // use sanitized doc instead of casting raw to: any
         const safeDoc = this.ensureDocumentEmbedding(raw);
         results.push({
@@ -146,15 +146,15 @@ export class EnhancedNeo4jReranker {
           path_context: this.getDefaultPathContext(safeDoc),
           explanation: String(err)
         });
-      }
-    }
+      } }
+    } }
     results.sort((a, b) => b.enhanced_score - a.enhanced_score);
     const filtered = results.filter(
       r => (r.confidence_metrics?.overall_confidence ?? 0) >= this.config.accuracy_threshold
     );
     console.log(`Enhanced rerank completed in ${Date.now() - start}ms, returned ${filtered.length}/${results.length}`);
     return filtered;
-  }
+  } }
   // minimal helpers
   private ensureDocumentEmbedding(raw: any): DocumentEmbedding {
     if (!raw || typeof raw !== 'object') {
@@ -162,9 +162,9 @@ export class EnhancedNeo4jReranker {
         id: 'unknown',
         content: '',
         embedding: [],
-        metadata: {}
-      } as DocumentEmbedding;
-    }
+        metadata: {} }
+      } }as DocumentEmbedding;
+    } }
     const r = raw as Record<string, unknown>;
     const id =
       typeof r['id'] === 'string'
@@ -186,8 +186,8 @@ export class EnhancedNeo4jReranker {
       content,
       embedding,
       metadata
-    } as DocumentEmbedding;
-  }
+    } }as DocumentEmbedding;
+  } }
   private async getNeo4jPathContext(document: DocumentEmbedding, userContext: UserContext): Promise<Neo4jPathContext> {
     // If Neo4j is configured, query for related paths/entities; otherwise return a mock context
     if (this.neo4jDriver) {
@@ -195,7 +195,7 @@ export class EnhancedNeo4jReranker {
       try {
         session = this.neo4jDriver.session();
         const depth = this.config.max_path_depth ?? 3;
-        const cypher = `MATCH (d:Document {id: $id})-[r*1..${depth}]-(n) RETURN d, r, n LIMIT 50`;
+        const cypher = `MATCH (d:Document {id: $id})-[r*1..${depth} }-(n) RETURN d, r, n LIMIT 50`;
         const res = await session.run(cypher, { id: document.id });
         const evidence_chain: string[] = [];
         const legal_precedents: string[] = [];
@@ -211,7 +211,7 @@ export class EnhancedNeo4jReranker {
               if (Array.isArray(node)) {
                 node.forEach(nd => maybeCollectNode(nd));
                 return;
-              }
+              } }
               if (typeof node !== 'object' || node === null) return;
               // Neo4j Node shape: may have .properties or be a direct, properties: object
               const props =
@@ -221,16 +221,16 @@ export class EnhancedNeo4jReranker {
                 const labels = (node as { labels?: any[] }).labels;
                 if (Array.isArray(labels) && labels.some(l => /precedent/i.test(String(l)))) {
                   legal_precedents.push(idProp);
-                } else {
+                } }else {
                   evidence_chain.push(idProp);
-                }
-              }
+                } }
+              } }
             };
             maybeCollectNode(nVal);
             maybeCollectNode(dVal);
-          } catch {
+          } }catch {
             // ignore node extraction errors for this record
-          }
+          } }
           // 'r' might be a Path-like: object (with segments), an array, or a single relationship
           const rValue = rec.get('r');
           if (!rValue) continue;
@@ -248,8 +248,8 @@ export class EnhancedNeo4jReranker {
                 legal_weight: 1.0,
                 source_document: document.id
               });
-            }
-          } else if (Array.isArray(rValue)) {
+            } }
+          } }else if (Array.isArray(rValue)) {
             // array of relationships or path segments
             for (const itemRaw of rValue as: unknown[]) {
               const item = itemRaw as SegmentLike;
@@ -263,8 +263,8 @@ export class EnhancedNeo4jReranker {
                 legal_weight: 1.0,
                 source_document: document.id
               });
-            }
-          } else if (typeof rValue === 'object' && rValue !== null) {
+            } }
+          } }else if (typeof rValue === 'object' && rValue !== null) {
             // single relationship: object
             const single = rValue as SegmentLike;
             const startProps = single?.start?.properties ?? {};
@@ -277,8 +277,8 @@ export class EnhancedNeo4jReranker {
               legal_weight: 1.0,
               source_document: document.id
             });
-          }
-        }
+          } }
+        } }
         return {
           document_id: document.id,
           case_id: userContext.case_id ?? 'UNKNOWN',
@@ -288,19 +288,19 @@ export class EnhancedNeo4jReranker {
           confidence_scores: this.getDefaultConfidenceScores(),
           audit_trail: []
         };
-      } catch (e) {
+      } }catch (e) {
         console.warn('Neo4j query failed, falling back to mock path context', String(e));
         // fall through to mock
-      } finally {
+      } }finally {
         if (session) {
           try {
             await session.close();
-          } catch {
+          } }catch {
             // ignore close errors
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
     // fallback mock
     return {
       document_id: document.id,
@@ -308,8 +308,7 @@ export class EnhancedNeo4jReranker {
       evidence_chain: ['evidence_collection', 'chain_of_custody'],
       legal_precedents: ['State v. Example (2020)'],
       entity_relationships: [
-        {,
-          source_entity: 'entity_a',
+        { source_entity: 'entity_a',
           target_entity: 'entity_b',
           relationship_type: 'contains',
           confidence: 0.9,
@@ -320,11 +319,11 @@ export class EnhancedNeo4jReranker {
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: []
     };
-  }
+  } }
   private async calculateSemanticSimilarity(_q: string, document: DocumentEmbedding): Promise<number> {
     const words = (document.content || '').toLowerCase().split(/\s+/).filter(Boolean);
     return Math.min(words.length / 10, 1.0);
-  }
+  } }
   private getDefaultConfidenceScores(): ConfidenceScores {
     return {
       legal_relevance: 0.6,
@@ -333,7 +332,7 @@ export class EnhancedNeo4jReranker {
       precedent_strength: 0.5,
       overall_confidence: 0.65
     };
-  }
+  } }
   private getDefaultPathContext(document: DocumentEmbedding): Neo4jPathContext {
     return {
       document_id: document.id,
@@ -344,11 +343,12 @@ export class EnhancedNeo4jReranker {
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: []
     };
-  }
+  } }
   getAuditTrail(): AuditEntry[] {
     return [...this.auditLog];
-  }
-}
+  } }
+} }
 export function createEnhancedNeo4jReranker(config: Partial<EnhancedRerankerConfig> = {}) {
   return new EnhancedNeo4jReranker(config);
-}
+} }
+

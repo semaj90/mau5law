@@ -1,28 +1,28 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db';
-import { cases, caseActivities } from '$lib/server/db/schema';
-import { eq, and, or, desc, count, sql } from 'drizzle-orm';
+import { db } }from '$lib/server/db';
+import { cases, caseActivities } }from '$lib/server/db/schema';
+import { eq, and, or, desc, count, sql } }from 'drizzle-orm';
 
 // Provide local aliases to satisfy the rest of the file without relying on specific drizzle exports.
 // Use `unknown` to avoid `any` and keep runtime casts explicit where needed.
 type AnyTable = unknown;
 type AnyColumn = unknown;
 
-import { z } from 'zod';
-import { getEmbedding } from '$lib/server/services/embeddingService';
-import type { RequestHandler } from './$types';
-import { randomUUID, createHash } from 'crypto';
+import { z } }from 'zod';
+import { getEmbedding } }from '$lib/server/services/embeddingService';
+import type { RequestHandler } }from './$types';
+import { randomUUID, createHash } }from 'crypto';
 
 // Remove local: any-typed alias and add a small type-guard helper instead
 // const dbAny = db as: unknown, as: any
-function isHttpError(e: any): e is { status: number } {
+function isHttpError(e: any): e is { status: number } }{
   return (
     typeof e === 'object' && e !== null && 'status' in e && typeof (e as Record<string, unknown>).status === 'number'
   );
-}
+} }
 // Authentication helper
 async function getAuthenticatedUser(locals: App.Locals): Promise<any> {
   const user = locals.user;
@@ -32,11 +32,11 @@ async function getAuthenticatedUser(locals: App.Locals): Promise<any> {
       401,
       makeHttpErrorPayload({
         message: 'Authentication required',
-        code: `UNAUTHENTICATED` })
+        code: 'UNAUTHENTICATED' })
     );
-  }
+  } }
   return { user, session };
-}
+} }
 // Validation schema for case creation with enhanced fields
 const createCaseSchema = z.object({
   caseNumber: z.string().min(1, 'Case: number is required'),
@@ -69,10 +69,10 @@ async function resolveSchemaTable<T = unknown>(...candidates: string[]): Promise
     if (Object.prototype.hasOwnProperty.call(mod, name)) {
       const val = mod[name];
       if (val !== undefined) return val as T;
-    }
-  }
+    } }
+  } }
   throw new Error(`Schema table not found. Tried: ${candidates.join(', ')}`);
-}
+} }
 
 // add runtime column-resolvers to tolerate schema naming differences
 function resolveTableColumn(table: any, ...candidates: string[]): any {
@@ -82,11 +82,11 @@ function resolveTableColumn(table: any, ...candidates: string[]): any {
     if (Object.prototype.hasOwnProperty.call(t, name)) {
       // return the resolved column as: unknown (avoid, 'any' to satisfy linting/tsconfig)
       return t[name];
-    }
-  }
+    } }
+  } }
   // If nothing found, throw a descriptive error so callers can handle it during runtime tests
-  throw new Error(`Could not resolve: any of columns [${candidates.join(', ')}] on provided table`);
-}
+  throw new Error(`Could not resolve: any of columns [${candidates.join(', ')} } on provided table`);
+} }
 
 // convenient wrapper specifically for `cases` table to choose the assigned/assignee column
 function getCasesAssignedColumn() {
@@ -100,13 +100,13 @@ function getCasesAssignedColumn() {
     'assigned_to_id',
     'assignee_id'
   );
-}
+} }
 
 // GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them)
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
-    const { user } = await getAuthenticatedUser(locals);
+    const { user } }= await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     const status = url.searchParams.get('status');
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100); // Cap at, 100
@@ -139,9 +139,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           404,
           makeHttpErrorPayload({
             message: 'Case not found or access denied',
-            code: `CASE_NOT_FOUND` })
+            code: 'CASE_NOT_FOUND' })
         );
-      }
+      } }
       // Get related documents (resolve table at runtime to avoid missing-export compile errors)
       const caseDocuments = await resolveSchemaTable<Record<string, unknown>>(
         'caseDocuments',
@@ -190,16 +190,16 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           documents,
           activities,
           timeline
-        }
+        } }
       });
-    }
+    } }
 
     // Build query for cases the user has access to - use assignedAttorney property (resolved)
     const assignedCol = getCasesAssignedColumn();
     const whereConditions = [or(eq(cases.createdBy, user.id), eq(assignedCol, user.id))];
     if (status) {
       whereConditions.push(eq(cases.status, status));
-    }
+    } }
     // If search term provided, search in title and description
     if (search) {
       const searchTerm = `%${search.toLowerCase()}%`;
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           sql`lower(COALESCE(${cases.description}, '')) LIKE ${searchTerm}`
         )
       );
-    }
+    } }
     // Get cases with pagination - map assignedAttorney from schema correctly
     const result = await db
       .select({
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .limit(limit)
       .offset(offset);
     // Get total count for pagination
-    const [{ total }] = await db
+    const [{ total } } = await db
       .select({ total: count() })
       .from(cases)
       .where(and(...whereConditions));
@@ -249,30 +249,30 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         totalPages: Math.ceil(total / limit)
       },
       user: {
-       , id: user.id,
+  id: user.id,
         email: user.email,
         role: user.role
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     if (isHttpError(err)) {
       // Re-throw SvelteKit errors
       throw err;
-    }
+    } }
     console.error('Error fetching cases:', err);
     throw error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to fetch cases',
-        code: `FETCH_ERROR` })
+        code: 'FETCH_ERROR' })
     );
-  }
+  } }
 };
 // POST: Create a new case (authenticated)
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Authenticate user
-    const { user } = await getAuthenticatedUser(locals);
+    const { user } }= await getAuthenticatedUser(locals);
     // Parse and validate request body
     const body = await request.json();
     // narrow the validatedData type for TypeScript
@@ -283,27 +283,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const now = new Date();
     // Generate embedding for case content (title + description) using pgvector
     // use nullish coalescing to preserve empty-string descriptions if provided
-    const caseContent = `${validatedData.title} ${validatedData.description ?? '` }`;'`
+    const caseContent = `${validatedData.title} }${validatedData.description ?? '` }`;'`
     let caseEmbedding: number[] | null = null;
 
     try {
       // Generate semantic embedding for similarity search
       caseEmbedding = await getEmbedding(caseContent);
-    } catch (embeddingError) {
+    } }catch (embeddingError) {
       console.warn('Failed to generate case embedding:', embeddingError);
       // Continue without embedding - not critical for case creation
-    }
+    } }
     // Check for duplicate case: number for this user
     const existingCase = await db
-      .select({, id: cases.id })
+      .select({ id: cases.id })
       .from(cases)
       .where(and(eq(cases.caseNumber, validatedData.caseNumber), eq(cases.createdBy, user.id)))
       .limit(1);
     if (existingCase.length > 0) {
       // Log concise context and throw the HTTP error inline to avoid the parse issue
       console.warn('Duplicate case creation attempt', { userId: user.id, caseNumber: validatedData.caseNumber });
-      throw error(400, makeHttpErrorPayload({ message: 'Case: number already exists', code: `DUPLICATE_CASE_NUMBER` }));
-    }
+      throw error(400, makeHttpErrorPayload({ message: 'Case: number already exists', code: 'DUPLICATE_CASE_NUMBER' }));
+    } }
     // Insert case into database (use typed db)
     const newCase = await db
       .insert(cases)
@@ -312,11 +312,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseNumber: validatedData.caseNumber,
         title: validatedData.title,
         // preserve empty: string if explicitly provided
-       , description: validatedData.description ?? '',
+  description: validatedData.description ?? '',
         priority: validatedData.priority,
         status: validatedData.status ?? 'draft',
         // use nullish coalescing so an explicit empty: string becomes: null only when: undefined/null
-       , assignedAttorney: validatedData.assignedAttorney ?? null,
+  assignedAttorney: validatedData.assignedAttorney ?? null,
         createdBy: user.id,
         userId: user.id, // For compatibility
         metadata: {
@@ -335,15 +335,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       id: randomUUID(),
       caseId: caseId,
       type: 'case_created',
-      description: `Case ${validatedData.caseNumber} "${validatedData.title}" created`,
+      description: `Case ${validatedData.caseNumber} }"${validatedData.title}" created`,
       userId: user.id,
       timestamp: now,
       metadata: {
-       , title: validatedData.title,
+  title: validatedData.title,
         priority: validatedData.priority,
         category: validatedData.category,
         userEmail: user.email
-      }
+      } }
     });
     // Create initial timeline event
     // Insert timeline (resolve table at runtime)
@@ -357,14 +357,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       id: randomUUID(),
       caseId: caseId,
       event: 'Case Created',
-      description: `Case ${validatedData.caseNumber} "${validatedData.title}" was created by ${user.email}`,
+      description: `Case ${validatedData.caseNumber} }"${validatedData.title}" was created by ${user.email}`,
       timestamp: now,
       type: 'milestone',
       metadata: {
-       , createdBy: user.id,
+  createdBy: user.id,
         createdByEmail: user.email,
         priority: validatedData.priority
-      }
+      } }
     });
     // If embedding was generated, store it in the embedding cache for future use
     if (caseEmbedding && caseEmbedding.length > 0) {
@@ -381,14 +381,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             embedding: caseEmbedding,
             model_name: 'embeddinggemma:latest',
             metadata: {
-             , entityType: 'case',
+  entityType: 'case',
               entityId: caseId,
               content: caseContent.substring(0, 500)
             },
             created_at: now,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
           });
-        } catch (insertErr) {
+        } }catch (insertErr) {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
             // use a narrowed access to the column name to avoid: "as: any" cast
@@ -396,14 +396,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               .update(embeddingCache, as: unknown as AnyTable)
               .set({ embedding: caseEmbedding, updated_at: now })
               .where(eq((embeddingCache as: unknown as Record<string, unknown>).content_hash, contentHash));
-          } catch (updateErr) {
+          } }catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
-          }
-        }
-      } catch (cacheError) {
+          } }
+        } }
+      } }catch (cacheError) {
         console.warn('Failed to cache embedding:', cacheError);
-      }
-    }
+      } }
+    } }
     return json(
       {
         success: true,
@@ -412,20 +412,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           ...newCase[0],
           hasEmbedding: !!caseEmbedding,
           createdBy: {
-           , id: user.id,
+  id: user.id,
             email: user.email,
             // use helper instead of assuming firstName/lastName fields exist
             name: getUserDisplayName(user)
-          }
-        }
+          } }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     if (isHttpError(err)) {
       // Re-throw SvelteKit errors
       throw err;
-    }
+    } }
     console.error('Error creating case:', err);
     if (err instanceof z.ZodError) {
       throw error(
@@ -436,23 +436,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     throw error(500, makeHttpErrorPayload({ message: 'Failed to create case', code: 'CREATE_ERROR' }));
-  }
+  } }
 };
 // Helper function to hash content for embedding cache
 function hashContent(content: string): string {
   // Use Node crypto createHash for deterministic, synchronous hashing
   return createHash('sha256').update(content, 'utf8').digest('hex');
-}
+} }
 // PUT: Update an existing case (authenticated, owner or assigned only)
 export const PUT: RequestHandler = async ({ request, url, locals }) => {
   try {
     // Authenticate user
-    const { user } = await getAuthenticatedUser(locals);
+    const { user } }= await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` }'`
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` } }`
     // Parse and validate request body
     const body = await request.json();
     // narrow the validatedData type for TypeScript
@@ -472,10 +472,10 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       .where(eq(cases.id, caseId))
       .limit(1);
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
-    }
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+    } }
     type CaseRecord = { id: string;, title: string;
-     , createdBy: string;
+  createdBy: string;
       assignedAttorney?: string | null;
       metadata?: Record<string, unknown>;
     };
@@ -488,9 +488,9 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Access denied - you can only update cases you created or are assigned to',
-          code: `ACCESS_DENIED` })
+          code: 'ACCESS_DENIED' })
       );
-    }
+    } }
     // Generate new embedding if title or description changed
     let newEmbedding: number[] | null = null;
     const titleChanged = validatedData.title && validatedData.title !== caseRecord.title;
@@ -499,12 +499,12 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       try {
         const newTitle = validatedData.title || caseRecord.title;
         const newDescription = validatedData.description || '';
-        const newContent = `${newTitle} ${newDescription}`;
+        const newContent = `${newTitle} }${newDescription}`;
         newEmbedding = await getEmbedding(newContent);
-      } catch (embeddingError) {
+      } }catch (embeddingError) {
         console.warn('Failed to generate updated embedding:', embeddingError);
-      }
-    }
+      } }
+    } }
     // Build update: object with only provided fields (avoid `any`)
     const updateData: Record<string, unknown> = {
       updatedAt: now
@@ -526,7 +526,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         updatedByEmail: user.email,
         lastUpdated: now.toISOString()
       };
-    }
+    } }
     // Update case in database
     const updatedCase = await db.update(cases).set(updateData).where(eq(cases.id, caseId)).returning();
     // Log the update activity with detailed changes
@@ -543,12 +543,12 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       userId: user.id,
       timestamp: now,
       metadata: {
-       , changes: validatedData,
+  changes: validatedData,
         changedFields,
         updatedBy: user.id,
         updatedByEmail: user.email,
         hasNewEmbedding: !!newEmbedding
-      }
+      } }
     });
     // Update embedding cache if embedding was regenerated
     if (newEmbedding && newEmbedding.length > 0) {
@@ -557,7 +557,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         const embeddingCache = schemaMod['embeddingCache'] as: unknown;
         const newTitle = validatedData.title || caseRecord.title;
         const newDescription = validatedData.description || '';
-        const newContent = `${newTitle} ${newDescription}`;
+        const newContent = `${newTitle} }${newDescription}`;
         const contentHash = hashContent(newContent);
         try {
           await db.insert(embeddingCache as: unknown as AnyTable).values({
@@ -566,7 +566,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
             embedding: newEmbedding,
             model_name: 'embeddinggemma:latest',
             metadata: {
-             , entityType: 'case',
+  entityType: 'case',
               entityId: caseId,
               content: newContent.substring(0, 500),
               action: 'updated'
@@ -574,21 +574,21 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
             created_at: now,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
           });
-        } catch (insertErr) {
+        } }catch (insertErr) {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
             await db
               .update(embeddingCache as: unknown as AnyTable)
               .set({ embedding: newEmbedding, updated_at: now })
               .where(eq((embeddingCache as: unknown as Record<string, unknown>).content_hash, contentHash));
-          } catch (updateErr) {
+          } }catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
-          }
-        }
-      } catch (cacheError) {
+          } }
+        } }
+      } }catch (cacheError) {
         console.warn('Failed to update embedding cache:', cacheError);
-      }
-    }
+      } }
+    } }
     return json({
       success: true,
       message: 'Case updated successfully',
@@ -596,17 +596,17 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         ...updatedCase[0],
         hasNewEmbedding: !!newEmbedding,
         updatedBy: {
-         , id: user.id,
+  id: user.id,
           email: user.email,
           name: getUserDisplayName(user)
         },
         changedFields
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     if (isHttpError(err)) {
       throw err;
-    }
+    } }
     console.error('Error updating case:', err);
     if (err instanceof z.ZodError) {
       throw error(
@@ -617,18 +617,18 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     throw error(500, makeHttpErrorPayload({ message: 'Failed to update case', code: 'UPDATE_ERROR' }));
-  }
+  } }
 };
 // DELETE: Delete a case (authenticated, owner or admin only)
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
-    const { user } = await getAuthenticatedUser(locals);
+    const { user } }= await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` }'`
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` } }`
     // Check if user has permission to delete this case
     const assignedCol = getCasesAssignedColumn();
     const existingCase = await db
@@ -644,8 +644,8 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       .where(eq(cases.id, caseId))
       .limit(1);
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
-    }
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+    } }
     const caseRecord = existingCase[0];
     // Only case creator or admin can delete cases
     const hasPermission = caseRecord.createdBy === user.id || user.role === 'admin';
@@ -654,18 +654,18 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Access denied - only case creators or administrators can delete cases',
-          code: `DELETE_ACCESS_DENIED` })
+          code: 'DELETE_ACCESS_DENIED' })
       );
-    }
+    } }
     // Prevent deletion of cases that are in progress (safety check)
     const protectedStatuses = ['in_progress', 'review'];
     if (protectedStatuses.includes(caseRecord.status) && user.role !== 'admin') {
       throw error(
         400,
-        makeHttpErrorPayload({ message: 'Cannot delete case with, status: '${caseRecord.status}'. Please close the case first or contact an administrator.`,'`
-          code: `CASE_STATUS_PROTECTED` })
+        makeHttpErrorPayload({ message: 'Cannot delete case with, status: '${caseRecord.status} }. Please close the case first or contact an administrator.`,'`
+          code: 'CASE_STATUS_PROTECTED' })
       );
-    }
+    } }
     const now = new Date();
     // Log deletion activity before actual deletion
     await db.insert(caseActivities).values({
@@ -675,14 +675,14 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       description: `Case, "${caseRecord.title}" (${caseRecord.caseNumber}) deleted by ${user.email}`,
       userId: user.id,
       timestamp: now,
-      metadata: {, deletedCase: {, id: caseRecord.id,
+      metadata: { deletedCase: { id: caseRecord.id,
           title: caseRecord.title,
           caseNumber: caseRecord.caseNumber,
           status: caseRecord.status
         },
         deletedBy: user.id,
         deletedByEmail: user.email,
-        isAdmin: user.role === 'admin' }'` });'`
+        isAdmin: user.role === 'admin' } }` });'`
     // Delete related data in proper order (maintain referential integrity)
     // Resolve tables at runtime to perform deletions (avoid missing-export compile errors)
     const caseTimelineDel = await resolveSchemaTable<Record<string, unknown>>(
@@ -710,7 +710,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     deleteResults.forEach((result, index) => {
       if (result.status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
-        console.warn(`Failed to delete ${tableName} for case ${caseId}: ', result.reason);'` }
+        console.warn(`Failed to delete ${tableName} }for case ${caseId}: ', result.reason);'` } }
     });
     // Delete the case itself
     const deletedCase = await db.delete(cases).where(eq(cases.id, caseId)).returning();
@@ -719,9 +719,9 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         500,
         makeHttpErrorPayload({
           message: 'Failed to delete case from database',
-          code: `DELETE_FAILED` })
+          code: 'DELETE_FAILED' })
       );
-    }
+    } }
     // Clean up embedding cache for this case
     try {
       const schemaMod = (await import('$lib/server/db/schema')) as: unknown as Record<string, unknown>;
@@ -736,44 +736,45 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
             entityId: caseId
           })
         );
-      } catch (delErr) {
+      } }catch (delErr) {
         console.warn('Fallback embedding cache delete failed (attempting looser delete by entityId):', delErr);
-      }
-    } catch (cacheError) {
+      } }
+    } }catch (cacheError) {
       console.warn('Failed to clean up embedding cache:', cacheError);
-    }
+    } }
     return json({
       success: true,
       message: `Case, "${caseRecord.title}" deleted successfully`,
       data: {
-       , id: caseId,
+  id: caseId,
         title: caseRecord.title,
         caseNumber: caseRecord.caseNumber,
         deletedBy: {
-         , id: user.id,
+  id: user.id,
           email: user.email,
           name: getUserDisplayName(user)
         },
         deletedAt: now.toISOString(),
         relatedDataDeleted: {
-         , timeline: deleteResults[0].status === 'fulfilled',
+  timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
-          documents: deleteResults[2].status === 'fulfilled' }'` }'`
+          documents: deleteResults[2].status === 'fulfilled' } }` } }`
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     if (isHttpError(err)) {
       throw err;
-    }
+    } }
     console.error('Error deleting case:', err);
-    throw error(500, makeHttpErrorPayload({ message: 'Failed to delete case', code: `DELETE_ERROR` }));
-  }
+    throw error(500, makeHttpErrorPayload({ message: 'Failed to delete case', code: 'DELETE_ERROR' }));
+  } }
 };
 // add helper to safely derive a user display name without assuming properties that may not exist
 function getUserDisplayName(user: any): string {
   if (typeof user === 'object' && user !== null && ('firstName' in user || 'lastName' in user || 'email' in user)) {
     const u = user as { firstName?: string; lastName?: string; email?: string };
-    const fullName = `${u.firstName ?? ''} ${u.lastName ?? '` }`.trim();'`
+    const fullName = `${u.firstName ?? ''} }${u.lastName ?? '` }`.trim();'`
     return fullName || u.email || 'Unknown User';
-  }
+  } }
   return, 'Unknown User';
-}
+} }
+

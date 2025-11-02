@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { DiffPatchApplicator } }from '$lib/services/diff-patch-applicator';
 
 // In production, this would integrate with the actual agentic system
 const activeTasks = new Map();
@@ -8,7 +8,7 @@ const patchApplicator = new DiffPatchApplicator();
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { taskId, agentId } = await request.json();
+    const { taskId, agentId } }= await request.json();
 
     if (!taskId || !agentId) {
       return json(
@@ -17,9 +17,9 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'Missing required parameters',
           message: 'Both taskId and agentId are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Check if agent is already working on a task
     if (activeTasks.has(agentId)) {
@@ -27,10 +27,10 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Agent busy',
-          message: 'Agent ${agentId} is already working on, task: ${activeTasks.get(agentId).taskId}' },
-        { status: 409 }
+          message: 'Agent ${agentId} }is already working on, task: ${activeTasks.get(agentId).taskId} } },
+        { status: 409 } }
       );
-    }
+    } }
 
     // Start the agent task
     const taskExecution = {
@@ -40,11 +40,11 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'running',
       progress: 0,
       steps: [
-        {, id: 'analyze', name: 'Analyzing codebase structure', status: 'pending' },
+        { id: 'analyze', name: 'Analyzing codebase structure', status: 'pending' },
         { id: 'generate', name: 'Generating code changes', status: 'pending' },
         { id: 'patch', name: 'Creating diff patches', status: 'pending' },
         { id: 'validate', name: 'Validating changes', status: 'pending' },
-        { id: 'apply', name: 'Applying patches', status: `pending' }'`
+        { id: 'apply', name: 'Applying patches', status: `pending' } }`
       ]
     };
 
@@ -61,23 +61,23 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = {
       success: true,
       execution: {
-       , executionId: `exec-${taskId}-${Date.now()}`,
+  executionId: `exec-${taskId}-${Date.now()}`,
         taskId,
         agentId,
         status: 'started',
         estimatedDuration: 30000, // 30 seconds for demo
-        message: `Agent ${agentId} started working on task ${taskId}' },'`
+        message: `Agent ${agentId} }started working on task ${taskId} } },'`
       capabilities: {
-       , ragEnabled: true,
+  ragEnabled: true,
         gemma3Model: 'gemma3:legal-latest',
         tensorrtAccelerated: true,
         pgvectorIntegration: true,
         diffPatchingEnabled: true
-      }
+      } }
     };
 
     return json(response);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error executing agent task:', error);
     return json(
       {
@@ -85,9 +85,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Execution failed',
         message: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         execution: task
       });
-    }
+    } }
 
     // Return all active tasks
     const allTasks = Array.from(activeTasks.entries()).map(([agentId, task]) => ({
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
       activeTasks: allTasks,
       totalActiveAgents: activeTasks.size
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error getting agent execution status:', error);
     return json(
       {
@@ -121,7 +121,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to get execution status',
         message: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

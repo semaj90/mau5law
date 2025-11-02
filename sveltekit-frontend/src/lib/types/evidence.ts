@@ -1,9 +1,9 @@
-import type { AIResponse } from '$lib/types';
-import type { Message } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
+import type { Message } }from '$lib/types';
 // Evidence Management Types for SvelteKit, 2 AI Platform
 // Optimized for PostgreSQL + PGVector + Qdrant + MinIO + Redis
 
-import type { ActorRef } from 'xstate';
+import type { ActorRef } }from 'xstate';
 
 /**
  * Defines the structure for an evidence item used in the legal AI platform.
@@ -32,11 +32,11 @@ export interface Evidence {
     format?: string;
     [key: string]: any; // Allows for: any other arbitrary metadata properties.
   };
-}
+} }
 
 // ==================== Evidence File Types ====================
 
-export type EvidenceFile = {, id: string;, userId: string;
+export type EvidenceFile = { id: string;, userId: string;
   caseId?: string;
   filename: string;
   originalName: string;
@@ -54,7 +54,7 @@ export type EvidenceFile = {, id: string;, userId: string;
   processingError?: string;
 };
 
-export type EvidenceUploadInput = {, file: File;, userId: string;
+export type EvidenceUploadInput = { file: File;, userId: string;
   caseId?: string;
   tags?: string[];
   metadata?: Record<string, unknown>;
@@ -71,7 +71,7 @@ export type EvidenceAnalysisResult = { success: boolean;, fileId: string;
 
 // ==================== AI Agent Types ====================
 
-export type AIAgentTool = {, name: string;, description: string;
+export type AIAgentTool = { name: string;, description: string;
  , parameters: Record<string, { type: string; description: string; required?: boolean }>;
  , execute: (params: Record<string, unknown>) => Promise<unknown>;
 };
@@ -81,20 +81,20 @@ export type AIToolInvocation = { tool: string;, params: Record<string, unknown>
   timestamp: number;
 };
 
-export type AIResponse = {, text: string;, source: 'ollama' | 'tensorrt';
+export type AIResponse = { text: string;, source: 'ollama' | 'tensorrt';
   model: string;
   toolInvocations?: AIToolInvocation[];
   tokensUsed?: number;
   responseTimeMs: number;
 };
 
-export type ChatMessage = {, id: string;, role: 'user' | 'assistant' | 'system';
+export type ChatMessage = { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
   userId: string;
   caseId?: string;
   evidenceIds?: string[];
-  aiMetadata?: {, source: 'ollama' | 'tensorrt';, model: string;
+  aiMetadata?: { source: 'ollama' | 'tensorrt';, model: string;
     toolsUsed?: string[];
   };
 };
@@ -114,7 +114,7 @@ export type VectorSearchQuery = {
   };
 };
 
-export type VectorSearchResult = {, id: string;, score: number;
+export type VectorSearchResult = { id: string;, score: number;
   evidence: EvidenceFile;
   distance: number;
 };
@@ -131,26 +131,26 @@ export type WorkflowContext = {
 };
 
 export type WorkflowEvent =
-  | { type: 'PROCESS_EVIDENCE'; data: EvidenceFile }
-  | { type: 'OCR_COMPLETE'; text: string }
-  | { type: 'EMBEDDING_COMPLETE'; embedding: number[] }
-  | { type: 'ANALYSIS_COMPLETE'; result: EvidenceAnalysisResult }
-  | { type: 'ERROR'; error: string }
-  | { type: 'RETRY' }
+  | { type: 'PROCESS_EVIDENCE'; data: EvidenceFile } }
+  | { type: 'OCR_COMPLETE'; text: string } }
+  | { type: 'EMBEDDING_COMPLETE'; embedding: number[] } }
+  | { type: 'ANALYSIS_COMPLETE'; result: EvidenceAnalysisResult } }
+  | { type: 'ERROR'; error: string } }
+  | { type: 'RETRY' } }
   | { type: 'CANCEL' };
 
 // ==================== Cache Types ====================
 
-export type CacheEntry<T> = {, data: T;, timestamp: number;
+export type CacheEntry<T> = { data: T;, timestamp: number;
   ttl: number;
   userId?: string;
 };
 
-export type EmbeddingCache = CacheEntry<{, fileId: string;, embedding: VectorEmbedding;
+export type EmbeddingCache = CacheEntry<{ fileId: string;, embedding: VectorEmbedding;
   model: string;
 }>;
 
-export type AnalysisCache = CacheEntry<{, fileId: string;, summary: string;
+export type AnalysisCache = CacheEntry<{ fileId: string;, summary: string;
   tags: string[];
   legalNotes?: string;
 }>;
@@ -164,21 +164,21 @@ export type APIResponse<T = unknown> = {
   timestamp: number;
 };
 
-export type UploadResponse = APIResponse<{, fileId: string;, path: string;
+export type UploadResponse = APIResponse<{ fileId: string;, path: string;
   processingStarted: boolean;
 }>;
 
-export type SearchResponse = APIResponse<{, results: VectorSearchResult[];, totalFound: number;
+export type SearchResponse = APIResponse<{ results: VectorSearchResult[];, totalFound: number;
   queryTimeMs: number;
 }>;
 
 // ==================== WebSocket Message Types ====================
 
 export type WSMessage =
-  | { type: 'PROCESSING_UPDATE'; fileId: string; stage: string; progress: number }
-  | { type: 'ANALYSIS_COMPLETE'; fileId: string; result: EvidenceAnalysisResult }
-  | { type: 'ERROR'; fileId: string; error: string }
-  | { type: 'CHAT_MESSAGE'; message: ChatMessage }
+  | { type: 'PROCESSING_UPDATE'; fileId: string; stage: string; progress: number } }
+  | { type: 'ANALYSIS_COMPLETE'; fileId: string; result: EvidenceAnalysisResult } }
+  | { type: 'ERROR'; fileId: string; error: string } }
+  | { type: 'CHAT_MESSAGE'; message: ChatMessage } }
   | { type: 'VECTOR_SEARCH_RESULT'; results: VectorSearchResult[] };
 
 // ==================== Export Actor Types ====================
@@ -203,3 +203,4 @@ export type EvidenceSnapshot = {
   // Optional error when the actor has errored
   error?: any;
 };
+

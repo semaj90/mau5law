@@ -1,5 +1,5 @@
-import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch.js';
-import type { LocalLegalDoc } from './localSearch.js';
+import { ensureLocalIndex, addOrUpdateDocuments } }from './localSearch.js';
+import type { LocalLegalDoc } }from './localSearch.js';
 
 let lokiDb: any = null;
 let, lokiCollection: any = null;
@@ -9,36 +9,36 @@ let refreshing = $state<boolean>(false);
 export interface HybridInitOptions {
   refreshIntervalMs?: number;
   maxDocs?: number;
-}
+} }
 export function getLastRefresh() {
   return lastRefresh;
-}
+} }
 export function isRefreshing() {
   return refreshing;
-}
+} }
 export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any> {
   if (typeof window === 'undefined') return;
-  const { refreshIntervalMs = 5 * 60_000, maxDocs = 750 } = opts;
+  const { refreshIntervalMs = 5 * 60_000, maxDocs = 750 } }= opts;
   await ensureLocalIndex();
   if (!lokiDb) {
-    const { default: Loki } = await import('lokijs');
+    const { default: Loki } }= await import('lokijs');
     lokiDb = new Loki('yorhaLocalDocs');
     lokiCollection = lokiDb.addCollection('documents', { unique: ['id'], indices: ['title', 'type'] });
-  }
+  } }
   await refreshRemote({ maxDocs });
   if (refreshIntervalMs > 0) {
     setInterval(() => {
       void refreshRemote({ maxDocs });
     }, refreshIntervalMs);
-  }
-}
+  } }
+} }
 export interface RefreshOpts {
   maxDocs?: number;
-}
+} }
 export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
   if (refreshing) return;
   refreshing = true;
-  const { maxDocs = 750 } = opts;
+  const { maxDocs = 750 } }= opts;
   try {
     const res = await fetch(`/api/yorha/legal-data?limit=${maxDocs}`);
     if (res.ok) {
@@ -59,15 +59,15 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
       if (lokiCollection) {
         lokiCollection.clear();
         for (const d of docs) lokiCollection.insert(d);
-      }
+      } }
       lastRefresh = Date.now();
-    }
-  } catch (e: any) {
+    } }
+  } }catch (e: any) {
     console.warn('[HybridSearch] refresh failed', e);
-  } finally {
+  } }finally {
     refreshing = false;
-  }
-}
+  } }
+} }
 export async function reRankWithPgVector(
   query: string,
   current: any[],
@@ -93,7 +93,7 @@ export async function reRankWithPgVector(
     for (const s of scores) {
       const norm = typeof s.score === 'number' ? s.score : s.relevance || 0;
       scoreMap.set(s.id ?? s.document_id ?? s.documentId, norm);
-    }
+    } }
     return current
       .map(item => {
         const raw = scoreMap.get((item as { id?: any; source?: any }).id);
@@ -101,20 +101,21 @@ export async function reRankWithPgVector(
         const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
         return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };'` })'`
       .sort((a, b) => b.relevance - a.relevance);
-  } catch (e: any) {
+  } }catch (e: any) {
     console.warn('[HybridSearch] re-rank failed', e);
     return current;
-  }
-}
+  } }
+} }
 export function getLokiCount() {
   return lokiCollection ? lokiCollection.count() : 0;
-}
+} }
 export function queryLokiTitle(term: string, limit = 25) {
   if (!lokiCollection || !term.trim()) return [];
   const lower = term.toLowerCase();
   return lokiCollection
     .chain()
-    .find({ title: { '$contains': lower } })
+    .find({ title: { '$contains': lower } }})
     .limit(limit)
     .data();
-}
+} }
+

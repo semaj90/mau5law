@@ -8,13 +8,13 @@
  * - canvas-collaboration.ts
  *
  *, Usage:
- *   import { canvasStore } from '$lib/stores/unified';
+ *   import { canvasStore } }from '$lib/stores/unified';
  *
  *   canvasStore.addElement('node', { x: 100, y: 100 });
  *   $: canvas = $canvasStore.canvasData;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -30,34 +30,34 @@ export interface CanvasElement { id: string;, type: ElementType;
   style?: Record<string, unknown>;
   locked?: boolean;
   lockedBy?: string;
-}
+} }
 
 export interface CanvasConnection { id: string;, fromId: string;
   toId: string;
  , type: string;
   label?: string;
   style?: Record<string, unknown>;
-}
+} }
 
 export interface CanvasState { id: string;, elements: CanvasElement[];
   connections: CanvasConnection[];
   version: number;
   createdAt: number;
   updatedAt: number;
-}
+} }
 
-export interface CollaboratorCursor {, userId: string;, name: string;
+export interface CollaboratorCursor { userId: string;, name: string;
   x: number;
   y: number;
   color: string;
   timestamp: number;
-}
+} }
 
-export interface CanvasHistoryEntry {, version: number;, action: string;
+export interface CanvasHistoryEntry { version: number;, action: string;
   timestamp: number;
   userId: string;
   changes: any;
-}
+} }
 
 /**
  * Canvas Store State
@@ -95,10 +95,9 @@ interface CanvasStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: CanvasStoreState = {
- , canvasId: null,
+const initialState: CanvasStoreState = { canvasId: null,
   canvasData: null,
   elements: [],
   connections: [],
@@ -123,7 +122,7 @@ const initialState: CanvasStoreState = {
  * Create Canvas Store
  */
 function createCanvasStore() {
-  const { subscribe, update } = writable<CanvasStoreState>(initialState);
+  const { subscribe, update } }= writable<CanvasStoreState>(initialState);
 
   return {
     subscribe,
@@ -152,13 +151,13 @@ function createCanvasStore() {
             isLoading: false,
             lastUpdated: Date.now()
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load canvas');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load canvas';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     // ========== ELEMENT MANAGEMENT ==========
@@ -277,7 +276,7 @@ function createCanvasStore() {
     updateConnection(id: string, updates: Partial<CanvasConnection>) {
       update(s => ({
         ...s,
-        connections: s.connections.map(c => (c.id === id ? { ...c, ...updates } : c)),
+        connections: s.connections.map(c => (c.id === id ? { ...c, ...updates } }: c)),
         isDirty: true
       }));
     },
@@ -351,8 +350,7 @@ function createCanvasStore() {
      * Save canvas
      */
     async saveCanvas() {
-      const state: { canvasId: string | null; elements: CanvasElement[]; connections: CanvasConnection[] } = {
-       , canvasId: null,
+      const state: { canvasId: string | null; elements: CanvasElement[]; connections: CanvasConnection[] } }= { canvasId: null,
         elements: [],
         connections: []
       };
@@ -371,8 +369,7 @@ function createCanvasStore() {
         const response = await fetch(`/api/canvas/${state.canvasId}`, {
           method: 'PUT',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , elements: state.elements,
+          body: JSON.stringify({ elements: state.elements,
             connections: state.connections
           }),
           credentials: `include` });
@@ -384,11 +381,11 @@ function createCanvasStore() {
             isSyncing: false,
             lastUpdated: Date.now()
           }));
-        }
-      } catch (error) {
-        console.error('Save error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Save error:', error);
         update(s => ({ ...s, isSyncing: false }));
-      }
+      } }
     },
 
     // ========== COLLABORATION ==========
@@ -403,7 +400,7 @@ function createCanvasStore() {
           const updated = [...s.collaborators];
           updated[idx] = cursor;
           return { ...s, collaborators: updated };
-        }
+        } }
         return { ...s, collaborators: [...s.collaborators, cursor] };
       });
     },
@@ -419,7 +416,7 @@ function createCanvasStore() {
           const newLocks = new Map(s.locks);
           for (const [elemId, lockedBy] of newLocks) {
             if (lockedBy === userId) newLocks.delete(elemId);
-          }
+          } }
           return newLocks;
         })()
       }));
@@ -464,7 +461,7 @@ function createCanvasStore() {
      * Export canvas
      */
     async exportCanvas(format: 'svg' | 'png' | 'json') {
-      const state: { canvasId: string | null } = {, canvasId: null };
+      const state: { canvasId: string | null } }= { canvasId: null };
       subscribe(s => {
         state.canvasId = s.canvasId;
       })();
@@ -486,8 +483,8 @@ function createCanvasStore() {
           a.download = `canvas.${format}`;
           a.click();
           URL.revokeObjectURL(url);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Export error:', error);` }`'
     },
 
@@ -495,7 +492,7 @@ function createCanvasStore() {
      * Share canvas
      */
     async shareCanvas(userIds: string[]) {
-      const state: { canvasId: string | null } = {, canvasId: null };
+      const state: { canvasId: string | null } }= { canvasId: null };
       subscribe(s => {
         state.canvasId = s.canvasId;
       })();
@@ -508,7 +505,7 @@ function createCanvasStore() {
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ userIds }),
           credentials: `include' });'`
-      } catch (error) {
+      } }catch (error) {
         console.error('Share error:', error);` }`'
     },
 
@@ -517,12 +514,11 @@ function createCanvasStore() {
     _addToHistory(getAction: (state: CanvasStoreState) => string) {
       update(s => {
         const action = getAction(s);
-        const entry: CanvasHistoryEntry = {
-         , version: s.history.length,
+        const entry: CanvasHistoryEntry = { version: s.history.length,
           action,
           timestamp: Date.now(),
           userId: 'current-user',
-          changes: {, elements: s.elements, connections: s.connections }
+          changes: { elements: s.elements, connections: s.connections } }
         };
 
         return {
@@ -531,9 +527,9 @@ function createCanvasStore() {
           historyIndex: s.historyIndex + 1
         };
       });
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -563,9 +559,10 @@ export const selectedElements = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { canvasData, addElement } from '$lib/stores/canvas-state'
- *   import { canvasStore } from '$lib/stores/canvas-store'
+ *   import { canvasData, addElement } }from '$lib/stores/canvas-state'
+ *   import { canvasStore } }from '$lib/stores/canvas-store'
  *
  * New imports:
- *   import { canvasStore, canvasElements, canvasConnections } from '$lib/stores/unified'
+ *   import { canvasStore, canvasElements, canvasConnections } }from '$lib/stores/unified'
  */
+

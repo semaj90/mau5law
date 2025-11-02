@@ -3,13 +3,13 @@
  * Comprehensive demonstration of the 3D UI system with YoRHa aesthetic
  */
 import * as THREE from 'three';
-import { YoRHaButton3D } from './components/YoRHaButton3D.js';
-import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
-import { YoRHaInput3D } from './components/YoRHaInput3D.js';
-import { YoRHaModal3D } from './components/YoRHaModal3D.js';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
-import { YORHA_COLORS } from './YoRHaUI3D.js';
-import { EventEmitter } from "events";
+import { YoRHaButton3D } }from './components/YoRHaButton3D.js';
+import { YoRHaPanel3D } }from './components/YoRHaPanel3D.js';
+import { YoRHaInput3D } }from './components/YoRHaInput3D.js';
+import { YoRHaModal3D } }from './components/YoRHaModal3D.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } }from './YoRHaLayout3D.js';
+import { YORHA_COLORS } }from './YoRHaUI3D.js';
+import { EventEmitter } }from "events";
 export class YoRHaUIExample {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -37,7 +37,7 @@ export class YoRHaUIExample {
     this.createMainInterface();
     // Start the render loop
     this.animate();
-  }
+  } }
   private setupRenderer(container: HTMLElement): void {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -45,19 +45,19 @@ export class YoRHaUIExample {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setClearColor(YORHA_COLORS.primary.black, 0.9);
     container.appendChild(this.renderer.domElement);
-  }
+  } }
   private setupScene(): void {
     // Add subtle background gradient
     const gradientGeometry = new THREE.PlaneGeometry(50, 30);
-    const gradientMaterial = new THREE.ShaderMaterial({ uniforms: {, topColor: {, value: new THREE.Color(YORHA_COLORS.primary.black) },
-        bottomColor: {, value: new THREE.Color(YORHA_COLORS.primary.grey) }
+    const gradientMaterial = new THREE.ShaderMaterial({ uniforms: { topColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
+        bottomColor: { value: new THREE.Color(YORHA_COLORS.primary.grey) } }
       },
       vertexShader: `
         varying vec2 vUv;
         void main() {
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
+        } }
       `,`
       fragmentShader: '
         uniform vec3 topColor;
@@ -65,12 +65,12 @@ export class YoRHaUIExample {
         varying vec2 vUv;
         void main() {
           gl_FragColor = vec4(mix(bottomColor, topColor, vUv.y), 1.0);
-        }
+        } }
       ' });'
     const background = new THREE.Mesh(gradientGeometry, gradientMaterial);
     background.position.z = -10;
     this.scene.add(background);
-  }
+  } }
   private setupLighting(): void {
     // Ambient light for overall illumination
     const ambientLight = new THREE.AmbientLight(YORHA_COLORS.primary.white, 0.4);
@@ -89,11 +89,11 @@ export class YoRHaUIExample {
     const accentLight2 = new THREE.PointLight(YORHA_COLORS.accent.amber, 0.2, 8);
     accentLight2.position.set(3, -2, 2);
     this.scene.add(accentLight2);
-  }
+  } }
   private setupCamera(): void {
     this.camera.position.set(0, 0, 8);
     this.camera.lookAt(0, 0, 0);
-  }
+  } }
   private setupEventListeners(container: HTMLElement): void {
     // Mouse events
     container.addEventListener('mousemove', this.onMouseMove.bind(this));
@@ -102,7 +102,7 @@ export class YoRHaUIExample {
     window.addEventListener('keydown', this.onKeyDown.bind(this));
     // Resize handling
     window.addEventListener('resize', this.onWindowResize.bind(this));
-  }
+  } }
   private createMainInterface(): void {
     // Create main layout container
     this.mainLayout = YoRHaLayoutPresets.createFlexColumn(0.4);
@@ -117,7 +117,7 @@ export class YoRHaUIExample {
     this.createFloatingActions();
     // Update layout
     this.mainLayout.updateLayout();
-  }
+  } }
   private createHeader(): void {
     // Header panel
     const headerPanel = new YoRHaPanel3D({
@@ -126,11 +126,10 @@ export class YoRHaUIExample {
       width: 8,
       height: 1.2,
       showCloseButton: false,
-      glow: {
-       , enabled: true,
+      glow: { enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.3
-      }
+      } }
     });
     // Header layout for controls
     const headerLayout = YoRHaLayoutPresets.createToolbar();
@@ -150,7 +149,7 @@ export class YoRHaUIExample {
     headerLayout.addChild(statusButton);
     headerLayout.addChild(settingsButton);
     this.mainLayout.addChild(headerPanel, { alignSelf: 'stretch' });
-  }
+  } }
   private createMainContent(): void {
     // Main content panel
     const contentPanel = new YoRHaPanel3D({
@@ -211,7 +210,7 @@ export class YoRHaUIExample {
       console.log('Name input:', event.data?.value);
     });
     this.mainLayout.addChild(contentPanel, { flex: 1, alignSelf: 'stretch' });
-  }
+  } }
   private createFooter(): void {
     // Footer layout for action buttons
     const footerLayout = YoRHaLayoutPresets.createFlexRow(0.3);
@@ -248,7 +247,7 @@ export class YoRHaUIExample {
     footerLayout.addChild(cancelButton);
     footerLayout.addChild(helpButton);
     this.mainLayout.addChild(footerLayout, { alignSelf: 'center' });
-  }
+  } }
   private createFloatingActions(): void {
     // Floating notification button
     const notificationButton = new YoRHaButton3D({
@@ -256,11 +255,10 @@ export class YoRHaUIExample {
       variant: 'accent',
       size: 'small',
       rounded: true,
-      glow: {
-       , enabled: true,
+      glow: { enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.5
-      }
+      } }
     });
     notificationButton.position.set(6, 3, 1);
     this.scene.add(notificationButton);
@@ -270,7 +268,7 @@ export class YoRHaUIExample {
       const scale = 1 + Math.sin(time) * 0.1;
       notificationButton.scale.setScalar(scale);
     });
-  }
+  } }
   private showSubmissionModal(): void {
     this.modal = new YoRHaModal3D({
       title: 'Command Execution',
@@ -313,9 +311,9 @@ export class YoRHaUIExample {
         this.scene.remove(this.modal);
         this.modal.dispose();
         this.modal = undefined;
-      }
+      } }
     });
-  }
+  } }
   private showConfirmationModal(): void {
     this.modal = new YoRHaModal3D({
       title: 'Abort Operation',
@@ -340,9 +338,9 @@ export class YoRHaUIExample {
         this.scene.remove(this.modal);
         this.modal.dispose();
         this.modal = undefined;
-      }
+      } }
     });
-  }
+  } }
   private showHelpModal(): void {
     this.modal = new YoRHaModal3D({
       title: 'System Documentation',
@@ -365,9 +363,9 @@ export class YoRHaUIExample {
         this.scene.remove(this.modal);
         this.modal.dispose();
         this.modal = undefined;
-      }
+      } }
     });
-  }
+  } }
   private showSuccessModal(): void {
     this.modal = new YoRHaModal3D({
       title: 'Command Executed Successfully',
@@ -386,9 +384,9 @@ export class YoRHaUIExample {
         this.scene.remove(this.modal);
         this.modal.dispose();
         this.modal = undefined;
-      }
+      } }
     });
-  }
+  } }
   private onMouseMove(_event: MouseEvent): void {
     const rect = this.renderer.domElement.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -400,9 +398,9 @@ export class YoRHaUIExample {
       // Trigger leave event on previously hovered: object
       if (this.hoveredObject.userData.onLeave) {
         this.hoveredObject.userData.onLeave();
-      }
+      } }
       this.hoveredObject = undefined;
-    }
+    } }
     if (intersects.length > 0) {
       const: object = intersects[0].object;
       if (object.userData.interactive) {
@@ -410,14 +408,14 @@ export class YoRHaUIExample {
         this.renderer.domElement.style.cursor = 'pointer';
         if (object.userData.onHover) {
           object.userData.onHover();
-        }
-      } else {
+        } }
+      } }else {
         this.renderer.domElement.style.cursor = 'default';
-      }
-    } else {
+      } }
+    } }else {
       this.renderer.domElement.style.cursor = 'default';
-    }
-  }
+    } }
+  } }
   private onClick(_event: MouseEvent): void {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
@@ -425,21 +423,21 @@ export class YoRHaUIExample {
       const: object = intersects[0].object;
       if (object.userData.interactive && object.userData.onClick) {
         object.userData.onClick();
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private onKeyDown(_event: KeyboardEvent): void {
     // Handle keyboard input for focused components
     // This would be expanded to work with actual focused input components
     console.log('Key pressed:', event.key);
-  }
+  } }
   private onWindowResize(): void {
     const container = this.renderer.domElement.parentElement;
     if (!container) return;
     this.camera.aspect = container.clientWidth / container.clientHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-  }
+  } }
   private animate(): void {
     this.animationId = requestAnimationFrame(this.animate.bind(this));
     // Update layouts
@@ -451,14 +449,14 @@ export class YoRHaUIExample {
           object instanceof YoRHaInput3D ||
           object instanceof YoRHaModal3D) {
         // Components handle their own animations internally
-      }
+      } }
     });
     this.renderer.render(this.scene, this.camera);
-  }
+  } }
   public dispose(): void {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
-    }
+    } }
     // Dispose of all components
     this.scene.traverse((object) => {
       if (object instanceof YoRHaButton3D ||
@@ -466,15 +464,15 @@ export class YoRHaUIExample {
           object instanceof YoRHaInput3D ||
           object instanceof YoRHaModal3D) {
         object.dispose();
-      }
+      } }
     });
     this.mainLayout.dispose();
     // Dispose of Three.js resources
     this.renderer.dispose();
-  }
-}
+  } }
+} }
 // Usage example
 export function createYoRHaUIDemo(container: HTMLElement): YoRHaUIExample {
   return new YoRHaUIExample(container);
-}
+} }
 // YoRHaUIExample already exported above

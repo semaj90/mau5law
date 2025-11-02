@@ -6,14 +6,14 @@
 export interface GoServiceConfig { enhancedRagUrl: string;, uploadServiceUrl: string;
   kratosServerUrl: string;
   timeout: number;
-}
+} }
 
 export interface RAGRequest {
   query: string;
   context?: string[];
   userId?: string;
   caseId?: string;
-}
+} }
 
 export interface RAGResponse { response: string;, confidence: number;
   sources: string[];
@@ -21,17 +21,17 @@ export interface RAGResponse { response: string;, confidence: number;
   metadata: { model: string;, processingTime: number;
     tokensUsed: number;
   };
-}
+} }
 
 export interface UploadResponse {
   success: boolean;
   fileId?: string;
   url?: string;
   message?: string;
-}
+} }
 
 export class GoServiceClient {
-  constructor(public config: GoServiceConfig) {}
+  constructor(public config: GoServiceConfig) {} }
 
   async queryRAG(request: RAGRequest): Promise<RAGResponse> {
     try {
@@ -43,11 +43,11 @@ export class GoServiceClient {
       });
       if (!response.ok) throw new Error(`RAG service error: ${response.status}`);
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('RAG query failed:', error);
       throw new Error(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
-  }
+    } }
+  } }
 
   async uploadFile(file: File, metadata?: Record<string, any>): Promise<UploadResponse> {
     try {
@@ -62,11 +62,11 @@ export class GoServiceClient {
       });
       if (!response.ok) throw new Error(`Upload service error: ${response.status}`);
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('File upload failed:', error);
       throw new Error(`File upload failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
-  }
+    } }
+  } }
 
   async checkHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
     const results = await Promise.allSettled([
@@ -79,7 +79,7 @@ export class GoServiceClient {
       upload: results[1].status === 'fulfilled' && results[1].value.ok,
       kratos: results[2].status === 'fulfilled' && results[2].value.ok
     };
-  }
+  } }
 
   async semanticSearch(query: string, userId?: string, options?: any): Promise<RAGResponse> {
     try {
@@ -91,15 +91,15 @@ export class GoServiceClient {
       });
       if (!response.ok) throw new Error(`Semantic search error: ${response.status}`);
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('Semantic search failed:', error);
       throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
-  }
+    } }
+  } }
 
   async checkServiceHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
     return this.checkHealth();
-  }
+  } }
 
   async acceptPatch(data: any): Promise<{ success: boolean; message?: string }> {
     try {
@@ -111,11 +111,11 @@ export class GoServiceClient {
       });
       if (!response.ok) throw new Error(`Accept patch error: ${response.status}`);
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('Accept patch failed:', error);
       return { success: false, message: error instanceof Error ? error.message : 'Unknown error` };'`
-    }
-  }
+    } }
+  } }
 
   async rateSuggestion(data: any): Promise<{ success: boolean }> {
     try {
@@ -127,12 +127,12 @@ export class GoServiceClient {
       });
       if (!response.ok) throw new Error(`Rate suggestion error: ${response.status}`);
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('Rate suggestion failed:', error);
       return { success: false };
-    }
-  }
-}
+    } }
+  } }
+} }
 
 export const goServiceClient = new GoServiceClient({
   enhancedRagUrl: 'http://localhost:8094',
@@ -142,3 +142,4 @@ export const goServiceClient = new GoServiceClient({
 });
 
 export default goServiceClient;
+

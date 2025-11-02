@@ -14,7 +14,7 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 
 export const POST: RequestHandler = async () => {
   return json({
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async () => {
     headers: {
       'X-Deprecated': 'true',
       'X-Migrate-To': '/api/v2/evidence?action=search'
-    }
+    } }
   });
 };
 
@@ -44,3 +44,4 @@ export const GET: RequestHandler = async () => {
     message: 'Use GET /api/v2/evidence?action=search&q=xxx instead'
   }, { status: 410 });
 };
+

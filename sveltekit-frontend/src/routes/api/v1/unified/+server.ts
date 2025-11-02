@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { redisService } from '$lib/server/redis-service';
-import { minioService } from '$lib/server/storage/minio-service';
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service';
-import { workflowOrchestrator } from '$lib/machines/workflow-machine';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
+import { redisService } }from '$lib/server/redis-service';
+import { minioService } }from '$lib/server/storage/minio-service';
+import { rabbitmqService } }from '$lib/server/messaging/rabbitmq-service';
+import { workflowOrchestrator } }from '$lib/machines/workflow-machine';
 
 // mark imported services as referenced to avoid: "defined but never used" errors
 // (keeps minimal runtime impact while satisfying the compiler/linter)
@@ -24,12 +24,12 @@ export interface APIResponse<T = unknown> {
   performance?: {
     executionTime: number;
     cacheHit?: boolean;
-   , servicesUsed: string[];
+  servicesUsed: string[];
   };
-}
+} }
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-}
+} }
 function createResponse<T>(
   success: boolean,
   data?: T | null,
@@ -45,7 +45,7 @@ function createResponse<T>(
     version: '1.0.0',
     performance
   };
-}
+} }
 
 // Typed request body to avoid `any`
 type UnifiedRequestBody = {
@@ -56,7 +56,7 @@ type UnifiedRequestBody = {
   [key: string]: any;
 };
 
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
   const action = url.searchParams.get('action') ?? '';
   try {
@@ -64,16 +64,16 @@ export const, GET: RequestHandler = async ({ url }) => {
       case, 'health': {
         const healthStatus = {
           status: 'healthy',
-          services: {, redis: {, status: 'healthy',
+          services: { redis: { status: 'healthy',
               connected: true
             },
-            minio: {, status: 'healthy', initialized: true },
-            rabbitmq: {, status: 'healthy', connected: true },
-            postgresql: {, status: 'healthy', connected: true },
+            minio: { status: 'healthy', initialized: true },
+            rabbitmq: { status: 'healthy', connected: true },
+            postgresql: { status: 'healthy', connected: true },
             xstate: {
-             , status: 'healthy',
+  status: 'healthy',
               workflows: workflowOrchestrator.getActiveWorkflowsCount()
-            }
+            } }
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
@@ -84,18 +84,18 @@ export const, GET: RequestHandler = async ({ url }) => {
             servicesUsed: ['all']
           })
         );
-      }
+      } }
       case, 'search': {
         const query = url.searchParams.get('query');
         if (!query) {
           return json(createResponse(false, null, 'Query parameter required'));
-        }
+        } }
         // Mock search results
         const searchResults = {
           query,
           results: [
-            {, id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },'`'`
-            { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence' }'`
+            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },'`'`
+            { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence' } }`
           ],
           total: 2
         };
@@ -105,13 +105,13 @@ export const, GET: RequestHandler = async ({ url }) => {
             servicesUsed: ['postgresql', 'redis']
           })
         );
-      }
+      } }
       default: return json(createResponse(false, null, `Unknown action: ${action}`));
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(createResponse(false, null, message), { status: 500 });
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now();
@@ -120,13 +120,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = (await request.json().catch(() => ({}))) as UnifiedRequestBody;
     switch (action) {
       case, 'rag': {
-        const { query, caseId } = body;
+        const { query, caseId } }= body;
         if (!query) {
           return json(createResponse(false, null, 'Query required'));
-        }
+        } }
         const ragResponse = {
           query,
-          response: `Analysis;, for: "${query}": This is a production-ready RAG response that integrates vector search, document retrieval, and AI generation.`,
+          response: `Analysis; for: "${query}": This is a production-ready RAG response that integrates vector search, document retrieval, and AI generation.`,
           sources: ['Document A', 'Evidence B', 'Case Law C'],
           confidence: 0.91,
           caseId
@@ -137,25 +137,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
             servicesUsed: ['postgresql', 'redis', 'rabbitmq']
           })
         );
-      }
+      } }
       case, 'upload': {
         const uploadResult = {
           fileId: `file_${Date.now()}`,
           fileName: body.fileName ?? 'document.pdf',
           status: 'uploaded',
           size: typeof body.size === 'number' ? body.size : 1024,
-          url: `https://example.com/files/file_${Date.now()}' };'`
+          url: `https://example.com/files/file_${Date.now()} } };'`
         return json(
           createResponse(true, uploadResult, undefined, {
             executionTime: Date.now() - startTime,
             servicesUsed: ['minio', 'rabbitmq']
           })
         );
-      }
+      } }
       default: return json(createResponse(false, null, `Unknown action: ${action}`));
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(createResponse(false, null, message), { status: 500 });
-  }
+  } }
 };
+

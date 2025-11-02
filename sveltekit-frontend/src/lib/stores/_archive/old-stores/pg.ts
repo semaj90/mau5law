@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import pgClient, { poolShim } from '$lib/server/db-shim';
+import pgClient, { poolShim } }from '$lib/server/db-shim';
 
 const pool = poolShim;
 
@@ -8,7 +8,7 @@ function tempToPgRadius(temp = 0.3) {
   const maxRadius = 0.5; // wide
   const t = Math.max(0, Math.min(1, temp));
   return minRadius + (maxRadius - minRadius) * t;
-}
+} }
 
 export async function queryPgvector(vec: number[], limit = 200, temperature = 0.3): Promise<any> {
   const radius = tempToPgRadius(temperature);
@@ -23,13 +23,14 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
       [vec, radius, limit]
     );
     const rows = res.rows ?? [];
-    return { ann: rows.map((r: any) => ({, id: String(r.id),
+    return { ann: rows.map((r: any) => ({ id: String(r.id),
         text: r.text,
         metadata: r.metadata ?? {},
         embedding: r.embedding
       }))
     };
-  } finally {
+  } }finally {
     if (conn && typeof conn.release === 'function') conn.release();
-  }
-}
+  } }
+} }
+

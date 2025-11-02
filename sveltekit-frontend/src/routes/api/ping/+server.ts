@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   return json({
     status: 'ok',
@@ -7,3 +7,4 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   });
 };
+

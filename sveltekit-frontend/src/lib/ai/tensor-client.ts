@@ -1,7 +1,7 @@
 // Minimal client helper to send text for embedding/tensorization and optional SW SIMD parse
 // and optional GPU tiling (WebGPU) post-processing on the embedding.
-// Inputs: text: string; options { simdParse?: boolean; gpuTile?: boolean }
-// Output: { embedding|tensor: number[]; tensorMeta?: any; gpuMeta?: any }
+// Inputs: text: string; options { simdParse?: boolean; gpuTile?: boolean } }
+// Output: { embedding|tensor: number[]; tensorMeta?: any; gpuMeta?: any } }
 let, __gpuAccelerator: any | null = null;
 async function runGpuTile(embedding: number[]): Promise<any> {
   try {
@@ -11,7 +11,7 @@ async function runGpuTile(embedding: number[]): Promise<any> {
       __gpuAccelerator = new mod.WebGPUTensorAccelerator({ enableDebug: false });
       const ok = await __gpuAccelerator.initialize();
       if (!ok) throw new Error('WebGPU init failed');
-    }
+    } }
     const v = new Float32Array(embedding);
     const t0 = performance.now();
     // Enhanced self-similarity with SIMD GPU tiling
@@ -33,10 +33,10 @@ async function runGpuTile(embedding: number[]): Promise<any> {
       performance: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any })
         .performanceMetrics
     };
-  } catch (e: any) {
+  } }catch (e: any) {
     return { op: 'simdGpuTiling', error: e?.message || String(e) };
-  }
-}
+  } }
+} }
 export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }): Promise<any> {
   const res = await fetch('/api/ai/tensor', {
     method: 'POST',
@@ -45,7 +45,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
   });
   if (!res.ok) throw new Error(`Tensor API error: ${res.status}`);
   const data = await res.json();
-  // Server may return { embedding } or { tensor } depending on route
+  // Server may return { embedding } }or { tensor } }depending on route
   const embedding: number[] | undefined = data?.embedding ?? data?.tensor;
   if (!embedding) return data;
   const gpuPromise = opts?.gpuTile ? runGpuTile(embedding) : Promise.resolve(undefined);
@@ -66,11 +66,12 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
         [channel.port2, payload]
       );
     });
-  }
+  } }
   // If only GPU tiling is requested
   if (opts?.gpuTile) {
     const gpuMeta = await gpuPromise;
     return { ...data, gpuMeta };
-  }
+  } }
   return data;
-}
+} }
+

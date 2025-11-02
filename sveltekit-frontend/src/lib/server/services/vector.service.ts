@@ -11,41 +11,41 @@
 // 6. PERFORMANCE - Query optimization and connection pooling
 //
 // 📋 WIRING REQUIREMENTS:
-// -;, Environment: OLLAMA_URL, EMBEDDING_MODEL, DATABASE_URL
+// -; Environment: OLLAMA_URL, EMBEDDING_MODEL, DATABASE_URL
 // - Services: OllamaService, DatabaseService, CacheService
 // - Dependencies: postgres, drizzle-orm, ioredis
 // - Extensions: PostgreSQL pgvector extension
 //
 // 🔧 IMPLEMENTATION NOTES:
-// - Original;, backup: vector.service.ts.backup (309 lines)
+// - Original; backup: vector.service.ts.backup (309 lines)
 // - Schema dependency: vector-schema-simple.ts → vector-schema.ts
 // - Database migration required for vector columns
 // - Performance testing needed for similarity thresholds
-import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Centralized endpoint utility
-import { db } from '$lib/server/db/client'; // Drizzle DB client
-import { sql } from 'drizzle-orm';
-import { documentEmbeddings } from '$lib/server/db/schema-postgres'; // Assuming this schema exists
-import { createHash } from 'crypto';
-import { redisClient } from '$lib/server/cache/redis'; // Redis client for caching
+import { getOllamaEndpoint } }from '$lib/server/utils/endpoints'; // Centralized endpoint utility
+import { db } }from '$lib/server/db/client'; // Drizzle DB client
+import { sql } }from 'drizzle-orm';
+import { documentEmbeddings } }from '$lib/server/db/schema-postgres'; // Assuming this schema exists
+import { createHash } }from 'crypto';
+import { redisClient } }from '$lib/server/cache/redis'; // Redis client for caching
 
 // Utility to create a stable hash for caching
 async function hashText(text: string): Promise<string> {
   return createHash('sha256').update(text).digest('hex');
-}
+} }
 
 export interface EmbeddingResult { embedding: number[];, success: boolean;
   model?: string;
   error?: string;
-}
-export interface VectorSearchResult {, id: string;, content: string;
+} }
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
-}
+} }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   documentType?: string;
-}
+} }
 export class VectorOperationsService {
   /**
    * Generate embedding using Ollama
@@ -63,7 +63,7 @@ export class VectorOperationsService {
    * const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
    *   method: 'POST',
    *   headers: { 'Content-Type': `application/json` },'`'`
-   *   body: JSON.stringify({, model: EMBEDDING_MODEL, prompt: text )})
+   *   body: JSON.stringify({ model: EMBEDDING_MODEL, prompt: text )})
    * });
    * ```
    */
@@ -73,9 +73,9 @@ export class VectorOperationsService {
 
     if (!text || text.trim().length === 0) {
       return { embedding: [], success: false, error: 'Input text cannot be empty' };
-    }
+    } }
 
-    const cacheKey = 'langcache:embedding:${model}:${await hashText(text)}';
+    const cacheKey = 'langcache:embedding:${model}:${await hashText(text)} };
     try {
       const cachedEmbedding = await redisClient.get(cacheKey);
       if (cachedEmbedding) {
@@ -84,7 +84,7 @@ export class VectorOperationsService {
           embedding: JSON.parse(cachedEmbedding),
           success: true,
           model: model + ' (cached)` };'`
-      }
+      } }
 
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
@@ -93,8 +93,8 @@ export class VectorOperationsService {
       });
 
       if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Ollama API error: ${response.status} }${response.statusText}`);
+      } }
 
       const data: unknown = await response.json();
 
@@ -106,16 +106,16 @@ export class VectorOperationsService {
         data &&
         typeof data === 'object' &&
         'embedding' in data &&
-        isNumberArray((data as {, embedding: unknown }).embedding)
+        isNumberArray((data as { embedding: unknown }).embedding)
       ) {
         rawEmbedding = (data as { embedding: number[] }).embedding;
-      } else {
+      } }else {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
 
       if (!isNumberArray(rawEmbedding)) {
         throw new Error('Ollama response did not contain a valid: number array embedding.');
-      }
+      } }
 
       // Cache the result for, 2 hours (7200 seconds)
       await redisClient.set(cacheKey, JSON.stringify(rawEmbedding), { EX: 7200 });
@@ -125,13 +125,13 @@ export class VectorOperationsService {
         success: true,
         model: model
       };
-    } catch (error: unknown) {
+    } }catch (error: unknown) {
       console.error('Embedding generation failed:', error);
       return {
         embedding: [],
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
-  }
+        error: error instanceof Error ? error.message : 'Unknown error' };'` } }`
+  } }
   /**
    * Search for similar content using vector similarity
    *
@@ -149,21 +149,21 @@ export class VectorOperationsService {
    * return await db.select({
    *   id: documentEmbeddings.id,
    *   content: documentEmbeddings.chunkText,
-   *   similarity: sql<number>`1 - (${documentEmbeddings.embedding} <=> ARRAY[${sql.raw()`
+   *   similarity: sql<number>`1 - (${documentEmbeddings.embedding} }<=> ARRAY[${sql.raw()`
    *     queryEmbedding.embedding.join(')'),
-   *   )}]: vector)`
+   *   )} }: vector)`
    * }).from(documentEmbeddings).orderBy(similarity).limit(options.limit || 10);
    * ```
    */
   static async searchSimilar(query: string, options: VectorSearchOptions = {}): Promise<VectorSearchResult[]> {
     // Corrected return type
     try {
-      const { limit = 10, threshold = 0.7, documentType } = options;
+      const { limit = 10, threshold = 0.7, documentType } }= options;
 
       const queryEmbeddingResult = await this.generateEmbedding(query);
       if (!queryEmbeddingResult.success || !queryEmbeddingResult.embedding) {
         throw new Error(queryEmbeddingResult.error || 'Failed to generate query embedding');
-      }
+      } }
 
       const queryEmbedding = queryEmbeddingResult.embedding;
 
@@ -173,14 +173,14 @@ export class VectorOperationsService {
           id: documentEmbeddings.id,
           content: documentEmbeddings.chunkText,
           // Calculate similarity: 1 - cosine_distance (where cosine_distance is <-> operator); score:
-            sql<number>`1 - (${documentEmbeddings.embedding} <=> ${sql.raw(`'[${queryEmbedding.join(',')}]'::vector`)})`.as(
+            sql<number>`1 - (${documentEmbeddings.embedding} }<=> ${sql.raw(`'[${queryEmbedding.join(',')} }'::vector`)})`.as(
               'score'
             ),
           metadata: documentEmbeddings.metadata
         })
         .from(documentEmbeddings)
         .where(
-          sql<boolean>`1 - (${documentEmbeddings.embedding} <=> ${sql.raw(`'[${queryEmbedding.join(',')}]'::vector`)}) > ${threshold}`
+          sql<boolean>`1 - (${documentEmbeddings.embedding} }<=> ${sql.raw(`'[${queryEmbedding.join(',')} }'::vector`)}) > ${threshold}`
         )
         .orderBy(sql`score DESC`)
         .limit(limit);
@@ -189,13 +189,13 @@ export class VectorOperationsService {
         id: row.id,
         content: row.content,
         score: row.score,
-        metadata: row.metadata || {}
+        metadata: row.metadata || {} }
       }));
-    } catch (error: unknown) {
-      console.error('Vector search error:', error);'
+    } }catch (error: unknown) {
+      console.error('Vector search error:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Store document embedding in PostgreSQL with pgvector
    *
@@ -214,7 +214,7 @@ export class VectorOperationsService {
    *   documentId,
    *   documentType: metadata?.type || 'document',
    *   chunkText: content
-   *  , embedding: sql`ARRAY[${sql.raw(embedding.join(','))}]: vector`,
+   *  , embedding: sql`ARRAY[${sql.raw(embedding.join(','))} }: vector`,
    *   metadata: JSON.stringify(metadata),
    *   createdAt: new Date()
    * });
@@ -225,28 +225,28 @@ export class VectorOperationsService {
     documentId: string,
     content: string,
     embedding: number[],
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any } }
   ): Promise<boolean> {
     try {
       if (!embedding || embedding.length === 0) {
         throw new Error('Embedding vector cannot be empty');
-      }
+      } }
 
       await db.insert(documentEmbeddings).values({
         documentId: documentId,
         documentType: metadata?.documentType || 'general', // Use metadata type or default
         chunkText: content,
-        embedding: sql`${sql.raw(`'[${embedding.join(',')}]'::vector`)}`, // Correctly cast to vector type
+        embedding: sql`${sql.raw(`'[${embedding.join(',')} }'::vector`)}`, // Correctly cast to vector type
         metadata: metadata ? JSON.stringify(metadata) : null,
         createdAt: new Date(),
         updatedAt: new Date()
       });
       return true;
-    } catch (error: unknown) {
-      console.error('Store embedding error:', error);'
+    } }catch (error: unknown) {
+      console.error('Store embedding error:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * TODO: IMPLEMENT FULL SEMANTIC SEARCH
    * This is a temporary stub to resolve compilation errors
@@ -257,7 +257,7 @@ export class VectorOperationsService {
     // For now, delegate to searchSimilar
     const results = await this.searchSimilar(query, options);
     return results;
-  }
+  } }
   /**
    * TODO: IMPLEMENT DOCUMENT STORAGE
    * This is a temporary stub to resolve compilation errors
@@ -267,7 +267,7 @@ export class VectorOperationsService {
    , documentId: string,
     content: string,
     documentType?: string,
-    metadata: any = {}
+    metadata: any = {} }
   ): Promise<string> {
     console.warn('storeDocument is a stub - implement with full document storage');
     // In a real implementation, this would store the document content and then generate/store its embedding.
@@ -275,9 +275,9 @@ export class VectorOperationsService {
     const embeddingResult = await this.generateEmbedding(content);
     if (embeddingResult.success && embeddingResult.embedding) {
       await this.storeDocumentEmbedding(documentId, content, embeddingResult.embedding, { ...metadata, documentType });
-    }
+    } }
     return documentId;
-  }
+  } }
   /**
    * TODO: IMPLEMENT DOCUMENT ANALYSIS
    * This is a temporary stub to resolve compilation errors
@@ -285,7 +285,7 @@ export class VectorOperationsService {
   static async analyzeDocument(documentId: string, analysisType: string): Promise<any> {
     // Corrected parameter syntax
     console.warn('analyzeDocument is a stub - implement with full document analysis');
-    return { documentId, analysisType, result: 'mock_analysis_result' };'` }'`
+    return { documentId, analysisType, result: 'mock_analysis_result' };'` } }`
   /**
    *, TODO: IMPLEMENT SIMILAR DOCUMENT SEARCH
    * This is a temporary stub to resolve compilation errors
@@ -297,7 +297,7 @@ export class VectorOperationsService {
     // and then use it to search for similar documents.
     // For now, we'll return a mock.'
     return [];
-  }
+  } }
   // 🚀 ADDITIONAL METHODS TO IMPLEMENT
   // ===================================
   /**
@@ -313,7 +313,7 @@ export class VectorOperationsService {
    * static async updateDocumentEmbedding()
    *   documentId: string
    *  , newContent: string
-   *   metadata?: { [key: string]: any }
+   *   metadata?: { [key: string]: any } }
    * ): Promise<boolean>
    */
   /**
@@ -343,5 +343,5 @@ export class VectorOperationsService {
    *  , minClusterSize: number
    * ): Promise<Arra>y>><any>
    */
-}
+} }
 export default VectorOperationsService;

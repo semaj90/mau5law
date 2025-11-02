@@ -1,14 +1,14 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 
 /**
- * Simple SSE streaming endpoint that accepts a JSON body { prompt }
+ * Simple SSE streaming endpoint that accepts a JSON body { prompt } }
  * and streams lines of text as the LLM: 'progresses'.
  *
  * This is a development-friendly implementation which simulates streaming
  * and is safe to run without a real streaming LLM.
  */
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const prompt = String(body.prompt || '');
@@ -25,17 +25,18 @@ export const, POST: RequestHandler = async ({ request }) => {
             clearInterval(id);
             controller.close();
             return;
-          }
+          } }
           const chunk = `data: ${parts[i]}\n\n`;
           controller.enqueue(encoder.encode(chunk));
           i += 1;
         }, 250);
-      }
+      } }
     });
 
     return new Response(stream, {
-      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' }'' });
-  } catch (err) {
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' } } });
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

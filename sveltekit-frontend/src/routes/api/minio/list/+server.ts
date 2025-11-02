@@ -1,15 +1,15 @@
 // MinIO List Objects API Endpoint
 // Lists objects in MinIO bucket with optional filtering
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client, as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import { env } }from '$env/dynamic/private';
+import { Client, as MinIOClient } }from 'minio';
+import type { RequestHandler } }from './$types';
 interface MinIOObject { name: string;, etag: string;
   size: number;
- , lastModified: Date;
+  lastModified: Date;
   prefix?: string;
   metadata?: Record<string, string>;
-}
+} }
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const bucketName = url.searchParams.get('bucket') || env.MINIO_BUCKET_NAME || 'legal-documents';
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const useSSL = env.MINIO_USE_SSL === 'true';
     // Initialize MinIO client
     const minioClient = new MinIOClient({
-     , endPoint: minioEndpoint.split(':')[0],
+  endPoint: minioEndpoint.split(':')[0],
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
@@ -34,12 +34,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const bucketExists = await minioClient.bucketExists(bucketName);
     if (!bucketExists) {
       return json({ error: 'Bucket does not exist' }, { status: 404 });
-    }
+    } }
     // Determine search prefix
     let searchPrefix = prefix;
     if (caseId && !prefix) {
       searchPrefix = `cases/${caseId}/`;
-    }
+    } }
     // List objects
     const objectsList: MinIOObject[] = [];
     const objectStream = minioClient.listObjects(bucketName, searchPrefix, recursive);
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
         lastModified: obj.lastModified,
         prefix: obj.prefix
       });
-    }
+    } }
     // For each: object, try to get metadata (optional, can be expensive)
     const includeMetadata = url.searchParams.get('metadata') === 'true';
     if (includeMetadata && objectsList.length <= 20) {
@@ -61,10 +61,10 @@ export const GET: RequestHandler = async ({ url }) => {
         try {
           const stat = await minioClient.statObject(bucketName, obj.name);
           obj.metadata = stat.metaData;
-        } catch (err) {
-          console.warn(`Could not get metadata for ${obj.name}: ', err);'' }'`
-      }
-    }
+        } }catch (err) {
+          console.warn(`Could not get metadata for ${obj.name}: ', err);'' } }`
+      } }
+    } }
     // Group by folder structure if not recursive
     const folders = new Set<string>();
     if (!recursive) {
@@ -74,10 +74,10 @@ export const GET: RequestHandler = async ({ url }) => {
           const folderPath = parts.slice(0, -1).join('/') + '/';
           if (folderPath !== searchPrefix) {
             folders.add(folderPath);
-          }
-        }
+          } }
+        } }
       });
-    }
+    } }
     return json({
       success: true,
       bucket: bucketName,
@@ -90,13 +90,14 @@ export const GET: RequestHandler = async ({ url }) => {
       truncated: objectsList.length >= maxKeys,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    console.error('MinIO list error:', error);'
+  } }catch (error) {
+    console.error('MinIO list error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'List operation failed` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Fix database schema to match Drizzle schema
-import { json } from '@sveltejs/kit';
-import { db, sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import { db, sql } }from 'drizzle-orm';
 export async function POST(): Promise<any> {
   try {
     console.log('🔧 Adding missing columns to users table...');
@@ -21,14 +21,15 @@ export async function POST(): Promise<any> {
       message: 'Schema fixed successfully',
       columns: columns
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('❌ Failed to fix schema:', error);
     return json(
       {
         success: false,
         error: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
+

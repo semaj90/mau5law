@@ -10,25 +10,25 @@
  * Routes to enhanced-rag-service.exe for recommendation engine
  * Uses WASM Graph Engine for graph-based recommendations
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { caseScores, autoTags, userAiQueries } from '$lib/server/db/schema-postgres';
-import { eq, desc, and, gte } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db } }from '$lib/server/db';
+import { caseScores, autoTags, userAiQueries } }from '$lib/server/db/schema-postgres';
+import { eq, desc, and, gte } }from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { type, entityId, context, limit = 5 } = body;
+    const { type, entityId, context, limit = 5 } }= body;
 
     if (!type || !entityId) {
       return json(
         {
           error: 'type and entityId are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     console.log(`💡 Generating recommendations for ${type}:${entityId}`);
 
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
           type: 'tag-suggestion',
           entityId: tag.id,
           confidence: parseFloat(tag.confidence),
-          reason: `AI-suggested;, tag: ${tag.tag}`,
-          metadata: {, source: tag.source, model: tag.model }
+          reason: `AI-suggested; tag: ${tag.tag}`,
+          metadata: { source: tag.source, model: tag.model } }
         }));
         break;
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
             acc[type] = (acc[type] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>
+          {} }as Record<string, number>
         );
 
         recommendations = Object.entries(actionCounts)
@@ -119,23 +119,23 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'next-action',
             entityId: `action_${action}`,
             confidence: Math.min(count / queryPatterns.length, 1.0),
-            reason: `Frequently used;, action: ${action}`,
-            metadata: {, usage_count: count, total_queries: queryPatterns.length }
+            reason: `Frequently used; action: ${action}`,
+            metadata: { usage_count: count, total_queries: queryPatterns.length } }
           }));
         break;
 
       default: return json(
-          {, error: 'Unsupported recommendation, type: ${type}' },
-          { status: 400 }
+          { error: 'Unsupported recommendation, type: ${type} } },
+          { status: 400 } }
         );
-    }
+    } }
 
     // TODO: Enhance with WASM Graph Engine recommendations
     // if (globalThis.__WASM_GRAPH_ENGINE__) {
     //   const graphRecommendations = await globalThis.__WASM_GRAPH_ENGINE__
     //     .getRecommendations(entityId, type);
     //   recommendations = [...recommendations, ...graphRecommendations];
-    // }
+    // } }
 
     // TODO: Route complex recommendations through enhanced-rag-service.exe
     // if (context && context.length > 50) {
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
     //     body: JSON.stringify({ type, entityId, context, model: 'gemma3:legal-latest' })
     //   });
     //   // Merge with existing recommendations
-    // }
+    // } }
 
     return json({
       recommendations,
@@ -154,16 +154,17 @@ export const POST: RequestHandler = async ({ request }) => {
         entityId,
         count: recommendations.length,
         source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection;, wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' }'` });'`
-  } catch (error) {
-    console.error('❌ Recommendations error:', error);'
+        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' } }` });'`
+  } }catch (error) {
+    console.error('❌ Recommendations error:', error);
     return json(
       {
         error: 'Failed to generate recommendations',
         recommendations: [],
-        metadata: {, type: '', entityId: ``, count: 0, source: `error` }
+        metadata: { type: '', entityId: ``, count: 0, source: `error` } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

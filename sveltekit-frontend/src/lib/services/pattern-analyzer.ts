@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Enhanced Pattern Analyzer with Production-Ready Features
  *
@@ -13,17 +13,17 @@ import type { User } from '$lib/types';
  * - Cross-modal pattern detection
  * - Advanced clustering and trend analysis
  */
-import { db } from '$lib/server/db/index.js';
-import { sql } from 'drizzle-orm';
-import { MinIOService } from '$lib/server/minio-service.js';
-import { GemmaEmbeddingService } from './gemma-embedding-service.js';
+import { db } }from '$lib/server/db/index.js';
+import { sql } }from 'drizzle-orm';
+import { MinIOService } }from '$lib/server/minio-service.js';
+import { GemmaEmbeddingService } }from './gemma-embedding-service.js';
 const gemmaEmbeddingService = new GemmaEmbeddingService();
 import {
   embedText,
   embedImageBuffer
-} from '$lib/server/index.js';
-import { createMachine, assign, fromPromise, type ActorRefFrom } from 'xstate';
-import { browser } from '$app/environment';
+} }from '$lib/server/index.js';
+import { createMachine, assign, fromPromise, type ActorRefFrom } }from 'xstate';
+import { browser } }from '$app/environment';
 import Fuse from 'fuse.js';
 
 // RabbitMQ integration (conditionally loaded for server-side)
@@ -32,20 +32,20 @@ if (!browser) {
   try {
     // Dynamic import for server-only RabbitMQ
     rabbitmq = await import('$lib/server/rabbitmq-client.js').then(m => m.default || m.rabbitmq);
-  } catch (error) {
+  } }catch (error) {
     console.warn('RabbitMQ not available:', error);
-  }
-}
+  } }
+} }
 
 // Loki.js in-memory database (conditionally loaded)
 let Loki: any = null;
 if (!browser) {
   try {
     Loki = (await import('lokijs')).default;
-  } catch (error) {
+  } }catch (error) {
     console.warn('Loki.js not available, falling back to array search');
-  }
-}
+  } }
+} }
 // Enhanced types for multimodal pattern analysis
 interface UserDocument { id: number;, userId: string;
   source: string | null;
@@ -55,14 +55,14 @@ interface UserDocument { id: number;, userId: string;
   metadata?: string | null; // JSON: string;
   createdAt: Date;
   needs_embedding?: boolean;
-}
-interface PatternResult {, id: number;, source: string | null;
+} }
+interface PatternResult { id: number;, source: string | null;
   content: string;
   distance: number;
   pattern_type?: 'document' | 'cluster' | 'trend' | 'cross_modal';
   confidence?: number;
-}
-interface MultimodalPatternResult {, id: number;, source: string | null;
+} }
+interface MultimodalPatternResult { id: number;, source: string | null;
   content: string;
   contentType?: string;
   distance: number;
@@ -73,9 +73,9 @@ interface MultimodalPatternResult {, id: number;, source: string | null;
     ocrText?: string;
     audioLength?: number;
     frameCount?: number;
-    imageSize?: { width: number;, height: number }
-  }
-}
+    imageSize?: { width: number; height: number } }
+  } }
+} }
 interface EnhancedPatternAnalyzerOptions {
   k?: number; // Number of nearest docs to return (default 10)
   refreshEmbeddings?: boolean; // Recompute missing embeddings
@@ -84,7 +84,7 @@ interface EnhancedPatternAnalyzerOptions {
   clusterResults?: boolean; // Apply k-means clustering to results
   crossModalSearch?: boolean; // Enable cross-modal similarity search
   contentTypes?: string[]; // Filter by content types
-  timeRange?: { start: Date; end: Date } // Time range filter
+  timeRange?: { start: Date; end: Date } }// Time range filter
   minConfidence?: number; // Minimum similarity confidence
   useWorkerPool?: boolean; // Use worker pool for processing
   useIndexedDB?: boolean; // Use IndexedDB for offline caching
@@ -92,15 +92,13 @@ interface EnhancedPatternAnalyzerOptions {
   useFuzzySearch?: boolean; // Enable Fuse.js fuzzy matching
   useRabbitMQ?: boolean; // Submit async jobs to RabbitMQ
   useXState?: boolean; // Use XState workflow orchestration
-}
+} }
 
 // XState Pattern Analysis Workflow Machine
-const patternAnalysisMachine = createMachine({
- , id: 'patternAnalysis',
-  context: {
-   , userId: null, as: string | null,
+const patternAnalysisMachine = createMachine({ id: 'patternAnalysis',
+  context: { userId: null, as: string | null,
     queryContent: null, as: string | Buffer | null,
-    options: {} as EnhancedPatternAnalyzerOptions,
+    options: {} }as EnhancedPatternAnalyzerOptions,
     queryEmbedding: null, as: number[] | null,
     vectorResults: [] as MultimodalPatternResult[],
     crossModalResults: [] as MultimodalPatternResult[],
@@ -109,41 +107,39 @@ const patternAnalysisMachine = createMachine({
     error: null as Error | null
   },
   initial: 'idle',
-  states: {, idle: {, on: {, START: 'generating_embedding' }
+  states: { idle: { on: { START: 'generating_embedding' } }
     },
-    generating_embedding: {, invoke: {, src: fromPromise(async ({ input }: any) => {
+    generating_embedding: { invoke: { src: fromPromise(async ({ input }: any) => {
           if (!input.queryContent) {
             const recentDocs = await db.execute(sql`
               SELECT content FROM user_documents
-              WHERE user_id = ${input.userId}
+              WHERE user_id = ${input.userId} }
               ORDER BY created_at DESC LIMIT, 10
             `);`
             const textSnippet = recentDocs.map((d: any) => d.content).join('\n\n');
             return await embedText(textSnippet);
-          }
+          } }
           if (Buffer.isBuffer(input.queryContent)) {
             return await embedImageBuffer(input.queryContent);
-          }
+          } }
           return await embedText(input.queryContent.toString());
         }),
-        onDone: {
-         , target: 'vector_search',
-          actions: assign({, queryEmbedding: ({ event }: any) => event.output })
+        onDone: { target: 'vector_search',
+          actions: assign({ queryEmbedding: ({ event }: any) => event.output })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({, error: ({ event }: any) => event.error })
-        }
-      }
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }: any) => event.error })
+        } }
+      } }
     },
-    vector_search: {, invoke: {, src: fromPromise(async ({ input }: any) => {
+    vector_search: { invoke: { src: fromPromise(async ({ input }: any) => {
           const results = await db.execute(sql`
             SELECT id, source, content, content_type, metadata,
                    (embedding <-> ${JSON.stringify(input.queryEmbedding)}::vector) AS distance
             FROM user_documents
-            WHERE user_id = ${input.userId} AND embedding IS NOT NULL
+            WHERE user_id = ${input.userId} }AND embedding IS NOT NULL
             ORDER BY distance ASC
-            LIMIT ${input.options.k || 10}
+            LIMIT ${input.options.k || 10} }
           `);`
           return results.map((doc: any) => ({
             id: doc.id,
@@ -156,17 +152,15 @@ const patternAnalysisMachine = createMachine({
             modality: PatternAnalyzer.getModalityFromContentType(doc.content_type)
           }));
         }),
-        onDone: {
-         , target: 'cross_modal_search',
-          actions: assign({, vectorResults: ({ event }: any) => event.output })
+        onDone: { target: 'cross_modal_search',
+          actions: assign({ vectorResults: ({ event }: any) => event.output })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({, error: ({ event }: any) => event.error })
-        }
-      }
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }: any) => event.error })
+        } }
+      } }
     },
-    cross_modal_search: {, invoke: {, src: fromPromise(async ({ input }: any) => {
+    cross_modal_search: { invoke: { src: fromPromise(async ({ input }: any) => {
           if (!input.options.crossModalSearch) return [];
           return await PatternAnalyzer.performCrossModalSearch(
             input.userId,
@@ -175,13 +169,12 @@ const patternAnalysisMachine = createMachine({
             input.options.k || 10
           );
         }),
-        onDone: {
-         , target: 'clustering',
-          actions: assign({, crossModalResults: ({ event }: any) => event.output })
-        }
-      }
+        onDone: { target: 'clustering',
+          actions: assign({ crossModalResults: ({ event }: any) => event.output })
+        } }
+      } }
     },
-    clustering: {, invoke: {, src: fromPromise(async ({ input }: any) => {
+    clustering: { invoke: { src: fromPromise(async ({ input }: any) => {
           const merged = PatternAnalyzer.mergeCrossModalResults(
             input.vectorResults,
             input.crossModalResults
@@ -189,32 +182,30 @@ const patternAnalysisMachine = createMachine({
           if (!input.options.clusterResults || merged.length < 3) return merged;
           return await PatternAnalyzer.clusterMultimodalPatterns(merged);
         }),
-        onDone: {
-         , target: 'caching',
-          actions: assign({, clusteredResults: ({ event }: any) => event.output })
-        }
-      }
+        onDone: { target: 'caching',
+          actions: assign({ clusteredResults: ({ event }: any) => event.output })
+        } }
+      } }
     },
-    caching: {, invoke: {, src: fromPromise(async ({ input }: any) => {
+    caching: { invoke: { src: fromPromise(async ({ input }: any) => {
           // Cache in IndexedDB if enabled (browser-side)
           if (browser && input.options.useIndexedDB) {
             await PatternAnalyzer.cacheInIndexedDB(input.userId, input.clusteredResults);
-          }
+          } }
           // Cache in Loki.js if enabled (server-side)
           if (!browser && input.options.useLokiJS && Loki) {
             await PatternAnalyzer.cacheInLoki(input.userId, input.clusteredResults);
-          }
+          } }
           return input.clusteredResults;
         }),
-        onDone: {
-         , target: 'complete',
-          actions: assign({, finalResults: ({ event }: any) => event.output })
-        }
-      }
+        onDone: { target: 'complete',
+          actions: assign({ finalResults: ({ event }: any) => event.output })
+        } }
+      } }
     },
-    complete: {, type: 'final' },'`'`
-    failed: {, type: 'final' }
-  }
+    complete: { type: 'final' },'`'`
+    failed: { type: 'final' } }
+  } }
 });
 
 // IndexedDB configuration for offline pattern caching
@@ -226,8 +217,7 @@ const PATTERNS_STORE = 'patterns';
 let lokiDB: any = null;
 
 // Fuse.js fuzzy search configuration
-const FUSE_OPTIONS = {
- , keys: ['content', 'source'],
+const FUSE_OPTIONS = { keys: ['content', 'source'],
   threshold: 0.4,
   includeScore: true,
   ignoreLocation: true,
@@ -240,7 +230,7 @@ const CROSS_MODAL_THRESHOLDS = {
   'audio_to_text': 0.4,
   'video_to_image': 0.25,
   'video_to_text': 0.35
-}
+} }
 
 // Fixed dynamic simdjson loader with fallback
 async function parseJsonWithSimd(jsonText: string): Promise<any> {
@@ -251,12 +241,12 @@ async function parseJsonWithSimd(jsonText: string): Promise<any> {
     const simdjson = await import('simdjson-wasm').catch(() => null);
     if (simdjson && typeof simdjson.parse === 'function') {
       return simdjson.parse(jsonText);
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore and fallback
-  }
+  } }
   return JSON.parse(jsonText);
-}
+} }
 
 // ============================================================================
 // INDEXEDDB HELPERS (Client-Side Offline Cache)
@@ -276,10 +266,10 @@ async function openIndexedDB(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(PATTERNS_STORE)) {
         const store = db.createObjectStore(PATTERNS_STORE, { keyPath: 'userId' });
         store.createIndex('timestamp', 'timestamp', { unique: false });
-      }
+      } }
     };
   });
-}
+} }
 
 async function cachePatternsinIndexedDB(
   userId: string,
@@ -299,10 +289,10 @@ async function cachePatternsinIndexedDB(
     });
 
     db.close();
-  } catch (error) {
+  } }catch (error) {
     console.warn('Failed to cache patterns in IndexedDB:', error);
-  }
-}
+  } }
+} }
 
 async function getCachedPatternsFromIndexedDB(
   userId: string
@@ -321,16 +311,16 @@ async function getCachedPatternsFromIndexedDB(
         const result = request.result;
         if (result && Date.now() - result.timestamp < 3600000) { // 1 hour TTL
           resolve(result.patterns);
-        } else {
+        } }else {
           resolve(null);
-        }
+        } }
       };
     });
-  } catch (error) {
+  } }catch (error) {
     console.warn('Failed to get cached patterns from IndexedDB:', error);
     return: null;
-  }
-}
+  } }
+} }
 
 // ============================================================================
 // LOKI.JS HELPERS (Server-Side In-Memory Search)
@@ -352,7 +342,7 @@ function initializeLokiDB(): any {
   });
 
   return lokiDB;
-}
+} }
 
 function cacheInLokiDB(userId: string, patterns: MultimodalPatternResult[]): void {
   if (browser || !Loki) return;
@@ -370,12 +360,12 @@ function cacheInLokiDB(userId: string, patterns: MultimodalPatternResult[]): voi
   patterns.forEach(pattern => {
     collection.insert({ ...pattern, userId, timestamp: Date.now() });
   });
-}
+} }
 
 function searchLokiDB(
   userId: string,
   query: string,
-  options: { modality?: string; contentType?: string; limit?: number } = {}
+  options: { modality?: string; contentType?: string; limit?: number } }= {} }
 ): MultimodalPatternResult[] {
   if (browser || !Loki) return [];
 
@@ -397,10 +387,10 @@ function searchLokiDB(
       r.content.toLowerCase().includes(query.toLowerCase()) ||
       (r.source && r.source.toLowerCase().includes(query.toLowerCase()))
     );
-  }
+  } }
 
   return results.slice(0, options.limit || 100);
-}
+} }
 
 // ============================================================================
 // FUSE.JS HELPERS (Fuzzy Search)
@@ -419,7 +409,7 @@ function fuzzySearchPatterns(
     ...result.item,
     fuzzyScore: result.score
   }));
-}
+} }
 
 // ============================================================================
 // RABBITMQ HELPERS (Async Job Processing)
@@ -432,7 +422,7 @@ async function submitPatternAnalysisJob(
 ): Promise<string> {
   if (browser || !rabbitmq) {
     throw new Error('RabbitMQ only available on server-side');
-  }
+  } }
 
   const jobId = `pattern-${userId}-${Date.now()}`;
 
@@ -448,7 +438,7 @@ async function submitPatternAnalysisJob(
   });
 
   return jobId;
-}
+} }
 
 async function getRabbitMQJobResult(jobId: string): Promise<MultimodalPatternResult[] | null> {
   if (browser || !rabbitmq) return: null;
@@ -461,10 +451,10 @@ async function getRabbitMQJobResult(jobId: string): Promise<MultimodalPatternRes
   if (result) {
     await redis.del(resultKey); // Clean up
     return JSON.parse(result);
-  }
+  } }
 
   return: null;
-}
+} }
 
 export class PatternAnalyzer {
   /**
@@ -477,7 +467,7 @@ export class PatternAnalyzer {
   static async getUserPatterns(
     userId: string,
     queryContent?: string | Buffer,
-    options: EnhancedPatternAnalyzerOptions = {}
+    options: EnhancedPatternAnalyzerOptions = {} }
   ): Promise<MultimodalPatternResult[]> {
     const {
       k = 10,
@@ -490,7 +480,7 @@ export class PatternAnalyzer {
       timeRange,
       minConfidence = 0.1,
       useWorkerPool = true
-    } = options;
+    } }= options;
 
     try {
       // Initialize query embedding
@@ -500,26 +490,26 @@ export class PatternAnalyzer {
       const whereClauses: string[] = [`user_id = ${sql.raw(userId)}`];
       if (contentTypes.length > 0) {
         // content type safe list handled via interpolation below
-      }
+      } }
       if (timeRange) {
         // apply created_at time window filter
-        whereClauses.push(`created_at BETWEEN ${sql.raw(timeRange.start.toISOString())} AND ${sql.raw(timeRange.end.toISOString())}`);
-      }
+        whereClauses.push(`created_at BETWEEN ${sql.raw(timeRange.start.toISOString())} }AND ${sql.raw(timeRange.end.toISOString())}`);
+      } }
 
       // Use a safe, simple select via db.execute to avoid compiling against specific drizzle helpers in this edit
       const contentTypeClause = contentTypes.length > 0 ? sql` AND content_type = ANY(${contentTypes})` : sql``;
       const recentDocs = await db.execute(sql`
         SELECT id, user_id, source, content, content_type, embedding, metadata, created_at
         FROM user_documents
-        WHERE user_id = ${userId}
-        ${contentTypeClause}
+        WHERE user_id = ${userId} }
+        ${contentTypeClause} }
         ORDER BY created_at DESC
         LIMIT, 500
       `);`
 
       if (!recentDocs || recentDocs.length === 0) {
         return [];
-      }
+      } }
 
       // If queryContent provided, create embedding from it; otherwise derive from recent activity
       if (queryContent) {
@@ -527,12 +517,12 @@ export class PatternAnalyzer {
           // image/binary embedding
           const embedRes = await embedImageBuffer(queryContent);
           if (embedRes && Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
-        } else {
+        } }else {
           const embedRes = await embedText(queryContent.toString());
           if (embedRes && (embedRes as: any).embedding) queryEmbedding = (embedRes as: any).embedding;
           else if (Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
-        }
-      } else {
+        } }
+      } }else {
         const textSnippet = recentDocs
           .slice(0, 10)
           .map((d: any) => (d.content || '').toString())
@@ -541,8 +531,8 @@ export class PatternAnalyzer {
           const embedRes = await embedText(textSnippet);
           if (embedRes && (embedRes as: any).embedding) queryEmbedding = (embedRes as: any).embedding;
           else if (Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
-        }
-      }
+        } }
+      } }
 
       // 4) Perform vector similarity search if we have a query embedding
       let results: MultimodalPatternResult[] = [];
@@ -552,11 +542,11 @@ export class PatternAnalyzer {
           SELECT id, source, content, content_type, metadata,
                  (embedding <-> ${JSON.stringify(queryEmbedding)}::vector) AS distance
           FROM user_documents
-          WHERE user_id = ${userId}
+          WHERE user_id = ${userId} }
             AND embedding IS NOT NULL
-            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`' }'`
+            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`' } }`
           ORDER BY distance ASC
-          LIMIT ${k * 2}
+          LIMIT ${k * 2} }
         `);`
 
         results = (res || [])
@@ -577,10 +567,10 @@ export class PatternAnalyzer {
               pattern_type: 'document',
               confidence: Math.max(0, 1 - parseFloat(doc.distance)),
               modality,
-              extractedFeatures: metadata.processingResults || {}
-            } as MultimodalPatternResult;
+              extractedFeatures: metadata.processingResults || {} }
+            } }as MultimodalPatternResult;
           });
-      } else {
+      } }else {
         // Fallback: return recent documents without similarity ranking
         results = recentDocs.slice(0, k).map((doc: any) => ({
           id: doc.id,
@@ -591,20 +581,20 @@ export class PatternAnalyzer {
           pattern_type: 'document',
           confidence: 1,
           modality: PatternAnalyzer.getModalityFromContentType(doc.content_type),
-          extractedFeatures: {}
-        } as MultimodalPatternResult));
-      }
+          extractedFeatures: {} }
+        } }as MultimodalPatternResult));
+      } }
 
       // 5) Cross-modal enhancement if enabled
       if (crossModalSearch && queryEmbedding) {
         const crossModalResults = await PatternAnalyzer.performCrossModalSearch(userId, queryEmbedding, contentTypes, k);
         results = PatternAnalyzer.mergeCrossModalResults(results, crossModalResults);
-      }
+      } }
 
       // 6) Optional clustering
       if (clusterResults && results.length > 3) {
         results = await PatternAnalyzer.clusterMultimodalPatterns(results);
-      }
+      } }
 
       // 7) Log pattern session (best-effort)
       await PatternAnalyzer.logPatternSession(
@@ -616,11 +606,11 @@ export class PatternAnalyzer {
       );
 
       return results;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Error in getUserPatterns: ', error);'`'`
       throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Determine modality from content type
@@ -631,7 +621,7 @@ export class PatternAnalyzer {
     if (contentType.startsWith('audio/')) return, 'audio';
     if (contentType.startsWith('video/')) return, 'video';
     return, 'text';
-  }
+  } }
   /**
    * Perform cross-modal similarity search
    */
@@ -649,22 +639,22 @@ export class PatternAnalyzer {
         crossModalTypes.add('image/png');
         crossModalTypes.add('audio/wav');
         crossModalTypes.add('video/mp4');
-      }
+      } }
       if (contentTypes.includes('image/jpeg') || contentTypes.includes('image/png')) {
         crossModalTypes.add('text/plain');
         crossModalTypes.add('video/mp4');
-      }
+      } }
       if (crossModalTypes.size === 0) return [];
 
       const rows = await db.execute(sql`
         SELECT id, source, content, content_type, metadata,
                (embedding <-> ${JSON.stringify(queryEmbedding)}::vector) AS distance
         FROM user_documents
-        WHERE user_id = ${userId}
+        WHERE user_id = ${userId} }
           AND embedding IS NOT NULL
           AND content_type = ANY(${Array.from(crossModalTypes)})
         ORDER BY distance ASC
-        LIMIT ${Math.max(1, Math.floor(k / 2))}
+        LIMIT ${Math.max(1, Math.floor(k / 2))} }
       `);`
 
       return (rows || []).map((doc: any) => {
@@ -679,14 +669,14 @@ export class PatternAnalyzer {
           pattern_type: 'cross_modal',
           confidence: Math.max(0, 1 - parseFloat(doc.distance)),
           modality,
-          extractedFeatures: metadata.processingResults || {}
-        } as MultimodalPatternResult;
+          extractedFeatures: metadata.processingResults || {} }
+        } }as MultimodalPatternResult;
       });
-    } catch (error) {
-      console.error('Cross-modal search error:', error);'
+    } }catch (error) {
+      console.error('Cross-modal search error:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Merge cross-modal results with main results
    */
@@ -702,10 +692,10 @@ export class PatternAnalyzer {
         crossResult.distance = (crossResult.distance || 0) + 0.1;
         crossResult.confidence = Math.max(0, (crossResult.confidence || 0) - 0.1);
         merged.push(crossResult);
-      }
-    }
+      } }
+    } }
     return merged.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
-  }
+  } }
   /**
    * Enhanced clustering for multimodal patterns
    */
@@ -716,7 +706,7 @@ export class PatternAnalyzer {
       const m = p.modality || 'text';
       if (!modalityGroups.has(m)) modalityGroups.set(m, []);
       modalityGroups.get(m)!.push(p);
-    }
+    } }
 
     const clusteredResults: MultimodalPatternResult[] = [];
     for (const group of modalityGroups.values()) {

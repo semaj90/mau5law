@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { User } }from '$lib/types';
+import type { RequestHandler } }from './$types.js'
+import { json } }from '@sveltejs/kit'
 /*
  * Production Health Check API
  * Comprehensive system status for all services
@@ -9,12 +9,12 @@ import { json } from '@sveltejs/kit'
 export interface ServiceStatus { name: string, status: 'healthy' | 'warning' | 'error'
   response_time?: number
   details?: any
-}
+} }
 export interface HealthResponse {
- , overall_status: 'healthy' | 'warning' | 'error',
-  timestamp: string; services: ServiceStatus[]; system_info: {, nodejs_version: string, memory_usage: NodeJS.MemoryUsage;, uptime: number
-  }
-}
+  overall_status: 'healthy' | 'warning' | 'error',
+  timestamp: string; services: ServiceStatus[]; system_info: { nodejs_version: string, memory_usage: NodeJS.MemoryUsage; uptime: number
+  } }
+} }
 async function checkService(name: string, url: string, timeout = 5000): Promise<ServiceStatus> {
   const startTime = Date.now()
   try {
@@ -23,7 +23,7 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
     const response = await fetch(url, {
       signal: controller.signal,
       method: 'GET',
-      headers: { 'User-Agent': 'Production-Health-Check' }
+      headers: { 'User-Agent': 'Production-Health-Check' } }
     })
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
@@ -32,22 +32,22 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
       status: response.ok ? 'healthy' : 'warning',
       response_time: responseTime,
       details: {
-       , http_status: response.status,
+  http_status: response.status,
         url
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     return {
       name,
       status: 'error',
       response_time: Date.now() - startTime,
       details: {
-       , error: error.message,
+  error: error.message,
         url
-      }
-    }
-  }
-}
+      } }
+    } }
+  } }
+} }
 async function checkDatabase(): Promise<ServiceStatus> {
   const startTime = Date.now()
   try {
@@ -58,22 +58,22 @@ async function checkDatabase(): Promise<ServiceStatus> {
       status: 'healthy',
       response_time: Date.now() - startTime,
       details: {
-       , database: 'evidence_processing',
+  database: 'evidence_processing',
         connection: 'active'
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     return {
       name: 'PostgreSQL',
       status: 'error',
       response_time: Date.now() - startTime,
       details: {
         error: error.message
-      }
-    }
-  }
-}
-export const, GET: RequestHandler = async ({ url }) => {
+      } }
+    } }
+  } }
+} }
+export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   try {
     // Check all production services in parallel
@@ -91,18 +91,18 @@ export const, GET: RequestHandler = async ({ url }) => {
     let overallStatus: 'healthy' | 'warning' | 'error' = 'healthy'
     if (errorCount > 0) {
       overallStatus = errorCount > serviceChecks.length / 2 ? 'error' : 'warning'
-    } else if (warningCount > 0) {
-      overallStatus = 'warning` }'`
+    } }else if (warningCount > 0) {
+      overallStatus = 'warning` } }`
     const response: HealthResponse = {
-     , overall_status: overallStatus,
+  overall_status: overallStatus,
       timestamp: new Date().toISOString(),
       services: serviceChecks,
       system_info: {
-       , nodejs_version: process.version,
+  nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
         uptime: process.uptime()
-      }
-    }
+      } }
+    } }
     const statusCode = overallStatus === 'healthy' ? 200 :
                       overallStatus === 'warning' ? 200 : 503
     return json(response, {
@@ -110,19 +110,19 @@ export const, GET: RequestHandler = async ({ url }) => {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
-        'Expires': `0` }
+        'Expires': `0` } }
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     return json({
       overall_status: 'error',
       timestamp: new Date().toISOString(),
       error: error.message,
       services: [],
       system_info: {
-       , nodejs_version: process.version,
+  nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
         uptime: process.uptime()
-      }
+      } }
     }, { status: 500 })
-  }
+  } }
 }

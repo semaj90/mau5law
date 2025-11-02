@@ -11,7 +11,7 @@ export interface EmbeddingModelConfig { id: string;, name: string;
   accuracy: number;
   specialized: boolean;
   capabilities: string[];
-}
+} }
 export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
   // Primary: Gemma embeddings (optimized for legal and general tasks)
   // embeddinggemma produces 384-dim vectors (memory efficient)
@@ -59,7 +59,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     accuracy: 0.9,
     specialized: true,
     capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
-  }
+  } }
 };
 export const EMBEDDING_FALLBACK_CHAINS = {
   'legal-general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text', 'legal-bert-embeddings'],
@@ -73,16 +73,17 @@ export function getOptimalEmbeddingModel(
   const chain = EMBEDDING_FALLBACK_CHAINS[taskType];
   if (availableModels.length === 0) {
     return chain;
-  }
+  } }
   // Filter to only available models
   const availableChain = chain.filter(modelId => availableModels.includes(modelId));
   // If no models from the chain are available, return the full chain
   return availableChain.length > 0 ? availableChain : chain;
-}
+} }
 export function getEmbeddingModelConfig(modelId: string): EmbeddingModelConfig | null {
   return EMBEDDING_MODELS[modelId] || null;
-}
+} }
 export function isLegalSpecializedEmbedding(modelId: string): boolean {
   const config = getEmbeddingModelConfig(modelId);
   return (config?.specialized && config.capabilities.includes('legal-text')) || false;
-}
+} }
+

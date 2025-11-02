@@ -1,15 +1,15 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Search Examples for Multi-Core MCP Vector Server
  * Demonstrates various search capabilities and usage patterns
  */
-import { MultiCoreMCPVectorServer } from './multi-core-mcp-vector-server';
+import { MultiCoreMCPVectorServer } }from './multi-core-mcp-vector-server';
 // Example usage of the search functionality
 export class SearchExamples {
   private server: MultiCoreMCPVectorServer;
   constructor(server: MultiCoreMCPVectorServer) {
     this.server = server;
-  }
+  } }
   /**
    * Example: Simple document search
    */
@@ -20,7 +20,7 @@ export class SearchExamples {
       threshold: 0.75,
       useCache: true
     });
-    console.log(`Found ${results.length} documents:`);
+    console.log(`Found ${results.length} }documents:`);
     results.forEach((result, index) => {
       console.log(`${index + 1}. Document: ${result.document_id}`);
       console.log(`   Similarity: ${(result.similarity * 100).toFixed(1)}%`);
@@ -28,7 +28,7 @@ export class SearchExamples {
       console.log(`   Search Time: ${result.searchTime.toFixed(2)}ms\n`);
     });
     return results;
-  }
+  } }
   /**
    * Example: Semantic search across multiple collections
    */
@@ -54,7 +54,7 @@ export class SearchExamples {
       console.log(`   Content: ${item.content.substring(0, 150)}...`);
     });
     return result;
-  }
+  } }
   /**
    * Example: Full-text search with ranking
    */
@@ -77,7 +77,7 @@ export class SearchExamples {
       console.log(`   Snippet: "${item.snippet}"`);
     });
     return result;
-  }
+  } }
   /**
    * Example: Hybrid search combining all methods
    */
@@ -107,10 +107,10 @@ export class SearchExamples {
       console.log(`   Search Types: ${item.search_types.join(', ')}`);
       if (item.snippet) {
         console.log(`   Snippet: "${item.snippet}"`);
-      }
+      } }
     });
     return result;
-  }
+  } }
   /**
    * Example: Advanced vector search (existing functionality)
    */
@@ -137,7 +137,7 @@ export class SearchExamples {
       console.log(`   Content: ${item.content.substring(0, 120)}...`);
     });
     return result;
-  }
+  } }
   /**
    * Example: Search performance comparison
    */
@@ -183,7 +183,7 @@ export class SearchExamples {
         count: vectorResults.results.length,
         time: performance.now() - vectorStart
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Search comparison error: ', error);` }`'
     const totalTime = performance.now() - startTime;
     console.log(`\nSearch Performance Comparison Results:`);
@@ -193,10 +193,10 @@ export class SearchExamples {
       console.log(`${method.toUpperCase()}:`);
       console.log(`  Results: ${stats.count}`);
       console.log('  Time: ${stats.time.toFixed(2)}ms');
-      console.log('  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1)} results/sec\n');
+      console.log('  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1)} }results/sec\n');
     });
     return results;
-  }
+  } }
   /**
    * Run all search examples
    */
@@ -215,11 +215,12 @@ export class SearchExamples {
       console.log('\n' + '='.repeat(60) + '\n');
       await this.exampleSearchComparison();
       console.log('✅ All search examples completed successfully!');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Search examples failed:', error);
       throw error;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export for easy usage
 export default SearchExamples;
+

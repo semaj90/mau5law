@@ -13,10 +13,10 @@
  *
  * @module vite-error-schema
  */
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { sql } from 'drizzle-orm';
-import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
+import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { sql } }from 'drizzle-orm';
+import type { ErrorMetadata, ErrorCategory } }from '$lib/services/mcp-simd-parser';
 /**
  * Vite/TypeScript errors with embeddings
  *
@@ -91,7 +91,7 @@ export interface ErrorMetadataJSON {
   suggestions?: string[];
   /** Custom user notes */
   notes?: string;
-}
+} }
 /**
  * Error clusters for grouping similar errors
  *
@@ -132,7 +132,7 @@ export interface ClusterMetadataJSON {
   density?: number;
   /** Clustering algorithm used */
   algorithm?: 'dbscan' | 'kmeans' | 'hierarchical';
-}
+} }
 /**
  * Error cluster membership (many-to-many relationship)
  */
@@ -174,9 +174,9 @@ export const errorHistory = pgTable('error_history', {
   /** Error count by source */
   errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
   /** Top, 10 error codes */
-  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string;, count: number }>>(),
+  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
   /** Top, 10 affected files */
-  topFiles: jsonb('top_files').$type<Array<{ path: string;, count: number }>>(),
+  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
   /** Build metadata */
   buildMetadata: jsonb('build_metadata').$type<{ command: string;, duration: number;
     exitCode: number;
@@ -288,3 +288,4 @@ export type NewErrorSimilarity = typeof errorSimilarity.$inferInsert;
  * USING hnsw (query_embedding vector_cosine_ops);
  * ```
  */
+

@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /**
  * Server-Sent Events (SSE) Endpoint for Real-Time Workflow Updates
  *
@@ -15,9 +15,9 @@ import { redis, ensureRedisReady } from, '$lib/server/redis-client';
  * ```
  */
 
-import type { RequestEvent } from, '@sveltejs/kit';
-import { error } from, '@sveltejs/kit';
-import IORedis from, 'ioredis';
+import type { RequestEvent } }from '@sveltejs/kit';
+import { error } }from '@sveltejs/kit';
+import IORedis from 'ioredis';
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -28,12 +28,12 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
  */
 // Accept a typed RequestEvent instead of `any`
 export const GET = async (event: RequestEvent) => {
-  const { params, request } = event;
-  const { sessionId } = params;
+  const { params, request } }= event;
+  const { sessionId } }= params;
 
   if (!sessionId) {
     throw error(400, 'Session ID is required');
-  }
+  } }
 
   // Add a small interface representing the pub/sub surface we use.
   // This avoids casting everywhere while keeping compile-time safety.
@@ -54,7 +54,7 @@ export const GET = async (event: RequestEvent) => {
 
     // close connection
     quit(): Promise<void>;
-  }
+  } }
 
   // Create Redis subscriber for this session and cast to our pub/sub interface
   const redis = redis as: unknown as RedisPubSub;
@@ -65,10 +65,10 @@ export const GET = async (event: RequestEvent) => {
     if (e instanceof Error) return e.message;
     try {
       return JSON.stringify(e);
-    } catch {
+    } }catch {
       return String(e);
-    }
-  }
+    } }
+  } }
 
   const encoder = new TextEncoder();
 
@@ -84,7 +84,7 @@ export const GET = async (event: RequestEvent) => {
       controller.enqueue(
         encoder.encode(
           `data: ${JSON.stringify({`
-           , type: 'SSE_CONNECTED',
+  type: 'SSE_CONNECTED',
             sessionId,
             timestamp: new Date().toISOString()
           })}\n\n`
@@ -94,12 +94,12 @@ export const GET = async (event: RequestEvent) => {
       // Try subscribing and handle subscription failure gracefully
       try {
         await redis.subscribe(channel);
-      } catch (subErr) {
+      } }catch (subErr) {
         console.error(`[SSE] Redis subscribe failed for session ${sessionId}:`, subErr);
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'SSE_ERROR',
+  type: 'SSE_ERROR',
               error: 'Redis subscribe failed',
               details: stringifyError(subErr),
               timestamp: new Date().toISOString()
@@ -109,12 +109,12 @@ export const GET = async (event: RequestEvent) => {
         // best-effort cleanup
         try {
           if (typeof redis.quit === 'function') await redis.quit();
-        } catch (e) {
+        } }catch (e) {
           console.warn('[SSE] redis.quit error after subscribe failure:', stringifyError(e));
-        }
+        } }
         controller.close();
         return;
-      }
+      } }
 
       // Define handlers so we can remove them on disconnect
       messageHandler = (ch: string, message: string) => {
@@ -123,9 +123,9 @@ export const GET = async (event: RequestEvent) => {
           const data = JSON.parse(message);
           console.log(`[SSE] Sending event to session ${sessionId}:`, data?.type);
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
-        } catch (err) {
+        } }catch (err) {
           console.error(`[SSE] Error parsing message for session ${sessionId}:`, err);
-        }
+        } }
       };
 
       errorHandler = (err: Error) => {
@@ -134,16 +134,16 @@ export const GET = async (event: RequestEvent) => {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'SSE_ERROR',
+  type: 'SSE_ERROR',
                 error: 'Redis connection error',
                 details: stringifyError(err),
                 timestamp: new Date().toISOString()
               })}\n\n`
             )
           );
-        } catch (e) {
+        } }catch (e) {
           // ignore enqueue errors during error handling
-        }
+        } }
       };
 
       // runtime on/off exist on ioredis; redis is typed as RedisPubSub above
@@ -159,30 +159,30 @@ export const GET = async (event: RequestEvent) => {
           // remove listeners first
           try {
             if (messageHandler && typeof redis.off === 'function') redis.off('message', messageHandler);
-          } catch (e) {
+          } }catch (e) {
             console.warn('[SSE] Error removing message handler:', stringifyError(e));
-          }
+          } }
           try {
             if (errorHandler && typeof redis.off === 'function') redis.off('error', errorHandler);
-          } catch (e) {
+          } }catch (e) {
             console.warn('[SSE] Error removing error handler:', stringifyError(e));
-          }
+          } }
 
           // best-effort cleanup; methods may be async - guard with try/catch
           try {
             if (typeof redis.unsubscribe === 'function') await redis.unsubscribe(channel);
-          } catch (e: any) {
+          } }catch (e: any) {
             console.warn('[SSE] Error during redis.unsubscribe:', stringifyError(e));
-          }
+          } }
           try {
             if (typeof redis.quit === 'function') await redis.quit();
-          } catch (e: any) {
+          } }catch (e: any) {
             console.warn('[SSE] Error during redis.quit:', stringifyError(e));
-          }
+          } }
 
           controller.close();
         },
-        { once: true }
+        { once: true } }
       );
     },
 
@@ -192,21 +192,21 @@ export const GET = async (event: RequestEvent) => {
       // remove listeners and attempt cleanup (synchronous path)
       try {
         if (messageHandler && typeof redis.off === 'function') redis.off('message', messageHandler);
-      } catch (e) {
+      } }catch (e) {
         console.warn('[SSE] unsubscribe error (cancel):', stringifyError(e));
-      }
+      } }
       try {
         if (errorHandler && typeof redis.off === 'function') redis.off('error', errorHandler);
-      } catch (e) {
+      } }catch (e) {
         console.warn('[SSE] off error (cancel):', stringifyError(e));
-      }
+      } }
 
       if (typeof redis.unsubscribe === 'function') {
-        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));'
-      }
+        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));
+      } }
       if (typeof redis.quit === 'function') {
         redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));` }`'
-    }
+    } }
   });
 
   // Return SSE response
@@ -216,6 +216,7 @@ export const GET = async (event: RequestEvent) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
-    }
+    } }
   });
 };
+

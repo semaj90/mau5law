@@ -1,8 +1,8 @@
 // @ts-nocheck
 // Enhanced-bits + pgvector embeddings schema
-import { pgTable, uuid, text, timestamp, integer, jsonb, numeric } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, integer, jsonb, numeric } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle';
+import { sql } }from 'drizzle-orm';
 // Embeddings table for the enhanced-bits demo
 export const embeddings = pgTable('embeddings', {
   // id had .notNull() after defaultRandom() causing TS: unknown errors — remove .notNull()
@@ -54,3 +54,4 @@ export type LegalDocumentEmbedding = typeof legalDocumentEmbeddings.$inferSelect
 export type NewLegalDocumentEmbedding = typeof legalDocumentEmbeddings.$inferInsert;
 export type SearchQuery = typeof searchQueries.$inferSelect;
 export type NewSearchQuery = typeof searchQueries.$inferInsert;
+

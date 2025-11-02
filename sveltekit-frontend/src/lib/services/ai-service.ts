@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { env } from "$env/dynamic/private";
-import { tauriLLM } from './tauri-llm.js';
+import type { Case } }from '$lib/types';
+import { env } }from "$env/dynamic/private";
+import { tauriLLM } }from './tauri-llm.js';
 
 // Define a more specific type for models returned by Tauri
 interface TauriModel {
@@ -8,20 +8,20 @@ interface TauriModel {
   domain?: string;
   architecture?: string;
   // Add: any other properties that might be relevant and accessed
-}
+} }
 
 // Define specific types for Tauri LLM options
 interface TauriEmbeddingOptions {
   batchSize?: number;
   normalize?: boolean;
   poolingStrategy?: "mean" | "cls" | string; //, Added: string for flexibility if other strategies exist
-}
+} }
 
 interface TauriInferenceOptions {
   temperature?: number;
   maxTokens?: number;
   // Add other potential inference options if known
-}
+} }
 
 // Shim for the Tauri LLM runtime (methods are optional so we can guard calls)
 type TauriLLMShim = {
@@ -35,7 +35,7 @@ type TauriLLMShim = {
   runInference?: (;
     prompt: string,
     opts?: TauriInferenceOptions
-  ) => Promise<string | { output?: string }>; // Changed: 'any';, to: 'string' for output
+  ) => Promise<string | { output?: string }>; // Changed: 'any'; to: 'string' for output
   getAvailableModels?: () => TauriModel[]; // Use TauriModel[]
   getCurrentModels?: () => TauriModel[]; // Use TauriModel[]
 };
@@ -46,9 +46,9 @@ const tauri = tauriLLM as: unknown as TauriLLMShim;
 const normalizeEmbedding = (embedding: number[] | number[][]): number[] => {
   if (Array.isArray(embedding) && Array.isArray(embedding[0])) {
     return embedding[0] as: number[];
-  }
+  } }
   return embedding as: number[];
-}
+} }
 
 // --- Added helper to, format: unknown errors consistently ---
 function formatError(error: any): string {
@@ -56,10 +56,10 @@ function formatError(error: any): string {
 	if (error instanceof Error) return error.message;
 	try {
 		return JSON.stringify(error);
-	} catch {
+	} }catch {
 		return String(error);
-	}
-}
+	} }
+} }
 // --- end helper ---
 
 // Provider types
@@ -70,7 +70,7 @@ export interface AIServiceConfig { preferLocal: boolean;, fallbackToCloud: bool
   legalDomain: boolean;
   maxRetries: number;
   timeoutMs: number;
-}
+} }
 export interface GenerationOptions {
   provider?: LLMProvider;
   temperature?: number;
@@ -78,32 +78,32 @@ export interface GenerationOptions {
   systemPrompt?: string;
   context?: string[];
   legalContext?: boolean;
-}
+} }
 export interface EmbeddingOptions {
   provider?: EmbeddingProvider;
   batchSize?: number;
   normalize?: boolean;
   legalDomain?: boolean;
-}
+} }
 
 // Define interface for Ollama generate payload
-interface OllamaGeneratePayload {, model: string;, prompt: string;
+interface OllamaGeneratePayload { model: string;, prompt: string;
   stream: boolean;
-  options: {, temperature: number;, max_tokens: number;
+  options: { temperature: number;, max_tokens: number;
   };
-}
+} }
 
 // Interface for OpenAI embedding data items
-interface OpenAIEmbeddingDataItem {, embedding: number[];, index: number;
+interface OpenAIEmbeddingDataItem { embedding: number[];, index: number;
   object: string;
-}
+} }
 
 // Interface for the result of a single document analysis in batch processing
-interface DocumentAnalysisResult {, id: string;, embedding: number[];
+interface DocumentAnalysisResult { id: string;, embedding: number[];
   classification?: string; // Optional as it might not be present on error
   summary?: string;       // Optional as it might not be present on error
   error?: string;         // Present if an error occurred for this document
-}
+} }
 
 class EnhancedAIService {
   private, config: AIServiceConfig;
@@ -118,21 +118,21 @@ class EnhancedAIService {
       timeoutMs: 30000,
       ...config
     };
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     if (typeof tauri.initialize === "function") {
       await tauri.initialize();
-    }
+    } }
     this.isInitialized = true;
     console.log("Enhanced AI Service initialized");
-  }
+  } }
 
   // Generate embeddings
   async generateEmbedding(
     text: string | string[],
-    options: EmbeddingOptions = {}
+    options: EmbeddingOptions = {} }
   ): Promise<number[] | number[][]> {
     await this.initialize();
     const provider = this.selectEmbeddingProvider(options);
@@ -143,31 +143,31 @@ class EnhancedAIService {
         if (typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
           if (typeof tauri.generateEmbedding !== "function") {
             throw new Error("Tauri embedding API missing");
-          }
+          } }
           const result = (await tauri.generateEmbedding(inputs, {
             batchSize: options.batchSize,
             normalize: options.normalize,
             poolingStrategy: "mean"
           })) as: number[][];
           return options.normalize === false ? result : result.map(normalizeEmbedding);
-        } else {
+        } }else {
           throw new Error("Tauri embedding model not available");
-        }
-      }
+        } }
+      } }
 
       // default / openai
       const openaiEmb = await this.generateOpenAIEmbeddings(inputs);
       return openaiEmb;
-    } catch (error: any) {
+    } }catch (error: any) {
       const errMsg = formatError(error);
       console.error(`Embedding generation failed with ${provider}: ', errMsg);'`
       if (this.config.fallbackToCloud && provider.startsWith("tauri-")) {
         const fallback = await this.generateOpenAIEmbeddings(inputs);
         return fallback;
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Generate chat/response
   async generateResponse(prompt: string, options: GenerationOptions = {}): Promise<string> {
@@ -181,7 +181,7 @@ class EnhancedAIService {
         if (typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
           if (typeof tauri.runInference !== "function") {
             throw new Error("Tauri inference API missing");
-          }
+          } }
           const resp = await tauri.runInference(fullPrompt, {
             temperature: options.temperature,
             maxTokens: options.maxTokens
@@ -189,28 +189,28 @@ class EnhancedAIService {
           // Safely extract: string from response, handling both: string, and: object types
           if (typeof resp === 'object' && resp !== null && 'output' in resp) {
             return String(resp.output ?? "");
-          }
+          } }
           return String(resp ?? "");
-        } else {
+        } }else {
           throw new Error("Local LLM not available");
-        }
-      }
+        } }
+      } }
 
       if (provider === "ollama") {
         return await this.generateOllamaResponse(fullPrompt, options);
-      }
+      } }
 
       // default openai
       return await this.generateOpenAIResponse(fullPrompt, options);
-    } catch (error: any) {
+    } }catch (error: any) {
       const errMsg = formatError(error);
       console.error(`LLM generation failed with ${provider}:`, errMsg);
       if (this.config.fallbackToCloud && provider === "tauri-local") {
         return this.generateResponse(prompt, { ...options, provider: "openai" });
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Analyze legal document using local LLM when available
   async analyzeLegalDocument(text: string): Promise<{ classification: string;, keyEntities: string[];
@@ -221,21 +221,21 @@ class EnhancedAIService {
     await this.initialize();
     if (!(typeof tauri.isAvailable === "function" && tauri.isAvailable())) {
       throw new Error("Local legal analysis requires Tauri environment");
-    }
+    } }
 
     try {
       const [classification, summary, riskAssessment] = await Promise.all([
         this.generateResponse(
           `Classify this legal document type and return only the classification (e.g., "Contract", "Brief", "Motion"): ${text.substring(0, 500)}`,
-          { provider: "tauri-local", legalContext: true }
+          { provider: "tauri-local", legalContext: true } }
         ),
         this.generateResponse(
           `Provide a concise summary of this legal document: ${text.substring(0, 1000)}`,
-          { provider: "tauri-local", legalContext: true }
+          { provider: "tauri-local", legalContext: true } }
         ),
         this.generateResponse(
           `Assess the legal risks in this document: ${text.substring(0, 800)}`,
-          { provider: "tauri-local", legalContext: true }
+          { provider: "tauri-local", legalContext: true } }
         )
       ]);
 
@@ -248,15 +248,15 @@ class EnhancedAIService {
         summary,
         riskAssessment
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const errMsg = formatError(error);
       console.error("Legal document analysis failed:", errMsg);
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Batch processing for documents
-  async batchAnalyzeDocuments(documents: Array<{, id: string;, text: string }>): Promise<DocumentAnalysisResult[]> {
+  async batchAnalyzeDocuments(documents: Array<{ id: string; text: string }>): Promise<DocumentAnalysisResult[]> {
     await this.initialize();
     const results: DocumentAnalysisResult[] = [];
     for (const doc of documents) {
@@ -264,11 +264,11 @@ class EnhancedAIService {
         const embedding = await this.generateEmbedding(doc.text, { legalDomain: true });
         const classification = await this.generateResponse(
           `Classify this document type: ${doc.text.substring(0, 200)}`,
-          { provider: typeof tauri.isAvailable === "function" && tauri.isAvailable() ? "tauri-local" : "openai" }
+          { provider: typeof tauri.isAvailable === "function" && tauri.isAvailable() ? "tauri-local" : "openai" } }
         );
         const summary = await this.generateResponse(
           `Summarize: ${doc.text.substring(0, 500)}`,
-          { maxTokens: 200 }
+          { maxTokens: 200 } }
         );
         results.push({
           id: doc.id,
@@ -276,17 +276,17 @@ class EnhancedAIService {
           classification,
           summary
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = formatError(error);
         results.push({
           id: doc.id,
           embedding: [],
           error: msg
         });
-      }
-    }
+      } }
+    } }
     return results;
-  }
+  } }
 
   // Provider selection for embeddings
   private selectEmbeddingProvider(options: EmbeddingOptions = {}): EmbeddingProvider {
@@ -298,9 +298,9 @@ class EnhancedAIService {
       if (hasLegalBERT) return, "tauri-legal-bert";
       const hasBERT = models.some((m) => m.architecture === "bert" && m.type === "embedding");
       if (hasBERT) return, "tauri-bert";
-    }
+    } }
     return, "openai";
-  }
+  } }
 
    // Provider selection for LLM
    private selectLLMProvider(options: GenerationOptions = {}): LLMProvider {
@@ -309,10 +309,10 @@ class EnhancedAIService {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalLLM = models.some((m) => m.type === "chat" && m.domain === "legal");
       if (hasLegalLLM) return, "tauri-local";
-    }
+    } }
     if (env.OLLAMA_URL) return, "ollama";
     return, "openai";
-  }
+  } }
 
   // Build system prompt
   private buildSystemPrompt(options: GenerationOptions = {}): string {
@@ -321,9 +321,9 @@ class EnhancedAIService {
       prompt += `
 You are a specialized legal AI assistant with expertise in legal document analysis, case law, and legal procedures.
 Provide accurate, professional responses and cite relevant authorities when appropriate. Clarify jurisdiction if needed.
-`;' }'`
+`;' } }`
     return prompt.trim();
-  }
+  } }
 
   // Build full prompt
   private buildFullPrompt(prompt: string, systemPrompt: string, context?: string[]): string {
@@ -332,39 +332,35 @@ Provide accurate, professional responses and cite relevant authorities when appr
     if (context && context.length) full += `Context:\n${context.join("\n")}\n\n`;
     full += `Query: ${prompt}`;
     return full;
-  }
+  } }
 
   // OpenAI embeddings
   private async generateOpenAIEmbeddings(texts: string[]): Promise<number[][]> {
     if (!env.OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
     const resp = await fetch("https://api.openai.com/v1/embeddings", {
       method: "POST",
-      headers: {
-       , Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+      headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-       , model: "text-embedding-ada-002",
+      body: JSON.stringify({ model: "text-embedding-ada-002",
         input: texts
       })
     });
     if (!resp.ok) throw new Error(`OpenAI API error: ${resp.statusText}`);
     const data = await resp.json();
     return (data.data || []).map((item: OpenAIEmbeddingDataItem) => item.embedding);
-  }
+  } }
 
   // OpenAI chat completion
   private async generateOpenAIResponse(prompt: string, options: GenerationOptions): Promise<string> {
     if (!env.OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: {
-       , Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+      headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-       , model: "gpt-3.5-turbo",
-        messages: [{, role: "user", content: prompt }],
+      body: JSON.stringify({ model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt } },
         max_tokens: options.maxTokens || 512,
         temperature: options.temperature ?? 0.7
       })
@@ -372,18 +368,17 @@ Provide accurate, professional responses and cite relevant authorities when appr
     if (!resp.ok) throw new Error(`OpenAI API error: ${resp.statusText}`);
     const data = await resp.json();
     return data.choices?.[0]?.message?.content ?? "No response generated";
-  }
+  } }
 
   // Ollama generate
   private async generateOllamaResponse(prompt: string, options: GenerationOptions): Promise<string> {
     const ollamaUrl = env.OLLAMA_URL || "http://localhost:11434";
-    const payload: OllamaGeneratePayload = { // Changed: 'any'; to: 'OllamaGeneratePayload';, model: env.OLLAMA_MODEL || "gemma3-legal:latest",
+    const payload: OllamaGeneratePayload = { // Changed: 'any'; to: 'OllamaGeneratePayload'; model: env.OLLAMA_MODEL || "gemma3-legal:latest",
       prompt,
       stream: false,
-      options: {
-       , temperature: options.temperature ?? 0.7,
+      options: { temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 512
-      }
+      } }
     };
     const resp = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
@@ -394,7 +389,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
     const data = await resp.json();
     // Ollama response shapes vary; try common fields
     return data.output?.[0]?.content ?? data.response ?? "No response generated";
-  }
+  } }
 
   // Simple legal entity extraction
   private extractLegalEntities(text: string): string[] {
@@ -409,10 +404,10 @@ Provide accurate, professional responses and cite relevant authorities when appr
       const matches = text.match(pattern);
       if (matches) {
         entities.push(...matches);
-      }
-    }
+      } }
+    } }
     return entities; // Return the populated entities array
-  }
-}
+  } }
+} }
 
 export default EnhancedAIService;

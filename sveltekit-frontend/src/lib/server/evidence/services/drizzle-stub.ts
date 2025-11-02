@@ -7,8 +7,9 @@ export async function upsertEmbedding(evidenceId: string, vector: number[], meta
     await fs.promises.mkdir(dir, { recursive: true });
     const out = { evidenceId, vectorLength: vector.length, meta, ts: Date.now() };
     await fs.promises.writeFile(path.join(dir, `${evidenceId}.json`), JSON.stringify(out, null, 2), 'utf-8');
-  } catch (err) {
+  } }catch (err) {
     console.error('Failed to persist embedding', err);
     throw err;
-  }
-}
+  } }
+} }
+

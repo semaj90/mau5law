@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Enhanced AI Analysis Service - Phase 2: Advanced NLP & Semantic Analysis
  *
@@ -15,15 +15,15 @@ import type { Document } from '$lib/types';
  * - PostgreSQL with pgvector for embeddings
  * - CUDA acceleration via discovered workers
  */
-import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
-import { OllamaService } from '../server/ai/ollama-service.js';
-import { drizzleVectorConfig } from '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } }from '../ai/embedding-config.js';
+import { OllamaService } }from '../server/ai/ollama-service.js';
+import { drizzleVectorConfig } }from '../server/db/drizzle-vector-config.js';
 import type {
   LegalDocument,
   DocumentChunk,
   AnalysisResult,
   UserQuery
-} from '../server/ai/types.js';
+} }from '../server/ai/types.js';
 // Legal Entity Types
 export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';, name: string;
   citation?: string;
@@ -32,29 +32,29 @@ export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulat
   context: string;
   startOffset: number;
   endOffset: number;
-  metadata?: { [key: string]: any }
-}
+  metadata?: { [key: string]: any } }
+} }
 // Semantic Analysis Results
-export interface SemanticAnalysis {, documentId: string;, summary: string;
+export interface SemanticAnalysis { documentId: string;, summary: string;
   keyTopics: string[];
   legalEntities: LegalEntity[];
-  sentiment: {, score: number; // -1 to, 1, confidence: number;
-    aspects: { aspect: string; sentiment: number }[];
-  }
-  complexity: {, score: number; // 0 to, 1, factors: string[];
+  sentiment: { score: number; // -1 to, 1, confidence: number;
+    aspects: { aspect: string; sentiment: number } }];
+  } }
+  complexity: { score: number; // 0 to, 1, factors: string[];
     readabilityIndex: number;
-  }
+  } }
   embedding: number[];
   similarDocuments: Array<any>;
 // Legal Reasoning Analysis
-export interface LegalReasoning {, argumentStructure: {, premises: string[];
+export interface LegalReasoning { argumentStructure: { premises: string[];
   conclusions: string[];
   logicalConnections: Array<any>;
   legalPrinciples: Array<any>;
-  riskAssessment: {, overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
-  precedentAnalysis: {, relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
-  }
-}
+  riskAssessment: { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
+  precedentAnalysis: { relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
+  } }
+} }
 // Enhanced AI Analysis Service
 export class EnhancedAIAnalysisService {
   private ollamaService: OllamaService;
@@ -64,7 +64,7 @@ export class EnhancedAIAnalysisService {
     this.ollamaService = new OllamaService();
     this.embeddingModel = getOptimalEmbeddingModel(['legal-text', 'semantic-search']);
     this.vectorConfig = drizzleVectorConfig;
-  }
+  } }
   /**
    * Perform comprehensive semantic analysis of a legal document
    */
@@ -82,8 +82,7 @@ export class EnhancedAIAnalysisService {
       const complexity = await this.analyzeComplexity(document.content);
       // 5. Find similar documents using vector similarity
       const similarDocuments = await this.findSimilarDocuments(embedding, document.id);
-      const result: SemanticAnalysis = {
-       , documentId: document.id,
+      const result: SemanticAnalysis = { documentId: document.id,
         summary: summaryAndTopics.summary,
         keyTopics: summaryAndTopics.topics,
         legalEntities: entities,
@@ -91,14 +90,14 @@ export class EnhancedAIAnalysisService {
         complexity,
         embedding,
         similarDocuments
-      }
-      console.log(`✅ Semantic analysis complete for ${document.id}: ${entities.length} entities, ${similarDocuments.length} similar docs`);
+      } }
+      console.log(`✅ Semantic analysis complete for ${document.id}: ${entities.length} }entities, ${similarDocuments.length} }similar docs`);
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Semantic analysis failed for ${document.id}:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Perform advanced legal reasoning analysis
    */
@@ -110,11 +109,10 @@ export class EnhancedAIAnalysisService {
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
         prompt: reasoningPrompt,
-        options: {
-         , temperature: 0.3, // Lower temperature for more precise legal reasoning
+        options: { temperature: 0.3, // Lower temperature for more precise legal reasoning
           top_p: 0.9,
           max_tokens: 2048;
-        }
+        } }
       )});
       // Parse structured reasoning response
       const reasoning = this.parseReasoningResponse((response as { response?: any); embedding?: any }).response);
@@ -123,11 +121,11 @@ export class EnhancedAIAnalysisService {
       reasoning.precedentAnalysis = precedentAnalysis;
       console.log(`✅ Legal reasoning analysis complete for ${document,.i,d}`);
       return reasoning;
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Legal reasoning analysis failed for, ${documen,t.i,d}:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Extract legal entities using NER with Gemma models
    */
@@ -143,31 +141,29 @@ Analyze the following legal text and extract all legal entities. Return, a JSON 
   "context",: "surrounding context",
   "startOffset",: 0,
   "endOffset",: 10
-}
+} }
 Focus on:
 - Case, names and citations (e.g., "Brown v. Board of Education", "Roe v. Wade")
 - Statutes, and regulations (e.g., "42 U.S.C. § 1983", "Title VII")
 - Legal, precedents and holdings
 - Parties, attorneys, judges, organizations
 - Contract, terms and provisions
-Text: ${text.substring(0, 4000)}
+Text: ${text.substring(0, 4000)} }
 Return only the JSON array: ';'
     try {
-      const response = await this.ollamaService.generateCompletion({
-       , model: 'gemma3-legal:latest',
-        prompt: entityPrompt;, options: {
-         , temperature: 0.2,
+      const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal:latest',
+        prompt: entityPrompt; options: { temperature: 0.2,
           max_tokens: 1000;
-        }
+        } }
       )});
       // Parse JSON response and validate entities
       const entities = this.parseAndValidateEntities((response as { response?: any); embedding?: any }).response, text);
       return entities;
-    } catch (error) {
+    } }catch (error) {
       console.warn('Entity extraction failed, returning empty array:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Generate document embedding using Gemma embeddings
    */
@@ -178,11 +174,11 @@ Return only the JSON array: ';'
         prompt: text.substring(0, 2000) // Limit to model context
       });
       return (response as { response?: any; embedding?: any }).embedding;
-    } catch (error) {
+    } }catch (error) {
       console.error('Embedding generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Generate summary and extract key topics
    */
@@ -195,25 +191,23 @@ Return in JSON, format:;
 {
   "summary",: "...",
   "topics",: ["topic1", "topic2", "topic3"]
-  Document: ${text.substring(0, 3000)}
+  Document: ${text.substring(0, 3000)} }
 JSON Response: ';'
     try {
-      const response = await this.ollamaService.generateCompletion({
-       , model: 'gemma3-legal:latest',
-        prompt: summaryPrompt;, options: {
-         , temperature: 0.4,
+      const response = await this.ollamaService.generateCompletion({ model: 'gemma3-legal:latest',
+        prompt: summaryPrompt; options: { temperature: 0.4,
           max_tokens: 500;
-        }
+        } }
       )});
       return JSON.parse((response as { response?: any); embedding?: any }).response);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Summary generation failed:', error);
       return {
         summary: 'Summary generation failed',
         topics: ['document-analysis'];
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Analyze document sentiment
    */
@@ -223,11 +217,11 @@ JSON Response: ';'
       score: 0.0, // Neutral for legal documents
       confidence: 0.8,
       aspects: [;
-        {, aspect: 'legal-tone', sentiment: 0.0 },
-        { aspect: 'argumentation', sentiment: 0.1 }
+        { aspect: 'legal-tone', sentiment: 0.0 },
+        { aspect: 'argumentation', sentiment: 0.1 } }
       ]
-    }
-  }
+    } }
+  } }
   /**
    * Analyze document complexity
    */
@@ -238,12 +232,12 @@ JSON Response: ';'
     const avgWordsPerSentence = words / sentences;
     const complexityScore = Math.min(avgWordsPerSentence / 20, 1.0);
     return { score: complexityScore;, factors: [
-        `,Average ${avgWordsPerSentence.toFixed(1)} words per sentence`,
-        `${sentences} sentences total`
+        `,Average ${avgWordsPerSentence.toFixed(1)} }words per sentence`,
+        `${sentences} }sentences total`
       ],
       readabilityIndex: Math.max(15 - avgWordsPerSentence * 0.5, 0)
-    }
-  }
+    } }
+  } }
   /**
    * Find similar documents using vector similarity
    */
@@ -254,8 +248,7 @@ JSON Response: ';'
       console.log('🔍 Searching for similar documents using vector similarity...');
       // Placeholder implementation - would query actual vector DB
       return [
-        {,
-          documentId: 'similar-doc-1',
+        { documentId: 'similar-doc-1',
           similarity: 0.85,
           relevantSections: ['Section 1', 'Conclusion']
         },
@@ -263,13 +256,13 @@ JSON Response: ';'
           documentId: 'similar-doc-2',
           similarity: 0.78,
           relevantSections: ['Introduction', 'Analysis']
-        }
+        } }
       ];
-    } catch (error) {
+    } }catch (error) {
       console.warn('Similar document search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Build legal reasoning analysis prompt
    */
@@ -289,33 +282,31 @@ Perform sophisticated legal reasoning analysis on this, document. Analyz,e:
    - Specific, risk factors with, severit,y and likelihood
    - Potential, mitigations
 Return structured JSON response with, complete, analysis.
-$,{contextStr}
-Document: ${text.substring(0, 3000)}
+$,{contextStr} }
+Document: ${text.substring(0, 3000)} }
 JSON Analysis: ';'
-  }
+  } }
   /**
    * Parse structured reasoning response
    */
   private parseReasoningResponse(response: string): LegalReasoning {
     try {
       return JSON.parse(response);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to parse reasoning response:', error);
       // Return fallback structure
-      return { argumentStructure: {, premises: ['Document analysis in progress'],
+      return { argumentStructure: { premises: ['Document analysis in progress'],
           conclusions: ['Analysis requires review'],
           logicalConnections: [];
         },
         legalPrinciples: [],
-        riskAssessment: {
-         , overallRisk: 'medium',
+        riskAssessment: { overallRisk: 'medium',
           riskFactors: [];
         },
-        precedentAnalysis: {
-         , relevantCases: [],
-          trend: 'unclear' }'` }'`
-    }
-  }
+        precedentAnalysis: { relevantCases: [],
+          trend: 'unclear' } }` } }`
+    } }
+  } }
   /**
    * Analyze legal precedents
    */
@@ -323,17 +314,16 @@ JSON Analysis: ';'
     // Placeholder implementation - would query legal databases
     return {
       relevantCases: [;
-        {,
-          caseId: 'case-123',
+        { caseId: 'case-123',
           citation: 'Brown v. Board, 347 U.S. 483 (1954)',
           relevance: 0.89,
           keyHoldings: ['Equal protection analysis'],
           distinguishingFactors: ['Different factual context'];
-        }
+        } }
       ],
       trend: 'favorable' as const;
-    }
-  }
+    } }
+  } }
   /**
    * Parse and validate extracted entities
    */
@@ -342,23 +332,23 @@ JSON Analysis: ';'
       const entities = JSON.parse(response);
       if (!Array.isArray(entities)) {
         return [];
-      }
+      } }
       return entities.filter(entity =>;
         entity.type &&
         entity.name &&
         typeof entity.confidence === 'number' &&
         entity.confidence > 0.5
       );
-    } catch (error) {
+    } }catch (error) {
       console.warn('Entity parsing failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Batch analyze multiple documents
    */
   async batchAnalyzeDocuments(documents: LegalDocument[]): Promise<SemanticAnalysis[]> {
-    console.log(`🔄 Starting batch analysis of ${documents.length} documents`);
+    console.log(`🔄 Starting batch analysis of ${documents.length} }documents`);
     const results = await Promise.allSettled(
       documents.map(doc => this.analyzeDocument(doc)
     );
@@ -366,9 +356,9 @@ JSON Analysis: ';'
       .filter(item => item.status) === 'fulfilled')
       .map(result => (result as PromiseFulfilledResult<SemanticAnalysis>).value);
     const failed = results.filter(item => item.status) === 'rejected').length;
-    console.log(`✅ Batch analysis complete: ${successful.length} successful, $,{failed} failed`);
+    console.log(`✅ Batch analysis complete: ${successful.length} }successful, $,{failed} }failed`);
     return successful;
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const enhancedAIAnalysis = new EnhancedAIAnalysisService();

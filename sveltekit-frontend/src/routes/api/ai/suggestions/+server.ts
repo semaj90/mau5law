@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,30 +17,30 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index.js';
-import { chatMessages, chatRecommendations } from '$lib/server/db/schema-unified.js';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
-import { eq } from 'drizzle-orm';
-import { v4, as uuidv4 } from 'uuid';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestEvent } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index.js';
+import { chatMessages, chatRecommendations } }from '$lib/server/db/schema-unified.js';
+import { generateEnhancedEmbedding } }from '$lib/server/ai/embeddings-enhanced.js';
+import { eq } }from 'drizzle-orm';
+import { v4, as uuidv4 } }from 'uuid';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
 // Import our new AI suggestion services
-import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/ollama-suggestions-service.js';
+import { generateOllamaSuggestions, type OllamaSuggestion } }from '$lib/services/ollama-suggestions-service.js';
 import {
   generateVectorContextualSuggestions,
   type ContextualSuggestion
-} from '$lib/services/vector-suggestions-service.js';
+} }from '$lib/services/vector-suggestions-service.js';
 import {
   generateEnhancedRAGSuggestions,
   type RAGSuggestionResponse
-} from '$lib/services/enhanced-rag-suggestions-service.js';
+} }from '$lib/services/enhanced-rag-suggestions-service.js';
 import {
   aiSuggestionsClient,
   ReportTypeUtils,
   type SuggestionResponse
-} from '$lib/services/ai-suggestions-grpc-client.js';
+} }from '$lib/services/ai-suggestions-grpc-client.js';
 export interface EnhancedSuggestionRequest {
   content: string;
   reportType?:
@@ -73,12 +73,12 @@ export interface EnhancedSuggestionRequest {
   maxSuggestions?: number;
   confidenceThreshold?: number;
   temperature?: number;
-}
-export interface UnifiedSuggestion {, id: string;, content: string;
+} }
+export interface UnifiedSuggestion { id: string;, content: string;
   type: string;
   confidence: number;
   reasoning: string;
-  metadata: {, source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';, category: string;
+  metadata: { source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';, category: string;
     priority?: number;
     keywords?: string[];
     supportingContext?: string[];
@@ -86,7 +86,7 @@ export interface UnifiedSuggestion {, id: string;, content: string;
     urgency?: number;
     processingTimeMs?: number;
   };
-}
+} }
 export async function POST({ request, url }: RequestEvent): Promise<any> {
   try {
     const data: EnhancedSuggestionRequest = await request.json();
@@ -104,10 +104,10 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       maxSuggestions = 5,
       confidenceThreshold = 0.6,
       temperature = 0.3
-    } = data;
+    } }= data;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
-    }
+    } }
     // Generate comprehensive AI suggestions using multiple services
     const suggestions = await generateComprehensiveSuggestions({
       content,
@@ -133,7 +133,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
         recommendationId,
         reportType
       });
-    }
+    } }
     return json({
       id: recommendationId,
       suggestions,
@@ -141,30 +141,30 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       reportType,
       confidence: suggestions.length > 0 ? suggestions[0].confidence : 0,
       servicesUsed: {
-       , vectorSearch: useVectorSearch,
+  vectorSearch: useVectorSearch,
         ollamaAI: useOllamaAI,
         enhancedRAG: useEnhancedRAG,
         protobufGRPC: useProtobuf
       },
       timestamp: new Date().toISOString(),
       metadata: {
-       , contentLength: content.length,
+  contentLength: content.length,
         suggestionsCount: suggestions.length,
         context: Object.keys(context).length > 0 ? context : undefined,
         processingServices: suggestions.map(s => s.metadata.source).filter((v, i, a) => a.indexOf(v) === i)
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error generating AI suggestions:', error);
     return json(
       {
         error: 'Failed to generate suggestions',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
 async function generateComprehensiveSuggestions({
   content,
   reportType,
@@ -179,13 +179,13 @@ async function generateComprehensiveSuggestions({
   userId
 }: { content: string;, reportType: string;
   context: any;
- , useVectorSearch: boolean;
- , useOllamaAI: boolean;
- , useEnhancedRAG: boolean;
- , useProtobuf: boolean;
- , maxSuggestions: number;
- , confidenceThreshold: number;
- , temperature: number;
+  useVectorSearch: boolean;
+  useOllamaAI: boolean;
+  useEnhancedRAG: boolean;
+  useProtobuf: boolean;
+  maxSuggestions: number;
+  confidenceThreshold: number;
+  temperature: number;
   userId?: string;
 }): Promise<UnifiedSuggestion[]> {
   const allSuggestions: UnifiedSuggestion[] = [];
@@ -206,10 +206,10 @@ async function generateComprehensiveSuggestions({
             max_suggestions: maxSuggestions,
             confidence_threshold: confidenceThreshold,
             context: {
-             , case_id: context.caseId,
+  case_id: context.caseId,
               user_id: userId,
               document_ids: context.evidenceIds
-            }
+            } }
           });
           grpcResponse.suggestions.forEach((suggestion, index) => {
             allSuggestions.push({
@@ -219,29 +219,29 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.metadata?.reasoning || 'Generated via Protocol Buffers gRPC service',
               metadata: {
-               , source: 'protobuf_grpc',
+  source: 'protobuf_grpc',
                 category: suggestion.category?.toString() || 'general',
                 priority: suggestion.priority,
                 keywords: suggestion.metadata?.source_documents || [],
                 supportingContext: suggestion.supporting_evidence || [],
                 citations: suggestion.case_citations || [],
                 processingTimeMs: Date.now() - grpcStartTime
-              }
+              } }
             });
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn('Protocol Buffers gRPC service failed:', error);
-        }
+        } }
       })()
     );
-  }
+  } }
   // 2. Enhanced RAG Service
   if (useEnhancedRAG) {
     servicePromises.push(
       (async () => {
         try {
           const ragStartTime = Date.now();
-          const ragResponse = await generateEnhancedRAGSuggestions(content, reportType, { context: {, caseId: context.caseId,
+          const ragResponse = await generateEnhancedRAGSuggestions(content, reportType, { context: { caseId: context.caseId,
               evidenceIds: context.evidenceIds,
               userId
             },
@@ -256,22 +256,22 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-               , source: 'enhanced_rag',
+  source: 'enhanced_rag',
                 category: suggestion.metadata.category,
                 priority: suggestion.metadata.priority,
                 keywords: suggestion.metadata.contextDocuments || [],
                 supportingContext: suggestion.supportingContext,
                 citations: suggestion.relevantCitations,
                 processingTimeMs: Date.now() - ragStartTime
-              }
+              } }
             });
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn('Enhanced RAG service failed:', error);
-        }
+        } }
       })()
     );
-  }
+  } }
   // 3. Ollama AI Service
   if (useOllamaAI) {
     servicePromises.push(
@@ -290,20 +290,20 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-               , source: 'ollama',
+  source: 'ollama',
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 urgency: suggestion.metadata.urgency,
                 processingTimeMs: Date.now() - ollamaStartTime
-              }
+              } }
             });
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn('Ollama AI service failed:', error);
-        }
+        } }
       })()
     );
-  }
+  } }
   // 4. Vector Contextual Search
   if (useVectorSearch) {
     servicePromises.push(
@@ -324,20 +324,20 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-               , source: 'vector_search',
+  source: 'vector_search',
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 supportingContext: suggestion.metadata.sourceDocumentId ? [suggestion.metadata.sourceDocumentId] : [],
                 processingTimeMs: Date.now() - vectorStartTime
-              }
+              } }
             });
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn('Vector search service failed:', error);
-        }
+        } }
       })()
     );
-  }
+  } }
   // 5. Rule-based fallback (always enabled)
   servicePromises.push(
     (async () => {
@@ -351,11 +351,11 @@ async function generateComprehensiveSuggestions({
           confidence: suggestion.confidence,
           reasoning: suggestion.reasoning,
           metadata: {
-           , source: 'rule_based',
+  source: 'rule_based',
             category: suggestion.metadata.category,
             keywords: suggestion.metadata.keywords || [],
             processingTimeMs: Date.now() - ruleStartTime
-          }
+          } }
         });
       });
     })()
@@ -366,10 +366,10 @@ async function generateComprehensiveSuggestions({
   const uniqueSuggestions = deduplicateUnifiedSuggestions(allSuggestions);
   const rankedSuggestions = rankSuggestionsByQuality(uniqueSuggestions, confidenceThreshold);
   console.log(
-    `Generated ${allSuggestions.length} total suggestions from ${new Set(allSuggestions.map(s => s.metadata.source)).size} services in ${Date.now() - processingStartTime}ms`
+    `Generated ${allSuggestions.length} }total suggestions from ${new Set(allSuggestions.map(s => s.metadata.source)).size} }services in ${Date.now() - processingStartTime}ms`
   );
   return rankedSuggestions.slice(0, maxSuggestions);
-}
+} }
 function generateRuleBasedSuggestions(content: string, reportType: string, contentLower: string) {
   const suggestions: Array<any> = [];
   if (reportType === 'prosecution_memo') {
@@ -380,9 +380,9 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'background_check',
         confidence: 0.8,
         reasoning: 'Document mentions suspect/defendant - criminal history relevant',
-        metadata: {, keywords: ['suspect', 'defendant'], category: 'legal_strategy' }
+        metadata: { keywords: ['suspect', 'defendant'], category: 'legal_strategy' } }
       });
-    }
+    } }
     if (contentLower.includes('evidence')) {
       suggestions.push({
         content:
@@ -390,9 +390,9 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'evidence_validation',
         confidence: 0.85,
         reasoning: 'Evidence mentioned - authentication crucial for admissibility',
-        metadata: {, keywords: ['evidence'], category: 'procedural' }
+        metadata: { keywords: ['evidence'], category: 'procedural' } }
       });
-    }
+    } }
     if (contentLower.includes('witness')) {
       suggestions.push({
         content:
@@ -400,9 +400,9 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'witness_analysis',
         confidence: 0.82,
         reasoning: 'Witness mentioned - credibility assessment important',
-        metadata: {, keywords: ['witness'], category: 'testimony' }
+        metadata: { keywords: ['witness'], category: 'testimony' } }
       });
-    }
+    } }
     if (contentLower.includes('charge') || contentLower.includes('count')) {
       suggestions.push({
         content:
@@ -410,40 +410,40 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'charge_analysis',
         confidence: 0.87,
         reasoning: 'Charges mentioned - element analysis required',
-        metadata: {, keywords: ['charge', 'count'], category: 'legal_elements' }
+        metadata: { keywords: ['charge', 'count'], category: 'legal_elements' } }
       });
-    }
-  } else if (reportType === 'case_brief') {
+    } }
+  } }else if (reportType === 'case_brief') {
     suggestions.push({
       content: 'Summarize the key legal issues and applicable statutes relevant to this case.',
       type: 'legal_summary',
       confidence: 0.75,
       reasoning: 'Case brief format requires legal issue identification',
-      metadata: {, category: 'structure' }
+      metadata: { category: 'structure' } }
     });
     suggestions.push({
       content: 'Analyze: any potential constitutional issues or procedural defenses.',
       type: 'constitutional_analysis',
       confidence: 0.73,
       reasoning: 'Case brief should address constitutional considerations',
-      metadata: {, category: 'legal_analysis' }
+      metadata: { category: 'legal_analysis' } }
     });
-  } else if (reportType === 'evidence_summary') {
+  } }else if (reportType === 'evidence_summary') {
     suggestions.push({
       content: 'Organize evidence chronologically and by relevance to each charge.',
       type: 'evidence_organization',
       confidence: 0.78,
       reasoning: 'Evidence summary requires logical organization',
-      metadata: {, category: 'organization' }
+      metadata: { category: 'organization' } }
     });
     suggestions.push({
       content: 'Note: any chain of custody issues that need to be addressed.',
       type: 'custody_chain',
       confidence: 0.8,
       reasoning: 'Chain of custody critical for evidence admissibility',
-      metadata: {, category: 'procedural' }
+      metadata: { category: 'procedural' } }
     });
-  }
+  } }
   // Generic content-based suggestions
   if (content.length < 200) {
     suggestions.push({
@@ -451,29 +451,29 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'content_expansion',
       confidence: 0.65,
       reasoning: 'Content appears brief - additional detail may strengthen argument',
-      metadata: {, contentLength: content.length, category: 'content_quality' }
+      metadata: { contentLength: content.length, category: 'content_quality' } }
     });
-  }
+  } }
   if (!contentLower.includes('statute') && !contentLower.includes('law')) {
     suggestions.push({
       content: 'Reference applicable statutes and legal precedents to strengthen your argument.',
       type: 'legal_citations',
       confidence: 0.7,
       reasoning: 'No legal citations found - precedents would strengthen analysis',
-      metadata: {, category: 'legal_support' }
+      metadata: { category: 'legal_support' } }
     });
-  }
+  } }
   if (!contentLower.includes('conclusion') && content.length > 500) {
     suggestions.push({
       content: 'Consider adding a conclusion section to summarize your key findings and recommendations.',
       type: 'conclusion_needed',
       confidence: 0.68,
       reasoning: 'Lengthy content without conclusion - summary would improve clarity',
-      metadata: {, contentLength: content.length, category: 'structure' }
+      metadata: { contentLength: content.length, category: 'structure' } }
     });
-  }
+  } }
   return suggestions;
-}
+} }
 async function getVectorBasedSuggestions(content: string, reportType: string): Promise<any> {
   try {
     // Generate embedding for the content
@@ -485,7 +485,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
     // Search for similar chat messages and their recommendations
     const similarMessages = await db
       .select({
-       , content: chatMessages.content,
+  content: chatMessages.content,
         recommendations: chatRecommendations.content,
         confidence: chatRecommendations.confidence,
         type: chatRecommendations.recommendationType
@@ -505,13 +505,13 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
         type: msg.type || 'vector_based',
         confidence: msg.confidence!,
         reasoning: 'Based on similar previous conversations',
-        metadata: {, source: 'vector_search', similarContent: msg.content }
+        metadata: { source: 'vector_search', similarContent: msg.content } }
       }));
-  } catch (error: any) {
+  } }catch (error: any) {
     console.warn('Vector similarity search failed:', error);
     return [];
-  }
-}
+  } }
+} }
 async function generateContextualSuggestions(content: string, context: any): Promise<any> {
   const suggestions: Array<any> = [];
   try {
@@ -522,8 +522,8 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'case_context',
         confidence: 0.75,
         reasoning: 'Working within specific case context',
-        metadata: {, caseId: context.caseId, category: 'context_aware' }'` });'`
-    }
+        metadata: { caseId: context.caseId, category: 'context_aware' } }` });'`
+    } }
     // If we have evidence context, suggest evidence-specific analysis
     if (context.evidenceIds && context.evidenceIds.length > 0) {
       suggestions.push({
@@ -531,9 +531,9 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'evidence_context',
         confidence: 0.78,
         reasoning: 'Specific evidence items referenced',
-        metadata: {, evidenceIds: context.evidenceIds, category: `evidence_specific` }
+        metadata: { evidenceIds: context.evidenceIds, category: `evidence_specific` } }
       });
-    }
+    } }
     // If we have previous messages, suggest consistency
     if (context.previousMessages && context.previousMessages.length > 0) {
       suggestions.push({
@@ -541,30 +541,30 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'consistency_check',
         confidence: 0.72,
         reasoning: 'Building on previous conversation context',
-        metadata: {, previousMessageCount: context.previousMessages.length, category: `consistency` }
+        metadata: { previousMessageCount: context.previousMessages.length, category: `consistency` } }
       });
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.warn('Failed to generate contextual suggestions:', error);
-  }
+  } }
   return suggestions;
-}
+} }
 function deduplicateUnifiedSuggestions(suggestions: UnifiedSuggestion[]): UnifiedSuggestion[] {
   const seen = new Map<string, UnifiedSuggestion>();
   suggestions.forEach(suggestion => {
     const key = suggestion.content.toLowerCase().replace(/\s+/g, ' ').trim();
     if (!seen.has(key)) {
       seen.set(key, suggestion);
-    } else {
+    } }else {
       // Keep the suggestion with higher confidence
       const existing = seen.get(key)!;
       if (suggestion.confidence > existing.confidence) {
         seen.set(key, suggestion);
-      }
-    }
+      } }
+    } }
   });
   return Array.from(seen.values());
-}
+} }
 function rankSuggestionsByQuality(suggestions: UnifiedSuggestion[], confidenceThreshold: number): UnifiedSuggestion[] {
   return suggestions
     .filter(s => s.confidence >= confidenceThreshold)
@@ -583,7 +583,7 @@ function rankSuggestionsByQuality(suggestions: UnifiedSuggestion[], confidenceTh
         b.confidence * 0.5 + (b.metadata.priority || 1) * 0.2 + (sourceWeights[b.metadata.source] || 0.5) * 0.3;
       return scoreB - scoreA;
     });
-}
+} }
 async function storeRecommendations({
   userId,
   sessionId,
@@ -592,10 +592,10 @@ async function storeRecommendations({
   recommendationId,
   reportType
 }: { userId: string;, sessionId: string;
- , content: string;
- , suggestions: UnifiedSuggestion[];
- , recommendationId: string;
- , reportType: string;
+  content: string;
+  suggestions: UnifiedSuggestion[];
+  recommendationId: string;
+  reportType: string;
 }): Promise<any> {
   try {
     // Generate embedding for the content
@@ -619,7 +619,7 @@ async function storeRecommendations({
           servicesUsed: suggestions.map(s => s.metadata.source),
           totalSuggestions: suggestions.length,
           timestamp: new Date().toISOString()
-        }
+        } }
       })
       .returning({ id: chatMessages.id });
     const messageId = messageResult[0]?.id;
@@ -635,7 +635,7 @@ async function storeRecommendations({
           content: suggestion.content,
           confidence: suggestion.confidence,
           metadata: {
-           , reasoning: suggestion.reasoning,
+  reasoning: suggestion.reasoning,
             source: suggestion.metadata.source,
             category: suggestion.metadata.category,
             priority: suggestion.metadata.priority,
@@ -646,12 +646,13 @@ async function storeRecommendations({
             processingTimeMs: suggestion.metadata.processingTimeMs,
             rank: i + 1,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     console.error('Failed to store enhanced recommendations:', error);
     // Don't throw - we don't want storage failure to break the API
-  }
-}
+  } }
+} }
+

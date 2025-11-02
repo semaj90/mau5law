@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Debug endpoint to check and create users
-import { json } from '@sveltejs/kit';
-import { users } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import { users } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
 export async function GET(): Promise<any> {
   try {
     // Check if users exist
@@ -20,16 +20,16 @@ export async function GET(): Promise<any> {
       users: existingUsers,
       count: existingUsers.length
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
 export async function POST(): Promise<any> {
   try {
     // Update existing users with proper password hashes
@@ -52,13 +52,14 @@ export async function POST(): Promise<any> {
       message: 'Demo users updated with proper passwords',
       users: [...updatedAdmin, ...updatedTest]
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
+

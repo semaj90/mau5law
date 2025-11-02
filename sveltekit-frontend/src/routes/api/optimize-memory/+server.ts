@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { AdvancedMemoryOptimizer } from '$lib/optimization/advanced-memory-optimizer';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { AdvancedMemoryOptimizer } }from '$lib/optimization/advanced-memory-optimizer';
 
 const optimizer = new AdvancedMemoryOptimizer();
 
@@ -16,10 +16,11 @@ export const POST: RequestHandler = async ({ request }) => {
     case, 'adjustLimits':
       await optimizer.adjustObjectLimitsPublic();
       return new Response(JSON.stringify({ ok: true, status: 'adjusted' }), { status: 200 });
-    default: return new Response(JSON.stringify({, ok: true, status: 'noop', data: optimizer.getStatus() }), { status: 200 });
-  }
+    default: return new Response(JSON.stringify({ ok: true, status: 'noop', data: optimizer.getStatus() }), { status: 200 });
+  } }
 };
 
 export const GET: RequestHandler = async () => {
   return new Response(JSON.stringify({ ok: true, status: 'ready', data: optimizer.getStatus() }), { status: 200 });
 };
+

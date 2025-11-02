@@ -10,11 +10,11 @@
  * Routes to enhanced-rag-service.exe for statute analysis
  * Database, Tables: statutes, legalPrecedents, legalDocuments
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { statutes, legalPrecedents } from '$lib/server/db/schema-postgres';
-import { eq, like, and, desc } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db } }from '$lib/server/db';
+import { statutes, legalPrecedents } }from '$lib/server/db/schema-postgres';
+import { eq, like, and, desc } }from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -50,10 +50,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
       if (conditions.length > 0) {
         query = query.where(and(...conditions));
-      }
+      } }
 
       result = await query;
-    } else {
+    } }else {
       // Query statutes
       let query = db
         .select({
@@ -78,36 +78,37 @@ export const GET: RequestHandler = async ({ url }) => {
 
       query = query.where(and(...conditions));
       result = await query;
-    }
+    } }
 
     // TODO: Route enhanced search through enhanced-rag-service.exe
     // if (search && search.length > 10) {
     //   const ragResults = await fetch('http://localhost:8080/api/legal/statute-search', {
     //     method: 'POST',
     //     headers: { 'Content-Type': 'application/json' },'`'`
-    //     body: JSON.stringify({, query: search, jurisdiction, type })
+    //     body: JSON.stringify({ query: search, jurisdiction, type })
     //   });
     //   // Merge RAG results with database results
-    // }
+    // } }
 
     return json({
       laws: result,
       type,
       metadata: {
-       , count: result.length,
+  count: result.length,
         jurisdiction,
         category,
-        source: `database' }'`
+        source: `database' } }`
     });
-  } catch (error) {
-    console.error('❌ Laws API error:', error);'
+  } }catch (error) {
+    console.error('❌ Laws API error:', error);
     return json(
       {
         error: 'Failed to fetch laws',
         laws: [],
-        metadata: {, count: 0, source: `error' }'`
+        metadata: { count: 0, source: `error' } }`
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

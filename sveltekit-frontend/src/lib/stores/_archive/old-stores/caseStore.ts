@@ -1,15 +1,15 @@
 // Global case management store with real data integration
-import { writable, derived, get } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { authStore } from './authStore.js';
-import { browser } from '$app/environment';
-import type { Case, Evidence, Report } from '$lib/server/db/schema';
+import { writable, derived, get } }from 'svelte/store';
+import type { Writable, Readable } }from 'svelte/store';
+import { authStore } }from './authStore.js';
+import { browser } }from '$app/environment';
+import type { Case, Evidence, Report } }from '$lib/server/db/schema';
 
  // Extended case type with relations
  export interface CaseWithRelations extends Case {
    evidence?: Evidence[];
    reports?: Report[];
- }
+ } }
  // Alias for backward compatibility
  export type CaseData = CaseWithRelations;
 
@@ -23,19 +23,18 @@ import type { Case, Evidence, Report } from '$lib/server/db/schema';
      priority?: string;
      search?: string;
    };
-   pagination: {, page: number;, limit: number;
+   pagination: { page: number;, limit: number;
      total: number;
    };
- }
+ } }
 
  // Add a typed API for the case store to avoid `any` and `this` casts
 type PartialFilters = Partial<CaseState['filters']>;
-export interface CaseStoreAPI extends Readable<CaseState> {, set: Writable<CaseState>['set'];, update: Writable<CaseState>['update'];
+export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseState>['set'];, update: Writable<CaseState>['update'];
 
   loadCases(filters?: PartialFilters): Promise<void>;
   loadCase(caseId: string): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-  createCase(caseData: {
-   , title: string;
+  createCase(caseData: { title: string;
     description?: string;
     caseType?: string;
     priority?: string;
@@ -61,7 +60,7 @@ export interface CaseStoreAPI extends Readable<CaseState> {, set: Writable<CaseS
   ): Promise<{ success: boolean; analysis?: any; error?: string }>;
   loadLocalFallback(): void;
   reset: () => void;
-}
+} }
 
 const createCaseStore = (): CaseStoreAPI => {
   // create named writable so `get(store)` works reliably
@@ -72,21 +71,20 @@ const createCaseStore = (): CaseStoreAPI => {
     isLoading: false,
     error: null,
     filters: {},
-    pagination: {
-     , page: 1,
+    pagination: { page: 1,
       limit: 20,
       total: 0
-    }
+    } }
   });
 
-  const { subscribe, set, update } = store;
+  const { subscribe, set, update } }= store;
 
   // Create a typed api: object so internal methods can call each other without `any`
   const api = {
     subscribe,
     set,
     update
-  } as: unknown as CaseStoreAPI;
+  } }as: unknown as CaseStoreAPI;
 
   // Load cases from database
   api.loadCases = async (filters?: PartialFilters) => {
@@ -114,22 +112,22 @@ const createCaseStore = (): CaseStoreAPI => {
           filters: { ...state.filters, ...(filters || {}) },
           isLoading: false
         }));
-      } else {
-        const error = await response.json().catch(() => ({ message: `Unknown error` }));
+      } }else {
+        const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
           error: error.message || 'Failed to load cases',
           isLoading: false
         }));
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
         error: message || 'Network error while loading cases',
         isLoading: false
       }));
-    }
+    } }
   };
 
   // Load specific case with relations
@@ -148,7 +146,7 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: true, case caseData };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
@@ -156,8 +154,8 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: false, error: error.message || 'Failed to load case' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -165,11 +163,11 @@ const createCaseStore = (): CaseStoreAPI => {
         isLoading: false
       }));
       return { success: false, error: message || 'Network error' };
-    }
+    } }
   };
 
   // Create new case
-  api.createCase = async (caseData: {, title: string; description?: string; caseType?: string; priority?: string }) => {
+  api.createCase = async (caseData: { title: string; description?: string; caseType?: string; priority?: string }) => {
     update(state => ({ ...state, isLoading: true, error: null }));
     try {
       const response = await fetch('/api/cases', {
@@ -192,7 +190,7 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: true, case newCase };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
@@ -200,15 +198,15 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: false, error: error.message || 'Failed to create case' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
         error: message || 'Network error while creating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` }'`
+      return { success: false, error: message || 'Network error' };'` } }`
   };
 
   // Update case
@@ -227,12 +225,12 @@ const createCaseStore = (): CaseStoreAPI => {
         const updatedCase = await response.json();
         update(state => ({
           ...state,
-          cases: state.cases.map(c => (c.id === caseId ? { ...c, ...updatedCase } : c)),
-          activeCase: state.activeCase?.id === caseId ? { ...state.activeCase, ...updatedCase } : state.activeCase,
+          cases: state.cases.map(c => (c.id === caseId ? { ...c, ...updatedCase } }: c)),
+          activeCase: state.activeCase?.id === caseId ? { ...state.activeCase, ...updatedCase } }: state.activeCase,
           isLoading: false
         }));
         return { success: true, case updatedCase };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
@@ -240,15 +238,15 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: false, error: error.message || 'Failed to update case' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
         error: message || 'Network error while updating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` }'`
+      return { success: false, error: message || 'Network error' };'` } }`
   };
 
   // Delete case
@@ -272,7 +270,7 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: true };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
@@ -280,15 +278,15 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: false, error: error.message || 'Failed to delete case' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
         error: message || 'Network error while deleting case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` }'`
+      return { success: false, error: message || 'Network error' };'` } }`
   };
 
   // Generate AI-powered report for case
@@ -316,12 +314,12 @@ const createCaseStore = (): CaseStoreAPI => {
             ? {
                 ...state.activeCase,
                 reports: [...(state.activeCase.reports || []), report]
-              }
+              } }
             : state.activeCase,
           isLoading: false
         }));
         return { success: true, report };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
           ...state,
@@ -329,15 +327,15 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false
         }));
         return { success: false, error: error.message || 'Failed to generate report' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
         error: message || 'Network error while generating report',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` }'`
+      return { success: false, error: message || 'Network error' };'` } }`
   };
 
   // Set active case
@@ -368,8 +366,8 @@ const createCaseStore = (): CaseStoreAPI => {
   api.clearFilters = () => {
     update(state => ({
       ...state,
-      filters: {} as CaseState['filters'],
-      pagination: { ...state.pagination, page: 1 }
+      filters: {} }as CaseState['filters'],
+      pagination: { ...state.pagination, page: 1 } }
     }));
     // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases();
   };
@@ -378,7 +376,7 @@ const createCaseStore = (): CaseStoreAPI => {
   api.setPage = (page: number) => {
     update(state => ({
       ...state,
-      pagination: { ...state.pagination, page }
+      pagination: { ...state.pagination, page } }
     }));
     // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases(get(store).filters);
   };
@@ -406,13 +404,13 @@ const createCaseStore = (): CaseStoreAPI => {
       if (response.ok) {
         const analysis = await response.json();
         return { success: true, analysis };
-      } else {
+      } }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         return { success: false, error: error.message || 'Failed analysis' };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      return { success: false, error: message || 'Network error during analysis' };'` }'`
+      return { success: false, error: message || 'Network error during analysis' };'` } }`
   };
 
   // Local fallback for testing when no auth session exists (SvelteKit v2 style)
@@ -428,9 +426,9 @@ const createCaseStore = (): CaseStoreAPI => {
         pagination: { ...state.pagination, ...(parsed.pagination ?? {}) },
         filters: parsed.filters ?? state.filters
       }));
-    } catch {
+    } }catch {
       // ignore parse errors
-    }
+    } }
   };
 
   // For potential external resets/tests
@@ -442,7 +440,7 @@ const createCaseStore = (): CaseStoreAPI => {
       isLoading: false,
       error: null,
       filters: {},
-      pagination: {, page: 1, limit: 20, total: 0 }
+      pagination: { page: 1, limit: 20, total: 0 } }
     });
   };
 
@@ -464,9 +462,10 @@ const createCaseStore = (): CaseStoreAPI => {
     authStore.subscribe(auth => {
       if (auth?.isAuthenticated && !auth?.isLoading) {
         // Fire-and-forget typed call: void caseStore.loadCases();
-      } else if (!auth?.isAuthenticated && !auth?.isLoading) {
+      } }else if (!auth?.isAuthenticated && !auth?.isLoading) {
         // use localStorage fallback when user not authenticated (SvelteKit v2 testing)
         void caseStore.loadLocalFallback();
-      }
+      } }
     });
-  }
+  } }
+

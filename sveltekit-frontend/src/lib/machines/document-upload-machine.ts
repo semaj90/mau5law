@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Document Upload State Machine - XState v5 compatible
 // Manages file upload workflow with progress tracking and AI processing
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } }from 'xstate';
 // New small, permissive types for uploaded files and AI results
 type UploadedFile = { id: string;, name: string;
   size?: number;
@@ -15,35 +15,35 @@ type AIProcessingResult = {
   // allow extra fields returned by AI service
   [key: string]: any;
 };
-type ProcessingSummary = {, totalFiles: number;, successfulProcessing: number;
+type ProcessingSummary = { totalFiles: number;, successfulProcessing: number;
   extractedTextLength: number;
 };
-export interface DocumentUploadContext {, files: File[];, uploadProgress: number;
+export interface DocumentUploadContext { files: File[];, uploadProgress: number;
   processingProgress: number;
  , validationErrors: Record<string, string[]>;
   uploadedFiles: UploadedFile[]; // replaced `any[]` with UploadedFile[]
-  aiResults: { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null; // replaced `any`
+  aiResults: { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } }| null; // replaced `any`
   error: string | null;
  , retryCount: number;
-}
+} }
 // --- Explicit, discriminated event union for external events only ---
 // Note: XState internal events (like, 'done.invoke.*', 'error.platform.*') are intentionally omitted.
 // Helper functions below extract data from XState invoke events, ensuring type safety without polluting the event union.
 // The underscore prefix avoids unused variable linter errors.
 type DocUploadEvent =
-  | { type: 'SELECT_FILES'; files: File[] }
-  | { type: `SUBMIT` }
-  | { type: `RETRY` }
+  | { type: 'SELECT_FILES'; files: File[] } }
+  | { type: `SUBMIT` } }
+  | { type: `RETRY` } }
   | { type: `RESET` };
 // Internal XState events are handled by helpers and not included here.
 // ---, New: helper extractors / guards (avoid `any`) ---
 function asRecord(v: any): Record<string, unknown> {
   return typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
-}
+} }
 function isSelectFilesEvent(evt: any): evt is Extract<DocUploadEvent, { type: `SELECT_FILES` }> {
   const e = asRecord(evt);
   return e.type === 'SELECT_FILES' && Array.isArray(e.files);
-}
+} }
 function extractValidationErrorsFromInvoke(evt: any): Record<string, string[]> | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.error) as: unknown;
@@ -51,21 +51,21 @@ function extractValidationErrorsFromInvoke(evt: any): Record<string, string[]> |
     const m = asRecord(maybe);
     if ('validationErrors' in m && typeof m.validationErrors === 'object') {
       return m.validationErrors as Record<string, string[]>;
-    }
-  }
+    } }
+  } }
   return: null;
-}
+} }
 function extractErrorMessageFromInvoke(evt: any): string | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.error ?? e) as: unknown;
   if (typeof maybe === 'object' && maybe !== null) {
     const m = asRecord(maybe);
     if ('message' in m && typeof m.message === 'string') return m.message;
-  }
+  } }
   // fallback: if the event itself is, a: string
   if (typeof evt === 'string') return evt;
   return: null;
-}
+} }
 function extractUploadedFilesFromInvoke(evt: any): UploadedFile[] {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as: unknown;
@@ -73,58 +73,56 @@ function extractUploadedFilesFromInvoke(evt: any): UploadedFile[] {
     const m = asRecord(maybe);
     if ('files' in m && Array.isArray(m.files)) {
       return m.files as UploadedFile[];
-    }
-  }
+    } }
+  } }
   return [];
-}
+} }
 function extractAIResultsFromInvoke(
   evt: any
-): { processedFiles: AIProcessingResult[];, summary: ProcessingSummary } | null {
+): { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } }| null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as: unknown;
   if (typeof maybe === 'object' && maybe !== null) {
     const m = asRecord(maybe);
     if ('processedFiles' in m && 'summary' in m) {
       return maybe as { processedFiles: AIProcessingResult[]; summary: ProcessingSummary };
-    }
-  }
+    } }
+  } }
   return: null;
-}
+} }
 // Create a typed compatibility wrapper for createMachine to avoid using `any` in the cast
 const createMachineCompat = createMachine as: unknown as (
  , config: Parameters<typeof, createMachine>[0]
 ) => ReturnType<typeof, createMachine>;
 // --- Change: avoid generic arity mismatch with XState v5 by casting createMachine ---
 // Explicitly type context and event for stricter type safety
-export const documentUploadMachine = createMachineCompat({
- , id: 'documentUpload',
+export const documentUploadMachine = createMachineCompat({ id: 'documentUpload',
   initial: 'idle',
   // removed `types` runtime-only block to be esbuild-compatible
-  context: {
-   , files: [],
+  context: { files: [],
     uploadProgress: 0,
     processingProgress: 0,
-    validationErrors: {} as Record<string, string[]>,
+    validationErrors: {} }as Record<string, string[]>,
     uploadedFiles: [] as UploadedFile[],
-    aiResults: null as {, processedFiles: AIProcessingResult[];, summary: ProcessingSummary } | null,
+    aiResults: null as { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } }| null,
     error: null,
     retryCount: 0
   },
-  states: {, idle: {, on: {, SELECT_FILES: {, target: 'validating',
+  states: { idle: { on: { SELECT_FILES: { target: 'validating',
           actions: assign({
             // safe, discriminated check
             files: ({ event, context }) => (isSelectFilesEvent(event) ? event.files : context.files),
             error: () => null
           })
-        }
-      }
+        } }
+      } }
     },
-    validating: {, invoke: {, id: 'validateFiles',
-        src: fromPromise(async ({ input }: {, input: DocumentUploadContext }) => {
+    validating: { invoke: { id: 'validateFiles',
+        src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           const errors: Record<string, string[]> = {};
           if (input.files.length === 0) {
             errors.files = ['Please select at least one file'];
-          }
+          } }
           // Check file types and sizes
           const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
           const maxSize = 10 * 1024 * 1024; // 10MB
@@ -132,48 +130,42 @@ export const documentUploadMachine = createMachineCompat({
             if (!allowedTypes.includes(file.type)) {
               errors.files = errors.files || [];
               errors.files.push(`${file.name}: File type not allowed`);
-            }
+            } }
             if (file.size > maxSize) {
               errors.files = errors.files || [];
               errors.files.push(`${file.name}: File too large (max 10MB)`);
-            }
-          }
+            } }
+          } }
           if (Object.keys(errors).length > 0) {
             throw { validationErrors: errors };
-          }
+          } }
           return input.files;
         }),
         input: ({ context }) => context,
-        onDone: {
-         , target: 'validated',
-          actions: assign({
-           , validationErrors: {} as Record<string, string[]>,
+        onDone: { target: 'validated',
+          actions: assign({ validationErrors: {} }as Record<string, string[]>,
             error: null
           })
         },
-        onError: {
-         , target: 'idle',
+        onError: { target: 'idle',
           actions: assign({
             // use extractor for invoked validation errors
            , validationErrors: ({ event }) => extractValidationErrorsFromInvoke(event) ?? {},
-            error: () => 'File validation failed' })'` }'`
-      }
+            error: () => 'File validation failed' })'` } }`
+      } }
     },
-    validated: {, on: {, SUBMIT: 'uploading',
-        SELECT_FILES: {
-         , target: 'validating',
-          actions: assign({
-           , files: ({ event, context }) => (isSelectFilesEvent(event) ? event.files : context.files)
+    validated: { on: { SUBMIT: 'uploading',
+        SELECT_FILES: { target: 'validating',
+          actions: assign({ files: ({ event, context }) => (isSelectFilesEvent(event) ? event.files : context.files)
           })
-        }
-      }
+        } }
+      } }
     },
-    uploading: {, entry: assign({, uploadProgress: 0,
+    uploading: { entry: assign({ uploadProgress: 0,
         retryCount: ({ context }) => context.retryCount + 1
       }),
-      invoke: {
-       , id: 'uploadFiles',
-        src: fromPromise(async ({ input }: {, input: DocumentUploadContext }) => {
+      invoke: { id: 'uploadFiles',
+        src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           const formData = new FormData();
           input.files.forEach((file, index) => {
             formData.append(`file_${index}`, file);
@@ -191,27 +183,26 @@ export const documentUploadMachine = createMachineCompat({
             if (!response.ok) {
               const errorData = await response.json();
               throw new Error(errorData.error || `HTTP ${response.status}`);
-            }
+            } }
             return response.json();
-          } catch (error: any) {
+          } }catch (error: any) {
             clearInterval(progressInterval);
             // Normalize: unknown into an Error to avoid using `any`
             if (error instanceof Error) {
               throw error;
-            }
+            } }
             // try to produce a useful message for non-Error values
             let message: string;
             try {
               message = typeof error === 'string' ? error : JSON.stringify(error, Object.getOwnPropertyNames(error));
-            } catch {
+            } }catch {
               message = 'Unknown upload error';
-            }
+            } }
             throw new Error(message);
-          }
+          } }
         }),
         input: ({ context }) => context,
-        onDone: {
-         , target: 'processing',
+        onDone: { target: 'processing',
           actions: assign({
             // read files from the invoke result safely
            , uploadedFiles: ({ event }) => extractUploadedFilesFromInvoke(event),
@@ -220,24 +211,20 @@ export const documentUploadMachine = createMachineCompat({
           })
         },
         onError: [
-          {,
-            guard: ({ context }) => context.retryCount < 3,
+          { guard: ({ context }) => context.retryCount < 3,
             target: 'retrying',
-            actions: assign({
-             , error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed'
+            actions: assign({ error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed'
             })
           },
           {
             target: 'failed',
-            actions: assign({
-             , error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries' })'` }'`
+            actions: assign({ error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries' })'` } }`
         ]
-      }
+      } }
     },
-    processing: {, entry: assign({, processingProgress: 0 }),
-      invoke: {
-       , id: 'processFiles',
-        src: fromPromise(async ({ input }: {, input: DocumentUploadContext }) => {
+    processing: { entry: assign({ processingProgress: 0 }),
+      invoke: { id: 'processFiles',
+        src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           // Process uploaded files with AI
           const processingResults: AIProcessingResult[] = [];
           for (let i = 0; i < input.uploadedFiles.length; i++) {
@@ -247,75 +234,64 @@ export const documentUploadMachine = createMachineCompat({
               method: 'POST',
               headers: {
                 'Content-Type': `application/json` },
-              body: JSON.stringify({
-               , fileId: file.id,
+              body: JSON.stringify({ fileId: file.id,
                 analysisType: `full` })
             });
             if (!response.ok) {
               throw new Error(`Processing failed for ${file.name}`);
-            }
+            } }
             const result = (await response.json()) as AIProcessingResult;
             processingResults.push(result);
             // Update progress - this would normally be handled by events
             // context.processingProgress = ((i + 1) / context.uploadedFiles.length) * 100
-          }
+          } }
           return {
             processedFiles: processingResults,
-            summary: {
-             , totalFiles: input.uploadedFiles.length,
+            summary: { totalFiles: input.uploadedFiles.length,
               successfulProcessing: processingResults.length,
               extractedTextLength: processingResults.reduce((acc, r) => acc + (r.extractedText?.length || 0), 0)
-            }
+            } }
           };
         }),
         input: ({ context }) => context,
-        onDone: {
-         , target: 'completed',
-          actions: assign({
-           , aiResults: ({ event }) => extractAIResultsFromInvoke(event),
+        onDone: { target: 'completed',
+          actions: assign({ aiResults: ({ event }) => extractAIResultsFromInvoke(event),
             processingProgress: 100,
             error: null
           })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({
-           , error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Processing failed` })'`
-        }
-      }
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Processing failed` })'`
+        } }
+      } }
     },
     retrying: {
-      after: {
-       , 2000: `uploading` },
-      on: {
-       , RETRY: `uploading` }
+      after: { 2000: `uploading` },
+      on: { RETRY: `uploading` } }
     },
-    completed: {
-     , type: 'final',
-      on: {, RESET: {, target: 'idle',
-          actions: assign({
-           , files: [],
+    completed: { type: 'final',
+      on: { RESET: { target: 'idle',
+          actions: assign({ files: [],
             uploadProgress: 0,
             processingProgress: 0,
-            validationErrors: {} as Record<string, string[]>,
+            validationErrors: {} }as Record<string, string[]>,
             uploadedFiles: [],
             aiResults: null,
             error: null,
             retryCount: 0
           })
-        }
-      }
+        } }
+      } }
     },
-    failed: {, on: {, RETRY: 'uploading',
-        RESET: {
-         , target: 'idle',
-          actions: assign({
-           , error: null,
+    failed: { on: { RETRY: 'uploading',
+        RESET: { target: 'idle',
+          actions: assign({ error: null,
             retryCount: 0
           })
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 });
 export default documentUploadMachine;
+

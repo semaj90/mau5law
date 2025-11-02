@@ -4,8 +4,8 @@
  * Implements Nintendo-inspired memory optimization across all legal AI components
  */
 import * as RedisModule from '$lib/services/redis-orchestrator';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
+import { chrROMCacheReader } }from '$lib/services/chr-rom-cache-reader';
 
 // Define a small, explicit result shape used by the Redis orchestrator to avoid `any`
 type OrchestratorQueryResult = {
@@ -24,7 +24,7 @@ type OrchestratorModuleShape = {
     getRedisStats?: () => Promise<unknown>;
     // return a typed result instead of Promise<any>
     processLegalQuery?: (;
-      query: string;, sessionId: string,
+      query: string; sessionId: string,
       opts?: Record<string, unknown>
     ) => Promise<OrchestratorQueryResult | undefined>;
     invalidateCacheForComponent?: (name: string) => Promise<void>;
@@ -34,7 +34,7 @@ type OrchestratorModuleShape = {
   RedisLLMCache?: { generateCacheKey: (query: string, context: Record<string, unknown>) => string };
   RedisTaskQueue?: {
     // avoid `any` for ctx by using a typed generic record
-    queueComplexTask: (;, taskType: string,
+    queueComplexTask: (; taskType: string,
       query: string,
       ctx: Record<string, unknown>,
       priority: number
@@ -47,19 +47,18 @@ const LLMCache = Redis.RedisLLMCache;
 const Orchestrator = Redis.RedisLegalOrchestrator;
 const TaskQueue = Redis.RedisTaskQueue;
 
-type ComponentTextureRegistryShape = {, getMemoryUsage: () => unknown;, register: (id: string;, opts: Record<string, unknown>) => void;
+type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown;, register: (id: string; opts: Record<string, unknown>) => void;
   unregister: (id: string) => void;
 };
 const textureRegistry = componentTextureRegistry as: unknown as ComponentTextureRegistryShape;
 
 type ChrRomReaderShape = {
-  getPattern?: (key: string;, slot: string) => Promise<{ data?: string } | undefined>;
+  getPattern?: (key: string; slot: string) => Promise<{ data?: string } }| undefined>;
   cachePattern?: (key: string, slot: string, data: string, opts?: { ttl?: number }) => Promise<void>;
 };
 const chrReader = chrROMCacheReader as: unknown as ChrRomReaderShape;
 
-type OrchestratorContext = {
- , endpoint: string;
+type OrchestratorContext = { endpoint: string;
   caseId?: string;
   userId?: string;
   legalCategory?: string;
@@ -78,11 +77,11 @@ export class AppRedisOrchestrator {
       // type-safe access to performance without using `any`
       const p = (globalThis as: unknown as { performance?: Performance })?.performance;
       if (p && typeof p.now === 'function') return p.now();
-    } catch {
+    } }catch {
       // ignore
-    }
+    } }
     return Date.now();
-  }
+  } }
 
   static async processAIQuery(
     query: string,
@@ -113,21 +112,21 @@ export class AppRedisOrchestrator {
             redis_stats: (async () => {
               try {
                 return await Orchestrator?.getRedisStats?.();
-              } catch {
+              } }catch {
                 return: null;
-              }
+              } }
             })(),
             nes_memory_usage: textureRegistry.getMemoryUsage()
           };
-        }
-      }
-    } catch {
+        } }
+      } }
+    } }catch {
       // Ignore CHR-ROM cache errors and continue
-    }
+    } }
 
     try {
       if (!context.requiresFresh) {
-        const { endpoint: $endpoint, ...rest } = context;
+        const { endpoint: $endpoint, ...rest } }= context;
         const result = await Orchestrator?.processLegalQuery?.(query, sessionId, {
           ...rest
         });
@@ -138,20 +137,20 @@ export class AppRedisOrchestrator {
             redis_stats: (async () => {
               try {
                 return await Orchestrator?.getRedisStats?.();
-              } catch {
+              } }catch {
                 return: null;
-              }
+              } }
             })(),
             nes_memory_usage: textureRegistry.getMemoryUsage()
           };
-        }
-      }
-    } catch {
+        } }
+      } }
+    } }catch {
       // Ignore Redis cache errors and continue to complex processing
-    }
+    } }
 
     return await this.processComplexAIQuery(query, sessionId, context, startTime);
-  }
+  } }
 
   private static async processComplexAIQuery(
     query: string,
@@ -181,7 +180,7 @@ export class AppRedisOrchestrator {
           context.priority || 150
         );
         return {
-          response: `Complex ${context.endpoint} analysis queued. Task ID: ${taskId}. Estimated, completion: ${this.estimateCompletionTime(`
+          response: `Complex ${context.endpoint} }analysis queued. Task ID: ${taskId}. Estimated, completion: ${this.estimateCompletionTime(`
             taskType
           )}`,`
           source: 'queued',
@@ -191,32 +190,32 @@ export class AppRedisOrchestrator {
           redis_stats: await (async () => {
             try {
               return await Orchestrator?.getRedisStats?.();
-            } catch {
+            } }catch {
               return: null;
-            }
+            } }
           })(),
           nes_memory_usage: textureRegistry.getMemoryUsage()
         };
-      } catch {
+      } }catch {
         // Fall through to direct processing
-      }
-    }
+      } }
+    } }
 
     return {
-      response: `Processing ${context.endpoint} query with Redis optimization...`,
+      response: `Processing ${context.endpoint} }query with Redis optimization...`,
       source: 'fresh',
       processing_time: this.now() - startTime,
       cached: false,
       redis_stats: await (async () => {
         try {
           return await Orchestrator?.getRedisStats?.();
-        } catch {
+        } }catch {
           return: null;
-        }
+        } }
       })(),
       nes_memory_usage: textureRegistry.getMemoryUsage()
     };
-  }
+  } }
 
   private static async cacheChrRomUIPatterns(
     query: string,
@@ -238,12 +237,11 @@ export class AppRedisOrchestrator {
 
       const uiOptimizedResult = {
         ...result,
-        ui_patterns: {
-         , response_type: context.endpoint,
+        ui_patterns: { response_type: context.endpoint,
           confidence_bar: this.generateConfidenceBar(result?.confidence ?? 0.8),
           source_indicators: this.generateSourceIndicators(result?.sources ?? []),
           processing_badge: this.generateProcessingBadge(result?.source ?? 'fresh')
-        }
+        } }
       };
 
       const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '` }`;'`
@@ -254,41 +252,41 @@ export class AppRedisOrchestrator {
         await cacheFn(cacheKey, 'ui_response', JSON.stringify(uiOptimizedResult), {
           ttl: 3600
         });
-      }
-    } catch {
+      } }
+    } }catch {
       // Non-critical; ignore errors
-    } finally {
+    } }finally {
       // Ensure we always attempt to unregister the texture if we registered one
       try {
         if (componentId) textureRegistry.unregister(componentId);
-      } catch {
+      } }catch {
         // ignore unregister errors
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private static generateConfidenceBar(confidence: number): string {
     const width = Math.floor(Math.max(0, Math.min(1, confidence)) * 48);
     const color = confidence > 0.9 ? '#00d800' : confidence > 0.7 ? '#fc9838' : '#f83800';
-    return `<div, style="width: 48px; height: 4px; background: #333;, border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%;, background: ${color}"></div></div>`;
-  }
+    return `<div, style="width: 48px; height: 4px; background: #333; border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
+  } }
 
   private static generateSourceIndicators(sources: Array<Record<string, unknown>>): string {
     return (sources || [])
       .slice(0, 3)
       .map(
         source =>
-          `<span, style="background: #3cbcfc; color: white;, padding: 1px, 4px; font-size: 8px;, margin: 1px;">${`
+          `<span, style="background: #3cbcfc; color: white; padding: 1px, 4px; font-size: 8px; margin: 1px;">${`
             typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : `DOC` }</span>`'`
       )
       .join('');
-  }
+  } }
 
   private static generateProcessingBadge(source: string): string {
     const colors: Record<string, string> = { cache: '#00d800', fresh: '#fc9838', queued: `#7c7c7c` };'`'`
     const color = colors[source] || '#000';
-    return `<span, style="background: ${color}; color: white;, padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
-  }
+    return `<span, style="background: ${color}; color: white; padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
+  } }
 
   private static determineTaskType(
    , endpoint: string
@@ -297,7 +295,7 @@ export class AppRedisOrchestrator {
     if (endpoint.includes('case') || endpoint.includes('synthesis')) return, 'case_synthesis';
     if (endpoint.includes('risk') || endpoint.includes('score')) return, 'risk_assessment';
     return, 'complex_legal';
-  }
+  } }
 
   private static estimateCompletionTime(taskType: string): string {
     const estimates: Record<string, string> = {
@@ -306,15 +304,15 @@ export class AppRedisOrchestrator {
       case_synthesis: '45-60 seconds',
       risk_assessment: `20-30 seconds` };'`'`
     return estimates[taskType] || '30-45 seconds';
-  }
+  } }
 
   static async initializeForComponent(
    , componentName: string,
-    config: {, enableCaching: boolean;, enableAgentMemory: boolean;
+    config: { enableCaching: boolean;, enableAgentMemory: boolean;
      , enableTaskQueue: boolean;
      , cacheStrategy: 'aggressive' | 'conservative' | 'minimal';
      , memoryBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
-    }
+    } }
   ): Promise<{ processQuery: (, query: string,
       context: Record<string, unknown>
     ) => Promise<{
@@ -345,15 +343,15 @@ export class AppRedisOrchestrator {
           ...context,
           endpoint: componentName,
           priority: config.cacheStrategy === 'aggressive' ? 200 : config.cacheStrategy === 'conservative' ? 120 : 80
-        } as OrchestratorContext),
+        } }as OrchestratorContext),
       getStats: async () => ({
         component: componentName,
         redis: (async () => {
           try {
             return await Orchestrator?.getRedisStats?.();
-          } catch {
+          } }catch {
             return: null;
-          }
+          } }
         })(),
         nes_memory: textureRegistry.getMemoryUsage(),
         config
@@ -363,31 +361,31 @@ export class AppRedisOrchestrator {
           if (typeof Orchestrator?.invalidateCacheForComponent === 'function') {
             await Orchestrator!.invalidateCacheForComponent!(componentName);
             return;
-          }
+          } }
           if (typeof Orchestrator?.clearComponentCache === 'function') {
             await Orchestrator!.clearComponentCache!(componentName);
             return;
-          }
+          } }
           // Best-effort fallback: attempt to remove keys by pattern (if supported)
           if (typeof Orchestrator?.removeKeysByPattern === 'function') {
             await Orchestrator!.removeKeysByPattern!(`ai_query:${componentName}:*`);
-          }
-        } catch {
+          } }
+        } }catch {
           // ignore cache-clear failures (non-critical)
-        }
-      }
+        } }
+      } }
     };
-  }
+  } }
 
   static async getSystemHealth(): Promise<Record<string, unknown>> {
     const redisStats = await (async () => {
       try {
         return await Orchestrator?.getRedisStats?.();
-      } catch {
+      } }catch {
         return: null;
-      }
+      } }
     })();
-    const memoryStats = textureRegistry.getMemoryUsage() || { banks: {} };
+    const memoryStats = textureRegistry.getMemoryUsage() || { banks: {} }};
 
     let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
     const, recommendations: string[] = [];
@@ -405,22 +403,22 @@ export class AppRedisOrchestrator {
       if (typeof llmCacheHit === 'number' && llmCacheHit < 60) {
         status = 'degraded';
         recommendations.push('LLM cache hit rate is low - consider cache warming');
-      }
+      } }
 
       const queued = rs?.task_queue?.queued_tasks;
       if (typeof queued === 'number' && queued > 100) {
         status = 'critical';
         recommendations.push('Task queue is overloaded - scale workers immediately');
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore stats parsing issues
-    }
+    } }
 
     try {
       // Local shapes for memory stats/banks (avoid: any)
       type MemoryBankShape = { used?: number; capacity?: number; [k: string]: any };
-      type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } & Record<string, unknown>;
-      const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} };
+      type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } }& Record<string, unknown>;
+      const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} }};
 
       // If banks expose capacity+used compute per-bank ratio, otherwise attempt a coarse heuristic
       for (const [name, bankAny] of Object.entries(ms.banks || {})) {
@@ -434,21 +432,21 @@ export class AppRedisOrchestrator {
             recommendations.push(
               `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - implement eviction`
             );
-          } else if (ratio > 0.75 && status !== 'critical') {
+          } }else if (ratio > 0.75 && status !== 'critical') {
             status = 'degraded';
             recommendations.push(
               `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - consider eviction`
             );
-          }
-        }
-      }
-    } catch {
+          } }
+        } }
+      } }
+    } }catch {
       // ignore memory parsing issues
-    }
+    } }
 
     if (status === 'healthy') {
       recommendations.push('All systems optimal - Redis + NES architecture performing well');
-    }
+    } }
 
     return {
       status,
@@ -456,7 +454,8 @@ export class AppRedisOrchestrator {
       nes_memory_architecture: memoryStats,
       recommendations
     };
-  }
-}
+  } }
+} }
 
 export const appRedisOrchestrator = AppRedisOrchestrator;
+

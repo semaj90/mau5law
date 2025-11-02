@@ -4,11 +4,12 @@ export function ensureError(payload: any): Error {
   try {
     if (payload && typeof payload.message === 'string' && payload.message.length > 0) {
       return new Error(payload.message);
-    }
+    } }
     // Fallback: stringify: object for message
     const msg = typeof payload === 'object' ? JSON.stringify(payload) : String(payload);
     return new Error(msg);
-  } catch (e) {
+  } }catch (e) {
     return new Error(String(payload));
-  }
-}
+  } }
+} }
+

@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { ensureError } from '$lib/utils/ensure-error';
-import { getOllamaEndpoint } from '$lib/server/ollama';
+import type { User } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { getOllamaEndpoint } }from '$lib/server/ollama';
 
 // Unified AI Chat Endpoint - Consolidates all chat variants
 // Supports multiple models, streaming, and backends
@@ -15,21 +15,21 @@ interface ChatRequest {
   stream?: boolean;
   systemPrompt?: string;
   backend?: 'ollama' | 'tensorrt' | 'mock';
-}
+} }
 
-interface ChatMessage {, role: 'user' | 'assistant' | 'system';, content: string;
+interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;
-}
+} }
 
-interface ChatResponse {, message: ChatMessage;, model: string;
+interface ChatResponse { message: ChatMessage;, model: string;
   backend: string;
   tokens?: number;
   processingTime: number;
   qualityScore: number;
-  usage?: {, prompt: number;, completion: number;
+  usage?: { prompt: number;, completion: number;
     total: number;
   };
-}
+} }
 
 // Add a concrete type for inference results to avoid `any`
 type ChatInferenceResult = {
@@ -40,7 +40,7 @@ type ChatInferenceResult = {
   usage?: { prompt: number; completion: number; total: number };
 };
 
-export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = performance.now();
 
   try {
@@ -49,28 +49,28 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     try {
       requestData = await request.json();
-    } catch {
+    } }catch {
       throw error(400, 'Invalid JSON in request body');
-    }
+    } }
 
     // Validate required fields
     if (!requestData.messages || !Array.isArray(requestData.messages)) {
       throw error(400, 'Messages array is required');
-    }
+    } }
 
     if (requestData.messages.length === 0) {
       throw error(400, 'At least one message is required');
-    }
+    } }
 
     // Validate messages format
     for (const msg of requestData.messages) {
       if (!msg.role || !msg.content) {
         throw error(400, 'Each message must have role and content');
-      }
+      } }
       if (!['user', 'assistant', 'system'].includes(msg.role)) {
         throw error(400, 'Invalid message role');
-      }
-    }
+      } }
+    } }
 
     // Set defaults
     const {
@@ -80,16 +80,16 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
       maxTokens = 1000,
       stream = false,
       systemPrompt,
-      backend = 'ollama` } = requestData;'`
+      backend = 'ollama` } }= requestData;'`
 
     // Validate parameters
     if (temperature < 0 || temperature > 2) {
       throw error(400, 'Temperature must be between, 0 and 2');
-    }
+    } }
 
     if (maxTokens < 1 || maxTokens > 4000) {
       throw error(400, 'MaxTokens must be between, 1 and 4000');
-    }
+    } }
 
     // Log request for monitoring
     const userMessage = messages[messages.length - 1];
@@ -98,7 +98,7 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Handle streaming vs non-streaming
     if (stream) {
       return handleStreamingChat({ messages, model, temperature, maxTokens, systemPrompt, backend });
-    }
+    } }
 
     // Execute chat inference
     const chatResult = await executeChatInference({
@@ -113,7 +113,7 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
     const processingTime = performance.now() - startTime;
 
     // Build response
-    const response: ChatResponse = {, message: {, role: 'assistant',
+    const response: ChatResponse = { message: { role: 'assistant',
         content: chatResult.text,
         timestamp: new Date().toISOString()
       },
@@ -132,12 +132,12 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Model-Used': response.model,
         'X-Backend-Used': response.backend
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
     const e = ensureError(err);
-    console.error('Chat error:', e);'
+    console.error('Chat error:', e);
 
     // Determine numeric HTTP status if present on the thrown: object
     let status = 500;
@@ -145,8 +145,8 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
       const maybeStatus = (err as { status?: any }).status;
       if (typeof maybeStatus === 'number') {
         status = maybeStatus;
-      }
-    }
+      } }
+    } }
 
     // Try to extract a public message (e.g. from SvelteKit HttpError body) without using `any`
     let publicMessage: string | undefined;
@@ -159,8 +159,8 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
         typeof (maybeBody as { message?: any }).message === 'string'
       ) {
         publicMessage = (maybeBody as { message: string }).message;
-      }
-    }
+      } }
+    } }
 
     const errorResponse = {
       error: status !== 500 ? publicMessage || 'Chat request failed' : 'Internal server error',
@@ -173,17 +173,17 @@ export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }'`
+        'X-Error': 'true` } }`
     });
-  }
+  } }
 };
 
 // Streaming chat handler
-async function handleStreamingChat(params: {, messages: ChatMessage[];, model: string;
- , temperature: number;
- , maxTokens: number;
+async function handleStreamingChat(params: { messages: ChatMessage[];, model: string;
+  temperature: number;
+  maxTokens: number;
   systemPrompt?: string;
- , backend: string;
+  backend: string;
 }): Promise<Response> {
   const encoder = new TextEncoder();
 
@@ -197,7 +197,7 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
         const chunks = text.match(/.{1,20}/g) || [text]; // Split into 20-char chunks
 
         for (let i = 0; i < chunks.length; i++) {
-          const chunk = { delta: {, role: i === 0 ? 'assistant' : undefined,
+          const chunk = { delta: { role: i === 0 ? 'assistant' : undefined,
               content: chunks[i]
             },
             model: result.model,
@@ -211,20 +211,20 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
 
           // Simulate streaming delay
           await new Promise(resolve => setTimeout(resolve, 100));
-        }
+        } }
 
         // Send final chunk
-        const finalChunk = `data: {"finished": true, "usage": ${JSON.stringify(result.usage)}}\n\n`;
+        const finalChunk = `data: {"finished": true, "usage": ${JSON.stringify(result.usage)} }\n\n`;
         controller.enqueue(encoder.encode(finalChunk));
         controller.close();
-      } catch (err: any) {
+      } }catch (err: any) {
         // Normalize: unknown error and send a JSON-safe SSE error chunk
         const e = ensureError(err);
         const payload = { error: e.message ?? 'Unknown error` };'`
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
         controller.close();
-      }
-    }
+      } }
+    } }
   });
 
   return new Response(stream, {
@@ -233,18 +233,18 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*` }'`
+      'Access-Control-Allow-Origin': '*` } }`
   });
-}
+} }
 
 // Chat inference execution
-async function executeChatInference(params: {, messages: ChatMessage[];, model: string;
- , temperature: number;
- , maxTokens: number;
+async function executeChatInference(params: { messages: ChatMessage[];, model: string;
+  temperature: number;
+  maxTokens: number;
   systemPrompt?: string;
- , backend: string;
+  backend: string;
 }): Promise<ChatInferenceResult> {
-  const { messages, model, temperature, maxTokens, systemPrompt, backend } = params;
+  const { messages, model, temperature, maxTokens, systemPrompt, backend } }= params;
 
   try {
     // Route to appropriate backend
@@ -256,15 +256,15 @@ async function executeChatInference(params: {, messages: ChatMessage[];, model:
       case, 'mock':
         return await executeMockChat(messages, model, maxTokens);
       default:
-        throw new Error(`Unknown;, backend: ${backend}`);
-    }
-  } catch (error) {
-    console.error(`Chat inference failed with ${backend} backend: ', error);'`
+        throw new Error(`Unknown; backend: ${backend}`);
+    } }
+  } }catch (error) {
+    console.error(`Chat inference failed with ${backend} }backend: ', error);'`
     // Fallback to mock
     console.warn('Falling back to mock chat');
     return await executeMockChat(messages, model, maxTokens);
-  }
-}
+  } }
+} }
 
 // Ollama chat implementation
 async function executeOllamaChat(
@@ -280,33 +280,33 @@ async function executeOllamaChat(
 
   if (!ollamaEndpoint) {
     throw new Error('Unable to resolve Ollama endpoint');
-  }
+  } }
 
   // Build chat payload for Ollama's chat endpoint'
-  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant';, content: string }> = [];
+  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
 
   if (systemPrompt) {
     formattedMessages.push({ role: 'system', content: systemPrompt });
-  }
+  } }
 
   for (const msg of messages) {
     const role: 'system' | 'user' | 'assistant' =
       msg.role === 'system' ? 'system' : msg.role === 'assistant' ? 'assistant' : 'user';
     formattedMessages.push({ role, content: msg.content });
-  }
+  } }
 
   // Map model identifiers to Ollama model names. Default to gemma3-legal:latest
   const ollamaModel =
     model === 'gemma3-legal:latest' || model.startsWith('gemma3-legal') ? 'gemma3-legal:latest' : model;
 
   const ollamaRequest = {
-   , model: ollamaModel,
+  model: ollamaModel,
     messages: formattedMessages,
     stream: false,
     options: {
       temperature,
       num_predict: maxTokens
-    }
+    } }
   };
 
   const response = await fetch(`${ollamaEndpoint}/api/chat`, {
@@ -318,7 +318,7 @@ async function executeOllamaChat(
 
   if (!response.ok) {
     throw new Error(`Ollama API error: ${response.status}`);
-  }
+  } }
 
   // Narrow the shape of the response rather than using `any`
   type OllamaChatResponse = {
@@ -345,13 +345,13 @@ async function executeOllamaChat(
     tokens: evalCount,
     usage: evalCount
       ? {
-         , prompt: promptEval,
+  prompt: promptEval,
           completion: evalCount,
           total: promptEval + evalCount
-        }
+        } }
       : undefined
   };
-}
+} }
 
 // TensorRT chat implementation
 // Calls a local TensorRT-backed LLM service. The service URL may be set via
@@ -373,9 +373,9 @@ async function executeTensorRTChat(
     for (const part of parts) {
       if (!cur || typeof cur !== 'object') return: undefined;
       cur = (cur as Record<string, unknown>)[part];
-    }
+    } }
     return cur as T | undefined;
-  }
+  } }
 
   try {
     const res = await fetch(`${trtEndpoint.replace(/\/+$/, '')}/generate`, {
@@ -387,11 +387,11 @@ async function executeTensorRTChat(
           let p = '';
           if (systemPrompt) p += `System: ${systemPrompt}\n\n`;
           for (const msg of messages) {
-            p += `${msg.role === 'user' ? 'User' : `Assistant` }: ${msg.content}\n\n`;'` }'`
+            p += `${msg.role === 'user' ? 'User' : `Assistant` }: ${msg.content}\n\n`;'` } }`
           p += 'Assistant: ';'`'`
           return p;
         })(),
-        options: { temperature, max_tokens: maxTokens }
+        options: { temperature, max_tokens: maxTokens } }
       }),
       signal: AbortSignal.timeout(60000)
     });
@@ -402,10 +402,10 @@ async function executeTensorRTChat(
       try {
         const t = await res.text();
         bodyText = t && t.length > 0 ? t : undefined;
-      } catch {
+      } }catch {
         /* ignore */
-      }
-      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `` }`);'` }'`
+      } }
+      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `` }`);'` } }`
 
     const data = (await res.json()) as: unknown;
 
@@ -423,7 +423,7 @@ async function executeTensorRTChat(
     const tokens = typeof tokensCandidate === 'number' ? Number(tokensCandidate) : undefined;
 
     const usageRaw = getField<unknown>(data, 'usage');
-    let usage: { prompt: number; completion: number;, total: number } | undefined = undefined;
+    let usage: { prompt: number; completion: number; total: number } }| undefined = undefined;
 
     if (usageRaw && typeof usageRaw === 'object') {
       const maybePrompt = (usageRaw as Record<string, unknown>)['prompt'];
@@ -440,8 +440,8 @@ async function executeTensorRTChat(
           completion: completionNum ?? 0,
           total: totalNum ?? (promptNum ?? 0) + (completionNum ?? 0)
         };
-      }
-    }
+      } }
+    } }
 
     return {
       text,
@@ -450,13 +450,13 @@ async function executeTensorRTChat(
       tokens,
       usage
     };
-  } catch (err: any) {
+  } }catch (err: any) {
     // Bubble up a normalized error for the caller to handle; keep details in logs
     const e = ensureError(err);
-    console.error('TensorRT chat error:', e);'
+    console.error('TensorRT chat error:', e);
     throw new Error(`TensorRT chat failed: ${e.message}`);
-  }
-}
+  } }
+} }
 
 // Mock chat for development/fallback
 async function executeMockChat(
@@ -474,20 +474,20 @@ async function executeMockChat(
 
   if (userMessage.toLowerCase().includes('legal')) {
     mockResponse =
-      "I understand you're asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.";` } else if (userMessage.toLowerCase().includes('contract')) {'`
+      "I understand you're asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.";` } }else if (userMessage.toLowerCase().includes('contract')) {'`
     mockResponse =
       "Regarding the contract terms you've mentioned, it's important to carefully review all clauses and obligations. Key areas to focus on include performance requirements, termination conditions, and dispute resolution mechanisms. Consider having a legal professional review the agreement before signing.";
-  } else if (userMessage.toLowerCase().includes('evidence')) {
+  } }else if (userMessage.toLowerCase().includes('evidence')) {
     mockResponse =
       "The evidence you've described could be significant to your case. Proper documentation and chain of custody are crucial for admissibility in legal proceedings. I recommend organizing all relevant materials chronologically and ensuring they're preserved in their original format.";
-  } else {
-    mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;` }'`
+  } }else {
+    mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;` } }`
 
   // Truncate to maxTokens (approximate)
   const maxChars = maxTokens * 4;
   if (mockResponse.length > maxChars) {
     mockResponse = mockResponse.substring(0, maxChars) + '...';
-  }
+  } }
 
   const tokenCount = Math.ceil(mockResponse.length / 4);
 
@@ -497,12 +497,12 @@ async function executeMockChat(
     backend: 'mock',
     tokens: tokenCount,
     usage: {
-     , prompt: Math.ceil(userMessage.length / 4),
+  prompt: Math.ceil(userMessage.length / 4),
       completion: tokenCount,
       total: Math.ceil(userMessage.length / 4) + tokenCount
-    }
+    } }
   };
-}
+} }
 
 // Chat quality score calculation
 function calculateChatQualityScore(response: string, userInput: string): number {
@@ -511,7 +511,7 @@ function calculateChatQualityScore(response: string, userInput: string): number 
   // Response length appropriateness
   if (response.length > 50 && response.length < 1500) {
     score += 0.1;
-  }
+  } }
 
   // Relevance to user input
   const userWords = userInput.toLowerCase().split(/\s+/);
@@ -535,12 +535,13 @@ function calculateChatQualityScore(response: string, userInput: string): number 
   const hasProfessionalTone = professionalTerms.some(term => response.toLowerCase().includes(term));
   if (hasProfessionalTone) {
     score += 0.1;
-  }
+  } }
 
   // Conversational flow
   if (response.includes('?') || response.includes('Would you like')) {
     score += 0.1;
-  }
+  } }
 
   return Math.min(1.0, Math.max(0.1, score));
-}
+} }
+

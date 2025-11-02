@@ -14,14 +14,14 @@ export interface ChatMessage {
   role: ChatRole;
   content: string;
   timestamp?: string; //, ISO: string, optional
-}
+} }
 
 /* Embedding types and options */
 export interface EmbeddingOptions {
   model?: string;
   normalize?: boolean; // whether to L2-normalize vectors
   truncateTo?: number; // optional max tokens/characters
-}
+} }
 
 /* Chat options and streaming */
 export interface ChatOptions {
@@ -30,7 +30,7 @@ export interface ChatOptions {
   maxTokens?: number;
   stream?: boolean;
   metadata?: Record<string, any>;
-}
+} }
 
 export interface ChatResult {
   id?: string;
@@ -38,7 +38,7 @@ export interface ChatResult {
   model?: string;
   tokensUsed?: number;
   raw?: any;
-}
+} }
 
 /* Cache options for Redis-like caches */
 export interface CacheSetOptions {
@@ -46,25 +46,25 @@ export interface CacheSetOptions {
   ttlMs?: number; // alternatively allow milliseconds
   tags?: string[]; // semantic tags for invalidation
   persistent?: boolean; // whether this key should survive restarts (implementation-defined)
-}
+} }
 
 /* Vector search options and result */
 export interface VectorSearchOptions {
   distance?: 'cosine' | 'dot' | 'euclidean';
   includePayload?: boolean;
   filter?: Record<string, any>; // optional metadata filter
-}
+} }
 
 export interface VectorSearchResult<TMeta = Record<string, any>> { id: string;, score: number;
   payload?: TMeta;
-}
+} }
 
 /* Clustering options */
 export interface ClusterOptions {
   algorithm?: 'kmeans' | 'hdbscan' | 'kmeans++';
   seed?: number;
   iterations?: number;
-}
+} }
 
 /* Interfaces */
 
@@ -82,7 +82,7 @@ export interface IOllamaEmbeddingService {
 
   /** Optional health check */
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; details?: any }>;
-}
+} }
 
 export interface IOllamaChatService {
   /**
@@ -98,7 +98,7 @@ export interface IOllamaChatService {
   streamChat?(messages: ChatMessage[], options?: ChatOptions): AsyncIterable<string>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; latencyMs?: number }>;
-}
+} }
 
 export interface IRedisCacheService {
   get<T = any>(key: string): Promise<T | null>;
@@ -113,11 +113,11 @@ export interface IRedisCacheService {
   setIfNotExists?(key: string, value: any, ttlSeconds?: number): Promise<boolean>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; usedMemory?: number }>;
-}
+} }
 
 export interface IQdrantVectorService {
   upsertVector(id: string, vector: Float32Array | number[], metadata?: Record<string, any>): Promise<void>;
-  upsertBatch(items: {, id: string;, vector: Float32Array | number[]; metadata?: Record<string, any> }[]): Promise<void>;
+  upsertBatch(items: { id: string; vector: Float32Array | number[]; metadata?: Record<string, any> } }]): Promise<void>;
 
   /**
    * Search a vector and return top-K results with optional payload/metadata.
@@ -134,7 +134,7 @@ export interface IQdrantVectorService {
   deleteByIds?(ids: string[]): Promise<void>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; collections?: string[] }>;
-}
+} }
 
 export interface IUltraJSONParser {
   parse<T = any>(data: string): T;
@@ -144,7 +144,7 @@ export interface IUltraJSONParser {
    * Safe parse that never throws; returns: null on invalid JSON
    */
   safeParse?<T = any>(data: string): T | null;
-}
+} }
 
 export interface IWasmClusteringService {
   /**
@@ -153,7 +153,7 @@ export interface IWasmClusteringService {
    */
   cluster(vectors: Array<Float32Array | number[]>, n: number, options?: ClusterOptions): Promise<number[]>;
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; wasmVersion?: string }>;
-}
+} }
 
 export interface INesGPUBridge {
   /**
@@ -168,4 +168,5 @@ export interface INesGPUBridge {
   getDeviceInfo?(): Promise<{ name: string; memoryBytes?: number; supportsCUDA?: boolean; vendor?: string }>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; device?: string }>;
-}
+} }
+

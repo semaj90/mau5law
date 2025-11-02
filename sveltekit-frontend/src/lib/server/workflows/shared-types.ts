@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Shared types for Legal AI Platform
 // SvelteKit, 2 + PostgreSQL/pgvector + Qdrant + Redis + XState v5
-import type { Actor, SnapshotFrom } from 'xstate';
-import type { documentProcessingMachine } from './document-processing.js';
-import type { legalCaseManagementMachine } from './legal-case-management.js';
+import type { Actor, SnapshotFrom } }from 'xstate';
+import type { documentProcessingMachine } }from './document-processing.js';
+import type { legalCaseManagementMachine } }from './legal-case-management.js';
 
 // ============================================================================
 // Vector Database Types (PostgreSQL pgvector + Qdrant compatible)
@@ -18,28 +18,28 @@ export interface DocumentChunk { id: string;, content: string;
   metadata: DocumentMetadata;
   createdAt: Date;
   updatedAt: Date;
-}
+} }
 
 /** Metadata attached to document chunks */
-export interface DocumentMetadata {, documentId: string;, chunkIndex: number;
+export interface DocumentMetadata { documentId: string;, chunkIndex: number;
   sourceFile?: string;
   caseId?: string;
   tags?: string[];
   [key: string]: any;
-}
+} }
 
 /** Qdrant search result */
-export interface QdrantSearchResult {, id: string;, score: number;
+export interface QdrantSearchResult { id: string;, score: number;
   payload: DocumentMetadata;
   vector?: VectorEmbedding;
-}
+} }
 
 /** PostgreSQL pgvector search result */
-export interface PgVectorSearchResult {, id: string;, content: string;
+export interface PgVectorSearchResult { id: string;, content: string;
   embedding: VectorEmbedding;
   similarity: number;
  , metadata: DocumentMetadata;
-}
+} }
 
 // ============================================================================
 // XState v5 Workflow Types
@@ -75,16 +75,16 @@ export type CacheKeyPattern =
   | `case:${string}`;
 
 /** Redis cache value with TTL */
-export interface CachedValue<T = unknown> {, data: T;, expiresAt: number;
+export interface CachedValue<T = unknown> { data: T;, expiresAt: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 /** Cache operation result */
 export interface CacheResult<T> {
   hit: boolean;
   data?: T;
   ttl?: number;
-}
+} }
 
 // ============================================================================
 // SvelteKit Integration Types
@@ -96,27 +96,25 @@ export interface ServerLoadResult<T> {
   error?: string;
   cached?: boolean;
   timestamp?: number;
-}
+} }
 
 /** SvelteKit form action result */
-export interface FormActionResult<T = unknown> {
- , success: boolean;
+export interface FormActionResult<T = unknown> { success: boolean;
   data?: T;
   error?: string;
   validationErrors?: Record<string, string>;
-}
+} }
 
 /** API response format */
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: {
-   , timestamp: number;
+  metadata?: { timestamp: number;
     requestId?: string;
     cached?: boolean;
   };
-}
+} }
 
 // ============================================================================
 // Database Query Types (Drizzle ORM compatible)
@@ -126,29 +124,28 @@ export interface ApiResponse<T = unknown> {
 export interface PaginationParams { page: number;, pageSize: number;
   offset?: number;
   limit?: number;
-}
+} }
 
 /** Paginated result wrapper */
-export interface PaginatedResult<T> {, items: T[];, total: number;
+export interface PaginatedResult<T> { items: T[];, total: number;
   page: number;
   pageSize: number;
   hasMore: boolean;
-}
+} }
 
 /** Vector search parameters */
-export interface VectorSearchParams {
- , query: string;
+export interface VectorSearchParams { query: string;
   embedding?: VectorEmbedding;
   limit?: number;
   threshold?: number;
   filter?: Record<string, unknown>;
-}
+} }
 
 /** Vector search result */
 export interface VectorSearchResult { chunks: DocumentChunk[];, scores: number[];
   total: number;
   queryEmbedding?: VectorEmbedding;
-}
+} }
 
 // ============================================================================
 // Legal Domain Types
@@ -171,17 +168,16 @@ export type Jurisdiction = 'federal' | 'state' | 'local' | 'international';
 // ============================================================================
 
 /** Standard error response */
-export interface ErrorResponse {
- , error: string;
+export interface ErrorResponse { error: string;
   code?: string;
   details?: Record<string, unknown>;
   timestamp: number;
-}
+} }
 
 /** Validation error */
-export interface ValidationError {, field: string;, message: string;
+export interface ValidationError { field: string;, message: string;
   value?: any;
-}
+} }
 
 // ============================================================================
 // Utility Types
@@ -199,3 +195,4 @@ export type RequireKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export type AsyncFunction<T = unknown, Args, extends, unknown[] = unknown[]> = (
   ...args: Args
 ) => Promise<T>;
+

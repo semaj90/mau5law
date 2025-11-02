@@ -11,7 +11,7 @@ export interface UploadResponse {
   size?: number;
   type?: string;
   error?: string;
-}
+} }
 export interface DeleteResponse {
   ok: boolean;
   message?: string;
@@ -19,13 +19,13 @@ export interface DeleteResponse {
   hardDeleteScheduled?: boolean;
   hardDeleteAfter?: string;
   error?: string;
-}
+} }
 export interface StorageFile { bucket: string;, key: string;
   url?: string;
   size?: number;
   type?: string;
   uploadedAt?: Date;
-}
+} }
 /**
  * Secure storage client with authentication and error handling
  */
@@ -35,13 +35,13 @@ export class SecureStorageClient {
   constructor(baseUrl = '/api/v1/storage', authToken?: string) {
     this.baseUrl = baseUrl;
     this.authToken = authToken;
-  }
+  } }
   /**
    * Set authentication token
    */
   setAuthToken(token: string) {
     this.authToken = token;
-  }
+  } }
   /**
    * Get authentication headers
    */
@@ -49,9 +49,9 @@ export class SecureStorageClient {
     const headers: Record<string, string> = {};
     if (this.authToken) {
       headers['Authorization'] = `Bearer ${this.authToken}`;
-    }
+    } }
     return headers;
-  }
+  } }
   /**
    * Upload file with proper error handling and security
    */
@@ -62,7 +62,7 @@ export class SecureStorageClient {
       formData.append('bucket', bucket);
       if (customKey) {
         formData.append('key', customKey);
-      }
+      } }
       const response = await fetch(`${this.baseUrl}/upload`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
@@ -74,13 +74,13 @@ export class SecureStorageClient {
         return {
           ok: false,
           error: result.error || 'Upload failed' };
-      }
+      } }
       return result;
-    } catch (error) {
-      console.error('Upload error: ', error);'
+    } }catch (error) {
+      console.error('Upload error: ', error);
       return { ok: false, error: 'Network error during upload' };
-    }
-  }
+    } }
+  } }
   /**
    * Delete file with conditional client-side removal
    * Only removes from client state if server confirms deletion
@@ -100,13 +100,13 @@ export class SecureStorageClient {
         return {
           ok: false,
           error: result.error || 'Delete failed' };
-      }
+      } }
       return result;
-    } catch (error) {
-      console.error('Delete error: ', error);'
+    } }catch (error) {
+      console.error('Delete error: ', error);
       return { ok: false, error: 'Network error during delete' };
-    }
-  }
+    } }
+  } }
   /**
    * Check file deletion status
    */
@@ -125,13 +125,13 @@ export class SecureStorageClient {
           ok: false,
           error: result.error || 'Status check failed'
         };
-      }
+      } }
       return result;
-    } catch (error) {
-      console.error('Status check error:', error);'
+    } }catch (error) {
+      console.error('Status check error:', error);
       return { ok: false, error: 'Network error during status check' };
-    }
-  }
+    } }
+  } }
   /**
    * Batch upload multiple files
    */
@@ -139,7 +139,7 @@ export class SecureStorageClient {
     files: File[],
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void
-  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string }[] }> {
+  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string } }] }> {
     const successful: UploadResponse[] = [];
     const failed: Array<{ file: File; error: string }> = [];
     for (let i = 0; i < files.length; i++) {
@@ -147,17 +147,17 @@ export class SecureStorageClient {
       const result = await this.uploadFile(file, bucket);
       if (result.ok) {
         successful.push(result);
-      } else {
+      } }else {
         failed.push({
           file,
-          error: result.error || 'Unknown error' });'` }'`
+          error: result.error || 'Unknown error' });'` } }`
       if (onProgress) {
         onProgress(i + 1, files.length);
-      }
-    }
+      } }
+    } }
     return { successful, failed };
-  }
-}
+  } }
+} }
 /**
  * Reactive storage manager for Svelte components
  */
@@ -168,7 +168,7 @@ export class ReactiveStorageManager {
   private error = $state<string | null>(null);
   constructor(authToken?: string) {
     this.client = new SecureStorageClient('/api/v1/storage', authToken);
-  }
+  } }
   /**
    * Get reactive state
    */
@@ -178,13 +178,13 @@ export class ReactiveStorageManager {
       loading: this.loading,
       error: this.error
     };
-  }
+  } }
   /**
    * Set authentication token
    */
   setAuthToken(token: string) {
     this.client.setAuthToken(token);
-  }
+  } }
   /**
    * Upload file and update state
    */
@@ -204,17 +204,17 @@ export class ReactiveStorageManager {
           uploadedAt: new Date()
         });
         return true;
-      } else {
+      } }else {
         this.error = result.error ?? 'Upload failed';
         return false;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       this.error = error instanceof Error ? error.message : 'Upload failed';
       return false;
-    } finally {
+    } }finally {
       this.loading = false;
-    }
-  }
+    } }
+  } }
   /**
    * Delete file and update state conditionally
    */
@@ -227,23 +227,23 @@ export class ReactiveStorageManager {
         // Remove from client state only after successful server deletion
         this.files = this.files.filter(f => !(f.bucket === bucket && f.key === key));
         return true;
-      } else {
+      } }else {
         this.error = result.error ?? 'Delete failed';
         return false;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       this.error = error instanceof Error ? error.message : 'Delete failed';
       return false;
-    } finally {
+    } }finally {
       this.loading = false;
-    }
-  }
+    } }
+  } }
   /**
    * Clear error state
    */
   clearError() {
     this.error = null;
-  }
+  } }
   /**
    * Refresh file list (if you have a list endpoint)
    */
@@ -251,8 +251,8 @@ export class ReactiveStorageManager {
     // Implementation would depend on having a list endpoint
     // For now, this is a placeholder
     console.log('File refresh not implemented yet');
-  }
-}
+  } }
+} }
 /**
  * Create a new storage manager instance
  */

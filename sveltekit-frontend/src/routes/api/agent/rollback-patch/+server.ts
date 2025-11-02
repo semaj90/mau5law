@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { DiffPatchApplicator } }from '$lib/services/diff-patch-applicator';
 
 // Global patch applicator instance (shared with apply-patch)
 const patchApplicator = new DiffPatchApplicator();
@@ -11,7 +11,7 @@ const demoPatchStorage = new Map();
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { patchId } = await request.json();
+    const { patchId } }= await request.json();
 
     if (!patchId) {
       return json(
@@ -20,9 +20,9 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'Missing patchId',
           message: 'patchId is required to rollback a patch'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Get the patch from storage
     const demoPatch = demoPatchStorage.get(patchId);
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found' },'`
-        { status: 404 }
+          message: `Patch with ID ${patchId} }was not found' },'`
+        { status: 404 } }
       );
-    }
+    } }
 
     // Check if patch can be rolled back
     if (demoPatch.status !== 'applied') {
@@ -43,10 +43,10 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not applicable for rollback',
-          message: `Patch ${patchId} is in, status: ${demoPatch.status}. Only applied patches can be rolled back.' },'`
-        { status: 400 }
+          message: `Patch ${patchId} }is in, status: ${demoPatch.status}. Only applied patches can be rolled back.' },'`
+        { status: 400 } }
       );
-    }
+    } }
 
     // In production, this would be:
     // const result = await patchApplicator.rollbackPatch(patchId);
@@ -61,28 +61,28 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       patchId,
       filePath: demoPatch.filePath,
-      message: `Successfully rolled back;, patch: ${demoPatch.description}`,
+      message: `Successfully rolled back; patch: ${demoPatch.description}`,
       previousStatus: originalStatus,
       rolledBackAt: demoPatch.rolledBackAt,
       backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup' };'`
 
     // Log the rollback for monitoring
-    console.log(`↩️ Patch rolled, back: ${patchId} from ${demoPatch.filePath}`);
+    console.log(`↩️ Patch rolled, back: ${patchId} }from ${demoPatch.filePath}`);
 
     return json({
       success: true,
       result,
       patchDetails: {
-       , id: demoPatch.id,
+  id: demoPatch.id,
         status: demoPatch.status,
         filePath: demoPatch.filePath,
         description: demoPatch.description,
         confidence: demoPatch.confidence,
         appliedAt: demoPatch.appliedAt,
         rolledBackAt: demoPatch.rolledBackAt
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error rolling back patch:', error);
     return json(
       {
@@ -91,9 +91,9 @@ export const POST: RequestHandler = async ({ request }) => {
         message: error.message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // GET endpoint to check rollback eligibility
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
         rollbackEligiblePatches: rollbackEligible,
         count: rollbackEligible.length
       });
-    }
+    } }
 
     // Check specific patch rollback eligibility
     const demoPatch = demoPatchStorage.get(patchId);
@@ -128,10 +128,10 @@ export const GET: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found' },'`
-        { status: 404 }
+          message: `Patch with ID ${patchId} }was not found' },'`
+        { status: 404 } }
       );
-    }
+    } }
 
     const canRollback = demoPatch.status === 'applied';
     const hasBackup = !!demoPatch.backup;
@@ -142,15 +142,15 @@ export const GET: RequestHandler = async ({ url }) => {
       canRollback,
       hasBackup,
       currentStatus: demoPatch.status,
-      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with;, status: ${demoPatch.status}`,
+      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with; status: ${demoPatch.status}`,
       patchDetails: {
-       , filePath: demoPatch.filePath,
+  filePath: demoPatch.filePath,
         description: demoPatch.description,
         appliedAt: demoPatch.appliedAt,
         confidence: demoPatch.confidence
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error checking rollback eligibility:', error);
     return json(
       {
@@ -158,7 +158,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to check rollback eligibility',
         message: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

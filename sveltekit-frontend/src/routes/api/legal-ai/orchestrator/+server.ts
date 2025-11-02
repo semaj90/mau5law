@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 import {
   withSSRHandler,
   createSSRResponse,
   createSSRErrorResponse,
   type BitsUICompatibleData, // Import BitsUICompatibleData
-} from '$lib/server/api-ssr-helpers.js';
-import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent
+} }from '$lib/server/api-ssr-helpers.js';
+import type { RequestEvent } }from '@sveltejs/kit'; // Import RequestEvent
 
 // Define WorkflowStepOptions based on OrchestrationRequest's options'
 interface WorkflowStepOptions {
@@ -15,7 +15,7 @@ interface WorkflowStepOptions {
   cacheResults?: boolean;
   priority?: 'low' | 'medium' | 'high';
   timeout?: number;
-}
+} }
 
 /*
  * Legal AI Orchestrator - Central API Router
@@ -29,7 +29,7 @@ interface OrchestrationRequest { workflow: 'legal-research' | 'document-processi
     priority?: 'low' | 'medium' | 'high';
     timeout?: number;
   };
-}
+} }
 interface OrchestrationResult extends BitsUICompatibleObject {
   // Removed broad index signature that caused type conflicts
   workflowId: string;
@@ -39,12 +39,12 @@ interface OrchestrationResult extends BitsUICompatibleObject {
   // Change:, allow: object-shaped results (previously BitsUICompatibleData caused many mismatch errors)
   result?: BitsUICompatibleObject;
   error?: string;
-  metrics: {, totalTime: number;, apiCalls: number;
+  metrics: { totalTime: number;, apiCalls: number;
     cacheHits: number;
-   , gpuAccelerated: boolean;
+  gpuAccelerated: boolean;
   };
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 interface WorkflowStep extends BitsUICompatibleObject {
   // Removed broad index signature that caused type conflicts
@@ -53,61 +53,61 @@ interface WorkflowStep extends BitsUICompatibleObject {
   result?: WorkflowStepResult;
   error?: string;
   duration: number;
- , apiEndpoint: string;
+  apiEndpoint: string;
   // Optional flexible container for additional step-level data
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // --- New Interfaces for Step Executors ---
 
 type WorkflowStepResult = BitsUICompatibleObject; // Simplified to extend the: object type
 
 // Search Legal Documents
-interface SearchLegalDocumentsParams {, query: string;, jurisdiction: string;
+interface SearchLegalDocumentsParams { query: string;, jurisdiction: string;
   maxResults?: number;
   useAI?: boolean;
   previousResults?: WorkflowStepResult[];
-}
+} }
 
 interface LegalSearchResultItem extends BitsUICompatibleObject {
   // Removed broad index signature
   title: string;
   url: string;
   snippet: string;
- , source: string;
+  source: string;
   date?: string;
   relevanceScore?: number;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 interface EnhancedLegalSearchResult extends BitsUICompatibleObject {
   // Removed broad index signature
   results: LegalSearchResultItem[];
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Analyze Precedents
 interface AnalyzePrecedentsParams { query: string;, jurisdiction: string;
   userRole?: string;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface LegalResearchAnalysisResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , analysis: BitsUICompatibleData;
+  analysis: BitsUICompatibleData;
   recommendations?: BitsUICompatibleData[];
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Generate Research Summary
 interface GenerateResearchSummaryParams {
   query: string;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface ChatResponse extends BitsUICompatibleObject {
   // Removed broad index signature
- , response: BitsUICompatibleData;
+  response: BitsUICompatibleData;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Extract Document Entities
 interface ExtractDocumentEntitiesParams {
@@ -116,23 +116,23 @@ interface ExtractDocumentEntitiesParams {
   extractEntities?: boolean;
   includeKeyTerms?: boolean;
   previousResults?: WorkflowStepResult[];
-}
+} }
 
 interface ExtractedEntity extends BitsUICompatibleObject {
   // Removed broad index signature
   text: BitsUICompatibleData;
- , type: BitsUICompatibleData;
+  type: BitsUICompatibleData;
   start?: BitsUICompatibleData;
   end?: BitsUICompatibleData;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 interface DocumentEntityExtractionResult extends BitsUICompatibleObject {
   // Removed broad index signature
   entities: ExtractedEntity[];
   keyTerms?: BitsUICompatibleData[];
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Analyze Document Content
 interface AnalyzeDocumentContentParams {
@@ -140,12 +140,12 @@ interface AnalyzeDocumentContentParams {
   analysisType?: string;
   includeMetadata?: boolean;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface DocumentAnalysisResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , analysis: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
+  analysis: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Generate Document Summary
 interface GenerateDocumentSummaryParams {
@@ -154,61 +154,61 @@ interface GenerateDocumentSummaryParams {
   includeKeyPoints?: boolean;
   legalFocus?: boolean;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface DocumentSummaryResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , summary: BitsUICompatibleData;
+  summary: BitsUICompatibleData;
   keyPoints?: BitsUICompatibleData[];
   keyTerms?: BitsUICompatibleData[];
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Score Case Strength
 interface ScoreCaseStrengthParams { title: string;, description: string;
   caseType: string;
   jurisdiction: string;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface CaseScoringResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , score: BitsUICompatibleData;
+  score: BitsUICompatibleData;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Suggest Research Topics
 interface SuggestResearchTopicsParams { caseType: string;, title: string;
   description: string;
   maxSuggestions?: number;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface ResearchSuggestionsResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , suggestions: BitsUICompatibleData[];
+  suggestions: BitsUICompatibleData[];
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Create Case Timeline
 interface CreateCaseTimelineParams {
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface CaseTimelineResult extends BitsUICompatibleObject {
   // Removed broad index signature
   milestones: Array<BitsUICompatibleObject>;
   // Allow, ISO: string timestamps (now.toISOString()) as well as BitsUICompatibleData;
   generated: BitsUICompatibleData | string;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Process Evidence Metadata
 interface ProcessEvidenceMetadataParams { evidenceId: string;, metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
   extractAdditional?: boolean;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface EvidenceMetadataProcessingResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
+  metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Analyze Evidence Relevance
 interface AnalyzeEvidenceRelevanceParams {
@@ -217,23 +217,23 @@ interface AnalyzeEvidenceRelevanceParams {
   evidenceItems: string[];
   analysisDepth?: string;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface EvidenceRelevanceAnalysisResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , relevanceScore: number;
+  relevanceScore: number;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Generate Evidence Report
 interface GenerateEvidenceReportParams {
   evidenceId: string;
   previousResults?: WorkflowStepResult[];
-}
+} }
 interface EvidenceReportResult extends BitsUICompatibleObject {
   // Removed broad index signature
- , report: string;
+  report: string;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // --- New Interfaces for QLoRA Distillation Workflow ---
 interface TriggerQLoRADistillationParams { userId: string;, domain: string;
@@ -246,7 +246,7 @@ interface TriggerQLoRADistillationParams { userId: string;, domain: string;
     optimizeFor?: 'speed' | 'quality' | 'size';
   };
   feedbackData?: Array<BitsUICompatibleData>;
-}
+} }
 
 interface TriggerQLoRADistillationResult extends BitsUICompatibleObject {
   // Removed broad index signature
@@ -255,9 +255,9 @@ interface TriggerQLoRADistillationResult extends BitsUICompatibleObject {
   status: 'queued' | 'processing' | 'completed' | 'failed';
   message: string;
   estimatedDuration: string;
- , statusUrl: string;
+  statusUrl: string;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
-}
+} }
 
 // Add a local alias for BitsUICompatibleObject built from BitsUICompatibleData
 // This mirrors the shape previously expected by the file and avoids importing a non-existent symbol.
@@ -270,7 +270,7 @@ class LegalAIOrchestrator {
   private stepExecutors = new Map<string, (params: any, options?: WorkflowStepOptions) => Promise<unknown>>();
   constructor() {
     this.initializeStepExecutors();
-  }
+  } }
   private initializeStepExecutors() {
     // Legal research workflow steps
     this.stepExecutors.set(
@@ -359,7 +359,7 @@ class LegalAIOrchestrator {
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
-  }
+  } }
   async executeWorkflow(request: OrchestrationRequest): Promise<OrchestrationResult> {
     const workflowId = this.generateWorkflowId();
     const startTime = Date.now();
@@ -369,18 +369,18 @@ class LegalAIOrchestrator {
       status: 'processing',
       steps: [],
       metrics: {
-       , totalTime: 0,
+  totalTime: 0,
         apiCalls: 0,
         cacheHits: 0,
         gpuAccelerated: request.options?.useGPU || false
-      }
+      } }
     };
     this.activeWorkflows.set(workflowId, result);
     try {
       const workflowSteps = this.getWorkflowSteps(request.workflow);
       for (const stepConfig of workflowSteps) {
         const step: WorkflowStep = {
-         , name: stepConfig.name,
+  name: stepConfig.name,
           status: 'processing',
           duration: 0,
           apiEndpoint: stepConfig.endpoint
@@ -392,34 +392,34 @@ class LegalAIOrchestrator {
           const executor = this.stepExecutors.get(stepConfig.name);
           if (!executor) {
             throw new Error(`No executor found for step: ${stepConfig.name}`);
-          }
+          } }
           step.result = (await executor(
             // Explicitly cast the result to WorkflowStepResult
             { ...request.parameters, previousResults: this.getPreviousResults(result.steps) },
             request.options
           )) as WorkflowStepResult;
           step.status = 'completed';
-        } catch (error) {
+        } }catch (error) {
           step.status = 'failed';
           step.error = error instanceof Error ? error.message : String(error);
           result.status = 'failed';
           result.error = `Workflow failed at step: ${stepConfig.name}`;
           break;
-        }
+        } }
         step.duration = Date.now() - stepStartTime;
-      }
+      } }
       if (result.status !== 'failed') {
         result.status = 'completed';
         result.result = this.aggregateWorkflowResults(result.steps, request.workflow);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       result.status = 'failed';
       result.error = error instanceof Error ? error.message : String(error);
-    }
+    } }
     result.metrics.totalTime = Date.now() - startTime;
     this.activeWorkflows.set(workflowId, result);
     return result;
-  }
+  } }
   // Step executor implementations
   private async executeSearchLegalDocuments(
     params: SearchLegalDocumentsParams,
@@ -429,7 +429,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , query: params.query,
+  query: params.query,
         jurisdiction: params.jurisdiction,
         maxResults: params.maxResults || 20,
         useAI: true
@@ -437,9 +437,9 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Search failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeAnalyzePrecedents(
     params: AnalyzePrecedentsParams,
@@ -456,7 +456,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , topic: params.query, // Using params.query as: 'topic';, jurisdiction: params.jurisdiction,
+  topic: params.query, // Using params.query as: 'topic'; jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
         includeAnalysis: true,
         userRole: params.userRole,
@@ -465,15 +465,15 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Precedent analysis failed: ${response.status}`);
-    }
+    } }
     return (await response.json()) as LegalResearchAnalysisResult; // Explicitly cast
-  }
+  } }
 
   private async executeGenerateResearchSummary(
     params: GenerateResearchSummaryParams,
     _options?: WorkflowStepOptions
   ): Promise<ChatResponse> {
-    // Fix: Use a type guard to correctly; type: 'r' and;, ensure: 'analysis' property exists
+    // Fix: Use a type guard to correctly; type: 'r' and; ensure: 'analysis' property exists
     const precedentAnalysisResult = params.previousResults?.find(
       (r): r is LegalResearchAnalysisResult =>
         (r as LegalResearchAnalysisResult).analysis !== undefined &&
@@ -485,16 +485,16 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({, message: `Generate a comprehensive legal research summary, for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
+      body: JSON.stringify({ message: `Generate a comprehensive legal research summary, for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
         model: 'gemma3-legal:latest',
         temperature: 0.3
       })
     });
     if (!response.ok) {
       throw new Error(`Summary generation failed: ${response.status}`);
-    }
+    } }
     return (await response.json()) as ChatResponse; // Explicitly cast
-  }
+  } }
 
   private async executeExtractDocumentEntities(
     params: ExtractDocumentEntitiesParams,
@@ -504,7 +504,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , content: params.content,
+  content: params.content,
         documentType: params.documentType || 'legal_document',
         extractEntities: true,
         includeKeyTerms: true
@@ -512,9 +512,9 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Entity extraction failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeAnalyzeDocumentContent(
     params: AnalyzeDocumentContentParams,
@@ -524,15 +524,15 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , text: params.content, // Using params.content as: 'text';, analysisType: 'legal_document',
+  text: params.content, // Using params.content as: 'text'; analysisType: 'legal_document',
         includeMetadata: true
       })
     });
     if (!response.ok) {
       throw new Error(`Document analysis failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeGenerateDocumentSummary(
     params: GenerateDocumentSummaryParams,
@@ -542,7 +542,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , content: params.content,
+  content: params.content,
         maxLength: params.maxLength || 500,
         includeKeyPoints: params.includeKeyPoints || true,
         legalFocus: params.legalFocus || true
@@ -550,9 +550,9 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Document summarization failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeScoreCaseStrength(
     params: ScoreCaseStrengthParams,
@@ -562,7 +562,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , caseTitle: params.title,
+  caseTitle: params.title,
         description: params.description,
         caseType: params.caseType,
         jurisdiction: params.jurisdiction
@@ -570,9 +570,9 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Case scoring failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeSuggestResearchTopics(
     params: SuggestResearchTopicsParams,
@@ -582,16 +582,16 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , context: `New ${params.caseType} case ${params.title}. ${params.description}`,
+  context: `New ${params.caseType} }case ${params.title}. ${params.description}`,
         suggestionType: 'research',
         maxSuggestions: params.maxSuggestions || 10
       })
     });
     if (!response.ok) {
       throw new Error(`Research suggestions failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeCreateCaseTimeline(
     _params: CreateCaseTimelineParams,
@@ -601,7 +601,7 @@ class LegalAIOrchestrator {
     const now = new Date();
     const timeline: CaseTimelineResult = {
       milestones: [
-        {, name: 'Case Created', date: now.toISOString(), type: 'created' },
+        { name: 'Case Created', date: now.toISOString(), type: 'created' },
         {
           name: 'Initial Research Due',
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -609,13 +609,13 @@ class LegalAIOrchestrator {
         {
           name: 'Discovery Phase',
           date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          type: `phase` }
+          type: `phase` } }
       ],
       // Allow ISO: string timestamps (now.toISOString()) as well as BitsUICompatibleData
       generated: now.toISOString()
     };
     return timeline;
-  }
+  } }
 
   private async executeProcessEvidenceMetadata(
     params: ProcessEvidenceMetadataParams,
@@ -625,16 +625,16 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , evidenceId: params.evidenceId,
+  evidenceId: params.evidenceId,
         metadata: params.metadata,
         extractAdditional: params.extractAdditional || true
       })
     });
     if (!response.ok) {
       throw new Error(`Evidence metadata processing failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeAnalyzeEvidenceRelevance(
     params: AnalyzeEvidenceRelevanceParams,
@@ -644,20 +644,20 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , query: params.caseContext || params.title,
+  query: params.caseContext || params.title,
         evidenceItems: params.evidenceItems,
         analysisDepth: params.analysisDepth || 'comprehensive' })'` });'`
     if (!response.ok) {
       throw new Error(`Evidence relevance analysis failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeGenerateEvidenceReport(
     params: GenerateEvidenceReportParams,
     _options?: WorkflowStepOptions
   ): Promise<EvidenceReportResult> {
-    // Fix: Use a type guard to correctly; type: 'r' and;, ensure: 'relevanceScore' property exists.
+    // Fix: Use a type guard to correctly; type: 'r' and; ensure: 'relevanceScore' property exists.
     const relevanceData =
       params.previousResults?.find(
         (r): r is EvidenceRelevanceAnalysisResult =>
@@ -668,7 +668,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , reportType: 'evidence_analysis',
+  reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
         relevanceScore: relevanceData,
         includeRecommendations: true
@@ -676,9 +676,9 @@ class LegalAIOrchestrator {
     });
     if (!response.ok) {
       throw new Error(`Evidence report generation failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
 
   private async executeTriggerQLoRADistillation(
     params: TriggerQLoRADistillationParams,
@@ -692,50 +692,50 @@ class LegalAIOrchestrator {
 
     if (!response.ok) {
       throw new Error(`QLoRA distillation trigger failed: ${response.status}`);
-    }
+    } }
     return await response.json();
-  }
+  } }
   // Helper methods
   private getWorkflowSteps(workflow: OrchestrationRequest['workflow']) {
     // Use specific workflow type
-    type WorkflowConfig = { name: string; endpoint: string }[];
+    type WorkflowConfig = { name: string; endpoint: string } }];
     const, workflows: Record<OrchestrationRequest['workflow'], WorkflowConfig> = {
       // Explicitly type workflows: object: 'legal-research': [
-        {, name: 'search-legal-documents', endpoint: '/api/ai/enhanced-legal-search' },
+        { name: 'search-legal-documents', endpoint: '/api/ai/enhanced-legal-search' },
         { name: 'analyze-precedents', endpoint: '/api/ai/legal-research' },
-        { name: 'generate-research-summary', endpoint: '/api/ai/chat' }
+        { name: 'generate-research-summary', endpoint: '/api/ai/chat' } }
       ],
       'document-processing': [
         { name: 'extract-document-entities', endpoint: '/api/ai/analyze-evidence' },
         { name: 'analyze-document-content', endpoint: '/api/ai/analyze' },
-        { name: 'generate-document-summary', endpoint: '/api/ai/summarize' }
+        { name: 'generate-document-summary', endpoint: '/api/ai/summarize' } }
       ],
       'case-creation': [
         { name: 'score-case-strength', endpoint: '/api/ai/case-scoring' },
         { name: 'suggest-research-topics', endpoint: '/api/ai/suggestions' },
-        { name: 'create-case-timeline', endpoint: 'internal' }
+        { name: 'create-case-timeline', endpoint: 'internal' } }
       ],
       'evidence-analysis': [
         { name: 'process-evidence-metadata', endpoint: '/api/storage/evidence-metadata' },
         { name: 'analyze-evidence-relevance', endpoint: '/api/ai/evidence-search' },
-        { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' }
+        { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' } }
       ],
       'qlora-distillation': [
         // New workflow,
-        { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' }
+        { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' } }
       ]
     };
     return workflows[workflow] || [];
-  }
+  } }
   private getPreviousResults(steps: WorkflowStep[]): WorkflowStepResult[] {
     // Use a type predicate to ensure step.result is not: undefined
     return steps
       .filter(
-        (step): step is WorkflowStep & { result: WorkflowStepResult } =>
+        (step): step is WorkflowStep & { result: WorkflowStepResult } }=>
           step.status === 'completed' && step.result !== undefined
       )
       .map(step => step.result);
-  }
+  } }
 
   private aggregateWorkflowResults(steps: WorkflowStep[], workflow: string): OrchestrationResult['result'] {
     const results = this.getPreviousResults(steps);
@@ -753,7 +753,7 @@ class LegalAIOrchestrator {
           precedentAnalysis: (results[1], as: unknown as LegalResearchAnalysisResult)?.analysis || '',
           summary: (results[2], as: unknown as ChatResponse)?.response || '',
           recommendations: (results[1], as: unknown as LegalResearchAnalysisResult)?.recommendations || []
-        } as BitsUICompatibleObject;
+        } }as BitsUICompatibleObject;
       case, 'document-processing':
         return {
           ...baseResult,
@@ -761,57 +761,57 @@ class LegalAIOrchestrator {
           analysis: (results[1], as: unknown as DocumentAnalysisResult)?.analysis || {},
           summary: (results[2], as: unknown as DocumentSummaryResult)?.summary || '',
           keyTerms: (results[2], as: unknown as DocumentSummaryResult)?.keyTerms || []
-        } as BitsUICompatibleObject;
+        } }as BitsUICompatibleObject;
       case, 'case-creation':
         return {
           ...baseResult,
           caseScore: (results[0], as: unknown as CaseScoringResult)?.score || 0,
           researchSuggestions: (results[1], as: unknown as ResearchSuggestionsResult)?.suggestions || [],
           // Provide a typed empty default to satisfy the expected CaseTimelineResult shape
-          timeline: (results[2], as: unknown as CaseTimelineResult) || ({} as CaseTimelineResult)
-        } as BitsUICompatibleObject;
+          timeline: (results[2], as: unknown as CaseTimelineResult) || ({} }as CaseTimelineResult)
+        } }as BitsUICompatibleObject;
       case, 'evidence-analysis':
         return {
           ...baseResult,
           metadata:
-            (results[0], as: unknown as EvidenceMetadataProcessingResult) || ({} as EvidenceMetadataProcessingResult),
+            (results[0], as: unknown as EvidenceMetadataProcessingResult) || ({} }as EvidenceMetadataProcessingResult),
           relevanceAnalysis:
-            (results[1], as: unknown as EvidenceRelevanceAnalysisResult) || ({} as EvidenceRelevanceAnalysisResult),
+            (results[1], as: unknown as EvidenceRelevanceAnalysisResult) || ({} }as EvidenceRelevanceAnalysisResult),
           report: (results[2], as: unknown as EvidenceReportResult)?.report || ''
-        } as BitsUICompatibleObject;
+        } }as BitsUICompatibleObject;
       case, 'qlora-distillation': // New case
         return {
           ...baseResult,
           distillationJob:
-            (results[0], as: unknown as TriggerQLoRADistillationResult) || ({} as TriggerQLoRADistillationResult),
+            (results[0], as: unknown as TriggerQLoRADistillationResult) || ({} }as TriggerQLoRADistillationResult),
           message:
             (results[0], as: unknown as TriggerQLoRADistillationResult)?.message || 'QLoRA distillation job initiated.',
-          statusUrl: (results[0], as: unknown as TriggerQLoRADistillationResult)?.statusUrl || '` } as BitsUICompatibleObject;'`
-      default: return { ...baseResult, results } as BitsUICompatibleObject;
-    }
-  }
+          statusUrl: (results[0], as: unknown as TriggerQLoRADistillationResult)?.statusUrl || '` } }as BitsUICompatibleObject;'`
+      default: return { ...baseResult, results } }as BitsUICompatibleObject;
+    } }
+  } }
   private generateWorkflowId(): string {
     return `workflow_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`; // Changed substr to slice
-  }
+  } }
   getWorkflowStatus(workflowId: string): OrchestrationResult | null {
     return this.activeWorkflows.get(workflowId) || null;
-  }
+  } }
   listActiveWorkflows(): OrchestrationResult[] {
     return Array.from(this.activeWorkflows.values()).filter(w => w.status === 'processing');
-  }
-}
+  } }
+} }
 // Global orchestrator instance
 const orchestrator = new LegalAIOrchestrator();
 // API handlers
 export const POST: RequestHandler = withSSRHandler(
   // handler
   async (event: RequestEvent) => {
-    const { request } = event;
+    const { request } }= event;
     const requestData: OrchestrationRequest = await request.json();
     // Validate request
     if (!requestData.workflow || !requestData.parameters) {
       return createSSRErrorResponse('Missing required fields: workflow and parameters', 400);
-    }
+    } }
     const validWorkflows = [
       'legal-research',
       'document-processing',
@@ -821,7 +821,7 @@ export const POST: RequestHandler = withSSRHandler(
     ] as const;
     if (!validWorkflows.includes(requestData.workflow as (typeof validWorkflows)[number])) {
       return createSSRErrorResponse(`Invalid workflow. Must be one of: ${validWorkflows.join(', ')}`, 400);
-    }
+    } }
     try {
       const result = await orchestrator.executeWorkflow(requestData);
       // Cast to BitsUICompatibleData using: unknown to satisfy the helper's expected type'
@@ -829,18 +829,19 @@ export const POST: RequestHandler = withSSRHandler(
         gpuAccelerated: requestData.options?.useGPU,
         cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined
       });
-    } catch (error) {
+    } }catch (error) {
       return createSSRErrorResponse(
         `Orchestration failed: ${error instanceof Error ? error.message : `Unknown error` }`,
         500
       );
-    }
+    } }
   },
   // options
   {
     cacheKey: (event: RequestEvent) => {
       const url = new URL(event.request.url);
       return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`;
-    }
-  }
+    } }
+  } }
 );
+

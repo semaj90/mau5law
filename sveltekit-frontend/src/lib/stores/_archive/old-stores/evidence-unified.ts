@@ -1,19 +1,19 @@
 /// <reference, types="vite/client" />
-import { writable, derived, get } from "svelte/store";
+import { writable, derived, get } }from "svelte/store";
 /**
  * FIXED Evidence Unified Store - Phase, 2 Integration
  * Addresses critical and compatibility issues
  */
-import { browser } from "$app/environment";
+import { browser } }from "$app/environment";
 // Safe import with fallback
 let selectedCase: any;
 try {
   const casesModule = await import("./cases");
   selectedCase = casesModule.selectedCase || writable(null);
-} catch {
+} }catch {
   console.warn("Cases store not found, using fallback");
   selectedCase = writable(null);
-}
+} }
 export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
@@ -22,31 +22,30 @@ export interface Evidence { id: string;, caseId: string;
   x: number;
   y: number;
   fileUrl?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any } }
   tags?: string[];
   embedding?: number[];
-  location?: {, latitude: number;, longitude: number;
+  location?: { latitude: number;, longitude: number;
     address?: string;
-  }
-  classification?: {, category: string;, relevance: number;
+  } }
+  classification?: { category: string;, relevance: number;
     confidence: number;
-  }
-  timeline?: {, createdAt: string;, updatedAt: string;
+  } }
+  timeline?: { createdAt: string;, updatedAt: string;
     collectedAt?: string;
-  }
+  } }
   analysis?: {
     aiSummary?: string;
     vectorSimilarity?: number;
     relatedEvidence?: string[];
-  }
-}
-export interface EvidenceStoreState {, evidence: Evidence[];, isLoading: boolean;
+  } }
+} }
+export interface EvidenceStoreState { evidence: Evidence[];, isLoading: boolean;
   error: string | null;
   isConnected: boolean;
-}
+} }
 class UnifiedEvidenceStore {
-  public store = writable<EvidenceStoreState>({
-   , evidence: [],
+  public store = writable<EvidenceStoreState>({ evidence: [],
     isLoading: false;
    , error: null,
     isConnected: false
@@ -64,17 +63,17 @@ class UnifiedEvidenceStore {
         selectedCase.subscribe((caseId: string | null) => {
           this.fetchEvidence(caseId);
         });
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private async initializeConnection() {
     if (!browser) return;
     try {
       await this.connectWebSocket();
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn("WebSocket failed, using polling fallback");
-    }
-  }
+    } }
+  } }
   private async connectWebSocket(): Promise<void> {
     if (!browser) return;
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -91,15 +90,14 @@ class UnifiedEvidenceStore {
             channels: ["evidence_update"]
           }),
         );
-      }
+      } }
       this.websocket.onmessage = (_event: any) => {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
-        } catch (error: any) {
-          console.error("WebSocket message error:", error);"
-        }
-      }
+        } }catch (error: any) {
+          console.error("WebSocket message error:", error); } }
+      } }
       this.websocket.onclose = () => {
         this.store.update((s) => ({ ...s, isConnected: false });
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -109,19 +107,18 @@ class UnifiedEvidenceStore {
             },
             Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000),
           );
-        }
-      }
+        } }
+      } }
       this.websocket.onerror = (error) => {
-        console.error("WebSocket connection error:", error);"
-      }
-    } catch (error: any) {
+        console.error("WebSocket connection error:", error); } }
+    } }catch (error: any) {
       console.error("Failed to create WebSocket:", error);
       throw error;
-    }
-  }
+    } }
+  } }
   private handleRealtimeUpdate(message: any) {
     if (message.channel === "evidence_update") {
-      const { type, data } = message.data;
+      const { type, data } }= message.data;
       switch (type) {
         case, 'EVIDENCE_CREATED':
           this.store.update((s) => ({
@@ -133,7 +130,7 @@ class UnifiedEvidenceStore {
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
-              e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e
+              e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } }: e
             )
           });
           break;
@@ -143,21 +140,21 @@ class UnifiedEvidenceStore {
             evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id)
           });
           break;
-      }
+      } }
       this.saveToLocalStorage();
-    }
-  }
+    } }
+  } }
   public async fetchEvidence(caseId: string | null) {
     if (!caseId) {
       this.store.update((s) => ({ ...s, evidence: [], error: null });
       return;
-    }
+    } }
     this.store.update((s) => ({ ...s, isLoading: true, error: null });
     try {
       // removed unused response assignment
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to fetch evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-      }
+      } }
       const evidenceList: Evidence[] = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
@@ -165,22 +162,22 @@ class UnifiedEvidenceStore {
         isLoading: false
       });
       this.saveToLocalStorage();
-    } catch (error: any) {
+    } }catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
         error: error.message
       });
       console.error("Failed to fetch evidence:", error);
-    }
-  }
+    } }
+  } }
   public async addEvidence(
     newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId">,
   ) {
     const currentCaseId = selectedCase ? get(selectedCase) : null;
     if (!currentCaseId) {
       throw new Error("No case selected");
-    }
+    } }
     this.store.update((s) => ({ ...s, isLoading: true });
     try {
       const response = await fetch("/api/evidence", {
@@ -190,7 +187,7 @@ class UnifiedEvidenceStore {
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to add evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-      }
+      } }
       const createdEvidence: Evidence = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
@@ -198,15 +195,15 @@ class UnifiedEvidenceStore {
         isLoading: false
       });
       this.saveToLocalStorage();
-    } catch (error: any) {
+    } }catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
         error: error.message
       });
       throw error;
-    }
-  }
+    } }
+  } }
   public async updateEvidence(evidenceId: string, updates: Partial<Evidence>) {
     let originalEvidence: Evidence | undefined;
     this.store.update((s) => {
@@ -214,9 +211,9 @@ class UnifiedEvidenceStore {
       return {
         ...s,
         evidence: s.evidence.map((e: any) =>
-          e.id === evidenceId ? { ...e, ...updates } : e
+          e.id === evidenceId ? { ...e, ...updates } }: e
         )
-      }
+      } }
     });
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -226,9 +223,9 @@ class UnifiedEvidenceStore {
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to update evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-      }
+      } }
       this.saveToLocalStorage();
-    } catch (error: any) {
+    } }catch (error: any) {
       if (originalEvidence) {
         this.store.update((s) => ({
           ...s,
@@ -237,10 +234,10 @@ class UnifiedEvidenceStore {
           ),
           error: error.message
         });
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
   public async deleteEvidence(evidenceId: string) {
     let originalEvidence: Evidence | undefined;
     this.store.update((s) => {
@@ -248,7 +245,7 @@ class UnifiedEvidenceStore {
       return {
         ...s,
         evidence: s.evidence.filter((e: any) => e.id !== evidenceId)
-      }
+      } }
     });
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -256,19 +253,19 @@ class UnifiedEvidenceStore {
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-      }
+      } }
       this.saveToLocalStorage();
-    } catch (error: any) {
+    } }catch (error: any) {
       if (originalEvidence) {
         this.store.update((s) => ({
           ...s,
           evidence: [...s.evidence, originalEvidence!],
           error: error.message
         });
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
   private saveToLocalStorage() {
     if (!browser) return;
     try {
@@ -280,10 +277,10 @@ class UnifiedEvidenceStore {
           lastUpdated: new Date().toISOString()
         }),
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("Failed to save to localStorage:", error);
-    }
-  }
+    } }
+  } }
   private loadFromLocalStorage() {
     if (!browser) return;
     try {
@@ -300,28 +297,28 @@ class UnifiedEvidenceStore {
             error: null,
             isConnected: false
           });
-        }
-      }
-    } catch (error: any) {
+        } }
+      } }
+    } }catch (error: any) {
       console.error("Failed to load from localStorage:", error);
-    }
-  }
+    } }
+  } }
   public clearError() {
     this.store.update((s) => ({ ...s, error: null });
-  }
+  } }
   public disconnect() {
     if (this.websocket) {
       this.websocket.close();
       this.websocket = null;
-    }
+    } }
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
-    }
+    } }
     this.store.update((s) => ({ ...s, isConnected: false });
-  }
+  } }
   public subscribe = this.store.subscribe;
-}
+} }
 export const evidenceStore = new UnifiedEvidenceStore();
 export const evidenceById = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence>();
@@ -333,7 +330,7 @@ export const evidenceByCase = derived(evidenceStore, ($store) => {
   $store.evidence.forEach((item) => {
     if (!map.has((item as { id?: any; caseId?: any }).caseId)) {
       map.set((item as { id?: any; caseId?: any }).caseId, []);
-    }
+    } }
     map.get((item as { id?: any; caseId?: any }).caseId)!.push(item);
   });
   return map;

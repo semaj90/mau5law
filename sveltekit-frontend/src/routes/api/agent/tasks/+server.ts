@@ -1,18 +1,17 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 // Mock RAG task system for demo - in production, this would integrate with the actual RAG system
-const mockTaskSystem = { stats: {, totalTasks: 8,
+const mockTaskSystem = { stats: { totalTasks: 8,
     pendingCount: 5,
     completedCount: 2,
     failedCount: 1
   },
   availableTasks: [
-    {,
-      id: 'implement-user-profile-page',
+    { id: 'implement-user-profile-page',
       title: 'Implement User Profile Page',
       description: 'Create a complete user profile page with authentication, settings, and preferences',
       priority: 'high',
@@ -67,8 +66,7 @@ const mockTaskSystem = { stats: {, totalTasks: 8,
     },
   ],
   recentCompletedTasks: [
-    {,
-      id: 'test-gemma3-embeddings-performance',
+    { id: 'test-gemma3-embeddings-performance',
       title: 'Test Gemma3 Embeddings Performance',
       description: 'Benchmark and optimize Gemma3 embeddings for legal document search',
       priority: 'medium',
@@ -106,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
 
     return json(response);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error loading RAG tasks:', error);
     return json(
       {
@@ -114,7 +112,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to load tasks',
         message: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

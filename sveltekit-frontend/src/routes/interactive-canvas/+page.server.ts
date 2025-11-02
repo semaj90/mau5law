@@ -1,13 +1,13 @@
-import { canvasStates, cases, evidence } from '$lib/server/db/schema-postgres';
-import { helpers } from '$lib/server/db';
-import type { PageServerLoad } from './$types.js';
-import { redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
+import { canvasStates, cases, evidence } }from '$lib/server/db/schema-postgres';
+import { helpers } }from '$lib/server/db';
+import type { PageServerLoad } }from './$types.js';
+import { redirect } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
     throw redirect(302, '/login');
-  }
+  } }
   const user = locals.user;
   // Get report ID from query params
   const reportId = url.searchParams.get('reportId');
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       .limit(1);
     if (canvasStateResult) {
       canvasState = canvasStateResult.canvasData;
-    }
+    } }
     // Load associated evidence
     evidenceData = await db
       .select()
@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       .where(helpers.eq(cases.id, reportId as: string) as: any)
       .limit(1);
     reportData = caseResult;
-  }
+  } }
   return {
     user,
     reportId,
@@ -45,3 +45,4 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     evidence: evidenceData
   };
 };
+

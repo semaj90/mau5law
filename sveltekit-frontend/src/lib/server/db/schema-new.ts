@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // @ts-nocheck
 import {
   pgTable,
@@ -11,8 +11,8 @@ import {
   decimal,
   serial,
   uuid
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} }from "drizzle-orm/pg-core";
+import { relations } }from "drizzle-orm";
 // === AUTHENTICATION & USER MANAGEMENT ===
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -67,7 +67,7 @@ export const layoutComponents = pgTable("layout_components", {
   htmlContent: text("html_content").notNull(),
   cssStyles: text("css_styles"),
   jsInteractions: text("js_interactions"), // Optional JavaScript for interactions;
-  position: jsonb("position").notNull(), // { x, y, width, height, zIndex }
+  position: jsonb("position").notNull(), // { x, y, width, height, zIndex } }
   themeId: uuid("theme_id").references(() => themes.id, {
     onDelete: "cascade"
   }),

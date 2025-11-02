@@ -2,162 +2,149 @@
  * 🎨 Enhanced-Bits Design System
  * Gaming-inspired design tokens and theme utilities for Legal AI Platform
  */
-import type { ConsolePalette } from './retro-console-palettes';
-import { CONSOLE_PALETTES, applyConsolePalette } from './retro-console-palettes';
-export interface DesignTokens { spacing: {, xs: string;
+import type { ConsolePalette } }from './retro-console-palettes';
+import { CONSOLE_PALETTES, applyConsolePalette } }from './retro-console-palettes';
+export interface DesignTokens { spacing: { xs: string;
     sm: string;
     md: string;
     lg: string;
     xl: string;
     '2xl': string;
     '3xl': string;
-  }
-  typography: {, fontFamily: {, mono: string;
+  } }
+  typography: { fontFamily: { mono: string;
       sans: string;
       pixel: string;
-    }
-    fontSize: {, xs: string;, sm: string;
+    } }
+    fontSize: { xs: string;, sm: string;
       base: string;
       lg: string;
       xl: string;
       '2xl': string;
       '3xl': string;
-    }
-    lineHeight: {, tight: string;, normal: string;
+    } }
+    lineHeight: { tight: string;, normal: string;
       relaxed: string;
-    }
-  }
-  borderRadius: {, none: string;, sm: string;
+    } }
+  } }
+  borderRadius: { none: string;, sm: string;
     md: string;
     lg: string;
     pixel: string;
-  }
-  shadows: {, sm: string;, md: string;
+  } }
+  shadows: { sm: string;, md: string;
     lg: string;
     pixel: string;
     neon: string;
-  }
-  animations: {, duration: {, fast: string;
+  } }
+  animations: { duration: { fast: string;
       normal: string;
       slow: string;
-    }
-    easing: {, linear: string;, easeIn: string;
+    } }
+    easing: { linear: string;, easeIn: string;
       easeOut: string;
       easeInOut: string;
-    }
-  }
-}
-export interface CustomTheme extends DesignTokens {, name: string;, palette: ConsolePalette;
+    } }
+  } }
+} }
+export interface CustomTheme extends DesignTokens { name: string;, palette: ConsolePalette;
   mode: 'light' | 'dark' | 'retro';
-  effects: {, pixelatedBorders: boolean;, scanlines: boolean;
+  effects: { pixelatedBorders: boolean;, scanlines: boolean;
     crtEffect: boolean;
    , glowEffects: boolean;
-  }
-}
+  } }
+} }
 // Base design tokens (NES-inspired minimal design)
-export const BASE_DESIGN_TOKENS: DesignTokens = {, spacing: {, xs: '0.25rem',    // 4px
+export const BASE_DESIGN_TOKENS: DesignTokens = { spacing: { xs: '0.25rem',    // 4px
     sm: '0.5rem',     // 8px
     md: '1rem',       // 16px
     lg: '1.5rem',     // 24px
     xl: '2rem',       // 32px: '2xl': '3rem',    // 48px: '3xl': '4rem'     // 64px
   },
-  typography: {, fontFamily: {, mono: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
+  typography: { fontFamily: { mono: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
       sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       pixel: '"Press Start 2P", "Courier New", monospace'
     },
-    fontSize: {
-     , xs: '0.75rem',    // 12px
+    fontSize: { xs: '0.75rem',    // 12px
       sm: '0.875rem',   // 14px
       base: '1rem',     // 16px
       lg: '1.125rem',   // 18px
       xl: '1.25rem',    // 20px: '2xl': '1.5rem',  // 24px: '3xl': '1.875rem' // 30px
     },
-    lineHeight: {
-     , tight: '1.25',
+    lineHeight: { tight: '1.25',
       normal: '1.5',
       relaxed: '1.75'
-    }
+    } }
   },
-  borderRadius: {
-   , none: '0',
+  borderRadius: { none: '0',
     sm: '0.125rem',   // 2px
     md: '0.25rem',    // 4px
     lg: '0.5rem',     // 8px
     pixel: '0'        // Always sharp for retro feel
   },
-  shadows: {
-   , sm: '0 1px 2px, 0 rgba(0, 0, 0, 0.05)',
+  shadows: { sm: '0 1px 2px, 0 rgba(0, 0, 0, 0.05)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
     pixel: '2px 2px, 0 rgba(0, 0, 0, 0.8)',
     neon: '0, 0 5px currentColor, 0, 0 10px currentColor, 0, 0 15px currentColor'
   },
-  animations: {, duration: {, fast: '150ms',
+  animations: { duration: { fast: '150ms',
       normal: '300ms',
       slow: '500ms'
     },
-    easing: {
-     , linear: 'linear',
+    easing: { linear: 'linear',
       easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
       easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
       easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
-    }
-  }
-}
+    } }
+  } }
+} }
 // Predefined theme configurations
-export const THEME_PRESETS = { nesClassic: {, name: 'NES Classic',
+export const THEME_PRESETS = { nesClassic: { name: 'NES Classic',
     palette: CONSOLE_PALETTES.nes,
     mode: 'retro' as const,
-    effects: {
-     , pixelatedBorders: true,
+    effects: { pixelatedBorders: true,
       scanlines: false,
       crtEffect: false,
       glowEffects: false
-    }
+    } }
   },
-  snesMode7: {
-   , name: 'SNES Mode 7',
+  snesMode7: { name: 'SNES Mode 7',
     palette: CONSOLE_PALETTES.snes,
     mode: 'retro' as const,
-    effects: {
-     , pixelatedBorders: false,
+    effects: { pixelatedBorders: false,
       scanlines: true,
       crtEffect: true,
       glowEffects: true
-    }
+    } }
   },
-  ps1Legal: {
-   , name: 'PlayStation Legal',
+  ps1Legal: { name: 'PlayStation Legal',
     palette: CONSOLE_PALETTES.ps1,
     mode: 'dark' as const,
-    effects: {
-     , pixelatedBorders: false,
+    effects: { pixelatedBorders: false,
       scanlines: false,
       crtEffect: false,
       glowEffects: true
-    }
+    } }
   },
-  n64Ultra: {
-   , name: 'N64 Ultra',
+  n64Ultra: { name: 'N64 Ultra',
     palette: CONSOLE_PALETTES.n64,
     mode: 'dark' as const,
-    effects: {
-     , pixelatedBorders: true,
+    effects: { pixelatedBorders: true,
       scanlines: false,
       crtEffect: false,
       glowEffects: true
-    }
+    } }
   },
-  ps2Emotion: {
-   , name: 'PS2 Emotion',
+  ps2Emotion: { name: 'PS2 Emotion',
     palette: CONSOLE_PALETTES.ps2,
     mode: 'dark' as const,
-    effects: {, pixelatedBorders: false;, scanlines: false,
+    effects: { pixelatedBorders: false;, scanlines: false,
       crtEffect: false,
       glowEffects: true
-    }
-  }
-} as const;
+    } }
+  } }
+} }as const;
 /**
  * Create a custom theme by combining design tokens with a console palette
  */
@@ -173,8 +160,8 @@ export function createCustomTheme(
     mode: preset.mode,
     effects: preset.effects,
     ...overrides
-  }
-}
+  } }
+} }
 /**
  * Apply design system theme to document root
  */
@@ -227,7 +214,7 @@ export function applyDesignSystemToDocument(theme: CustomTheme): void {
     mode: theme.mode,
     effects: theme.effects
   }));
-}
+} }
 /**
  * Get the currently applied theme from localStorage
  */
@@ -235,55 +222,55 @@ export function getCurrentTheme(): Partial<CustomTheme> | null {
   try {
     const stored = localStorage.getItem('design-system-theme');
     return stored ? JSON.parse(stored) : null;
-  } catch {
+  } }catch {
     return: null;
-  }
-}
+  } }
+} }
 /**
  * CSS utility classes generator
  */
 export function generateUtilityCSS(theme: CustomTheme): string {
   const css = `
 /* Design System Utility Classes */
-.ds-font-mono { font-family: ${theme.typography.fontFamily.mono} }
-.ds-font-sans { font-family: ${theme.typography.fontFamily.sans} }
-.ds-font-pixel { font-family: ${theme.typography.fontFamily.pixel} }
-.ds-text-xs { font-size: ${theme.typography.fontSize.xs} }
-.ds-text-sm { font-size: ${theme.typography.fontSize.sm} }
-.ds-text-base { font-size: ${theme.typography.fontSize.base} }
-.ds-text-lg { font-size: ${theme.typography.fontSize.lg} }
-.ds-text-xl { font-size: ${theme.typography.fontSize.xl} }
-.ds-text-2xl { font-size: ${theme.typography.fontSize['2xl']} }
-.ds-text-3xl { font-size: ${theme.typography.fontSize['3xl']} }
-.ds-leading-tight { line-height: ${theme.typography.lineHeight.tight} }
-.ds-leading-normal { line-height: ${theme.typography.lineHeight.normal} }
-.ds-leading-relaxed { line-height: ${theme.typography.lineHeight.relaxed} }
-.ds-p-xs { padding: ${theme.spacing.xs} }
-.ds-p-sm { padding: ${theme.spacing.sm} }
-.ds-p-md { padding: ${theme.spacing.md} }
-.ds-p-lg { padding: ${theme.spacing.lg} }
-.ds-p-xl { padding: ${theme.spacing.xl} }
-.ds-m-xs { margin: ${theme.spacing.xs} }
-.ds-m-sm { margin: ${theme.spacing.sm} }
-.ds-m-md { margin: ${theme.spacing.md} }
-.ds-m-lg { margin: ${theme.spacing.lg} }
-.ds-m-xl { margin: ${theme.spacing.xl} }
-.ds-rounded-none { border-radius: ${theme.borderRadius.none} }
-.ds-rounded-sm { border-radius: ${theme.borderRadius.sm} }
-.ds-rounded-md { border-radius: ${theme.borderRadius.md} }
-.ds-rounded-lg { border-radius: ${theme.borderRadius.lg} }
-.ds-rounded-pixel { border-radius: ${theme.borderRadius.pixel} }
-.ds-shadow-sm { box-shadow: ${theme.shadows.sm} }
-.ds-shadow-md { box-shadow: ${theme.shadows.md} }
-.ds-shadow-lg { box-shadow: ${theme.shadows.lg} }
-.ds-shadow-pixel { box-shadow: ${theme.shadows.pixel} }
-.ds-shadow-neon { box-shadow: ${theme.shadows.neon} }
+.ds-font-mono { font-family: ${theme.typography.fontFamily.mono} }} }
+.ds-font-sans { font-family: ${theme.typography.fontFamily.sans} }} }
+.ds-font-pixel { font-family: ${theme.typography.fontFamily.pixel} }} }
+.ds-text-xs { font-size: ${theme.typography.fontSize.xs} }} }
+.ds-text-sm { font-size: ${theme.typography.fontSize.sm} }} }
+.ds-text-base { font-size: ${theme.typography.fontSize.base} }} }
+.ds-text-lg { font-size: ${theme.typography.fontSize.lg} }} }
+.ds-text-xl { font-size: ${theme.typography.fontSize.xl} }} }
+.ds-text-2xl { font-size: ${theme.typography.fontSize['2xl']} }} }
+.ds-text-3xl { font-size: ${theme.typography.fontSize['3xl']} }} }
+.ds-leading-tight { line-height: ${theme.typography.lineHeight.tight} }} }
+.ds-leading-normal { line-height: ${theme.typography.lineHeight.normal} }} }
+.ds-leading-relaxed { line-height: ${theme.typography.lineHeight.relaxed} }} }
+.ds-p-xs { padding: ${theme.spacing.xs} }} }
+.ds-p-sm { padding: ${theme.spacing.sm} }} }
+.ds-p-md { padding: ${theme.spacing.md} }} }
+.ds-p-lg { padding: ${theme.spacing.lg} }} }
+.ds-p-xl { padding: ${theme.spacing.xl} }} }
+.ds-m-xs { margin: ${theme.spacing.xs} }} }
+.ds-m-sm { margin: ${theme.spacing.sm} }} }
+.ds-m-md { margin: ${theme.spacing.md} }} }
+.ds-m-lg { margin: ${theme.spacing.lg} }} }
+.ds-m-xl { margin: ${theme.spacing.xl} }} }
+.ds-rounded-none { border-radius: ${theme.borderRadius.none} }} }
+.ds-rounded-sm { border-radius: ${theme.borderRadius.sm} }} }
+.ds-rounded-md { border-radius: ${theme.borderRadius.md} }} }
+.ds-rounded-lg { border-radius: ${theme.borderRadius.lg} }} }
+.ds-rounded-pixel { border-radius: ${theme.borderRadius.pixel} }} }
+.ds-shadow-sm { box-shadow: ${theme.shadows.sm} }} }
+.ds-shadow-md { box-shadow: ${theme.shadows.md} }} }
+.ds-shadow-lg { box-shadow: ${theme.shadows.lg} }} }
+.ds-shadow-pixel { box-shadow: ${theme.shadows.pixel} }} }
+.ds-shadow-neon { box-shadow: ${theme.shadows.neon} }} }
 /* Theme Effect Classes */
 .pixelated-borders * {
   image-rendering: pixelated;
   border-radius: 0 !important;
-}
-.scanlines::before {, content: '';, position: fixed;
+} }
+.scanlines::before { content: '';, position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -295,11 +282,10 @@ export function generateUtilityCSS(theme: CustomTheme): string {
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 1000;
-}
-.crt-effect {
- , filter: contrast(1.1) brightness(1.2);
-}
-.crt-effect::after {, content: '';, position: fixed;
+} }
+.crt-effect { filter: contrast(1.1) brightness(1.2);
+} }
+.crt-effect::after { content: '';, position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -311,16 +297,16 @@ export function generateUtilityCSS(theme: CustomTheme): string {
   );
   pointer-events: none;
   z-index: 999;
-}
+} }
 .glow-effects .console-primary {
   text-shadow: 0, 0 5px currentColor;
-}
+} }
 .glow-effects .console-accent-0 {
   box-shadow: 0, 0 10px currentColor;
-}
+} }
   `;`
   return css;
-}
+} }
 /**
  * Initialize design system with a theme
  */
@@ -335,10 +321,10 @@ export function initializeDesignSystem(themeName: keyof typeof THEME_PRESETS = '
   const existing = document.getElementById('design-system-utilities');
   if (existing) {
     existing.remove();
-  }
+  } }
   document.head.appendChild(styleEl);
   return theme;
-}
+} }
 // Auto-initialize on import if in browser
 if (typeof window !== 'undefined') {
   // Check for stored theme preference
@@ -349,6 +335,6 @@ if (typeof window !== 'undefined') {
     ) as keyof typeof THEME_PRESETS;
     if (themeName) {
       initializeDesignSystem(themeName);
-    }
-  }
+    } }
+  } }
 }

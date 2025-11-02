@@ -2,8 +2,8 @@
  * Enhanced Embedding Cache Service
  * Redis-based caching for embeddings and frequently accessed data
  */
-import { redisService } from './redis-service.js';
-import { dbPool } from './database-pool-service.js';
+import { redisService } }from './redis-service.js';
+import { dbPool } }from './database-pool-service.js';
 
 interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   model: string;
@@ -11,22 +11,22 @@ interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   accessCount: number;
   lastAccessed: number;
   compressed?: boolean;
-}
-interface QueryCacheEntry {, query: string;, results: any[];
+} }
+interface QueryCacheEntry { query: string;, results: any[];
   metadata: any;
   timestamp: number;
   ttl: number;
-}
-interface CacheStats {, embeddings: {, hits: number;
+} }
+interface CacheStats { embeddings: { hits: number;
     misses: number;
     size: number;
   };
-  queries: {, hits: number;, misses: number;
+  queries: { hits: number;, misses: number;
     size: number;
   };
-  sessions: {, active: number;, total: number;
+  sessions: { active: number;, total: number;
   };
-}
+} }
 
 class EmbeddingCacheService {
   // Cache prefixes
@@ -68,10 +68,10 @@ class EmbeddingCacheService {
       };
       await redisService.set(`${this.EMBEDDING_PREFIX}${key}`, JSON.stringify(cacheData), this.EMBEDDING_TTL);
       await this.updateStats('embeddings', 'store');
-      console.log(`🔗 Cached embedding for text (${text.length} chars, ${embedding.length} dims)`);
-    } catch (error) {
+      console.log(`🔗 Cached embedding for text (${text.length} }chars, ${embedding.length} }dims)`);
+    } }catch (error) {
       console.warn('Embedding cache error:', error);` }`'
-  }
+  } }
 
   /**
    * Retrieve cached embedding with hot-cache optimization
@@ -86,7 +86,7 @@ class EmbeddingCacheService {
         await this.updateStats('embeddings', 'hot_hit');
         const entry = JSON.parse(cached) as EmbeddingCacheEntry;
         return entry.compressed ? this.decompressEmbedding(entry.embedding as: string) : (entry.embedding as: number[]);
-      }
+      } }
       // Check regular cache
       cached = await redisService.get(`${this.EMBEDDING_PREFIX}${key}`);
       if (cached) {
@@ -96,24 +96,24 @@ class EmbeddingCacheService {
         entry.lastAccessed = Date.now();
         if (entry.accessCount >= this.HOT_ACCESS_THRESHOLD) {
           await this.promoteToHotCache(`${this.EMBEDDING_PREFIX}${key}`, entry);
-        } else {
+        } }else {
           // Update access stats in regular cache
           await redisService.set(`${this.EMBEDDING_PREFIX}${key}`, JSON.stringify(entry), this.EMBEDDING_TTL);
-        }
+        } }
         await this.updateStats('embeddings', 'hit');
         const embedding = entry.compressed
           ? this.decompressEmbedding(entry.embedding as: string)
           : (entry.embedding as: number[]);
         return Array.isArray(embedding) ? embedding : this.decompressEmbedding(String(embedding));
-      }
+      } }
       await this.updateStats('embeddings', 'miss');
       return: null;
-    } catch (error) {
-      console.warn('Embedding retrieval error:', error);'
+    } }catch (error) {
+      console.warn('Embedding retrieval error:', error);
       await this.updateStats('embeddings', 'error');
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Cache query results with intelligent TTL
@@ -136,10 +136,10 @@ class EmbeddingCacheService {
       };
       await redisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
       await this.updateStats('queries', 'store');
-      console.log(`📊 Cached query results (${results.length} items, TTL: ${ttl}s)`);
-    } catch (error) {
+      console.log(`📊 Cached query results (${results.length} }items, TTL: ${ttl}s)`);
+    } }catch (error) {
       console.warn('Query cache error:', error);` }`'
-  }
+  } }
 
   /**
    * Retrieve cached query results
@@ -152,17 +152,17 @@ class EmbeddingCacheService {
       if (cached) {
         const entry = JSON.parse(cached) as QueryCacheEntry;
         await this.updateStats('queries', 'hit');
-        console.log(`📋 Query cache hit (${entry.results.length} results)`);
+        console.log(`📋 Query cache hit (${entry.results.length} }results)`);
         return entry.results;
-      }
+      } }
       await this.updateStats('queries', 'miss');
       return: null;
-    } catch (error) {
-      console.warn('Query retrieval error:', error);'
+    } }catch (error) {
+      console.warn('Query retrieval error:', error);
       await this.updateStats('queries', 'error');
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Cache chat session data
@@ -179,14 +179,14 @@ class EmbeddingCacheService {
         this.SESSION_TTL
       );
       await this.updateStats('sessions', 'store');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Session cache error:', error);` }`'
-  }
+  } }
 
   /**
    * Batch cache multiple embeddings efficiently
    */
-  async batchCacheEmbeddings(items: Array<{, text: string;, embedding: number[]; model?: string }>): Promise<void> {
+  async batchCacheEmbeddings(items: Array<{ text: string; embedding: number[]; model?: string }>): Promise<void> {
     if (!redisService.isHealthy() || !items || items.length === 0) return;
     try {
       // Use individual Redis operations for compatibility
@@ -194,8 +194,7 @@ class EmbeddingCacheService {
       for (const item of items) {
         const model = item.model || 'nomic-embed-text';
         const key = this.generateEmbeddingKey(item.text, model);
-        const entry: EmbeddingCacheEntry = {
-         , text: item.text,
+        const entry: EmbeddingCacheEntry = { text: item.text,
           embedding: this.compressEmbedding(item.embedding),
           model,
           timestamp: Date.now(),
@@ -205,12 +204,12 @@ class EmbeddingCacheService {
         };
         await redisService.set(`${this.EMBEDDING_PREFIX}${key}`, JSON.stringify(entry), this.EMBEDDING_TTL);
         cached++;
-      }
-      console.log(`📦 Batch cached ${cached} embeddings`);
+      } }
+      console.log(`📦 Batch cached ${cached} }embeddings`);
       await this.updateStats('embeddings', 'batch_store', cached);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Batch cache error:', error);` }`'
-  }
+  } }
 
   /**
    * Invalidate cache patterns
@@ -228,49 +227,47 @@ class EmbeddingCacheService {
               : [this.SESSION_PREFIX];
       let totalDeleted = 0;
       for (const prefix of prefixes) {
-        const keys = await redisService.keys(`${prefix}${pattern}*`);
+        const keys = await redisService.keys(`${prefix}${pattern} }`);
         if (keys && keys.length > 0) {
           for (const key of keys) {
             await redisService.del(key);
-          }
+          } }
           totalDeleted += keys.length;
-        }
-      }
-      console.log(`🗑️ Invalidated ${totalDeleted} cache entries`);
-    } catch (error) {
+        } }
+      } }
+      console.log(`🗑️ Invalidated ${totalDeleted} }cache entries`);
+    } }catch (error) {
       console.warn('Cache invalidation error:', error);` }`'
-  }
+  } }
 
   /**
    * Get comprehensive cache statistics
    */
   async getStats(): Promise<CacheStats> {
-    const defaultStats: CacheStats = {, embeddings: {, hits: 0, misses: 0, size: 0 },
-      queries: {, hits: 0, misses: 0, size: 0 },
-      sessions: {, active: 0, total: 0 }
+    const defaultStats: CacheStats = { embeddings: { hits: 0, misses: 0, size: 0 },
+      queries: { hits: 0, misses: 0, size: 0 },
+      sessions: { active: 0, total: 0 } }
     };
     if (!redisService.isHealthy()) return defaultStats;
     try {
       const stats = (await redisService.hgetall(`${this.STATS_PREFIX}all`)) || {};
-      return { embeddings: {, hits: parseInt(stats['emb_hits'] || '0'),
+      return { embeddings: { hits: parseInt(stats['emb_hits'] || '0'),
           misses: parseInt(stats['emb_misses'] || '0'),
           size: await this.getCacheSize('embeddings')
         },
-        queries: {
-         , hits: parseInt(stats['query_hits'] || '0'),
+        queries: { hits: parseInt(stats['query_hits'] || '0'),
           misses: parseInt(stats['query_misses'] || '0'),
           size: await this.getCacheSize('queries')
         },
-        sessions: {
-         , active: parseInt(stats['session_active'] || '0'),
+        sessions: { active: parseInt(stats['session_active'] || '0'),
           total: parseInt(stats['session_total'] || '0')
-        }
+        } }
       };
-    } catch (error) {
-      console.warn('Stats retrieval error:', error);'
+    } }catch (error) {
+      console.warn('Stats retrieval error:', error);
       return defaultStats;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate cache key for embedding
@@ -278,7 +275,7 @@ class EmbeddingCacheService {
   private generateEmbeddingKey(text: string, model: string): string {
     const content = `${model}:${text}`;
     return Buffer.from(content).toString('base64').substring(0, 40);
-  }
+  } }
 
   /**
    * Generate cache key for query
@@ -286,7 +283,7 @@ class EmbeddingCacheService {
   private generateQueryKey(query: string, metadata: any): string {
     const content = `${query}:${JSON.stringify(metadata)}`;
     return Buffer.from(content).toString('base64').substring(0, 40);
-  }
+  } }
 
   /**
    * Compress embedding array for storage efficiency
@@ -295,7 +292,7 @@ class EmbeddingCacheService {
     // Simple compression by rounding to, 4 decimal places and packing
     const rounded = embedding.map(n => Math.round(n * 10000) / 10000);
     return Buffer.from(JSON.stringify(rounded)).toString('base64');
-  }
+  } }
 
   /**
    * Decompress embedding array
@@ -304,10 +301,10 @@ class EmbeddingCacheService {
     try {
       const data = Buffer.from(compressed, 'base64').toString();
       return JSON.parse(data);
-    } catch {
+    } }catch {
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Promote frequently accessed items to hot cache
@@ -317,9 +314,9 @@ class EmbeddingCacheService {
       const hotKey = originalKey.replace(this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX);
       await redisService.set(hotKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
       console.log(`🔥 Promoted to hot cache: ${entry.text.substring(0, 50)}...`);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Hot cache promotion error:', error);` }`'
-  }
+  } }
 
   /**
    * Calculate intelligent TTL for queries
@@ -333,7 +330,7 @@ class EmbeddingCacheService {
     const complexity = metadata.complexity || 1;
     baseTTL = Math.floor(baseTTL * (2 - complexity)); // Higher complexity = shorter TTL
     return Math.max(baseTTL, 60); // Minimum, 1 minute
-  }
+  } }
 
   /**
    * Calculate query complexity score
@@ -349,7 +346,7 @@ class EmbeddingCacheService {
     if (lowerQuery.includes('group by')) complexity += 0.3;
     if (lowerQuery.includes('order by')) complexity += 0.2;
     return Math.min(complexity, 2.0); // Cap at 2.0
-  }
+  } }
 
   /**
    * Get cache size for a specific type
@@ -358,12 +355,12 @@ class EmbeddingCacheService {
     try {
       const prefix =
         type === 'embeddings' ? this.EMBEDDING_PREFIX : type === 'queries' ? this.QUERY_PREFIX : this.SESSION_PREFIX;
-      const keys = await redisService.keys(`${prefix}*`);
+      const keys = await redisService.keys(`${prefix} }`);
       return keys ? keys.length : 0;
-    } catch {
+    } }catch {
       return 0;
-    }
-  }
+    } }
+  } }
 
   /**
    * Update cache statistics
@@ -374,10 +371,11 @@ class EmbeddingCacheService {
       const prefix = type === 'embeddings' ? 'emb' : type === 'queries' ? 'query' : 'session';
       const field = `${prefix}_${operation}`;
       await redisService.hincrby(`${this.STATS_PREFIX}all`, field, count);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Stats update error:', error);` }`'
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const embeddingCache = new EmbeddingCacheService();
+

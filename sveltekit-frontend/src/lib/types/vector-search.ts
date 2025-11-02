@@ -1,11 +1,10 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 // Type definitions for Enhanced Vector Search Service
 // Legal AI Platform - Vector Similarity Search Types
 export interface VectorSearchResult {
-  results: Array<{,
-    id,: string;
+  results: Array<{ id,: string;
     content: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any } }
     similarity: number;
     score: number;
   }>;
@@ -14,10 +13,10 @@ export interface VectorSearchResult {
   searchStrategy: string;
   indexUsed: string;
   threshold: number;
-  embedding: {, dimensions: number;, model: string;
+  embedding: { dimensions: number;, model: string;
     format: string;
-  }
-}
+  } }
+} }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
@@ -25,14 +24,14 @@ export interface VectorSearchOptions {
   includeMetadata?: boolean;
   filters?: {
     documentType?: string[];
-    dateRange?: { start?: Date; end?: Date }
+    dateRange?: { start?: Date; end?: Date } }
     tags?: string[];
-  }
-}
-export interface EmbeddingVector {, dimensions: number;, values: number[];
+  } }
+} }
+export interface EmbeddingVector { dimensions: number;, values: number[];
   model: string;
   createdAt: Date;
-}
+} }
 export interface VectorSearchOptions {
   /**, Maximum: number of results to return */
   limit?: number;
@@ -52,7 +51,7 @@ export interface VectorSearchOptions {
   useHybridSearch?: boolean;
   /** Boost recent documents in ranking */
   boostRecent?: boolean;
-}
+} }
 export interface VectorSearchResult {
   /** Unique identifier for the result */
   id: string;
@@ -88,8 +87,8 @@ export interface VectorSearchResult {
     mimeType?: string;
     /** Additional custom metadata */
     [key: string]: any;
-  }
-}
+  } }
+} }
 export interface BatchVectorSearchQuery {
   /** Unique identifier for this query */
   id: string;
@@ -97,11 +96,11 @@ export interface BatchVectorSearchQuery {
   embedding: number[];
   /** Search options for this query */
   options?: VectorSearchOptions;
-}
+} }
 export interface BatchVectorSearchResult {
   /** Results organized by query ID */
   [queryId: string]: VectorSearchResult[];
-}
+} }
 export interface VectorSearchHealthStatus {
   /** Overall health status */
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -117,7 +116,7 @@ export interface VectorSearchHealthStatus {
     performance?: {
       countQueryTime?: number;
       sampleQueryTime?: number;
-    }
+    } }
     /** Index performance rating */
     indexStatus?: 'optimal' | 'good' | 'slow' | 'poor';
     /** Error message if unhealthy */
@@ -126,32 +125,32 @@ export interface VectorSearchHealthStatus {
     recommendation?: string;
     /** Timestamp of health check */
     timestamp?: string;
-  }
-}
+  } }
+} }
 export interface VectorSearchStats {
   /** Count of vectors by entity type */
-  vectorCounts: {, evidence: number;, cases: number;
+  vectorCounts: { evidence: number;, cases: number;
     chunks?: number;
-  }
+  } }
   /** PostgreSQL index usage statistics */
   indexStats: {
-    [indexName: string]: {, table: string;, scans: number;
+    [indexName: string]: { table: string;, scans: number;
       tuplesRead: number;
       tuplesFetched: number;
-    }
-  }
+    } }
+  } }
   /** Vector dimensions by entity type */
   dimensions: {
     evidence: number;
     cases?: number;
     chunks?: number;
-  }
+  } }
   /** Recent activity and status */
-  recentActivity: {, lastUpdated: string;, healthStatus: string;
+  recentActivity: { lastUpdated: string;, healthStatus: string;
     error?: string;
     timestamp?: string;
-  }
-}
+  } }
+} }
 export interface VectorClusterResult {
   /** Unique cluster identifier */
   clusterId: string;
@@ -165,7 +164,7 @@ export interface VectorClusterResult {
   topics: string[];
   /** Number of documents in cluster */
   size: number;
-}
+} }
 export interface VectorQueryExpansion {
   /** Original search term */
   originalTerm: string;
@@ -177,7 +176,7 @@ export interface VectorQueryExpansion {
   relatedConcepts: string[];
   /** Confidence in expansion quality */
   confidence: number;
-}
+} }
 export interface SimilaritySearchParams {
   /** Query embedding vector */
   queryEmbedding: number[];
@@ -187,7 +186,7 @@ export interface SimilaritySearchParams {
   useApproximate?: boolean;
   /** Custom distance function */
   distanceFunction?: 'l2' | 'cosine' | 'inner_product';
-}
+} }
 export interface VectorIndexInfo {
   /** Index name */
   name: string;
@@ -204,16 +203,16 @@ export interface VectorIndexInfo {
     ef_construction?: number;
     ef_search?: number;
     m?: number;
-  }
+  } }
   /** Index size in bytes */
   sizeBytes?: number;
   /** Number of index scans */
   scans?: number;
   /** Index effectiveness metrics */
-  effectiveness?: {, tuplesRead: number;, tuplesFetched: number;
+  effectiveness?: { tuplesRead: number;, tuplesFetched: number;
     hitRatio: number;
-  }
-}
+  } }
+} }
 export interface VectorSearchPerformanceMetrics {
   /** Total search time in milliseconds */
   totalTime: number;
@@ -231,7 +230,7 @@ export interface VectorSearchPerformanceMetrics {
   resultsReturned: number;
   /** Whether index was used effectively */
   indexUsed: boolean;
-}
+} }
 export interface VectorEmbeddingMetadata {
   /** Model used to generate embedding */
   model: string;
@@ -246,12 +245,12 @@ export interface VectorEmbeddingMetadata {
     chunkSize?: number;
     overlap?: number;
     normalization?: string;
-  }
+  } }
   /** Quality metrics */
-  quality?: {, confidence: number;, completeness: number;
+  quality?: { confidence: number;, completeness: number;
     relevance: number;
-  }
-}
+  } }
+} }
 // Utility types for type safety
 export type VectorDimensions = 384 | 768 | 1536; // Common embedding dimensions
 export type DistanceFunction = 'l2' | 'cosine' | 'inner_product';
@@ -266,24 +265,24 @@ export class VectorSearchError extends Error {
   ) {
     super(message);
     this.name = 'VectorSearchError';
-  }
-}
+  } }
+} }
 export class EmbeddingValidationError extends VectorSearchError {
   constructor(message: string, details?: any) {
     super(message, 'EMBEDDING_VALIDATION_ERROR', details);
-  }
-}
+  } }
+} }
 export class VectorIndexError extends VectorSearchError {
   constructor(message: string, details?: any) {
     super(message, 'VECTOR_INDEX_ERROR', details);
-  }
-}
+  } }
+} }
 // Type guards for runtime validation
 export function isValidEmbedding(_value: any): value is: number[] {
   return Array.isArray(value) &&
          value.length > 0 &&
          value.every(v => typeof v === 'number' && !isNaN(v));
-}
+} }
 export function isValidVectorSearchResult(_value: any): value is VectorSearchResult {
   return typeof value === 'object' &&
          typeof value.id === 'string' &&

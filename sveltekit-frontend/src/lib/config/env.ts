@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import { normalizePerformanceProfile, clampMemoryMB } from '$lib/gpu/types';
+import { normalizePerformanceProfile, clampMemoryMB } }from '$lib/gpu/types';
 // Raw environment (unvalidated)
 const RAW_ENV = {
   OLLAMA_URL: import.meta.env.OLLAMA_URL,
@@ -16,7 +16,7 @@ const RAW_ENV = {
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
   VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE
 };
-export interface EnvConfig {, OLLAMA_URL: string;, OLLAMA_MODEL: string;
+export interface EnvConfig { OLLAMA_URL: string;, OLLAMA_MODEL: string;
   OPENAI_API_KEY: string;
   DATABASE_URL: string;
   PUBLIC_APP_URL: string;
@@ -28,16 +28,15 @@ export interface EnvConfig {, OLLAMA_URL: string;, OLLAMA_MODEL: string;
   GPU_DEBUG: boolean;
   SHADER_DEBUG: boolean;
  , REDUCTION_MODE: 'auto' | 'gpu' | 'cpu';
-}
+} }
 function coerceBoolean(_value: string | undefined, defaultValue: boolean): boolean {
   if (_value === undefined) return defaultValue;
   return !(_value.toLowerCase() === 'false' || _value === '0' || _value.toLowerCase() === 'off');
-}
+} }
 function validateAndBuildEnv(): EnvConfig {
   const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10));
   const profile = normalizePerformanceProfile(RAW_ENV.VITE_PERFORMANCE_PROFILE);
-  const cfg: EnvConfig = {
-   , OLLAMA_URL: RAW_ENV.OLLAMA_URL || 'http://localhost:8086',
+  const cfg: EnvConfig = { OLLAMA_URL: RAW_ENV.OLLAMA_URL || 'http://localhost:8086',
     OLLAMA_MODEL: RAW_ENV.OLLAMA_MODEL || 'gemma3:legal-latest',
     OPENAI_API_KEY: RAW_ENV.OPENAI_API_KEY || '',
     DATABASE_URL: RAW_ENV.DATABASE_URL || '',
@@ -56,9 +55,9 @@ function validateAndBuildEnv(): EnvConfig {
   };
   if (cfg.GPU_DEBUG) {
     console.log('[ENV] Loaded configuration', cfg);
-  }
+  } }
   return cfg;
-}
+} }
 export const ENV_CONFIG: EnvConfig = validateAndBuildEnv();
 // Client-safe environment access with GPU configuration
 export const CLIENT_ENV = Object.freeze({
@@ -85,7 +84,7 @@ export const GPU_CONFIG = Object.freeze({
   lodSystemIntegration: true,
   // Performance settings
   memoryLimit: CLIENT_ENV.GPU_MEMORY_LIMIT * 1024 * 1024, // Convert MB to bytes
-  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE;, as: 'auto' | 'mobile' | 'desktop' | 'high-end',
+  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE; as: 'auto' | 'mobile' | 'desktop' | 'high-end',
   // Debug configuration
   enableDebug: CLIENT_ENV.GPU_DEBUG,
   enableShaderDebug: CLIENT_ENV.SHADER_DEBUG,
@@ -99,3 +98,4 @@ export const GPU_CONFIG = Object.freeze({
   reductionMode: CLIENT_ENV.REDUCTION_MODE
 });
 export default ENV_CONFIG;
+

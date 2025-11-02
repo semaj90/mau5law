@@ -4,13 +4,13 @@ declare global {
   // WebGPU fixes
   interface GPUAdapter {
     name?: string;
-  }
+  } }
 
   // Buffer compatibility
   interface BufferLike extends ArrayBuffer {
     byteLength: number;
     length?: number;
-  }
+  } }
 
   // Fuse.js fixes
   namespace Fuse {
@@ -20,8 +20,8 @@ declare global {
       keys?: (string | { name: string; weight?: number })[];
       threshold?: number;
       // Removed non-standard properties: indices, key, value
-    }
-  }
+    } }
+  } }
 
   // LokiDB fixes
   interface LokiIndexedAdapter {
@@ -31,7 +31,7 @@ declare global {
     find?(query: any): any;
     remove?(query: any): any;
     clear?(): any;
-  }
+  } }
 
   // Canvas state fixes
   interface CanvasState {
@@ -41,28 +41,28 @@ declare global {
     save?(): void;
     fabricJSON?: any;
     metadata?: any;
-  }
+  } }
   interface InteractiveCanvasState extends CanvasState {
     nodes?: any[];
     connections?: any[];
     viewport?: any;
-  }
+  } }
 
   // Cache manager fixes
   interface AdvancedCacheManager {
     start?(): Promise<void>;
     clearAll?(): Promise<void>;
-  }
+  } }
   interface CacheConfiguration {
     enableIntelligentTierSelection?: boolean;
-  }
+  } }
 
   // XState fixes
   interface ActorOptions<T = unknown> {
     // phantom property to ensure the generic: 'T' is used (avoids unused-type lint errors)
     _generic?: T;
     services?: Record<string, unknown> | undefined;
-  }
+  } }
 
   // RabbitMQ fixes
   interface RabbitMQService {
@@ -70,43 +70,43 @@ declare global {
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
     consume?: (queue: string, handler: (...args: any[]) => unknown) => Promise<void>;
-  }
+  } }
 
   // NATS fixes
   interface NATSSubscription {
     unsubscribe(): void;
     [Symbol.asyncIterator](): AsyncIterator<unknown>;
-  }
+  } }
 
   // Gemma service fixes
   interface GemmaEmbeddingService {
     defaultModel?: string;
-  }
+  } }
 
   // Redis fixes
   namespace IORedis {
     interface Redis {
       hset(_key: string, field: string, value: any): Promise<number>;
-    }
-  }
+    } }
+  } }
 
   // Training service fixes
   interface QLoRAReinforcementTrainer {
     isTraining?: boolean;
     isTraaining?: boolean; // Keep typo for backwards compatibility
-  }
+  } }
 
   // WASM fixes
   interface VectorOpsModule {
     (input: any): any;
-  }
+  } }
 
   // UI JSON SSR Configuration fix
   interface UIJsonSSRConfig {
     data?: Record<string, unknown>;
     // Add: any other expected properties of UIJsonSSRConfig here
-  }
-} // end declare global
+  } }
+} }// end declare global
 
 // -----------------------------
 //, New: NodeJS.ProcessEnv typings
@@ -135,8 +135,8 @@ declare namespace NodeJS {
 
     //, Add: any other env keys used across the repo as optional strings
     [key: string]: string | undefined;
-  }
-}
+  } }
+} }
 
 // -----------------------------
 // Module augmentations (extended)
@@ -146,7 +146,7 @@ declare module, '$lib/server/messaging/rabbitmq-service' {
   /**
    * Named export map of queue names
    * Example usage:
-   *   import { QUEUES } from '$lib/server/messaging/rabbitmq-service';
+   *   import { QUEUES } }from '$lib/server/messaging/rabbitmq-service';
    */
   export const QUEUES: Record<string, string>;
 
@@ -156,14 +156,14 @@ declare module, '$lib/server/messaging/rabbitmq-service' {
    */
   const _default: Record<string, string>;
   export default _default;
-}
+} }
 
 declare module, '$lib/server/messaging/rabbitmq-service.js' {
   // same shape for the .js import variant
   export const QUEUES: Record<string, string>;
   const _default: Record<string, string>;
   export default _default;
-}
+} }
 
 // Lightweight db client helper signature (centralized factory pattern)
 declare module, '$lib/server/db/client' {
@@ -177,7 +177,7 @@ declare module, '$lib/server/db/client' {
    * callers can narrow to the concrete client type (pg, drizzle, etc.).
    */
   export function createDbClient(): any;
-}
+} }
 
 // Redis cache helper typings (minimal surface used across repo)
 declare module, '$lib/server/cache/redis' {
@@ -190,11 +190,11 @@ declare module, '$lib/server/cache/redis' {
     del(...keys: string[]): Promise<number>;
     expire(key: string, seconds: number): Promise<number>;
     quit?(): Promise<void>;
-  }
+  } }
 
   export function createRedisClient(): SimpleRedisClient;
   export const defaultRedisClient: SimpleRedisClient | null;
-}
+} }
 
 // Keep existing module augmentations below (if: any)
 declare module, '$lib/utils/webgpu-array-utils' {
@@ -202,16 +202,17 @@ declare module, '$lib/utils/webgpu-array-utils' {
   export function adaptiveQuantization(data: Float32Array): Float32Array;
   // normalizeVectors may be absent in some builds; export as an optional const typed as a function or: undefined
   export const, normalizeVectors: ((vectors: Float32Array) => Float32Array) | undefined;
-}
+} }
 
 declare module, './webgpu-rag-service' {
   export interface GPUSearchMetrics { searchTime: number;, resultCount: number;
-  }
-}
+  } }
+} }
 // Also provide a $lib alias for the same service (covers different import forms)
 declare module, '$lib/services/webgpu-rag-service' {
   export interface GPUSearchMetrics { searchTime: number;, resultCount: number;
-  }
-}
+  } }
+} }
 
 export {};
+

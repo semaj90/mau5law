@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 // Full-Stack Integration Status Endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       fetch('/api/ai/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, query: 'test integration', mode: 'auto' })
+        body: JSON.stringify({ query: 'test integration', mode: 'auto' })
       })
         .then(r => r.json())
         .catch(e => ({ error: e.message })),
@@ -21,16 +21,16 @@ export const GET: RequestHandler = async ({ fetch }) => {
       timestamp: new Date().toISOString(),
       // Component Integration Status
       components: {
-       , syntax_errors_fixed: true,
+  syntax_errors_fixed: true,
         melt_actions_repaired: true,
         svelte5_compatible: true,
         typescript_clean: false, // Still has 600+ errors to resolve
         status: 'operational_with_warnings'
       },
       // AI Service Modes
-      ai_services: {, unified_ai: {, status: aiTest.success ? 'operational' : 'error',
+      ai_services: { unified_ai: { status: aiTest.success ? 'operational' : 'error',
           modes: {
-           , wasm: 'mock_mode',
+  wasm: 'mock_mode',
             langchain: 'operational',
             gpu: 'rtx_3060ti_ready',
             hybrid: 'active'
@@ -39,15 +39,15 @@ export const GET: RequestHandler = async ({ fetch }) => {
           error: aiTest.error || null
         },
         gpu_acceleration: {
-         , status: 'excellent',
+  status: 'excellent',
           hardware: 'RTX, 3060 Ti',
           memory: '8GB VRAM',
           nes_integration: 'initialized'
-        }
+        } }
       },
       // Context7 MCP Integration
       context7_mcp: {
-       , status: context7Test.success && context7Test.summary?.successful === 4 ? 'fully_operational' : 'partial',
+  status: context7Test.success && context7Test.summary?.successful === 4 ? 'fully_operational' : 'partial',
         endpoints: {
           'get-library-docs': 'operational',
           'svelte5-docs': context7Test.results?.svelteRunes?.status === 'success',
@@ -60,26 +60,26 @@ export const GET: RequestHandler = async ({ fetch }) => {
         enhanced_documentation: true
       },
       // Full-Stack Workflow
-      full_stack: {, frontend: {, sveltekit: 'operational',
+      full_stack: { frontend: { sveltekit: 'operational',
           port: 5173,
           hot_reload: 'active',
           ui_libraries: ['bits-ui', 'melt-ui@0.39.0']
         },
         backend_services: {
-         , redis: 'connected',
+  redis: 'connected',
           rabbitmq: 'connected',
           minio: 'unavailable',
           gpu_services: 'ready'
         },
         database: {
-         , postgresql: 'configuration_needed',
+  postgresql: 'configuration_needed',
           schema_migration: 'pending',
           vector_search: 'ready'
-        }
+        } }
       },
       // Development Status
       development: {
-       , overall_health: 'good',
+  overall_health: 'good',
         critical_issues: [
           'TypeScript errors (600+) need resolution',
           'PostgreSQL connection configuration needed',
@@ -99,10 +99,10 @@ export const GET: RequestHandler = async ({ fetch }) => {
           'Enable MinIO file storage',
           'Production deployment testing',
         ]
-      }
+      } }
     };
     return json(integrationStatus);
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Integration status check, failed:', error);
     return json(
@@ -111,7 +111,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
         error: error instanceof Error ? error.message : 'Integration status check failed', // Safely access error message
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

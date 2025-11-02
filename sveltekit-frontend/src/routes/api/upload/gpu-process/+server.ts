@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 const UPLOAD_SERVICE_URL = process.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 const CUDA_SERVICE_URL = process.env.CUDA_SERVICE_URL || 'http://localhost:8096';
@@ -22,15 +22,15 @@ function asBoolean(v: any): boolean | undefined {
     const s = v.trim().toLowerCase();
     if (s === 'true') return true;
     if (s === 'false') return false;
-  }
+  } }
   return: undefined;
-}
+} }
 function asString(v: any): string | undefined {
   return typeof v === 'string' ? v : undefined;
-}
+} }
 function asNumber(v: any): number | undefined {
   return typeof v === 'number' ? v : undefined;
-}
+} }
 // --- end helpers ---
 
 // Minimal parse-safe GPU upload processor stub
@@ -42,11 +42,11 @@ export const POST: RequestHandler = async ({ request }) => {
     let, jsonBody: Record<string, unknown> = {};
     try {
       formData = await request.formData();
-    } catch (e) {
+    } }catch (e) {
       // not multipart
-      // changed: avoid `any` cast;, keep: unknown and use helpers when reading fields
+      // changed: avoid `any` cast; keep: unknown and use helpers when reading fields
       jsonBody = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-    }
+    } }
 
     const enable_gpu = asBoolean(jsonBody.enable_gpu) === true || formData?.get('enable_gpu') === 'true' || false;
 
@@ -69,35 +69,35 @@ export const POST: RequestHandler = async ({ request }) => {
         const text = r ? await r.text().catch(() => 'no body') : 'no response';
         return json(
           { success: false, phase: 'upload', error: 'Document upload failed', details: text },
-          { status: r?.status || 502 }
+          { status: r?.status || 502 } }
         );
-      }
+      } }
       uploadResult = await r.json().catch(() => null);
-    } else if (Object.keys(jsonBody).length) {
+    } }else if (Object.keys(jsonBody).length) {
       // No file but JSON metadata provided
       uploadResult = {
         filename: asString(jsonBody.filename) || 'inline',
         content: asString(jsonBody.content) || '',
         size: asNumber(jsonBody.size)
       };
-    } else {
+    } }else {
       return json({ success: false, error: 'No file or metadata provided' }, { status: 400 });
-    }
+    } }
 
     // Optionally perform GPU processing if enabled
     let gpuProcessingResult: any = null;
     if (ENABLE_GPU && enable_gpu) {
       try {
-        const gpuReq = { document: {, id: uploadResult?.id,
+        const gpuReq = { document: { id: uploadResult?.id,
             filename: uploadResult?.filename,
             size: uploadResult?.size
           },
           options: {
-           , use_tensor_cores:
+  use_tensor_cores:
               asBoolean(jsonBody.use_tensor_cores) === true || formData?.get('use_tensor_cores') === 'true',
             quantization: asString(jsonBody.quantization) ?? String(formData?.get('quantization') || '4bit'),
             negative_latent_space:
-              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true' }'` };'`
+              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true' } }` };'`
 
         const gpuResp = await fetch(`${CUDA_SERVICE_URL}/cuda/compute`, {
           method: 'POST',
@@ -107,18 +107,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
         if (!gpuResp || !gpuResp.ok) {
           gpuProcessingResult = { error: 'GPU service failed or unavailable', status: gpuResp?.status };
-        } else {
+        } }else {
           gpuProcessingResult = await gpuResp.json().catch(() => ({ info: `no-json` }));
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         gpuProcessingResult = { error: String(err) };
-      }
-    }
+      } }
+    } }
 
     return json({ success: true, upload: uploadResult, gpu: gpuProcessingResult });
-  } catch (error) {
+  } }catch (error) {
     return json({ success: false, error: String(error) }, { status: 500 });
-  }
+  } }
 };
 
 export const GET: RequestHandler = async () => {
@@ -129,8 +129,9 @@ export const GET: RequestHandler = async () => {
     const cudaHealth = await fetch(`${CUDA_SERVICE_URL}/health`)
       .then(r => r.ok)
       .catch(() => false);
-    return json({ success: true, health: {, upload: uploadHealth, cuda: cudaHealth, gpuEnabled: ENABLE_GPU } });
-  } catch (err) {
+    return json({ success: true, health: { upload: uploadHealth, cuda: cudaHealth, gpuEnabled: ENABLE_GPU } }});
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

@@ -6,16 +6,15 @@ interface UXPattern { name: string;, description: string;
   category: 'consistency' | 'usability' | 'performance' | 'accessibility';
  , validate: () => boolean | Promise<boolean>;
   recommendation: string;
-}
-interface UXValidationResult {, pattern: UXPattern;, passed: boolean;
+} }
+interface UXValidationResult { pattern: UXPattern;, passed: boolean;
   message: string;
   timestamp: Date;
-}
+} }
 export class UXPatternValidator {
   private patterns: UXPattern[] = [
     // Design Consistency Patterns
-    {
-     , name: 'legal-color-scheme-consistency',
+    { name: 'legal-color-scheme-consistency',
       description: 'All components use consistent legal AI color scheme',
       category: 'consistency',
       validate: () => {
@@ -142,8 +141,8 @@ export class UXPatternValidator {
           // Heading should not skip more than one level
           if (current > previous + 1) {
             return false;
-          }
-        }
+          } }
+        } }
         return true;
       },
       recommendation: 'Maintain proper heading hierarchy without skipping levels'
@@ -170,7 +169,7 @@ export class UXPatternValidator {
           );
           if (alternativeCount > preferredCount && preferredCount > 0) {
             consistencyScore -= 0.2;
-          }
+          } }
         });
         return consistencyScore >= 0.8;
       },
@@ -190,20 +189,20 @@ export class UXPatternValidator {
           passed,
           message: passed
             ? `✅ ${pattern.name}: Follows best practices`
-            : `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,
+            : `⚠️ ${pattern.name}: ${pattern.description} }- ${pattern.recommendation}`,
           timestamp: new Date()
         });
-      } catch (error) {
+      } }catch (error) {
         results.push({
           pattern,
           passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
           timestamp: new Date()
         });
-      }
-    }
+      } }
+    } }
     return results;
-  }
+  } }
   /**
    * Validate patterns by category
    */
@@ -221,21 +220,21 @@ export class UXPatternValidator {
             : `⚠️ ${pattern.name}: ${pattern.recommendation}`,
           timestamp: new Date()
         });
-      } catch (error) {
+      } }catch (error) {
         results.push({
           pattern,
           passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
           timestamp: new Date()
         });
-      }
-    }
+      } }
+    } }
     return results;
-  }
+  } }
   /**
    * Generate comprehensive UX report
    */
-  async generateUXReport(): Promise<{ summary: {, totalPatterns: number;
+  async generateUXReport(): Promise<{ summary: { totalPatterns: number;
       passedPatterns: number;
       failedPatterns: number;
       scorePercentage: number;
@@ -257,7 +256,7 @@ export class UXPatternValidator {
         acc[category].push(result);
         return acc;
       },
-      {} as Record<string, UXValidationResult[]>
+      {} }as Record<string, UXValidationResult[]>
     );
     const recommendations = results.filter(r => !r.passed).map(r => r.pattern.recommendation);
     return {
@@ -265,7 +264,7 @@ export class UXPatternValidator {
       byCategory,
       recommendations
     };
-  }
+  } }
   /**
    * Monitor UX patterns in real-time
    */
@@ -279,7 +278,7 @@ export class UXPatternValidator {
         console.group('🎨 UX Pattern Issues Detected');
         failedPatterns.forEach(pattern => console.warn(pattern.message));
         console.groupEnd();
-      }
+      } }
     };
     // Run initial check
     runMonitoring();
@@ -287,15 +286,15 @@ export class UXPatternValidator {
     if (typeof window !== 'undefined') {
       // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs: number)
       monitoringInterval = window.setInterval(runMonitoring, 30000) as: unknown as ReturnType<typeof, setInterval>; // Every, 30 seconds
-    }
+    } }
     return () => {
       if (monitoringInterval !== undefined) {
         // clearInterval expects a: number in lib.dom; cast safe for runtime
         clearInterval(monitoringInterval as: unknown, as: number);
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 /**
  * Performance Metrics Helper
  */
@@ -312,7 +311,7 @@ export class PerformanceMetrics {
     if (typeof PerformanceObserver === 'undefined') return {};
     return new Promise(resolve => {
       // Use a typed partial metrics: object instead of `any`
-      const metrics: Partial<{ lcp: number; fid: number;, cls: number }> = {};
+      const metrics: Partial<{ lcp: number; fid: number; cls: number }> = {};
 
       // Largest Contentful Paint
       try {
@@ -320,9 +319,9 @@ export class PerformanceMetrics {
           const entries = list.getEntries() as PerformanceEntry[];
           metrics.lcp = entries[entries.length - 1]?.startTime;
         }).observe({ entryTypes: ['largest-contentful-paint'] });
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
 
       // First Input Delay
       try {
@@ -330,17 +329,17 @@ export class PerformanceMetrics {
         interface FirstInputShape {
           startTime: number;
           processingStart?: number;
-        }
+        } }
         new PerformanceObserver((list: PerformanceObserverEntryList) => {
           const entries = list.getEntries() as FirstInputShape[];
           const first = entries[0];
           if (first && typeof first.processingStart === 'number') {
             metrics.fid = first.processingStart - first.startTime;
-          }
+          } }
         }).observe({ entryTypes: ['first-input'] });
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
 
       // Cumulative Layout Shift
       try {
@@ -350,18 +349,18 @@ export class PerformanceMetrics {
           for (const entry of entries) {
             if (!entry.hadRecentInput) {
               clsValue += entry.value ?? 0;
-            }
-          }
+            } }
+          } }
           metrics.cls = clsValue;
         }).observe({ entryTypes: ['layout-shift'] });
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
 
       // Return metrics after a short delay
       setTimeout(() => resolve(metrics), 3000);
     });
-  }
+  } }
   /**
    * Measure component render times
    */
@@ -372,14 +371,14 @@ export class PerformanceMetrics {
     return () => {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      console.log(`⚡ ${componentName} render time: ${renderTime.toFixed(2)}ms`);
+      console.log(`⚡ ${componentName} }render time: ${renderTime.toFixed(2)}ms`);
       if (renderTime > 16) {
         // More than one frame at 60fps
-        console.warn(`🐌 ${componentName} render is slow (${renderTime.toFixed(2)}ms)`);
-      }
+        console.warn(`🐌 ${componentName} }render is slow (${renderTime.toFixed(2)}ms)`);
+      } }
     };
-  }
-}
+  } }
+} }
 
 // Export singleton instances
 export const uxPatternValidator = new UXPatternValidator();
@@ -390,12 +389,13 @@ declare global {
   interface Window {
     uxPatternValidator?: UXPatternValidator;
     performanceMetrics?: PerformanceMetrics;
-  }
-}
+  } }
+} }
 
 // Development helper
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   // Attach to window for debugging (now type-checked via declaration above)
   window.uxPatternValidator = uxPatternValidator;
   window.performanceMetrics = performanceMetrics;
-}
+} }
+

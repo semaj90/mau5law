@@ -1,6 +1,6 @@
 // Simple test endpoint to validate our setup
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || 'test';
@@ -9,13 +9,13 @@ export const GET: RequestHandler = async ({ url }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'nomic-embed-text',
+  model: 'nomic-embed-text',
         input: query
       })
     });
     if (!embeddingResponse.ok) {
       return json({ error: 'Embedding service failed', status: embeddingResponse.status }, { status: 500 });
-    }
+    } }
     const embeddingResult = await embeddingResponse.json();
     const queryEmbedding = embeddingResult.embeddings[0];
     // Test 2: CUDA service
@@ -24,10 +24,10 @@ export const GET: RequestHandler = async ({ url }) => {
       const cudaResponse = await fetch('http://localhost:8097/api/v1/health');
       if (cudaResponse.ok) {
         cudaResult = await cudaResponse.json();
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.log('CUDA service not available:', error);
-    }
+    } }
     return json({
       success: true,
       query,
@@ -36,15 +36,16 @@ export const GET: RequestHandler = async ({ url }) => {
       cuda_service: cudaResult ? 'available' : 'unavailable',
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    console.error('Test endpoint error:', error);'
+  } }catch (error) {
+    console.error('Test endpoint error:', error);
     return json(
       {
         success: false,
         error: error.message,
         stack: error.stack
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

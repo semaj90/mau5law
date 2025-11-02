@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 /*
  * System Information API
  */
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
   // Server-side only check to prevent browser polyfill issues
   if (typeof window !== 'undefined') {
     return json({ error: 'This endpoint only works on the server' }, { status: 500 });
-  }
+  } }
   try {
     // Import Node.js, 'os' module directly (server-only)
     const os = await import('node:os');
@@ -25,10 +25,11 @@ export const GET: RequestHandler = async () => {
       nodeVersion: process.version,
       uptime: os.uptime()
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       { error: 'Failed to get system information', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

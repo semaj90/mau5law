@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // Move/import Drizzle pg-core symbols near the top of the file
 import {
   pgTable,
@@ -12,10 +12,10 @@ import {
   real,
   integer,
   vector
-} from 'drizzle-orm/pg-core';
+} }from 'drizzle-orm/pg-core';
 // If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
-import { users } from './schema-postgres';
-import { sql } from 'drizzle-orm';
+import { users } }from './schema-postgres';
+import { sql } }from 'drizzle-orm';
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
 export * from './schema-gpu-cache';
@@ -112,10 +112,10 @@ export const chatEmbeddings = pgTable(
     semanticHash: varchar('semantic_hash', { length: 256 }).notNull()
   },
   table => {
-    return { pk: primaryKey({, columns: [table.chatId] }),
+    return { pk: primaryKey({ columns: [table.chatId] }),
       // Add an index for efficient vector search
-      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);' };'`
-  }
+      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} }USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);' };'`
+  } }
 );
 // 🧠 User Reports Table
 export const reports = pgTable('reports', {
@@ -127,7 +127,7 @@ export const reports = pgTable('reports', {
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO: object;, isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO: object; isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
@@ -136,8 +136,9 @@ console.log('📝 Drizzle ORM schema defined');
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO: object;, isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO: object; isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
 console.log('📝 Drizzle ORM schema defined');
+

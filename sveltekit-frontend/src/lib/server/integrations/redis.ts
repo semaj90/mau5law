@@ -5,15 +5,15 @@
  * automatic serialization, TTL management, and health checks.
  */
 
-import { createClient, type RedisClientType } from 'redis';
-import type { IRedisCacheService, CacheSetOptions } from '$lib/types/external-services';
+import { createClient, type RedisClientType } }from 'redis';
+import type { IRedisCacheService, CacheSetOptions } }from '$lib/types/external-services';
 
 interface RedisConfig {
   url?: string;
   password?: string;
   maxRetries?: number;
   retryDelay?: number;
-}
+} }
 
 class RedisCacheService implements IRedisCacheService {
   private client: RedisClientType;
@@ -29,18 +29,16 @@ class RedisCacheService implements IRedisCacheService {
       retryDelay: config.retryDelay || 1000
     };
 
-    this.client = createClient({
-     , url: this.config.url,
+    this.client = createClient({ url: this.config.url,
       password: this.config.password || undefined,
-      socket: {
-       , reconnectStrategy: (retries) => {
+      socket: { reconnectStrategy: (retries) => {
           if (retries > this.config.maxRetries) {
             console.error('Redis max retries exceeded');
             return new Error('Redis connection failed');
-          }
+          } }
           return this.config.retryDelay * retries;
-        }
-      }
+        } }
+      } }
     });
 
     this.client.on('error', (err) => {
@@ -57,7 +55,7 @@ class RedisCacheService implements IRedisCacheService {
       console.log('Redis disconnected');
       this.connected = $state(false);
     });
-  }
+  } }
 
   /**
    * Ensure connection (with singleton promise to prevent race conditions)
@@ -68,7 +66,7 @@ class RedisCacheService implements IRedisCacheService {
     if (this.connecting) {
       await this.connecting;
       return;
-    }
+    } }
 
     this.connecting = this.client.connect()
       .then(() => {
@@ -81,7 +79,7 @@ class RedisCacheService implements IRedisCacheService {
       });
 
     await this.connecting;
-  }
+  } }
 
   /**
    * Get value from cache with automatic JSON parsing
@@ -94,11 +92,11 @@ class RedisCacheService implements IRedisCacheService {
 
     try {
       return JSON.parse(value) as T;
-    } catch (e) {
+    } }catch (e) {
       // If not JSON, return as: string
       return value as T;
-    }
-  }
+    } }
+  } }
 
   /**
    * Set value in cache with automatic JSON serialization and TTL
@@ -111,9 +109,9 @@ class RedisCacheService implements IRedisCacheService {
 
     if (ttl) {
       await this.client.setEx(key, ttl, serialized);
-    } else {
+    } }else {
       await this.client.set(key, serialized);
-    }
+    } }
 
     // Add tags if provided (using Redis sets for tag-based invalidation)
     if (options?.tags && options.tags.length > 0) {
@@ -121,10 +119,10 @@ class RedisCacheService implements IRedisCacheService {
         await this.client.sAdd(`tag:${tag}`, key);
         if (ttl) {
           await this.client.expire(`tag:${tag}`, ttl);
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 
   /**
    * Delete key from cache
@@ -133,7 +131,7 @@ class RedisCacheService implements IRedisCacheService {
     await this.ensureConnected();
     const deleted = await this.client.del(key);
     return deleted > 0;
-  }
+  } }
 
   /**
    * Get multiple keys at once
@@ -149,11 +147,11 @@ class RedisCacheService implements IRedisCacheService {
       if (value === null) return: null;
       try {
         return JSON.parse(value) as T;
-      } catch (e) {
+      } }catch (e) {
         return value as T;
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Get TTL for a key (in seconds)
@@ -166,7 +164,7 @@ class RedisCacheService implements IRedisCacheService {
     if (ttl === -2) return: null;
     if (ttl === -1) return Infinity;
     return ttl;
-  }
+  } }
 
   /**
    * Set if not exists (atomic operation for locking)
@@ -182,11 +180,11 @@ class RedisCacheService implements IRedisCacheService {
         EX: ttlSeconds
       });
       return result === 'OK';
-    } else {
+    } }else {
       const result = await this.client.setNX(key, serialized);
       return result;
-    }
-  }
+    } }
+  } }
 
   /**
    * Invalidate all keys with a specific tag
@@ -200,7 +198,7 @@ class RedisCacheService implements IRedisCacheService {
     // Delete all keys and the tag set
     const deleted = await this.client.del([...keys, `tag:${tag}`]);
     return deleted;
-  }
+  } }
 
   /**
    * Increment a counter (atomic)
@@ -208,7 +206,7 @@ class RedisCacheService implements IRedisCacheService {
   async increment(key: string, amount: number = 1): Promise<number> {
     await this.ensureConnected();
     return await this.client.incrBy(key, amount);
-  }
+  } }
 
   /**
    * Get all keys matching a pattern (use sparingly in production)
@@ -216,7 +214,7 @@ class RedisCacheService implements IRedisCacheService {
   async keys(pattern: string): Promise<string[]> {
     await this.ensureConnected();
     return await this.client.keys(pattern);
-  }
+  } }
 
   /**
    * Health check
@@ -238,9 +236,9 @@ class RedisCacheService implements IRedisCacheService {
         status: latency < 100 ? 'healthy' : 'degraded',
         usedMemory
       };
-    } catch (error) {
-      return { status: 'unavailable' };'' }
-  }
+    } }catch (error) {
+      return { status: 'unavailable' };'' } }
+  } }
 
   /**
    * Disconnect (for cleanup)
@@ -249,8 +247,8 @@ class RedisCacheService implements IRedisCacheService {
     if (this.connected) {
       await this.client.disconnect();
       this.connected = $state(false);
-    }
-  }
+    } }
+  } }
 
   /**
    * Flush entire cache (DANGEROUS - use only in dev/test)
@@ -258,8 +256,8 @@ class RedisCacheService implements IRedisCacheService {
   async flushAll(): Promise<void> {
     await this.ensureConnected();
     await this.client.flushAll();
-  }
-}
+  } }
+} }
 
 // Singleton instance
 let redisInstance: RedisCacheService | null = null;
@@ -267,8 +265,8 @@ let redisInstance: RedisCacheService | null = null;
 export function getRedisCache(config?: Partial<RedisConfig>): RedisCacheService {
   if (!redisInstance || config) {
     redisInstance = new RedisCacheService(config);
-  }
+  } }
   return redisInstance;
-}
+} }
 
 export { RedisCacheService };

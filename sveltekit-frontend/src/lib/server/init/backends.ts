@@ -1,12 +1,12 @@
-import { registerBackend } from '$lib/services/providers/ollama/config';
+import { registerBackend } }from '$lib/services/providers/ollama/config';
 let initialized = $state<boolean>(false);
 function env(name: string, fallback?: string): string {
   if (typeof process !== 'undefined' && process.env[name]) return String(process.env[name]);
   if (typeof import.meta !== 'undefined' && (import.meta as: any).env?.[name] !== undefined) {
     return String((import.meta as: any).env[name]);
-  }
+  } }
   return fallback ?? '';
-}
+} }
 export function initBackends(): void {
   if (initialized) return;
   const tensorrtUrl = env('PUBLIC_TENSORRT_URL', 'http://localhost:8001');
@@ -15,4 +15,5 @@ export function initBackends(): void {
   registerBackend('ollama', ollamaUrl);
   registerBackend('webgpu', '/api/embeddings/webgpu');
   initialized = true;
-}
+} }
+

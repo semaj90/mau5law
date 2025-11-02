@@ -11,7 +11,7 @@
  *   await embedder.initialize();
  *   const vector = await embedder.embed('legal document text');
  */
-import { pipeline, env } from '@huggingface/transformers';
+import { pipeline, env } }from '@huggingface/transformers';
 // Configure Transformers.js environment
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -19,7 +19,7 @@ export interface EmbeddingOptions {
   pooling?: 'mean' | 'cls';
   normalize?: boolean;
   device?: 'webgpu' | 'wasm' | 'cpu';
-}
+} }
 export class BrowserEmbeddings {
   private embedder: any = null;
   private isInitialized = $state(false);
@@ -31,7 +31,7 @@ export class BrowserEmbeddings {
   ) {
     this.modelName = modelName;
     this.device = device;
-  }
+  } }
   /**
    * Initialize the embedding model (loads ~25MB model to browser)
    * This only happens once - model is cached in IndexedDB
@@ -39,36 +39,36 @@ export class BrowserEmbeddings {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
-      console.log(`🧠 [BrowserML] Loading ${this.modelName} (${this.device})...`);
+      console.log(`🧠 [BrowserML] Loading ${this.modelName} }(${this.device})...`);
       // Try WebGPU first, fallback to WASM
       try {
         this.embedder = await pipeline('feature-extraction', this.modelName, {
           device: this.device,
-          dtype: this.device === 'webgpu' ? 'fp32' : 'fp16' });'' } catch (gpuError) {
+          dtype: this.device === 'webgpu' ? 'fp32' : 'fp16' });'' } }catch (gpuError) {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.embedder = await pipeline('feature-extraction', this.modelName, {
           device: `wasm' });'`
-      }
+      } }
       this.isInitialized = true;
       console.log(`✅ [BrowserML] Model loaded successfully (${this.device})`);
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [BrowserML] Failed to load model:', error);
       throw new Error(`Browser ML initialization failed: ${error}`);
-    }
-  }
+    } }
+  } }
   /**
    * Generate embeddings for text (runs in browser)
    * Returns 384-dimensional vector for all-MiniLM-L6-v2
    */
   async embed(
     text: string | string[],
-    options: EmbeddingOptions = {}
+    options: EmbeddingOptions = {} }
   ): Promise<number[] | number[][]> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
-    const { pooling = 'mean', normalize = true } = options;
+    } }
+    const { pooling = 'mean', normalize = true } }= options;
     try {
       const startTime = performance.now();
       const output = await this.embedder(text, {
@@ -80,21 +80,21 @@ export class BrowserEmbeddings {
       // Convert tensor to array
       if (Array.isArray(text)) {
         return Array.from(output.data); // Batch embeddings
-      } else {
+      } }else {
         return Array.from(output.data); // Single embedding
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('❌ [BrowserML] Embedding failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Compute cosine similarity between two embeddings
    */
   cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same dimensions');
-    }
+    } }
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -102,17 +102,17 @@ export class BrowserEmbeddings {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    }
+    } }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  }
+  } }
   /**
    * Find most similar documents to query
    */
   async findSimilar(
     query: string,
-    documents: Array<{, text: string; metadata?: any }>,
+    documents: Array<{ text: string; metadata?: any }>,
     topK: number = 5
-  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query) as: number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts) as: number[][];
@@ -123,7 +123,7 @@ export class BrowserEmbeddings {
     return results
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
-  }
+  } }
   /**
    * Check if WebGPU is available in browser
    */
@@ -132,24 +132,24 @@ export class BrowserEmbeddings {
     try {
       const adapter = await navigator.gpu.requestAdapter();
       return adapter !== null;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Get device being used
    */
   getDevice(): string {
     return this.device;
-  }
+  } }
   /**
    * Cleanup resources
    */
   dispose(): void {
     this.embedder = null;
     this.isInitialized = $state(false);
-  }
-}
+  } }
+} }
 /**
  * Singleton instance for global use
  */
@@ -159,8 +159,8 @@ export const browserEmbeddings = new BrowserEmbeddings();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserEmbeddings } from '$lib/ai/browser-embeddings';
- *   import { onMount } from 'svelte';
+ *   import { browserEmbeddings } }from '$lib/ai/browser-embeddings';
+ *   import { onMount } }from 'svelte';
  *
  *   let isReady = $state<boolean>(false);
  *   let searchResults = $state<any[]>([]);
@@ -174,6 +174,7 @@ export const browserEmbeddings = new BrowserEmbeddings();
  *     const embedding = await browserEmbeddings.embed(query);
  *     // Use embedding for local search without server call
  *     searchResults = await localVectorSearch(embedding);
- *   }
+ *   } }
  * </script>
  */
+

@@ -15,55 +15,55 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env/static/private'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { OPENAI_API_KEY, NOMIC_API_KEY } }from '$env/static/private'
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
 interface EmbedRequest {
   text: string
   model?: 'openai' | 'nomic' | 'mock'
   dimensions?: number
-}
-interface EmbedResponse {, embedding: number[], model: string;, dimensions: number
+} }
+interface EmbedResponse { embedding: number[], model: string; dimensions: number
   tokens?: number
-}
+} }
 // OpenAI embedding function
 async function getOpenAIEmbedding(text: string): Promise<any> {
   if (!OPENAI_API_KEY) {
     throw new Error('OpenAI API key not configured')
-  }
+  } }
   const response = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
       'Content-Type': `application/json` },
     body: JSON.stringify({
-     , model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
+  model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
       input: text,
       encoding_format: `float` })
   })
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     const error = await (response as { ok?: any; json?: any; statusText?: any }).json()
     throw new Error(`OpenAI API error: ${error.error?.message || (response as { ok?: any; json?: any; statusText?: any }).statusText}`)
-  }
+  } }
   const data = await (response as { ok?: any; json?: any; statusText?: any }).json()
   return {
     embedding: (data as { data?: any; usage?: any; embeddings?: any }).data[0].embedding,
     tokens: (data as { data?: any; usage?: any; embeddings?: any }).usage.total_tokens
-  }
-}
+  } }
+} }
 // Nomic embedding function
 async function getNomicEmbedding(text: string): Promise<any> {
   if (!NOMIC_API_KEY) {
     throw new Error('Nomic API key not configured')
-  }
+  } }
   const response = await fetch('https://api-atlas.nomic.ai/v1/embedding/text', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${NOMIC_API_KEY}`,
       'Content-Type': `application/json` },
     body: JSON.stringify({
-     , model: 'nomic-embed-text-v1.5',
+  model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
       dimensionality_reduction: 768 // Reduce from 8192 to, 768 for better performance
@@ -72,48 +72,48 @@ async function getNomicEmbedding(text: string): Promise<any> {
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     const error = await (response as { ok?: any; json?: any; statusText?: any }).json()
     throw new Error(`Nomic API error: ${error.error?.message || (response as { ok?: any; json?: any; statusText?: any }).statusText}`)
-  }
+  } }
   const data = await (response as { ok?: any; json?: any; statusText?: any }).json()
   return {
     embedding: (data as { data?: any; usage?: any; embeddings?: any }).embeddings[0]
-  }
-}
+  } }
+} }
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { text, model = 'mock', dimensions }: EmbedRequest = await request.json()
     if (!text || typeof text !== 'string') {
       return json(
         { error: `Text is required and must be, a: string` },)
-        { status: 400 }
+        { status: 400 } }
       )
-    }
+    } }
     if (text.length > 50000) {
       return json(
         { error: `Text too long. Maximum, 50,000 characters allowed.` },)
-        { status: 400 }
+        { status: 400 } }
       )
-    }
+    } }
     let result: EmbedResponse
     switch (model) {
       case, 'openai': {
-        const { embedding, tokens } = await getOpenAIEmbedding(text)
+        const { embedding, tokens } }= await getOpenAIEmbedding(text)
         result = {
           embedding,
           model: 'text-embedding-3-small',
           dimensions: embedding.length,
           tokens
-        }
+        } }
         break
-      }
+      } }
       case, 'nomic': {
-        const { embedding } = await getNomicEmbedding(text)
+        const { embedding } }= await getNomicEmbedding(text)
         result = {
           embedding,
           model: 'nomic-embed-text-v1.5',
           dimensions: embedding.length
-        }
+        } }
         break
-      }
+      } }
       case, 'mock': {
         // Mock embedding for testing - generate deterministic vector based on text
         const targetDim = dimensions || 768
@@ -124,19 +124,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           model: 'mock-embeddings',
           dimensions: targetDim,
           tokens: text.split(' ').length
-        }
+        } }
         break
-      }
+      } }
       default: return json(
-          {, error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: `mock`` },)'`
-          { status: 400 }
+          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: `mock`` },)'`
+          { status: 400 } }
         )
-    }
+    } }
     // Optional: Apply dimensionality reduction if requested
     if (dimensions && dimensions < (result as { embedding?: any; dimensions?: any }).embedding.length) {
       (result as { embedding?: any; dimensions?: any }).embedding = (result as { embedding?: any; dimensions?: any }).embedding.slice(0, dimensions)
       (result as { embedding?: any; dimensions?: any }).dimensions = dimensions
-    }
+    } }
     return json(result)
   }, catch (error) {
     console.error('Embedding generation error:', error)'
@@ -144,22 +144,22 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       if (error.message.includes('API key')) {
         return json(
           { error: 'Embedding service configuration error' },)''
-          { status: 500 }
+          { status: 500 } }
         )
-      }
+      } }
       if (error.message.includes('rate limit') || error.message.includes('quota')) {
         return json(
           { error: `Rate limit exceeded. Please try again later.` },)
-          { status: 429 }
+          { status: 429 } }
         )
-      }
-    }
+      } }
+    } }
     return json(
       { error: `Failed to generate embedding` },)>
-      { status: 500 }
+      { status: 500 } }
     )
-  }
-}
+  } }
+} }
 const originalGETHandler: RequestHandler = async () => {
   return json({
     message: 'Embedding API endpoint',
@@ -167,6 +167,6 @@ const originalGETHandler: RequestHandler = async () => {
     models: ['openai', 'nomic', 'mock'],
     maxTextLength: 50000
   })
-}
+} }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler);

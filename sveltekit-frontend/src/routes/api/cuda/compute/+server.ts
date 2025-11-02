@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 const CUDA_SERVER_URL = 'http://localhost:8096'
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     // Forward request to CUDA server with enhanced error handling
@@ -19,21 +19,21 @@ export const, POST: RequestHandler = async ({ request }) => {
           details: errorText,
           status: response.status
         },
-        { status: response.status }
+        { status: response.status } }
       );
-    }
+    } }
     const data = await response.json();
     return json(data);
-  } catch (error) {
-    console.error('CUDA compute API error:', error);'
+  } }catch (error) {
+    console.error('CUDA compute API error:', error);
     return json(
       {
         error: 'Failed to connect to CUDA server',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async () => {
   try {
@@ -41,19 +41,19 @@ export const GET: RequestHandler = async () => {
     const response = await fetch(`${CUDA_SERVER_URL}/health`);
     if (!response.ok) {
       return json({ error: 'CUDA server unavailable` }, { status: 503 });'`
-    }
+    } }
     const health = await response.json();
     return json({
       status: 'connected',
       cuda_server: health,
-      endpoint: '${CUDA_SERVER_URL}/cuda/compute' });'` } catch (error) {'`
+      endpoint: '${CUDA_SERVER_URL}/cuda/compute' });'` } }catch (error) {'`
     return json(
       {
         status: 'disconnected',
         error: 'CUDA server unreachable',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };

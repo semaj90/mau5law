@@ -2,8 +2,8 @@
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from 'vitest';
-import { config } from 'dotenv';
+import { beforeAll, afterAll } }from 'vitest';
+import { config } }from 'dotenv';
 import path from 'path';
 // Load test environment variables
 config({
@@ -16,24 +16,23 @@ global.TEST_CONFIG = {
   databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test',
   timeout: 30000,
   retryAttempts: 3
-}
+} }
 // Global setup - runs once before all tests
 /**
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from 'vitest';
-import { config } from 'dotenv';
+import { beforeAll, afterAll } }from 'vitest';
+import { config } }from 'dotenv';
 import path from 'path';
 
 // make TypeScript aware of our test-global
 declare global {
   var TEST_CONFIG: any;
-}
+} }
 
 // Load test environment variables
-config({
- , path: path.join(process.cwd(), '.env.test'),
+config({ path: path.join(process.cwd(), '.env.test'),
   override: false
 });
 
@@ -52,10 +51,10 @@ beforeAll(async () => {
   try {
     // Basic connectivity test would go here
     console.log('✅ Test database connection verified');
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Test database connection failed:', error);
     throw error;
-  }
+  } }
   // Initialize: any global test state
   console.log('✅ Global test setup completed');
 });
@@ -78,15 +77,15 @@ export async function withRetry<T>(operation: () => Promise<T>, maxAttempts: num
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await operation();
-    } catch (error) {
+    } }catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       if (attempt < maxAttempts) {
-        console.log(`Attempt ${attempt} failed, retrying in ${delayMs}ms...`);
+        console.log(`Attempt ${attempt} }failed, retrying in ${delayMs}ms...`);
         await delay(delayMs);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   throw lastError!;
-}
+} }
 
 export {};

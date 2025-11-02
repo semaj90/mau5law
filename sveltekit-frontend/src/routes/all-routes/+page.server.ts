@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { PageServerLoad } from './$types.js';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { PageServerLoad } }from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback
-  const isLoggedIn = Boolean((locals as { user?: { id: string } })?.user?.id) || Boolean(cookies.get('session'));
+  const isLoggedIn = Boolean((locals as { user?: { id: string } }})?.user?.id) || Boolean(cookies.get('session'));
   const dashboardPath = isLoggedIn ? '/dashboard/activities' : '/dashboard';
 
   // Services to check (unchanged)
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { name: 'QUIC Service', port: 5178, path: '/' },
     { name: 'Redis', port: 6379, path: '/ping' },
     { name: 'PostgreSQL', port: 5432, path: null }, // No HTTP endpoint
-    { name: 'Ollama', port: 11434, path: '/api/tags' }
+    { name: 'Ollama', port: 11434, path: '/api/tags' } }
   ];
 
   // Test which services are actually responding (unchanged)
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     services.map(async service => {
       if (!service.path) {
         return { ...service, status: 'no-http', responseTime: 0 };
-      }
+      } }
 
       const startTime = Date.now();
       try {
@@ -37,14 +37,14 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
           responseTime,
           httpStatus: response.status
         };
-      } catch (error) {
+      } }catch (error) {
         return {
           ...service,
           status: 'down',
           responseTime: Date.now() - startTime,
           error: error instanceof Error ? error.message : 'Unknown error'
         };
-      }
+      } }
     })
   );
 
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { path: '/api/search/advanced', icon: '🔍', description: 'Advanced Search API' },
     { path: '/api/canvas', icon: '🎨', description: `Canvas API` },'`'`
     { path: '/api/modules', icon: '🧩', description: `Modules API` },
-    { path: '/api/updates', icon: '🔄', description: `Updates API` }
+    { path: '/api/updates', icon: '🔄', description: `Updates API` } }
   ];
 
   // Simplified route layout recommendation (removed file system scanning)
@@ -82,11 +82,10 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       ? 'User logged in — recommend linking dashboard to user activities at /dashboard/activities.'
       : 'Public view — system dashboard at /dashboard.',
     conflicts: [], // No file-based conflicts detected without fs access
-    counts: {
-     , total: realRoutes.length,
+    counts: { total: realRoutes.length,
       api: realRoutes.filter(r => r.path.startsWith('/api')).length,
       ui: realRoutes.filter(r => !r.path.startsWith('/api')).length,
-      groups: {}
+      groups: {} }
     },
     suggestions: [
       'Use nested dashboards for user-specific flows, e.g. /dashboard/activities, /dashboard/settings.',
@@ -101,31 +100,29 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 
   return {
     availableRoutes: realRoutes,
-    routeInventory: {
-     , fileRoutesSample: realRoutes.map(r => r.path),
-      counts: {
-       , config: realRoutes.length,
+    routeInventory: { fileRoutesSample: realRoutes.map(r => r.path),
+      counts: { config: realRoutes.length,
         fileBased: 0, // No file-based scanning
         api: realRoutes.filter(r => r.path.startsWith('/api')).length,
         configMissingFiles: 0,
         filesMissingConfig: 0,
         consolidatable: 0
-      }
+      } }
     },
-    serviceHealth: {, system_overview: {, healthy_services: healthyServices,
+    serviceHealth: { system_overview: { healthy_services: healthyServices,
         total_services: services.length,
         uptime_hours: Math.floor(process.uptime() / 3600),
         last_updated: new Date().toISOString()
       },
       services: serviceStatus.map(result =>
-        result.status === 'fulfilled' ? result.value : {, name: 'Unknown', status: 'error', error: result.reason }
+        result.status === 'fulfilled' ? result.value : { name: 'Unknown', status: 'error', error: result.reason } }
       ),
-      performance: {
-       , cpu_usage: Math.round(process.cpuUsage().user / 1000000),
+      performance: { cpu_usage: Math.round(process.cpuUsage().user / 1000000),
         memory_usage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100),
         disk_usage: 45, // Mock value
-      }
+      } }
     },
     recommendedRouteLayout
   };
 };
+

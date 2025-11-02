@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { z } from 'zod';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { z } }from 'zod';
 // Case creation form schema
 export const caseFormSchema = z.object({
   caseNumber: z
@@ -14,9 +14,9 @@ export const caseFormSchema = z.object({
     .min(10, 'Description must be at least, 10 characters')
     .max(1000, 'Description too long')
     .optional(),
-  priority: z.enum(['low', 'medium', 'high'], { errorMap: () => ({, message: 'Please select a priority level' }) }),
+  priority: z.enum(['low', 'medium', 'high'], { errorMap: () => ({ message: 'Please select a priority level' }) }),
   status: z
-    .enum(['draft', 'active', 'pending', 'closed'], { errorMap: () => ({, message: 'Please select a status' }) })
+    .enum(['draft', 'active', 'pending', 'closed'], { errorMap: () => ({ message: 'Please select a status' }) })
     .default('draft'),
   assignedTo: z.string().uuid('Please select a valid user').optional(),
   dueDate: z
@@ -28,7 +28,7 @@ export const caseFormSchema = z.object({
         const parsed = new Date(date);
         return !Number.isNaN(parsed.getTime()) && parsed > new Date();
       },
-      { message: 'Due date must be in the future' }
+      { message: 'Due date must be in the future' } }
     ),
   tags: z.array(z.string().min(1).max(30)).max(10, 'Maximum, 10 tags allowed').optional(),
   isConfidential: z.boolean().default(false),
@@ -38,7 +38,7 @@ export const caseFormSchema = z.object({
 export const evidenceFormSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title too long'),
   description: z.string().max(500, 'Description too long').optional(),
-  evidenceType: z.enum(['document', 'image', 'video', 'audio', 'digital'], { errorMap: () => ({, message: 'Please select evidence type' })
+  evidenceType: z.enum(['document', 'image', 'video', 'audio', 'digital'], { errorMap: () => ({ message: 'Please select evidence type' })
   }),
   tags: z.array(z.string().min(1).max(30)).max(15, 'Maximum, 15 tags allowed').optional(),
   isChainOfCustodyRequired: z.boolean().default(false),
@@ -51,7 +51,7 @@ export const evidenceFormSchema = z.object({
       const now = new Date();
       return !Number.isNaN(parsed.getTime()) && parsed <= now;
     },
-    { message: 'Collection date cannot be in the future' }
+    { message: 'Collection date cannot be in the future' } }
   ),
   location: z.string().min(1, 'Collection location is required').max(200, 'Location too long')
 });
@@ -111,3 +111,4 @@ export type EvidenceForm = z.infer<typeof, evidenceFormSchema>;
 export type AuthForm = z.infer<typeof, authFormSchema>;
 export type RegisterForm = z.infer<typeof, registerFormSchema>;
 export type SearchForm = z.infer<typeof, searchFormSchema>;
+

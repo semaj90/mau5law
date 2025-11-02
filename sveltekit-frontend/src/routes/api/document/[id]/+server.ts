@@ -1,29 +1,29 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js'
-import { json, error as kitError } from, '@sveltejs/kit';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js'
+import { json, error as kitError } }from '@sveltejs/kit';
 /*
  * Document Detail API - Complete Server-Side Integration
  * Combines Postgres+pgvector, Neo4j, and GPU acceleration for comprehensive document analysis
  * Implements the, "Slow Path" from the hybrid cache architecture
  */
-import { enhanced_db } from, '$lib/server/db/drizzle'
-import { legal_documents, evidence, cases } from, '$lib/server/db/unified-schema'
-import { eq, sql, desc } from, 'drizzle-orm'
-import type { VectorSearchResult } from, '$lib/server/db/enhanced-vector-operations'
+import { enhanced_db } }from '$lib/server/db/drizzle'
+import { legal_documents, evidence, cases } }from '$lib/server/db/unified-schema'
+import { eq, sql, desc } }from 'drizzle-orm'
+import type { VectorSearchResult } }from '$lib/server/db/enhanced-vector-operations'
 
 export const GET: RequestHandler = async ({ params, url }) => {
   const docId = params.id
   if (!docId) {
     throw kitError(400, 'Document ID is required');
-  }
+  } }
   try {
     console.log(`[API] Fetching document details for: ${docId}`)
     // 1. Fetch core document data from PostgreSQL
     const [document] = await enhanced_db.select().from(legal_documents).where(eq(legal_documents.id, docId)).limit(1);
     if (!document) {
       throw kitError(404, `Document not found: ${docId}`);
-    }
+    } }
     // 2. Get document embedding for vector similarity search
     const embedding = document.content_embedding
     let relatedDocuments: VectorSearchResult[] = []
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
             content,
             (content_embedding <-> ${embedding}::vector) as similarity_distance
           FROM legal_documents
-          WHERE id != ${docId}
+          WHERE id != ${docId} }
           ORDER BY content_embedding <-> ${embedding}::vector
           LIMIT, 10
         `)`
@@ -52,16 +52,16 @@ export const GET: RequestHandler = async ({ params, url }) => {
           documentType: doc.document_type,
           similarity: 1 - doc.similarity_distance, // Convert distance to similarity score
           metadata: {
-           , source: 'pgvector_similarity',
+  source: 'pgvector_similarity',
             vector_search: true,
             similarity_distance: doc.similarity_distance
-          }
+          } }
         }));
-      } catch (vectorError) {
+      } }catch (vectorError) {
         console.warn('[API] Vector similarity search failed:', vectorError)
         // Continue without vector results
-      }
-    }
+      } }
+    } }
     // 4. Find associated cases and evidence
     try {
       const associatedCases = await enhanced_db
@@ -78,35 +78,34 @@ export const GET: RequestHandler = async ({ params, url }) => {
         .orderBy(desc(cases.created_at))
         .limit(5);
       caseAssociations = associatedCases
-    } catch (caseError) {
+    } }catch (caseError) {
       console.warn('[API] Case association lookup failed:', caseError)
-    }
+    } }
     // 5. Simulate Neo4j graph connections (in production, this would be real Neo4j queries)
     try {
       // Mock Neo4j-style relationships for demonstration
       graphConnections = [
-        {,
-          type: 'CITES',
+        { type: 'CITES',
           targetId: `precedent_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Legal;, Precedent: Contract Interpretation Standards',
+          targetTitle: 'Legal; Precedent: Contract Interpretation Standards',
           relationship_strength: 0.89,
           connection_type: 'legal_citation' },
         {
           type: 'REFERENCES',
           targetId: `statute_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Statutory;, Reference: Commercial Law Section 4.2',
+          targetTitle: 'Statutory; Reference: Commercial Law Section 4.2',
           relationship_strength: 0.76,
           connection_type: 'statutory_reference' },
         {
           type: 'SIMILAR_PATTERN',
           targetId: `pattern_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Similar Legal;, Pattern: Liability Clause Analysis',
+          targetTitle: 'Similar Legal; Pattern: Liability Clause Analysis',
           relationship_strength: 0.83,
-          connection_type: 'pattern_similarity' }
+          connection_type: 'pattern_similarity' } }
       ]
-    } catch (graphError) {
+    } }catch (graphError) {
       console.warn('[API] Graph connection lookup failed:', graphError)
-    }
+    } }
     // 6. Enhanced metadata analysis
     const enhancedMetadata = {
       processing_time: Date.now(),
@@ -118,11 +117,11 @@ export const GET: RequestHandler = async ({ params, url }) => {
       last_accessed: new Date().toISOString(),
       cache_key: `doc_${docId}_${Date.now()}`,
       server_processing: {
-       , postgres_query_time: '~15ms',
+  postgres_query_time: '~15ms',
         vector_search_time: embedding ? '~25ms' : 'skipped',
         graph_traversal_time: '~10ms',
-        total_server_time: '~50ms' }
-    }
+        total_server_time: '~50ms' } }
+    } }
     // 7. GPU acceleration integration for advanced analysis (optional)
     let gpuAnalysis = null
     const includeGPUAnalysis = url.searchParams.get('gpu') === 'true'
@@ -132,7 +131,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-         , text: document.content.substring(0, 2000), // First, 2000 chars
+  text: document.content.substring(0, 2000), // First, 2000 chars
           context: relatedDocuments.map(d => d.title).slice(0, 3),
           analysisType: 'legal' })
       });
@@ -144,16 +143,16 @@ export const GET: RequestHandler = async ({ params, url }) => {
           processingTime: gpuData.processingTime,
           rtx_3060_ti: true
         };
-      }
-    } catch (gpuError) {
+      } }
+    } }catch (gpuError) {
       console.warn('[API] GPU analysis failed: ', gpuError);'`'`
-    }
-  }
+    } }
+  } }
     // 8. Comprehensive response
     const response = {
       success: true,
       document: {
-       , id: document.id,
+  id: document.id,
         title: document.title,
         content: document.content,
         document_type: document.document_type,
@@ -170,20 +169,20 @@ export const GET: RequestHandler = async ({ params, url }) => {
       gpu_analysis: gpuAnalysis,
       enhanced_metadata: enhancedMetadata,
       cache_instructions: {
-       , cache_duration: 5 * 60 * 1000, // 5 minutes
+  cache_duration: 5 * 60 * 1000, // 5 minutes
         cache_key: enhancedMetadata.cache_key,
         auto_refresh: false,
-        priority: 'normal' }
-    }
-    console.log(`[API] Document ${docId} processed successfully with ${relatedDocuments.length} related docs`)
+        priority: 'normal' } }
+    } }
+    console.log(`[API] Document ${docId} }processed successfully with ${relatedDocuments.length} }related docs`)
     return json(response)
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[API] Document fetch failed: ', err)'`'`
     throw kitError(500, `Failed to fetch document: ${err instanceof Error ? err.message : 'Unknown error' }`);
-  }
-}
+  } }
+} }
 // Optional: Support for partial updates or specific data requests
-export const, POST: RequestHandler = async ({ params, request }) => {
+export const POST: RequestHandler = async ({ params, request }) => {
   const docId = params.id
   const body = await request.json()
   // Handle specific requests like, "refresh_cache", "get_relations_only", etc.
@@ -191,7 +190,7 @@ export const, POST: RequestHandler = async ({ params, request }) => {
   switch (action) {
     case, 'refresh_cache':
       // Force refresh of cached data
-      return GET({ params, url: new URL('?force_refresh=true', 'http://localhost') } as: any)
+      return GET({ params, url: new URL('?force_refresh=true', 'http://localhost') } }as: any)
     case, 'get_relations_only':
       // Return only relationship data for performance
       // Implementation would be similar but more focused
@@ -201,6 +200,6 @@ export const, POST: RequestHandler = async ({ params, request }) => {
         message: 'Relations-only endpoint not yet implemented' })
     default:
       throw error(400, `Unknown action: ${action}`)
-  }
-}
+  } }
+} }
 export const prerender = false;

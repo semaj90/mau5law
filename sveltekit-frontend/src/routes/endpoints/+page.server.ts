@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } }from './$types.js';
 type EndpointStatus = {
   name: string;
   path: string;
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async () => {
       name: 'Go Upload Service',
       path: 'http://localhost:8097/health',
       healthy: true,
-      message: 'File processing ready',
+      message: 'File processing ready'
     },
     { name: 'Load Balancer', path: 'http://localhost:8100', healthy: true, message: 'Round Robin active' },
     { name: 'QUIC Gateway', path: 'http://localhost:8101', healthy: true, message: 'HTTP/3 enabled' },
@@ -24,3 +24,4 @@ export const load: PageServerLoad = async () => {
   ];
   return { endpoints };
 };
+

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 
 type TelemetryEntry = { ts: number;, latency: number;
   frameDelta?: number;
@@ -9,13 +9,13 @@ type TelemetryEntry = { ts: number;, latency: number;
   note?: string;
 };
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     // Basic validation
     if (!body || typeof body !== 'object' || typeof body.ts !== 'number') {
       return json({ success: false, error: 'invalid_payload' }, { status: 400 });
-    }
+    } }
 
     const entry = body as TelemetryEntry;
 
@@ -24,18 +24,19 @@ export const, POST: RequestHandler = async ({ request }) => {
       await ensureRedisReady(2000);
       // Use LPUSH so newest items are at head
       await redis.lpush('telemetry:events', JSON.stringify(entry));
-    } catch (err) {
+    } }catch (err) {
       // If redis not available, write to tmp in-memory list (process-level)
       interface GlobalTelemetry {
         __telemetryFallback?: TelemetryEntry[];
-      }
+      } }
       const g = globalThis as: unknown as GlobalTelemetry;
       g.__telemetryFallback = g.__telemetryFallback ?? [];
       g.__telemetryFallback.push(entry);
-    }
+    } }
 
     return json({ success: true });
-  } catch (err: any) {
+  } }catch (err: any) {
     return json({ success: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 });
-  }
+  } }
 };
+

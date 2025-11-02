@@ -9,20 +9,20 @@
 
 export interface ServiceStatus {
   [serviceName: string]: boolean;
-}
+} }
 
 export interface AdminHealthResponse {
   success: boolean;
   error?: string;
   data?: AdminHealthData;
-}
+} }
 
 export interface AdminHealthData { cpu: number;, memory: number;
   database: string | number;
   storage: number;
   uptime: number;
   timestamp: string | Date; // allow Date objects or ISO strings
-}
+} }
 
 // Replace the previous re-export with a simpler alias
 export type AdminHealth = AdminHealthResponse;
@@ -36,20 +36,20 @@ export interface SystemMetrics { cpu: CPUMetrics;, memory: MemoryMetrics;
   network?: NetworkMetrics;
   uptime: number;
   timestamp: string | Date;
-}
+} }
 
 export interface CPUMetrics { usage: number;, cores: number;
   model?: string;
   frequency?: number;
   temp?: number;
-}
+} }
 
 export interface MemoryMetrics { total: number;, used: number;
   free: number;
   percentage: number;
   swapTotal?: number;
   swapUsed?: number;
-}
+} }
 
 export interface DiskMetrics { total: number;, used: number;
   free: number;
@@ -57,14 +57,14 @@ export interface DiskMetrics { total: number;, used: number;
   inode?: { total: number;, used: number;
     free: number;
   };
-}
+} }
 
 export interface NetworkMetrics { bytesIn: number;, bytesOut: number;
   packetsIn: number;
   packetsOut: number;
   errors: number;
   dropped: number;
-}
+} }
 
 // ============================================================================
 // ADMIN STATUS RESPONSE TYPES
@@ -75,12 +75,12 @@ export interface AdminStatusResponse { success: boolean;, status: AdminStatus;
   services: ServiceHealthStatus;
   timestamp: string | Date;
   error?: string;
-}
+} }
 
 export interface AdminStatus { state: 'operational' | 'degraded' | 'critical' | 'maintenance';, uptime: number;
   version: string;
   environment: string;
-}
+} }
 
 export interface ServiceHealthStatus { database: ServiceHealth;, cache: ServiceHealth;
   messageQueue?: ServiceHealth;
@@ -88,7 +88,7 @@ export interface ServiceHealthStatus { database: ServiceHealth;, cache: Service
   gpu?: ServiceHealth;
   storage?: ServiceHealth;
   [key: string]: ServiceHealth | undefined;
-}
+} }
 
 export interface ServiceHealth {
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
@@ -96,7 +96,7 @@ export interface ServiceHealth {
   lastCheck?: string;
   error?: string;
   details?: Record<string, unknown>;
-}
+} }
 
 // ============================================================================
 // DATABASE STATUS TYPES
@@ -118,7 +118,7 @@ export interface DatabaseStatus { connected: boolean;, version: string;
   };
   extensions: string[];
   timestamp: string | Date;
-}
+} }
 
 export interface DatabaseQueryStats { totalQueries: number;, successfulQueries: number;
   failedQueries: number;
@@ -126,7 +126,7 @@ export interface DatabaseQueryStats { totalQueries: number;, successfulQueries:
   slowQueries: number;
   activeConnections: number;
   queuedQueries: number;
-}
+} }
 
 // ============================================================================
 // CACHE STATUS TYPES
@@ -144,7 +144,7 @@ export interface CacheStatus { type: 'redis' | 'memory' | 'hybrid';, connected:
   keyCount: number;
   maxMemory?: number;
   timestamp: string | Date;
-}
+} }
 
 // ============================================================================
 // MESSAGE QUEUE STATUS TYPES
@@ -157,14 +157,14 @@ export interface MessageQueueStatus { type: 'rabbitmq' | 'kafka' | 'redis';, co
     averageProcessingTime: number;
   };
   timestamp: string | Date;
-}
+} }
 
 export interface QueueInfo { name: string;, messageCount: number;
   consumerCount: number;
   durable: boolean;
   status: 'active' | 'stalled' | 'error';
   error?: string;
-}
+} }
 
 // ============================================================================
 // VECTOR STORE STATUS TYPES
@@ -182,14 +182,14 @@ export interface VectorStoreStatus { type: 'pgvector' | 'qdrant' | 'faiss' | 'hy
     memoryUsage?: number;
   };
   timestamp: string | Date;
-}
+} }
 
 export interface IndexInfo { name: string;, vectorCount: number;
   dimensions: number;
   type: string;
   size: number;
   lastUpdated: string;
-}
+} }
 
 // ============================================================================
 // CONFIGURATION TYPES
@@ -198,7 +198,7 @@ export interface IndexInfo { name: string;, vectorCount: number;
 export interface AdminConfigResponse { success: boolean;, configuration: AdminConfiguration;
   timestamp: string | Date;
   error?: string;
-}
+} }
 
 export interface AdminConfiguration { database: DatabaseConfig;, cache: CacheConfig;
   messageQueue?: MessageQueueConfig;
@@ -206,46 +206,46 @@ export interface AdminConfiguration { database: DatabaseConfig;, cache: CacheCo
   gpu?: GPUConfig;
   storage?: StorageConfig;
   security?: SecurityConfig;
-}
+} }
 
 export interface DatabaseConfig { host: string;, port: number;
   database: string;
   ssl: boolean;
   poolSize: number;
   connectionTimeout: number;
-}
+} }
 
 export interface CacheConfig { type: string;, host: string;
   port: number;
   ttl: number;
   maxMemory: number;
-}
+} }
 
 export interface MessageQueueConfig { type: string;, host: string;
   port: number;
   prefetch: number;
-}
+} }
 
 export interface VectorStoreConfig { type: string;, dimensions: number;
   indexType: string;
   gpuEnabled: boolean;
-}
+} }
 
 export interface GPUConfig { enabled: boolean;, devices: Array<{ id: number;, name: string;
     memory: number;
   }>;
   cudaVersion?: string;
-}
+} }
 
 export interface StorageConfig { type: string;, path: string;
   maxSize: number;
   quotaPerUser?: number;
-}
+} }
 
 export interface SecurityConfig { authEnabled: boolean;, encryptionEnabled: boolean;
   tlsEnabled: boolean;
   certificatePath?: string;
-}
+} }
 
 // ============================================================================
 // AUDIT LOG TYPES
@@ -255,7 +255,7 @@ export interface AuditLogResponse { success: boolean;, logs: AuditLog[];
   pagination: AuditLogPagination;
   timestamp: string | Date;
   error?: string;
-}
+} }
 
 export interface AuditLog { id: string;, timestamp: string;
   userId: string;
@@ -266,12 +266,12 @@ export interface AuditLog { id: string;, timestamp: string;
   details: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
-}
+} }
 
 export interface AuditLogPagination { page: number;, pageSize: number;
   total: number;
   pages: number;
-}
+} }
 
 // ============================================================================
 // ADMIN ACTION RESPONSE TYPES
@@ -282,7 +282,7 @@ export interface AdminActionResponse { success: boolean;, action: string;
   duration: number;
   timestamp: string | Date;
   error?: string;
-}
+} }
 
 export interface DatabaseMaintenanceResponse extends AdminActionResponse { action: 'vacuum' | 'analyze' | 'reindex' | 'backup' | 'restore';, result: {
     affectedRows?: number;
@@ -290,11 +290,11 @@ export interface DatabaseMaintenanceResponse extends AdminActionResponse { actio
     duration: number;
     backupPath?: string;
   };
-}
+} }
 
 export interface CacheClearResponse extends AdminActionResponse { action: 'clear_cache' | 'clear_pattern';, result: { keysDeleted: number;, memoryFreed: number;
   };
-}
+} }
 
 export interface ServiceRestartResponse extends AdminActionResponse { action: 'restart_service';, result: {
     service: string;
@@ -302,4 +302,5 @@ export interface ServiceRestartResponse extends AdminActionResponse { action: 'r
     newPid?: number;
     downtime: number;
   };
-}
+} }
+

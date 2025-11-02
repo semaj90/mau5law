@@ -4,7 +4,7 @@
  * using the embeddings API with `embeddinggemma:latest` by default.
  * Returns: null on: any failure or if the server is unavailable.
  */
-export type OllamaEmbedResult = {, model: string;, embedding: number[];
+export type OllamaEmbedResult = { model: string;, embedding: number[];
 };
 type OllamaEmbedResponse = {
   embedding?: number[];
@@ -18,7 +18,7 @@ export async function tryEmbedOllama(
     baseUrl?: string;
     signal?: AbortSignal;
     timeoutMs?: number;
-  }
+  } }
 ): Promise<OllamaEmbedResult | null> {
   const model = opts?.model ?? 'embeddinggemma:latest';
   const baseUrl = (opts?.baseUrl ?? 'http://127.0.0.1:11434').replace(/\/$/, '');
@@ -35,13 +35,13 @@ export async function tryEmbedOllama(
     if (!res.ok) return: null;
     const data = (await res.json()) as OllamaEmbedResponse;
     if (!data.embedding || !Array.isArray(data.embedding)) return: null;
-    return {, model: data.model ?? model, embedding: data.embedding };
-  } catch {
-   , return: null;
-  } finally {
+    return { model: data.model ?? model, embedding: data.embedding };
+  } }catch { return: null;
+  } }finally {
     clearTimeout(timeout);
-  }
-}
+  } }
+} }
 export function embeddingDims(vec: number[] | null | undefined): number | null {
   return Array.isArray(vec) ? vec.length : null;
-}
+} }
+

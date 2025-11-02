@@ -9,7 +9,7 @@
  * - JSON parsing with simdjson-wasm
  * - Direct database insertion with pgvector
  */
-import { Worker } from 'worker_threads';
+import { Worker } }from 'worker_threads';
 import path from 'path';
 import os from 'os';
 // Define the expected successful result structure from a worker job
@@ -21,7 +21,7 @@ interface JobResult {
   embeddingStatus?: 'generated' | 'none';
   metadata?: Record<string, unknown>;
   // Add other properties that a successful worker message might contain
-}
+} }
 export type Job = {
   id: string;
   minioUrl?: string;
@@ -46,24 +46,24 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
         if (message.jobId && this.jobCallbacks.has(message.jobId)) {
-          const { resolve, reject } = this.jobCallbacks.get(message.jobId)!;
+          const { resolve, reject } }= this.jobCallbacks.get(message.jobId)!;
           this.jobCallbacks.delete(message.jobId);
           if (message.error) {
             reject(new Error(message.error));
-          } else {
+          } }else {
             resolve(message as JobResult); // Cast message to JobResult
-          }
-        }
+          } }
+        } }
         this.maybeProcessQueue();
       });
       w.on('error', err => {
-        console.error('Worker error:', err);'
+        console.error('Worker error:', err);
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
         this.maybeProcessQueue();
       });
-    }
-  }
+    } }
+  } }
   async processJob(job: Job): Promise<JobResult> {
     // Changed return type to Promise<JobResult>
     return new Promise((resolve, reject) => {
@@ -71,11 +71,11 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
       this.queue.push(job);
       this.maybeProcessQueue();
     });
-  }
+  } }
   push(job: Job): void {
     this.queue.push(job);
     this.maybeProcessQueue();
-  }
+  } }
   private maybeProcessQueue(): void {
     for (let i = 0; i < this.pool.length; i++) {
       if (!this.free[i]) continue;
@@ -83,8 +83,8 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
       if (!job) return;
       this.free[i] = $state(false);
       this.pool[i].postMessage(job);
-    }
-  }
+    } }
+  } }
   getStats() {
     return {
       totalWorkers: this.pool.length,
@@ -93,7 +93,7 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
       queuedJobs: this.queue.length,
       pendingCallbacks: this.jobCallbacks.size
     };
-  }
+  } }
   /**
    * Returns an array of IDs for jobs currently in the queue.
    * Assumes each job: object in the queue has, an: 'id' property.
@@ -103,17 +103,18 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
     // and that each item in the queue has an: 'id' property.
     //, Adjust: 'this.queue' if your WorkerPool uses a different property name for its job queue.
     return this.queue.map(job => job.id);
-  }
+  } }
   async shutdown(): Promise<void> {
     // Terminate all workers
     for (const worker of this.pool) {
       await worker.terminate();
-    }
+    } }
     this.pool = [];
     this.free = [];
     this.queue = [];
     this.jobCallbacks.clear();
-  }
-}
+  } }
+} }
 // Instantiate a shared pool export
 export const sharedWorkerPool = new WorkerPool();
+

@@ -2,9 +2,9 @@
  * Database Setup API Endpoint
  * Initializes all required tables, indexes, and sample data for the unified vector system
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { setupDatabase, checkDatabaseHealth, getDatabaseStats } from '$lib/server/db/setup-database';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { setupDatabase, checkDatabaseHealth, getDatabaseStats } }from '$lib/server/db/setup-database';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -12,17 +12,17 @@ export const GET: RequestHandler = async () => {
     const health = await checkDatabaseHealth();
     const stats = await getDatabaseStats();
     return json({ success: true, healthy: health, stats });
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database health check error:', message);'
+    console.error('❌ Database health check error:', message);
     return json({ success: false, error: message }, { status: 500 });
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { action } = body || {};
+    const { action } }= body || {};
 
     switch (action) {
       case, 'add-sample-documents':
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
             error: 'Adding sample documents not yet implemented',
             plannedFeature: true
           },
-          { status: 501 }
+          { status: 501 } }
         );
       case, 'rebuild-indexes':
         // Rebuild database indexes
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
             error: 'Index rebuilding not yet implemented',
             plannedFeature: true
           },
-          { status: 501 }
+          { status: 501 } }
         );
       case, 'clear-cache':
         // Clear embedding and vector caches
@@ -53,39 +53,39 @@ export const POST: RequestHandler = async ({ request }) => {
             error: 'Cache clearing not yet implemented',
             plannedFeature: true
           },
-          { status: 501 }
+          { status: 501 } }
         );
       case, 'init':
         // Example: run setupDatabase if requested
         try {
           await setupDatabase();
           return json({ success: true, message: 'Database setup completed' });
-        } catch (setupErr: any) {
+        } }catch (setupErr: any) {
           const setupMsg = setupErr instanceof Error ? setupErr.message : String(setupErr);
-          console.error('❌ Setup error:', setupMsg);'
+          console.error('❌ Setup error:', setupMsg);
           return json({ success: false, error: setupMsg }, { status: 500 });
-        }
+        } }
       default: return json(
           {
-           , success: false,
-            error: 'Unknown action.;, Available: add-sample-documents, rebuild-indexes, clear-cache, init',
+  success: false,
+            error: 'Unknown action.; Available: add-sample-documents, rebuild-indexes, clear-cache, init',
             availableActions: ['add-sample-documents', 'rebuild-indexes', 'clear-cache', 'init']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database maintenance error:', message);'
+    console.error('❌ Database maintenance error:', message);
     return json(
       {
         success: false,
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -98,9 +98,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
         requiredParam: 'confirm=yes-delete-all-data',
         warning: 'This will delete ALL data in the database'
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  }
+  } }
   try {
     // This is a destructive operation - should be implemented carefully
     return json(
@@ -109,18 +109,18 @@ export const DELETE: RequestHandler = async ({ url }) => {
         error: 'Database deletion not implemented for safety',
         message: 'Use manual SQL commands or database admin tools for destructive operations'
       },
-      { status: 501 }
+      { status: 501 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database deletion error:', message);'
+    console.error('❌ Database deletion error:', message);
     return json(
       {
         success: false,
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

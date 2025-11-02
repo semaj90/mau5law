@@ -2,7 +2,7 @@
  * WebSocket endpoint for binary QLoRA streaming
  * Handles WebSocket upgrade requests and delegates to the WebSocket server
  */
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
 export const GET: RequestHandler = async ({ request }) => {
   // Check if this is a WebSocket upgrade request
   if (request.headers.get('upgrade')?.toLowerCase() === 'websocket') {
@@ -18,13 +18,13 @@ export const GET: RequestHandler = async ({ request }) => {
           'Upgrade': 'WebSocket',
           'Connection': 'Upgrade',
           'Sec-WebSocket-Accept': ''
-        }
+        } }
       });
-    } else {
+    } }else {
       console.error('❌ [WebSocket Route] WebSocket server not available');
       return new Response('WebSocket server not available', { status: 503 });
-    }
-  }
+    } }
+  } }
   // Return information about the WebSocket endpoint for non-upgrade requests
   return new Response(
     JSON.stringify({
@@ -33,18 +33,19 @@ export const GET: RequestHandler = async ({ request }) => {
       status: 'Ready',
       description: 'Real-time binary compressed QLoRA topology predictions',
       upgrade: 'Use WebSocket upgrade headers to connect',
-      example: {, request: {, query: 'analyze legal contract',
+      example: { request: { query: 'analyze legal contract',
           topologyType: 'legal',
           accuracyTarget: 90,
           streamBinary: true
-        }
-      }
+        } }
+      } }
     }),
     {
       status: 200,
       headers: {
         'Content-Type': 'application/json'
-      }
-    }
+      } }
+    } }
   );
 };
+

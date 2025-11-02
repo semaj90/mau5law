@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   return json({
     success: true,
@@ -15,14 +15,15 @@ export const POST: RequestHandler = async ({ request }) => {
       received: body,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: 'Failed to parse request',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  }
+  } }
 };
+

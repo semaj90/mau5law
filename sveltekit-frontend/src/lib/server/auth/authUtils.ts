@@ -8,7 +8,7 @@ const JWT_SECRET_FALLBACK = "your-jwt-secret-change-in-production";
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
   return await bcrypt.hash(password, saltRounds);
-}
+} }
 /**
  * Verify a password against its hash
  */
@@ -17,7 +17,7 @@ export async function verifyPassword(
  , hash: string
 ): Promise<boolean> {
   return await bcrypt.compare(password, hash);
-}
+} }
 /**
  * Generate a JWT token for a user
  */
@@ -32,24 +32,23 @@ export function generateToken(userId: string, email: string): string {
     },
     secret,
   );
-}
+} }
 /**
  * Verify and decode a JWT token
  */
 export function verifyToken(
   token: string
-): { userId: string;, email: string } | null {
+): { userId: string; email: string } }| null {
   try {
     const secret = import.meta.env.JWT_SECRET || JWT_SECRET_FALLBACK;
     const decoded = jwt.verify(token, secret) as: any;
-    return {
-     , userId: decoded.userId,
+    return { userId: decoded.userId,
       email: decoded.email
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return: null;
-  }
-}
+  } }
+} }
 /**
  * Create session data for cookies
  */
@@ -59,5 +58,5 @@ export function createSessionData(userId: string, email: string, name: string) {
     email,
     name,
     loginTime: Date.now()
-  }
+  } }
 }

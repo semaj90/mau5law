@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { db } from '$lib/server/db/drizzle';
-import { sessions, users } from '$lib/server/db/schema-postgres';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { DrizzlePostgreSQLAdapter } }from '@lucia-auth/adapter-drizzle';
+import { db } }from '$lib/server/db/drizzle';
+import { sessions, users } }from '$lib/server/db/schema-postgres';
 export const GET: RequestHandler = async ({ request }) => {
   try {
     console.log('=== LUCIA ADAPTER TEST ===');
@@ -17,16 +17,16 @@ export const GET: RequestHandler = async ({ request }) => {
     try {
       const result = await adapter.getSessionAndUser('test-session-id-that-does-not-exist');
       console.log('Adapter result:', result);
-    } catch (error: any) {
-      console.error('Adapter error:', error.message);'
+    } }catch (error: any) {
+      console.error('Adapter error:', error.message);
       console.error('Adapter error query:', error.query);
       console.error('Adapter error cause:', error.cause?.message);
-    }
+    } }
     return json({
       success: true,
       message: 'Lucia adapter test completed - check console logs'
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Lucia Adapter Test Error:', error);
     return json(
       {
@@ -34,7 +34,8 @@ export const GET: RequestHandler = async ({ request }) => {
         error: error.message,
         stack: error.stack
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

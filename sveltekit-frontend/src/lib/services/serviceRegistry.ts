@@ -1,8 +1,8 @@
 import http from 'http';
-import { EventEmitter } from 'events';
+import { EventEmitter } }from 'events';
 // Auto-generated Service Registry for Go, gRPC, QUIC, HTTP, WebSocket endpoints
 // Source: gonet12grpcquic3.txt, GO_BINARIES_CATALOG.md, FULL_STACK_INTEGRATION_COMPLETE.md
-export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
+export const ServiceRegistry = { http: { enhancedRAG: 'http://localhost:8094',
     uploadService: 'http://localhost:8093',
     aiSummary: 'http://localhost:8096',
     clusterManager: 'http://localhost:8213',
@@ -37,23 +37,18 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     testServer: 'http://localhost:8225',
     testBuild: 'http://localhost:8226'
   },
-  grpc: {
-   , grpcServer: 'localhost:50051',
+  grpc: { grpcServer: 'localhost:50051',
     kratosServer: 'localhost:50052'
   },
-  quic: {
-   , ragQuicProxy: 'localhost:8216'
+  quic: { ragQuicProxy: 'localhost:8216'
   },
-  ws: {
-   , liveAgent: 'ws://localhost:8200/ws',
+  ws: { liveAgent: 'ws://localhost:8200/ws',
     enhancedRAG: 'ws://localhost:8094/ws'
   },
-  nats: {
-   , ws1: 'ws://localhost:4222',
+  nats: { ws1: 'ws://localhost:4222',
     ws2: 'ws://localhost:4223'
   },
-  proxy: {
-   , enhancedRAG: '/api/go/enhanced-rag',
+  proxy: { enhancedRAG: '/api/go/enhanced-rag',
     neo4j: '/api/neo4j',
     upload: '/api/go/upload',
     cluster: '/api/go/cluster',
@@ -62,8 +57,7 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     qdrant: '/api/qdrant',
     llm: '/api/llm'
   },
-  endpoints: {
-   , ragQuery: '/api/v1/rag',
+  endpoints: { ragQuery: '/api/v1/rag',
     ai: '/api/v1/ai',
     upload: '/api/v1/upload',
     natsPublish: '/api/v1/nats/publish',
@@ -78,14 +72,14 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     context7Autosolve: '/api/context7-autosolve',
     natsDemo: '/demos/nats-messaging'
   },
-  proto: {
-   , embedder: 'proto/embed.proto',
+  proto: { embedder: 'proto/embed.proto',
     evidenceProcessor: 'microservices/evidence-processor/proto/evidence.proto',
     gpuService: 'proto/gpu_service.proto',
     tensor: 'proto/tensor.proto',
     events: 'proto/events.proto',
     ingest: 'proto/ingest.proto',
     ingestNew: 'proto/ingest_new.proto'
-  }
+  } }
 };
 //, Usage: ServiceRegistry.http.enhancedRAG, ServiceRegistry.grpc.kratosServer, etc.
+

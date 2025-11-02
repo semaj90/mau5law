@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * RAG Chunking API - Optimized text chunking for legal documents
  * Handles semantic chunking, paragraph-aware splitting, and CUDA-accelerated processing
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getCudaServiceUrl, getEmbeddingModel } }from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } }from '$lib/server/minio-service';
+import { generateEmbeddings } }from '$lib/server/services/embedding-service';
 interface ChunkingRequest {
   text?: string;
   minioUrl?: string;
@@ -22,32 +22,32 @@ interface ChunkingRequest {
     useCUDA?: boolean;
     generateEmbeddings?: boolean;
   };
-}
-interface SemanticChunk {, content: string;, startIndex: number;
+} }
+interface SemanticChunk { content: string;, startIndex: number;
   endIndex: number;
   embedding?: number[];
-  metadata: {, wordCount: number;, sentenceCount: number;
+  metadata: { wordCount: number;, sentenceCount: number;
     complexity: number;
     entities?: string[];
     keyTerms?: string[];
     similarity?: number; // Similarity to previous chunk
   };
-}
-interface ChunkingResponse {, success: boolean;, chunks: SemanticChunk[];
-  summary: {, totalChunks: number;, averageChunkSize: number;
+} }
+interface ChunkingResponse { success: boolean;, chunks: SemanticChunk[];
+  summary: { totalChunks: number;, averageChunkSize: number;
     totalTokens: number;
     processingTime: number;
     chunkingMethod: string;
-   , usedCUDA: boolean;
+  usedCUDA: boolean;
   };
   embeddings?: number[][];
   documentMetadata?: Record<string, unknown> | undefined; // <-- added optional typed metadata
-}
+} }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const body: ChunkingRequest = await request.json();
-    const { text: providedText, minioUrl, options = {} } = body;
+    const { text: providedText, minioUrl, options = {} }} }= body;
     const {
       chunkSize = 512,
       chunkOverlap = 50,
@@ -58,10 +58,10 @@ export const POST: RequestHandler = async ({ request }) => {
       extractMetadata = true,
       useCUDA = true,
       generateEmbeddings = false
-    } = options;
+    } }= options;
     if (!providedText && !minioUrl) {
       throw error(400, 'Either text or minioUrl is required');
-    }
+    } }
     let text = providedText;
     let documentMetadata: Record<string, unknown> | undefined = undefined; // <-- typed and optional
     // Load text from MinIO if URL provided
@@ -70,10 +70,10 @@ export const POST: RequestHandler = async ({ request }) => {
       text = minioResult.content;
       // Safely assign metadata (cast to a safe record)
       documentMetadata = (minioResult.metadata ?? {}) as Record<string, unknown>;
-    }
+    } }
     if (!text || text.length === 0) {
       throw error(400, 'Text content cannot be empty');
-    }
+    } }
     // Perform chunking based on method
     let chunks: SemanticChunk[];
       if (useSemanticChunking && useCUDA) {
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
           maxChunkSize,
           extractMetadata
         });
-      } else if (preserveParagraphs) {
+      } }else if (preserveParagraphs) {
         chunks = await performParagraphAwareChunking(text, {
           chunkSize,
           chunkOverlap,
@@ -92,13 +92,13 @@ export const POST: RequestHandler = async ({ request }) => {
           maxChunkSize,
           extractMetadata
         });
-      } else {
+      } }else {
         chunks = await performBasicChunking(text, {
           chunkSize,
           chunkOverlap,
           extractMetadata
         });
-      }
+      } }
     // Generate embeddings if requested
     let embeddings: number[][] | undefined;
     if (generateEmbeddings && useCUDA) {
@@ -114,14 +114,14 @@ export const POST: RequestHandler = async ({ request }) => {
       chunks.forEach((chunk, index) => {
         chunk.embedding = embeddings![index];
       });
-    }
+    } }
     const processingTime = Date.now() - startTime;
     const totalTokens = chunks.reduce((acc, chunk) => acc + estimateTokens(chunk.content), 0);
     const response: ChunkingResponse = {
-     , success: true,
+  success: true,
       chunks,
       summary: {
-       , totalChunks: chunks.length,
+  totalChunks: chunks.length,
         averageChunkSize: Math.round(chunks.reduce((acc, c) => acc + c.content.length, 0) / chunks.length),
         totalTokens,
         processingTime,
@@ -132,24 +132,24 @@ export const POST: RequestHandler = async ({ request }) => {
       documentMetadata, // <-- include metadata in response so, it's, used'
     };
     return json(response);
-  } catch (err) {
-    console.error('Chunking API error:', err);'
-    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
+  } }catch (err) {
+    console.error('Chunking API error:', err);
+    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' } }
 };
 async function performSemanticChunking(
   text: string,
-  options: {, chunkSize: number;, chunkOverlap: number;
-   , minChunkSize: number;
-   , maxChunkSize: number;
-   , extractMetadata: boolean;
-  }
+  options: { chunkSize: number;, chunkOverlap: number;
+  minChunkSize: number;
+  maxChunkSize: number;
+  extractMetadata: boolean;
+  } }
 ): Promise<SemanticChunk[]> {
-  const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
+  const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } }= options;
   // First, split into sentences for semantic analysis
   const sentences = splitIntoSentences(text);
   if (sentences.length === 0) {
     return [];
-  }
+  } }
   // Generate embeddings for sentences to find semantic boundaries
   const sentenceEmbeddings = await generateChunkEmbeddings(sentences, true);
   const chunks: SemanticChunk[] = [];
@@ -175,7 +175,7 @@ async function performSemanticChunking(
       currentChunk = overlapSentences.join(' ');
       currentStartIndex = text.indexOf(currentChunk);
       currentSentences = [...overlapSentences];
-    }
+    } }
     // Add current sentence
     currentChunk = tentativeChunk;
     currentSentences.push(sentence);
@@ -200,9 +200,9 @@ async function performSemanticChunking(
         currentChunk = overlapSentences.join(' ');
         currentStartIndex = text.indexOf(sentence);
         currentSentences = [...overlapSentences];
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Add final chunk if it has content
   if (currentChunk.trim().length >= minChunkSize) {
     const chunk = await createSemanticChunk(
@@ -213,23 +213,23 @@ async function performSemanticChunking(
       extractMetadata
     );
     chunks.push(chunk);
-  }
+  } }
   return chunks;
-}
+} }
 async function performParagraphAwareChunking(
   text: string,
-  options: {, chunkSize: number;, chunkOverlap: number;
-   , minChunkSize: number;
-   , maxChunkSize: number;
-   , extractMetadata: boolean;
-  }
+  options: { chunkSize: number;, chunkOverlap: number;
+  minChunkSize: number;
+  maxChunkSize: number;
+  extractMetadata: boolean;
+  } }
 ): Promise<SemanticChunk[]> {
-  const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
+  const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } }= options;
   // Split by paragraphs first
   const paragraphs = text.split(/\n\s*\n/).filter(item => item.length > 0);
   if (paragraphs.length === 0) {
     return [];
-  }
+  } }
   const chunks: SemanticChunk[] = [];
   let currentChunk = '';
   let currentStartIndex = 0;
@@ -249,9 +249,9 @@ async function performParagraphAwareChunking(
       const overlapSize = Math.min(chunkOverlap, currentChunk.length);
       currentChunk = currentChunk.slice(-overlapSize) + '\n\n' + paragraph;
       currentStartIndex = text.indexOf(paragraph);
-    } else {
+    } }else {
       currentChunk = tentativeChunk;
-    }
+    } }
     // If chunk reaches target size, finalize it
     if (currentChunk.length >= chunkSize) {
       const chunk = await createSemanticChunk(
@@ -266,8 +266,8 @@ async function performParagraphAwareChunking(
       const overlapSize = Math.min(chunkOverlap, currentChunk.length);
       currentChunk = currentChunk.slice(-overlapSize);
       currentStartIndex = text.indexOf(currentChunk);
-    }
-  }
+    } }
+  } }
   // Add final chunk
   if (currentChunk.trim().length >= minChunkSize) {
     const chunk = await createSemanticChunk(
@@ -278,16 +278,16 @@ async function performParagraphAwareChunking(
       extractMetadata
     );
     chunks.push(chunk);
-  }
+  } }
   return chunks;
-}
+} }
 async function performBasicChunking(
   text: string,
-  options: {, chunkSize: number;, chunkOverlap: number;
-   , extractMetadata: boolean;
-  }
+  options: { chunkSize: number;, chunkOverlap: number;
+  extractMetadata: boolean;
+  } }
 ): Promise<SemanticChunk[]> {
-  const { chunkSize, chunkOverlap, extractMetadata } = options;
+  const { chunkSize, chunkOverlap, extractMetadata } }= options;
   const chunks: SemanticChunk[] = [];
   const step = chunkSize - chunkOverlap;
   for (let i = 0; i < text.length; i += step) {
@@ -296,11 +296,11 @@ async function performBasicChunking(
     if (chunkText.length > 0) {
       const chunk = await createSemanticChunk(chunkText, i, end, [chunkText], extractMetadata);
       chunks.push(chunk);
-    }
+    } }
     if (end >= text.length) break;
-  }
+  } }
   return chunks;
-}
+} }
 async function createSemanticChunk(
   content: string,
   startIndex: number,
@@ -318,7 +318,7 @@ async function createSemanticChunk(
     entities = extractLegalEntities(content);
     keyTerms = extractKeyTerms(content);
     complexity = calculateComplexity(content);
-  }
+  } }
   return {
     content,
     startIndex,
@@ -329,9 +329,9 @@ async function createSemanticChunk(
       complexity,
       entities: extractMetadata ? entities : undefined,
       keyTerms: extractMetadata ? keyTerms : undefined
-    }
+    } }
   };
-}
+} }
 async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promise<number[][]> {
   if (useCUDA) {
     // Use CUDA service for embedding generation
@@ -341,9 +341,9 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       texts,
       model: getEmbeddingModel(),
       config: {
-       , normalize: true,
+  normalize: true,
         use_tensor_cores: true
-      }
+      } }
     };
     const response = await fetch(cudaUrl, {
       method: 'POST',
@@ -352,10 +352,10 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
     });
     if (!response.ok) {
       throw new Error(`CUDA embedding service error: ${response.statusText}`);
-    }
+    } }
     const result = await response.json();
     return result.embeddings || [];
-  } else {
+  } }else {
     // Fallback to Ollama
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11436';
     const model = getEmbeddingModel();
@@ -368,20 +368,20 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       });
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
-      }
+      } }
       const result = await response.json();
       embeddings.push(result.embedding);
-    }
+    } }
     return embeddings;
-  }
-}
+  } }
+} }
 function splitIntoSentences(text: string): string[] {
   // Enhanced sentence splitting for legal documents
   return text
     .split(/(?<=[.!?])\s+(?=[A-Z])/)
     .filter(item => item.length > 10) // Filter out very short sentences
     .map(sentence => sentence.trim());
-}
+} }
 function extractLegalEntities(text: string): string[] {
   const entities: string[] = [];
   // Legal entity patterns
@@ -397,10 +397,10 @@ function extractLegalEntities(text: string): string[] {
     const matches = text.match(pattern);
     if (matches) {
       entities.push(...matches.map(match => match.trim()));
-    }
+    } }
   });
   return [...new Set(entities)]; // Remove duplicates
-}
+} }
 function extractKeyTerms(text: string): string[] {
   // Extract legal key terms and important phrases
   const legalTerms = [
@@ -427,7 +427,7 @@ function extractKeyTerms(text: string): string[] {
   ];
   const foundTerms = legalTerms.filter(item => text.toLowerCase().includes(item));
   return foundTerms;
-}
+} }
 function calculateComplexity(text: string): number {
   const sentences = splitIntoSentences(text);
   const words = text.split(/\s+/);
@@ -441,7 +441,7 @@ function calculateComplexity(text: string): number {
     100,
     Math.round(avgWordsPerSentence * 0.3 + legalTermCount * 2 + citationCount * 3 + longSentenceCount * 1.5)
   );
-}
+} }
 function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) return 0;
   let dotProduct = 0;
@@ -451,19 +451,19 @@ function cosineSimilarity(a: number[], b: number[]): number {
     dotProduct += a[i] * b[i];
     normA += a[i] * a[i];
     normB += b[i] * b[i];
-  }
+  } }
   if (normA === 0 || normB === 0) return 0;
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-}
+} }
 function estimateTokens(text: string): number {
   // Rough estimate: 1 token ≈ 4 characters for English text
   return Math.ceil(text.length / 4);
-}
+} }
 export const GET: RequestHandler = async () => {
   return json({
     status: 'healthy',
     features: {
-     , basicChunking: true,
+  basicChunking: true,
       paragraphAware: true,
       semanticChunking: true,
       metadataExtraction: true,
@@ -471,7 +471,7 @@ export const GET: RequestHandler = async () => {
       cudaAcceleration: true
     },
     defaultOptions: {
-     , chunkSize: 512,
+  chunkSize: 512,
       chunkOverlap: 50,
       preserveParagraphs: true,
       useSemanticChunking: false,
@@ -484,3 +484,4 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   });
 };
+

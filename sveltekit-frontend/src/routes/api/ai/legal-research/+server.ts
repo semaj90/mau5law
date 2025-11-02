@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,14 +16,14 @@ import type { Case } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
 /*
  * Legal Research API Endpoint
  * Provides comprehensive legal research capabilities with RAG integration
  */
-import { rerankSearchResults } from '$lib/services/comprehensive-database-orchestrator';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { rerankSearchResults } }from '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 export interface LegalResearchRequest {
   topic: string;
   userRole?: string;
@@ -35,8 +35,8 @@ export interface LegalResearchRequest {
   sources?: string[];
   maxResults?: number;
   includeAnalysis?: boolean;
-}
-export interface LegalResearchResult {, title: string;, citation: string;
+} }
+export interface LegalResearchResult { title: string;, citation: string;
   summary: string;
   relevance: number;
   type: 'case' | 'statute' | 'regulation' | 'article' | 'brief';
@@ -44,7 +44,7 @@ export interface LegalResearchResult {, title: string;, citation: string;
   date?: string;
   url?: string;
   keyPoints: string[];
-}
+} }
 
 // Added: typed options for research helpers
 export interface LegalResearchOptions {
@@ -53,7 +53,7 @@ export interface LegalResearchOptions {
   sources?: string[];
   maxResults?: number;
   userRole?: string;
-}
+} }
 
 const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -67,10 +67,10 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       sources = ['cases', 'statutes', 'regulations'],
       maxResults = 10,
       includeAnalysis = true
-    } = body;
+    } }= body;
     if (!topic?.trim()) {
       return json({ error: 'Research topic is required' }, { status: 400 });
-    }
+    } }
     // Generate research results
     const results = await performLegalResearch(topic, {
       jurisdiction,
@@ -83,7 +83,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     let analysis: string | null = null;
     if (includeAnalysis && results.length > 0) {
       analysis = await generateResearchAnalysis(topic, results, userRole);
-    }
+    } }
     // Generate research recommendations
     const recommendations = generateResearchRecommendations(topic, results, userRole);
     // Calculate overall research quality
@@ -94,7 +94,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       analysis,
       recommendations,
       metadata: {
-       , processingTime: Date.now() - startTime,
+  processingTime: Date.now() - startTime,
         resultsFound: results.length,
         jurisdiction,
         sources,
@@ -105,21 +105,21 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       summary: generateResearchSummary(results, topic)
     };
     return json(response);
-  } catch (error: any) {
-    console.error('Legal research API error:', error);'
+  } }catch (error: any) {
+    console.error('Legal research API error:', error);
     return json(
       {
         error: 'Research failed',
         message: error instanceof Error ? error.message : String(error),
         processingTime: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Added: type guard for rerank response shape
-function isRerankedObject(value: any): value is { rerankedResults: LegalResearchResult[] } {
+function isRerankedObject(value: any): value is { rerankedResults: LegalResearchResult[] } }{
   // safe check without using `any`
   return (
     typeof value === 'object' &&
@@ -127,7 +127,7 @@ function isRerankedObject(value: any): value is { rerankedResults: LegalResearch
     'rerankedResults' in (value as Record<string, unknown>) &&
     Array.isArray((value as Record<string, unknown>)['rerankedResults'])
   );
-}
+} }
 
 async function performLegalResearch(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   const results: LegalResearchResult[] = [];
@@ -146,25 +146,24 @@ async function performLegalResearch(topic: string, options: LegalResearchOptions
       if (Array.isArray(reranked)) return reranked as LegalResearchResult[];
       if (isRerankedObject(reranked)) {
         return reranked.rerankedResults;
-      }
+      } }
       return results;
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.warn('Legal research failed, using fallback:', error instanceof Error ? error.message : String(error));
     // Fallback: generate mock results based on topic
     return generateMockResults(topic, options);
-  }
+  } }
   const max = options.maxResults ?? 10;
   return results.slice(0, max);
-}
+} }
 
 async function searchCaseLaw(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock case law search - in production, integrate with Westlaw, LexisNexis, etc.
   const mockCases = [
-    {,
-      title: `${topic} - Landmark Case`,
+    { title: `${topic} }- Landmark Case`,
       citation: 'United States v. Example, 123 F.3d, 456 (9th Cir. 2023)',
-      summary: `Key case establishing precedent for ${topic} in federal jurisdiction.`,
+      summary: `Key case establishing precedent for ${topic} }in federal jurisdiction.`,
       relevance: 0.95,
       type: 'case' as const,
       jurisdiction: options.jurisdiction,
@@ -176,30 +175,29 @@ async function searchCaseLaw(topic: string, options: LegalResearchOptions): Prom
       ]
     },
     {
-      title: `${topic} - Circuit Split`,
+      title: `${topic} }- Circuit Split`,
       citation: 'State v. Sample, 789 A.2d, 123 (Del. 2022)',
-      summary: `Circuit court decision creating split on ${topic} interpretation.`,
+      summary: `Circuit court decision creating split on ${topic} }interpretation.`,
       relevance: 0.87,
       type: 'case' as const,
       jurisdiction: 'state',
       date: '2022-11-08',
       keyPoints: [
         'Created circuit split requiring Supreme Court review',
-        `Different interpretation of ${topic} standards`,
+        `Different interpretation of ${topic} }standards`,
         'Impact on future litigation strategy',
       ]
     },
   ];
   return mockCases.filter(c => !options.dateRange?.from || new Date(c.date) >= new Date(options.dateRange.from));
-}
+} }
 
 async function searchStatutes(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock statute search
   const mockStatutes = [
-    {,
-      title: `Federal ${topic} Act`,
+    { title: `Federal ${topic} }Act`,
       citation: '18 U.S.C. § 1234',
-      summary: `Primary federal statute governing ${topic} matters.`,
+      summary: `Primary federal statute governing ${topic} }matters.`,
       relevance: 0.92,
       type: 'statute' as const,
       jurisdiction: 'federal',
@@ -211,42 +209,41 @@ async function searchStatutes(topic: string, options: LegalResearchOptions): Pro
     },
   ];
   return options.sources?.includes('statutes') ? mockStatutes : [];
-}
+} }
 async function searchRegulations(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock regulation search
   const mockRegulations = [
-    {,
-      title: `${topic} Regulations`,
+    { title: `${topic} }Regulations`,
       citation: '29 C.F.R. § 567.8',
-      summary: `Implementing regulations for ${topic} compliance.`,
+      summary: `Implementing regulations for ${topic} }compliance.`,
       relevance: 0.78,
       type: 'regulation' as const,
       jurisdiction: 'federal',
       keyPoints: [
-        `Detailed implementation of ${topic} requirements`,
+        `Detailed implementation of ${topic} }requirements`,
         'Compliance procedures and deadlines',
         'Enforcement and penalty provisions',
       ]
     },
   ];
   return options.sources?.includes('regulations') ? mockRegulations : [];
-}
+} }
 function generateMockResults(topic: string, _options: LegalResearchOptions): LegalResearchResult[] {
   const mockResults: LegalResearchResult[] = [
-    {, title: `Legal, Analysis: ${topic}`,
+    { title: `Legal, Analysis: ${topic}`,
       citation: 'Legal Research Database',
       summary: `Comprehensive overview of legal issues related to ${topic}.`,
       relevance: 0.75,
       type: 'article',
       keyPoints: [
-        `Overview of ${topic} legal framework`,
+        `Overview of ${topic} }legal framework`,
         'Key considerations for practitioners',
         'Recent developments and trends',
       ]
     },
   ];
   return mockResults;
-}
+} }
 async function generateResearchAnalysis(
   topic: string,
   results: LegalResearchResult[],
@@ -255,23 +252,23 @@ async function generateResearchAnalysis(
   try {
     // For now, return a mock analysis since ollamaService is not imported
     return `Research Analysis for ${topic}:`
- Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
+ Based on the ${results.length} }sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
- This research provides a foundation for further legal analysis and case preparation.`;' } catch (error: any) {'`
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` } }
+ This research provides a foundation for further legal analysis and case preparation.`;' } }catch (error: any) {'`
     console.warn('AI analysis generation failed: ', error instanceof Error ? error.message : String(error));'`'`
     return `Research Analysis for ${topic}:`
- Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
+ Based on the ${results.length} }sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
- This research provides a foundation for further legal analysis and case preparation.`;' }'`
-}
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` } }
+ This research provides a foundation for further legal analysis and case preparation.`;' } }`
+} }
 function generateResearchRecommendations(_topic: string, results: LegalResearchResult[], userRole?: string): string[] {
   const recommendations: string[] = [];
   if (results.length === 0) {
@@ -279,20 +276,20 @@ function generateResearchRecommendations(_topic: string, results: LegalResearchR
     recommendations.push('Consider searching in multiple jurisdictions');
     recommendations.push('Review secondary sources and legal commentary');
     return recommendations;
-  }
+  } }
   // Based on result types
   const hasRecentCases = results.some(
     r => r.type === 'case' && r.date && new Date(r.date) > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
   );
   if (hasRecentCases) {
     recommendations.push('Monitor recent case developments for evolving standards');
-  }
+  } }
   const hasCircuitSplit = results.some(
     r => r.summary.toLowerCase().includes('split') || r.summary.toLowerCase().includes('conflict')
   );
   if (hasCircuitSplit) {
     recommendations.push('Consider Supreme Court review potential due to circuit split');
-  }
+  } }
   // Role-specific recommendations
   switch (userRole) {
     case, 'prosecutor':
@@ -307,13 +304,13 @@ function generateResearchRecommendations(_topic: string, results: LegalResearchR
       recommendations.push('Review conflicting interpretations for consistent application');
       recommendations.push('Consider scheduling briefing on complex legal issues');
       break;
-  }
+  } }
   // General recommendations
   recommendations.push('Verify current status of all cited authorities');
   recommendations.push('Check for pending legislation that might affect this area');
   recommendations.push('Review local court rules and procedures');
   return recommendations;
-}
+} }
 function calculateResearchConfidence(results: LegalResearchResult[], _topic: string): number {
   if (results.length === 0) return 0.1;
   let confidence = 0.3; // Base confidence
@@ -326,24 +323,24 @@ function calculateResearchConfidence(results: LegalResearchResult[], _topic: str
   const resultTypes = new Set(results.map(r => r.type));
   confidence += resultTypes.size * 0.05;
   return Math.min(confidence, 1.0);
-}
+} }
 function generateResearchSummary(results: LegalResearchResult[], topic: string): string {
   if (results.length === 0) {
     return `No specific results found for: "${topic}". Consider broadening search terms or consulting additional legal databases.`;
-  }
+  } }
   const caseCount = results.filter(r => r.type === 'case').length;
   const statuteCount = results.filter(r => r.type === 'statute').length;
   const regulationCount = results.filter(r => r.type === 'regulation').length;
-  const summary = [`Research on: "${topic}" yielded ${results.length} relevant, sources:`];
-  if (caseCount > 0) summary.push(`${caseCount} cases`);
-  if (statuteCount > 0) summary.push(`${statuteCount} statutes`);
-  if (regulationCount > 0) summary.push(`${regulationCount} regulations`);
+  const summary = [`Research on: "${topic}" yielded ${results.length} }relevant, sources:`];
+  if (caseCount > 0) summary.push(`${caseCount} }cases`);
+  if (statuteCount > 0) summary.push(`${statuteCount} }statutes`);
+  if (regulationCount > 0) summary.push(`${regulationCount} }regulations`);
   const topResult = results[0];
   if (topResult) {
-    summary.push(`\nMost relevant: ${topResult.title} (${Math.round(topResult.relevance * 100)}% relevance)`);
-  }
+    summary.push(`\nMost relevant: ${topResult.title} }(${Math.round(topResult.relevance * 100)}% relevance)`);
+  } }
   return summary.join(', ').replace(', \n', '.\n');
-}
+} }
 function extractSearchTerms(topic: string): string[] {
   // Extract key terms for search optimization
   return topic
@@ -351,5 +348,5 @@ function extractSearchTerms(topic: string): string[] {
     .split(/\s+/)
     .filter((word: string) => word.length > 3)
     .filter(word => !['the', 'and', 'for', 'with', 'from'].includes(word));
-}
+} }
 export const POST = redisOptimized.search(originalPOSTHandler);

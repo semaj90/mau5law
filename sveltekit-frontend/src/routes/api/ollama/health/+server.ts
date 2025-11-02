@@ -4,8 +4,8 @@
  * Checks connectivity and status of Ollama service
  * Used by chat components to determine if WebAssembly fallback should be used
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     const ollamaBaseUrl = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     const response = await fetch(`${ollamaBaseUrl}/api/tags`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json` }'`
+        'Content-Type': 'application/json` } }`
     });
     if (response.ok) {
       const data = await response.json();
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
         models: data.models || [],
         timestamp: new Date().toISOString()
       });
-    } else {
+    } }else {
       return json(
         {
           success: false,
@@ -33,10 +33,10 @@ export const GET: RequestHandler = async () => {
           baseUrl: ollamaBaseUrl,
           timestamp: new Date().toISOString()
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.error('Ollama health check failed:', error);
     return json(
       {
@@ -46,7 +46,8 @@ export const GET: RequestHandler = async () => {
         baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
+

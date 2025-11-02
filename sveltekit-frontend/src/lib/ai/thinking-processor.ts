@@ -1,19 +1,19 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Enhanced thinking style processor for legal AI
 export interface ThinkingAnalysis { thinking: string;, analysis: any;
   confidence: number;
   reasoning_steps: string[];
-  metadata: {, model_used: string;, processing_time: number;
+  metadata: { model_used: string;, processing_time: number;
    , thinking_enabled: boolean;
   };
-}
+} }
 // Enhanced analysis with GRPO integration flag
 export interface EnhancedThinkingOptions extends AnalysisOptions {
   useGRPO?: boolean;
   enableRecommendations?: boolean;
   userId?: string;
   userRole?: string;
-}
+} }
 export interface AnalysisOptions {
   evidenceId?: string;
   caseId?: string;
@@ -21,7 +21,7 @@ export interface AnalysisOptions {
   analysisType?: 'classification' | 'extraction' | 'reasoning' | 'compliance' | 'chain_of_custody';
   useThinkingStyle?: boolean;
   contextDocuments?: string[];
-}
+} }
 export class ThinkingProcessor {
   /**
    * Analyzes a document using the enhanced API endpoint
@@ -47,14 +47,14 @@ export class ThinkingProcessor {
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-    }
+    } }
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     if (!(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success) {
       throw new Error(
         (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error ||
           'Analysis failed'
       );
-    }
+    } }
     // Return enhanced analysis if GRPO was used
     if (
       useGRPO &&
@@ -85,11 +85,11 @@ export class ThinkingProcessor {
           temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any })
             .analysis.temporal_score,
           structured_reasoning: (
-            result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }
+            result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any } }
           ).analysis.structured_reasoning
-        }
+        } }
       };
-    }
+    } }
     // Standard analysis response
     return {
       thinking:
@@ -105,22 +105,22 @@ export class ThinkingProcessor {
           .reasoning_steps || [],
       metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
     };
-  }
+  } }
   /**
    * Analyzes evidence by ID
    */
   static async analyzeEvidence(
     evidenceId: string,
-    options: Omit<AnalysisOptions, 'evidenceId'> = {}
+    options: Omit<AnalysisOptions, 'evidenceId'> = {} }
   ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { evidenceId, ...options });
-  }
+  } }
   /**
    * Analyzes a case by ID
    */
   static async analyzeCase(caseId: string, options: Omit<AnalysisOptions, 'caseId'> = {}): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { caseId, ...options });
-  }
+  } }
   /**
    * Parses a thinking-style response from the API
    */
@@ -131,13 +131,12 @@ export class ThinkingProcessor {
         analysis: this.extractJSON(content) || { raw_analysis: content },
         confidence: 0.8,
         reasoning_steps: [],
-        metadata: {
-         , model_used: 'quick',
+        metadata: { model_used: 'quick',
           processing_time: 0,
           thinking_enabled: false
-        }
+        } }
       };
-    }
+    } }
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
     const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
     const afterThinking = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim();
@@ -146,13 +145,12 @@ export class ThinkingProcessor {
       analysis: this.extractJSON(afterThinking) || { raw_analysis: afterThinking },
       confidence: this.calculateConfidence(thinking, afterThinking),
       reasoning_steps: this.extractReasoningSteps(thinking),
-      metadata: {
-       , model_used: 'thinking',
+      metadata: { model_used: 'thinking',
         processing_time: 0,
         thinking_enabled: true
-      }
+      } }
     };
-  }
+  } }
   /**
    * Extracts JSON from text content
    */
@@ -160,10 +158,10 @@ export class ThinkingProcessor {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-    } catch {
+    } }catch {
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Calculates confidence score based on thinking depth and analysis quality
    */
@@ -177,7 +175,7 @@ export class ThinkingProcessor {
     if (analysis.includes('confidence') || analysis.includes('recommendations')) score += 0.1;
     if (analysis.includes('key_findings') || analysis.includes('legal_implications')) score += 0.1;
     return Math.min(0.95, score);
-  }
+  } }
   /**
    * Extracts numbered reasoning steps from thinking content
    */
@@ -187,7 +185,7 @@ export class ThinkingProcessor {
       .filter(line => line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*'))
       .map(step => step.trim())
       .slice(0, 10); // Limit to, 10 steps for UI
-  }
+  } }
   /**
    * Formats thinking content for display
    */
@@ -199,13 +197,13 @@ export class ThinkingProcessor {
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert markdown bold to HTML
       .replace(/\n\n/g, '</p><p>') // Convert double newlines to paragraphs
       .replace(/^(.*)$/gm, '<p>$1</p>'); // Wrap in paragraphs
-  }
+  } }
   /**
    * Gets the appropriate model name based on thinking style
    */
   static getModelName(useThinking: boolean): string {
     return useThinking ? 'legal-gemma3-thinking' : 'gemma3-legal:latest';
-  }
+  } }
   /**
    * Validates analysis results
    */
@@ -217,7 +215,7 @@ export class ThinkingProcessor {
       analysis.confidence >= 0 &&
       analysis.confidence <= 1
     );
-  }
+  } }
   /**
    * Gets analysis history for a document
    */
@@ -231,13 +229,13 @@ export class ThinkingProcessor {
       throw new Error(
         `Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`
       );
-    }
+    } }
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success
       ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses
       : [];
-  }
-}
+  } }
+} }
 /**
  * Utility functions for working with legal document analysis
  */
@@ -255,12 +253,12 @@ export const LegalAnalysisUtils = {
   /**
    * Gets the confidence level description
    */
-  getConfidenceLabel(confidence: number): { label: string;, color: string } {
+  getConfidenceLabel(confidence: number): { label: string; color: string } }{
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
     if (confidence >= 0.7) return { label: 'Good', color: `#f59e0b` };'`'`
     if (confidence >= 0.6) return { label: 'Fair', color: `#ef4444` };
-    return {, label: 'Low', color: `#6b7280` };
+    return { label: 'Low', color: `#6b7280` };
   },
   /**
    * Formats processing time for display
@@ -294,7 +292,7 @@ export const LegalAnalysisUtils = {
       'overruled',
     ];
     return legalTerms.filter(term => text.includes(term));
-  }
+  } }
 };
 /**
  * Document analysis result from thinking processor
@@ -305,15 +303,15 @@ export interface DocumentAnalysisResult { id: string;, document_type: string;
   legal_implications: string[];
   recommendations: string[];
   confidence: number;
-  risk_assessment?: {, level: 'low' | 'medium' | 'high';, factors: string[];
+  risk_assessment?: { level: 'low' | 'medium' | 'high';, factors: string[];
   };
-  compliance_status?: {, compliant: boolean;, violations: string[];
+  compliance_status?: { compliant: boolean;, violations: string[];
     recommendations: string[];
   };
-  chain_of_custody?: {, complete: boolean;, gaps: string[];
+  chain_of_custody?: { complete: boolean;, gaps: string[];
    , verification_status: string;
   };
-}
+} }
 /**
  * Quick analysis shortcuts for common operations
  */
@@ -354,5 +352,6 @@ export const QuickAnalysis = {
       analysisType: 'compliance',
       useThinkingStyle: useThinking
     });
-  }
+  } }
 };
+

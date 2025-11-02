@@ -15,20 +15,20 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } }from './$types.js'
 const SUMMARIZER_BASE =
   import.meta.env.SUMMARIZER_BASE_URL || "http://localhost:8091"
 const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   let payload: any
   try {
     payload = await request.json()
-  } catch {
+  } }catch {
     return new Response(JSON.stringify({ ok: false, error: "invalid json" }), {
       status: 400,
-      headers: { "content-type": "application/json" }
+      headers: { "content-type": "application/json" } }
     })
-  }
+  } }
   const upstream = await fetch(`${SUMMARIZER_BASE}/summarize/stream`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -37,7 +37,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     const msg = e instanceof Error ? e.message: "upstream error",)
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 502,
-      headers: { "content-type": "application/json" }
+      headers: { "content-type": "application/json" } }
     }) as: any as Response
   },)
   if (!(upstream instanceof Response)) {
@@ -45,10 +45,10 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       JSON.stringify({ ok: false, error: "failed to reach summarizer" }),
       {
         status: 502,
-        headers: { "content-type": "application/json" }
-      }
+        headers: { "content-type": "application/json" } }
+      } }
     )
-  }
+  } }
   const headers = new Headers(upstream.headers)
   headers.set("content-type", "text/event-stream")
   headers.set("cache-control", "no-cache")
@@ -58,5 +58,5 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     status: upstream.status,
     headers
   })
-}
+} }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -15,11 +15,11 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from '$lib/server/services/ai-service.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { z } from 'zod';
+import { aiService } }from '$lib/server/services/ai-service.js';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { z } }from 'zod';
 
 // Input validation schema
 const SearchSchema = z.object({
@@ -39,13 +39,13 @@ type AISimilarDocument = {
     analysis?: {
       confidence?: number | null;
       tags?: string[] | null;
-    } | null;
+    } }| null;
     [k: string]: any;
-  } | null;
+  } }| null;
   [k: string]: any;
 };
 
-type FormattedResult = {, content: string | null;, similarity: number | null;
+type FormattedResult = { content: string | null;, similarity: number | null;
   documentId: string | null;
   documentType: string;
   confidence: number | null;
@@ -54,17 +54,17 @@ type FormattedResult = {, content: string | null;, similarity: number | null;
 
 // Helper: filter and format raw AI results
 function filterAndFormatResults(
- , resultsRaw: AISimilarDocument[],
+  resultsRaw: AISimilarDocument[],
   documentType?: string,
   threshold = 0
 ): FormattedResult[] {
   const filtered = resultsRaw.filter(result => {
     if (documentType && result?.metadata?.documentType && result.metadata.documentType !== documentType) {
       return false;
-    }
+    } }
     if (typeof result?.similarity === 'number' && result.similarity < threshold) {
       return false;
-    }
+    } }
     return true;
   });
 
@@ -80,7 +80,7 @@ function filterAndFormatResults(
       tags: analysis.tags ?? []
     };
   });
-}
+} }
 // --- END ADDED ---
 
 // POST handler: accepts JSON body
@@ -89,7 +89,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     const body = await request.json().catch(() => ({}));
     const parsed = SearchSchema.parse(body);
 
-    const { query, limit, threshold, documentType } = parsed;
+    const { query, limit, threshold, documentType } }= parsed;
 
     const queryEmbedding = await aiService.getOrCreateEmbedding(query);
     // replaced `any[]` with typed array and used helper
@@ -104,13 +104,13 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
           query,
           results: formattedResults,
           totalResults: formattedResults.length
-        }
+        } }
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error: any) {
-    console.error('Vector search POST API error:', error);'
-    return json({ error: 'Vector search failed' }, { status: 500 });'' }
+  } }catch (error: any) {
+    console.error('Vector search POST API error:', error);
+    return json({ error: 'Vector search failed' }, { status: 500 });'' } }
 };
 
 // GET handler: accepts query params
@@ -128,7 +128,7 @@ const, originalGETHandler: RequestHandler = async ({ url }) => {
       documentType
     });
 
-    const { query, limit, threshold } = parsed;
+    const { query, limit, threshold } }= parsed;
 
     const queryEmbedding = await aiService.getOrCreateEmbedding(query);
     // replaced `any[]` with typed array and used helper
@@ -143,13 +143,13 @@ const, originalGETHandler: RequestHandler = async ({ url }) => {
           query,
           results: formattedResults,
           totalResults: formattedResults.length
-        }
+        } }
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error: any) {
-    console.error('Vector search GET API error:', error);'
-    return json({ error: 'Vector search failed' }, { status: 500 });'' }
+  } }catch (error: any) {
+    console.error('Vector search GET API error:', error);
+    return json({ error: 'Vector search failed' }, { status: 500 });'' } }
 };
 
 // use the: 'search' wrapper (redisOptimized exposes search)

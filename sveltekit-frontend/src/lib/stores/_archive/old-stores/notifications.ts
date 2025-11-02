@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import { writable } from 'svelte/store';
+import type { Case } }from '$lib/types';
+import { writable } }from 'svelte/store';
 export interface Notification { id: string;, type: 'info' | 'success' | 'warning' | 'error' | 'system';
   title?: string;
  , message: string;
@@ -9,7 +9,7 @@ export interface Notification { id: string;, type: 'info' | 'success' | 'warnin
   icon?: string;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center';
   showProgress?: boolean;
-}
+} }
 export interface NotificationOptions {
   type?: Notification['type'];
   title?: string;
@@ -19,12 +19,12 @@ export interface NotificationOptions {
   icon?: string;
   position?: Notification['position'];
   showProgress?: boolean;
-}
+} }
 function createNotificationStore() {
-  const { subscribe, update } = writable<Notification[]>([]);
+  const { subscribe, update } }= writable<Notification[]>([]);
   function generateId(): string {
     return `notification-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
-  }
+  } }
   function add(message: string, options: NotificationOptions = {}): string {
     const id = generateId();
     const notification: Notification = {
@@ -46,34 +46,34 @@ function createNotificationStore() {
       setTimeout(() => {
         remove(id);
       }, timeout);
-    }
+    } }
     return id;
-  }
+  } }
   function remove(id: string) {
     update(notifications => notifications.filter(n => n.id !== id));
-  }
+  } }
   function clear() {
     update(() => []);
-  }
+  } }
   // Convenience methods for different notification types
   function info(message: string, options: Omit<NotificationOptions, 'type'> = {}): string {
     return add(message, { ...options, type: 'info' });
-  }
+  } }
   function success(message: string, options: Omit<NotificationOptions, 'type'> = {}): string {
     return add(message, { ...options, type: 'success' });
-  }
+  } }
   function warning(message: string, options: Omit<NotificationOptions, 'type'> = {}): string {
     return add(message, { ...options, type: 'warning' });
-  }
+  } }
   function error(message: string, options: Omit<NotificationOptions, 'type'> = {}): string {
     return add(message, { ...options, type: 'error' });
-  }
+  } }
   function system(message: string, options: Omit<NotificationOptions, 'type'> = {}): string {
     return add(message, {
       ...options,
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center' });'` }'`
+      position: options.position || 'center' });'` } }`
   // Legal AI specific notifications
   function caseUpdate(message: string, caseId?: string): string {
     const title = caseId ? `Case ${caseId}` : 'Case Update';
@@ -83,7 +83,7 @@ function createNotificationStore() {
       icon: '📋',
       duration: 7000
     });
-  }
+  } }
   function evidenceProcessed(message: string, evidenceId?: string): string {
     const title = evidenceId ? `Evidence ${evidenceId}` : 'Evidence Processed';
     return add(message, {
@@ -92,7 +92,7 @@ function createNotificationStore() {
       icon: '🔍',
       duration: 5000
     });
-  }
+  } }
   function aiAnalysisComplete(message: string, confidence?: number): string {
     const confidenceText = confidence ? ` (${Math.round(confidence)}% confidence)` : '';
     return add(message + confidenceText, {
@@ -101,7 +101,7 @@ function createNotificationStore() {
       icon: '🤖',
       duration: 8000
     });
-  }
+  } }
   function securityAlert(message: string): string {
     return add(message, {
       type: 'error',
@@ -109,7 +109,7 @@ function createNotificationStore() {
       icon: '🚨',
       persistent: true,
       position: `center` });
-  }
+  } }
   function systemStatus(message: string, isOnline: boolean = true): string {
     return add(message, {
       type: 'system',
@@ -117,7 +117,7 @@ function createNotificationStore() {
       icon: isOnline ? '🟢' : '🔴',
       persistent: !isOnline,
       position: `top-left` });
-  }
+  } }
   return {
     subscribe,
     add,
@@ -135,7 +135,8 @@ function createNotificationStore() {
     securityAlert,
     systemStatus
   };
-}
+} }
 export const notificationStore = createNotificationStore();
 export const notify = notificationStore;
 export default notificationStore;
+

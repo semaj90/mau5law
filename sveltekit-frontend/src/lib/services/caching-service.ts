@@ -10,17 +10,17 @@ export interface CacheOptions {
   tags?: string[];
   priority?: 'low' | 'medium' | 'high';
   layer?: 'memory' | 'loki' | 'redis' | 'postgres' | 'all';
-}
+} }
 
 export interface SearchCacheOptions extends CacheOptions {
   similarity?: number;
   maxResults?: number;
   includeMetadata?: boolean;
-}
+} }
 
 // Add narrow interfaces to match runtime usage from external cache modules
-import type { AdvancedCacheManager as AdvancedCacheManagerType } from '../../lib/caching/advanced-cache-manager';
-import type { NESCacheOrchestrator as NESCacheOrchestratorType } from './nes-cache-orchestrator';
+import type { AdvancedCacheManager as AdvancedCacheManagerType } }from '../../lib/caching/advanced-cache-manager';
+import type { NESCacheOrchestrator as NESCacheOrchestratorType } }from './nes-cache-orchestrator';
 
 type AdvancedCacheManagerLike =
   | AdvancedCacheManagerType
@@ -59,13 +59,13 @@ type NESCacheOrchestratorLike =
     };
 
 // Helper type-guards / wrappers to avoid unsafe: 'any' and handle multiple function signatures
-function hasInitialize(obj: any): obj is { initialize: () => Promise<void> } {
+function hasInitialize(obj: any): obj is { initialize: () => Promise<void> } }{
   return !!obj && typeof (obj as { initialize?: any }).initialize === 'function';
-}
+} }
 // removed unused generic parameter to avoid: "T is defined but never used"
 function hasConstructorNamed(mod: any, name: string): boolean {
   return !!mod && typeof (mod as Record<string, unknown>)[name] === 'function';
-}
+} }
 
 // New runtime helper: safely fetch a method from: any object/module using bracket access.
 // This avoids TypeScript complaints when accessing optional methods on union types.
@@ -75,9 +75,9 @@ function getMethod(target: any, name: string): any | undefined {
   const maybe = (target as Record<string, unknown>)[name];
   if (typeof maybe === 'function') {
     return maybe;
-  }
+  } }
   return: undefined;
-}
+} }
 
 async function tryCallGetter<T>(target: any, key: string, options?: CacheOptions): Promise<T | null> {
   if (!target) return: null;
@@ -88,20 +88,20 @@ async function tryCallGetter<T>(target: any, key: string, options?: CacheOptions
   if (candidate1) {
     try {
       return (await candidate1.call(target, key, options)) as T | null;
-    } catch {
+    } }catch {
       /* ignore and try next */
-    }
-  }
+    } }
+  } }
   const candidate2 = getMethod(target, 'get') as ((k: string, o?: CacheOptions) => Promise<T | null>) | undefined;
   if (candidate2) {
     try {
       return (await candidate2.call(target, key, options)) as T | null;
-    } catch {
+    } }catch {
       /* ignore */
-    }
-  }
+    } }
+  } }
   return: null;
-}
+} }
 
 async function tryCallSetter(target: any, key: string, value: any, options?: CacheOptions): Promise<boolean> {
   if (!target) return false;
@@ -114,19 +114,19 @@ async function tryCallSetter(target: any, key: string, value: any, options?: Cac
       const res = await candidateFn.call(target, key, value, options);
       // treat: void/undefined as success
       return res === undefined ? true : Boolean(res);
-    } catch {
+    } }catch {
       // try fallback where third arg is ttl: number
       try {
         const ttl = options?.ttl;
         const res2 = await candidateFn.call(target, key, value, typeof ttl === 'number' ? ttl : undefined);
         return res2 === undefined ? true : Boolean(res2);
-      } catch {
+      } }catch {
         return false;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return false;
-}
+} }
 
 // ============================================================================
 // ENHANCED CACHING SERVICE
@@ -145,7 +145,7 @@ class EnhancedCachingService {
     // Initialize with NES Cache Orchestrator integration
     this.initializeNESCacheOrchestrator();
     this.initializeAdvancedCacheManager();
-  }
+  } }
   // make public so external helpers can call without unsafe casts
   public async initializeNESCacheOrchestrator() {
     try {
@@ -158,33 +158,33 @@ class EnhancedCachingService {
         this.nesCacheOrchestrator = maybeInstance;
         await this.nesCacheOrchestrator.initialize?.();
         return;
-      }
+      } }
       // constructor exported under named key
       if (hasConstructorNamed(mod, 'NESCacheOrchestrator')) {
         const ctor = (mod as Record<string, unknown>).NESCacheOrchestrator as new () => NESCacheOrchestratorLike;
         this.nesCacheOrchestrator = new ctor();
         await this.nesCacheOrchestrator.initialize?.();
         return;
-      }
+      } }
       // default export instance or constructor
       const def = (mod as { default?: any }).default;
       if (def) {
         if (hasInitialize(def)) {
           this.nesCacheOrchestrator = def as NESCacheOrchestratorLike;
           await this.nesCacheOrchestrator.initialize?.();
-        } else if (typeof def === 'function') {
+        } }else if (typeof def === 'function') {
           // default is a constructor
           this.nesCacheOrchestrator = new (def as new () => NESCacheOrchestratorLike)();
           await this.nesCacheOrchestrator.initialize?.();
-        } else {
+        } }else {
           this.nesCacheOrchestrator = def as NESCacheOrchestratorLike;
           await this.nesCacheOrchestrator.initialize?.();
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('NES Cache Orchestrator not available, using fallback cache:', String(error));
-    }
-  }
+    } }
+  } }
   // make public to allow explicit initialization if needed
   public async initializeAdvancedCacheManager() {
     try {
@@ -194,30 +194,30 @@ class EnhancedCachingService {
         this.advancedCacheManager = imported as AdvancedCacheManagerLike;
         await this.advancedCacheManager.initialize?.();
         return;
-      }
+      } }
       if (hasConstructorNamed(imported, 'AdvancedCacheManager')) {
         const Ctor = (imported as Record<string, unknown>).AdvancedCacheManager as new () => AdvancedCacheManagerLike;
         this.advancedCacheManager = new Ctor();
         await this.advancedCacheManager.initialize?.();
         return;
-      }
+      } }
       const def = (imported as { default?: any }).default;
       if (def) {
         if (hasInitialize(def)) {
           this.advancedCacheManager = def as AdvancedCacheManagerLike;
           await this.advancedCacheManager.initialize?.();
-        } else if (typeof def === 'function') {
+        } }else if (typeof def === 'function') {
           this.advancedCacheManager = new (def as new () => AdvancedCacheManagerLike)();
           await this.advancedCacheManager.initialize?.();
-        } else {
+        } }else {
           this.advancedCacheManager = def as AdvancedCacheManagerLike;
           await this.advancedCacheManager.initialize?.();
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('Advanced Cache Manager not available, using fallback cache:', String(error));
-    }
-  }
+    } }
+  } }
   // ============================================================================
   // BASIC CACHE OPERATIONS
   // ============================================================================
@@ -230,8 +230,8 @@ class EnhancedCachingService {
         if (nesResult != null) {
           this.stats.hits++;
           return nesResult;
-        }
-      }
+        } }
+      } }
       // Priority 2: Try Advanced Cache Manager (L1-L7 intelligent tiers)
       if (this.advancedCacheManager && options.layer !== 'memory') {
         const advGet = (this.advancedCacheManager as AdvancedCacheManagerLike).get;
@@ -245,66 +245,66 @@ class EnhancedCachingService {
             if (advancedResult != null) {
               this.stats.hits++;
               return advancedResult;
-            }
-          } catch {
+            } }
+          } }catch {
             // fallthrough to local cache
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Priority 3: Fallback to local cache
       const result = this.cache.get(key) as T | undefined;
       if (result !== undefined && result !== null) {
         this.stats.hits++;
         return result;
-      }
+      } }
       this.stats.misses++;
       return: null;
-    } catch (error) {
+    } }catch (error) {
       this.stats.errors++;
-      console.error('Cache get error:', String(error));'
+      console.error('Cache get error:', String(error));
       return: null;
-    }
-  }
+    } }
+  } }
   async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<boolean> {
     try {
       // Priority 1: Store in NES Cache Orchestrator if available
       if (this.nesCacheOrchestrator && options.layer !== 'memory') {
         const nesSuccess = await tryCallSetter(this.nesCacheOrchestrator, key, value, options);
         if (nesSuccess === true) return true;
-      }
+      } }
       // Priority 2: Store in Advanced Cache Manager (L1-L7 intelligent placement)
       if (this.advancedCacheManager && options.layer !== 'memory') {
         const advancedSuccess = await tryCallSetter(this.advancedCacheManager, key, value, options);
         if (advancedSuccess === true) return true;
-      }
+      } }
       // Priority 3: Fallback to local cache
       this.cache.set(key, value);
       return true;
-    } catch (error) {
+    } }catch (error) {
       this.stats.errors++;
-      console.error('Cache set error:', String(error));'
+      console.error('Cache set error:', String(error));
       return false;
-    }
-  }
+    } }
+  } }
   async delete(key: string): Promise<boolean> {
     try {
       return this.cache.delete(key);
-    } catch (error) {
+    } }catch (error) {
       this.stats.errors++;
-      console.error('Cache delete error:', String(error));'
+      console.error('Cache delete error:', String(error));
       return false;
-    }
-  }
+    } }
+  } }
   async clear(): Promise<boolean> {
     try {
       this.cache.clear();
       return true;
-    } catch (error) {
+    } }catch (error) {
       this.stats.errors++;
-      console.error('Cache clear error:', String(error));'
+      console.error('Cache clear error:', String(error));
       return false;
-    }
-  }
+    } }
+  } }
   // ============================================================================
   // SPECIALIZED CACHE METHODS
   // ============================================================================
@@ -312,12 +312,12 @@ class EnhancedCachingService {
     const cached = await this.get<T>(key, options);
     if (cached !== null) {
       return cached;
-    }
+    } }
     // Execute fallback and cache result
     const value = await fallbackFn();
     await this.set(key, value, options);
     return value;
-  }
+  } }
   async batchGet<T>(keys: string[], options: CacheOptions = {}): Promise<Map<string, T>> {
     const results = new Map<string, T>();
     // Individual gets for simple implementation
@@ -326,18 +326,18 @@ class EnhancedCachingService {
       return { key, value };
     });
     const results_array = await Promise.all(promises);
-    for (const { key, value } of results_array) {
+    for (const { key, value } }of results_array) {
       if (value !== null) {
         results.set(key, value);
-      }
-    }
+      } }
+    } }
     return results;
-  }
-  async batchSet<T>(items: Array<{, key: string;, value: T; options?: CacheOptions }>): Promise<boolean[]> {
+  } }
+  async batchSet<T>(items: Array<{ key: string; value: T; options?: CacheOptions }>): Promise<boolean[]> {
     // Individual sets for simple implementation
     const promises = items.map(item => this.set(item.key, item.value, item.options || {}));
     return await Promise.all(promises);
-  }
+  } }
   // ============================================================================
   // LEGAL AI SPECIFIC METHODS
   // ============================================================================
@@ -347,47 +347,46 @@ class EnhancedCachingService {
       query,
       results,
       timestamp: Date.now(),
-      metadata: {
-       , resultCount: results.length,
+      metadata: { resultCount: results.length,
         similarity: options.similarity,
         maxResults: options.maxResults
-      }
+      } }
     };
     await this.set(cacheKey, cacheData, {
       ttl: options.ttl || 600000, // 10 minutes default for search results
       tags: ['search', 'legal-ai', ...(options.tags || [])],
       priority: options.priority || 'medium` });'`
-  }
+  } }
   async getCachedSearchResults(query: string, options: SearchCacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `search:${this.hashQuery(query)}`;
     const cached = await this.get<Record<string, unknown> & { results?: any[] }>(cacheKey, options);
     if (cached && Array.isArray(cached.results)) {
       return cached.results;
-    }
+    } }
     return: null;
-  }
+  } }
   async cacheDocumentAnalysis(documentId: string, analysis: any, options: CacheOptions = {}): Promise<void> {
     const cacheKey = `analysis:${documentId}`;
     await this.set(cacheKey, analysis, {
       ttl: options.ttl || 3600000, // 1 hour default for document analysis
       tags: ['analysis', 'document', documentId, ...(options.tags || [])],
       priority: options.priority || 'high` });'`
-  }
+  } }
   async getCachedDocumentAnalysis(documentId: string, options: CacheOptions = {}): Promise<unknown | null> {
     const cacheKey = `analysis:${documentId}`;
     return await this.get<unknown>(cacheKey, options);
-  }
+  } }
   async cacheVectorSimilarity(queryHash: string, results: any[], options: CacheOptions = {}): Promise<void> {
     const cacheKey = `vector:${queryHash}`;
     await this.set(cacheKey, results, {
       ttl: options.ttl || 1800000, // 30 minutes default for vector results
       tags: ['vector', 'similarity', ...(options.tags || [])],
       priority: options.priority || 'high` });'`
-  }
+  } }
   async getCachedVectorSimilarity(queryHash: string, options: CacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `vector:${queryHash}`;
     return await this.get<unknown[]>(cacheKey, options);
-  }
+  } }
   // ============================================================================
   // CACHE INVALIDATION
   // ============================================================================
@@ -396,22 +395,22 @@ class EnhancedCachingService {
       // Simple implementation: clear all cache
       await this.clear();
       return 1;
-    } catch (error) {
+    } }catch (error) {
       this.stats.errors++;
-      console.error('Cache invalidation error:', String(error));'
+      console.error('Cache invalidation error:', String(error));
       return 0;
-    }
-  }
+    } }
+  } }
   async invalidateDocument(documentId: string): Promise<void> {
     await Promise.all([
       this.delete(`analysis:${documentId}`),
       this.invalidateByTag(documentId),
       this.invalidateByTag('document'),
     ]);
-  }
+  } }
   async invalidateSearchCache(): Promise<void> {
     await this.invalidateByTag('search');
-  }
+  } }
   // ============================================================================
   // STATISTICS AND HEALTH
   // ============================================================================
@@ -425,7 +424,7 @@ class EnhancedCachingService {
       },
       layers: layerStats
     };
-  }
+  } }
   async healthCheck(): Promise<Record<string, unknown>> {
     let serviceHealthy = true;
     try {
@@ -435,16 +434,16 @@ class EnhancedCachingService {
       const result = await this.get<string>(testKey);
       await this.delete(testKey);
       serviceHealthy = result === 'test';
-    } catch {
+    } }catch {
       serviceHealthy = false;
-    }
+    } }
     const layerHealth = null; // Simple implementation
     return {
       healthy: serviceHealthy,
       service: serviceHealthy,
       layers: layerHealth
     };
-  }
+  } }
   // ============================================================================
   // UTILITY METHODS
   // ============================================================================
@@ -457,8 +456,8 @@ class EnhancedCachingService {
       case, 'high':
         return 10;
       default: return 5;
-    }
-  }
+    } }
+  } }
   private hashQuery(query: string): string {
     // Simple hash function for cache keys
     let hash = 0;
@@ -467,9 +466,9 @@ class EnhancedCachingService {
       hash = (hash << 5) - hash + char;
       // make 32-bit explicit
       hash = hash & 0xffffffff;
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   resetStats(): void {
     this.stats = {
       requests: 0,
@@ -477,8 +476,8 @@ class EnhancedCachingService {
       misses: 0,
       errors: 0
     };
-  }
-}
+  } }
+} }
 // ============================================================================
 // SINGLETON INSTANCE
 // ============================================================================
@@ -491,11 +490,11 @@ export async function initializeNESCacheIntegration(): Promise<boolean> {
     // Force initialization of NES Cache Orchestrator if not already done
     await cachingService.initializeNESCacheOrchestrator();
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to initialize NES Cache integration:', String(error));
     return false;
-  }
-}
+  } }
+} }
 export function getNESCacheStats(): Record<string, unknown> {
   const nesOrchestrator = cachingService['nesCacheOrchestrator'] as NESCacheOrchestratorLike | undefined;
   if (nesOrchestrator) {
@@ -509,22 +508,22 @@ export function getNESCacheStats(): Record<string, unknown> {
       memoryUsage: memFn ? memFn.call(nesOrchestrator) : 'N/A',
       cacheHierarchy: hierFn ? hierFn.call(nesOrchestrator) : 'N/A',
       performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A` };'`
-  }
+  } }
   return { initialized: false };
-}
+} }
 
 // --- Consolidated Public API Exports ---
 export async function getCacheStats(): Promise<Record<string, unknown>> {
   return cachingService.getStats();
-}
+} }
 
 export async function getCacheHealth(): Promise<Record<string, unknown>> {
   return cachingService.healthCheck();
-}
+} }
 
 export async function getWithFallback<T>(key: string, fallbackFn: () => Promise<T>, options?: CacheOptions): Promise<T> {
   return cachingService.getWithFallback(key, fallbackFn, options);
-}
+} }
 
 export async function cacheSearchResults(
   query: string,
@@ -532,11 +531,11 @@ export async function cacheSearchResults(
   options?: SearchCacheOptions
 ): Promise<void> {
   return cachingService.cacheSearchResults(query, results, options);
-}
+} }
 
 export async function getCachedSearchResults(query: string, options?: SearchCacheOptions): Promise<unknown[] | null> {
   return cachingService.getCachedSearchResults(query, options);
-}
+} }
 
 export async function cacheDocumentAnalysis(
   documentId: string,
@@ -544,15 +543,16 @@ export async function cacheDocumentAnalysis(
   options?: CacheOptions
 ): Promise<void> {
   return cachingService.cacheDocumentAnalysis(documentId, analysis, options);
-}
+} }
 
 export async function getCachedDocumentAnalysis(documentId: string, options?: CacheOptions): Promise<unknown | null> {
   return cachingService.getCachedDocumentAnalysis(documentId, options);
-}
+} }
 
 export async function invalidateDocument(documentId: string): Promise<void> {
   return cachingService.invalidateDocument(documentId);
-}
+} }
 
 // single default export
 export default cachingService;
+

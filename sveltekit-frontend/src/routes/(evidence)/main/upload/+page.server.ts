@@ -2,11 +2,11 @@
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema
  */
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { fail, redirect } }from '@sveltejs/kit';
+import { superValidate } }from 'sveltekit-superforms/server';
+import { zod } }from 'sveltekit-superforms/adapters';
+import { writeFile, mkdir } }from 'fs/promises';
+import { existsSync } }from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
 import {
@@ -14,10 +14,10 @@ import {
   getFileTypeFromMime,
   validateFileSize,
   validateFileType
-} from '$lib/schemas/evidence-upload.js';
-import { db, cases, evidence, helpers } from '$lib/server/db';
-import type { PageServerLoad, Actions } from './$types.js';
-import { getUserId } from '$lib/server/auth/utils';
+} }from '$lib/schemas/evidence-upload.js';
+import { db, cases, evidence, helpers } }from '$lib/server/db';
+import type { PageServerLoad, Actions } }from './$types.js';
+import { getUserId } }from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
@@ -37,54 +37,53 @@ export const load: PageServerLoad = async ({ locals }) => {
       form,
       cases: userCases
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
       cases: []
     };
-  }
+  } }
 };
-export const actions: Actions = {
- , upload: async ({ request, locals }) => {
+export const actions: Actions = { upload: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, zod(evidenceUploadSchema));
     if (!form.valid) {
       console.error('Form validation failed:', form.errors);
       return fail(400, { form });
-    }
+    } }
     const file = formData.get('file') as File;
     if (!file || file.size === 0) {
       return fail(400, {
         form: {
           ...form,
-          errors: {, file: ['Please select a file to upload'] }
-        }
+          errors: { file: ['Please select a file to upload'] } }
+        } }
       });
-    }
+    } }
     // Validate file size
     if (!validateFileSize(file)) {
       return fail(400, {
         form: {
           ...form,
-          errors: {, file: ['File size exceeds the maximum limit of 100MB'] }
-        }
+          errors: { file: ['File size exceeds the maximum limit of 100MB'] } }
+        } }
       });
-    }
+    } }
     // Determine evidence type from file if not specified
     let evidenceType = form.data.evidence_type as: any;
     if (evidenceType === 'UNKNOWN' || !evidenceType) {
       evidenceType = getFileTypeFromMime(file.type);
-    }
+    } }
     // Validate file type matches evidence type
     if (!validateFileType(file, evidenceType)) {
       return fail(400, {
         form: {
           ...form,
-          errors: {, file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] }
-        }
+          errors: { file: [`File type ${file.type} }is not supported for ${evidenceType} }evidence`] } }
+        } }
       });
-    }
+    } }
     try {
       // Verify the case exists (if case_id is provided)
       if (form.data.case_id) {
@@ -97,11 +96,11 @@ export const actions: Actions = {
           return fail(400, {
             form: {
               ...form,
-              errors: {, case_id: ['Selected case not found'] }
-            }
+              errors: { case_id: ['Selected case not found'] } }
+            } }
           });
-        }
-      }
+        } }
+      } }
       // Generate unique storage key
       const fileExtension = path.extname(file.name);
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -111,7 +110,7 @@ export const actions: Actions = {
       const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', form.data.case_id || 'default');
       if (!existsSync(uploadDir)) {
         await mkdir(uploadDir, { recursive: true });
-      }
+      } }
       // Save file to disk
       const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
       const fileBuffer = Buffer.from(await file.arrayBuffer());
@@ -140,24 +139,22 @@ export const actions: Actions = {
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
               citationsFound: ocrResult.citations?.length || 0
             });
-          } else {
+          } }else {
             console.warn('OCR processing failed:', ocrResponse.statusText);
-          }
-        } catch (ocrError) {
+          } }
+        } }catch (ocrError) {
           console.warn('OCR processing error (non-critical):', ocrError);
-        }
-      }
+        } }
+      } }
       // Generate rich metadata based on file type
-      let metadata: any = {
-       , kind: evidenceType,
+      let metadata: any = { kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
-        processingOptions: {
-         , enableAiAnalysis: form.data.enableAiAnalysis,
+        processingOptions: { enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
           enableSummarization: form.data.enableSummarization
-        }
+        } }
       };
       switch (evidenceType) {
         case, 'PDF':
@@ -177,7 +174,7 @@ export const actions: Actions = {
           metadata = {
             ...metadata,
             kind: 'IMAGE',
-            resolution: {, width: 0, height: 0 }, // Would be extracted with sharp,
+            resolution: { width: 0, height: 0 }, // Would be extracted with sharp,
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
@@ -188,7 +185,7 @@ export const actions: Actions = {
           metadata = {
             kind: 'VIDEO',
             durationSeconds: 0, // Would be extracted with ffprobe,
-            resolution: {, width: 0, height: 0 },
+            resolution: { width: 0, height: 0 },
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
@@ -219,12 +216,11 @@ export const actions: Actions = {
           };
           break;
         default:
-          metadata = {
-           , kind: 'UNKNOWN',
+          metadata = { kind: 'UNKNOWN',
             fileSize: file.size,
             uploadedAt: new Date().toISOString()
           };
-      }
+      } }
       // Insert evidence record into database with unified schema
       const evidenceRecord = await db
         .insert(evidence)
@@ -249,15 +245,14 @@ export const actions: Actions = {
             location: form.data.location,
             chainOfCustody: form.data.chainOfCustody || [],
             ocrResult: ocrResult
-              ? {
-                 , extractedText: ocrResult.text,
+              ? { extractedText: ocrResult.text,
                   confidence: ocrResult.averageConfidence,
                   legalConcepts: ocrResult.legalConcepts,
                   citations: ocrResult.citations,
                   pageCount: ocrResult.pages
-                }
+                } }
               : null
-          }
+          } }
         })
         .returning();
       console.log('Evidence uploaded successfully:', {
@@ -286,31 +281,31 @@ export const actions: Actions = {
           if (goResult.embeddings || goResult.analysis) {
             metadata = {
               ...metadata,
-              goServiceProcessing: {
-               , embeddings: goResult.embeddings,
+              goServiceProcessing: { embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
                 processedAt: new Date().toISOString()
-              }
+              } }
             };
-          }
-        } else {
+          } }
+        } }else {
           console.warn('⚠️ Go upload service processing failed:', goServiceResponse.statusText);
           console.warn('Continuing with local processing only');
-        }
-      } catch (goServiceError) {
+        } }
+      } }catch (goServiceError) {
         console.warn('⚠️ Go upload service error (non-critical):', goServiceError);
         console.warn('Continuing with local processing only');
-        // Don't fail the upload, just log the warning` }'`
-    } catch (error: any) {
-      console.error('Evidence upload error:', error);'
+        // Don't fail the upload, just log the warning` } }`
+    } }catch (error: any) {
+      console.error('Evidence upload error:', error);
       return fail(500, {
         form: {
           ...form,
-          errors: {, file: ['Failed to upload file. Please try again.'] }
-        }
+          errors: { file: ['Failed to upload file. Please try again.'] } }
+        } }
       });
-    }
+    } }
     // Redirect to evidence list or case details
     throw redirect(302, `/cases/${form.data.case_id}/evidence`);
-  }
+  } }
 };
+

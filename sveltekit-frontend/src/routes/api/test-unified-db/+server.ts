@@ -1,7 +1,7 @@
-import { unifiedDb, db } from '$lib/server/db/unified-client';
-import { sql } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { unifiedDb, db } }from '$lib/server/db/unified-client';
+import { sql } }from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Testing Unified Database Client...');
@@ -26,9 +26,9 @@ export const GET: RequestHandler = async () => {
       await db.execute(sql`SELECT, '[1,2,3]'::vector`);
       vectorSupport = true;
       console.log('✅ pgvector Extension: Available');
-    } catch (error) {
+    } }catch (error) {
       console.log('⚠️ pgvector Extension: Not Available');
-    }
+    } }
     // Test 5: Qdrant Connection Check
     const qdrant = unifiedDb.qdrant();
     let qdrantSupport = $state<boolean>(false);
@@ -37,12 +37,12 @@ export const GET: RequestHandler = async () => {
         await qdrant.getCollections();
         qdrantSupport = true;
         console.log('✅ Qdrant Connection: Available');
-      } catch (error) {
+      } }catch (error) {
         console.log('⚠️ Qdrant Connection: Not Available');
-      }
-    } else {
+      } }
+    } }else {
       console.log('ℹ️ Qdrant: Not configured');
-    }
+    } }
     // Test 6: Test Vector Search (if vector support available)
     let vectorSearchTest = null;
     if (vectorSupport) {
@@ -57,16 +57,16 @@ export const GET: RequestHandler = async () => {
           performance: searchResults.performance
         };
         console.log('✅ Vector Search, Test:', vectorSearchTest);
-      } catch (error) {
+      } }catch (error) {
         console.log('⚠️ Vector Search Test Failed:', error);
         vectorSearchTest = { error: String(error) };
-      }
-    }
+      } }
+    } }
     const results = {
       status: 'success',
       timestamp: new Date().toISOString(),
       tests: {
-       , healthCheck: health,
+  healthCheck: health,
         basicQuery: testQuery.length > 0,
         tableCheck: tableCheck.map(t => t.table_name),
         vectorSupport,
@@ -74,14 +74,14 @@ export const GET: RequestHandler = async () => {
         vectorSearchTest
       },
       summary: {
-       , database: health.postgresql ? '✅ Connected' : '❌ Failed',
+  database: health.postgresql ? '✅ Connected' : '❌ Failed',
         pgvector: vectorSupport ? '✅ Available' : '⚠️ Not Available',
         qdrant: qdrantSupport ? '✅ Connected' : '⚠️ Not Connected',
-        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy` }'`
+        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy` } }`
     };
     console.log('🎉 Unified Database Client Test, Complete:', results.summary);
     return json(results);
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Unified Database Client Test Failed:', error);
     return json(
       {
@@ -89,7 +89,8 @@ export const GET: RequestHandler = async () => {
         error: String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

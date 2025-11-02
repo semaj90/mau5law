@@ -7,7 +7,7 @@ export interface VectorSearchResult { id: string;, content: string;
   metadata: Record<string, any>;
   score: number;
   source: 'qdrant' | 'pgvector';
-}
+} }
 
 export interface SearchOptions {
   limit?: number;
@@ -16,12 +16,12 @@ export interface SearchOptions {
   usePgVector?: boolean;
   hybrid?: boolean;
   filters?: Record<string, any>;
-}
+} }
 
 export interface EmbeddingProvider {
   embed(text: string): Promise<Float32Array>;
   embedBatch(texts: string[]): Promise<Float32Array[]>;
-}
+} }
 
 export interface VectorDatabase {
   search(
@@ -38,4 +38,5 @@ export interface VectorDatabase {
   ): Promise<void>;
 
   delete(id: string): Promise<void>;
-}
+} }
+

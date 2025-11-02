@@ -13,26 +13,26 @@
  * GET  /api/search/vector   →  Return service health + status
  */
 
-import { json } from '@sveltejs/kit';
-import { enhancedVectorSearchService } from '$lib/server/ai/vector-search-service-instance';
-import { securityService } from '$lib/services/security.js';
-import { generateEmbedding } from '$lib/server/ai/embeddings-simple';
-import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
+import { json } }from '@sveltejs/kit';
+import { enhancedVectorSearchService } }from '$lib/server/ai/vector-search-service-instance';
+import { securityService } }from '$lib/services/security.js';
+import { generateEmbedding } }from '$lib/server/ai/embeddings-simple';
+import type { VectorSearchQueryResult, SearchResult } }from '$lib/types/search';
 
 // POST — Main vector search handler
 export const POST = async ({ request }) => {
   try {
-    const { query, limit = 10 } = await request.json();
+    const { query, limit = 10 } }= await request.json();
 
     if (!query || typeof query !== 'string' || !query.trim()) {
       return json({ success: false, error: 'Invalid or empty query' }, { status: 400 });
-    }
+    } }
 
     // Generate embedding (Ollama → fallback → CPU)
     const embedding = await generateEmbedding(query, { model: 'local' });
     if (!embedding) {
       return json({ success: false, error: 'Embedding generation failed' }, { status: 500 });
-    }
+    } }
 
     // Execute typed vector search via unified service
     const results = await enhancedVectorSearchService.search({
@@ -56,18 +56,18 @@ export const POST = async ({ request }) => {
         results: mapped,
         timestamp: new Date().toISOString()
       },
-      { headers: securityService.getSecurityHeaders() }
+      { headers: securityService.getSecurityHeaders() } }
     );
-  } catch (err) {
+  } }catch (err) {
     console.error('[VectorSearch] Error:', err);
     return json(
       {
         success: false,
         error: err instanceof Error ? err.message : String(err)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // GET — Service health/status
@@ -79,13 +79,14 @@ export const GET = async () => {
         success: true,
         status: 'ok',
         services: svc.getStatus?.() ?? 'active',
-        endpoints: {, search: 'POST /api/search/vector' },
+        endpoints: { search: 'POST /api/search/vector' },
         timestamp: new Date().toISOString()
       },
-      { headers: securityService.getSecurityHeaders() }
+      { headers: securityService.getSecurityHeaders() } }
     );
-  } catch (err) {
+  } }catch (err) {
     console.error('[VectorSearch Health] Error:', err);
     return json({ success: false, status: 'error', message: String(err) }, { status: 500 });
-  }
+  } }
 };
+

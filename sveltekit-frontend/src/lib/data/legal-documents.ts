@@ -9,10 +9,9 @@ export interface LegalDocument { id: string;, title: string;
   code: string;
   url?: string;
   sections?: string[];
-}
+} }
 export const legalDocuments: LegalDocument[] = [
-  {
-   , id: "ca-pen-187",
+  { id: "ca-pen-187",
     title: "California Penal Code Section, 187 - Murder",
     description: "Defines murder in the first and second degree under California law",
     content: "Murder is the unlawful killing of a human being, or a fetus, with malice aforethought. This section includes definitions of first-degree murder (premeditated) and second-degree murder. First-degree murder includes killings that are willful, deliberate, and premeditated, or committed during certain felonies like robbery, burglary, or rape.",
@@ -37,7 +36,7 @@ export const legalDocuments: LegalDocument[] = [
     id: "ca-civ-1549",
     title: "California Civil Code Section, 1549 - Contract Formation",
     description: "Requirements for valid contract formation",
-    content: "A contract is an agreement to do or not to do a certain thing. It must;, have: (1) parties capable of contracting; (2) their consent; (3) a lawful: object; and (4) sufficient consideration. Consent is not free when obtained through duress, menace, fraud, undue influence, or mistake.",
+    content: "A contract is an agreement to do or not to do a certain thing. It must; have: (1) parties capable of contracting; (2) their consent; (3) a lawful: object; and (4) sufficient consideration. Consent is not free when obtained through duress, menace, fraud, undue influence, or mistake.",
     jurisdiction: "california",
     category: "contract",
     code: "CIV 1549",
@@ -59,7 +58,7 @@ export const legalDocuments: LegalDocument[] = [
     id: "ca-evid-352",
     title: "California Evidence Code Section, 352 - Exclusion of Evidence",
     description: "Court's discretion to exclude evidence that is more prejudicial than probative",'
-    content: "The court in its discretion may exclude evidence if its probative value is substantially outweighed by the probability that its admission;, will: (a) necessitate undue consumption of time or (b) create substantial danger of undue prejudice, of confusing the issues, or of misleading the jury.",
+    content: "The court in its discretion may exclude evidence if its probative value is substantially outweighed by the probability that its admission; will: (a) necessitate undue consumption of time or (b) create substantial danger of undue prejudice, of confusing the issues, or of misleading the jury.",
     jurisdiction: "california",
     category: "evidence",
     code: "EVID 352",
@@ -125,7 +124,7 @@ export const legalDocuments: LegalDocument[] = [
     id: "ca-gov-6254",
     title: "California Government Code Section, 6254 - Public Records Act Exemptions",
     description: "Exemptions from disclosure under the California Public Records Act",
-    content: "Records exempt from disclosure;, include: personnel records, records of ongoing investigation, attorney-client privileged communications, records protected by state or federal law, and records that would compromise security. Public agencies must justify: any exemption claimed.",
+    content: "Records exempt from disclosure; include: personnel records, records of ongoing investigation, attorney-client privileged communications, records protected by state or federal law, and records that would compromise security. Public agencies must justify: any exemption claimed.",
     jurisdiction: "california",
     category: "administrative",
     code: "GOV 6254",
@@ -142,6 +141,6 @@ export const legalDocuments: LegalDocument[] = [
     code: "HSC 11350",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=11350.&lawCode=HSC",
     sections: ["11350(a)", "11350(b)"]
-  }
+  } }
 ];
 export default legalDocuments;

@@ -1,8 +1,8 @@
-import { globalGPUManager } from './global-gpu-manager.js';
+import { globalGPUManager } }from './global-gpu-manager.js';
 export interface VertexChunk { id: string;, buffer: GPUBuffer | WebGLBuffer | Float32Array;
   size: number;
  , lastUsed: number;
-}
+} }
 export class VertexCacheManager {
   private chunks = new Map<string, VertexChunk>();
   async createChunk(id: string, data: Float32Array): Promise<VertexChunk> {
@@ -18,8 +18,7 @@ export class VertexCacheManager {
         let buffer: GPUBuffer;
         try {
           // Preferred path: mappedAtCreation for fast upload
-          buffer = device.createBuffer({
-           , size: data.byteLength,
+          buffer = device.createBuffer({ size: data.byteLength,
             usage,
             mappedAtCreation: true
           }, as: any);
@@ -28,12 +27,11 @@ export class VertexCacheManager {
             ? new Float32Array(mapped)
             : new Float32Array((mapped as ArrayBufferView).buffer, (mapped as ArrayBufferView).byteOffset, (mapped as ArrayBufferView).byteLength / Float32Array.BYTES_PER_ELEMENT);
           target.set(data);
-          try { buffer.unmap(); } catch { /* ignore */ }
-        } catch (innerErr) {
+          try { buffer.unmap(); } }catch { /* ignore */ } }
+        } }catch (innerErr) {
           // Fallback: try non-mapped buffer + queue.writeBuffer OR mapAsync if available
           try {
-            buffer = device.createBuffer({
-             , size: data.byteLength,
+            buffer = device.createBuffer({ size: data.byteLength,
               usage,
               mappedAtCreation: false
             }, as: any);
@@ -41,29 +39,29 @@ export class VertexCacheManager {
             const anyDevice = device as: any;
             if (anyDevice?.queue && typeof anyDevice.queue.writeBuffer === 'function') {
               anyDevice.queue.writeBuffer(buffer, 0, data.buffer, data.byteOffset ?? 0, data.byteLength);
-            } else if (typeof (buffer as: any).mapAsync === 'function') {
+            } }else if (typeof (buffer as: any).mapAsync === 'function') {
               // Try mapAsync -> set -> unmap
               const GPUMapModeWrite = (typeof (globalThis as: any).GPUMapMode !== 'undefined' ? (globalThis as: any).GPUMapMode.WRITE : 1);
               await (buffer as: any).mapAsync(GPUMapModeWrite);
               const mapped = (buffer as: any).getMappedRange();
               new Float32Array(mapped).set(data);
-              try { (buffer as: any).unmap(); } catch { /* ignore */ }
-            } else {
+              try { (buffer as: any).unmap(); } }catch { /* ignore */ } }
+            } }else {
               // No upload path available: throw to fall back to CPU below
               throw innerErr;
-            }
-          } catch (fallbackErr) {
+            } }
+          } }catch (fallbackErr) {
             throw fallbackErr;
-          }
-        }
+          } }
+        } }
         const chunk: VertexChunk = { id, buffer, size: data.length, lastUsed: Date.now() };
         this.chunks.set(id, chunk);
         return chunk;
-      } catch (err) {
+      } }catch (err) {
         console.warn('VertexCacheManager.createChunk: WebGPU path failed, falling back', err);
         // fall through to other backends
-      }
-    } else if ((ctx?.type === 'webgl2' || ctx?.type === 'webgl') && (ctx as: any).gl && typeof (ctx as: any).gl.createBuffer === 'function') {
+      } }
+    } }else if ((ctx?.type === 'webgl2' || ctx?.type === 'webgl') && (ctx as: any).gl && typeof (ctx as: any).gl.createBuffer === 'function') {
       const gl = (ctx as: any).gl as WebGLRenderingContext | WebGL2RenderingContext;
       try {
         const buffer = gl.createBuffer();
@@ -75,46 +73,46 @@ export class VertexCacheManager {
           const chunk: VertexChunk = { id, buffer, size: data.length, lastUsed: Date.now() };
           this.chunks.set(id, chunk);
           return chunk;
-        }
-      } catch (e) {
+        } }
+      } }catch (e) {
         console.warn('VertexCacheManager.createChunk: WebGL path failed, falling back', e);
-      }
-    } else {
+      } }
+    } }else {
       // CPU fallback
       const chunk: VertexChunk = { id, buffer: data, size: data.length, lastUsed: Date.now() };
       this.chunks.set(id, chunk);
       return chunk;
-    }
-  }
+    } }
+  } }
   getChunk(id: string): VertexChunk | undefined {
     const chunk = this.chunks.get(id);
     if (chunk) chunk.lastUsed = Date.now();
     return chunk;
-  }
+  } }
   evictOld(thresholdMs = 30_000): void {
     const now = Date.now();
     for (const [id, chunk] of this.chunks.entries()) {
       if (now - chunk.lastUsed > thresholdMs) {
         this._tryDestroyBuffer(chunk.buffer);
         this.chunks.delete(id);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   clear(): void {
     for (const chunk of this.chunks.values()) {
       this._tryDestroyBuffer(chunk.buffer);
-    }
+    } }
     this.chunks.clear();
-  }
+  } }
   // internal helper: attempt to free GPU resources for different backends
   private _tryDestroyBuffer(buf: GPUBuffer | WebGLBuffer | Float32Array): void {
     // WebGPU buffer: has destroy()
     try {
       const maybeGPU = buf as: unknown as { destroy?: any };
       if (maybeGPU && typeof (maybeGPU, as: any).destroy === 'function') {
-        try { (maybeGPU as: any).destroy(); return; } catch { /* ignore */ }
-      }
-    } catch { /* ignore */ }
+        try { (maybeGPU as: any).destroy(); return; } }catch { /* ignore */ } }
+      } }
+    } }catch { /* ignore */ } }
     // WebGL buffer: delete via current GL context if available
     try {
       const ctx = globalGPUManager.getHybridGPU();
@@ -127,20 +125,21 @@ export class VertexCacheManager {
           if (isProbablyBufferObject) {
             // io-safety: wrap isBuffer/deleteBuffer because cross-context objects may throw
             let ok = false;
-            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } catch { ok = false; }
+            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } }catch { ok = false; } }
             if (ok) {
-              try { gl.deleteBuffer(buf as WebGLBuffer); return; } catch { /* ignore */ }
-            }
-          }
-        } catch (e) {
+              try { gl.deleteBuffer(buf as WebGLBuffer); return; } }catch { /* ignore */ } }
+            } }
+          } }
+        } }catch (e) {
           // Best-effort: some environments may throw when checking isBuffer with foreign objects.
           /* eslint-disable no-console */
           console.warn('VertexCacheManager: WebGL buffer deletion guard caught error', e);
           /* eslint-enable no-console */
-        }
-      }
-    } catch { /* ignore */ }
+        } }
+      } }
+    } }catch { /* ignore */ } }
     // CPU Float32Array: nothing to do, let GC reclaim
-  }
-}
+  } }
+} }
 export const vertexCacheManager = new VertexCacheManager();
+

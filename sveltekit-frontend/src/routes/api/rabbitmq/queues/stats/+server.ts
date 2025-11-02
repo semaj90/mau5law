@@ -3,8 +3,8 @@
  *
  * Provides detailed statistics about queue performance and message flow
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 /* Helpers: runtime detection and fetch-with-timeout */
 const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:15672';
@@ -17,10 +17,10 @@ async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, ms =
   try {
     const res = await fetch(input, { ...init, signal: controller.signal });
     return res;
-  } finally {
+  } }finally {
     clearTimeout(id);
-  }
-}
+  } }
+} }
 
 async function rabbitManagementAvailable(): Promise<boolean> {
   try {
@@ -30,19 +30,19 @@ async function rabbitManagementAvailable(): Promise<boolean> {
     if (RABBITMQ_USER && RABBITMQ_PASS) {
       const basic = Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64');
       headers['Authorization'] = `Basic ${basic}`;
-    }
+    } }
     const res = await fetchWithTimeout(url, { headers }, 2000);
     return !!(res && res.ok);
-  } catch {
+  } }catch {
     return false;
-  }
-}
+  } }
+} }
 
 function detectRuntime(): 'docker' | 'windows' | 'unknown' {
   if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return, 'docker';
   if (process.platform === 'win32') return, 'windows';
   return, 'unknown';
-}
+} }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -62,10 +62,10 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 45632,
         state: 'running',
         throughput: {
-         , publish_rate: 2.3,
+  publish_rate: 2.3,
           deliver_rate: 2.1,
           ack_rate: 2.1
-        }
+        } }
       },
       'legal.chunks.embed': {
         name: 'legal.chunks.embed',
@@ -77,10 +77,10 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 123456,
         state: 'running',
         throughput: {
-         , publish_rate: 8.7,
+  publish_rate: 8.7,
           deliver_rate: 8.5,
           ack_rate: 8.3
-        }
+        } }
       },
       'legal.chunks.store': {
         name: 'legal.chunks.store',
@@ -92,10 +92,10 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 78901,
         state: 'running',
         throughput: {
-         , publish_rate: 5.2,
+  publish_rate: 5.2,
           deliver_rate: 5.0,
           ack_rate: 4.9
-        }
+        } }
       },
       'legal.dlq': {
         name: 'legal.dlq',
@@ -107,11 +107,11 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 12345,
         state: 'running',
         throughput: {
-         , publish_rate: 0.1,
+  publish_rate: 0.1,
           deliver_rate: 0,
           ack_rate: 0
-        }
-      }
+        } }
+      } }
     };
 
     // Decide whether to use real RabbitMQ Management API or simulated fallback
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const headers: Record<string, string> = {};
         if (RABBITMQ_USER && RABBITMQ_PASS) {
           headers['Authorization'] = `Basic ${Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64')}`;
-        }
+        } }
         const resp = await fetchWithTimeout(queueUrl, { headers }, 3000);
         if (resp && resp.ok) {
           const q = await resp.json();
@@ -142,52 +142,52 @@ export const GET: RequestHandler = async ({ url }) => {
             memory: q.memory ?? 0,
             state: q.state ?? 'unknown',
             throughput: {
-             , publish_rate: q.message_stats?.publish_details?.rate ?? 0,
+  publish_rate: q.message_stats?.publish_details?.rate ?? 0,
               deliver_rate: q.message_stats?.deliver_get_details?.rate ?? 0,
               ack_rate: q.message_stats?.ack_details?.rate ?? 0
-            }
+            } }
           };
           if (detailed) {
             return json(
               {
                 ...queueStats,
                 timestamp,
-                detailed_metrics: {, message_rates: {, last_5_minutes: {
-                     , published: Math.floor(Math.random() * 100),
+                detailed_metrics: { message_rates: { last_5_minutes: {
+  published: Math.floor(Math.random() * 100),
                       delivered: Math.floor(Math.random() * 95),
                       acknowledged: Math.floor(Math.random() * 95),
                       redelivered: Math.floor(Math.random() * 5)
                     },
                     last_hour: {
-                     , published: Math.floor(Math.random() * 1000),
+  published: Math.floor(Math.random() * 1000),
                       delivered: Math.floor(Math.random() * 950),
                       acknowledged: Math.floor(Math.random() * 950),
                       redelivered: Math.floor(Math.random() * 50)
-                    }
+                    } }
                   },
-                  consumer_details: Array.from({, length: queueStats.consumers }, (_, i) => ({
+                  consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
                     tag: `consumer_${i + 1}`,
                     channel: `channel_${i + 1}`,
                     prefetch_count: 10,
                     ack_required: true,
                     active: true
                   }))
-                }
+                } }
               },
-              { headers: { 'X-Source': source, 'X-Runtime': runtime } }
+              { headers: { 'X-Source': source, 'X-Runtime': runtime } }} }
             );
-          }
+          } }
           return json(
             { [queueName]: queueStats, timestamp },
-            { headers: { 'X-Source': source, 'X-Runtime': runtime } }
+            { headers: { 'X-Source': source, 'X-Runtime': runtime } }} }
           );
-        }
+        } }
         // fall through to simulated if response not ok
-      } catch (err) {
+      } }catch (err) {
         // fall back to simulated
         console.warn('Failed to retrieve queue from RabbitMQ management API, falling back to simulated:', err);
-      }
-    }
+      } }
+    } }
 
     // If specific queue requested and simulated data available
     if (queueName && baseStats[queueName as keyof typeof baseStats]) {
@@ -197,33 +197,33 @@ export const GET: RequestHandler = async ({ url }) => {
           {
             ...queueStats,
             timestamp,
-            detailed_metrics: {, message_rates: {, last_5_minutes: {
-                 , published: Math.floor(Math.random() * 100),
+            detailed_metrics: { message_rates: { last_5_minutes: {
+  published: Math.floor(Math.random() * 100),
                   delivered: Math.floor(Math.random() * 95),
                   acknowledged: Math.floor(Math.random() * 95),
                   redelivered: Math.floor(Math.random() * 5)
                 },
                 last_hour: {
-                 , published: Math.floor(Math.random() * 1000),
+  published: Math.floor(Math.random() * 1000),
                   delivered: Math.floor(Math.random() * 950),
                   acknowledged: Math.floor(Math.random() * 950),
                   redelivered: Math.floor(Math.random() * 50)
-                }
+                } }
               },
-              consumer_details: Array.from({, length: queueStats.consumers }, (_, i) => ({
+              consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
                 tag: `consumer_${i + 1}`,
                 channel: `channel_${i + 1}`,
                 prefetch_count: 10,
                 ack_required: true,
                 active: true
               }))
-            }
+            } }
           },
-          { headers: { 'X-Source': source, 'X-Runtime': runtime } }
+          { headers: { 'X-Source': source, 'X-Runtime': runtime } }} }
         );
-      }
-      return json({ [queueName]: queueStats, timestamp }, { headers: { 'X-Source': source, 'X-Runtime': runtime } });
-    }
+      } }
+      return json({ [queueName]: queueStats, timestamp }, { headers: { 'X-Source': source, 'X-Runtime': runtime } }});
+    } }
 
     // Return all queue statistics (simulated or combine with real if mgmt available)
     const allStats = {
@@ -241,22 +241,22 @@ export const GET: RequestHandler = async ({ url }) => {
         uptime: '2d 14h 35m',
         erlang_processes: 428,
         file_descriptors: {
-         , used: 156,
+  used: 156,
           available: 65536
         },
         connection_count: 12,
         channel_count: 24
       };
-    }
+    } }
     return json(allStats, {
       headers: {
         'Cache-Control': 'max-age=30',
         'X-Queue-Count': String(Object.keys(baseStats).length),
         'X-Source': source,
         'X-Runtime': runtime
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to fetch queue statistics:', error);
     return json(
       {
@@ -264,14 +264,14 @@ export const GET: RequestHandler = async ({ url }) => {
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, queue } = await request.json();
+    const { action, queue } }= await request.json();
     const runtime = detectRuntime();
     const mgmtAvailable = await rabbitManagementAvailable();
 
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (action) {
       case, 'purge':
         if (!queue) {
-          return json({ error: 'Queue name required for purge action' }, { status: 400 });'' }
+          return json({ error: 'Queue name required for purge action' }, { status: 400 });'' } }
         if (mgmtAvailable) {
           try {
             const apiBase = RABBITMQ_MGMT_HOST.replace(/\/$/, '');
@@ -288,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
             const headers: Record<string, string> = { 'Content-Type': 'application/json' };'`'`
             if (RABBITMQ_USER && RABBITMQ_PASS) {
               headers['Authorization'] = `Basic ${Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64')}`;
-            }
+            } }
             const resp = await fetchWithTimeout(purgeUrl, { method: 'DELETE', headers }, 3000);
             if (resp && (resp.status === 204 || resp.ok)) {
               return json(
@@ -298,15 +298,15 @@ export const POST: RequestHandler = async ({ request }) => {
                   result: 'success',
                   timestamp: new Date().toISOString()
                 },
-                { headers: { 'X-Source': 'rabbitmq', 'X-Runtime': runtime } }
+                { headers: { 'X-Source': 'rabbitmq', 'X-Runtime': runtime } }} }
               );
-            }
+            } }
             // If purge failed, fall through to simulated response
             console.warn('RabbitMQ purge returned non-ok status, falling back to simulated response');
-          } catch (err) {
+          } }catch (err) {
             console.warn('RabbitMQ purge failed, using simulated response:', err);
-          }
-        }
+          } }
+        } }
         console.log(`🧹 Purging queue (simulated): ${queue}`);
         return json(
           {
@@ -316,7 +316,7 @@ export const POST: RequestHandler = async ({ request }) => {
             messages_purged: Math.floor(Math.random() * 50),
             timestamp: new Date().toISOString()
           },
-          { headers: { 'X-Source': 'simulated', 'X-Runtime': runtime } }
+          { headers: { 'X-Source': 'simulated', 'X-Runtime': runtime } }} }
         );
       case, 'reset_stats':
         console.log('📊 Resetting queue statistics');
@@ -327,11 +327,11 @@ export const POST: RequestHandler = async ({ request }) => {
             result: 'success',
             timestamp: new Date().toISOString()
           },
-          { headers: { 'X-Source': mgmtAvailable ? 'rabbitmq' : 'simulated', 'X-Runtime': runtime } }
+          { headers: { 'X-Source': mgmtAvailable ? 'rabbitmq' : 'simulated', 'X-Runtime': runtime } }} }
         );
-      default: return json({, error: `Unknown, action: ${action}' }, { status: 400 });'`
-    }
-  } catch (error) {
+      default: return json({ error: `Unknown, action: ${action} } }, { status: 400 });'`
+    } }
+  } }catch (error) {
     console.error('Queue management action failed:', error);
     return json(
       {
@@ -339,7 +339,8 @@ export const POST: RequestHandler = async ({ request }) => {
         details: error instanceof Error ? error.message : `Unknown error`,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

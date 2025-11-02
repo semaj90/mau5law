@@ -10,10 +10,10 @@ import {
   real,
   jsonb,
   index
-} from "drizzle-orm/pg-core";
-import { sql, type InferModel } from "drizzle-orm";
-import { vector } from "pgvector/drizzle";
-// import { relations } from "drizzle-orm/relations"; // enable when cases/evidence tables are imported
+} }from "drizzle-orm/pg-core";
+import { sql, type InferModel } }from "drizzle-orm";
+import { vector } }from "pgvector/drizzle";
+// import { relations } }from "drizzle-orm/relations"; // enable when cases/evidence tables are imported
 
 // Core case embeddings table - 512 dimensions for optimal performance
 export const caseEmbeddings = pgTable(
@@ -28,7 +28,7 @@ export const caseEmbeddings = pgTable(
     embedding: vector('embedding', { dimensions: 512 }).notNull(),
     textHash: text('text_hash').notNull(),
     model: text('model').notNull().default('embeddinggemma:latest'),
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
@@ -56,7 +56,7 @@ export const evidenceEmbeddings = pgTable(
     embedding: vector('embedding', { dimensions: 512 }).notNull(),
     textHash: text('text_hash').notNull(),
     model: text('model').notNull().default('embeddinggemma:latest'),
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
   },

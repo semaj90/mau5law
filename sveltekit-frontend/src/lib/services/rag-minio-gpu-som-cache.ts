@@ -8,18 +8,18 @@ interface CacheEntry { id: string;, content: string;
   accessCount: number;
   clusterId: number;
   priority: number;
-}
-interface SOMNode {, weights: Float32Array;, documents: string[];
+} }
+interface SOMNode { weights: Float32Array;, documents: string[];
   lastAccess: number;
   cluster: number;
-}
-interface GPUCacheStats {, l1Hits: number;, l2Hits: number;
+} }
+interface GPUCacheStats { l1Hits: number;, l2Hits: number;
   l3Hits: number;
   misses: number;
   totalRequests: number;
   avgResponseTime: number;
   clusterEfficiency: number;
-}
+} }
 
 export class RAGMinIOGPUSOMCache {
   private, l1Cache: Map<string, CacheEntry>; // Hot cache (GPU memory)
@@ -56,7 +56,7 @@ export class RAGMinIOGPUSOMCache {
       clusterEfficiency: 0
     };
     this.initializeSOM();
-  }
+  } }
 
   // Initialize Self-Organizing Map with random weights
   private initializeSOM(): void {
@@ -72,9 +72,9 @@ export class RAGMinIOGPUSOMCache {
           lastAccess: Date.now(),
           cluster: i * this.gridWidth + j
         };
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Simulated GPU-accelerated cosine similarity
   private async computeSimilarityGPU(vector1: Float32Array, vector2: Float32Array): Promise<number> {
@@ -88,18 +88,18 @@ export class RAGMinIOGPUSOMCache {
       dot += a * b;
       n1 += a * a;
       n2 += b * b;
-    }
+    } }
     const denom = Math.sqrt(n1) * Math.sqrt(n2);
     if (denom === 0) return 0;
     return dot / denom;
-  }
+  } }
 
   // Find Best Matching Unit (BMU)
   private async findBMU(inputVector: Float32Array): Promise<{ x: number; y: number; distance: number }> {
     let bestDistance = Infinity;
     let bestX = 0;
     let bestY = 0;
-    const promises: Promise<{ x: number; y: number;, distance: number }>[] = [];
+    const promises: Promise<{ x: number; y: number; distance: number }>[] = [];
 
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
@@ -111,8 +111,8 @@ export class RAGMinIOGPUSOMCache {
             distance: 1 - similarity
           }))
         );
-      }
-    }
+      } }
+    } }
 
     const results = await Promise.all(promises);
     for (const r of results) {
@@ -120,11 +120,11 @@ export class RAGMinIOGPUSOMCache {
         bestDistance = r.distance;
         bestX = r.x;
         bestY = r.y;
-      }
-    }
+      } }
+    } }
 
     return { x: bestX, y: bestY, distance: bestDistance };
-  }
+  } }
 
   // Update SOM weights based on input vector (neighborhood learning)
   private async updateSOMWeights(inputVector: Float32Array, bmuX: number, bmuY: number): Promise<void> {
@@ -137,11 +137,11 @@ export class RAGMinIOGPUSOMCache {
         const nodeWeights = this.somGrid[i][j].weights;
         for (let k = 0; k < nodeWeights.length; k++) {
           nodeWeights[k] += learningInfluence * (inputVector[k] - nodeWeights[k]);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     this.learningRate *= this.decayRate;
-  }
+  } }
 
   // Decide optimal cache level
   private async getOptimalCacheLevel(entry: CacheEntry): Promise<'l1' | 'l2' | 'l3'> {
@@ -150,12 +150,12 @@ export class RAGMinIOGPUSOMCache {
     const recentAccess = Date.now() - entry.timestamp < 5 * 60 * 1000; // 5, minutes
     if (entry.accessCount > 5 && recentAccess && clusterActivity > 3) {
       return, 'l1';
-    } else if (entry.accessCount > 2 && clusterActivity > 1) {
+    } }else if (entry.accessCount > 2 && clusterActivity > 1) {
       return, 'l2';
-    } else {
+    } }else {
       return, 'l3';
-    }
-  }
+    } }
+  } }
 
   // Store document with intelligent placement
   async store(id: string, content: string, vector: Float32Array): Promise<void> {
@@ -185,8 +185,8 @@ export class RAGMinIOGPUSOMCache {
       case, 'l3':
         await this.storeL3(entry);
         break;
-    }
-  }
+    } }
+  } }
 
   // Retrieve document traversing hierarchy
   async retrieve(id: string): Promise<CacheEntry | null> {
@@ -200,7 +200,7 @@ export class RAGMinIOGPUSOMCache {
       entry.timestamp = Date.now();
       this.updateStats((typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime);
       return entry;
-    }
+    } }
     if (this.l2Cache.has(id)) {
       this.stats.l2Hits++;
       const entry = this.l2Cache.get(id)!;
@@ -209,7 +209,7 @@ export class RAGMinIOGPUSOMCache {
       if (entry.accessCount > 3) await this.promoteToL1(entry);
       this.updateStats((typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime);
       return entry;
-    }
+    } }
     if (this.l3Cache.has(id)) {
       this.stats.l3Hits++;
       const entry = this.l3Cache.get(id)!;
@@ -218,24 +218,24 @@ export class RAGMinIOGPUSOMCache {
       if (entry.accessCount > 2) await this.promoteToL2(entry);
       this.updateStats((typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime);
       return entry;
-    }
+    } }
 
     this.stats.misses++;
     this.updateStats((typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime);
     return: null;
-  }
+  } }
 
   // Semantic search within clusters (simulated GPU)
   async semanticSearch(queryVector: Float32Array, limit = 10): Promise<CacheEntry[]> {
     const bmu = await this.findBMU(queryVector);
-    const results: Array<{ entry: CacheEntry;, similarity: number }> = [];
+    const results: Array<{ entry: CacheEntry; similarity: number }> = [];
 
     const pushIfFound = async (docId: string) => {
       const entry = this.l1Cache.get(docId) || this.l2Cache.get(docId) || this.l3Cache.get(docId);
       if (entry) {
         const similarity = await this.computeSimilarityGPU(queryVector, entry.vector);
         results.push({ entry, similarity });
-      }
+      } }
     };
 
     const clusterDocs = this.somGrid[bmu.y][bmu.x].documents.slice(0, limit);
@@ -247,16 +247,16 @@ export class RAGMinIOGPUSOMCache {
         const neighborDocs = this.somGrid[n.y][n.x].documents;
         for (const docId of neighborDocs.slice(0, limit - results.length)) {
           await pushIfFound(docId);
-        }
+        } }
         if (results.length >= limit) break;
-      }
-    }
+      } }
+    } }
 
     return results
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit)
       .map(r => r.entry);
-  }
+  } }
 
   // Periodic maintenance: evict stale, update metrics
   async optimizeCache(): Promise<void> {
@@ -265,45 +265,45 @@ export class RAGMinIOGPUSOMCache {
       if (entry.timestamp < l1Cutoff && entry.accessCount < 2) {
         this.l1Cache.delete(id);
         await this.storeL2(entry);
-      }
-    }
+      } }
+    } }
 
     const l2Cutoff = Date.now() - 60 * 60 * 1000; // 1 hour
     for (const [id, entry] of Array.from(this.l2Cache)) {
       if (entry.timestamp < l2Cutoff && entry.accessCount < 1) {
         this.l2Cache.delete(id);
         await this.storeL3(entry);
-      }
-    }
+      } }
+    } }
 
     this.updateClusterEfficiency();
-  }
+  } }
 
   // Helper cache operations
   private async storeL1(entry: CacheEntry): Promise<void> {
     if (this.l1Cache.size >= this.maxL1Size) {
       await this.evictLRUFromL1();
-    }
+    } }
     this.l1Cache.set(entry.id, entry);
-  }
+  } }
   private async storeL2(entry: CacheEntry): Promise<void> {
     if (this.l2Cache.size >= this.maxL2Size) {
       await this.evictLRUFromL2();
-    }
+    } }
     this.l2Cache.set(entry.id, entry);
-  }
+  } }
   private async storeL3(entry: CacheEntry): Promise<void> {
     // Simulate MinIO/persistent storage by keeping in l3 map
     this.l3Cache.set(entry.id, entry);
-  }
+  } }
   private async promoteToL1(entry: CacheEntry): Promise<void> {
     this.l2Cache.delete(entry.id);
     await this.storeL1(entry);
-  }
+  } }
   private async promoteToL2(entry: CacheEntry): Promise<void> {
     this.l3Cache.delete(entry.id);
     await this.storeL2(entry);
-  }
+  } }
 
   private async evictLRUFromL1(): Promise<void> {
     let oldestEntry: CacheEntry | null = null;
@@ -312,13 +312,13 @@ export class RAGMinIOGPUSOMCache {
       if (!oldestEntry || entry.timestamp < oldestEntry.timestamp) {
         oldestEntry = entry;
         oldestId = id;
-      }
-    }
+      } }
+    } }
     if (oldestEntry) {
       this.l1Cache.delete(oldestId);
       await this.storeL2(oldestEntry);
-    }
-  }
+    } }
+  } }
 
   private async evictLRUFromL2(): Promise<void> {
     let oldestEntry: CacheEntry | null = null;
@@ -327,39 +327,39 @@ export class RAGMinIOGPUSOMCache {
       if (!oldestEntry || entry.timestamp < oldestEntry.timestamp) {
         oldestEntry = entry;
         oldestId = id;
-      }
-    }
+      } }
+    } }
     if (oldestEntry) {
       this.l2Cache.delete(oldestId);
       await this.storeL3(oldestEntry);
-    }
-  }
+    } }
+  } }
 
   private calculatePriority(content: string, vector: Float32Array): number {
     const contentScore = Math.min(content.length / 1000, 1);
     const vectorMag = Math.sqrt(Array.from(vector).reduce((sum, val) => sum + val * val, 0));
     return contentScore * vectorMag;
-  }
+  } }
 
   private getNeighboringClusters(x: number, y: number): Array<{ x: number; y: number }> {
-    const neighbors: Array<{ x: number;, y: number }> = [];
+    const neighbors: Array<{ x: number; y: number }> = [];
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         const nx = x + dx;
         const ny = y + dy;
         if (nx >= 0 && nx < this.gridWidth && ny >= 0 && ny < this.gridHeight && (dx !== 0 || dy !== 0)) {
           neighbors.push({ x: nx, y: ny });
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return neighbors;
-  }
+  } }
 
   private updateStats(responseTime: number): void {
     const prevTotal = this.stats.totalRequests > 0 ? this.stats.totalRequests - 1 : 0;
     this.stats.avgResponseTime =
       (this.stats.avgResponseTime * prevTotal + responseTime) / Math.max(1, this.stats.totalRequests);
-  }
+  } }
 
   private updateClusterEfficiency(): void {
     let totalClusters = 0;
@@ -368,17 +368,17 @@ export class RAGMinIOGPUSOMCache {
       for (let j = 0; j < this.gridWidth; j++) {
         totalClusters++;
         if (this.somGrid[i][j].documents.length > 0) activeClusters++;
-      }
-    }
+      } }
+    } }
     this.stats.clusterEfficiency = totalClusters === 0 ? 0 : activeClusters / totalClusters;
-  }
+  } }
 
   // Expose stats
   getStats(): GPUCacheStats & { l1Size: number;, l2Size: number;
     l3Size: number;
     hitRate: number;
    , somGridUtilization: number;
-  } {
+  } }{
     const totalHits = this.stats.l1Hits + this.stats.l2Hits + this.stats.l3Hits;
     const hitRate = this.stats.totalRequests > 0 ? totalHits / this.stats.totalRequests : 0;
     return {
@@ -389,11 +389,11 @@ export class RAGMinIOGPUSOMCache {
       hitRate,
       somGridUtilization: this.stats.clusterEfficiency
     };
-  }
+  } }
 
   // Export SOM visualization data for debugging
   getSOMVisualization(): Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> {
-    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number;, clusterId: number }> = [];
+    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> = [];
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
         visualization.push({
@@ -403,11 +403,12 @@ export class RAGMinIOGPUSOMCache {
           lastAccess: this.somGrid[i][j].lastAccess,
           clusterId: this.somGrid[i][j].cluster
         });
-      }
-    }
+      } }
+    } }
     return visualization;
-  }
-}
+  } }
+} }
 
 // Singleton instance for global cache management
 export const globalGPUCache = new RAGMinIOGPUSOMCache();
+

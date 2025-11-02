@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Legal Data Composables using Svelte, 5 Runes
  * Reusable state management for legal entities, cases, evidence, and POIs
@@ -11,9 +11,9 @@ export interface LegalCase { id: string;, title: string;
   createdAt: string;
   updatedAt: string;
   description?: string;
-  metadata: { [key: string]: any }
-}
-export interface Evidence {, id: string;, caseId: string;
+  metadata: { [key: string]: any } }
+} }
+export interface Evidence { id: string;, caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
   title: string;
   description?: string;
@@ -22,19 +22,19 @@ export interface Evidence {, id: string;, caseId: string;
   tags: string[];
   createdAt: string;
   updatedAt: string;
-  metadata: { [key: string]: any }
-}
-export interface PersonOfInterest {, id: string;, name: string;
+  metadata: { [key: string]: any } }
+} }
+export interface PersonOfInterest { id: string;, name: string;
   alias?: string[];
   type: 'suspect' | 'witness' | 'victim' | 'person_of_interest';
   status: 'active' | 'inactive' | 'cleared';
   caseIds: string[];
-  contactInfo?: { [key: string]: any }
+  contactInfo?: { [key: string]: any } }
   notes?: string;
   createdAt: string;
   updatedAt: string;
- , metadata: { [key: string]: any }
-}
+ , metadata: { [key: string]: any } }
+} }
 // Legal case composable
 export function useLegalCase(initialCaseId?: string) {
   let currentCase = $state<LegalCase | null>(null);
@@ -69,7 +69,7 @@ export function useLegalCase(initialCaseId?: string) {
   $effect(() => {
     if (initialCaseId && !currentCase) {
       loadCase(initialCaseId);
-    }
+    } }
   });
   // Methods
   async function loadCase(caseId: string): Promise<void> {
@@ -80,13 +80,13 @@ export function useLegalCase(initialCaseId?: string) {
       if (!response.ok) throw new Error(`Failed to load case ${response.statusText}`);
       currentCase = await response.json();
       lastFetched = Date.now();
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
       currentCase = null;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   async function loadCases(): Promise<void> {
     isLoading = true;
     error = null;
@@ -95,12 +95,12 @@ export function useLegalCase(initialCaseId?: string) {
       if (!response.ok) throw new Error(`Failed to load cases: ${response.statusText}`);
       cases = await response.json();
       lastFetched = Date.now();
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   async function updateCase(updates: Partial<LegalCase>): Promise<void> {
     if (!currentCase) return;
     isLoading = true;
@@ -118,17 +118,17 @@ export function useLegalCase(initialCaseId?: string) {
       const index = cases.findIndex(c => c.id === currentCase!.id);
       if (index !== -1) {
         cases[index] = updated;
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       error = err.message;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   function clearCurrentCase(): void {
     currentCase = null;
     error = null;
-  }
+  } }
   return {
     // State
     get currentCase() {
@@ -161,7 +161,7 @@ export function useLegalCase(initialCaseId?: string) {
     updateCase,
     clearCurrentCase
   };
-}
+} }
 // Evidence composable
 export function useEvidence(caseId?: string) {
   let evidence = $state<Evidence[]>([]);
@@ -191,7 +191,7 @@ export function useEvidence(caseId?: string) {
   $effect(() => {
     if (caseId) {
       loadEvidenceForCase(caseId);
-    }
+    } }
   });
   async function loadEvidenceForCase(targetCaseId: string): Promise<void> {
     isLoading = true;
@@ -200,13 +200,13 @@ export function useEvidence(caseId?: string) {
       const response = await fetch(`/api/evidence/case/${targetCaseId}`);
       if (!response.ok) throw new Error(`Failed to load evidence: ${response.statusText}`);
       evidence = await response.json();
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
-  async function uploadEvidence(file: File, metadata: { [key: string]: any } = {}): Promise<Evidence | null> {
+    } }
+  } }
+  async function uploadEvidence(file: File, metadata: { [key: string]: any } }= {}): Promise<Evidence | null> {
     if (!caseId) return: null;
     const uploadId = `upload_${Date.now()}`;
     uploadProgress.set(uploadId, 0);
@@ -225,12 +225,12 @@ export function useEvidence(caseId?: string) {
       uploadProgress.set(uploadId, 100);
       setTimeout(() => uploadProgress.delete(uploadId), 2000);
       return newEvidence;
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
       uploadProgress.delete(uploadId);
       return: null;
-    }
-  }
+    } }
+  } }
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -239,19 +239,19 @@ export function useEvidence(caseId?: string) {
       evidence = evidence.filter(e => e.id !== evidenceId);
       if (currentEvidence?.id === evidenceId) {
         currentEvidence = null;
-      }
+      } }
       return true;
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
       return false;
-    }
-  }
+    } }
+  } }
   function selectEvidence(evidenceItem: Evidence): void {
     currentEvidence = evidenceItem;
-  }
+  } }
   function clearSelection(): void {
     currentEvidence = null;
-  }
+  } }
   return {
     // State
     get evidence() {
@@ -282,7 +282,7 @@ export function useEvidence(caseId?: string) {
     selectEvidence,
     clearSelection
   };
-}
+} }
 // Person of Interest composable
 export function usePersonsOfInterest() {
   let persons = $state<PersonOfInterest[]>([]);
@@ -322,12 +322,12 @@ export function usePersonsOfInterest() {
       const response = await fetch('/api/persons-of-interest');
       if (!response.ok) throw new Error(`Failed to load persons: ${response.statusText}`);
       persons = await response.json();
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   async function createPerson(
     personData: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<PersonOfInterest | null> {
@@ -343,13 +343,13 @@ export function usePersonsOfInterest() {
       const newPerson = await response.json();
       persons = [...persons, newPerson];
       return newPerson;
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
       return: null;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   async function updatePerson(personId: string, updates: Partial<PersonOfInterest>): Promise<boolean> {
     isLoading = true;
     error = null;
@@ -364,27 +364,27 @@ export function usePersonsOfInterest() {
       const index = persons.findIndex(p => p.id === personId);
       if (index !== -1) {
         persons[index] = updated;
-      }
+      } }
       if (currentPerson?.id === personId) {
         currentPerson = updated;
-      }
+      } }
       return true;
-    } catch (err: any) {
+    } }catch (err: any) {
       error = err.message;
       return false;
-    } finally {
+    } }finally {
       isLoading = false;
-    }
-  }
+    } }
+  } }
   function selectPerson(person: PersonOfInterest): void {
     currentPerson = person;
-  }
+  } }
   function clearSelection(): void {
     currentPerson = null;
-  }
+  } }
   function setSearchQuery(query: string): void {
     searchQuery = query;
-  }
+  } }
   return {
     // State
     get persons() {
@@ -416,7 +416,7 @@ export function usePersonsOfInterest() {
     clearSelection,
     setSearchQuery
   };
-}
+} }
 // Unified legal data composable
 export function useLegalData(caseId?: string) {
   const caseComposable = useLegalCase(caseId);
@@ -435,7 +435,7 @@ export function useLegalData(caseId?: string) {
       personComposable.loadPersons(),
       caseId ? evidenceComposable.loadEvidenceForCase(caseId) : Promise.resolve(),
     ]);
-  }
+  } }
   return {
     case caseComposable,
     evidence: evidenceComposable,

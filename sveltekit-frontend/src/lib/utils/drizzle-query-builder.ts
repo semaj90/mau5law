@@ -1,6 +1,6 @@
-import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { cases, evidence, reports } from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import { db } }from '$lib/server/db';
+import { cases, evidence, reports } }from '$lib/server/db/schema-postgres';
 
 // Minimal safe helpers for common selects used by the app.
 export const QueryBuilder = {
@@ -14,5 +14,5 @@ export const QueryBuilder = {
 
   async selectReportByCase(caseId: string) {
     return db.select().from(reports).where(eq(reports.caseId, caseId));
-  }
+  } }
 };

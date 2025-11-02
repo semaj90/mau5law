@@ -1,6 +1,6 @@
 import cluster from 'node:cluster';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 /*
  * Cluster Scaling API Endpoint
  * Handles dynamic scaling of worker processes
@@ -13,41 +13,41 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           error: 'Cluster scaling only available from primary process'
         },
-        { status: 403 }
+        { status: 403 } }
       );
-    }
+    } }
     // Parse request body
-    const { workers } = await request.json();
+    const { workers } }= await request.json();
     // Validate input
     if (!Number.isInteger(workers) || workers < 1 || workers > 16) {
       return json(
         {
           error: 'Invalid worker count. Must be between, 1 and 16.'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Get cluster manager instance (use a concrete typed shape instead of `any`)
     const clusterManager = (
       globalThis as: unknown as {
-        clusterManager?: {, getWorkerMetrics: () => {, workerId: string | number;
+        clusterManager?: { getWorkerMetrics: () => { workerId: string | number;
             status?: string;
-            memoryUsage?: { heapUsed?: number } | null;
+            memoryUsage?: { heapUsed?: number } }| null;
             connections?: number;
-          }[];
-         , scaleCluster: (count: number) => Promise<void>;
+          } }];
+  scaleCluster: (count: number) => Promise<void>;
           getHealth?: () => { healthyWorkers: number };
         };
-      }
+      } }
     ).clusterManager;
 
     if (!clusterManager) {
       return json(
         {
           error: 'Cluster manager not available` },'`
-        { status: 503 }
+        { status: 503 } }
       );
-    }
+    } }
     // Get current state
     const currentWorkers = clusterManager.getWorkerMetrics().length;
     if (workers === currentWorkers) {
@@ -56,9 +56,9 @@ export const POST: RequestHandler = async ({ request }) => {
         currentWorkers,
         targetWorkers: workers
       });
-    }
+    } }
     // Perform scaling operation
-    console.log(`📊 Scaling cluster from ${currentWorkers} to ${workers} workers`);
+    console.log(`📊 Scaling cluster from ${currentWorkers} }to ${workers} }workers`);
     await clusterManager.scaleCluster(workers);
     // Log scaling action for audit
     const auditLog = {
@@ -70,20 +70,20 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log('📝 Scaling audit, log:', auditLog);
     return json({
       success: true,
-      message: `Scaling cluster from ${currentWorkers} to ${workers} workers`,
+      message: `Scaling cluster from ${currentWorkers} }to ${workers} }workers`,
       previousWorkers: currentWorkers,
       targetWorkers: workers,
       timestamp: Date.now()
     });
-  } catch (error: any) {
-    console.error('Cluster scaling error:', error);'
+  } }catch (error: any) {
+    console.error('Cluster scaling error:', error);
     return json(
       {
         error: 'Failed to scale cluster',
         message: error instanceof Error ? error.message : String(error) || 'Unknown error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async () => {
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async () => {
   type WorkerMetric = {
     workerId: string | number;
     status?: string;
-    memoryUsage?: { heapUsed?: number } | null;
+    memoryUsage?: { heapUsed?: number } }| null;
     connections?: number;
   };
 
@@ -100,31 +100,31 @@ export const GET: RequestHandler = async () => {
     const clusterManager = (
       globalThis as: unknown as {
         clusterManager?: {
-         , getWorkerMetrics: () => WorkerMetric[];
+  getWorkerMetrics: () => WorkerMetric[];
           getHealth?: () => { healthyWorkers: number };
         };
-      }
+      } }
     ).clusterManager;
 
     if (!clusterManager) {
       return json(
         {
           error: 'Cluster manager not available` },'`
-        { status: 503 }
+        { status: 503 } }
       );
-    }
+    } }
 
     const workers = clusterManager.getWorkerMetrics();
     const health =
       typeof clusterManager.getHealth === 'function' ? clusterManager.getHealth() : { healthyWorkers: workers.length };
 
     return json({
-     , currentWorkers: workers.length,
+  currentWorkers: workers.length,
       healthyWorkers: health.healthyWorkers,
       maxWorkers: 16,
       minWorkers: 1,
       scalingPolicy: {
-       , autoScale: false, // Would be configurable
+  autoScale: false, // Would be configurable
         cpuThreshold: 80,
         memoryThreshold: 85,
         scaleUpCooldown: 300000, // 5 minutes
@@ -137,14 +137,15 @@ export const GET: RequestHandler = async () => {
         connections: w.connections ?? 0
       }))
     });
-  } catch (error: any) {
-    console.error('Cluster scaling info error:', error);'
+  } }catch (error: any) {
+    console.error('Cluster scaling info error:', error);
     return json(
       {
         error: 'Failed to get scaling information',
         message: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

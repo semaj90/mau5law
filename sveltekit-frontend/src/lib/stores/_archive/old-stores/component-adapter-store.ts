@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /**
  * Svelte, 5 Component Adapter Logic Layer
  * Converts complex stateful components into simple: "dumb" prop receivers
  * following the decoupled architecture pattern
  */
-import { writable, get, type Readable } from 'svelte/store'; // Removed: 'derived'
-import type { DeepPartial } from '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
+import { writable, get, type Readable } }from 'svelte/store'; // Removed: 'derived'
+import type { DeepPartial } }from '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
 
 // Simple interfaces for UI consumption
 export interface ComponentState<TData = unknown> {
@@ -14,7 +14,7 @@ export interface ComponentState<TData = unknown> {
   error: string | null;
   data: TData; // Type data with TData
  , meta: Record<string, unknown>; // Use Record<string, unknown>
-}
+} }
 export interface UIProps {
   variant?: string;
   size?: string;
@@ -22,16 +22,16 @@ export interface UIProps {
   class?: string;
   style?: string;
   [key: string]: any; // Use: unknown
-}
+} }
 export interface ComponentAdapter<TData = unknown> {
   // Default to: unknown
   state: Readable<ComponentState<TData>>; // Pass TData to ComponentState
   props: Readable<UIProps>;
-  actions: {, update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates, reset: () => void;
+  actions: { update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates, reset: () => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
   };
-}
+} }
 /**
  * Base Component Adapter Factory
  * Creates simplified adapters for complex components
@@ -42,28 +42,27 @@ export function createComponentAdapter<TData = unknown>( // Default to: unknown
     loading?: boolean;
     error?: string | null;
     meta?: Record<string, unknown>; // Use Record<string, unknown>
-  } = {}
+  } }= {} }
 ): ComponentAdapter<TData> {
   const state = writable<ComponentState<TData>>({
     // Pass TData to ComponentState
     loading: options.loading ?? false,
     error: options.error ?? null,
     data: initialData,
-    meta: options.meta ?? {}
+    meta: options.meta ?? {} }
   });
   const props = writable<UIProps>({
     variant: 'default',
     size: 'medium',
     disabled: false
   });
-  return { state: {, subscribe: state.subscribe },
-    props: {, subscribe: props.subscribe },
-    actions: {
-     , update: (newData: DeepPartial<TData>) => {
+  return { state: { subscribe: state.subscribe },
+    props: { subscribe: props.subscribe },
+    actions: { update: (newData: DeepPartial<TData>) => {
         // Use DeepPartial
         state.update(current => ({
           ...current,
-          data: { ...(current.data, as: object), ...(newData as: object) } as TData, // Type assertion for merging
+          data: { ...(current.data, as: object), ...(newData as: object) } }as TData, // Type assertion for merging
         }));
       },
       reset: () => {
@@ -71,7 +70,7 @@ export function createComponentAdapter<TData = unknown>( // Default to: unknown
           loading: false,
           error: null,
           data: initialData,
-          meta: {}
+          meta: {} }
         });
       },
       setLoading: (loading: boolean) => {
@@ -79,10 +78,10 @@ export function createComponentAdapter<TData = unknown>( // Default to: unknown
       },
       setError: (error: string | null) => {
         state.update(current => ({ ...current, error }));
-      }
-    }
+      } }
+    } }
   };
-}
+} }
 /**
  * Chat Component Adapter
  * Simplifies complex chat component state
@@ -93,11 +92,11 @@ export interface ChatMessage {
   content: string;
   timestamp?: number;
   [key: string]: any; // Allow additional properties
-}
-export interface ChatData {, messages: ChatMessage[]; // Use ChatMessage[], currentInput: string;
+} }
+export interface ChatData { messages: ChatMessage[]; // Use ChatMessage[], currentInput: string;
   isTyping: boolean;
  , connectionStatus: 'connected' | 'disconnected' | 'connecting';
-}
+} }
 export function createChatAdapter(initialMessages: ChatData['messages'] = []): ComponentAdapter<ChatData> {
   const adapter = createComponentAdapter<ChatData>({
     messages: initialMessages,
@@ -111,7 +110,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     addMessage: (message: Omit<ChatMessage, 'timestamp'>) => {
       // Use Omit to allow timestamp to be added
       adapter.actions.update({
-        messages: [...(get(adapter.state).data.messages || []), { ...message, timestamp: Date.now() }]
+        messages: [...(get(adapter.state).data.messages || []), { ...message, timestamp: Date.now() } }
       });
     },
     setTyping: (isTyping: boolean) => {
@@ -122,13 +121,13 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     },
     setConnectionStatus: (status: ChatData['connectionStatus']) => {
       adapter.actions.update({ connectionStatus: status });
-    }
+    } }
   };
   return {
     ...adapter,
     actions: chatActions
   };
-}
+} }
 /**
  * Search Component Adapter
  * Simplifies complex search component state
@@ -139,21 +138,21 @@ export interface SearchResult {
   title: string;
   description: string;
   [key: string]: any; // Allow additional properties
-}
-export interface SearchData {, query: string;, results: SearchResult[]; // Use SearchResult[]
+} }
+export interface SearchData { query: string;, results: SearchResult[]; // Use SearchResult[]
  , filters: Record<string, unknown>; // Use Record<string, unknown>
-  pagination: {, page: number;, limit: number;
+  pagination: { page: number;, limit: number;
     total: number;
   };
   sortBy: string;
  , sortOrder: 'asc' | 'desc';
-}
+} }
 export function createSearchAdapter(): ComponentAdapter<SearchData> {
   const adapter = createComponentAdapter<SearchData>({
     query: '',
     results: [],
     filters: {},
-    pagination: {, page: 1, limit: 20, total: 0 },
+    pagination: { page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
     sortOrder: 'desc'
   });
@@ -166,40 +165,40 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
       // Type results
       adapter.actions.update({
         results,
-        pagination: { ...get(adapter.state).data.pagination, total }
+        pagination: { ...get(adapter.state).data.pagination, total } }
       });
     },
     updateFilters: (filters: Partial<SearchData['filters']>) => {
       const currentFilters = get(adapter.state).data.filters || {};
-      adapter.actions.update({ filters: { ...currentFilters, ...filters } });
+      adapter.actions.update({ filters: { ...currentFilters, ...filters } }});
     },
     setPage: (page: number) => {
       const currentPagination = get(adapter.state).data.pagination;
       adapter.actions.update({
-        pagination: { ...currentPagination, page }
+        pagination: { ...currentPagination, page } }
       });
-    }
+    } }
   };
   return {
     ...adapter,
     actions: searchActions
   };
-}
+} }
 /**
  * Upload Component Adapter
  * Simplifies complex file upload component state
- */ export interface UploadData {, files: File[];, uploadProgress: Record<string, number>;
+ */ export interface UploadData { files: File[];, uploadProgress: Record<string, number>;
   uploadStatus: Record<string, 'pending' | 'uploading' | 'completed' | 'error'>;
   maxFileSize: number;
   allowedTypes: string[];
   multiple: boolean;
-}
+} }
 export function createUploadAdapter(
  , options: {
     maxFileSize?: number;
     allowedTypes?: string[];
     multiple?: boolean;
-  } = {}
+  } }= {} }
 ): ComponentAdapter<UploadData> {
   const adapter = createComponentAdapter<UploadData>({
     files: [],
@@ -230,13 +229,13 @@ export function createUploadAdapter(
     updateProgress: (fileName: string, progress: number) => {
       const currentProgress = get(adapter.state).data.uploadProgress || {};
       adapter.actions.update({
-        uploadProgress: { ...currentProgress, [fileName]: progress }
+        uploadProgress: { ...currentProgress, [fileName]: progress } }
       });
     },
     updateStatus: (fileName: string, status: UploadData['uploadStatus'][string]) => {
       const currentStatus = get(adapter.state).data.uploadStatus || {};
       adapter.actions.update({
-        uploadStatus: { ...currentStatus, [fileName]: status }
+        uploadStatus: { ...currentStatus, [fileName]: status } }
       });
     },
     removeFile: (fileName: string) => {
@@ -252,13 +251,13 @@ export function createUploadAdapter(
         uploadProgress: updatedProgress,
         uploadStatus: updatedStatus
       });
-    }
+    } }
   };
   return {
     ...adapter,
     actions: uploadActions
   };
-}
+} }
 /**
  * Form Component Adapter
  * Simplifies complex form component state
@@ -271,19 +270,19 @@ export interface FormData<TFormValues, extends, Record<string, unknown>> {
   touched: Record<keyof, TFormValues, boolean>; // Type touched with keys from TFormValues
   isSubmitting: boolean;
  , isValid: boolean;
-}
+} }
 export function createFormAdapter<TFormValues, extends, Record<string, unknown>>( // Use Record<string, unknown>
   initialValues: TFormValues, // Type initialValues with TFormValues
-  validationRules: { [K in keyof TFormValues]?: (value: TFormValues[K]) => string | null } = {} // Type validationRules
+  validationRules: { [K in keyof TFormValues]?: (value: TFormValues[K]) => string | null } }= {} }// Type validationRules
 ): ComponentAdapter<FormData<TFormValues>> {
   // Pass TFormValues to FormData
   const adapter = createComponentAdapter<FormData<TFormValues>>({
     // Pass TFormValues to FormData
     values: initialValues,
-    errors: {} as Partial<Record<keyof, TFormValues, string>>, // <- explicit typing to satisfy, conditional, types
+    errors: {} }as Partial<Record<keyof, TFormValues, string>>, // <- explicit typing to satisfy, conditional, types
     touched: Object.keys(initialValues).reduce(
       (acc, key) => ({ ...acc, [key]: false }),
-      {} as Record<keyof, TFormValues, boolean>
+      {} }as Record<keyof, TFormValues, boolean>
     ), // Initialize touched based on initialValues keys
     isSubmitting: false,
     isValid: true
@@ -302,17 +301,17 @@ export function createFormAdapter<TFormValues, extends, Record<string, unknown>>
         const error = validationRules[field]!(value); // Assert non-null as we checked for existence
         if (error) {
           errors[field] = error;
-        } else {
+        } }else {
           delete errors[field];
-        }
-      }
+        } }
+      } }
       // Cast payload to DeepPartial<FormData<TFormValues>> to satisfy generic conditional typing
       adapter.actions.update({
         values: newValues,
         touched: newTouched,
         errors,
         isValid: Object.keys(errors).length === 0
-      } as DeepPartial<FormData<TFormValues>>);
+      } }as DeepPartial<FormData<TFormValues>>);
     },
     setFieldError: (field: keyof TFormValues, error: string) => {
       // Type field
@@ -322,23 +321,23 @@ export function createFormAdapter<TFormValues, extends, Record<string, unknown>>
       adapter.actions.update({
         errors: newErrors,
         isValid: Object.keys(newErrors).length === 0
-      } as DeepPartial<FormData<TFormValues>>);
+      } }as DeepPartial<FormData<TFormValues>>);
     },
     clearErrors: () => {
       adapter.actions.update({
-        errors: {} as Partial<Record<keyof, TFormValues, string>>,
+        errors: {} }as Partial<Record<keyof, TFormValues, string>>,
         isValid: true
-      } as DeepPartial<FormData<TFormValues>>);
+      } }as DeepPartial<FormData<TFormValues>>);
     },
     setSubmitting: (isSubmitting: boolean) => {
-      adapter.actions.update({ isSubmitting } as DeepPartial<FormData<TFormValues>>);
-    }
+      adapter.actions.update({ isSubmitting } }as DeepPartial<FormData<TFormValues>>);
+    } }
   };
   return {
     ...adapter,
     actions: formActions
   };
-}
+} }
 /**
  * Component Adapter Registry
  * Central registry for managing component adapters
@@ -346,20 +345,20 @@ export function createFormAdapter<TFormValues, extends, Record<string, unknown>>
   private adapters = new Map<string, ComponentAdapter<unknown>>(); // Use ComponentAdapter<unknown>
   register<T>(id: string, adapter: ComponentAdapter<T>): void {
     this.adapters.set(id, adapter as ComponentAdapter<unknown>); // Cast to: unknown for storage
-  }
+  } }
   get<T>(id: string): ComponentAdapter<T> | undefined {
     return this.adapters.get(id) as ComponentAdapter<T>;
-  }
+  } }
   unregister(id: string): void {
     this.adapters.delete(id);
-  }
+  } }
   clear(): void {
     this.adapters.clear();
-  }
+  } }
   list(): string[] {
     return Array.from(this.adapters.keys());
-  }
-}
+  } }
+} }
 export const componentRegistry = new ComponentAdapterRegistry();
 /**
  * Utility functions for Svelte, 5 component migration
@@ -371,8 +370,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
   // Convert complex state to simple props
   stateToProps: (state: ComponentState<unknown>): UIProps => {
     // Pass: unknown to ComponentState
-    return {
-     , loading: state.loading,
+    return { loading: state.loading,
       disabled: state.loading,
       error: !!state.error,
       'data-error': state.error,
@@ -381,13 +379,14 @@ export const componentRegistry = new ComponentAdapterRegistry();
     };
   },
   // Event handler factory for simplified components
-  createHandler: <T, extends (...args: any[]) => void>( // Use: unknown[];, fn: T,
-    options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
+  createHandler: <T, extends (...args: any[]) => void>( // Use: unknown[]; fn: T,
+    options: { preventDefault?: boolean; stopPropagation?: boolean } }= {} }
   ) => {
     return (event: Event, ...args: Parameters<T>) => {
       if (options.preventDefault) event.preventDefault();
       if (options.stopPropagation) event.stopPropagation();
       fn(...args);
     };
-  }
+  } }
 };
+

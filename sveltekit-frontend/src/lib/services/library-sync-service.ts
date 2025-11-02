@@ -30,5 +30,6 @@ export const librarySyncService = {
   },
   async syncAllLibraries() {
     return { success: true, synced: 0 };
-  }
+  } }
 };
+

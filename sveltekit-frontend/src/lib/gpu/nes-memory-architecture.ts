@@ -1,4 +1,4 @@
-import { globalGPUManager } from './global-gpu-manager';
+import { globalGPUManager } }from './global-gpu-manager';
 /**
  * MemorySlot interface represents a slot in memory with an id, embedding, timestamp,
  * usage count, and optional metadata.
@@ -7,7 +7,7 @@ export interface MemorySlot { id: string;, embedding: Float32Array;
   timestamp: number;
  , usageCount: number;
   metadata?: Record<string, unknown>;
-}
+} }
 /**
  * NESMemoryRegion interface represents a region of NES memory with a name, size,
  * buffer, and view.
@@ -15,7 +15,7 @@ export interface MemorySlot { id: string;, embedding: Float32Array;
 export interface NESMemoryRegion { name: string;, size: number;
   buffer: SharedArrayBuffer | ArrayBuffer;
  , view: Uint8Array;
-}
+} }
 /**
  * NESMemoryArchitecture — single clean implementation combining
  * slot-based memory and named memory regions (CHR-ROM, VRAM, OAM, PALETTE).
@@ -34,7 +34,7 @@ export class NESMemoryArchitecture {
     this.defineRegion('VRAM', 16 * 1024);
     this.defineRegion('OAM', 256);
     this.defineRegion('PALETTE', 32);
-  }
+  } }
   // --- Slot API -----------------------------------------------------------
   /**
    * Insert a new slot into memory.
@@ -44,21 +44,21 @@ export class NESMemoryArchitecture {
     if (slot.embedding.length !== this.dim) throw new Error('Embedding dimension mismatch');
     if (this.slots.length >= this.capacity) this.evictSlots();
     this.slots.push({ ...slot, timestamp: Date.now(), usageCount: 0 });
-  }
+  } }
   /**
    * Batch insert multiple slots into memory.
    * @param slots - The slots to insert.
    */
   public batchInsert(slots: Array<Omit<MemorySlot, 'timestamp' | 'usageCount'>>) {
     for (const s of slots) this.insertSlot(s);
-  }
+  } }
   /**
    * Get all slots in memory.
    * @returns An array of all slots.
    */
   public getAllSlots() {
     return this.slots.slice();
-  }
+  } }
   /**
    * Evict slots from memory using a least-recently-used (LRU) strategy.
    * @returns The evicted slots.
@@ -67,7 +67,7 @@ export class NESMemoryArchitecture {
     this.slots.sort((a, b) => (a.usageCount - b.usageCount) || (a.timestamp - b.timestamp));
     const removeCount = Math.max(1, Math.floor(this.capacity * 0.05));
     return this.slots.splice(0, removeCount);
-  }
+  } }
   // --- Region API ---------------------------------------------------------
   /**
    * Create a buffer for a memory region. Falls back to ArrayBuffer if SharedArrayBuffer is not available.
@@ -80,9 +80,9 @@ export class NESMemoryArchitecture {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return new SharedArrayBuffer(size);
-    }
+    } }
     return new ArrayBuffer(size);
-  }
+  } }
   /**
    * Define a new memory region.
    * @param name - The name of the region.
@@ -92,7 +92,7 @@ export class NESMemoryArchitecture {
     const buffer = this.createBuffer(size);
     const view = new Uint8Array(buffer);
     this.regions.set(name, { name, size, buffer, view });
-  }
+  } }
   /**
    * Write data to a memory region.
    * @param name - The name of the region.
@@ -101,9 +101,9 @@ export class NESMemoryArchitecture {
    */
   public writeRegion(name: string, offset: number, data: Uint8Array) {
     const r = this.regions.get(name);
-    if (!r) throw new Error(`Region ${name} not found`);
+    if (!r) throw new Error(`Region ${name} }not found`);
     r.view.set(data, offset);
-  }
+  } }
   /**
    * Read data from a memory region.
    * @param name - The name of the region.
@@ -113,9 +113,9 @@ export class NESMemoryArchitecture {
    */
   public readRegion(name: string, offset: number, length: number): Uint8Array {
     const r = this.regions.get(name);
-    if (!r) throw new Error(`Region ${name} not found`);
+    if (!r) throw new Error(`Region ${name} }not found`);
     return r.view.slice(offset, offset + length);
-  }
+  } }
   /**
    * Get statistics about memory regions.
    * @returns An: object mapping region names to their sizes.
@@ -124,7 +124,7 @@ export class NESMemoryArchitecture {
     const stats: Record<string, number> = {};
     this.regions.forEach((v, k) => (stats[k] = v.size));
     return stats;
-  }
+  } }
   // --- Utility ------------------------------------------------------------
   /**
    * Clear all slots and reset memory regions to zero.
@@ -132,7 +132,7 @@ export class NESMemoryArchitecture {
   public clear() {
     this.slots.length = 0;
     this.regions.forEach(r => r.view.fill(0));
-  }
+  } }
   /**
    * GPU-assisted helper (best-effort): quantize CHR-ROM via globalGPUManager
    * @param width - The width for quantization.
@@ -146,17 +146,18 @@ export class NESMemoryArchitecture {
       const floatArray = new Float32Array(chr.buffer as ArrayBuffer);
       if (globalGPUManager && typeof globalGPUManager.quantizeToNESPalette === 'function') {
         await globalGPUManager.quantizeToNESPalette(floatArray, width, height);
-      } else {
+      } }else {
         // graceful no-op if GPU manager is unavailable
         // eslint-disable-next-line no-console
         console.warn('globalGPUManager.quantizeToNESPalette not available; skipping quantize');
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       // eslint-disable-next-line no-console
       console.warn('gpuQuantizeCHR failed', err);
-    }
-  }
-}
+    } }
+  } }
+} }
 // single default instance for quick usage
 export const nesMemory = new NESMemoryArchitecture();
 export default NESMemoryArchitecture;
+

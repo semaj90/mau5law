@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Dynamic Route Discovery System
  * Automatically discovers all SvelteKit routes in the application
@@ -8,7 +8,7 @@ export interface RouteInfo { path: string;, name: string;
  , category: string;
   icon?: string;
   description?: string;
-}
+} }
 
 /**
  * Discover all routes programmatically
@@ -16,7 +16,7 @@ export interface RouteInfo { path: string;, name: string;
 export function discoverRoutes(): RouteInfo[] {
   const routes: RouteInfo[] = [
     // Core routes
-    {, path: '/', name: 'Home', category: 'core', icon: '🏠', description: 'Dashboard and overview' },
+    { path: '/', name: 'Home', category: 'core', icon: '🏠', description: 'Dashboard and overview' },
     { path: '/cases', name: 'Cases', category: 'core', icon: '📋', description: 'Case management' },
     { path: '/evidence', name: 'Evidence', category: 'core', icon: '🔍', description: 'Evidence board' },
 
@@ -38,19 +38,20 @@ export function discoverRoutes(): RouteInfo[] {
 
     // YoRHa routes
     { path: '/yorha', name: 'YoRHa Terminal', category: 'yorha', icon: '⚡' },
-    { path: '/yorha/dashboard', name: 'YoRHa Dashboard', category: 'yorha', icon: '📊' }
+    { path: '/yorha/dashboard', name: 'YoRHa Dashboard', category: 'yorha', icon: '📊' } }
   ];
 
   return routes;
-}
+} }
 
 export function getRoutesByCategory(category: string): RouteInfo[] {
   return discoverRoutes().filter(route => route.category === category);
-}
+} }
 
 export function searchRoutes(query: string): RouteInfo[] {
   const lowercaseQuery = query.toLowerCase();
   return discoverRoutes().filter(
     route => route.name.toLowerCase().includes(lowercaseQuery) || route.path.toLowerCase().includes(lowercaseQuery)
   );
-}
+} }
+

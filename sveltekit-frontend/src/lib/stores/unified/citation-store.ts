@@ -8,14 +8,14 @@
  * - citation-precedent.ts
  *
  *, Usage:
- *   import { citationStore, searchCitations } from '$lib/stores/unified';
+ *   import { citationStore, searchCitations } }from '$lib/stores/unified';
  *
  *   await citationStore.searchCitations('statute, 42 USC');
  *   const similar = await citationStore.findSimilarCitations(citationId);
  *   $: citations = $citationStore.citations;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -37,12 +37,12 @@ export interface Citation { id: string;, title: string;
   tags?: string[];
   createdAt: number;
   updatedAt: number;
-}
+} }
 
-export interface CitationCluster {, id: string;, citations: Citation[];
+export interface CitationCluster { id: string;, citations: Citation[];
   theme: string;
   relevance: number;
-}
+} }
 
 /**
  * Citation Store State
@@ -75,10 +75,9 @@ interface CitationStoreState {
   lastUpdated: number;
   isLoading: boolean;
   error: string | null;
-}
+} }
 
-const initialState: CitationStoreState = {
- , citations: [],
+const initialState: CitationStoreState = { citations: [],
   citationsByType: new Map(),
   citationsByJurisdiction: new Map(),
   searchQuery: '',
@@ -100,7 +99,7 @@ const initialState: CitationStoreState = {
  * Create Citation Store
  */
 function createCitationStore() {
-  const { subscribe, update } = writable<CitationStoreState>(initialState);
+  const { subscribe, update } }= writable<CitationStoreState>(initialState);
 
   return {
     subscribe,
@@ -129,15 +128,15 @@ function createCitationStore() {
             citationsByType: this._groupByType(citations),
             citationsByJurisdiction: this._groupByJurisdiction(citations)
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load citations');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load citations';
         update(s => ({ ...s, error: errorMsg }));
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     // ========== SEARCH ==========
@@ -163,13 +162,13 @@ function createCitationStore() {
             filteredCitations: results,
             isLoading: false
           }));
-        } else {
+        } }else {
           throw new Error('Search failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Search failed';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -181,7 +180,7 @@ function createCitationStore() {
         const response = await fetch(`/api/citations/${citationId}/similar`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({, threshold: threshold || 0.7 }),
+          body: JSON.stringify({ threshold: threshold || 0.7 }),
           credentials: `include` });'`'`
 
         if (response.ok) {
@@ -195,14 +194,14 @@ function createCitationStore() {
           }));
 
           return similar;
-        } else {
+        } }else {
           throw new Error('Similarity search failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Similarity search failed';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
         return [];
-      }
+      } }
     },
 
     // ========== FILTERING ==========
@@ -272,7 +271,7 @@ function createCitationStore() {
       update(s => ({
         ...s,
         citations: s.citations.map(c =>
-          c.id === id ? { ...c, ...updates, updatedAt: Date.now() } : c
+          c.id === id ? { ...c, ...updates, updatedAt: Date.now() } }: c
         )
       }));
     },
@@ -306,7 +305,7 @@ function createCitationStore() {
         const response = await fetch('/api/citations/cluster', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({, citations: this._getCurrentCitations() }),
+          body: JSON.stringify({ citations: this._getCurrentCitations() }),
           credentials: `include` });'`'`
 
         if (response.ok) {
@@ -319,11 +318,11 @@ function createCitationStore() {
             isClusteringEnabled: true,
             isLoading: false
           }));
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Clustering failed:', error);
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     // ========== SELECTION ==========
@@ -380,7 +379,7 @@ function createCitationStore() {
         const citation = s.citations.find(c => c.id === citationId);
         if (citation?.tags) {
           principles = citation.tags.filter(t => t.startsWith('principle:'));
-        }
+        } }
       })();
       return principles;
     },
@@ -411,9 +410,9 @@ function createCitationStore() {
         current = s.citations;
       })();
       return current;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -448,16 +447,17 @@ export const similarCitations = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { citations  } from '$lib/stores/unified'
- *   import { legalCitations, searchCitations } from '$lib/stores/legal-citations'
+ *   import { citations  } }from '$lib/stores/unified'
+ *   import { legalCitations, searchCitations } }from '$lib/stores/legal-citations'
  *
  * New imports:
- *   import { citationStore, citations, filteredCitations } from '$lib/stores/unified'
+ *   import { citationStore, citations, filteredCitations } }from '$lib/stores/unified'
  *
  * Usage patterns:
- *  ;, Old: $citations, $legalCitations
+ *  ; Old: $citations, $legalCitations
  *   New: $citations or $filteredCitations from unified
  *
  *  , Old: searchCitations(query)
  *   New: citationStore.searchCitations(query)
  */
+

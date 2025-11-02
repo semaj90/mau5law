@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // Simplified Vector Schema - Production Ready
-import { jsonb, pgTable, real, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, real, text, timestamp, uuid, varchar } }from 'drizzle-orm/pg-core';
 // Chat embeddings table for AI conversations
 export const chatEmbeddings = pgTable('chat_embeddings', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -99,11 +99,11 @@ export interface EmbeddingOptions {
   caseId?: string;
   userId?: string;
   metadata?: { [key: string]: any };
-}
-export interface VectorSearchResult {, id: string;, content: string;
+} }
+export interface VectorSearchResult { id: string;, content: string;
  , similarity: number;
   metadata?: { [key: string]: any };
-}
+} }
 // Aliases for backward compatibility
 export const searchQueries = semanticSearchCache;
 export const userEmbeddings_simple = userEmbeddings;
@@ -112,3 +112,4 @@ export const evidenceEmbeddings_simple = evidenceVectors;
 export const documentEmbeddings_simple = documentEmbeddings;
 export const vectorSimilarity_simple = vectorSimilarity;
 export const semanticSearchCache_simple = semanticSearchCache;
+

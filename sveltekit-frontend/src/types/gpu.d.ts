@@ -6,8 +6,8 @@
 declare global {
   interface Navigator {
     gpu?: GPU;
-  }
-}
+  } }
+} }
 // CUDA Service Types
 export interface CUDADevice { id: number;, name: string;
   computeCapability: string;
@@ -15,11 +15,11 @@ export interface CUDADevice { id: number;, name: string;
   memoryFree: number;
   temperature?: number;
   utilization?: number;
-}
+} }
 export interface CUDAServiceStatus { available: boolean;, devices: CUDADevice[];
   driverVersion?: string;
   runtimeVersion?: string;
-}
+} }
 // WebGPU SOM Cache Types
 export interface WebGPUSOMCache { maxNodes: number;, dimensions: number;
   learningRate: number;
@@ -30,7 +30,7 @@ export interface WebGPUSOMCache { maxNodes: number;, dimensions: number;
   updateWithWeight(id: string, vector: Float32Array, weight: number): void;
   getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
   storeVector(id: string, vector: Float32Array): void;
-}
+} }
 // WebGPU Topology Accelerator
 export interface WebGPUTopologyAccelerator {
   device?: GPUDevice;
@@ -39,7 +39,7 @@ export interface WebGPUTopologyAccelerator {
   initialize(): Promise<boolean>;
   processVectors(vectors: Float32Array[]): Promise<Float32Array[]>;
   cleanup(): void;
-}
+} }
 // Local LLM Connector
 export interface LocalLLMConnector {
   isConnected: boolean;
@@ -47,22 +47,22 @@ export interface LocalLLMConnector {
   connect(endpoint: string): Promise<boolean>;
   generate(prompt: string, options?: Record<string, unknown>): Promise<string>;
   disconnect(): void;
-}
+} }
 // Hidden Markov Model for AssemblyScript compatibility
 export class HiddenMarkaraiModel {
-  constructor(config: {, stateCount: number;, observationCount: number;
+  constructor(config: { stateCount: number;, observationCount: number;
    , transitionSmoothness: number;
    , emissionSmoothness: number;
   });
   train(observations: number[][]): void;
   predict(sequence: number[]): number[];
   getStateDistribution(): Float32Array;
-}
+} }
 // Tensor Acceleration Types
 export interface TensorAccelerator {
   acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
   batchProcess(vectors: Float32Array[]): Promise<Float32Array[]>;
-}
+} }
 // Export namespace for compatibility
 export declare const tensorAccelerator: TensorAccelerator;
 export declare function acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
@@ -71,14 +71,14 @@ export interface WASMMemory {
   buffer: ArrayBuffer;
   size(): number;
   grow(delta: number): number;
-}
+} }
 // AssemblyScript Math Functions
 export interface WASMMath {
   sqrt(x: number): number;
   abs(x: number): number;
   max(a: number, b: number): number;
   min(a: number, b: number): number;
-}
+} }
 declare global {
   // AssemblyScript globals when compiled to WASM
   const memory: WASMMemory;
@@ -92,5 +92,6 @@ declare global {
   type f32 = number;
   type i64 = bigint;
   type f64 = number;
-}
+} }
 export {};
+

@@ -2,25 +2,25 @@
  * NES-Style GPU Bridge - Integrates NES caching architecture with GPU acceleration
  * Provides 8-bit efficiency optimizations for modern GPU computing
  */
-import type { CanvasState } from '$lib/types';
-import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker';
-import { createActor } from 'xstate';
-import { systemMonitorMachine } from '$lib/machines/system-monitor';
+import type { CanvasState } }from '$lib/types';
+import type { MultiDimArray, GPUProcessingStats } }from '$lib/workers/gpu-tensor-worker';
+import { createActor } }from 'xstate';
+import { systemMonitorMachine } }from '$lib/machines/system-monitor';
 
 // NES-style memory hierarchy mapping to modern GPU
 export interface NESGPUMemoryHierarchy { prgRom: Float32Array;      // Global Memory (VRAM), chrRom: Uint8ClampedArray; // L2 Cache (pattern tables)
   ram: Float32Array;         // Shared/working memory
   ppu: Int32Array;           // Registers / small control state
-}
+} }
 
 // Bit depth profiles for browser optimization
-export interface BitDepthProfile {, standard: number;, modern: number;
+export interface BitDepthProfile { standard: number;, modern: number;
   premium: number;
   target: number;
   compressed: number;
   minimal: number;
  , totalBits: number;
-}
+} }
 
 // Cache optimization table (NES-style)
 export interface CacheTable { alphabet: string;, numbers: string;
@@ -29,12 +29,12 @@ export interface CacheTable { alphabet: string;, numbers: string;
   commonPhrases: string[];
   nibbleValues: number[];
   byteValues: number[];
-}
+} }
 
-export interface CachedTensor {, tensor: MultiDimArray;, timestamp: number;
+export interface CachedTensor { tensor: MultiDimArray;, timestamp: number;
   hitCount: number;
  , memoryLevel: keyof NESGPUMemoryHierarchy;
-}
+} }
 
 // Add a small, local worker message type for stronger typing where used
 interface GPUMessage {
@@ -42,10 +42,10 @@ interface GPUMessage {
   id?: string;
   data?: any;
   error?: string;
-}
+} }
 
 // Replace the BridgeStats definition so it matches actual fields used across the class
-export interface BridgeStats {, totalConversions: number;, cacheHitRate: number;
+export interface BridgeStats { totalConversions: number;, cacheHitRate: number;
   averageCompressionRatio: number;
   bitDepthOptimizations: number;
   gpuAccelerations: number;
@@ -54,7 +54,7 @@ export interface BridgeStats {, totalConversions: number;, cacheHitRate: number
   batchProcessed: number;
   sharedBufferTransfers: number;
   avgConversionTime: number;
-}
+} }
 
 export class NESStyleGPUBridge {
   private gpuWorker: Worker | null = null;
@@ -88,8 +88,7 @@ export class NESStyleGPUBridge {
       sharedBufferTransfers: 0,
       avgConversionTime: 0
     };
-    this.memoryHierarchy = {
-     , prgRom: new Float32Array(32768),
+    this.memoryHierarchy = { prgRom: new Float32Array(32768),
       chrRom: new Uint8ClampedArray(8192),
       ram: new Float32Array(2048),
       ppu: new Int32Array(64)
@@ -106,11 +105,11 @@ export class NESStyleGPUBridge {
             const fallbackMode = !!snapshot.context?.fallbackMode;
             if (fallbackMode !== this.useFallback) {
               this.useFallback = fallbackMode;
-              console.log(`🧠 GPUBridge switched to ${fallbackMode ? 'CPU fallback' : `GPU active` } mode`);
-            }
-          } catch (e) {
+              console.log(`🧠 GPUBridge switched to ${fallbackMode ? 'CPU fallback' : `GPU active` } }mode`);
+            } }
+          } }catch (e) {
             if (this.verbose) console.warn('systemMonitor subscription error', e);
-          }
+          } }
         });
 
         // track user activity to keep machine active
@@ -124,25 +123,25 @@ export class NESStyleGPUBridge {
             await fetch('/ping', { method: 'HEAD', cache: `no-store` });'`'`
             const latency = performance.now() - start;
             this.systemMonitor?.send({ type: 'NETWORK_PING', latency });
-          } catch {
+          } }catch {
             this.systemMonitor?.send({ type: `NETWORK_TIMEOUT` });
-          }
+          } }
         }, 10000);
-      } catch (e) {
+      } }catch (e) {
         if (this.verbose) console.warn('Failed to start system monitor actor', e);
-      }
-    }
+      } }
+    } }
 
     // Do not eagerly initialize worker/adapter in constructor (SSR-safe).
     // GPU / WebGPU will be initialized lazily when first needed.
-  }
+  } }
 
   // SSR-safe current time helper
   private now(): number {
     return (typeof performance !== 'undefined' && typeof performance.now === 'function')
       ? performance.now()
       : Date.now();
-  }
+  } }
 
   /** Prepare SharedArrayBuffer for zero-copy tensor transfer (SSR-safe) */
   private initSharedBuffer(): void {
@@ -151,22 +150,22 @@ export class NESStyleGPUBridge {
         this.sharedBuffer = null;
         if (this.verbose) console.warn('SharedArrayBuffer not available in this environment');
         return;
-      }
+      } }
       const size = 1024 * 1024 * 8; // 8 MB
       this.sharedBuffer = new SharedArrayBuffer(size);
       if (this.verbose) console.log('🧩 Shared buffer initialized, 8 MB');
-    } catch (e) {
+    } }catch (e) {
       console.warn('SharedArrayBuffer initialization failed:', e);
       this.sharedBuffer = null;
-    }
-  }
+    } }
+  } }
 
   /** Lazy, SSR-safe GPU worker initializer */
   private async ensureGPUWorker(): Promise<void> {
     if (this.gpuWorker) return;
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       throw new Error('Worker not supported in this environment');
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       try {
@@ -181,13 +180,13 @@ export class NESStyleGPUBridge {
             if (this.verbose) console.log('🎮 GPU worker ready (lazy init)');
             resolve();
             return;
-          }
+          } }
           if (msg?.type === 'ERROR') {
             worker.removeEventListener('message', onInitMsg);
             worker.terminate();
             reject(new Error(msg.error ?? 'GPU worker initialization error'));
             return;
-          }
+          } }
           // ignore other messages during init
         };
 
@@ -196,7 +195,7 @@ export class NESStyleGPUBridge {
         // Protect against worker that never responds
         const initTimeout = setTimeout(() => {
           worker.removeEventListener('message', onInitMsg);
-          try { worker.terminate(); } catch {}
+          try { worker.terminate(); } }catch {} }
           reject(new Error('GPU worker initialization timeout'));
         }, 15000);
 
@@ -204,24 +203,24 @@ export class NESStyleGPUBridge {
         // Request initialization; include flag whether shared buffer exists.
         try {
           worker.postMessage({ type: 'INITIALIZE', shared: !!this.sharedBuffer });
-        } catch (err) {
+        } }catch (err) {
           clearTimeout(initTimeout);
           worker.removeEventListener('message', onInitMsg);
           worker.terminate();
           reject(err instanceof Error ? err : new Error(String(err)));
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   /** Batch GPU processing with SharedArrayBuffer support */
   async processBatch(tensors: MultiDimArray[]): Promise<MultiDimArray[]> {
     // Respect fallback mode: reject to allow callers to fallback to CPU path
     if (this.useFallback) {
       return Promise.reject(new Error('GPU fallback mode enabled'));
-    }
+    } }
 
     // ensure worker is available (lazy init)
     await this.ensureGPUWorker();
@@ -239,9 +238,9 @@ export class NESStyleGPUBridge {
           this.stats.gpuAccelerations++;
           this.stats.batchProcessed++;
           resolve(msg.data);
-        } else {
+        } }else {
           reject(new Error(msg.error ?? 'GPU error'));
-        }
+        } }
       });
 
       // Send tensors; include sharedBuffer in message body (structured clone).
@@ -253,13 +252,13 @@ export class NESStyleGPUBridge {
           data: tensors,
           sharedBuffer: this.sharedBuffer ?? null
         });
-      } catch (err) {
+      } }catch (err) {
         clearTimeout(timeout);
         this.queue.delete(id);
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   /** Fallback to WebGPU compute shader for direct execution */
   async processWithWebGPU(tensor: MultiDimArray): Promise<Float32Array> {
@@ -278,7 +277,7 @@ export class NESStyleGPUBridge {
     // Placeholder compute pipeline (no shader for brevity)
     this.stats.gpuAccelerations++;
     return data;
-  }
+  } }
 
   // Main entry point: Convert canvas state to GPU-optimized tensor
   async canvasStateToTensor(state: CanvasState): Promise<MultiDimArray> {
@@ -289,8 +288,7 @@ export class NESStyleGPUBridge {
       const tensorShape = this.calculateOptimalShape(objects);
       const nesOptimizedData = await this.optimizeForNESStyle(objects, tensorShape);
       const quantizedData = this.applyBitDepthOptimization(nesOptimizedData);
-      const tensor: MultiDimArray = {
-       , shape: tensorShape,
+      const tensor: MultiDimArray = { shape: tensorShape,
         data: quantizedData,
         dimensions: tensorShape.length,
         layout: 'nes_optimized',
@@ -302,11 +300,11 @@ export class NESStyleGPUBridge {
       const conversionTime = this.now() - startTime;
       console.log(`🎮 Canvas→Tensor conversion: ${conversionTime.toFixed(2)}ms`);
       return tensor;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('🚨 Canvas state conversion failed:', error);
       throw new Error(`Canvas conversion failed: ${error?.message ?? String(error)}`);
-    }
-  }
+    } }
+  } }
 
   // Process canvas state with GPU acceleration and NES-style caching
   async processCanvasStateWithGPU(state: CanvasState): Promise<CanvasState> {
@@ -314,14 +312,14 @@ export class NESStyleGPUBridge {
     if (this.useFallback) {
       console.warn('⚙️ Network degraded or idle — CPU fallback engaged');
       return this.processFallbackWithNESOptimization(state);
-    }
+    } }
 
     const cacheKey = `canvas_${state.id}_processed`;
     const cached = this.checkNESCache(cacheKey);
     if (cached) {
       this.stats.nesStyleCacheHits++;
       return this.tensorToCanvasState(cached.tensor, state);
-    }
+    } }
 
     try {
       const tensor = await this.canvasStateToTensor(state);
@@ -329,11 +327,11 @@ export class NESStyleGPUBridge {
       const processedTensor = await this.processWithGPUWorker(tensor);
       this.cacheInNESHierarchy(cacheKey, processedTensor);
       return this.tensorToCanvasState(processedTensor, state);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('🚨 GPU processing failed:', error);
       return this.processFallbackWithNESOptimization(state);
-    }
-  }
+    } }
+  } }
 
   // Auto-encoder with NES-style bit depth optimization
   async optimizeCanvasState(state: CanvasState, targetBitDepth = 24): Promise<CanvasState> {
@@ -359,9 +357,9 @@ export class NESStyleGPUBridge {
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
         processingTime,
         memoryLevel
-      }
+      } }
     };
-  }
+  } }
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
@@ -369,26 +367,26 @@ export class NESStyleGPUBridge {
     if (dataSize <= 2048) return, 'ram';
     if (dataSize <= 8192) return, 'chrRom';
     return, 'prgRom';
-  }
+  } }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
     const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
-    } else if (hierarchy instanceof Uint8ClampedArray) {
+    } }else if (hierarchy instanceof Uint8ClampedArray) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i] * 255);
-      }
-    } else if (hierarchy instanceof Int32Array) {
+      } }
+    } }else if (hierarchy instanceof Int32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i]);
-      }
-    }
-    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } elements in ${level} (NES hierarchy)`);
-  }
+      } }
+    } }
+    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } }elements in ${level} }(NES hierarchy)`);
+  } }
 
   // Advanced bit-depth quantization (inspired by NES PPU)
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
@@ -400,19 +398,19 @@ export class NESStyleGPUBridge {
       let quantized: number;
       if (bitDepth <= 8) {
         quantized = Math.round(normalized * levels) / levels;
-      } else if (bitDepth <= 16) {
+      } }else if (bitDepth <= 16) {
         const ditherNoise = (Math.random() - 0.5) / levels;
         quantized = Math.round((normalized + ditherNoise) * levels) / levels;
-      } else {
+      } }else {
         quantized = Math.round(normalized * levels) / levels;
-      }
+      } }
       quantizedData[i] = quantized * 2 - 1;
-    }
+    } }
     return {
       ...tensor,
       data: quantizedData,
       layout: `nes_quantized_${bitDepth}bit` };
-  }
+  } }
 
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: any[]): number[] {
@@ -422,17 +420,17 @@ export class NESStyleGPUBridge {
     const timeDimension = 1;
     if ((objects?.length ?? 0) <= 10) {
       return [maxObjects, propertiesPerObject, embeddingDimension];
-    } else {
+    } }else {
       return [timeDimension, maxObjects, propertiesPerObject, embeddingDimension];
-    }
-  }
+    } }
+  } }
 
   // Convert objects to NES-optimized format (enhanced implementation — multi-time-step support)
   private async optimizeForNESStyle(objects: any[], shape: number[]): Promise<Float32Array> {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
-      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] } }
+      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
@@ -444,17 +442,17 @@ export class NESStyleGPUBridge {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
         frames = (objects as: any[][]).slice(0, dims.time);
-      } else {
+      } }else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
           frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       frames = [Array.isArray(objects) ? (objects as: any[]) : []];
-    }
+    } }
 
     // Ensure frames array has length dims.time
     while (frames.length < dims.time) frames.push([]);
@@ -493,7 +491,7 @@ export class NESStyleGPUBridge {
         const props: number[] = new Array(dims.props);
         for (let p = 0; p < dims.props; p++) {
           props[p] = p < propsBase.length ? (propsBase[p] ?? 0) : 0;
-        }
+        } }
 
         // Write into tensor: index = t*(N*P*E) + objIdx*(P*E) + p*E + e
         const frameOffset = t * (dims.objects * dims.props * dims.embed);
@@ -505,34 +503,34 @@ export class NESStyleGPUBridge {
             const idx = propBaseOffset + e;
             if (idx >= 0 && idx < totalElements) {
               optimized[idx] = this.applyNESEncoding(propValue, e);
-            }
-          }
-        }
-      }
-    }
+            } }
+          } }
+        } }
+      } }
+    } }
 
     return optimized;
-  }
+  } }
 
   // NES-style quantization helpers
   private quantizeCoordinate(coord: number): number {
     return Math.round((coord + 1000) / 2000 * 255) / 255 * 2 - 1;
-  }
+  } }
   private quantizeSize(size: number): number {
     return Math.round(Math.min(size, 512) / 512 * 255) / 255;
-  }
+  } }
   private quantizeScale(scale: number): number {
     return Math.round(Math.min(scale, 4) / 4 * 255) / 255;
-  }
+  } }
   private quantizeAngle(angle: number): number {
     return Math.round((((angle % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeOpacity(opacity: number): number {
     return Math.round(opacity * 255) / 255;
-  }
+  } }
   private quantizeSkew(skew: number): number {
     return Math.round((skew + 45) / 90 * 255) / 255;
-  }
+  } }
   private colorToNESPalette(color: string | undefined): number {
     if (!color) return 0;
     if (typeof color === 'string' && color.startsWith('#')) {
@@ -540,9 +538,9 @@ export class NESStyleGPUBridge {
       const num = parseInt(hex, 16);
       const nesColor = this.mapToNESPalette(num);
       return nesColor / 63;
-    }
+    } }
     return 0;
-  }
+  } }
   private mapToNESPalette(rgbValue: number): number {
     const r = (rgbValue >> 16) & 0xFF;
     const g = (rgbValue >> 8) & 0xFF;
@@ -551,33 +549,33 @@ export class NESStyleGPUBridge {
     const nesG = Math.round(g / 255 * 3);
     const nesB = Math.round(b / 255 * 3);
     return nesR * 16 + nesG * 4 + nesB;
-  }
+  } }
   private quantizeStrokeWidth(width: number): number {
     return Math.round(Math.min(width, 32) / 32 * 255) / 255;
-  }
+  } }
   private objectTypeToNumber(type: string | undefined): number {
     const types = ['rect', 'circle', 'triangle', 'text', 'image', 'path', 'group'];
     const index = types.indexOf(type || 'rect');
     return (index !== -1 ? index : 0) / (types.length - 1) * 2 - 1;
-  }
+  } }
   private quantizeZIndex(zIndex: number): number {
     return Math.round((zIndex + 100) / 200 * 255) / 255;
-  }
+  } }
   private quantizeRotation(rotation: number): number {
     return Math.round((((rotation % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeShadow(shadow: any): number {
     if (!shadow) return 0;
     const blur = Math.min(shadow.blur || 0, 50);
     return Math.round(blur / 50 * 255) / 255;
-  }
+  } }
   private applyNESEncoding(value: number, embedIndex: number): number {
     const quantized = Math.round((value + 1) * 127.5); // 0-255
     const nibbleLow = quantized & 0x0F;
     const nibbleHigh = (quantized & 0xF0) >> 4;
     const selectedNibble = embedIndex % 2 === 0 ? nibbleLow : nibbleHigh;
     return selectedNibble / 15.0 * 2 - 1;
-  }
+  } }
 
   // NES-style cache checking
   private checkNESCache(cacheKey: string): CachedTensor | null {
@@ -585,9 +583,9 @@ export class NESStyleGPUBridge {
     if (cached && (Date.now() - cached.timestamp) < 300000) {
       cached.hitCount++;
       return cached;
-    }
+    } }
     return: null;
-  }
+  } }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
     const cached: CachedTensor = {
@@ -601,15 +599,15 @@ export class NESStyleGPUBridge {
     if (this.tensorCache.size > 50) {
       const oldestKey = this.tensorCache.keys().next().value;
       if (oldestKey) this.tensorCache.delete(oldestKey);
-    }
-  }
+    } }
+  } }
 
   /** Lazy, SSR-safe GPU worker initializer (single consolidated implementation) */
   private async ensureGPUWorker(): Promise<void> {
     if (this.gpuWorker) return;
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       throw new Error('Worker not supported in this environment');
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       try {
@@ -624,13 +622,13 @@ export class NESStyleGPUBridge {
             if (this.verbose) console.log('🎮 GPU worker ready (lazy init)');
             resolve();
             return;
-          }
+          } }
           if (msg?.type === 'ERROR') {
             worker.removeEventListener('message', onInitMsg);
             worker.terminate();
             reject(new Error(msg.error ?? 'GPU worker initialization error'));
             return;
-          }
+          } }
           // ignore other messages during init
         };
 
@@ -639,7 +637,7 @@ export class NESStyleGPUBridge {
         // Protect against worker that never responds
         const initTimeout = setTimeout(() => {
           worker.removeEventListener('message', onInitMsg);
-          try { worker.terminate(); } catch {}
+          try { worker.terminate(); } }catch {} }
           reject(new Error('GPU worker initialization timeout'));
         }, 15000);
 
@@ -647,27 +645,27 @@ export class NESStyleGPUBridge {
         // Request initialization; include flag whether shared buffer exists.
         try {
           worker.postMessage({ type: 'INITIALIZE', shared: !!this.sharedBuffer });
-        } catch (err) {
+        } }catch (err) {
           clearTimeout(initTimeout);
           worker.removeEventListener('message', onInitMsg);
           worker.terminate();
           reject(err instanceof Error ? err : new Error(String(err)));
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   // Single, public toggle for fallback mode (consolidated)
   public setFallbackMode(enabled: boolean): void {
     this.useFallback = !!enabled;
     if (this.useFallback) {
       if (this.verbose) console.warn('NESStyleGPUBridge: entering fallback mode (GPU disabled)');
-    } else {
+    } }else {
       if (this.verbose) console.log('NESStyleGPUBridge: resuming GPU mode');
-    }
-  }
+    } }
+  } }
 
   // Process canvas state with GPU acceleration and NES-style caching
   async processCanvasStateWithGPU(state: CanvasState): Promise<CanvasState> {
@@ -675,14 +673,14 @@ export class NESStyleGPUBridge {
     if (this.useFallback) {
       console.warn('⚙️ Network degraded or idle — CPU fallback engaged');
       return this.processFallbackWithNESOptimization(state);
-    }
+    } }
 
     const cacheKey = `canvas_${state.id}_processed`;
     const cached = this.checkNESCache(cacheKey);
     if (cached) {
       this.stats.nesStyleCacheHits++;
       return this.tensorToCanvasState(cached.tensor, state);
-    }
+    } }
 
     try {
       const tensor = await this.canvasStateToTensor(state);
@@ -690,11 +688,11 @@ export class NESStyleGPUBridge {
       const processedTensor = await this.processWithGPUWorker(tensor);
       this.cacheInNESHierarchy(cacheKey, processedTensor);
       return this.tensorToCanvasState(processedTensor, state);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('🚨 GPU processing failed:', error);
       return this.processFallbackWithNESOptimization(state);
-    }
-  }
+    } }
+  } }
 
   // Auto-encoder with NES-style bit depth optimization
   async optimizeCanvasState(state: CanvasState, targetBitDepth = 24): Promise<CanvasState> {
@@ -720,9 +718,9 @@ export class NESStyleGPUBridge {
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
         processingTime,
         memoryLevel
-      }
+      } }
     };
-  }
+  } }
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
@@ -730,26 +728,26 @@ export class NESStyleGPUBridge {
     if (dataSize <= 2048) return, 'ram';
     if (dataSize <= 8192) return, 'chrRom';
     return, 'prgRom';
-  }
+  } }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
     const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
-    } else if (hierarchy instanceof Uint8ClampedArray) {
+    } }else if (hierarchy instanceof Uint8ClampedArray) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i] * 255);
-      }
-    } else if (hierarchy instanceof Int32Array) {
+      } }
+    } }else if (hierarchy instanceof Int32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i]);
-      }
-    }
-    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } elements in ${level} (NES hierarchy)`);
-  }
+      } }
+    } }
+    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } }elements in ${level} }(NES hierarchy)`);
+  } }
 
   // Advanced bit-depth quantization (inspired by NES PPU)
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
@@ -761,19 +759,19 @@ export class NESStyleGPUBridge {
       let quantized: number;
       if (bitDepth <= 8) {
         quantized = Math.round(normalized * levels) / levels;
-      } else if (bitDepth <= 16) {
+      } }else if (bitDepth <= 16) {
         const ditherNoise = (Math.random() - 0.5) / levels;
         quantized = Math.round((normalized + ditherNoise) * levels) / levels;
-      } else {
+      } }else {
         quantized = Math.round(normalized * levels) / levels;
-      }
+      } }
       quantizedData[i] = quantized * 2 - 1;
-    }
+    } }
     return {
       ...tensor,
       data: quantizedData,
       layout: `nes_quantized_${bitDepth}bit` };
-  }
+  } }
 
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: any[]): number[] {
@@ -783,17 +781,17 @@ export class NESStyleGPUBridge {
     const timeDimension = 1;
     if ((objects?.length ?? 0) <= 10) {
       return [maxObjects, propertiesPerObject, embeddingDimension];
-    } else {
+    } }else {
       return [timeDimension, maxObjects, propertiesPerObject, embeddingDimension];
-    }
-  }
+    } }
+  } }
 
   // Convert objects to NES-optimized format (enhanced implementation — multi-time-step support)
   private async optimizeForNESStyle(objects: any[], shape: number[]): Promise<Float32Array> {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
-      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] } }
+      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
@@ -805,17 +803,17 @@ export class NESStyleGPUBridge {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
         frames = (objects as: any[][]).slice(0, dims.time);
-      } else {
+      } }else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
           frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       frames = [Array.isArray(objects) ? (objects as: any[]) : []];
-    }
+    } }
 
     // Ensure frames array has length dims.time
     while (frames.length < dims.time) frames.push([]);
@@ -854,7 +852,7 @@ export class NESStyleGPUBridge {
         const props: number[] = new Array(dims.props);
         for (let p = 0; p < dims.props; p++) {
           props[p] = p < propsBase.length ? (propsBase[p] ?? 0) : 0;
-        }
+        } }
 
         // Write into tensor: index = t*(N*P*E) + objIdx*(P*E) + p*E + e
         const frameOffset = t * (dims.objects * dims.props * dims.embed);
@@ -866,34 +864,34 @@ export class NESStyleGPUBridge {
             const idx = propBaseOffset + e;
             if (idx >= 0 && idx < totalElements) {
               optimized[idx] = this.applyNESEncoding(propValue, e);
-            }
-          }
-        }
-      }
-    }
+            } }
+          } }
+        } }
+      } }
+    } }
 
     return optimized;
-  }
+  } }
 
   // NES-style quantization helpers
   private quantizeCoordinate(coord: number): number {
     return Math.round((coord + 1000) / 2000 * 255) / 255 * 2 - 1;
-  }
+  } }
   private quantizeSize(size: number): number {
     return Math.round(Math.min(size, 512) / 512 * 255) / 255;
-  }
+  } }
   private quantizeScale(scale: number): number {
     return Math.round(Math.min(scale, 4) / 4 * 255) / 255;
-  }
+  } }
   private quantizeAngle(angle: number): number {
     return Math.round((((angle % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeOpacity(opacity: number): number {
     return Math.round(opacity * 255) / 255;
-  }
+  } }
   private quantizeSkew(skew: number): number {
     return Math.round((skew + 45) / 90 * 255) / 255;
-  }
+  } }
   private colorToNESPalette(color: string | undefined): number {
     if (!color) return 0;
     if (typeof color === 'string' && color.startsWith('#')) {
@@ -901,9 +899,9 @@ export class NESStyleGPUBridge {
       const num = parseInt(hex, 16);
       const nesColor = this.mapToNESPalette(num);
       return nesColor / 63;
-    }
+    } }
     return 0;
-  }
+  } }
   private mapToNESPalette(rgbValue: number): number {
     const r = (rgbValue >> 16) & 0xFF;
     const g = (rgbValue >> 8) & 0xFF;
@@ -912,33 +910,33 @@ export class NESStyleGPUBridge {
     const nesG = Math.round(g / 255 * 3);
     const nesB = Math.round(b / 255 * 3);
     return nesR * 16 + nesG * 4 + nesB;
-  }
+  } }
   private quantizeStrokeWidth(width: number): number {
     return Math.round(Math.min(width, 32) / 32 * 255) / 255;
-  }
+  } }
   private objectTypeToNumber(type: string | undefined): number {
     const types = ['rect', 'circle', 'triangle', 'text', 'image', 'path', 'group'];
     const index = types.indexOf(type || 'rect');
     return (index !== -1 ? index : 0) / (types.length - 1) * 2 - 1;
-  }
+  } }
   private quantizeZIndex(zIndex: number): number {
     return Math.round((zIndex + 100) / 200 * 255) / 255;
-  }
+  } }
   private quantizeRotation(rotation: number): number {
     return Math.round((((rotation % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeShadow(shadow: any): number {
     if (!shadow) return 0;
     const blur = Math.min(shadow.blur || 0, 50);
     return Math.round(blur / 50 * 255) / 255;
-  }
+  } }
   private applyNESEncoding(value: number, embedIndex: number): number {
     const quantized = Math.round((value + 1) * 127.5); // 0-255
     const nibbleLow = quantized & 0x0F;
     const nibbleHigh = (quantized & 0xF0) >> 4;
     const selectedNibble = embedIndex % 2 === 0 ? nibbleLow : nibbleHigh;
     return selectedNibble / 15.0 * 2 - 1;
-  }
+  } }
 
   // NES-style cache checking
   private checkNESCache(cacheKey: string): CachedTensor | null {
@@ -946,9 +944,9 @@ export class NESStyleGPUBridge {
     if (cached && (Date.now() - cached.timestamp) < 300000) {
       cached.hitCount++;
       return cached;
-    }
+    } }
     return: null;
-  }
+  } }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
     const cached: CachedTensor = {
@@ -962,15 +960,15 @@ export class NESStyleGPUBridge {
     if (this.tensorCache.size > 50) {
       const oldestKey = this.tensorCache.keys().next().value;
       if (oldestKey) this.tensorCache.delete(oldestKey);
-    }
-  }
+    } }
+  } }
 
   /** Lazy, SSR-safe GPU worker initializer (single consolidated implementation) */
   private async ensureGPUWorker(): Promise<void> {
     if (this.gpuWorker) return;
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       throw new Error('Worker not supported in this environment');
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       try {
@@ -985,13 +983,13 @@ export class NESStyleGPUBridge {
             if (this.verbose) console.log('🎮 GPU worker ready (lazy init)');
             resolve();
             return;
-          }
+          } }
           if (msg?.type === 'ERROR') {
             worker.removeEventListener('message', onInitMsg);
             worker.terminate();
             reject(new Error(msg.error ?? 'GPU worker initialization error'));
             return;
-          }
+          } }
           // ignore other messages during init
         };
 
@@ -1000,7 +998,7 @@ export class NESStyleGPUBridge {
         // Protect against worker that never responds
         const initTimeout = setTimeout(() => {
           worker.removeEventListener('message', onInitMsg);
-          try { worker.terminate(); } catch {}
+          try { worker.terminate(); } }catch {} }
           reject(new Error('GPU worker initialization timeout'));
         }, 15000);
 
@@ -1008,27 +1006,27 @@ export class NESStyleGPUBridge {
         // Request initialization; include flag whether shared buffer exists.
         try {
           worker.postMessage({ type: 'INITIALIZE', shared: !!this.sharedBuffer });
-        } catch (err) {
+        } }catch (err) {
           clearTimeout(initTimeout);
           worker.removeEventListener('message', onInitMsg);
           worker.terminate();
           reject(err instanceof Error ? err : new Error(String(err)));
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   // Single, public toggle for fallback mode (consolidated)
   public setFallbackMode(enabled: boolean): void {
     this.useFallback = !!enabled;
     if (this.useFallback) {
       if (this.verbose) console.warn('NESStyleGPUBridge: entering fallback mode (GPU disabled)');
-    } else {
+    } }else {
       if (this.verbose) console.log('NESStyleGPUBridge: resuming GPU mode');
-    }
-  }
+    } }
+  } }
 
   // Process canvas state with GPU acceleration and NES-style caching
   async processCanvasStateWithGPU(state: CanvasState): Promise<CanvasState> {
@@ -1036,14 +1034,14 @@ export class NESStyleGPUBridge {
     if (this.useFallback) {
       console.warn('⚙️ Network degraded or idle — CPU fallback engaged');
       return this.processFallbackWithNESOptimization(state);
-    }
+    } }
 
     const cacheKey = `canvas_${state.id}_processed`;
     const cached = this.checkNESCache(cacheKey);
     if (cached) {
       this.stats.nesStyleCacheHits++;
       return this.tensorToCanvasState(cached.tensor, state);
-    }
+    } }
 
     try {
       const tensor = await this.canvasStateToTensor(state);
@@ -1051,11 +1049,11 @@ export class NESStyleGPUBridge {
       const processedTensor = await this.processWithGPUWorker(tensor);
       this.cacheInNESHierarchy(cacheKey, processedTensor);
       return this.tensorToCanvasState(processedTensor, state);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('🚨 GPU processing failed:', error);
       return this.processFallbackWithNESOptimization(state);
-    }
-  }
+    } }
+  } }
 
   // Auto-encoder with NES-style bit depth optimization
   async optimizeCanvasState(state: CanvasState, targetBitDepth = 24): Promise<CanvasState> {
@@ -1081,9 +1079,9 @@ export class NESStyleGPUBridge {
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
         processingTime,
         memoryLevel
-      }
+      } }
     };
-  }
+  } }
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
@@ -1091,26 +1089,26 @@ export class NESStyleGPUBridge {
     if (dataSize <= 2048) return, 'ram';
     if (dataSize <= 8192) return, 'chrRom';
     return, 'prgRom';
-  }
+  } }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
     const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
-    } else if (hierarchy instanceof Uint8ClampedArray) {
+    } }else if (hierarchy instanceof Uint8ClampedArray) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i] * 255);
-      }
-    } else if (hierarchy instanceof Int32Array) {
+      } }
+    } }else if (hierarchy instanceof Int32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i]);
-      }
-    }
-    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } elements in ${level} (NES hierarchy)`);
-  }
+      } }
+    } }
+    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } }elements in ${level} }(NES hierarchy)`);
+  } }
 
   // Advanced bit-depth quantization (inspired by NES PPU)
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
@@ -1122,19 +1120,19 @@ export class NESStyleGPUBridge {
       let quantized: number;
       if (bitDepth <= 8) {
         quantized = Math.round(normalized * levels) / levels;
-      } else if (bitDepth <= 16) {
+      } }else if (bitDepth <= 16) {
         const ditherNoise = (Math.random() - 0.5) / levels;
         quantized = Math.round((normalized + ditherNoise) * levels) / levels;
-      } else {
+      } }else {
         quantized = Math.round(normalized * levels) / levels;
-      }
+      } }
       quantizedData[i] = quantized * 2 - 1;
-    }
+    } }
     return {
       ...tensor,
       data: quantizedData,
       layout: `nes_quantized_${bitDepth}bit` };
-  }
+  } }
 
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: any[]): number[] {
@@ -1144,17 +1142,17 @@ export class NESStyleGPUBridge {
     const timeDimension = 1;
     if ((objects?.length ?? 0) <= 10) {
       return [maxObjects, propertiesPerObject, embeddingDimension];
-    } else {
+    } }else {
       return [timeDimension, maxObjects, propertiesPerObject, embeddingDimension];
-    }
-  }
+    } }
+  } }
 
   // Convert objects to NES-optimized format (enhanced implementation — multi-time-step support)
   private async optimizeForNESStyle(objects: any[], shape: number[]): Promise<Float32Array> {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
-      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] } }
+      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
@@ -1166,17 +1164,17 @@ export class NESStyleGPUBridge {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
         frames = (objects as: any[][]).slice(0, dims.time);
-      } else {
+      } }else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
           frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       frames = [Array.isArray(objects) ? (objects as: any[]) : []];
-    }
+    } }
 
     // Ensure frames array has length dims.time
     while (frames.length < dims.time) frames.push([]);
@@ -1215,7 +1213,7 @@ export class NESStyleGPUBridge {
         const props: number[] = new Array(dims.props);
         for (let p = 0; p < dims.props; p++) {
           props[p] = p < propsBase.length ? (propsBase[p] ?? 0) : 0;
-        }
+        } }
 
         // Write into tensor: index = t*(N*P*E) + objIdx*(P*E) + p*E + e
         const frameOffset = t * (dims.objects * dims.props * dims.embed);
@@ -1227,34 +1225,34 @@ export class NESStyleGPUBridge {
             const idx = propBaseOffset + e;
             if (idx >= 0 && idx < totalElements) {
               optimized[idx] = this.applyNESEncoding(propValue, e);
-            }
-          }
-        }
-      }
-    }
+            } }
+          } }
+        } }
+      } }
+    } }
 
     return optimized;
-  }
+  } }
 
   // NES-style quantization helpers
   private quantizeCoordinate(coord: number): number {
     return Math.round((coord + 1000) / 2000 * 255) / 255 * 2 - 1;
-  }
+  } }
   private quantizeSize(size: number): number {
     return Math.round(Math.min(size, 512) / 512 * 255) / 255;
-  }
+  } }
   private quantizeScale(scale: number): number {
     return Math.round(Math.min(scale, 4) / 4 * 255) / 255;
-  }
+  } }
   private quantizeAngle(angle: number): number {
     return Math.round((((angle % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeOpacity(opacity: number): number {
     return Math.round(opacity * 255) / 255;
-  }
+  } }
   private quantizeSkew(skew: number): number {
     return Math.round((skew + 45) / 90 * 255) / 255;
-  }
+  } }
   private colorToNESPalette(color: string | undefined): number {
     if (!color) return 0;
     if (typeof color === 'string' && color.startsWith('#')) {
@@ -1262,9 +1260,9 @@ export class NESStyleGPUBridge {
       const num = parseInt(hex, 16);
       const nesColor = this.mapToNESPalette(num);
       return nesColor / 63;
-    }
+    } }
     return 0;
-  }
+  } }
   private mapToNESPalette(rgbValue: number): number {
     const r = (rgbValue >> 16) & 0xFF;
     const g = (rgbValue >> 8) & 0xFF;
@@ -1273,33 +1271,33 @@ export class NESStyleGPUBridge {
     const nesG = Math.round(g / 255 * 3);
     const nesB = Math.round(b / 255 * 3);
     return nesR * 16 + nesG * 4 + nesB;
-  }
+  } }
   private quantizeStrokeWidth(width: number): number {
     return Math.round(Math.min(width, 32) / 32 * 255) / 255;
-  }
+  } }
   private objectTypeToNumber(type: string | undefined): number {
     const types = ['rect', 'circle', 'triangle', 'text', 'image', 'path', 'group'];
     const index = types.indexOf(type || 'rect');
     return (index !== -1 ? index : 0) / (types.length - 1) * 2 - 1;
-  }
+  } }
   private quantizeZIndex(zIndex: number): number {
     return Math.round((zIndex + 100) / 200 * 255) / 255;
-  }
+  } }
   private quantizeRotation(rotation: number): number {
     return Math.round((((rotation % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeShadow(shadow: any): number {
     if (!shadow) return 0;
     const blur = Math.min(shadow.blur || 0, 50);
     return Math.round(blur / 50 * 255) / 255;
-  }
+  } }
   private applyNESEncoding(value: number, embedIndex: number): number {
     const quantized = Math.round((value + 1) * 127.5); // 0-255
     const nibbleLow = quantized & 0x0F;
     const nibbleHigh = (quantized & 0xF0) >> 4;
     const selectedNibble = embedIndex % 2 === 0 ? nibbleLow : nibbleHigh;
     return selectedNibble / 15.0 * 2 - 1;
-  }
+  } }
 
   // NES-style cache checking
   private checkNESCache(cacheKey: string): CachedTensor | null {
@@ -1307,9 +1305,9 @@ export class NESStyleGPUBridge {
     if (cached && (Date.now() - cached.timestamp) < 300000) {
       cached.hitCount++;
       return cached;
-    }
+    } }
     return: null;
-  }
+  } }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
     const cached: CachedTensor = {
@@ -1323,15 +1321,15 @@ export class NESStyleGPUBridge {
     if (this.tensorCache.size > 50) {
       const oldestKey = this.tensorCache.keys().next().value;
       if (oldestKey) this.tensorCache.delete(oldestKey);
-    }
-  }
+    } }
+  } }
 
   /** Lazy, SSR-safe GPU worker initializer (single consolidated implementation) */
   private async ensureGPUWorker(): Promise<void> {
     if (this.gpuWorker) return;
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       throw new Error('Worker not supported in this environment');
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       try {
@@ -1346,13 +1344,13 @@ export class NESStyleGPUBridge {
             if (this.verbose) console.log('🎮 GPU worker ready (lazy init)');
             resolve();
             return;
-          }
+          } }
           if (msg?.type === 'ERROR') {
             worker.removeEventListener('message', onInitMsg);
             worker.terminate();
             reject(new Error(msg.error ?? 'GPU worker initialization error'));
             return;
-          }
+          } }
           // ignore other messages during init
         };
 
@@ -1361,7 +1359,7 @@ export class NESStyleGPUBridge {
         // Protect against worker that never responds
         const initTimeout = setTimeout(() => {
           worker.removeEventListener('message', onInitMsg);
-          try { worker.terminate(); } catch {}
+          try { worker.terminate(); } }catch {} }
           reject(new Error('GPU worker initialization timeout'));
         }, 15000);
 
@@ -1369,27 +1367,27 @@ export class NESStyleGPUBridge {
         // Request initialization; include flag whether shared buffer exists.
         try {
           worker.postMessage({ type: 'INITIALIZE', shared: !!this.sharedBuffer });
-        } catch (err) {
+        } }catch (err) {
           clearTimeout(initTimeout);
           worker.removeEventListener('message', onInitMsg);
           worker.terminate();
           reject(err instanceof Error ? err : new Error(String(err)));
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   // Single, public toggle for fallback mode (consolidated)
   public setFallbackMode(enabled: boolean): void {
     this.useFallback = !!enabled;
     if (this.useFallback) {
       if (this.verbose) console.warn('NESStyleGPUBridge: entering fallback mode (GPU disabled)');
-    } else {
+    } }else {
       if (this.verbose) console.log('NESStyleGPUBridge: resuming GPU mode');
-    }
-  }
+    } }
+  } }
 
   // Process canvas state with GPU acceleration and NES-style caching
   async processCanvasStateWithGPU(state: CanvasState): Promise<CanvasState> {
@@ -1397,14 +1395,14 @@ export class NESStyleGPUBridge {
     if (this.useFallback) {
       console.warn('⚙️ Network degraded or idle — CPU fallback engaged');
       return this.processFallbackWithNESOptimization(state);
-    }
+    } }
 
     const cacheKey = `canvas_${state.id}_processed`;
     const cached = this.checkNESCache(cacheKey);
     if (cached) {
       this.stats.nesStyleCacheHits++;
       return this.tensorToCanvasState(cached.tensor, state);
-    }
+    } }
 
     try {
       const tensor = await this.canvasStateToTensor(state);
@@ -1412,11 +1410,11 @@ export class NESStyleGPUBridge {
       const processedTensor = await this.processWithGPUWorker(tensor);
       this.cacheInNESHierarchy(cacheKey, processedTensor);
       return this.tensorToCanvasState(processedTensor, state);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('🚨 GPU processing failed:', error);
       return this.processFallbackWithNESOptimization(state);
-    }
-  }
+    } }
+  } }
 
   // Auto-encoder with NES-style bit depth optimization
   async optimizeCanvasState(state: CanvasState, targetBitDepth = 24): Promise<CanvasState> {
@@ -1442,9 +1440,9 @@ export class NESStyleGPUBridge {
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
         processingTime,
         memoryLevel
-      }
+      } }
     };
-  }
+  } }
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
@@ -1452,26 +1450,26 @@ export class NESStyleGPUBridge {
     if (dataSize <= 2048) return, 'ram';
     if (dataSize <= 8192) return, 'chrRom';
     return, 'prgRom';
-  }
+  } }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
     const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
-    } else if (hierarchy instanceof Uint8ClampedArray) {
+    } }else if (hierarchy instanceof Uint8ClampedArray) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i] * 255);
-      }
-    } else if (hierarchy instanceof Int32Array) {
+      } }
+    } }else if (hierarchy instanceof Int32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       for (let i = 0; i < length; i++) {
         hierarchy[i] = Math.round((tensor.data as Float32Array)[i]);
-      }
-    }
-    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } elements in ${level} (NES hierarchy)`);
-  }
+      } }
+    } }
+    console.log(`📦 Stored ${ (tensor.data as Float32Array).length } }elements in ${level} }(NES hierarchy)`);
+  } }
 
   // Advanced bit-depth quantization (inspired by NES PPU)
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
@@ -1483,19 +1481,19 @@ export class NESStyleGPUBridge {
       let quantized: number;
       if (bitDepth <= 8) {
         quantized = Math.round(normalized * levels) / levels;
-      } else if (bitDepth <= 16) {
+      } }else if (bitDepth <= 16) {
         const ditherNoise = (Math.random() - 0.5) / levels;
         quantized = Math.round((normalized + ditherNoise) * levels) / levels;
-      } else {
+      } }else {
         quantized = Math.round(normalized * levels) / levels;
-      }
+      } }
       quantizedData[i] = quantized * 2 - 1;
-    }
+    } }
     return {
       ...tensor,
       data: quantizedData,
       layout: `nes_quantized_${bitDepth}bit` };
-  }
+  } }
 
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: any[]): number[] {
@@ -1505,17 +1503,17 @@ export class NESStyleGPUBridge {
     const timeDimension = 1;
     if ((objects?.length ?? 0) <= 10) {
       return [maxObjects, propertiesPerObject, embeddingDimension];
-    } else {
+    } }else {
       return [timeDimension, maxObjects, propertiesPerObject, embeddingDimension];
-    }
-  }
+    } }
+  } }
 
   // Convert objects to NES-optimized format (enhanced implementation — multi-time-step support)
   private async optimizeForNESStyle(objects: any[], shape: number[]): Promise<Float32Array> {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
-      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] } }
+      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
@@ -1527,17 +1525,17 @@ export class NESStyleGPUBridge {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
         frames = (objects as: any[][]).slice(0, dims.time);
-      } else {
+      } }else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
           frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       frames = [Array.isArray(objects) ? (objects as: any[]) : []];
-    }
+    } }
 
     // Ensure frames array has length dims.time
     while (frames.length < dims.time) frames.push([]);
@@ -1576,7 +1574,7 @@ export class NESStyleGPUBridge {
         const props: number[] = new Array(dims.props);
         for (let p = 0; p < dims.props; p++) {
           props[p] = p < propsBase.length ? (propsBase[p] ?? 0) : 0;
-        }
+        } }
 
         // Write into tensor: index = t*(N*P*E) + objIdx*(P*E) + p*E + e
         const frameOffset = t * (dims.objects * dims.props * dims.embed);
@@ -1588,34 +1586,34 @@ export class NESStyleGPUBridge {
             const idx = propBaseOffset + e;
             if (idx >= 0 && idx < totalElements) {
               optimized[idx] = this.applyNESEncoding(propValue, e);
-            }
-          }
-        }
-      }
-    }
+            } }
+          } }
+        } }
+      } }
+    } }
 
     return optimized;
-  }
+  } }
 
   // NES-style quantization helpers
   private quantizeCoordinate(coord: number): number {
     return Math.round((coord + 1000) / 2000 * 255) / 255 * 2 - 1;
-  }
+  } }
   private quantizeSize(size: number): number {
     return Math.round(Math.min(size, 512) / 512 * 255) / 255;
-  }
+  } }
   private quantizeScale(scale: number): number {
     return Math.round(Math.min(scale, 4) / 4 * 255) / 255;
-  }
+  } }
   private quantizeAngle(angle: number): number {
     return Math.round((((angle % 360) + 360) % 360) / 360 * 255) / 255;
-  }
+  } }
   private quantizeOpacity(opacity: number): number {
     return Math.round(opacity * 255) / 255;
-  }
+  } }
   private quantizeSkew(skew: number): number {
     return Math.round((skew + 45) / 90 * 255) / 255;
-  }
+  } }
   private colorToNESPalette(color: string | undefined): number {
     if (!color) return 0;
     if (typeof color === 'string' && color.startsWith('#')) {
@@ -1623,8 +1621,8 @@ export class NESStyleGPUBridge {
       const num = parseInt(hex, 16);
       const nesColor = this.mapToNESPalette(num);
       return nesColor / 63;
-    }
+    } }
     return 0;
-  }
+  } }
   private mapToNESPalette(rgbValue: number): number {
     const r = (rgbValue >> 16

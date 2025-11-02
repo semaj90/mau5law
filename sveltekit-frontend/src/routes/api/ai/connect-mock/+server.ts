@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 /*
  * Production AI Connection Endpoint
  * Connects to actual Ollama service running on port, 11434
@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { model } = await request.json();
+    const { model } }= await request.json();
     const targetModel = model || 'gemma3-legal';
     // Check Ollama service availability
     try {
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
         signal: AbortSignal.timeout(5000)
       });
       if (ollamaResponse.ok) {
-        const { models } = await ollamaResponse.json();
+        const { models } }= await ollamaResponse.json();
         const availableModels = models.map((m: any) => m.name);
         // Test connection with specified model
         if (availableModels.includes(targetModel)) {
@@ -24,10 +24,10 @@ export const POST: RequestHandler = async ({ request }) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-             , model: targetModel,
+  model: targetModel,
               prompt: 'Connection test',
               stream: false,
-              options: {, num_predict: 1 }
+              options: { num_predict: 1 } }
             }),
             signal: AbortSignal.timeout(10000)
           });
@@ -41,9 +41,9 @@ export const POST: RequestHandler = async ({ request }) => {
               production: true,
               service: 'ollama',
               endpoint: 'http://localhost:11434',
-              message: 'Successfully connected to ${targetModel} model' });
-          }
-        }
+              message: 'Successfully connected to ${targetModel} }model' });
+          } }
+        } }
         return json(
           {
             success: false,
@@ -52,10 +52,10 @@ export const POST: RequestHandler = async ({ request }) => {
             requestedModel: targetModel,
             message: 'Requested model not found in Ollama service'
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
-    } catch (ollamaError) {
+      } }
+    } }catch (ollamaError) {
       // Fallback to production Enhanced RAG service
       try {
         const ragResponse = await fetch('http://localhost:8094/health', {
@@ -72,9 +72,8 @@ export const POST: RequestHandler = async ({ request }) => {
             production: true,
             service: 'enhanced-rag',
             endpoint: 'http://localhost:8094',
-            message: `Connected to Enhanced RAG service (Go microservice)' });'`
-        }
-      } catch (ragError) {
+            message: 'Connected to Enhanced RAG service (Go microservice)' });'' } }
+      } }catch (ragError) {
         // Final fallback - development mode
         return json({
           success: true,
@@ -86,13 +85,13 @@ export const POST: RequestHandler = async ({ request }) => {
           fallback: true,
           message: 'AI services unavailable - using development mode',
           details: {
-           , ollama: (ollamaError as Error).message,
+  ollama: (ollamaError as Error).message,
             enhancedRAG: (ragError as Error).message
-          }
+          } }
         });
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     return json(
       {
         success: false,
@@ -100,7 +99,8 @@ export const POST: RequestHandler = async ({ request }) => {
         message: (error as Error).message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

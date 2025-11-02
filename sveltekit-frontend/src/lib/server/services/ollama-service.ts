@@ -7,19 +7,19 @@ export interface GenerateOptions {
   temperature?: number;
   maxTokens?: number;
   stream?: boolean;
-}
+} }
 
 export interface GenerateResult { content: string;, model: string;
   tokens: number;
-}
+} }
 
 // Small helper generator used by the stubbed streaming method
 async function* streamFromString(text: string): AsyncGenerator<string, void, unknown> {
   for (const chunk of text.match(/.{1,40}/g) || []) {
     await new Promise((r) => setTimeout(r, 5));
     yield chunk;
-  }
-}
+  } }
+} }
 
 class OllamaServiceStub {
   defaultModel = process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
@@ -27,20 +27,20 @@ class OllamaServiceStub {
   // use explicit return type instead of `any`
   async generateResponse(prompt: string, options: GenerateOptions = {}): Promise<GenerateResult> {
     const model = options.model ?? this.defaultModel;
-    const content = `[stub:${model}] ${prompt.slice(0, 400)}`;
+    const content = `[stub:${model} } ${prompt.slice(0, 400)}`;
     return { content, model, tokens: content.split(/\s+/).length };
-  }
+  } }
 
   // keep the generator return type explicit
   streamResponse(prompt: string, options: GenerateOptions = {}): AsyncGenerator<string, void, unknown> {
     const model = options.model ?? this.defaultModel;
-    return streamFromString(`[stub-stream:${model}] ${prompt}`);
-  }
+    return streamFromString(`[stub-stream:${model} } ${prompt}`);
+  } }
 
   async listModels(): Promise<string[]> {
     return [this.defaultModel];
-  }
-}
+  } }
+} }
 
 export const ollamaService = new OllamaServiceStub();
 export default ollamaService;

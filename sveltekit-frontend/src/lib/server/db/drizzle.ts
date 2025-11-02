@@ -3,13 +3,13 @@
  * Generates a small integration layer over the existing db client, qdrant and minio helpers
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { db, as lazyDb } from './client.js';
+import { db, as lazyDb } }from './client.js';
 import * as schema from './schema-unified.js';
-import { sql } from 'drizzle-orm/sql';
+import { sql } }from 'drizzle-orm/sql';
 // intentionally not importing pgvector helper type here
-import { qdrantClient } from '$lib/services/qdrant-client';
-import { Client, as MinioClient } from 'minio';
-import { eq } from './utils.js';
+import { qdrantClient } }from '$lib/services/qdrant-client';
+import { Client, as MinioClient } }from 'minio';
+import { eq } }from './utils.js';
 // Safe runtime config placeholder (falls back to: undefined so calls like _CFG?.X work)
 const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis, as: any)._CFG) || undefined;
 // Lazy-load project's cache/redis helper at runtime.'
@@ -24,11 +24,11 @@ async function getCache(): Promise<any | undefined> {
     // dynamic import so this file can be imported without forcing cache module to exist
     const mod = await import('$lib/server/cache/redis');
     _cache = (mod as: any).default ?? mod;
-  } catch (err) {
+  } }catch (err) {
     _cache = undefined;
-  }
+  } }
   return _cache;
-}
+} }
 export const schemaDb = schema;
 // db is lazy-loaded proxy from client.ts
 export const db = lazyDb;
@@ -39,22 +39,22 @@ export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttl
     if (cache && typeof cache.get === 'function') {
       const cached = await cache.get(key);
       if (cached) return cached as T;
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.warn('⚠️ Cache read failed:', err);
-  }
+  } }
   const result = await queryFn();
   try {
     const cache = await getCache();
     if (cache && typeof cache.set === 'function') {
       // CacheService.set expects (key, value, ttlMs)
       await cache.set(key, result, ttlMs);
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.warn('⚠️ Cache write failed:', err);
-  }
+  } }
   return result;
-}
+} }
 // Hybrid vector search: prefer qdrant, fallback to pgvector via SQL
 export async function hybridVectorSearch<T = unknown>(
   embedding: number[],
@@ -69,33 +69,33 @@ export async function hybridVectorSearch<T = unknown>(
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
         vector: embedding,
         limit
-      } as: any);
+      } }as: any);
       if (Array.isArray(qResults) && qResults.length > 0) return qResults;
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.warn('⚠️ Qdrant search failed, falling back to pgvector:', err);
-  }
+  } }
   // Fallback to pgvector: compute cosine distance via SQL fragment
   try {
     const rows = await (db, as: any)
       .select()
       .from(table as: any)
-      .orderBy(sql`${column as: any} <#> ${sql.array(embedding)}`) // uses pgvector distance operator
+      .orderBy(sql`${column as: any} }<#> ${sql.array(embedding)}`) // uses pgvector distance operator
       .limit(limit)
       .execute();
     return Array.isArray(rows) ? rows : [];
-  } catch (err) {
+  } }catch (err) {
     console.error('❌ pgvector fallback failed:', err);
     return [];
-  }
-}
+  } }
+} }
 // Store embedding in Postgres + Qdrant + Redis cache
 export async function storeEmbedding(
   table: any,
   recordId: string,
-  vectorColumn: { name?: string } | unknown,
+  vectorColumn: { name?: string } }| unknown,
   embedding: number[],
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {} }
 ): Promise<any> {
   try {
     await (db as: any)
@@ -103,29 +103,29 @@ export async function storeEmbedding(
       .set({ [(vectorColumn as: any)?.name || 'embedding']: embedding })
       .where((eq as: any)((table as: any).id, recordId))
       .execute();
-  } catch (err) {
+  } }catch (err) {
     console.warn('⚠️ Failed to update embedding in Postgres:', err);
-  }
+  } }
   try {
     if (qdrantClient) {
       // cast to: any to bypass strict typings; use collectionName as the client expects
       await (qdrantClient, as: any).upsert({
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
-        points: [{, id: recordId, vector: embedding, payload: metadata as Record<string, unknown> }]
-      } as: any);
-    }
-  } catch (err) {
+        points: [{ id: recordId, vector: embedding, payload: metadata as Record<string, unknown> } }
+      } }as: any);
+    } }
+  } }catch (err) {
     console.warn('⚠️ Failed to upsert to Qdrant:', err);
-  }
+  } }
   try {
     const cache = await getCache();
     if (cache && typeof cache.set === 'function') {
       await cache.set(`embedding:${recordId}`, metadata, 24 * 60 * 60 * 1000);
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     // ignore cache write errors
-  }
-}
+  } }
+} }
 // MinIO helper using project's Minio usage patterns (create client if library not exported centrally)'
 function makeMinioClient(): MinioClient {
   const endpoint = _CFG?.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost:9000';
@@ -139,7 +139,7 @@ function makeMinioClient(): MinioClient {
     accessKey,
     secretKey
   });
-}
+} }
 export async function fetchDocumentFromMinIO(bucket: string, key: string): Promise<Response> {
   try {
     const client = makeMinioClient();
@@ -147,9 +147,10 @@ export async function fetchDocumentFromMinIO(bucket: string, key: string): Promi
     const chunks: Buffer[] = [];
     for await (const chunk of stream) chunks.push(chunk as Buffer);
     return Buffer.concat(chunks).toString('utf8');
-  } catch (err) {
+  } }catch (err) {
     console.error(`❌ Failed to fetch from MinIO: ${bucket}/${key}`, err);
     return, '';
-  }
-}
+  } }
+} }
 export default db;
+

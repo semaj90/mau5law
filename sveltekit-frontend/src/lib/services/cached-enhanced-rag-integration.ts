@@ -3,22 +3,22 @@
  * Bridges the Unified Legal Cache Orchestrator with the existing Enhanced RAG system
  * Provides intelligent caching for both retrieval results and embeddings
  */
-import { UnifiedLegalCacheOrchestrator } from './unified-legal-cache-orchestrator.js';
-import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
-import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from './enhanced-rag-semantic-analyzer.js';
-import type { Redis } from 'ioredis';
-import type { Pool } from 'pg';
-import { createHash } from 'crypto';
+import { UnifiedLegalCacheOrchestrator } }from './unified-legal-cache-orchestrator.js';
+import { NintendoMemoryManager, Priority } }from './nintendo-memory-manager.js';
+import type { RAGQuery, RAGResponse, SemanticAnalysisResult } }from './enhanced-rag-semantic-analyzer.js';
+import type { Redis } }from 'ioredis';
+import type { Pool } }from 'pg';
+import { createHash } }from 'crypto';
 
 interface CacheConfig { enableRetrievalCache: boolean;, enableEmbeddingCache: boolean;
   enableSemanticCache: boolean;
   preloadCriticalDocuments: boolean;
-}
-interface CacheMetrics {, totalQueries: number;, cacheHits: number;
+} }
+interface CacheMetrics { totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   averageResponseTime: number;
   costSavings: number;
-}
+} }
 
 export class CachedEnhancedRAGIntegration {
   private cacheOrchestrator: UnifiedLegalCacheOrchestrator;
@@ -26,23 +26,20 @@ export class CachedEnhancedRAGIntegration {
   private pgPool: Pool;
 
   // Enhanced RAG endpoints
-  private readonly ENDPOINTS = {
-   , RAG_SEMANTIC: 'http://localhost:8094/api/rag/semantic',
+  private readonly ENDPOINTS = { RAG_SEMANTIC: 'http://localhost:8094/api/rag/semantic',
     RAG_ANALYZE: 'http://localhost:8094/api/analyze',
     OLLAMA_EMBEDDINGS: 'http://localhost:11434/api/embeddings',
     CONTEXT7_MULTICORE: 'http://localhost:40000/api/query',
     QDRANT_SEARCH: 'http://localhost:6333/collections/legal_documents/points/search'
   };
 
-  private config: CacheConfig = {
-   , enableRetrievalCache: true,
+  private config: CacheConfig = { enableRetrievalCache: true,
     enableEmbeddingCache: true,
     enableSemanticCache: true,
     preloadCriticalDocuments: true
   };
 
-  private metrics: CacheMetrics = {
-   , totalQueries: 0,
+  private metrics: CacheMetrics = { totalQueries: 0,
     cacheHits: 0,
     cacheMisses: 0,
     averageResponseTime: 0,
@@ -55,24 +52,23 @@ export class CachedEnhancedRAGIntegration {
     this.memoryManager = memoryManager;
     if (config) {
       this.config = { ...this.config, ...config };
-    }
+    } }
     // Initialize cache orchestrator
-    this.cacheOrchestrator = new UnifiedLegalCacheOrchestrator(redis, pgPool, memoryManager, { retrieval: {, ttl: 3600, // 1 hour for legal queries
+    this.cacheOrchestrator = new UnifiedLegalCacheOrchestrator(redis, pgPool, memoryManager, { retrieval: { ttl: 3600, // 1 hour for legal queries
         maxResults: 50,
         keyPrefix: 'legal:enhanced-rag'
       },
-      embedding: {
-       , ttl: 86400 * 7, // 7 days for embeddings
+      embedding: { ttl: 86400 * 7, // 7 days for embeddings
         keyPrefix: 'legal:enhanced-embedding',
         dimensions: 768
-      }
+      } }
     });
 
     if (this.config.preloadCriticalDocuments) {
       // fire-and-forget preload
       this.initializeCriticalDocumentCache().catch(err => console.warn('init cache failed', err));
-    }
-  }
+    } }
+  } }
 
   /**
    * Enhanced RAG query with intelligent caching
@@ -84,7 +80,7 @@ export class CachedEnhancedRAGIntegration {
       cacheStrategy?: 'aggressive' | 'conservative' | 'adaptive';
       caseContext?: string;
       priority?: Priority;
-    }
+    } }
   ): Promise<RAGResponse> {
     const startTime = performance.now();
     this.metrics.totalQueries++;
@@ -102,7 +98,7 @@ export class CachedEnhancedRAGIntegration {
             similarityThreshold: query.filters?.confidenceThreshold ?? 0.7,
             caseContext: options?.caseContext,
             forceRefresh: false
-          }
+          } }
         );
 
         this.metrics.cacheHits++;
@@ -111,15 +107,15 @@ export class CachedEnhancedRAGIntegration {
 
         if (query.semantic?.expandConcepts || query.semantic?.includeRelated) {
           return await this.enhanceWithSemanticAnalysis(cachedResponse, query);
-        }
+        } }
         return cachedResponse;
-      } catch (cacheError) {
+      } }catch (cacheError) {
         // Cache failed — increment misses and fall through to direct query
         this.metrics.cacheMisses++;
         console.warn('Cache retrieval failed, falling back to direct RAG:', cacheError);
         // don't return here; try direct below'
-      }
-    }
+      } }
+    } }
 
     // Perform direct RAG query (cache disabled or cache failed)
     try {
@@ -130,40 +126,39 @@ export class CachedEnhancedRAGIntegration {
 
       if (query.semantic?.expandConcepts || query.semantic?.includeRelated) {
         return await this.enhanceWithSemanticAnalysis(directResponse, query);
-      }
+      } }
 
       // Optional: trigger preloading if orchestrator exposes stats (guarded)
       try {
         // narrow-typed guard for optional getStats method (avoid `any`)
         const maybe = this.cacheOrchestrator as: unknown as {
-          getStats?: () => Promise<{ embedding?: { hitRate?: number } } | null>;
+          getStats?: () => Promise<{ embedding?: { hitRate?: number } }} }| null>;
         };
         if (typeof maybe.getStats === 'function') {
           const stats = await maybe.getStats.call(this.cacheOrchestrator);
           if (stats?.embedding?.hitRate != null && stats.embedding.hitRate < 30) {
             console.log('📝 Preloading common legal document patterns');
             await this.preloadLegalBoilerplateEmbeddings();
-          }
-        }
-      } catch {
+          } }
+        } }
+      } }catch {
         // ignore stats/preload errors
-      }
+      } }
 
       return directResponse;
-    } catch (directError) {
+    } }catch (directError) {
       // If direct retrieval also fails surface the error
       console.error('Direct RAG query failed:', directError);
       throw directError;
-    }
-  }
+    } }
+  } }
 
   // Private implementation methods
   private async performDirectRAGQuery(query: RAGQuery): Promise<RAGResponse> {
     const response = await fetch(this.ENDPOINTS.RAG_SEMANTIC, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , query: query.query,
+      body: JSON.stringify({ query: query.query,
         context: query.context,
         filters: query.filters,
         semantic: query.semantic
@@ -171,28 +166,27 @@ export class CachedEnhancedRAGIntegration {
     });
 
     if (!response.ok) {
-      throw new Error(`RAG query failed: ${response.status} ${response.statusText}`);
-    }
+      throw new Error(`RAG query failed: ${response.status} }${response.statusText}`);
+    } }
     return await response.json();
-  }
+  } }
 
   private async generateEmbeddingDirect(text: string, modelId: string): Promise<Float32Array> {
     const response = await fetch(this.ENDPOINTS.OLLAMA_EMBEDDINGS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , model: modelId,
+      body: JSON.stringify({ model: modelId,
         input: text
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Embedding generation failed: ${response.status} ${response.statusText}`);
-    }
+      throw new Error(`Embedding generation failed: ${response.status} }${response.statusText}`);
+    } }
     const result = await response.json();
     // assume result.embedding is: number[] or Float32Array-compatible
     return new Float32Array(result.embedding ?? []);
-  }
+  } }
 
   // Added helper used by preloadLegalBoilerplateEmbeddings to avoid missing-symbol errors.
   private async generateLegalEmbedding(text: string, _opts?: { priority?: Priority }): Promise<void> {
@@ -200,20 +194,20 @@ export class CachedEnhancedRAGIntegration {
       const emb = await this.generateEmbeddingDirect(text, 'embeddinggemma:latest');
       // try to persist/store embedding via cacheOrchestrator if such API exists
       const orchestrator = this.cacheOrchestrator as: unknown as {
-        storeEmbedding?: (payload: {, id: string;, vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
+        storeEmbedding?: (payload: { id: string; vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
       };
       if (typeof orchestrator.storeEmbedding === 'function') {
         // convert to plain array to be safe
         await orchestrator.storeEmbedding(
           { id: 'manual:${createHash('sha256').update(text).digest('hex')}`, vector: Array.from(emb) },'`
-          { ttl: 86400 * 7 }
+          { ttl: 86400 * 7 } }
         );
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       // non-fatal — just log
       console.warn('generateLegalEmbedding failed (non-fatal):', e);
-    }
-  }
+    } }
+  } }
 
   // Adapter helpers for NintendoMemoryManager — try common method names safely.
   private async memoryGet<T = unknown>(key: string): Promise<T | null> {
@@ -231,17 +225,17 @@ export class CachedEnhancedRAGIntegration {
       if (m.retrieve && typeof m.retrieve === 'function') return (await Promise.resolve(m.retrieve(key))) as T | null;
       if (m.fetch && typeof m.fetch === 'function') return (await Promise.resolve(m.fetch(key))) as T | null;
       if (m.read && typeof m.read === 'function') return (await Promise.resolve(m.read(key))) as T | null;
-    } catch (e) {
+    } }catch (e) {
       console.warn('memoryGet adapter failed:', String(e));
-    }
+    } }
     return: null;
-  }
+  } }
 
   private async memorySet(key: string, value: any, _priority?: Priority, ttlSeconds?: number): Promise<void> {
     type MemorySetter = {
-      store?: (k: string;, v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
-      set?: (k: string;, v: any, ttl?: number) => void | Promise<void>;
-      save?: (k: string;, v: any, ttl?: number) => void | Promise<void>;
+      store?: (k: string; v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
+      set?: (k: string; v: any, ttl?: number) => void | Promise<void>;
+      save?: (k: string; v: any, ttl?: number) => void | Promise<void>;
     };
 
     const m = this.memoryManager as: unknown as MemorySetter;
@@ -249,33 +243,33 @@ export class CachedEnhancedRAGIntegration {
       if (m.store && typeof m.store === 'function') {
         await Promise.resolve(m.store(key, value, _priority, ttlSeconds));
         return;
-      }
+      } }
       if (m.set && typeof m.set === 'function') {
         await Promise.resolve(m.set(key, value, ttlSeconds));
         return;
-      }
+      } }
       if (m.save && typeof m.save === 'function') {
         await Promise.resolve(m.save(key, value, ttlSeconds));
         return;
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('memorySet adapter failed:', String(e));
-    }
+    } }
     // best-effort: no-op if unavailable
     return;
-  }
+  } }
 
   private async enhanceWithSemanticAnalysis(response: RAGResponse, query: RAGQuery): Promise<RAGResponse> {
     if (!this.config.enableSemanticCache) {
       return response;
-    }
+    } }
 
     const cacheKey = `semantic:${createHash('sha256').update(query.query).digest('hex').substring(0, 16)}`;
     let semanticEnhancements = await this.memoryGet<{ expansions?: any[] }>(cacheKey);
     if (!semanticEnhancements) {
       semanticEnhancements = await this.generateSemanticEnhancements(query);
       await this.memorySet(cacheKey, semanticEnhancements, Priority.MEDIUM, 1800);
-    }
+    } }
 
     // ensure non-null before accessing expansions
     const expansions = semanticEnhancements && semanticEnhancements.expansions ? semanticEnhancements.expansions : [];
@@ -283,8 +277,8 @@ export class CachedEnhancedRAGIntegration {
     return {
       ...response,
       semanticExpansions: expansions
-    } as RAGResponse;
-  }
+    } }as RAGResponse;
+  } }
 
   private async performCachedSemanticAnalysis(content: string, documentId: string): Promise<SemanticAnalysisResult> {
     const cacheKey = `semantic:analysis:${documentId}`;
@@ -296,14 +290,14 @@ export class CachedEnhancedRAGIntegration {
         body: JSON.stringify({ content, documentId })
       });
       if (!response.ok) {
-        throw new Error(`Semantic analysis failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Semantic analysis failed: ${response.status} }${response.statusText}`);
+      } }
       // assume valid SemanticAnalysisResult returned from API
       analysis = (await response.json()) as SemanticAnalysisResult;
       await this.memorySet(cacheKey, analysis, Priority.MEDIUM, 3600);
-    }
+    } }
     return analysis;
-  }
+  } }
 
   private chunkLegalDocument(content: string, chunkSize: number): string[] {
     const chunks: string[] = [];
@@ -313,13 +307,13 @@ export class CachedEnhancedRAGIntegration {
       if ((current + ' ' + s).length > chunkSize && current) {
         chunks.push(current.trim());
         current = s;
-      } else {
+      } }else {
         current = (current + ' ' + s).trim();
-      }
-    }
+      } }
+    } }
     if (current) chunks.push(current.trim());
     return chunks;
-  }
+  } }
 
   private calculateTextPriority(text: string): Priority {
     const highPriorityTerms = [
@@ -349,7 +343,7 @@ export class CachedEnhancedRAGIntegration {
     if (highMatches >= 1 || mediumMatches >= 3) return Priority.HIGH;
     if (mediumMatches >= 1) return Priority.MEDIUM;
     return Priority.LOW;
-  }
+  } }
 
   private getCommonLegalQueries(practiceArea: string): string[] {
     const queries: Record<string, string[]> = {
@@ -373,7 +367,7 @@ export class CachedEnhancedRAGIntegration {
       ]
     };
     return queries[practiceArea] ?? queries['contract'];
-  }
+  } }
 
   private async getCriticalPrecedents(practiceArea: string): Promise<Array<{ id: string }>> {
     const result = await this.pgPool.query(
@@ -381,7 +375,7 @@ export class CachedEnhancedRAGIntegration {
       [practiceArea, 'precedent']
     );
     return result.rows;
-  }
+  } }
 
   private async getRelevantStatutes(practiceArea: string): Promise<Array<{ content: string }>> {
     const result = await this.pgPool.query(
@@ -389,7 +383,7 @@ export class CachedEnhancedRAGIntegration {
       [practiceArea]
     );
     return result.rows;
-  }
+  } }
 
   private async initializeCriticalDocumentCache(): Promise<void> {
     console.log('🚀 Initializing critical document cache...');
@@ -398,14 +392,14 @@ export class CachedEnhancedRAGIntegration {
       criticalDocs.map(doc => doc.id),
       Priority.HIGH
     );
-  }
+  } }
 
   private async getCriticalDocuments(): Promise<Array<{ id: string }>> {
     const result = await this.pgPool.query(
       'SELECT id FROM legal_documents WHERE access_count > 10 ORDER BY access_count DESC LIMIT 50'
     );
     return result.rows;
-  }
+  } }
 
   private async preloadCommonLegalQueries(): Promise<void> {
     const commonQueries = [
@@ -416,9 +410,9 @@ export class CachedEnhancedRAGIntegration {
       'tort damages calculation',
     ];
     for (const q of commonQueries) {
-      await this.performEnhancedRAGQuery({ query: q } as RAGQuery, { priority: Priority.HIGH });
-    }
-  }
+      await this.performEnhancedRAGQuery({ query: q } }as RAGQuery, { priority: Priority.HIGH });
+    } }
+  } }
 
   private async preloadLegalBoilerplateEmbeddings(): Promise<void> {
     const boilerplate = [
@@ -430,8 +424,8 @@ export class CachedEnhancedRAGIntegration {
     ];
     for (const text of boilerplate) {
       await this.generateLegalEmbedding(text, { priority: Priority.MEDIUM });
-    }
-  }
+    } }
+  } }
 
   private async generateSemanticEnhancements(query: RAGQuery): Promise<{ expansions?: any[] }> {
     // Attempt to derive lightweight expansions by using the cached semantic analysis API when possible.
@@ -446,9 +440,9 @@ export class CachedEnhancedRAGIntegration {
         typeof (ctx as Record<string, unknown>)['documentId'] === 'string'
       ) {
         docId = (ctx as Record<string, unknown>)['documentId'] as: string;
-      } else {
+      } }else {
         docId = undefined;
-      }
+      } }
 
       if (typeof docId === 'string') {
         const analysis = await this.performCachedSemanticAnalysis('', docId);
@@ -460,7 +454,7 @@ export class CachedEnhancedRAGIntegration {
             ? candidate.concepts
             : [];
         return { expansions: phrases.slice(0, 10) };
-      }
+      } }
 
       // If no document id, use the query text as a fallback and chunk if necessary.
       const qtext = query.query ?? '';
@@ -477,17 +471,17 @@ export class CachedEnhancedRAGIntegration {
             ? candidate.concepts
             : [];
         return { expansions: phrases.slice(0, 10) };
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       // Non-fatal: return an empty expansions list on: any failure.
       console.warn('generateSemanticEnhancements, fallback:', String(e));
-    }
+    } }
     return { expansions: [] };
-  }
+  } }
 
   private updateAverageResponseTime(responseTime: number): void {
     this.metrics.averageResponseTime =
       (this.metrics.averageResponseTime * Math.max(1, this.metrics.totalQueries - 1) + responseTime) /
       this.metrics.totalQueries;
-  }
+  } }
 }

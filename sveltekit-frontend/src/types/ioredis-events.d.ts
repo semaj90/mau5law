@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
-import { Redis, as IORedis } from 'ioredis';
+import { EventEmitter } }from 'events';
+import { Redis, as IORedis } }from 'ioredis';
 
 declare module, 'ioredis' {
   /**
@@ -7,5 +7,6 @@ declare module, 'ioredis' {
    * This resolves TypeScript errors where: 'on', 'off', 'once' are not found on the Redis type,
    * as ioredis instances are indeed EventEmitters.
    */
-  interface Redis extends EventEmitter {}
-}
+  interface Redis extends EventEmitter {} }
+} }
+

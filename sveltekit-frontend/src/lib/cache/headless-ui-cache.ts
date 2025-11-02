@@ -3,19 +3,19 @@
  * Client-side caching layer that bridges server-side Redis tensor cache
  * with XState Neural Sprite frontend for maximum performance
  */
-import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
-import { browser } from '$app/environment';
+import { vectorWasm } }from '../wasm/vector-wasm-wrapper.js';
+import { browser } }from '$app/environment';
 export interface CacheEntry<T = any> { key: string;, data: T;
   timestamp: number;
   ttl: number;
   version: string;
   embedding?: Float32Array;
-  metadata?: {, size: number;, hits: number;
+  metadata?: { size: number;, hits: number;
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
    , computeCost: number; // Relative cost to regenerate
   };
-}
+} }
 export interface CacheStrategy {
   // Memory tiers (fastest to slowest)
   memory: boolean; // In-memory Map cache,
@@ -28,16 +28,15 @@ export interface CacheStrategy {
   // Sync with server
  , syncWithRedis: boolean; // Sync with server-side Redis,
   conflictResolution: 'client' | 'server' | 'merge';
-}
-export interface CacheConfig {
- , maxMemorySize: number; // Max memory cache size (bytes),
+} }
+export interface CacheConfig { maxMemorySize: number; // Max memory cache size (bytes),
   maxIndexedDBSize: number; // Max IndexedDB size (bytes)
   maxLocalStorageSize: number; // Max localStorage size (bytes),
   defaultTTL: number; // Default TTL in milliseconds
  , embeddingDimensions: number; // For semantic caching,
   syncInterval: number; // Sync with server interval (ms)
   strategy: CacheStrategy;
-}
+} }
 export class HeadlessUICache {
   private memoryCache = new Map<string, CacheEntry>();
   private config: CacheConfig;
@@ -54,8 +53,7 @@ export class HeadlessUICache {
       defaultTTL: 30 * 60 * 1000, // 30 minutes
       embeddingDimensions: 256,
       syncInterval: 5 * 60 * 1000, // 5 minutes
-      strategy: {
-       , memory: true,
+      strategy: { memory: true,
         indexeddb: true,
         localStorage: false, // Disabled by default due to size limits
         lru: true,
@@ -67,27 +65,27 @@ export class HeadlessUICache {
       ...config
     };
     this.initialize();
-  }
+  } }
   private async initialize(): Promise<void> {
     if (!browser) return;
     try {
       // Initialize WebAssembly for semantic operations
       if (this.config.strategy.semantic) {
         await vectorWasm.initialize();
-      }
+      } }
       // Initialize IndexedDB
       if (this.config.strategy.indexeddb) {
         await this.initializeIndexedDB();
-      }
+      } }
       // Start sync timer
       if (this.config.strategy.syncWithRedis) {
         this.startSyncTimer();
-      }
+      } }
       console.log('[HeadlessCache] Initialized successfully');
-    } catch (error) {
+    } }catch (error) {
       console.error('[HeadlessCache] Initialization failed:', error);
-    }
-  }
+    } }
+  } }
   private async initializeIndexedDB(): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('HeadlessUICache', 1);
@@ -103,10 +101,10 @@ export class HeadlessUICache {
           store.createIndex('timestamp', 'timestamp');
           store.createIndex('version', 'version');
           store.createIndex('lastAccess', 'metadata.lastAccess');
-        }
+        } }
       };
     });
-  }
+  } }
   /**
    * Get cached data with semantic similarity fallback
    */
@@ -120,8 +118,8 @@ export class HeadlessUICache {
         this.cacheHits++;
         this.updateHitRatio();
         return memResult.data as T;
-      }
-    }
+      } }
+    } }
     // 2. Check IndexedDB (medium speed)
     if (this.config.strategy.indexeddb && this.db) {
       const idbResult = await this.getFromIndexedDB<T>(key);
@@ -129,12 +127,12 @@ export class HeadlessUICache {
         // Promote to memory cache
         if (this.config.strategy.memory) {
           this.memoryCache.set(key, idbResult);
-        }
+        } }
         this.cacheHits++;
         this.updateHitRatio();
         return idbResult.data;
-      }
-    }
+      } }
+    } }
     // 3. Semantic similarity search (if query provided)
     if (semanticQuery && this.config.strategy.semantic) {
       const semanticResult = await this.findSemanticallysimilar<T>(semanticQuery, 0.8);
@@ -142,8 +140,8 @@ export class HeadlessUICache {
         this.cacheHits++;
         this.updateHitRatio();
         return semanticResult.data;
-      }
-    }
+      } }
+    } }
     // 4. Try server sync if enabled
     if (this.config.strategy.syncWithRedis) {
       const serverResult = await this.fetchFromServer<T>(key);
@@ -152,11 +150,11 @@ export class HeadlessUICache {
         this.cacheHits++;
         this.updateHitRatio();
         return serverResult;
-      }
-    }
+      } }
+    } }
     this.updateHitRatio();
     return: null;
-  }
+  } }
   /**
    * Set cached data with optional semantic embedding
    */
@@ -173,36 +171,35 @@ export class HeadlessUICache {
       timestamp: Date.now(),
       ttl: ttl || this.config.defaultTTL,
       version: this.generateVersion(),
-      metadata: {
-       , size: this.estimateSize(data),
+      metadata: { size: this.estimateSize(data),
         hits: 0,
         lastAccess: Date.now(),
         source,
         computeCost: this.estimateComputeCost(data)
-      }
+      } }
     };
     // Generate semantic embedding if text provided
     if (semanticText && this.config.strategy.semantic) {
       try {
         entry.embedding = await vectorWasm.generateHashEmbedding(semanticText, this.config.embeddingDimensions);
-      } catch (error) {
+      } }catch (error) {
         console.warn('[HeadlessCache] Failed to generate embedding:', error);
-      }
-    }
+      } }
+    } }
     // Store in memory cache
     if (this.config.strategy.memory) {
       await this.enforceMemoryLimit();
       this.memoryCache.set(key, entry);
-    }
+    } }
     // Store in IndexedDB
     if (this.config.strategy.indexeddb && this.db) {
       await this.setInIndexedDB(entry);
-    }
+    } }
     // Sync to server if enabled
     if (this.config.strategy.syncWithRedis && source === 'client') {
       this.queueServerSync(key, entry);
-    }
-  }
+    } }
+  } }
   /**
    * Find semantically similar cached entries using WASM vector operations
    */
@@ -220,19 +217,19 @@ export class HeadlessUICache {
           if (similarity > threshold && similarity > bestSimilarity) {
             bestSimilarity = similarity;
             bestMatch = entry as CacheEntry<T>;
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Search IndexedDB if no good match in memory
       if (!bestMatch && this.db) {
         bestMatch = await this.searchIndexedDBBySimilarity<T>(queryEmbedding, threshold);
-      }
+      } }
       return bestMatch;
-    } catch (error) {
+    } }catch (error) {
       console.error('[HeadlessCache] Semantic search failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Smart eviction using multiple strategies
    */
@@ -250,8 +247,8 @@ export class HeadlessUICache {
     while (this.calculateMemorySize() > this.config.maxMemorySize && entries.length > 0) {
       const [key] = entries.shift()!;
       this.memoryCache.delete(key);
-    }
-  }
+    } }
+  } }
   /**
    * Calculate eviction score (lower = more likely to evict)
    */
@@ -261,17 +258,17 @@ export class HeadlessUICache {
     if (this.config.strategy.lru) {
       const ageMs = Date.now() - entry.metadata!.lastAccess;
       score += ageMs / (1000 * 60 * 60); // Hours since last access
-    }
+    } }
     // Factor in hit frequency
     score -= entry.metadata!.hits * 10;
     // Factor in compute cost (expensive to regenerate = higher score)
     if (this.config.strategy.cost) {
       score += entry.metadata!.computeCost * 5;
-    }
+    } }
     // Factor in size (larger = more likely to evict)
     score += entry.metadata!.size / 1024; // KB
     return score;
-  }
+  } }
   /**
    * Sync with server-side Redis tensor cache
    */
@@ -281,7 +278,7 @@ export class HeadlessUICache {
       // Get server cache manifest
       const response = await fetch('/api/cache/manifest', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' } }
       });
       if (!response.ok) return;
       const serverManifest = await response.json();
@@ -293,30 +290,30 @@ export class HeadlessUICache {
           const serverData = await this.fetchFromServer(serverEntry.key);
           if (serverData) {
             await this.set(serverEntry.key, serverData, undefined, 'server');
-          }
-        }
-      }
-    } catch (error) {
+          } }
+        } }
+      } }
+    } }catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
-    }
-  }
+    } }
+  } }
   private async fetchFromServer<T>(key: string): Promise<T | null> {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }'` });'`
+        headers: { 'Content-Type': 'application/json' } }` });'`
       if (!response.ok) return: null;
       const data = await response.json();
       return data.value as T;
-    } catch (error) {
+    } }catch (error) {
       console.error('[HeadlessCache] Server fetch failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   private queueServerSync(key: string, entry: CacheEntry): void {
     // Queue for async server sync (implement with a proper queue)
     setTimeout(() => this.syncEntryToServer(key, entry), 100);
-  }
+  } }
   private async syncEntryToServer(key: string, entry: CacheEntry): Promise<void> {
     try {
       await fetch('/api/cache', {
@@ -328,32 +325,32 @@ export class HeadlessUICache {
           ttl: entry.ttl,
           version: entry.version,
           source: 'client' })'` });'`
-    } catch (error) {
+    } }catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
-    }
-  }
+    } }
+  } }
   private startSyncTimer(): void {
     if (this.syncTimer) clearInterval(this.syncTimer);
     this.syncTimer = setInterval(() => {
       this.syncWithServer();
     }, this.config.syncInterval);
-  }
+  } }
   // Helper methods
   private isValidEntry(entry: CacheEntry): boolean {
     return Date.now() - entry.timestamp < entry.ttl;
-  }
+  } }
   private updateMetadata(entry: CacheEntry): void {
     if (entry.metadata) {
       entry.metadata.hits++;
       entry.metadata.lastAccess = Date.now();
-    }
-  }
+    } }
+  } }
   private generateVersion(): string {
     return `v${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
+  } }
   private estimateSize(data: any): number {
     return JSON.stringify(data).length * 2; // Rough UTF-16 estimate
-  }
+  } }
   private estimateComputeCost(data: any): number {
     // Estimate computational cost based on data complexity
     const str = JSON.stringify(data);
@@ -361,17 +358,17 @@ export class HeadlessUICache {
     if (str.includes('analysis') || str.includes('summary')) return 8;
     if (str.length > 10000) return 6;
     return 1;
-  }
+  } }
   private calculateMemorySize(): number {
     let total = 0;
     for (const entry of this.memoryCache.values()) {
       total += entry.metadata?.size || 0;
-    }
+    } }
     return total;
-  }
+  } }
   private updateHitRatio(): void {
     this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests : 0;
-  }
+  } }
   // IndexedDB helpers
   private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
     if (!this.db) return: null;
@@ -384,13 +381,13 @@ export class HeadlessUICache {
         if (entry && this.isValidEntry(entry)) {
           this.updateMetadata(entry);
           resolve(entry);
-        } else {
+        } }else {
           resolve(null);
-        }
+        } }
       };
       request.onerror = () => resolve(null);
     });
-  }
+  } }
   private async setInIndexedDB<T>(entry: CacheEntry<T>): Promise<void> {
     if (!this.db) return;
     return new Promise((resolve, reject) => {
@@ -400,7 +397,7 @@ export class HeadlessUICache {
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
-  }
+  } }
   private async searchIndexedDBBySimilarity<T>(
     queryEmbedding: Float32Array,
     threshold: number
@@ -422,19 +419,19 @@ export class HeadlessUICache {
               if (similarity > threshold && similarity > bestSimilarity) {
                 bestSimilarity = similarity;
                 bestMatch = entry;
-              }
-            } catch (error) {
+              } }
+            } }catch (error) {
               // Skip this entry
-            }
-          }
+            } }
+          } }
           cursor.continue();
-        } else {
+        } }else {
           resolve(bestMatch);
-        }
+        } }
       };
       request.onerror = () => resolve(null);
     });
-  }
+  } }
   /**
    * Get cache statistics
    */
@@ -446,7 +443,7 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : 'inactive' };'` }'`
+      lastSync: this.syncTimer ? 'active' : 'inactive' };'` } }`
   /**
    * Clear all caches
    */
@@ -456,8 +453,8 @@ export class HeadlessUICache {
       const transaction = this.db.transaction(['cache'], 'readwrite');
       const store = transaction.objectStore('cache');
       await store.clear();
-    }
-  }
+    } }
+  } }
   /**
    * Cleanup resources
    */
@@ -465,14 +462,14 @@ export class HeadlessUICache {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
       this.syncTimer = null;
-    }
+    } }
     if (this.db) {
       this.db.close();
       this.db = null;
-    }
+    } }
     this.memoryCache.clear();
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const headlessUICache = new HeadlessUICache();
 // Export cache decorator for easy integration
@@ -485,13 +482,13 @@ export function cached(ttl?: number, semanticKey?: string) {
       const cached = await headlessUICache.get(cacheKey, semanticKey);
       if (cached !== null) {
         return cached;
-      }
+      } }
       // Execute original method
       const result = await originalMethod.apply(this, args);
       // Cache the result
       await headlessUICache.set(cacheKey, result, ttl, 'client', semanticKey);
       return result;
-    }
+    } }
     return descriptor;
-  }
+  } }
 }

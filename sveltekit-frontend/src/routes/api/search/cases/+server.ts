@@ -1,25 +1,25 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 // Optimized case search API endpoint
 // Supports multiple search strategies with automatic fallbacks
-import { json } from '@sveltejs/kit';
-import { and, desc, ilike, or, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import { cases } from '$lib/server/db/schema/cases'; // Import the cases schema
+import { json } }from '@sveltejs/kit';
+import { and, desc, ilike, or, sql } }from 'drizzle-orm';
+import { db } }from '$lib/server/db/index';
+import { cases } }from '$lib/server/db/schema/cases'; // Import the cases schema
 
 // Define types for better type safety
 interface CaseFilters {
   status?: string | null;
   priority?: string | null;
   category?: string | null;
-}
+} }
 
 type CaseSelect = typeof cases.$inferSelect; // Type for a selected case from the database
 
 interface CaseSearchResult extends CaseSelect { searchScore: number;, matchType: 'text' | 'semantic' | 'hybrid';
-}
+} }
 
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q');
     const limit = parseInt(url.searchParams.get('limit') || '20');
@@ -27,7 +27,7 @@ export const, GET: RequestHandler = async ({ url }) => {
     const searchType = url.searchParams.get('type') || 'hybrid'; // 'text', 'semantic', 'hybrid'
     const filters: CaseFilters = {
       // Use the new interface
-     , status: url.searchParams.get('status'),
+  status: url.searchParams.get('status'),
       priority: url.searchParams.get('priority'),
       category: url.searchParams.get('category')
     };
@@ -39,7 +39,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         total: 0,
         message: 'Query too short'
       });
-    }
+    } }
     const startTime = Date.now();
     let results: CaseSearchResult[] = []; // Type the results array
     // For now, use text search only until vector search is properly configured
@@ -54,18 +54,18 @@ export const, GET: RequestHandler = async ({ url }) => {
       filters,
       fromCache: false
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Change: 'any'; to: 'unknown'
-    console.error('Case search, error:', error);'
+    console.error('Case search, error:', error);
     return json(
       {
         results: [],
         error: 'Search failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Fast text-based search using SQL LIKE
 async function searchCasesText(query: string, limit: number, filters: CaseFilters): Promise<CaseSearchResult[]> {
@@ -80,14 +80,14 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
     ];
     // Add filters
     if (filters.status) {
-      whereConditions.push(sql`${cases.status} = ${filters.status}`);
-    }
+      whereConditions.push(sql`${cases.status} }= ${filters.status}`);
+    } }
     if (filters.priority) {
-      whereConditions.push(sql`${cases.priority} = ${filters.priority}`);
-    }
+      whereConditions.push(sql`${cases.priority} }= ${filters.priority}`);
+    } }
     if (filters.category) {
-      whereConditions.push(sql`${cases.category} = ${filters.category}`);
-    }
+      whereConditions.push(sql`${cases.category} }= ${filters.category}`);
+    } }
     const results = await db
       .select()
       .from(cases)
@@ -99,9 +99,10 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       ...case_,
       searchScore: 1.0,
       matchType: 'text` }));'`
-  } catch (error: any) {
+  } }catch (error: any) {
     // Change: 'any'; to: 'unknown'
     console.error('Text search, failed:', error);
     return [];
-  }
-}
+  } }
+} }
+

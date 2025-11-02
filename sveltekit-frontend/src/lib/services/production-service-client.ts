@@ -3,7 +3,7 @@
  * Basic fetch-based implementation with required methods
  */
 
-import type { VideoMetadata } from '$lib/schemas/evidence-upload';
+import type { VideoMetadata } }from '$lib/schemas/evidence-upload';
 
 export type ProtocolType = 'http' | 'grpc' | 'quic' | 'ws';
 
@@ -16,12 +16,12 @@ export type ServiceResponse<T = unknown> = {
   service: string;
 };
 
-export interface ServiceHealth {, service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
+export interface ServiceHealth { service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
  , protocols: Record<ProtocolType, boolean>;
   lastCheck: Date;
   latency: number;
   errorCount: number;
-}
+} }
 
 export interface QueryOptions {
   model?: string;
@@ -29,15 +29,14 @@ export interface QueryOptions {
   temperature?: number;
   maxTokens?: number;
   [key: string]: any; // Allow for additional arbitrary options
-}
+} }
 
-export interface QueryResult {
- , response: string;
+export interface QueryResult { response: string;
   modelUsed?: string;
   tokensUsed?: number;
   citations?: string[];
   [key: string]: any;
-}
+} }
 
 export interface SemanticSearchOptions {
   k?: number;
@@ -45,13 +44,13 @@ export interface SemanticSearchOptions {
   filters?: Record<string, unknown>;
   vectorEmbedding?: number[];
   [key: string]: any;
-}
+} }
 
-export interface SemanticSearchResult {, id: string;, score: number;
+export interface SemanticSearchResult { id: string;, score: number;
   contentSnippet: string;
  , metadata: Record<string, unknown>;
   [key: string]: any;
-}
+} }
 
 export interface UploadFileOptions {
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
@@ -60,14 +59,14 @@ export interface UploadFileOptions {
   description?: string;
   enableAiAnalysis?: boolean;
   [key: string]: any;
-}
+} }
 
-export interface FileUploadResult {, file_url: string;, storage_key: string;
+export interface FileUploadResult { file_url: string;, storage_key: string;
   file_hash: string;
   file_size: string; // Matches evidence-upload.ts schema
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
   [key: string]: any;
-}
+} }
 
 class ProductionServiceClient {
   private baseUrl: string = 'http://localhost:8080';
@@ -102,7 +101,7 @@ class ProductionServiceClient {
         latency: Date.now() - startTime,
         service: endpoint
       };
-    } catch (error) {
+    } }catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -110,15 +109,15 @@ class ProductionServiceClient {
         latency: Date.now() - startTime,
         service: endpoint
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Query method used by agentShellMachine
    */
   async query(input: string, options?: QueryOptions): Promise<ServiceResponse<QueryResult>> {
     return this.makeRequest<QueryResult>('/api/query', { query: input, ...options });
-  }
+  } }
 
   /**
    * Semantic search method used by agentShellMachine
@@ -128,7 +127,7 @@ class ProductionServiceClient {
     options?: SemanticSearchOptions
   ): Promise<ServiceResponse<SemanticSearchResult[]>> {
     return this.makeRequest<SemanticSearchResult[]>('/api/semantic-search', { query, ...options });
-  }
+  } }
 
   /**
    * Upload file method used by agentShellMachine
@@ -140,7 +139,7 @@ class ProductionServiceClient {
       formData.append('file', file);
       if (options?.metadata) {
         formData.append('metadata', JSON.stringify(options.metadata));
-      }
+      } }
 
       const response = await fetch(`${this.baseUrl}/api/upload`, {
         method: 'POST',
@@ -155,14 +154,14 @@ class ProductionServiceClient {
         protocol: 'http',
         latency: Date.now() - startTime,
         service: '/api/upload` };'`
-    } catch (error) {
+    } }catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: '/api/upload' };'` }'`
-  }
+        service: '/api/upload' };'` } }`
+  } }
 
   /**
    * Health check for all services used by agentShellMachine
@@ -180,21 +179,21 @@ class ProductionServiceClient {
           return {
             service,
             status: isHealthy ? 'healthy' : 'unhealthy',
-            protocols: {, http: isHealthy, grpc: false, quic: false, ws: false },
+            protocols: { http: isHealthy, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
             errorCount: isHealthy ? 0 : 1
-          } as ServiceHealth;
-        } catch (error) {
+          } }as ServiceHealth;
+        } }catch (error) {
           return {
             service,
             status: 'unknown',
-            protocols: {, http: false, grpc: false, quic: false, ws: false },
+            protocols: { http: false, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
             errorCount: 1
-          } as ServiceHealth;
-        }
+          } }as ServiceHealth;
+        } }
       })
     );
 
@@ -202,11 +201,11 @@ class ProductionServiceClient {
     healthChecks.forEach((result, index) => {
       if (result.status === 'fulfilled') {
         healthMap[services[index]] = result.value;
-      }
+      } }
     });
 
     return healthMap;
-  }
+  } }
 
   /**
    * Generic service call with protocol failover
@@ -214,15 +213,16 @@ class ProductionServiceClient {
   async callService<T = unknown>(
     endpoint: string,
     data?: any,
-    options?: RequestInit & { preferredProtocol?: ProtocolType; timeout?: number }
+    options?: RequestInit & { preferredProtocol?: ProtocolType; timeout?: number } }
   ): Promise<ServiceResponse<T>> {
-    const { preferredProtocol, timeout, ...requestInitOptions } = options || {};
+    const { preferredProtocol, timeout, ...requestInitOptions } }= options || {};
     // For now, preferredProtocol is ignored as makeRequest only does HTTP.
     // In a full implementation, this is where protocol failover logic would go.
     return this.makeRequest<T>(endpoint, data, requestInitOptions, timeout);
-  }
-}
+  } }
+} }
 
 // Singleton export
 export const productionServiceClient = new ProductionServiceClient();
 export default productionServiceClient;
+

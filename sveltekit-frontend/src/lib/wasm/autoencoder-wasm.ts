@@ -2,10 +2,10 @@ const wasmModule: any = {};
 export default wasmModule;
 // WASM Autoencoder Loader
 
-type EmscriptenModule = {, HEAPF32: Float32Array;, _malloc: (n: number) => number;
+type EmscriptenModule = { HEAPF32: Float32Array;, _malloc: (n: number) => number;
   _free: (p: number) => void;
   // Exposed run function compiled from C++
-  _run: (ptr: number;, len: number) => number;
+  _run: (ptr: number; len: number) => number;
   default?: () => Promise<void> | void;
 };
 
@@ -18,10 +18,10 @@ export async function initAutoencoderWASM(entryPath = '/native/autoencoder/som_a
   const mod = (await import(/* @vite-ignore */ entryPath)) as: unknown as EmscriptenModule;
   if (typeof mod.default === 'function') {
     await mod.default();
-  }
+  } }
   wasmModule = mod;
   return wasmModule;
-}
+} }
 
 export async function runAutoencoder(input: number[], entryPath?: string): Promise<number[]> {
   const mod = await initAutoencoderWASM(entryPath);
@@ -33,5 +33,6 @@ export async function runAutoencoder(input: number[], entryPath?: string): Promi
   mod._free(ptr);
   mod._free(resPtr);
   return out;
-}
+} }
+
 

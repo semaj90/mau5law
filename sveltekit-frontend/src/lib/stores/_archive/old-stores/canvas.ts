@@ -1,9 +1,8 @@
 
-import { writable } from "svelte/store";
+import { writable } }from "svelte/store";
 // Orphaned content: import type { Evidence
 // Sidebar state
-export const sidebarStore = writable({
- , open: false,
+export const sidebarStore = writable({ open: false,
   width: 320,
   items: [], as: any[],
   searchQuery: "",
@@ -12,8 +11,7 @@ export const sidebarStore = writable({
 // Toolbar state
 export const toolbarStore = writable({
   selectedTool: "select",
-  formatting: {
-   , bold: false,
+  formatting: { bold: false,
     italic: false,
     underline: false,
     strikethrough: false,
@@ -23,8 +21,7 @@ export const toolbarStore = writable({
     backgroundColor: "transparent",
     textAlign: "left"
   },
-  drawing: {
-   , strokeWidth: 2,
+  drawing: { strokeWidth: 2,
     strokeColor: "#000000",
     fillColor: "transparent",
     opacity: 1

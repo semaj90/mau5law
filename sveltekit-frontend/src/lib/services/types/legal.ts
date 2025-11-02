@@ -8,4 +8,5 @@ export interface LegalDocument { id: string;, title: string;
   type?: string;
   createdAt?: Date;
   updatedAt?: Date;
-}
+} }
+

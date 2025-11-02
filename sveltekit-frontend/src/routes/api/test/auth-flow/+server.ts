@@ -1,21 +1,21 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { productionServiceClient, services } from '$lib/services/productionServiceClient.js';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { productionServiceClient, services } }from '$lib/services/productionServiceClient.js';
 export interface AuthFlowTestResult { step: string;, success: boolean;
   duration: number;
   data?: any;
   error?: string;
-}
-export interface TestSuite {, testId: string;, timestamp: string;
+} }
+export interface TestSuite { testId: string;, timestamp: string;
   totalDuration: number;
   overallSuccess: boolean;
   results: AuthFlowTestResult[];
-  systemHealth: {, authentication: boolean;, sessionManagement: boolean;
+  systemHealth: { authentication: boolean;, sessionManagement: boolean;
     aiAssistant: boolean;
     productionServices: boolean;
     gpuAcceleration: boolean;
   };
-}
+} }
 // New: explicit authenticated user + auth payload types to avoid `any`
 type AuthenticatedUser = {
   id: string | number;
@@ -23,7 +23,7 @@ type AuthenticatedUser = {
 };
 
 type AuthData = {
- , user: AuthenticatedUser;
+  user: AuthenticatedUser;
   sessionCookie?: string | null;
 };
 
@@ -38,7 +38,7 @@ function isAuthData(obj: any): obj is AuthData {
   const urec = user as Record<string, unknown>;
   const id = urec['id'];
   return typeof id === 'string' || typeof id === 'number';
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   const testId = `auth_flow_test_${Date.now()}`;
@@ -51,16 +51,16 @@ export const POST: RequestHandler = async ({ request }) => {
     overallSuccess: false,
     results: [],
     systemHealth: {
-     , authentication: false,
+  authentication: false,
       sessionManagement: false,
       aiAssistant: false,
       productionServices: false,
       gpuAcceleration: false
-    }
+    } }
   };
   try {
     const body = await request.json();
-    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com' } = body;'`'`
+    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com' } }= body;'`'`
     // Test 1: Authentication System
     const authResult = await testAuthenticationSystem(testUser);
     testSuite.results.push(authResult);
@@ -72,19 +72,19 @@ export const POST: RequestHandler = async ({ request }) => {
         const msg = 'Authentication result did not contain valid auth data for session management';
         console.error('❌', msg);
         const sessionFailure: AuthFlowTestResult = {
-         , step: 'session_management',
+  step: 'session_management',
           success: false,
           duration: 0,
           error: msg
         };
         testSuite.results.push(sessionFailure);
         testSuite.systemHealth.sessionManagement = $state(false);
-      } else {
+      } }else {
         const sessionResult = await testSessionManagement(authResult.data);
         testSuite.results.push(sessionResult);
         testSuite.systemHealth.sessionManagement = sessionResult.success;
-      }
-    }
+      } }
+    } }
     // Test 3: Production Services
     const servicesResult = await testProductionServices();
     testSuite.results.push(servicesResult);
@@ -94,13 +94,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const aiResult = await testAIAssistant();
       testSuite.results.push(aiResult);
       testSuite.systemHealth.aiAssistant = aiResult.success;
-    }
+    } }
     // Test 5: GPU Acceleration (if enabled)
     if (includeGPU) {
       const gpuResult = await testGPUAcceleration();
       testSuite.results.push(gpuResult);
       testSuite.systemHealth.gpuAcceleration = gpuResult.success;
-    }
+    } }
     // Test 6: End-to-End Integration
     const integrationResult = await testEndToEndIntegration(testUser);
     testSuite.results.push(integrationResult);
@@ -113,13 +113,13 @@ export const POST: RequestHandler = async ({ request }) => {
       success: testSuite.overallSuccess,
       testSuite,
       summary: {
-       , passed: testSuite.results.filter(item => item.success).length,
+  passed: testSuite.results.filter(item => item.success).length,
         failed: testSuite.results.filter(item => !item.success).length,
         total: testSuite.results.length,
         duration: testSuite.totalDuration
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Authentication flow test failed:', message);
     testSuite.totalDuration = Date.now() - startTime;
@@ -136,9 +136,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Test execution failed',
         testSuite
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Test authentication system
 async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestResult> {
@@ -150,27 +150,27 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , email: testUser,
+  email: testUser,
         password: `password' })'`
     });
     if (!loginResponse.ok) {
       throw new Error(`Login failed: ${loginResponse.statusText}`);
-    }
+    } }
     const loginData = await loginResponse.json();
     if (!loginData.success || !loginData.user) {
       throw new Error('Login response missing user data');
-    }
+    } }
     console.log('✅ Authentication system test passed');
     return {
       step: 'authentication_system',
       success: true,
       duration: Date.now() - stepStart,
       data: {
-       , user: loginData.user,
+  user: loginData.user,
         sessionCookie: loginResponse.headers.get('set-cookie')
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Authentication system test failed:', message);
     return {
@@ -179,8 +179,8 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
 // Test session management
 async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
@@ -188,7 +188,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
     console.log('📊 Testing session management...');
     if (!isAuthData(authData)) {
       throw new Error('Invalid authentication data provided to session management test');
-    }
+    } }
     // Simulate session validation
     const sessionValidation = {
       userId: authData.user.id,
@@ -198,7 +198,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
     };
     // Test session health
     const sessionHealth = {
-     , isValid: true,
+  isValid: true,
       warningCount: 0,
       lastCheck: new Date()
     };
@@ -208,11 +208,11 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       success: true,
       duration: Date.now() - stepStart,
       data: {
-       , validation: sessionValidation,
+  validation: sessionValidation,
         health: sessionHealth
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Session management test failed:', message);
     return {
@@ -221,30 +221,30 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
 // Add type guards to avoid `any` casts
 function hasCheckAllServicesHealth(
- , obj: any
-): obj is { checkAllServicesHealth: () => Promise<Record<string, unknown>> } {
+  obj: any
+): obj is { checkAllServicesHealth: () => Promise<Record<string, unknown>> } }{
   return (
     typeof obj === 'object' &&
     obj !== null &&
     'checkAllServicesHealth' in obj &&
     typeof (obj as Record<string, unknown>)['checkAllServicesHealth'] === 'function'
   );
-}
+} }
 
 function hasGetAllServicesHealth(
   obj: any
-): obj is { getAllServicesHealth: () => Promise<Record<string, unknown>> } {
+): obj is { getAllServicesHealth: () => Promise<Record<string, unknown>> } }{
   return (
     typeof obj === 'object' &&
     obj !== null &&
     'getAllServicesHealth' in obj &&
     typeof (obj as Record<string, unknown>)['getAllServicesHealth'] === 'function'
   );
-}
+} }
 // Test production services
 async function testProductionServices(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
@@ -267,8 +267,8 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     const totalServices = Object.keys(serviceHealth).length || 0;
     if (totalServices > 0 && healthyServices === 0) {
       throw new Error('No production services are healthy');
-    }
-    console.log(`✅ Production services test passed (${healthyServices}/${totalServices} healthy)`);
+    } }
+    console.log(`✅ Production services test passed (${healthyServices}/${totalServices} }healthy)`);
     return {
       step: 'production_services',
       success: true,
@@ -278,9 +278,9 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
         ragResponse: ragResponse ? 'Success' : 'No response',
         healthyCount: healthyServices,
         totalCount: totalServices
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Production services test failed:', message);
     return {
@@ -289,8 +289,8 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
 // Test AI assistant
 async function testAIAssistant(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
@@ -307,7 +307,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     ).length;
     if (healthyOllama === 0) {
       throw new Error('No Ollama instances are healthy');
-    }
+    } }
     // Test AI query
     const aiQuery = 'Explain XState integration with Svelte, 5 for legal AI applications';
     const aiResponse = await services.queryRAG(aiQuery, {
@@ -320,7 +320,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: true,
       duration: Date.now() - stepStart,
-      data: {, ollamaHealth: {, primary:
+      data: { ollamaHealth: { primary:
             ollamaHealthChecks[0].status === 'fulfilled' &&
             (ollamaHealthChecks[0] as PromiseFulfilledResult<Response>).value?.ok === true,
           secondary:
@@ -332,9 +332,9 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
         },
         aiResponse: aiResponse ? 'Success' : 'No response',
         healthyInstances: healthyOllama
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ AI assistant test failed:', message);
     return {
@@ -343,8 +343,8 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
 // Test GPU acceleration
 async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
@@ -371,9 +371,9 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
         gpuInfo,
         gpuQuery: gpuQuery ? 'Success' : 'No response',
         accelerationEnabled: true
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ GPU acceleration test failed:', message);
     return {
@@ -382,8 +382,8 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
 // Test end-to-end integration
 async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
@@ -402,8 +402,8 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
     const workflowSteps = Object.values(workflow).filter(v => v === true).length;
     const totalSteps = Object.keys(workflow).length;
     if (workflowSteps !== totalSteps) {
-      throw new Error(`Workflow incomplete: ${workflowSteps}/${totalSteps} steps completed`);
-    }
+      throw new Error(`Workflow incomplete: ${workflowSteps}/${totalSteps} }steps completed`);
+    } }
     console.log('✅ End-to-end integration test passed');
     return {
       step: 'end_to_end_integration',
@@ -413,9 +413,9 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
         workflow,
         completedSteps: workflowSteps,
         totalSteps,
-        integrationScore: `100%' }'`
+        integrationScore: `100%' } }`
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ End-to-end integration test failed:', message);
     return {
@@ -424,5 +424,6 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
       duration: Date.now() - stepStart,
       error: message
     };
-  }
-}
+  } }
+} }
+

@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types';
+import type { RequestHandler } }from './$types';
 import {
 	getMissedMessages,
 	registerSseConnection,
@@ -6,23 +6,23 @@ import {
 	storeMessage,
 	broadcastMessage,
 	nowId
-} from, '$lib/server/evidence-stream';
+} }from '$lib/server/evidence-stream';
 
 // --- Dev in-memory message store & SSE connection registry ---
 // Note: these are lightweight dev stubs. Replace with Redis/pubsub or DB-backed store in production.
-type StoredMessage = {, id: string;, sessionId: string;
+type StoredMessage = { id: string;, sessionId: string;
   type?: string;
   payload?: any; // Changed from: any to: unknown;
- , timestamp: string;
+  timestamp: string;
 };
 
 const encoder = new TextEncoder();
 
 export const GET: RequestHandler = async ({ request, params, url }) => {
-	const { sessionId } = params;
+	const { sessionId } }= params;
 	if (!sessionId) {
 		return new Response('Session ID required', { status: 400 });
-	}
+	} }
 	const upgradeHeader = request.headers.get('upgrade')?.toLowerCase();
 	if (upgradeHeader !== 'websocket') {
 		// Non-WebSocket request - return missed messages via HTTP
@@ -39,14 +39,14 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 					headers: {
 						'Content-Type': 'application/json',
 						'Cache-Control': 'no-cache'
-					}
-				}
+					} }
+				} }
 			);
-		} catch (error: any) { // Changed from: any to: unknown
+		} }catch (error: any) { // Changed from: any to: unknown
 			console.error('❌ Error getting missed, messages:', error);
 			return new Response('Internal Server Error', { status: 500 });
-		}
-	}
+		} }
+	} }
 	// WebSocket upgrade request
 	try {
 		// Keep the existing behavior: advise using a dedicated WebSocket server/adapter.
@@ -55,20 +55,20 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 			headers: {
 				'Upgrade': 'websocket',
 				'Connection': 'Upgrade'
-			}
+			} }
 		});
-	} catch (error: any) { // Changed from: any to: unknown
-		console.error('❌ WebSocket upgrade, error:', error);'
+	} }catch (error: any) { // Changed from: any to: unknown
+		console.error('❌ WebSocket upgrade, error:', error);
 		return new Response('WebSocket upgrade failed', { status: 500 });
-	}
+	} }
 };
 
 // For development/testing - simple server-sent events alternative + publish action
 export const POST: RequestHandler = async ({ request, params }) => {
-	const { sessionId } = params;
+	const { sessionId } }= params;
 	if (!sessionId) {
 		return new Response('Session ID required', { status: 400 });
-	}
+	} }
 	try {
 		const body = await request.json();
 		const action = body?.action;
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 						id: nowId(),
 						sessionId,
 						type: 'connection-established',
-						payload: {, timestamp: new Date().toISOString() },
+						payload: { timestamp: new Date().toISOString() },
 						timestamp: new Date().toISOString()
 					};
 					controller.enqueue(encoder.encode(`data: ${JSON.stringify(initMsg)}\n\n`));
@@ -99,13 +99,13 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					keepAlive = setInterval(() => {
 						try {
 							controller.enqueue(encoder.encode('data: {"type":"heartbeat"}\n\n'));
-						} catch (error: any) { // Changed from: any, to: unknown
+						} }catch (error: any) { // Changed from: any, to: unknown
 							// If enqueue fails, clear interval and let cancel handle deregistration
 							if (keepAlive) {
 								clearInterval(keepAlive);
 								keepAlive = null;
-							}
-						}
+							} }
+						} }
 					}, 30000);
 
 					// Cleanup after, 1 hour (adjust as needed)
@@ -113,10 +113,10 @@ export const POST: RequestHandler = async ({ request, params }) => {
 						if (keepAlive) {
 							clearInterval(keepAlive);
 							keepAlive = null;
-						}
+						} }
 						if (controllerRef) {
 							deregisterSseConnection(sessionId, controllerRef);
-						}
+						} }
 						controller.close();
 					}, 3600000);
 				},
@@ -125,16 +125,16 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					if (keepAlive) {
 						clearInterval(keepAlive);
 						keepAlive = null;
-					}
+					} }
 					if (timeout) {
 						clearTimeout(timeout);
 						timeout = null;
-					}
+					} }
 					// Use the captured controller reference for deregistration
 					if (controllerRef) {
 						deregisterSseConnection(sessionId, controllerRef);
-					}
-				}
+					} }
+				} }
 			});
 
 			return new Response(stream, {
@@ -142,17 +142,17 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					'Content-Type': 'text/event-stream',
 					'Cache-Control': 'no-cache',
 					'Connection': 'keep-alive'
-				}
+				} }
 			});
-		} else if (action === 'publish') {
-			const { type, payload } = body;
+		} }else if (action === 'publish') {
+			const { type, payload } }= body;
 			if (!type || !payload) {
 				return new Response(JSON.stringify({ error: 'Type and payload required for publish action', code: 400 }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json' }'` });'`
-			}
+					headers: { 'Content-Type': 'application/json' } }` });'`
+			} }
 			const message: StoredMessage = {
-			, id: nowId(),
+  id: nowId(),
 				sessionId,
 				type,
 				payload,
@@ -162,17 +162,18 @@ export const POST: RequestHandler = async ({ request, params }) => {
 			await broadcastMessage(sessionId, message);
 			return new Response(JSON.stringify({ status: 'published', messageId: message.id }), {
 				status: 200,
-				headers: { 'Content-Type': `application/json` }
+				headers: { 'Content-Type': `application/json` } }
 			});
-		} else {
+		} }else {
 			return new Response(
 				JSON.stringify({ error: 'Invalid action', code: 400 }),
-				{ status: 400, headers: { 'Content-Type': `application/json` } }
+				{ status: 400, headers: { 'Content-Type': `application/json` } }} }
 			);
-		}
-	} catch (error: any) { // Changed from: any to: unknown
+		} }
+	} }catch (error: any) { // Changed from: any to: unknown
 		console.error('❌ Error in POST, handler:', error);
 		return new Response('Internal Server Error', { status: 500 });
-	}
+	} }
 };
+
 

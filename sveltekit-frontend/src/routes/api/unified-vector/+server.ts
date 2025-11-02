@@ -3,9 +3,9 @@
  * Single endpoint to access all vector systems: WebGPU SOM, WebAssembly RAG,
  * PageRank, Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedVectorOrchestrator } from '$lib/services/unified-vector-orchestrator';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { unifiedVectorOrchestrator } }from '$lib/services/unified-vector-orchestrator';
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'info';
@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
         allSystemsOperational: Object.values(health).every(s => s),
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     if (action === 'analytics') {
       const analytics = await unifiedVectorOrchestrator.getPerformanceAnalytics();
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
         analytics,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     // default/info response
     return json({
@@ -36,9 +36,9 @@ export const GET: RequestHandler = async ({ url }) => {
       availableActions: ['health', 'analytics'],
       timestamp: new Date().toISOString()
     });
-  } catch (err) {
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -46,7 +46,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json().catch(() => null);
     // Echo back request for now; integration happens behind feature flags.
     return json({ success: true, received: body ?? null });
-  } catch (err) {
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

@@ -1,7 +1,7 @@
 // removed unused Node: 'crypto' import — the store uses globalThis.crypto.randomUUID at runtime
 // Real-time evidence store with WebSocket/SSE integration and local undo
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment'; // <- ensure browser, check, works
+import { writable, derived, get } }from 'svelte/store';
+import { browser } }from '$app/environment'; // <- ensure browser, check, works
 
 export interface Evidence { id: string;, title: string;
   description: string;
@@ -13,13 +13,13 @@ export interface Evidence { id: string;, title: string;
   location?: { latitude: number;, longitude: number;
     address?: string;
   };
-  classification?: {, category: string;, relevance: number;
+  classification?: { category: string;, relevance: number;
     confidence: number;
   };
-  timeline?: {, createdAt: string;, updatedAt: string;
+  timeline?: { createdAt: string;, updatedAt: string;
     collectedAt?: string;
   };
-  analysis?: {, summary: string;, keyPoints: string[];
+  analysis?: { summary: string;, keyPoints: string[];
     relevance: number;
     admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
@@ -29,15 +29,15 @@ export interface Evidence { id: string;, title: string;
     vectorSimilarity?: number;
     relatedEvidence?: string[];
   };
-}
-export interface EvidenceOperation {, id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
+} }
+export interface EvidenceOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
   timestamp: string;
   userId?: string;
   evidenceId: string;
   previousState?: Evidence | null;
   newState?: Evidence | null;
   changes?: Partial<Evidence>;
-}
+} }
 
 // New: typed shape for localStorage data
 type StoredEvidenceData = {
@@ -57,10 +57,10 @@ function parseStoredData(obj: any): StoredEvidenceData | null {
   if (Array.isArray(anyObj.operationHistory)) result.operationHistory = anyObj.operationHistory as EvidenceOperation[];
   if (typeof anyObj.currentHistoryIndex === 'number') result.currentHistoryIndex = anyObj.currentHistoryIndex;
   return result;
-}
+} }
 function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err);
-}
+} }
 
 // New: typed shapes for realtime messages
 type RealtimeEventType = 'EVIDENCE_CREATED' | 'EVIDENCE_UPDATED' | 'EVIDENCE_DELETED';
@@ -73,13 +73,13 @@ type RealtimePayload = {
   userId?: string;
 };
 
-type RealtimeMessage = {, channel: string;, data: RealtimePayload;
+type RealtimeMessage = { channel: string;, data: RealtimePayload;
 };
 
 // Simple runtime type-guards
 function isObject(x: any): x is Record<string, unknown> {
   return typeof x === 'object' && x !== null;
-}
+} }
 function isRealtimeMessage(msg: any): msg is RealtimeMessage {
   if (!isObject(msg)) return false;
   const channel = (msg as Record<string, unknown>).channel;
@@ -88,7 +88,7 @@ function isRealtimeMessage(msg: any): msg is RealtimeMessage {
   const type = (data as Record<string, unknown>).type;
   if (typeof type !== 'string') return false;
   return ['EVIDENCE_CREATED', 'EVIDENCE_UPDATED', 'EVIDENCE_DELETED'].includes(type);
-}
+} }
 
 class RealTimeEvidenceStore {
   // Core stores
@@ -111,30 +111,30 @@ class RealTimeEvidenceStore {
   //, Helper: use global crypto.randomUUID when available, fallback otherwise
   private createUUID(): string {
     // Use a narrow typed view of globalThis to avoid `any`
-    const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
+    const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } }};
     const uuid = g.crypto?.randomUUID?.();
     if (typeof uuid === 'string') {
       return uuid;
-    }
+    } }
     // fallback: reasonably unique id
     return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-  }
+  } }
   constructor() {
     if (browser) {
       this.initializeConnection();
       this.loadFromLocalStorage();
-    }
-  }
+    } }
+  } }
   // Connection Management
   private async initializeConnection() {
     try {
       // Try WebSocket first
       await this.connectWebSocket();
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('WebSocket failed, falling back to SSE:', getErrorMessage(err));
       this.connectSSE();
-    }
-  }
+    } }
+  } }
   private async connectWebSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
@@ -158,7 +158,7 @@ class RealTimeEvidenceStore {
           try {
             const message = JSON.parse(event.data);
             this.handleRealtimeUpdate(message);
-          } catch (err: any) {
+          } }catch (err: any) {
             console.error('WebSocket message parse error:', getErrorMessage(err));` }`'
         };
         this.websocket.onclose = () => {
@@ -170,20 +170,20 @@ class RealTimeEvidenceStore {
               this.reconnectAttempts++;
               this.connectWebSocket();
             }, this.reconnectDelay * this.reconnectAttempts);
-          } else {
+          } }else {
             console.warn('Max WebSocket reconnect attempts reached, falling back to SSE');
             this.connectSSE();
-          }
+          } }
         };
         this.websocket.onerror = event => {
-          console.error('WebSocket error:', event);'
+          console.error('WebSocket error:', event);
           reject(new Error('WebSocket error'));
         };
-      } catch (err: any) {
+      } }catch (err: any) {
         reject(err);
-      }
+      } }
     });
-  }
+  } }
   private connectSSE() {
     try {
       const userId = this.getCurrentUserId();
@@ -198,7 +198,7 @@ class RealTimeEvidenceStore {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
-        } catch (err: any) {
+        } }catch (err: any) {
           console.error('SSE message parse error:', getErrorMessage(err));` }`'
       };
       this.eventSource.onerror = () => {
@@ -209,20 +209,20 @@ class RealTimeEvidenceStore {
             this.reconnectAttempts++;
             this.connectSSE();
           }, this.reconnectDelay * this.reconnectAttempts);
-        }
+        } }
       };
-    } catch (err: any) {
+    } }catch (err: any) {
       console.error('SSE connection failed:', getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   // Real-time update handling (accept: unknown and validate)
   private handleRealtimeUpdate(message: any) {
     if (!isRealtimeMessage(message)) {
       console.warn('Ignored invalid realtime message:', message);
       return;
-    }
+    } }
     if (message.channel === 'evidence_update') {
-      const { type, evidenceId, data, changes, userId } = message.data;
+      const { type, evidenceId, data, changes, userId } }= message.data;
       switch (type) {
         case, 'EVIDENCE_CREATED':
           // data is typed as Evidence | undefined; guard before calling
@@ -234,15 +234,15 @@ class RealTimeEvidenceStore {
         case, 'EVIDENCE_DELETED':
           if (evidenceId) this.handleEvidenceDeleted(evidenceId, userId);
           break;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private handleEvidenceCreated(evidenceData: Evidence, userId?: string) {
     this.evidence.update(items => {
       // Check if evidence already exists (avoid duplicates)
       if (items.find(item => item.id === evidenceData.id)) {
         return items;
-      }
+      } }
       // Add to local cache
       this.localCache.set(evidenceData.id, evidenceData);
       // Add operation to history
@@ -258,7 +258,7 @@ class RealTimeEvidenceStore {
       return [...items, evidenceData];
     });
     this.saveToLocalStorage();
-  }
+  } }
   private handleEvidenceUpdated(evidenceId: string, changes: Partial<Evidence>, userId?: string) {
     this.evidence.update(items => {
       const index = items.findIndex(item => item.id === evidenceId);
@@ -282,7 +282,7 @@ class RealTimeEvidenceStore {
       return [...items];
     });
     this.saveToLocalStorage();
-  }
+  } }
   private handleEvidenceDeleted(evidenceId: string, userId?: string) {
     this.evidence.update(items => {
       const index = items.findIndex(item => item.id === evidenceId);
@@ -303,18 +303,17 @@ class RealTimeEvidenceStore {
       return items.filter(item => item.id !== evidenceId);
     });
     this.saveToLocalStorage();
-  }
+  } }
   // CRUD Operations with optimistic updates
   public async createEvidence(evidenceData: Omit<Evidence, 'id'>): Promise<string> {
     const evidenceId = this.createUUID();
     const newEvidence: Evidence = {
       ...evidenceData,
       id: evidenceId,
-      timeline: {
-       , createdAt: new Date().toISOString(),
+      timeline: { createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         ...evidenceData.timeline
-      }
+      } }
     };
     // Optimistic update
     this.handleEvidenceCreated(newEvidence, this.getCurrentUserId());
@@ -327,20 +326,20 @@ class RealTimeEvidenceStore {
       });
       if (!res.ok) {
         throw new Error(`Failed to create evidence: ${res.statusText}`);
-      }
+      } }
       const result = (await res.json()) as { id?: string };
       return result.id || evidenceId;
-    } catch (err: any) {
+    } }catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceDeleted(evidenceId);
       throw new Error(getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   public async updateEvidence(evidenceId: string, changes: Partial<Evidence>): Promise<void> {
     const currentEvidence = get(this.evidence).find(item => item.id === evidenceId);
     if (!currentEvidence) {
-      throw new Error(`Evidence ${evidenceId} not found`);
-    }
+      throw new Error(`Evidence ${evidenceId} }not found`);
+    } }
     // Optimistic update
     this.handleEvidenceUpdated(evidenceId, changes, this.getCurrentUserId());
     try {
@@ -352,18 +351,18 @@ class RealTimeEvidenceStore {
       });
       if (!res.ok) {
         throw new Error(`Failed to update evidence: ${res.statusText}`);
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceUpdated(evidenceId, currentEvidence, this.getCurrentUserId());
       throw new Error(getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   public async deleteEvidence(evidenceId: string): Promise<void> {
     const currentEvidence = get(this.evidence).find(item => item.id === evidenceId);
     if (!currentEvidence) {
-      throw new Error(`Evidence ${evidenceId} not found`);
-    }
+      throw new Error(`Evidence ${evidenceId} }not found`);
+    } }
     // Optimistic update
     this.handleEvidenceDeleted(evidenceId, this.getCurrentUserId());
     try {
@@ -372,13 +371,13 @@ class RealTimeEvidenceStore {
         method: `DELETE` });'`'`
       if (!res.ok) {
         throw new Error(`Failed to delete evidence: ${res.statusText}`);
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId());
       throw new Error(getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   // Undo/Redo functionality
   private addToHistory(operation: EvidenceOperation) {
     this.operationHistory.update(history => {
@@ -386,24 +385,24 @@ class RealTimeEvidenceStore {
       // Remove: any operations after current index (when undoing then doing new operation)
       if (currentIndex < history.length - 1) {
         history = history.slice(0, currentIndex + 1);
-      }
+      } }
       history.push(operation);
       // Limit history size (keep last, 100 operations)
       if (history.length > 100) {
         history = history.slice(-100);
-      }
+      } }
       return history;
     });
     this.currentHistoryIndex.update(_ => get(this.operationHistory).length - 1);
-  }
+  } }
   public canUndo(): boolean {
     return get(this.currentHistoryIndex) >= 0;
-  }
+  } }
   public canRedo(): boolean {
     const history = get(this.operationHistory);
     const currentIndex = get(this.currentHistoryIndex);
     return currentIndex < history.length - 1;
-  }
+  } }
   public undo(): boolean {
     if (!this.canUndo()) return false;
     const history = get(this.operationHistory);
@@ -414,7 +413,7 @@ class RealTimeEvidenceStore {
       case, 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
-        }
+        } }
         break;
       case, 'UPDATE':
         if (operation.previousState) {
@@ -422,21 +421,21 @@ class RealTimeEvidenceStore {
             const index = items.findIndex(item => item.id === operation.evidenceId);
             if (index !== -1) {
               items[index] = operation.previousState!;
-            }
+            } }
             return [...items];
           });
-        }
+        } }
         break;
       case, 'DELETE':
         if (operation.previousState) {
           this.evidence.update(items => [...items, operation.previousState!]);
-        }
+        } }
         break;
-    }
+    } }
     this.currentHistoryIndex.update(index => index - 1);
     this.saveToLocalStorage();
     return true;
-  }
+  } }
   public redo(): boolean {
     if (!this.canRedo()) return false;
     const history = get(this.operationHistory);
@@ -447,7 +446,7 @@ class RealTimeEvidenceStore {
       case, 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => [...items, operation.newState!]);
-        }
+        } }
         break;
       case, 'UPDATE':
         if (operation.newState) {
@@ -455,34 +454,33 @@ class RealTimeEvidenceStore {
             const index = items.findIndex(item => item.id === operation.evidenceId);
             if (index !== -1) {
               items[index] = operation.newState!;
-            }
+            } }
             return [...items];
           });
-        }
+        } }
         break;
       case, 'DELETE':
         this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         break;
-    }
+    } }
     this.currentHistoryIndex.update(index => index + 1);
     this.saveToLocalStorage();
     return true;
-  }
+  } }
   // Local storage persistence
   private saveToLocalStorage() {
     if (!browser) return;
     try {
-      const data: StoredEvidenceData = {
-       , evidence: get(this.evidence),
+      const data: StoredEvidenceData = { evidence: get(this.evidence),
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
         lastUpdated: new Date().toISOString()
       };
       localStorage.setItem('evidenceStore', JSON.stringify(data));
-    } catch (err: any) {
+    } }catch (err: any) {
       console.error('Failed to save to localStorage:', getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   private loadFromLocalStorage() {
     if (!browser) return;
     try {
@@ -497,7 +495,7 @@ class RealTimeEvidenceStore {
         if (lastUpdated) {
           const hoursDiff = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
           if (hoursDiff >= 24) return;
-        }
+        } }
         this.evidence.set(data.evidence || []);
         this.operationHistory.set(data.operationHistory || []);
         this.currentHistoryIndex.set(typeof data.currentHistoryIndex === 'number' ? data.currentHistoryIndex : -1);
@@ -505,27 +503,27 @@ class RealTimeEvidenceStore {
         data.evidence?.forEach((item: Evidence) => {
           this.localCache.set(item.id, item);
         });
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       console.error('Failed to load from localStorage:', getErrorMessage(err));
-    }
-  }
+    } }
+  } }
   // Utility methods
   private getCurrentUserId(): string {
     // In a real app, get from auth store or session
     return, 'current-user-id';
-  }
+  } }
   public disconnect() {
     if (this.websocket) {
       this.websocket.close();
       this.websocket = null;
-    }
+    } }
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;
-    }
+    } }
     this.isConnected.set(false);
-  }
+  } }
   // Derived stores for convenience
   public evidenceById = derived(this.evidence, items => {
     const map = new Map<string, Evidence>();
@@ -537,11 +535,12 @@ class RealTimeEvidenceStore {
     items.forEach(item => {
       if (!map.has(item.caseId)) {
         map.set(item.caseId, []);
-      }
+      } }
       map.get(item.caseId)!.push(item);
     });
     return map;
   });
-}
+} }
 // Export singleton instance
 export const evidenceStore = new RealTimeEvidenceStore();
+

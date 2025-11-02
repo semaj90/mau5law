@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { $state, $derived } from 'svelte'; // Import Svelte, 5 runes
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { $state, $derived } }from 'svelte'; // Import Svelte, 5 runes
 
 /**
  * Unified AI Assistant Global Store - SvelteKit, 2 + Svelte, 5 Runes
@@ -22,7 +22,7 @@ export interface AIMessage { id: string;, role: 'user' | 'assistant' | 'system'
     processingTime?: number;
     legalContext?: string;
   };
-}
+} }
 export interface CaseAIContext {
   caseId: string;
   title?: string;
@@ -33,27 +33,27 @@ export interface CaseAIContext {
       annotations: string[];
       connections: string[];
       aiSummary?: string;
-    }
+    } }
   >;
-  currentSession: {, isActive: boolean;, lastActivity: number;
+  currentSession: { isActive: boolean;, lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{, id: string;, type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
+  insights: Array<{ id: string;, type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
     confidence: number;
     evidenceIds: string[];
     timestamp: number;
   }>;
-}
+} }
 export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
 
-export interface AssistantConfig {, temperature: number;, maxTokens: number;
+export interface AssistantConfig { temperature: number;, maxTokens: number;
   model: string;
   systemPrompt: string;
   autoSwitchBackend: boolean;
   persistHistory: boolean;
  , enableAcceleration: boolean;
-}
+} }
 // Global AI Assistant Store using Svelte, 5 Runes
 class AIAssistantGlobalStore {
   // Core state (now using Svelte, 5 runes for reactivity)
@@ -89,12 +89,11 @@ class AIAssistantGlobalStore {
   }>({
     totalQueries: 0,
     averageResponseTime: 0,
-    backendLatency: {
-     , vllm: 0,
+    backendLatency: { vllm: 0,
       ollama: 0,
       webasm: 0,
       'go-micro': 0
-    }
+    } }
   });
 
   // Global insights
@@ -109,16 +108,16 @@ class AIAssistantGlobalStore {
   // Derived-like getters (now using $derived)
   get currentCase(): CaseAIContext | undefined {
     return $derived(this.currentCaseId ? this.cases[this.currentCaseId] : undefined);
-  }
+  } }
   get currentMessages(): AIMessage[] {
     return $derived(this.currentCase?.messages || []);
-  }
+  } }
   get hasActiveCases(): boolean {
     return $derived(Object.keys(this.cases).length > 0);
-  }
+  } }
   get isProcessing(): boolean {
     return $derived(this.isLoading);
-  }
+  } }
 
   // Cache for performance
   private messageCache = new Map<string, AIMessage>();
@@ -128,8 +127,8 @@ class AIAssistantGlobalStore {
     if (typeof window !== 'undefined') {
       this.loadPersistedState();
       this.startHealthMonitoring();
-    }
-  }
+    } }
+  } }
 
   // === Core Case Management Methods ===
   initializeCase(caseId: string, title?: string) {
@@ -141,15 +140,14 @@ class AIAssistantGlobalStore {
           title,
           messages: [],
           evidenceMap: {},
-          currentSession: {
-           , isActive: false,
+          currentSession: { isActive: false,
             lastActivity: Date.now()
           },
           insights: []
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   setCurrentCase(caseId: string) {
     this.initializeCase(caseId);
     this.currentCaseId = caseId;
@@ -162,11 +160,11 @@ class AIAssistantGlobalStore {
             ...this.cases[caseId].currentSession,
             isActive: true,
             lastActivity: Date.now()
-          }
-        }
+          } }
+        } }
       };
-    }
-  }
+    } }
+  } }
   async addMessage(caseId: string, message: Omit<AIMessage, 'id' | 'timestamp'>) {
     this.initializeCase(caseId);
     const newMessage: AIMessage = {
@@ -182,14 +180,14 @@ class AIAssistantGlobalStore {
         currentSession: {
           ...this.cases[caseId].currentSession,
           lastActivity: Date.now()
-        }
-      }
+        } }
+      } }
     };
     this.messageCache.set(newMessage.id, newMessage);
     if (this.config.persistHistory) {
       this.persistState();
-    }
-  }
+    } }
+  } }
 
   // === Enhanced AI Communication Methods ===
   async sendMessage(
@@ -201,7 +199,7 @@ class AIAssistantGlobalStore {
       includeHistory?: boolean;
       legalContext?: string;
       useAcceleration?: boolean;
-    }
+    } }
   ): Promise<AIMessage> {
     this.isLoading = true;
     this.error = undefined;
@@ -211,9 +209,8 @@ class AIAssistantGlobalStore {
         role: 'user',
         content,
         evidenceIds,
-        metadata: {
-         , legalContext: options?.legalContext
-        }
+        metadata: { legalContext: options?.legalContext
+        } }
       });
       const backend = options?.backend || (await this.selectOptimalBackend(content, options?.legalContext));
       this.currentBackend = backend;
@@ -222,9 +219,9 @@ class AIAssistantGlobalStore {
       let response: any;
       if (options?.useAcceleration && this.config.enableAcceleration) {
         response = await this.sendWithAcceleration(content, contextMessages, backend);
-      } else {
+      } }else {
         response = await this.sendToBackend(backend, contextMessages);
-      }
+      } }
       const assistantMessage: AIMessage = {
         id:
           typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -239,7 +236,7 @@ class AIAssistantGlobalStore {
           tokenCount: response.tokenCount,
           processingTime: typeof performance !== 'undefined' ? performance.now() - startTime : Date.now() - startTime,
           confidence: response.confidence
-        }
+        } }
       };
       await this.addMessage(caseId, assistantMessage);
       this.updateMetrics(
@@ -247,7 +244,7 @@ class AIAssistantGlobalStore {
         typeof performance !== 'undefined' ? performance.now() - startTime : Date.now() - startTime
       );
       return assistantMessage;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ AI message failed:', error);
       this.error = error instanceof Error ? error.message : String(error);
       if (!options?.backend && this.config.autoSwitchBackend) {
@@ -258,15 +255,15 @@ class AIAssistantGlobalStore {
               ...options,
               backend: fallbackBackend
             });
-          } catch (fallbackError) {
-            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);'' }'`
-        }
-      }
+          } }catch (fallbackError) {
+            console.error(`❌ Fallback ${fallbackBackend} }failed: ', fallbackError);'' } }`
+        } }
+      } }
       throw error;
-    } finally {
+    } }finally {
       this.isLoading = false;
-    }
-  }
+    } }
+  } }
 
   // === Backend Selection and Management ===
   private async selectOptimalBackend(message: string, context?: string): Promise<Backend> {
@@ -283,7 +280,7 @@ class AIAssistantGlobalStore {
     const optimal = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as Backend;
     console.log(`🧠 Backend selection:`, scores, `Selected: ${optimal}`);
     return optimal;
-  }
+  } }
 
   private calculateBackendScore(
     backend: Backend,
@@ -296,21 +293,21 @@ class AIAssistantGlobalStore {
       'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
       'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
-      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 }
+      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 } }
     };
     score += (complexityScores[backend][complexity] || 0) * 0.3;
     if (hasLegalContext) {
       const legalBonuses: Record<Backend, number> = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
       score += legalBonuses[backend] || 0;
-    }
+    } }
     if (requiresSpeed) {
       const speedScores: Record<Backend, number> = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
       score += (speedScores[backend] || 0) * 0.2;
-    }
+    } }
     const latencyPenalty = Math.min((this.metrics.backendLatency[backend] || 0) / 5000, 0.3);
     score -= latencyPenalty;
     return Math.max(0, Math.min(1, score));
-  }
+  } }
 
   // === Enhanced Acceleration Integration ===
   private async sendWithAcceleration(content: string, contextMessages: AIMessage[], backend: Backend) {
@@ -319,87 +316,83 @@ class AIAssistantGlobalStore {
     const useCUDAService = complexity === 'complex' || backend === 'go-micro';
     if (useLocalAI) {
       return await this.sendWithLocalBrowserAI(content, contextMessages);
-    } else if (useCUDAService) {
+    } }else if (useCUDAService) {
       return await this.sendWithCUDAService(content, contextMessages);
-    } else {
+    } }else {
       return await this.sendWithSIMDWebGPU(content, contextMessages);
-    }
-  }
+    } }
+  } }
   private async sendWithLocalBrowserAI(content: string, contextMessages: AIMessage[]) {
-    const { browserLocalAI } = await import('$lib/ai/browser-local-ai.js');
+    const { browserLocalAI } }= await import('$lib/ai/browser-local-ai.js');
     if (!browserLocalAI.isInitialized()) {
       const initialized = await browserLocalAI.initialize();
       if (!initialized) {
         throw new Error('Browser-local AI initialization failed');
-      }
-    }
+      } }
+    } }
     const conversationContext = contextMessages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
     const result = await browserLocalAI.generateText({
       prompt: content,
       maxTokens: 512,
       temperature: 0.3,
-      systemPrompt: `You are a legal AI assistant.;, Context:\n${conversationContext}' });'`
+      systemPrompt: `You are a legal AI assistant.; Context:\n${conversationContext} } });'`
     return {
       text: result.text,
       model: 'gemma3-270m-local',
       confidence: result.confidence,
       tokenCount: result.tokensGenerated,
-      accelerationMetrics: {
-       , totalProcessingTime: result.processingTime,
+      accelerationMetrics: { totalProcessingTime: result.processingTime,
         accelerationUsed: 'browser-local',
         device: result.device,
         fromCache: result.fromCache
-      }
+      } }
     };
-  }
+  } }
   private async sendWithCUDAService(content: string, contextMessages: AIMessage[]) {
-    const { cudaServiceWorker } = await import('$lib/ai/cuda-service-worker.js');
+    const { cudaServiceWorker } }= await import('$lib/ai/cuda-service-worker.js');
     const recentContext = contextMessages
       .slice(-5)
       .map(msg => `${msg.role}: ${msg.content}`)
       .join('\n');
     const systemPrompt = `You are a specialized legal AI assistant. Recent conversation context:\n${recentContext}`;
-    const result = await cudaServiceWorker.generateText({
-     , model: 'gemma3-legal-latest',
+    const result = await cudaServiceWorker.generateText({ model: 'gemma3-legal-latest',
       prompt: content,
       maxTokens: 2048,
       temperature: 0.2,
       systemPrompt,
       priority: 'normal',
-      legalContext: {
-       , jurisdiction: 'general',
+      legalContext: { jurisdiction: 'general',
         practiceArea: 'legal_assistance',
         documentType: 'conversation',
-        confidentiality: `attorney-client' }'`
+        confidentiality: `attorney-client' } }`
     });
     return {
       text: result.text,
       model: result.modelUsed,
       confidence: result.confidence,
       tokenCount: result.tokensGenerated,
-      accelerationMetrics: {
-       , totalProcessingTime: result.processingTime,
+      accelerationMetrics: { totalProcessingTime: result.processingTime,
         queueTime: result.queueTime,
         accelerationUsed: 'cuda-tensorrt',
         gpuUtilization: result.gpuUtilization,
         precision: result.precision,
         tensorrtVersion: result.metadata?.tensorrtVersion
-      }
+      } }
     };
-  }
+  } }
   private async sendWithSIMDWebGPU(content: string, contextMessages: AIMessage[]) {
-    const { enhanceAIResponse } = await import('$lib/ai/accelerated-legal-assistant.js');
+    const { enhanceAIResponse } }= await import('$lib/ai/accelerated-legal-assistant.js');
     const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
       id: `case_${i}`,
       title: `Case Document ${i + 1}`,
       content: `Mock case content`,
-      embedding: Float32Array.from({, length: 768 }, () => Math.random())
+      embedding: Float32Array.from({ length: 768 }, () => Math.random())
     }));
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
       content: `Mock evidence content`,
-      embedding: Float32Array.from({, length: 768 }, () => Math.random())
+      embedding: Float32Array.from({ length: 768 }, () => Math.random())
     }));
     const acceleratedResult = await enhanceAIResponse(content, mockCaseDocuments, mockEvidenceDocuments, {
       maxResults: 10,
@@ -412,16 +405,16 @@ class AIAssistantGlobalStore {
       model: 'simd-webgpu-accelerated',
       confidence: acceleratedResult.confidence ?? 0.9,
       tokenCount: acceleratedResult.enhancedResponse.length / 4,
-      accelerationMetrics: acceleratedResult.acceleratedResults?.processingMetrics ?? {}
+      accelerationMetrics: acceleratedResult.acceleratedResults?.processingMetrics ?? {} }
     };
-  }
+  } }
 
   // === Context and History Management ===
   private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
     const cacheKey = `${caseId}-${query}-${legalContext || '' }`;'`'`
     if (this.contextCache.has(cacheKey)) {
       return this.contextCache.get(cacheKey)!;
-    }
+    } }
     const caseMessages = this.cases[caseId]?.messages || [];
     const recentMessages = caseMessages.slice(-10);
     const relevantMessages = caseMessages
@@ -440,9 +433,9 @@ class AIAssistantGlobalStore {
     if (this.contextCache.size > 100) {
       const keys = Array.from(this.contextCache.keys());
       keys.slice(0, 50).forEach(key => this.contextCache.delete(key));
-    }
+    } }
     return contextMessages;
-  }
+  } }
 
   // === Backend Communication ===
   private async sendToBackend(backend: Backend, messages: AIMessage[]) {
@@ -454,11 +447,11 @@ class AIAssistantGlobalStore {
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
-      throw new Error(`Backend ${backend} responded with ${response.status}`);
-    }
+      throw new Error(`Backend ${backend} }responded with ${response.status}`);
+    } }
     const data = await response.json();
     return this.parseBackendResponse(backend, data);
-  }
+  } }
   private getBackendEndpoint(backend: Backend): string {
     const endpoints: Record<Backend, string> = {
       'vllm': '/api/ai/chat',
@@ -466,9 +459,9 @@ class AIAssistantGlobalStore {
       'webasm': '/api/ai/webasm-chat',
       'go-micro': '/api/ai/go-micro-chat' };'`'`
     return endpoints[backend];
-  }
+  } }
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
-    const basePayload = { messages: messages.map(msg => ({, role: msg.role, content: msg.content })),
+    const basePayload = { messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
       model: this.config.model
     };
@@ -480,8 +473,8 @@ class AIAssistantGlobalStore {
       case, 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: `high' };'`
      , default: return basePayload;
-    }
-  }
+    } }
+  } }
   private parseBackendResponse(backend: Backend, data: any) {
     return {
       text: data.text || data.response || data.choices?.[0]?.message?.content || '',
@@ -490,7 +483,7 @@ class AIAssistantGlobalStore {
       confidence: data.confidence,
       backend
     };
-  }
+  } }
 
   // === Analysis Methods ===
   private analyzeMessageComplexity(message: string): 'simple' | 'medium' | 'complex' {
@@ -500,15 +493,15 @@ class AIAssistantGlobalStore {
     if (length > 500 || (hasLegalTerms && hasComplexQuery)) return, 'complex';
     if (length > 100 || hasLegalTerms || hasComplexQuery) return, 'medium';
     return, 'simple';
-  }
+  } }
   private hasLegalContext(message: string, context?: string): boolean {
     const legalTerms = /\b(legal|law|contract|deed|court|judge|attorney|liability|statute|regulation|compliance)\b/i;
     return legalTerms.test(message) || legalTerms.test(context || '');
-  }
+  } }
   private requiresSpeedOptimization(message: string): boolean {
     const speedIndicators = /\b(quick|fast|urgent|immediately|asap|now)\b/i;
     return speedIndicators.test(message) || message.length < 50;
-  }
+  } }
 
   // === Performance and Health Monitoring ===
   private updateMetrics(backend: Backend, processingTime: number) {
@@ -521,7 +514,7 @@ class AIAssistantGlobalStore {
       },
       averageResponseTime: this.metrics.averageResponseTime * 0.9 + processingTime * 0.1
     };
-  }
+  } }
   private startHealthMonitoring() {
     if (typeof window === 'undefined') return;
     setInterval(async () => {
@@ -537,11 +530,11 @@ class AIAssistantGlobalStore {
         this.availableBackends = Object.entries(this.backendHealth)
           .filter(([_, score]) => score > 0.1)
           .map(([backend]) => backend as Backend);
-      } catch (error) {
+      } }catch (error) {
         console.warn('Health check failed:', error);
-      }
+      } }
     }, 30000);
-  }
+  } }
 
   // === Persistence ===
   private persistState() {
@@ -554,10 +547,10 @@ class AIAssistantGlobalStore {
         metrics: this.metrics
       };
       localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave));
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to persist AI assistant state:', error);
-    }
-  }
+    } }
+  } }
   private loadPersistedState() {
     try {
       const saved = localStorage.getItem('ai-assistant-unified-state');
@@ -567,11 +560,11 @@ class AIAssistantGlobalStore {
         this.currentCaseId = state.currentCaseId;
         this.config = { ...this.config, ...state.config };
         this.metrics = { ...this.metrics, ...state.metrics };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to load persisted AI assistant state:', error);
-    }
-  }
+    } }
+  } }
 
   // === Utility Methods ===
   clearCase(caseId: string) {
@@ -580,20 +573,20 @@ class AIAssistantGlobalStore {
     this.cases = newCases;
     if (this.currentCaseId === caseId) {
       this.currentCaseId = undefined;
-    }
+    } }
     this.persistState();
-  }
+  } }
   clearAllHistory() {
     this.cases = {};
     this.currentCaseId = undefined;
     this.messageCache.clear();
     this.contextCache.clear();
     this.persistState();
-  }
+  } }
   updateConfig(newConfig: Partial<AssistantConfig>) {
     this.config = { ...this.config, ...newConfig };
     this.persistState();
-  }
+  } }
   exportConversation(caseId: string, format: 'json' | 'markdown' = 'json') {
     const caseData = this.cases[caseId];
     if (!caseData) return: null;
@@ -607,9 +600,9 @@ class AIAssistantGlobalStore {
     };
     if (format === 'markdown') {
       return this.convertToMarkdown(conversation);
-    }
+    } }
     return JSON.stringify(conversation, null, 2);
-  }
+  } }
   private convertToMarkdown(conversation: any): string {
     let markdown = `# Legal AI Assistant - ${conversation.title || conversation.caseId}\n\n`;
     markdown += `**Exported**: ${conversation.exportedAt}\n\n`;
@@ -617,14 +610,15 @@ class AIAssistantGlobalStore {
     conversation.messages.forEach((msg: AIMessage) => {
       const timestamp = new Date(msg.timestamp).toLocaleString();
       const backend = msg.metadata?.backend ? ` (${msg.metadata.backend})` : '';
-      markdown += `## ${msg.role.toUpperCase()}${backend} - ${timestamp}\n\n`;
+      markdown += `## ${msg.role.toUpperCase()}${backend} }- ${timestamp}\n\n`;
       markdown += `${msg.content}\n\n`;
       if (msg.metadata?.processingTime) {
         markdown += `*Processing time: ${Math.round(msg.metadata.processingTime)}ms*\n\n`;
-      }
+      } }
     });
     return markdown;
-  }
-}
+  } }
+} }
 // Create singleton instance
 export const aiAssistant = new AIAssistantGlobalStore();
+

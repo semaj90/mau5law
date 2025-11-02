@@ -2,8 +2,8 @@
  * Logout endpoint - invalidate session and clear cookies
  */
 
-import { json, type RequestHandler, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
+import { json, type RequestHandler, redirect } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
 
 export const POST: RequestHandler = async (event) => {
   try {
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async (event) => {
     if (sessionId) {
       // Invalidate the session in database
       await auth.invalidateSession(sessionId);
-    }
+    } }
 
     // Clear the session cookie
     const sessionCookie = auth.createBlankSessionCookie();
@@ -26,20 +26,20 @@ export const POST: RequestHandler = async (event) => {
       success: true,
       message: 'Logged out successfully'
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error during logout:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Failed to logout',
+  message: 'Failed to logout',
           code: 'LOGOUT_ERROR',
           status: 500
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async (event) => {
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async (event) => {
 
     if (sessionId) {
       await auth.invalidateSession(sessionId);
-    }
+    } }
 
     const sessionCookie = auth.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -58,8 +58,9 @@ export const GET: RequestHandler = async (event) => {
     });
 
     return redirect(303, '/');
-  } catch (error) {
+  } }catch (error) {
     console.error('Error during logout:', error);
     return redirect(303, '/');
-  }
+  } }
 };
+

@@ -1,21 +1,21 @@
-import { evidence, db } from '$lib/server/db';
+import { evidence, db } }from '$lib/server/db';
 import path from 'path';
-import { json } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
-import { promises, as fs } from 'fs';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { randomUUID } }from 'crypto';
+import { promises, as fs } }from 'fs';
+import type { RequestHandler } }from './$types.js';
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;
   if (!user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  } }
   const formData = await request.formData();
   const file = formData.get('file');
   const caseId = formData.get('caseId')?.toString();
   const description = formData.get('description')?.toString() || '';
   if (!file || !(file instanceof File) || !caseId) {
     return json({ error: 'Missing file or caseId' }, { status: 400 });
-  }
+  } }
   const id = randomUUID();
   const now = new Date();
   const ext = path.extname(file.name);

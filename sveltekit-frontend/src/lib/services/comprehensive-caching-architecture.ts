@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Comprehensive Multi-Layer Caching Architecture for Legal AI Platform
  *
@@ -26,32 +26,29 @@ import type { Case } from '$lib/types';
  * @version 3.2.0
  * @lastModified 2025-01-20
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { Pool } from 'pg';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import { Pool } }from 'pg';
 import Loki from 'lokijs';
 import Fuse from 'fuse.js';
-import { createClient, as createRedisClient } from 'redis';
-import amqp, { Connection, Channel } from 'amqplib';
-import { writable, type Writable } from 'svelte/store';
+import { createClient, as createRedisClient } }from 'redis';
+import amqp, { Connection, Channel } }from 'amqplib';
+import { writable, type Writable } }from 'svelte/store';
 
 // Neo4j type definitions (fallback for environments without neo4j-driver)
 export interface Neo4jDriver {
   driver: (uri: string, auth: any) => any;
-  auth: {
-   , basic: (username: string, password: string) => any;
+  auth: { basic: (username: string, password: string) => any;
   };
-}
+} }
 
 // Mock Neo4j for environments where it's not available'
-const neo4j: Neo4jDriver = {
- , driver: (uri: string, auth: any) => ({ session: () => ({, run: async (query: string) => ({ records: [] }),
-      close: async () => {}
+const neo4j: Neo4jDriver = { driver: (uri: string, auth: any) => ({ session: () => ({ run: async (query: string) => ({ records: [] }),
+      close: async () => {} }
     }),
-    close: async () => {}
+    close: async () => {} }
   }),
-  auth: {
-   , basic: (username: string, password: string) => ({ username, password })
-  }
+  auth: { basic: (username: string, password: string) => ({ username, password })
+  } }
 };
 
 // ===== TYPE DEFINITIONS =====
@@ -67,7 +64,7 @@ export interface CacheEntry<T = any> { id: string;, data: T;
   confidentiality_level?: 'public' | 'confidential' | 'privileged' | 'attorney_client';
   access_log?: CacheAccessEntry[];
   retention_period?: number; // days
-}
+} }
 
 export interface LegalCacheContext {
   case_id?: string;
@@ -80,7 +77,7 @@ export interface LegalCacheContext {
   privilege_protected?: boolean;
   chain_of_custody_required?: boolean;
   audit_required?: boolean;
-}
+} }
 
 export interface CacheComplianceInfo {
   retention_rule: string;
@@ -89,17 +86,17 @@ export interface CacheComplianceInfo {
   compliance_tags: string[];
   access_restrictions: string[];
   audit_level: 'none' | 'basic' | 'detailed' | 'forensic';
-}
+} }
 
-export interface CacheAccessEntry {, user_id: string;, timestamp: Date;
+export interface CacheAccessEntry { user_id: string;, timestamp: Date;
   action: 'read' | 'write' | 'delete' | 'export';
   ip_address?: string;
   user_agent?: string;
   success: boolean;
   details?: string;
-}
+} }
 
-export interface CacheLayer {, name: string;, priority: number;
+export interface CacheLayer { name: string;, priority: number;
   capacity: number;
   ttl: number;
   hitRate: number;
@@ -107,18 +104,18 @@ export interface CacheLayer {, name: string;, priority: number;
   legalCompliant: boolean;
   encryptionRequired: boolean;
   auditLevel: 'none' | 'basic' | 'detailed' | 'forensic';
-}
+} }
 
-export interface ClusterConfig {, nodeId: string;, totalNodes: number;
+export interface ClusterConfig { nodeId: string;, totalNodes: number;
   shardStrategy: 'hash' | 'range' | 'consistent';
   replicationFactor: number;
   legalCompliance: boolean;
   dataResidency: string; // jurisdiction requirement
   encryptionAtRest: boolean;
   encryptionInTransit: boolean;
-}
+} }
 
-export interface CachePerformanceMetrics {, totalRequests: number;, cacheHits: number;
+export interface CachePerformanceMetrics { totalRequests: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   averageLatency: number;
@@ -127,7 +124,7 @@ export interface CachePerformanceMetrics {, totalRequests: number;, cacheHits: 
   legalComplianceRate: number;
   privilegeViolations: number;
   auditEvents: number;
-}
+} }
 
 export interface CacheSearchOptions {
   preferredLayers?: string[];
@@ -137,7 +134,7 @@ export interface CacheSearchOptions {
   legalContext?: LegalCacheContext;
   requireCompliance?: boolean;
   auditAccess?: boolean;
-}
+} }
 
 export interface CacheStorageOptions {
   ttl?: number;
@@ -149,15 +146,15 @@ export interface CacheStorageOptions {
   compliance?: CacheComplianceInfo;
   encryptData?: boolean;
   auditAccess?: boolean;
-}
+} }
 
-export interface ShaderCacheEntry {, id: string;, vertexSource: string;
+export interface ShaderCacheEntry { id: string;, vertexSource: string;
   fragmentSource: string;
   compiledProgram?: WebGLProgram;
   lastUsed: number;
   useCount: number;
   legalContext?: LegalCacheContext;
-}
+} }
 
 // ===== COMPREHENSIVE CACHING ARCHITECTURE CLASS =====
 export class ComprehensiveCachingArchitecture {
@@ -174,8 +171,7 @@ export class ComprehensiveCachingArchitecture {
   // Performance tracking
   private cacheStats: Writable<Map<string, CacheLayer>> = writable(new Map());
   private clusterHealth: Writable<ClusterConfig | null> = writable(null);
-  private performanceMetrics: Writable<CachePerformanceMetrics> = writable({
-   , totalRequests: 0,
+  private performanceMetrics: Writable<CachePerformanceMetrics> = writable({ totalRequests: 0,
     cacheHits: 0,
     cacheMisses: 0,
     hitRate: 0,
@@ -202,24 +198,24 @@ export class ComprehensiveCachingArchitecture {
       qdrant: { host: string; port: number; collection: string };
       postgres: { connectionString: string };
       neo4j: { uri: string; user: string; password: string };
-     , rabbitmq: {, url: string };
+     , rabbitmq: { url: string };
      , cluster: ClusterConfig;
-      encryption?: {, key: string };
-      legalCompliance?: {, enabled: boolean;, jurisdiction: string;
+      encryption?: { key: string };
+      legalCompliance?: { enabled: boolean;, jurisdiction: string;
        , retentionPeriod: number; // days
        , auditLevel: 'none' | 'basic' | 'detailed' | 'forensic';
       };
-    }
+    } }
   ) {
     this.encryptionKey = config.encryption?.key || 'default-key-change-in-production';
-  }
+  } }
 
   // ===== INITIALIZATION METHODS =====
   async initialize(): Promise<void> {
     if (this.initialized) {
       console.warn('Caching architecture already initialized');
       return;
-    }
+    } }
     console.log('🚀 Initializing Comprehensive Caching Architecture for Legal AI...');
     try {
       await this.initializeLokiDB();
@@ -234,12 +230,12 @@ export class ComprehensiveCachingArchitecture {
       this.startPerformanceMonitoring();
       this.initialized = true;
       console.log('✅ All cache layers initialized successfully with legal compliance');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to initialize caching architecture:', error);
       this.initialized = $state(false);
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async initializeLokiDB(): Promise<void> {
     this.lokiDb = new Loki('legal-ai-cache.db', {
@@ -271,7 +267,7 @@ export class ComprehensiveCachingArchitecture {
           unique: ['id'],
           clone: true, // Enable cloning for data integrity
         });
-      }
+      } }
     });
     console.log('📄 Loki.js legal collections initialized');
     this.updateCacheStats('loki', {
@@ -285,7 +281,7 @@ export class ComprehensiveCachingArchitecture {
       encryptionRequired: false,
       auditLevel: 'basic'
     });
-  }
+  } }
 
   private async initializeRedis(): Promise<void> {
     const redisUrl = this.config.redis.password
@@ -306,23 +302,23 @@ export class ComprehensiveCachingArchitecture {
       if (typeof (this.redisClient as: any).configSet === 'function') {
         await (this.redisClient as: any).configSet('maxmemory-policy', 'allkeys-lru');
         await (this.redisClient as: any).configSet('timeout', '300'); // 5 minute timeout
-      } else {
+      } }else {
         await (this.redisClient as: any).sendCommand(['CONFIG', 'SET', 'maxmemory-policy', 'allkeys-lru']);
         await (this.redisClient as: any).sendCommand(['CONFIG', 'SET', 'timeout', '300']);
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       console.warn('Redis configSet not supported or failed:', err);
-    }
+    } }
     // Set up Redis modules for legal compliance if available
     try {
       if (typeof (this.redisClient as: any).configSet === 'function') {
         await (this.redisClient as: any).configSet('save', '900, 1, 300, 10 60 10000'); // Aggressive persistence
-      } else {
+      } }else {
         await (this.redisClient as: any).sendCommand(['CONFIG', 'SET', 'save', '900, 1, 300, 10 60 10000']);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('Redis persistence configuration failed:', error);
-    }
+    } }
     this.updateCacheStats('redis', {
       name: 'Redis Legal Distributed',
       priority: 2,
@@ -333,7 +329,7 @@ export class ComprehensiveCachingArchitecture {
       legalCompliant: true,
       encryptionRequired: true,
       auditLevel: `detailed` });
-  }
+  } }
 
   private async initializeQdrant(): Promise<void> {
     this.qdrantClient = new QdrantClient({
@@ -342,33 +338,32 @@ export class ComprehensiveCachingArchitecture {
     });
     // Create collection for cached legal document embeddings
     try {
-      await this.qdrantClient.createCollection(this.config.qdrant.collection, { vectors: {, size: 384, // Standard embedding dimension for legal documents
+      await this.qdrantClient.createCollection(this.config.qdrant.collection, { vectors: { size: 384, // Standard embedding dimension for legal documents
           distance: 'Cosine' },
-        optimizers_config: {
-         , default_segment_number: 2,
+        optimizers_config: { default_segment_number: 2,
           max_segment_size: 20000,
           memmap_threshold: 50000,
           indexing_threshold: 10000
         },
-        quantization_config: {, binary: {, always_ram: true
-          }
-        }
+        quantization_config: { binary: { always_ram: true
+          } }
+        } }
       });
       // Create indexes for legal metadata
       try {
         await this.qdrantClient.createPayloadIndex(this.config.qdrant.collection, 'confidentiality_level');
-      } catch (error: any) {
+      } }catch (error: any) {
         console.log("Index for: 'confidentiality_level' may already exist");
-      }
+      } }
       try {
         await this.qdrantClient.createPayloadIndex(this.config.qdrant.collection, 'case_id');
-      } catch (error: any) {
+      } }catch (error: any) {
         console.log("Index for: 'case_id' may already exist");
-      }
+      } }
       console.log('📐 Qdrant legal vector collection created');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.log('📐 Qdrant collection exists or created');
-    }
+    } }
     this.updateCacheStats('qdrant', {
       name: 'Qdrant Legal Vector Cache',
       priority: 3,
@@ -379,7 +374,7 @@ export class ComprehensiveCachingArchitecture {
       legalCompliant: true,
       encryptionRequired: true,
       auditLevel: 'detailed' });
-  }
+  } }
 
   private async initializePostgreSQL(): Promise<void> {
     this.postgresPool = new Pool({
@@ -419,7 +414,7 @@ export class ComprehensiveCachingArchitecture {
           hit_count INTEGER DEFAULT, 0,
           access_count INTEGER DEFAULT, 0,
           last_accessed TIMESTAMP,
-          cluster_node TEXT DEFAULT: '${this.config.cluster.nodeId}',
+          cluster_node TEXT DEFAULT: '${this.config.cluster.nodeId} },
           compliance_tags TEXT[],
           audit_level TEXT DEFAULT: 'basic',
           encrypted BOOLEAN DEFAULT FALSE,
@@ -442,7 +437,7 @@ export class ComprehensiveCachingArchitecture {
       ];
       for (const indexQuery of indexes) {
         await client.query(indexQuery);
-      }
+      } }
       // Create access audit table
       await client.query(`
         CREATE TABLE IF NOT EXISTS cache_access_audit (
@@ -464,9 +459,9 @@ export class ComprehensiveCachingArchitecture {
         CREATE INDEX IF NOT EXISTS idx_cache_audit_violation ON cache_access_audit (compliance_violation);
       `);`
       console.log('🐘 PostgreSQL with legal compliance initialized');
-    } finally {
+    } }finally {
       client.release();
-    }
+    } }
     this.updateCacheStats('postgres', {
       name: 'PostgreSQL Legal PGVector',
       priority: 4,
@@ -477,7 +472,7 @@ export class ComprehensiveCachingArchitecture {
       legalCompliant: true,
       encryptionRequired: true,
       auditLevel: 'forensic' });
-  }
+  } }
 
   private async initializeRabbitMQ(): Promise<void> {
     this.rabbitConnection = await amqp.connect(this.config.rabbitmq.url);
@@ -492,7 +487,7 @@ export class ComprehensiveCachingArchitecture {
       exclusive: false,
       arguments: {
         'x-message-ttl': 86400000, // 24 hours: 'x-max-length': 10000
-      }
+      } }
     });
     // Bind to legal cache invalidation patterns
     const bindingPatterns = [
@@ -504,7 +499,7 @@ export class ComprehensiveCachingArchitecture {
     ];
     for (const pattern of bindingPatterns) {
       await this.rabbitChannel.bindQueue(queueName, 'legal-cache-invalidation', pattern);
-    }
+    } }
     // Set up message handling for legal cache events
     await this.rabbitChannel.consume(queueName, async msg => {
       if (msg) {
@@ -512,15 +507,15 @@ export class ComprehensiveCachingArchitecture {
           const invalidationEvent = JSON.parse(msg.content.toString());
           await this.handleLegalCacheInvalidation(invalidationEvent);
           await this.rabbitChannel?.ack(msg);
-        } catch (error: any) {
+        } }catch (error: any) {
           console.error('Failed to process cache invalidation:', error);
           // nack without requeue
           await this.rabbitChannel?.nack(msg, false, false);
-        }
-      }
+        } }
+      } }
     });
     console.log('🐰 RabbitMQ legal cache messaging initialized');
-  }
+  } }
 
   private async initializeNeo4j(): Promise<void> {
     try {
@@ -540,14 +535,14 @@ export class ComprehensiveCachingArchitecture {
       for (const query of queries) {
         try {
           await this.neo4jSession.run(query);
-        } catch (error: any) {
+        } }catch (error: any) {
           console.log('Neo4j index/constraint exists or created (or failed silently):', error?.message || error);
-        }
-      }
+        } }
+      } }
       console.log('🕸️ Neo4j legal graph cache initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Neo4j initialization failed, using mock implementation:', error);
-    }
+    } }
     this.updateCacheStats('neo4j', {
       name: 'Neo4j Legal Graph Cache',
       priority: 5,
@@ -558,63 +553,57 @@ export class ComprehensiveCachingArchitecture {
       legalCompliant: true,
       encryptionRequired: true,
       auditLevel: 'detailed' });
-  }
+  } }
 
   private async initializeFuseInstances(): Promise<void> {
     const legalFuseConfigs = [
-      {,
-        name: 'legal-documents',
+      { name: 'legal-documents',
         keys: ['title', 'content', 'case_number', 'client_name'],
-        options: {
-         , threshold: 0.2,
+        options: { threshold: 0.2,
           distance: 100,
           includeScore: true,
           includeMatches: true,
           findAllMatches: true,
           minMatchCharLength: 3
-        }
+        } }
       },
       {
         name: 'case-precedents',
         keys: ['case_name', 'citation', 'summary', 'legal_principles'],
-        options: {
-         , threshold: 0.3,
+        options: { threshold: 0.3,
           distance: 150,
           includeScore: true,
           includeMatches: true
-        }
+        } }
       },
       {
         name: 'evidence-items',
         keys: ['description', 'type', 'source', 'tags'],
-        options: {
-         , threshold: 0.25,
+        options: { threshold: 0.25,
           distance: 80,
           includeScore: true,
           includeMatches: true
-        }
+        } }
       },
       {
         name: 'client-communications',
         keys: ['subject', 'content', 'participants'],
-        options: {
-         , threshold: 0.4,
+        options: { threshold: 0.4,
           distance: 120,
           includeScore: true
-        }
+        } }
       },
     ];
     legalFuseConfigs.forEach((cfg: any) => {
       this.fuseInstances.set(cfg.name, new Fuse([], cfg.options));
     });
     console.log('🔍 Fuse.js legal search instances initialized');
-  }
+  } }
 
   private async initializeShaderCache(): Promise<void> {
     // Pre-compile common shaders for legal data visualization
     const legalShaders = [
-      {,
-        id: 'case-timeline-vertex',
+      { id: 'case-timeline-vertex',
         vertex: `
           attribute vec3 position;
           attribute float timeValue;
@@ -629,7 +618,7 @@ export class ComprehensiveCachingArchitecture {
             vAlpha = 1.0 - abs(timeValue - currentTime) * 0.1;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             gl_PointSize = 5.0;
-          }
+          } }
         `,`
         fragment: '
           precision mediump float;
@@ -637,7 +626,7 @@ export class ComprehensiveCachingArchitecture {
           varying float vAlpha;
           void main() {
             gl_FragColor = vec4(vColor, vAlpha);
-          }
+          } }
         ' },`'`
       {
         id: 'evidence-chain-visualization',
@@ -653,7 +642,7 @@ export class ComprehensiveCachingArchitecture {
             vColor = nodeColor;
             vCustodyIndex = custodyIndex;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
+          } }
         `,`
         fragment: '
           precision mediump float;
@@ -663,7 +652,7 @@ export class ComprehensiveCachingArchitecture {
             float integrity = step(0.5, vCustodyIndex);
             vec3 finalColor = mix(vec3(1.0, 0.0, 0.0), vColor, integrity);
             gl_FragColor = vec4(finalColor, 1.0);
-          }
+          } }
         ' },`'`
     ];
     // Store shader sources for lazy compilation
@@ -677,13 +666,13 @@ export class ComprehensiveCachingArchitecture {
       });
     });
     console.log('🎨 WebGL legal visualization shader cache initialized');
-  }
+  } }
 
   private async initializeLegalCompliance(): Promise<void> {
     if (!this.config.legalCompliance?.enabled) {
       console.log('Legal compliance monitoring disabled');
       return;
-    }
+    } }
     setInterval(() => {
       this.performComplianceAudit();
     }, 3600000);
@@ -694,14 +683,14 @@ export class ComprehensiveCachingArchitecture {
       this.scanForPrivilegeViolations();
     }, 300000);
     console.log('⚖️ Legal compliance monitoring initialized');
-  }
+  } }
 
   private startPerformanceMonitoring(): void {
     setInterval(() => {
       this.updatePerformanceMetrics();
     }, 30000);
     console.log('📊 Performance monitoring started');
-  }
+  } }
 
   // ===== CORE CACHING METHODS =====
   async get<T>(key: string, options: CacheSearchOptions = {}): Promise<CacheEntry<T> | null> {
@@ -714,11 +703,11 @@ export class ComprehensiveCachingArchitecture {
       requireCompliance = false,
       auditAccess = true,
       legalContext
-    } = options;
+    } }= options;
 
     if (requireCompliance && !this.isLegallyCompliant()) {
       throw new Error('Cache access denied: Legal compliance requirements not met');
-    }
+    } }
 
     for (const layer of preferredLayers) {
       try {
@@ -739,33 +728,33 @@ export class ComprehensiveCachingArchitecture {
           case, 'neo4j':
             result = await this.getFromNeo4j<T>(key, legalContext);
             break;
-        }
+        } }
         if (result) {
           if (!this.validateLegalAccess(result, legalContext)) {
             this.recordPrivilegeViolation(key, result, legalContext);
             throw new Error('Access denied: Insufficient privileges for this content');
-          }
+          } }
           result.hits = (result.hits || 0) + 1;
           await this.propagateToFasterLayers(key, result, layer);
           this.updateHitRate(layer);
           if (auditAccess && result.legalContext?.audit_required) {
             await this.auditCacheAccess(key, 'read', legalContext, true);
-          }
+          } }
           const latency = Date.now() - start;
           this.updateLatencyMetrics(latency);
           this.performanceMetrics.update(m => ({ ...m, cacheHits: m.cacheHits + 1 }));
           return result;
-        }
-      } catch (err: any) {
-        console.warn(`Cache layer ${layer} failed: ', err);'`
+        } }
+      } }catch (err: any) {
+        console.warn(`Cache layer ${layer} }failed: ', err);'`
         if (auditAccess) await this.auditCacheAccess(key, 'read', legalContext, false, err?.message);
         continue;
-      }
-    }
+      } }
+    } }
 
     this.performanceMetrics.update(m => ({ ...m, cacheMisses: m.cacheMisses + 1 }));
     return: null;
-  }
+  } }
 
   async set<T>(key: string, data: T, options: CacheStorageOptions = {}): Promise<void> {
     if (!this.initialized) throw new Error('Caching architecture not initialized');
@@ -779,14 +768,13 @@ export class ComprehensiveCachingArchitecture {
       compliance,
       encryptData = false,
       auditAccess = true
-    } = options;
+    } }= options;
 
     if (legalContext && !this.validateLegalStorage(legalContext, compliance)) {
       throw new Error('Storage denied: Legal compliance requirements not met');
-    }
+    } }
 
-    const cacheEntry: CacheEntry<T> = {
-     , id: this.generateCacheId(key),
+    const cacheEntry: CacheEntry<T> = { id: this.generateCacheId(key),
       data: encryptData ? await this.encryptData(data) : data,
       timestamp: Date.now(),
       ttl,
@@ -819,23 +807,23 @@ export class ComprehensiveCachingArchitecture {
           case, 'neo4j':
             await this.setInNeo4j(key, cacheEntry);
             break;
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         console.warn(`Failed to cache in ${layer}: ', error);'`
         this.performanceMetrics.update(metrics => ({ ...metrics, errorRate: metrics.errorRate + 1 }));
-      }
+      } }
     });
 
     await Promise.allSettled(promises);
 
     if (auditAccess && legalContext?.audit_required) {
       await this.auditCacheAccess(key, 'write', legalContext, true);
-    }
+    } }
 
     if (this.rabbitChannel) {
       await this.publishLegalCacheUpdate(key, cacheEntry);
-    }
-  }
+    } }
+  } }
 
   // ===== LEGAL COMPLIANCE METHODS =====
   private validateLegalAccess<T>(entry: CacheEntry<T>, context?: LegalCacheContext): boolean {
@@ -843,13 +831,13 @@ export class ComprehensiveCachingArchitecture {
     if (entry.legalContext?.case_id && context?.case_id !== entry.legalContext.case_id) return false;
     if (entry.legalContext?.jurisdiction && context?.jurisdiction !== entry.legalContext.jurisdiction) return false;
     return true;
-  }
+  } }
 
   private validateLegalStorage(context: LegalCacheContext, compliance?: CacheComplianceInfo): boolean {
     if (context.privilege_protected && !context.attorney_id) return false;
     if (compliance?.legal_hold && !compliance.retention_rule) return false;
     return true;
-  }
+  } }
 
   private async auditCacheAccess(
     key: string,
@@ -858,8 +846,7 @@ export class ComprehensiveCachingArchitecture {
     success: boolean = true,
     details?: string
   ): Promise<void> {
-    const auditEntry: CacheAccessEntry = {
-     , user_id: context?.attorney_id || 'system',
+    const auditEntry: CacheAccessEntry = { user_id: context?.attorney_id || 'system',
       timestamp: new Date(),
       action: action, as: any,
       success,
@@ -879,24 +866,24 @@ export class ComprehensiveCachingArchitecture {
           [key, auditEntry.user_id, action, null, success, details]
         );
         client.release();
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error('Failed to audit cache access: ', error);'`'`
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private recordPrivilegeViolation<T>(key: string, entry: CacheEntry<T>, context?: LegalCacheContext): void {
     const violation = {
       timestamp: new Date(),
       key,
-      entry: {, id: entry.id, confidentiality_level: entry.confidentiality_level },
+      entry: { id: entry.id, confidentiality_level: entry.confidentiality_level },
       attempted_context: context,
       severity: 'critical' };
     this.privilegeViolationLog.push(violation);
     this.performanceMetrics.update(metrics => ({ ...metrics, privilegeViolations: metrics.privilegeViolations + 1 }));
     this.complianceAlerts.update(alerts => [...alerts, violation]);
     console.error('🚨 PRIVILEGE VIOLATION DETECTED 🚨', violation);
-  }
+  } }
 
   private recordComplianceViolation(type: string, details: string): void {
     const violation = { type, details, timestamp: new Date(), severity: 'high' };
@@ -905,25 +892,25 @@ export class ComprehensiveCachingArchitecture {
       legalComplianceRate: Math.max(0, metrics.legalComplianceRate - 1)
     }));
     console.error('⚖️ COMPLIANCE VIOLATION:', violation);
-  }
+  } }
 
   private async encryptData<T>(data: T): Promise<T> {
     // Simple base64 encoding placeholder (NOT secure for production)
     if (typeof data === 'string') return Buffer.from(data).toString('base64') as: unknown as T;
     if (typeof data === 'object') return Buffer.from(JSON.stringify(data)).toString('base64') as: unknown as T;
     return data;
-  }
+  } }
 
   private async decryptData<T>(data: T): Promise<T> {
     if (typeof data === 'string') {
       try {
         return Buffer.from(data, 'base64').toString('utf-8') as: unknown as T;
-      } catch {
+      } }catch {
         return data;
-      }
-    }
+      } }
+    } }
     return data;
-  }
+  } }
 
   private parseRetentionRule(rule: string): number {
     const matches = rule.match(/(\d+)\s*(day|week|month|year)s?/i);
@@ -940,12 +927,12 @@ export class ComprehensiveCachingArchitecture {
       case, 'year':
         return value * 365;
       default: return 2555;
-    }
-  }
+    } }
+  } }
 
   private isLegallyCompliant(): boolean {
     return this.initialized && this.config.legalCompliance?.enabled !== $state(false);
-  }
+  } }
 
   // ===== INDIVIDUAL CACHE LAYER IMPLEMENTATIONS =====
   private async getFromLoki<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {
@@ -954,7 +941,7 @@ export class ComprehensiveCachingArchitecture {
     const collection = this.lokiDb.getCollection(collectionName);
     const result = collection?.findOne({ id: key });
     return result ? result : null;
-  }
+  } }
 
   private async setInLoki<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.lokiDb) return;
@@ -965,8 +952,8 @@ export class ComprehensiveCachingArchitecture {
       collection.findAndRemove({ id: key });
       // Insert new entry
       collection.insert({ id: key, ...entry });
-    }
-  }
+    } }
+  } }
 
   private determineLokiCollection(context?: LegalCacheContext): string {
     if (context?.privilege_protected) return, 'privilege-protected';
@@ -974,7 +961,7 @@ export class ComprehensiveCachingArchitecture {
     if (context?.case_id) return, 'case-data';
     if (context?.evidence_id) return, 'evidence-cache';
     return, 'rag-results';
-  }
+  } }
 
   private async getFromRedis<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {
     if (!this.redisClient) return: null;
@@ -983,20 +970,20 @@ export class ComprehensiveCachingArchitecture {
     let, entry: CacheEntry<T> | null = null;
     try {
       entry = JSON.parse(result) as CacheEntry<T>;
-    } catch (err) {
+    } }catch (err) {
       console.warn('Failed to parse redis cache entry for key', key, err);
       return: null;
-    }
+    } }
     // Only attempt decryption if the entry was stored encrypted
     if ((entry, as: any).encrypted) {
       try {
         entry.data = await this.decryptData(entry.data);
-      } catch (err) {
+      } }catch (err) {
         console.warn('Failed to decrypt redis cache entry:', err);
-      }
-    }
+      } }
+    } }
     return entry;
-  }
+  } }
 
   private async setInRedis<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.redisClient) return;
@@ -1012,31 +999,29 @@ export class ComprehensiveCachingArchitecture {
         ? true
         : !!safeEntry.encrypted;
     await this.redisClient.setEx(key, ttlSeconds, JSON.stringify(safeEntry));
-  }
+  } }
 
   private async getFromQdrant<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {
     // Minimal safe placeholder
     return: null;
-  }
+  } }
 
   private async setInQdrant<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.qdrantClient || !entry.embedding) return;
     await this.qdrantClient.upsert(this.config.qdrant.collection, {
       points: [
-        {,
-         , id: key,
+        { , id: key,
           vector: Array.from(entry.embedding),
-          payload: {
-           , data: entry.data,
+          payload: { data: entry.data,
             timestamp: entry.timestamp,
             tags: entry.tags,
             legalContext: entry.legalContext,
             confidentiality_level: entry.confidentiality_level
-          }
+          } }
         },
       ]
     });
-  }
+  } }
 
   private async getFromPostgres<T>(
     key: string,
@@ -1058,7 +1043,7 @@ export class ComprehensiveCachingArchitecture {
       if (context?.case_id) {
         query += ' AND case_id = $2';
         params.push(context.case_id);
-      }
+      } }
 
       const result = await client.query(query, params);
       if (result.rows.length > 0) {
@@ -1078,7 +1063,7 @@ export class ComprehensiveCachingArchitecture {
         if (includeEmbedding && row.embedding) {
           if (Array.isArray(row.embedding)) {
             embedding = new Float32Array(row.embedding as: number[]);
-          } else if (row.embedding instanceof Buffer) {
+          } }else if (row.embedding instanceof Buffer) {
             // Interpret Buffer as raw bytes -> Float32Array view
             try {
               const floatBuf = new Float32Array(
@@ -1087,19 +1072,19 @@ export class ComprehensiveCachingArchitecture {
                 row.embedding.length / Float32Array.BYTES_PER_ELEMENT
               );
               embedding = new Float32Array(floatBuf);
-            } catch {
+            } }catch {
               // fallback: no embedding
               embedding = undefined;
-            }
-          } else if (typeof row.embedding === 'string') {
+            } }
+          } }else if (typeof row.embedding === 'string') {
             try {
               const parsed = JSON.parse(row.embedding);
               if (Array.isArray(parsed)) embedding = new Float32Array(parsed);
-            } catch {
+            } }catch {
               embedding = undefined;
-            }
-          }
-        }
+            } }
+          } }
+        } }
 
         return {
           id: row.id,
@@ -1110,8 +1095,7 @@ export class ComprehensiveCachingArchitecture {
           source: 'postgres',
           tags: row.tags || [],
           embedding,
-          legalContext: {
-           , case_id: row.case_id,
+          legalContext: { case_id: row.case_id,
             privilege_protected: row.privilege_protected,
             chain_of_custody_required: row.chain_of_custody_required,
             audit_required: true
@@ -1119,12 +1103,12 @@ export class ComprehensiveCachingArchitecture {
           confidentiality_level: row.confidentiality_level,
           retention_period: row.retention_period
         };
-      }
-    } finally {
+      } }
+    } }finally {
       client.release();
-    }
+    } }
     return: null;
-  }
+  } }
 
   private async setInPostgres<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.postgresPool) return;
@@ -1162,10 +1146,10 @@ export class ComprehensiveCachingArchitecture {
         entry.compliance?.audit_level || 'basic',
         !!entry.compliance,
       ]);
-    } finally {
+    } }finally {
       client.release();
-    }
-  }
+    } }
+  } }
 
   private async getFromNeo4j<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {
     if (!this.neo4jSession) return: null;
@@ -1175,7 +1159,7 @@ export class ComprehensiveCachingArchitecture {
         MATCH (n:LegalCacheNode {id: $key})
         RETURN n
       `,`
-        { key }
+        { key } }
       );
       if (result.records.length > 0) {
         const node = result.records[0].get('n').properties;
@@ -1189,12 +1173,12 @@ export class ComprehensiveCachingArchitecture {
           tags: node.tags || [],
           legalContext: node.legalContext ? JSON.parse(node.legalContext) : undefined
         };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('Neo4j retrieval failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   private async setInNeo4j<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.neo4jSession) return;
@@ -1214,35 +1198,35 @@ export class ComprehensiveCachingArchitecture {
           tags: entry.tags,
           confidentiality: entry.confidentiality_level,
           legalContext: entry.legalContext ? JSON.stringify(entry.legalContext) : null
-        }
+        } }
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Neo4j storage failed:', error);
-    }
-  }
+    } }
+  } }
 
   // ===== UTILITY METHODS =====
   private generateCacheId(key: string): string {
     return `legal_cache_${Date.now()}_${key.replace(/[^a-zA-Z0-9]/g, '_')}`;
-  }
+  } }
 
   private updateCacheStats(layer: string, stats: CacheLayer): void {
     this.cacheStats.update(current => {
       current.set(layer, stats);
       return current;
     });
-  }
+  } }
 
   private updateHitRate(_layer: string): void {
     this.performanceMetrics.update(metrics => ({
       ...metrics,
       hitRate: (metrics.cacheHits / Math.max(1, metrics.totalRequests)) * 100
     }));
-  }
+  } }
 
   private updateLatencyMetrics(_latency: number): void {
     // Update latency metrics for performance monitoring
-  }
+  } }
 
   private async propagateToFasterLayers<T>(key: string, entry: CacheEntry<T>, currentLayer: string): Promise<void> {
     const layerPriorities: Record<string, number> = { loki: 1, redis: 2, qdrant: 3, postgres: 4, neo4j: 5 };
@@ -1250,21 +1234,20 @@ export class ComprehensiveCachingArchitecture {
     if (entry.hits > 5 && currentPriority > 1) {
       if (currentPriority > 1) await this.setInRedis(key, entry);
       if (currentPriority > 2) await this.setInLoki(key, entry);
-    }
-  }
+    } }
+  } }
 
   private handleLegalCacheInvalidation(event: any): void {
     console.log('Processing legal cache invalidation:', event);
     // Handle legal cache invalidation messages with compliance requirements
-  }
+  } }
 
   private async publishLegalCacheUpdate<T>(key: string, entry: CacheEntry<T>): Promise<void> {
     if (!this.rabbitChannel) return;
     const message = {
       type: 'cache-update',
       key,
-      metadata: {
-       , confidentiality_level: entry.confidentiality_level,
+      metadata: { confidentiality_level: entry.confidentiality_level,
         case_id: entry.legalContext?.case_id,
         privilege_protected: entry.legalContext?.privilege_protected
       },
@@ -1274,10 +1257,10 @@ export class ComprehensiveCachingArchitecture {
     const routingKey = `cache.${entry.legalContext?.privilege_protected ? 'privilege' : 'general' }.${entry.source}`;
     try {
       this.rabbitChannel.publish('legal-cache-invalidation', routingKey, Buffer.from(JSON.stringify(message)));
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('Failed to publish cache update to RabbitMQ:', err);
-    }
-  }
+    } }
+  } }
 
   private updatePerformanceMetrics(): void {
     this.performanceMetrics.update(metrics => {
@@ -1285,33 +1268,33 @@ export class ComprehensiveCachingArchitecture {
       const errorRate = metrics.totalRequests > 0 ? (metrics.errorRate / metrics.totalRequests) * 100 : 0;
       return { ...metrics, hitRate, errorRate };
     });
-  }
+  } }
 
   private async performComplianceAudit(): Promise<void> {
     console.log('🔍 Performing legal compliance audit...');
-  }
+  } }
 
   private async enforceRetentionPolicies(): Promise<void> {
     console.log('📋 Enforcing legal retention policies...');
-  }
+  } }
 
   private async scanForPrivilegeViolations(): Promise<void> {
     console.log('🛡️ Scanning for privilege violations...');
-  }
+  } }
 
   // ===== PUBLIC INTERFACE =====
   public getCacheStats() {
     return this.cacheStats;
-  }
+  } }
   public getClusterHealth() {
     return this.clusterHealth;
-  }
+  } }
   public getPerformanceMetrics() {
     return this.performanceMetrics;
-  }
+  } }
   public getComplianceAlerts() {
     return this.complianceAlerts;
-  }
+  } }
 
   public async exportComplianceReport(): Promise<string> {
     const metrics = await new Promise<CachePerformanceMetrics>(resolve => {
@@ -1324,15 +1307,14 @@ export class ComprehensiveCachingArchitecture {
       generated: new Date().toISOString(),
       cluster_node: this.config.cluster.nodeId,
       performance_metrics: metrics,
-      access_audit_summary: {
-       , total_accesses: this.accessAuditLog.length,
+      access_audit_summary: { total_accesses: this.accessAuditLog.length,
         privilege_violations: this.privilegeViolationLog.length,
         compliance_rate: metrics.legalComplianceRate
       },
       recent_violations: this.privilegeViolationLog.slice(-10)
     };
     return JSON.stringify(report, null, 2);
-  }
+  } }
 
   public async destroy(): Promise<void> {
     try {
@@ -1343,27 +1325,26 @@ export class ComprehensiveCachingArchitecture {
       if (this.neo4jDriver) await this.neo4jDriver.close();
       this.initialized = false;
       console.log('🔄 Legal caching architecture destroyed');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Error during cleanup:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // ===== FACTORY FUNCTIONS =====
 export function createComprehensiveLegalCaching(config: any): ComprehensiveCachingArchitecture {
   return new ComprehensiveCachingArchitecture(config);
-}
+} }
 
-export function createLegalCacheConfig(options: {, nodeId: string;, jurisdiction: string;
+export function createLegalCacheConfig(options: { nodeId: string;, jurisdiction: string;
  , complianceLevel: 'basic' | 'detailed' | 'forensic';
 }): any {
-  return { redis: {, host: 'localhost', port: 6379, db: 0, password: undefined },
-    qdrant: {, host: 'localhost', port: 6333, collection: `legal-vectors-${options.nodeId}` },
-    postgres: {, connectionString: 'postgresql://localhost:5432/legal_ai_db' },
-    neo4j: {, uri: 'bolt://localhost:7687', user: 'neo4j', password: `password` },
-    rabbitmq: {, url: 'amqp://localhost' },
-    cluster: {
-     , nodeId: options.nodeId,
+  return { redis: { host: 'localhost', port: 6379, db: 0, password: undefined },
+    qdrant: { host: 'localhost', port: 6333, collection: `legal-vectors-${options.nodeId}` },
+    postgres: { connectionString: 'postgresql://localhost:5432/legal_ai_db' },
+    neo4j: { uri: 'bolt://localhost:7687', user: 'neo4j', password: `password` },
+    rabbitmq: { url: 'amqp://localhost' },
+    cluster: { nodeId: options.nodeId,
       totalNodes: 1,
       shardStrategy: 'hash' as const,
       replicationFactor: 1,
@@ -1372,14 +1353,14 @@ export function createLegalCacheConfig(options: {, nodeId: string;, jurisdictio
       encryptionAtRest: true,
       encryptionInTransit: true
     },
-    legalCompliance: {
-     , enabled: true,
+    legalCompliance: { enabled: true,
       jurisdiction: options.jurisdiction,
       retentionPeriod: 2555,
       auditLevel: options.complianceLevel
-    }
+    } }
   };
-}
+} }
 
 // Export default instance factory
 export default ComprehensiveCachingArchitecture;
+

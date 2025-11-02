@@ -15,11 +15,11 @@
  *  ✅ Performance optimized
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { z } }from 'zod';
+import { db } }from '$lib/server/db';
+import { sql } }from 'drizzle-orm';
 
 // ===== SCHEMAS =====
 
@@ -38,21 +38,21 @@ interface VectorSearchResult {
   title?: string;
   description?: string;
   content?: string;
- , similarity: number;
+  similarity: number;
   metadata?: Record<string, unknown>;
   evidenceType?: string;
   confidentialityLevel?: string;
-}
+} }
 
 interface VectorSearchResponse { results: VectorSearchResult[];, query: string;
   topK: number;
   threshold: number;
   responseTime: number;
   timestamp: string;
-  metadata: {, table: string;, modelUsed: string;
-   , indexType: string;
+  metadata: { table: string;, modelUsed: string;
+  indexType: string;
   };
-}
+} }
 
 // ===== OLLAMA EMBEDDING SERVICE =====
 
@@ -73,21 +73,21 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
     if (!response.ok) {
       throw new Error(`Ollama ${response.status}: ${response.statusText}`);
-    }
+    } }
 
     const data = (await response.json()) as { embedding: number[] };
     if (!data.embedding || !Array.isArray(data.embedding)) {
       throw new Error('Invalid embedding response format');
-    }
+    } }
 
     return data.embedding;
-  } catch (err) {
-    console.error('Embedding error:', err);'
+  } }catch (err) {
+    console.error('Embedding error:', err);
     throw error(503, {
       message: 'Failed to generate query embedding',
       detail: err instanceof Error ? err.message : `Unknown error' });'`
-  }
-}
+  } }
+} }
 
 // ===== DRIZZLE PGVECTOR SEARCH =====
 
@@ -103,7 +103,7 @@ async function searchEvidenceWithDrizzle(
       similarity: number;
       evidenceType: string;
       confidentialityLevel: string | null;
-     , metadata: string | null;
+  metadata: string | null;
     }>(
       sql`
         SELECT
@@ -116,9 +116,9 @@ async function searchEvidenceWithDrizzle(
           metadata::text
         FROM evidence
         WHERE embedding IS NOT NULL
-          AND (1 - (embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector)) >= ${threshold}
+          AND (1 - (embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector)) >= ${threshold} }
         ORDER BY embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector
-        LIMIT ${topK}
+        LIMIT ${topK} }
       `
     );
 
@@ -131,13 +131,13 @@ async function searchEvidenceWithDrizzle(
       confidentialityLevel: row.confidentialityLevel || undefined,
       metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
-  } catch (err) {
-    console.error('Evidence search error:', err);'
+  } }catch (err) {
+    console.error('Evidence search error:', err);
     throw error(500, {
       message: 'Evidence search failed',
       detail: err instanceof Error ? err.message : `Database error' });'`
-  }
-}
+  } }
+} }
 
 async function searchDocumentsWithDrizzle(
   embedding: number[],
@@ -146,7 +146,7 @@ async function searchDocumentsWithDrizzle(
 ): Promise<VectorSearchResult[]> {
   try {
     const results = await db.execute<{ id: string;, content: string | null;
-     , similarity: number;
+  similarity: number;
     }>(
       sql`
         SELECT
@@ -155,9 +155,9 @@ async function searchDocumentsWithDrizzle(
           (1 - (embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector)) as similarity
         FROM documents
         WHERE embedding IS NOT NULL
-          AND (1 - (embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector)) >= ${threshold}
+          AND (1 - (embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector)) >= ${threshold} }
         ORDER BY embedding <=> ${sql.raw(JSON.stringify(embedding))}::vector
-        LIMIT ${topK}
+        LIMIT ${topK} }
       `
     );
 
@@ -166,12 +166,12 @@ async function searchDocumentsWithDrizzle(
       content: row.content || undefined,
       similarity: row.similarity
     }));
-  } catch (err) {
-    console.error('Documents search error:', err);'
+  } }catch (err) {
+    console.error('Documents search error:', err);
     throw error(500, {
       message: 'Documents search failed',
-      detail: err instanceof Error ? err.message : 'Database error' });'' }
-}
+      detail: err instanceof Error ? err.message : 'Database error' });'' } }
+} }
 
 // ===== MAIN HANDLER =====
 
@@ -197,14 +197,14 @@ export const POST: RequestHandler = async ({ request }) => {
         params.threshold || 0.5
       );
       searchTable = 'documents';
-    } else {
+    } }else {
       results = await searchEvidenceWithDrizzle(
         embedding,
         params.topK || 10,
         params.threshold || 0.5
       );
       searchTable = 'evidence';
-    }
+    } }
 
     const responseTime = Date.now() - startTime;
 
@@ -216,29 +216,29 @@ export const POST: RequestHandler = async ({ request }) => {
       responseTime,
       timestamp: new Date().toISOString(),
       metadata: {
-       , table: searchTable,
+  table: searchTable,
         modelUsed: 'embeddinggemma:latest',
-        indexType: `pgvector (cosine distance)' }'`
+        indexType: `pgvector (cosine distance)' } }`
     };
 
     return json(response);
-  } catch (err) {
+  } }catch (err) {
     if (err instanceof z.ZodError) {
       return error(400, {
         message: 'Invalid request parameters',
         errors: err.flatten().fieldErrors
       });
-    }
+    } }
 
     // Let custom errors propagate
     if (err && typeof err === 'object' && 'status' in err) {
       return err as ReturnType<typeof, error>;
-    }
+    } }
 
     return error(500, {
       message: 'Search failed',
       detail: err instanceof Error ? err.message : `Unknown error' });'`
-  }
+  } }
 };
 
 // ===== HEALTH CHECK =====
@@ -251,8 +251,7 @@ export const GET: RequestHandler = async () => {
     );
 
     if (!vectorTest || vectorTest.length === 0) {
-      return error(503, { message: `pgvector not available' });'`
-    }
+      return error(503, { message: 'pgvector not available' });'' } }
 
     // Check Ollama
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -263,15 +262,16 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       services: {
-       , pgvector: 'available',
+  pgvector: 'available',
         ollama: ollamaCheck?.ok ? 'available' : 'unreachable' },'`'`
       endpoints: {
-       , search: 'POST /api/search-drizzle-pgvector',
-        health: `GET /api/search-drizzle-pgvector' }'`
+  search: 'POST /api/search-drizzle-pgvector',
+        health: `GET /api/search-drizzle-pgvector' } }`
     });
-  } catch (err) {
+  } }catch (err) {
     return error(503, {
       message: 'Health check failed',
       detail: err instanceof Error ? err.message : `Unknown error' });'`
-  }
+  } }
 };
+

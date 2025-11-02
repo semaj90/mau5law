@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 /*
  * Library Sync API Endpoints - Step, 6 & 7 Integration
  */
-import { librarySyncService } from '$lib/services/library-sync-service';
+import { librarySyncService } }from '$lib/services/library-sync-service';
 
 // GET /api/libraries - Search libraries
 export const GET: RequestHandler = async ({ url }) => {
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
       libraries,
       count: libraries.length
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to search libraries:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
@@ -25,9 +25,9 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to search libraries',
         message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // POST /api/libraries/sync - Trigger manual sync
@@ -37,17 +37,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const source = body.source as: 'github' | 'context7' | 'npm' | undefined;
     if (source === 'github') {
       await librarySyncService.syncGitHubLibraries();
-    } else if (source === 'context7') {
+    } }else if (source === 'context7') {
       await librarySyncService.syncContext7Libraries();
-    } else if (source === 'npm') {
+    } }else if (source === 'npm') {
       await librarySyncService.syncNpmLibraries();
-    } else {
+    } }else {
       await librarySyncService.syncAllLibraries();
-    }
+    } }
     return json({
       success: true,
       message: `Libraries synced successfully${source ? ` for ${source}` : '' }` });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to sync libraries:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
@@ -56,7 +56,8 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Failed to sync libraries',
         message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

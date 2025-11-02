@@ -1,6 +1,6 @@
 
-import type { RequestHandler } from './$types.js'
-import { json, error as kitError } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js'
+import { json, error as kitError } }from '@sveltejs/kit';
 
 /*
  * Simple Copilot Optimization API for Testing
@@ -15,13 +15,13 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         status: 'healthy',
         services: {
-         , simdProcessor: true,
+  simdProcessor: true,
           indexOptimizer: true,
           vectorEmbeddings: true,
           cache: true
         },
         performance: {
-         , responseTime: 5,
+  responseTime: 5,
           memoryUsage: 50
         },
         timestamp: Date.now()
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         content: generateExampleCopilotContent(),
         analysis: {
-         , size: 2500,
+  size: 2500,
           lines: 80,
           sections: 6,
           codeBlocks: 4,
@@ -53,8 +53,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
     default:
       throw kitError(400, `Invalid action: ${action}., Use: health, status, load_copilot`);
-  }
-}
+  } }
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   const contentType = request.headers.get('content-type');
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => null);
   if (!body) throw kitError(400, 'Invalid JSON body');
 
-  const { action, content } = body as { action?: string; content?: any };
+  const { action, content } }= body as { action?: string; content?: any };
   if (!action) throw kitError(400, 'Action is required');
 
   switch (action) {
@@ -71,9 +71,8 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         optimizedIndex: {
-         , entries: [
-            {,
-             , id: 'demo_1',
+  entries: [
+            { id: 'demo_1',
               content: (content, as: string) || 'Demo content',
               score: 0.95,
               patterns: ['$props()', '$state()', 'Context7']
@@ -81,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ]
         },
         summary: {
-         , totalEntries: 1,
+  totalEntries: 1,
           indexSize: '0.5 MB',
           optimizationTime: 150,
           cacheHitRate: 0.8,
@@ -96,11 +95,10 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         query: content,
         results: [
-          {,
-            id: 'result_1',
+          { id: 'result_1',
             content: 'Example search result',
             score: 0.92,
-            explanation: 'Context7 pattern;, match: Svelte, 5 runes` }'`
+            explanation: 'Context7 pattern; match: Svelte, 5 runes` } }`
         ],
         count: 1,
         timestamp: Date.now()
@@ -108,27 +106,27 @@ export const POST: RequestHandler = async ({ request }) => {
 
     default:
       throw kitError(400, `Invalid action: ${action}., Use: optimize_index, semantic_search`);
-  }
+  } }
 };
 
 function generateExampleCopilotContent(): string {
   return `# Copilot Context - Legal AI System`
 ## SvelteKit, 2 & Svelte, 5 Patterns
 ### Modern Component Patterns
-- **Props**: Use \`let { prop = 'default` } = $props()\`'`
+- **Props**: Use \`let { prop = 'default` } }= $props()\`'`
 - **State**: Use \`$state()\` for reactive state
 - **Computed**: Use \`$derived()\` for computed values
 - **Effects**: Use \`$effect()\` for side effects
 \n+\`\`\`typescript`
 // Example Svelte, 5 component
 export function MyComponent() {
-  let { data = [] } = $props()
+  let { data = [] } }= $props()
   let count = $state<number>(0)
   let doubled = $derived(count * 2)
   $effect(() => {
     console.log('Count changed:', count)
   })
-}
+} }
 \n+\`\`\`
 ## Database Patterns with Drizzle ORM
 \n+\`\`\`typescript`
@@ -146,7 +144,7 @@ export const cases = pgTable('cases', {
 export async function processLegalDocument(content: string): Promise<any> {
   const embedding = await generateEmbedding(content)
   const similarDocs = await semanticSearch(embedding)
-  return { embedding, similarDocs }
-}
+  return { embedding, similarDocs } }
+} }
 \n+\`\`\`
 `;` }

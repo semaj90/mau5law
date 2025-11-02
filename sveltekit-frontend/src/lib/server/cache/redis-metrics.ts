@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /**
  * Redis Cache with Hit/Miss Metrics
  * Tracks cache performance for optimization insights
  */
-import { createClient, type RedisClientType } from 'redis';
+import { createClient, type RedisClientType } }from 'redis';
 interface CacheMetrics { hits: number;, misses: number;
   sets: number;
   deletes: number;
@@ -12,16 +12,15 @@ interface CacheMetrics { hits: number;, misses: number;
   hitRate: number;
   averageGetTime: number;
   averageSetTime: number;
-}
-interface OperationTiming {, operation: string;, duration: number;
+} }
+interface OperationTiming { operation: string;, duration: number;
   timestamp: number;
-}
+} }
 export class RedisMetricsCache {
   private, client: RedisClientType | null = null;
   private isConnected = $state(false);
   // Metrics counters
-  private metrics: CacheMetrics = {
-   , hits: 0,
+  private metrics: CacheMetrics = { hits: 0,
     misses: 0,
     sets: 0,
     deletes: 0,
@@ -36,8 +35,8 @@ export class RedisMetricsCache {
   private setTimes: number[] = [];
   private readonly MAX_TIMING_SAMPLES = 1000;
   // Key pattern tracking for insights
-  private, keyPatterns: Map<string, { hits: number;, misses: number }> = new Map();
-  constructor(private url: string) {}
+  private, keyPatterns: Map<string, { hits: number; misses: number }> = new Map();
+  constructor(private url: string) {} }
   /**
    * Connect to Redis
    */
@@ -46,7 +45,7 @@ export class RedisMetricsCache {
     try {
       this.client = redis;
       this.client.on('error', (err) => {
-        console.error('Redis connection error:', err);'
+        console.error('Redis connection error:', err);
         this.metrics.errors++;
         this.isConnected = false;
       });
@@ -55,19 +54,19 @@ export class RedisMetricsCache {
         this.isConnected = true;
       });
       await this.client.connect();
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to connect to Redis:', error);
       this.metrics.errors++;
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get value from cache with metrics tracking
    */
   async get(key: string): Promise<string | null> {
     if (!this.client) {
       await this.connect();
-    }
+    } }
     const startTime = performance.now();
     this.metrics.totalRequests++;
     try {
@@ -79,59 +78,59 @@ export class RedisMetricsCache {
       if (value !== null) {
         this.metrics.hits++;
         this.trackKeyPattern(key, true);
-      } else {
+      } }else {
         this.metrics.misses++;
         this.trackKeyPattern(key, false);
-      }
+      } }
       this.updateHitRate();
       return value;
-    } catch (error) {
+    } }catch (error) {
       this.metrics.errors++;
       this.metrics.misses++;
       console.error(`Redis GET error for key ${key}: ', error);'`
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Set value in cache with metrics tracking
    */
   async set(key: string, value: string, ttl?: number): Promise<boolean> {
     if (!this.client) {
       await this.connect();
-    }
+    } }
     const startTime = performance.now();
     this.metrics.sets++;
     try {
       if (ttl) {
         await this.client!.setEx(key, ttl, value);
-      } else {
+      } }else {
         await this.client!.set(key, value);
-      }
+      } }
       const duration = performance.now() - startTime;
       this.recordTiming('set', duration);
       return true;
-    } catch (error) {
+    } }catch (error) {
       this.metrics.errors++;
       console.error(`Redis SET error for key ${key}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Delete key from cache
    */
   async del(key: string): Promise<number> {
     if (!this.client) {
       await this.connect();
-    }
+    } }
     try {
       this.metrics.deletes++;
       return await this.client!.del(key);
-    } catch (error) {
+    } }catch (error) {
       this.metrics.errors++;
       console.error(`Redis DEL error for key ${key}: ', error);'`
       return 0;
-    }
-  }
+    } }
+  } }
   /**
    * Get or set pattern (cache-aside)
    */
@@ -145,16 +144,16 @@ export class RedisMetricsCache {
     if (cached !== null) {
       try {
         return JSON.parse(cached) as T;
-      } catch {
+      } }catch {
         // If parse fails, fetch fresh data
         await this.del(key);
-      }
-    }
+      } }
+    } }
     // Cache miss - fetch fresh data
     const freshData = await fetchFn();
     await this.set(key, JSON.stringify(freshData), ttl);
     return freshData;
-  }
+  } }
   /**
    * Multi-tier caching: Redis → Fallback → Source
    */
@@ -169,10 +168,10 @@ export class RedisMetricsCache {
     if (cached !== null) {
       try {
         return JSON.parse(cached) as T;
-      } catch {
+      } }catch {
         // Parse failed, continue to fallback
-      }
-    }
+      } }
+    } }
     // Try fallback source (e.g., MinIO, PostgreSQL)
     try {
       const fallbackData = await fallbackSource();
@@ -180,16 +179,16 @@ export class RedisMetricsCache {
         // Cache fallback result
         await this.set(key, JSON.stringify(fallbackData), ttl);
         return fallbackData;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Fallback source failed:', error);
-    }
+    } }
     // Fetch from primary source
     const primaryData = await primarySource();
     // Cache primary result
     await this.set(key, JSON.stringify(primaryData), ttl);
     return primaryData;
-  }
+  } }
   /**
    * Batch get with metrics
    */
@@ -205,20 +204,20 @@ export class RedisMetricsCache {
         if (value !== null) {
           this.metrics.hits++;
           this.trackKeyPattern(keys[index], true);
-        } else {
+        } }else {
           this.metrics.misses++;
           this.trackKeyPattern(keys[index], false);
-        }
+        } }
       });
       this.recordTiming('mGet', duration);
       this.updateHitRate();
       return values;
-    } catch (error) {
+    } }catch (error) {
       this.metrics.errors++;
-      console.error('Redis MGET error:', error);'
+      console.error('Redis MGET error:', error);
       return keys.map(() => null);
-    }
-  }
+    } }
+  } }
   /**
    * Track performance timing
    */
@@ -227,16 +226,16 @@ export class RedisMetricsCache {
       this.getTimes.push(duration);
       if (this.getTimes.length > this.MAX_TIMING_SAMPLES) {
         this.getTimes.shift();
-      }
+      } }
       this.metrics.averageGetTime = this.getTimes.reduce((a, b) => a + b, 0) / this.getTimes.length;
-    } else if (operation === 'set') {
+    } }else if (operation === 'set') {
       this.setTimes.push(duration);
       if (this.setTimes.length > this.MAX_TIMING_SAMPLES) {
         this.setTimes.shift();
-      }
+      } }
       this.metrics.averageSetTime = this.setTimes.reduce((a, b) => a + b, 0) / this.setTimes.length;
-    }
-  }
+    } }
+  } }
   /**
    * Track key patterns for analysis
    */
@@ -246,28 +245,28 @@ export class RedisMetricsCache {
     const existing = this.keyPatterns.get(pattern) || { hits: 0, misses: 0 };
     if (hit) {
       existing.hits++;
-    } else {
+    } }else {
       existing.misses++;
-    }
+    } }
     this.keyPatterns.set(pattern, existing);
-  }
+  } }
   /**
    * Update hit rate
    */
   private updateHitRate(): void {
     const total = this.metrics.hits + this.metrics.misses;
     this.metrics.hitRate = total > 0 ? (this.metrics.hits / total) * 100 : 0;
-  }
+  } }
   /**
    * Get current metrics
    */
   getMetrics(): CacheMetrics {
     return { ...this.metrics };
-  }
+  } }
   /**
    * Get key pattern statistics
    */
-  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number;, hitRate: number }> {
+  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number; hitRate: number }> {
     return Array.from(this.keyPatterns.entries())
       .map(([pattern, stats]) => ({
         pattern,
@@ -276,27 +275,26 @@ export class RedisMetricsCache {
         hitRate: stats.hits + stats.misses > 0 ? (stats.hits / (stats.hits + stats.misses)) * 100 : 0
       }))
       .sort((a, b) => (b.hits + b.misses) - (a.hits + a.misses)); // Sort by total requests
-  }
+  } }
   /**
    * Get performance insights
    */
   getPerformanceInsights() {
     const metrics = this.getMetrics();
     const patterns = this.getKeyPatternStats();
-    return { overall: {, hitRate: metrics.hitRate.toFixed(2) + '%',
+    return { overall: { hitRate: metrics.hitRate.toFixed(2) + '%',
         totalRequests: metrics.totalRequests,
         hits: metrics.hits,
         misses: metrics.misses,
         errors: metrics.errors,
         errorRate: ((metrics.errors / metrics.totalRequests) * 100).toFixed(2) + '%'
       },
-      performance: {
-       , averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
+      performance: { averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
         averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms` },'`
       topPatterns: patterns.slice(0, 10),
       recommendations: this.generateRecommendations(metrics, patterns)
     };
-  }
+  } }
   /**
    * Generate optimization recommendations
    */
@@ -305,27 +303,27 @@ export class RedisMetricsCache {
     // Low hit rate recommendation
     if (metrics.hitRate < 50) {
       recommendations.push(`⚠️  Low cache hit rate (${metrics.hitRate.toFixed(1)}%). Consider increasing TTL or pre-warming cache.`);
-    }
+    } }
     // High error rate
     if (metrics.errors / metrics.totalRequests > 0.01) {
       recommendations.push('❌ High error rate detected. Check Redis connection stability.');
-    }
+    } }
     // Slow operations
     if (metrics.averageGetTime > 10) {
       recommendations.push(`🐌 Slow GET operations (${metrics.averageGetTime.toFixed(1)}ms avg). Consider connection pooling or Redis cluster.`);
-    }
+    } }
     // Pattern-specific recommendations
     patterns.forEach(pattern => {
       if (pattern.hitRate < 30 && (pattern.hits + pattern.misses) > 100) {
         recommendations.push(`📊 Low hit rate for pattern: "${pattern.pattern}" (${pattern.hitRate.toFixed(1)}%). Consider cache warming.`);
-      }
+      } }
     });
     // Cache warming suggestion
     if (metrics.misses > metrics.hits * 2) {
       recommendations.push('🔥 High miss rate suggests cache warming could help. Implement pre-fetch for common queries.');
-    }
+    } }
     return recommendations;
-  }
+  } }
   /**
    * Reset metrics
    */
@@ -344,7 +342,7 @@ export class RedisMetricsCache {
     this.getTimes = [];
     this.setTimes = [];
     this.keyPatterns.clear();
-  }
+  } }
   /**
    * Close connection
    */
@@ -354,15 +352,16 @@ export class RedisMetricsCache {
       this.client = null;
       this.isConnected = $state(false);
       console.log('Redis disconnected');
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 let redisMetricsCache: RedisMetricsCache | null = null;
 export function getRedisMetricsCache(url?: string): RedisMetricsCache {
   if (!redisMetricsCache) {
     const redisUrl = url || process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
     redisMetricsCache = new RedisMetricsCache(redisUrl);
-  }
+  } }
   return redisMetricsCache;
-}
+} }
+

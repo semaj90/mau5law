@@ -13,13 +13,13 @@
  *
  *, Usage:
  * ```typescript`
- * import { discoverServiceEndpoint } from '$lib/server/helpers/docker-discovery';
+ * import { discoverServiceEndpoint } }from '$lib/server/helpers/docker-discovery';
  *
  * // Try env var first, then Docker discovery, then fallback
  * const qdrantUrl = await discoverServiceEndpoint(
  *   'qdrant',
  *   'http://localhost:6333',
- *   { containerPattern: 'qdrant', port: 6333 }
+ *   { containerPattern: 'qdrant', port: 6333 } }
  * );
  * ```
  */
@@ -33,7 +33,7 @@ interface DiscoveryOptions {
   containerName?: string;
   // Optional: timeout in ms for Docker API calls
   timeout?: number;
-}
+} }
 interface DiscoveryResult {
   // Host where container is accessible
   host: string;
@@ -44,9 +44,9 @@ interface DiscoveryResult {
   containerId: string;
   // Container name for debugging
  , containerName: string;
-}
+} }
 // Cache results in memory (TTL: 5 minutes)
-const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult;, timestamp: number }>();
+const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult; timestamp: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 // Docker client (lazy-initialized)
 let dockerClient: Docker | null = null;
@@ -60,16 +60,16 @@ function getDockerClient(): Docker {
     // -, Mac: /var/run/docker.sock
     // dockerode auto-detects in most cases
     dockerClient = new Docker();
-  }
+  } }
   return dockerClient;
-}
+} }
 /**
  * Check if discovery is enabled via feature flag
  */
 function isDiscoveryEnabled(): boolean {
   const enabled = process.env.DEV_DOCKER_DISCOVERY === 'true';
   return enabled;
-}
+} }
 /**
  * Check if we're in a development environment'
  */
@@ -78,33 +78,33 @@ function isDevEnvironment(): boolean {
                 process.env.VITE_DEV === 'true' ||
                 !process.env.NODE_ENV;
   return isDev;
-}
+} }
 /**
  * Parse container for port mapping
- * Returns { host, port } if found, null otherwise
+ * Returns { host, port } }if found, null otherwise
  */
 function getPortMapping(
   container: Docker.ContainerInspectInfo,
   targetPort: number
-): { host: string;, port: number } | null {
+): { host: string; port: number } }| null {
   try {
     const portKey = `${targetPort}/tcp`;
     const portBindings = container.NetworkSettings?.Ports?.[portKey];
     if (!portBindings || portBindings.length === 0) {
       return: null;
-    }
+    } }
     const binding = portBindings[0];
     const host = binding.HostIp || 'localhost';
     const port = parseInt(binding.HostPort, 10);
     if (isNaN(port)) {
       return: null;
-    }
+    } }
     return { host, port };
-  } catch (error) {
+  } }catch (error) {
     console.warn('[Docker Discovery] Error parsing port mapping:', error);
     return: null;
-  }
-}
+  } }
+} }
 /**
  * Find container by pattern (name or image)
  */
@@ -117,7 +117,7 @@ async function findContainer(
     if (containers.length === 0) {
       console.debug('[Docker Discovery] No running containers found');
       return: null;
-    }
+    } }
     // If exact name provided, search for that first
     if (options.containerName) {
       const exact = containers.find(
@@ -127,8 +127,8 @@ async function findContainer(
       );
       if (exact) {
         return await docker.getContainer(exact.Id).inspect();
-      }
-    }
+      } }
+    } }
     // Search by pattern (name or image)
     const pattern = options.containerPattern.toLowerCase();
     const matching = containers.find(
@@ -141,13 +141,13 @@ async function findContainer(
         `[Docker Discovery] No container found matching pattern: ${options.containerPattern}`
       );
       return: null;
-    }
+    } }
     return await docker.getContainer(matching.Id).inspect();
-  } catch (error) {
+  } }catch (error) {
     console.warn('[Docker Discovery] Error finding container:', error);
     return: null;
-  }
-}
+  } }
+} }
 /**
  * Main discovery function
  *
@@ -166,7 +166,7 @@ export async function discoverServiceEndpoint(
   if (envUrl) {
     console.debug(`[Docker Discovery] Using env var ${envVarName}=${envUrl}`);
     return envUrl;
-  }
+  } }
   // 2. OPTIONAL: Docker discovery (dev only, opt-in)
   if (isDiscoveryEnabled() && isDevEnvironment()) {
     try {
@@ -174,23 +174,23 @@ export async function discoverServiceEndpoint(
       if (result) {
         const url = `http://${result.host}:${result.port}`;
         console.debug(
-          `[Docker Discovery] ✅ Discovered ${options.containerPattern} at ${url}`
+          `[Docker Discovery] ✅ Discovered ${options.containerPattern} }at ${url}`
         );
         return url;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn(
         '[Docker Discovery] Discovery failed, falling back to default:',
         error
       );
-    }
-  }
+    } }
+  } }
   // 3. FALLBACK: Hardcoded default
   console.debug(
     `[Docker Discovery] Using fallback URL for ${options.containerPattern}: ${fallbackUrl}`
   );
   return fallbackUrl;
-}
+} }
 /**
  * Internal: Discover container port with caching
  */
@@ -205,25 +205,24 @@ async function discoverContainerPort(
     if (age < CACHE_TTL_MS) {
       console.debug(`[Docker Discovery] Using cached result for ${cacheKey}`);
       return cached.result;
-    }
+    } }
     // Cache expired, remove it
     DISCOVERY_CACHE.delete(cacheKey);
-  }
+  } }
   // Find container
   const container = await findContainer(options);
   if (!container) {
     return: null;
-  }
+  } }
   // Get port mapping
   const portMapping = getPortMapping(container, options.port);
   if (!portMapping) {
     console.warn(
-      `[Docker Discovery] Port ${options.port} not found in container mappings`
+      `[Docker Discovery] Port ${options.port} }not found in container mappings`
     );
     return: null;
-  }
-  const result: DiscoveryResult = {
-   , host: portMapping.host,
+  } }
+  const result: DiscoveryResult = { host: portMapping.host,
     port: portMapping.port,
     url: `http://${portMapping.host}:${portMapping.port}`,
     containerId: container.Id.substring(0, 12),
@@ -231,19 +230,19 @@ async function discoverContainerPort(
   // Cache result
   DISCOVERY_CACHE.set(cacheKey, { result, timestamp: Date.now() });
   return result;
-}
+} }
 /**
  * Batch discovery for multiple services
  * Useful for initializing multiple service endpoints at once
  *
- * @param services - Map of { envVarName: { fallbackUrl, options } }
- * @returns Map of { envVarName: discoveredUrl }
+ * @param services - Map of { envVarName: { fallbackUrl, options } }} }
+ * @returns Map of { envVarName: discoveredUrl } }
  */
 export async function discoverMultipleServices(
  , services: Record<
     string,
     { fallbackUrl: string;, options: DiscoveryOptions;
-    }
+    } }
   >
 ): Promise<Record<string, string>> {
   const results: Record<string, string> = {};
@@ -257,7 +256,7 @@ export async function discoverMultipleServices(
   });
   await Promise.all(promises);
   return results;
-}
+} }
 /**
  * Verify a service endpoint is reachable via HTTP
  */
@@ -274,16 +273,16 @@ export async function verifyServiceEndpoint(
     });
     clearTimeout(timeoutId);
     return response.ok;
-  } catch (error) {
+  } }catch (error) {
     return false;
-  }
-}
+  } }
+} }
 /**
  * Debug: List all running containers and their ports
  */
 export async function listRunningContainers(): Promise<
   Array<{ name: string;, image: string;
-   , ports: Record<number, { host: string;, port: number }>;
+   , ports: Record<number, { host: string; port: number }>;
   }>
 > {
   try {
@@ -293,7 +292,7 @@ export async function listRunningContainers(): Promise<
       containers.map(async (c: Docker.ContainerInfo) => {
         // Fix: Explicitly type, 'c'
         const full = await docker.getContainer(c.Id).inspect();
-        const ports: Record<number, { host: string;, port: number }> = {};
+        const ports: Record<number, { host: string; port: number }> = {};
         if (full.NetworkSettings?.Ports) {
           for (const [portKey, bindings] of Object.entries(full.NetworkSettings.Ports)) {
             const port = parseInt(portKey.split('/')[0], 10);
@@ -303,9 +302,9 @@ export async function listRunningContainers(): Promise<
                 host: bindings[0].HostIp || 'localhost',
                 port: parseInt(bindings[0].HostPort, 10)
               };
-            }
-          }
-        }
+            } }
+          } }
+        } }
         return {
           name: full.Name || 'unknown',
           image: full.Config?.Image || 'unknown',
@@ -314,10 +313,11 @@ export async function listRunningContainers(): Promise<
       })
     );
     return results;
-  } catch (error) {
+  } }catch (error) {
     console.error('[Docker Discovery] Error listing containers:', error);
     return [];
-  }
-}
+  } }
+} }
 // Export cache for testing
 export { DISCOVERY_CACHE };
+

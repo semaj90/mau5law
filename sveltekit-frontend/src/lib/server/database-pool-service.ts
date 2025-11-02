@@ -3,9 +3,9 @@
  * Implements Redis-based connection pooling and distributed caching
  */
 import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { redisService } from './redis-service.js';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
+import { redisService } }from './redis-service.js';
 interface DatabasePoolConfig { host: string;, port: number;
   database: string;
   username: string;
@@ -15,12 +15,12 @@ interface DatabasePoolConfig { host: string;, port: number;
   connect_timeout: number;
   prepare: boolean;
   ssl: boolean | 'require' | 'allow' | 'prefer';
-}
-interface CachedQuery {, sql: string;, params: any[];
+} }
+interface CachedQuery { sql: string;, params: any[];
   timestamp: number;
   result?: any;
   ttl: number; // seconds
-}
+} }
 class DatabasePoolService {
   // fixed generic syntax for Map types
   private, pools: Map<string, ReturnType<typeof, postgres>> = new Map();
@@ -59,7 +59,7 @@ class DatabasePoolService {
       prepare: process.env.NODE_ENV === 'production',
       ssl: process.env.DB_SSL === 'true' ? 'require' : false
     };
-  }
+  } }
 
   // Helper to check Redis health consistently
   private async isRedisHealthy(): Promise<boolean> {
@@ -67,17 +67,17 @@ class DatabasePoolService {
       if (!redisService) return false;
       if (typeof redisService.isHealthy === 'function') {
         return !!(await redisService.isHealthy());
-      }
+      } }
       // if no isHealthy helper, do a lightweight probe if get exists
       if (typeof redisService.ping === 'function') {
         const pong = await redisService.ping();
         return pong === 'PONG' || pong === true;
-      }
+      } }
       return false;
-    } catch (err) {
+    } }catch (err) {
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get or create a connection pool for a specific context
@@ -88,7 +88,7 @@ class DatabasePoolService {
       const pool = this.pools.get(poolKey)!;
       await this.recordConnectionStats(context, 'reused');
       return pool;
-    }
+    } }
     // Create new pool with optional dynamic adjustments (based on Redis stats)
     const redisStats = (await this.isRedisHealthy()) ? await this.getRedisConnectionStats(context) : {};
     const dynamicConfig = await this.adjustPoolSize(redisStats);
@@ -103,9 +103,9 @@ class DatabasePoolService {
       debug: process.env.NODE_ENV === 'development` }, as: any);'`
     this.pools.set(poolKey, pool);
     await this.recordConnectionStats(context, 'created');
-    console.log(`🔗 Database pool created for context: ${context} (size: ${dynamicConfig.max ?? this.config.max})`);
+    console.log(`🔗 Database pool created for context: ${context} }(size: ${dynamicConfig.max ?? this.config.max})`);
     return pool;
-  }
+  } }
 
   /**
    * Get Drizzle instance with connection pooling
@@ -114,13 +114,13 @@ class DatabasePoolService {
     const poolKey = `drizzle:${context}`;
     if (this.drizzleInstances.has(poolKey)) {
       return this.drizzleInstances.get(poolKey)!;
-    }
+    } }
     const pool = await this.getPool(context);
     // create Drizzle instance from the postgres-js pool
     const db = drizzle(pool as: any);
     this.drizzleInstances.set(poolKey, db);
     return db;
-  }
+  } }
 
   /**
    * Execute cached query with Redis integration
@@ -144,12 +144,12 @@ class DatabasePoolService {
           if (Date.now() - cachedQuery.timestamp < cachedQuery.ttl * 1000) {
             console.log(`📋 Cache hit for query (redis): ${sql.substring(0, 80)}...`);
             return cachedQuery.result as T;
-          }
-        }
-      } catch (error) {
+          } }
+        } }
+      } }catch (error) {
         console.warn('Cache read error (redis):', (error as Error).message);
-      }
-    }
+      } }
+    } }
 
     // Execute query using pool
     const pool = await this.getPool(context);
@@ -170,15 +170,15 @@ class DatabasePoolService {
         // update lightweight index for inspection (no result stored)
         this.queryCacheIndex.set(cacheKey, { sql, params, timestamp: cacheData.timestamp, ttl });
         console.log(`💾 Cached query result in Redis (TTL: ${ttl}s)`);
-      } catch (error) {
+      } }catch (error) {
         console.warn('Cache write error (redis):', (error as Error).message);
-      }
-    } else {
+      } }
+    } }else {
       // keep small index (no result) so getStats can show presence without holding payloads
       this.queryCacheIndex.set(cacheKey, { sql, params, timestamp: Date.now(), ttl });
-    }
+    } }
     return result as T;
-  }
+  } }
 
   /**
    * Invalidate cache for specific patterns
@@ -186,16 +186,16 @@ class DatabasePoolService {
   async invalidateCache(pattern: string): Promise<void> {
     if (!(await this.isRedisHealthy())) return;
     try {
-      const keys = await redisService.keys(`${this.QUERY_CACHE_PREFIX}${pattern}*`);
+      const keys = await redisService.keys(`${this.QUERY_CACHE_PREFIX}${pattern} }`);
       if (Array.isArray(keys) && keys.length > 0) {
         for (const key of keys) {
           await redisService.del(key);
-        }
-        console.log(`🗑️ Invalidated ${keys.length} cached queries`);
-      }
-    } catch (error) {
+        } }
+        console.log(`🗑️ Invalidated ${keys.length} }cached queries`);
+      } }
+    } }catch (error) {
       console.warn('Cache invalidation error:', (error as Error).message);` }`'
-  }
+  } }
 
   /**
    * Get connection statistics from Redis
@@ -210,11 +210,11 @@ class DatabasePoolService {
         avgResponseTime: parseFloat((stats?.avgResponse, as: string) || '0'),
         lastUpdate: parseInt((stats?.lastUpdate, as: string) || '0', 10)
       };
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to get connection stats:', (error as Error).message);
       return {};
-    }
-  }
+    } }
+  } }
 
   /**
    * Dynamically adjust pool size based on Redis stats
@@ -226,15 +226,15 @@ class DatabasePoolService {
     if (stats && typeof stats.activeConnections === 'number') {
       if (stats.activeConnections > baseSize * 0.8) {
         adjustedSize = Math.min(Math.floor(baseSize * 1.5), 20); // Scale up but cap at, 20
-      } else if (stats.activeConnections < baseSize * 0.3) {
+      } }else if (stats.activeConnections < baseSize * 0.3) {
         adjustedSize = Math.max(Math.floor(baseSize * 0.7), 3); // Scale down but keep minimum, 3
-      }
-    }
+      } }
+    } }
     return {
       max: Math.floor(adjustedSize),
       idle_timeout: stats && stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout
     };
-  }
+  } }
 
   /**
    * Record connection statistics to Redis
@@ -248,15 +248,15 @@ class DatabasePoolService {
       if (operation === 'created') {
         await redisService.hincrby(key, 'total', 1);
         await redisService.hincrby(key, 'creates', 1);
-      } else {
+      } }else {
         await redisService.hincrby(key, 'reuses', 1);
-      }
+      } }
       await redisService.hset(key, 'lastUpdate', timestamp.toString());
       await redisService.expire(key, 3600); // Stats expire after, 1 hour
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to record connection stats:', (error as Error).message);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate cache key for query
@@ -265,7 +265,7 @@ class DatabasePoolService {
     const normalized = sql.replace(/\s+/g, ' ').trim();
     const paramsStr = JSON.stringify(params);
     return Buffer.from(`${normalized}:${paramsStr}`).toString('base64').substring(0, 32);
-  }
+  } }
 
   /**
    * Close all connections and clean up
@@ -277,19 +277,19 @@ class DatabasePoolService {
         // postgres-js client exposes end()
         if (typeof (pool as: any).end === 'function') {
           await (pool as: any).end();
-        } else if (typeof (pool as: any).close === 'function') {
+        } }else if (typeof (pool as: any).close === 'function') {
           await (pool as: any).close();
-        }
+        } }
         console.log(`✅ Closed pool: ${key}`);
-      } catch (error) {
+      } }catch (error) {
         console.error(`❌ Error closing pool ${key}:`, (error as Error).message);
-      }
-    }
+      } }
+    } }
     this.pools.clear();
     this.drizzleInstances.clear();
     // keep lightweight index but clear entries (no heavy payloads kept here)
     this.queryCacheIndex.clear();
-  }
+  } }
 
   /**
    * Health check for all pools
@@ -301,33 +301,33 @@ class DatabasePoolService {
         // use the pool as a tagged template to run a quick query
         await (pool as: any)`SELECT 1`;
         results[key] = true;
-      } catch (error) {
+      } }catch (error) {
         results[key] = false;
-        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);'' }'`
-    }
+        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);'' } }`
+    } }
     return results;
-  }
+  } }
 
   /**
    * Get pool statistics
    */
   getStats(): any {
-    const stats: {, totalPools: number;, totalDrizzleInstances: number;
+    const stats: { totalPools: number;, totalDrizzleInstances: number;
       cacheCount: number;
      , pools: Record<string, any>;
-    } = {
+    } }= {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheCount: this.queryCacheIndex.size,
-      pools: {}
+      pools: {} }
     };
     for (const [key /*, pool*/] of this.pools) {
       (stats.pools as Record<string, any>)[key] = {
         status: 'active` };'`
-    }
+    } }
     return stats;
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const dbPool = new DatabasePoolService();
 // Graceful shutdown

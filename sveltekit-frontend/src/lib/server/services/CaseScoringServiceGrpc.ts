@@ -1,14 +1,14 @@
 // CaseScoringServiceGrpc.ts - Binary Protocol Optimized Case Scoring for Phase 5-7
 // Implements gRPC streaming with 60% performance improvement target
-import { credentials, loadPackageDefinition } from '@grpc/grpc-js';
-import { loadSync } from '@grpc/proto-loader';
-import { ollamaService } from './OllamaService.js';
-import { db } from '../db.js';
-import { caseScores } from '../db/schema.js';
-import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
-import { EventEmitter } from 'events';
+import { credentials, loadPackageDefinition } }from '@grpc/grpc-js';
+import { loadSync } }from '@grpc/proto-loader';
+import { ollamaService } }from './OllamaService.js';
+import { db } }from '../db.js';
+import { caseScores } }from '../db/schema.js';
+import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } }from '../../types/scoring.js';
+import { EventEmitter } }from 'events';
 import * as zlib from 'zlib';
-import { promisify } from 'util';
+import { promisify } }from 'util';
 
 // --- added: promisified gunzip helper
 const gunzip = promisify(zlib.gunzip);
@@ -19,19 +19,19 @@ class PerformanceMonitor {
   recordMetric(name: string, value: number) {
     if (!this.metrics.has(name)) this.metrics.set(name, []);
     this.metrics.get(name)!.push(value);
-  }
+  } }
   getAverageMetric(name: string): number {
     const v = this.metrics.get(name) || [];
     if (!v.length) return 0;
     return v.reduce((a, b) => a + b, 0) / v.length;
-  }
-  getComparison(): { json: number; grpc: number;, improvement: number } {
+  } }
+  getComparison(): { json: number; grpc: number; improvement: number } }{
     const json = this.getAverageMetric('json_processing');
     const grpc = this.getAverageMetric('grpc_processing');
     const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
     return { json, grpc, improvement };
-  }
-}
+  } }
+} }
 // Simple logger - avoid `any`
 const logger = {
   info: (msg: string, ...args: any[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
@@ -40,7 +40,7 @@ const logger = {
   debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args)
 };
 
-// --- Added: narrow gRPC types moved ahead of the class to;, avoid: "cannot find name" errors
+// --- Added: narrow gRPC types moved ahead of the class to; avoid: "cannot find name" errors
 type GrpcResponse = {
   case_id?: string;
   score?: number;
@@ -48,7 +48,7 @@ type GrpcResponse = {
   detailed_scores?: Record<string, unknown>;
   detailed_scorings?: Record<string, unknown>;
   ai_analysis?: Buffer | string | Uint8Array;
-  recommendations?: Array<{ text?: string } | string>;
+  recommendations?: Array<{ text?: string } }| string>;
   scoring_date?: { seconds?: number };
   metadata?: {
     model_name?: string;
@@ -70,11 +70,11 @@ type GrpcStreamUpdate = {
 };
 
 type GrpcWritableStream = { write: (data: any) => void;, end: () => void;
-  on: (event: 'data' | 'error' | 'end';, handler: (payload?: any) => void) => void;
+  on: (event: 'data' | 'error' | 'end'; handler: (payload?: any) => void) => void;
 };
 
 type GrpcClientType = {
-  ScoreCase?: (req: any;, cb: (err: any, res?: GrpcResponse) => void) => void;
+  ScoreCase?: (req: any; cb: (err: any, res?: GrpcResponse) => void) => void;
   StreamScoringUpdates?: () => GrpcWritableStream | undefined;
   StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -103,7 +103,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
   createdAt: string; // changed to ISO: string;
   riskLevel: string;
   updatedAt?: string; // changed to, ISO: string
-} {
+} }{
   const numericScore = typeof result.score === 'number' ? result.score : Number(result.score ?? NaN);
   let riskLevel = 'unknown';
   if (!Number.isNaN(numericScore)) {
@@ -111,7 +111,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
     else if (numericScore >= 60) riskLevel = 'medium';
     else if (numericScore >= 40) riskLevel = 'low';
     else riskLevel = 'very_low';
-  }
+  } }
 
   return {
     caseId: result.caseId,
@@ -127,7 +127,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
    , createdAt: (result.scoringDate ?? new Date()).toISOString(),
     riskLevel: riskLevel,
     // updatedAt left optional; if present elsewhere ensure it's set as ISO: string` };'`
-}
+} }
 
 // Export singleton instance
 export class CaseScoringServiceGrpc extends EventEmitter {
@@ -150,7 +150,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   constructor() {
     super();
     this.initializeGrpcClient();
-  }
+  } }
   /**
    * Initialize gRPC client with binary protocol
    */
@@ -184,7 +184,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
       if (!CaseScoringService) {
         throw new Error('CaseScoringService proto not found');
-      }
+      } }
       const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
       // satisfy compiler with GrpcClientType shape via runtime `as: unknown as ...`
       this.grpcClient = new (CaseScoringService, as: unknown as { new (...args: any[]): GrpcClientType })(
@@ -195,14 +195,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           'grpc.keepalive_time_ms': 10000,
           'grpc.keepalive_timeout_ms': 5000,
           'grpc.keepalive_permit_without_calls': 1
-        }
+        } }
       );
       logger.info('gRPC client initialized', { target });
-    } catch (err) {
+    } }catch (err) {
       logger.warn('gRPC initialization failed, will fallback to JSON', err);
       this.grpcClient = null;
-    }
-  }
+    } }
+  } }
   /**
    * Score a case using binary protocol (gRPC) with fallback to JSON
    */
@@ -212,12 +212,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     if (this.grpcClient) {
       try {
         return await this.scoreCaseGrpc(request, startTime);
-      } catch (err) {
+      } }catch (err) {
         logger.warn('gRPC scoring failed, falling back to JSON', err);
-      }
-    }
+      } }
+    } }
     return this.scoreCaseJson(request, startTime);
-  }
+  } }
   /**
    * Score case using gRPC binary protocol
    */
@@ -231,14 +231,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         criteria: this.convertCriteriaToProto(
           request.scoring_criteria ?? (request, as: unknown as { criteria?: ScoringCriteria }).criteria
         ),
-        parameters: {
-         , model: this.SCORING_MODEL,
+        parameters: { model: this.SCORING_MODEL,
           temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
           compression: 'GZIP` },'`
-        request_time: {, seconds: Math.floor(Date.now() / 1000) },
+        request_time: { seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
         priority: this.getPriority(request)
       };
@@ -246,47 +245,45 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       // Guard: ensure ScoreCase exists
       if (!this.grpcClient?.ScoreCase) {
         return reject(new Error('gRPC ScoreCase method unavailable'));
-      }
+      } }
 
       // Make gRPC call
       this.grpcClient.ScoreCase(grpcRequest, async (error: any, response?: GrpcResponse) => {
         if (error) {
           return reject(error);
-        }
+        } }
         try {
           const processingTime = Date.now() - startTime;
           this.performanceMonitor.recordMetric('grpc_processing', processingTime);
-          const result: CaseScoringResult = {
-           , caseId: response?.case_id ?? '',
+          const result: CaseScoringResult = { caseId: response?.case_id ?? '',
             score: response?.score ?? 0,
             confidence: response?.confidence ?? 0,
             criteria: this.convertCriteriaFromProto(
               (response?.detailed_scores as Record<string, unknown>) ||
                 (response?.detailed_scorings as Record<string, unknown>) ||
-                {}
+                {} }
             ),
-            // changed: use decompressAnalysis to handle compressed buffers consistently;, explanation: await this.decompressAnalysis(response?.ai_analysis),
-            recommendations: (response?.recommendations || []).map((r: { text?: string } | string) =>
+            // changed: use decompressAnalysis to handle compressed buffers consistently; explanation: await this.decompressAnalysis(response?.ai_analysis),
+            recommendations: (response?.recommendations || []).map((r: { text?: string } }| string) =>
               typeof r === 'string' ? r : r.text || String(r)
             ),
             scoringDate: response?.scoring_date ? new Date((response.scoring_date.seconds ?? 0) * 1000) : new Date(),
             model: response?.metadata?.model_name || this.SCORING_MODEL,
             version: response?.metadata?.model_version || '1.0',
-            performanceMetrics: {
-             , protocol: 'gRPC',
+            performanceMetrics: { protocol: 'gRPC',
               responseTime: processingTime,
               accuracy: response?.confidence ?? 0
-            }
+            } }
           };
           await this.saveScoring(result);
           this.logPerformanceComparison();
           resolve(result);
-        } catch (e) {
+        } }catch (e) {
           reject(e);
-        }
+        } }
       });
     });
-  }
+  } }
   /**
    * Original JSON-based scoring (fallback)
    */
@@ -306,8 +303,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     const processingTime = Date.now() - startTime;
     this.performanceMonitor.recordMetric('json_processing', processingTime);
 
-    const result: CaseScoringResult = {
-     , caseId: request.caseId,
+    const result: CaseScoringResult = { caseId: request.caseId,
       score: finalScore,
       confidence: this.calculateConfidence(componentScores),
       criteria: componentScores,
@@ -316,16 +312,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       scoringDate: new Date(),
       model: this.SCORING_MODEL,
       version: '1.0',
-      performanceMetrics: {
-       , protocol: 'JSON/HTTP',
+      performanceMetrics: { protocol: 'JSON/HTTP',
         responseTime: processingTime,
         accuracy: this.calculateConfidence(componentScores)
-      }
+      } }
     };
 
     await this.saveScoring(result);
     return result;
-  }
+  } }
   /**
    * Stream real-time scoring updates using gRPC bidirectional streaming
    */
@@ -333,13 +328,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
       logger.warn('gRPC not available for streaming');
       return () => {};
-    }
+    } }
 
     const stream = this.grpcClient.StreamScoringUpdates();
     if (!stream) {
       logger.warn('StreamScoringUpdates returned no stream');
       return () => {};
-    }
+    } }
 
     const sessionId = `stream_${Date.now()}`;
     this.streamingSessions.set(sessionId, stream);
@@ -350,11 +345,11 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_ids: caseIds,
         event_types: ['PARTIAL_UPDATE', 'CRITERIA_EVALUATED', 'SCORING_COMPLETE'],
         include_partial_updates: true,
-        update_interval: {, seconds: 1 }
+        update_interval: { seconds: 1 } }
       });
-    } catch (err) {
+    } }catch (err) {
       logger.warn('Failed to write subscription to stream', err);
-    }
+    } }
 
     // Handle streaming responses
     stream.on('data', (payload: any) => {
@@ -364,13 +359,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         // Call user callback and emit event; protect against callback exceptions
         try {
           callback(processed);
-        } catch (cbErr) {
+        } }catch (cbErr) {
           logger.warn('streamScoringUpdates callback threw', cbErr);
-        }
+        } }
         this.emit('scoring-update', processed);
-      } catch (procErr) {
+      } }catch (procErr) {
         logger.warn('Failed to process streaming data', procErr);
-      }
+      } }
     });
 
     stream.on('error', (err: any) => {
@@ -388,12 +383,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     return () => {
       try {
         stream.end();
-      } catch {
+      } }catch {
         // ignore errors on end
-      }
+      } }
       this.streamingSessions.delete(sessionId);
     };
-  }
+  } }
   /**
    * Batch scoring with parallel processing
    */
@@ -401,27 +396,27 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     if (!this.grpcClient || !this.grpcClient.StreamCaseScoring) {
       // fallback to JSON in parallel
       return Promise.all(requests.map(r => this.scoreCase(r)));
-    }
+    } }
 
     const call = this.grpcClient.StreamCaseScoring();
     if (!call) {
       // fallback
       return Promise.all(requests.map(r => this.scoreCase(r)));
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
-      // changed: allow async processing;, inside: 'data' handler
+      // changed: allow async processing; inside: 'data' handler
       call.on('data', async (payload: any) => {
         const response = payload as GrpcResponse;
         try {
           results.push(await this.convertGrpcResponse(response));
-        } catch (e) {
+        } }catch (e) {
           logger.warn('Failed to convert batch response', e);
-        }
+        } }
       });
       call.on('end', () => {
-        logger.info(`Batch scoring complete: ${results.length} cases processed`);
+        logger.info(`Batch scoring complete: ${results.length} }cases processed`);
         resolve(results);
       });
       call.on('error', reject);
@@ -434,26 +429,25 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           criteria: this.convertCriteriaToProto(
             r.scoring_criteria ?? (r, as: unknown as { criteria?: Partial<ScoringCriteria> }).criteria
           ),
-          parameters: {
-           , model: this.SCORING_MODEL,
+          parameters: { model: this.SCORING_MODEL,
             temperature: r.temperature ?? this.DEFAULT_TEMPERATURE,
             max_tokens: 1000,
             use_cached_embeddings: true,
             enable_streaming: false,
-            compression: 'GZIP` }'`
+            compression: 'GZIP` } }`
         };
         call.write(req);
-      }
+      } }
       call.end();
     });
-  }
+  } }
   /**
    * Helper: Serialize case metadata to binary
    */
   private serializeCaseMetadata(metadata?: Record<string, unknown>): Buffer {
     const json = JSON.stringify(metadata || {});
     return Buffer.from(json);
-  }
+  } }
   /**
    * Helper: Convert criteria to protobuf format
    */
@@ -466,9 +460,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       public_interest: c.public_interest ?? 0.5,
       case_complexity: c.case_complexity ?? 0.5,
       resource_requirements: c.resource_requirements ?? 0.5,
-      custom_criteria: c.custom_criteria || {}
+      custom_criteria: c.custom_criteria || {} }
     };
-  }
+  } }
   /**
    *, Helper: Convert criteria from protobuf format
    */
@@ -482,7 +476,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       case_complexity: (pc['case_complexity'], as: number) ?? 0.5,
       resource_requirements: (pc['resource_requirements'], as: number) ?? 0.5
     };
-  }
+  } }
   /**
    * Helper: Decompress binary AI analysis
    */
@@ -495,14 +489,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       if (Buffer.isBuffer(compressedData)) {
         const decompressed = await gunzip(compressedData);
         return decompressed.toString('utf-8');
-      }
+      } }
 
       // If it's a typed array (Uint8Array / ArrayBuffer view), convert to Buffer then decompress'
       if (typeof compressedData !== 'string' && (ArrayBuffer.isView(compressedData) || compressedData instanceof ArrayBuffer)) {
         const buf = Buffer.from(compressedData as Uint8Array);
         const decompressed = await gunzip(buf);
         return decompressed.toString('utf-8');
-      }
+      } }
 
       // For: string, input: attempt base64 decode + gunzip (common for compressed payloads sent as base64).
       // If that fails, fall back to returning the original: string (preserve previous behavior).
@@ -513,20 +507,20 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           if (maybeBuf.length > 0) {
             const decompressed = await gunzip(maybeBuf);
             return decompressed.toString('utf-8');
-          }
-        } catch {
+          } }
+        } }catch {
           // ignore and fall through to returning the: string
-        }
+        } }
         return compressedData;
-      }
+      } }
 
       //, Fallback: stringify whatever came in
       return String(compressedData);
-    } catch (err: any) {
+    } }catch (err: any) {
       logger.warn('Failed to decompress analysis', err);
       return typeof compressedData === 'string' ? compressedData : String(compressedData);
-    }
-  }
+    } }
+  } }
   /**
    * Helper: Process streaming update
    */
@@ -536,15 +530,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     timestamp: Date;
     sequenceNumber?: number;
     data?: any;
-  } {
-    return {
-     , caseId: update.case_id,
+  } }{
+    return { caseId: update.case_id,
       eventType: update.event_type,
       timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
       sequenceNumber: update.sequence_number,
       data: update.partial_score ?? update.criteria_update ?? update.recommendation_update ?? update.processing_status
     };
-  }
+  } }
   /**
    *, Helper: Convert gRPC response to result format
    */
@@ -557,19 +550,18 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       confidence: response.confidence ?? 0,
       criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
       explanation,
-      recommendations: (response.recommendations || []).map((r: { text?: string } | string) =>
+      recommendations: (response.recommendations || []).map((r: { text?: string } }| string) =>
         typeof r === 'string' ? r : r.text || String(r)
       ),
       scoringDate: response.scoring_date ? new Date((response.scoring_date.seconds ?? 0) * 1000) : new Date(),
       model: response?.metadata?.model_name || this.SCORING_MODEL,
       version: response?.metadata?.model_version || '1.0',
-      performanceMetrics: {
-       , protocol: 'gRPC',
+      performanceMetrics: { protocol: 'gRPC',
         responseTime: 0,
         accuracy: response.confidence ?? 0
-      }
+      } }
     };
-  }
+  } }
   /**
    *, Helper: Get priority from request
    */
@@ -580,7 +572,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     if (metadata['priority'] === 'high') return 3; // URGENT
     if (metadata['priority'] === 'medium') return 2; // HIGH
     return 1; // NORMAL
-  }
+  } }
   /**
    * Log performance comparison between JSON and gRPC
    */
@@ -593,8 +585,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         improvement: `${comparison.improvement.toFixed(1)}%` });'`'`
       // Emit performance metrics for monitoring
       this.emit('performance-metrics', comparison);
-    }
-  }
+    } }
+  } }
   // Reuse methods from original service
   private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
     const caseData = (request as: unknown as { metadata?: Record<string, unknown> }).metadata || {};
@@ -631,7 +623,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
       max_tokens: 1000
     });
-  }
+  } }
   private async calculateComponentScores(request: CaseScoringRequest, aiAnalysis: string): Promise<ScoringCriteria> {
     const provided = (request as: unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria || {};
 
@@ -664,7 +656,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
         resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5
       };
-    } catch (err: any) {
+    } }catch (err: any) {
       logger.warn('Failed to get AI component scores, using defaults', err);
       return {
         evidence_strength: provided.evidence_strength ?? 0.5,
@@ -674,8 +666,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_complexity: provided.case_complexity ?? 0.5,
         resource_requirements: provided.resource_requirements ?? 0.5
       };
-    }
-  }
+    } }
+  } }
   private calculateWeightedScore(criteria: ScoringCriteria): number {
     let weightedSum = 0;
     let totalWeight = 0;
@@ -686,11 +678,11 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       if (typeof val === 'number') {
         weightedSum += val * w;
         totalWeight += w;
-      }
-    }
+      } }
+    } }
     const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
     return Math.round(Math.max(0, Math.min(100, normalized)));
-  }
+  } }
   private async generateRecommendations(
     request: CaseScoringRequest,
     scores: ScoringCriteria,
@@ -699,19 +691,19 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     const recommendations: string[] = [];
     if (finalScore >= 80) {
       recommendations.push('Strong case - recommend proceeding with prosecution');
-    } else if (finalScore >= 60) {
+    } }else if (finalScore >= 60) {
       recommendations.push('Viable case - consider strengthening weak areas before proceeding');
-    } else if (finalScore >= 40) {
+    } }else if (finalScore >= 40) {
       recommendations.push('Borderline case - significant improvements needed');
-    } else {
+    } }else {
       recommendations.push('Weak case - recommend further investigation or declining prosecution');
-    }
+    } }
     if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain, of, custody');
     if (scores.witness_reliability < 0.6)
       recommendations.push('Assess witness credibility and consider additional witnesses');
     if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law, and, precedents');
     return recommendations;
-  }
+  } }
   private calculateConfidence(scores: ScoringCriteria): number {
     const values = Object.values(scores).filter(v => typeof v === 'number') as: number[];
     if (!values.length) return 0.5;
@@ -719,7 +711,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
     const confidence = Math.max(0.5, 1 - variance * 2);
     return Math.round(confidence * 100) / 100;
-  }
+  } }
   private parseAIScores(aiResponse: string): Partial<ScoringCriteria> {
     try {
       const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
@@ -740,15 +732,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           ) {
             // safer assignment without `any`
             (out as Partial<ScoringCriteria>)[k as keyof ScoringCriteria] = clamped;
-          }
-        }
-      }
+          } }
+        } }
+      } }
       return out;
-    } catch (err) {
+    } }catch (err) {
       logger.warn('Failed to parse AI scores', err);
       return {};
-    }
-  }
+    } }
+  } }
   /**
    * Helper: robust wrapper to call Ollama service generate function (tolerant to different method names)
    */
@@ -770,12 +762,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       if (typeof c === 'function') {
         fn = c;
         break;
-      }
-    }
+      } }
+    } }
 
     if (!fn) {
       throw new Error('Ollama generate method not found on ollamaService');
-    }
+    } }
 
     // Try common signatures: (model, prompt, opts) then fallback to (prompt, opts)
     const callWithModel = async (): Promise<string> => {
@@ -789,19 +781,19 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     try {
       return await callWithModel();
-    } catch (errModel) {
+    } }catch (errModel) {
       // Fallback to prompt-first signature:
       // Some Ollama service implementations only accept (prompt, options) instead of (model, prompt, options).
       // This fallback is triggered if the model-first call fails, ensuring compatibility with both function signatures.
       try {
         return await callWithPrompt();
-      } catch (errPrompt) {
+      } }catch (errPrompt) {
         // Surface original errors but keep them typed as: unknown
         const em = (errPrompt ?? errModel) as: unknown;
         throw new Error(`Ollama generate invocation, failed: ${String(em)}`);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Validates the CaseScoringRequest: object, ensuring required fields are present and correctly typed.
@@ -811,16 +803,16 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     // Basic validation to avoid runtime failures; throw for truly invalid requests
     if (!request || typeof request !== 'object') {
       throw new Error('Invalid request: request must be, an: object');
-    }
+    } }
     if (!request.caseId || typeof request.caseId !== 'string' || !request.caseId.trim()) {
       throw new Error('Invalid request: missing or invalid caseId');
-    }
+    } }
     // optional: normalize scoring_criteria structure without using `any`
     const reqRecord = request, as: unknown as Record<string, unknown>;
     if ('scoring_criteria' in reqRecord && reqRecord['scoring_criteria'] !== undefined && typeof reqRecord['scoring_criteria'] !== 'object') {
       throw new Error('Invalid request: scoring_criteria must be, an: object');
-    }
-  }
+    } }
+  } }
 
   // New helper: persist scoring results to DB (mapped to snake_case columns)
   private async saveScoring(result: CaseScoringResult): Promise<void> {
@@ -831,7 +823,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       // Basic validation
       if (!dbPayload.caseId || typeof dbPayload.caseId !== 'string') {
         throw new Error('DB insert failed: caseId is missing or not, a: string');
-      }
+      } }
 
       // Retry mechanism: up to, 3 attempts with exponential backoff
       // --- changed code: ensure payload is treated as a concrete (non-optional) shape for TS overload resolution
@@ -842,8 +834,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       while (attempt < maxAttempts) {
         try {
           // Build a concrete payload with required fields (avoid optional-indexed Insertable typing)
-          const insertPayload: InsertPayload = {
-           , caseId: dbPayload.caseId!,
+          const insertPayload: InsertPayload = { caseId: dbPayload.caseId!,
             score: dbPayload.score!,
             confidence: dbPayload.confidence!,
             criteria: dbPayload.criteria!,
@@ -863,22 +854,21 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           // success
           lastError = null;
           break;
-        } catch (err: any) {
+        } }catch (err: any) {
           lastError = err;
           attempt++;
           if (attempt < maxAttempts) {
             await new Promise(res => setTimeout(res, 200 * Math.pow(2, attempt))); // exponential backoff
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       if (lastError) {
         // Surface critical DB failures to monitoring service
         const errorLog = {
           code: 'DB_PERSIST_ERROR_CRITICAL',
           timestamp: new Date().toISOString(),
-          payloadSummary: {
-           , caseId: dbPayload.caseId,
+          payloadSummary: { caseId: dbPayload.caseId,
             score: dbPayload.score,
             confidence: dbPayload.confidence
           },
@@ -891,23 +881,22 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           };
           if (g.monitoringService && typeof g.monitoringService.alertCritical === 'function') {
             await g.monitoringService.alertCritical(errorLog);
-          }
+          } }
           if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
             await g.redisLogger.logError(errorLog);
-          } else {
+          } }else {
             logger.error('[DB_PERSIST_ERROR_CRITICAL]', errorLog);
-          }
-        } catch (logErr: any) {
+          } }
+        } }catch (logErr: any) {
           logger.error('Failed to surface critical DB error', logErr, errorLog);
-        }
+        } }
         // Do not rethrow to avoid breaking scoring flow; choose to log and continue
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       const errorLog = {
         code: 'DB_PERSIST_ERROR',
         timestamp: new Date().toISOString(),
-        payloadSummary: {
-         , caseId: result.caseId,
+        payloadSummary: { caseId: result.caseId,
           score: result.score,
           confidence: result.confidence
         },
@@ -920,18 +909,18 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         };
         if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
           await g.redisLogger.logError(errorLog);
-        } else {
+        } }else {
           logger.warn('[DB_PERSIST_ERROR]', errorLog);
-        }
-      } catch (logErr: any) {
+        } }
+      } }catch (logErr: any) {
         logger.warn('Failed to log error to Redis', logErr, errorLog);
-      }
+      } }
       // Non-fatal: do not rethrow to avoid breaking scoring flow
-    }
-  }
-}
+    } }
+  } }
+} }
 
 //, NOTE: removed duplicate helper definitions that were previously declared below saveScoring
 
-// { changed code } - re-introduce singleton after class declaration
+// { changed code } }- re-introduce singleton after class declaration
 export const caseScoringServiceGrpc = new CaseScoringServiceGrpc();

@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 /*
  * QUIC Services Management API - Central Hub for All QUIC Services
  * Provides centralized management, health monitoring, and configuration for all QUIC services
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
 
-const QUIC_SERVICES_CONFIG = { gateway: {, name: 'QUIC Gateway',
+const QUIC_SERVICES_CONFIG = { gateway: { name: 'QUIC Gateway',
     primaryPort: 8443,
     fallbackPort: 8444,
     baseUrl: 'http://localhost:8443',
@@ -15,7 +15,7 @@ const QUIC_SERVICES_CONFIG = { gateway: {, name: 'QUIC Gateway',
     features: ['HTTP/3', 'HTTP/2 Fallback', 'TLS Generation', 'Proxy Headers']
   },
   vector: {
-   , name: 'QUIC Vector Proxy',
+  name: 'QUIC Vector Proxy',
     primaryPort: 8445,
     fallbackPort: 8446,
     baseUrl: 'http://localhost:8445',
@@ -24,7 +24,7 @@ const QUIC_SERVICES_CONFIG = { gateway: {, name: 'QUIC Gateway',
     features: ['Multi-backend Routing', 'Vector Caching', 'Qdrant Integration', 'pgvector Support']
   },
   aiStream: {
-   , name: 'QUIC AI Stream',
+  name: 'QUIC AI Stream',
     primaryPort: 8447,
     fallbackPort: 8448,
     baseUrl: 'http://localhost:8447',
@@ -33,37 +33,37 @@ const QUIC_SERVICES_CONFIG = { gateway: {, name: 'QUIC Gateway',
     features: ['AI Streaming', 'WebSocket Support', 'Session Management', 'Multiple Models']
   },
   ragProxy: {
-   , name: 'RAG QUIC Proxy',
+  name: 'RAG QUIC Proxy',
     primaryPort: 8451,
     fallbackPort: 8452,
     baseUrl: 'http://localhost:8451',
     fallbackUrl: 'http://localhost:8452',
     description: 'Enhanced RAG service with edge caching and metrics',
     features: ['Edge Caching', 'ETag Revalidation', 'Prometheus Metrics', 'JSON Optimization']
-  }
+  } }
 };
 
 export interface QUICServiceStatus { name: string;, status: 'healthy' | 'fallback' | 'unhealthy' | 'error';
   protocol: string;
-  ports: {, quic: number;, fallback: number;
+  ports: { quic: number;, fallback: number;
   };
   url: string;
   responseTime?: number;
   error?: string;
   features: string[];
   metrics?: { [key: string]: any };
-}
-export interface QUICClusterStatus {, totalServices: number;, healthyServices: number;
+} }
+export interface QUICClusterStatus { totalServices: number;, healthyServices: number;
   fallbackServices: number;
   unhealthyServices: number;
   overallStatus: 'healthy' | 'degraded' | 'unhealthy';
- , services: Record<string, QUICServiceStatus>;
+  services: Record<string, QUICServiceStatus>;
   timestamp: string;
-}
+} }
 /*
  * GET /api/v1/quic - Get comprehensive QUIC services status
  */
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const includeMetrics = url.searchParams.get('metrics') === 'true';
     const serviceName = url.searchParams.get('service');
@@ -72,11 +72,11 @@ export const, GET: RequestHandler = async ({ url }) => {
     if (serviceName) {
       const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG];
       if (!serviceConfig) {
-        error(404, ensureError({ message: 'Service, '${serviceName}' not found' }));
-      }
+        error(404, ensureError({ message: 'Service, '${serviceName} } not found' }));
+      } }
       const serviceStatus = await checkServiceHealth(serviceName, serviceConfig, includeMetrics, timeout);
       return json(serviceStatus);
-    }
+    } }
     // Check all services
     const servicePromises = Object.entries(QUIC_SERVICES_CONFIG).map(([key, config]) =>
       checkServiceHealth(key, config, includeMetrics, timeout)
@@ -101,14 +101,14 @@ export const, GET: RequestHandler = async ({ url }) => {
           case, 'error':
             unhealthyCount++;
             break;
-        }
-      } else {
+        } }
+      } }else {
         services[serviceName] = {
           name: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].name,
           status: 'error',
           protocol: 'N/A',
           ports: {
-           , quic: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].primaryPort,
+  quic: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].primaryPort,
             fallback: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].fallbackPort
           },
           url: 'N/A',
@@ -116,19 +116,19 @@ export const, GET: RequestHandler = async ({ url }) => {
           features: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].features
         };
         unhealthyCount++;
-      }
+      } }
     });
     // Determine overall status
     let overallStatus: 'healthy' | 'degraded' | 'unhealthy';
     if (unhealthyCount === 0) {
       overallStatus = fallbackCount === 0 ? 'healthy' : 'degraded';
-    } else if (healthyCount > 0 || fallbackCount > 0) {
+    } }else if (healthyCount > 0 || fallbackCount > 0) {
       overallStatus = 'degraded';
-    } else {
+    } }else {
       overallStatus = 'unhealthy';
-    }
+    } }
     const clusterStatus: QUICClusterStatus = {
-     , totalServices: Object.keys(QUIC_SERVICES_CONFIG).length,
+  totalServices: Object.keys(QUIC_SERVICES_CONFIG).length,
       healthyServices: healthyCount,
       fallbackServices: fallbackCount,
       unhealthyServices: unhealthyCount,
@@ -137,7 +137,7 @@ export const, GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     };
     return json(clusterStatus);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('QUIC services status check failed:', err);
     error(
       500,
@@ -146,21 +146,21 @@ export const, GET: RequestHandler = async ({ url }) => {
         error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
-  }
+  } }
 };
 /*
  * POST /api/v1/quic - Execute command across QUIC services
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { command, services, parameters } = await request.json();
+    const { command, services, parameters } }= await request.json();
     const targetServices = services || Object.keys(QUIC_SERVICES_CONFIG);
     // Validate command
     const validCommands = ['restart', 'health-check', 'clear-cache', 'update-config'];
     if (!validCommands.includes(command)) {
-      error(400, ensureError({ message: 'Invalid command. Valid, commands: ${validCommands.join(', ')}' }));
-    }
-    const results: { [key: string]: any } = {};
+      error(400, ensureError({ message: 'Invalid command. Valid, commands: ${validCommands.join(', ')} } }));
+    } }
+    const results: { [key: string]: any } }= {};
     for (const serviceName of targetServices) {
       const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG];
       if (!serviceConfig) {
@@ -168,23 +168,23 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Service, '${serviceName}` not found` };'`'`
         continue;
-      }
+      } }
       try {
         results[serviceName] = await executeServiceCommand(serviceName, serviceConfig, command, parameters);
-      } catch (commandError) {
+      } }catch (commandError) {
         results[serviceName] = {
           success: false,
           error: commandError instanceof Error ? commandError.message : 'Unknown error'
         };
-      }
-    }
+      } }
+    } }
     return json({
       command,
       services: targetServices,
       results,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('QUIC services command execution failed:', err);
     error(
       500,
@@ -193,20 +193,20 @@ export const POST: RequestHandler = async ({ request }) => {
         error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
-  }
+  } }
 };
 /*
  * PUT /api/v1/quic - Update QUIC services configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { service, configuration } = await request.json();
+    const { service, configuration } }= await request.json();
     if (!service || !configuration) {
       error(400, ensureError({ message: 'Service name and configuration are required' }));
-    }
+    } }
     const serviceConfig = QUIC_SERVICES_CONFIG[service as keyof typeof QUIC_SERVICES_CONFIG];
     if (!serviceConfig) {
-      error(404, ensureError({ message: 'Service, '${service}' not found' }));'` }'`
+      error(404, ensureError({ message: 'Service, '${service} } not found' }));'` } }`
     // In a real implementation, this would update the service configuration
     // For now, we'll simulate the update'
     const updatedConfig = {
@@ -221,7 +221,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       configuration: updatedConfig,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('QUIC configuration update failed:', err);
     error(
       500,
@@ -229,7 +229,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         message: 'Configuration update failed',
         error: err instanceof Error ? err.message : `Unknown error` })
     );
-  }
+  } }
 };
 /*
  * Check health of individual QUIC service
@@ -245,7 +245,7 @@ async function checkServiceHealth(
   let protocol = 'N/A';
   let url = serviceConfig.baseUrl;
   let serviceError: string | undefined;
-  let, metrics: { [key: string]: any } | undefined;
+  let, metrics: { [key: string]: any } }| undefined;
   try {
     // Try primary QUIC endpoint first
     const primaryResponse = await fetch(`${serviceConfig.baseUrl}/health`, {
@@ -258,14 +258,14 @@ async function checkServiceHealth(
         try {
           const healthData = await primaryResponse.json();
           metrics = healthData.metrics || {};
-        } catch (e: any) {
+        } }catch (e: any) {
           // Metrics parsing failed, continue without metrics
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       throw new Error(`Primary endpoint returned ${primaryResponse.status}`);
-    }
-  } catch (primaryError) {
+    } }
+  } }catch (primaryError) {
     // Try fallback HTTP/2 endpoint
     try {
       const fallbackResponse = await fetch(`${serviceConfig.fallbackUrl}/health`, {
@@ -279,25 +279,25 @@ async function checkServiceHealth(
           try {
             const healthData = await fallbackResponse.json();
             metrics = healthData.metrics || {};
-          } catch (e: any) {
+          } }catch (e: any) {
             // Metrics parsing failed, continue without metrics
-          }
-        }
-      } else {
+          } }
+        } }
+      } }else {
         throw new Error(`Fallback endpoint returned ${fallbackResponse.status}`);
-      }
-    } catch (fallbackError) {
+      } }
+    } }catch (fallbackError) {
       status = 'error';
       serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message : `Unknown` }, Fallback: ${fallbackError instanceof Error ? fallbackError.message : `Unknown` }`;
-    }
-  }
+    } }
+  } }
   const responseTime = Date.now() - startTime;
   return {
     name: serviceConfig.name,
     status,
     protocol,
     ports: {
-     , quic: serviceConfig.primaryPort,
+  quic: serviceConfig.primaryPort,
       fallback: serviceConfig.fallbackPort
     },
     url,
@@ -306,7 +306,7 @@ async function checkServiceHealth(
     features: serviceConfig.features,
     metrics
   };
-}
+} }
 /*
  * Execute command on specific service
  */
@@ -336,7 +336,7 @@ async function executeServiceCommand(
     case, 'update-config':
       if (!parameters) {
         throw new Error('Parameters required for config update');
-      }
+      } }
       const configResponse = await fetch(`${baseUrl}/config`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
@@ -354,6 +354,7 @@ async function executeServiceCommand(
         message: `Restart signal sent to ${serviceConfig.name}`,
         note: `Restart functionality would be implemented based on deployment method` };
     default:
-      throw new Error(`Unknown;, command: ${command}`);
-  }
-}
+      throw new Error(`Unknown; command: ${command}`);
+  } }
+} }
+

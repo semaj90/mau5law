@@ -1,5 +1,5 @@
-import type { WebGPUComputeShader } from '$lib/types/vector-jobs';
-import { shaderCacheManager } from './shader-cache-manager.js';
+import type { WebGPUComputeShader } }from '$lib/types/vector-jobs';
+import { shaderCacheManager } }from './shader-cache-manager.js';
 
 export class WebGPUPolyfillService {
   // Types for GPU device info and compute shader management
@@ -62,21 +62,21 @@ export class WebGPUPolyfillService {
               try {
                 // Pass the actual GPUDevice (this.device) — avoid casting to project-specific WebGPUDevice
                 await shaderCacheManager.initialize?.(this.device);
-              } catch (e: any) {
+              } }catch (e: any) {
                 this.safeDebug('shaderCacheManager initialize ignored:', String(e));
-              }
+              } }
               this.safeLog('🔥 WebGPU initialized successfully');
               return true;
-            }
-          }
-        } catch (error: any) {
+            } }
+          } }
+        } }catch (error: any) {
           this.safeWarn('WebGPU initialization failed, falling back to WebGL:', String(error));
-        }
-      }
-    }
+        } }
+      } }
+    } }
     // Fallback to WebGL2
     return this.initializeWebGLFallback();
-  }
+  } }
 
   private initializeWebGLFallback(): boolean {
     try {
@@ -87,20 +87,20 @@ export class WebGPUPolyfillService {
       if (!this.webglFallback) {
         this.safeError('WebGL2 not available');
         return false;
-      }
+      } }
       // Log renderer when possible
       try {
         this.safeLog('Renderer:', this.webglFallback.getParameter(this.webglFallback.RENDERER));
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       this.safeLog('✅ WebGL2 fallback initialized');
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       this.safeError('WebGL initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Embedding computation entry point — prefers GPU/WebGL but falls back to CPU.
@@ -113,34 +113,34 @@ export class WebGPUPolyfillService {
       if (this.isWebGPUAvailable && this.device && this.queue) {
         result = await this.computeEmbeddingWebGPU(inputVector, dimensions);
         this.performanceStats.webgpuOpsCount++;
-      } else if (this.webglFallback) {
+      } }else if (this.webglFallback) {
         result = await this.computeEmbeddingWebGL(inputVector, dimensions);
         this.performanceStats.webglOpsCount++;
-      } else {
+      } }else {
         result = this.computeEmbeddingCPU(inputVector, dimensions);
-      }
+      } }
       const processingTime =
         (typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now()) -
         startTime;
       this.updatePerformanceStats(processingTime);
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       this.safeError('Embedding computation failed:', error);
       return this.computeEmbeddingCPU(inputVector, dimensions);
-    }
-  }
+    } }
+  } }
 
   // Current GPU/WebGL paths delegate to CPU until shaders are implemented.
   private async computeEmbeddingWebGPU(_inputVector: number[], dimensions: number): Promise<number[]> {
     // Future: implement WGSL compute shader for embeddings
     if (!this.device || !this.queue) throw new Error('WebGPU device not available');
     return this.computeEmbeddingCPU(new Array(dimensions).fill(0), dimensions);
-  }
+  } }
 
   private async computeEmbeddingWebGL(_inputVector: number[], dimensions: number): Promise<number[]> {
     // Future: implement WebGL GLSL path if needed
     return this.computeEmbeddingCPU(new Array(dimensions).fill(0), dimensions);
-  }
+  } }
 
   private computeEmbeddingCPU(inputVector: number[], dimensions: number): number[] {
     const out = new Float32Array(dimensions);
@@ -149,11 +149,11 @@ export class WebGPUPolyfillService {
       for (let j = 0; j < inputVector.length; j++) {
         const weight = Math.sin(i * j * 0.001 + i * 0.1);
         sum += (inputVector[j] ?? 0) * weight;
-      }
+      } }
       out[i] = Math.tanh(sum * 0.1) * Math.sqrt(dimensions);
-    }
+    } }
     return Array.from(out);
-  }
+  } }
 
   /**
    * Similarity computation entry point — prefers GPU/WebGL but falls back to CPU.
@@ -167,22 +167,22 @@ export class WebGPUPolyfillService {
       if (this.isWebGPUAvailable && this.device && this.queue) {
         similarity = await this.computeSimilarityWebGPU(vector1, vector2);
         this.performanceStats.webgpuOpsCount++;
-      } else if (this.webglFallback) {
+      } }else if (this.webglFallback) {
         similarity = await this.computeSimilarityWebGL(vector1, vector2);
         this.performanceStats.webglOpsCount++;
-      } else {
+      } }else {
         similarity = this.computeSimilarityCPU(vector1, vector2);
-      }
+      } }
       const processingTime =
         (typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now()) -
         startTime;
       this.updatePerformanceStats(processingTime);
       return similarity;
-    } catch (error: any) {
+    } }catch (error: any) {
       this.safeError('Similarity computation failed:', error);
       return this.computeSimilarityCPU(vector1, vector2);
-    }
-  }
+    } }
+  } }
 
   // GPU/WebGL placeholders for future acceleration
   private async computeSimilarityWebGPU(vector1: number[], vector2: number[]): Promise<number> {
@@ -190,12 +190,12 @@ export class WebGPUPolyfillService {
     //, Future: Implement WGSL compute shader for GPU acceleration.
     if (!this.device || !this.queue) throw new Error('WebGPU device not available');
     return this.computeSimilarityCPU(vector1, vector2);
-  }
+  } }
 
   private async computeSimilarityWebGL(vector1: number[], vector2: number[]): Promise<number> {
     // Future: implement WebGL compute with transform feedback / textures
     return this.computeSimilarityCPU(vector1, vector2);
-  }
+  } }
 
   /**
    * Implements cosine similarity between two vectors.
@@ -209,10 +209,10 @@ export class WebGPUPolyfillService {
       dotProduct += vector1[i] * vector2[i];
       norm1 += vector1[i] * vector1[i];
       norm2 += vector2[i] * vector2[i];
-    }
+    } }
     const magnitude = Math.sqrt(norm1) * Math.sqrt(norm2);
     return magnitude === 0 ? 0 : dotProduct / magnitude;
-  }
+  } }
 
   private updatePerformanceStats(processingTime: number): void {
     this.performanceStats.operationsCompleted += 1;
@@ -221,7 +221,7 @@ export class WebGPUPolyfillService {
       this.performanceStats.operationsCompleted > 0
         ? this.performanceStats.totalProcessingTime / this.performanceStats.operationsCompleted
         : 0;
-  }
+  } }
 
   /**
    * Returns performance statistics for WebGPU/WebGL operations.
@@ -241,7 +241,7 @@ export class WebGPUPolyfillService {
       isWebGPUAvailable: this.isWebGPUAvailable,
       hasWebGLFallback: !!this.webglFallback
     };
-  }
+  } }
 
   /**
    * Cleans up GPU and WebGL resources used by this polyfill.
@@ -258,19 +258,19 @@ export class WebGPUPolyfillService {
             const maybePromise = deviceWithDestroy.destroy();
             if (maybePromise && typeof (maybePromise as { then?: any }).then === 'function') {
               (maybePromise as Promise<void>).catch(e => this.safeDebug('device.destroy() rejected:', String(e)));
-            }
-          } catch (callErr: any) {
+            } }
+          } }catch (callErr: any) {
             this.safeDebug('device.destroy() call threw:', String(callErr));
-          }
-        }
-      } catch {
+          } }
+        } }
+      } }catch {
         /* ignore */
-      }
+      } }
       this.device = null;
       this.queue = null;
       this.adapter = null;
       this.isWebGPUAvailable = $state(false);
-    }
+    } }
 
     // Cleanup WebGL resources
     if (this.webglFallback && this.canvas) {
@@ -279,13 +279,14 @@ export class WebGPUPolyfillService {
         const loseContext = gl.getExtension('WEBGL_lose_context');
         if (loseContext) {
           loseContext.loseContext();
-        }
-      } catch {
+        } }
+      } }catch {
         /* ignore */
-      }
+      } }
       this.webglFallback = null;
       this.canvas = null;
-    }
+    } }
     this.safeLog('🧹 WebGPU/WebGL resources cleaned up');
-  }
-}
+  } }
+} }
+

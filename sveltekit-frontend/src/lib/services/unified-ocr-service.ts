@@ -9,8 +9,8 @@
  * 5. MinIO storage fallback - If file already processed
  */
 
-import { extractTextFromImage, type OCRResult, type ImageSource } from '$lib/ocr/ocr-client';
-import { browser } from '$app/environment';
+import { extractTextFromImage, type OCRResult, type ImageSource } }from '$lib/ocr/ocr-client';
+import { browser } }from '$app/environment';
 
 export interface UnifiedOCRResult { success: boolean;, text: string;
   confidence?: number;
@@ -24,7 +24,7 @@ export interface UnifiedOCRResult { success: boolean;, text: string;
     textLength?: number;
     device?: string;
   };
-}
+} }
 
 export interface OCROptions {
   language?: string;
@@ -33,7 +33,7 @@ export interface OCROptions {
   useCache?: boolean;
   evidenceId?: string;
   documentId?: string;
-}
+} }
 
 class UnifiedOCRService {
   private GPU_OCR_URL = 'http://localhost:8090'; // Python Surya OCR
@@ -58,9 +58,9 @@ class UnifiedOCRService {
       const processingTime = performance.now() - startTime;
       console.log(`✅ GPU OCR succeeded in ${processingTime.toFixed(0)}ms`);
       return { ...result, processingTime };
-    } catch (gpuError) {
+    } }catch (gpuError) {
       console.warn('⚠️ GPU OCR failed:', gpuError);
-    }
+    } }
 
     // Strategy 2: Try Server CUDA OCR
     try {
@@ -69,9 +69,9 @@ class UnifiedOCRService {
       const processingTime = performance.now() - startTime;
       console.log(`✅ CUDA OCR succeeded in ${processingTime.toFixed(0)}ms`);
       return { ...result, processingTime };
-    } catch (cudaError) {
+    } }catch (cudaError) {
       console.warn('⚠️ CUDA OCR failed:', cudaError);
-    }
+    } }
 
     // Strategy 3: Try Client CPU OCR (Tesseract.js) - browser only
     if (browser) {
@@ -81,10 +81,10 @@ class UnifiedOCRService {
         const processingTime = performance.now() - startTime;
         console.log(`✅ Client OCR succeeded in ${processingTime.toFixed(0)}ms`);
         return { ...result, processingTime };
-      } catch (clientError) {
+      } }catch (clientError) {
         console.warn('⚠️ Client OCR failed:', clientError);
-      }
-    }
+      } }
+    } }
 
     // Strategy 4: Try Evidence OCR endpoint (if evidenceId provided)
     if (options.evidenceId) {
@@ -94,10 +94,10 @@ class UnifiedOCRService {
         const processingTime = performance.now() - startTime;
         console.log(`✅ Evidence OCR succeeded in ${processingTime.toFixed(0)}ms`);
         return { ...result, processingTime };
-      } catch (evidenceError) {
+      } }catch (evidenceError) {
         console.warn('⚠️ Evidence OCR failed:', evidenceError);
-      }
-    }
+      } }
+    } }
 
     // Strategy 5: Check MinIO for pre-processed document
     if (options.documentId) {
@@ -107,10 +107,10 @@ class UnifiedOCRService {
         const processingTime = performance.now() - startTime;
         console.log(`✅ MinIO cache hit in ${processingTime.toFixed(0)}ms`);
         return { ...result, processingTime };
-      } catch (minioError) {
+      } }catch (minioError) {
         console.warn('⚠️ MinIO fallback failed:', minioError);
-      }
-    }
+      } }
+    } }
 
     // All strategies failed
     const processingTime = performance.now() - startTime;
@@ -119,12 +119,11 @@ class UnifiedOCRService {
       text: '',
       engine: 'none',
       processingTime,
-      metadata: {
-       , filename: file.name,
+      metadata: { filename: file.name,
         fileType: file.type
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Strategy, 1: Python GPU OCR (Surya + langextract-go + Ollama)
@@ -143,13 +142,13 @@ class UnifiedOCRService {
 
     if (!response.ok) {
       throw new Error(`GPU OCR service error: ${response.status}`);
-    }
+    } }
 
     const data = await response.json();
 
     if (!data.success) {
       throw new Error('GPU OCR processing failed');
-    }
+    } }
 
     return {
       success: true,
@@ -161,7 +160,7 @@ class UnifiedOCRService {
       processingTime: 0, // Will be set by caller
       metadata: data.metadata
     };
-  }
+  } }
 
   /**
    * Strategy, 2: Server CUDA OCR
@@ -179,7 +178,7 @@ class UnifiedOCRService {
 
     if (!response.ok) {
       throw new Error(`CUDA OCR error: ${response.status}`);
-    }
+    } }
 
     const data = await response.json();
 
@@ -189,13 +188,12 @@ class UnifiedOCRService {
       confidence: data.confidence,
       engine: 'cuda',
       processingTime: 0,
-      metadata: {
-       , filename: file.name,
+      metadata: { filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0,
-        device: 'cuda` }'`
+        device: 'cuda` } }`
     };
-  }
+  } }
 
   /**
    * Strategy, 3: Client CPU OCR (Tesseract.js)
@@ -203,14 +201,14 @@ class UnifiedOCRService {
   private async tryClientOCR(file: File, options: OCROptions): Promise<UnifiedOCRResult> {
     if (!browser) {
       throw new Error('Client OCR only available in browser');
-    }
+    } }
 
     // Convert File to ImageSource
     const result: OCRResult = await extractTextFromImage(file, options.language || 'eng');
 
     if (!result.text) {
       throw new Error('Client OCR returned empty text');
-    }
+    } }
 
     return {
       success: true,
@@ -218,12 +216,11 @@ class UnifiedOCRService {
       confidence: result.confidence,
       engine: 'tesseract-cpu',
       processingTime: 0,
-      metadata: {
-       , filename: file.name,
+      metadata: { filename: file.name,
         fileType: file.type,
         textLength: result.text.length,
-        device: 'cpu' }'` };'`
-  }
+        device: 'cpu' } }` };'`
+  } }
 
   /**
    * Strategy, 4: Evidence OCR endpoint
@@ -231,7 +228,7 @@ class UnifiedOCRService {
   private async tryEvidenceOCR(file: File, options: OCROptions, fetchFn: typeof fetch): Promise<UnifiedOCRResult> {
     if (!options.evidenceId) {
       throw new Error('Evidence ID required for evidence OCR');
-    }
+    } }
 
     const formData = new FormData();
     formData.append('file', file);
@@ -244,7 +241,7 @@ class UnifiedOCRService {
 
     if (!response.ok) {
       throw new Error(`Evidence OCR error: ${response.status}`);
-    }
+    } }
 
     const data = await response.json();
 
@@ -254,13 +251,12 @@ class UnifiedOCRService {
       confidence: data.confidence,
       engine: 'evidence',
       processingTime: 0,
-      metadata: {
-       , filename: file.name,
+      metadata: { filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Strategy, 5: MinIO cache lookup
@@ -272,13 +268,13 @@ class UnifiedOCRService {
 
     if (!response.ok) {
       throw new Error(`MinIO lookup error: ${response.status}`);
-    }
+    } }
 
     const data = await response.json();
 
     if (!data.text) {
       throw new Error('MinIO returned empty OCR data');
-    }
+    } }
 
     return {
       success: true,
@@ -290,7 +286,7 @@ class UnifiedOCRService {
       processingTime: 0,
       metadata: data.metadata
     };
-  }
+  } }
 
   /**
    * Health check for all OCR services
@@ -320,7 +316,8 @@ class UnifiedOCRService {
       evidenceOCR: results[3].status === 'fulfilled' ? results[3].value : false,
       minioStorage: results[4].status === 'fulfilled' ? results[4].value : false
     };
-  }
-}
+  } }
+} }
 
 export const unifiedOCRService = new UnifiedOCRService();
+

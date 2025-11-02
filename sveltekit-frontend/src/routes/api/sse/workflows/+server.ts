@@ -1,6 +1,6 @@
 // Server-Sent Events endpoint for real-time workflow updates
-import type { RequestHandler } from './$types.js'
-import { workflowOrchestrator } from '$lib/server/workflows/orchestrator'
+import type { RequestHandler } }from './$types.js'
+import { workflowOrchestrator } }from '$lib/server/workflows/orchestrator'
 export const GET: RequestHandler = async ({ url, request }) => {
   console.log('📡 SSE client connected to workflow updates')
   const workflowId = url.searchParams.get('workflowId')
@@ -18,10 +18,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         message += `data: ${JSON.stringify(data)}\n\n`
         try {
           controller.enqueue(encoder.encode(message))
-        } catch (error) {
+        } }catch (error) {
           console.error('❌ SSE send error:', error)'
-        }
-      }
+        } }
+      } }
       // Send connection confirmation
       sendEvent('connected', {
         clientId,
@@ -40,15 +40,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
             updatedAt: workflow.updatedAt,
             context: workflow.context
           }, `status-${workflowId}-${Date.now()}`)
-        } else {
+        } }else {
           sendEvent('error', {
-            message: `Workflow ${workflowId} not found`,
-            code: 'WORKFLOW_NOT_FOUND' })'` }'`
-      } else {
+            message: `Workflow ${workflowId} }not found`,
+            code: 'WORKFLOW_NOT_FOUND' })'` } }`
+      } }else {
         // Send overview of all workflows
         const stats = workflowOrchestrator.getStatistics()
         sendEvent('overview', stats, `overview-${Date.now()}`)
-      }
+      } }
       // Subscribe to workflow events
       const unsubscribeProgress = workflowOrchestrator.subscribe('WORKFLOW_PROGRESS', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             state: event.payload.state,
             timestamp: event.timestamp
           }, `progress-${event.workflowId}-${event.timestamp}`)
-        }
+        } }
       })
       const unsubscribeStarted = workflowOrchestrator.subscribe('WORKFLOW_STARTED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: event.timestamp,
             ...event.payload
           }, `started-${event.workflowId}-${event.timestamp}`)
-        }
+        } }
       })
       const unsubscribeCompleted = workflowOrchestrator.subscribe('WORKFLOW_COMPLETED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: event.timestamp,
             finalContext: event.payload.finalContext
           }, `completed-${event.workflowId}-${event.timestamp}`)
-        }
+        } }
       })
       const unsubscribeFailed = workflowOrchestrator.subscribe('WORKFLOW_FAILED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: event.timestamp,
             error: event.payload.error
           }, `failed-${event.workflowId}-${event.timestamp}`)
-        }
+        } }
       })
       // Send periodic heartbeat
       const heartbeatInterval = setInterval(() => {
@@ -96,10 +96,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: Date.now(),
             clientId
           })
-        } catch (error) {
+        } }catch (error) {
           console.log('📡 SSE client disconnected (heartbeat failed)')
           clearInterval(heartbeatInterval)
-        }
+        } }
       }, 30000); // Every, 30 seconds
       // Send periodic stats update if no specific workflow
       let statsInterval: NodeJS.Timeout | null = null
@@ -108,12 +108,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
           try {
             const stats = workflowOrchestrator.getStatistics()
             sendEvent('stats-update', stats, `stats-${Date.now()}`)
-          } catch (error) {
+          } }catch (error) {
             console.log('📡 SSE client disconnected (stats update failed)')
             clearInterval(statsInterval!)
-          }
+          } }
         }, 5000); // Every, 5 seconds
-      }
+      } }
       // Handle client disconnect
       let disconnected = false
       const cleanup = () => {
@@ -128,10 +128,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         if (statsInterval) clearInterval(statsInterval)
         try {
           controller.close()
-        } catch (error) {
+        } }catch (error) {
           // Controller already closed
-        }
-      }
+        } }
+      } }
       // Detect client disconnect via AbortSignal
       const abortController = new AbortController()
       request.signal?.addEventListener('abort', cleanup)
@@ -142,8 +142,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       console.log('📡 SSE stream cancelled')
       if ((this as: any).cleanup) {
         (this as: any).cleanup()
-      }
-    }
+      } }
+    } }
   })
   return new Response(stream, {
     status: 200,
@@ -155,9 +155,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Access-Control-Allow-Headers': 'Cache-Control',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
-    }
+    } }
   })
-}
+} }
 // Handle preflight OPTIONS requests for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
@@ -166,5 +166,5 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Cache-Control',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Max-Age': '86400' }'` })'`
+      'Access-Control-Max-Age': '86400' } }` })'`
 }

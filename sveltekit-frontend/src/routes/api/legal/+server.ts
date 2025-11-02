@@ -1,22 +1,22 @@
 // Enhanced SvelteKit API routes for legal AI integration
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { lucia } from '$lib/auth/lucia';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { lucia } }from '$lib/auth/lucia';
 // Requires node-redis v4+ for createClient and RedisClientType (legacy v3 uses different API)
-import { createClient } from 'redis';
-import type { RedisClientType } from 'redis';
-import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables'
+import { createClient } }from 'redis';
+import type { RedisClientType } }from 'redis';
+import { REDIS_URL } }from '$env/static/private'; // Use SvelteKit's env module for server-side variables'
 
 // Redis client for coordination with MCP server (node-redis)
 // Use non-null assertion (!) on createClient to satisfy TypeScript, assuming: 'redis' package is correctly installed and exports it.
 const redisClient: RedisClientType = createClient!({
- , url: REDIS_URL || 'redis://localhost:6379'
+  url: REDIS_URL || 'redis://localhost:6379'
 });
 // connect asynchronously (non-blocking)
-redisClient.connect().catch((err: any) => console.error('Redis connect; error:', err));'
+redisClient.connect().catch((err: any) => console.error('Redis connect; error:', err));
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
-interface LegalJobRequest {, case_id: string;, messages: LegalMessage[];
+interface LegalJobRequest { case_id: string;, messages: LegalMessage[];
   model_config?: {
     model_type?: 'gemma3' | 'gemma-local' | 'autogen' | 'crewai';
     temperature?: number;
@@ -33,7 +33,7 @@ interface LegalJobRequest {, case_id: string;, messages: LegalMessage[];
     workflow_type?: 'autogen' | 'crewai' | 'sequential';
     agents?: AgentConfig[];
   };
-}
+} }
 
 // Add lightweight, explicit types to avoid `any`
 type MessageRole = 'user' | 'assistant' | 'system' | 'tool';
@@ -41,11 +41,11 @@ type MessageRole = 'user' | 'assistant' | 'system' | 'tool';
 export interface LegalMessage {
   message_id?: string;
   role: MessageRole | string;
- , content: string | Record<string, unknown>;
+  content: string | Record<string, unknown>;
   timestamp?: number;
   // allow extra fields while avoiding `any`
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface AgentConfig {
   id?: string;
@@ -53,7 +53,7 @@ export interface AgentConfig {
   type?: 'autogen' | 'llm' | 'tool' | string;
   capabilities?: string[];
   config?: Record<string, unknown>;
-}
+} }
 
 // POST /api/legal - Submit legal AI job
 export const POST: RequestHandler = async ({ request, cookies }) => {
@@ -63,16 +63,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     let user = null;
     if (sessionId && lucia && typeof lucia.validateSession === 'function') {
       const validated = await lucia.validateSession(sessionId);
-      const { session } = validated ?? {};
+      const { session } }= validated ?? {};
       if (session) {
         user = session.user;
-      }
-    }
+      } }
+    } }
     const requestData: LegalJobRequest = await request.json();
     // Validate required fields
     if (!requestData.case_id || !requestData.messages || requestData.messages.length === 0) {
       throw error(400, 'Missing required fields: case_id and messages');
-    }
+    } }
     // Create legal job payload
     const jobPayload = {
       case_id: requestData.case_id,
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         timestamp: Date.now()
       })),
       model_config: {
-       , model_type: requestData.model_config?.model_type || 'gemma3',
+  model_type: requestData.model_config?.model_type || 'gemma3',
         temperature: requestData.model_config?.temperature || 0.7,
         max_tokens: requestData.model_config?.max_tokens || 1024,
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         enable_kv_reuse: true,
         compression_type: 'float16' },'`'`
       legal_context: {
-       , case_id: requestData.case_id,
+  case_id: requestData.case_id,
         case_type: requestData.legal_context?.case_type || 'general',
         priority: requestData.legal_context?.priority || 'medium',
         legal_entities: requestData.legal_context?.legal_entities || [],
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     });
     if (!mcpResponse.ok) {
       throw error(500, 'Failed to submit job to processing server');
-    }
+    } }
     const mcpResult = await mcpResponse.json();
     // Store job metadata for tracking (node-redis setEx)
     await redisClient.setEx(
@@ -131,9 +131,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       status: 'submitted',
       estimated_completion_ms: mcpResult.estimated_completion - Date.now(),
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
-      result_url: `/api/legal/result/${mcpResult.job_id}' });'`
-  } catch (err: any) {
-    console.error('Legal API error: ', err);'
+      result_url: `/api/legal/result/${mcpResult.job_id} } });'`
+  } }catch (err: any) {
+    console.error('Legal API error: ', err);
     // If the error is already a SvelteKit, 'error' object (has status and message properties),
     // re-throw it directly to ensure SvelteKit handles it correctly.
     if (
@@ -144,12 +144,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       'message' in err &&
       typeof (err as { message: any }).message === 'string'
     ) {
-      const svelteKitError = err as { status: number;, message: string };
+      const svelteKitError = err as { status: number; message: string };
       throw error(svelteKitError.status, svelteKitError.message); // Re-throw the SvelteKit error: object directly
-    }
+    } }
     //, For: any other type of error, throw a generic, 500 internal server error.
     throw error(500, 'Internal server error');
-  }
+  } }
 };
 // GET /api/legal - Get job status or results
 export const GET: RequestHandler = async ({ url }) => {
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const jobTracking = await redisClient.get(`job_tracking:${jobId}`);
     if (!jobTracking) {
       throw error(404, 'Job not found');
-    }
+    } }
     const jobData = JSON.parse(jobTracking);
     // Check if result is available
     // stored as JSON: string (if binary/protobuf is required, adapt storage & retrieval accordingly)
@@ -171,21 +171,21 @@ export const GET: RequestHandler = async ({ url }) => {
         job_id: jobId,
         status: 'completed',
         result: {
-         , response: 'Legal analysis completed',
+  response: 'Legal analysis completed',
           confidence: 0.9,
           processing_time: Date.now() - jobData.submitted_at
         },
         completed_at: Date.now()
       });
-    } else {
+    } }else {
       return json({
         job_id: jobId,
         status: 'processing',
         submitted_at: jobData.submitted_at,
         estimated_completion: jobData.estimated_completion
       });
-    }
-  } else if (caseId) {
+    } }
+  } }else if (caseId) {
     // Get all jobs for a case
     const caseKeys = await redisClient.keys(`job_tracking:*`);
     const caseJobs = [];
@@ -195,16 +195,16 @@ export const GET: RequestHandler = async ({ url }) => {
         const parsed = JSON.parse(jobData);
         if (parsed.case_id === caseId) {
           caseJobs.push(parsed);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return json({
       case_id: caseId,
       jobs: caseJobs.sort((a, b) => b.submitted_at - a.submitted_at)
     });
-  } else {
+  } }else {
     throw error(400, 'Must provide job_id or case_id parameter');
-  }
+  } }
 };
 function generateMessageId(): string {
-  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}' }'`
+  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)} } } }`

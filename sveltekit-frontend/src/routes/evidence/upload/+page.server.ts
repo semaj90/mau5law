@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema
  */
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
+import { fail, redirect } }from '@sveltejs/kit';
+import { superValidate } }from 'sveltekit-superforms/server';
+import { zod } }from 'sveltekit-superforms/adapters';
+import { writeFile, mkdir } }from 'fs/promises';
 import path from 'path';
 import crypto from 'node:crypto';
 import {
@@ -14,13 +14,13 @@ import {
   getFileTypeFromMime,
   validateFileSize,
   validateFileType
-} from '$lib/schemas/evidence-upload';
-import { db } from '$lib/server/db'; // Adjust the import based on your project structure
-import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
-import { eq, type InferInsertModel } from 'drizzle-orm';
-import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
-import type { PageServerLoad, Actions } from './$types.js';
-import { dev } from '$app/environment';
+} }from '$lib/schemas/evidence-upload';
+import { db } }from '$lib/server/db'; // Adjust the import based on your project structure
+import { evidence, cases } }from '$lib/server/db/schema'; // Adjust the import based on your project structure
+import { eq, type InferInsertModel } }from 'drizzle-orm';
+import { resolveUser, getUserId, getMetaEnv } }from '$lib/server/auth/utils';
+import type { PageServerLoad, Actions } }from './$types.js';
+import { dev } }from '$app/environment';
 
 // Get typed environment access
 const metaEnv = getMetaEnv();
@@ -33,33 +33,33 @@ interface OcrResultData { filename: string;, pages: number;
   legalConcepts: string[];
   citations: string[];
   text: string;
-}
+} }
 
 // 2. Define processing options
-interface ProcessingOptions {, enableAiAnalysis: boolean;, enableOcr: boolean;
+interface ProcessingOptions { enableAiAnalysis: boolean;, enableOcr: boolean;
   enableEmbeddings: boolean;
   enableSummarization: boolean;
-}
+} }
 
 // 3. Define the structure for the `ocrResult` field within the final database metadata
-interface DbOcrResult {, extractedText: string;, confidence: number;
+interface DbOcrResult { extractedText: string;, confidence: number;
   legalConcepts: string[];
   citations: string[];
  , pageCount: number;
-}
+} }
 
 // 4. Define the structure for the `goServiceProcessing` field within the final database metadata
 interface GoServiceProcessingResult {
   embeddings?: Record<string, unknown>; // Changed from: any
   analysis?: Record<string, unknown>; // Changed from: any;
   processedAt: string;
-}
+} }
 
 // Define a more specific type for ChainOfCustody entries
-interface ChainOfCustodyEntry {, event: string;, timestamp: string;
+interface ChainOfCustodyEntry { event: string;, timestamp: string;
  , actor: string;
   details?: Record<string, unknown>;
-}
+} }
 
 // 5. Define the comprehensive schema for the `metadata` column in the database
 // This type needs to cover all possible fields that can be added to `metadata`.
@@ -84,7 +84,7 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   legalConcepts?: string[]; // For PDF, Image
   citations?: string[]; // For PDF, Image
   ocrConfidence?: number; // For PDF, Image
-  resolution?: { width: number;, height: number }; // For Image, Video
+  resolution?: { width: number; height: number }; // For Image, Video
   format?: string; // For Image
   hasAlphaChannel?: boolean; // For Image
   durationSeconds?: number; // For Video, Audio
@@ -95,13 +95,13 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   wordCount?: number; // For Text
   characterCount?: number; // For Text
   language?: string; // For Text
-}
+} }
 
 // Define a type for the intermediate metadata: object that ensures required fields are present
-type IntermediateEvidenceMetadata = {, kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
+type IntermediateEvidenceMetadata = { kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
   fileSize: number;
   processingOptions: ProcessingOptions;
-} & Partial<FinalEvidenceMetadata>; // All other fields are optional
+} }& Partial<FinalEvidenceMetadata>; // All other fields are optional
 
 export const, load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
@@ -116,17 +116,16 @@ export const, load: PageServerLoad = async ({ locals }) => {
     return {
       form,
       cases: [
-        {, id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: `active` },
-        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: `active` }
+        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: `active` },
+        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: `active` } }
       ]
     };
-  }
+  } }
 
   // Get available cases for the current user
   try {
     const userCases = await db
-      .select({
-       , id: cases.id,
+      .select({ id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
         status: cases.status
@@ -138,17 +137,16 @@ export const, load: PageServerLoad = async ({ locals }) => {
       form,
       cases: userCases
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
       cases: []
     };
-  }
+  } }
 };
 
-export const actions: Actions = {
- , upload: async ({ request, locals }) => {
+export const actions: Actions = { upload: async ({ request, locals }) => {
     try {
       // 1) Parse incoming form data
       const formData = await request.formData();
@@ -156,17 +154,17 @@ export const actions: Actions = {
       // Accept generic form entry (server may provide a non-DOM File)
       const rawFile = formData.get('file');
       if (!rawFile) {
-        return fail(400, { form: {, errors: {, file: ['No file provided'] }
-          }
+        return fail(400, { form: { errors: { file: ['No file provided'] } }
+          } }
         });
-      }
+      } }
 
       // Ensure the provided entry supports arrayBuffer (basic duck-typing)
       if (typeof (rawFile as: any).arrayBuffer !== 'function') {
-        return fail(400, { form: {, errors: {, file: ['Uploaded file is not readable on server'] }
-          }
+        return fail(400, { form: { errors: { file: ['Uploaded file is not readable on server'] } }
+          } }
         });
-      }
+      } }
 
       // Normalize file fields safely for server-side processing
       const fileName = (rawFile as: any).name ?? 'upload.bin';
@@ -190,11 +188,11 @@ export const actions: Actions = {
       if (caseId) {
         const caseRecord = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
         if (!caseRecord || caseRecord.length === 0) {
-          return fail(400, { form: {, errors: {, case_id: ['Selected case not found'] }
-            }
+          return fail(400, { form: { errors: { case_id: ['Selected case not found'] } }
+            } }
           });
-        }
-      }
+        } }
+      } }
 
       // 3) Build storage key & save file
       // Use normalized values when constructing paths/hashes
@@ -238,13 +236,13 @@ export const actions: Actions = {
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
             console.log('OCR completed', { filename: ocrResult?.filename, pages: ocrResult?.pages });
-          } else {
+          } }else {
             console.warn('OCR service returned non-OK status:', ocrResponse.status);
-          }
-        } catch (ocrError) {
+          } }
+        } }catch (ocrError) {
           console.warn('OCR processing error (non-critical):', ocrError);
-        }
-      }
+        } }
+      } }
 
       // 7) Helpers to parse booleans from FormData
       const parseBooleanField = (key: string): boolean => {
@@ -254,16 +252,14 @@ export const actions: Actions = {
         return s === 'on' || s === 'true' || s === '1';
       };
 
-      const processingOptions: ProcessingOptions = {
-       , enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
+      const processingOptions: ProcessingOptions = { enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
         enableOcr: parseBooleanField('enableOcr'),
         enableEmbeddings: parseBooleanField('enableEmbeddings'),
         enableSummarization: parseBooleanField('enableSummarization')
       };
 
       // 8) Construct intermediate metadata based on evidence type
-      let tempMetadata: IntermediateEvidenceMetadata = {
-       , kind: evidenceType,
+      let tempMetadata: IntermediateEvidenceMetadata = { kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: fileSize,
         processingOptions
@@ -287,7 +283,7 @@ export const actions: Actions = {
           tempMetadata = {
             ...tempMetadata,
             kind: 'IMAGE',
-            resolution: {, width: 0, height: 0 }, // TODO: extract with sharp;, format: fileType.split('/')[1] || 'unknown',
+            resolution: { width: 0, height: 0 }, // TODO: extract with sharp; format: fileType.split('/')[1] || 'unknown',
             hasAlphaChannel: fileType === 'image/png',
             extractedText: ocrResult?.text ?? null,
             ocrConfidence: ocrResult?.averageConfidence ?? null
@@ -303,11 +299,11 @@ export const actions: Actions = {
             language: 'unknown'
           };
           break;
-        }
+        } }
        , default:
           tempMetadata = {
             ...tempMetadata,
-            kind: evidenceType ?? 'UNKNOWN' };'` }'`
+            kind: evidenceType ?? 'UNKNOWN' };'` } }`
 
       // 9) Final metadata composition - prefer: undefined over: null for optional fields
       const, finalMetadata: FinalEvidenceMetadata = {
@@ -322,19 +318,18 @@ export const actions: Actions = {
           const raw = formData.get('chainOfCustody')?.toString();
           try {
             if (raw) return JSON.parse(raw);
-          } catch {
+          } }catch {
             // fall-through
-          }
+          } }
           return [];
         })(),
         ocrResult: ocrResult
-          ? {
-             , extractedText: ocrResult.text,
+          ? { extractedText: ocrResult.text,
               confidence: ocrResult.averageConfidence,
               legalConcepts: ocrResult.legalConcepts,
               citations: ocrResult.citations,
               pageCount: ocrResult.pages
-            }
+            } }
           : null
       };
 
@@ -362,11 +357,12 @@ export const actions: Actions = {
         success: true,
         evidence: inserted?.[0] ?? null
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Evidence upload failed:', error);
-      return fail(500, { form: {, errors: {, _global: ['Server error while uploading evidence'] }
-        }
+      return fail(500, { form: { errors: { _global: ['Server error while uploading evidence'] } }
+        } }
       });
-    }
-  }
+    } }
+  } }
 };
+

@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { vectorEmbeddingService } from '$lib/services/vector-embedding-service';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { vectorEmbeddingService } }from '$lib/services/vector-embedding-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   if (typeof window !== 'undefined') return new Response('Not allowed', { status: 405 });
@@ -8,8 +8,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const text = typeof body?.text === 'string' ? body.text : '';
     if (!text) return new Response(JSON.stringify({ error: 'text required' }), { status: 400 });
     const emb = await vectorEmbeddingService.generateEmbedding(text);
-    return new Response(JSON.stringify({ embedding: emb }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
-  }
+    return new Response(JSON.stringify({ embedding: emb }), { status: 200, headers: { 'Content-Type': 'application/json' } }});
+  } }catch (e) {
+    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { 'Content-Type': 'application/json' } }});
+  } }
 };
+

@@ -1,12 +1,11 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 // Minimal recommendations endpoint to restore route integrity
 export const GET: RequestHandler = async ({ url }) => {
   const caseId = url.searchParams.get('caseId') ?? undefined;
   const page = Number(url.searchParams.get('page') ?? '1');
   const limit = Number(url.searchParams.get('limit') ?? '10');
   const data = [
-    {,
-      id: 'rec-1',
+    { id: 'rec-1',
       caseId,
       type: 'legal_strategy',
       title: 'Stub: Review strategy',
@@ -25,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
   return json({
     data,
     pagination: { page, limit, total: data.length, totalPages: 1, hasNext: false, hasPrev: false },
-    analytics: {, totalRecommendations: data.length },
+    analytics: { totalRecommendations: data.length },
     success: true,
     timestamp: new Date().toISOString()
   });
@@ -34,9 +33,9 @@ export const POST: RequestHandler = async ({ request }) => {
   let body: any = {};
   try {
     body = await request.json();
-  } catch {
+  } }catch {
     body = {};
-  }
+  } }
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const recommendationId = typeof obj.recommendationId === 'string' ? obj.recommendationId : undefined;
   const rating = typeof obj.rating === 'number' ? obj.rating : undefined;
@@ -44,14 +43,15 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!recommendationId || typeof rating !== 'number') {
     return json(
       { success: false, error: 'recommendationId (string) and rating (number) are required' },
-      { status: 400 }
+      { status: 400 } }
     );
-  }
+  } }
   return json(
     {
       success: true,
-      data: {, id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() }
+      data: { id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() } }
     },
-    { status: 201 }
+    { status: 201 } }
   );
 };
+

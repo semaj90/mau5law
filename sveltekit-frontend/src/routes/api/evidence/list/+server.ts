@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres-enhanced';
-import { desc } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema-postgres-enhanced';
+import { desc } }from 'drizzle-orm';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     const rows = await db.select().from(evidence).orderBy(desc(evidence.createdAt)).limit(500);
@@ -19,8 +19,9 @@ export const GET: RequestHandler = async () => {
       summaryType: (r as Record<string, unknown>).summaryType || null
     }));
     return new Response(JSON.stringify({ evidence: mapped }), { status: 200 });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Evidence list error', err);
     return new Response(JSON.stringify({ error: 'Failed to list evidence' }), { status: 500 });
-  }
+  } }
 };
+

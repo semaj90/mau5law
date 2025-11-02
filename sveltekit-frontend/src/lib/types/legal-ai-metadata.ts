@@ -3,7 +3,7 @@
 
 export interface LegalAIMetadataEntity { name: string;, type: string;
   confidence: number;
-}
+} }
 
 export interface LegalAIClassifications {
   documentType?: string;
@@ -11,7 +11,7 @@ export interface LegalAIClassifications {
   urgency?: string;
   confidentiality?: string;
   [key: string]: any;
-}
+} }
 
 export interface ProcessingStep {
   step: string;
@@ -19,7 +19,7 @@ export interface ProcessingStep {
   duration_ms?: number; // new extractor uses duration_ms
   success: boolean;
   metadata?: { [key: string]: any };
-}
+} }
 
 export interface LegalAIMetadata {
   // Legacy/test fields
@@ -46,6 +46,6 @@ export interface LegalAIMetadata {
     risk_assessment: 'low' | 'medium' | 'high' | 'critical' | string;
     summary: string;
   };
-}
+} }
 
 export type DefaultLegalAIMetadata = LegalAIMetadata;

@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { ChatHistoryService } from '$lib/server/chat/history-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { ChatHistoryService } }from '$lib/server/chat/history-service';
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const user = locals.user as: any;
@@ -13,14 +13,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         sessionId,
         messages: messages.reverse()
       });
-    }
+    } }
     const sessions = await ChatHistoryService.getSessionsByUser(user.id);
     return json({
       success: true,
       sessions
     });
-  } catch (error) {
-    console.error('Chat history API error:', error);'
+  } }catch (error) {
+    console.error('Chat history API error:', error);
     // Return mock chat history on failure
     const sessionId = url.searchParams.get('sessionId');
     const mockData = sessionId
@@ -29,8 +29,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           error: 'failure default to mock',
           sessionId,
           messages: [
-            {,
-              id: 'mock-msg-001',
+            { id: 'mock-msg-001',
               content: 'Mock chat message - legal analysis request',
               role: 'user',
               timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
@@ -42,13 +41,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
               timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000 + 30000).toISOString()
             },
           ]
-        }
+        } }
       : {
           success: false,
           error: 'failure default to mock',
           sessions: [
-            {,
-              id: 'mock-session-001',
+            { id: 'mock-session-001',
               title: 'Employment Contract Analysis',
               lastMessage: 'Mock legal consultation',
               timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
@@ -56,5 +54,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           ]
         };
     return json(mockData, { status: 500 });
-  }
+  } }
 };
+

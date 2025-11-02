@@ -1,12 +1,12 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Detective Mode Pattern Detection API Route
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { CasesCRUDService, EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
 
 // Pattern detection request schema
 const PatternDetectionSchema = z.object({
@@ -18,7 +18,7 @@ const PatternDetectionSchema = z.object({
   sensitivity: z.number().min(0).max(1).default(0.7),
   options: z
     .object({
-     , includeAnomalies: z.boolean().default(true),
+  includeAnomalies: z.boolean().default(true),
       includePredictions: z.boolean().default(false),
       minOccurrences: z.number().min(1).default(2),
       timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
@@ -36,24 +36,24 @@ interface Pattern { id: string;, type: string;
   occurrences?: number;
   // allow additional fields from mock detectors without using `any`
   [key: string]: any;
-}
+} }
 
-interface Anomaly {, id: string;, type: string;
+interface Anomaly { id: string;, type: string;
   subtype?: string;
   description?: string;
   confidence: number;
   severity?: 'low' | 'medium' | 'high' | 'very_high' | string;
   [key: string]: any;
-}
+} }
 
-interface DetectionResults {, patterns: Pattern[];, anomalies: Anomaly[];
+interface DetectionResults { patterns: Pattern[];, anomalies: Anomaly[];
   insights?: string[];
   confidence: number;
   summary?: string;
   [key: string]: any;
-}
+} }
 
-type DetectionPart = {, patterns: Pattern[];, anomalies: Anomaly[];
+type DetectionPart = { patterns: Pattern[];, anomalies: Anomaly[];
   confidence: number;
 };
 // --- end new types ---
@@ -62,15 +62,15 @@ type DetectionPart = {, patterns: Pattern[];, anomalies: Anomaly[];
  * POST /api/v1/detective/patterns
  * Detect suspicious patterns in case evidence and data
  */
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED' }));'`
-    }
+    } }
     // Parse request body
     const body = await request.json();
-    const { caseId, evidenceIds, patternTypes, sensitivity, options = {} } = PatternDetectionSchema.parse(body);
+    const { caseId, evidenceIds, patternTypes, sensitivity, options = {} }} }= PatternDetectionSchema.parse(body);
     // Create service instances
     const casesService = new CasesCRUDService(getUserId(locals));
     const evidenceService = new EvidenceCRUDService(getUserId(locals));
@@ -78,19 +78,19 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     const caseData = await casesService.getById(caseId);
     if (!caseData) {
       return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND' }));'`
-    }
+    } }
     // Get evidence data for pattern analysis
     let evidence;
     if (evidenceIds && evidenceIds.length > 0) {
       // Get specific evidence items
       evidence = await Promise.all(evidenceIds.map(id => evidenceService.getById(id)));
       evidence = (evidence || []).filter(Boolean); // Remove: null results
-    } else {
+    } }else {
       // Get all case evidence
       const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 });
       evidence = evidenceResult.data;
-    }
-    console.log(`Detecting patterns for case ${caseId} with ${evidence.length} evidence items`);
+    } }
+    console.log(`Detecting patterns for case ${caseId} }with ${evidence.length} }evidence items`);
     // Perform pattern detection
     const patternResults = await detectSuspiciousPatterns(caseData, evidence, patternTypes, sensitivity, options);
     // Update case metadata with pattern analysis
@@ -98,14 +98,14 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       metadata: {
         ...caseData.metadata,
         lastPatternAnalysis: {
-         , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
           sensitivity,
           patternTypes: patternTypes || 'all',
           analyzedBy: getUserId(locals),
           patternsFound: patternResults.patterns.length,
           anomaliesFound: patternResults.anomalies.length
-        }
-      }
+        } }
+      } }
     });
     return json({
       success: true,
@@ -113,18 +113,18 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         caseId,
         analysis: patternResults,
         metadata: {
-         , evidenceAnalyzed: evidence.length,
+  evidenceAnalyzed: evidence.length,
           sensitivity,
           patternTypes: patternTypes || ['all'],
           analysisTime: new Date().toISOString()
-        }
+        } }
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString(),
-        action: `pattern_detection_completed' }'`
+        action: `pattern_detection_completed' } }`
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error in pattern detection:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -135,7 +135,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const message = err instanceof Error ? err.message : String(err);
     return error(
       500,
@@ -145,7 +145,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         details: message
       })
     );
-  }
+  } }
 };
 
 /*
@@ -156,10 +156,10 @@ async function detectSuspiciousPatterns(
   evidence: any[],
   patternTypes?: string[],
   sensitivity: number = 0.7,
-  options: GenericRecord = {}
+  options: GenericRecord = {} }
 ): Promise<DetectionResults> {
   const results: DetectionResults = {
-   , patterns: [],
+  patterns: [],
     anomalies: [],
     insights: [],
     confidence: 0,
@@ -179,55 +179,55 @@ async function detectSuspiciousPatterns(
       results.patterns.push(...temporalPatterns.patterns);
       results.anomalies.push(...temporalPatterns.anomalies);
       results.confidence = Math.max(results.confidence, temporalPatterns.confidence);
-    }
+    } }
     // Location Pattern Detection
     if (detectionTypes.includes('location')) {
       const locationPatterns = await detectLocationPatterns(evidence, sensitivity, options);
       results.patterns.push(...locationPatterns.patterns);
       results.anomalies.push(...locationPatterns.anomalies);
       results.confidence = Math.max(results.confidence, locationPatterns.confidence);
-    }
+    } }
     // Behavioral Pattern Detection
     if (detectionTypes.includes('behavior')) {
       const behaviorPatterns = await detectBehavioralPatterns(evidence, sensitivity, options);
       results.patterns.push(...behaviorPatterns.patterns);
       results.anomalies.push(...behaviorPatterns.anomalies);
       results.confidence = Math.max(results.confidence, behaviorPatterns.confidence);
-    }
+    } }
     // Communication Pattern Detection
     if (detectionTypes.includes('communication')) {
       const commPatterns = await detectCommunicationPatterns(evidence, sensitivity, options);
       results.patterns.push(...commPatterns.patterns);
       results.anomalies.push(...commPatterns.anomalies);
       results.confidence = Math.max(results.confidence, commPatterns.confidence);
-    }
+    } }
     // Financial Pattern Detection
     if (detectionTypes.includes('financial')) {
       const financialPatterns = await detectFinancialPatterns(evidence, sensitivity, options);
       results.patterns.push(...financialPatterns.patterns);
       results.anomalies.push(...financialPatterns.anomalies);
       results.confidence = Math.max(results.confidence, financialPatterns.confidence);
-    }
+    } }
     // Digital Pattern Detection
     if (detectionTypes.includes('digital')) {
       const digitalPatterns = await detectDigitalPatterns(evidence, sensitivity, options);
       results.patterns.push(...digitalPatterns.patterns);
       results.anomalies.push(...digitalPatterns.anomalies);
       results.confidence = Math.max(results.confidence, digitalPatterns.confidence);
-    }
+    } }
     // Generate insights based on detected patterns
     results.insights = generatePatternInsights(results.patterns, results.anomalies);
     results.summary = generatePatternSummary(results);
     return results;
-  } catch (error) {
-    console.error('Pattern detection error:', error);'
+  } }catch (error) {
+    console.error('Pattern detection error:', error);
     return {
       ...results,
       error: 'Pattern detection failed',
       details: error instanceof Error ? error.message : String(error)
-    } as DetectionResults;
-  }
-}
+    } }as DetectionResults;
+  } }
+} }
 
 /*
  * Detect temporal patterns and anomalies
@@ -239,19 +239,19 @@ async function detectTemporalPatterns(
 ): Promise<DetectionPart> {
   const patterns: Pattern[] = [
     {
-     , id: `temporal_${Date.now()}`,
+  id: `temporal_${Date.now()}`,
       type: 'temporal',
       subtype: 'clustering',
       description: 'Evidence clustered in specific time periods',
       confidence: 0.85,
       occurrences: Math.floor((evidence || []).length * 0.6),
       timeRanges: [
-        {, start: '2024-01-01T08:00:00Z', end: '2024-01-01T10:00:00Z', count: 3 },
-        { start: '2024-01-02T14:00:00Z', end: '2024-01-02T16:00:00Z', count: 4 }
+        { start: '2024-01-01T08:00:00Z', end: '2024-01-01T10:00:00Z', count: 3 },
+        { start: '2024-01-02T14:00:00Z', end: '2024-01-02T16:00:00Z', count: 4 } }
       ],
       significance: 'high',
       implications: ['Coordinated activity', 'Time-based planning']
-    } as Pattern,
+    } }as Pattern,
   ];
   const anomalies: Anomaly[] = [];
   // Detect temporal anomalies
@@ -264,134 +264,127 @@ async function detectTemporalPatterns(
       confidence: 0.78,
       timestamp: '2024-01-03T03:30:00Z',
       severity: 'medium',
-      context: `Activity at unusual hour' } as Anomaly);'`
-  }
+      context: `Activity at unusual hour' } }as Anomaly);'`
+  } }
   return {
     patterns,
     anomalies,
     confidence: 0.82
   };
-}
+} }
 
 /*
  * Detect location-based patterns
  */
 async function detectLocationPatterns(
- , _evidence: any[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {,
-        id: `location_${Date.now()}`,
+      { id: `location_${Date.now()}`,
         type: 'location',
         subtype: 'geographical_clustering',
         description: 'Evidence concentrated in specific geographic areas',
         confidence: 0.76,
         locations: [
-          {, lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },'`'`
-          { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side' }'`
+          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },'`'`
+          { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side' } }`
         ],
         radius: '2.5 km',
-        significance: `high' } as Pattern'`
+        significance: `high' } }as Pattern'`
     ],
     anomalies: [
-      {,
-        id: `location_anomaly_${Date.now()}`,
+      { id: `location_anomaly_${Date.now()}`,
         type: 'location',
         subtype: 'geographic_outlier',
         description: 'Single evidence item far from cluster',
         confidence: 0.69,
-        location: {, lat: 40.6892, lon: -74.0445, name: `Brooklyn' },'`
+        location: { lat: 40.6892, lon: -74.0445, name: `Brooklyn' },'`
         distance: '15.2 km from cluster center',
-        severity: `low' } as Anomaly'`
+        severity: `low' } }as Anomaly'`
     ],
     confidence: 0.73
   };
-}
+} }
 
 /*
  * Detect behavioral patterns
  */
 async function detectBehavioralPatterns(
- , evidence: any[],
+  evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {,
-        id: `behavior_${Date.now()}`,
+      { id: `behavior_${Date.now()}`,
         type: 'behavior',
         subtype: 'consistent_methodology',
         description: 'Consistent methods across multiple incidents',
         confidence: 0.91,
         characteristics: ['Similar approach patterns', 'Consistent tool usage', 'Repeated sequence of actions'],
         occurrences: Math.max(2, Math.floor((evidence || []).length * 0.4)),
-        significance: `very_high' } as Pattern'`
+        significance: `very_high' } }as Pattern'`
     ],
     anomalies: [
-      {,
-        id: `behavior_anomaly_${Date.now()}`,
+      { id: `behavior_anomaly_${Date.now()}`,
         type: 'behavior',
         subtype: 'deviation',
         description: 'Unusual deviation from established pattern',
         confidence: 0.74,
         context: 'Different methodology used in one instance',
-        severity: `medium' } as Anomaly'`
+        severity: `medium' } }as Anomaly'`
     ],
     confidence: 0.88
   };
-}
+} }
 
 /*
  * Detect communication patterns
  */
 async function detectCommunicationPatterns(
- , _evidence: any[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {,
-        id: `comm_${Date.now()}`,
+      { id: `comm_${Date.now()}`,
         type: 'communication',
         subtype: 'frequency_pattern',
         description: 'Regular communication intervals detected',
         confidence: 0.67,
         intervals: ['Every, 2 hours', 'Daily at, 9 AM', 'Weekly on Fridays'],
         channels: ['Email', 'Phone', 'Messaging'],
-        significance: `medium' } as Pattern'`
+        significance: `medium' } }as Pattern'`
     ],
     anomalies: [
-      {,
-        id: `comm_anomaly_${Date.now()}`,
+      { id: `comm_anomaly_${Date.now()}`,
         type: 'communication',
         subtype: 'silence_period',
         description: 'Unusual communication silence',
         confidence: 0.71,
         duration: '48 hours',
         context: 'Expected communication did not occur',
-        severity: `medium' } as Anomaly'`
+        severity: `medium' } }as Anomaly'`
     ],
     confidence: 0.69
   };
-}
+} }
 
 /*
  * Detect financial patterns
  */
 async function detectFinancialPatterns(
- , _evidence: any[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {,
-        id: `financial_${Date.now()}`,
+      { id: `financial_${Date.now()}`,
         type: 'financial',
         subtype: 'transaction_pattern',
         description: 'Regular transaction amounts and timing',
@@ -399,35 +392,33 @@ async function detectFinancialPatterns(
         amounts: ['$500.00', '$1,000.00', '$250.00'],
         frequency: 'Weekly',
         accounts: ['Account A', 'Account B'],
-        significance: `high' } as Pattern'`
+        significance: `high' } }as Pattern'`
     ],
     anomalies: [
-      {,
-        id: `financial_anomaly_${Date.now()}`,
+      { id: `financial_anomaly_${Date.now()}`,
         type: 'financial',
         subtype: 'unusual_amount',
         description: 'Transaction amount significantly different from pattern',
         confidence: 0.83,
         amount: '$5,000.00',
         context: 'Amount 10x larger than typical pattern',
-        severity: `high' } as Anomaly'`
+        severity: `high' } }as Anomaly'`
     ],
     confidence: 0.81
   };
-}
+} }
 
 /*
  * Detect digital forensics patterns
  */
 async function detectDigitalPatterns(
- , _evidence: any[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {,
-        id: `digital_${Date.now()}`,
+      { id: `digital_${Date.now()}`,
         type: 'digital',
         subtype: 'access_pattern',
         description: 'Consistent digital access patterns',
@@ -435,11 +426,10 @@ async function detectDigitalPatterns(
         systems: ['System A', 'Database B', 'Application C'],
         times: ['Business hours', 'After hours access'],
         methods: ['Standard login', 'API access'],
-        significance: `high' } as Pattern'`
+        significance: `high' } }as Pattern'`
     ],
     anomalies: [
-      {,
-        id: `digital_anomaly_${Date.now()}`,
+      { id: `digital_anomaly_${Date.now()}`,
         type: 'digital',
         subtype: 'unauthorized_access',
         description: 'Access attempt outside normal parameters',
@@ -447,11 +437,11 @@ async function detectDigitalPatterns(
         system: 'Restricted Database',
         time: '2024-01-01T02:30:00Z',
         method: 'Direct database connection',
-        severity: `very_high' } as Anomaly'`
+        severity: `very_high' } }as Anomaly'`
     ],
     confidence: 0.89
   };
-}
+} }
 
 /*
  * Generate insights from detected patterns
@@ -459,44 +449,44 @@ async function detectDigitalPatterns(
 function generatePatternInsights(patterns: Pattern[], anomalies: Anomaly[]): string[] {
   const insights: string[] = [];
   if (patterns.length > 0) {
-    insights.push(`${patterns.length} significant patterns detected indicating systematic behavior`);
-  }
+    insights.push(`${patterns.length} }significant patterns detected indicating systematic behavior`);
+  } }
   if (anomalies.length > 0) {
-    insights.push(`${anomalies.length} anomalies found that warrant further investigation`);
-  }
+    insights.push(`${anomalies.length} }anomalies found that warrant further investigation`);
+  } }
   const highConfidencePatterns = patterns.filter(p => (p.confidence ?? 0) > 0.8);
   if (highConfidencePatterns.length > 0) {
-    insights.push(`${highConfidencePatterns.length} high-confidence patterns suggest coordinated activity`);
-  }
+    insights.push(`${highConfidencePatterns.length} }high-confidence patterns suggest coordinated activity`);
+  } }
   const criticalAnomalies = anomalies.filter(a => a.severity === 'high' || a.severity === 'very_high');
   if (criticalAnomalies.length > 0) {
-    insights.push(`${criticalAnomalies.length} critical anomalies require immediate attention`);
-  }
+    insights.push(`${criticalAnomalies.length} }critical anomalies require immediate attention`);
+  } }
   return insights;
-}
+} }
 
 /*
  * Generate pattern analysis summary
  */
 function generatePatternSummary(results: DetectionResults): string {
-  const { patterns, anomalies, confidence } = results;
-  let summary = `Pattern analysis completed with ${confidence.toFixed(2)} confidence. `;
-  summary += `Found ${patterns.length} patterns and ${anomalies.length} anomalies. `;
+  const { patterns, anomalies, confidence } }= results;
+  let summary = `Pattern analysis completed with ${confidence.toFixed(2)} }confidence. `;
+  summary += `Found ${patterns.length} }patterns and ${anomalies.length} }anomalies. `;
   if (patterns.length > 0) {
     summary += `Detected patterns suggest systematic behavior across multiple evidence items. `;
-  }
+  } }
   if (anomalies.length > 0) {
     summary += `Anomalies indicate deviations from expected patterns that may be significant. `;
-  }
+  } }
   if (confidence > 0.8) {
     summary += `High confidence analysis indicates reliable pattern detection.`;
-  } else if (confidence > 0.6) {
+  } }else if (confidence > 0.6) {
     summary += `Moderate confidence suggests patterns are likely but need verification.`;
-  } else {
+  } }else {
     summary += `Low confidence indicates patterns may need additional evidence for confirmation.`;
-  }
+  } }
   return summary;
-}
+} }
 
 // Narrowed locals type to avoid `any` and reflect common shapes used in this route.
 type DetectiveLocals = {
@@ -505,12 +495,12 @@ type DetectiveLocals = {
     sub?: string;
     // allow other user properties without using `any`
     [key: string]: any;
-  } | null;
+  } }| null;
   session?: {
     userId?: string;
     // other session props
     [key: string]: any;
-  } | null;
+  } }| null;
   // permit additional entries on locals (e.g., auth providers) without `any`
   [key: string]: any;
 };
@@ -518,8 +508,7 @@ type DetectiveLocals = {
 /* Add small GET health/placeholder handler (keeps endpoint available for simple checks) */
 export const GET: RequestHandler = async () => {
   // lightweight endpoint: the POST remains the full implementation above
-  return json({, success: true, message: `Detective patterns endpoint (ready)' });'`
-};
+  return json({ success: true, message: 'Detective patterns endpoint (ready)' });'' };
 
 /**
  * Utility: resolve user id from SvelteKit locals.
@@ -533,4 +522,5 @@ function getUserId(locals: DetectiveLocals): string {
     (typeof locals?.user?.sub === 'string' && locals.user.sub) ||
     'unknown'
   );
-}
+} }
+

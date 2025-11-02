@@ -1,28 +1,28 @@
-import type { SearchResult } from '$lib/types';
-import { writable, type Writable, get } from 'svelte/store';
-import type { LLMProvider } from '$lib/types/llm';
+import type { SearchResult } }from '$lib/types';
+import { writable, type Writable, get } }from 'svelte/store';
+import type { LLMProvider } }from '$lib/types/llm';
 
 export interface SearchResult { id: string;, score: number;
   payload: { content: string };
-}
-export interface QueryIntent {, type: string;, confidence: number;
+} }
+export interface QueryIntent { type: string;, confidence: number;
   entities: string[];
-}
+} }
 export interface QueryContext {
   userId: string;
   sessionId?: string;
   previousQueries?: string[];
-}
-export interface RAGQuery {, id: string;, originalQuery: string;
+} }
+export interface RAGQuery { id: string;, originalQuery: string;
   expandedQueries: string[];
   intent: QueryIntent;
   context: QueryContext;
   timestamp: number;
-}
-export interface RAGResponse {, queryId: string;, synthesizedAnswer: string;
+} }
+export interface RAGResponse { queryId: string;, synthesizedAnswer: string;
   sources: SearchResult[];
  , confidence: number;
-}
+} }
 
 export class EnhancedRAGSystem {
   private cache = new Map<string, RAGResponse>();
@@ -32,16 +32,15 @@ export class EnhancedRAGSystem {
   public processing$: Writable<boolean> = writable(false);
 
   // Accept a partial provider so simple: object literals can be used as stubs
-  constructor(private, llmProvider: Partial<LLMProvider> = {} as Partial<LLMProvider>) {}
+  constructor(private, llmProvider: Partial<LLMProvider> = {} }as Partial<LLMProvider>) {} }
 
   public async queryRAG(
     _originalQuery: string,
     _context: QueryContext,
-    _options?: { useQueryExpansion?: boolean; maxSources?: number }
+    _options?: { useQueryExpansion?: boolean; maxSources?: number } }
   ): Promise<RAGResponse> {
     this.processing$.set(true);
-    const resp: RAGResponse = {
-     , queryId: `stub_${Date.now()}`,
+    const resp: RAGResponse = { queryId: `stub_${Date.now()}`,
       synthesizedAnswer: '(stub)',
       sources: [],
       confidence: 0
@@ -50,14 +49,14 @@ export class EnhancedRAGSystem {
     this.processing$.set(false);
     this.cache.set(resp.queryId, resp);
     return resp;
-  }
+  } }
 
   public calculateOverallConfidence(): number {
     // read the current value from the store using Svelte's get() helper'
     const last = get(this.ragResponse$);
     return last?.confidence ?? 0;
-  }
-}
+  } }
+} }
 
 // Provide a small default instance for convenience
 const _ollamaStub = {
@@ -72,3 +71,4 @@ const _ollamaStub = {
 export const enhancedRAG = new EnhancedRAGSystem(_ollamaStub);
 
 export default EnhancedRAGSystem;
+

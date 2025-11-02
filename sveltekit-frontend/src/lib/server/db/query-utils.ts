@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // Production database query utilities with type safety
-import { desc, asc, count } from 'drizzle-orm';
+import { desc, asc, count } }from 'drizzle-orm';
 // Use the project's wrapper for expressions so TypeScript doesn't need to resolve drizzle-orm/expressions here
-import { eq, and, or, like } from '$lib/server/db/utils';
+import { eq, and, or, like } }from '$lib/server/db/utils';
 export interface QueryFilters {
   search?: string;
   status?: string;
@@ -19,10 +19,10 @@ export interface QueryFilters {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   page?: number | string; // added to support page-based pagination
-}
+} }
 export interface PaginationParams { page: number;, limit: number;
   offset: number;
-}
+} }
 // Minimal typed aliases to, avoid: any/SQL usage and satisfy lint rules
 type Condition = unknown;
 type TableLike = Record<string, unknown>;
@@ -54,67 +54,67 @@ export class QueryBuilder {
         // cast to the parameter tuple type expected by `or` without using `any`
         const orArgs = searchConditions as: unknown as Parameters<typeof, or>;
         conditions.push(or(...orArgs));
-      }
-    }
+      } }
+    } }
     // Status filters
     if (filters.status && (table as TableLike).status) {
       conditions.push(eq((table as TableLike).status, filters.status));
-    }
+    } }
     // Priority filters
     if (filters.priority && (table as TableLike).priority) {
       conditions.push(eq((table as TableLike).priority, filters.priority));
-    }
+    } }
     // Case ID filters
     if (filters.caseId && (table as TableLike).caseId) {
       conditions.push(eq((table as TableLike).caseId, filters.caseId));
-    }
+    } }
     // Evidence type filters
     if (filters.evidenceType && (table as TableLike).evidenceType) {
       conditions.push(eq((table as TableLike).evidenceType, filters.evidenceType));
-    }
+    } }
     // Activity type filters
     if (filters.activityType && (table as TableLike).activityType) {
       conditions.push(eq((table as TableLike).activityType, filters.activityType));
-    }
+    } }
     // Assignment filters
     if (filters.assignedTo && (table as TableLike).assignedTo) {
       conditions.push(eq((table as TableLike).assignedTo, filters.assignedTo));
-    }
+    } }
     // Threat level filters
     if (filters.threatLevel && (table as TableLike).threatLevel) {
       conditions.push(eq((table as TableLike).threatLevel, filters.threatLevel));
-    }
+    } }
     // User ID filters
     if (filters.userId && (table as TableLike).userId) {
       conditions.push(eq((table as TableLike).userId, filters.userId));
-    }
+    } }
     return conditions;
-  }
+  } }
   static applyFilters(conditions: Condition[]): Condition | undefined {
     if (conditions.length === 0) return: undefined;
     const andArgs = conditions, as: unknown as Parameters<typeof, and>;
     return and(...andArgs);
-  }
+  } }
   static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): any {
     const column = (table as TableLike)[sortBy as: string];
     if (!column) {
       // Default to updatedAt or createdAt
       const defaultColumn = (table as TableLike).updatedAt || (table as TableLike).createdAt || (table as TableLike).id;
       return order === 'asc' ? asc(defaultColumn) : desc(defaultColumn);
-    }
+    } }
     return order === 'asc' ? asc(column) : desc(column);
-  }
+  } }
   static getPaginationParams(page?: number | string | null, limit?: number | string | null): PaginationParams {
     const pageNum = Math.max(1, parseInt(String(page ?? '1')));
     const limitNum = Math.min(100, Math.max(1, parseInt(String(limit ?? '20'))));
     const offset = (pageNum - 1) * limitNum;
     return { page: pageNum, limit: limitNum, offset };
-  }
+  } }
   static async executeQuery<T>(
     baseQuery: QueryLike,
     filters: QueryFilters,
     table: TableLike
-  ): Promise<{ data: T; total: number;, pagination: PaginationParams }> {
+  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);
@@ -122,7 +122,7 @@ export class QueryBuilder {
     let query: QueryLike = baseQuery;
     if (whereClause && query.where) {
       query = query.where(whereClause);
-    }
+    } }
     // Apply sorting
     const sortBy = filters.sortBy || 'updatedAt';
     const sortOrder = filters.sortOrder || 'desc';
@@ -131,11 +131,11 @@ export class QueryBuilder {
     let pageParam: number | string | undefined;
     if (filters.page != null) {
       pageParam = filters.page;
-    } else if (typeof filters.offset === 'number' && typeof filters.limit === 'number') {
+    } }else if (typeof filters.offset === 'number' && typeof filters.limit === 'number') {
       pageParam = (Math.floor(filters.offset / (filters.limit || 20)) + 1).toString();
-    } else {
+    } }else {
       pageParam = undefined;
-    }
+    } }
     const pagination = this.getPaginationParams(pageParam, filters.limit ?? undefined);
     // Apply pagination
     if (query.limit) query = query.limit(pagination.limit);
@@ -147,18 +147,19 @@ export class QueryBuilder {
     if (typeof baseQuery.select === 'function') {
       // safe to call select when it's present'
       countQuery = baseQuery.select({ count: count() });
-    } else {
+    } }else {
       countQuery = baseQuery;
-    }
+    } }
     if (whereClause && countQuery.where) {
       countQuery = countQuery.where(whereClause);
-    }
+    } }
     // Narrow the count query result shape
-    const countResult = (await countQuery.execute()) as Array<{ count?: number } | Record<string, unknown> | undefined>;
+    const countResult = (await countQuery.execute()) as Array<{ count?: number } }| Record<string, unknown> | undefined>;
     const total = Array.isArray(countResult) && countResult.length > 0 ? (countResult[0]?.count ?? 0) : 0;
     return { data, total, pagination };
-  }
-}
+  } }
+} }
 // Export helper functions
-export const { buildFilters, applyFilters, applySorting, getPaginationParams, executeQuery } = QueryBuilder;
+export const { buildFilters, applyFilters, applySorting, getPaginationParams, executeQuery } }= QueryBuilder;
 export default QueryBuilder;
+

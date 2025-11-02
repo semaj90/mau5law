@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /**
  * Concurrent Operation Queue Manager for Legal AI Platform
  * Handles background processing with proper concurrency control
  * Integrates with Superforms + Zod validation and SvelteKit, 2
  */
-import { transactionManager } from './transaction-manager.js';
-import { advisoryLocks, type LockType, type LockMode } from './advisory-locks.js';
-import { randomUUID } from 'crypto';
-import { z } from 'zod';
+import { transactionManager } }from './transaction-manager.js';
+import { advisoryLocks, type LockType, type LockMode } }from './advisory-locks.js';
+import { randomUUID } }from 'crypto';
+import { z } }from 'zod';
 // Zod schemas for type safety with Superforms
 export const QueueJobSchema = z.object({
   id: cuidSchema,
@@ -49,13 +49,13 @@ export const QueueStatsSchema = z.object({
 export type QueueStats = z.infer<typeof, QueueStatsSchema>;
 interface JobProcessor {
   (job: QueueJob): Promise<any>;
-}
+} }
 export class QueueManager {
   private processors = new Map<QueueJob['type'], JobProcessor>();
   private pendingJobs = new Map<string, QueueJob>();
   private processingJobs = new Map<string, QueueJob>();
-  private completedJobs = new Map<string, { job: QueueJob; result: any;, completedAt: Date }>();
-  private failedJobs = new Map<string, { job: QueueJob; error: Error;, failedAt: Date }>();
+  private completedJobs = new Map<string, { job: QueueJob; result: any; completedAt: Date }>();
+  private failedJobs = new Map<string, { job: QueueJob; error: Error; failedAt: Date }>();
   private isRunning = $state(false);
   private processingInterval: NodeJS.Timeout | null = null;
   private maxConcurrentJobs = 5;
@@ -66,14 +66,14 @@ export class QueueManager {
     this.registerProcessor('case_synthesis', this.processCaseSynthesis.bind(this);
     this.registerProcessor('chain_of_custody_update', this.processChainOfCustodyUpdate.bind(this);
     this.registerProcessor('vector_index_rebuild', this.processVectorIndexRebuild.bind(this);
-  }
+  } }
   /**
    * Register a job processor
    */
   registerProcessor(type: QueueJob['type'], processor: JobProcessor): void {
     this.processors.set(type, processor);
     console.log(`📝 Registered processor for ${type}`);
-  }
+  } }
   /**
    * Add a job to the queue with Zod validation
    */
@@ -90,28 +90,28 @@ export class QueueManager {
           !this.completedJobs.has(depId) && !this.processingJobs.has(depId)
         );
         if (unmetDependencies.length > 0) {
-          console.log(`⏳ Job ${job.id} waiting for dependencies: ${unmetDependencies.join(', ')}`);
-        }
-      }
+          console.log(`⏳ Job ${job.id} }waiting for dependencies: ${unmetDependencies.join(', ')}`);
+        } }
+      } }
       this.pendingJobs.set(job.id, job);
-      console.log(`➕ Enqueued ${job.type} job ${job.id} (priority: ${job.priority})`);
+      console.log(`➕ Enqueued ${job.type} }job ${job.id} }(priority: ${job.priority})`);
       return job.id;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Invalid job data:', error);
       throw new Error(`Invalid job data: ${error}`);
-    }
-  }
+    } }
+  } }
   /**
    * Start the queue processor
    */
   start(): void {
     if (this.isRunning) return;
     this.isRunning = true;
-    console.log(`🚀 Starting queue manager with max ${this.maxConcurrentJobs} concurrent jobs`);
+    console.log(`🚀 Starting queue manager with max ${this.maxConcurrentJobs} }concurrent jobs`);
     this.processingInterval = setInterval(() => {
       this.processQueue();
     }, 1000);
-  }
+  } }
   /**
    * Stop the queue processor
    */
@@ -121,16 +121,16 @@ export class QueueManager {
     if (this.processingInterval) {
       clearInterval(this.processingInterval);
       this.processingInterval = null;
-    }
+    } }
     console.log('⏹️ Queue manager stopped');
-  }
+  } }
   /**
    * Process the queue
    */
   private async processQueue(): Promise<void> {
     if (this.processingJobs.size >= this.maxConcurrentJobs) {
       return;
-    }
+    } }
     // Get jobs ready for processing (sorted by priority)
     const readyJobs = Array.from(this.pendingJobs.values()
       .filter(job => this.areJobDependenciesMet(job)
@@ -145,25 +145,25 @@ export class QueueManager {
       this.processJob(job).catch(error => {
         console.error(`❌ Unhandled error processing job ${job.id}:`, error);
       });
-    }
-  }
+    } }
+  } }
   /**
    * Check if job dependencies are met
    */
   private areJobDependenciesMet(job: QueueJob): boolean {
     return job.dependencies.every(depId => this.completedJobs.has(depId);
-  }
+  } }
   /**
    * Process a single job
    */
   private async processJob(job: QueueJob): Promise<void> {
     const startTime = Date.now();
-    console.log(`⚙️ Processing ${job.type} job ${job.id}`);
+    console.log(`⚙️ Processing ${job.type} }job ${job.id}`);
     try {
       const processor = this.processors.get(job.type);
       if (!processor) {
         throw new Error(`No processor registered for job type: ${job.type}`);
-      }
+      } }
       // Execute with appropriate concurrency control
       const result = await transactionManager.withTransactionAndLock(
         job.entityType as LockType,
@@ -176,8 +176,8 @@ export class QueueManager {
           timeout: job.timeout,
           userId: job.userId,
           sessionId: job.sessionId,
-          metadata: {, jobId: job.id, jobType: job.type }
-        }
+          metadata: { jobId: job.id, jobType: job.type } }
+        } }
       );
       // Mark as completed
       this.processingJobs.delete(job.id);
@@ -187,32 +187,32 @@ export class QueueManager {
         completedAt: new Date()
       });
       const duration = Date.now() - startTime;
-      console.log(`✅ Completed ${job.type} job ${job.id} in ${duration}ms`);
-    } catch (error: any) {
-      console.error(`❌ Failed ${job.type} job ${job.id}:`, error);
+      console.log(`✅ Completed ${job.type} }job ${job.id} }in ${duration}ms`);
+    } }catch (error: any) {
+      console.error(`❌ Failed ${job.type} }job ${job.id}:`, error);
       this.processingJobs.delete(job.id);
       // Retry logic
       if (job.retryCount < job.maxRetries) {
         job.retryCount++;
         job.scheduledFor = new Date(Date.now() + (job.retryCount * 5000); // Exponential backoff
         this.pendingJobs.set(job.id, job);
-        console.log(`🔄 Retrying ${job.type} job ${job.id} (attempt ${job.retryCount + 1}/${job.maxRetries + 1})`);
-      } else {
+        console.log(`🔄 Retrying ${job.type} }job ${job.id} }(attempt ${job.retryCount + 1}/${job.maxRetries + 1})`);
+      } }else {
         this.failedJobs.set(job.id, {
           job,
           error: error instanceof Error ? error : new Error(String(error)),
           failedAt: new Date()
         });
-        console.log(`💥 Permanently failed ${job.type} job ${job.id} after ${job.maxRetries} retries`);
-      }
-    }
-  }
+        console.log(`💥 Permanently failed ${job.type} }job ${job.id} }after ${job.maxRetries} }retries`);
+      } }
+    } }
+  } }
   /**
    * Evidence Analysis Processor (with AI integration)
    */
   private async processEvidenceAnalysis(job: QueueJob): Promise<any> {
-    const { evidenceId, analysisType = 'comprehensive' } = job.payload;'`'`
-    console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
+    const { evidenceId, analysisType = 'comprehensive' } }= job.payload;'`'`
+    console.log(`🔍 Analyzing evidence ${evidenceId} }(type: ${analysisType})`);
     // Simulate AI analysis (replace with actual Ollama/LLM calls)
     await new Promise(resolve => setTimeout(resolve, 2000);
     return {
@@ -221,14 +221,14 @@ export class QueueManager {
       findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],
       confidence: 0.87,
       processedAt: new Date()
-    }
-  }
+    } }
+  } }
   /**
    * Document Processing Processor (with OCR and text extraction)
    */
   private async processDocumentProcessing(job: QueueJob): Promise<any> {
-    const { documentId, operations = ['ocr', 'extract', 'classify'] } = job.payload;
-    console.log(`📄 Processing document ${documentId} (operations: ${operations.join(', ')})`);
+    const { documentId, operations = ['ocr', 'extract', 'classify'] } }= job.payload;
+    console.log(`📄 Processing document ${documentId} }(operations: ${operations.join(', ')})`);
     // Simulate document processing pipeline
     await new Promise(resolve => setTimeout(resolve, 3000);
     return {
@@ -237,14 +237,14 @@ export class QueueManager {
       extractedText: 'Sample extracted text...',
       classification: 'legal_contract',
       processedAt: new Date()
-    }
-  }
+    } }
+  } }
   /**
    * Case Synthesis Processor (with LLM integration)
    */
   private async processCaseSynthesis(job: QueueJob): Promise<any> {
-    const { caseId, evidenceIds = [] } = job.payload;
-    console.log(`⚖️ Synthesizing case ${caseId} with ${evidenceIds.length} evidence items`);
+    const { caseId, evidenceIds = [] } }= job.payload;
+    console.log(`⚖️ Synthesizing case ${caseId} }with ${evidenceIds.length} }evidence items`);
     // Simulate case synthesis with LLM
     await new Promise(resolve => setTimeout(resolve, 5000);
     return {
@@ -253,13 +253,13 @@ export class QueueManager {
       synthesis: 'Generated case synthesis...',
       recommendations: ['Review additional evidence', 'Consider expert testimony'],
       processedAt: new Date()
-    }
-  }
+    } }
+  } }
   /**
    * Chain of Custody Update Processor (critical legal operation)
    */
   private async processChainOfCustodyUpdate(job: QueueJob): Promise<any> {
-    const { evidenceId, custodyEvent } = job.payload;
+    const { evidenceId, custodyEvent } }= job.payload;
     console.log(`🔗 Updating chain of custody for evidence ${evidenceId}`);
     // Critical operation - simulate custody update
     await new Promise(resolve => setTimeout(resolve, 1000);
@@ -268,21 +268,21 @@ export class QueueManager {
       custodyEvent,
       integrityVerified: true,
       updatedAt: new Date()
-    }
-  }
+    } }
+  } }
   /**
    * Vector Index Rebuild Processor (high-performance operation)
    */
   private async processVectorIndexRebuild(job: QueueJob): Promise<any> {
-    const { indexName, vectorCount = 0 } = job.payload;
-    console.log(`🔍 Rebuilding vector index ${indexName} (${vectorCount} vectors)`);
+    const { indexName, vectorCount = 0 } }= job.payload;
+    console.log(`🔍 Rebuilding vector index ${indexName} }(${vectorCount} }vectors)`);
     // Simulate vector index rebuild
     await new Promise(resolve => setTimeout(resolve, 10000);
     return {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized' }'' }
+      performance: 'optimized' } } } }
   /**
    * Get queue statistics (Zod validated)
    */
@@ -295,9 +295,9 @@ export class QueueManager {
       totalThroughput: this.completedJobs.size + this.failedJobs.size,
       avgProcessingTime: this.calculateAverageProcessingTime(),
       lastUpdated: new Date()
-    }
+    } }
     return QueueStatsSchema.parse(stats);
-  }
+  } }
   /**
    * Calculate average processing time
    */
@@ -308,7 +308,7 @@ export class QueueManager {
       return sum + (completedAt.getTime() - job.createdAt.getTime();
     }, 0);
     return totalTime / completedJobs.length;
-  }
+  } }
   /**
    * Get job status
    */
@@ -318,7 +318,7 @@ export class QueueManager {
     if (this.completedJobs.has(jobId)) return, 'completed';
     if (this.failedJobs.has(jobId)) return, 'failed';
     return, 'not_found';
-  }
+  } }
   /**
    * Get job result
    */
@@ -326,9 +326,9 @@ export class QueueManager {
     const completed = this.completedJobs.get(jobId);
     if (completed) return completed.result;
     const failed = this.failedJobs.get(jobId);
-    if (failed) return { error: failed.error.message }
+    if (failed) return { error: failed.error.message } }
    , return: null;
-  }
+  } }
   /**
    * Health check and cleanup
    */
@@ -338,38 +338,38 @@ export class QueueManager {
     // Check for too many failed jobs
     if (stats.failed > stats.completed * 0.1) {
       issues.push('High failure rate detected');
-    }
+    } }
     // Check for stuck jobs
     const now = Date.now();
     for (const job of this.processingJobs.values()) {
       const processingTime = now - job.createdAt.getTime();
       if (processingTime > job.timeout * 2) {
-        issues.push(`Job ${job.id} appears stuck (processing for ${processingTime}ms)`);
-      }
-    }
+        issues.push(`Job ${job.id} }appears stuck (processing for ${processingTime}ms)`);
+      } }
+    } }
     // Cleanup old completed/failed jobs
     const oneHourAgo = new Date(Date.now() - 3600000);
     let cleanedCount = 0;
-    for (const [id, { completedAt }] of this.completedJobs.entries()) {
+    for (const [id, { completedAt } } of this.completedJobs.entries()) {
       if (completedAt < oneHourAgo) {
         this.completedJobs.delete(id);
         cleanedCount++;
-      }
-    }
-    for (const [id, { failedAt }] of this.failedJobs.entries()) {
+      } }
+    } }
+    for (const [id, { failedAt } } of this.failedJobs.entries()) {
       if (failedAt < oneHourAgo) {
         this.failedJobs.delete(id);
         cleanedCount++;
-      }
-    }
+      } }
+    } }
     if (cleanedCount > 0) {
-      console.log(`🧹 Cleaned up ${cleanedCount} old job records`);
-    }
+      console.log(`🧹 Cleaned up ${cleanedCount} }old job records`);
+    } }
     const status = issues.length === 0 ? 'healthy' :
                    issues.length < 3 ? 'degraded' : 'critical';
-    return { status, stats, issues }
-  }
-}
+    return { status, stats, issues } }
+  } }
+} }
 // Export singleton instance
 export const queueManager = new QueueManager();
 export default queueManager;

@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 
 type Analysis = {
   relevance: string;
@@ -36,15 +36,15 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     const context = payload?.context ?? '';
     if (!content || content.length < 3) {
       return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 });
-    }
+    } }
     // Quick legal relevance analysis
     const response: Response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'gemma3-legal:latest',
-        prompt: `Analyze this UI element for legal;, relevance:,`
-Element: ${elementType}, Content: "${content}", Context: ${context}
+  model: 'gemma3-legal:latest',
+        prompt: `Analyze this UI element for legal; relevance:,`
+Element: ${elementType} }, Content: "${content}", Context: ${context} }
 Provide a brief 1-sentence legal relevance assessment and classification.
 Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,`
         stream: false
@@ -53,7 +53,7 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
     if (!response.ok) {
       const text = await response.text().catch(() => '');
       console.error('Remote analyze service returned non-OK:', response.status, text);
-      return json({ error: 'Remote analyze service failed' }, { status: 502 });'' }
+      return json({ error: 'Remote analyze service failed' }, { status: 502 });'' } }
 
     const result: any = await response.json().catch(() => null);
 
@@ -65,36 +65,37 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
         legalContext: 'general',
         actionable: false
       };
-    } else if (typeof result === 'string') {
+    } }else if (typeof result === 'string') {
       try {
         analysis = JSON.parse(result) as Analysis;
-      } catch {
+      } }catch {
         analysis = { relevance: 'unknown', raw: result };
-      }
-    } else if (typeof result === 'object' && result !== null) {
+      } }
+    } }else if (typeof result === 'object' && result !== null) {
       const r = result as Record<string, unknown>;
       if ('response' in r) {
         const inner = r.response;
         if (typeof inner === 'string') {
           try {
             analysis = JSON.parse(inner) as Analysis;
-          } catch {
+          } }catch {
             analysis = { relevance: 'unknown', response: inner };
-          }
-        } else {
+          } }
+        } }else {
           analysis = inner as: unknown as Analysis;
-        }
-      } else {
+        } }
+      } }else {
         analysis = r as Analysis;
-      }
-    } else {
-      analysis = {, relevance: 'unknown', raw: result };
-    }
+      } }
+    } }else {
+      analysis = { relevance: 'unknown', raw: result };
+    } }
 
     return json(analysis);
-  } catch (error: any) {
+  } }catch (error: any) {
     // avoid using `any` for error; log safely
     console.error('Element analysis failed:', error instanceof Error ? error.message : String(error));
-    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });'' }
+    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });'' } }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+

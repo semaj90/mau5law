@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { pgTable, text, uuid, integer, timestamp, jsonb, serial, real } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
+import { pgTable, text, uuid, integer, timestamp, jsonb, serial, real } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle';
 // Enhanced documents table: metadata + basic text for embeddings
 export const enhanced_documents = pgTable('enhanced_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -41,7 +41,7 @@ export const enhanced_search_cache = pgTable('enhanced_search_cache', {
 export type EnhancedDocumentStatus = 'active' | 'archived' | 'processing' | 'failed';
 export function isValidEnhancedDocumentStatus(status: string): status is EnhancedDocumentStatus {
   return ['active', 'archived', 'processing', 'failed'].includes(status);
-}
+} }
 // Export inferred types for TypeScript usage across the codebase
 export type EnhancedDocument = typeof enhanced_documents.$inferSelect;
 export type InsertEnhancedDocument = typeof enhanced_documents.$inferInsert;
@@ -49,3 +49,4 @@ export type EnhancedEmbedding = typeof enhanced_embeddings.$inferSelect;
 export type InsertEnhancedEmbedding = typeof enhanced_embeddings.$inferInsert;
 export type EnhancedSearchCache = typeof enhanced_search_cache.$inferSelect;
 export type InsertEnhancedSearchCache = typeof enhanced_search_cache.$inferInsert;
+

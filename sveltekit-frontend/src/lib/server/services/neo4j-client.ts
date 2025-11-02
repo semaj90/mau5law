@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * ⚖️ Neo4j Client for Legal Entity Graphs
  * --------------------------------------------------
  * Adds or updates entities and relationships from
  * WASM / AI-parsed legal documents.
  */
-import neo4j, { Driver, Session } from 'neo4j-driver';
-import { env } from '$env/dynamic/private';
+import neo4j, { Driver, Session } }from 'neo4j-driver';
+import { env } }from '$env/dynamic/private';
 type LegalEntity = {
   name?: string;
   type?: string;
@@ -24,7 +24,7 @@ class Neo4jClientService {
   private, driver: Driver;
   constructor() {
     this.driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASS));
-  }
+  } }
   async mergeEntityRelations(legalDoc: LegalDocument) {
     const session: Session = this.driver.session();
     try {
@@ -38,13 +38,13 @@ class Neo4jClientService {
            MERGE (d:Document {id: $docId})
            MERGE (e)-[:MENTIONED_IN]->(d)
            SET e.type = $type`,`
-          { name, type, docId }
+          { name, type, docId } }
         );
-      }
-    } finally {
+      } }
+    } }finally {
       await session.close();
-    }
-  }
+    } }
+  } }
   async getEntityGraph(limit = 100) {
     const session: Session = this.driver.session();
     try {
@@ -52,18 +52,19 @@ class Neo4jClientService {
         `MATCH (e:Entity)-[r:MENTIONED_IN]->(d:Document)`
          RETURN e, r, d
          LIMIT $limit`,`
-        { limit }
+        { limit } }
       );
       return result.records.map(rec => ({
         entity: rec.get('e').properties,
         doc: rec.get('d').properties
       }));
-    } finally {
+    } }finally {
       await session.close();
-    }
-  }
+    } }
+  } }
   async close() {
     await this.driver.close();
-  }
-}
+  } }
+} }
 export const Neo4jClient = new Neo4jClientService();
+

@@ -13,7 +13,7 @@ export interface VectorJob { id: string;, ownerType: 'evidence' | 'report' | 'c
   attempts: number;
   maxAttempts: number;
   error?: string;
-}
+} }
 export interface VectorJobResult { jobId: string;, status: 'success' | 'failed';
   vector?: number[];
   similarity?: number;
@@ -25,18 +25,18 @@ export interface VectorJobResult { jobId: string;, status: 'success' | 'failed'
     timestamp: number;
   };
   error?: string;
-}
+} }
 export interface CUDAProcessingStatus { jobId: string;, stage: 'initializing' | 'preprocessing' | 'computing' | 'postprocessing' | 'completed';
   progress: number; // 0-100,
   currentOperation: string;
   estimatedTimeRemainingMs?: number;
   gpuUtilization?: number;
   memoryUsage?: number;
-}
+} }
 export interface WebGPUProcessingOptions { useFloat16: boolean;, batchSize: number;
   workgroupSize: number;
   fallbackToWebGL: boolean;
-}
+} }
 export interface VectorOperationRequest { operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering';, ownerType: string;
   ownerId: string;
   data?: any;
@@ -46,23 +46,23 @@ export interface VectorOperationRequest { operation: 'embedding' | 'similarity' 
     timeout?: number;
     retryAttempts?: number;
   };
-}
+} }
 export interface VectorOperationResponse { jobId: string;, status: 'queued' | 'processing' | 'completed' | 'failed';
   result?: VectorJobResult;
   error?: string;
   queuePosition?: number;
   estimatedWaitTimeMs?: number;
-}
+} }
 // Redis Streams specific types
 export interface RedisStreamMessage { id: string;, fields: Record<string, string>;
-}
+} }
 export interface RedisStreamGroup { name: string;, consumers: RedisStreamConsumer[];
   pending: number;
   lastDeliveredId: string;
-}
+} }
 export interface RedisStreamConsumer { name: string;, pending: number;
   idle: number;
-}
+} }
 // Outbox pattern types for reliable messaging
 export interface VectorOutboxEntry { id: string;, ownerType: string;
   ownerId: string;
@@ -72,22 +72,22 @@ export interface VectorOutboxEntry { id: string;, ownerType: string;
   attempts: number;
   processedAt?: Date;
   createdAt: Date;
-}
+} }
 // WebGPU types
 export interface WebGPUDevice { device: GPUDevice;, queue: GPUQueue;
   adapter: GPUAdapter;
   features: string[];
   limits: Record<string, number>;
   isAvailable: boolean;
-}
+} }
 export interface WebGPUComputeShader { module: GPUShaderModule;, pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
-}
+} }
 export interface WebGPUVectorOperation { inputBuffer: GPUBuffer;, outputBuffer: GPUBuffer;
   uniformBuffer: GPUBuffer;
   bindGroup: GPUBindGroup;
   workgroupCount: [number, number, number];
-}
+} }
 // WASM LLM types
 export interface WASMLLMConfig { modelPath: string;, tokenizer: string;
   maxTokens: number;
@@ -96,7 +96,7 @@ export interface WASMLLMConfig { modelPath: string;, tokenizer: string;
   topP: number;
   useGPU: boolean;
   memoryLimit: number;
-}
+} }
 export interface WASMLLMResponse { text: string;, tokens: number;
   processingTimeMs: number;
   confidence: number;
@@ -104,7 +104,7 @@ export interface WASMLLMResponse { text: string;, tokens: number;
     completionTokens: number;
     totalTokens: number;
   };
-}
+} }
 // Legal AI specific vector types
 export interface LegalVectorEmbedding { id: string;, documentId: string;
   caseId?: string;
@@ -117,16 +117,16 @@ export interface LegalVectorEmbedding { id: string;, documentId: string;
     extractedAt: Date;
     modelVersion: string;
   };
-}
+} }
 export interface LegalSimilarityResult { sourceId: string;, targetId: string;
   similarity: number;
   commonConcepts: string[];
   legalCitations: string[];
   relevantStatutes: string[];
   precedentStrength: 'strong' | 'moderate' | 'weak';
-}
+} }
 // Monitoring and metrics types
-export interface VectorServiceMetrics { queueDepth: {, embeddings: number;
+export interface VectorServiceMetrics { queueDepth: { embeddings: number;
     similarities: number;
     indexing: number;
     clustering: number;
@@ -143,7 +143,7 @@ export interface VectorServiceMetrics { queueDepth: {, embeddings: number;
     vectorsPerSecond: number;
     throughputMBps: number;
   };
-}
+} }
 export interface VectorHealthStatus { overall: 'healthy' | 'degraded' | 'unhealthy';, services: { redis: 'connected' | 'disconnected' | 'error';, postgres: 'connected' | 'disconnected' | 'error';
     rabbitmq: 'connected' | 'disconnected' | 'error';
     cuda: 'available' | 'unavailable' | 'error';
@@ -155,7 +155,7 @@ export interface VectorHealthStatus { overall: 'healthy' | 'degraded' | 'unhealt
     };
   };
   lastHealthCheck: Date;
-}
+} }
 // Error types for vector processing
 export class VectorProcessingError extends Error {
   constructor(
@@ -167,23 +167,23 @@ export class VectorProcessingError extends Error {
   ) {
     super(message);
     this.name = 'VectorProcessingError';
-  }
-}
+  } }
+} }
 export class CUDAError extends VectorProcessingError {
 	constructor(message: string, jobId: string, operation: string) {
 		super(message, jobId, operation, 'cuda_processing', false);
 		this.name = 'CUDAError';
-	}
-}
+	} }
+} }
 export class WebGPUError extends VectorProcessingError {
 	constructor(message: string, jobId: string, operation: string) {
 		super(message, jobId, operation, 'webgpu_processing', true);
 		this.name = 'WebGPUError';
-	}
-}
+	} }
+} }
 export class RedisStreamError extends VectorProcessingError {
 	constructor(message: string, jobId: string, operation: string) {
 		super(message, jobId, operation, 'redis_streaming', true);
 		this.name = 'RedisStreamError';
-	}
+	} }
 }

@@ -1,8 +1,8 @@
-import { reports } from, '$lib/server/db/schema-postgres'
-import { db } from, '$lib/server/db/index'
-import { eq } from, 'drizzle-orm'
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { reports } }from '$lib/server/db/schema-postgres'
+import { db } }from '$lib/server/db/index'
+import { eq } }from 'drizzle-orm'
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 type JsonObject = Record<string, unknown>;
 
@@ -16,37 +16,37 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const reportId = params.reportId;
     if (!reportId) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
     const reportResult = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!reportResult.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
     return json(reportResult[0]);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching report:', errorMessage(err));
     return json({ error: 'Failed to fetch report' }, { status: 500 });
-  }
+  } }
 };
 
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const reportId = params.reportId;
     if (!reportId) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
 
     const data = (await request.json()) as JsonObject;
 
@@ -54,7 +54,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
 
     // Calculate word count and estimated read time
     const contentRaw = safeString(data.content);
@@ -62,7 +62,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const wordCount = textContent ? textContent.split(/\s+/).filter(word => word.length > 0).length : 0;
 
     const updateData: JsonObject = {
-     , updatedAt: new Date()
+  updatedAt: new Date()
     };
 
     // Only update provided and validated fields
@@ -86,54 +86,54 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200)
       };
-    }
+    } }
 
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error updating report:', errorMessage(err));
     return json({ error: 'Failed to update report' }, { status: 500 });
-  }
+  } }
 };
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const reportId = params.reportId;
     if (!reportId) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
     // Check if report exists
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
     return json({ success: true, deletedReport });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error deleting report:', errorMessage(err));
     return json({ error: 'Failed to delete report' }, { status: 500 });
-  }
+  } }
 };
 
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const reportId = params.reportId;
     if (!reportId) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
 
     const data = (await request.json()) as JsonObject;
 
@@ -141,10 +141,10 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
 
     const updateData: JsonObject = {
-     , updatedAt: new Date()
+  updatedAt: new Date()
     };
 
     // Handle specific patch operations (validate fields)
@@ -152,21 +152,21 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     if (op === 'publish') {
       updateData.status = 'published';
       updateData.isPublic = safeBoolean(data.isPublic) ?? false;
-    } else if (op === 'archive') {
+    } }else if (op === 'archive') {
       updateData.status = 'archived';
-    } else if (op === 'draft') {
+    } }else if (op === 'draft') {
       updateData.status = 'draft';
-    } else if (op === 'addTag') {
+    } }else if (op === 'addTag') {
       const currentTags = (existingReport[0].tags as: unknown, as: string[]) || [];
       const tagToAdd = safeString(data.tag);
       if (tagToAdd && !currentTags.includes(tagToAdd)) {
         updateData.tags = [...currentTags, tagToAdd];
-      }
-    } else if (op === 'removeTag') {
+      } }
+    } }else if (op === 'removeTag') {
       const currentTags = (existingReport[0].tags as: unknown, as: string[]) || [];
       const tagToRemove = safeString(data.tag);
       updateData.tags = currentTags.filter(tag => tag !== tagToRemove);
-    } else {
+    } }else {
       // Regular field updates - only include primitive, validated fields
       Object.keys(data).forEach(key => {
         if (key === 'operation') return;
@@ -179,14 +179,14 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
           (typeof val === 'object' && val !== null)
         ) {
           updateData[key] = val;
-        }
+        } }
       });
-    }
+    } }
 
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error patching report:', errorMessage(err));
     return json({ error: 'Failed to update report' }, { status: 500 });
-  }
+  } }
 };

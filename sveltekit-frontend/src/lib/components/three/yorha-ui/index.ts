@@ -14,7 +14,7 @@ export {
   type YoRHaGradient,
   type YoRHaAnimation,
   type YoRHaTransform
-} from './YoRHaUI3D.js';
+} }from './YoRHaUI3D.js';
 // Anti-Aliasing Enhanced System
 export {
   YoRHaAntiAliased3D,
@@ -22,19 +22,19 @@ export {
   type AntiAliasingConfig,
   type ShaderEnhancements,
   AntiAliasingUtils
-} from './YoRHaAntiAliasing3D.js';
+} }from './YoRHaAntiAliasing3D.js';
 // Import for local use in utility functions
-import { YoRHaButton3D } from './components/YoRHaButton3D.js';
-import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
-import { YoRHaInput3D } from './components/YoRHaInput3D.js';
-import { YoRHaModal3D } from './components/YoRHaModal3D.js';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
-import { createYoRHaUIDemo } from './YoRHaUIExample.js';
+import { YoRHaButton3D } }from './components/YoRHaButton3D.js';
+import { YoRHaPanel3D } }from './components/YoRHaPanel3D.js';
+import { YoRHaInput3D } }from './components/YoRHaInput3D.js';
+import { YoRHaModal3D } }from './components/YoRHaModal3D.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } }from './YoRHaLayout3D.js';
+import { createYoRHaUIDemo } }from './YoRHaUIExample.js';
 // Core UI Components
-export { YoRHaButton3D, type YoRHaButton3DOptions } from './components/YoRHaButton3D.js';
-export { YoRHaPanel3D, type YoRHaPanel3DOptions } from './components/YoRHaPanel3D.js';
-export { YoRHaInput3D, type YoRHaInput3DOptions } from './components/YoRHaInput3D.js';
-export { YoRHaModal3D, type YoRHaModal3DOptions } from './components/YoRHaModal3D.js';
+export { YoRHaButton3D, type YoRHaButton3DOptions } }from './components/YoRHaButton3D.js';
+export { YoRHaPanel3D, type YoRHaPanel3DOptions } }from './components/YoRHaPanel3D.js';
+export { YoRHaInput3D, type YoRHaInput3DOptions } }from './components/YoRHaInput3D.js';
+export { YoRHaModal3D, type YoRHaModal3DOptions } }from './components/YoRHaModal3D.js';
 // Layout System
 export {
   YoRHaLayout3D,
@@ -43,9 +43,9 @@ export {
   type YoRHaChildLayout,
   type YoRHaPosition3D,
   type YoRHaPadding3D
-} from './YoRHaLayout3D.js';
+} }from './YoRHaLayout3D.js';
 // Complete Example
-export { YoRHaUIExample, createYoRHaUIDemo } from './YoRHaUIExample.js';
+export { YoRHaUIExample, createYoRHaUIDemo } }from './YoRHaUIExample.js';
 // Utility functions for common use cases
 export const YoRHaUtils = {
   /**
@@ -94,33 +94,30 @@ export const YoRHaUtils = {
       gridRows: rows,
       gap
     });
-  }
-}
+  } }
+} }
 // Constants for easy access to color schemes (use YORHA_COLORS directly for type safety)
-export const YoRHaThemes = { DEFAULT: {, background: 0xd4c5a9,  // YORHA_COLORS.primary.beige
+export const YoRHaThemes = { DEFAULT: { background: 0xd4c5a9,  // YORHA_COLORS.primary.beige
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
     border: 0x8b8680,      // YORHA_COLORS.primary.grey
     accent: 0xd4af37       // YORHA_COLORS.accent.gold
   },
-  TERMINAL: {
-   , background: 0x0a0a0a,  // YORHA_COLORS.primary.black
+  TERMINAL: { background: 0x0a0a0a,  // YORHA_COLORS.primary.black
     text: 0xd4af37,        // YORHA_COLORS.accent.gold
     border: 0xd4af37,      // YORHA_COLORS.accent.gold
     accent: 0xffc649       // YORHA_COLORS.accent.amber
   },
-  ALERT: {
-   , background: 0xff6b6b,  // YORHA_COLORS.status.error
+  ALERT: { background: 0xff6b6b,  // YORHA_COLORS.status.error
     text: 0xfaf6ed,        // YORHA_COLORS.primary.white
     border: 0x8b0000,
     accent: 0xffa500       // YORHA_COLORS.status.warning
   },
-  SUCCESS: {
-   , background: 0x90ee90,  // YORHA_COLORS.status.success
+  SUCCESS: { background: 0x90ee90,  // YORHA_COLORS.status.success
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
     border: 0x228b22,
     accent: 0xfaf6ed       // YORHA_COLORS.primary.white
-  }
-}
+  } }
+} }
 // Quick setup function for common scenarios
 export const YoRHaQuickSetup = {
   /**
@@ -149,7 +146,7 @@ export const YoRHaQuickSetup = {
     container.addChild(usernameInput, { alignSelf: 'stretch' });
     container.addChild(passwordInput, { alignSelf: 'stretch' });
     container.addChild(submitButton, { alignSelf: 'center' });
-    return { container, usernameInput, passwordInput, submitButton }
+    return { container, usernameInput, passwordInput, submitButton } }
   },
   /**
    * Create a confirmation dialog with yes/no buttons
@@ -181,7 +178,7 @@ export const YoRHaQuickSetup = {
     layout.addChild(messagePanel);
     layout.addChild(buttonLayout);
     modal.addContent(layout);
-    return { modal, yesButton, noButton }
+    return { modal, yesButton, noButton } }
   },
   /**
    * Create a settings panel with common options
@@ -212,17 +209,16 @@ export const YoRHaQuickSetup = {
     layout.addChild(themeInput, { alignSelf: 'stretch' });
     layout.addChild(saveButton, { alignSelf: 'center' });
     panel.addContent(layout);
-    return { panel, volumeInput, themeInput, saveButton }
+    return { panel, volumeInput, themeInput, saveButton } }
   },
   /**
    * Create a toolbar with common actions
    */
-  createToolbar: (actions: Array<{, text: string; icon?: string; variant?: string }>) => {
+  createToolbar: (actions: Array<{ text: string; icon?: string; variant?: string }>) => {
     const toolbar = YoRHaLayoutPresets.createToolbar();
     const buttons: YoRHaButton3D[] = [];
     actions.forEach(action => {
-      const button = new YoRHaButton3D({
-       , text: action.text,
+      const button = new YoRHaButton3D({ text: action.text,
         icon: action.icon,
         variant: action.variant || 'secondary',
         size: 'small'
@@ -230,9 +226,9 @@ export const YoRHaQuickSetup = {
       toolbar.addChild(button);
       buttons.push(button);
     });
-    return { toolbar, buttons }
-  }
-}
+    return { toolbar, buttons } }
+  } }
+} }
 // Version information
 export const YORHA_UI_VERSION = '1.0.0';
 /**
@@ -240,7 +236,7 @@ export const YORHA_UI_VERSION = '1.0.0';
  */
 export function initYoRHaUI(container: HTMLElement) {
   return createYoRHaUIDemo(container);
-}
+} }
 // Re-export Three.js for convenience (if needed)
 export * as THREE from 'three';
 export * from './api/YoRHaAPIClient.js';

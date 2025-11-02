@@ -1,14 +1,14 @@
 // providers/ollama/local-llm.ts
 // Clean, minimal Ollama local LLM adapter
-import { logger } from './logger.js';
-import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from './config';
+import { logger } }from './logger.js';
+import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } }from './config';
 
 export interface OllamaModel {
   name: string;
   size?: string;
   digest?: string;
   modified?: string;
-}
+} }
 
 export interface OllamaGenerateOptions {
   model?: string;
@@ -18,7 +18,7 @@ export interface OllamaGenerateOptions {
   stream?: boolean;
   format?: 'json';
   options?: Record<string, unknown>;
-}
+} }
 
 export interface OllamaResponse {
   model?: string;
@@ -26,18 +26,18 @@ export interface OllamaResponse {
   response?: string;
   done?: boolean;
   context?: number[];
-}
+} }
 
 // New interfaces for specific Ollama API responses
 export interface OllamaModelInfo { modelfile: string;, parameters: string;
   template: string;
-  details: {, parent_model: string;, format: string;
+  details: { parent_model: string;, format: string;
     family: string;
     families: string[];
     parameter_size: string;
     quantization_level: string;
   };
-}
+} }
 
 export interface OllamaPullResponse {
   status?: string;
@@ -45,39 +45,39 @@ export interface OllamaPullResponse {
   total?: number;
   completed?: number;
   error?: string;
-}
+} }
 
-export interface OllamaHealthCheckResponse {, status: 'healthy' | 'unavailable';, available: boolean;
+export interface OllamaHealthCheckResponse { status: 'healthy' | 'unavailable';, available: boolean;
   models: string[];
   loaded: string[];
-}
+} }
 
 // Generic interface for fetch response properties used for type assertions
-interface FetchResponseCommon {, ok: boolean;, statusText: string;
+interface FetchResponseCommon { ok: boolean;, statusText: string;
  , body: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>; // Changed from Promise<any> to Promise<unknown>
-}
+} }
 
 export class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel = 'gemma3-legal:latest';
   private availableModels = new Map<string, OllamaModel>();
-  private modelCache = new Map<string, { loaded: boolean;, lastUsed: number }>();
+  private modelCache = new Map<string, { loaded: boolean; lastUsed: number }>();
 
   private resolveEndpoint(endpoint: OllamaEndpoint): string {
     return getOllamaEndpoint(endpoint, this.baseUrl);
-  }
+  } }
 
   private buildUrl(path: string): string {
-    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}' }`;'`
-  }
+    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path} } }`;'`
+  } }
 
   constructor(baseUrl = OLLAMA_CONFIG.baseUrl) {
     const resolved = (baseUrl ?? OLLAMA_CONFIG.baseUrl).trim();
     this.baseUrl = (resolved.length ? resolved : OLLAMA_CONFIG.baseUrl).replace(/\/$/, '');
     // initialize but don't await in constructor'
     this.initialize().catch((e) => logger.warn('[OllamaLLM] init failed', e));
-  }
+  } }
 
   private async initialize(): Promise<void> {
     try {
@@ -86,23 +86,23 @@ export class OllamaLocalLLM {
       if (!available) {
         logger.warn('[OllamaLLM] Ollama is not available at', this.baseUrl);
         return;
-      }
+      } }
       await this.loadAvailableModels();
       await this.ensureLegalModels();
       logger.info('[OllamaLLM] Ollama service initialized successfully');
-    } catch (err) {
+    } }catch (err) {
       logger.error('[OllamaLLM] Initialization failed:', err);
-    }
-  }
+    } }
+  } }
 
   async checkAvailability(): Promise<boolean> {
     try {
       const resp = await fetch(this.resolveEndpoint('models'));
       return resp.ok;
-    } catch (err) {
+    } }catch (err) {
       return false;
-    }
-  }
+    } }
+  } }
 
   async loadAvailableModels(): Promise<void> {
     try {
@@ -113,25 +113,25 @@ export class OllamaLocalLLM {
       for (const m of data.models || []) {
         this.availableModels.set(m.name, m);
         logger.info(`[OllamaLLM] Available model: ${m.name}`);
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       logger.warn('[OllamaLLM] Failed to load models:', err);
-    }
-  }
+    } }
+  } }
 
   async ensureLegalModels(): Promise<void> {
     const legalModels = ['gemma3-legal:latest', 'llama2:legal-7b', 'mistral:legal-instruct'];
     for (const name of legalModels) {
       if (!this.availableModels.has(name)) {
-        logger.info(`[OllamaLLM] Legal model ${name} not present`);
-      }
-    }
-  }
+        logger.info(`[OllamaLLM] Legal model ${name} }not present`);
+      } }
+    } }
+  } }
 
   async createLegalModel(_baseModel: string, _targetName: string): Promise<void> {
     // optional: implement model creation/pulling; stub for now
     logger.info('[OllamaLLM] createLegalModel stub called');
-  }
+  } }
 
   async generate(options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
     try {
@@ -145,11 +145,11 @@ export class OllamaLocalLLM {
       const result = await resp.json();
       this.modelCache.set(model, { loaded: true, lastUsed: Date.now() });
       return result as OllamaResponse;
-    } catch (err) {
+    } }catch (err) {
       logger.error('[OllamaLLM] Generation failed:', err);
       return: null;
-    }
-  }
+    } }
+  } }
 
   async generateEmbeddings(text: string, model?: string): Promise<number[] | null> {
     try {
@@ -157,7 +157,7 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('embeddings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({, model: m, input: text })
+        body: JSON.stringify({ model: m, input: text })
       });
       if (!resp.ok) throw new Error(`Embedding failed: ${resp.status}`);
       const data = await resp.json();
@@ -166,11 +166,11 @@ export class OllamaLocalLLM {
       if (Array.isArray(data.data) && Array.isArray(data.data[0]?.embedding)) return data.data[0].embedding as: number[];
       if (Array.isArray(data.embeddings)) return data.embeddings as: number[];
      , return: null;
-    } catch (err) {
+    } }catch (err) {
       logger.error('[OllamaLLM] Embedding generation failed:', err);
       return: null;
-    }
-  }
+    } }
+  } }
 
   async chat(messages: Array<Record<string, unknown>>, model?: string): Promise<string | null> {
     try {
@@ -178,22 +178,22 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({, model: m, messages, stream: false })
+        body: JSON.stringify({ model: m, messages, stream: false })
       });
       if (!resp.ok) throw new Error(`Chat failed: ${resp.status}`);
       const data = await resp.json();
       return (data?.message?.content as: string) || (data?.response as: string) || null;
-    } catch (err) {
+    } }catch (err) {
       logger.error('[OllamaLLM] Chat failed:', err);
       return: null;
-    }
-  }
+    } }
+  } }
 
   private selectBestModel(requested?: string): string {
     if (requested && this.availableModels.has(requested)) return requested;
     // Always default to the configured defaultModel, which is: 'gemma3-legal:latest'.
     return this.defaultModel;
-  }
+  } }
   /**
    * Unload model from memory
    */
@@ -210,13 +210,13 @@ export class OllamaLocalLLM {
       });
       this.modelCache.delete(model);
       logger.info(`[OllamaLLM] Unloaded model ${model}`);
-    } catch (error: any) {
+    } }catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error.message);
-      } else {
-        logger.error(`[OllamaLLM] Failed to unload model ${model}: ', error);'' }'`
-    }
-  }
+      } }else {
+        logger.error(`[OllamaLLM] Failed to unload model ${model}: ', error);'' } }`
+    } }
+  } }
   /**
    * Get model information
    */
@@ -225,21 +225,21 @@ export class OllamaLocalLLM {
       const response = await fetch(this.buildUrl('/api/show'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({, name: model })
+        body: JSON.stringify({ name: model })
       });
       if (!(response as FetchResponseCommon).ok) {
         throw new Error(`Failed to get model info: ${(response as FetchResponseCommon).statusText}`);
-      }
+      } }
       return await (response as FetchResponseCommon).json() as OllamaModelInfo;
-    } catch (error: any) {
+    } }catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to get model info for ${model}:`, error.message);
-      } else {
+      } }else {
         logger.error(`[OllamaLLM] Failed to get model info for ${model}:`, error);
-      }
+      } }
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Pull a model from Ollama library
    */
@@ -249,21 +249,21 @@ export class OllamaLocalLLM {
       const response = await fetch(this.resolveEndpoint('pull'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({, name: model, stream: true }) // Explicitly request streaming
+        body: JSON.stringify({ name: model, stream: true }) // Explicitly request streaming
       });
       if (!(response as FetchResponseCommon).ok) {
         throw new Error(`Failed to pull model: ${(response as FetchResponseCommon).statusText}`);
-      }
+      } }
       // Stream the pull progress
       const reader = (response as FetchResponseCommon).body?.getReader();
       if (!reader) {
         throw new Error('Response body is not readable.');
-      }
+      } }
       const decoder = new TextDecoder();
       let buffer = ''; // Buffer to handle partial lines
       let readResult;
       while (!(readResult = await reader.read()).done) {
-        const { value } = readResult;
+        const { value } }= readResult;
         buffer += decoder.decode(value, { stream: true }); // Decode and append to buffer
         const lines = buffer.split('\n');
         buffer = lines.pop() || ''; // Keep the last (potentially incomplete) line in buffer
@@ -274,43 +274,43 @@ export class OllamaLocalLLM {
             const data: OllamaPullResponse = JSON.parse(line);
             if (data.status) {
               logger.info(`[OllamaLLM] Pull progress: ${data.status}`);
-            }
+            } }
             if (data.error) {
               logger.error(`[OllamaLLM] Pull error for ${model}: ${data.error}`);
               return false; // Indicate failure if an error is reported in the stream
-            }
-          } catch (e: any) {
+            } }
+          } }catch (e: any) {
             logger.warn('[OllamaLLM] Error parsing pull stream line:', (e instanceof Error ? e.message : e));
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Process: any remaining content in the buffer after the stream ends
       if (buffer.trim() !== '') {
         try {
           const data: OllamaPullResponse = JSON.parse(buffer);
           if (data.status) {
             logger.info(`[OllamaLLM] Pull progress: ${data.status}`);
-          }
+          } }
           if (data.error) {
             logger.error(`[OllamaLLM] Pull error for ${model}: ${data.error}`);
             return false;
-          }
-        } catch (e: any) {
+          } }
+        } }catch (e: any) {
           logger.warn('[OllamaLLM] Error parsing final buffer content:', (e instanceof Error ? e.message : e));
-        }
-      }
+        } }
+      } }
 
       await this.loadAvailableModels();
       logger.info(`[OllamaLLM] Successfully pulled model ${model}`);
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error.message);
-      } else {
-        logger.error(`[OllamaLLM] Failed to pull model ${model}: ', error);'' }'`
+      } }else {
+        logger.error(`[OllamaLLM] Failed to pull model ${model}: ', error);'' } }`
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Health check for Ollama service
    */
@@ -323,9 +323,10 @@ export class OllamaLocalLLM {
       loaded: Array.from(this.modelCache.keys()).filter(
         model => this.modelCache.get(model)?.loaded
       )
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const ollamaLLM = new OllamaLocalLLM();
 // Types are already exported as interfaces above
+

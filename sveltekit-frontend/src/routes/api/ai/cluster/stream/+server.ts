@@ -1,27 +1,27 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { subscribeClusterEvents } from '$lib/server/ai/cluster-stream';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { subscribeClusterEvents } }from '$lib/server/ai/cluster-stream';
 
 const denoGlobal = (globalThis as typeof globalThis & {
-  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response;, socket: WebSocket } };
+  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response; socket: WebSocket } }};
 }).Deno;
 
 const WebSocketPairCtor = (globalThis as typeof globalThis & {
-  WebSocketPair?: new () => { 0: WebSocket;, 1: WebSocket };
+  WebSocketPair?: new () => { 0: WebSocket; 1: WebSocket };
 }).WebSocketPair;
 
 export const GET: RequestHandler = async ({ request }) => {
   if (request.headers.get('upgrade') !== 'websocket') {
     return new Response('Expected websocket upgrade request', { status: 426 });
-  }
+  } }
 
   if (denoGlobal?.upgradeWebSocket) {
-    const { socket, response } = denoGlobal.upgradeWebSocket(request);
+    const { socket, response } }= denoGlobal.upgradeWebSocket(request);
     const unsubscribe = subscribeClusterEvents(event => {
       try {
         socket.readyState === socket.OPEN && socket.send(JSON.stringify(event));
-      } catch (err) {
+      } }catch (err) {
         console.error('[ClusterStream] failed to send over Deno websocket', err);
-      }
+      } }
     });
     const cleanup = () => unsubscribe();
     socket.addEventListener('close', cleanup);
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ request }) => {
     // @ts-expect-error runtime WebSocket API varies
     socket.onerror = cleanup;
     return response;
-  }
+  } }
 
   if (typeof WebSocketPairCtor === 'function') {
     const pair = new WebSocketPairCtor();
@@ -42,9 +42,9 @@ export const GET: RequestHandler = async ({ request }) => {
     const unsubscribe = subscribeClusterEvents(event => {
       try {
         server.readyState === server.OPEN && server.send(JSON.stringify(event));
-      } catch (err) {
+      } }catch (err) {
         console.error('[ClusterStream] failed to send over WebSocketPair', err);
-      }
+      } }
     });
     const cleanup = () => unsubscribe();
     server.addEventListener?.('close', cleanup);
@@ -57,7 +57,8 @@ export const GET: RequestHandler = async ({ request }) => {
       status: 101,
       webSocket: client
     }, as: unknown as ResponseInit);
-  }
+  } }
 
   return new Response('WebSocket upgrade not supported on this platform', { status: 501 });
 };
+

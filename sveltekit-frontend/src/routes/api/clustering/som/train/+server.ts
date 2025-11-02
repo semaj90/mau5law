@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 import createRedisInstance from '$lib/server/redis';
 
 // Minimal typed shape for the redis client we need here (avoid `any`)
@@ -12,19 +12,20 @@ type RedisClientLike = {
 const redisInstance = createRedisInstance();
 const redis = redisInstance as: unknown as RedisClientLike;
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
   try {
     if (typeof redis.rpush === 'function') {
       // Normalize to a Promise in case rpush is synchronous
       await Promise.resolve(redis.rpush('som:train:queue', JSON.stringify(body)));
-    } else {
+    } }else {
       console.warn('Redis client does not expose rpush; skipping enqueue.');
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.warn('Failed to enqueue SOM training job:', err);
-  }
+  } }
 
   return json({ ok: true });
 };
+

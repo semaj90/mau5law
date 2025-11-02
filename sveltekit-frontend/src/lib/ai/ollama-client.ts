@@ -14,14 +14,14 @@ export interface GenerateOptions {
   topK?: number;
   maxTokens?: number;
   stream?: boolean;
-}
+} }
 export interface GenerateResponse { response: string;, model: string;
   duration: number;
   total_duration?: number;
   load_duration?: number;
   prompt_eval_count?: number;
   eval_count?: number;
-}
+} }
 export class OllamaClient {
   private baseUrl: string;
   private defaultModel: string;
@@ -31,13 +31,13 @@ export class OllamaClient {
   ) {
     this.baseUrl = baseUrl;
     this.defaultModel = defaultModel;
-  }
+  } }
   /**
    * Generate text using Ollama gemma3:270m
    */
   async generate(
    , prompt: string,
-    options: GenerateOptions = {}
+    options: GenerateOptions = {} }
   ): Promise<GenerateResponse> {
     const {
       model = this.defaultModel,
@@ -46,7 +46,7 @@ export class OllamaClient {
       topK = 50,
       maxTokens = 512,
       stream = false
-    } = options;
+    } }= options;
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
@@ -60,41 +60,41 @@ export class OllamaClient {
             topP,
             topK,
             maxTokens
-          }
+          } }
         })
       });
       if (!response.ok) {
         const error = await response.text();
-        throw new Error(`Ollama API error: ${response.status} - ${error}`);
-      }
+        throw new Error(`Ollama API error: ${response.status} }- ${error}`);
+      } }
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [Ollama Client] Generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{, role: 'user' | 'assistant' | 'system';, content: string }>,
-    options: GenerateOptions = {}
+    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
+    options: GenerateOptions = {} }
   ): Promise<string> {
     // Build prompt from messages
     let prompt = '';
     for (const msg of messages) {
       if (msg.role === 'system') {
         prompt += `System: ${msg.content}\n\n`;
-      } else if (msg.role === 'user') {
+      } }else if (msg.role === 'user') {
         prompt += `User: ${msg.content}\n\n`;
-      } else if (msg.role === 'assistant') {
+      } }else if (msg.role === 'assistant') {
         prompt += `Assistant: ${msg.content}\n\n`;
-      }
-    }
+      } }
+    } }
     prompt += 'Assistant: ';
     const result = await this.generate(prompt, options);
     return result.response;
-  }
+  } }
   /**
    * Check if Ollama is available
    */
@@ -110,16 +110,16 @@ export class OllamaClient {
           gemma3_270m_available: false,
           available_models: []
         };
-      }
+      } }
       return await response.json();
-    } catch {
+    } }catch {
       return {
         status: 'offline',
         gemma3_270m_available: false,
         available_models: []
       };
-    }
-  }
+    } }
+  } }
   /**
    * Legal-specific helpers
    */
@@ -129,31 +129,31 @@ export class OllamaClient {
       {
         temperature: 0.3,
         maxTokens: 300
-      }
+      } }
     );
     return result.response;
-  }
+  } }
   async answerLegalQuestion(question: string, context: string): Promise<string> {
     const result = await this.generate(
       `Context: ${context}\n\nQuestion: ${question}\n\nAnswer the question based only on the provided context. Be accurate and concise.`,
       {
         temperature: 0.5,
         maxTokens: 400
-      }
+      } }
     );
     return result.response;
-  }
+  } }
   async extractLegalEntities(text: string): Promise<string> {
     const result = await this.generate(
       `Extract legal entities (parties, dates, locations) from this text. Return as JSON:\n\n${text}`,
       {
         temperature: 0.1,
         maxTokens: 200
-      }
+      } }
     );
     return result.response;
-  }
-}
+  } }
+} }
 /**
  * Singleton instance for global use
  */
@@ -163,8 +163,8 @@ export const ollamaClient = new OllamaClient();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
-import type { User } from '$lib/types';
- *   import { ollamaClient } from '$lib/ai/ollama-client';
+import type { User } }from '$lib/types';
+ *   import { ollamaClient } }from '$lib/ai/ollama-client';
  *
  *   let response = $state<string>('');
  *
@@ -176,7 +176,7 @@ import type { User } from '$lib/types';
  *
  *     response = result.response;
  *     console.log('Generated in:', result.duration, 'ms');
- *   }
+ *   } }
  * </script>
  *
  * <button, onclick={() => ask('Explain contract law')}>
@@ -185,3 +185,4 @@ import type { User } from '$lib/types';
  *
  * <p>{response}</p>
  */
+

@@ -1,9 +1,9 @@
-import { canvasLayouts } from '$lib/server/db/schema-canvas';
-import type { RequestEvent } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq, and, like, desc, sql } from 'drizzle-orm';
-import { getUserId } from '$lib/server/auth/utils';
+import { canvasLayouts } }from '$lib/server/db/schema-canvas';
+import type { RequestEvent } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { eq, and, like, desc, sql } }from 'drizzle-orm';
+import { getUserId } }from '$lib/server/auth/utils';
 
 // Small helper to safely format: unknown errors for logging
 function formatError(e: any): string {
@@ -11,19 +11,19 @@ function formatError(e: any): string {
   if (e instanceof Error) return e.stack ?? e.message;
   try {
     return JSON.stringify(e);
-  } catch {
+  } }catch {
     return String(e);
-  }
-}
+  } }
+} }
 
 export async function GET({ url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const caseId = url.searchParams.get('caseId');
     const canvasId = url.searchParams.get('id');
     const search = url.searchParams.get('search') || '';
@@ -37,23 +37,23 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       const [canvasState] = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).limit(1);
       if (!canvasState) {
         return json({ error: 'Canvas state not found' }, { status: 404 });
-      }
+      } }
       return json(canvasState);
-    } else {
+    } }else {
       // Build filters
       const filters: any[] = [];
       // Add case filter
       if (caseId) {
         filters.push(eq(canvasLayouts.caseId, caseId));
-      }
+      } }
       // Add search filter
       if (search) {
         filters.push(like(canvasLayouts.name, `%${search}%`));
-      }
+      } }
       // Add template filter
       if (isTemplate !== null) {
         filters.push(eq(canvasLayouts.isDefault, isTemplate === 'true'));
-      }
+      } }
       // Determine the column for sorting
       const orderColumn =
         sortBy === 'name'
@@ -83,28 +83,28 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
           limit,
           offset,
           total: totalCount
-        }
+        } }
       });
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.error('Error fetching canvas states:', formatError(error));
     return json({ error: 'Failed to fetch canvas states' }, { status: 500 });
-  }
-}
+  } }
+} }
 
 export async function POST({ request, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const data = (await request.json()) as Record<string, unknown>;
     // Validate required fields
     if (!data.name || !data.layoutData) {
       return json({ error: 'Name and layout data are required' }, { status: 400 });
-    }
+    } }
     const canvasStateData = {
       caseId: (data.caseId, as: string) || null,
       name: (data.name, as: string).trim(),
@@ -115,24 +115,24 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
     };
     const [newCanvasState] = await db.insert(canvasLayouts).values(canvasStateData).returning();
     return json(newCanvasState, { status: 201 });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error creating canvas state:', formatError(error));
     return json({ error: 'Failed to create canvas state' }, { status: 500 });
-  }
-}
+  } }
+} }
 
 export async function PUT({ request, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const data = (await request.json()) as Record<string, unknown>;
     if (!data.id) {
       return json({ error: 'Canvas state ID is required' }, { status: 400 });
-    }
+    } }
     // Check if canvas state exists
     const existingCanvasState = await db
       .select()
@@ -141,7 +141,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       .limit(1);
     if (!existingCanvasState.length) {
       return json({ error: 'Canvas state not found' }, { status: 404 });
-    }
+    } }
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
     };
@@ -156,57 +156,57 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       .where(eq(canvasLayouts.id, data.id))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error updating canvas state:', formatError(error));
     return json({ error: 'Failed to update canvas state' }, { status: 500 });
-  }
-}
+  } }
+} }
 
 export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const canvasId = url.searchParams.get('id');
     if (!canvasId) {
       return json({ error: 'Canvas state ID is required' }, { status: 400 });
-    }
+    } }
     // Check if canvas state exists
     const existingCanvasState = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).limit(1);
     if (!existingCanvasState.length) {
       return json({ error: 'Canvas state not found' }, { status: 404 });
-    }
+    } }
     // Delete the canvas state
     const [deletedCanvasState] = await db.delete(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).returning();
     return json({ success: true, deletedCanvasState });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error deleting canvas state:', formatError(error));
     return json({ error: 'Failed to delete canvas state' }, { status: 500 });
-  }
-}
+  } }
+} }
 
 // PATCH endpoint for partial updates
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available` }, { status: 500 });'`
-    }
+    } }
     const canvasId = url.searchParams.get('id');
     if (!canvasId) {
       return json({ error: `Canvas state ID is required` }, { status: 400 });
-    }
+    } }
     const data = (await request.json()) as Record<string, unknown>;
     // Check if canvas state exists
     const existingCanvasState = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).limit(1);
     if (!existingCanvasState.length) {
       return json({ error: `Canvas state not found` }, { status: 404 });
-    }
+    } }
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
     };
@@ -218,26 +218,27 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
           .update(canvasLayouts)
           .set({ isDefault: false })
           .where(eq(canvasLayouts.caseId, existingCanvasState[0].caseId));
-      }
+      } }
       updateData.isDefault = true;
-    } else if (data.operation === 'updateData') {
+    } }else if (data.operation === 'updateData') {
       updateData.layoutData = data.layoutData;
-    } else {
+    } }else {
       // Regular field updates
       Object.keys(data).forEach(key => {
         if (key !== 'operation') {
           (updateData as Record<string, unknown>)[key] = data[key];
-        }
+        } }
       });
-    }
+    } }
     const [updatedCanvasState] = await db
       .update(canvasLayouts)
       .set(updateData)
       .where(eq(canvasLayouts.id, canvasId))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error patching canvas state: ', formatError(error));'`'`
     return json({ error: `Failed to update canvas state` }, { status: 500 });
-  }
-}
+  } }
+} }
+

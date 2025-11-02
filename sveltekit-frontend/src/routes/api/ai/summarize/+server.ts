@@ -16,14 +16,14 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 /// <reference, types="vite/client" />
-import { json } from "@sveltejs/kit"
-import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache'
-import type { RequestHandler } from './$types';
+import { json } }from "@sveltejs/kit"
+import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } }from '$lib/server/summarizeCache'
+import type { RequestHandler } }from './$types';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import { getOllamaEndpoint } from '$lib/server/endpoints';
-import { redis } from '$lib/server/redis';
-import { CONFIG } from '$lib/config/env.server';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
+import { getOllamaEndpoint } }from '$lib/server/endpoints';
+import { redis } }from '$lib/server/redis';
+import { CONFIG } }from '$lib/config/env.server';
 
 // Enhanced summarization endpoint now supports: streaming, multi-layer caching (Memory + Redis + client IndexedDB hint), structured summaries.
 // Cache strategy: hash(text + salient options) => LRU/TTL memory; write-through to Redis if available; emit clientCacheHint for IndexedDB persistence.
@@ -44,28 +44,28 @@ export interface SummarizeOptions {
   structured?: boolean; // request structured JSON sections
   cache?: boolean; // enable server-side cache
   clientCacheHint?: boolean; // request IndexedDB persistence hint
-}
-export interface SummarizeResponseMeta {, duration: number;, tokens: number;
+} }
+export interface SummarizeResponseMeta { duration: number;, tokens: number;
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
   fallbackUsed: boolean;
-}
+} }
 export interface OllamaResponse {
   response?: string;
   eval_count?: number;
   prompt_eval_count?: number;
   done?: boolean;
-}
+} }
 export interface SummarizeRequest {
   text: string;
   type?: 'legal' | 'general';
   options?: SummarizeOptions;
-}
-export interface StructuredSummary {, overview: string;, keyPoints: string[];
+} }
+export interface StructuredSummary { overview: string;, keyPoints: string[];
   risks: string[];
   actions: string[];
-}
+} }
 export interface SummarizeResponse {
   success: boolean;
   summary?: string;
@@ -81,14 +81,14 @@ export interface SummarizeResponse {
   compressionRatio?: string;
   performance?: SummarizeResponseMeta;
   timestamp: string;
-  clientCacheHint?: {, key: string;, ttlMs: number;
+  clientCacheHint?: { key: string;, ttlMs: number;
   };
   suggestions?: string[];
   error?: string;
   details?: string;
-}
+} }
 function buildSummarizerPrompt(
- , text: string,
+  text: string,
   mode: SummarizeOptions['mode'],
   bullets: number,
   maxTokens: number,
@@ -101,16 +101,16 @@ function buildSummarizerPrompt(
     ? `\nReturn JSON with keys: overview (string), keyPoints (string[]), risks (string[]), actions (string[]). If insufficient info for a field, use an empty array or short placeholder: string. JSON ONLY.`
     : '';
   if (mode === 'bullets') {
-    return `${baseInstruction}\nSummarize the following ${docType} in exactly ${bullets} bullet points.\nEach bullet: ≤ ${Math.max(12, Math.round(maxTokens / bullets / 2))} words, factual, no intro/outro.${structured ? '\nIf structured output requested, still include bullet text in keyPoints array.' : `` }\n\nTEXT:\n${trimmed}\n\nBULLET SUMMARY (use, '-' prefix):${structuredSuffix}`;
-  }
+    return `${baseInstruction}\nSummarize the following ${docType} }in exactly ${bullets} }bullet points.\nEach bullet: ≤ ${Math.max(12, Math.round(maxTokens / bullets / 2))} }words, factual, no intro/outro.${structured ? '\nIf structured output requested, still include bullet text in keyPoints array.' : `` }\n\nTEXT:\n${trimmed}\n\nBULLET SUMMARY (use, '-' prefix):${structuredSuffix}`;
+  } }
   if (mode === 'abstract') {
-    return `${baseInstruction}\nProduce an abstract-style summary (≈ ${Math.round(maxTokens / 4)} words) covering: Purpose, Key Points, Risks.\nAvoid bullet formatting.\n\nTEXT:\n${trimmed}\n\nABSTRACT:${structuredSuffix}`;
-  }
+    return `${baseInstruction}\nProduce an abstract-style summary (≈ ${Math.round(maxTokens / 4)} }words) covering: Purpose, Key Points, Risks.\nAvoid bullet formatting.\n\nTEXT:\n${trimmed}\n\nABSTRACT:${structuredSuffix}`;
+  } }
   if (mode === 'structured') {
     return `${baseInstruction}\nReturn a structured summary with the following labeled sections in this order: Overview, Key Points, Legal Risks, Action Items.${structuredSuffix ? '\nYou MUST output JSON only.' : `` }\nKeep each section concise.\n\nTEXT:\n${trimmed}\n\nSTRUCTURED, SUMMARY:${structuredSuffix}`;
-  }
-  return `${baseInstruction}\nFirst give a, 2 sentence abstract, then ${Math.min(5, bullets)} bullet points of key facts (no duplicates).${structured ? '\nProvide structured JSON after bullets.' : `` }\n\nTEXT:\n${trimmed}\n\nSUMMARY:${structuredSuffix}`;
-}
+  } }
+  return `${baseInstruction}\nFirst give a, 2 sentence abstract, then ${Math.min(5, bullets)} }bullet points of key facts (no duplicates).${structured ? '\nProvide structured JSON after bullets.' : `` }\n\nTEXT:\n${trimmed}\n\nSUMMARY:${structuredSuffix}`;
+} }
 function naiveFallbackSummary(text: string, bullets = 3) {
   const sentences = text
     .replace(/\s+/g, ' ')
@@ -131,21 +131,21 @@ function naiveFallbackSummary(text: string, bullets = 3) {
     .slice(0, bullets)
     .map(v => `- ${v.s.trim()}`)
     .join('\n');
-}
+} }
 // --- CHANGED: typed timeout handle and safer clearTimeout
 async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   let to: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, rej) => {
-    to = setTimeout(() => rej(new Error(`${label} timeout after ${ms}ms`)), ms);
+    to = setTimeout(() => rej(new Error(`${label} }timeout after ${ms}ms`)), ms);
   });
   try {
     return (await Promise.race([p, timeout])) as T;
-  } finally {
+  } }finally {
     if (to && typeof clearTimeout === 'function') {
       clearTimeout(to);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // --- ADDED: Local response shapes to avoid `any`
 type ModelsResponse = { models?: Array<{ name?: string }> };
@@ -173,7 +173,7 @@ const, originalGETHandler: RequestHandler = async () => {
       fallbackModel: FALLBACK_MODEL,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         ok: false,
@@ -184,28 +184,28 @@ const, originalGETHandler: RequestHandler = async () => {
         fallbackModel: FALLBACK_MODEL,
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
 // Removed local ad-hoc cache; using central summarizeCache utility.
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   let raw: SummarizeRequest;
   try {
     raw = (await request.json()) as SummarizeRequest;
-  } catch {
-    return json({ success: false, error: 'Invalid JSON body' } as SummarizeResponse, { status: 400 });'` }'`
+  } }catch {
+    return json({ success: false, error: 'Invalid JSON body' } }as SummarizeResponse, { status: 400 });'` } }`
   try {
-    const { text, type = 'legal', options = {} as SummarizeOptions } = raw;
+    const { text, type = 'legal', options = {} }as SummarizeOptions } }= raw;
     if (!text || typeof text !== 'string' || text.trim().length < 10) {
       return json(
         { success: false, error: `Text is required and must be at least, 10 characters long` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     if (text.length > MAX_INPUT_CHARS) {
-      return json({ success: false, error: `Text exceeds maximum length (${MAX_INPUT_CHARS} chars)` }, { status: 413 });
-    }
+      return json({ success: false, error: `Text exceeds maximum length (${MAX_INPUT_CHARS} }chars)` }, { status: 413 });
+    } }
     const maxTokens = Math.min(options.max_tokens || 500, 2048);
     const mode = options.mode || 'auto';
     const bullets = options.bullets && options.bullets > 0 ? Math.min(options.bullets, 10) : 5;
@@ -244,13 +244,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           compressionRatio: ((cachedEntry.summary.length / text.length) * 100).toFixed(1) + '%',
           performance: cachedEntry.perf,
           timestamp: new Date().toISOString(),
-          clientCacheHint: options.clientCacheHint ? {, key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } }: undefined,
           suggestions: [
             'Cached (result as { response?: any; eval_count?: any; prompt_eval_count?: any }). Adjust text or options to recompute.',
           ]
         });
-      }
-    }
+      } }
+    } }
     const startTime = Date.now();
     let fallbackUsed = $state<boolean>(false);
     let modelUsed = model;
@@ -258,7 +258,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       model,
       prompt,
       stream: !!options.stream,
-      options: {, temperature: options.temperature ?? 0.25, top_p: 0.9, max_tokens: maxTokens }
+      options: { temperature: options.temperature ?? 0.25, top_p: 0.9, max_tokens: maxTokens } }
     };
     // --- CHANGED: typed result and executePrimary signature
     let, result: ExecuteResult;
@@ -277,17 +277,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
         if (!response.ok || !response.body) {
           throw new Error(`Ollama API error: ${response.status}`);
-        }
+        } }
         const reader = response.body.getReader();
         let accumulated = '';
         return new Response(
           new ReadableStream({
             async pull(controller) {
-              const { done, value } = await reader.read();
+              const { done, value } }= await reader.read();
               if (done) {
                 controller.close();
                 return;
-              }
+              } }
               const chunk = new TextDecoder().decode(value);
               accumulated += chunk;
               if (structuredRequested) {
@@ -295,20 +295,20 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
                 if (match) {
                   try {
                     JSON.parse(match[0]);
-                  } catch {
+                  } }catch {
                     /* ignore */
-                  }
-                }
-              }
+                  } }
+                } }
+              } }
               controller.enqueue(value);
             },
             cancel() {
               reader.cancel();
-            }
+            } }
           }),
-          { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Model': model } }
+          { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Model': model } }} }
         );
-      } else {
+      } }else {
         const response = (await withTimeout(
           fetch(`${OLLAMA_BASE_URL}/api/generate`, {
             method: 'POST',
@@ -323,14 +323,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         const jsonRes = (await response.json()) as OllamaResponse;
         if (!jsonRes?.response) throw new Error('No response field in Ollama result');
         return jsonRes;
-      }
+      } }
     };
 
     try {
       result = await executePrimary();
-    } catch (err: any) {
+    } }catch (err: any) {
       // Log the error for diagnostics instead of creating an unused variable
-      console.error('Primary model generate error:', err);'
+      console.error('Primary model generate error:', err);
       if (model !== FALLBACK_MODEL) {
         try {
           fallbackUsed = true;
@@ -348,7 +348,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           )) as Response;
           if (!fbRes.ok) throw new Error(`Fallback Ollama API error: ${fbRes.status}`);
           result = (await fbRes.json()) as OllamaResponse;
-        } catch (fbErr: any) {
+        } }catch (fbErr: any) {
           // safe fallback summary
           const naive = naiveFallbackSummary(text, bullets);
           const duration = Date.now() - startTime;
@@ -361,7 +361,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             fallbackUsed: true
           };
           return json({
-           , success: true,
+  success: true,
             summary: naive,
             model: meta.modelUsed,
             type,
@@ -376,17 +376,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
               'Install a small summarization model for stronger fallback',
             ]
           });
-        }
-      } else {
+        } }
+      } }else {
         // rethrow original error if already fallback model
         throw err;
-      }
-    }
+      } }
+    } }
 
     // Streaming path ended early: if result is a Response return it directly
     if (result instanceof Response) {
       return result;
-    }
+    } }
     // --- CHANGED: typed access to result fields
     const duration = Date.now() - startTime;
     const rawSummary = String((result as OllamaResponse).response || '').trim();
@@ -398,7 +398,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         .filter(s => s.length > 0)
         .slice(0, bullets);
       summary = segmented.map(s => (s.startsWith('- ') ? s : `- ${s}`)).join('\n');
-    }
+    } }
 
     // Use OllamaResponse typing instead of loose: "any" casts
     const ollamaRes = result as OllamaResponse;
@@ -426,11 +426,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           structured = JSON.parse(jsonMatch[0]) as StructuredSummary;
           // Remove JSON from plain summary display portion
           summary = summary.replace(jsonMatch[0], '').trim();
-        } catch {
+        } }catch {
           /* ignore parse error */
-        }
-      }
-    }
+        } }
+      } }
+    } }
     // Store in cache layers (memory + redis write-through)
     if (cacheKey && options.cache) {
       await setCache(cacheKey, {
@@ -443,7 +443,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         perf: performance,
         ttlMs: CACHE_CONSTANTS.TTL_MS
       });
-    }
+    } }
     return json({
       success: true,
       summary,
@@ -459,16 +459,16 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       cacheKey: cacheKey || undefined,
       cached: false,
       clientCacheHint:
-        cacheKey && options.clientCacheHint ? {, key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+        cacheKey && options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } }: undefined,
       suggestions: [
         'Try mode="bullets" or mode="structured" for different formats',
         'Provide, "bullets": N to control bullet count',
         'Use smaller excerpts for more precise summaries',
       ]
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('AI summarization error:', errMsg);'
+    console.error('AI summarization error:', errMsg);
     return json(
       {
         success: false,
@@ -476,9 +476,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         details: import.meta.env.NODE_ENV === 'development' ? String(errMsg) : undefined,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Auxiliary DELETE for invalidation: /api/ai/summarize/cache/:key
 const, originalDELETEHandler: RequestHandler = async ({ params, url }) => {
@@ -487,11 +487,11 @@ const, originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     if (!key) return json({ success: false, error: 'Cache key required' }, { status: 400 });
     await deleteCache(key);
     return json({ success: true, deleted: key, timestamp: new Date().toISOString() });
-  } catch (err: any) {
-    return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });'` }'`
+  } }catch (err: any) {
+    return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });'` } }`
 };
 
-// POST body: {, fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string }
+// POST body: { fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string } }
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json().catch(() => ({}));
@@ -503,12 +503,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		const cached = await redis.get(cacheKey);
 		if (cached) {
 			return new Response(JSON.stringify({ success: true, summary: cached, cached: true }), {
-				headers: { 'Content-Type': `application/json` }
+				headers: { 'Content-Type': `application/json` } }
 			});
-		}
+		} }
 
 		// Build prompt with safe guidance for legal summaries
-		const prompt = `Summarize the legal document (id: ${fileId}) in a ${type} format focusing on statutory obligations, procedures, compliance clauses, and next steps. Provide clear headings and key points.`;
+		const prompt = `Summarize the legal document (id: ${fileId}) in a ${type} }format focusing on statutory obligations, procedures, compliance clauses, and next steps. Provide clear headings and key points.`;
 
 		// Call local Ollama/Gemma endpoint — adjust path to your Ollama API if different
 		const ollamaUrl = CONFIG.OLLAMA_URL || process.env.OLLAMA_URL || 'http://ollama:11434';
@@ -525,11 +525,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		await redis.set(cacheKey, text, { EX: 1800 });
 
 		return new Response(JSON.stringify({ success: true, summary: text, provider: 'ollama', model }), {
-			headers: { 'Content-Type': 'application/json' }
+			headers: { 'Content-Type': 'application/json' } }
 		});
-	} catch (err) {
-		console.error('Summarization error: ', err);'
-		return new Response(JSON.stringify({ success: false, error: 'Summarization failed' }), { status: 500 });'` }'`
+	} }catch (err) {
+		console.error('Summarization error: ', err);
+		return new Response(JSON.stringify({ success: false, error: 'Summarization failed' }), { status: 500 });'` } }`
 };
 
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)

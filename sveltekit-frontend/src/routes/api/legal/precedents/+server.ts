@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 // Minimal repaired Legal Precedents API
-import { db } from '$lib/server/db/index';
+import { db } }from '$lib/server/db/index';
 // Import with fallback for different schema files
 let legalPrecedents: any;
 try {
   const schema = await import('$lib/server/db/schema-postgres');
   legalPrecedents = schema.legalPrecedents;
-} catch (error: any) {
+} }catch (error: any) {
   console.warn('Legal precedents schema not available');
-}
-import { eq } from 'drizzle-orm';
+} }
+import { eq } }from 'drizzle-orm';
 import crypto from 'crypto';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Simulate database query that might fail
     if (!legalPrecedents) {
       throw new Error('Database schema not available');
-    }
+    } }
     // In production, this would query the database
     const precedents = []; // Simulated empty result for now
     return json({
@@ -28,13 +28,12 @@ export const GET: RequestHandler = async ({ url }) => {
       total: precedents.length,
       query
     });
-  } catch (error) {
-    console.error('Legal precedents API error:', error);'
+  } }catch (error) {
+    console.error('Legal precedents API error:', error);
     // Return mock precedents data
     const query = url.searchParams.get('query') || '';
     const mockPrecedents = [
-      {,
-        id: 'mock-precedent-001',
+      { id: 'mock-precedent-001',
         caseTitle: 'Mock vs. TechCorp Employment Dispute',
         citation: '123 F.3d, 456 (9th Cir. 2024)',
         year: 2024,
@@ -65,16 +64,16 @@ export const GET: RequestHandler = async ({ url }) => {
         query,
         source: 'mock-database'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json().catch(() => ({}));
     if (!body.caseTitle || !body.citation) {
       return json({ success: false, error: 'caseTitle and citation required' }, { status: 400 });
-    }
+    } }
     // In production, this would save to database
     const rec = { id: crypto.randomUUID(), ...body, created: new Date().toISOString() };
     return json({
@@ -82,23 +81,24 @@ export const POST: RequestHandler = async ({ request }) => {
       precedent: rec,
       message: 'Precedent created successfully'
     });
-  } catch (error) {
-    console.error('Create precedent API error:', error);'
+  } }catch (error) {
+    console.error('Create precedent API error:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock - precedent created locally',
         precedent: {
-         , id: 'mock-' + crypto.randomUUID(),
+  id: 'mock-' + crypto.randomUUID(),
           caseTitle: 'Mock Precedent',
           citation: 'Mock Citation',
           created: new Date().toISOString(),
           source: 'mock-creation'
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const PUT: RequestHandler = async () => json({ success: true, similar: [] });
 export const prerender = false;
+

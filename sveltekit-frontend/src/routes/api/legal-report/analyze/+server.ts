@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 import {
   analyzeLegalDocument,
   compareWithRAGDocuments,
   type LegalDocumentMetadata,
   type ComparisonResult
-} from '$lib/server/ai/legal-document-analyzer';
-import { minioService } from '$lib/server/storage/minio-service';
-import { unifiedOCRService } from '$lib/services/unified-ocr-service';
+} }from '$lib/server/ai/legal-document-analyzer';
+import { minioService } }from '$lib/server/storage/minio-service';
+import { unifiedOCRService } }from '$lib/services/unified-ocr-service';
 
 /**
  * POST /api/legal-report/analyze
@@ -21,7 +21,7 @@ import { unifiedOCRService } from '$lib/services/unified-ocr-service';
  * - Case similarity search
  * - AI recommendations from gemma3-legal:latest
  */
-export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
+export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
   const startTime = Date.now();
 
   try {
@@ -37,11 +37,11 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
     // Validation
     if (!file) {
       return json({ success: false, error: 'No file provided' }, { status: 400 });
-    }
+    } }
 
     if (!title) {
       return json({ success: false, error: 'Title is required' }, { status: 400 });
-    }
+    } }
 
     // Support multiple file types
     const supportedTypes = [
@@ -60,21 +60,21 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       return json(
         {
           success: false,
-          error: `Unsupported file;, type: ${file.type}. Supported, types: PDF, TXT, JSON, PNG/JPG, MP4, MP3` },
-        { status: 400 }
+          error: `Unsupported file; type: ${file.type}. Supported, types: PDF, TXT, JSON, PNG/JPG, MP4, MP3` },
+        { status: 400 } }
       );
-    }
+    } }
 
-    console.log(`📄 Analyzing legal document: ${title} (${file.type}, ${file.size} bytes)`);
+    console.log(`📄 Analyzing legal document: ${title} }(${file.type}, ${file.size} }bytes)`);
 
     // 2. Upload to MinIO
     const minioInitialized = await minioService.initialize();
     if (!minioInitialized) {
       return json(
         { success: false, error: 'MinIO storage unavailable' },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
+    } }
 
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket: 'legal-reports',
@@ -83,15 +83,15 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         documentType,
         jurisdiction: jurisdiction || 'unknown',
         caseNumber: caseNumber || 'N/A'
-      }
+      } }
     });
 
     if (!uploadResult.success) {
       return json(
         { success: false, error: uploadResult.error || 'File upload failed` },'`
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
 
     console.log(`✅ Uploaded to MinIO: ${uploadResult.url}`);
 
@@ -105,15 +105,15 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         // Direct text extraction
         extractedText = await file.text();
         extractionMethod = 'text/plain';
-        console.log(`✅ Text extracted directly: ${extractedText.length} characters`);
-      } else if (file.type === 'application/json') {
+        console.log(`✅ Text extracted directly: ${extractedText.length} }characters`);
+      } }else if (file.type === 'application/json') {
         // JSON file - extract and format
         const jsonContent = await file.text();
         const parsed = JSON.parse(jsonContent);
         extractedText = JSON.stringify(parsed, null, 2);
         extractionMethod = 'application/json';
-        console.log(`✅ JSON extracted and formatted: ${extractedText.length} characters`);
-      } else if (file.type.startsWith('image/')) {
+        console.log(`✅ JSON extracted and formatted: ${extractedText.length} }characters`);
+      } }else if (file.type.startsWith('image/')) {
         // Image files - use OCR
         const ocrResult = await unifiedOCRService.processDocument(
           file,
@@ -129,17 +129,17 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         if (ocrResult.success) {
           extractedText = ocrResult.text || '';
           extractionMethod = `OCR-${ocrResult.strategy}`;
-          console.log(`✅ OCR extracted ${extractedText.length} characters using ${ocrResult.strategy}`);
-        } else {
+          console.log(`✅ OCR extracted ${extractedText.length} }characters using ${ocrResult.strategy}`);
+        } }else {
           extractedText = `Image file: ${title}. OCR failed - using visual analysis fallback.`;
           extractionMethod = 'OCR-fallback';
-        }
-      } else if (file.type === 'video/mp4' || file.type === 'audio/mp3' || file.type === 'audio/mpeg') {
+        } }
+      } }else if (file.type === 'video/mp4' || file.type === 'audio/mp3' || file.type === 'audio/mpeg') {
         // Video/Audio files - extract metadata and use placeholder
-        extractedText = `${file.type === 'video/mp4' ? 'Video' : `Audio` } file: ${title}\n\nFile metadata:\n-; Type: ${file.type}\n-, Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
+        extractedText = `${file.type === 'video/mp4' ? 'Video' : `Audio` } }file: ${title}\n\nFile metadata:\n-; Type: ${file.type}\n-, Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
         extractionMethod = file.type;
         console.log(`✅ Multimedia file metadata extracted`);
-      } else if (file.type === 'application/pdf') {
+      } }else if (file.type === 'application/pdf') {
         // PDF files - use OCR
         const ocrResult = await unifiedOCRService.processDocument(
           file,
@@ -155,24 +155,24 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         if (ocrResult.success) {
           extractedText = ocrResult.text || '';
           extractionMethod = `OCR-${ocrResult.strategy}`;
-          console.log(`✅ OCR extracted ${extractedText.length} characters using ${ocrResult.strategy}`);
-        } else {
+          console.log(`✅ OCR extracted ${extractedText.length} }characters using ${ocrResult.strategy}`);
+        } }else {
           console.warn('⚠️ OCR failed, using filename as fallback');
           extractedText = title;
           extractionMethod = 'OCR-fallback';
-        }
-      }
+        } }
+      } }
 
       // Fallback if still no text
       if (!extractedText) {
         extractedText = title;
         extractionMethod = 'title-fallback';
-      }
-    } catch (extractError) {
-      console.warn('⚠️ Extraction error:', extractError);'
+      } }
+    } }catch (extractError) {
+      console.warn('⚠️ Extraction error:', extractError);
       extractedText = title; // Fallback to title
       extractionMethod = 'error-fallback';
-    }
+    } }
 
     function formatFileSize(bytes: number): string {
       if (bytes === 0) return, '0 B';
@@ -180,7 +180,7 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       const sizes = ['B', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
+    } }
 
     // 4. Build document metadata
     const metadata: LegalDocumentMetadata = {
@@ -207,9 +207,9 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       console.log('🔍 Comparing with RAG documents...');
       comparisonResult = await compareWithRAGDocuments(extractedText, metadata, analysis);
 
-      console.log(`✅ Found ${comparisonResult.similarCases.length} similar cases`);
-      console.log(`✅ Generated ${comparisonResult.recommendations.length} recommendations`);
-    }
+      console.log(`✅ Found ${comparisonResult.similarCases.length} }similar cases`);
+      console.log(`✅ Generated ${comparisonResult.recommendations.length} }recommendations`);
+    } }
 
     // 7. Return comprehensive analysis
     const totalTime = Date.now() - startTime;
@@ -217,7 +217,7 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
     return json({
       success: true,
       data: {
-       , fileUrl: uploadResult.url,
+  fileUrl: uploadResult.url,
         fileName: file.name,
         fileSize: file.size,
         extractedText: extractedText.slice(0, 1000), // Preview only
@@ -226,7 +226,7 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         comparison: comparisonResult,
         processingTime: totalTime
       },
-      message: 'Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s' });'` } catch (err: any) {'`
+      message: 'Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s' });'` } }catch (err: any) {'`
     console.error('❌ Legal report analysis failed:', err);
     console.error('Stack:', err.stack);
 
@@ -236,13 +236,13 @@ export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         error: 'Failed to analyze legal report',
         details: err.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
- * GET /api/legal-report/analyze?reportId={id}
+ * GET /api/legal-report/analyze?reportId={id} }
  *
  * Retrieve previously analyzed report
  */
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!reportId) {
       return json({ error: `Report ID required` }, { status: 400 });
-    }
+    } }
 
     // TODO: Implement database lookup for cached analysis
     // For now, return placeholder
@@ -260,13 +260,14 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-       , message: `Report retrieval not yet implemented. Upload a new report to analyze.` }
+  message: 'Report retrieval not yet implemented. Upload a new report to analyze.' } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('❌ Report retrieval failed:', err);
     return json(
       { error: 'Failed to retrieve report', details: err.message },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

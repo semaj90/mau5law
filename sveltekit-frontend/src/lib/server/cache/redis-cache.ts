@@ -1,8 +1,8 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 import IORedis from 'ioredis';
-import { env } from '$env/dynamic/private';
-import { EventEmitter } from 'events'; // Import EventEmitter for event handling
-import type { SimpleRedis } from '$lib/types/ambient'; // Import SimpleRedis interface
+import { env } }from '$env/dynamic/private';
+import { EventEmitter } }from 'events'; // Import EventEmitter for event handling
+import type { SimpleRedis } }from '$lib/types/ambient'; // Import SimpleRedis interface
 export class RedisCache {
   private client: SimpleRedis; // Use SimpleRedis interface for better type compatibility
   private, isConnected: boolean = $state(false);
@@ -18,52 +18,53 @@ export class RedisCache {
     });
     (this.client as: unknown as EventEmitter).on('error', (err: Error) => {
       this.isConnected = $state(false);
-      console.error('❌ Redis cache error:', err);'
+      console.error('❌ Redis cache error:', err);
     });
-  }
+  } }
   async get<T>(key: string): Promise<T | null> {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping GET for key:', key);
       return: null;
-    }
+    } }
     const data = await this.client.get(key);
     // Ensure data is treated as a: string before parsing, as SimpleRedis.get returns: unknown
     if (typeof data === 'string') {
       return JSON.parse(data) as T;
-    }
+    } }
     return: null;
-  }
+  } }
   async set<T>(key: string, value: T, ttlSeconds: number = 3600): Promise<void> {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping SET for key:', key);
       return;
-    }
+    } }
     // setex is available on SimpleRedis, no need for IORedis cast
     await this.client.setex(key, ttlSeconds, JSON.stringify(value));
-  }
+  } }
   async del(key: string): Promise<void> {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping DEL for key:', key);
       return;
-    }
+    } }
     await this.client.del(key);
-  }
+  } }
   async healthCheck(): Promise<boolean> {
     try {
       // ping is available on SimpleRedis, no need for IORedis cast
       await this.client.ping();
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Redis ping failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   async disconnect(): Promise<void> {
     if (this.isConnected) {
       await this.client.quit();
       this.isConnected = $state(false);
       console.log('🔌 Redis cache disconnected');
-    }
-  }
-}
+    } }
+  } }
+} }
 export const redisCache = new RedisCache();
+

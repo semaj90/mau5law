@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from '$lib/server/embedding-cache-middleware.js';
-import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import type { Case } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } }from '$lib/server/embedding-cache-middleware.js';
+import { webgpuRedisOptimizer } }from '$lib/server/webgpu-redis-optimizer.js';
 /**
  * Legal AI Embedding Benchmark with WebGPU Optimization
  * Real-world performance testing with legal document processing
@@ -15,7 +15,7 @@ interface EmbeddingBenchmarkRequest { mode: 'single' | 'batch' | 'stress' | 'com
     practiceAreas?: string[];
     documentTypes?: ('contract' | 'case' | 'statute' | 'brief')[];
   };
-}
+} }
 type BenchmarkConfig = EmbeddingBenchmarkRequest['config'];
 type DocumentType = 'contract' | 'case' | 'statute' | 'brief';
 interface BenchmarkResult { mode: string;, totalDocuments: number;
@@ -25,16 +25,16 @@ interface BenchmarkResult { mode: string;, totalDocuments: number;
   cacheHitRatio: number;
   webgpuUtilization: number;
   compressionRatio: number;
-  memoryUsage: {, peak: number;, average: number;
+  memoryUsage: { peak: number;, average: number;
   };
-  qualityMetrics?: {, avgSimilarity: number;, coherenceScore: number;
+  qualityMetrics?: { avgSimilarity: number;, coherenceScore: number;
   };
   // include errors count so stress test uses the variable
   errors?: number;
-}
+} }
 // Sample legal documents for testing
 const SAMPLE_LEGAL_DOCUMENTS = {
- , contracts: [
+  contracts: [
     'This Employment Agreement is entered into between Company X and Employee Y, effective January, 1, 2024. Employee shall perform duties as Software Engineer with annual compensation of $120,000. Agreement includes non-disclosure and non-compete clauses valid for, 18 months post-termination.',
     'Software License Agreement grants licensee non-exclusive rights to use proprietary software. License fee is $50,000 annually with maintenance support included. Licensee prohibited from reverse engineering, redistribution, or sublicensing without written consent.',
     'Real Estate Purchase Agreement for property located at, 123 Main Street. Purchase price $500,000 with 20% down payment. Closing date scheduled for March, 15, 2024. Property sold as-is with standard title insurance requirements.',
@@ -59,14 +59,14 @@ export const GET: RequestHandler = async () => {
       success: true,
       service: 'legal-embedding-benchmark',
       systemStatus: {
-       , embeddingCache: cacheStats,
+  embeddingCache: cacheStats,
         webgpuOptimizer: optimizerStats,
         sampleDocuments: {
-         , contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
+  contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,
           statutes: SAMPLE_LEGAL_DOCUMENTS.statutes.length,
           total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length
-        }
+        } }
       },
       availableBenchmarks: [
         'single - Individual document embedding with detailed metrics',
@@ -76,24 +76,24 @@ export const GET: RequestHandler = async () => {
       ],
       timestamp: Date.now()
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: 'Failed to get benchmark system status',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // POST - Run embedding benchmarks
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const benchmarkRequest: EmbeddingBenchmarkRequest = await request.json();
-    const { mode, config } = benchmarkRequest;
+    const { mode, config } }= benchmarkRequest;
     const clientAddr = safeGetClientAddress(getClientAddress, request);
-    console.log(`🧪 Legal Embedding Benchmark: ${mode} -, Client: ${clientAddr}`);
+    console.log(`🧪 Legal Embedding Benchmark: ${mode} }-, Client: ${clientAddr}`);
     let result: BenchmarkResult;
     switch (mode) {
       case, 'single':
@@ -110,38 +110,38 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         break;
       default: return json(
           {
-           , success: false,
+  success: false,
             error: 'Invalid benchmark mode',
             validModes: ['single', 'batch', 'stress', 'comparison']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
+    } }
     return json({
       success: true,
       mode,
       result,
       metadata: {
-       , timestamp: Date.now(),
+  timestamp: Date.now(),
         clientAddress: clientAddr,
         systemConfig: {
-         , webgpuEnabled: config.useWebGPU !== false,
+  webgpuEnabled: config.useWebGPU !== false,
           batchSize: config.batchSize || 128,
           practiceAreas: config.practiceAreas || ['general']
-        }
-      }
+        } }
+      } }
     });
-  } catch (error) {
-    console.error('Legal embedding benchmark error:', error);'
+  } }catch (error) {
+    console.error('Legal embedding benchmark error:', error);
     return json(
       {
         success: false,
         error: 'Benchmark execution failed',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // --- Added helpers ---
 function safeGetClientAddress(getClientAddress: (() => string) | undefined, request: Request) {
@@ -150,18 +150,18 @@ function safeGetClientAddress(getClientAddress: (() => string) | undefined, requ
     if (typeof getClientAddress === 'function') {
       const addr = getClientAddress();
       if (addr) return addr;
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     // ignore and fallback to headers
-  }
+  } }
   // common reverse-proxy header fallback
   const forwarded = request.headers.get?.('x-forwarded-for');
   return forwarded || request.headers.get?.('cf-connecting-ip') || 'unknown';
-}
+} }
 
 function safeDivide(numerator: number, denominator: number) {
   return denominator ? numerator / denominator : 0;
-}
+} }
 // --- End helpers ---
 /**
  * Single document embedding benchmark with detailed analysis
@@ -190,7 +190,7 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
       wasCached: embeddingResult.metadata.cacheHit
     });
     if (embeddingResult.metadata.cacheHit) cacheHits++;
-  }
+  } }
   // Calculate quality metrics
   if (results.length > 1) {
     for (let i = 0; i < results.length - 1; i++) {
@@ -199,8 +199,8 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
         results[i + 1].embeddingDimensions
       );
       totalSimilarity += similarity;
-    }
-  }
+    } }
+  } }
   const totalTime = Date.now() - startTime;
   const memoryPeak = process.memoryUsage().heapUsed;
   const avgTime = safeDivide(totalTime, documents.length);
@@ -214,15 +214,15 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
     webgpuUtilization: config.useWebGPU ? 0.75 : 0, // Simulated
     compressionRatio: 4.2,
     memoryUsage: {
-     , peak: memoryPeak,
+  peak: memoryPeak,
       average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {
-     , avgSimilarity: totalSimilarity / Math.max(1, results.length - 1),
+  avgSimilarity: totalSimilarity / Math.max(1, results.length - 1),
       coherenceScore: 0.85, // Simulated coherence score
-    }
+    } }
   };
-}
+} }
 /**
  * Batch processing benchmark with parallel optimization
  */
@@ -249,11 +249,11 @@ async function runBatchProcessingBenchmark(config: BenchmarkConfig): Promise<Ben
       totalDocuments += batch.length;
       // Simulate cache hit detection (in real implementation, would track actual hits)
       cacheHits += Math.floor(batch.length * 0.3); // Assume 30% cache hit rate for demo
-    } catch (err) {
+    } }catch (err) {
       // Log and continue with remaining iterations
       console.warn('Batch processing error (continuing):', err);
-    }
-  }
+    } }
+  } }
   const totalTime = Date.now() - startTime;
   const memoryPeak = process.memoryUsage().heapUsed;
   return {
@@ -266,11 +266,11 @@ async function runBatchProcessingBenchmark(config: BenchmarkConfig): Promise<Ben
     webgpuUtilization: config.useWebGPU ? 0.85 : 0,
     compressionRatio: 4.5,
     memoryUsage: {
-     , peak: memoryPeak,
+  peak: memoryPeak,
       average: (memoryStart + memoryPeak) / 2
-    }
+    } }
   };
-}
+} }
 /**
  * Stress test benchmark with high concurrency
  */
@@ -296,13 +296,13 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
           completedDocs++;
           // Small random delay to prevent overwhelming
           await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
-        } catch (error) {
+        } }catch (error) {
           errors++;
-          console.warn(`Worker ${workerId} error: ', error);'` }
-      }
+          console.warn(`Worker ${workerId} }error: ', error);'` } }
+      } }
     })();
     workers.push(p);
-  }
+  } }
   await Promise.all(workers);
   const actualDuration = Date.now() - startTime;
   return {
@@ -315,13 +315,13 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
     webgpuUtilization: 0.95, // High utilization during stress test
     compressionRatio: 4.0,
     memoryUsage: {
-     , peak: process.memoryUsage().heapUsed,
+  peak: process.memoryUsage().heapUsed,
       average: process.memoryUsage().heapUsed * 0.8
     },
     // return the error count so it's considered used'
     errors
   };
-}
+} }
 /**
  * Comparison benchmark: WebGPU vs Standard caching
  */
@@ -335,7 +335,7 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
       documentType: doc.type,
       practiceArea: `comparison-webgpu` };
     await getLegalEmbedding(legalQuery);
-  }
+  } }
   const webgpuTime = Date.now() - webgpuStartTime;
   // Standard processing simulation (would use different cache implementation)
   const standardTime = webgpuTime * 2.5; // Simulate 2.5x slower standard processing
@@ -351,20 +351,20 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
     webgpuUtilization: 0.5, // Half the time using WebGPU
     compressionRatio: 4.3,
     memoryUsage: {
-     , peak: process.memoryUsage().heapUsed,
+  peak: process.memoryUsage().heapUsed,
       average: process.memoryUsage().heapUsed * 0.7
     },
     qualityMetrics: {
-     , avgSimilarity: 0.82,
+  avgSimilarity: 0.82,
       coherenceScore: 0.88
-    }
+    } }
   };
-}
+} }
 /**
  * Get all sample documents with metadata
  */
 function getAllSampleDocuments() {
-  const allDocs: Array<{ text: string;, type: DocumentType }> = [];
+  const allDocs: Array<{ text: string; type: DocumentType }> = [];
   function mapCategoryToType(category: string): DocumentType {
     switch (category) {
       case, 'contracts':
@@ -374,15 +374,15 @@ function getAllSampleDocuments() {
       case, 'statutes':
         return, 'statute';
       default: return, 'brief';
-    }
-  }
+    } }
+  } }
   for (const [category, docs] of Object.entries(SAMPLE_LEGAL_DOCUMENTS)) {
     for (const text of docs) {
       allDocs.push({ text, type: mapCategoryToType(category) });
-    }
-  }
+    } }
+  } }
   return allDocs;
-}
+} }
 /**
  * Calculate similarity between embeddings (simplified)
  */
@@ -390,7 +390,7 @@ function calculateEmbeddingSimilarity(dim1: number, dim2: number): number {
   // Simplified similarity calculation for demo
   const diff = Math.abs(dim1 - dim2);
   return Math.max(0, 1 - diff / Math.max(dim1, dim2));
-}
+} }
 // DELETE - Clear benchmark cache data
 export const DELETE: RequestHandler = async () => {
   try {
@@ -402,14 +402,15 @@ export const DELETE: RequestHandler = async () => {
       message: 'Legal embedding benchmark cache cleared',
       timestamp: Date.now()
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: 'Failed to clear benchmark cache',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

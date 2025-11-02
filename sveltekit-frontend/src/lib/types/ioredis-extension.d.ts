@@ -14,5 +14,6 @@ declare module, 'ioredis' {
     //   get(key: string, path?: string): Promise<string | null>;
     //   del(key: string, path?: string): Promise<number>;
     // };
-  }
-}
+  } }
+} }
+

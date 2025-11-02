@@ -1,21 +1,21 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { AIEvidenceAnalyzer, type EvidenceItem } }from '$lib/services/ai-evidence-analyzer';
 export interface AnalyzeRequest extends EvidenceItem {
   // Extends EvidenceItem with: any additional fields if needed
-}
-export interface AnalysisResult {, sessionId: string;, status: 'processing' | 'completed' | 'failed';
- , step: string;
+} }
+export interface AnalysisResult { sessionId: string;, status: 'processing' | 'completed' | 'failed';
+  step: string;
   analysis?: Record<string, unknown>;
   error?: string;
-}
+} }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const evidence: AnalyzeRequest = await request.json();
     // Validate evidence data
     if (!evidence.id || !evidence.title || !evidence.description) {
       throw error(400, 'Missing required evidence fields: id, title, description');
-    }
+    } }
     // Generate session ID
     const sessionId = `analysis_${evidence.id}_${Date.now()}`;
     // Initialize analyzer
@@ -28,16 +28,16 @@ export const POST: RequestHandler = async ({ request }) => {
       step: 'analysis_complete',
       analysis
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Evidence analysis failed:', err);
-    throw error(500, `Analysis failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
+    throw error(500, `Analysis failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
 };
 // GET endpoint to retrieve analysis by evidence ID
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
   if (!evidenceId) {
     throw error(400, 'Missing evidenceId parameter');
-  }
+  } }
   try {
     // TODO: Fetch analysis from database
     // For now, return a sample response indicating the analysis should be requested via POST
@@ -46,9 +46,10 @@ export const GET: RequestHandler = async ({ url }) => {
         message: 'Analysis not found. Please submit evidence for analysis via POST request.',
         evidenceId,
         status: `not_found` },'`'`
-      { status: 404 }
+      { status: 404 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Failed to fetch analysis:', err);
-    throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
+    throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
 };
+

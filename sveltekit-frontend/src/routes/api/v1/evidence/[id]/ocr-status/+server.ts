@@ -1,8 +1,8 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { evidence } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
 
 /**
  * GET /api/v1/evidence/[id]/ocr-status - Check OCR processing status
@@ -16,12 +16,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const session = locals.session;
     if (!session?.user) {
       throw error(401, 'Authentication required');
-    }
+    } }
 
     const evidenceId = parseInt(params.id);
     if (isNaN(evidenceId)) {
       throw error(400, 'Invalid evidence ID');
-    }
+    } }
 
     // Get evidence with OCR status
     const evidenceRecord = await db
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (evidenceRecord.length === 0) {
       throw error(404, 'Evidence not found');
-    }
+    } }
 
     const record = evidenceRecord[0];
     const processingTime = performance.now() - startTime;
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       // Processing quality indicators
       quality: {
-       , hasText: !!record.ocrText,
+  hasText: !!record.ocrText,
         textLength: record.ocrText?.length || 0,
         highConfidence: hasHighConfidence,
         hasRegions: hasRegions,
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       // Timing information
       timing: {
-       , uploaded: record.createdAt.toISOString(),
+  uploaded: record.createdAt.toISOString(),
         lastUpdated: record.updatedAt.toISOString(),
         processed: record.processedAt?.toISOString()
       },
@@ -90,11 +90,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'Cache-Control': 'max-age=60', // Cache for, 1 minute
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Evidence OCR status error:', err);'
+    console.error('Evidence OCR status error:', err);
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Status check failed' : 'Internal server error',
@@ -107,7 +107,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }'`
+        'X-Error': 'true` } }`
     });
-  }
+  } }
 };
+

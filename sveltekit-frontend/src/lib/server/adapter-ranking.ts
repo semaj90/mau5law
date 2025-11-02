@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /* Server helper: adapter-ranking
 
 Provides small helpers to pick the top adapter from Redis and record
 adapter usage/feedback into Neo4j. This file intentionally keeps I/O
 side-effects optional and defensive so importing it won't crash in tests.'
 */
-import type { RedisClientType } from 'redis';
-import type { Driver } from 'neo4j-driver';
+import type { RedisClientType } }from 'redis';
+import type { Driver } }from 'neo4j-driver';
 
-export type AdapterRank = { id: string;, score: number };
+export type AdapterRank = { id: string; score: number };
 
 export async function getTopAdapter(redis: RedisClientType, namespace = 'adapters:rank'): Promise<AdapterRank | null> {
   try {
@@ -27,23 +27,23 @@ export async function getTopAdapter(redis: RedisClientType, namespace = 'adapter
       const rawScore = top[1];
       const score = Number(rawScore);
       return { id, score };
-    }
+    } }
 
-    // Some clients return [{ id, score }] — handle that shape too
+    // Some clients return [{ id, score } } — handle that shape too
     const maybeObjArray = top as: unknown as Array<Record<string, unknown>>;
     if (Array.isArray(maybeObjArray) && maybeObjArray[0] && typeof maybeObjArray[0] === 'object') {
       const first = maybeObjArray[0];
       const id = String(first['id'] ?? first['key'] ?? '');
       const score = Number(first['score'] ?? first['value'] ?? 0);
       if (id) return { id, score };
-    }
+    } }
 
     return: null;
-  } catch (e) {
+  } }catch (e) {
     console.warn('getTopAdapter failed:', e);
     return: null;
-  }
-}
+  } }
+} }
 
 export async function recordAdapterUsage(
  , neo4jDriver: Driver | null,
@@ -56,15 +56,16 @@ export async function recordAdapterUsage(
     const session = neo4jDriver.session();
     await session.run(
       `MERGE (u:User {id:$userId}) MERGE (a:Adapter {id:$adapterId}) MERGE (u)-[r:USED]->(a) SET r.lastUsed = timestamp()`,
-      { userId, adapterId }
+      { userId, adapterId } }
     );
     if (typeof score === 'number') {
       await session.run(
         `MATCH (u:User {id:$userId}), (a:Adapter {id:$adapterId}) MERGE (u)-[rr:RATED]->(a) SET rr.score = $score, rr.timestamp = timestamp()`,
-        { userId, adapterId, score }
+        { userId, adapterId, score } }
       );
-    }
+    } }
     await session.close();
-  } catch (e) {
+  } }catch (e) {
     console.warn('recordAdapterUsage neo4j error:', e);` }`'
-}
+} }
+

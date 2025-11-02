@@ -1,12 +1,12 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { CasesCRUDService, EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
 // Query schema
 const InsightsQuerySchema = z.object({
   caseId: cuidSchema,
@@ -22,10 +22,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { caseId, insightType, depth } = InsightsQuerySchema.parse(queryParams);
+    const { caseId, insightType, depth } }= InsightsQuerySchema.parse(queryParams);
     // Create service instances
     const casesService = new CasesCRUDService(getUserId(locals));
     const evidenceService = new EvidenceCRUDService(getUserId(locals));
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const caseData = await casesService.getById(caseId);
     if (!caseData) {
       throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
-    }
+    } }
     // Get case evidence for insight generation
     // Normalize evidence result shape to an array to avoid runtime errors if the service returns unexpected shape
     const evidenceResult = (await evidenceService.listByCase(caseId, { page: 1, limit: 100 })) as EvidenceListResponse;
@@ -51,15 +51,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           evidenceCount: evidenceList.length,
           lastUpdated: new Date().toISOString(),
           confidence: insights.overallConfidence
-        }
+        } }
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'insights_generated'
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error getting detective insights:', err);
     if (err instanceof z.ZodError) {
       throw error(
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const details = err instanceof Error ? err.message : typeof err === 'string' ? err : JSON.stringify(err);
     throw error(
       500,
@@ -80,13 +80,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         details
       })
     );
-  }
+  } }
 };
 
 // Add a lightweight typed shape for `locals` to avoid `any` and keep flexibility
 type RequestLocals = {
-  session?: { user?: { id?: string | number } } | null;
-  user?: { id?: string | number } | null;
+  session?: { user?: { id?: string | number } }} }| null;
+  user?: { id?: string | number } }| null;
   userId?: string | number | null;
   // allow other runtime props preserved from SvelteKit or middleware
   [key: string]: any;
@@ -97,9 +97,9 @@ function getUserId(locals: RequestLocals): string {
   const id = locals?.user?.id ?? locals?.session?.user?.id ?? locals?.userId ?? null;
   if (!id) {
     throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED' }));'`
-  }
+  } }
   return String(id);
-}
+} }
 
 // Add lightweight types to avoid `any` usage
 type EvidenceItem = {
@@ -118,7 +118,7 @@ type EvidenceListResponse = {
 type InsightType = 'summary' | 'patterns' | 'risks' | 'recommendations' | 'all';
 type DepthType = 'quick' | 'detailed' | 'comprehensive';
 
-type InsightsResult = {, overallConfidence: number;, summary: any | null;
+type InsightsResult = { overallConfidence: number;, summary: any | null;
   patterns: any[];
   risks: any | null;
   recommendations: any[];
@@ -132,14 +132,14 @@ type InsightsResult = {, overallConfidence: number;, summary: any | null;
  * Generate comprehensive detective insights
  */
 async function generateDetectiveInsights(
- , caseData: any,
+  caseData: any,
   evidence: EvidenceItem[],
   insightType: InsightType,
   depth: DepthType,
   _userId: string
 ): Promise<InsightsResult> {
   const insights: InsightsResult = {
-   , overallConfidence: 0,
+  overallConfidence: 0,
     summary: null,
     patterns: [],
     risks: null,
@@ -153,39 +153,39 @@ async function generateDetectiveInsights(
     if (insightType === 'summary' || insightType === 'all') {
       insights.summary = await generateSummaryInsights(caseData, evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.82);
-    }
+    } }
     // Generate pattern insights
     if (insightType === 'patterns' || insightType === 'all') {
       insights.patterns = await generatePatternInsights(evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.75);
-    }
+    } }
     // Generate risk assessment
     if (insightType === 'risks' || insightType === 'all') {
       insights.risks = await generateRiskInsights(caseData, evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.78);
-    }
+    } }
     // Generate recommendations
     if (insightType === 'recommendations' || insightType === 'all') {
       insights.recommendations = await generateRecommendationInsights(caseData, evidence, depth);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.8);
-    }
+    } }
     // Generate key findings if comprehensive analysis
     if (depth === 'comprehensive') {
       insights.keyFindings = await generateKeyFindings(caseData, evidence);
       insights.timeline = await generateTimelineInsights(evidence);
       insights.connections = await generateConnectionInsights(evidence);
-    }
+    } }
     return insights;
-  } catch (e: any) {
-    console.error('Insight generation error:', e);'
+  } }catch (e: any) {
+    console.error('Insight generation error:', e);
     const details = e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
     return {
       ...insights,
       error: 'Insight generation failed',
       details
     };
-  }
-}
+  } }
+} }
 /*
  * Generate summary insights
  */
@@ -199,15 +199,14 @@ async function generateSummaryInsights(_caseData: any, evidence: EvidenceItem[])
     prosecutionReadiness: evidence.length > 3 ? 'ready' : 'needs more evidence',
     confidence: 0.82
   };
-}
+} }
 /*
  * Generate pattern insights
  */
 //, changed: evidence is unused -> rename to _evidence
 async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unknown[]> {
   return [
-    {,
-      type: 'temporal',
+    { type: 'temporal',
       description: 'Evidence clustering suggests coordinated activity',
       strength: 'high',
       confidence: 0.85,
@@ -228,23 +227,23 @@ async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unkno
       implications: ['Signature behavior', 'Repeat patterns']
     },
   ];
-}
+} }
 /*
  * Generate risk assessment insights
  */
 // changed: both caseData and evidence unused -> prefix with underscore
 async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): Promise<unknown> {
-  return { caseRisk: {, level: 'medium',
+  return { caseRisk: { level: 'medium',
       score: 0.65,
       factors: ['Evidence authenticity verified', 'Chain of custody documented', 'Some gaps in timeline']
     },
     evidenceRisk: {
-     , level: 'low',
+  level: 'low',
       score: 0.25,
       factors: ['Strong digital evidence', 'Multiple corroborating sources', 'Proper collection procedures']
     },
     prosecutionRisk: {
-     , level: 'medium',
+  level: 'medium',
       score: 0.45,
       factors: ['Need expert testimony', 'Complex technical evidence', 'Strong foundation exists']
     },
@@ -254,19 +253,18 @@ async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): 
       'Strengthen chain of custody documentation',
     ]
   };
-}
+} }
 /*
  * Generate recommendation insights
  */
 // changed: caseData and evidence unused -> prefix with underscore
 async function generateRecommendationInsights(
- , _caseData: any,
+  _caseData: any,
   _evidence: EvidenceItem[],
   depth: DepthType
 ): Promise<unknown[]> {
   const recommendations = [
-    {,
-      priority: 'high',
+    { priority: 'high',
       category: 'evidence',
       action: 'Collect additional corroborating evidence',
       reasoning: 'Strengthen case foundation',
@@ -307,11 +305,11 @@ async function generateRecommendationInsights(
         reasoning: 'Narrative clarity for prosecution',
         timeline: '1 week',
         confidence: 0.95
-      }
+      } }
     );
-  }
+  } }
   return recommendations;
-}
+} }
 /*
  * Generate key findings
  */
@@ -324,7 +322,7 @@ async function generateKeyFindings(_caseData: any, _evidence: EvidenceItem[]): P
     'Geographic concentration suggests local knowledge',
     'Technical evidence requires expert interpretation',
   ];
-}
+} }
 /*
  * Generate timeline insights
  */
@@ -333,8 +331,7 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
     totalEvents: evidence.length,
     timespan: '30 days', // Would calculate from actual timestamps
     keyPeriods: [
-      {,
-        start: '2024-01-01',
+      { start: '2024-01-01',
         end: '2024-01-07',
         significance: 'Initial activity period',
         evidenceCount: Math.floor(evidence.length * 0.4)
@@ -347,14 +344,13 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
       },
     ],
     gaps: [
-      {,
-        start: '2024-01-08',
+      { start: '2024-01-08',
         end: '2024-01-14',
         significance: 'Suspicious quiet period',
-        recommendation: `Investigate activities during this timeframe` }
+        recommendation: `Investigate activities during this timeframe` } }
     ]
   };
-}
+} }
 /*
  * Generate connection insights
  */
@@ -364,16 +360,17 @@ async function generateConnectionInsights(evidence: EvidenceItem[]): Promise<unk
     strongConnections: Math.floor(evidence.length * 0.3),
     weakConnections: Math.floor(evidence.length * 0.7),
     connectionTypes: {
-     , temporal: Math.floor(evidence.length * 0.4),
+  temporal: Math.floor(evidence.length * 0.4),
       geographical: Math.floor(evidence.length * 0.3),
       behavioral: Math.floor(evidence.length * 0.5),
       technical: Math.floor(evidence.length * 0.2)
     },
     centralNodes: evidence.slice(0, 3).map(item => ({
       // use typed access from EvidenceItem instead of casting to: any
-     , id: item.id ?? null,
+  id: item.id ?? null,
       title: item.title ?? null,
       connectionCount: Math.floor(Math.random() * 10) + 1,
       significance: `high' }))'`
   };
-}
+} }
+

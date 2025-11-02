@@ -1,6 +1,6 @@
 // Minimal WebGPU scaffold for the WebGPULegalDocumentGraph interface
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
-import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
+import { captureLatency, type LatencyEntry } }from '$lib/services/latency-logger';
 
 export type PerformanceStats = { fps: number;, frameTime: number;
   gpuMemoryUsage: number; // best-effort estimate
@@ -16,7 +16,7 @@ export interface WebGPULegalDocumentGraph {
   stopRenderLoop(): void;
   getPerformanceStats(): PerformanceStats;
   onFrame(cb: (stats: PerformanceStats) => void): void;
-}
+} }
 
 // Simple in-memory scaffold implementation
 export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
@@ -27,8 +27,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
   private lastFrame = 0;
   private frameTimes: number[] = [];
   private, frameCallbacks: Array<(s: PerformanceStats) => void> = [];
-  private stats: PerformanceStats = {
-   , fps: 0,
+  private stats: PerformanceStats = { fps: 0,
     frameTime: 0,
     gpuMemoryUsage: 0,
     nodeCount: 0,
@@ -39,25 +38,25 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
     if (typeof window === 'undefined' || !('gpu' in navigator)) return;
     try {
       // requestAdapter may be: undefined in unsupported contexts
-      const nav = navigator, as: unknown as { gpu?: { requestAdapter?: () => Promise<GPUAdapter | null> } };
+      const nav = navigator, as: unknown as { gpu?: { requestAdapter?: () => Promise<GPUAdapter | null> } }};
       const gpuApi = nav.gpu;
       if (!gpuApi || !gpuApi.requestAdapter) return;
       this.adapter = await gpuApi.requestAdapter();
       if (!this.adapter) return;
       this.device = await this.adapter.requestDevice();
-    } catch (err) {
+    } }catch (err) {
       // silent failure for SSR or unsupported GPU
       // eslint-disable-next-line no-console
       console.debug('WebGPU init failed', err);
-    }
-  }
+    } }
+  } }
 
   async loadGraphFromDB(_graphId: string): Promise<void> {
     // TODO: load nodes/edges and populate tensor store / GPU buffers
     // For now create placeholders
     this.stats.nodeCount = 0;
     this.stats.edgeCount = 0;
-  }
+  } }
 
   startRenderLoop() {
     if (this.rafId) return;
@@ -67,14 +66,14 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
       this.rafId = requestAnimationFrame(loop);
     };
     this.rafId = requestAnimationFrame(loop);
-  }
+  } }
 
   stopRenderLoop() {
     if (this.rafId) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
-    }
-  }
+    } }
+  } }
 
   private renderFrame(now: number) {
     const dt = now - this.lastFrame;
@@ -94,8 +93,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
 
     // Fire-and-forget capture into latency logger
     try {
-      const entry: LatencyEntry = {
-       , ts: Date.now(),
+      const entry: LatencyEntry = { ts: Date.now(),
         latency: Math.round(this.stats.frameTime),
         frameDelta: Math.round(this.stats.frameTime),
         gpuActive: !!this.device,
@@ -103,14 +101,14 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
         note: 'webgpu-frame'
       };
       void captureLatency(entry);
-    } catch (e) {
+    } }catch (e) {
       // swallow
-    }
-  }
+    } }
+  } }
 
   getPerformanceStats(): PerformanceStats {
     return { ...this.stats };
-  }
+  } }
 
   onFrame(cb: (stats: PerformanceStats) => void) {
     this.frameCallbacks.push(cb);
@@ -118,10 +116,11 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
       const idx = this.frameCallbacks.indexOf(cb);
       if (idx >= 0) this.frameCallbacks.splice(idx, 1);
     };
-  }
-}
+  } }
+} }
 
 // Export a convenient singleton for app use
 export const webgpuLegalGraph = new WebGPULegalDocumentGraphImpl();
 
 export default webgpuLegalGraph;
+

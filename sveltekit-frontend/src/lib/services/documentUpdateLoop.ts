@@ -1,12 +1,12 @@
 // Document Update Loop Service
 // Auto re-embed and re-rank on document changes with intelligent diff detection
-import { db } from '$lib/server/db';
-import { legalDocuments, as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
-import { eq, sql, desc } from 'drizzle-orm';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { OllamaEmbeddings } from '@langchain/ollama';
+import { db } }from '$lib/server/db';
+import { legalDocuments, as documents, documentVectors, queryVectors } }from '$lib/server/db/schema-unified';
+import { eq, sql, desc } }from 'drizzle-orm';
+import { RecursiveCharacterTextSplitter } }from 'langchain/text_splitter';
+import { OllamaEmbeddings } }from '@langchain/ollama';
 import crypto from 'crypto';
-import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
+import { VectorSearchService } }from '$lib/server/db/drizzle-vector-config';
 
 // ============================================================================
 // CONFIGURATION & TYPES
@@ -18,21 +18,21 @@ export interface DocumentChange { documentId: string;, changeType: 'content' | 
   changeHash: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
   affectedChunks?: number[];
-}
+} }
 
-export interface ReembedResult {, documentId: string;, chunksUpdated: number;
+export interface ReembedResult { documentId: string;, chunksUpdated: number;
   chunksAdded: number;
   chunksRemoved: number;
   similarityImpact: number;
   processingTime: number;
   rerankedQueries: number;
-}
+} }
 
-export interface RerankingJob {, queryId: string;, query: string;
+export interface RerankingJob { queryId: string;, query: string;
   originalResults: Array<any>;
   newResults: Array<any>;
   improvement: number;
-}
+} }
 
 // Add small helper types to avoid `any`
 type ClickedResult = {
@@ -54,7 +54,7 @@ type QueryVectorRow = {
 // small helper to, stringify: unknown errors
 function formatError(error: any): string {
   return error instanceof Error ? error.message : String(error ?? 'Unknown error');
-}
+} }
 
 // ============================================================================
 // DOCUMENT UPDATE DETECTION
@@ -89,7 +89,7 @@ export class DocumentUpdateLoop {
       chunkSize: 1000,
       chunkOverlap: 200
     });
-  }
+  } }
 
   // ============================================================================
 
@@ -102,8 +102,8 @@ export class DocumentUpdateLoop {
       const [currentDoc] = await db.select().from(documents).where(eq(documents.id, documentId)).limit(1);
 
       if (!currentDoc) {
-        throw new Error(`Document ${documentId} not found`);
-      }
+        throw new Error(`Document ${documentId} }not found`);
+      } }
 
       const oldContent = (currentDoc.extractedText as: string) || '';
 
@@ -112,7 +112,7 @@ export class DocumentUpdateLoop {
       const newHash = crypto.createHash('sha256').update(newContent).digest('hex');
       if (oldHash === newHash) {
         return: null; // No changes detected
-      }
+      } }
 
       // Calculate content similarity to determine priority
       const oldEmbedding = await this.embeddings.embedQuery(oldContent.substring(0, 1000));
@@ -134,14 +134,14 @@ export class DocumentUpdateLoop {
       };
 
       console.log(
-        `📝 Document change detected: ${documentId} (priority: ${priority}, similarity: ${similarity.toFixed(3)})`
+        `📝 Document change detected: ${documentId} }(priority: ${priority}, similarity: ${similarity.toFixed(3)})`
       );
       return change;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Change detection failed:', formatError(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private calculateChangePriority(
     similarity: number,
@@ -153,7 +153,7 @@ export class DocumentUpdateLoop {
     if (similarity < 0.6 || lengthChange > 0.3) return, 'high';
     if (similarity < 0.8 || lengthChange > 0.1) return, 'medium';
     return, 'low';
-  }
+  } }
 
   private async detectAffectedChunks(documentId: string, oldContent: string, newContent: string): Promise<number[]> {
     try {
@@ -177,14 +177,14 @@ export class DocumentUpdateLoop {
         const newChunk = newChunks[i] || '';
         if (oldChunk !== newChunk) {
           affectedChunks.push(i);
-        }
-      }
+        } }
+      } }
       return affectedChunks;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Failed to detect affected chunks:', formatError(error));
       return []; // Return empty array on error
-    }
-  }
+    } }
+  } }
 
   // ============================================================================
 
@@ -211,12 +211,12 @@ export class DocumentUpdateLoop {
           const emb = await this.embeddings.embedQuery(chunk);
           // Normalize to: number[] in case the embedder returns other shapes
           embeddings.push(Array.isArray(emb) ? (emb as: number[]) : []);
-        } catch (e) {
+        } }catch (e) {
           // On individual embedding failure, push an empty vector and continue
           console.warn('Embedding failed for a chunk, inserting empty vector:', formatError(e));
           embeddings.push([]);
-        }
-      }
+        } }
+      } }
 
       // Store new vectors
       const vectorRecords = chunks.map((chunk, index) => ({
@@ -224,12 +224,11 @@ export class DocumentUpdateLoop {
         chunkIndex: index,
         content: chunk,
         embedding: embeddings[index],
-        metadata: {
-         , reembeddedAt: new Date().toISOString(),
+        metadata: { reembeddedAt: new Date().toISOString(),
           changeHash: change.changeHash,
           chunkSize: chunk.length,
           priority: change.priority
-        }
+        } }
       }));
 
       await db.insert(documentVectors).values(...vectorRecords);
@@ -240,18 +239,16 @@ export class DocumentUpdateLoop {
         .set({
           extractedText: change.newContent,
           updatedAt: new Date(),
-          analysis: {
-           , lastReembedded: new Date().toISOString(),
+          analysis: { lastReembedded: new Date().toISOString(),
             chunksCount: chunks.length,
             changeHash: change.changeHash,
             priority: change.priority
-          }
+          } }
         })
         .where(eq(documents.id, change.documentId));
 
       const processingTime = Date.now() - startTime;
-      const result: ReembedResult = {
-       , documentId: change.documentId,
+      const result: ReembedResult = { documentId: change.documentId,
         chunksUpdated: chunks.length,
         chunksAdded: Math.max(0, chunks.length - (change.affectedChunks?.length || 0)),
         chunksRemoved: Math.max(0, (change.affectedChunks?.length || 0) - chunks.length),
@@ -260,13 +257,13 @@ export class DocumentUpdateLoop {
         rerankedQueries: 0, // Will be updated in re-ranking
       };
 
-      console.log(`✅ Re-embedding complete: ${chunks.length} chunks in ${processingTime}ms`);
+      console.log(`✅ Re-embedding complete: ${chunks.length} }chunks in ${processingTime}ms`);
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Re-embedding failed:', formatError(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   // ============================================================================
   // INTELLIGENT RE-RANKING
@@ -288,7 +285,7 @@ export class DocumentUpdateLoop {
           createdAt: queryVectors.createdAt
         })
         .from(queryVectors)
-        .where(sql`${queryVectors.createdAt} > NOW() - INTERVAL: '7 days'`)
+        .where(sql`${queryVectors.createdAt} }> NOW() - INTERVAL: '7 days'`)
         .orderBy(desc(queryVectors.createdAt))
         .limit(200)) as QueryVectorRow[]; // Cast directly to QueryVectorRow[]
 
@@ -300,34 +297,34 @@ export class DocumentUpdateLoop {
           // clickedResults might be stored as JSON: string or as array
           const arr = typeof clicked === 'string' ? JSON.parse(clicked) : (clicked as ClickedResult[] | null);
           return Array.isArray(arr) && arr.some(c => String(c?.id) === String(documentId)); // Use String() constructor
-        } catch (e) {
+        } }catch (e) {
           // Catch error for parsing
           console.warn(`Failed to parse clickedResults for query ${q.id}:`, formatError(e));
           return false;
-        }
+        } }
       });
 
       for (const queryRecord of affectedQueries) {
         const job = await this.rerankSingleQuery(queryRecord, documentId); // Call private method
         if (job) rerankingJobs.push(job);
-      }
-      console.log(`✅ Re-ranked ${rerankingJobs.length} affected queries`);
+      } }
+      console.log(`✅ Re-ranked ${rerankingJobs.length} }affected queries`);
       return rerankingJobs;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Re-ranking failed:', formatError(error));
       return [];
-    }
-  }
+    } }
+  } }
 
   private async rerankSingleQuery(queryRecord: QueryVectorRow, documentId: string): Promise<RerankingJob | null> {
     if (!queryRecord.embedding) {
       console.warn(`Skipping re-ranking for query ${queryRecord.id}: no embedding found.`);
       return: null;
-    }
+    } }
 
     try {
       // Perform a new vector search for the query
-      // Assuming VectorSearchService.searchDocuments returns an array of {, id: string, similarity: number }
+      // Assuming VectorSearchService.searchDocuments returns an array of { id: string, similarity: number } }
       const newSearchResults = await VectorSearchService.searchDocuments(
         queryRecord.embedding,
         0.7 // Example threshold, adjust as needed
@@ -346,11 +343,11 @@ export class DocumentUpdateLoop {
         // If the document is in the top, 5, give a higher score
         if (newDocIndex < 5) {
           improvement += 2;
-        } else if (newDocIndex < 10) {
+        } }else if (newDocIndex < 10) {
           improvement += 1;
-        }
+        } }
         // Could also factor in the actual similarity score: newSearchResults[newDocIndex].similarity
-      }
+      } }
 
       // Score based on how many previously clicked documents are still highly ranked
       const topNForRetained = 20; // Consider top, 20 results for this metric
@@ -361,7 +358,7 @@ export class DocumentUpdateLoop {
       // Add a score based on the proportion of retained clicked documents
       if (originalClickedIds.length > 0) {
         improvement += retainedClickedCount / originalClickedIds.length;
-      }
+      } }
 
       return {
         queryId: queryRecord.id,
@@ -370,18 +367,18 @@ export class DocumentUpdateLoop {
         newResults: newSearchResults,
         improvement: improvement
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Failed to re-rank single query ${queryRecord.id}: ', formatError(error));'`
       return: null;
-    }
-  }
+    } }
+  } }
 
   private cosineSimilarity(vecA: number[], vecB: number[]): number {
     const dotProduct = vecA.reduce((sum, val, idx) => sum + val * (vecB[idx] || 0), 0);
     const magA = Math.sqrt(vecA.reduce((sum, val) => sum + val * val, 0));
     const magB = Math.sqrt(vecB.reduce((sum, val) => sum + val * val, 0));
     return magA && magB ? dotProduct / (magA * magB) : 0;
-  }
+  } }
 
   // For testing: manually trigger change detection & re-embedding
   async debugReembed(documentId: string, newContent: string) {
@@ -393,10 +390,11 @@ export class DocumentUpdateLoop {
         console.log('Reembed result:', result);
         // Ensure documentId is passed correctly here
         await this.rerankAffectedQueries(documentId);
-      } else {
+      } }else {
         console.log('No changes detected');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Debug re-embed error:', formatError(error));` }`'
-  }
-}
+  } }
+} }
+

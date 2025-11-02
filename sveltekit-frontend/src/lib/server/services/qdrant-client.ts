@@ -8,21 +8,21 @@ type SearchRequestBody = {
   filter?: Record<string, unknown>;
   [k: string]: any;
 };
-type SearchHit = {, id: string | number; score?: number; payload?: Record<string, unknown> };
+type SearchHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
 type CollectionsListResponse = { collections?: Array<{ name: string }> };
 type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: any };
-type CreateCollectionBody = { vectors: {;, size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
+type CreateCollectionBody = { vectors: {; size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
 const DEFAULT_QDRANT = 'http://localhost:6333';
 function getQdrantUrl(): string {
   if (process.env.QDRANT_URL) return process.env.QDRANT_URL;
   if (process.env.QDRANT_HOST && process.env.QDRANT_PORT)
     return `http://${process.env.QDRANT_HOST}:${process.env.QDRANT_PORT}`;
   return DEFAULT_QDRANT;
-}
+} }
 function getApiKeyHeader(): Record<string, string> {
   const key = process.env.QDRANT_API_KEY || '';
-  return key ? { Authorization: `ApiKey ${key}' } : {};'`
-}
+  return key ? { Authorization: `ApiKey ${key} } } }: {};'`
+} }
 type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 async function ensureFetch(): Promise<FetchFn> {
   if (typeof globalThis.fetch === 'function') return globalThis.fetch as: unknown as FetchFn;
@@ -30,10 +30,10 @@ async function ensureFetch(): Promise<FetchFn> {
     const nf = await import('node-fetch');
     const mod: any = nf;
     return (mod.default || mod) as FetchFn;
-  } catch (e) {
+  } }catch (e) {
     throw new Error('fetch is not available and node-fetch cannot be loaded');
-  }
-}
+  } }
+} }
 interface SdkClientLike {
   collections?: {
     list?: () => Promise<CollectionsListResponse>;
@@ -53,12 +53,12 @@ interface SdkClientLike {
   search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
   upsert?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
   delete?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
-}
+} }
 async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
   try {
     const mod = await import('@qdrant/js-client-rest');
     type Ctor = new (opts?: Record<string, unknown>) => unknown;
-    const maybe = mod as { QdrantClient?: Ctor; default?: Ctor } | any;
+    const maybe = mod as { QdrantClient?: Ctor; default?: Ctor } }| any;
     const ctor = maybe?.QdrantClient ?? maybe?.default ?? maybe;
     if (typeof ctor === 'function') {
       const url = getQdrantUrl();
@@ -66,12 +66,11 @@ async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
       const opts: Record<string, unknown> = { url };
       if (apiKey) opts.apiKey = apiKey;
       return new ctor(opts) as: unknown as SdkClientLike;
-    }
+    } }
     return: null;
-  } catch {
-   , return: null;
-  }
-}
+  } }catch { return: null;
+  } }
+} }
 async function httpRequest(path: string, method = 'GET', body?: any): Promise<any> {
   const f = await ensureFetch();
   const base = getQdrantUrl().replace(/\/$/, '');
@@ -82,17 +81,17 @@ async function httpRequest(path: string, method = 'GET', body?: any): Promise<an
   const res = await f(url, init);
   if (!res.ok) {
     const txt = await res.text().catch(() => '');
-    throw new Error(`Qdrant HTTP ${res.status} ${res.statusText}: ${txt}`);
-  }
+    throw new Error(`Qdrant HTTP ${res.status} }${res.statusText}: ${txt}`);
+  } }
   if (res.status === 204) return: null;
   return res.json().catch(() => null);
-}
+} }
 async function httpGetCollections(): Promise<CollectionsListResponse> {
   return (await httpRequest('/collections')) as CollectionsListResponse;
-}
+} }
 async function httpCreateCollection(name: string, body: CreateCollectionBody): Promise<any> {
   return await httpRequest(`/collections/${encodeURIComponent(name)}`, 'PUT', body);
-}
+} }
 async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndexBody): Promise<any> {
   const base = getQdrantUrl().replace(/\/$/, '');
   const tries = [
@@ -108,27 +107,27 @@ async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndex
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getApiKeyHeader() },
         body: JSON.stringify(body)
-      } as: any);
+      } }as: any);
       if (res.ok) return await res.json();
-    } catch {
+    } }catch {
       // try next
-    }
-  }
+    } }
+  } }
   throw new Error('createPayloadIndex failed (all HTTP endpoints tried)');
-}
+} }
 async function httpSearch(collectionName: string, body: SearchRequestBody): Promise<SearchHit[]> {
   return (await httpRequest(
     `/collections/${encodeURIComponent(collectionName)}/points/search`,
     'POST',
     body
   )) as SearchHit[];
-}
+} }
 async function httpUpsert(collectionName: string, points: Array<Record<string, unknown>>): Promise<any> {
   return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points?wait=true`, 'PUT', { points });
-}
+} }
 async function httpDelete(collectionName: string, ids: (string | number)[]) {
   return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points/delete`, 'POST', { points: ids });
-}
+} }
 const qdrant = {
   async getCollections(): Promise<CollectionsListResponse> {
     const sdk = await tryCreateSdkClient();
@@ -136,10 +135,10 @@ const qdrant = {
       try {
         if (sdk.collections?.list) return await sdk.collections.list();
         if (typeof sdk.getCollections === 'function') return await sdk.getCollections();
-      } catch (e) {
+      } }catch (e) {
         console.warn('[Qdrant] SDK getCollections failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpGetCollections();
   },
   async createCollection(collectionName: string, body: CreateCollectionBody) {
@@ -148,10 +147,10 @@ const qdrant = {
       try {
         if (sdk.collections?.create) return await sdk.collections.create(collectionName, body);
         if (typeof sdk.createCollection === 'function') return await sdk.createCollection(collectionName, body);
-      } catch (e) {
+      } }catch (e) {
         console.warn('[Qdrant] SDK createCollection failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpCreateCollection(collectionName, body);
   },
   async createPayloadIndex(collectionName: string, body: PayloadIndexBody) {
@@ -162,10 +161,10 @@ const qdrant = {
         if (typeof sdk.createPayloadIndex === 'function') return await sdk.createPayloadIndex(collectionName, body);
         if (sdk.collections?.createFieldIndex) return await sdk.collections.createFieldIndex(collectionName, body);
         if (typeof sdk.createFieldIndex === 'function') return await sdk.createFieldIndex(collectionName, body);
-      } catch (e) {
+      } }catch (e) {
         console.warn('[Qdrant] SDK createPayloadIndex failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpCreatePayloadIndex(collectionName, body);
   },
   async search(collectionName: string, body: SearchRequestBody) {
@@ -173,12 +172,12 @@ const qdrant = {
     if (sdk) {
       try {
         if (sdk.points?.search)
-          return await sdk.points.search({ collection_name: collectionName, ...body } as Record<string, unknown>);
+          return await sdk.points.search({ collection_name: collectionName, ...body } }as Record<string, unknown>);
         if (typeof sdk.search === 'function') return await sdk.search(collectionName, body);
-      } catch (e) {
+      } }catch (e) {
         console.warn('[Qdrant] SDK search failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpSearch(collectionName, body);
   },
   async upsert(collectionName: string, points: Array<Record<string, unknown>>) {
@@ -186,13 +185,13 @@ const qdrant = {
     if (sdk) {
       try {
         if (sdk.points?.upsert)
-          return await sdk.points.upsert({ collection_name: collectionName, points } as Record<string, unknown>);
+          return await sdk.points.upsert({ collection_name: collectionName, points } }as Record<string, unknown>);
         if (typeof sdk.upsert === 'function')
-          return await sdk.upsert(collectionName, { points } as Record<string, unknown>);
-      } catch (e) {
+          return await sdk.upsert(collectionName, { points } }as Record<string, unknown>);
+      } }catch (e) {
         console.warn('[Qdrant] SDK upsert failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpUpsert(collectionName, points);
   },
   async delete(collectionName: string, ids: (string | number)[]) {
@@ -200,47 +199,47 @@ const qdrant = {
     if (sdk) {
       try {
         if (typeof sdk.delete === 'function')
-          return await sdk.delete(collectionName, { points: ids } as Record<string, unknown>);
+          return await sdk.delete(collectionName, { points: ids } }as Record<string, unknown>);
         if (sdk.points?.delete)
-          return await sdk.points.delete({ collection_name: collectionName, points: ids } as Record<string, unknown>);
-      } catch (e) {
+          return await sdk.points.delete({ collection_name: collectionName, points: ids } }as Record<string, unknown>);
+      } }catch (e) {
         console.warn('[Qdrant] SDK delete failed, falling back to HTTP', e);
-      }
-    }
+      } }
+    } }
     return await httpDelete(collectionName, ids);
-  }
+  } }
 };
 async function qdrantHealthCheck(): Promise<boolean> {
   try {
     const f = await ensureFetch();
     const url = `${getQdrantUrl().replace(/\/$/, '')}/health`;
-    const res = await f(url, { method: 'GET', headers: getApiKeyHeader() } as: any);
+    const res = await f(url, { method: 'GET', headers: getApiKeyHeader() } }as: any);
     return res.ok;
-  } catch {
+  } }catch {
     return false;
-  }
-}
+  } }
+} }
 async function waitForQdrantReady(maxRetries = 15, delayMs = 2000): Promise<boolean> {
   for (let i = 0; i < maxRetries; i++) {
     if (await qdrantHealthCheck()) {
       console.log(`🟢 Qdrant ready (attempt ${i + 1}/${maxRetries})`);
       return true;
-    }
+    } }
     console.log(`⏳ Waiting for Qdrant... (${i + 1}/${maxRetries})`);
     await new Promise(r => setTimeout(r, delayMs));
-  }
+  } }
   console.error('❌ Qdrant did not become ready in time.');
   return false;
-}
+} }
 async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION || 'documents'): Promise<void> {
   try {
     const cols = await qdrant.getCollections();
     const exists = cols?.collections?.some((c: any) => c.name === collectionName);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrant.createCollection(collectionName, { vectors: {, size: vectorSize, distance: 'Cosine' } });'`'`
+      await qdrant.createCollection(collectionName, { vectors: { size: vectorSize, distance: 'Cosine' } }});'`'`
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
-    }
+    } }
     const pairs: Array<[string, string]> = [
       ['type', 'keyword'],
       ['title', 'text'],
@@ -249,18 +248,19 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
     for (const [field, schema] of pairs) {
       try {
         await qdrant.createPayloadIndex(collectionName, { field_name: field, field_schema: schema });
-      } catch (e) {
-        console.warn(`Failed to create payload index for field: '${field}': ', e);'' }'`
-    }
+      } }catch (e) {
+        console.warn(`Failed to create payload index for field: '${field} }: ', e);'' } }`
+    } }
     return { ok: true };
-  } catch (e) {
+  } }catch (e) {
     console.error('initQdrantIndexes failed:', e);
     return { ok: false, error: String(e) };
-  }
-}
+  } }
+} }
 async function bootstrapQdrant(collectionName?: string): Promise<any> {
   const ready = await waitForQdrantReady();
   if (!ready) throw new Error('Qdrant startup timeout');
   return await initQdrantIndexes(collectionName || process.env.QDRANT_COLLECTION || 'documents');
-}
+} }
 export { qdrant, initQdrantIndexes, qdrantHealthCheck, waitForQdrantReady, bootstrapQdrant };
+

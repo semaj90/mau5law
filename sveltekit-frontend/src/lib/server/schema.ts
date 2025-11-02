@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 // src/lib/server/schema.ts - Database schema definitions
 import {
   pgTable,
@@ -12,9 +12,9 @@ import {
   json,
   boolean,
   index
-} from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { sql } from 'drizzle-orm';
+} }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { sql } }from 'drizzle-orm';
 export const storage_files = pgTable('storage_files', {
   id: serial('id').primaryKey(),
   key: text('key').notNull(),
@@ -290,3 +290,4 @@ export type NewChatEmbedding = typeof chatEmbeddings.$inferInsert;
 // Aliases for compatibility with API routes
 export const legalDocuments = evidenceTable;
 export const contentEmbeddings = evidenceEmbeddingsTable;
+

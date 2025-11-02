@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 // WebSocket Server for Live Evidence Processing Updates
 // Broadcasts XState workflow updates to connected clients with Redis caching
 
-import { WebSocketServer, WebSocket } from 'ws';
-import type { EvidenceActor, WSMessage, WorkflowContext } from '$lib/types/evidence';
+import { WebSocketServer, WebSocket } }from 'ws';
+import type { EvidenceActor, WSMessage, WorkflowContext } }from '$lib/types/evidence';
 
 // Simple Redis client stub (replace with actual implementation)
 interface SimpleRedis {
@@ -12,17 +12,17 @@ interface SimpleRedis {
   get(key: string): Promise<string | null>;
   quit(): Promise<void>;
   isOpen: boolean;
-}
+} }
 
-function createClient(_config: {, url: string;, password: string }): SimpleRedis {
+function createClient(_config: { url: string; password: string }): SimpleRedis {
   return {
     isOpen: false,
     async connect() { this.isOpen = true; },
     async setEx() {},
     async get() { return: null; },
-    async quit() { this.isOpen = false; }
+    async quit() { this.isOpen = false; } }
   };
-}
+} }
 
 const WS_PORT = 8081;
 
@@ -30,7 +30,7 @@ interface ConnectedClient {
   ws: WebSocket;
   userId?: string;
   subscribedFileIds: Set<string>;
-}
+} }
 
 class EvidenceWebSocketServer {
   private wss: WebSocketServer;
@@ -40,29 +40,28 @@ class EvidenceWebSocketServer {
 
   constructor() {
     this.wss = new WebSocketServer({ port: WS_PORT });
-    const redisConfig: any = {
-     , url: 'redis://localhost:6379'
+    const redisConfig: any = { url: 'redis://localhost:6379'
     };
 
     // Only add password if explicitly set
     if (process.env.REDIS_PASSWORD) {
       redisConfig.password = process.env.REDIS_PASSWORD;
-    }
+    } }
 
     this.redis = redis;
 
     this.setupRedis();
     this.setupWebSocket();
-  }
+  } }
 
   private async setupRedis() {
     try {
       await this.redis.connect();
       console.log('[WS] ✅ Redis connected for message caching');
-    } catch (error) {
+    } }catch (error) {
       console.error('[WS] ❌ Redis connection failed:', error);
-    }
-  }
+    } }
+  } }
 
   private setupWebSocket() {
     this.wss.on('connection', (ws: WebSocket, req) => {
@@ -90,7 +89,7 @@ class EvidenceWebSocketServer {
         try {
           const message = JSON.parse(data.toString());
           await this.handleClientMessage(ws, message);
-        } catch (error) {
+        } }catch (error) {
           console.error('[WS] ❌ Message parse error:', error);` }`'
       });
 
@@ -100,13 +99,13 @@ class EvidenceWebSocketServer {
       });
 
       ws.on('error', (error) => {
-        console.error('[WS] ❌ WebSocket error:', error);'
+        console.error('[WS] ❌ WebSocket error:', error);
         this.clients.delete(ws);
       });
     });
 
     console.log(`[WS] 🚀 WebSocket server running on ws://localhost:${WS_PORT}`);
-  }
+  } }
 
   private async handleClientMessage(ws: WebSocket, message: Record<string, unknown>) {
     const client = this.clients.get(ws);
@@ -117,27 +116,27 @@ class EvidenceWebSocketServer {
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.add(message.fileId);
           console.log(`[WS] 📂 Client subscribed to fileId: ${message.fileId}`);
-        }
+        } }
         break;
 
       case, 'UNSUBSCRIBE_FILE':
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.delete(message.fileId);
           console.log(`[WS] 📂 Client unsubscribed from fileId: ${message.fileId}`);
-        }
+        } }
         break;
 
       case, 'PING':
         ws.send(JSON.stringify({ type: 'PONG', timestamp: Date.now() }));
         break;
-    }
-  }
+    } }
+  } }
 
   private sendToClient(ws: WebSocket, message: WSMessage) {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
-    }
-  }
+    } }
+  } }
 
   // Register workflow actor for broadcasting updates
   public registerWorkflowActor(fileId: string, actor: EvidenceActor) {
@@ -150,12 +149,11 @@ class EvidenceWebSocketServer {
     });
 
     console.log(`[WS] 📡 Registered workflow actor for fileId: ${fileId}`);
-  }
+  } }
 
   // Broadcast workflow update to subscribed clients
   private async broadcastWorkflowUpdate(fileId: string, context: WorkflowContext) {
-    const message: WSMessage = {
-     , type: 'PROCESSING_UPDATE',
+    const message: WSMessage = { type: 'PROCESSING_UPDATE',
       fileId,
       stage: context.stage,
       progress: context.progress
@@ -168,20 +166,19 @@ class EvidenceWebSocketServer {
         300,
         JSON.stringify(message)
       );
-    }
+    } }
 
     // Broadcast to subscribed clients
     for (const [ws, client] of this.clients) {
       if (client.subscribedFileIds.has(fileId) || !client.subscribedFileIds.size) {
         this.sendToClient(ws, message);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Broadcast analysis completion
   public async broadcastAnalysisComplete(fileId: string, result: Record<string, unknown>) {
-    const message: WSMessage = {
-     , type: 'ANALYSIS_COMPLETE',
+    const message: WSMessage = { type: 'ANALYSIS_COMPLETE',
       fileId,
       // @ts-expect-error - Dynamic result shape varies
       result
@@ -194,22 +191,21 @@ class EvidenceWebSocketServer {
         3600,
         JSON.stringify(message)
       );
-    }
+    } }
 
     // Broadcast to all clients subscribed to this file
     for (const [ws, client] of this.clients) {
       if (client.subscribedFileIds.has(fileId)) {
         this.sendToClient(ws, message);
-      }
-    }
+      } }
+    } }
 
     console.log(`[WS] ✅ Broadcast analysis complete for fileId: ${fileId}`);
-  }
+  } }
 
   // Broadcast error
   public async broadcastError(fileId: string, error: string) {
-    const message: WSMessage = {
-     , type: 'ERROR',
+    const message: WSMessage = { type: 'ERROR',
       fileId,
       error
     };
@@ -221,17 +217,17 @@ class EvidenceWebSocketServer {
         600,
         JSON.stringify(message)
       );
-    }
+    } }
 
     // Broadcast to subscribed clients
     for (const [ws, client] of this.clients) {
       if (client.subscribedFileIds.has(fileId)) {
         this.sendToClient(ws, message);
-      }
-    }
+      } }
+    } }
 
     console.log(`[WS] ❌ Broadcast error for fileId: ${fileId}`);
-  }
+  } }
 
   // Get cached updates for reconnecting clients
   public async getCachedUpdates(fileId: string): Promise<WSMessage[]> {
@@ -249,13 +245,13 @@ class EvidenceWebSocketServer {
       if (cached) {
         try {
           messages.push(JSON.parse(cached));
-        } catch (error) {
+        } }catch (error) {
           console.error('[WS] ❌ Cache parse error:', error);` }`'
-      }
-    }
+      } }
+    } }
 
     return messages;
-  }
+  } }
 
   // Shutdown server
   public async shutdown() {
@@ -264,7 +260,7 @@ class EvidenceWebSocketServer {
     // Close all client connections
     for (const [ws] of this.clients) {
       ws.close();
-    }
+    } }
 
     // Close WebSocket server
     this.wss.close();
@@ -272,11 +268,11 @@ class EvidenceWebSocketServer {
     // Disconnect Redis
     if (this.redis.isOpen) {
       await this.redis.quit();
-    }
+    } }
 
     console.log('[WS] ✅ WebSocket server shutdown complete');
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const evidenceWsServer = new EvidenceWebSocketServer();
@@ -291,3 +287,4 @@ process.on('SIGTERM', async () => {
   await evidenceWsServer.shutdown();
   process.exit(0);
 });
+

@@ -5,22 +5,22 @@ export class LegalAIServiceDiscovery {
     const services = {
       enhancedRAG: await this.checkService('http:,//localhost:8094', ['/health')]),
       uploadService: await this.checkService('http:,//localhost:8093', ['/health')]),
-      kratosService: { status: 'unknown', capabilities: ['grpc_service'] }
-    }
+      kratosService: { status: 'unknown', capabilities: ['grpc_service'] } }
+    } }
     return services;
-  }
+  } }
   private async checkService(baseUrl: string, endpoints: string[]) {
     for (const endpoint of endpoints) {
       try {
         // removed unused response assignment
         if (response.ok) {
-          return { status: 'online', url: baseUrl, capabilities: ['health_check'] }
-        }
-      } catch (error: any) {
+          return { status: 'online', url: baseUrl, capabilities: ['health_check'] } }
+        } }
+      } }catch (error: any) {
         continue;
-      }
-    }
-    return { status: 'offline', url: baseUrl, capabilities: [] }
-  }
-}
+      } }
+    } }
+    return { status: 'offline', url: baseUrl, capabilities: [] } }
+  } }
+} }
 export const serviceDiscovery = new LegalAIServiceDiscovery();

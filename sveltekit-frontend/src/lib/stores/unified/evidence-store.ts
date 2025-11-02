@@ -9,13 +9,13 @@
  * - chain-of-custody.ts
  *
  *, Usage:
- *   import { evidenceStore } from '$lib/stores/unified';
+ *   import { evidenceStore } }from '$lib/stores/unified';
  *
  *   await evidenceStore.uploadEvidence(file, metadata);
  *   $: evidence = $evidenceStore.evidence;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -45,7 +45,7 @@ export interface EvidenceFile { id: string;, name: string;
   tags?: string[];
   description?: string;
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   handledBy: string;
@@ -54,16 +54,16 @@ export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   location?: string;
   action: string;
   notes?: string;
-}
+} }
 
-export interface AnalysisResult {, id: string;, evidenceId: string;
+export interface AnalysisResult { id: string;, evidenceId: string;
   analysisType: string;
   status: AnalysisStatus;
   result?: any;
   error?: string;
   startedAt: number;
   completedAt?: number;
-}
+} }
 
 /**
  * Evidence Store State
@@ -101,10 +101,9 @@ interface EvidenceStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: EvidenceStoreState = {
- , evidence: [],
+const initialState: EvidenceStoreState = { evidence: [],
   filteredEvidence: [],
   activeCaseId: null,
   selectedEvidenceId: null,
@@ -128,7 +127,7 @@ const initialState: EvidenceStoreState = {
  * Create Evidence Store
  */
 function createEvidenceStore() {
-  const { subscribe, update } = writable<EvidenceStoreState>(initialState);
+  const { subscribe, update } }= writable<EvidenceStoreState>(initialState);
 
   return {
     subscribe,
@@ -156,13 +155,13 @@ function createEvidenceStore() {
             lastUpdated: Date.now(),
             isLoading: false
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load evidence');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load evidence';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     // ========== UPLOAD ==========
@@ -172,7 +171,7 @@ function createEvidenceStore() {
      */
     async uploadEvidence(
       file: File,
-      metadata: {, caseId: string;, type: EvidenceType; tags?: string[]; description?: string }
+      metadata: { caseId: string; type: EvidenceType; tags?: string[]; description?: string } }
     ) {
       const fileId = `ev-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -214,10 +213,10 @@ function createEvidenceStore() {
           }));
 
           return evidenceFile;
-        } else {
+        } }else {
           throw new Error('Upload failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Upload failed';
         update(s => ({
           ...s,
@@ -230,7 +229,7 @@ function createEvidenceStore() {
           uploadingFiles: s.uploadingFiles.filter(f => f !== file)
         }));
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -260,7 +259,7 @@ function createEvidenceStore() {
         const response = await fetch(`/api/evidence/${evidenceId}/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({, type: analysisType }),
+          body: JSON.stringify({ type: analysisType }),
           credentials: `include' });'`
 
         if (response.ok) {
@@ -275,10 +274,10 @@ function createEvidenceStore() {
           }));
 
           return result;
-        } else {
+        } }else {
           throw new Error('Analysis failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Analysis failed';
         update(s => ({
           ...s,
@@ -287,7 +286,7 @@ function createEvidenceStore() {
           isAnalyzing: false
         }));
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -372,12 +371,12 @@ function createEvidenceStore() {
           }));
 
           return entries;
-        }
+        } }
         return [];
-      } catch (error) {
+      } }catch (error) {
         console.error('Failed to get chain of custody:', error);
         return [];
-      }
+      } }
     },
 
     /**
@@ -407,12 +406,12 @@ function createEvidenceStore() {
           });
 
           return newEntry;
-        }
+        } }
         throw new Error('Failed to add custody entry');
-      } catch (error) {
-        console.error('Chain of custody error:', error);'
+      } }catch (error) {
+        console.error('Chain of custody error:', error);
         throw error;
-      }
+      } }
     },
 
     // ========== MANAGEMENT ==========
@@ -433,13 +432,13 @@ function createEvidenceStore() {
             filteredEvidence: s.filteredEvidence.filter(e => e.id !== evidenceId),
             totalEvidence: s.totalEvidence - 1
           }));
-        } else {
+        } }else {
           throw new Error('Failed to delete evidence');
-        }
-      } catch (error) {
-        console.error('Delete error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Delete error:', error);
         throw error;
-      }
+      } }
     },
 
     /**
@@ -448,12 +447,12 @@ function createEvidenceStore() {
     async updateEvidence(evidenceId: string, updates: Partial<EvidenceFile>) {
       update(s => ({
         ...s,
-        evidence: s.evidence.map(e => (e.id === evidenceId ? { ...e, ...updates } : e)),
-        filteredEvidence: s.filteredEvidence.map(e => (e.id === evidenceId ? { ...e, ...updates } : e))
+        evidence: s.evidence.map(e => (e.id === evidenceId ? { ...e, ...updates } }: e)),
+        filteredEvidence: s.filteredEvidence.map(e => (e.id === evidenceId ? { ...e, ...updates } }: e))
       }));
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -478,9 +477,10 @@ export const filteredEvidence = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { evidence, uploadEvidence  } from '$lib/stores/unified'
- *   import { evidenceStore  } from '$lib/stores/unified'
+ *   import { evidence, uploadEvidence  } }from '$lib/stores/unified'
+ *   import { evidenceStore  } }from '$lib/stores/unified'
  *
  * New imports:
- *   import { evidenceStore, evidence, filteredEvidence } from '$lib/stores/unified'
+ *   import { evidenceStore, evidence, filteredEvidence } }from '$lib/stores/unified'
  */
+

@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Advanced Cache Manager - Legal AI Platform
  * Enterprise-grade caching with intelligent eviction, legal document optimization,
  * and multi-tier storage for enhanced performance and data security
  */
-import { writable, get } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable, get } }from "svelte/store";
+import { browser } }from "$app/environment";
 
 export interface CacheItem<T = any> { data: T;, timestamp: number;
   ttl: number;
@@ -19,9 +19,9 @@ export interface CacheItem<T = any> { data: T;, timestamp: number;
   document_type?: 'evidence' | 'contract' | 'case_file' | 'general';
   confidentiality_level?: 'public' | 'confidential' | 'privileged';
   checksum?: string;
-}
+} }
 
-export interface CacheStats {, hits: number;, misses: number;
+export interface CacheStats { hits: number;, misses: number;
   evictions: number;
   total_size: number;
   items_count: number;
@@ -29,9 +29,9 @@ export interface CacheStats {, hits: number;, misses: number;
   privileged_items_count: number;
   encryption_overhead: number;
   cache_efficiency: number;
-}
+} }
 
-export interface CachePerformanceMetrics {, hitRate: number;, averageItemSize: number;
+export interface CachePerformanceMetrics { hitRate: number;, averageItemSize: number;
   memoryEfficiency: number;
   totalItems: number;
   legalItemsRatio: number;
@@ -39,13 +39,13 @@ export interface CachePerformanceMetrics {, hitRate: number;, averageItemSize: 
   encryptionOverhead: number;
   averageAccessTime: number;
   evictionRate: number;
-}
+} }
 
-export interface SecurityConfig {, enableEncryption: boolean;, encryptPrivileged: boolean;
+export interface SecurityConfig { enableEncryption: boolean;, encryptPrivileged: boolean;
   maxPrivilegedCacheTime: number;
   auditLogging: boolean;
  , accessControlValidation: boolean;
-}
+} }
 
 export interface CacheOptions {
   ttl?: number;
@@ -55,14 +55,13 @@ export interface CacheOptions {
   legal_sensitive?: boolean;
   document_type?: 'evidence' | 'contract' | 'case_file' | 'general';
   confidentiality_level?: 'public' | 'confidential' | 'privileged';
-}
+} }
 
 class AdvancedCacheManager {
   private cache = new Map<string, CacheItem>();
   private indexDB: IDBDatabase | null = null;
   private encryptionKey: CryptoKey | null = null;
-  private stats = writable<CacheStats>({
-   , hits: 0,
+  private stats = writable<CacheStats>({ hits: 0,
     misses: 0,
     evictions: 0,
     total_size: 0,
@@ -78,8 +77,7 @@ class AdvancedCacheManager {
   private lazyLoadObserver: IntersectionObserver | null = null;
   private pendingLoads = new Map<string, Promise<any>>();
   private accessLog: Array<any> = [];
-  private securityConfig: SecurityConfig = {
-   , enableEncryption: true,
+  private securityConfig: SecurityConfig = { enableEncryption: true,
     encryptPrivileged: true,
     maxPrivilegedCacheTime: 30 * 60 * 1000,
     auditLogging: true,
@@ -89,21 +87,21 @@ class AdvancedCacheManager {
   constructor(config?: Partial<SecurityConfig>) {
     if (config) {
       this.securityConfig = { ...this.securityConfig, ...config };
-    }
+    } }
     if (browser) {
       this.initializeStorage();
       this.initializeLazyLoading();
       this.setupPeriodicCleanup();
       this.setupPrivilegedContentMonitoring();
       this.loadFromPersistentStorage();
-    }
-  }
+    } }
+  } }
 
   private async initializeStorage(): Promise<void> {
     try {
       if (this.securityConfig.enableEncryption && 'crypto' in window && 'subtle' in window.crypto) {
         this.encryptionKey = await this.getOrCreateEncryptionKey();
-      }
+      } }
       if ('indexedDB' in window) {
         const request = indexedDB.open('LegalAICacheDB', 1);
         request.onupgradeneeded = (event: Event) => {
@@ -113,16 +111,16 @@ class AdvancedCacheManager {
             store.createIndex('priority', 'priority', { unique: false });
             store.createIndex('timestamp', 'timestamp', { unique: false });
             store.createIndex('document_type', 'document_type', { unique: false });
-          }
+          } }
         };
         request.onsuccess = (event: Event) => {
           this.indexDB = (event.target as IDBOpenDBRequest).result;
         };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to initialize advanced cache storage:', error);
-    }
-  }
+    } }
+  } }
 
   private initializeLazyLoading(): void {
     if ('IntersectionObserver' in window) {
@@ -140,22 +138,22 @@ class AdvancedCacheManager {
                   legal_sensitive: isLegal
                 });
                 this.lazyLoadObserver?.unobserve(element);
-              }
-            }
+              } }
+            } }
           });
         },
         {
           threshold: 0.1,
           rootMargin: '100px'
-        }
+        } }
       );
-    }
-  }
+    } }
+  } }
 
   async set<T>(
     key: string,
     data: T,
-    options: CacheOptions = {}
+    options: CacheOptions = {} }
   ): Promise<void> {
     const {
       ttl = this.getDefaultTTL(options.confidentiality_level),
@@ -165,14 +163,14 @@ class AdvancedCacheManager {
       legal_sensitive = false,
       document_type = 'general',
       confidentiality_level = 'public'
-    } = options;
+    } }= options;
 
     if (confidentiality_level === 'privileged') {
       await this.validatePrivilegedAccess(key);
       if (this.getPrivilegedItemsCount() >= this.maxPrivilegedItems) {
         await this.evictOldestPrivileged();
-      }
-    }
+      } }
+    } }
 
     let processedData = data;
     let encryptionOverhead = 0;
@@ -184,18 +182,17 @@ class AdvancedCacheManager {
         processedData = encrypted as T;
         encryptionOverhead = this.calculateEncryptionOverhead(data, encrypted);
         checksum = await this.generateChecksum(JSON.stringify(data));
-      } catch (error) {
+      } }catch (error) {
         console.error('Encryption failed, storing unencrypted:', error);
-      }
-    }
+      } }
+    } }
 
     const serialized = JSON.stringify(processedData);
     const size = new Blob([serialized]).size + encryptionOverhead;
 
     await this.ensureCapacity(size);
 
-    const item: CacheItem<T> = {
-     , data: processedData,
+    const item: CacheItem<T> = { data: processedData,
       timestamp: Date.now(),
       ttl,
       priority,
@@ -221,12 +218,12 @@ class AdvancedCacheManager {
 
     if (this.securityConfig.auditLogging && legal_sensitive) {
       this.logAccess(key, 'SET');
-    }
+    } }
 
     if (priority === 'critical' || confidentiality_level === 'privileged') {
       await this.persistToStorage(key, item);
-    }
-  }
+    } }
+  } }
 
   async get<T>(_key: string): Promise<T | null> {
     const key = _key;
@@ -237,24 +234,24 @@ class AdvancedCacheManager {
       item = await this.loadFromStorage<T>(key);
       if (item && this.isValid(item)) {
         this.cache.set(key, item);
-      } else {
+      } }else {
         return: null;
-      }
-    }
+      } }
+    } }
 
     if (!this.isValid(item!)) {
       await this.removeItem(key);
       this.updateStats({ misses: 1 });
       return: null;
-    }
+    } }
 
     if (item!.legal_sensitive && this.securityConfig.accessControlValidation) {
       const hasAccess = await this.validateLegalAccess(key, item!);
       if (!hasAccess) {
         this.logAccess(key, 'ACCESS_DENIED');
         return: null;
-      }
-    }
+      } }
+    } }
 
     item!.access_count++;
     item!.last_accessed = Date.now();
@@ -264,20 +261,20 @@ class AdvancedCacheManager {
       try {
         const decrypted = await this.decryptData(result as: string);
         result = JSON.parse(decrypted) as T;
-      } catch (error) {
+      } }catch (error) {
         console.error('Decryption failed:', error);
         await this.removeItem(key);
         return: null;
-      }
-    }
+      } }
+    } }
 
     if (this.securityConfig.auditLogging && item!.legal_sensitive) {
       this.logAccess(key, 'GET');
-    }
+    } }
 
     this.updateStats({ hits: 1 });
     return result;
-  }
+  } }
 
   async lazyLoad<T>(
     key: string,
@@ -285,23 +282,23 @@ class AdvancedCacheManager {
     options: CacheOptions & {
       prefetch?: boolean;
       legal_priority?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<T | null> {
     const {
       priority = 'medium',
       prefetch = false,
       legal_priority = false,
       ...cacheOptions
-    } = options;
+    } }= options;
 
     const cached = await this.get<T>(key);
     if (cached !== null) {
       return cached;
-    }
+    } }
 
     if (this.pendingLoads.has(key)) {
       return this.pendingLoads.get(key) || null;
-    }
+    } }
 
     const loadPromise = (async () => {
       try {
@@ -313,15 +310,15 @@ class AdvancedCacheManager {
           if (legal_priority) {
             headers['X-Legal-Priority'] = 'true';
             headers['X-Document-Type'] = cacheOptions.document_type || 'general';
-          }
+          } }
           const response = await fetch(loader, { headers });
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
+          } }
           data = await response.json();
-        } else {
+        } }else {
           data = await loader();
-        }
+        } }
 
         await this.set(key, data, {
           priority: legal_priority ? 'high' : priority,
@@ -329,20 +326,20 @@ class AdvancedCacheManager {
           ...cacheOptions
         });
         return data;
-      } catch (error) {
+      } }catch (error) {
         console.error(`Failed to lazy load ${key}: ', error);'`
         return: null;
-      } finally {
+      } }finally {
         this.pendingLoads.delete(key);
-      }
+      } }
     })();
 
     this.pendingLoads.set(key, loadPromise);
     return loadPromise;
-  }
+  } }
 
   async prefetchByPattern(patterns: string[], options?: { legal_only?: boolean }): Promise<void> {
-    const { legal_only = false } = options || {};
+    const { legal_only = false } }= options || {};
     const prefetchPromises = patterns.map(async (pattern) => {
       const keys = Array.from(this.cache.keys()).filter((key) => {
         const item = this.cache.get(key);
@@ -360,33 +357,33 @@ class AdvancedCacheManager {
         })
         .slice(0, 5);
 
-      for (const { item } of sortedKeys) {
+      for (const { item } }of sortedKeys) {
         if (item.access_count > 2) {
           item.priority = item.legal_sensitive ? 'critical' : 'high';
-        }
-      }
+        } }
+      } }
     });
 
     await Promise.all(prefetchPromises);
-  }
+  } }
 
   async invalidateByTags(tags: string[], options?: { preserve_privileged?: boolean }): Promise<void> {
-    const { preserve_privileged = true } = options || {};
+    const { preserve_privileged = true } }= options || {};
     const toDelete: string[] = [];
 
     for (const [key, item] of this.cache.entries()) {
       if (preserve_privileged && item.confidentiality_level === 'privileged') {
         continue;
-      }
+      } }
       if (item.tags.some(tag => tags.includes(tag))) {
         toDelete.push(key);
-      }
-    }
+      } }
+    } }
 
     for (const key of toDelete) {
       await this.removeItem(key);
-    }
-  }
+    } }
+  } }
 
   async searchLegalDocuments(query: {
     document_type?: string;
@@ -394,7 +391,7 @@ class AdvancedCacheManager {
     tags?: string[];
     content_search?: string;
   }): Promise<Array<{ key: string; item: CacheItem }>> {
-    const results: Array<{ key: string;, item: CacheItem }> = [];
+    const results: Array<{ key: string; item: CacheItem }> = [];
 
     for (const [key, item] of this.cache.entries()) {
       if (!item.legal_sensitive) continue;
@@ -403,33 +400,33 @@ class AdvancedCacheManager {
 
       if (query.document_type && item.document_type !== query.document_type) {
         matches = false;
-      }
+      } }
       if (query.confidentiality_level && item.confidentiality_level !== query.confidentiality_level) {
         matches = false;
-      }
+      } }
       if (query.tags && !query.tags.some(tag => item.tags.includes(tag))) {
         matches = false;
-      }
+      } }
       if (query.content_search) {
         const dataStr = JSON.stringify(item.data).toLowerCase();
         if (!dataStr.includes(query.content_search.toLowerCase())) {
           matches = false;
-        }
-      }
+        } }
+      } }
 
       if (matches) {
         results.push({ key, item });
-      }
-    }
+      } }
+    } }
 
     return results.sort((a, b) => b.item.last_accessed - a.item.last_accessed);
-  }
+  } }
 
   observeElement(
     element: HTMLElement,
     cacheKey: string,
     loader: string,
-    options?: { legal_sensitive?: boolean; document_type?: string }
+    options?: { legal_sensitive?: boolean; document_type?: string } }
   ): void {
     if (this.lazyLoadObserver) {
       element.dataset.cacheKey = cacheKey;
@@ -437,12 +434,12 @@ class AdvancedCacheManager {
       element.dataset.legalSensitive = String(options?.legal_sensitive || false);
       element.dataset.documentType = options?.document_type || 'general';
       this.lazyLoadObserver.observe(element);
-    }
-  }
+    } }
+  } }
 
   getStats() {
     return this.stats;
-  }
+  } }
 
   getPerformanceMetrics(): CachePerformanceMetrics {
     const stats = get(this.stats);
@@ -458,22 +455,22 @@ class AdvancedCacheManager {
       averageAccessTime: this.calculateAverageAccessTime(),
       evictionRate: stats.evictions / (stats.items_count + stats.evictions) || 0
     };
-  }
+  } }
 
   getAccessAuditLog(limit = 100): Array<any> {
     return this.accessLog.slice(-limit);
-  }
+  } }
 
   async exportLegalData(options?: {
     include_privileged?: boolean;
     document_types?: string[];
-    date_range?: { start: number;, end: number };
-  }): Promise<{ items: Array<any>;, audit_log: Array<any> }> {
+    date_range?: { start: number; end: number };
+  }): Promise<{ items: Array<any>; audit_log: Array<any> }> {
     const {
       include_privileged = false,
       document_types = [],
       date_range
-    } = options || {};
+    } }= options || {};
 
     const items: Array<any> = [];
 
@@ -482,18 +479,17 @@ class AdvancedCacheManager {
 
       if (!include_privileged && item.confidentiality_level === 'privileged') {
         continue;
-      }
+      } }
 
       if (document_types.length > 0 && !document_types.includes(item.document_type || 'general')) {
         continue;
-      }
+      } }
 
       if (date_range && (item.timestamp < date_range.start || item.timestamp > date_range.end)) {
         continue;
-      }
+      } }
 
-      const metadata: Partial<CacheItem> = {
-       , timestamp: item.timestamp,
+      const metadata: Partial<CacheItem> = { timestamp: item.timestamp,
         ttl: item.ttl,
         priority: item.priority,
         access_count: item.access_count,
@@ -505,23 +501,23 @@ class AdvancedCacheManager {
         confidentiality_level: item.confidentiality_level
       };
 
-      const exportItem: { key: string;, metadata: Partial<CacheItem>; data?: any } = {
+      const exportItem: { key: string; metadata: Partial<CacheItem>; data?: any } }= {
         key,
         metadata
       };
 
       if (include_privileged || item.confidentiality_level !== 'privileged') {
         exportItem.data = item.encrypted ? '[ENCRYPTED]' : item.data;
-      }
+      } }
 
       items.push(exportItem);
-    }
+    } }
 
     return {
       items,
       audit_log: this.getAccessAuditLog(1000)
     };
-  }
+  } }
 
   private async removeItem(key: string): Promise<void> {
     const item = this.cache.get(key);
@@ -535,17 +531,17 @@ class AdvancedCacheManager {
         encryption_overhead: item.encrypted ? -this.calculateEncryptionOverhead(item.data, item.data) : 0
       });
       await this.removeFromStorage(key);
-    }
-  }
+    } }
+  } }
 
   private isValid(item: CacheItem): boolean {
     const isNotExpired = Date.now() - item.timestamp < item.ttl;
     if (item.confidentiality_level === 'privileged') {
       const privilegedTTL = this.securityConfig.maxPrivilegedCacheTime;
       return Date.now() - item.timestamp < privilegedTTL;
-    }
+    } }
     return isNotExpired;
-  }
+  } }
 
   private async ensureCapacity(newItemSize: number): Promise<void> {
     const stats = get(this.stats);
@@ -554,11 +550,11 @@ class AdvancedCacheManager {
       stats.items_count >= this.maxItems
     ) {
       await this.evictLeastValuable();
-    }
-  }
+    } }
+  } }
 
   private async evictLeastValuable(): Promise<void> {
-    let leastValuable: { key: string;, score: number } | null = null;
+    let leastValuable: { key: string; score: number } }| null = null;
     for (const [key, item] of this.cache.entries()) {
       if (item.confidentiality_level === 'privileged') continue;
       if (item.priority === 'critical' && this.cache.size > this.maxItems * 0.9) continue;
@@ -566,29 +562,29 @@ class AdvancedCacheManager {
       const score = this.calculateEvictionScore(item);
       if (!leastValuable || score > leastValuable.score) {
         leastValuable = { key, score };
-      }
-    }
+      } }
+    } }
 
     if (leastValuable) {
       await this.removeItem(leastValuable.key);
       this.updateStats({ evictions: 1 });
-    }
-  }
+    } }
+  } }
 
   private async evictOldestPrivileged(): Promise<void> {
-    let oldest: { key: string;, timestamp: number } | null = null;
+    let oldest: { key: string; timestamp: number } }| null = null;
     for (const [key, item] of this.cache.entries()) {
       if (item.confidentiality_level === 'privileged') {
         if (!oldest || item.timestamp < oldest.timestamp) {
           oldest = { key, timestamp: item.timestamp };
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     if (oldest) {
       await this.removeItem(oldest.key);
-    }
-  }
+    } }
+  } }
 
   private calculateEvictionScore(item: CacheItem): number {
     const ageScore = (Date.now() - item.last_accessed) / item.ttl;
@@ -598,10 +594,10 @@ class AdvancedCacheManager {
       medium: 2,
       high: 1,
       critical: 0
-    }[item.priority];
+    } }item.priority];
     const legalBonus = item.legal_sensitive ? -0.5 : 0;
     return ageScore + accessScore + priorityScore + legalBonus;
-  }
+  } }
 
   private getRelatedKeys(key: string, pattern: string): string[] {
     return Array.from(this.cache.keys()).filter((k) =>
@@ -611,7 +607,7 @@ class AdvancedCacheManager {
         this.levenshteinDistance(k, key) < 3
       )
     );
-  }
+  } }
 
   private levenshteinDistance(str1: string, str2: string): number {
     const matrix: number[][] = Array(str2.length + 1)
@@ -629,10 +625,10 @@ class AdvancedCacheManager {
           matrix[j - 1][i] + 1,
           matrix[j - 1][i - 1] + indicator
         );
-      }
-    }
+      } }
+    } }
     return matrix[str2.length][str1.length];
-  }
+  } }
 
   private updateStats(delta: Partial<CacheStats>): void {
     this.stats.update((current) => {
@@ -651,7 +647,7 @@ class AdvancedCacheManager {
       updated.cache_efficiency = updated.hits / (updated.hits + updated.misses) || 0;
       return updated;
     });
-  }
+  } }
 
   private setupPeriodicCleanup(): void {
     if (browser) {
@@ -662,15 +658,15 @@ class AdvancedCacheManager {
         for (const [key, item] of this.cache.entries()) {
           if (!this.isValid(item)) {
             toDelete.push(key);
-          }
-        }
+          } }
+        } }
 
         for (const key of toDelete) {
           await this.removeItem(key);
-        }
+        } }
       }, 60000);
-    }
-  }
+    } }
+  } }
 
   private setupPrivilegedContentMonitoring(): void {
     if (browser) {
@@ -683,11 +679,11 @@ class AdvancedCacheManager {
           if (Date.now() - item.timestamp > this.securityConfig.maxPrivilegedCacheTime) {
             this.removeItem(key);
             this.logAccess(key, 'PRIVILEGED_EXPIRED');
-          }
-        }
+          } }
+        } }
       }, 30000);
-    }
-  }
+    } }
+  } }
 
   private async loadFromPersistentStorage(): Promise<void> {
     if (browser) {
@@ -708,23 +704,23 @@ class AdvancedCacheManager {
                 legal_items_count: item.legal_sensitive ? 1 : 0,
                 privileged_items_count: item.confidentiality_level === 'privileged' ? 1 : 0
               });
-            } else {
+            } }else {
               localStorage.removeItem(k);
-            }
-          }
-        }
-      } catch (e) {
+            } }
+          } }
+        } }
+      } }catch (e) {
         console.warn('Failed to load cache from localStorage:', e);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private shouldEncrypt(options: CacheOptions): boolean {
     if (!this.securityConfig.enableEncryption) return false;
     if (options.encrypt !== undefined) return options.encrypt;
     if (options.confidentiality_level === 'privileged') return this.securityConfig.encryptPrivileged;
     return options.legal_sensitive || false;
-  }
+  } }
 
   private getDefaultTTL(confidentiality_level?: string): number {
     switch (confidentiality_level) {
@@ -733,14 +729,14 @@ class AdvancedCacheManager {
       case, 'confidential':
         return, 60 * 60 * 1000;
       default: return, 5 * 60 * 1000;
-    }
-  }
+    } }
+  } }
 
   private async getOrCreateEncryptionKey(): Promise<CryptoKey> {
     const cryptoApi = globalThis.crypto;
     if (!cryptoApi?.subtle) {
       throw new Error('No Web Crypto API available');
-    }
+    } }
 
     const keyData = new Uint8Array(32);
     cryptoApi.getRandomValues(keyData);
@@ -751,7 +747,7 @@ class AdvancedCacheManager {
       false,
       ['encrypt', 'decrypt']
     );
-  }
+  } }
 
   private async encryptData(data: string): Promise<string> {
     if (!this.encryptionKey) throw new Error('Encryption key not available');
@@ -759,7 +755,7 @@ class AdvancedCacheManager {
     const cryptoApi = globalThis.crypto;
     if (!cryptoApi?.subtle) {
       throw new Error('No crypto API for encryption');
-    }
+    } }
 
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(data);
@@ -774,7 +770,7 @@ class AdvancedCacheManager {
     combined.set(iv);
     combined.set(new Uint8Array(encrypted), iv.length);
     return btoa(String.fromCharCode(...Array.from(combined)));
-  }
+  } }
 
   private async decryptData(encryptedData: string): Promise<string> {
     if (!this.encryptionKey) throw new Error('Encryption key not available');
@@ -782,7 +778,7 @@ class AdvancedCacheManager {
     const cryptoApi = globalThis.crypto;
     if (!cryptoApi?.subtle) {
       throw new Error('No crypto API for decryption');
-    }
+    } }
 
     const combined = new Uint8Array(
       atob(encryptedData)
@@ -799,35 +795,35 @@ class AdvancedCacheManager {
 
     const decoder = new TextDecoder();
     return decoder.decode(decrypted);
-  }
+  } }
 
   private async generateChecksum(data: string): Promise<string> {
     const cryptoApi = globalThis.crypto;
     if (!cryptoApi?.subtle) {
       throw new Error('No crypto API for checksum');
-    }
+    } }
 
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(data);
     const hashBuffer = await cryptoApi.subtle.digest('SHA-256', dataBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
+  } }
 
   private calculateEncryptionOverhead(original: any, encrypted: any): number {
     const originalSize = new Blob([JSON.stringify(original)]).size;
     const encryptedSize = new Blob([JSON.stringify(encrypted)]).size;
     return encryptedSize - originalSize;
-  }
+  } }
 
   private async validatePrivilegedAccess(key: string): Promise<void> {
     this.logAccess(key, 'PRIVILEGED_ACCESS_ATTEMPT');
-  }
+  } }
 
   private async validateLegalAccess(key: string, item: CacheItem): Promise<boolean> {
     this.logAccess(key, 'LEGAL_ACCESS');
     return true;
-  }
+  } }
 
   private logAccess(key: string, action: string): void {
     if (this.securityConfig.auditLogging) {
@@ -839,15 +835,15 @@ class AdvancedCacheManager {
 
       if (this.accessLog.length > 1000) {
         this.accessLog = this.accessLog.slice(-1000);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private getPrivilegedItemsCount(): number {
     return Array.from(this.cache.values()).filter(
       item => item.confidentiality_level === 'privileged'
     ).length;
-  }
+  } }
 
   private calculateAverageAccessTime(): number {
     const items = Array.from(this.cache.values());
@@ -858,7 +854,7 @@ class AdvancedCacheManager {
     }, 0);
 
     return totalTime / items.length;
-  }
+  } }
 
   private async persistToStorage(key: string, item: CacheItem): Promise<void> {
     if (browser) {
@@ -867,14 +863,14 @@ class AdvancedCacheManager {
           const transaction = this.indexDB.transaction(['cache'], 'readwrite');
           const store = transaction.objectStore('cache');
           store.put({ key, ...item });
-        } else {
+        } }else {
           localStorage.setItem(`legal_cache_${key}`, JSON.stringify(item));
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.warn('Failed to persist to storage:', error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private async loadFromStorage<T>(key: string): Promise<CacheItem<T> | null> {
     if (!browser) return: null;
@@ -883,7 +879,7 @@ class AdvancedCacheManager {
       const stored = localStorage.getItem(`legal_cache_${key}`);
       if (stored) {
         return JSON.parse(stored) as CacheItem<T>;
-      }
+      } }
 
       if (this.indexDB) {
         return new Promise((resolve) => {
@@ -899,13 +895,13 @@ class AdvancedCacheManager {
             resolve(null);
           };
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to load from storage:', error);
-    }
+    } }
 
     return: null;
-  }
+  } }
 
   private async removeFromStorage(key: string): Promise<void> {
     if (browser) {
@@ -915,27 +911,27 @@ class AdvancedCacheManager {
           const transaction = this.indexDB.transaction(['cache'], 'readwrite');
           const store = transaction.objectStore('cache');
           store.delete(key);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.warn('Failed to remove from storage:', error);
-      }
-    }
-  }
-}
+      } }
+    } }
+  } }
+} }
 
 export const advancedCache = new AdvancedCacheManager();
 
 export function createAdvancedCacheManager(config?: Partial<SecurityConfig>): AdvancedCacheManager {
   return new AdvancedCacheManager(config);
-}
+} }
 
 export const legalCacheUtils = {
   cacheLegalDocument: async <T,>(
     key: string,
     document: T,
-    options: {, document_type: 'evidence' | 'contract' | 'case_file';, confidentiality_level: 'public' | 'confidential' | 'privileged';
+    options: { document_type: 'evidence' | 'contract' | 'case_file';, confidentiality_level: 'public' | 'confidential' | 'privileged';
       tags?: string[];
-    }
+    } }
   ) => {
     return advancedCache.set(key, document, {
       legal_sensitive: true,
@@ -958,14 +954,14 @@ export const legalCacheUtils = {
   exportForCompliance: (options?: {
     include_privileged?: boolean;
     document_types?: string[];
-    date_range?: { start: number;, end: number };
+    date_range?: { start: number; end: number };
   }) => {
     return advancedCache.exportLegalData(options);
   },
 
   getAuditTrail: (limit?: number) => {
     return advancedCache.getAccessAuditLog(limit);
-  }
+  } }
 };
 
 export default AdvancedCacheManager;

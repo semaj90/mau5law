@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 /*
  * AI Integration Test Suite
  * Comprehensive testing of all AI/MCP API endpoints
@@ -11,49 +11,49 @@ import {
   commonMCPQueries,
   generateMCPPrompt,
   copilotOrchestrator
-} from '$lib/utils/mcp-helpers';
+} }from '$lib/utils/mcp-helpers';
 
 // Helper type for AI/API responses to reduce repetition
 type AiApiResponse = {
   [key: string]: any;
 };
 
-export interface TestResult {, name: string;, status: 'pass' | 'fail' | 'warning';
+export interface TestResult { name: string;, status: 'pass' | 'fail' | 'warning';
   duration: number;
   details: string;
   error?: string;
-}
-export interface TestSuite {, name: string;, tests: TestResult[];
+} }
+export interface TestSuite { name: string;, tests: TestResult[];
   totalTests: number;
   passedTests: number;
   failedTests: number;
   warnings: number;
   totalDuration: number;
-}
+} }
 /*
  * Main test runner
  */
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
-    const { testSuite = 'all', verbose = false } = await request.json();
+    const { testSuite = 'all', verbose = false } }= await request.json();
     const results: TestSuite[] = [];
     // Run different test suites based on request
     if (testSuite === 'all' || testSuite === 'mcp') {
       results.push(await testMCPIntegration(verbose));
-    }
+    } }
     if (testSuite === 'all' || testSuite === 'ai') {
       results.push(await testAIServices(verbose));
-    }
+    } }
     if (testSuite === 'all' || testSuite === 'find') {
       results.push(await testFindAPI(verbose));
-    }
+    } }
     if (testSuite === 'all' || testSuite === 'memory') {
       results.push(await testMemoryGraph(verbose));
-    }
+    } }
     if (testSuite === 'all' || testSuite === 'semantic') {
       results.push(await testSemanticSearch(verbose));
-    }
+    } }
     // Calculate overall statistics
     const totalTests = results.reduce((sum, suite) => sum + suite.totalTests, 0);
     const totalPassed = results.reduce((sum, suite) => sum + suite.passedTests, 0);
@@ -74,7 +74,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       testSuites: results,
       recommendations: generateRecommendations(results)
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Test suite execution failed:', error);
     return json(
       {
@@ -82,9 +82,9 @@ export const, POST: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * Test MCP Context7 Integration
@@ -99,10 +99,10 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log(`Generated MCP Prompt: ${prompt.substring(0, 100)}...`);
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Failed to generate MCP prompt');
-    }
+    } }
     if (!prompt.includes('sveltekit')) {
       throw new Error('Generated prompt does not contain expected content');
-    }
+    } }
     return `Generated prompt: "${prompt.substring(0, 50)}..."`;
   });
   // Test 2: MCP Request Validation
@@ -112,13 +112,13 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log('Validation for valid request:', validation);
     if (!validation.valid) {
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
-    }
+    } }
     const invalidRequest = { tool: 'invalid-tool' as never };
     const invalidValidation = validateMCPRequest(invalidRequest);
     if (verbose) console.log('Validation for invalid request:', invalidValidation);
     if (invalidValidation.valid) {
       throw new Error('Invalid request was incorrectly validated as valid');
-    }
+    } }
     return `Valid request passed, invalid request properly rejected`;
   });
   // Test 3: Copilot Orchestrator
@@ -132,38 +132,38 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log('Copilot Orchestrator result:', result);
     if (!result || typeof result !== 'object') {
       throw new Error('Orchestrator did not return valid result');
-    }
+    } }
     const hasRequiredFields = ['semantic', 'memory', 'agentResults', 'synthesized'].some(
       (field: string) => field in result
     );
     if (!hasRequiredFields) {
       return, 'Orchestrator returned result but may be using mock data';
-    }
-    return `Orchestrator executed successfully with ${Object.keys(result).length} result fields`;
+    } }
+    return `Orchestrator executed successfully with ${Object.keys(result).length} }result fields`;
   });
   // Test 4: Memory Graph Integration
   await runTest(tests, 'Memory Graph Read', async () => {
     const memoryData = await mcpMemoryReadGraph();
-    if (verbose) console.log(`Memory graph returned ${memoryData.length} items.`);
+    if (verbose) console.log(`Memory graph returned ${memoryData.length} }items.`);
     if (!Array.isArray(memoryData)) {
       throw new Error('Memory graph did not return array format');
-    }
+    } }
     if (memoryData.length === 0) {
       return, 'Memory graph returned empty array (may be expected)';
-    }
-    return `Memory graph returned ${memoryData.length} nodes/relations`;
+    } }
+    return `Memory graph returned ${memoryData.length} }nodes/relations`;
   });
   // Test 5: Semantic Search Integration
   await runTest(tests, 'Semantic Search', async () => {
     const searchResults = await semanticSearch('legal document analysis');
-    if (verbose) console.log(`Semantic search returned ${searchResults.length} results.`);
+    if (verbose) console.log(`Semantic search returned ${searchResults.length} }results.`);
     if (!Array.isArray(searchResults)) {
       throw new Error('Semantic search did not return array format');
-    }
+    } }
     if (searchResults.length === 0) {
       return, 'Semantic search returned no results (may indicate service unavailable)';
-    }
-    return `Semantic search returned ${searchResults.length} results`;
+    } }
+    return `Semantic search returned ${searchResults.length} }results`;
   });
   return {
     name: 'Context7 MCP Integration',
@@ -174,14 +174,14 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
     totalDuration: Date.now() - suiteStartTime
   };
-}
+} }
 /*
  * Test AI Services (Ollama/LLMs)
  */
 interface OllamaModel {
   name: string;
   [key: string]: any;
-}
+} }
 async function testAIServices(verbose: boolean): Promise<TestSuite> {
   const tests: TestResult[] = [];
   const suiteStartTime = Date.now();
@@ -193,7 +193,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     });
     if (!response.ok) {
       throw new Error(`Ollama service returned ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Ollama version data:', data);
     return `Ollama service healthy, version: ${data.version || 'unknown' }`;'' });
@@ -205,18 +205,18 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     });
     if (!response.ok) {
       throw new Error(`Failed to get model list: ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Available Ollama models:', data.models);
     const models = (data.models as OllamaModel[]) || [];
     if (models.length === 0) {
       throw new Error('No models available in Ollama');
-    }
+    } }
     const hasGemma = models.some(m => m.name.includes('gemma'));
     if (!hasGemma) {
-      return `${models.length} models available but no Gemma model found`;
-    }
-    return `${models.length} models available including Gemma variants`;
+      return `${models.length} }models available but no Gemma model found`;
+    } }
+    return `${models.length} }models available including Gemma variants`;
   });
   // Test 3: Simple AI Generation
   await runTest(tests, 'AI Text Generation', async () => {
@@ -224,66 +224,66 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-       , model: 'gemma3-legal:latest',
-        prompt: 'Test;, prompt: What is 2+2?',
+  model: 'gemma3-legal:latest',
+        prompt: 'Test; prompt: What is 2+2?',
         stream: false,
         options: {
-         , temperature: 0.1,
+  temperature: 0.1,
           max_tokens: 50
-        }
+        } }
       })
     });
     if (!response.ok) {
       throw new Error(`AI generation failed: ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('AI generation response:', data.response);
     if (!data.response || typeof data.response !== 'string') {
       throw new Error('AI response invalid or empty');
-    }
+    } }
     if (data.response.length < 5) {
       return, 'AI response too short, may indicate issues';
-    }
+    } }
     return `AI generated response: "${data.response.substring(0, 50)}..."`;
   });
   // Test 4: JSON Response Parsing
   await runTest(tests, 'Structured AI Response', async () => {
     const prompt = `
       Return a JSON: object with this exact, structure:
-      {"status": "success", "message": "test completed", "number": 42}
+      {"status": "success", "message": "test completed", "number": 42} }
       Return only the JSON, no other text.
     `;`
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-       , model: 'gemma3-legal:latest',
+  model: 'gemma3-legal:latest',
         prompt,
         stream: false,
         options: {
-         , temperature: 0.1,
+  temperature: 0.1,
           max_tokens: 100
-        }
+        } }
       })
     });
     if (!response.ok) {
       throw new Error(`Structured AI request failed: ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Structured AI response:', data.response);
     try {
       if (typeof data.response !== 'string') {
         throw new Error('AI response was not a: string.');
-      }
+      } }
       const parsed = JSON.parse(data.response);
       if (parsed.status !== 'success' || parsed.number !== 42) {
         return, 'AI returned JSON but with incorrect values';
-      }
+      } }
       return, 'AI successfully returned structured JSON response';
-    } catch (error: any) {
+    } }catch (error: any) {
       if (verbose) console.error('Failed to parse JSON response:', data.response);
       return, 'AI response was not valid JSON format';
-    }
+    } }
   });
   return {
     name: 'AI Services (Ollama/LLM)',
@@ -294,18 +294,18 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
     totalDuration: Date.now() - suiteStartTime
   };
-}
+} }
 /*
  * Test Find API Endpoint
  */
 interface FindApiResult {
   aiConfidence?: number;
   [key: string]: any;
-}
+} }
 
 // Add a more specific type for the find API response
 interface FindApiResponse {
- , success: boolean;
+  success: boolean;
   error?: string;
   results?: FindApiResult[];
   metadata?: {
@@ -315,7 +315,7 @@ interface FindApiResponse {
   mcpContext?: any;
   autoSuggestions?: any[];
   suggestions?: any[];
-}
+} }
 
 async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   const tests: TestResult[] = [];
@@ -326,7 +326,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-       , query: 'test legal document',
+  query: 'test legal document',
         type: 'all',
         useAI: false,
         mcpAnalysis: false
@@ -334,16 +334,16 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     });
     if (!response.ok) {
       throw new Error(`Find API request failed: ${response.status}`);
-    }
+    } }
     const data: FindApiResponse = await response.json();
     if (verbose) console.log('Basic Find API response:', data);
     if (!data.success) {
       throw new Error(`Find API returned error: ${data.error}`);
-    }
+    } }
     if (!Array.isArray(data.results)) {
       throw new Error('Find API did not return results array');
-    }
-    return `Find API returned ${data.results.length} results in ${data.metadata?.processingTime}ms`;
+    } }
+    return `Find API returned ${data.results.length} }results in ${data.metadata?.processingTime}ms`;
   });
   // Test 2: AI-Enhanced Search
   await runTest(tests, 'AI-Enhanced Search', async () => {
@@ -351,7 +351,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-       , query: 'contract liability evidence',
+  query: 'contract liability evidence',
         type: 'all',
         useAI: true,
         mcpAnalysis: false,
@@ -361,20 +361,20 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     });
     if (!response.ok) {
       throw new Error(`AI-enhanced search failed: ${response.status}`);
-    }
+    } }
     const data: FindApiResponse = await response.json();
     if (verbose) console.log('AI-Enhanced Search response:', data);
     if (!data.success) {
       throw new Error(`AI search returned error: ${data.error}`);
-    }
+    } }
     if (!data.results) {
       return, 'AI enhancement did not return results';
-    }
+    } }
     const hasAiConfidence = data.results.some(result => result.aiConfidence !== undefined);
     if (!hasAiConfidence) {
       return, 'AI enhancement may not be working (no confidence scores)';
-    }
-    return `AI-enhanced search returned ${data.results.length} results with confidence scores`;
+    } }
+    return `AI-enhanced search returned ${data.results.length} }results with confidence scores`;
   });
   // Test 3: MCP Analysis Integration
   await runTest(tests, 'MCP Analysis in Find API', async () => {
@@ -382,7 +382,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-       , query: 'legal precedent analysis',
+  query: 'legal precedent analysis',
         type: 'all',
         useAI: true,
         mcpAnalysis: true,
@@ -391,15 +391,15 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     });
     if (!response.ok) {
       throw new Error(`MCP analysis request failed: ${response.status}`);
-    }
+    } }
     const data: FindApiResponse = await response.json();
     if (verbose) console.log('MCP Analysis in Find API response:', data);
     if (!data.success) {
       throw new Error(`MCP analysis returned error: ${data.error}`);
-    }
+    } }
     if (!data.metadata?.mcpAnalysis) {
       return, 'MCP analysis was not executed (may be expected)';
-    }
+    } }
     const hasMcpContext = data.mcpContext !== null;
     const hasAutoSuggestions = data.autoSuggestions && data.autoSuggestions.length > 0;
     return `MCP analysis executed, context: ${hasMcpContext}, suggestions: ${hasAutoSuggestions}`;
@@ -409,16 +409,16 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/ai/find?q=contract');
     if (!response.ok) {
       throw new Error(`Suggestions API failed: ${response.status}`);
-    }
+    } }
     const data: FindApiResponse = await response.json();
     if (verbose) console.log('Search Suggestions API response:', data);
     if (!data.success) {
       throw new Error(`Suggestions API returned error: ${data.error}`);
-    }
+    } }
     if (!Array.isArray(data.suggestions)) {
       throw new Error('Suggestions API did not return array');
-    }
-    return `Suggestions API returned ${data.suggestions.length} suggestions`;
+    } }
+    return `Suggestions API returned ${data.suggestions.length} }suggestions`;
   });
   // Test 5: Rate Limiting
   await runTest(tests, 'Rate Limiting Check', async () => {
@@ -430,7 +430,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
           method: 'POST',
           headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
-           , query: 'rate limit test',
+  query: 'rate limit test',
             type: 'all',
             useAI: false
           })
@@ -443,13 +443,13 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     const rateLimited = statusCodes.some((code: number) => code === 429);
     if (rateLimited) {
       return, 'Rate limiting is working (some requests returned 429)';
-    }
+    } }
     // Check rate limit headers
     const lastResponse = responses[responses.length - 1];
     const rateLimitHeader = lastResponse.headers.get('X-RateLimit-Remaining');
     if (rateLimitHeader !== null) {
       return `Rate limiting headers present, remaining: ${rateLimitHeader}`;
-    }
+    } }
     return, 'Rate limiting may not be configured (all requests succeeded)';
   });
   return {
@@ -461,7 +461,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
     totalDuration: Date.now() - suiteStartTime
   };
-}
+} }
 /*
  * Test Memory Graph Integration
  */
@@ -473,21 +473,21 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/mcp/memory/read-graph', {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({, filters: {, nodeTypes: ['ai-interaction', 'search'],
+      body: JSON.stringify({ filters: { nodeTypes: ['ai-interaction', 'search'],
           limit: 10
-        }
+        } }
       })
     });
     if (verbose) console.log('Memory Graph Read response status:', response.status);
     // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return, 'Memory graph endpoint not implemented yet (expected)';
-    }
+    } }
     if (!response.ok) {
       throw new Error(`Memory graph read failed: ${response.status}`);
-    }
+    } }
     const data = await response.json();
-    return `Memory graph read successful, returned ${JSON.stringify(data).length} characters`;
+    return `Memory graph read successful, returned ${JSON.stringify(data).length} }characters`;
   });
   // Test 2: Memory Relation Creation
   await runTest(tests, 'Memory Relation Creation', async () => {
@@ -495,22 +495,22 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-       , source: 'test-user',
+  source: 'test-user',
         target: 'test-search',
         relationType: 'performed-search',
         properties: {
-         , timestamp: new Date().toISOString(),
-          query: `test memory relation' }'`
+  timestamp: new Date().toISOString(),
+          query: `test memory relation' } }`
       })
     });
     if (verbose) console.log('Memory Relation Creation response status:', response.status);
     // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return, 'Memory relation endpoint not implemented yet (expected)';
-    }
+    } }
     if (!response.ok) {
       throw new Error(`Memory relation creation failed: ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     return `Memory relation created successfully: ${data.success}`;
   });
@@ -523,7 +523,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
     totalDuration: Date.now() - suiteStartTime
   };
-}
+} }
 /*
  * Test Semantic Search Integration
  */
@@ -536,21 +536,21 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , query: `legal document contract analysis' })'`
+  query: `legal document contract analysis' })'`
     });
     if (verbose) console.log('Semantic Search Service response status:', response.status);
     // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return, 'Semantic search endpoint not implemented yet (expected)';
-    }
+    } }
     if (!response.ok) {
       throw new Error(`Semantic search failed: ${response.status}`);
-    }
+    } }
     const data: AiApiResponse = await response.json();
     if (!data.results || !Array.isArray(data.results)) {
       throw new Error('Semantic search did not return results array');
-    }
-    return `Semantic search returned ${data.results.length} results`;
+    } }
+    return `Semantic search returned ${data.results.length} }results`;
   });
   // Test 2: Vector Database Connection
   await runTest(tests, 'Vector Database (Qdrant)', async () => {
@@ -562,16 +562,16 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       if (verbose) console.log('Qdrant connection status:', response.status);
       if (!response.ok) {
         throw new Error(`Qdrant connection failed: ${response.status}`);
-      }
+      } }
       const data: AiApiResponse = await response.json();
       if (!data.result || !(data.result as { collections: any[] }).collections) {
         return, 'Qdrant connected but no collections found';
-      }
-      return `Qdrant connected, ${(data.result as { collections: any[] }).collections.length} collections available`;
-    } catch (error: any) {
-      if (verbose) console.error('Qdrant connection error:', (error as Error).message);'
+      } }
+      return `Qdrant connected, ${(data.result as { collections: any[] }).collections.length} }collections available`;
+    } }catch (error: any) {
+      if (verbose) console.error('Qdrant connection error:', (error as Error).message);
       return, 'Qdrant vector database not available (may be expected)';
-    }
+    } }
   });
   return {
     name: 'Semantic Search Integration',
@@ -582,7 +582,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
     totalDuration: Date.now() - suiteStartTime
   };
-}
+} }
 /*
  * Helper function to run individual tests
  */
@@ -600,22 +600,22 @@ async function runTest(tests: TestResult[], name: string, testFn: () => Promise<
       details.includes('may not be')
     ) {
       status = 'warning';
-    }
+    } }
     tests.push({
       name,
       status,
       duration,
       details
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     tests.push({
       name,
       status: 'fail',
       duration: Date.now() - startTime,
       details: 'Test failed',
       error: error instanceof Error ? error.message : `Unknown error' });'`
-  }
-}
+  } }
+} }
 /*
  * Generate recommendations based on test results
  */
@@ -628,27 +628,27 @@ function generateRecommendations(testSuites: TestSuite[]): string[] {
       recommendations.push(
         `🔴 ${suite.name}: High failure rate (${Math.round(failureRate * 100)}%). Consider checking service availability and configuration.`
       );
-    } else if (failureRate > 0.2) {
+    } }else if (failureRate > 0.2) {
       recommendations.push(
         `🟡 ${suite.name}: Some tests failing (${Math.round(failureRate * 100)}%). Review failed tests and service health.`
       );
-    }
+    } }
     if (warningRate > 0.7) {
       recommendations.push(
         `⚠️ ${suite.name}: Many services not yet implemented (${Math.round(warningRate * 100)}% warnings). This is expected during development.`
       );
-    }
+    } }
     if (suite.totalDuration > 10000) {
       recommendations.push(
         `⏱️ ${suite.name}: Slow response times (${suite.totalDuration}ms). Consider performance optimization.`
       );
-    }
-  }
+    } }
+  } }
   if (recommendations.length === 0) {
     recommendations.push('✅ All systems operational. Great work on the AI integration!');
-  }
+  } }
   return recommendations;
-}
+} }
 /*
  * GET handler for quick health check
  */
@@ -666,14 +666,14 @@ export const GET: RequestHandler = async () => {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-         , query: 'health check',
+  query: 'health check',
           useAI: false
         })
       }).then((r: Response) => ({ findApi: r.ok }))
     ]);
     const results = checks.map(check => (check.status === 'fulfilled' ? check.value : { error: true }));
-    const healthStatus = { ai: results[0] && 'ai' in results[0] ? (results[0] as {, ai: boolean }).ai : false,
-      findApi: results[1] && 'findApi' in results[1] ? (results[1] as {, findApi: boolean }).findApi : false
+    const healthStatus = { ai: results[0] && 'ai' in results[0] ? (results[0] as { ai: boolean }).ai : false,
+      findApi: results[1] && 'findApi' in results[1] ? (results[1] as { findApi: boolean }).findApi : false
     };
     const allHealthy = Object.values(healthStatus).every(Boolean);
     return json({
@@ -682,7 +682,7 @@ export const GET: RequestHandler = async () => {
       duration: Date.now() - startTime,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         healthy: false,
@@ -690,7 +690,8 @@ export const GET: RequestHandler = async () => {
         duration: Date.now() - startTime,
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
+

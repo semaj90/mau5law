@@ -36,7 +36,7 @@ type PgPool = {
 const isPgPool = (p: any): p is PgPool =>
   typeof p === 'object' && p !== null && 'connect' in p && typeof (p as PgPool).connect === 'function';
 
-const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promise<unknown> } =>
+const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promise<unknown> } }=>
   typeof p === 'object' && p !== null && 'query' in p && typeof (p as { query?: any }).query === 'function';
 
 /**
@@ -74,7 +74,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         const r = res as { rows?: any[]; result?: any[] };
         if (Array.isArray(r.rows)) return r.rows as SavedCitationRow[];
         if (Array.isArray(r.result)) return r.result as SavedCitationRow[];
-      }
+      } }
       return [];
     };
 
@@ -87,16 +87,16 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
       client = await pool.connect();
       const res = await client.query(sql, [userId]);
       rows = extractRows(res);
-    } else if (hasQuery(pool)) {
+    } }else if (hasQuery(pool)) {
       // postgres-js often returns an array directly, or an: object with .rows
       const res = await pool.query(sql, [userId]);
       rows = extractRows(res);
-    } else {
+    } }else {
       throw new Error('Unsupported database client shape');
-    }
+    } }
 
     return rows.map((r: SavedCitationRow) => {
-      // Helper to parse Postgres array literal like: {"a","b","c,with,comma"}
+      // Helper to parse Postgres array literal like: {"a","b","c,with,comma"} }
       const parsePgArray = (pgArr: string | null | undefined): string[] => {
         if (!pgArr || typeof pgArr !== 'string') return [];
         const trimmed = pgArr.trim();
@@ -114,69 +114,67 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
                 cur += '"';"
                 i++;
                 continue;
-              }
+              } }
               inQuotes = !inQuotes;
               continue;
-            }
+            } }
             if (ch === ',' && !inQuotes) {
               out.push(cur);
               cur = '';
               continue;
-            }
+            } }
             cur += ch;
-          }
+          } }
           if (cur !== '') out.push(cur);
           return out.map(s => s.trim()).filter(Boolean);
-        } catch {
+        } }catch {
           return [];
-        }
+        } }
       };
 
       // safe tags parsing
       let tags: string[] = [];
       if (Array.isArray(r.tags)) {
         tags = r.tags.map(String);
-      } else if (typeof r.tags === 'string' && r.tags.length) {
+      } }else if (typeof r.tags === 'string' && r.tags.length) {
         const s = r.tags.trim();
         // JSON array: string
         if (s.startsWith('[')) {
-          try {,
-            const parsed = JSON.parse(s);
+          try { const parsed = JSON.parse(s);
             if (Array.isArray(parsed)) tags = parsed.map(String);
             else tags = [String(parsed)];
-          } catch {
+          } }catch {
             tags = [s];
-          }
-        } else if (s.startsWith('{') && s.endsWith(' }')) {'`'`
+          } }
+        } }else if (s.startsWith('{') && s.endsWith(' } })) {'`'`
           // Postgres text[] literal
           try {
             tags = parsePgArray(s);
-          } catch {
+          } }catch {
             tags = [s];
-          }
-        } else {
+          } }
+        } }else {
           // fallback: comma-separated or single value
           tags = s
             .split(',')
             .map(t => t.trim())
             .filter(Boolean);
-        }
-      }
+        } }
+      } }
 
       // safe context_data parsing
       let contextData: Record<string, string> | undefined;
       if (r.context_data && typeof r.context_data === 'object') {
         contextData = r.context_data as Record<string, string>;
-      } else if (typeof r.context_data === 'string' && r.context_data.length) {
+      } }else if (typeof r.context_data === 'string' && r.context_data.length) {
         const s = r.context_data.trim();
         if (s.startsWith('{') || s.startsWith('[')) {
-          try {,
-            const parsed = JSON.parse(s);
+          try { const parsed = JSON.parse(s);
             if (parsed && typeof parsed === 'object') contextData = parsed as Record<string, string>;
-          } catch {
+          } }catch {
             // ignore parse errors
-          }
-        } else {
+          } }
+        } }else {
           // try simple key=value pairs separated by commas
           try {
             const obj: Record<string, string> = {};
@@ -185,21 +183,21 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
               if (k) obj[k.trim()] = (rest.join('=') || '').trim();
             });
             if (Object.keys(obj).length) contextData = obj;
-          } catch {
+          } }catch {
             contextData = undefined;
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       // normalize savedAt to ISO: string
       let savedAt = new Date().toISOString();
       if (r.saved_at) {
         if (r.saved_at instanceof Date) {
           savedAt = r.saved_at.toISOString();
-        } else if (typeof r.saved_at === 'string' && !isNaN(Date.parse(r.saved_at))) {
+        } }else if (typeof r.saved_at === 'string' && !isNaN(Date.parse(r.saved_at))) {
           savedAt = new Date(r.saved_at).toISOString();
-        }
-      }
+        } }
+      } }
 
       return {
         id: String(r.id),
@@ -214,11 +212,12 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         contextData
       };
     });
-  } catch (err) {
-    console.error('getSavedCitationsForUser error:', err);'
+  } }catch (err) {
+    console.error('getSavedCitationsForUser error:', err);
     // bubble up for caller to decide fallback behavior
     throw err;
-  } finally {
+  } }finally {
     if (client && typeof client.release === 'function') client.release();
-  }
-}
+  } }
+} }
+

@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json, error } }from '@sveltejs/kit';
 /*
  * XState API Endpoint - State Management & Orchestration
  * Routes to: xstate-manager.exe: 8212
  */
-import { ensureError } from '$lib/utils/ensure-error';
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { productionServiceClient } }from '$lib/services/productionServiceClient';
 
 export interface XStateEvent {
   type: string;
@@ -13,17 +13,17 @@ export interface XStateEvent {
   machineId?: string;
   actorId?: string;
   timestamp?: string;
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const eventData: XStateEvent = await request.json();
     if (!eventData.type) {
       return error(400, ensureError({ message: 'Event type is required' }));
-    }
+    } }
     // Add timestamp if not provided
     if (!eventData.timestamp) {
       eventData.timestamp = new Date().toISOString();
-    }
+    } }
     const result = await productionServiceClient.execute('xstate.event', {
       event: eventData,
       source: 'sveltekit-frontend'
@@ -32,15 +32,15 @@ export const, POST: RequestHandler = async ({ request }) => {
       success: true,
       data: result,
       metadata: {
-       , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
         service: 'xstate-manager',
         operation: 'event',
         event_type: eventData.type
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('XState API Error: ', err);'`'`
-    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);'' }
+    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);'' } }
 };
 export const GET: RequestHandler = async ({ url }) => {
   const machineId = url.searchParams.get('machineId');
@@ -52,23 +52,23 @@ export const GET: RequestHandler = async ({ url }) => {
         machineId
       });
       return json({ success: true, data: result });
-    }
+    } }
     if (actorId) {
       // Get actor state
       const result = await productionServiceClient.execute('xstate.actor.status', {
         actorId
       });
       return json({ success: true, data: result });
-    }
+    } }
     // XState service overview
     const health = await productionServiceClient.execute('services.health', {});
     return json({
       service: 'xstate',
       status: 'operational',
       endpoints: {
-       , event: '/api/v1/xstate (POST)',
-        machine_status: '/api/v1/xstate?machineId={id}',
-        actor_status: '/api/v1/xstate?actorId={id}',
+  event: '/api/v1/xstate (POST)',
+        machine_status: '/api/v1/xstate?machineId={id} },
+        actor_status: '/api/v1/xstate?actorId={id} },
         machines: '/api/v1/xstate/machines',
         actors: '/api/v1/xstate/actors` },'`
       health: {
@@ -93,7 +93,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'ERROR',
         'RESET',
       ],
-      version: '1.0.0' });'` } catch (err: any) {'`
+      version: '1.0.0' });'` } }catch (err: any) {'`
     console.error('XState GET Error: ', err);'`'`
-    return error(503, ensureError({ message: 'XState service health check failed' }));'` }'`
+    return error(503, ensureError({ message: 'XState service health check failed' }));'` } }`
 };
+

@@ -1,18 +1,18 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 /*
  * PostgreSQL-First Worker Trigger API
  * Handles Redis events for auto-tagging and case processing
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { redisService } from '$lib/server/redis-service';
-import { z } from 'zod';
-import { db } from '$lib/server/db/index';
-import { cases } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { redisService } }from '$lib/server/redis-service';
+import { z } }from 'zod';
+import { db } }from '$lib/server/db/index';
+import { cases } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
 import stream from 'stream';
-import { EventEmitter } from 'events';
+import { EventEmitter } }from 'events';
 // Validation schema for worker trigger requests
 const WorkerTriggerSchema = z.object({
   type: z.enum(['case_created', 'evidence_uploaded', 'document_processed', 'manual_trigger']),
@@ -22,7 +22,7 @@ const WorkerTriggerSchema = z.object({
   action: z.enum(['tag', 'process', 'mirror', 'analyze']).default('process'),
   metadata: z
     .object({
-     , priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
       caseType: z.string().optional(),
       tags: z.array(z.string()).optional(),
       trigger: z.string().optional(),
@@ -46,21 +46,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Generate correlation ID if not provided
     if (!triggerData.correlationId) {
       triggerData.correlationId = `trigger-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }
+    } }
     // Add timestamp if not provided
     if (!triggerData.metadata?.timestamp) {
       triggerData.metadata = {
         ...triggerData.metadata,
         timestamp: new Date().toISOString()
       };
-    }
+    } }
     // Validate case exists if caseId provided
     if (triggerData.caseId) {
       const caseExists = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, triggerData.caseId)).limit(1);
       if (caseExists.length === 0) {
         return error(404, `Case not found: ${triggerData.caseId}`);
-      }
-    }
+      } }
+    } }
     // Ensure Redis connection (defensive cast to avoid ambient mismatches)
     await (redisService as: any).initialize();
     // Create Redis stream event
@@ -96,13 +96,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             trigger: triggerData.metadata?.trigger || 'api',
             correlation_id: triggerData.correlationId,
             timestamp: new Date().toISOString()
-          })}'
+          })} }
         `);`
         console.log(`📡 PostgreSQL NOTIFY sent for case ${triggerData.caseId}`);
-      } catch (pgError) {
+      } }catch (pgError) {
         console.warn('⚠️ PostgreSQL NOTIFY failed:', pgError);
-        // Don't fail the request if PG notification fails` }'`
-    }
+        // Don't fail the request if PG notification fails` } }`
+    } }
     return json({
       success: true,
       data: {
@@ -113,30 +113,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId: triggerData.caseId
       },
       metadata: {
-       , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: `2.0` }
+        version: `2.0` } }
     });
-  } catch (validationError) {
+  } }catch (validationError) {
     console.error('❌ Worker trigger validation failed:', validationError);
     if (validationError instanceof z.ZodError) {
       return error(400, `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed` }`);'`
-    }
+    } }
     return error(
       500,
       `Worker trigger failed: ${validationError instanceof Error ? validationError.message : `Unknown error` }`
     );
-  }
+  } }
 };
 
 // Based on node-redis types and usage in this file.
 interface RedisStreamInfo {
   length: number;
-  'first-entry': { id: string;, message: Record<string, string> } | null;
-  'last-entry': { id: string;, message: Record<string, string> } | null;
-}
+  'first-entry': { id: string; message: Record<string, string> } }| null;
+  'last-entry': { id: string; message: Record<string, string> } }| null;
+} }
 
-interface RedisStreamEvent { id: string;, message: {, timestamp: string;, type: string;
+interface RedisStreamEvent { id: string;, message: { timestamp: string;, type: string;
     action: string;
     caseId: string;
     evidenceId: string;
@@ -144,13 +144,13 @@ interface RedisStreamEvent { id: string;, message: {, timestamp: string;, type
     metadata: string;
     retry: '0' | '1';
   };
-}
+} }
 
 /*
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
  */
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     // Ensure Redis connection
     await redisService.initialize();
@@ -170,39 +170,39 @@ export const, GET: RequestHandler = async () => {
       caseId: event.message.caseId || null,
       evidenceId: event.message.evidenceId || null,
       documentId: event.message.documentId || null,
-      metadata: JSON.parse(event.message.metadata || '{}'),
+      metadata: JSON.parse(event.message.metadata || '{} }),
       retry: event.message.retry === '1` }));'`
     return json({
       success: true,
       data: {
         streamInfo: streamInfo
           ? {
-             , length: streamInfo.length,
+  length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
               lastEntry: streamInfo['last-entry']
-            }
+            } }
           : null,
         recentEvents: events,
-        workerStatus: 'active', // TODO: Implement actual worker health check;, lastProcessed: events.length > 0 ? events[0].timestamp : null
+        workerStatus: 'active', // TODO: Implement actual worker health check; lastProcessed: events.length > 0 ? events[0].timestamp : null
       },
       metadata: {
-       , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: `2.0` }
+        version: `2.0` } }
     });
-  } catch (e) {
+  } }catch (e) {
     const error = ensureError(e);
     console.error('❌ Worker status check failed:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Worker status check failed',
-          code: `WORKER_STATUS_ERROR` }
+  message: 'Worker status check failed',
+          code: 'WORKER_STATUS_ERROR' } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * DELETE /api/worker/autotag/trigger
@@ -213,7 +213,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     // TODO: Add proper admin authentication check
     // if (!locals.user || locals.user.role !== 'admin') {
     //   return error(403, 'Admin access required')
-    // }
+    // } }
     // Ensure Redis connection
     await redisService.initialize();
     const streamName = 'autotag:requests';
@@ -223,30 +223,31 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     const deletedCount = streamInfo?.length ?? 0;
     // Delete the entire stream
     await redisService.del(streamName);
-    console.log(`🗑️ Worker event stream cleared: ${deletedCount} events deleted`);
+    console.log(`🗑️ Worker event stream cleared: ${deletedCount} }events deleted`);
     return json({
       success: true,
       data: {
-       , deletedEvents: deletedCount,
+  deletedEvents: deletedCount,
         streamName,
         clearedAt: new Date().toISOString()
       },
       metadata: {
-       , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
         operation: 'stream-clear',
-        version: `2.0` }
+        version: `2.0` } }
     });
-  } catch (e) {
+  } }catch (e) {
     const error = ensureError(e);
     console.error('❌ Worker stream clear failed:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Worker stream clear failed',
-          code: `STREAM_CLEAR_ERROR` }
+  message: 'Worker stream clear failed',
+          code: 'STREAM_CLEAR_ERROR' } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

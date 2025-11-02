@@ -3,17 +3,17 @@
  * Connects the existing Enhanced Caching Service with Revolutionary AI Architecture
  * Provides seamless integration between Redis L1/L2 caching and Nintendo-inspired optimizations
  */
-import { enhancedCachingService } from './enhanced-caching-service.js';
-import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from './enhanced-caching-service.js';
-import { revolutionaryAI } from './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
-import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from './revolutionary-ai-integration.js';
+import { enhancedCachingService } }from './enhanced-caching-service.js';
+import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } }from './enhanced-caching-service.js';
+import { revolutionaryAI } }from './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
+import type { RevolutionaryAIQuery, RevolutionaryAIResponse } }from './revolutionary-ai-integration.js';
 // simdJSONAccelerator is not directly used in the bridge, but revolutionaryAI might use it.
-// import { simdJSONAccelerator } from '$lib/wasm/simd-json-wrapper';
-import { chrRomPatternCache } from '$lib/cache/chr-rom-pattern-cache';
-import { visualMemoryPalace } from '$lib/memory/visual-memory-palace-integration';
-import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
-import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
-import type { LegalVisualizationVertex } from '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
+// import { simdJSONAccelerator } }from '$lib/wasm/simd-json-wrapper';
+import { chrRomPatternCache } }from '$lib/cache/chr-rom-pattern-cache';
+import { visualMemoryPalace } }from '$lib/memory/visual-memory-palace-integration';
+import type { LegalDocumentJSON } }from '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
+import type { CHRROMPattern } }from '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
+import type { LegalVisualizationVertex } }from '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
 
 // Local lightweight type to avoid casting to `any` everywhere
 type AnyCachedResult = {
@@ -61,9 +61,9 @@ export interface UnifiedCacheResult {
   optimizationLevel: number;
   // Cache source information
   cacheSource: 'enhanced' | 'revolutionary' | 'hybrid';
-}
+} }
 
-export interface HybridCacheQuery {, query: string;, type: 'embedding' | 'query' | 'revolutionary';
+export interface HybridCacheQuery { query: string;, type: 'embedding' | 'query' | 'revolutionary';
   options?: {
     // Enhanced caching options
     useEmbeddingCache?: boolean;
@@ -78,7 +78,7 @@ export interface HybridCacheQuery {, query: string;, type: 'embedding' | 'query
     cacheStrategy?: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive';
     fallbackEnabled?: boolean;
   };
-}
+} }
 
 class EnhancedCachingRevolutionaryBridge {
   private initialized = $state(false);
@@ -90,7 +90,7 @@ class EnhancedCachingRevolutionaryBridge {
     hybridQueries: 0,
     totalQueries: 0,
     averageResponseTime: 0,
-    bestStrategy: 'adaptive';, as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };'`
+    bestStrategy: 'adaptive'; as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };'`
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -102,10 +102,10 @@ class EnhancedCachingRevolutionaryBridge {
         // A simple health check or initialization call for revolutionaryAI
         await revolutionaryAI.healthCheck(); // Assuming healthCheck exists and initializes if needed
         this.revolutionaryAvailable = true;
-      } catch (err) {
+      } }catch (err) {
         this.revolutionaryAvailable = $state(false);
         console.warn('⚠️ Revolutionary AI initialization failed (will continue with enhanced caching):', err);
-      }
+      } }
       // Consider the bridge initialized if at least the enhanced caching service is present or revolutionary succeeded.
       this.initialized = Boolean(enhancedOk || this.revolutionaryAvailable);
       if (this.initialized) {
@@ -114,14 +114,14 @@ class EnhancedCachingRevolutionaryBridge {
           this.revolutionaryAvailable,
           ')'
         );
-      } else {
+      } }else {
         throw new Error('Bridge failed to initialize core systems');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('❌ Bridge initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Unified query processing that intelligently routes between systems
@@ -130,7 +130,7 @@ class EnhancedCachingRevolutionaryBridge {
     const startTime = performance.now();
     if (!this.initialized) {
       await this.initialize();
-    }
+    } }
     this.performanceMetrics.totalQueries++;
     try {
       // Determine optimal strategy
@@ -152,7 +152,7 @@ class EnhancedCachingRevolutionaryBridge {
         default:
           result = await this.adaptiveStrategy(hybridQuery, startTime);
           break;
-      }
+      } }
 
       // Update performance metrics
       this.updateMetrics(result);
@@ -169,7 +169,7 @@ class EnhancedCachingRevolutionaryBridge {
         `📊 Cache hit rate: ${stats.cacheHitRate?.toFixed?.(2) ?? 'N/A'}%, Source: ${stats.cacheSource ?? 'unknown` }`'`
       );
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Unified query processing failed:', error);
       // Return fallback result
       return {
@@ -184,8 +184,8 @@ class EnhancedCachingRevolutionaryBridge {
         documents: [],
         visualizations: []
       };
-    }
-  }
+    } }
+  } }
 
   // --- Strategy Implementations (Stubs) ---
 
@@ -194,16 +194,16 @@ class EnhancedCachingRevolutionaryBridge {
   ): 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive' {
     if (query.options?.cacheStrategy) {
       return query.options.cacheStrategy;
-    }
+    } }
     // Simple adaptive logic for now
     if (
       this.revolutionaryAvailable &&
       this.performanceMetrics.revolutionaryCacheHits > this.performanceMetrics.enhancedCacheHits
     ) {
       return, 'revolutionary_first';
-    }
+    } }
     return, 'enhanced_first';
-  }
+  } }
 
   private async enhancedFirstStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {
     // Try enhanced caching first
@@ -212,22 +212,22 @@ class EnhancedCachingRevolutionaryBridge {
     if (cachedResult) {
       this.performanceMetrics.enhancedCacheHits++;
       return { ...cachedResult, totalResponseTime: performance.now() - startTime, cacheSource: 'enhanced' };
-    }
+    } }
 
     // Fallback to revolutionary AI if not cached
     const revolutionaryResult = await this.processWithRevolutionaryAI(query, startTime, 'hybrid');
     await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for, 1 hour
     return { ...revolutionaryResult, cacheSource: 'hybrid' };
-  }
+  } }
 
   private async revolutionaryFirstStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {
     // Directly process with revolutionary AI (which has its own internal caching)
     const revolutionaryResult = await this.processWithRevolutionaryAI(query, startTime, 'revolutionary');
     if (revolutionaryResult.cacheHitRate > 0) {
       this.performanceMetrics.revolutionaryCacheHits++;
-    }
+    } }
     return revolutionaryResult;
-  }
+  } }
 
   private async parallelStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {
     const cacheKey = this.generateQueryKey(query);
@@ -239,20 +239,20 @@ class EnhancedCachingRevolutionaryBridge {
     if (enhancedResult) {
       this.performanceMetrics.enhancedCacheHits++;
       return { ...enhancedResult, totalResponseTime: performance.now() - startTime, cacheSource: 'enhanced' };
-    }
+    } }
 
     if (revolutionaryResult.cacheHitRate > 0) {
       this.performanceMetrics.revolutionaryCacheHits++;
-    }
+    } }
     await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for, 1 hour
     return { ...revolutionaryResult, cacheSource: 'hybrid' };
-  }
+  } }
 
   private async adaptiveStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {
     // For simplicity, adaptive defaults to enhanced_first for now.
     // More complex logic would involve real-time performance monitoring.
     return this.enhancedFirstStrategy(query, startTime);
-  }
+  } }
 
   private async processWithRevolutionaryAI(
     query: HybridCacheQuery,
@@ -261,19 +261,17 @@ class EnhancedCachingRevolutionaryBridge {
   ): Promise<UnifiedCacheResult> {
     if (!this.revolutionaryAvailable) {
       throw new Error('Revolutionary AI is not available.');
-    }
+    } }
 
-    const revolutionaryQuery: RevolutionaryAIQuery = {
-     , query: query.query,
+    const revolutionaryQuery: RevolutionaryAIQuery = { query: query.query,
       type: 'semantic', // Default type, can be refined
-      options: {
-       , useGPUVisualization: query.options?.useCHRROMPatterns || false,
+      options: { useGPUVisualization: query.options?.useCHRROMPatterns || false,
         enableSIMDAcceleration: query.options?.enableSIMDAcceleration || false,
         useCHRROMPatterns: query.options?.useCHRROMPatterns || false,
         useMemoryPalace: query.options?.useMemoryPalace || false,
         compressionLevel: query.options?.compressionLevel || 'medium',
         responseFormat: 'json'
-      }
+      } }
     };
 
     // Call the Revolutionary AI to get a response
@@ -281,8 +279,7 @@ class EnhancedCachingRevolutionaryBridge {
     const respLike = response as: unknown as RevolutionaryResponseLike; // Cast for easier access to optional fields
     const optim = respLike.optimizations || {};
 
-    return {
-     , chrRomPatterns: response.results.patterns || [],
+    return { chrRomPatterns: response.results.patterns || [],
       memoryPalacePath: response.results.memoryPath || [],
       simdAcceleration: !!query.options?.enableSIMDAcceleration,
       documents: response.results.documents || [],
@@ -294,7 +291,7 @@ class EnhancedCachingRevolutionaryBridge {
         (((optim.simdSpeedup || 0) + (optim.gpuAcceleration || 0) + (optim.memoryReduction || 0)) / 3) * 100,
       cacheSource: source
     };
-  }
+  } }
 
   private generateQueryKey(query: HybridCacheQuery): string {
     const keyData = {
@@ -305,7 +302,7 @@ class EnhancedCachingRevolutionaryBridge {
     return btoa(JSON.stringify(keyData))
       .replace(/[^a-zA-Z0-9]/g, '')
       .substring(0, 32);
-  }
+  } }
 
   private updateMetrics(result: UnifiedCacheResult): void {
     const metrics = this.performanceMetrics;
@@ -320,11 +317,11 @@ class EnhancedCachingRevolutionaryBridge {
     if (procTime < metrics.averageResponseTime && hitRate > 50) {
       if (result.cacheSource === 'enhanced') {
         metrics.bestStrategy = 'enhanced_first';
-      } else if (result.cacheSource === 'revolutionary') {
+      } }else if (result.cacheSource === 'revolutionary') {
         metrics.bestStrategy = 'revolutionary_first';
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Convenience methods for specific use cases
@@ -333,12 +330,11 @@ class EnhancedCachingRevolutionaryBridge {
     return await this.processUnifiedQuery({
       query: text,
       type: 'embedding',
-      options: {
-       , useEmbeddingCache: true,
+      options: { useEmbeddingCache: true,
         ...options
-      }
+      } }
     });
-  }
+  } }
 
   async getCachedQueryResultsUnified(
     queryText: string,
@@ -347,12 +343,11 @@ class EnhancedCachingRevolutionaryBridge {
     return await this.processUnifiedQuery({
       query: queryText,
       type: 'query',
-      options: {
-       , useQueryCache: true,
+      options: { useQueryCache: true,
         ...options
-      }
+      } }
     });
-  }
+  } }
 
   async processLegalQueryUnified(
     queryText: string,
@@ -361,16 +356,15 @@ class EnhancedCachingRevolutionaryBridge {
     return await this.processUnifiedQuery({
       query: queryText,
       type: 'revolutionary',
-      options: {
-       , enableSIMDAcceleration: true,
+      options: { enableSIMDAcceleration: true,
         useCHRROMPatterns: true,
         useMemoryPalace: true,
         compressionLevel: 'maximum',
         cacheStrategy: 'adaptive',
         ...options
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Get comprehensive performance metrics
@@ -385,7 +379,7 @@ class EnhancedCachingRevolutionaryBridge {
       hybridQueryRate: total > 0 ? metrics.hybridQueries / total : 0,
       overallEfficiency: total > 0 ? (metrics.enhancedCacheHits + metrics.revolutionaryCacheHits) / total : 0
     };
-  }
+  } }
 
   /**
    * Reset metrics for testing or optimization
@@ -397,12 +391,12 @@ class EnhancedCachingRevolutionaryBridge {
       hybridQueries: 0,
       totalQueries: 0,
       averageResponseTime: 0,
-      bestStrategy: 'adaptive' };'` }'`
+      bestStrategy: 'adaptive' };'` } }`
 
   // --- Health Check and Metrics for Bridge ---
   async getAIHealthStatus(): Promise<any> {
     return revolutionaryAI.healthCheck();
-  }
+  } }
 
   async getCacheHealthStatus(): Promise<any> {
     const redisStatus = await enhancedCachingService.healthCheck();
@@ -412,12 +406,11 @@ class EnhancedCachingRevolutionaryBridge {
     return {
       ...redisStatus,
       memoryPalace: memoryPalaceAnalytics,
-      chrRomPatternCache: {
-       , size: patternCacheSize,
+      chrRomPatternCache: { size: patternCacheSize,
         status: patternCacheSize > 0 ? 'active' : `idle` },
       status: redisStatus.local && redisStatus.redis && memoryPalaceAnalytics ? 'healthy' : `degraded` };
-  }
-}
+  } }
+} }
 
 /**
  * Singleton instance for global use
@@ -429,13 +422,14 @@ export const enhancedCachingRevolutionaryBridge = new EnhancedCachingRevolutiona
  */
 export async function getUnifiedEmbedding(text: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.getCachedEmbeddingUnified(text, options);
-}
+} }
 export async function getUnifiedQueryResults(query: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.getCachedQueryResultsUnified(query, options);
-}
+} }
 export async function processUnifiedLegalQuery(query: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.processLegalQueryUnified(query, options);
-}
+} }
 export async function getBridgeMetrics(): Promise<any> {
   return enhancedCachingRevolutionaryBridge.getPerformanceMetrics();
-}
+} }
+

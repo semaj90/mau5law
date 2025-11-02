@@ -8,8 +8,8 @@
  * Uses embeddinggemma:latest model via centralized service
  *
  * POST /api/embeddings/ollama
- * Body: { text: string } or { texts: string[] } or { input: string } or { prompt: string }
- * Response: { embedding: number[] } or { embeddings: number[][] }
+ * Body: { text: string } }or { texts: string[] } }or { input: string } }or { prompt: string } }
+ * Response: { embedding: number[] } }or { embeddings: number[][] } }
  *
  * Production Services:
  * - Ollama; AI: Centralized embeddings via services.ts
@@ -17,21 +17,21 @@
  * - Dynamic model configuration from environment
  *
  * Performance:
- * - Cache;, hits: <1ms (Redis, retrieval)
+ * - Cache; hits: <1ms (Redis, retrieval)
  * - Fresh embeddings: 50-100ms (GPU processing)
  * - Batch processing supported
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { generateEmbedding, services } from '$lib/server/services';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { readBodyFast } }from '$lib/server/utils/json-fast';
+import { generateEmbedding, services } }from '$lib/server/services';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await readBodyFast(request);
     if (!body) {
       return json({ error: 'Request body required' }, { status: 400 });
-    }
+    } }
 
     const startTime = Date.now();
 
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const text of body.texts) {
         const embedding = await generateEmbedding(text);
         results.push(embedding);
-      }
+      } }
 
       return json({
         embeddings: results,
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
         production: true,
         service: 'ollama-centralized'
       });
-    }
+    } }
 
     // Handle batch embeddings (text array - alternative format)
     const text = body.text || body.input || body.prompt;
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const t of text) {
         const embedding = await generateEmbedding(t);
         results.push(embedding);
-      }
+      } }
 
       return json({
         embedding: results, // backward compatibility
@@ -75,12 +75,12 @@ export const POST: RequestHandler = async ({ request }) => {
         production: true,
         service: 'ollama-centralized'
       });
-    }
+    } }
 
     // Handle single embedding
     if (!text) {
       return json({ error: 'text, input, or prompt required' }, { status: 400 });
-    }
+    } }
 
     console.log('🚀 embeddings/ollama: Generating embedding via centralized service');
 
@@ -93,18 +93,18 @@ export const POST: RequestHandler = async ({ request }) => {
       production: true,
       service: 'ollama-centralized'
     });
-  } catch (err) {
-    console.error('❌ embeddings/ollama error:', err);'
+  } }catch (err) {
+    console.error('❌ embeddings/ollama error:', err);
 
     if (err instanceof Response) {
       throw err;
-    }
+    } }
 
     return json(
       { error: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
 
     if (!response.ok) {
       throw error(503, 'Ollama service unavailable');
-    }
+    } }
 
     const data = await response.json();
     const models = data.models || [];
@@ -136,8 +136,9 @@ export const GET: RequestHandler = async () => {
       model_available: hasEmbeddingModel,
       available_models: models.map((m: any) => m.name),
       production: true,
-      service: 'ollama-centralized' });'' } catch (err) {
+      service: 'ollama-centralized' });'' } }catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');
-  }
+  } }
 };
+

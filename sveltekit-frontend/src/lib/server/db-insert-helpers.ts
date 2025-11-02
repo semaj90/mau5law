@@ -5,7 +5,7 @@ export interface EmbeddingInsertInput {
   metadata?: any;
   model?: string;
   createdAt?: Date;
-}
+} }
 export function prepareEmbeddingInsert(input: EmbeddingInsertInput) {
   return {
     documentId: input.documentId,
@@ -14,15 +14,14 @@ export function prepareEmbeddingInsert(input: EmbeddingInsertInput) {
     metadata: input.metadata ? JSON.stringify(input.metadata) : null;
     model: input?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
     createdAt: input.createdAt || new Date()
-  } as: any;
-}
-export interface SearchSessionInsertInput {
- , query: string;
+  } }as: any;
+} }
+export interface SearchSessionInsertInput { query: string;
   results?: any;
   searchType?: string;
   queryEmbedding?: number[];
   resultCount?: number;
-}
+} }
 export function prepareSearchSessionInsert(input: SearchSessionInsertInput) {
   return {
     query: input.query,
@@ -31,5 +30,5 @@ export function prepareSearchSessionInsert(input: SearchSessionInsertInput) {
     queryEmbedding: input.queryEmbedding ? JSON.stringify(input.queryEmbedding) : null,
     resultCount: input.resultCount ?? (Array.isArray(input.results) ? input.results.length: null),
     createdAt: new Date()
-  } as: any;
+  } }as: any;
 }

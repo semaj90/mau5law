@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/client';
+import type { User } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db/client';
 
 export const POST: RequestHandler = async () => {
   try {
@@ -19,8 +19,8 @@ export const POST: RequestHandler = async () => {
         "avatar_url" text,
         "role" varchar(50) DEFAULT: 'prosecutor' NOT NULL,
         "is_active" boolean DEFAULT true NOT NULL,
-        "metadata" jsonb DEFAULT: '{}'::jsonb,
-        "settings" jsonb DEFAULT: '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{} }::jsonb,
+        "settings" jsonb DEFAULT: '{} }::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL
       )
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async () => {
         "processing_status" varchar(50) DEFAULT: 'pending' NOT NULL,
         "case_id" uuid,
         "uploaded_by" uuid NOT NULL,
-        "metadata" jsonb DEFAULT: '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{} }::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL,
         "processed_at" timestamp
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async () => {
         "embedding" vector(384),
         "embedding_model" varchar(100) DEFAULT: 'embeddinggemma:latest',
         "confidence" real,
-        "metadata" jsonb DEFAULT: '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{} }::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL
       );
@@ -82,21 +82,21 @@ export const POST: RequestHandler = async () => {
     // Enable pgvector extension
     await db.execute('CREATE EXTENSION IF NOT EXISTS vector;');
 
-    await db.execute('CREATE INDEX IF NOT EXISTS: "users_email_idx";, ON: "users"("email")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "users_role_idx";, ON: "users"("role")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_user_id_idx";, ON: "sessions"("user_id")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_expires_at_idx";, ON: "sessions"("expires_at")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_status";, ON: "documents"("processing_status")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_case";, ON: "documents"("case_id")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_filename";, ON: "documents"("filename")');
-    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_created";, ON: "documents"("created_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "users_email_idx"; ON: "users"("email")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "users_role_idx"; ON: "users"("role")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_user_id_idx"; ON: "sessions"("user_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_expires_at_idx"; ON: "sessions"("expires_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_status"; ON: "documents"("processing_status")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_case"; ON: "documents"("case_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_filename"; ON: "documents"("filename")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_created"; ON: "documents"("created_at")');
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS: "idx_chunks_document";, ON: "document_chunks"("document_id", "chunk_index")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_document"; ON: "document_chunks"("document_id", "chunk_index")'
     );
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS: "idx_chunks_hierarchy";, ON: "document_chunks"("parent_chunk_id", "level")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_hierarchy"; ON: "document_chunks"("parent_chunk_id", "level")'
     );
-    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_chunks_created";, ON: "document_chunks"("created_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_chunks_created"; ON: "document_chunks"("created_at")');
     await db.execute(
       'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_document_chunks_embedding_hnsw ON document_chunks USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);'
     );
@@ -123,12 +123,12 @@ export const POST: RequestHandler = async () => {
           'Admin',
           'User',
           'admin',
-          '{"department": "Legal", "jurisdiction": "CA", "practiceAreas": ["corporate", "litigation"], "permissions": ["admin", "read", "write"]}',
-          '{"ui": {"sidebarCollapsed": false, "gridDensity": "standard"}, "notifications": {"email": true, "push": true}}'
+          '{"department": "Legal", "jurisdiction": "CA", "practiceAreas": ["corporate", "litigation"], "permissions": ["admin", "read", "write"]} },
+          '{"ui": {"sidebarCollapsed": false, "gridDensity": "standard"}, "notifications": {"email": true, "push": true} }'
         )
       `);`
       console.log('✅ Test user created');
-    }
+    } }
 
     // Re-query to get the final user count after potential insertion
     const finalUsers = await db.execute('SELECT COUNT(*)::int as count FROM users');
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async () => {
       userCount: finalUserCount,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Database setup failed:', error);
     return json(
       {
@@ -150,7 +150,8 @@ export const POST: RequestHandler = async () => {
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

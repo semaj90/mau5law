@@ -1,12 +1,12 @@
-import { randomUUID } from 'node:crypto';
-import Loki, { type Collection } from 'lokijs';
+import { randomUUID } }from 'node:crypto';
+import Loki, { type Collection } }from 'lokijs';
 import Fuse from 'fuse.js';
-import Redis, { type Redis as IORedis } from 'ioredis';
-import { QdrantClient, type PointStruct } from '@qdrant/js-client-rest';
-import { Pool, type PoolClient } from 'pg';
-import neo4j, { type Driver as Neo4jDriver, type Session } from 'neo4j-driver';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import Redis, { type Redis as IORedis } }from 'ioredis';
+import { QdrantClient, type PointStruct } }from '@qdrant/js-client-rest';
+import { Pool, type PoolClient } }from 'pg';
+import neo4j, { type Driver as Neo4jDriver, type Session } }from 'neo4j-driver';
+import { RecursiveCharacterTextSplitter } }from '@langchain/textsplitters';
+import { OpenAIEmbeddings } }from '@langchain/openai';
 
 type SummarizationPipeline = (
   text: string,
@@ -23,25 +23,25 @@ export interface BaseKnowledgeItem {
   createdAt?: Date | string;
   updatedAt?: Date | string;
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface EvidenceItem extends BaseKnowledgeItem {
   fileName?: string;
   sourceUrl?: string;
   bucket?: string;
   checksum?: string;
-}
+} }
 
 export interface NoteItem extends BaseKnowledgeItem {
   authorId?: string;
   caseId?: string;
   pinned?: boolean;
-}
+} }
 
 export interface CanvasItem extends BaseKnowledgeItem {
   canvasState?: any;
   zoom?: number;
-}
+} }
 
 export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
 
@@ -54,13 +54,13 @@ type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 interface CollectionContext<K, extends, KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
   fuse: Fuse<KnowledgeRecordMap[K]>;
  , fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
-}
+} }
 
 interface CollectionSpec<K, extends, KnowledgeCollectionName> {
   name: K;
   indices?: string[];
   fuseKeys?: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
-}
+} }
 
 export interface HybridConfig {
   redis?: IORedis;
@@ -85,18 +85,17 @@ export interface HybridConfig {
   transformersModel?: string;
   textSplitter?: RecursiveCharacterTextSplitter;
   collections?: Array<CollectionSpec<KnowledgeCollectionName>>;
-}
+} }
 
-interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> {, instanceId: string;, action: 'upsert' | 'remove' | 'clear';
+interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> { instanceId: string;, action: 'upsert' | 'remove' | 'clear';
   collection: KnowledgeCollectionName;
   item?: T;
   itemId?: string;
   emittedAt: string;
-}
+} }
 
 const, DEFAULT_COLLECTIONS: Array<CollectionSpec<KnowledgeCollectionName>> = [
-  {,
-    name: 'evidence',
+  { name: 'evidence',
     indices: ['id', 'tags', 'fileName'],
     fuseKeys: ['title', 'content', 'fileName', 'tags']
   },
@@ -147,8 +146,7 @@ export class LokiHybridStore {
 
     this.textSplitter =
       cfg.textSplitter ??
-      new RecursiveCharacterTextSplitter({
-       , chunkSize: 768,
+      new RecursiveCharacterTextSplitter({ chunkSize: 768,
         chunkOverlap: 128
       });
 
@@ -171,7 +169,7 @@ export class LokiHybridStore {
     this.transformersModel = cfg.transformersModel ?? 'Xenova/distilbart-cnn-6-6';
 
     this.setupCollections(cfg.collections ?? DEFAULT_COLLECTIONS);
-  }
+  } }
 
   async init(): Promise<void> {
     if (this.isInitialized) return;
@@ -187,31 +185,31 @@ export class LokiHybridStore {
           console.error('[kgcl] failed handling redis broadcast', error);
         });
       });
-    }
+    } }
 
     if (this.redis && this.config.autoPersistToRedis) {
       await this.refreshFromRedis().catch((error) => {
         console.warn('[kgcl] redis hydration failed, continuing with empty cache', error);
       });
-    }
+    } }
 
     this.isInitialized = true;
-  }
+  } }
 
   getCollectionNames(): KnowledgeCollectionName[] {
     return Array.from(this.contexts.keys());
-  }
+  } }
 
   getAll<K, extends, KnowledgeCollectionName>(collection: K): KnowledgeRecordMap[K][] {
     const ctx = this.getContext(collection);
     return ctx.collection.find();
-  }
+  } }
 
   search<K, extends, KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
     if (!query) return this.getAll(collection);
     const ctx = this.getContext(collection);
     return ctx.fuse.search(query).map((res) => res.item);
-  }
+  } }
 
   add<K, extends, KnowledgeCollectionName>(
     collection: K,
@@ -220,7 +218,7 @@ export class LokiHybridStore {
       persist?: boolean;
       broadcast?: boolean;
       embed?: boolean;
-    }
+    } }
   ): KnowledgeRecordMap[K] {
     const now = new Date();
     const enriched: KnowledgeRecordMap[K] = {
@@ -234,9 +232,9 @@ export class LokiHybridStore {
     if (existing) {
       Object.assign(existing, enriched);
       ctx.collection.update(existing);
-    } else {
+    } }else {
       ctx.collection.insert(enriched);
-    }
+    } }
 
     this.syncFuse(ctx);
 
@@ -246,16 +244,16 @@ export class LokiHybridStore {
 
     if (persist) {
       void this.persistToRedis(collection, enriched);
-    }
+    } }
     if (broadcast) {
       void this.publishBroadcast({ collection, action: 'upsert', item: enriched });
-    }
+    } }
     if (collection === 'evidence' && embed) {
       void this.embedAndSyncToQdrant(enriched as EvidenceItem);
-    }
+    } }
 
     return enriched;
-  }
+  } }
 
   upsertMany<K, extends, KnowledgeCollectionName>(
     collection: K,
@@ -264,10 +262,10 @@ export class LokiHybridStore {
       persist?: boolean;
       broadcast?: boolean;
       embed?: boolean;
-    }
+    } }
   ): KnowledgeRecordMap[K][] {
     return items.map((item) => this.add(collection, item, options));
-  }
+  } }
 
   remove(
     collection: KnowledgeCollectionName,
@@ -275,7 +273,7 @@ export class LokiHybridStore {
     options?: {
       persist?: boolean;
       broadcast?: boolean;
-    }
+    } }
   ): boolean {
     const ctx = this.getContext(collection);
     const existing = ctx.collection.findOne({ id });
@@ -290,19 +288,19 @@ export class LokiHybridStore {
       void this.redis?.hdel(this.redisKey(collection), id).catch((error) => {
         console.error('[kgcl] redis hdel failed', error);
       });
-    }
+    } }
     if (broadcast) {
       void this.publishBroadcast({ collection, action: 'remove', itemId: id });
-    }
+    } }
     return true;
-  }
+  } }
 
   clear(
     collection?: KnowledgeCollectionName,
     options?: {
       persist?: boolean;
       broadcast?: boolean;
-    }
+    } }
   ): void {
     const persist = options?.persist ?? this.config.autoPersistToRedis;
     const broadcast = options?.broadcast ?? this.config.autoBroadcast;
@@ -315,12 +313,12 @@ export class LokiHybridStore {
         void this.redis?.del(this.redisKey(name)).catch((error) => {
           console.error('[kgcl] redis del failed', error);
         });
-      }
+      } }
       if (broadcast) {
         void this.publishBroadcast({ collection: name, action: 'clear' });
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   async refreshFromRedis(collection?: KnowledgeCollectionName): Promise<void> {
     if (!this.redis) return;
@@ -335,11 +333,11 @@ export class LokiHybridStore {
       for (const json of Object.values(all)) {
         const parsed = this.deserialize(json) as KnowledgeRecordMap[typeof name];
         ctx.collection.insert(parsed);
-      }
+      } }
 
       this.syncFuse(ctx);
-    }
-  }
+    } }
+  } }
 
   async embedAndSyncToQdrant(item: EvidenceItem): Promise<void> {
     if (!this.qdrant) return;
@@ -360,11 +358,11 @@ export class LokiHybridStore {
         chunk: chunks[idx],
         chunkIndex: idx,
         sourceId: item.id
-      }
+      } }
     }));
 
     await this.qdrant.upsert(this.qdrantCollection, { points });
-  }
+  } }
 
   async syncEvidenceToPostgres(): Promise<void> {
     if (!this.pgPool) return;
@@ -389,13 +387,13 @@ export class LokiHybridStore {
             JSON.stringify(item.metadata ?? {}),
           ]
         );
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('[kgcl] postgres sync failed', error);
-    } finally {
+    } }finally {
       client?.release();
-    }
-  }
+    } }
+  } }
 
   async syncEvidenceToNeo4j(): Promise<void> {
     if (!this.neo4jDriver) return;
@@ -415,15 +413,15 @@ export class LokiHybridStore {
             title: item.title ?? null,
             summary: item.summary ?? null,
             tags: item.tags ?? []
-          }
+          } }
         );
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('[kgcl] neo4j sync failed', error);
-    } finally {
+    } }finally {
       await session?.close();
-    }
-  }
+    } }
+  } }
 
   async summarizeEvidence(id: string, maxLength = 128): Promise<string | undefined> {
     const ctx = this.getContext('evidence');
@@ -445,9 +443,9 @@ export class LokiHybridStore {
     this.syncFuse(ctx);
     if (this.config.autoPersistToRedis) {
       void this.persistToRedis('evidence', item);
-    }
+    } }
     return summary;
-  }
+  } }
 
   private setupCollections(specs: Array<CollectionSpec<KnowledgeCollectionName>>): void {
     for (const spec of specs) {
@@ -467,28 +465,28 @@ export class LokiHybridStore {
         fuseKeys: spec.fuseKeys ?? ['title', 'content', 'tags']
       };
       this.contexts.set(spec.name, ctx);
-    }
-  }
+    } }
+  } }
 
   private getContext<K, extends, KnowledgeCollectionName>(name: K): CollectionContext<K> {
     const ctx = this.contexts.get(name);
     if (!ctx) {
-      throw new Error(`Collection ${name} not registered in LokiHybridStore`);
-    }
+      throw new Error(`Collection ${name} }not registered in LokiHybridStore`);
+    } }
     return ctx;
-  }
+  } }
 
   private syncFuse<K, extends, KnowledgeCollectionName>(ctx: CollectionContext<K>): void {
     ctx.fuse.setCollection(ctx.collection.find());
-  }
+  } }
 
   private redisKey(collection: KnowledgeCollectionName): string {
     return `${this.config.redisPrefix}:${collection}`;
-  }
+  } }
 
   private redisChannel(): string {
     return `${this.config.redisPrefix}:events`;
-  }
+  } }
 
   private async persistToRedis<K, extends, KnowledgeCollectionName>(
     collection: K,
@@ -497,7 +495,7 @@ export class LokiHybridStore {
     if (!this.redis) return;
     const key = this.redisKey(collection);
     await this.redis.hset(key, item.id, JSON.stringify(this.prepareForStorage(item)));
-  }
+  } }
 
   private prepareForStorage<T, extends, KnowledgeItem>(item: T): T {
     return {
@@ -505,14 +503,14 @@ export class LokiHybridStore {
       createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : undefined,
       updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : undefined
     };
-  }
+  } }
 
   private deserialize(json: string): KnowledgeItem {
     const parsed = JSON.parse(json) as KnowledgeItem;
     if (parsed.createdAt) parsed.createdAt = new Date(parsed.createdAt);
     if (parsed.updatedAt) parsed.updatedAt = new Date(parsed.updatedAt);
     return parsed;
-  }
+  } }
 
   private async publishBroadcast(message: BroadcastMessage): Promise<void> {
     if (!this.redis) return;
@@ -522,7 +520,7 @@ export class LokiHybridStore {
       emittedAt: new Date().toISOString()
     });
     await this.redis.publish(this.redisChannel(), payload);
-  }
+  } }
 
   private async applyBroadcast(raw: string): Promise<void> {
     const parsed = JSON.parse(raw) as BroadcastMessage;
@@ -533,7 +531,7 @@ export class LokiHybridStore {
       ctx.collection.clear();
       this.syncFuse(ctx);
       return;
-    }
+    } }
 
     if (parsed.action === 'remove' && parsed.itemId) {
       const ctx = this.getContext(parsed.collection);
@@ -541,9 +539,9 @@ export class LokiHybridStore {
       if (doc) {
         ctx.collection.remove(doc);
         this.syncFuse(ctx);
-      }
+      } }
       return;
-    }
+    } }
 
     if (parsed.action === 'upsert' && parsed.item) {
       this.add(parsed.collection, parsed.item as: any, {
@@ -551,8 +549,8 @@ export class LokiHybridStore {
         broadcast: false,
         embed: false
       });
-    }
-  }
+    } }
+  } }
 
   private async ensureEmbeddings(): Promise<OpenAIEmbeddings | undefined> {
     if (this.embeddingsExplicitlyDisabled) return: undefined;
@@ -560,29 +558,30 @@ export class LokiHybridStore {
     if (!this.openAiApiKey) {
       console.warn('[kgcl] OpenAI API key missing; embeddings disabled');
       return: undefined;
-    }
-    this.embeddings = new OpenAIEmbeddings({, apiKey: this.openAiApiKey });
+    } }
+    this.embeddings = new OpenAIEmbeddings({ apiKey: this.openAiApiKey });
     return this.embeddings;
-  }
+  } }
 
   private async ensureSummarizer(): Promise<SummarizationPipeline | undefined> {
     if (this.summarizer) return this.summarizer;
     try {
-      const { pipeline } = await import('@xenova/transformers');
+      const { pipeline } }= await import('@xenova/transformers');
       this.summarizer = await pipeline('summarization', this.transformersModel);
       return this.summarizer;
-    } catch (error) {
+    } }catch (error) {
       console.warn('[kgcl] summarizer unavailable', error);
       return: undefined;
-    }
-  }
+    } }
+  } }
 
   private async connectIfNeeded(client?: IORedis): Promise<void> {
     if (!client) return;
     if (client.status === 'wait' || client.status === 'close' || client.status === 'end') {
       await client.connect();
-    }
-  }
-}
+    } }
+  } }
+} }
 
 export type { KnowledgeRecordMap };
+

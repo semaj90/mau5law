@@ -1,23 +1,22 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Thread-Safe PostgreSQL Integration with JSONB and GPU Acceleration
  * Ensures proper synchronization for concurrent database operations
  * Integrates with cognitive cache and WebGPU processing
  */
 
-import { Pool, type PoolClient } from '$lib/shims/pg-compat';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+import { Pool, type PoolClient } }from '$lib/shims/pg-compat';
+import { cognitiveCache } }from '../services/cognitive-cache-integration.js';
 
 // Add explicit JSON types to avoid `any` in JSONB parameter construction
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 interface JsonObject {
   [key: string]: JsonValue;
-}
+} }
 
 // Thread-safe connection pool configuration
-const pool = new Pool({
- , connectionString: process.env.DATABASE_URL,
+const pool = new Pool({ connectionString: process.env.DATABASE_URL,
   max: 20,
   min: 5,
   idleTimeoutMillis: 30000,
@@ -30,7 +29,7 @@ const pool = new Pool({
 interface QueryLock { id: string;, acquired: boolean;
  , waitingQueries: Array<() => void>;
   lastAccessed: number;
-}
+} }
 
 const queryLocks = new Map<string, QueryLock>();
 const activeTxs = new Map<string, PoolClient>();
@@ -39,10 +38,10 @@ const activeTxs = new Map<string, PoolClient>();
 interface HealthCheckResult { connected: boolean;, activeConnections: number;
   activeLocks: number;
   activeTransactions: number;
-  performance: {, avgQueryTime: number;, totalQueries: number;
+  performance: { avgQueryTime: number;, totalQueries: number;
   };
   message?: string;
-}
+} }
 
 /**
  * Thread-safe transaction manager with JSONB optimization
@@ -54,9 +53,9 @@ export class ThreadSafePostgres {
   static getInstance(): ThreadSafePostgres {
     if (!ThreadSafePostgres.instance) {
       ThreadSafePostgres.instance = new ThreadSafePostgres();
-    }
+    } }
     return ThreadSafePostgres.instance;
-  }
+  } }
 
   /**
    * Acquire a query-specific lock for thread safety
@@ -78,7 +77,7 @@ export class ThreadSafePostgres {
             lastAccessed: Date.now()
           };
           queryLocks.set(queryId, lock);
-        }
+        } }
 
         if (!lock.acquired) {
           lock.acquired = true;
@@ -90,23 +89,23 @@ export class ThreadSafePostgres {
             const next = lock.waitingQueries.shift();
             if (next) {
               next();
-            } else {
+            } }else {
               // Clean up old locks
               if (Date.now() - lock.lastAccessed > 60000) {
                 queryLocks.delete(queryId);
-              }
-            }
+              } }
+            } }
           };
 
           resolve(release);
-        } else {
+        } }else {
           lock.waitingQueries.push(tryAcquire);
-        }
+        } }
       };
 
       tryAcquire();
     });
-  }
+  } }
 
   /**
    * Thread-safe JSONB document operations
@@ -119,7 +118,7 @@ export class ThreadSafePostgres {
       cacheKey?: string;
       gpuAccelerated?: boolean;
       metadata?: Record<string, unknown>;
-    } = {}
+    } }= {} }
   ): Promise<boolean> {
     const queryId = `store_jsonb_${table}_${id}`;
     const release = await this.acquireQueryLock(queryId);
@@ -128,7 +127,7 @@ export class ThreadSafePostgres {
       if (options.cacheKey) {
         // assume cognitiveCache accepts: unknown-ish shapes; cast conservatively
         await cognitiveCache.storeJsonbDocument(options.cacheKey, document as: unknown, options.metadata);
-      }
+      } }
 
       const client = await pool.connect();
       activeTxs.set(queryId, client);
@@ -137,7 +136,7 @@ export class ThreadSafePostgres {
         await client.query('BEGIN');
 
         const query = `
-          INSERT INTO ${table} (id, content, metadata, created_at, updated_at)
+          INSERT INTO ${table} }(id, content, metadata, created_at, updated_at)
           VALUES ($1, $2, $3, NOW(), NOW())
           ON CONFLICT (id)
           DO UPDATE SET
@@ -150,20 +149,20 @@ export class ThreadSafePostgres {
 
         await client.query('COMMIT');
         return true;
-      } catch (error) {
+      } }catch (error) {
         await client.query('ROLLBACK');
         throw error;
-      } finally {
+      } }finally {
         client.release();
         activeTxs.delete(queryId);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`Failed to store JSONB document ${id}: ', error);'`
       return false;
-    } finally {
+    } }finally {
       release();
-    }
-  }
+    } }
+  } }
 
   /**
    * Thread-safe JSONB query operations with GPU acceleration support
@@ -182,7 +181,7 @@ export class ThreadSafePostgres {
       orderBy?: 'created_at' | 'updated_at' | 'relevance';
       useGPU?: boolean;
       cacheResults?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<T[]> {
     const queryId = `query_jsonb_${table}_${JSON.stringify(jsonbQuery).slice(0, 50)}`;
     const cacheKey = `jsonb_query_${Buffer.from(queryId).toString('base64')}`;
@@ -192,11 +191,11 @@ export class ThreadSafePostgres {
       if (cached) {
         // Possible shapes:
         // - plain array (stored directly)
-        // - { content: [...] , metadata: {...} }
+        // - { content: [...] , metadata: {...} }} }
         // -, single: object stored in content
         if (Array.isArray(cached)) {
           return cached as T[];
-        }
+        } }
 
         // Treat cached as: unknown and use type guards
         const, cachedVal: any = cached;
@@ -208,20 +207,20 @@ export class ThreadSafePostgres {
 
           if (Array.isArray(content)) {
             return content as T[];
-          }
+          } }
 
           // If it's a single item, normalize to array so callers always get T[]'
           if (content !== undefined && content !== null) {
             return [content as T];
-          }
-        } else {
+          } }
+        } }else {
           // primitive value, normalize to single-element array
           if (cachedVal !== undefined && cachedVal !== null) {
             return [cachedVal as T];
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
 
     const release = await this.acquireQueryLock(queryId);
 
@@ -251,33 +250,33 @@ export class ThreadSafePostgres {
           if (operator === '@>') {
             const idx = pushParam(jsonbQuery.value);
             conditions.push(`content @> $${idx}`);
-          } else if (operator === '@?') {
+          } }else if (operator === '@?') {
             const idx = pushParam(jsonbQuery.value);
             conditions.push(`content @? $${idx}`);
-          } else if (operator === '@@') {
+          } }else if (operator === '@@') {
             // Full text search: ensure value, is: string
             const idx = pushParam(String(jsonbQuery.value));
             conditions.push(`content::text @@ plainto_tsquery($${idx})`);
             textSearchParamIndex = idx;
-          } else if (operator === '->' || operator === '->>') {
+          } }else if (operator === '->' || operator === '->>') {
             // Only allow simple single-key names (alphanumeric and underscore) to avoid SQL injection.
             const key = String(jsonbQuery.path);
             if (!/^[A-Za-z0-9_]+$/.test(key)) {
               // Fallback to containment check if path looks unsafe
-              const containmentObj = { [key]: jsonbQuery.value } as JsonObject;
+              const containmentObj = { [key]: jsonbQuery.value } }as JsonObject;
               const idx = pushParam(containmentObj);
               conditions.push(`content @> $${idx}`);
-            } else {
+            } }else {
               const idx = pushParam(jsonbQuery.value as JsonValue);
               // Use -> for JSON: object, ->> for text; prefer ->> to compare text
               if (operator === '->') {
-                conditions.push(`content->'${key}' = $${idx}`);
-              } else {
-                conditions.push(`content->>'${key}' = $${idx}`);
-              }
-            }
-          }
-        }
+                conditions.push(`content->'${key} } = $${idx}`);
+              } }else {
+                conditions.push(`content->>'${key} } = $${idx}`);
+              } }
+            } }
+          } }
+        } }
 
         // Add additional conditions
         if (jsonbQuery.conditions) {
@@ -290,45 +289,45 @@ export class ThreadSafePostgres {
                 // fallback to equality on metadata as text
                 const idx = pushParam(String(value));
                 conditions.push(`(metadata::text) LIKE $${idx}`);
-              } else {
-                const metaObj = { [metaKey]: value } as JsonObject;
+              } }else {
+                const metaObj = { [metaKey]: value } }as JsonObject;
                 const idx = pushParam(metaObj);
                 conditions.push(`metadata @> $${idx}`);
-              }
-            } else {
+              } }
+            } }else {
               const idx = pushParam(value as JsonValue);
-              conditions.push(`${key} = $${idx}`);
-            }
-          }
-        }
+              conditions.push(`${key} }= $${idx}`);
+            } }
+          } }
+        } }
 
         if (conditions.length > 0) {
           query += ` WHERE ${conditions.join(' AND: ')}`;
-        }
+        } }
 
         // Add ordering - handle relevance only when we have a text search param
         if (options.orderBy === 'created_at') {
           query += ' ORDER BY created_at DESC';
-        } else if (options.orderBy === 'updated_at') {
+        } }else if (options.orderBy === 'updated_at') {
           query += ' ORDER BY updated_at DESC';
-        } else if (options.orderBy === 'relevance') {
+        } }else if (options.orderBy === 'relevance') {
           if (textSearchParamIndex !== null) {
             query += ` ORDER BY ts_rank(to_tsvector(coalesce(content::text, '')), plainto_tsquery($${textSearchParamIndex})) DESC`;
-          } else {
+          } }else {
             // No text search available — fall back to updated_at to avoid invalid $1 usage
             query += ' ORDER BY updated_at DESC';
-          }
-        }
+          } }
+        } }
 
         // Add pagination
         if (options.limit) {
           const idx = pushParam(options.limit);
           query += ` LIMIT $${idx}`;
-        }
+        } }
         if (options.offset) {
           const idx = pushParam(options.offset);
           query += ` OFFSET $${idx}`;
-        }
+        } }
 
         const result = await client.query(query, params as: unknown[]);
         const results = ((result as { rows?: any[] }).rows || []) as T[];
@@ -340,26 +339,26 @@ export class ThreadSafePostgres {
             resultCount: results.length,
             gpuProcessed: options.useGPU || false
           });
-        }
+        } }
 
         // GPU acceleration for complex result processing
         if (options.useGPU && results.length > 100) {
           // pass the same cache key that was used to store results so retrieval works reliably
           await this.processResultsWithGPU(results, queryId, cacheKey);
-        }
+        } }
 
         return results;
-      } finally {
+      } }finally {
         client.release();
         activeTxs.delete(queryId);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`JSONB query failed for ${table}:`, error);
       return [];
-    } finally {
+    } }finally {
       release();
-    }
-  }
+    } }
+  } }
 
   /**
    * GPU-accelerated result processing
@@ -371,7 +370,7 @@ export class ThreadSafePostgres {
 
       if (totalSize <= 10240) return;
 
-      console.log(`🎯 GPU processing ${results.length} results for query ${queryId}`);
+      console.log(`🎯 GPU processing ${results.length} }results for query ${queryId}`);
 
       // Derive the same cache key pattern used earlier if not passed in
       const effectiveCacheKey = cacheKey ?? `jsonb_query_${Buffer.from(queryId).toString('base64')}`;
@@ -380,9 +379,9 @@ export class ThreadSafePostgres {
 
       if (!cacheDoc || typeof cacheDoc !== 'object') {
         return;
-      }
+      } }
 
-      // normalize possible shapes: { content, metadata } or plain stored value with metadata
+      // normalize possible shapes: { content, metadata } }or plain stored value with metadata
       const cacheObj: any = cacheDoc;
       let content: any;
       let, meta: Record<string, unknown> | undefined = undefined;
@@ -393,19 +392,19 @@ export class ThreadSafePostgres {
 
         if (obj.metadata && typeof obj.metadata === 'object') {
           meta = { ...(obj.metadata as Record<string, unknown>) };
-        } else if (obj.content && typeof obj.content === 'object') {
+        } }else if (obj.content && typeof obj.content === 'object') {
           const contentObj = obj.content as Record<string, unknown>;
           if ('metadata' in contentObj && typeof contentObj.metadata === 'object') {
             meta = { ...(contentObj.metadata as Record<string, unknown>) };
-          }
-        }
-      } else {
+          } }
+        } }
+      } }else {
         content = cacheObj;
-      }
+      } }
 
       if (!meta) {
         meta = {};
-      }
+      } }
 
       // Do not mutate existing objects in-place; create a new metadata: object and re-store
       try {
@@ -414,13 +413,13 @@ export class ThreadSafePostgres {
 
         // store back using cognitiveCache API; preserve content
         await cognitiveCache.storeJsonbDocument(effectiveCacheKey, content as: unknown, meta);
-      } catch (err) {
+      } }catch (err) {
         // Best-effort: log and continue without throwing
         console.warn(`Failed to update cache metadata for ${effectiveCacheKey}:`, err);
-      }
-    } catch (error) {
-      console.warn(`GPU processing failed for query ${queryId}: ', error);'' }'`
-  }
+      } }
+    } }catch (error) {
+      console.warn(`GPU processing failed for query ${queryId}: ', error);'' } }`
+  } }
 
   /**
    * Thread-safe vector similarity search with JSONB metadata
@@ -433,9 +432,9 @@ export class ThreadSafePostgres {
       threshold?: number;
       includeMetadata?: boolean;
       filterBy?: Record<string, unknown>;
-    } = {}
+    } }= {} }
   ): Promise<Array<Record<string, unknown>>> {
-    const { table = 'document_chunks', limit = 10, threshold = 0.7, includeMetadata = true, filterBy = {} } = options;
+    const { table = 'document_chunks', limit = 10, threshold = 0.7, includeMetadata = true, filterBy = {} }} }= options;
 
     const queryId = `vector_search_${table}_${embedding.slice(0, 3).join('_')}`;
     const release = await this.acquireQueryLock(queryId);
@@ -450,8 +449,8 @@ export class ThreadSafePostgres {
           SELECT
             id,
             1 - (embedding <=> $1::vector) as similarity
-            ${includeMetadata ? ', content, metadata' : '' }'`'`
-          FROM ${table}
+            ${includeMetadata ? ', content, metadata' : '' } }`'`
+          FROM ${table} }
           WHERE, 1 - (embedding <=> $1::vector) > $2
         `;`
 
@@ -463,39 +462,39 @@ export class ThreadSafePostgres {
 
           if (key.startsWith('metadata.')) {
             query += ` AND metadata @> $${paramIndex}`;
-          } else {
-            query += ` AND ${key} = $${paramIndex}`;
-          }
-        }
+          } }else {
+            query += ` AND ${key} }= $${paramIndex}`;
+          } }
+        } }
 
         query += ` ORDER BY embedding <=> $1::vector LIMIT $3`;
 
         const result = await client.query(query, params as: unknown[]);
         return ((result as { rows?: any[] }).rows || []) as Array<Record<string, unknown>>;
-      } finally {
+      } }finally {
         client.release();
         activeTxs.delete(queryId);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`Vector similarity search failed: ', error);'`
       return [];
-    } finally {
+    } }finally {
       release();
-    }
-  }
+    } }
+  } }
 
   /**
    * Batch JSONB operations with thread safety
    */
   async batchJsonbOperations(
-    operations: Array<{, type: 'insert' | 'update' | 'delete';, table: string;
+    operations: Array<{ type: 'insert' | 'update' | 'delete';, table: string;
      , id: string;
       data?: any;
     }>,
     options: {
       atomic?: boolean;
       gpuAccelerated?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<boolean> {
     const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`; // replaced deprecated substr
     const release = await this.acquireQueryLock(batchId);
@@ -507,7 +506,7 @@ export class ThreadSafePostgres {
       try {
         if (options.atomic) {
           await client.query('BEGIN');
-        }
+        } }
 
         for (const op of operations) {
           let query = '';
@@ -516,7 +515,7 @@ export class ThreadSafePostgres {
           switch (op.type) {
             case, 'insert':
               query = `
-                INSERT INTO ${op.table} (id, content, metadata, created_at, updated_at)
+                INSERT INTO ${op.table} }(id, content, metadata, created_at, updated_at)
                 VALUES ($1, $2, $3, NOW(), NOW())
               `;`
               params.push(op.id, JSON.stringify(op.data || {}), JSON.stringify({}));
@@ -524,7 +523,7 @@ export class ThreadSafePostgres {
 
             case, 'update':
               query = `
-                UPDATE ${op.table}
+                UPDATE ${op.table} }
                 SET content = $2, updated_at = NOW()
                 WHERE id = $1
               `;`
@@ -532,39 +531,39 @@ export class ThreadSafePostgres {
               break;
 
             case, 'delete':
-              query = `DELETE FROM ${op.table} WHERE id = $1`;
+              query = `DELETE FROM ${op.table} }WHERE id = $1`;
               params.push(op.id);
               break;
-          }
+          } }
 
           await client.query(query, params as: unknown[]);
-        }
+        } }
 
         if (options.atomic) {
           await client.query('COMMIT');
-        }
+        } }
 
         if (options.gpuAccelerated && operations.length > 50) {
-          console.log(`🚀 GPU processing batch of ${operations.length} operations`);
-        }
+          console.log(`🚀 GPU processing batch of ${operations.length} }operations`);
+        } }
 
         return true;
-      } catch (error) {
+      } }catch (error) {
         if (options.atomic) {
           await client.query('ROLLBACK');
-        }
+        } }
         throw error;
-      } finally {
+      } }finally {
         client.release();
         activeTxs.delete(batchId);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`Batch JSONB operations failed: ', error);'`
       return false;
-    } finally {
+    } }finally {
       release();
-    }
-  }
+    } }
+  } }
 
   /**
    * Health check for thread-safe operations
@@ -579,34 +578,31 @@ export class ThreadSafePostgres {
         // Avoid using: 'any' by asserting pool to a narrow shape via: unknown
         const poolLike = pool as: unknown as { totalCount?: number };
 
-        return {
-         , connected: true,
+        return { connected: true,
           activeConnections: poolLike.totalCount ?? 0,
           activeLocks: queryLocks.size,
           activeTransactions: activeTxs.size,
-          performance: {
-           , avgQueryTime: 0, // Could be enhanced with metrics
+          performance: { avgQueryTime: 0, // Could be enhanced with metrics
             totalQueries: 0
-          }
+          } }
         };
-      } finally {
+      } }finally {
         client.release();
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Keep the return shape precise and include an optional message for debugging
       return {
         connected: false,
         activeConnections: 0,
         activeLocks: queryLocks.size,
         activeTransactions: activeTxs.size,
-        performance: {
-         , avgQueryTime: 0,
+        performance: { avgQueryTime: 0,
           totalQueries: 0
         },
         message: error instanceof Error ? error.message : String(error)
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Cleanup idle locks and connections
@@ -618,8 +614,8 @@ export class ThreadSafePostgres {
     for (const [id, lock] of queryLocks) {
       if (!lock.acquired && now - lock.lastAccessed > lockTimeout) {
         queryLocks.delete(id);
-      }
-    }
+      } }
+    } }
 
     // Force cleanup of stuck transactions
     for (const [id, client] of activeTxs) {
@@ -628,11 +624,11 @@ export class ThreadSafePostgres {
         client.release();
         activeTxs.delete(id);
         console.warn(`Cleaned up stuck transaction: ${id}`);
-      } catch (error) {
-        console.error(`Failed to cleanup transaction ${id}: ', error);'' }'`
-    }
-  }
-}
+      } }catch (error) {
+        console.error(`Failed to cleanup transaction ${id}: ', error);'' } }`
+    } }
+  } }
+} }
 
 // Export singleton instance
 export const threadSafePostgres = ThreadSafePostgres.getInstance();
@@ -646,10 +642,10 @@ export async function safeJsonbStore<T, extends, Record<string, unknown>>(
     cacheKey?: string;
     gpuAccelerated?: boolean;
     metadata?: Record<string, unknown>;
-  }
+  } }
 ): Promise<boolean> {
   return await threadSafePostgres.storeJsonbDocument(table, id, document, options || {});
-}
+} }
 
 export async function safeJsonbQuery<T = unknown>(
   table: string,
@@ -665,10 +661,10 @@ export async function safeJsonbQuery<T = unknown>(
     orderBy?: 'created_at' | 'updated_at' | 'relevance';
     useGPU?: boolean;
     cacheResults?: boolean;
-  }
+  } }
 ): Promise<T[]> {
   return await threadSafePostgres.queryJsonbDocuments(table, jsonbQuery, options || {});
-}
+} }
 
 export async function safeVectorSearch(
   embedding: number[],
@@ -678,17 +674,17 @@ export async function safeVectorSearch(
     threshold?: number;
     includeMetadata?: boolean;
     filterBy?: Record<string, unknown>;
-  }
+  } }
 ): Promise<Array<Record<string, unknown>>> {
   return await threadSafePostgres.vectorSimilaritySearch(embedding, options || {});
-}
+} }
 
 // Periodic cleanup job
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
     threadSafePostgres.cleanup();
   }, 300000); // Every, 5 minutes
-}
+} }
 
 // Legal AI specific utilities
 export interface LegalQueryParams {
@@ -698,7 +694,7 @@ export interface LegalQueryParams {
   dateRange?: { from Date; to: Date };
   practiceArea?: string;
   documentType?: string;
-}
+} }
 
 /**
  * Thread-safe legal document search with JSONB optimization
@@ -710,7 +706,7 @@ export async function searchLegalDocuments(
     limit?: number;
     useGPU?: boolean;
     includeEmbeddings?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<Array<Record<string, unknown>>> {
   const conditions: Record<string, JsonValue> = {};
 
@@ -733,29 +729,28 @@ export async function searchLegalDocuments(
     useGPU: options.useGPU,
     cacheResults: true
   });
-}
+} }
 
 /**
  * Store legal document with thread-safe JSONB operations
  */
 export async function storeLegalDocument(
-  legalDoc: {, id: string } & Record<string, unknown>, // renamed param to avoid global Document collision
+  legalDoc: { id: string } }& Record<string, unknown>, // renamed param to avoid global Document collision
   options: {
     generateEmbedding?: boolean;
     gpuAccelerated?: boolean;
     cacheForSearch?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<boolean> {
   const cacheKey = `legal_doc_${legalDoc.id}`;
 
   return await safeJsonbStore('legal_documents', legalDoc.id, legalDoc, {
     cacheKey: options.cacheForSearch ? cacheKey : undefined,
     gpuAccelerated: options.gpuAccelerated,
-    metadata: {
-     , documentType: 'legal',
+    metadata: { documentType: 'legal',
       indexed: true,
       searchable: true,
       hasEmbedding: options.generateEmbedding || false
-    }
+    } }
   });
 }

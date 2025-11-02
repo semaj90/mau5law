@@ -1,14 +1,14 @@
-import { db } from '$lib/db/connection';
-import { eq, desc } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import { chatSessions } from '$lib/server/db/schema-unified';
-import type { RequestHandler } from './$types.js';
+import { db } }from '$lib/db/connection';
+import { eq, desc } }from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import { chatSessions } }from '$lib/server/db/schema-unified';
+import type { RequestHandler } }from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const sessionData = await request.json();
     if (!sessionData.id) {
       return json({ error: 'Session ID is required' }, { status: 400 });
-    }
+    } }
     // Create new chat session
     const [newSession] = await db
       .insert(chatSessions)
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       session: newSession
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed from 'any' to: 'unknown'
     console.error('Error creating chat, session:', error);
     return json(
@@ -38,9 +38,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Failed to create chat session',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 } // Corrected placement of, status: object
+      { status: 500 } }// Corrected placement of, status: object
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -54,14 +54,14 @@ export const GET: RequestHandler = async ({ url }) => {
         .limit(1);
       if (session.length === 0) {
         return json({ error: 'Session not found' }, { status: 404 });
-      }
+      } }
       return json({ session: session[0] });
-    } else {
+    } }else {
       // Get all recent sessions (most recent first)
       const sessions = await db.select().from(chatSessions).orderBy(desc(chatSessions.updatedAt)).limit(50);
       return json({ sessions });
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     // Changed from 'any' to: 'unknown'
     console.error('Error fetching chat, sessions:', error);
     return json(
@@ -69,7 +69,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to fetch chat sessions',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 } // Corrected placement of, status: object
+      { status: 500 } }// Corrected placement of, status: object
     );
-  }
+  } }
 };
+

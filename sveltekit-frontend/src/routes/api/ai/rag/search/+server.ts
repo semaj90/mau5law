@@ -1,23 +1,23 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { requireAuth } from '$lib/server/auth-helpers';
-import { legalRAG } from '$lib/ai/langchain-rag';
-import { z } from 'zod';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { requireAuth } }from '$lib/server/auth-helpers';
+import { legalRAG } }from '$lib/ai/langchain-rag';
+import { z } }from 'zod';
 
 // Validation schema for RAG search requests
 const ragSearchSchema = z.object({
   query: z.string().min(1, 'Query is required').max(1000, 'Query too long'),
   filters: z
     .object({
-     , documentType: z.string().optional(),
+  documentType: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional()
     })
     .optional(),
   options: z
     .object({
-     , thinkingMode: z.boolean().optional(),
+  thinkingMode: z.boolean().optional(),
       verbose: z.boolean().optional(),
       maxRetrievedDocs: z.number().min(1).max(50).optional(),
       confidenceThreshold: z.number().min(0).max(1).optional(),
@@ -31,7 +31,7 @@ const ragSearchSchema = z.object({
  * Performs RAG-based semantic search across legal documents
  */
 export const POST: RequestHandler = async event => {
-  const { request } = event;
+  const { request } }= event;
 
   try {
     // Require authentication with test mode fallback
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async event => {
     const body = await request.json();
     const validatedData = ragSearchSchema.parse(body);
 
-    const { query, filters, options } = validatedData;
+    const { query, filters, options } }= validatedData;
 
     // Perform RAG query using LangChain service
     const startTime = performance.now();
@@ -67,11 +67,11 @@ export const POST: RequestHandler = async event => {
       content: doc.pageContent,
       relevance: doc.metadata?.score || result.confidence,
       metadata: {
-       , documentType: doc.metadata?.documentType,
+  documentType: doc.metadata?.documentType,
         jurisdiction: doc.metadata?.jurisdiction,
         practiceArea: doc.metadata?.practiceArea,
         chunkIndex: doc.metadata?.chunkIndex,
-        source: doc.metadata?.source || 'vector_store` }'`
+        source: doc.metadata?.source || 'vector_store` } }`
     }));
 
     return json({
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async event => {
       results,
       confidence: result.confidence,
       metadata: {
-       , userId: auth.user.id,
+  userId: auth.user.id,
         processingTime,
         retrievedChunks: result.metadata.retrievedChunks,
         usedThinkingMode: result.metadata.usedThinkingMode,
@@ -91,8 +91,8 @@ export const POST: RequestHandler = async event => {
       },
       _testMode: auth.isTestMode
     });
-  } catch (error) {
-    console.error('RAG search error:', error);'
+  } }catch (error) {
+    console.error('RAG search error:', error);
 
     if (error instanceof z.ZodError) {
       return json(
@@ -100,22 +100,22 @@ export const POST: RequestHandler = async event => {
           success: false,
           error: 'Invalid request parameters',
           details: error.errors.map(e => ({
-           , field: e.path.join('.'),
+  field: e.path.join('.'),
             message: e.message
           }))
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     return json(
       {
         success: false,
         error: 'RAG search failed',
         message: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -136,27 +136,28 @@ export const GET: RequestHandler = async event => {
       health,
       stats,
       capabilities: {
-       , documentTypes: ['contract', 'litigation', 'patent', 'trademark', 'motion', 'brief'],
+  documentTypes: ['contract', 'litigation', 'patent', 'trademark', 'motion', 'brief'],
         supportedFormats: ['pdf', 'doc', 'docx', 'txt', 'html'],
         features: {
-         , semanticSearch: true,
+  semanticSearch: true,
           thinkingMode: true,
           verboseMode: true,
           metadataFiltering: true,
           enhancedSemanticSearch: true
-        }
+        } }
       },
       _testMode: auth.isTestMode
     });
-  } catch (error) {
-    console.error('RAG health check error:', error);'
+  } }catch (error) {
+    console.error('RAG health check error:', error);
 
     return json(
       {
         success: false,
         error: 'Health check failed',
         message: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

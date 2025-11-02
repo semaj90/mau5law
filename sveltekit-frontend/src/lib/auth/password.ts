@@ -7,7 +7,7 @@ const SALT_ROUNDS = 12;
  */
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
-}
+} }
 /**
  * Verify a password against its hash
  */
@@ -16,7 +16,7 @@ export async function verifyPassword(
   hashedPassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
-}
+} }
 /**
  * Generate a secure random token
  */
@@ -26,9 +26,9 @@ export function generateRandomToken(length: number = 32): string {
   let result = "";
   for (let i = 0; i < length; i++) {
   result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
+  } }
   return result;
-}
+} }
 /**
  * Generate a numeric verification code
  */

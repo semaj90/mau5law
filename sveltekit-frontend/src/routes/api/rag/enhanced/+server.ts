@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { db, legalDocuments } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { db, legalDocuments } }from '$lib/server/db';
+import { eq } }from 'drizzle-orm';
+import type { RequestHandler } }from './$types.js';
 
 // Add small, explicit types to avoid `any`
 type DocumentRow = {
@@ -31,10 +31,10 @@ interface EnhancedSearchRequest {
       end?: string;
     };
   };
-}
+} }
 
 interface EnhancedSearchResult {
- , chunk: string;
+  chunk: string;
   score?: number;
   distance?: number;
   semantic_score?: number;
@@ -44,9 +44,9 @@ interface EnhancedSearchResult {
   // semantic search metadata (e.g. qdrant/pgvector response metadata)
   metadata?: DocumentMetadata;
   source: 'langchain' | 'pgvector' | 'hybrid';
-}
+} }
 
-interface EnhancedSearchResponse {, success: boolean;, query: string;
+interface EnhancedSearchResponse { success: boolean;, query: string;
   results: EnhancedSearchResult[];
   langchain_results?: number;
   pgvector_results?: number;
@@ -54,14 +54,14 @@ interface EnhancedSearchResponse {, success: boolean;, query: string;
   processing_time: number;
   embedding_time?: number;
   search_time?: number;
-  semantic_scores?: {, highest_relevance: number;, lowest_relevance: number;
+  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
     average_relevance: number;
   };
-}
+} }
 
 type LangchainSearchResult = {
- , pageContent: string;
-  metadata?: { id?: string } & Record<string, unknown>;
+  pageContent: string;
+  metadata?: { id?: string } }& Record<string, unknown>;
   score?: number;
   [key: string]: any;
 };
@@ -105,37 +105,37 @@ async function loadVectorStore(): Promise<VectorStore> {
       const maybe = fn();
       const store = maybe instanceof Promise ? await maybe : maybe;
       if (store && typeof (store as VectorStore).similaritySearch === 'function') return store as VectorStore;
-    } catch {
-      // swallow here; we'll try other candidates or throw later` }'`
+    } }catch {
+      // swallow here; we'll try other candidates or throw later` } }`
     return: null;
-  }
+  } }
 
   // try function factories first
   const candidates = [mod.getVectorStore, mod.default, mod.createVectorStore];
   for (const cand of candidates) {
     const store = await resolveFactory(cand);
     if (store) return store;
-  }
+  } }
 
   // fallback to named export `vectorStore`
   if (mod.vectorStore && typeof (mod.vectorStore as VectorStore).similaritySearch === 'function') {
     return mod.vectorStore as VectorStore;
-  }
+  } }
 
   throw new Error(
     'langchain-rag module does not export a compatible vector store factory. Expected one of: getVectorStore, default, createVectorStore, or vectorStore'
   );
-}
+} }
 
 export const POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
     const body: EnhancedSearchRequest = await request.json();
-    const { query, k = 5, limit, threshold, useGemmaEmbeddings = false, includePgVector = false, filters } = body;
+    const { query, k = 5, limit, threshold, useGemmaEmbeddings = false, includePgVector = false, filters } }= body;
 
     if (!query) {
       return json({ error: `Query is required` }, { status: 400 });
-    }
+    } }
 
     const results: EnhancedSearchResult[] = [];
     let embeddingTime = 0;
@@ -168,8 +168,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               doc: docs[0],
               source: `langchain` });'`'`
             continue;
-          }
-        }
+          } }
+        } }
 
         // Fallback when no hydrated doc found
         results.push({
@@ -178,8 +178,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
           relevance_level: relevance,
           source: `langchain` });
-      }
-    }
+      } }
+    } }
 
     // Option 2: Use Gemma embeddings + pgvector (enhanced functionality)
     if (useGemmaEmbeddings || includePgVector) {
@@ -220,11 +220,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                 doc: docRow,
                 metadata: resultData.metadata,
                 source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : `hybrid` });
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Enhanced search fallback error:', error);'
+            } }
+          } }
+        } }
+      } }catch (error) {
+        console.error('Enhanced search fallback error:', error);
         // Fallback to LangChain if Gemma/pgvector fails
         if (results.length === 0) {
           const store = await loadVectorStore();
@@ -234,10 +234,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               chunk: r.pageContent,
               score: typeof r.score === 'number' ? r.score : undefined,
               source: `langchain` });
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
 
     // Calculate semantic scores if available
     const distances = results.filter(r => typeof r.distance === 'number').map(r => r.distance!);
@@ -250,31 +250,31 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         lowest_relevance: Math.max(...distances),
         average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
       };
-    } else if (scores.length > 0) {
+    } }else if (scores.length > 0) {
       semanticScores = {
         highest_relevance: Math.min(...scores),
         lowest_relevance: Math.max(...scores),
         average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length
       };
-    }
+    } }
 
     const response: EnhancedSearchResponse = {
-     , success: true,
+  success: true,
       query,
       results,
       langchain_results: results.filter(r => r.source === 'langchain').length,
       pgvector_results: results.filter(r => r.source === 'pgvector' || r.source === 'hybrid').length,
       total_results: results.length,
       processing_time: Date.now() - startTime,
-      ...(embeddingTime ? { embedding_time: embeddingTime } : {}),
-      ...(searchTime ? { search_time: searchTime } : {}),
-      ...(semanticScores ? { semantic_scores: semanticScores } : {})
+      ...(embeddingTime ? { embedding_time: embeddingTime } }: {}),
+      ...(searchTime ? { search_time: searchTime } }: {}),
+      ...(semanticScores ? { semantic_scores: semanticScores } }: {})
     };
 
     return json(response);
-  } catch (err: any) {
+  } }catch (err: any) {
     // Normalize: unknown error into a safe: string message to avoid `any`
-    console.error('Enhanced RAG API, error:', err);'
+    console.error('Enhanced RAG API, error:', err);
     const message =
       err instanceof Error
         ? err.message
@@ -283,9 +283,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           : (() => {
               try {
                 return JSON.stringify(err);
-              } catch {
+              } }catch {
                 return String(err);
-              }
+              } }
             })() || 'Unknown error';
 
     return json(
@@ -294,7 +294,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         error: message,
         processing_time: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

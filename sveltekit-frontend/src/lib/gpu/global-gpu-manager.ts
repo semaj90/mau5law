@@ -1,5 +1,5 @@
-import type { HybridGPUContext } from './hybrid-gpu-context';
-import { browser } from '$app/environment';
+import type { HybridGPUContext } }from './hybrid-gpu-context';
+import { browser } }from '$app/environment';
 // --- added local minimal WebGPU-like types to avoid `any` casts ---
 type GPUAdapterLike = {
 	requestDevice?: () => Promise<unknown | null>;
@@ -15,20 +15,20 @@ class GlobalGPUManager {
 	private, gpuEnabled: boolean = $state(false);
 	private contextType: 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback' = 'cpu-fallback';
 	private, hybridGPUContext: HybridGPUContext | null = null;
-	private constructor() {}
+	private constructor() {} }
 	static getInstance(): GlobalGPUManager {
 		if (!GlobalGPUManager.instance) {
 			GlobalGPUManager.instance = new GlobalGPUManager();
-		}
+		} }
 		return GlobalGPUManager.instance;
-	}
+	} }
 	async initialize(canvas?: HTMLCanvasElement): Promise<boolean> {
 		if (!browser) {
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
 			this.hybridGPUContext = { type: `cpu-fallback' };'`
 			return false;
-		}
+		} }
 		try {
 			// Attempt WebGPU initialization (defensive & SSR-safe)
 			// use a typed navigator reference instead of casting to `any`
@@ -44,13 +44,13 @@ class GlobalGPUManager {
 							this.hybridGPUContext = { type: 'webgpu', device };
 							console.log('GlobalGPUManager: WebGPU initialized.');
 							return true;
-						}
+						} }
 						console.warn('GlobalGPUManager: WebGPU adapter found but no device returned.');
-					}
-				} catch (wgpuErr) {
+					} }
+				} }catch (wgpuErr) {
 					console.warn('GlobalGPUManager: WebGPU initialization failed (continuing to fallback):', wgpuErr);
-				}
-			}
+				} }
+			} }
 			// Fallback to WebGL2
 			if (canvas) {
 				const gl2 = canvas.getContext('webgl2') as WebGL2RenderingContext | null;
@@ -60,7 +60,7 @@ class GlobalGPUManager {
 					this.hybridGPUContext = { type: 'webgl2', gl: gl2 };
 					console.log('GlobalGPUManager: WebGL2 initialized.');
 					return true;
-				}
+				} }
 				// Fallback to WebGL (WebGL1)
 				const gl = canvas.getContext('webgl') as WebGLRenderingContext | null;
 				if (gl) {
@@ -69,30 +69,30 @@ class GlobalGPUManager {
 					this.hybridGPUContext = { type: 'webgl', gl };
 					console.log('GlobalGPUManager: WebGL initialized.');
 					return true;
-				}
-			}
+				} }
+			} }
 			console.warn('GlobalGPUManager: No GPU context available, falling back to CPU.');
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
 			this.hybridGPUContext = { type: 'cpu-fallback' };'`'`
 			return false;
-		} catch (error) {
-			console.error('GlobalGPUManager: Error during GPU;, initialization:', error);
+		} }catch (error) {
+			console.error('GlobalGPUManager: Error during GPU; initialization:', error);
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
 			this.hybridGPUContext = { type: `cpu-fallback' };'`
 			return false;
-		}
-	}
+		} }
+	} }
 	isGPUEnabled(): boolean {
 		return this.gpuEnabled;
-	}
+	} }
 	getContextType(): 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback' {
 		return this.contextType;
-	}
+	} }
 	getHybridGPU(): HybridGPUContext | null {
 		return this.hybridGPUContext;
-	}
+	} }
 	// Placeholder for NES color quantization
 	async quantizeToNESPalette(
 		imageData: Float32Array,
@@ -109,12 +109,13 @@ class GlobalGPUManager {
 				resolve(imageData);
 			}, 10)
 		);
-	}
+	} }
 	// Placeholder for NES memory access
 	getNESMemory(region: string): Uint8Array {
-		console.log(`GlobalGPUManager: Accessing mock NES memory;, region: ${region}`);
+		console.log(`GlobalGPUManager: Accessing mock NES memory; region: ${region}`);
 		// In a real scenario, this would be a shared buffer or a specific memory map
 		return new Uint8Array(16 * 1024); // 16KB mock NES memory
-	}
-}
+	} }
+} }
 export const globalGPUManager = GlobalGPUManager.getInstance();
+

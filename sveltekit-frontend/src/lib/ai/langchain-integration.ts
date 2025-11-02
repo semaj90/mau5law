@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * LangChain RAG Integration for Legal AI
  * Connects LangChain Ollama service to API endpoints
  */
-import { LangChainOllamaService } from './langchain-ollama-service';
+import { LangChainOllamaService } }from './langchain-ollama-service';
 // Initialize singleton LangChain service
 let langChainServiceInstance: LangChainOllamaService | null = null;
 export function getLangChainService(): LangChainOllamaService {
@@ -16,20 +16,20 @@ export function getLangChainService(): LangChainOllamaService {
       temperature: 0.3,
       maxTokens: 2048
     });
-  }
+  } }
   return langChainServiceInstance;
-}
+} }
 // Type helpers for RAG results
 export interface LegalRAGResult { answer: string;, confidence: number;
   processingTime: number;
-  sources: Array<{, title: string;, content: string;
+  sources: Array<{ title: string;, content: string;
     score: number;
   }>;
-}
-export interface RAGDocument {, pageContent: string;, metadata: {, title: string;, type: string;
+} }
+export interface RAGDocument { pageContent: string;, metadata: { title: string;, type: string;
    , score: number;
   };
-}
+} }
 /**
  * Query with RAG using LangChain
  */
@@ -41,17 +41,16 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
       answer: result.answer,
       confidence: result.confidence || 0.9,
       processingTime: result.processingTime,
-      sources: documents.map(doc => ({
-       , title: doc.metadata.title,
+      sources: documents.map(doc => ({ title: doc.metadata.title,
         content: doc.pageContent.substring(0, 200),
         score: doc.metadata.score
       }))
     };
-  } catch (error) {
-    console.error('LangChain RAG error:', error);'
+  } }catch (error) {
+    console.error('LangChain RAG error:', error);
     throw error;
-  }
-}
+  } }
+} }
 /**
  * Process document with LangChain embeddings
  */
@@ -64,8 +63,9 @@ export async function processDocumentWithLangChain(
   const service = getLangChainService();
   try {
     return await service.processDocument(content, { documentId });
-  } catch (error) {
-    console.error('Document processing error:', error);'
+  } }catch (error) {
+    console.error('Document processing error:', error);
     throw error;
-  }
-}
+  } }
+} }
+

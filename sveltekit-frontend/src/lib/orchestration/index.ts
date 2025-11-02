@@ -9,21 +9,21 @@ export type {
   JobPriority,
   RetryConfig,
   OptimizedRabbitMQOrchestrator
-} from './optimized-rabbitmq-orchestrator.js';
-export { optimizedOrchestrator } from './optimized-rabbitmq-orchestrator.js';
+} }from './optimized-rabbitmq-orchestrator.js';
+export { optimizedOrchestrator } }from './optimized-rabbitmq-orchestrator.js';
 // Sora Integration Exports
 export interface SoraMoogleIntegration {
   initialize(): Promise<void>;
   processDocument(doc: any): Promise<any>;
   trainModel(data: any[]): Promise<void>;
   predict(input: any): Promise<any>;
-}
+} }
 export interface SoraGraphTraversal {
   buildUserJourneyGraphs(data: any, options?: any, config?: any): Promise<any>;
   traverse(startNode: string, endNode: string): Promise<any[]>;
   findShortestPath(start: string, end: string): Promise<string[]>;
   getNodeNeighbors(nodeId: string): Promise<string[]>;
-}
+} }
 // Mock implementations for missing services
 export const soraMoogleIntegration: SoraMoogleIntegration = {
   async initialize() {
@@ -43,7 +43,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
   },
   async predict(input: any) {
     return { prediction: 'mock_result', confidence: 0.9 };
-  }
+  } }
 };
 export const, soraGraphTraversal: SoraGraphTraversal = {
   async buildUserJourneyGraphs(data: any, options?: any, config?: any) {
@@ -54,11 +54,11 @@ export const, soraGraphTraversal: SoraGraphTraversal = {
         ['start', 'process'],
         ['process', 'end'],
       ],
-      metadata: options || {}
+      metadata: options || {} }
     };
   },
   async traverse(startNode: string, endNode: string) {
-    console.log(`[SoraGraph] Traversing from ${startNode} to ${endNode}`);
+    console.log(`[SoraGraph] Traversing from ${startNode} }to ${endNode}`);
     return [startNode, 'intermediate', endNode];
   },
   async findShortestPath(start: string, end: string) {
@@ -66,9 +66,10 @@ export const, soraGraphTraversal: SoraGraphTraversal = {
   },
   async getNodeNeighbors(nodeId: string) {
     return [`neighbor_${nodeId}_1`, `neighbor_${nodeId}_2`];
-  }
+  } }
 };
 export default {
   soraMoogleIntegration,
   soraGraphTraversal
 };
+

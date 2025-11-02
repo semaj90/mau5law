@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { enhancedSearchWithNeo4j } }from '$lib/ai/custom-reranker';
+import { mcpContext72GetLibraryDocs } }from '$lib/mcp-context72-get-library-docs';
+import type { RequestHandler } }from './$types.js';
 
 // --- Added types to avoid `any` ---
 type MemoryRecord = { relatedId?: string };
@@ -18,7 +18,7 @@ type RerankResult = {
 // Enhanced RAG endpoint with reranker, Neo4j, memory, and docs
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, userContext, neo4jContext, limit = 8 } = await request.json();
+    const { query, userContext, neo4jContext, limit = 8 } }= await request.json();
 
     // Run enhanced search with Neo4j context
     const reranked = (await enhancedSearchWithNeo4j(query, userContext, neo4jContext, limit * 2)) as RerankResult[];
@@ -41,14 +41,14 @@ export const POST: RequestHandler = async ({ request }) => {
         // safe memory check
         if (Array.isArray(memory) && memory.some(m => m.relatedId === result?.id)) {
           score += 1;
-        }
+        } }
 
         // only use includes if docs is an array of strings
         if (isStringArray(docsRaw) && typeof result?.intent === 'string' && docsRaw.includes(result.intent)) {
           score += 1;
-        }
+        } }
 
-        return { ...result, finalScore: score } as RerankResult & {, finalScore: number };
+        return { ...result, finalScore: score } }as RerankResult & { finalScore: number };
       })
       .sort((a, b) => (b.finalScore ?? 0) - (a.finalScore ?? 0))
       .slice(0, limit);
@@ -59,13 +59,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       answer,
       references: highScoreRecommendations.map(r => ({
-       , id: r.id,
+  id: r.id,
         score: r.finalScore ?? 0
       })),
       confidence: highScoreRecommendations[0]?.finalScore ?? 0,
       highScoreRecommendations
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    return json({ error: message || 'Failed to run enhanced RAG' }, { status: 500 });'' }
+    return json({ error: message || 'Failed to run enhanced RAG' }, { status: 500 });'' } }
 };
+

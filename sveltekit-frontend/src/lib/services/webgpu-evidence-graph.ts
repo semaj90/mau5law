@@ -6,13 +6,13 @@ export interface GraphNode { id: string;, x: number;
   weight: number;
  , color: [number, number, number, number];
   connections: string[];
-}
+} }
 
-export interface GraphEdge {, source: string;, target: string;
+export interface GraphEdge { source: string;, target: string;
   weight: number;
   type: 'temporal' | 'causal' | 'semantic' | 'entity';
  , color: [number, number, number, number];
-}
+} }
 export class WebGPUEvidenceGraph {
   private device: GPUDevice | null = null;
   private context: GPUCanvasContext | null = null;
@@ -54,7 +54,7 @@ export class WebGPUEvidenceGraph {
       output.color = vec4<f32>(input.color.xyz * pulse, input.color.w);
       output.pointSize = input.size * (1.0 / max(0.0001, -viewPos.z));
       return output;
-    }
+    } }
   `;`
   private fragmentShader = `
     struct FragmentInput {
@@ -65,7 +65,7 @@ export class WebGPUEvidenceGraph {
     fn main(input : FragmentInput) -> @location(0) vec4<f32> {
       // Very simple passthrough fragment shader
       return input.color;
-    }
+    } }
   `;`
   // Edge shader for connection lines (simplified)
   private edgeVertexShader = `
@@ -98,24 +98,24 @@ export class WebGPUEvidenceGraph {
       output.color = input.color;
       output.t = t;
       return output;
-    }
+    } }
   `;`
   async initialize(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas;
     // Check WebGPU support
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported on this browser');
-    }
+    } }
     // Request adapter and device
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
       throw new Error('Failed to get GPU adapter');
-    }
+    } }
     this.device = await adapter.requestDevice();
     this.context = canvas.getContext('webgpu');
     if (!this.context) {
       throw new Error('Failed to get WebGPU context');
-    }
+    } }
     // Configure canvas
     const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({
@@ -127,7 +127,7 @@ export class WebGPUEvidenceGraph {
     await this.createPipeline(presentationFormat);
     // Initialize buffers
     this.createBuffers();
-  }
+  } }
   private async createPipeline(format: GPUTextureFormat): Promise<void> {
     if (!this.device) return;
     const vertexModule = this.device.createShaderModule({
@@ -139,33 +139,28 @@ export class WebGPUEvidenceGraph {
 
     this.pipeline = this.device.createRenderPipeline({
       layout: 'auto',
-      vertex: {
-       , module: vertexModule,
+      vertex: { module: vertexModule,
         entryPoint: 'main',
         buffers: [
-          {,
-           , arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
+          { , arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
             attributes: [
-              {, shaderLocation: 0, offset: 0, format: 'float32x3' },
+              { shaderLocation: 0, offset: 0, format: 'float32x3' },
               { shaderLocation: 1, offset: 12, format: 'float32x4' },
-              { shaderLocation: 2, offset: 28, format: 'float32' }
+              { shaderLocation: 2, offset: 28, format: 'float32' } }
             ]
           },
         ]
       },
-      fragment: {
-       , module: fragmentModule,
+      fragment: { module: fragmentModule,
         entryPoint: 'main',
-        targets: [{ format }]
+        targets: [{ format } }
       },
-      primitive: {
-       , topology: 'point-list'
+      primitive: { topology: 'point-list'
       },
-      depthStencil: {
-       , format: 'depth24plus',
+      depthStencil: { format: 'depth24plus',
         depthWriteEnabled: true,
-        depthCompare: 'less' }'` });'`
-  }
+        depthCompare: 'less' } }` });'`
+  } }
   private createBuffers(): void {
     if (!this.device) return;
     // Create uniform buffer for matrices and time
@@ -177,21 +172,19 @@ export class WebGPUEvidenceGraph {
     this.bindGroup = this.device.createBindGroup({
       layout: this.pipeline!.getBindGroupLayout(0),
       entries: [
-        {,
-          binding: 0,
-          resource: {
-           , buffer: this.uniformBuffer!
-          }
+        { binding: 0,
+          resource: { buffer: this.uniformBuffer!
+          } }
         },
       ]
     });
-  }
+  } }
   public updateGraph(nodes: GraphNode[], edges: GraphEdge[]): void {
     this.nodes = nodes;
     this.edges = edges;
     this.updateNodeBuffer();
     this.updateEdgeBuffer();
-  }
+  } }
   private updateNodeBuffer(): void {
     if (!this.device || this.nodes.length === 0) return;
     const data = new Float32Array(this.nodes.length * 8);
@@ -213,7 +206,7 @@ export class WebGPUEvidenceGraph {
     });
     new Float32Array(this.nodeBuffer.getMappedRange()).set(data);
     this.nodeBuffer.unmap();
-  }
+  } }
   private updateEdgeBuffer(): void {
     if (!this.device || this.edges.length === 0) return;
     const data = new Float32Array(this.edges.length * 11 * 2); // 2 vertices per edge
@@ -254,7 +247,7 @@ export class WebGPUEvidenceGraph {
     });
     new Float32Array(this.edgeBuffer.getMappedRange()).set(data);
     this.edgeBuffer.unmap();
-  }
+  } }
   public startAnimation(): void {
     if (!this.device || !this.context || !this.pipeline) return;
     const render = (time: number) => {
@@ -262,13 +255,13 @@ export class WebGPUEvidenceGraph {
       this.frameId = requestAnimationFrame(render);
     };
     render(0);
-  }
+  } }
   public stopAnimation(): void {
     if (this.frameId !== null) {
       cancelAnimationFrame(this.frameId);
       this.frameId = null;
-    }
-  }
+    } }
+  } }
   private renderFrame(time: number): void {
     if (!this.device || !this.context || !this.pipeline || !this.canvas) return;
     // Update uniforms
@@ -281,23 +274,20 @@ export class WebGPUEvidenceGraph {
     // Create command encoder
     const commandEncoder = this.device.createCommandEncoder();
     // Create depth texture using explicit size: object
-    const depthTexture = this.device.createTexture({, size: {, width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
+    const depthTexture = this.device.createTexture({ size: { width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
       format: 'depth24plus',
       usage: GPUTextureUsage.RENDER_ATTACHMENT
     });
-    const renderPassDescriptor: GPURenderPassDescriptor = {
-     , colorAttachments: [
-        {,
-          view: this.context.getCurrentTexture().createView(),
-          clearValue: {, r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
+    const renderPassDescriptor: GPURenderPassDescriptor = { colorAttachments: [
+        { view: this.context.getCurrentTexture().createView(),
+          clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: `store` }
+          storeOp: `store` } }
       ],
-      depthStencilAttachment: {
-       , view: depthTexture.createView(),
+      depthStencilAttachment: { view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
-        depthStoreOp: `store` }
+        depthStoreOp: `store` } }
     };
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(this.pipeline);
@@ -306,16 +296,16 @@ export class WebGPUEvidenceGraph {
     if (this.edgeBuffer) {
       passEncoder.setVertexBuffer(0, this.edgeBuffer);
       passEncoder.draw(this.edges.length * 2);
-    }
+    } }
     // Render nodes on top
     if (this.nodeBuffer) {
       passEncoder.setVertexBuffer(0, this.nodeBuffer);
       passEncoder.draw(this.nodes.length);
-    }
+    } }
     passEncoder.end();
     // Submit commands
     this.device.queue.submit([commandEncoder.finish()]);
-  }
+  } }
   private createViewMatrix(time: number): Float32Array {
     const angle = time * 0.0001;
     const distance = 5;
@@ -323,7 +313,7 @@ export class WebGPUEvidenceGraph {
     const center = [0, 0, 0];
     const up = [0, 1, 0];
     return this.lookAt(eye, center, up);
-  }
+  } }
   private createProjectionMatrix(): Float32Array {
     if (!this.canvas) return new Float32Array(16);
     const aspect = this.canvas.width / this.canvas.height;
@@ -331,7 +321,7 @@ export class WebGPUEvidenceGraph {
     const near = 0.1;
     const far = 100;
     return this.perspective(fov, aspect, near, far);
-  }
+  } }
   // Matrix math helpers
   private lookAt(eye: number[], center: number[], up: number[]): Float32Array {
     const f = this.normalize(this.subtract(center, eye));
@@ -355,7 +345,7 @@ export class WebGPUEvidenceGraph {
       this.dot(f, eye),
       1,
     ]);
-  }
+  } }
   private perspective(fov: number, aspect: number, near: number, far: number): Float32Array {
     const f = 1.0 / Math.tan(fov / 2);
     const rangeInv = 1 / (near - far);
@@ -377,20 +367,20 @@ export class WebGPUEvidenceGraph {
       near * far * rangeInv * 2,
       0,
     ]);
-  }
+  } }
   private normalize(v: number[]): number[] {
     const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     return [v[0] / length, v[1] / length, v[2] / length];
-  }
+  } }
   private cross(a: number[], b: number[]): number[] {
     return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-  }
+  } }
   private subtract(a: number[], b: number[]): number[] {
     return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-  }
+  } }
   private dot(a: number[], b: number[]): number {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  }
+  } }
   public destroy(): void {
     this.stopAnimation();
     if (this.nodeBuffer) this.nodeBuffer.destroy();
@@ -398,5 +388,6 @@ export class WebGPUEvidenceGraph {
     if (this.uniformBuffer) this.uniformBuffer.destroy();
     this.device = null;
     this.context = null;
-  }
-}
+  } }
+} }
+

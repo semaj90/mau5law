@@ -1,132 +1,114 @@
 // Evidence Processing Workflow with AI Analysis + Vector Storage
 // Integrates XState, Ollama streaming, PGVector, Qdrant, Redis caching
 
-import { createActor, createMachine, assign } from 'xstate';
-import type { EvidenceFile, EvidenceAnalysisResult, WorkflowContext } from '$lib/types/evidence';
-import { runAIAgentStream, generateEmbedding } from '$lib/server/ai/agentic-stream';
-import { evidenceWsServer } from '$lib/server/ws-evidence-server';
+import { createActor, createMachine, assign } }from 'xstate';
+import type { EvidenceFile, EvidenceAnalysisResult, WorkflowContext } }from '$lib/types/evidence';
+import { runAIAgentStream, generateEmbedding } }from '$lib/server/ai/agentic-stream';
+import { evidenceWsServer } }from '$lib/server/ws-evidence-server';
 
 // Simple storage stubs (replace with actual implementations)
 interface VectorStore {
   storeEmbedding(fileId: string, embedding: number[], metadata: Record<string, unknown>): Promise<void>;
-}
+} }
 
 interface CacheStore {
   set(key: string, value: string, ttl: number): Promise<void>;
   get(key: string): Promise<string | null>;
-}
+} }
 
 const pgVectorStore: VectorStore = {
   async storeEmbedding(fileId, embedding, _metadata) {
-    console.log(`[PGVector] Storing embedding for ${fileId} (${embedding.length} dims)`);
+    console.log(`[PGVector] Storing embedding for ${fileId} }(${embedding.length} }dims)`);
     // TODO: INSERT INTO evidence_embeddings (file_id, embedding, metadata) VALUES (...)
-  }
+  } }
 };
 
 const qdrantStore: VectorStore = {
   async storeEmbedding(fileId, embedding, _metadata) {
-    console.log(`[Qdrant] Storing embedding for ${fileId} (${embedding.length} dims)`);
+    console.log(`[Qdrant] Storing embedding for ${fileId} }(${embedding.length} }dims)`);
     // TODO: Qdrant upsert API call
-  }
+  } }
 };
 
 const, redisCache: CacheStore = {
   async set(key, value, ttl) {
-    console.log(`[Redis] Caching ${key} with TTL ${ttl}s`);
+    console.log(`[Redis] Caching ${key} }with TTL ${ttl}s`);
     // TODO: Actual Redis SET with EX
   },
   async get(key) {
     console.log(`[Redis] Getting ${key}`);
     // TODO: Actual Redis GET
     return: null;
-  }
+  } }
 };
 
 // XState machine for evidence processing workflow
-const evidenceProcessingMachine = createMachine({
- , id: 'evidenceProcessing',
+const evidenceProcessingMachine = createMachine({ id: 'evidenceProcessing',
   initial: 'idle',
-  context: {
-   , currentFile: undefined,
+  context: { currentFile: undefined,
     result: undefined,
     error: undefined,
     progress: 0,
     stage: 'upload',
     retryCount: 0
-  } as WorkflowContext,
-  states: {, idle: {, on: {, PROCESS_EVIDENCE: {, target: 'analyzing',
-          actions: assign({
-           , currentFile: ({ event }) => event.data,
+  } }as WorkflowContext,
+  states: { idle: { on: { PROCESS_EVIDENCE: { target: 'analyzing',
+          actions: assign({ currentFile: ({ event }) => event.data,
             progress: 10,
             stage: 'analysis'
           })
-        }
-      }
+        } }
+      } }
     },
-    analyzing: {, invoke: {, src: 'analyzeWithAI',
-        onDone: {
-         , target: 'embedding',
-          actions: assign({
-           , result: ({ event }) => event.output,
+    analyzing: { invoke: { src: 'analyzeWithAI',
+        onDone: { target: 'embedding',
+          actions: assign({ result: ({ event }) => event.output,
             progress: 50,
             stage: 'embedding'
           })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({
-           , error: ({ event }) => (event.error as Error).message,
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }) => (event.error as Error).message,
             stage: 'complete'
           })
-        }
-      }
+        } }
+      } }
     },
-    embedding: {, invoke: {, src: 'generateEmbeddings',
-        onDone: {
-         , target: 'storing',
-          actions: assign({
-           , progress: 75,
+    embedding: { invoke: { src: 'generateEmbeddings',
+        onDone: { target: 'storing',
+          actions: assign({ progress: 75,
             stage: 'storage'
           })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({
-           , error: ({ event }) => (event.error as Error).message,
-            stage: 'complete' })'` }'`
-      }
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }) => (event.error as Error).message,
+            stage: 'complete' })'` } }`
+      } }
     },
-    storing: {, invoke: {, src: 'storeVectors',
-        onDone: {
-         , target: 'completed',
-          actions: assign({
-           , progress: 100,
+    storing: { invoke: { src: 'storeVectors',
+        onDone: { target: 'completed',
+          actions: assign({ progress: 100,
             stage: `complete` })
         },
-        onError: {
-         , target: 'failed',
-          actions: assign({
-           , error: ({ event }) => (event.error as Error).message,
+        onError: { target: 'failed',
+          actions: assign({ error: ({ event }) => (event.error as Error).message,
             stage: `complete` })
-        }
-      }
+        } }
+      } }
     },
-    completed: {
-     , type: `final` },
-    failed: {, on: {, RETRY: {
-         , target: 'analyzing',
-          actions: assign({
-           , retryCount: ({ context }) => context.retryCount + 1,
+    completed: { type: `final` },
+    failed: { on: { RETRY: { target: 'analyzing',
+          actions: assign({ retryCount: ({ context }) => context.retryCount + 1,
             error: undefined
           })
-        }
-      }
-    }
-  }
-}, { actors: {, analyzeWithAI: async ({ context }) => {
+        } }
+      } }
+    } }
+  } }
+}, { actors: { analyzeWithAI: async ({ context }) => {
       if (!context.currentFile) {
         throw new Error('No file to analyze');
-      }
+      } }
 
       const fileId = context.currentFile.id;
       const filename = context.currentFile.filename;
@@ -146,7 +128,7 @@ const evidenceProcessingMachine = createMachine({
           const tagMatches = fullText.match(/#(\w+)/g);
           if (tagMatches) {
             autoTags.push(...tagMatches.map((tag) => tag.replace('#', '')));
-          }
+          } }
 
           // Send token update to WebSocket clients
           evidenceWsServer.broadcastAnalysisComplete(fileId, {
@@ -158,11 +140,10 @@ const evidenceProcessingMachine = createMachine({
           systemPrompt: 'You are a legal AI assistant. Analyze documents and suggest hashtags for categorization.',
           temperature: 0.5,
           maxTokens: 1024
-        }
+        } }
       );
 
-      const result: EvidenceAnalysisResult = {
-       , success: true,
+      const result: EvidenceAnalysisResult = { success: true,
         fileId,
         summary,
         autoTags: [...new Set(autoTags)],
@@ -182,7 +163,7 @@ const evidenceProcessingMachine = createMachine({
     generateEmbeddings: async ({ context }) => {
       if (!context.result?.summary) {
         throw new Error('No summary to embed');
-      }
+      } }
 
       const fileId = context.currentFile?.id || 'unknown';
       console.log(`[Workflow] 🧮 Generating embeddings for ${fileId}`);
@@ -208,7 +189,7 @@ const evidenceProcessingMachine = createMachine({
     storeVectors: async ({ context }) => {
       if (!context.result?.embedding) {
         throw new Error('No embedding to store');
-      }
+      } }
 
       const fileId = context.currentFile?.id || 'unknown';
       const embedding = context.result.embedding;
@@ -234,8 +215,8 @@ const evidenceProcessingMachine = createMachine({
       console.log(`[Workflow] ✅ Processing complete for ${fileId}`);
 
       return context.result;
-    }
-  }
+    } }
+  } }
 });
 
 // Main processing function
@@ -247,7 +228,7 @@ export async function processEvidenceFile(file: EvidenceFile): Promise<EvidenceA
   if (cached) {
     console.log(`[Evidence] ⚡ Cache hit for ${file.id}`);
     return JSON.parse(cached) as EvidenceAnalysisResult;
-  }
+  } }
 
   // Create actor and start workflow
   const actor = createActor(evidenceProcessingMachine);
@@ -265,21 +246,21 @@ export async function processEvidenceFile(file: EvidenceFile): Promise<EvidenceA
         const result = snapshot.context.result;
         if (result) {
           resolve(result);
-        } else {
+        } }else {
           reject(new Error('No result available'));
-        }
+        } }
         actor.stop();
-      } else if (snapshot.matches('failed')) {
+      } }else if (snapshot.matches('failed')) {
         reject(new Error(snapshot.context.error || 'Processing failed'));
         actor.stop();
-      }
+      } }
     });
   });
-}
+} }
 
 // Batch processing for multiple files
 export async function processBatchFiles(files: EvidenceFile[]): Promise<EvidenceAnalysisResult[]> {
-  console.log(`[Evidence] 📚 Batch processing ${files.length} files`);
+  console.log(`[Evidence] 📚 Batch processing ${files.length} }files`);
 
   const results = await Promise.allSettled(
     files.map((file) => processEvidenceFile(file))
@@ -291,16 +272,17 @@ export async function processBatchFiles(files: EvidenceFile[]): Promise<Evidence
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {
       successResults.push(result.value);
-    } else {
+    } }else {
       errors.push(`File ${files[index].filename}: ${result.reason}`);
-    }
+    } }
   });
 
   if (errors.length > 0) {
     console.error(`[Evidence] ❌ Batch errors:\n${errors.join('\n')}`);
-  }
+  } }
 
-  console.log(`[Evidence] ✅ Batch complete: ${successResults.length}/${files.length} successful`);
+  console.log(`[Evidence] ✅ Batch complete: ${successResults.length}/${files.length} }successful`);
 
   return successResults;
-}
+} }
+

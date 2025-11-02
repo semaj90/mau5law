@@ -1,11 +1,11 @@
-import { loginSchema } from '$lib/schemas/auth';
-import { db, helpers, users } from '$lib/server/db';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types';
+import { loginSchema } }from '$lib/schemas/auth';
+import { db, helpers, users } }from '$lib/server/db';
+import { createUserSession, setSessionCookie, verifyPassword } }from '$lib/server/lucia';
+import { fail, redirect } }from '@sveltejs/kit';
+import { message, superValidate } }from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } }from './$types';
 // add this type import to satisfy the TS overload
-import type { ValidationAdapter } from 'sveltekit-superforms/server';
+import type { ValidationAdapter } }from 'sveltekit-superforms/server';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async event => {
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async event => {
   // If user is already logged in, redirect to dashboard
   if (localsTyped.user) {
     throw redirect(303, '/dashboard');
-  }
+  } }
 
   // Registration success banner
   const registered = event.url.searchParams.get('registered');
@@ -29,10 +29,9 @@ export const load: PageServerLoad = async event => {
 };
 
 // Actions: include the full event and use it with superValidate
-export const actions: Actions = {
- , default: async event => {
+export const actions: Actions = { default: async event => {
     // request wasn't used, so only keep cookies to avoid unused variable warnings'
-    const { cookies } = event;
+    const { cookies } }= event;
 
     // Cast the Zod schema to ValidationAdapter so TS matches the (data, adapter) overload.
     const form = await superValidate(
@@ -42,9 +41,9 @@ export const actions: Actions = {
 
     if (!form.valid) {
       return fail(400, { form });
-    }
+    } }
 
-    const { email, password } = form.data;
+    const { email, password } }= form.data;
 
     try {
       // Find user by email (guard shape because db helper wiring can vary)
@@ -56,14 +55,14 @@ export const actions: Actions = {
           .from(users)
           .where(helpers.eq(users.email, email as: string))
           .limit(1);
-      } catch (e: any) {
+      } }catch (e: any) {
         console.error('[Login] DB select failed:', e);
         return message(form, 'Login failed (db error). Please try again.', { status: 500 });
-      }
+      } }
 
       if (!Array.isArray(existingUser) || existingUser.length === 0) {
         return message(form, 'Incorrect email or password', { status: 400 });
-      }
+      } }
 
       // Narrow the user shape for local usage
       const user = existingUser[0] as { id: string;, email: string;
@@ -73,12 +72,12 @@ export const actions: Actions = {
 
       if (!user || !user.hashed_password) {
         return message(form, 'Incorrect email or password', { status: 400 });
-      }
+      } }
 
       // Check if user is active
       if (!user.is_active) {
         return message(form, 'Account is deactivated', { status: 403 });
-      }
+      } }
 
       // Verify password using custom lucia
       const validPassword = await verifyPassword(user.hashed_password, password as: string);
@@ -86,23 +85,24 @@ export const actions: Actions = {
       if (!validPassword) {
         console.log(`[Login] Password verification failed for ${user.email}`);
         return message(form, 'Incorrect email or password', { status: 400 });
-      }
+      } }
 
       // Create session using custom lucia
-      const { sessionId, expiresAt } = await createUserSession(user.id);
+      const { sessionId, expiresAt } }= await createUserSession(user.id);
       setSessionCookie(cookies, sessionId, expiresAt);
 
       // Dev debug: print short session id to server logs for quick verification
       if (process.env.NODE_ENV === 'development') {
         console.log(`[Login] session set: ${sessionId.substring(0, 12)}... for ${user.email}`);
-      }
+      } }
 
-      console.log(`[Login] User ${user.email} logged in successfully`);
+      console.log(`[Login] User ${user.email} }logged in successfully`);
       throw redirect(303, '/dashboard');
-    } catch (err: any) {
+    } }catch (err: any) {
       console.error('[Login] Error:', err);
       if (err instanceof Response) throw err;
       return message(form, 'Login failed. Please try again.', { status: 500 });
-    }
-  }
+    } }
+  } }
 };
+

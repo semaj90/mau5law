@@ -9,19 +9,19 @@ export interface WebGPURAGConfig {
   tensorCoreOptimization?: boolean;
   maxBatchSize?: number;
   workgroupSize?: number;
-}
+} }
 
 export interface CUDAInteropConfig {
   enableCUDASharing?: boolean;
   cudaDeviceId?: number;
   memoryPoolSize?: number;
   streamPriority?: 'normal' | 'high';
-}
+} }
 
 export interface PTXKernelConfig { architecture: 'sm_86' | 'sm_89' | 'sm_90';, optimizationLevel: 0 | 1 | 2 | 3;
   maxRegisters?: number;
   sharedMemorySize?: number;
-}
+} }
 
 export class WebGPURAGEngine {
   private device: GPUDevice | null = null;
@@ -34,7 +34,7 @@ export class WebGPURAGEngine {
   constructor(
     private config: WebGPURAGConfig = {},
     private cudaConfig: CUDAInteropConfig = {},
-    private ptxConfig: PTXKernelConfig = {, architecture: 'sm_86', optimizationLevel: 3 }
+    private ptxConfig: PTXKernelConfig = { architecture: 'sm_86', optimizationLevel: 3 } }
   ) {
     this.config = {
       deviceType: 'discrete',
@@ -44,7 +44,7 @@ export class WebGPURAGEngine {
       workgroupSize: 256,
       ...config
     };
-  }
+  } }
 
   async initialize(): Promise<boolean> {
     try {
@@ -52,7 +52,7 @@ export class WebGPURAGEngine {
       if (!('gpu' in navigator)) {
         console.warn('WebGPU not available, falling back to CPU');
         return false;
-      }
+      } }
 
       // Request adapter with preferences
       const adapter = await navigator.gpu.requestAdapter({
@@ -62,11 +62,11 @@ export class WebGPURAGEngine {
       if (!adapter) {
         console.warn('No suitable WebGPU adapter found');
         return false;
-      }
+      } }
 
       // Get adapter info
       const adapterInfo = await adapter.requestAdapterInfo();
-      console.log(`🚀 WebGPU Adapter: ${adapterInfo.vendor} ${adapterInfo.device}`);
+      console.log(`🚀 WebGPU Adapter: ${adapterInfo.vendor} }${adapterInfo.device}`);
 
       // Request device with required features
       const requiredFeatures: GPUFeatureName[] = ['timestamp-query'];
@@ -74,20 +74,19 @@ export class WebGPURAGEngine {
       // Add Ampere-specific features if available
       if (adapter.features.has('texture-compression-bc')) {
         requiredFeatures.push('texture-compression-bc');
-      }
+      } }
 
       this.device = await adapter.requestDevice({
         requiredFeatures,
-        requiredLimits: {
-         , maxComputeWorkgroupStorageSize: 32768,
+        requiredLimits: { maxComputeWorkgroupStorageSize: 32768,
           maxComputeInvocationsPerWorkgroup: 1024,
           maxComputeWorkgroupsPerDimension: 65535
-        }
+        } }
       });
 
       // Error handling
       this.device.addEventListener('uncapturederror', event => {
-        console.error('WebGPU uncaptured error:', event.error);'
+        console.error('WebGPU uncaptured error:', event.error);
       });
 
       // Load WASM module for CUDA interop
@@ -99,15 +98,15 @@ export class WebGPURAGEngine {
       // Setup CUDA interoperability
       if (this.cudaConfig.enableCUDASharing) {
         await this.setupCUDAInterop();
-      }
+      } }
 
       console.log('✅ WebGPU RAG Engine initialized successfully');
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('WebGPU RAG Engine initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
 
   private async loadWASMModule(): Promise<void> {
     try {
@@ -118,11 +117,11 @@ export class WebGPURAGEngine {
         const wasmBytes = await wasmResponse.arrayBuffer();
         this.wasmModule = await WebAssembly.compile(wasmBytes);
         console.log('🔧 CUDA-WASM module compiled successfully');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('WASM module loading failed, using WebGPU-only mode:', error);
-    }
-  }
+    } }
+  } }
 
   private async initializeComputePipelines(): Promise<void> {
     if (!this.device) return;
@@ -136,7 +135,7 @@ export class WebGPURAGEngine {
     await this.createClusteringPipeline(shaderCode);
     await this.createEntityExtractionPipeline(shaderCode);
     await this.createSemanticSearchPipeline(shaderCode);
-  }
+  } }
 
   private async createSimilarityPipeline(shaderCode: string): Promise<void> {
     if (!this.device) return;
@@ -144,25 +143,24 @@ export class WebGPURAGEngine {
     // Create bind group layout for similarity computation
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {,
-         , binding: 0,
+        { , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'storage' }
+          buffer: { type: 'storage' } }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'uniform' }
+          buffer: { type: 'uniform' } }
         },
       ]
     });
@@ -170,146 +168,143 @@ export class WebGPURAGEngine {
     this.bindGroupLayouts.set('similarity', bindGroupLayout);
 
     // Create compute pipeline
-    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+      compute: { module: this.device.createShaderModule({ code: shaderCode }),
         entryPoint: 'cosine_similarity'
-      }
+      } }
     });
 
     this.computePipelines.set('similarity', computePipeline);
-  }
+  } }
 
   private async createClusteringPipeline(shaderCode: string): Promise<void> {
     if (!this.device) return;
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {,
-         , binding: 0,
+        { , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'storage' }
+          buffer: { type: 'storage' } }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'storage' }
+          buffer: { type: 'storage' } }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'uniform' }
+          buffer: { type: 'uniform' } }
         },
       ]
     });
 
     this.bindGroupLayouts.set('clustering', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+      compute: { module: this.device.createShaderModule({ code: shaderCode }),
         entryPoint: 'kmeans_assignment'
-      }
+      } }
     });
 
     this.computePipelines.set('clustering', computePipeline);
-  }
+  } }
 
   private async createEntityExtractionPipeline(shaderCode: string): Promise<void> {
     if (!this.device) return;
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {,
-         , binding: 0,
+        { , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'storage' }
+          buffer: { type: 'storage' } }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'uniform' }
+          buffer: { type: 'uniform' } }
         },
       ]
     });
 
     this.bindGroupLayouts.set('entity_extraction', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+      compute: { module: this.device.createShaderModule({ code: shaderCode }),
         entryPoint: 'extract_legal_entities'
-      }
+      } }
     });
 
     this.computePipelines.set('entity_extraction', computePipeline);
-  }
+  } }
 
   private async createSemanticSearchPipeline(shaderCode: string): Promise<void> {
     if (!this.device) return;
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {,
-          binding: 0,
+        { binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage' }
+          buffer: { type: 'read-only-storage' } }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: `storage` }'`'`
+          buffer: { type: `storage` } }`'`
         },
         {
           binding: 4,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: `uniform` }
+          buffer: { type: `uniform` } }
         },
       ]
     });
 
     this.bindGroupLayouts.set('semantic_search', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: { module: this.device.createShaderModule({, code: shaderCode }),
-        entryPoint: `semantic_search_scoring` }
+      compute: { module: this.device.createShaderModule({ code: shaderCode }),
+        entryPoint: `semantic_search_scoring` } }
     });
 
     this.computePipelines.set('semantic_search', computePipeline);
-  }
+  } }
 
   private async setupCUDAInterop(): Promise<void> {
     try {
       if (!this.wasmModule) {
         console.warn('CUDA interop requires WASM module');
         return;
-      }
+      } }
 
       // Initialize CUDA context through WASM
       const wasmInstance = await WebAssembly.instantiate(this.wasmModule);
@@ -321,18 +316,18 @@ export class WebGPURAGEngine {
       if (result === 0) {
         this.cudaInterop = true;
         console.log('🔗 CUDA interoperability enabled');
-      } else {
+      } }else {
         console.warn('CUDA initialization failed, code:', result);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('CUDA interop setup failed:', error);
-    }
-  }
+    } }
+  } }
 
   async computeSimilarities(documentEmbeddings: Float32Array, queryEmbedding: Float32Array): Promise<Float32Array> {
     if (!this.device || !this.computePipelines.has('similarity')) {
       throw new Error('WebGPU not initialized or similarity pipeline not available');
-    }
+    } }
 
     const pipeline = this.computePipelines.get('similarity')!;
     const bindGroupLayout = this.bindGroupLayouts.get('similarity')!;
@@ -356,10 +351,10 @@ export class WebGPURAGEngine {
     const bindGroup = this.device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        {, binding: 0, resource: {, buffer: inputBuffer } },
-        { binding: 1, resource: {, buffer: queryBuffer } },
-        { binding: 2, resource: {, buffer: resultBuffer } },
-        { binding: 3, resource: {, buffer: configBuffer } }
+        { binding: 0, resource: { buffer: inputBuffer } }},
+        { binding: 1, resource: { buffer: queryBuffer } }},
+        { binding: 2, resource: { buffer: resultBuffer } }},
+        { binding: 3, resource: { buffer: configBuffer } }} }
       ]
     });
 
@@ -394,7 +389,7 @@ export class WebGPURAGEngine {
     readBuffer.destroy();
 
     return resultCopy;
-  }
+  } }
 
   async performClustering(
     documentEmbeddings: Float32Array,
@@ -403,7 +398,7 @@ export class WebGPURAGEngine {
   ): Promise<{ centroids: Float32Array; assignments: Uint32Array }> {
     if (!this.device || !this.computePipelines.has('clustering')) {
       throw new Error('WebGPU not initialized or clustering pipeline not available');
-    }
+    } }
 
     const pipeline = this.computePipelines.get('clustering')!;
     const bindGroupLayout = this.bindGroupLayouts.get('clustering')!;
@@ -415,7 +410,7 @@ export class WebGPURAGEngine {
     const centroids = new Float32Array(numClusters * embeddingDim);
     for (let i = 0; i < centroids.length; i++) {
       centroids[i] = (Math.random() - 0.5) * 2;
-    }
+    } }
 
     const documentBuffer = this.createBuffer(documentEmbeddings, GPUBufferUsage.STORAGE);
     const centroidBuffer = this.createBuffer(centroids, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
@@ -432,10 +427,10 @@ export class WebGPURAGEngine {
     const bindGroup = this.device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        {, binding: 0, resource: {, buffer: documentBuffer } },
-        { binding: 1, resource: {, buffer: centroidBuffer } },
-        { binding: 2, resource: {, buffer: assignmentBuffer } },
-        { binding: 3, resource: {, buffer: configBuffer } }
+        { binding: 0, resource: { buffer: documentBuffer } }},
+        { binding: 1, resource: { buffer: centroidBuffer } }},
+        { binding: 2, resource: { buffer: assignmentBuffer } }},
+        { binding: 3, resource: { buffer: configBuffer } }} }
       ]
     });
 
@@ -453,7 +448,7 @@ export class WebGPURAGEngine {
 
       // In a full implementation, we would update centroids here
       // and check for convergence
-    }
+    } }
 
     // Read final results
     const centroidReadBuffer = this.device.createBuffer({
@@ -494,7 +489,7 @@ export class WebGPURAGEngine {
       centroids: centroidsCopy,
       assignments: assignmentsCopy
     };
-  }
+  } }
 
   private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBuffer {
     if (!this.device) throw new Error('WebGPU device not available');
@@ -506,13 +501,13 @@ export class WebGPURAGEngine {
 
     this.device.queue.writeBuffer(buffer, 0, data);
     return buffer;
-  }
+  } }
 
   async dispose(): Promise<void> {
     // Cleanup GPU resources
     for (const buffer of this.bufferPool.values()) {
       buffer.destroy();
-    }
+    } }
     this.bufferPool.clear();
     this.computePipelines.clear();
     this.bindGroupLayouts.clear();
@@ -520,26 +515,27 @@ export class WebGPURAGEngine {
     if (this.device) {
       this.device.destroy();
       this.device = null;
-    }
+    } }
 
     console.log('🧹 WebGPU RAG Engine disposed');
-  }
+  } }
 
   get isInitialized(): boolean {
     return this.device !== null;
-  }
+  } }
 
   get hasCUDAInterop(): boolean {
     return this.cudaInterop;
-  }
+  } }
 
   getDeviceInfo(): string {
     return this.device ? 'WebGPU Device Available' : 'No WebGPU Device';
-  }
-}
+  } }
+} }
 
 // Singleton instance for global access
 export const webgpuRAGEngine = new WebGPURAGEngine();
 
 // Auto-initialize on module load
 webgpuRAGEngine.initialize().catch(console.warn);
+

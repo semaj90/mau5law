@@ -15,21 +15,21 @@ export interface OllamaConfig {
   gpu: GpuConfig;
   performance: PerformanceConfig;
   features: FeaturesConfig;
-}
+} }
 export interface GpuConfig { enabled: boolean;, layers: number;
   mainGpu: number;
   tensorSplit: number[] | null;
-}
+} }
 export interface PerformanceConfig { batchSize: number;, parallelRequests: number;
   cacheEnabled: boolean;
   cacheTTL: number;
-}
+} }
 export interface FeaturesConfig { som: boolean;, proactiveCaching: boolean;
   multiModalIndexing: boolean;
   reinforcementLearning: boolean;
   webGpuAcceleration: boolean;
   intelligentFallback?: boolean;
-}
+} }
 export interface ModelConfig { name: string;, type: 'local' | 'legal-fallback' | 'general-fallback' | 'embedding' | 'embedding-fallback' | 'fallback';
   capabilities: string[];
   contextWindow: number;
@@ -39,7 +39,7 @@ export interface ModelConfig { name: string;, type: 'local' | 'legal-fallback' 
   topK?: number;
   systemPrompt?: string;
   options?: { [key: string]: any };
-}
+} }
 export interface OllamaGenerateRequest { model: string;, prompt: string;
   system?: string;
   template?: string;
@@ -58,9 +58,9 @@ export interface OllamaGenerateRequest { model: string;, prompt: string;
     num_thread?: number;
     repeat_penalty?: number;
   };
-}
+} }
 export interface OllamaEmbeddingRequest { model: string;, prompt: string;
-}
+} }
 export interface OllamaResponse { model: string;, created_at: string;
   response?: string;
   done: boolean;
@@ -72,11 +72,11 @@ export interface OllamaResponse { model: string;, created_at: string;
   eval_count?: number;
   fallback_used?: boolean;
   models_tried?: string[];
-}
+} }
 export interface OllamaEmbeddingResponse {
   embedding: number[];
   model?: string;
-}
+} }
 export interface DocumentChunk { id: string;, content: string;
   metadata: {
     source: string;
@@ -87,13 +87,13 @@ export interface DocumentChunk { id: string;, content: string;
   };
   embedding?: number[];
   relevanceScore?: number;
-}
+} }
 export interface SOMNode { x: number;, y: number;
   weight: number[];
   documents: string[];
   topic?: string;
   density: number;
-}
+} }
 export interface ProcessingPipeline { id: string;, status: 'pending' | 'processing' | 'completed' | 'failed';
   stages: { ingestion: boolean;, preprocessing: boolean;
     embedding: boolean;
@@ -108,7 +108,7 @@ export interface ProcessingPipeline { id: string;, status: 'pending' | 'process
     embeddingsCreated: number;
     processingTimeMs: number;
   };
-}
+} }
 export interface LegalDocument { id: string;, title: string;
   type: 'contract' | 'case' | 'statute' | 'brief' | 'memo' | 'other';
   content: string;
@@ -124,7 +124,7 @@ export interface LegalDocument { id: string;, title: string;
   embedding?: number[];
   somCoordinates?: { x: number; y: number };
   relevanceScore?: number;
-}
+} }
 export interface AnalysisResult { documentId: string;, summary: string;
   keyPoints: string[];
   entities: { people: string[];, organizations: string[];
@@ -137,13 +137,13 @@ export interface AnalysisResult { documentId: string;, summary: string;
   recommendations?: string[];
   citations?: { text: string;, source: string;
     confidence: number;
-  }[];
+  } }];
   metadata?: {
     modelUsed?: string;
     timestamp?: string;
     [key: string]: any;
   };
-}
+} }
 export interface UserQuery { id: string;, userId: string;
   query: string;
   timestamp: Date;
@@ -156,14 +156,14 @@ export interface UserQuery { id: string;, userId: string;
     confidence: number;
     processingTimeMs: number;
   };
-}
+} }
 export interface CacheEntry { key: string;, value: any;
   ttl: number;
   created: Date;
   lastAccessed: Date;
   accessCount: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
-}
+} }
 // RAG Configuration
 export interface SimpleRAGConfiguration { embeddingModel: string;, embeddingDimensions: number;
   llmModel: string;
@@ -174,5 +174,6 @@ export interface SimpleRAGConfiguration { embeddingModel: string;, embeddingDim
   timeoutMs: number;
   cacheEnabled: boolean;
   cacheTtl: number;
-}
+} }
 export type RAGConfiguration = SimpleRAGConfiguration; // compatibility alias for config.ts
+

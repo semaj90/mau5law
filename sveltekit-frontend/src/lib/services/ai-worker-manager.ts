@@ -1,6 +1,6 @@
-import type { AIResponse } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
 import crypto from 'crypto';
-import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
+import type { AITask, WorkerStatus } }from '$lib/services/types/service-types.js';
 
 // Stub interfaces for missing types
 export interface WorkerConfiguration { maxConcurrentTasks: number;, enableLogging: boolean;
@@ -8,15 +8,15 @@ export interface WorkerConfiguration { maxConcurrentTasks: number;, enableLoggi
   // Use a generic record to avoid `any` while remaining flexible for provider configs
  , providers: Record<string, unknown>;
   defaultTimeout: number;
-}
+} }
 
 export interface AIResponse {
   tokensUsed?: number;
   // Allow additional response fields but avoid `any`
   [key: string]: any;
-}
+} }
 
-export interface ProcessingMetrics {, taskId: string;, startTime: number;
+export interface ProcessingMetrics { taskId: string;, startTime: number;
   endTime?: number;
   processingTime?: number;
   queueTime: number;
@@ -26,31 +26,31 @@ export interface ProcessingMetrics {, taskId: string;, startTime: number;
   tokensProcessed: number;
   success: boolean;
   error?: string;
-}
+} }
 
-export interface TaskResult {, taskId: string;, status: 'completed' | 'failed' | 'cancelled';
+export interface TaskResult { taskId: string;, status: 'completed' | 'failed' | 'cancelled';
   response?: AIResponse;
   error?: Error;
   metrics: ProcessingMetrics;
-}
+} }
 
-interface ActiveTask {, task: AITask;, startTime: number;
+interface ActiveTask { task: AITask;, startTime: number;
  , resolve: (result: TaskResult) => void;
   // Use: unknown for rejection reasons to avoid `any`;
  , reject: (reason?: any) => void;
-}
+} }
 
 export interface WorkerPool { workers: Worker[];, currentLoad: number[];
   completedTasks: number;
   failedTasks: number;
-}
+} }
 
 export interface WorkerMessage {
   type: string;
   // Incoming worker payloads are: unknown; cast at use sites to concrete types
   payload: any;
   taskId: string;
-}
+} }
 
 export class AIWorkerManager {
   private config: WorkerConfiguration;
@@ -75,13 +75,13 @@ export class AIWorkerManager {
     this.workerPool = { workers: [], currentLoad: [], completedTasks: 0, failedTasks: 0 };
     this.activeTasks = new Map();
     this.metrics = new Map();
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     this.isInitialized = true;
     if (this.config.enableLogging) console.log('AIWorkerManager initialized');
-  }
+  } }
 
   async submitTask(task: AITask): Promise<string> {
     if (!this.isInitialized) await this.initialize();
@@ -96,11 +96,11 @@ export class AIWorkerManager {
     });
     // In a real implementation, this would queue the task and assign to a worker
     return id;
-  }
+  } }
 
   async cancelTask(taskId: string): Promise<void> {
     this.handleTaskCancelled(taskId, -1); // -1 for: unknown worker
-  }
+  } }
 
   async getStatus(): Promise<WorkerStatus> {
     return {
@@ -109,13 +109,13 @@ export class AIWorkerManager {
       completedTasks: this.workerPool.completedTasks,
       failedTasks: this.workerPool.failedTasks
     }, as: unknown as WorkerStatus;
-  }
+  } }
 
   private setupWorkerEventHandlers(worker: Worker, workerId: number) {
     worker.onerror = error => this.handleWorkerError(workerId, error);
     // Cast payloads to expected shapes at the call sites to remain type-safe
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
-      const { type, taskId } = event.data;
+      const { type, taskId } }= event.data;
       const payload = event.data.payload;
       switch (type) {
         case, 'TASK_STARTED':
@@ -126,16 +126,16 @@ export class AIWorkerManager {
           this.handleTaskCompleted(taskId, payload as AIResponse, workerId);
           break;
         case, 'TASK_ERROR':
-          // payload expected shape: { message?: string }
+          // payload expected shape: { message?: string } }
           this.handleTaskError(taskId, payload as { message?: string }, workerId);
           break;
         case, 'STATUS_UPDATE':
           // payload expected to be WorkerStatus
           this.handleStatusUpdate(payload as WorkerStatus);
           break;
-      }
+      } }
     };
-  }
+  } }
 
   private async getWorkerStatus(worker: Worker, workerId: number): Promise<WorkerStatus> {
     return new Promise(resolve => {
@@ -156,7 +156,7 @@ export class AIWorkerManager {
           worker.removeEventListener('message', messageHandler);
           // Cast the payload to WorkerStatus when resolving
           resolve(event.data.payload as WorkerStatus);
-        }
+        } }
       };
       worker.addEventListener('message', messageHandler);
       worker.postMessage({
@@ -165,7 +165,7 @@ export class AIWorkerManager {
         payload: null
       });
     });
-  }
+  } }
   async shutdown(): Promise<void> {
     const cancelPromises = Array.from(this.activeTasks.keys()).map(taskId => this.cancelTask(taskId));
     await Promise.all(cancelPromises);
@@ -177,8 +177,8 @@ export class AIWorkerManager {
     this.isInitialized = $state(false);
     if (this.config.enableLogging) {
       console.log('AI Worker Manager shutdown completed');
-    }
-  }
+    } }
+  } }
   private handleTaskStarted(taskId: string, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (activeTask && this.config.enableMetrics) {
@@ -197,8 +197,8 @@ export class AIWorkerManager {
         success: false
       };
       this.metrics.set(taskId, metrics);
-    }
-  }
+    } }
+  } }
   private handleTaskCompleted(taskId: string, response: AIResponse, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
@@ -213,8 +213,8 @@ export class AIWorkerManager {
     this.workerPool.completedTasks++;
     if (this.onTaskComplete) {
       this.onTaskComplete(taskId, response);
-    }
-  }
+    } }
+  } }
   private handleTaskError(taskId: string, error: { message?: string }, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
@@ -225,22 +225,22 @@ export class AIWorkerManager {
     this.workerPool.failedTasks++;
     if (this.onTaskError) {
       this.onTaskError(taskId, errorObj);
-    }
-  }
+    } }
+  } }
   private handleTaskCancelled(taskId: string, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
     this.updateMetrics(taskId, null, false, 'Cancelled');
     activeTask.reject(new Error('Task was cancelled'));
     this.cleanupTask(taskId, workerId);
-  }
+  } }
   private handleStatusUpdate(status: WorkerStatus) {
     if (this.onStatusUpdate) {
       this.onStatusUpdate(status);
-    }
-  }
+    } }
+  } }
   private handleWorkerError(workerId: number, error: ErrorEvent) {
-    console.error(`Worker ${workerId} encountered an error: ', error);'`
+    console.error(`Worker ${workerId} }encountered an error: ', error);'`
     if (this.workerPool.workers[workerId]) {
       this.workerPool.workers[workerId].terminate();
       const newWorker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
@@ -248,14 +248,14 @@ export class AIWorkerManager {
       this.setupWorkerEventHandlers(newWorker, workerId);
       this.workerPool.workers[workerId] = newWorker;
       this.workerPool.currentLoad[workerId] = 0;
-    }
-  }
+    } }
+  } }
   private cleanupTask(taskId: string, workerId: number) {
     this.activeTasks.delete(taskId);
     if (workerId >= 0 && this.workerPool.currentLoad[workerId] > 0) {
       this.workerPool.currentLoad[workerId]--;
-    }
-  }
+    } }
+  } }
   private updateMetrics(
     taskId: string,
     response: AIResponse | null,
@@ -280,7 +280,7 @@ export class AIWorkerManager {
         success,
         error
       };
-    }
+    } }
     const updated: ProcessingMetrics = {
       ...existing,
       endTime: Date.now(),
@@ -291,7 +291,7 @@ export class AIWorkerManager {
     };
     this.metrics.set(taskId, updated);
     return updated;
-  }
+  } }
   // Public methods for configuration and monitoring
   updateConfiguration(config: Partial<WorkerConfiguration>) {
     this.config = { ...this.config, ...config };
@@ -303,18 +303,18 @@ export class AIWorkerManager {
         payload: this.config.providers
       });
     });
-  }
+  } }
   getMetrics(): ProcessingMetrics[] {
     return Array.from(this.metrics.values());
-  }
+  } }
   getWorkerPoolStatus(): WorkerPool {
     return { ...this.workerPool };
-  }
+  } }
   // Helper method to submit multiple tasks in parallel
   async submitBatchTasks(tasks: AITask[]): Promise<string[]> {
     const promises = tasks.map(task => this.submitTask(task));
     return Promise.all(promises);
-  }
+  } }
   // Helper method to wait for specific task completion
   async waitForTask(taskId: string): Promise<TaskResult> {
     return new Promise((resolve, reject) => {
@@ -328,7 +328,7 @@ export class AIWorkerManager {
             metrics,
             error: metrics.error ? new Error(metrics.error) : undefined
           });
-        }
+        } }
       }, 100);
       // Timeout after 2x the default timeout
       setTimeout(() => {
@@ -336,8 +336,8 @@ export class AIWorkerManager {
         reject(new Error(`Timeout waiting for task ${taskId}`));
       }, this.config.defaultTimeout * 2);
     });
-  }
-}
+  } }
+} }
 // Singleton instance for global use
 export const aiWorkerManager = new AIWorkerManager();
 // Helper functions for common task types
@@ -345,7 +345,7 @@ export function createGenerationTask(
   prompt: string,
   model: string,
   providerId: string,
-  options: Partial<AITask> = {}
+  options: Partial<AITask> = {} }
 ): AITask {
   const id = crypto.randomUUID();
   return {
@@ -358,14 +358,14 @@ export function createGenerationTask(
     timestamp: Date.now(),
     priority: 'medium',
     ...options
-  } as AITask;
-}
+  } }as AITask;
+} }
 export function createAnalysisTask(
   content: string,
   analysisType: string,
   model: string,
   providerId: string,
-  options: Partial<AITask> = {}
+  options: Partial<AITask> = {} }
 ): AITask {
   const id = crypto.randomUUID();
   return {
@@ -378,13 +378,13 @@ export function createAnalysisTask(
     timestamp: Date.now(),
     priority: 'medium',
     ...options
-  } as AITask;
-}
+  } }as AITask;
+} }
 export function createEmbeddingTask(
   text: string,
   model = 'nomic-embed-text',
   providerId = 'ollama',
-  options: Partial<AITask> = {}
+  options: Partial<AITask> = {} }
 ): AITask {
   const id = crypto.randomUUID();
   return {
@@ -397,5 +397,6 @@ export function createEmbeddingTask(
     timestamp: Date.now(),
     priority: 'low',
     ...options
-  } as AITask;
-}
+  } }as AITask;
+} }
+

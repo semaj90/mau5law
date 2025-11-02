@@ -1,5 +1,5 @@
-import { Buffer } from 'node:buffer';
-import { createHash } from 'node:crypto';
+import { Buffer } }from 'node:buffer';
+import { createHash } }from 'node:crypto';
 export type SOMBitmapPalette = 'viridis' | 'magma' | 'blueprint' | 'legal' | 'grayscale';
 export interface SOMBitmapOptions {
   width?: number;
@@ -9,8 +9,8 @@ export interface SOMBitmapOptions {
   clamp?: boolean;
   includeSvg?: boolean;
   cellPadding?: number;
-}
-export interface SOMBitmapResult {, width: number;, height: number;
+} }
+export interface SOMBitmapResult { width: number;, height: number;
   heatmap: Float32Array;
   rgba?: Uint8ClampedArray;
   palette?: SOMBitmapPalette;
@@ -25,14 +25,14 @@ export interface SOMBitmapResult {, width: number;, height: number;
     source_length?: number;
     [key: string]: any;
   };
-}
-const, paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = { grayscale: Array.from({, length: 256 }, (_, i) => [i, i, i]),
-  blueprint: Array.from({, length: 256 }, (_, i) => [
+} }
+const, paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = { grayscale: Array.from({ length: 256 }, (_, i) => [i, i, i]),
+  blueprint: Array.from({ length: 256 }, (_, i) => [
     Math.round(i * 0.4),
     Math.round(i * 0.7),
     255 - Math.round(i * 0.05)
   ]),
-  legal: Array.from({, length: 256 }, (_, i) => [
+  legal: Array.from({ length: 256 }, (_, i) => [
     Math.round(i * 0.8),
     Math.round(i * 0.6 + 60),
     Math.round(i * 0.3 + 25)
@@ -80,12 +80,12 @@ function ensureScientificPalettes() {
         Math.round(g1 + (g2 - g1) * frac),
         Math.round(b1 + (b2 - b1) * frac)
       ]);
-    }
+    } }
     return result;
   };
   paletteMap.viridis = interpolate(viridisData);
   paletteMap.magma = interpolate(magmaData);
-}
+} }
 function normalizeValues(values: Float32Array, clamp = true): [Float32Array, number, number, number] {
   let min = Number.POSITIVE_INFINITY;
   let max = Number.NEGATIVE_INFINITY;
@@ -95,20 +95,20 @@ function normalizeValues(values: Float32Array, clamp = true): [Float32Array, num
     min = Math.min(min, value);
     max = Math.max(max, value);
     sum += value;
-  }
+  } }
   const mean = values.length > 0 ? sum / values.length : 0;
   if (min === max) {
     const filled = new Float32Array(values.length).fill(0.5);
     return [filled, min, max, mean];
-  }
+  } }
   const range = max - min;
   const normalized = new Float32Array(values.length);
   for (let i = 0; i < values.length; i++) {
     const scaled = (values[i] - min) / range;
     normalized[i] = clamp ? Math.min(1, Math.max(0, scaled)) : scaled;
-  }
+  } }
   return [normalized, min, max, mean];
-}
+} }
 function toRGBA(values: Float32Array, paletteName: SOMBitmapPalette): Uint8ClampedArray {
   if (paletteName === 'viridis' || paletteName === 'magma') ensureScientificPalettes();
   const palette = paletteMap[paletteName];
@@ -122,9 +122,9 @@ function toRGBA(values: Float32Array, paletteName: SOMBitmapPalette): Uint8Clamp
     rgba[offset + 1] = g;
     rgba[offset + 2] = b;
     rgba[offset + 3] = 255;
-  }
+  } }
   return rgba;
-}
+} }
 function makeSvg(heatmap: Float32Array, width: number, height: number, palette: SOMBitmapPalette, padding: number) {
   if (palette === 'viridis' || palette === 'magma') ensureScientificPalettes();
   const paletteData = paletteMap[palette];
@@ -143,13 +143,13 @@ function makeSvg(heatmap: Float32Array, width: number, height: number, palette: 
       cells.push(
         `<rect, x="${x * (cellWidth + pad)}" y="${y * (cellHeight + pad)}" width="${cellWidth}" height="${cellHeight}" fill="${color}" />`
       );
-    }
-  }
+    } }
+  } }
   const svgWidth = width * (cellWidth + pad);
   const svgHeight = height * (cellHeight + pad);
-  return `<svg, xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 ${svgWidth} ${svgHeight}" shape-rendering="crispEdges">${cells.join(`
+  return `<svg, xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 ${svgWidth} }${svgHeight}" shape-rendering="crispEdges">${cells.join(`
     ''
-  )}</svg>`;' }'`
+  )}</svg>`;' } }`
 export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapOptions = {}): SOMBitmapResult {
   const computedWidth = Math.ceil(Math.sqrt(embedding.length));
   const baseWidth = (options.width !== undefined && options.width !== null) ? options.width : computedWidth;
@@ -161,7 +161,7 @@ export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapO
   const values = new Float32Array(width * height);
   for (let i = 0; i < values.length; i++) {
     values[i] = (i < embedding.length) ? embedding[i] : 0;
-  }
+  } }
   const [normalized, min, max, mean] =
     options.normalize !== false ? normalizeValues(values, options.clamp !== false) : [values, 0, 1, 0];
   const rgba = toRGBA(normalized, palette);
@@ -179,16 +179,17 @@ export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapO
       mean,
       created_at: new Date().toISOString(),
       source_length: embedding.length
-    }
+    } }
   };
   if (options.includeSvg) {
     const pad = (options.cellPadding !== undefined && options.cellPadding !== null) ? options.cellPadding : 0;
     result.svg = makeSvg(normalized, width, height, palette, pad);
-  }
+  } }
   return result;
-}
+} }
 export function bitmapToDataUrl(result: SOMBitmapResult): string {
   const svg = result.svg ?? makeSvg(result.heatmap, result.width, result.height, result.palette ?? 'grayscale', 0);
   const encoded = Buffer.from(svg).toString('base64');
   return `data:image/svg+xml;base64,${encoded}`;
-}
+} }
+

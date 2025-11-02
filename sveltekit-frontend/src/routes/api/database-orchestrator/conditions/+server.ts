@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 // --- ADDED: explicit types for conditions/orchestrator to avoid: unknown/any inference ---
 type Condition = {
   id?: string;
- , type: string;
+  type: string;
   condition?: Record<string, unknown>;
   action: string;
   isActive?: boolean;
@@ -12,9 +12,9 @@ type Condition = {
   [key: string]: any;
 };
 
-declare const databaseOrchestrator: {, getStatus: () => {, isRunning: boolean };
+declare const databaseOrchestrator: { getStatus: () => { isRunning: boolean };
   conditions?: Map<string, Condition>;
-  addCondition: (condition: Condition & {, id: string }) => void;
+  addCondition: (condition: Condition & { id: string }) => void;
   removeCondition: (id: string) => void;
 };
 // --- end additions ---
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
 
     // ensure typed Map so Array.from().map receives [string, Condition]
     const map = databaseOrchestrator.conditions ?? new Map<string, Condition>();
-    const conditions: Array<Condition & {, id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
+    const conditions: Array<Condition & { id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
       id,
       ...(condition as Condition)
     }));
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async () => {
       orchestrator_running: status.isRunning,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -50,9 +50,9 @@ export const GET: RequestHandler = async () => {
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // POST /api/database-orchestrator/conditions - Add new condition
 export const POST: RequestHandler = async ({ request }) => {
@@ -68,19 +68,19 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing or invalid required;, fields: id (string), type (string), action (string)'
+          error: 'Missing or invalid required; fields: id (string), type (string), action (string)'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
-    const condition: Condition & { id: string } = {
-     , id: conditionData.id,
+    const condition: Condition & { id: string } }= {
+  id: conditionData.id,
       type: String(conditionData.type),
       condition: (conditionData.condition as Record<string, unknown>) ?? {},
       action: String(conditionData.action),
       isActive: typeof conditionData.isActive === 'boolean' ? conditionData.isActive : true,
-      metadata: (conditionData.metadata as Record<string, unknown>) ?? {}
+      metadata: (conditionData.metadata as Record<string, unknown>) ?? {} }
     };
 
     databaseOrchestrator.addCondition(condition);
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       condition,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -99,9 +99,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // DELETE /api/database-orchestrator/conditions/:id - Remove condition
 export const DELETE: RequestHandler = async ({ params }) => {
@@ -114,9 +114,9 @@ export const DELETE: RequestHandler = async ({ params }) => {
           success: false,
           error: 'Condition ID is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     databaseOrchestrator.removeCondition(id);
 
@@ -126,7 +126,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       conditionId: id,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -134,7 +134,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

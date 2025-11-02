@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Qdrant Vector Database Service
  * High-performance vector search and auto-tagging integration for SvelteKit.
@@ -9,8 +9,8 @@ import type { Document } from '$lib/types';
  * It uses the modern, stable API of the Qdrant client for improved type
  * safety, readability, and reliability.
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { writable, type Writable } from 'svelte/store';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import { writable, type Writable } }from 'svelte/store';
 
 // --- Local type definitions to replace non-exported `components` usage ---
 // Minimal shape used by this module. Adjust if you later rely on more Qdrant fields.
@@ -23,7 +23,7 @@ type PointStruct = { id: string | number;, vector: number[];
 };
 
 // Basic match condition shape used in filters within this codebase
-type MatchCondition = {, key: string;, match: { value: string | number | boolean };
+type MatchCondition = { key: string;, match: { value: string | number | boolean };
 };
 
 // Lightweight Filter shape to cover `must`/`must_not` usage in this file.
@@ -36,11 +36,10 @@ type Filter = {
 
 // Qdrant configuration
 const QDRANT_HOST = import.meta.env.VITE_QDRANT_HOST || 'http://localhost:6333';
-const QDRANT_COLLECTIONS = {
- , documents: 'legal_documents',
+const QDRANT_COLLECTIONS = { documents: 'legal_documents',
   users: 'user_profiles',
   activities: 'user_activities',
-  tags: `semantic_tags` } as const;
+  tags: `semantic_tags` } }as const;
 
 // --- Types (interfaces remain the same) ---
 export interface DocumentVector { id: string;, content: string;
@@ -48,9 +47,9 @@ export interface DocumentVector { id: string;, content: string;
   metadata: DocumentMetadata;
   tags: string[];
   timestamp: number;
-}
+} }
 
-export interface DocumentMetadata {, title: string;, type: 'legal_document' | 'case_law' | 'regulation' | 'contract' | 'brief';
+export interface DocumentMetadata { title: string;, type: 'legal_document' | 'case_law' | 'regulation' | 'contract' | 'brief';
   author?: string;
   date?: string;
   jurisdiction?: string;
@@ -59,12 +58,12 @@ export interface DocumentMetadata {, title: string;, type: 'legal_document' | '
   source_path?: string;
   page_count?: number;
   language?: string;
-}
+} }
 
-export interface LegalDocumentVector extends DocumentVector {, caseId: string;, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
+export interface LegalDocumentVector extends DocumentVector { caseId: string;, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
   legalJurisdiction: 'federal' | 'state' | 'local' | 'international';
   summary?: string;
-  legalEntities: {, parties: string[];, dates: string[];
+  legalEntities: { parties: string[];, dates: string[];
     monetary: string[];
     clauses: string[];
     jurisdictions: string[];
@@ -77,23 +76,22 @@ export interface LegalDocumentVector extends DocumentVector {, caseId: string;,
   processingStatus: 'pending' | 'processing' | 'completed' | 'error';
   aiModelVersion?: string;
   processedAt?: number;
-}
+} }
 
-export interface SearchResult {, id: string | number;, score: number;
+export interface SearchResult { id: string | number;, score: number;
   payload: DocumentVector | LegalDocumentVector;
   highlights?: string[];
-}
+} }
 
-export interface TagPrediction {, tag: string;, confidence: number;
+export interface TagPrediction { tag: string;, confidence: number;
   category: 'practice_area' | 'document_type' | 'legal_concept' | 'jurisdiction';
   source: 'llm' | 'pattern_matching' | 'manual';
-}
+} }
 
 // --- Expected API Response Types ---
 // Removed unused `OllamaEmbeddingResponse` type to fix TS unused-var error.
 
-type OllamaGenerateResponse = {
- , response: string; // This is often a stringified JSON
+type OllamaGenerateResponse = { response: string; // This is often a stringified JSON
 };
 
 type LLMTagResult = Partial<
@@ -118,7 +116,7 @@ export class QdrantService {
   constructor() {
     this.client = new QdrantClient({ url: QDRANT_HOST });
     void this.initialize();
-  }
+  } }
 
   // --- Core API Methods (Simplified & Type-Safe) ---
 
@@ -131,22 +129,22 @@ export class QdrantService {
     try {
       await this.client.upsert(collection, { wait: true, points });
       return { status: 'ok', count: points.length };
-    } catch (err) {
-      console.error('Qdrant upsert error:', err);'
+    } }catch (err) {
+      console.error('Qdrant upsert error:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   public async search(collection: string, request: Parameters<QdrantClient['search']>[1]) {
     if (!this.isConnected) throw new Error('Qdrant not connected');
     try {
       const results = await this.client.search(collection, request);
       return results;
-    } catch (err) {
-      console.error(`Search error in collection: '${collection}': ', err);'`
+    } }catch (err) {
+      console.error(`Search error in collection: '${collection} }: ', err);'`
       throw err;
-    }
-  }
+    } }
+  } }
 
   private async initialize(): Promise<void> {
     try {
@@ -164,17 +162,17 @@ export class QdrantService {
       if (collectionsResp.ok) {
         const collectionsInfo = (await collectionsResp.json()) as QdrantCollectionsResponse;
         this.collections$.set(collectionsInfo.collections.map((c: QdrantCollectionInfo) => c.name));
-      } else {
+      } }else {
         console.warn('Could not fetch collections info:', collectionsResp.status, collectionsResp.statusText);
-      }
+      } }
 
       console.log('🔗 Qdrant connected successfully');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Qdrant connection failed:', error);
       this.connectionStatus$.set('error');
       this.isConnected = $state(false);
-    }
-  }
+    } }
+  } }
 
   private async initializeCollections(): Promise<void> {
     const collections = Object.values(QDRANT_COLLECTIONS);
@@ -186,41 +184,40 @@ export class QdrantService {
       if (resp.ok) {
         const data = (await resp.json()) as QdrantCollectionsResponse;
         existingCollections = data.collections.map((c: QdrantCollectionInfo) => c.name);
-      } else {
+      } }else {
         console.warn('Failed to retrieve existing collections from Qdrant:', resp.status, resp.statusText);
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('Error fetching Qdrant collections:', err);
-    }
+    } }
 
     for (const collectionName of collections) {
       if (existingCollections.includes(collectionName)) {
-        console.log(`✅ Collection: '${collectionName}' exists`);
+        console.log(`✅ Collection: '${collectionName} } exists`);
         continue;
-      }
+      } }
       try {
-        console.log(`🔧 Creating collection: '${collectionName}'`);
+        console.log(`🔧 Creating collection: '${collectionName} }`);
         await this.createCollection(collectionName);
-      } catch (error) {
+      } }catch (error) {
         // It's possible another instance created it in the meantime.'
-        console.warn(`Could not create collection: '${collectionName}'. It may already exist.`, error);
-      }
-    }
-  }
+        console.warn(`Could not create collection: '${collectionName} }. It may already exist.`, error);
+      } }
+    } }
+  } }
 
   private async createCollection(name: string): Promise<void> {
     try {
-      await this.client.createCollection(name, { vectors: {, size: this.defaultVectorSize,
+      await this.client.createCollection(name, { vectors: { size: this.defaultVectorSize,
           distance: `Cosine` },
-        optimizers_config: {
-         , default_segment_number: 2
-        }
+        optimizers_config: { default_segment_number: 2
+        } }
       });
-    } catch (err) {
-      console.error(`createCollection('${name}') failed: ', err);'`
+    } }catch (err) {
+      console.error(`createCollection('${name} }) failed: ', err);'`
       throw err;
-    }
-  }
+    } }
+  } }
 
   // --- Document & Search Operations ---
 
@@ -228,22 +225,21 @@ export class QdrantService {
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const autoTags = await this.generateAutoTags(document.content, document.metadata);
 
-    const point: PointStruct = {
-     , id: documentId,
+    const point: PointStruct = { id: documentId,
       vector: this.normalizeVector(document.embedding),
       payload: {
         ...document.metadata,
         content: document.content,
         timestamp: Date.now(),
         tags: [...new Set([...document.tags, ...autoTags.map(t => t.tag)])]
-      }
+      } }
     };
 
     await this.upsert(QDRANT_COLLECTIONS.documents, [point]);
     await this.storeTagPredictions(documentId, autoTags);
-    console.log(`📄 Document: '${documentId}' added with ${autoTags.length} auto-tags`);
+    console.log(`📄 Document: '${documentId} } added with ${autoTags.length} }auto-tags`);
     return documentId;
-  }
+  } }
 
   public async searchDocuments(
     embedding: number[],
@@ -252,7 +248,7 @@ export class QdrantService {
       filter?: Filter;
       scoreThreshold?: number;
       query?: string;
-    } = {}
+    } }= {} }
   ): Promise<SearchResult[]> {
     const results = await this.search(QDRANT_COLLECTIONS.documents, {
       vector: this.normalizeVector(embedding),
@@ -262,8 +258,7 @@ export class QdrantService {
       with_payload: true
     });
 
-    const searchResults: SearchResult[] = results.map(result => ({
-     , id: result.id,
+    const searchResults: SearchResult[] = results.map(result => ({ id: result.id,
       score: result.score,
       payload: result.payload as DocumentVector,
       highlights: options.query ? this.extractHighlights(options.query, result.payload as DocumentVector) : []
@@ -271,7 +266,7 @@ export class QdrantService {
 
     this.searchResults$.set(searchResults);
     return searchResults;
-  }
+  } }
 
   // Example of a more specific search
   public async searchLegalDocuments(
@@ -280,17 +275,17 @@ export class QdrantService {
       caseType?: string;
       jurisdiction?: string;
       limit?: number;
-    } = {}
+    } }= {} }
   ): Promise<SearchResult[]> {
-    const filter: Filter = {, must: [] };
-    if (options.caseType) filter.must.push({ key: 'caseType', match: {, value: options.caseType } });
-    if (options.jurisdiction) filter.must.push({ key: 'legalJurisdiction', match: {, value: options.jurisdiction } });
+    const filter: Filter = { must: [] };
+    if (options.caseType) filter.must.push({ key: 'caseType', match: { value: options.caseType } }});
+    if (options.jurisdiction) filter.must.push({ key: 'legalJurisdiction', match: { value: options.jurisdiction } }});
 
     return this.searchDocuments(queryVector, {
       limit: options.limit,
       filter: filter.must.length > 0 ? filter : undefined
     });
-  }
+  } }
 
   // --- LLM Integration & Auto-Tagging ---
 
@@ -298,9 +293,8 @@ export class QdrantService {
     try {
       const resp = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
-        body: JSON.stringify({
-         , model: 'gemma3-legal',
-          prompt: `Analyze this legal document and generate semantic tags. Document;, Type: ${metadata.type}. Content, Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON: object with, keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and: "confidence_scores".`,
+        body: JSON.stringify({ model: 'gemma3-legal',
+          prompt: `Analyze this legal document and generate semantic tags. Document; Type: ${metadata.type}. Content, Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON: object with, keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and: "confidence_scores".`,
           stream: false,
           format: `json` })
       });
@@ -310,33 +304,33 @@ export class QdrantService {
       const parsedPayload = JSON.parse(data.response) as LLMTagResult; // The: 'response' field contains the stringified JSON
 
       return this.parseLLMTags(parsedPayload);
-    } catch (err) {
+    } }catch (err) {
       console.warn('⚠️ Auto-tagging failed, using fallback:', err);
       return this.fallbackTags(content, metadata);
-    }
-  }
+    } }
+  } }
 
   private parseLLMTags(llmResult: LLMTagResult): TagPrediction[] {
     const tags: TagPrediction[] = [];
-    const categories: { key: keyof LLMTagResult; category: TagPrediction['category'] }[] = [
-      {, key: 'practice_areas', category: 'practice_area' },
+    const categories: { key: keyof LLMTagResult; category: TagPrediction['category'] } }] = [
+      { key: 'practice_areas', category: 'practice_area' },
       { key: 'legal_concepts', category: 'legal_concept' },
       { key: 'entities', category: 'legal_concept' },
-      { key: 'document_characteristics', category: 'document_type' }
+      { key: 'document_characteristics', category: 'document_type' } }
     ];
 
-    for (const { key, category } of categories) {
+    for (const { key, category } }of categories) {
       const items = llmResult?.[key];
       if (Array.isArray(items)) {
         for (const item of items) {
           if (typeof item === 'string') {
             tags.push({ tag: item, confidence: 0.8, category, source: 'llm` });'`
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
     return tags;
-  }
+  } }
 
   private fallbackTags(content: string, metadata: DocumentMetadata): TagPrediction[] {
     const tags: TagPrediction[] = [];
@@ -347,24 +341,23 @@ export class QdrantService {
     for (const [tag, pattern] of Object.entries(patterns)) {
       if (pattern.test(content))
         tags.push({ tag, confidence: 0.6, category: 'practice_area', source: `pattern_matching` });
-    }
+    } }
     if (metadata.type) tags.push({ tag: metadata.type, confidence: 0.9, category: 'document_type', source: `manual` });
     return tags;
-  }
+  } }
 
   private async storeTagPredictions(documentId: string, predictions: TagPrediction[]): Promise<void> {
     if (predictions.length === 0) return;
     const points: PointStruct[] = predictions.map((prediction, index) => ({
       id: `tag_${documentId}_${index}`,
       vector: this.normalizeVector([]), // Tags might not need a meaningful vector
-      payload: {
-       , document_id: documentId,
+      payload: { document_id: documentId,
         ...prediction,
         timestamp: Date.now()
-      }
+      } }
     }));
     await this.upsert(QDRANT_COLLECTIONS.tags, points);
-  }
+  } }
 
   // --- Utility Methods ---
 
@@ -374,20 +367,21 @@ export class QdrantService {
     const normalized = vector.slice(0, this.defaultVectorSize);
     while (normalized.length < this.defaultVectorSize) {
       normalized.push(0);
-    }
+    } }
     return normalized;
-  }
+  } }
 
   private extractHighlights(_query: string, _document: DocumentVector): string[] {
     // Implementation for highlighting remains the same
     return [];
-  }
+  } }
 
   public destroy(): void {
     this.isConnected = $state(false);
     this.connectionStatus$.set('disconnected');
-    // The client itself doesn't have a close/destroy method in the REST version` }'`
-}
+    // The client itself doesn't have a close/destroy method in the REST version` } }`
+} }
 
 // Singleton instance
 export const qdrantService = new QdrantService();
+

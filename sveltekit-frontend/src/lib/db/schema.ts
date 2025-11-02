@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Legal AI Database Schema with Drizzle ORM
  * Optimized for pgvector embeddings and gemma3-legal:latest integration
@@ -16,10 +16,10 @@ import {
   numeric,
   real,
   index
-} from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations, type Relations } from 'drizzle-orm';
-import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
+} }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { relations, type Relations } }from 'drizzle-orm';
+import { createSelectSchema, createUpdateSchema, createInsertSchema } }from 'drizzle-zod';
 // TODO: Ensure there is a dedicated `case_memories` table for storing serialized
 // case-level AI memory blobs (case_id uuid -> memory_json jsonb, updated_at timestamp).
 // This file currently does not declare `case_memories`. Add it when migrating
@@ -61,7 +61,7 @@ export const cases = pgTable(
     priority: text('priority').default('medium'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}')
+    metadata: jsonb('metadata').default('{} })
   },
   table => ({
     userIdIndex: index('cases_user_id_idx').on(table.user_id),
@@ -90,7 +90,7 @@ export const documents = pgTable(
     tags: text('tags').array(),
     created_at: timestamp('created_at').defaultNow().notNull(),
     updated_at: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}')
+    metadata: jsonb('metadata').default('{} })
   },
   table => ({
     caseIdIndex: index('documents_case_id_idx').on(table.case_id),
@@ -124,7 +124,7 @@ export const evidence = pgTable(
     embedding: vector('embedding', { dimensions: 384 }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}')
+    metadata: jsonb('metadata').default('{} })
   },
   table => ({
     caseIdIndex: index('evidence_case_id_idx').on(table.case_id),
@@ -245,7 +245,7 @@ export const document_chunks = pgTable('document_chunks', {
   embedding: vector('embedding', { dimensions: 384 }).notNull(), // nomic-embed-text
   token_count: integer('token_count'),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}')
+  metadata: jsonb('metadata').default('{} })
 });
 // Citations table (fixed schema with proper foreign keys)
 export const citations = pgTable('citations', {
@@ -261,7 +261,7 @@ export const citations = pgTable('citations', {
   verified: boolean('verified').default(false),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}')
+  metadata: jsonb('metadata').default('{} })
 });
 // Sessions table for authentication
 export const sessions = pgTable('sessions', {
@@ -299,7 +299,7 @@ export const aiHistory = pgTable('ai_history', {
   model_used: text('model_used'),
   tokens_used: integer('tokens_used'),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}')
+  metadata: jsonb('metadata').default('{} })
 });
 // Relations for better query experience
 export const usersRelations = relations(users, ({ many }: Relations) => ({
@@ -402,7 +402,7 @@ export const casesInsertSchema = createInsertSchema(cases);
 // Helper function to extract Zod schema from drizzle-zod BuildSchema for SuperForms compatibility
 export function extractZodSchema<T>(drizzleZodSchema: T) {
   return drizzleZodSchema;
-}
+} }
 // Pre-extracted schemas for common use with SuperForms
 export const profileUpdateZodSchema = extractZodSchema(profileTableUpdateSchema);
 export const profileInsertZodSchema = extractZodSchema(profileTableInsertSchema);
@@ -423,7 +423,7 @@ export const ragDocuments = pgTable(
     fileType: text('file_type'),
     fileSize: integer('file_size'),
     content: text('content'),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{} }),
     embedding: vector('embedding', { dimensions: 768 }), // Gemma embeddings
     processedAt: timestamp('processed_at').defaultNow(),
     createdAt: timestamp('created_at').defaultNow()
@@ -441,7 +441,7 @@ export const knowledgeBase = pgTable(
     chunkId: text('chunk_id').unique().notNull(),
     content: text('content').notNull(),
     embedding: vector('embedding', { dimensions: 768 }),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{} }),
     chunkType: text('chunk_type').notNull(), // 'rag_document', 'component_overview', 'api_endpoint', etc.
     sourceFile: text('source_file'),
     createdAt: timestamp('created_at').defaultNow()
@@ -460,7 +460,7 @@ export const codeEmbeddings = pgTable(
     path: text('path').unique().notNull(),
     contentHash: text('content_hash').notNull(),
     embedding: vector('embedding', { dimensions: 768 }),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{} }),
     errorPatterns: text('error_patterns').array(),
     repairSuggestions: text('repair_suggestions').array(),
     confidenceScore: real('confidence_score'),
@@ -529,3 +529,4 @@ export const embeddingCache = pgTable('embedding_cache', {
   dimensions: integer('dimensions').notNull(), // Number of dimensions in the embedding
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
+

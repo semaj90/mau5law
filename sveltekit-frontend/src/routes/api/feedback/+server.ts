@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
@@ -12,10 +12,11 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!resp.ok) {
       const txt = await resp.text();
       return new Response(JSON.stringify({ ok: false, error: txt }), { status: 502 });
-    }
+    } }
     const body = await resp.json().catch(() => ({}));
     return new Response(JSON.stringify({ ok: true, result: body }), { status: 200 });
-  } catch (err: any) {
+  } }catch (err: any) {
     return new Response(JSON.stringify({ ok: false, error: String(err) }), { status: 500 });
-  }
+  } }
 };
+

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async ({ setHeaders }) => {
   setHeaders({
     'Content-Type': 'text/event-stream',
@@ -8,3 +8,4 @@ export const GET: RequestHandler = async ({ setHeaders }) => {
   // Example: send a single event and close
   return new Response('data: Hello from SSE!\n\n');
 };
+

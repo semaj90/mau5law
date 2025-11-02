@@ -4,7 +4,7 @@
  *
  * Provides utilities for retrieving documentation from Context7 MCP server
  * Supports all major framework dependencies for the Legal AI platform:
- * -;, Frontend: Svelte, 5, SvelteKit, 2, Bits UI, Melt UI, XState, UnoCSS
+ * -; Frontend: Svelte, 5, SvelteKit, 2, Bits UI, Melt UI, XState, UnoCSS
  * - Backend: TypeScript, Drizzle ORM
  * - Database: PostgreSQL with pgvector, Redis, Qdrant
  * - AI/Performance: WebGPU, WebAssembly
@@ -13,23 +13,23 @@
 export interface CodeSnippet { title: string;, code: string;
   description: string;
   language?: string;
-}
+} }
 
 export interface LibraryDocsRequest {
   context7CompatibleLibraryID: string;
   topic?: string;
   tokens?: number;
   format?: 'markdown' | 'json' | 'typescript';
-}
+} }
 
-export interface LibraryDocsResponse {, content: string;, metadata: {
+export interface LibraryDocsResponse { content: string;, metadata: {
     library: string;
     version?: string;
     topic?: string;
    , tokenCount: number;
   };
   snippets?: CodeSnippet[];
-}
+} }
 
 /**
  * Main function to fetch library documentation from Context7.2 MCP server
@@ -48,8 +48,7 @@ export async function mcpContext72GetLibraryDocs(
   const response = await fetchFn('/api/mcp/context72/get-library-docs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-     , context7CompatibleLibraryID: libraryId,
+    body: JSON.stringify({ context7CompatibleLibraryID: libraryId,
       topic,
       tokens: options.tokens || 10000,
       format: options.format || 'markdown',
@@ -62,10 +61,10 @@ export async function mcpContext72GetLibraryDocs(
     throw new Error(
       `Failed to get library docs from Context7.2: ${error.message || response.statusText}`
     );
-  }
+  } }
 
   return response.json();
-}
+} }
 
 // ============================================================================
 // Specialized helpers for frontend framework libraries
@@ -81,7 +80,7 @@ export async function getSvelte5Docs(
     { format: 'typescript', tokens: 15000 },
     fetchFn
   );
-}
+} }
 
 export async function getSvelteKitV2Docs(
   topic?: string,
@@ -93,7 +92,7 @@ export async function getSvelteKitV2Docs(
     { format: 'typescript', tokens: 12000 },
     fetchFn
   );
-}
+} }
 
 export async function getBitsUIv2Docs(
   topic?: string,
@@ -105,7 +104,7 @@ export async function getBitsUIv2Docs(
     { format: 'typescript', tokens: 12000 },
     fetchFn
   );
-}
+} }
 
 export async function getMeltUIDocs(
   topic?: string,
@@ -117,7 +116,7 @@ export async function getMeltUIDocs(
     { format: 'typescript', tokens: 10000 },
     fetchFn
   );
-}
+} }
 
 export async function getXStateDocs(
   topic?: string,
@@ -129,7 +128,7 @@ export async function getXStateDocs(
     { format: 'typescript', tokens: 8000 },
     fetchFn
   );
-}
+} }
 
 export async function getUnoCssDocs(
   topic?: string,
@@ -141,7 +140,7 @@ export async function getUnoCssDocs(
     { format: 'markdown', tokens: 8000 },
     fetchFn
   );
-}
+} }
 
 // ============================================================================
 // Specialized helpers for backend and database libraries
@@ -157,7 +156,7 @@ export async function getDrizzleOrmDocs(
     { format: 'typescript', tokens: 12000 },
     fetchFn
   );
-}
+} }
 
 export async function getPostgreSQLDocs(
   topic?: string,
@@ -169,7 +168,7 @@ export async function getPostgreSQLDocs(
     { format: 'markdown', tokens: 10000 },
     fetchFn
   );
-}
+} }
 
 export async function getRedisDocs(
   topic?: string,
@@ -181,7 +180,7 @@ export async function getRedisDocs(
     { format: 'markdown', tokens: 8000 },
     fetchFn
   );
-}
+} }
 
 export async function getQdrantDocs(
   topic?: string,
@@ -193,7 +192,7 @@ export async function getQdrantDocs(
     { format: 'markdown', tokens: 10000 },
     fetchFn
   );
-}
+} }
 
 // ============================================================================
 // Specialized helpers for AI and performance libraries
@@ -209,7 +208,7 @@ export async function getWebGPUDocs(
     { format: 'typescript', tokens: 10000 },
     fetchFn
   );
-}
+} }
 
 export async function getWebAssemblyDocs(
   topic?: string,
@@ -221,7 +220,7 @@ export async function getWebAssemblyDocs(
     { format: 'markdown', tokens: 8000 },
     fetchFn
   );
-}
+} }
 
 export async function getTypeScriptDocs(
   topic?: string,
@@ -233,7 +232,7 @@ export async function getTypeScriptDocs(
     { format: 'typescript', tokens: 10000 },
     fetchFn
   );
-}
+} }
 
 // ============================================================================
 // Tech Stack Integration Helpers
@@ -281,30 +280,31 @@ export async function getTechStackDocs(
         Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    }
+    } }
     case, 'backend': {
       const results = await Promise.all(
         Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    }
+    } }
     case, 'database': {
       const results = await Promise.all(
         Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    }
+    } }
     case, 'ai': {
       const results = await Promise.all(
         Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    }
+    } }
     case, 'full': {
       const results = await Promise.all(
         Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    }
-  }
-}
+    } }
+  } }
+} }
+

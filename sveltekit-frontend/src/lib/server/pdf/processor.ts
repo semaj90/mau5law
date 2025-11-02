@@ -5,10 +5,10 @@
  * - langextract for NLP entity extraction
  * - Sharp for image optimization
  */
-import { createWorker } from 'tesseract.js';
+import { createWorker } }from 'tesseract.js';
 import pdfParse from 'pdf-parse';
 import sharp from 'sharp';
-import { readFile } from 'fs/promises';
+import { readFile } }from 'fs/promises';
 export interface PDFProcessingResult { text: string;, pageCount: number;
   metadata: {
     title?: string;
@@ -23,13 +23,13 @@ export interface PDFProcessingResult { text: string;, pageCount: number;
     dates?: string[];
     legalCitations?: string[];
   };
-  ocr?: {, confidence: number;, text: string;
+  ocr?: { confidence: number;, text: string;
   };
   processingTime: number;
-}
-export interface OCRResult {, text: string;, confidence: number;
+} }
+export interface OCRResult { text: string;, confidence: number;
  , processingTime: number;
-}
+} }
 /**
  * Extract text from PDF using pdf-parse
  */
@@ -49,14 +49,14 @@ export async function extractPDFText(filePath: string): Promise<{ text: string;
         .then((textContent: any) => {
           return textContent.items.map((item: any) => item.str).join(' ');
         });
-    }
+    } }
   });
   return {
     text: data.text,
     pages: data.numpages,
-    metadata: data.info || {}
+    metadata: data.info || {} }
   };
-}
+} }
 /**
  * Perform OCR on image file using Tesseract.js
  * GPU-accelerated via WebGL backend
@@ -66,10 +66,10 @@ export async function performOCR(
   options: {
     lang?: string;
     optimize?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<OCRResult> {
   const startTime = Date.now();
-  const { lang = 'eng', optimize = true } = options;
+  const { lang = 'eng', optimize = true } }= options;
   // Optimize image with Sharp before OCR
   let imageBuffer: Buffer;
   if (optimize) {
@@ -83,15 +83,15 @@ export async function performOCR(
       .normalize() // Normalize contrast
       .sharpen() // Enhance edges
       .toBuffer();
-  } else {
+  } }else {
     imageBuffer = await readFile(imagePath);
-  }
+  } }
   // Create Tesseract worker
   const worker = await createWorker(lang, 1, {
     logger: m => {
       if (m.status === 'recognizing text') {
         console.log(`OCR Progress: ${Math.round(m.progress * 100)}%`);
-      }
+      } }
     },
     // Enable GPU acceleration via WebGL
     gzip: false,
@@ -108,10 +108,10 @@ export async function performOCR(
       confidence: result.data.confidence / 100, // Normalize to 0-1
       processingTime
     };
-  } finally {
+  } }finally {
     await worker.terminate();
-  }
-}
+  } }
+} }
 /**
  * Extract entities from text using langextract Python API
  * Assumes langextract service running at localhost:8099
@@ -125,15 +125,14 @@ export async function extractEntities(text: string): Promise<{ persons: string[]
     const response = await fetch('http://localhost:8099/api/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , text: text.slice(0, 10000), // Limit to 10k chars for performance
+      body: JSON.stringify({ text: text.slice(0, 10000), // Limit to 10k chars for performance
         extract_entities: true,
         extract_legal: true
       })
     });
     if (!response.ok) {
       throw new Error(`langextract API error: ${response.status}`);
-    }
+    } }
     const data = await response.json();
     return {
       persons: data.entities?.PERSON || [],
@@ -142,7 +141,7 @@ export async function extractEntities(text: string): Promise<{ persons: string[]
       dates: data.entities?.DATE || [],
       legalCitations: data.legal?.citations || []
     };
-  } catch (error) {
+  } }catch (error) {
     console.warn('⚠️ langextract extraction failed, continuing without NLP:', error);
     return {
       persons: [],
@@ -151,8 +150,8 @@ export async function extractEntities(text: string): Promise<{ persons: string[]
       dates: [],
       legalCitations: []
     };
-  }
-}
+  } }
+} }
 /**
  * Process PDF with full, pipeline:
  * 1. Extract text from PDF
@@ -165,10 +164,10 @@ export async function processPDF(
     performOCR?: boolean;
     extractNLP?: boolean;
     lang?: string;
-  } = {}
+  } }= {} }
 ): Promise<PDFProcessingResult> {
   const startTime = Date.now();
-  const { performOCR: forceOCR = false, extractNLP = true, lang = 'eng' } = options;'`'`
+  const { performOCR: forceOCR = false, extractNLP = true, lang = 'eng' } }= options;'`'`
   console.log(`📄 Processing PDF: ${filePath}`);
   // Step 1: Extract text from PDF
   const pdfData = await extractPDFText(filePath);
@@ -178,23 +177,22 @@ export async function processPDF(
   const textQuality = pdfData.text.trim().length;
   const shouldOCR = forceOCR || textQuality < 100;
   if (shouldOCR) {
-    console.log(`🔍 PDF text quality low (${textQuality} chars), performing OCR...`);
+    console.log(`🔍 PDF text quality low (${textQuality} }chars), performing OCR...`);
     // Note: In production, convert PDF pages to images first with pdf2pic
     // For now, skip OCR on PDFs (would need pdf2pic integration)
     console.warn('⚠️ PDF OCR requires pdf2pic integration (skipping)');
-  }
+  } }
   // Step 3: Extract entities with langextract
   let entities;
   if (extractNLP) {
     entities = await extractEntities(finalText);
-  }
+  } }
   const processingTime = Date.now() - startTime;
   console.log(`✅ PDF processing completed in ${processingTime}ms`);
   return {
     text: finalText,
     pageCount: pdfData.pages,
-    metadata: {
-     , title: pdfData.metadata.Title,
+    metadata: { title: pdfData.metadata.Title,
       author: pdfData.metadata.Author,
       subject: pdfData.metadata.Subject,
       createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined
@@ -203,7 +201,7 @@ export async function processPDF(
     ocr: ocrResult,
     processingTime
   };
-}
+} }
 /**
  * Process image file with OCR + NLP
  */
@@ -212,10 +210,10 @@ export async function processImage(
   options: {
     lang?: string;
     extractNLP?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<PDFProcessingResult> {
   const startTime = Date.now();
-  const { lang = 'eng', extractNLP = true } = options;
+  const { lang = 'eng', extractNLP = true } }= options;
   console.log(`🖼️ Processing image: ${filePath}`);
   // Perform OCR
   const ocrResult = await performOCR(filePath, { lang, optimize: true });
@@ -223,7 +221,7 @@ export async function processImage(
   let entities;
   if (extractNLP && ocrResult.text.length > 50) {
     entities = await extractEntities(ocrResult.text);
-  }
+  } }
   const processingTime = Date.now() - startTime;
   console.log(`✅ Image processing completed in ${processingTime}ms`);
   return {
@@ -234,7 +232,7 @@ export async function processImage(
     ocr: ocrResult,
     processingTime
   };
-}
+} }
 /**
  * Auto-detect file type and process accordingly
  */
@@ -245,13 +243,14 @@ export async function processDocument(
     lang?: string;
     extractNLP?: boolean;
     performOCR?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<PDFProcessingResult> {
   if (mimeType === 'application/pdf') {
     return processPDF(filePath, options);
-  } else if (mimeType.startsWith('image/')) {
+  } }else if (mimeType.startsWith('image/')) {
     return processImage(filePath, options);
-  } else {
+  } }else {
     throw new Error(`Unsupported document type: ${mimeType}`);
-  }
-}
+  } }
+} }
+

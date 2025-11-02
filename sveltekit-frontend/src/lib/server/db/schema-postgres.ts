@@ -1,7 +1,7 @@
 // Updated PostgreSQL schema based on database introspection
 // This schema matches the actual database structure (drizzle/schema.ts)
-import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+import { sql } }from 'drizzle-orm';
+import { relations } }from 'drizzle-orm/relations';
 import {
   boolean,
   integer,
@@ -17,7 +17,7 @@ import {
   numeric,
   pgEnum,
   index
-} from 'drizzle-orm/pg-core';
+} }from 'drizzle-orm/pg-core';
 // Note: vector type is handled via sql`` template in table definitions
 // === ENUMS FOR LEGAL AI APPLICATION ===
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
@@ -107,8 +107,7 @@ export const sessions = pgTable(
   },
   table => ({
     foreignKeys: [
-      foreignKey({,
-       , columns: [table.userId],
+      foreignKey({ , columns: [table.userId],
         foreignColumns: [users.id],
         name: 'sessions_user_id_users_id_fk'
       }).onDelete('cascade'),
@@ -126,8 +125,7 @@ export const emailVerificationCodes = pgTable(
   },
   table => ({
     foreignKeys: [
-      foreignKey({,
-       , columns: [table.userId],
+      foreignKey({ , columns: [table.userId],
         foreignColumns: [users.id],
         name: `email_verification_codes_user_id_users_id_fk` }).onDelete('cascade')
     ],
@@ -143,8 +141,7 @@ export const passwordResetTokens = pgTable(
   },
   table => ({
     foreignKeys: [
-      foreignKey({,
-       , columns: [table.userId],
+      foreignKey({ , columns: [table.userId],
         foreignColumns: [users.id],
         name: `password_reset_tokens_user_id_users_id_fk` }).onDelete('cascade')
     ]
@@ -324,8 +321,7 @@ export const legalDocuments = pgTable(
     embedding: text('embedding'), // Vector stored as text, converted in service layer
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `legal_documents_case_id_cases_id_fk` }).onDelete('cascade'),'`'`
     foreignKey({
@@ -377,8 +373,7 @@ export const attachmentVerifications = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.verifiedBy],
+    foreignKey({ columns: [table.verifiedBy],
       foreignColumns: [users.id],
       name: `attachment_verifications_verified_by_users_id_fk` })
   ]
@@ -408,8 +403,7 @@ export const canvasAnnotations = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.evidenceId],
+    foreignKey({ columns: [table.evidenceId],
       foreignColumns: [evidence.id],
       name: `canvas_annotations_evidence_id_evidence_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -436,8 +430,7 @@ export const canvasStates = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `canvas_states_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -469,8 +462,7 @@ export const aiReports = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `ai_reports_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -507,8 +499,7 @@ export const citations = pgTable(
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `citations_case_id_cases_id_fk` }).onDelete('cascade'),'`'`
     foreignKey({
@@ -542,8 +533,7 @@ export const reports = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `reports_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -582,8 +572,7 @@ export const savedReports = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `saved_reports_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -611,8 +600,7 @@ export const themes = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.createdBy],
+    foreignKey({ columns: [table.createdBy],
       foreignColumns: [users.id],
       name: `themes_created_by_users_id_fk` }).onDelete('cascade')
   ]
@@ -639,8 +627,7 @@ export const personsOfInterest = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `persons_of_interest_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -668,8 +655,7 @@ export const hashVerifications = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.evidenceId],
+    foreignKey({ columns: [table.evidenceId],
       foreignColumns: [evidence.id],
       name: `hash_verifications_evidence_id_evidence_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -706,8 +692,7 @@ export const userEmbeddings = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.userId],
+    foreignKey({ columns: [table.userId],
       foreignColumns: [users.id],
       name: `user_embeddings_user_id_users_id_fk` }).onDelete('cascade')
   ]
@@ -739,8 +724,7 @@ export const evidenceVectors = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.evidenceId],
+    foreignKey({ columns: [table.evidenceId],
       foreignColumns: [evidence.id],
       name: `evidence_vectors_evidence_id_evidence_id_fk` }).onDelete('cascade')
   ]
@@ -759,8 +743,7 @@ export const caseEmbeddings = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `case_embeddings_case_id_cases_id_fk` }).onDelete('cascade')
   ]
@@ -782,8 +765,7 @@ export const ragSessions = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.userId],
+    foreignKey({ columns: [table.userId],
       foreignColumns: [users.id],
       name: `rag_sessions_user_id_users_id_fk` }).onDelete('cascade'),
     unique('rag_sessions_session_id_unique').on(table.sessionId),
@@ -863,8 +845,7 @@ export const legalAnalysisSessions = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `legal_analysis_sessions_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -900,8 +881,7 @@ export const legalResearch = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `legal_research_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -946,8 +926,7 @@ export const caseScores = pgTable(
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.caseId],
+    foreignKey({ columns: [table.caseId],
       foreignColumns: [cases.id],
       name: `case_scores_case_id_cases_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -981,8 +960,7 @@ export const userAiQueries = pgTable(
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.userId],
+    foreignKey({ columns: [table.userId],
       foreignColumns: [users.id],
       name: `user_ai_queries_user_id_users_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -1011,8 +989,7 @@ export const autoTags = pgTable(
     confirmedAt: timestamp('confirmed_at', { mode: `string` })
   },
   table => [
-    foreignKey({,
-      columns: [table.confirmedBy],
+    foreignKey({ columns: [table.confirmedBy],
       foreignColumns: [users.id],
       name: `auto_tags_confirmed_by_users_id_fk` })
   ]
@@ -1103,8 +1080,7 @@ export const conversationTurns = pgTable(
     timestamp: timestamp('timestamp', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.sessionId],
+    foreignKey({ columns: [table.sessionId],
       foreignColumns: [conversationSessions.id],
       name: `conversation_turns_session_id_sessions_id_fk` }).onDelete('cascade'),
     index('conversation_turns_session_id_idx').on(table.sessionId),
@@ -1131,8 +1107,7 @@ export const extractedEntities = pgTable(
     extractedAt: timestamp('extracted_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
-    foreignKey({,
-      columns: [table.sessionId],
+    foreignKey({ columns: [table.sessionId],
       foreignColumns: [conversationSessions.id],
       name: `extracted_entities_session_id_sessions_id_fk` }).onDelete('cascade'),
     foreignKey({
@@ -1160,8 +1135,7 @@ export const hmmStateTransitions = pgTable(
     timestamp: timestamp('timestamp', { mode: `string` }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.sessionId],
+    foreignKey({ columns: [table.sessionId],
       foreignColumns: [conversationSessions.id],
       name: `hmm_state_transitions_session_id_sessions_id_fk` }).onDelete('cascade'),
     index('hmm_state_transitions_session_id_idx').on(table.sessionId),
@@ -1185,8 +1159,7 @@ export const nextStepPredictions = pgTable(
     expiresAt: timestamp('expires_at', { mode: `string` }).notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.sessionId],
+    foreignKey({ columns: [table.sessionId],
       foreignColumns: [conversationSessions.id],
       name: `next_step_predictions_session_id_sessions_id_fk` }).onDelete('cascade'),
     index('next_step_predictions_session_id_idx').on(table.sessionId),
@@ -1213,8 +1186,7 @@ export const contextualEmbeddings = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
   },
   table => [
-    foreignKey({,
-      columns: [table.sessionId],
+    foreignKey({ columns: [table.sessionId],
       foreignColumns: [conversationSessions.id],
       name: 'contextual_embeddings_session_id_sessions_id_fk'
     }).onDelete('cascade'),
@@ -1344,8 +1316,9 @@ export const helpers = { sql };
 // Note: do not re-export tables collectively to avoid redeclaration conflicts
 // Removed duplicated import and helpers redeclaration that caused TypeScript errors.
 // If you later need `not` and it's available in your environment, import it once at the top:'
-// import { not } from 'drizzle-orm';
+// import { not } }from 'drizzle-orm';
 // and then update the helpers export accordingly, e.g.
 // export const helpers = { eq, and, or, not, sql };
 // If you only want eq, document why:
 // export const helpers = { eq }; // Only eq is used for most queries in this codebase
+

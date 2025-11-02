@@ -5,7 +5,7 @@
 declare module, '$env/dynamic/private' {
   const env: Record<string, string | undefined>;
   export { env };
-}
+} }
 
 // Provide a module for the evidence upload schema used across the frontend.
 // This avoids import errors while the schema is being migrated or re-exported.
@@ -17,18 +17,18 @@ declare module, '$lib/schemas/evidence-upload' {
     codec?: string;
     sizeBytes?: number;
   };
-}
+} }
 
 // Also support direct source path imports
 declare module, 'src/lib/schemas/evidence-upload' {
   export * from '$lib/schemas/evidence-upload';
-}
+} }
 
 // Minimal amqplib fallback typing for dynamic import sites
 declare module, 'amqplib' {
   const content: any;
   export = content;
-}
+} }
 // Temporary module shims to satisfy tsc during incremental triage.
 // These are lightweight declarations mapping internal path aliases used by the app.
 declare module, '$lib/server/redis';
@@ -56,7 +56,7 @@ declare module, '*.svelte' {
   // constructor-vs-instance type errors while migrating to Svelte 5.
   const, component: any;
   export default component;
-}
+} }
 
 // Allow imports of common asset modules
 declare module, '*.svg';
@@ -68,38 +68,39 @@ declare global {
   // WebGPU support (avoid conflict with @webgpu/types)
   interface Navigator {
     gpu?: any; // Use: 'any' to avoid Navigator interface conflicts
-  }
+  } }
   // Global WebGPU types (simplified)
   interface GPU {
     requestAdapter(): Promise<any>;
-  }
+  } }
   // Telemetry and GPU Manager global properties
   interface Window {
     __TELEMETRY__?: any;
     __GPU_MANAGER__?: {
       getAcceleration(): any;
     };
-  }
-}
+  } }
+} }
 // Stub out problematic drizzle-orm gel module types
 declare module, 'gel' {
   export interface Duration {
     [key: string]: any;
-  }
+  } }
   export interface LocalDate {
     [key: string]: any;
-  }
+  } }
   export interface LocalTime {
     [key: string]: any;
-  }
+  } }
   export interface Timestamp {
     [key: string]: any;
-  }
+  } }
   export interface DateDuration {
     [key: string]: any;
-  }
+  } }
   export interface RelativeDuration {
     [key: string]: any;
-  }
-}
+  } }
+} }
 export {};
+

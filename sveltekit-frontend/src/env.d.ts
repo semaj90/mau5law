@@ -36,10 +36,10 @@
   readonly VITE_VECTOR_QUANTIZATION: string;
   readonly VITE_ADAPTIVE_SCALING: string;
   readonly VITE_REAL_TIME_SYNC: string;
-}
+} }
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-}
+} }
 // Extended global types for enhanced development experience
 declare global {
   interface Window {
@@ -55,37 +55,38 @@ declare global {
     __MEMORY_TRACKER__?: { l1GpuUsage: number;, l2RamUsage: number;
       l3RedisUsage: number;
     };
-  }
+  } }
   // Nintendo Memory Architecture Types
   namespace Nintendo {
     interface MemoryBank { id: number;, size: number;
       used: number;
       available: number;
       type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';
-    }
+    } }
     interface CHRROMBank { bankId: number;, address: number;
       size: 0x1000; // 4KB per bank,
       patternData: Uint8Array;
       isDirty: boolean;
-    }
-  }
+    } }
+  } }
   // Enhanced Telemetry Events
   namespace Telemetry {
     interface BaseEvent { timestamp: number;, sessionId: string;
       userId?: string;
-    }
+    } }
     interface GPUEvent extends BaseEvent { type: 'gpu_usage' | 'context_switch' | 'memory_allocation';, gpuUtilization: number;
       memoryUsed: number;
       temperature?: number;
-    }
+    } }
     interface PerformanceEvent extends BaseEvent { type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';, duration: number;
       operation: string;
       success: boolean;
-    }
+    } }
     interface ErrorEvent extends BaseEvent { type: 'error' | 'warning' | 'critical';, message: string;
       stack?: string;
       component: string;
-    }
-  }
-}
+    } }
+  } }
+} }
 export {};
+

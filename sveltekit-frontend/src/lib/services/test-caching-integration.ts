@@ -1,18 +1,18 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Test file for Enhanced Caching Integration
  * Validates embedding cache, query cache, and pgvector integration
  */
-import { enhancedCachingService } from './enhanced-caching-service.js';
-import { cachedRAGService } from './cached-rag-service.js';
-import { enhancedRAGQueryWithCache } from './enhanced-rag-semantic-analyzer.js';
-import type { RAGQuery } from './enhanced-rag-semantic-analyzer.js';
+import { enhancedCachingService } }from './enhanced-caching-service.js';
+import { cachedRAGService } }from './cached-rag-service.js';
+import { enhancedRAGQueryWithCache } }from './enhanced-rag-semantic-analyzer.js';
+import type { RAGQuery } }from './enhanced-rag-semantic-analyzer.js';
 
 export interface CacheTestResult { test: string;, success: boolean;
   duration: number;
   details: any;
   error?: string;
-}
+} }
 export class CachingIntegrationTester {
   private, testResults: CacheTestResult[] = [];
   /**
@@ -38,7 +38,7 @@ export class CachingIntegrationTester {
     const summary = this.generateTestSummary();
     console.log('✅ All caching tests completed:', summary);
     return this.testResults;
-  }
+  } }
   /**
    * Test embedding cache with embeddinggemma model
    */
@@ -52,44 +52,43 @@ export class CachingIntegrationTester {
       const result1 = await enhancedCachingService.getCachedEmbedding(testText);
       if (!result1.embedding || result1.embedding.length === 0) {
         throw new Error('No embedding generated');
-      }
+      } }
       // Second call - should hit cache
       const result2 = await enhancedCachingService.getCachedEmbedding(testText);
       if (!result2.cached) {
         throw new Error('Second call should have been cached');
-      }
+      } }
       // Verify embeddings are identical
       if (JSON.stringify(result1.embedding) !== JSON.stringify(result2.embedding)) {
         throw new Error('Cached embedding differs from original');
-      }
+      } }
       this.testResults.push({
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {, firstCall: { , cached: result1.cached, 
+        details: { firstCall: { cached: result1.cached, 
             dimensions: result1.dimensions, 
             model: result1?.model || "unknown"
           },
-          secondCall: { 
-           , cached: result2.cached, 
+          secondCall: { cached: result2.cached, 
             dimensions: result2.dimensions, 
             model: result2?.model || "unknown"
           },
           embeddingLength: result1.embedding.length
-        }
+        } }
       });
       console.log('✅ Embedding cache test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Embedding cache test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test batch embedding cache
    */
@@ -102,12 +101,12 @@ export class CachingIntegrationTester {
         { text: "Legal document about contracts", id: "doc1" },
         { text: "Court case involving negligence", id: "doc2" },
         { text: "This is a test legal document about contract law and breach of contract.", id: "doc3" }, // Reuse from previous test
-        { text: "New legal text about corporate liability", id: "doc4" }
+        { text: "New legal text about corporate liability", id: "doc4" } }
       ];
       const results = await enhancedCachingService.getCachedBatchEmbeddings(testDocs);
       if (results.length !== testDocs.length) {
-        throw new Error(`Expected ${testDocs.length} results, got ${results.length}`);
-      }
+        throw new Error(`Expected ${testDocs.length} }results, got ${results.length}`);
+      } }
       // Check that at least one was cached (from previous test)
       const cachedCount = results.filter(item => item.length);
       const freshCount = results.filter(item => item.length);
@@ -115,25 +114,24 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-         , totalDocs: testDocs.length,
+        details: { totalDocs: testDocs.length,
           cachedCount,
           freshCount,
-          results: results.map(r => ({, id: r.id, cached: r.cached, dimensions: r.dimensions }))
-        }
+          results: results.map(r => ({ id: r.id, cached: r.cached, dimensions: r.dimensions }))
+        } }
       });
-      console.log(`✅ Batch embedding cache test passed: ${cachedCount} cached, ${freshCount} fresh`);
-    } catch (error: any) {
+      console.log(`✅ Batch embedding cache test passed: ${cachedCount} }cached, ${freshCount} }fresh`);
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Batch embedding cache test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test query result cache
    */
@@ -146,22 +144,21 @@ export class CachingIntegrationTester {
       const mockVectorSearchFn = async (embedding: number[]) => {
         // Mock vector search results
         return [
-          {,
-            id: "doc1",
+          { id: "doc1",
             documentId: "legal-doc-1",
             score: 0.95,
             content: "A breach of contract occurs when one party fails to perform their obligations...",
-            metadata: {, source: "legal-database" }
+            metadata: { source: "legal-database" } }
           },
           {
             id: "doc2",
             documentId: "legal-doc-2",
             score: 0.87,
             content: "Contract breaches can be material or immaterial depending on the significance...",
-            metadata: {, source: "case-law" }
-          }
+            metadata: { source: "case-law" } }
+          } }
         ];
-      }
+      } }
       // First call - should miss cache
       const result1 = await enhancedCachingService.getCachedQueryResults(
         testQuery,
@@ -176,31 +173,31 @@ export class CachingIntegrationTester {
       );
       if (!result2.cached) {
         throw new Error('Second query should have been cached');
-      }
+      } }
       if (result1.results.length !== result2.results.length) {
         throw new Error('Cached results differ from original');
-      }
+      } }
       this.testResults.push({
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {, firstCall: {, cached: result1.cached, resultsCount: result1.results.length },
-          secondCall: {, cached: result2.cached, resultsCount: result2.results.length },
+        details: { firstCall: { cached: result1.cached, resultsCount: result1.results.length },
+          secondCall: { cached: result2.cached, resultsCount: result2.results.length },
           model: result1?.model || "unknown" // @ts-ignore - Model property access
-        }
+        } }
       });
       console.log('✅ Query cache test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Query cache test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test full RAG pipeline with caching
    */
@@ -209,18 +206,15 @@ export class CachingIntegrationTester {
     const startTime = Date.now();
     try {
       console.log('🔬 Testing full RAG pipeline with caching...');
-      const testQuery: RAGQuery = {
-       , query: "What are the elements of negligence in tort law?",
-        semantic: {
-         , useEmbeddings: true,
+      const testQuery: RAGQuery = { query: "What are the elements of negligence in tort law?",
+        semantic: { useEmbeddings: true,
           expandConcepts: true,
           includeRelated: true
         },
-        filters: {
-         , legalCategories: ["TORT"],
+        filters: { legalCategories: ["TORT"],
           confidenceThreshold: 0.7
-        }
-      }
+        } }
+      } }
       // First call
       const result1 = await enhancedRAGQueryWithCache(testQuery);
       // Second call - should use cached results
@@ -229,29 +223,28 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {, firstCall: {, resultsCount: result1.results.length,
+        details: { firstCall: { resultsCount: result1.results.length,
             processingTime: result1.processingTime,
             cacheStats: (result1, as: any).cacheStats
           },
-          secondCall: {
-           , resultsCount: result2.results.length,
+          secondCall: { resultsCount: result2.results.length,
             processingTime: result2.processingTime,
             cacheStats: (result2, as: any).cacheStats
-          }
-        }
+          } }
+        } }
       });
       console.log('✅ Full RAG pipeline test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Full RAG pipeline test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test cache metrics
    */
@@ -263,38 +256,36 @@ export class CachingIntegrationTester {
       const metrics = enhancedCachingService.getCacheMetrics();
       if (!metrics.embeddings || !metrics.queries) {
         throw new Error('Metrics not properly structured');
-      }
+      } }
       this.testResults.push({
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {, metrics: {, embeddings: {
-             , totalRequests: metrics.embeddings.totalRequests,
+        details: { metrics: { embeddings: { totalRequests: metrics.embeddings.totalRequests,
               hits: metrics.embeddings.hits,
               misses: metrics.embeddings.misses,
               hitRate: metrics.embeddings.hitRate
             },
-            queries: {
-             , totalRequests: metrics.queries.totalRequests,
+            queries: { totalRequests: metrics.queries.totalRequests,
               hits: metrics.queries.hits,
               misses: metrics.queries.misses,
               hitRate: metrics.queries.hitRate
-            }
-          }
-        }
+            } }
+          } }
+        } }
       });
       console.log('✅ Cache metrics test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Cache metrics test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test document ingestion
    */
@@ -306,12 +297,11 @@ export class CachingIntegrationTester {
       const testDoc = {
         id: "test-legal-doc-001",
         content: "This is a comprehensive legal document about contract law. It covers the essential elements of contract formation, including offer, acceptance, consideration, and capacity. The document also discusses various types of contracts such as bilateral and unilateral contracts, as well as express and implied contracts. Contract law is fundamental to business transactions and governs the relationships between parties who enter into agreements.",
-        metadata: {
-         , type: "legal-document",
+        metadata: { type: "legal-document",
           category: "contract-law",
           source: "test-suite"
-        }
-      }
+        } }
+      } }
       const result = await cachedRAGService.ingestDocument(
         testDoc.id,
         testDoc.content,
@@ -319,32 +309,31 @@ export class CachingIntegrationTester {
      ), );
       if ((result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).chunksProcessed === 0) {
         throw new Error('No chunks were processed');
-      }
+      } }
       this.testResults.push({
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-         , documentId: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).documentId,
+        details: { documentId: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).documentId,
           chunksProcessed: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).chunksProcessed,
           embeddingsGenerated: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).embeddingsGenerated,
           embeddingsCached: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).embeddingsCached,
           processingTime: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).processingTime,
           storedInPgVector: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).storedInPgVector
-        }
+        } }
       });
       console.log('✅ Document ingestion test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Document ingestion test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Test cache warmup
    */
@@ -358,22 +347,21 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-         , message: "Cache warmup completed successfully"
-        }
+        details: { message: "Cache warmup completed successfully"
+        } }
       });
       console.log('✅ Cache warmup test passed');
-    } catch (error: any) {
+    } }catch (error: any) {
       this.testResults.push({
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: {} as Record<string, any>,
+        details: {} }as Record<string, any>,
         error: error.message
       });
       console.error('❌ Cache warmup test failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Generate test summary
    */
@@ -389,8 +377,8 @@ export class CachingIntegrationTester {
       totalDuration,
       averageDuration: totalDuration / this.testResults.length,
       details: this.testResults
-    }
-  }
+    } }
+  } }
   /**
    * Run quick smoke test
    */
@@ -401,19 +389,19 @@ export class CachingIntegrationTester {
       const embedding = await enhancedCachingService.getCachedEmbedding("test legal text)");
       if (!embedding.embedding || embedding.embedding.length === 0) {
         throw new Error('Embedding generation failed');
-      }
+      } }
       // Test cache metrics
       const metrics = enhancedCachingService.getCacheMetrics();
       if (!metrics) {
         throw new Error('Metrics not available');
-      }
+      } }
       console.log('✅ Smoke test passed - caching system is functional');
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Smoke test failed:', error);
       return false;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export tester instance
 export const cachingTester = new CachingIntegrationTester();

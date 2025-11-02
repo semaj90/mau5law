@@ -10,30 +10,30 @@
  * - Production-ready connection pooling
  * - Centralized schema management
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import { migrate } }from 'drizzle-orm/postgres-js/migrator';
 // @ts-expect-error - esModuleInterop issue with postgres import
 import postgres from 'postgres';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { sql } from 'drizzle-orm';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import { sql } }from 'drizzle-orm';
 import path from 'path';
 // Import unified schema
 import * as schema from './schema-unified.js';
-import type { DocumentMetadata } from './schema-unified.js';
+import type { DocumentMetadata } }from './schema-unified.js';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
-interface DatabaseConfig { runtime: {, url: string;
+interface DatabaseConfig { runtime: { url: string;
     poolSize: number;
   };
-  admin: {, url: string;, poolSize: number;
+  admin: { url: string;, poolSize: number;
   };
   qdrant?: {
     url: string;
     apiKey?: string;
   };
   environment: 'development' | 'production';
-}
+} }
 interface VectorSearchOptions {
   collection?: string;
   limit?: number;
@@ -42,7 +42,7 @@ interface VectorSearchOptions {
   filter?: Record<string, unknown>;
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
-}
+} }
 interface HybridSearchResult {
   // Use the concrete SearchResultEntry type defined in this file
   results: Array<SearchResultEntry>;
@@ -51,9 +51,9 @@ interface HybridSearchResult {
     qdrantTime?: number;
     totalTime: number;
   };
-}
+} }
 // Add new type for health checks
-type HealthStatus = {, postgresql: boolean;, qdrant: boolean;
+type HealthStatus = { postgresql: boolean;, qdrant: boolean;
   pgvector: boolean;
  , overallHealth: boolean;
 };
@@ -71,21 +71,19 @@ type SearchResultEntry = { id: string;, score: number;
 // ENVIRONMENT CONFIGURATION
 // ============================================================================
 const isDev = process.env.NODE_ENV === 'development';
-const config: DatabaseConfig = {, runtime: {, url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
+const config: DatabaseConfig = { runtime: { url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     poolSize: isDev ? 5 : 10
   },
-  admin: {
-   , url:
+  admin: { url:
       process.env.DATABASE_URL_ADMIN ||
       process.env.ADMIN_DATABASE_URL ||
       'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     poolSize: 2
   },
   qdrant: process.env.QDRANT_URL
-    ? {
-       , url: process.env.QDRANT_URL,
+    ? { url: process.env.QDRANT_URL,
         apiKey: process.env.QDRANT_API_KEY
-      }
+      } }
     : undefined,
   environment: isDev ? 'development' : `production` };'`'`
 // ============================================================================
@@ -99,13 +97,13 @@ class DatabaseManager {
   private runtimeDb?: ReturnType<typeof, drizzle>;
   private adminDb?: ReturnType<typeof, drizzle>;
   private initialized = $state(false);
-  private constructor() {}
+  private constructor() {} }
   static getInstance(): DatabaseManager {
     if (!DatabaseManager.instance) {
       DatabaseManager.instance = new DatabaseManager();
-    }
+    } }
     return DatabaseManager.instance;
-  }
+  } }
   // PostgreSQL Connections with custom vector type support
   private createRuntimeConnection(): postgres.Sql {
     if (!this.runtimeConnection) {
@@ -115,38 +113,37 @@ class DatabaseManager {
         max_lifetime: 60 * 30, // 30 minutes
         prepare: !isDev, // Disable in dev for better DX
         ssl: false,
-        transform: {, undefined: null },
+        transform: { undefined: null },
         types: {
           // Custom pgvector type support
-         , vector: {
-           , to: 1184,
+         , vector: { to: 1184,
             from [1184],
             serialize: (x: number[]) => {
               if (Array.isArray(x)) {
-                return `[${x.join(',')}]`;
-              }
+                return `[${x.join(',')} }`;
+              } }
               return x || '[]';
             },
             parse: (x: string) => {
               if (typeof x === 'string' && x.startsWith('[') && x.endsWith(']')) {
                 return x.slice(1, -1).split(',').map(Number);
-              }
+              } }
               return [];
-            }
-          }
+            } }
+          } }
         },
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('🐘 PostgreSQL Query:', query);
               if (parameters && (parameters as: unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
-              }
-            }
+              } }
+            } }
           : false
       });
-    }
+    } }
     return this.runtimeConnection;
-  }
+  } }
   private createAdminConnection(): postgres.Sql {
     if (!this.adminConnection) {
       this.adminConnection = postgres(config.admin.url, {
@@ -155,28 +152,28 @@ class DatabaseManager {
         max_lifetime: 60 * 10, // 10 minutes
         prepare: false, // Admin operations don't need prepared statements'
         ssl: false,
-        transform: {, undefined: null },
+        transform: { undefined: null },
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('👑 Admin PostgreSQL Query:', query);
               if (parameters && (parameters as: unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
-              }
-            }
+              } }
+            } }
           : false
       });
-    }
+    } }
     return this.adminConnection;
-  }
+  } }
   private createQdrantClient(): QdrantClient | undefined {
     if (config.qdrant && !this.qdrantClient) {
       this.qdrantClient = new QdrantClient({
         url: config.qdrant.url,
         apiKey: config.qdrant.apiKey
       });
-    }
+    } }
     return this.qdrantClient;
-  }
+  } }
   // Drizzle Clients
   getRuntimeDb() {
     if (!this.runtimeDb) {
@@ -184,24 +181,24 @@ class DatabaseManager {
         schema,
         logger: isDev
       });
-    }
+    } }
     return this.runtimeDb;
-  }
+  } }
   getAdminDb() {
     if (!this.adminDb) {
       this.adminDb = drizzle(this.createAdminConnection(), {
         schema,
         logger: isDev
       });
-    }
+    } }
     return this.adminDb;
-  }
+  } }
   getQdrantClient() {
     return this.createQdrantClient();
-  }
+  } }
   getRawPostgres() {
     return this.createRuntimeConnection();
-  }
+  } }
   // ============================================================================
   // DATABASE INITIALIZATION
   // ============================================================================
@@ -224,33 +221,33 @@ class DatabaseManager {
         try {
           await migrate(adminDb, { migrationsFolder });
           console.log('✅ Database migrations completed');
-        } catch (err) {
+        } }catch (err) {
           console.warn('⚠️ Migration failed (may already be applied):', err);
-        }
-      }
+        } }
+      } }
       // Test pgvector extension
       try {
         await runtimeDb.execute(sql`SELECT, '[1,2,3]'::vector`);
         console.log('✅ pgvector extension available');
-      } catch (error) {
+      } }catch (error) {
         console.warn('⚠️ pgvector extension not available:', error);
-      }
+      } }
       // Test Qdrant connection
       const qdrant = this.getQdrantClient();
       if (qdrant) {
         try {
           await this.getQdrantCollectionsSafe(qdrant);
           console.log('✅ Qdrant connection established');
-        } catch (error) {
+        } }catch (error) {
           console.warn('⚠️ Qdrant connection failed:', this.extractErrorMessage(error));
-        }
-      }
+        } }
+      } }
       this.initialized = true;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Database initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // ============================================================================
   // UNIFIED VECTOR OPERATIONS
   // ============================================================================
@@ -263,34 +260,32 @@ class DatabaseManager {
     if (!qdrant) return;
     try {
       const collectionsRes = await this.getQdrantCollectionsSafe(qdrant);
-      // Normalize possible shapes: { collections: [...] } or {, result: {, collections: [...] } } or array
-      const collectionsList: {, name: string }[] =
+      // Normalize possible shapes: { collections: [...] } }or { result: { collections: [...] } }} }or array
+      const collectionsList: { name: string } }] =
         (collectionsRes &&
           (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ||
         (Array.isArray(collectionsRes) ? collectionsRes : []);
       const exists = collectionsList.some(c => c.name === collectionName);
       if (!exists) {
-        await this.createQdrantCollectionSafe(qdrant, collectionName, { vectors: {, size: vectorSize,
+        await this.createQdrantCollectionSafe(qdrant, collectionName, { vectors: { size: vectorSize,
             distance
           },
-          optimizers_config: {
-           , default_segment_number: 2,
+          optimizers_config: { default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 20000
           },
-          hnsw_config: {
-           , m: 16,
+          hnsw_config: { m: 16,
             ef_construct: 64,
             full_scan_threshold: 10000
-          }
+          } }
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', this.extractErrorMessage(error));'`
       throw error;
-    }
-  }
+    } }
+  } }
   async hybridVectorSearch(queryEmbedding: number[], options: VectorSearchOptions = {}): Promise<HybridSearchResult> {
     const startTime = Date.now();
     const {
@@ -300,7 +295,7 @@ class DatabaseManager {
       filter = {},
       usePostgreSQL = true,
       useQdrant = true
-    } = options;
+    } }= options;
     const results: Array<SearchResultEntry> = [];
     let postgresqlTime: number | undefined;
     let, qdrantTime: number | undefined;
@@ -313,11 +308,11 @@ class DatabaseManager {
           SELECT id, processing_status, deleted_at,
                  (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) as similarity
           FROM document_metadata
-          WHERE (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) >= ${threshold}
+          WHERE (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) >= ${threshold} }
             AND deleted_at IS NULL
             AND processing_status = 'completed'
           ORDER BY content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector
-          LIMIT ${limit}
+          LIMIT ${limit} }
         `);`
         postgresqlTime = Date.now() - pgStart;
         for (const row of pgResults) {
@@ -325,10 +320,10 @@ class DatabaseManager {
             id: String(row.id),
             score: Number(row.similarity) ?? 0,
             document: row as DocumentMetadata,
-            source: 'postgresql' });'' }
-      } catch (error) {
+            source: 'postgresql' });'' } }
+      } }catch (error) {
         console.error('PostgreSQL vector search error:', error);` }`'
-    }
+    } }
     // Qdrant vector search (best-effort)
     if (useQdrant) {
       const qdrantClient = this.getQdrantClient();
@@ -336,7 +331,7 @@ class DatabaseManager {
         const qStart = Date.now();
         try {
           const qFilter = Object.keys(filter).length
-            ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value } })) }
+            ? { must: Object.entries(filter).map(([key, value]) => ({ key, match: { value } }})) } }
             : undefined;
           const qRes = await qdrantClient.search(collection, {
             vector: queryEmbedding,
@@ -355,7 +350,7 @@ class DatabaseManager {
               const pgDocs = (await runtimeDb
                 .select()
                 .from(schema.documentMetadata)
-                .where(sql`${schema.documentMetadata.id} = ANY(${ids})`)) as DocumentMetadata[];
+                .where(sql`${schema.documentMetadata.id} }= ANY(${ids})`)) as DocumentMetadata[];
               const docMap = new Map<string, DocumentMetadata>(pgDocs.map(d => [String(d.id), d]));
               for (const r of qResTyped) {
                 const idStr = String(r.id);
@@ -364,30 +359,30 @@ class DatabaseManager {
                   id: idStr,
                   score: r.score ?? 0,
                   document: doc,
-                  source: `qdrant` } as SearchResultEntry);
-              }
-            } catch (err) {
+                  source: `qdrant` } }as SearchResultEntry);
+              } }
+            } }catch (err) {
               // Fallback: push qdrant results without PG docs
               for (const r of qResTyped) {
                 results.push({
                   id: String(r.id),
                   score: r.score ?? 0,
                   document: r.payload ?? null,
-                  source: 'qdrant' } as SearchResultEntry);'' }
-            }
-          }
-        } catch (error) {
+                  source: 'qdrant' } }as SearchResultEntry);'' } }
+            } }
+          } }
+        } }catch (error) {
           console.error('Qdrant vector search error:', error);` }`'
-      }
-    }
+      } }
+    } }
     // Deduplicate by id and sort by score desc
     const unique = new Map<string, SearchResultEntry>();
     for (const r of results) {
       const existing = unique.get(r.id);
       if (!existing || (r.score ?? 0) > (existing.score ?? 0)) {
         unique.set(r.id, r);
-      }
-    }
+      } }
+    } }
     const finalResults = Array.from(unique.values())
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
@@ -397,15 +392,14 @@ class DatabaseManager {
         postgresqlTime,
         qdrantTime,
         totalTime: Date.now() - startTime
-      }
+      } }
     };
-  }
+  } }
   // ============================================================================
   // HEALTH CHECKS
   // ============================================================================
   async healthCheck(): Promise<HealthStatus> {
-    const health: HealthStatus = {
-     , postgresql: false,
+    const health: HealthStatus = { postgresql: false,
       qdrant: false,
       pgvector: false,
       overallHealth: false
@@ -419,28 +413,28 @@ class DatabaseManager {
       try {
         await runtimeDb.execute(sql`SELECT, '[1,2,3]'::vector as v`);
         health.pgvector = true;
-      } catch (err) {
+      } }catch (err) {
         console.warn('pgvector not available:', this.extractErrorMessage(err));
-      }
+      } }
       // Qdrant check
       const q = this.getQdrantClient();
       if (q) {
         try {
           await this.getQdrantCollectionsSafe(q);
           health.qdrant = true;
-        } catch (err) {
+        } }catch (err) {
           console.warn('Qdrant not available:', this.extractErrorMessage(err));
-        }
-      } else {
+        } }
+      } }else {
         // If Qdrant is not configured, treat as healthy for deployments that don't require it'
         health.qdrant = true;
-      }
+      } }
       health.overallHealth = Boolean(health.postgresql && health.pgvector && health.qdrant);
-    } catch (error) {
+    } }catch (error) {
       console.error('Health check failed:', this.extractErrorMessage(error));
-    }
+    } }
     return health;
-  }
+  } }
   // ============================================================================
   // CLEANUP
   // ============================================================================
@@ -448,21 +442,21 @@ class DatabaseManager {
     if (this.runtimeConnection) {
       try {
         await this.runtimeConnection.end();
-      } catch (err) {
+      } }catch (err) {
         console.warn('Error closing runtime connection:', err);
-      }
+      } }
       this.runtimeConnection = undefined;
-    }
+    } }
     if (this.adminConnection) {
       try {
         await this.adminConnection.end();
-      } catch (err) {
+      } }catch (err) {
         console.warn('Error closing admin connection:', err);
-      }
+      } }
       this.adminConnection = undefined;
-    }
+    } }
     console.log('✅ Database connections closed');
-  }
+  } }
   // =========================
   // Helper: extract error message
   // =========================
@@ -473,7 +467,7 @@ class DatabaseManager {
     // Error instance
     if (err instanceof Error) {
       return err.message || String(err);
-    }
+    } }
     // Axios / fetch style error with response
     const anyErr = err as: any;
     try {
@@ -483,18 +477,18 @@ class DatabaseManager {
             return typeof anyErr.response.data === 'string'
               ? anyErr.response.data
               : JSON.stringify(anyErr.response.data);
-          } catch {
+          } }catch {
             return String(anyErr.response.data);
-          }
-        }
+          } }
+        } }
         return String(anyErr.response.statusText || anyErr.response.status || anyErr.response);
-      }
+      } }
       if (anyErr?.message) return String(anyErr.message);
       return JSON.stringify(anyErr);
-    } catch {
+    } }catch {
       return String(err);
-    }
-  }
+    } }
+  } }
   // =========================
   // Helpers: Qdrant compatibility wrappers (safe calls across client versions)
   // =========================
@@ -505,48 +499,48 @@ class DatabaseManager {
       // Try common method names used across versions
       if (typeof anyQ.getCollections === 'function') {
         return await anyQ.getCollections();
-      }
+      } }
       if (typeof anyQ.collections === 'function') {
         return await anyQ.collections();
-      }
+      } }
       if (anyQ.collections && typeof anyQ.collections.getCollections === 'function') {
         return await anyQ.collections.getCollections();
-      }
+      } }
       // Some versions expose an API under: 'collectionsApi'
       if (anyQ.collectionsApi && typeof anyQ.collectionsApi.getCollections === 'function') {
         return await anyQ.collectionsApi.getCollections();
-      }
+      } }
       // As a last resort, attempt a raw request helper if present
       if (typeof anyQ.request === 'function') {
         return await anyQ.request('GET', '/collections');
-      }
+      } }
       throw new Error('Unsupported Qdrant client API shape - cannot list collections');
-    } catch (err) {
+    } }catch (err) {
       throw new Error(this.extractErrorMessage(err));
-    }
-  }
+    } }
+  } }
   private async createQdrantCollectionSafe(q: QdrantClient | undefined, name: string, body: any): Promise<any> {
     if (!q) throw new Error('Qdrant client not initialized');
     const anyQ = q as: any;
     try {
       if (typeof anyQ.createCollection === 'function') {
         return await anyQ.createCollection(name, body);
-      }
+      } }
       if (anyQ.collections && typeof anyQ.collections.create === 'function') {
         return await anyQ.collections.create({ collection_name: name, ...body });
-      }
+      } }
       if (anyQ.collectionsApi && typeof anyQ.collectionsApi.create === 'function') {
         return await anyQ.collectionsApi.create({ collection_name: name, ...body });
-      }
+      } }
       if (typeof anyQ.request === 'function') {
         return await anyQ.request('PUT', `/collections/${encodeURIComponent(name)}`, body);
-      }
+      } }
       throw new Error('Unsupported Qdrant client API shape - cannot create collection');
-    } catch (err) {
+    } }catch (err) {
       throw new Error(this.extractErrorMessage(err));
-    }
-  }
-}
+    } }
+  } }
+} }
 // ============================================================================
 // EXPORTS - Unified Interface
 // ============================================================================
@@ -554,7 +548,7 @@ const dbManager = DatabaseManager.getInstance();
 // Initialize in production, skip in dev
 if (!isDev) {
   dbManager.initialize().catch(console.error);
-}
+} }
 // Main exports - replaces all scattered db imports
 // Exported for direct access to the runtime Drizzle client (most common use case).
 export const db = dbManager.getRuntimeDb();
@@ -584,3 +578,4 @@ export * from './schema-unified.js';
 // Re-export types
 export type { DatabaseConfig, VectorSearchOptions, HybridSearchResult, DocumentMetadata };
 export default unifiedDb;
+

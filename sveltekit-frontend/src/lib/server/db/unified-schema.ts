@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // @ts-nocheck
 // Production PostgreSQL schema with pgvector for vector search
-import { createId } from '@paralleldrive/cuid2';
-import { relations } from 'drizzle-orm';
+import { createId } }from '@paralleldrive/cuid2';
+import { relations } }from 'drizzle-orm';
 import {
   boolean,
   decimal,
@@ -15,9 +15,9 @@ import {
   timestamp,
   uuid,
   varchar
-} from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { z } from 'zod';
+} }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { z } }from 'zod';
 // Zod schemas for type-safe JSON fields
 export const UserSettingsExtSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),
@@ -75,10 +75,9 @@ export const users = pgTable('users', {
       notifications: true,
       language: 'en',
       timezone: 'UTC',
-      preferences: {
-       , defaultDocumentType: 'brief',
+      preferences: { defaultDocumentType: 'brief',
         dateFormat: 'US'
-      }
+      } }
     }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
@@ -123,8 +122,7 @@ export const themeConfigSchema = z.object({
 });
 export const userSettingsSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),
-  notifications: z.object({
-   , email: z.boolean().default(true)
+  notifications: z.object({ email: z.boolean().default(true)
   }),
   defaultDocumentType: z.string().default('brief'),
   timezone: z.string().default('UTC'),
@@ -184,7 +182,7 @@ export const layoutComponents = pgTable('layout_components', {
   htmlContent: text('html_content').notNull(),
   cssStyles: text('css_styles'),
   jsInteractions: text('js_interactions'), // Optional JavaScript for interactions
-  position: jsonb('position').notNull(), // { x, y, width, height, zIndex }
+  position: jsonb('position').notNull(), // { x, y, width, height, zIndex } }
   themeId: uuid('theme_id').references(() => themes.id, {
     onDelete: 'cascade'
   }),
@@ -886,7 +884,7 @@ export const userDocuments = pgTable(
   {
     id: serial('id').primaryKey(),
     userId: text('user_id').notNull(),
-    source: text('source'), // e.g. "minio://bucket/key";, or: "note", etc.
+    source: text('source'), // e.g. "minio://bucket/key"; or: "note", etc.
     content: text('content').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -956,3 +954,4 @@ export const patternSessionsRelations = relations(patternSessions, ({ one }) => 
     references: [users.id]
   })
 }));
+

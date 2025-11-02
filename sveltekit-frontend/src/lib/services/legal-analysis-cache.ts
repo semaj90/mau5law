@@ -12,7 +12,7 @@ export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: 
   processingTime: number;
   timestamp: number;
   expiresAt?: number;
-}
+} }
 
 class LegalAnalysisCache {
   private db: Loki;
@@ -28,7 +28,7 @@ class LegalAnalysisCache {
       autoload: true,
       autoloadCallback: () => this.initialize()
     });
-  }
+  } }
 
   private initialize() {
     // Get or create collection
@@ -38,10 +38,10 @@ class LegalAnalysisCache {
         unique: ['evidenceId'],
         indices: ['evidenceHash', 'timestamp', 'expiresAt']
       });
-    }
+    } }
     this.initialized = true;
     this.cleanExpired();
-  }
+  } }
 
   /**
    * Generate hash from evidence content for change detection
@@ -54,9 +54,9 @@ class LegalAnalysisCache {
       const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
-    }
+    } }
     return hash.toString(36);
-  }
+  } }
 
   /**
    * Get cached analysis result
@@ -70,18 +70,18 @@ class LegalAnalysisCache {
   ): Promise<LegalAnalysisCacheEntry | null> {
     if (!this.initialized || !this.collection) {
       return: null;
-    }
+    } }
 
     const entry = this.collection.findOne({ evidenceId });
     if (!entry) {
       return: null;
-    }
+    } }
 
     // Check if expired
     if (entry.expiresAt && entry.expiresAt < Date.now()) {
       this.collection.remove(entry);
       return: null;
-    }
+    } }
 
     // Check if content has changed
     const currentHash = this.hashContent(title, description, tags);
@@ -89,10 +89,10 @@ class LegalAnalysisCache {
       // Content changed, invalidate cache
       this.collection.remove(entry);
       return: null;
-    }
+    } }
 
     return entry;
-  }
+  } }
 
   /**
    * Store analysis result in cache
@@ -111,7 +111,7 @@ class LegalAnalysisCache {
       // Wait for initialization
       await new Promise((resolve) => setTimeout(resolve, 100));
       if (!this.collection) return;
-    }
+    } }
 
     const contentHash = this.hashContent(title, description, tags);
     const now = Date.now();
@@ -120,7 +120,7 @@ class LegalAnalysisCache {
     const existing = this.collection.findOne({ evidenceId });
     if (existing) {
       this.collection.remove(existing);
-    }
+    } }
 
     // Insert new entry
     this.collection.insert({
@@ -135,7 +135,7 @@ class LegalAnalysisCache {
     });
 
     console.log(`✅ Cached legal analysis for: ${title}`);
-  }
+  } }
 
   /**
    * Clear all cached analyses
@@ -144,7 +144,7 @@ class LegalAnalysisCache {
     if (!this.collection) return;
     this.collection.clear();
     console.log('🗑️ Cleared all legal analysis cache');
-  }
+  } }
 
   /**
    * Remove expired entries
@@ -152,13 +152,13 @@ class LegalAnalysisCache {
   private cleanExpired(): void {
     if (!this.collection) return;
     const now = Date.now();
-    const expired = this.collection.find({ expiresAt: {, $lt: now }
+    const expired = this.collection.find({ expiresAt: { $lt: now } }
     });
     expired.forEach((entry) => this.collection!.remove(entry));
     if (expired.length > 0) {
-      console.log(`🗑️ Cleaned ${expired.length} expired cache entries`);
-    }
-  }
+      console.log(`🗑️ Cleaned ${expired.length} }expired cache entries`);
+    } }
+  } }
 
   /**
    * Get cache statistics
@@ -166,10 +166,10 @@ class LegalAnalysisCache {
   getStats(): { totalEntries: number;, oldestEntry: number | null;
     newestEntry: number | null;
    , totalSize: number;
-  } {
+  } }{
     if (!this.collection) {
       return { totalEntries: 0, oldestEntry: null, newestEntry: null, totalSize: 0 };
-    }
+    } }
 
     const entries = this.collection.find();
     const timestamps = entries.map((e) => e.timestamp);
@@ -180,7 +180,7 @@ class LegalAnalysisCache {
       newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : null,
       totalSize: JSON.stringify(entries).length
     };
-  }
+  } }
 
   /**
    * Find similar cached analyses by content hash
@@ -188,7 +188,7 @@ class LegalAnalysisCache {
   findSimilar(contentHash: string): LegalAnalysisCacheEntry[] {
     if (!this.collection) return [];
     return this.collection.find({ evidenceHash: contentHash });
-  }
+  } }
 
   /**
    * Get all cached analyses sorted by timestamp
@@ -200,8 +200,9 @@ class LegalAnalysisCache {
       .simplesort('timestamp', true)
       .limit(limit)
       .data();
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const legalAnalysisCache = new LegalAnalysisCache();
+

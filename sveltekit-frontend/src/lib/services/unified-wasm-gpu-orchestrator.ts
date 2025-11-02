@@ -4,24 +4,24 @@
  * Production-ready orchestration layer with multi-tier fallbacks and performance optimization
  */
 // Commented out problematic imports due to module resolution issues
-// import type { CanvasState } from '$lib/stores/canvas-states'
-// import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker'
+// import type { CanvasState } }from '$lib/stores/canvas-states'
+// import type { MultiDimArray, GPUProcessingStats } }from '$lib/workers/gpu-tensor-worker'
 // Define interfaces locally
 export interface CanvasState { width: number;, height: number;
   data?: Uint8ClampedArray;
   pixels?: number[][];
   format?: string;
-}
-export interface MultiDimArray {, data: Float32Array | Uint8Array | Int32Array;, shape: number[];
+} }
+export interface MultiDimArray { data: Float32Array | Uint8Array | Int32Array;, shape: number[];
   dtype: string;
-}
-export interface GPUProcessingStats {, totalProcessingTime: number;, gpuUtilization: number;
+} }
+export interface GPUProcessingStats { totalProcessingTime: number;, gpuUtilization: number;
   memoryUsage: number;
  , operationsCompleted: number;
-}
-import { NESStyleGPUBridge } from './nes-gpu-bridge.js';
-import { gpuServiceIntegration } from './gpu-service-integration.js';
-import { writable } from 'svelte/store';
+} }
+import { NESStyleGPUBridge } }from './nes-gpu-bridge.js';
+import { gpuServiceIntegration } }from './gpu-service-integration.js';
+import { writable } }from 'svelte/store';
 // Browser detection
 const browser = typeof window !== 'undefined';
 
@@ -37,9 +37,9 @@ export interface UnifiedWASMGPUConfig { enableNESBridge: boolean;, enableOllama
   taskTimeoutMs: number;
   memoryLimitMB: number;
   performanceProfile: 'balanced' | 'speed' | 'memory' | 'quality';
-}
+} }
 // Task Types
-export interface WASMGPUTask {, id: string;, type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
+export interface WASMGPUTask { id: string;, type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
   priority: 'low' | 'medium' | 'high' | 'critical';
   data: any;
   targetService: 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'gpu_compute' | 'quic_gateway' | 'auto';
@@ -53,29 +53,29 @@ export interface WASMGPUTask {, id: string;, type: 'document_processing' | 'neu
     inputSize?: number;
     operation?: string;
   };
-}
+} }
 // Processing Results
-export interface WASMGPUResult {, taskId: string;, success: boolean;
+export interface WASMGPUResult { taskId: string;, success: boolean;
   serviceUsed: string;
   result?: any;
   error?: string;
   processingTime: number;
   memoryUsed: number;
   cacheHit: boolean;
-  performanceMetrics: {, throughput: number;, efficiency: number;
+  performanceMetrics: { throughput: number;, efficiency: number;
     accuracy?: number;
   };
-}
+} }
 // Service Status
-export interface ServiceStatus {, serviceName: string;, available: boolean;
+export interface ServiceStatus { serviceName: string;, available: boolean;
   healthy: boolean;
   responseTime: number;
   errorRate: number;
   queueLength: number;
   capabilities: string[];
-}
+} }
 // Performance Metrics
-export interface UnifiedPerformanceMetrics {, totalTasks: number;, succeededTasks: number;
+export interface UnifiedPerformanceMetrics { totalTasks: number;, succeededTasks: number;
   failedTasks: number;
   averageLatency: number;
   throughputPerSecond: number;
@@ -85,36 +85,36 @@ export interface UnifiedPerformanceMetrics {, totalTasks: number;, succeededTas
   errorDistribution: Record<string, number>;
   // added: p95 latency for better observability
   p95Latency?: number;
-}
+} }
 /**
  * Small typed helpers to avoid `any`
  */
 interface OllamaService {
-  generateCompletion?: (opts: {, prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
-  generate?: (opts: {, prompt: string }) => Promise<unknown>;
+  generateCompletion?: (opts: { prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
+  generate?: (opts: { prompt: string }) => Promise<unknown>;
   getStatus?: () => unknown;
   shutdown?: () => Promise<void>;
-}
+} }
 interface YoRHaProcessor {
   processDocument?: (doc: string) => Promise<unknown>;
   neuralInference?: (input: number[] | Float32Array) => Promise<unknown>;
-}
+} }
 // Strongly-typed GPU compute instance matching implemented API surface
 type GPUComputeInstance = {
   matmul?: (;
-    a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>,
+    a: Float32Array | number[][] | ArrayLike<number>; b: Float32Array | number[][] | ArrayLike<number>,
     m?: number,
     n?: number,
     k?: number
   ) => unknown;
   conv2d?: (;
-    input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>,
+    input: Float32Array | number[][] | ArrayLike<number>; kernel: Float32Array | number[][] | ArrayLike<number>,
     width?: number,
     height?: number,
     kernel_size?: number
   ) => unknown;
   attention?: (;
-    query: Float32Array | number[][] | ArrayLike<number>; key: Float32Array | number[][] | ArrayLike<number>;, value: Float32Array | number[][] | ArrayLike<number>,
+    query: Float32Array | number[][] | ArrayLike<number>; key: Float32Array | number[][] | ArrayLike<number>; value: Float32Array | number[][] | ArrayLike<number>,
     seq_len?: number,
     dim?: number
   ) => unknown;
@@ -125,10 +125,10 @@ type GPUComputeModule = { GPUCompute: new () => GPUComputeInstance };
 /* NEW: typed shape for NES-style bridge to avoid `any` */
 interface NESBridgeLike {
   getStats?: () => { totalConversions?: number; [k: string]: any };
-  getCacheStats?: () => number | { size?: number; length?: number } | unknown;
-  cache?: { size?: number; length?: number } | unknown;
+  getCacheStats?: () => number | { size?: number; length?: number } }| unknown;
+  cache?: { size?: number; length?: number } }| unknown;
   processCanvasStateWithGPU?: (state: CanvasState) => Promise<unknown>;
-}
+} }
 
 /* NEW: typed shape for YoRHa WASM module and a guard to avoid `any` usage */
 interface YoRHaWASMModule {
@@ -137,7 +137,7 @@ interface YoRHaWASMModule {
     neuralInference?: (input: number[] | Float32Array) => Promise<unknown>;
     shutdown?: () => Promise<void>;
   };
-}
+} }
 function isYoRHaModule(m: any): m is YoRHaWASMModule {
   return (
     typeof m === 'object' &&
@@ -145,7 +145,7 @@ function isYoRHaModule(m: any): m is YoRHaWASMModule {
     'YoRHaNeuralProcessor' in (m as Record<string, unknown>) &&
     typeof (m as Record<string, unknown>)['YoRHaNeuralProcessor'] === 'function'
   );
-}
+} }
 
 /**
  * Main Unified WASM-GPU Orchestrator Class
@@ -176,7 +176,7 @@ export class UnifiedWASMGPUOrchestrator {
     memoryEfficiency: 0,
     cacheHitRate: 0,
     serviceDistribution: {},
-    errorDistribution: {}
+    errorDistribution: {} }
   });
   public serviceStatuses = writable<ServiceStatus[]>([]);
   public queueLength = writable<number>(0);
@@ -194,7 +194,7 @@ export class UnifiedWASMGPUOrchestrator {
       ...config
     };
     this.initialize();
-  }
+  } }
   /**
    * Initialize all integrated services
    */
@@ -202,7 +202,7 @@ export class UnifiedWASMGPUOrchestrator {
     if (!browser) {
       console.warn('⚠️ WASM-GPU Orchestrator: Running in non-browser environment');
       return;
-    }
+    } }
     try {
       console.log('🚀 Initializing Unified WASM-GPU Orchestrator...');
       this.status.set('initializing');
@@ -214,15 +214,15 @@ export class UnifiedWASMGPUOrchestrator {
       // 1. Initialize NES GPU Bridge
       if (this.config.enableNESBridge) {
         initPromises.push(this.initializeNESBridge());
-      }
+      } }
       // 2. Initialize Ollama/LlamaCpp Integration
       if (this.config.enableOllamaIntegration) {
         initPromises.push(this.initializeOllamaService());
-      }
+      } }
       // 3. Initialize YoRHa Neural Processor
       if (this.config.enableYoRHaProcessor) {
         initPromises.push(this.initializeYoRHaProcessor());
-      }
+      } }
       // 4. Initialize WASM Modules
       initPromises.push(this.initializeWASMModules());
       // 5. Initialize GPU Service Integration
@@ -241,12 +241,12 @@ export class UnifiedWASMGPUOrchestrator {
       console.log(
         `📊 Services enabled: NES(${this.config.enableNESBridge}), Ollama(${this.config.enableOllamaIntegration}), YoRHa(${this.config.enableYoRHaProcessor}), QUIC(${this.config.enableQUICGateway})`
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ WASM-GPU Orchestrator initialization failed:', this.getErrorMessage(error));
       this.status.set('error');
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Initialize NES GPU Bridge
    */
@@ -255,11 +255,11 @@ export class UnifiedWASMGPUOrchestrator {
       // instantiate concrete bridge but store it as NESBridgeLike to use the interface
       this.nesGPUBridge = new NESStyleGPUBridge() as: unknown as NESBridgeLike;
       console.log('✅ NES GPU Bridge initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('⚠️ NES GPU Bridge initialization failed:', this.getErrorMessage(error));
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Helper: get Ollama endpoint (replace hardcoded occurrences)
    */
@@ -274,26 +274,26 @@ export class UnifiedWASMGPUOrchestrator {
         if (typeof import.meta !== 'undefined' && meta && meta.env) {
           const env = meta.env;
           candidates.push(env.VITE_OLLAMA_ENDPOINT ?? env.OLLAMA_ENDPOINT ?? env.OLLAMA_URL);
-        }
-      } catch {
+        } }
+      } }catch {
         // ignore
-      }
+      } }
 
       // 2) globalThis override
       if (typeof globalAny.OLLAMA_ENDPOINT === 'string' && globalAny.OLLAMA_ENDPOINT) {
         candidates.push(globalAny.OLLAMA_ENDPOINT as: string);
-      }
+      } }
 
       // 3) Node/process.env (SSR or build-time) - typed access without `any`
       try {
         const maybeProcess = typeof process !== 'undefined' ? (process as: unknown) : undefined;
-        const procEnv = (maybeProcess as { env?: Record<string, string | undefined> } | undefined)?.env;
+        const procEnv = (maybeProcess as { env?: Record<string, string | undefined> } }| undefined)?.env;
         if (procEnv) {
           candidates.push(procEnv.VITE_OLLAMA_ENDPOINT ?? procEnv.OLLAMA_ENDPOINT ?? procEnv.OLLAMA_URL);
-        }
-      } catch {
+        } }
+      } }catch {
         // ignore
-      }
+      } }
 
       // Normalize and validate candidates (first valid URL wins)
       for (const c of candidates) {
@@ -302,18 +302,18 @@ export class UnifiedWASMGPUOrchestrator {
           // If candidate is already a valid absolute URL, return it normalized (no trailing slash)
           const url = new URL(c);
           return url.toString().replace(/\/$/, '');
-        } catch {
+        } }catch {
           // If it isn't an absolute URL, try to coerce with http:// prefix'
           try {
             const coerced = c.startsWith('//') ? `http:${c}` : c.match(/^https?:\/\//i) ? c : `http://${c}`;
             const url2 = new URL(coerced);
             return url2.toString().replace(/\/$/, '');
-          } catch {
+          } }catch {
             // not a valid URL even after coercion, continue to next
             continue;
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       // Construct a sensible default dynamically (avoid embedding a raw literal everywhere)
       const host = typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost';
@@ -323,12 +323,12 @@ export class UnifiedWASMGPUOrchestrator {
           : 'http';
 
       return `${protocol}://${host}:${DEFAULT_OLLAMA_PORT}`;
-    } catch (err) {
+    } }catch (err) {
       // last-resort fallback (constructed, not a raw literal)
       // also log the underlying error for easier debugging
       // keep noise minimal in production; prefer debug-level logging if available
       // eslint-disable-next-line no-console
-      console.warn('getOllamaEndpoint fallback used due to error:', err);'
+      console.warn('getOllamaEndpoint fallback used due to error:', err);
       const hostFallback =
         typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost';
       const protocolFallback =
@@ -336,8 +336,8 @@ export class UnifiedWASMGPUOrchestrator {
           ? window.location.protocol.replace(/:$/, '')
           : 'http';
       return `${protocolFallback}://${hostFallback}:${DEFAULT_OLLAMA_PORT}`;
-    }
-  }
+    } }
+  } }
 
   /**
    * Lightweight service status aggregation used by health monitoring
@@ -346,8 +346,7 @@ export class UnifiedWASMGPUOrchestrator {
     const statuses: ServiceStatus[] = [];
 
     // NES Bridge status
-    statuses.push({
-     , serviceName: 'nes_bridge',
+    statuses.push({ serviceName: 'nes_bridge',
       available: !!this.nesGPUBridge,
       healthy: !!this.nesGPUBridge,
       responseTime: 0,
@@ -368,10 +367,10 @@ export class UnifiedWASMGPUOrchestrator {
         const res = await fetch(probeUrl, { method: 'GET` });'`
         responseTime = Date.now() - t0;
         healthy = res.ok;
-      } catch {
+      } }catch {
         // don't throw - keep best-effort'
         healthy = !!this.ollamaService;
-      }
+      } }
       statuses.push({
         serviceName: 'ollama_llama',
         available: !!this.ollamaService,
@@ -381,7 +380,7 @@ export class UnifiedWASMGPUOrchestrator {
         queueLength: 0,
         capabilities: ['completions', 'embeddings']
       });
-    } catch (e) {
+    } }catch (e) {
       // keep minimal noise
       console.warn('Ollama probe failed:', this.getErrorMessage(e));
       statuses.push({
@@ -393,7 +392,7 @@ export class UnifiedWASMGPUOrchestrator {
         queueLength: 0,
         capabilities: ['completions', 'embeddings']
       });
-    }
+    } }
 
     // YoRHa processor status
     statuses.push({
@@ -432,7 +431,7 @@ export class UnifiedWASMGPUOrchestrator {
     // Update reactive store and return
     this.serviceStatuses.set(statuses);
     return statuses;
-  }
+  } }
   /**
    * Insert task by priority
    */
@@ -445,10 +444,10 @@ export class UnifiedWASMGPUOrchestrator {
       if (taskPriority > queuedPriority) {
         insertIndex = i;
         break;
-      }
-    }
+      } }
+    } }
     this.taskQueue.splice(insertIndex, 0, task);
-  }
+  } }
 
   /**
    * Public API to enqueue a task (uses insertTaskByPriority)
@@ -456,7 +455,7 @@ export class UnifiedWASMGPUOrchestrator {
   public addTask(task: WASMGPUTask): void {
     this.insertTaskByPriority(task);
     this.queueLength.set(this.taskQueue.length);
-  }
+  } }
 
   /**
    * Start task processor
@@ -466,19 +465,19 @@ export class UnifiedWASMGPUOrchestrator {
       if (this.taskQueue.length === 0 || this.activeTasks.size >= this.config.maxConcurrentTasks) {
         setTimeout(processNextTask, 100);
         return;
-      }
+      } }
       const task = this.taskQueue.shift();
       if (!task) {
         setTimeout(processNextTask, 100);
         return;
-      }
+      } }
       this.activeTasks.set(task.id, task);
       this.queueLength.set(this.taskQueue.length);
       try {
         const result = await this.executeTask(task);
         this.taskResults.set(task.id, result);
-      } catch (error: any) {
-        console.error(`❌ Task ${task.id} execution failed: ', this.getErrorMessage(error));'`
+      } }catch (error: any) {
+        console.error(`❌ Task ${task.id} }execution failed: ', this.getErrorMessage(error));'`
         this.taskResults.set(task.id, {
           taskId: task.id,
           success: false,
@@ -487,15 +486,15 @@ export class UnifiedWASMGPUOrchestrator {
           processingTime: 0,
           memoryUsed: 0,
           cacheHit: false,
-          performanceMetrics: {, throughput: 0, efficiency: 0 }
+          performanceMetrics: { throughput: 0, efficiency: 0 } }
         });
-      }
+      } }
       this.activeTasks.delete(task.id);
       setTimeout(processNextTask, 10);
     };
     processNextTask();
     console.log('🔄 Unified task processor started');
-  }
+  } }
   /**
    * Execute task with appropriate service
    */
@@ -507,7 +506,7 @@ export class UnifiedWASMGPUOrchestrator {
     // Auto-select best service if needed
     if (task.targetService === 'auto') {
       serviceUsed = this.selectOptimalService(task);
-    }
+    } }
     try {
       switch (serviceUsed) {
         case, 'nes_bridge': {
@@ -519,14 +518,14 @@ export class UnifiedWASMGPUOrchestrator {
             if (typeof bridgeFn === 'function') {
               result = await bridgeFn.call(this.nesGPUBridge, canvasState);
               success = true;
-            } else {
+            } }else {
               throw new Error('NES Bridge does not implement processCanvasStateWithGPU');
-            }
-          } else {
+            } }
+          } }else {
             throw new Error('NES Bridge not available or invalid data');
-          }
+          } }
           break;
-        }
+        } }
         case, 'ollama_llama': {
           const data = task.data as Record<string, unknown> | null;
           if (this.ollamaService && data && 'document' in data) {
@@ -541,33 +540,33 @@ export class UnifiedWASMGPUOrchestrator {
                 maxTokens: 1024,
                 temperature: 0.3
               });
-            } else if (this.ollamaService.generate) {
+            } }else if (this.ollamaService.generate) {
               result = await this.ollamaService.generate({ prompt });
-            } else {
+            } }else {
               throw new Error('Ollama service does not expose generate API');
-            }
+            } }
             success = true;
-          } else {
+          } }else {
             throw new Error('Ollama service not available or invalid data');
-          }
+          } }
           break;
-        }
+        } }
         case, 'yorha_neural': {
           const data = task.data as Record<string, unknown> | null;
           if (this.yorhaProcessor && data && 'document' in data) {
             result = await this.yorhaProcessor.processDocument!(String(data.document));
             success = true;
-          } else if (this.yorhaProcessor && data && 'input' in data) {
+          } }else if (this.yorhaProcessor && data && 'input' in data) {
             const inputArr = Array.isArray(data.input)
               ? (data.input as: number[])
               : Array.from(data.input as Float32Array);
             result = await this.yorhaProcessor.neuralInference!(inputArr);
             success = true;
-          } else {
+          } }else {
             throw new Error('YoRHa Neural Processor not available or invalid data');
-          }
+          } }
           break;
-        }
+        } }
         case, 'gpu_compute': {
           const gpuModule = this.wasmModules.get('gpu_compute') as: unknown as GPUComputeModule | undefined;
           if (gpuModule && gpuModule.GPUCompute) {
@@ -580,34 +579,34 @@ export class UnifiedWASMGPUOrchestrator {
                 const p = payload as MatMulPayload;
                 result = compute.matmul?.(p.a, p.b, p.m, p.n, p.k);
                 break;
-              }
+              } }
               case, 'conv2d': {
                 const p = payload as Conv2DPayload;
                 result = compute.conv2d?.(p.input, p.kernel, p.width, p.height, p.kernel_size);
                 break;
-              }
+              } }
               case, 'attention': {
                 const p = payload as AttentionPayload;
                 result = compute.attention?.(p.query, p.key, p.value, p.seq_len, p.dim);
                 break;
-              }
+              } }
               case, 'fft': {
                 const p = payload as FFTPayload;
                 result = compute.fft?.(p.input);
                 break;
-              }
+              } }
               default:
-                throw new Error(`Unknown GPU;, operation: ${String(op)}`);
-            }
+                throw new Error(`Unknown GPU; operation: ${String(op)}`);
+            } }
             success = true;
-          } else {
+          } }else {
             throw new Error('GPU Compute WASM not available');
-          }
+          } }
           break;
-        }
+        } }
         default:
-          throw new Error(`Unknown;, service: ${serviceUsed}`);
-      }
+          throw new Error(`Unknown; service: ${serviceUsed}`);
+      } }
       // Try fallbacks if primary service failed
       if (!success && task.fallbackServices && task.fallbackServices.length > 0) {
         for (const fallbackService of task.fallbackServices) {
@@ -615,17 +614,17 @@ export class UnifiedWASMGPUOrchestrator {
             try {
               task.targetService = fallbackService as WASMGPUTask['targetService'];
               return await this.executeTask(task);
-            } catch (fallbackError: any) {
-              console.warn(`Fallback service ${fallbackService} also failed:`, this.getErrorMessage(fallbackError));
-            }
-          }
-        }
-      }
-    } catch (error: any) {
-      console.error(`Service ${serviceUsed} failed: ', this.getErrorMessage(error));'`
+            } }catch (fallbackError: any) {
+              console.warn(`Fallback service ${fallbackService} }also failed:`, this.getErrorMessage(fallbackError));
+            } }
+          } }
+        } }
+      } }
+    } }catch (error: any) {
+      console.error(`Service ${serviceUsed} }failed: ', this.getErrorMessage(error));'`
       success = false;
       result = null;
-    }
+    } }
     const endTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     const processingTime = endTime - startTime;
     return {
@@ -637,12 +636,11 @@ export class UnifiedWASMGPUOrchestrator {
       processingTime,
       memoryUsed: this.estimateMemoryUsage(result),
       cacheHit: false,
-      performanceMetrics: {
-       , throughput: success ? (processingTime > 0 ? 1000 / processingTime : 0) : 0,
+      performanceMetrics: { throughput: success ? (processingTime > 0 ? 1000 / processingTime : 0) : 0,
         efficiency: success ? 1 : 0
-      }
+      } }
     };
-  }
+  } }
   /**
    * Select optimal service for task
    */
@@ -661,8 +659,8 @@ export class UnifiedWASMGPUOrchestrator {
       case, 'legal_analysis':
         return this.ollamaService ? 'ollama_llama' : this.yorhaProcessor ? 'yorha_neural' : 'gpu_compute';
       default: return, 'yorha_neural';
-    }
-  }
+    } }
+  } }
   /**
    * Wait for task result
    */
@@ -673,15 +671,15 @@ export class UnifiedWASMGPUOrchestrator {
         const result = this.taskResults.get(taskId);
         if (result) {
           resolve(result);
-        } else if (Date.now() - start >= timeout) {
-          reject(new Error(`Task ${taskId} result not available within timeout`));
-        } else {
+        } }else if (Date.now() - start >= timeout) {
+          reject(new Error(`Task ${taskId} }result not available within timeout`));
+        } }else {
           setTimeout(checkResult, 100);
-        }
+        } }
       };
       checkResult();
     });
-  }
+  } }
   /**
    * Estimate memory usage for result (heuristic)
    */
@@ -694,17 +692,17 @@ export class UnifiedWASMGPUOrchestrator {
       if (Array.isArray(obj)) {
         const arr = obj as: unknown[];
         return arr.reduce<number>((s, v) => s + countKeys(v), 0);
-      }
+      } }
       let count = 0;
       const record = obj as Record<string, unknown>;
       for (const key of Object.keys(record)) {
         count += 1 + countKeys(record[key]);
-      }
+      } }
       return count;
     };
     const sizeEstimate = countKeys(result) * 8; // assume, 8 bytes per key/value pair
     return Math.min(sizeEstimate, this.config.memoryLimitMB * 1024 * 1024); // cap to memory limit
-  }
+  } }
   /**
    * Start periodic health monitoring (polls getServiceStatus)
    */
@@ -716,14 +714,14 @@ export class UnifiedWASMGPUOrchestrator {
       try {
         const statuses = await this.getServiceStatus();
         this.serviceStatuses.set(statuses);
-      } catch (e) {
+      } }catch (e) {
         // keep console warn minimal
         console.warn('Health poll failed:', this.getErrorMessage(e));
-      }
+      } }
     };
     poll();
     this.healthIntervalId = setInterval(poll, intervalMs);
-  }
+  } }
 
   /**
    * Stop periodic health monitoring
@@ -732,8 +730,8 @@ export class UnifiedWASMGPUOrchestrator {
     if (this.healthIntervalId) {
       clearInterval(this.healthIntervalId);
       this.healthIntervalId = undefined;
-    }
-  }
+    } }
+  } }
 
   /**
    * Start lightweight performance monitoring to update aggregated metrics
@@ -773,16 +771,15 @@ export class UnifiedWASMGPUOrchestrator {
           serviceDistribution[svc] = (serviceDistribution[svc] || 0) + 1;
           if (!r.success) {
             errorDistribution[svc] = (errorDistribution[svc] || 0) + 1;
-          }
-        }
+          } }
+        } }
 
         // Throughput approx = new results since last poll divided by seconds in interval
         const newResults = totalResults - lastTotalResults;
         const throughputPerSecond = newResults / Math.max(0.001, intervalMs / 1000);
 
         // Populate aggregated metrics (include p95Latency now)
-        const metrics: UnifiedPerformanceMetrics = {
-         , totalTasks: totalResults,
+        const metrics: UnifiedPerformanceMetrics = { totalTasks: totalResults,
           succeededTasks: succeeded,
           failedTasks: failed,
           averageLatency: Number(avgLatency.toFixed(2)),
@@ -804,16 +801,16 @@ export class UnifiedWASMGPUOrchestrator {
         this.queueLength.set(this.taskQueue.length);
 
         lastTotalResults = totalResults;
-      } catch (e) {
+      } }catch (e) {
         // keep console noise minimal
         console.warn('Performance poll failed:', this.getErrorMessage(e));
-      }
+      } }
     };
 
     // initial poll then periodic
     poll();
     this.perfIntervalId = setInterval(poll, intervalMs);
-  }
+  } }
 
   /**
    * Stop lightweight performance monitoring
@@ -823,8 +820,8 @@ export class UnifiedWASMGPUOrchestrator {
     if (this.perfIntervalId) {
       clearInterval(this.perfIntervalId);
       this.perfIntervalId = undefined;
-    }
-  }
+    } }
+  } }
 
   /**
    * Ensure both monitors are stopped (used during init/shutdown)
@@ -832,7 +829,7 @@ export class UnifiedWASMGPUOrchestrator {
   private ensureMonitoringStopped(): void {
     this.stopHealthMonitoring();
     this.stopPerformanceMonitoring();
-  }
+  } }
 
   /* ===== ADDED: Missing initializer methods & small helpers ===== */
 
@@ -849,25 +846,25 @@ export class UnifiedWASMGPUOrchestrator {
             const res = await fetch(`${endpoint}/completions`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json` },'`
-              body: JSON.stringify({, model: 'gemma3', prompt, max_tokens: maxTokens, temperature })
+              body: JSON.stringify({ model: 'gemma3', prompt, max_tokens: maxTokens, temperature })
             });
             if (!res.ok) throw new Error(`Ollama HTTP ${res.status}`);
             return await res.json();
-          } catch (e) {
+          } }catch (e) {
             console.warn('Ollama request failed:', this.getErrorMessage(e));
             return { error: this.getErrorMessage(e) };
-          }
+          } }
         },
         getStatus: () => ({ initialized: true, ready: true }),
         shutdown: async () => {
           this.ollamaService = null;
-        }
+        } }
       };
       console.log('✅ Ollama service wrapper initialized');
-    } catch (e) {
+    } }catch (e) {
       console.warn('⚠️ initializeOllamaService failed:', this.getErrorMessage(e));
-    }
-  }
+    } }
+  } }
 
   /**
    * Initialize YoRHa WASM neural processor (attempt dynamic import, fallback to stub)
@@ -878,9 +875,9 @@ export class UnifiedWASMGPUOrchestrator {
       try {
         // try dynamic import if a module exists at runtime (non-blocking)
         module = await import('./yorha-wasm.js');
-      } catch {
+      } }catch {
         module = undefined;
-      }
+      } }
 
       if (module && isYoRHaModule(module)) {
         const InstanceCtor = module.YoRHaNeuralProcessor!;
@@ -891,20 +888,20 @@ export class UnifiedWASMGPUOrchestrator {
         };
         this.wasmModules.set('yorha', module);
         console.log('✅ YoRHa WASM processor initialized');
-      } else {
+      } }else {
         // safe stub fallback - deterministic and quick
-        this.yorhaProcessor = { processDocument: async (doc: string) => ({, stub: true, text: String(doc).slice(0, 200) }),
+        this.yorhaProcessor = { processDocument: async (doc: string) => ({ stub: true, text: String(doc).slice(0, 200) }),
           neuralInference: async (input: number[] | Float32Array) => ({
             stub: true,
             length: Array.isArray(input) ? input.length : (input as Float32Array).length
           })
         };
         console.warn('⚠️ YoRHa WASM not available, using stub processor');
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('⚠️ initializeYoRHaProcessor failed:', this.getErrorMessage(e));
-    }
-  }
+    } }
+  } }
 
   /**
    * Initialize WASM modules (gpu_compute, etc.) - provide a safe stub when real WASM isn't available'
@@ -913,15 +910,14 @@ export class UnifiedWASMGPUOrchestrator {
     try {
       // Attempt to dynamically load a real WASM module here in future.
       // For now register a minimal CPU-based stub that satisfies the expected API surface.
-      const gpuStub: GPUComputeModule = {
-       , GPUCompute: class {
+      const gpuStub: GPUComputeModule = { GPUCompute: class {
           // use the declared payload shapes for parameter types and reference inputs for metadata
           matmul(a: MatMulPayload['a'], b: MatMulPayload['b'], m?: number, n?: number, k?: number) {
             return {
               matmul: true,
-              meta: { m, n, k, aLength: getLength(a), bLength: getLength(b) }
+              meta: { m, n, k, aLength: getLength(a), bLength: getLength(b) } }
             };
-          }
+          } }
           conv2d(
             input: Conv2DPayload['input'],
             kernel: Conv2DPayload['kernel'],
@@ -931,9 +927,9 @@ export class UnifiedWASMGPUOrchestrator {
           ) {
             return {
               conv2d: true,
-              meta: { width, height, kernel_size, inputLength: getLength(input), kernelLength: getLength(kernel) }
+              meta: { width, height, kernel_size, inputLength: getLength(input), kernelLength: getLength(kernel) } }
             };
-          }
+          } }
           attention(
             query: AttentionPayload['query'],
             key: AttentionPayload['key'],
@@ -943,20 +939,20 @@ export class UnifiedWASMGPUOrchestrator {
           ) {
             return {
               attention: true,
-              meta: { seq_len, dim, qLen: getLength(query), kLen: getLength(key), vLen: getLength(value) }
+              meta: { seq_len, dim, qLen: getLength(query), kLen: getLength(key), vLen: getLength(value) } }
             };
-          }
+          } }
           fft(input: FFTPayload['input']) {
             return { fft: true, length: getLength(input) };
-          }
-        }
+          } }
+        } }
       };
       this.wasmModules.set('gpu_compute', gpuStub);
       console.log('✅ WASM modules initialized (gpu_compute stub)');
-    } catch (e) {
+    } }catch (e) {
       console.warn('⚠️ initializeWASMModules failed:', this.getErrorMessage(e));
-    }
-  }
+    } }
+  } }
 
   /**
    * Initialize GPU service integration (bridge to native/webgpu service). Safe if gpuServiceIntegration lacks initialize()
@@ -969,13 +965,13 @@ export class UnifiedWASMGPUOrchestrator {
       if (typeof maybeInit === 'function') {
         await maybeInit.call(gpuServiceIntegration);
         console.log('✅ GPU service integration initialized');
-      } else {
+      } }else {
         console.warn('⚠️ gpuServiceIntegration.initialize() not present; skipping full initialization');
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('⚠️ initializeGPUServiceIntegration failed:', this.getErrorMessage(e));
-    }
-  }
+    } }
+  } }
 
   /**
    * Small helper to normalize: unknown errors, to: string messages
@@ -984,31 +980,31 @@ export class UnifiedWASMGPUOrchestrator {
     if (err instanceof Error) return err.message;
     try {
       return String(err);
-    } catch {
+    } }catch {
       return, 'Unknown error';
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /* ===== ADD: GPU operation payload shapes used by the stub and executor ===== */
-interface MatMulPayload {, a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>;
+interface MatMulPayload { a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>;
   m?: number;
   n?: number;
   k?: number;
-}
-interface Conv2DPayload {, input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>;
+} }
+interface Conv2DPayload { input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>;
   width?: number;
   height?: number;
   kernel_size?: number;
-}
-interface AttentionPayload {, query: Float32Array | number[][] | ArrayLike<number>;, key: Float32Array | number[][] | ArrayLike<number>;
+} }
+interface AttentionPayload { query: Float32Array | number[][] | ArrayLike<number>;, key: Float32Array | number[][] | ArrayLike<number>;
   value: Float32Array | number[][] | ArrayLike<number>;
   seq_len?: number;
   dim?: number;
-}
+} }
 interface FFTPayload {
   input: Float32Array | number[] | ArrayLike<number>;
-}
+} }
 
 /* NEW: union type for GPU compute payloads to satisfy the executor cast */
 type GPUComputePayload = MatMulPayload | Conv2DPayload | AttentionPayload | FFTPayload;
@@ -1019,7 +1015,7 @@ type HasLength = { length: number };
 /** Type-guard: true when value is, an: object with a numeric length property */
 function isHasLength(v: any): v is HasLength {
   return typeof v === 'object' && v !== null && 'length' in v && typeof (v as { length?: any }).length === 'number';
-}
+} }
 
 function getLength(x: any): number {
   if (x == null) return 0;

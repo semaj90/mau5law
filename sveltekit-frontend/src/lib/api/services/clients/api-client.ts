@@ -1,15 +1,14 @@
 // API Client utility for centralized API calls
-import { error } from '@sveltejs/kit';
+import { error } }from '@sveltejs/kit';
 export interface ApiConfig {
   baseUrl?: string;
   timeout?: number;
   retries?: number;
-}
-const defaultConfig: ApiConfig = {
- , baseUrl: '',
+} }
+const defaultConfig: ApiConfig = { baseUrl: '',
   timeout: 10000,
   retries: 3
-}
+} }
 
 // Fix: proper ApiError class implementation
 export class ApiError extends Error {
@@ -23,15 +22,15 @@ export class ApiError extends Error {
     this.data = data;
     // Maintains proper prototype chain (useful when targeting older runtimes)
     Object.setPrototypeOf(this, ApiError.prototype);
-  }
-}
+  } }
+} }
 
 // Fix: proper function signature and implementation
 export async function apiFetch<T = any>(
  , endpoint: string,
-  options: RequestInit & { config?: ApiConfig } = {}
+  options: RequestInit & { config?: ApiConfig } }= {} }
 ): Promise<T> {
-  const { config = {}, ...fetchOptions } = options;
+  const { config = {}, ...fetchOptions } }= options;
   const finalConfig: ApiConfig = { ...defaultConfig, ...config };
   const url = `${finalConfig.baseUrl}${endpoint}`;
 
@@ -48,25 +47,25 @@ export async function apiFetch<T = any>(
     if (!response.ok) {
       const body = await response.text().catch(() => null);
       throw new ApiError(`API request failed: ${response.statusText}`, response.status, body);
-    }
+    } }
 
     const contentType = response.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       return (await response.json()) as T;
-    }
+    } }
     // Fallback to text
     return (await response.text()) as: unknown as T;
-  } catch (err: any) {
+  } }catch (err: any) {
     clearTimeout(timeoutId);
     if (err instanceof ApiError) {
       throw err;
-    }
+    } }
     if (err instanceof Error && err.name === 'AbortError') {
       throw new ApiError('Request timeout', 408);
-    }
+    } }
     const message = err instanceof Error ? err.message : String(err);
     throw new ApiError(`Network error: ${message}`, 0);
-  }
-}
+  } }
+} }
 
 export { ApiError }

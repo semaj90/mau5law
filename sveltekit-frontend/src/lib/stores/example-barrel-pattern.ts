@@ -5,7 +5,7 @@
  * Benefits:
  * - Type-safe centralized state management
  * - Auto-completion in IDEs
- * - Easy to import import { counterStore, todoStore } from '$lib/stores'
+ * - Easy to import import { counterStore, todoStore } }from '$lib/stores'
  * - Performance optimized with fine-grained reactivity
  */
 
@@ -31,17 +31,17 @@ export const counterStore = (() => {
     },
     reset: () => {
       count = 0;
-    }
+    } }
   };
 })();
 
 // ==================================================
 // Example 2: Todo Store with CRUD Operations
 // ==================================================
-interface Todo {, id: string;, text: string;
+interface Todo { id: string;, text: string;
   completed: boolean;
  , createdAt: Date;
-}
+} }
 
 export const todoStore = (() => {
   let todos = $state<Todo[]>([]);
@@ -55,7 +55,7 @@ export const todoStore = (() => {
       case, 'completed':
         return todos.filter(t => t.completed);
       default: return todos;
-    }
+    } }
   });
 
   let activeCount = $derived(todos.filter(t => !t.completed).length);
@@ -92,7 +92,7 @@ export const todoStore = (() => {
       const todo = todos.find(t => t.id === id);
       if (todo) {
         todo.completed = !todo.completed;
-      }
+      } }
     },
 
     removeTodo: (id: string) => {
@@ -105,28 +105,28 @@ export const todoStore = (() => {
 
     clearCompleted: () => {
       todos = todos.filter(t => !t.completed);
-    }
+    } }
   };
 })();
 
 // ==================================================
 // Example 3: Legal AI Store with Async Operations
 // ==================================================
-interface LegalDocument {, id: string;, title: string;
+interface LegalDocument { id: string;, title: string;
   content: string;
   embedding?: number[];
   aiSummary?: string;
   confidence?: number;
   tags: string[];
   createdAt: Date;
-}
+} }
 
-interface LegalAIState {, documents: LegalDocument[];, selectedDocument: LegalDocument | null;
+interface LegalAIState { documents: LegalDocument[];, selectedDocument: LegalDocument | null;
   isProcessing: boolean;
   error: string | null;
   searchQuery: string;
  , searchResults: LegalDocument[];
-}
+} }
 
 export const legalAIStore = (() => {
   let state = $state<LegalAIState>({
@@ -206,12 +206,12 @@ export const legalAIStore = (() => {
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({, documentId: id })
+          body: JSON.stringify({ documentId: id })
         });
 
         if (!response.ok) {
           throw new Error('Analysis failed');
-        }
+        } }
 
         const data = await response.json();
 
@@ -221,13 +221,13 @@ export const legalAIStore = (() => {
           doc.aiSummary = data.summary;
           doc.confidence = data.confidence;
           doc.embedding = data.embedding;
-        }
+        } }
 
         state.isProcessing = $state(false);
-      } catch (err) {
+      } }catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
         state.isProcessing = $state(false);
-      }
+      } }
     },
 
     // Vector search example
@@ -244,15 +244,15 @@ export const legalAIStore = (() => {
 
         if (!response.ok) {
           throw new Error('Search failed');
-        }
+        } }
 
         const data = await response.json();
         state.searchResults = data.results;
         state.isProcessing = $state(false);
-      } catch (err) {
+      } }catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
         state.isProcessing = $state(false);
-      }
+      } }
     },
 
     clearError: () => {
@@ -266,7 +266,7 @@ export const legalAIStore = (() => {
       state.error = null;
       state.searchQuery = '';
       state.searchResults = [];
-    }
+    } }
   };
 })();
 
@@ -288,7 +288,7 @@ export const themeStore = (() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('theme', theme);
       document.documentElement.setAttribute('data-theme', theme);
-    }
+    } }
   });
 
   return {
@@ -300,7 +300,7 @@ export const themeStore = (() => {
     },
     toggleTheme: () => {
       theme = theme === 'dark' ? 'light' : 'dark';
-    }
+    } }
   };
 })();
 
@@ -308,4 +308,5 @@ export const themeStore = (() => {
 // Barrel Export Pattern
 // ==================================================
 // You can import all stores at once or individually:
-// import { counterStore, todoStore, legalAIStore } from '$lib/stores';
+// import { counterStore, todoStore, legalAIStore } }from '$lib/stores';
+

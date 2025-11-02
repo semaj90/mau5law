@@ -8,69 +8,64 @@ declare global {
   // Minimal WebGPU types used by this module (avoid `any`)
   interface GPU {
     requestAdapter(): Promise<GPUAdapter | null>;
-  }
+  } }
   interface GPUAdapter {
     // keep minimal surface — expand if you call adapter.* properties later
-  }
+  } }
   interface Navigator {
     gpu?: GPU | undefined;
-  }
-}
+  } }
+} }
 // Environment detection - fallback for environments without SvelteKit
 const browser = typeof window !== 'undefined';
 
-export interface IntegrationStatus { webassembly: {, available: boolean;
+export interface IntegrationStatus { webassembly: { available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
   };
-  sveltekit: {, version: string;, svelte5Patterns: boolean;
+  sveltekit: { version: string;, svelte5Patterns: boolean;
     ssrReady: boolean;
   };
-  database: {, drizzleOrm: boolean;, pgvectorSupport: boolean;
+  database: { drizzleOrm: boolean;, pgvectorSupport: boolean;
     postgresqlReady: boolean;
   };
-  ui: {, enhancedBitsComponents: boolean;, unoCSS: boolean;
+  ui: { enhancedBitsComponents: boolean;, unoCSS: boolean;
     nesCSS: boolean;
     gamingTheme: boolean;
   };
-  webgpu: {, available: boolean;, dawnBackend: boolean;
+  webgpu: { available: boolean;, dawnBackend: boolean;
     unifiedRuntime: boolean;
   };
-  cache: {, chrRomCache: boolean;, redisConnected: boolean;
+  cache: { chrRomCache: boolean;, redisConnected: boolean;
    , wasmCache: boolean;
   };
-}
+} }
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
-  const status: IntegrationStatus = {, webassembly: {, available: false,
+  const status: IntegrationStatus = { webassembly: { available: false,
       simdSupport: false,
       runtimeConnected: false
     },
-    sveltekit: {
-     , version: '2.0',
+    sveltekit: { version: '2.0',
       svelte5Patterns: true,
       ssrReady: true
     },
-    database: {
-     , drizzleOrm: true,
+    database: { drizzleOrm: true,
       pgvectorSupport: true,
       postgresqlReady: false
     },
-    ui: {
-     , enhancedBitsComponents: true,
+    ui: { enhancedBitsComponents: true,
       unoCSS: true,
       nesCSS: true,
       gamingTheme: true
     },
-    webgpu: {
-     , available: false,
+    webgpu: { available: false,
       dawnBackend: false,
       unifiedRuntime: true
     },
-    cache: {
-     , chrRomCache: true,
+    cache: { chrRomCache: true,
       redisConnected: false,
       wasmCache: true
-    }
+    } }
   };
   if (!browser) return status;
   try {
@@ -82,9 +77,9 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         const wasmModule = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]);
         await WebAssembly.instantiate(wasmModule);
         status.webassembly.simdSupport = typeof (WebAssembly as: any).SIMD !== 'undefined';
-      } catch (e) {
+      } }catch (e) {
         console.warn('WebAssembly SIMD check failed:', e);
-      }
+      } }
       // Check unified runtime connection
       try {
         // Use dynamic import with error handling for missing modules
@@ -93,21 +88,21 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         if (module?.unifiedRuntime) {
           await module.unifiedRuntime.initialize();
           status.webassembly.runtimeConnected = true;
-        }
-      } catch (e) {
+        } }
+      } }catch (e) {
         console.warn('Unified runtime connection failed:', e);
-      }
-    }
+      } }
+    } }
     // Check WebGPU support
     if (navigator.gpu) {
       status.webgpu.available = true;
       try {
         const adapter = await navigator.gpu.requestAdapter();
         status.webgpu.dawnBackend = !!adapter;
-      } catch (e) {
+      } }catch (e) {
         console.warn('WebGPU adapter request failed:', e);
-      }
-    }
+      } }
+    } }
     // Check database + cache by attempting a health endpoint fetch (safe client-side probe)
     try {
       const resp = await fetch('/api/health/status').catch(() => null);
@@ -118,16 +113,16 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
           !!(body?.services?.database?.status === 'ok' || body?.database?.postgresqlReady) || resp.ok;
         status.cache.redisConnected =
           !!(body?.services?.cache?.status === 'ok' || body?.cache?.redisConnected) || resp.ok;
-      } else {
+      } }else {
         // endpoint not reachable from client; leave defaults (false)
-      }
-    } catch (e) {
-      // ignore: client can't reach health endpoint` }'`
-  } catch (error) {
+      } }
+    } }catch (e) {
+      // ignore: client can't reach health endpoint` } }`
+  } }catch (error) {
     console.error('Integration status check failed:', error);
-  }
+  } }
   return status;
-}
+} }
 export function formatStatusReport(status: IntegrationStatus): string {
   const sections = [
     '🔧 WebAssembly Client Integration Status',
@@ -165,7 +160,7 @@ export function formatStatusReport(status: IntegrationStatus): string {
     `  📦 WASM Cache: ${status.cache.wasmCache}`
   ];
   return sections.join('\n');
-}
+} }
 export const integrationChecker = {
   checkIntegrationStatus,
   formatStatusReport

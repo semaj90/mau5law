@@ -1,15 +1,15 @@
-import type { RequestHandler } from './$types.js';
-import { error } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { error } }from '@sveltejs/kit';
 // Environment variable for Go GPU server URL (updated to use new inference endpoint)
 const GO_GPU_SERVER_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/inference';
 // Streaming proxy to Go GPU server
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     // Get the request body (expecting JSON for inference endpoint)
     const body = await request.json();
     if (!body || !body.prompt || body.prompt.trim().length === 0) {
       throw error(400, 'JSON body with prompt field is required');
-    }
+    } }
     console.log('Forwarding to GPU inference server:', GO_GPU_SERVER_URL);
     // safe substring logging
     const shortPrompt = body.prompt.length > 100 ? body.prompt.substring(0, 100) + '...' : body.prompt;
@@ -21,7 +21,7 @@ export const, POST: RequestHandler = async ({ request }) => {
 
     // Create inference request for the Go GPU server
     const inferenceRequest = {
-     , prompt: body.prompt,
+  prompt: body.prompt,
       model,
       max_tokens: body.max_tokens || 512,
       temperature,
@@ -38,9 +38,9 @@ export const, POST: RequestHandler = async ({ request }) => {
     });
     if (!gpuServerResponse.ok) {
       const errorText = await gpuServerResponse.text();
-      console.error('Go GPU server error:', errorText);'
+      console.error('Go GPU server error:', errorText);
       throw error(gpuServerResponse.status, `GPU server error: ${errorText}`);
-    }
+    } }
     // Parse and return the JSON response from Go inference server
     const responseData = await gpuServerResponse.json();
     // Return enhanced response with pgvector similarity data
@@ -63,17 +63,17 @@ export const, POST: RequestHandler = async ({ request }) => {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive' }'` }'`
+          'Connection': 'keep-alive' } }` } }`
     );
-  } catch (err: any) {
-    console.error('GPU Chat API error:', err);'
+  } }catch (err: any) {
+    console.error('GPU Chat API error:', err);
     // If this is a SvelteKit HTTP error (object with status) rethrow it unchanged
     if (typeof err === 'object' && err !== null && 'status' in err) {
       throw err;
-    }
+    } }
     const msg = err instanceof Error ? err.message : String(err);
     throw error(500, `GPU chat service error: ${msg}`);
-  }
+  } }
 };
 // Health check endpoint for GPU server
 export const GET: RequestHandler = async () => {
@@ -91,12 +91,12 @@ export const GET: RequestHandler = async () => {
           timestamp: new Date().toISOString()
         }),
         {
-          headers: { 'Content-Type': 'application/json' }'` }'`
+          headers: { 'Content-Type': 'application/json' } }` } }`
       );
-    } else {
+    } }else {
       throw new Error(`HTTP ${response.status}`);
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return new Response(
       JSON.stringify({
@@ -107,7 +107,8 @@ export const GET: RequestHandler = async () => {
       }),
       {
         status: 503,
-        headers: { 'Content-Type': 'application/json' }'` }'`
+        headers: { 'Content-Type': 'application/json' } }` } }`
     );
-  }
+  } }
 };
+

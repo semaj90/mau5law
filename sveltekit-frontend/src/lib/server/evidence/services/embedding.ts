@@ -10,15 +10,16 @@ export async function embedText(text: string): Promise<number[]> {
       // Normalize to a flat: number[] if nested
       const flat = Array.isArray(embeddings) ? embeddings.flat(Infinity).map(Number) : [];
       return flat.slice(0, 1536);
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     // ignore and fall back
-  }
+  } }
   // Fallback: deterministic pseudo-embedding via hash
   const hash = crypto.createHash('sha256').update(text).digest();
   const vec: number[] = [];
   for (let i = 0; i < 128; i++) {
     vec.push(hash[i % hash.length] / 255);
-  }
+  } }
   return vec;
-}
+} }
+

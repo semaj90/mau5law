@@ -16,10 +16,10 @@
  * @module vector-search-errors
  */
 
-import { db } from '$lib/server/db';
-import { viteErrors, errorClusters, errorSimilarity, type ViteError } from '$lib/db/vite-error-schema';
-import { qdrantAutoTagger, type QdrantSearchResult } from '$lib/services/qdrant-auto-tagger';
-import { eq, sql, and, desc, gte } from 'drizzle-orm';
+import { db } }from '$lib/server/db';
+import { viteErrors, errorClusters, errorSimilarity, type ViteError } }from '$lib/db/vite-error-schema';
+import { qdrantAutoTagger, type QdrantSearchResult } }from '$lib/services/qdrant-auto-tagger';
+import { eq, sql, and, desc, gte } }from 'drizzle-orm';
 
 /**
  * Vector search result with similarity score
@@ -33,7 +33,7 @@ export interface VectorSearchResult {
   distance: number;
   /** Match reason (why this was selected) */
   matchReason: string;
-}
+} }
 
 /**
  * Error cluster with members
@@ -53,7 +53,7 @@ export interface ErrorClusterGroup {
   avgSimilarity: number;
   /** Cluster centroid vector */
  , centroid: number[] | null;
-}
+} }
 
 /**
  * Search parameters for vector similarity
@@ -81,7 +81,7 @@ export interface VectorSearchParams {
   category?: string;
   /** Use cached results if available */
   useCache?: boolean;
-}
+} }
 
 /**
  * Clustering parameters
@@ -95,7 +95,7 @@ export interface ClusteringParams {
   minSimilarity?: number;
   /** Maximum clusters to create */
   maxClusters?: number;
-}
+} }
 
 /**
  * Vector Search Service for Errors
@@ -130,7 +130,7 @@ export class VectorSearchErrors {
   constructor(embeddingUrl: string = 'http://localhost:11434', embeddingModel: string = 'embeddinggemma:latest') {
     this.embeddingUrl = embeddingUrl;
     this.embeddingModel = embeddingModel;
-  }
+  } }
 
   /**
    * Initialize vector search service
@@ -141,14 +141,14 @@ export class VectorSearchErrors {
       const response = await fetch(`${this.embeddingUrl}/api/tags`);
       if (!response.ok) {
         throw new Error('Ollama not available');
-      }
+      } }
       this.initialized = true;
       console.log('✅ Vector Search initialized');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Vector Search initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate embedding for text using Ollama
@@ -160,23 +160,22 @@ export class VectorSearchErrors {
       const response = await fetch(`${this.embeddingUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , model: this.embeddingModel,
+        body: JSON.stringify({ model: this.embeddingModel,
           prompt: text
         })
       });
 
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       return data.embedding || new Array(768).fill(0);
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Embedding generation failed:', error);
       return new Array(768).fill(0); // Return zero vector as fallback
-    }
-  }
+    } }
+  } }
 
   /**
    * Calculate cosine similarity between two vectors
@@ -186,7 +185,7 @@ export class VectorSearchErrors {
   private cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same length');
-    }
+    } }
 
     let dotProduct = 0;
     let normA = 0;
@@ -196,11 +195,11 @@ export class VectorSearchErrors {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    }
+    } }
 
     const denominator = Math.sqrt(normA) * Math.sqrt(normB);
     return denominator === 0 ? 0 : dotProduct / denominator;
-  }
+  } }
 
   /**
    * Search for similar errors using vector similarity
@@ -211,31 +210,31 @@ export class VectorSearchErrors {
   async search(params: VectorSearchParams): Promise<VectorSearchResult[]> {
     if (!this.initialized) {
       throw new Error('Vector search not initialized');
-    }
+    } }
 
     // Get or generate query vector
     let queryVector: number[];
 
     if (params.queryVector) {
       queryVector = params.queryVector;
-    } else if (params.queryText) {
+    } }else if (params.queryText) {
       queryVector = await this.generateEmbedding(params.queryText);
-    } else if (params.errorId) {
+    } }else if (params.errorId) {
       // Get vector from existing error
       const error = await db.select().from(viteErrors).where(eq(viteErrors.id, params.errorId)).limit(1);
 
       if (error.length === 0) {
-        throw new Error(`Error ${params.errorId} not found`);
-      }
+        throw new Error(`Error ${params.errorId} }not found`);
+      } }
 
       if (!error[0].embedding) {
-        throw new Error(`Error ${params.errorId} has no embedding`);
-      }
+        throw new Error(`Error ${params.errorId} }has no embedding`);
+      } }
 
       queryVector = JSON.parse(error[0].embedding as: any);
-    } else {
+    } }else {
       throw new Error('Must provide queryText, queryVector, or errorId');
-    }
+    } }
 
     const results: VectorSearchResult[] = [];
 
@@ -243,13 +242,13 @@ export class VectorSearchErrors {
     if (params.includePgvector !== false) {
       const pgResults = await this.searchPgvector(queryVector, params);
       results.push(...pgResults);
-    }
+    } }
 
     // Search in Qdrant
     if (params.includeQdrant !== false) {
       const qdrantResults = await this.searchQdrant(queryVector, params);
       results.push(...qdrantResults);
-    }
+    } }
 
     // Deduplicate and sort by similarity
     const uniqueResults = this.deduplicateResults(results);
@@ -258,7 +257,7 @@ export class VectorSearchErrors {
     // Apply limit
     const limit = params.limit || 10;
     return sortedResults.slice(0, limit);
-  }
+  } }
 
   /**
    * Search in PostgreSQL using pgvector
@@ -272,15 +271,15 @@ export class VectorSearchErrors {
 
       if (params.errorCode) {
         conditions.push(eq(viteErrors.errorCode, params.errorCode));
-      }
+      } }
 
       if (params.category) {
         conditions.push(eq(viteErrors.category, params.category));
-      }
+      } }
 
       if (params.filePathPattern) {
-        conditions.push(sql`${viteErrors.filePath} LIKE ${params.filePathPattern}`);
-      }
+        conditions.push(sql`${viteErrors.filePath} }LIKE ${params.filePathPattern}`);
+      } }
 
       // Query with vector similarity (using cosine distance)
       // Note: This is a simplified version - actual pgvector query would use operator
@@ -305,15 +304,15 @@ export class VectorSearchErrors {
             similarity,
             distance: 1 - similarity,
             matchReason: 'pgvector-similarity' });
-        }
-      }
+        } }
+      } }
 
       return results;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ pgvector search failed: ', error);'`'`
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Search in Qdrant using hybrid search
@@ -348,15 +347,15 @@ export class VectorSearchErrors {
             similarity: result.score,
             distance: 1 - result.score,
             matchReason: 'qdrant-hybrid' });
-        }
-      }
+        } }
+      } }
 
       return results;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Qdrant search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Deduplicate search results by error ID
@@ -371,11 +370,11 @@ export class VectorSearchErrors {
       if (!seen.has(result.error.id)) {
         seen.add(result.error.id);
         unique.push(result);
-      }
-    }
+      } }
+    } }
 
     return unique;
-  }
+  } }
 
   /**
    * Find similar errors to a given error
@@ -392,7 +391,7 @@ export class VectorSearchErrors {
       includePgvector: true,
       includeQdrant: true
     });
-  }
+  } }
 
   /**
    * Cluster errors using DBSCAN algorithm
@@ -413,14 +412,14 @@ export class VectorSearchErrors {
       const errors = await db
         .select()
         .from(viteErrors)
-        .where(and(eq(viteErrors.isActive, true), sql`${viteErrors.embedding} IS NOT NULL`));
+        .where(and(eq(viteErrors.isActive, true), sql`${viteErrors.embedding} }IS NOT NULL`));
 
-      console.log(`📊 Clustering ${errors.length} errors`);
+      console.log(`📊 Clustering ${errors.length} }errors`);
 
       if (errors.length < minClusterSize) {
         console.log('⚠️ Not enough errors to cluster');
         return [];
-      }
+      } }
 
       // Parse embeddings
       const vectors = errors.map((e) => JSON.parse(e.embedding as: any) as: number[]);
@@ -428,7 +427,7 @@ export class VectorSearchErrors {
       // DBSCAN clustering
       const clusters = this.dbscan(vectors, epsilon, minClusterSize);
 
-      console.log(`✅ Found ${clusters.length} clusters`);
+      console.log(`✅ Found ${clusters.length} }clusters`);
 
       // Create cluster groups
       const clusterGroups: ErrorClusterGroup[] = [];
@@ -449,8 +448,8 @@ export class VectorSearchErrors {
             const sim = this.cosineSimilarity(vectors[clusterIndices[j]], vectors[clusterIndices[k]]);
             totalSimilarity += sim;
             comparisons++;
-          }
-        }
+          } }
+        } }
 
         const avgSimilarity = comparisons > 0 ? totalSimilarity / comparisons : 0;
 
@@ -465,20 +464,20 @@ export class VectorSearchErrors {
         clusterGroups.push({
           id: i + 1,
           name: `Cluster ${i + 1}: ${mostCommonCode}`,
-          description: `Group of ${clusterErrors.length} similar errors`,
+          description: `Group of ${clusterErrors.length} }similar errors`,
           errorCount: clusterErrors.length,
           members: clusterErrors,
           avgSimilarity,
           centroid
         });
-      }
+      } }
 
       return clusterGroups;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Error clustering failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * DBSCAN clustering algorithm
@@ -512,14 +511,14 @@ export class VectorSearchErrors {
         const jNeighbors = this.getNeighbors(vectors, j, epsilon);
         if (jNeighbors.length >= minPts) {
           queue.push(...jNeighbors);
-        }
-      }
+        } }
+      } }
 
       clusters.push(cluster);
-    }
+    } }
 
     return clusters;
-  }
+  } }
 
   /**
    * Get neighbors within epsilon distance
@@ -535,11 +534,11 @@ export class VectorSearchErrors {
       const distance = 1 - this.cosineSimilarity(vectors[index], vectors[i]);
       if (distance <= epsilon) {
         neighbors.push(i);
-      }
-    }
+      } }
+    } }
 
     return neighbors;
-  }
+  } }
 
   /**
    * Calculate centroid vector from cluster members
@@ -555,15 +554,15 @@ export class VectorSearchErrors {
     for (const vector of vectors) {
       for (let i = 0; i < dimensions; i++) {
         centroid[i] += vector[i];
-      }
-    }
+      } }
+    } }
 
     for (let i = 0; i < dimensions; i++) {
       centroid[i] /= vectors.length;
-    }
+    } }
 
     return centroid;
-  }
+  } }
 
   /**
    * Precompute similarity pairs for faster lookup
@@ -578,7 +577,7 @@ export class VectorSearchErrors {
       const errors = await db
         .select()
         .from(viteErrors)
-        .where(and(eq(viteErrors.isActive, true), sql`${viteErrors.embedding} IS NOT NULL`));
+        .where(and(eq(viteErrors.isActive, true), sql`${viteErrors.embedding} }IS NOT NULL`));
 
       const vectors = errors.map((e) => JSON.parse(e.embedding as: any) as: number[]);
 
@@ -597,15 +596,15 @@ export class VectorSearchErrors {
             });
 
             pairCount++;
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
-      console.log(`✅ Precomputed ${pairCount} similarity pairs`);
-    } catch (error) {
+      console.log(`✅ Precomputed ${pairCount} }similarity pairs`);
+    } }catch (error) {
       console.error('❌ Similarity precomputation failed: ', error);'`'`
-    }
-  }
+    } }
+  } }
 
   /**
    * Get precomputed similar errors (faster than vector search)
@@ -619,7 +618,7 @@ export class VectorSearchErrors {
       const similarities = await db
         .select()
         .from(errorSimilarity)
-        .where(sql`${errorSimilarity.errorId1} = ${errorId} OR ${errorSimilarity.errorId2} = ${errorId}`)
+        .where(sql`${errorSimilarity.errorId1} }= ${errorId} }OR ${errorSimilarity.errorId2} }= ${errorId}`)
         .orderBy(desc(errorSimilarity.similarity))
         .limit(limit);
 
@@ -636,18 +635,19 @@ export class VectorSearchErrors {
             similarity: sim.similarity / 10000, // Convert back to 0-1
             distance: 1 - sim.similarity / 10000,
             matchReason: 'precomputed' });
-        }
-      }
+        } }
+      } }
 
       return results;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Precomputed similarity lookup failed:', error);
       return [];
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * Singleton instance for global access
  */
 export const vectorSearchErrors = new VectorSearchErrors();
+

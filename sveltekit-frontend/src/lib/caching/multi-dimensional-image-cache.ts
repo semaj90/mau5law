@@ -3,21 +3,21 @@
  * Integrates with NES-GPU Memory Bridge, SOM Neural Networks, Auto-Encoders, and Tensor Tiling
  * for optimal graph traversal visualization image generation and caching
  */
-import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network.js';
-import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder.js';
+import { SOMNeuralNetwork, type SOMDecomposition } }from '../ai/som-neural-network.js';
+import { GraphPatternAutoEncoder, type EncodedGraphPattern } }from '../ai/graph-pattern-autoencoder.js';
 // ADDED: import the autoencoder's GraphNode/GraphData types for correct mapping'
 import type {
   GraphEdge as AEGraphEdge,
   GraphData as AEGraphData
-} from '../ai/graph-pattern-autoencoder.js';
+} }from '../ai/graph-pattern-autoencoder.js';
 // Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)'
 import * as nesGPUBridge from '../gpu/nes-gpu-memory-bridge.js';
 
 // --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---'
 type GPUTextureMatrix = {
   // minimal shape used by this file; expand if bridge provides extra fields
-  texture?: { destroy?: () => void } | undefined;
-  gpuBuffer?: { destroy?: () => void } | undefined;
+  texture?: { destroy?: () => void } }| undefined;
+  gpuBuffer?: { destroy?: () => void } }| undefined;
   [key: string]: any;
 };
 // --- end GPUTextureMatrix ---
@@ -26,7 +26,7 @@ type GPUTextureMatrix = {
 type NesGPUBridge = {
   createFlatBufferFromDocument?: (doc: any) => Promise<ArrayBuffer>;
   createRankingTexture?: (;
-    key: string; floatData: Float32Array; dims: {; width: number;, height: number }
+    key: string; floatData: Float32Array; dims: {; width: number; height: number } }
   ) => Promise<GPUTextureMatrix | null>;
   parseFlatBufferToDocument?: (data: ArrayBuffer) => ParsedDocument | null;
 };
@@ -40,20 +40,20 @@ class MultiLayerCache implements IMultiLayerCache {
   private store = new Map<string, unknown>();
   constructor(_opts?: Record<string, unknown>) {
     // noop
-  }
+  } }
   async initialize(): Promise<void> {
     return;
-  }
+  } }
   async set(collection: string, key: string, value: any, _ttlSeconds?: number): Promise<void> {
     this.store.set(`${collection}:${key}`, value);
-  }
+  } }
   async get(collection: string, key: string): Promise<unknown> {
     return this.store.get(`${collection}:${key}`);
-  }
+  } }
   async cleanup(): Promise<void> {
     this.store.clear();
-  }
-}
+  } }
+} }
 // --- end fallback MultiLayerCache ---
 
 // ----------------- ADDED: explicit types to replace many `any` usages -----------------
@@ -64,7 +64,7 @@ interface ProcessingMetrics {
   processingTime?: number;
   qualityScore?: number;
   [key: string]: any;
-}
+} }
 
 export interface GraphNode {
   id: string;
@@ -78,12 +78,12 @@ export interface GraphNode {
     [key: string]: any;
   };
   [key: string]: any;
-}
-export interface GraphEdge {, source: string;, target: string;
+} }
+export interface GraphEdge { source: string;, target: string;
   type?: string;
   metadata?: { [key: string]: any };
   [key: string]: any;
-}
+} }
 export interface GraphData {
   nodes?: GraphNode[];
   edges?: GraphEdge[];
@@ -95,65 +95,65 @@ export interface GraphData {
   };
   signature?: string;
   [key: string]: any;
-}
+} }
 export interface DocumentMetadata {
   imageData?: string;
   originalSize?: number;
   vectorEmbedding?: NumericArray;
   [key: string]: any;
-}
+} }
 export interface ParsedDocument {
   metadata?: DocumentMetadata;
   lastAccessed?: number;
   [key: string]: any;
-}
+} }
 // ----------------- end added types -----------------
 
-export interface ImageCacheEntry {, id: string;, algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
+export interface ImageCacheEntry { id: string;, algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
   imageData: string; // Base64 encoded
   dimensions: { width: number; height: number };
   metadata: ImageMetadata;
-  compressionData?: {, original: EncodedGraphPattern;, som: SOMDecomposition;
+  compressionData?: { original: EncodedGraphPattern;, som: SOMDecomposition;
     compressed: ArrayBuffer;
     compressionRatio: number;
   };
   gpuTexture?: GPUTextureMatrix;
   cacheStats: CacheStats;
   timestamp: number;
-}
-export interface ImageMetadata {, graphSignature: string;, nodeCount: number;
+} }
+export interface ImageMetadata { graphSignature: string;, nodeCount: number;
   edgeCount: number;
   processingTime: number;
   compressionRatio: number;
   qualityScore: number;
   legalDomain: string;
-  patterns: {, citationDensity: number;, jurisdictionalSpread: number;
+  patterns: { citationDensity: number;, jurisdictionalSpread: number;
     temporalRange: number;
     complexityIndex: number;
   };
-}
-export interface CacheStats {, hitCount: number;, missCount: number;
+} }
+export interface CacheStats { hitCount: number;, missCount: number;
   size: number;
   lastAccessed: number;
   generationCost: number;
   compressionEfficiency: number;
-}
-export interface CacheDimensions {, temporal: 'recent' | 'historical' | 'archived';, spatial: 'local' | 'regional' | 'global';
+} }
+export interface CacheDimensions { temporal: 'recent' | 'historical' | 'archived';, spatial: 'local' | 'regional' | 'global';
   semantic: 'simple' | 'complex' | 'expert';
   visual: 'thumbnail' | 'standard' | 'hires';
   algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
-}
-export interface CacheLayer {, name: string;, capacity: number;
+} }
+export interface CacheLayer { name: string;, capacity: number;
   ttl: number;
   priority: number;
   evictionPolicy: 'lru' | 'lfu' | 'rl' | 'som_guided';
   compression: boolean;
-}
-export interface MultiDimensionalQuery {, dimensions: Partial<CacheDimensions>;, graphSignature: string;
+} }
+export interface MultiDimensionalQuery { dimensions: Partial<CacheDimensions>;, graphSignature: string;
   requiredQuality: number;
   acceptableAge: number;
   preferredAlgorithms: string[];
-}
+} }
 export class MultiDimensionalImageCache {
   private som!: SOMNeuralNetwork;
   private autoencoder!: GraphPatternAutoEncoder;
@@ -167,8 +167,7 @@ export class MultiDimensionalImageCache {
   private gpuTextures: Map<string, GPUTextureMatrix> = new Map();
   // Cache layers with different characteristics
   private cacheLayers: CacheLayer[] = [
-    {
-     , name: 'gpu_texture',
+    { name: 'gpu_texture',
       capacity: 50, // Limited GPU memory
       ttl: 30000, // 30 seconds
       priority: 10,
@@ -222,11 +221,11 @@ export class MultiDimensionalImageCache {
   };
   constructor() {
     this.initializeServices();
-  }
+  } }
   private async initializeServices(): Promise<void> {
     try {
       // Initialize SOM neural network
-      this.som = new SOMNeuralNetwork({ gridSize: {, width: 8, height: 8 },
+      this.som = new SOMNeuralNetwork({ gridSize: { width: 8, height: 8 },
         learningRate: 0.1,
         neighborhoodRadius: 2.0,
         epochs: 50,
@@ -257,7 +256,7 @@ export class MultiDimensionalImageCache {
       });
       if (this.multiLayerCache && typeof this.multiLayerCache.initialize === 'function') {
         await this.multiLayerCache.initialize();
-      }
+      } }
 
       // Dynamically import optional reinforcement learning cache if present.
       // This avoids compile-time reference to a possibly-missing global symbol.
@@ -268,21 +267,21 @@ export class MultiDimensionalImageCache {
           this.rlCache = candidate;
           if (typeof this.rlCache.initialize === 'function') {
             await this.rlCache.initialize();
-          }
-        }
-      } catch (err) {
+          } }
+        } }
+      } }catch (err) {
         // Module not present or failed to load: continue without RL cache.
         console.debug('RL cache module not loaded (optional):', err);
-      }
+      } }
 
       // Initialize dimensional indices
       this.initializeDimensionalIndices();
       console.log('🚀 Multi-Dimensional Image Cache initialized with SOM, Auto-Encoder, and GPU integration');
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize Multi-Dimensional Image Cache:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private initializeDimensionalIndices(): void {
     // Create indices for each dimension
     const dimensions = ['temporal', 'spatial', 'semantic', 'visual', 'algorithm'];
@@ -290,12 +289,12 @@ export class MultiDimensionalImageCache {
       this.dimensionalIndices.set(dim, new Set());
     });
     console.log('📊 Dimensional indices initialized:', dimensions);
-  }
+  } }
   async storeImage(
     imageData: string,
     dimensions: CacheDimensions,
     graphData: GraphData,
-    processingMetrics: ProcessingMetrics //;, CHANGED: use typed ProcessingMetrics
+    processingMetrics: ProcessingMetrics //; CHANGED: use typed ProcessingMetrics
   ): Promise<string> {
     const startTime = performance.now();
     try {
@@ -316,12 +315,11 @@ export class MultiDimensionalImageCache {
         compressionRatio: 0,
         qualityScore: qualityScore, // USE extracted numeric value
         legalDomain: graphData.metadata?.legalDomain || 'general',
-        patterns: {
-         , citationDensity: this.calculateCitationDensity(graphData),
+        patterns: { citationDensity: this.calculateCitationDensity(graphData),
           jurisdictionalSpread: this.calculateJurisdictionalSpread(graphData),
           temporalRange: this.calculateTemporalRange(graphData),
           complexityIndex: this.calculateComplexityIndex(graphData)
-        }
+        } }
       };
       // Compress image data using auto-encoder and SOM
       const compressionData = await this.compressImageData(imageData, graphData);
@@ -333,21 +331,18 @@ export class MultiDimensionalImageCache {
           width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
           height: 600
         });
-      }
+      } }
       // Create cache entry
-      const entry: ImageCacheEntry = {
-       , id: cacheKey,
+      const entry: ImageCacheEntry = { id: cacheKey,
         algorithm: dimensions.algorithm || 'dfs',
         imageData,
-        dimensions: {
-         , width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
+        dimensions: { width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
           height: 600
         },
         metadata,
         compressionData: compressionData, // CHANGED: no `as: any` cast, keep typed
         gpuTexture: gpuTexture || undefined,
-        cacheStats: {
-         , hitCount: 0,
+        cacheStats: { hitCount: 0,
           missCount: 0,
           size: imageData.length,
           lastAccessed: Date.now(),
@@ -364,23 +359,23 @@ export class MultiDimensionalImageCache {
       try {
         if (this.rlCache && typeof this.rlCache.set === 'function') {
           await this.rlCache.set(cacheKey, entry);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         // Intentionally non-fatal; log at debug level to avoid empty catch block
         console.debug('RL cache set ignored for', cacheKey, err);
-      }
+      } }
       // Update metrics
       this.metrics.compressionSavings += (1 - (compressionData.compressionRatio ?? 1.0)) * imageData.length;
       this.metrics.generationTime += performance.now() - startTime;
       console.log(
-        `💾 Image stored: ${cacheKey}, ${(compressionData.compressionRatio ?? 1.0).toFixed(2)} compression, ${(performance.now() - startTime).toFixed(2)}ms`
+        `💾 Image stored: ${cacheKey}, ${(compressionData.compressionRatio ?? 1.0).toFixed(2)} }compression, ${(performance.now() - startTime).toFixed(2)}ms`
       );
       return cacheKey;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to store image:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   async queryImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     const startTime = performance.now();
     this.metrics.totalQueries++;
@@ -398,7 +393,7 @@ export class MultiDimensionalImageCache {
         this.metrics.retrieval_time += performance.now() - startTime;
         console.log(`✅ Cache hit: ${primaryKey}`);
         return entry;
-      }
+      } }
       // Try similarity-based matching using SOM
       entry = await this.findSimilarImage(query);
       if (entry) {
@@ -408,7 +403,7 @@ export class MultiDimensionalImageCache {
         this.metrics.som_operations++;
         console.log(`🧠 SOM-guided hit: ${entry.id}`);
         return entry;
-      }
+      } }
       // Try pattern-based matching using auto-encoder
       entry = await this.findPatternMatchingImage(query);
       if (entry) {
@@ -418,18 +413,18 @@ export class MultiDimensionalImageCache {
         this.metrics.autoencoder_operations++;
         console.log(`🤖 Auto-encoder guided hit: ${entry.id}`);
         return entry;
-      }
+      } }
       // No match found
       this.metrics.cacheMisses++;
       this.metrics.retrieval_time += performance.now() - startTime;
       console.log(`❌ Cache miss for query: ${JSON.stringify(query.dimensions)}`);
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to query image:', error);
       this.metrics.cacheMisses++;
       return: null;
-    }
-  }
+    } }
+  } }
   private async compressImageData(
    , imageData: string,
     graphData: GraphData
@@ -467,14 +462,13 @@ export class MultiDimensionalImageCache {
           })
         ),
         edges: (graphData.edges || []).map((e, i) => mapEdgeToAE(e, i)),
-        metadata: {
-         , totalNodes: graphData.nodes?.length || 0,
+        metadata: { totalNodes: graphData.nodes?.length || 0,
           totalEdges: graphData.edges?.length || 0,
           density: graphData.metadata?.density || 0,
           averageDegree: graphData.metadata?.averageDegree || 0,
           legalDomain: graphData.metadata?.legalDomain || 'general',
           timestamp: Date.now()
-        }
+        } }
       };
       // Encode with auto-encoder using the adapted shape
       const original = await this.autoencoder.encodeGraphPattern(aeGraph);
@@ -495,16 +489,16 @@ export class MultiDimensionalImageCache {
           imageData,
           originalSize: imageData.length,
           vectorEmbedding: original.encodedFeatures
-        }
+        } }
       };
       // Use typed nesBridge functions with safe fallback
       let, compressed: ArrayBuffer;
       if (nesBridge.createFlatBufferFromDocument) {
         compressed = await nesBridge.createFlatBufferFromDocument(mockDocument);
-      } else {
+      } }else {
         // fallback to naive ArrayBuffer if bridge not available
         compressed = new ArrayBuffer(imageData.length);
-      }
+      } }
       const compressionRatio = compressed.byteLength / Math.max(1, imageData.length);
       return {
         original,
@@ -512,21 +506,21 @@ export class MultiDimensionalImageCache {
         compressed,
         compressionRatio
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to compress image data:', error);
       // Return fallback compression
       return {
-        original: {} as EncodedGraphPattern,
-        som: {} as SOMDecomposition,
+        original: {} }as EncodedGraphPattern,
+        som: {} }as SOMDecomposition,
         compressed: new ArrayBuffer(imageData.length),
         compressionRatio: 1.0
       };
-    }
-  }
+    } }
+  } }
   private async createGPUTexture(
    , cacheKey: string,
     imageData: string,
-    dimensions: {, width: number;, height: number }
+    dimensions: { width: number; height: number } }
   ): Promise<GPUTextureMatrix | null> {
     try {
       // Convert base64 image to float array for GPU texture
@@ -539,7 +533,7 @@ export class MultiDimensionalImageCache {
       img.src = imageData;
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        // --- CHANGED: explicitly type error parameter to avoid;, implicit: 'any' ---
+        // --- CHANGED: explicitly type error parameter to avoid; implicit: 'any' ---
         img.onerror = (ev: ErrorEvent | Event | unknown) => reject(ev);
       });
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
@@ -552,20 +546,20 @@ export class MultiDimensionalImageCache {
         const g = imageDataArray.data[i * 4 + 1];
         const b = imageDataArray.data[i * 4 + 2];
         floatData[i] = (r * 0.299 + g * 0.587 + b * 0.114) / 255.0;
-      }
+      } }
       const gpuTexture = nesBridge.createRankingTexture
         ? await nesBridge.createRankingTexture(cacheKey, floatData, dimensions)
         : null;
       if (gpuTexture) {
         this.gpuTextures.set(cacheKey, gpuTexture);
         this.metrics.gpu_operations++;
-      }
+      } }
       return gpuTexture;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to create GPU texture:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   private async storeInLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): Promise<void> {
     // Determine appropriate layers based on dimensions and usage patterns
     const layersToUse = this.selectOptimalLayers(entry, dimensions);
@@ -582,23 +576,23 @@ export class MultiDimensionalImageCache {
                 entry.compressionData.compressed,
                 Math.floor(layer.ttl / 1000)
               );
-            }
-          } else if (layer.name === 'lokijs_persistent') {
+            } }
+          } }else if (layer.name === 'lokijs_persistent') {
             if (this.multiLayerCache && typeof this.multiLayerCache.set === 'function') {
               await this.multiLayerCache.set('visualization', layerKey, entry, Math.floor(layer.ttl / 1000));
-            }
-          }
-        } else {
+            } }
+          } }
+        } }else {
           // Store original version in memory layer
           if (layer.name === 'memory_compressed') {
             this.imageEntries.set(entry.id, entry);
-          }
-        }
-      } catch (error) {
+          } }
+        } }
+      } }catch (error) {
         console.error(`Failed to store in layer ${layer.name}:`, error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private async getFromLayers(cacheKey: string): Promise<ImageCacheEntry | null> {
     // Try layers in priority order
     const sortedLayers = [...this.cacheLayers].sort((a, b) => b.priority - a.priority);
@@ -608,7 +602,7 @@ export class MultiDimensionalImageCache {
         if (layer.name === 'memory_compressed') {
           const entry = this.imageEntries.get(cacheKey);
           if (entry) return entry;
-        } else if (layer.name === 'redis_shared' || layer.name === 'lokijs_persistent') {
+        } }else if (layer.name === 'redis_shared' || layer.name === 'lokijs_persistent') {
           const data =
             this.multiLayerCache && typeof this.multiLayerCache.get === 'function'
               ? await this.multiLayerCache.get('visualization', layerKey)
@@ -617,16 +611,16 @@ export class MultiDimensionalImageCache {
             // Reconstruct entry from compressed data if needed
             if (data instanceof ArrayBuffer) {
               return await this.reconstructFromCompressed(data, cacheKey);
-            } else if (data && typeof data === 'object') {
+            } }else if (data && typeof data === 'object') {
               return data as ImageCacheEntry;
-            }
-          }
-        }
-      } catch (error) {
-        console.error(`Failed to retrieve from layer ${layer.name}: ', error);'` }
-    }
+            } }
+          } }
+        } }
+      } }catch (error) {
+        console.error(`Failed to retrieve from layer ${layer.name}: ', error);'` } }
+    } }
     return: null;
-  }
+  } }
   private async findSimilarImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     try {
       // Use SOM to find similar cached images and apply query filters (preferredAlgorithms / requiredQuality / acceptableAge)
@@ -634,17 +628,17 @@ export class MultiDimensionalImageCache {
       if (!somDecomposition) return: null;
 
       const now = Date.now();
-      const candidates: { entry: ImageCacheEntry;, similarity: number }[] = [];
+      const candidates: { entry: ImageCacheEntry; similarity: number } }] = [];
       for (const entry of this.imageEntries.values()) {
         // filter by acceptable age if provided
         if (typeof query.acceptableAge === 'number') {
           const age = now - entry.timestamp;
           if (age > query.acceptableAge) continue;
-        }
+        } }
         // filter by required quality if provided
         if (typeof query.requiredQuality === 'number' && entry.metadata.qualityScore < query.requiredQuality) {
           continue;
-        }
+        } }
         // prefer entries matching preferred algorithms (if provided) by giving slight boost
         const algoBoost =
           Array.isArray(query.preferredAlgorithms) && query.preferredAlgorithms.length > 0
@@ -657,9 +651,9 @@ export class MultiDimensionalImageCache {
           const similarity = this.calculateSOMSimilarity(somDecomposition, entry.compressionData.som) + algoBoost;
           if (similarity > 0.7) {
             candidates.push({ entry, similarity });
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       // Sort by similarity and quality
       candidates.sort((a, b) => {
@@ -668,23 +662,23 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
       return candidates.length > 0 ? candidates[0].entry : null;
-    } catch (error) {
+    } }catch (error) {
       console.error('SOM similarity search failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   private async findPatternMatchingImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     try {
       // Use auto-encoder to find pattern-matching images
-      const candidates: { entry: ImageCacheEntry;, patternMatch: number }[] = [];
+      const candidates: { entry: ImageCacheEntry; patternMatch: number } }] = [];
       for (const entry of this.imageEntries.values()) {
         if (entry.compressionData?.original) {
           const patternMatch = this.calculatePatternSimilarity(query.graphSignature, entry.compressionData.original);
           if (patternMatch > 0.6) {
             candidates.push({ entry, patternMatch });
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Sort by pattern match and recency
       candidates.sort((a, b) => {
         const scoreA = a.patternMatch * (1 - (Date.now() - a.entry.timestamp) / 3600000);
@@ -692,23 +686,23 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
       return candidates.length > 0 ? candidates[0].entry : null;
-    } catch (error) {
+    } }catch (error) {
       console.error('Pattern matching search failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   private selectOptimalLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): CacheLayer[] {
     const selectedLayers: CacheLayer[] = [];
     // GPU texture layer for high-quality or SOM-based visualizations
     if (dimensions.visual === 'hires' || dimensions.algorithm === 'som') {
       const l = this.cacheLayers.find(l => l.name === 'gpu_texture');
       if (l) selectedLayers.push(l);
-    }
+    } }
     // Memory layer for frequently accessed images
     if (dimensions.temporal === 'recent' || entry.metadata.patterns.complexityIndex > 0.7) {
       const l = this.cacheLayers.find(l => l.name === 'memory_compressed');
       if (l) selectedLayers.push(l);
-    }
+    } }
     // LokiJS for persistent client-side caching
     const loki = this.cacheLayers.find(l => l.name === 'lokijs_persistent');
     if (loki) selectedLayers.push(loki);
@@ -716,14 +710,14 @@ export class MultiDimensionalImageCache {
     if (dimensions.spatial === 'global' || entry.metadata.nodeCount > 100) {
       const r = this.cacheLayers.find(l => l.name === 'redis_shared');
       if (r) selectedLayers.push(r);
-    }
+    } }
     // Disk archive for long-term storage
     if (entry.metadata.patterns.citationDensity > 0.8) {
       const d = this.cacheLayers.find(l => l.name === 'disk_archive');
       if (d) selectedLayers.push(d);
-    }
+    } }
     return selectedLayers;
-  }
+  } }
   private async reconstructFromCompressed(data: ArrayBuffer, cacheKey: string): Promise<ImageCacheEntry | null> {
     try {
       // Parse FlatBuffer data back to document (using typed bridge if available)
@@ -732,28 +726,24 @@ export class MultiDimensionalImageCache {
       if (!metadata?.imageData) return: null;
       // Reconstruct entry
       const imageLength = metadata.imageData?.length ?? 0;
-      const entry: ImageCacheEntry = {
-       , id: cacheKey,
+      const entry: ImageCacheEntry = { id: cacheKey,
         algorithm: 'dfs', // Default
         imageData: metadata.imageData,
-        dimensions: {, width: 800, height: 600 }, // Default
-        metadata: {
-         , graphSignature: cacheKey,
+        dimensions: { width: 800, height: 600 }, // Default
+        metadata: { graphSignature: cacheKey,
           nodeCount: 0,
           edgeCount: 0,
           processingTime: 0,
           compressionRatio: data.byteLength / Math.max(1, imageLength),
           qualityScore: 0.8,
           legalDomain: 'general',
-          patterns: {
-           , citationDensity: 0,
+          patterns: { citationDensity: 0,
             jurisdictionalSpread: 0,
             temporalRange: 0,
             complexityIndex: 0
-          }
+          } }
         },
-        cacheStats: {
-         , hitCount: 0,
+        cacheStats: { hitCount: 0,
           missCount: 0,
           size: imageLength,
           lastAccessed: Date.now(),
@@ -763,15 +753,15 @@ export class MultiDimensionalImageCache {
         timestamp: document?.lastAccessed || Date.now()
       };
       return entry;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to reconstruct from compressed data:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   // Helper methods
   private generateMultiDimensionalKey(
    , dimensions: CacheDimensions,
-    graphData: GraphData | { signature?: string }
+    graphData: GraphData | { signature?: string } }
   ): string {
     const parts = [
       dimensions.temporal || 'recent',
@@ -782,7 +772,7 @@ export class MultiDimensionalImageCache {
       graphData.signature || this.generateGraphSignature(graphData as GraphData),
     ];
     return `md_${parts.join('_')}`.replace(/[^a-zA-Z0-9_]/g, '_').substring(0, 64);
-  }
+  } }
 
   private generateGraphSignature(graphData: GraphData | { signature?: string }): string {
     if (graphData?.signature) return graphData.signature;
@@ -791,7 +781,7 @@ export class MultiDimensionalImageCache {
     const edgeCount = gd.edges?.length || 0;
     const domain = gd.metadata?.legalDomain || 'general';
     return `${nodeCount}_${edgeCount}_${domain}_${Date.now()}`.substring(0, 32);
-  }
+  } }
 
   private updateDimensionalIndices(cacheKey: string, dimensions: CacheDimensions): void {
     Object.entries(dimensions).forEach(([dim, value]) => {
@@ -799,37 +789,37 @@ export class MultiDimensionalImageCache {
         const dimSet = this.dimensionalIndices.get(dim);
         if (dimSet) {
           dimSet.add(`${String(value)}:${cacheKey}`);
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
 
   private calculateCitationDensity(graphData: GraphData): number {
     const citationEdges = graphData.edges?.filter(e => e.type === 'cites').length || 0;
     const totalEdges = graphData.edges?.length || 1;
     return citationEdges / totalEdges;
-  }
+  } }
 
   private calculateJurisdictionalSpread(graphData: GraphData): number {
     const jurisdictions = new Set(
       (graphData.nodes?.map(n => n.metadata?.jurisdiction).filter(Boolean) as: string[]) || []
     );
     return Math.min(jurisdictions.size / 10, 1.0); // Normalize to 0-1
-  }
+  } }
 
   private calculateTemporalRange(graphData: GraphData): number {
     const timestamps = (graphData.nodes?.map(n => n.metadata?.timestamp).filter(Boolean) as: number[]) || [];
     if (timestamps.length < 2) return, 0;
     const range = Math.max(...timestamps) - Math.min(...timestamps);
     return Math.min(range / (365 * 24 * 60 * 60 * 1000), 1.0); // Normalize to years
-  }
+  } }
 
   private calculateComplexityIndex(graphData: GraphData): number {
     const nodeCount = graphData.nodes?.length || 0;
     const edgeCount = graphData.edges?.length || 0;
     const nodeTypes = new Set((graphData.nodes?.map(n => n.type) as: string[]) || []).size;
     return Math.min((edgeCount / Math.max(1, nodeCount) + nodeTypes / 6) / 2, 1.0);
-  }
+  } }
   private calculateSOMSimilarity(som1: SOMDecomposition, som2: SOMDecomposition): number {
     // Simple similarity calculation between SOM decompositions
     if (!som1?.convergenceHistory || !som2?.convergenceHistory) return 0;
@@ -839,15 +829,15 @@ export class MultiDimensionalImageCache {
     for (let i = 0; i < len; i++) {
       const diff = Math.abs(som1.convergenceHistory[i] - som2.convergenceHistory[i]);
       similarity += 1 / (1 + diff); // Convert difference to similarity
-    }
+    } }
     return similarity / len;
-  }
+  } }
   private calculatePatternSimilarity(signature: string, pattern: EncodedGraphPattern): number {
     // Simple pattern similarity based on signature matching
     const signatureScore = signature === pattern.patternSignature ? 1.0 : 0.5;
     const compressionScore = 1 - (pattern.reconstructionError ?? 0);
     return (signatureScore + compressionScore) / 2;
-  }
+  } }
   // Public API methods
   getMetrics(): CacheMetrics {
     return {
@@ -865,14 +855,13 @@ export class MultiDimensionalImageCache {
       compressionEfficiency: this.metrics.compressionSavings,
       cacheSize: this.imageEntries.size,
       gpuTextureCount: this.gpuTextures.size,
-      layerStats: this.cacheLayers.map(layer => ({
-       , name: layer.name,
+      layerStats: this.cacheLayers.map(layer => ({ name: layer.name,
         capacity: layer.capacity,
         priority: layer.priority,
         ttl: layer.ttl
       }))
     };
-  }
+  } }
   async evictExpired(): Promise<number> {
     let evicted = 0;
     const now = Date.now();
@@ -883,49 +872,49 @@ export class MultiDimensionalImageCache {
         this.imageEntries.delete(key);
         this.gpuTextures.delete(key);
         evicted++;
-      }
-    }
-    console.log(`🧹 Evicted ${evicted} expired entries`);
+      } }
+    } }
+    console.log(`🧹 Evicted ${evicted} }expired entries`);
     return evicted;
-  }
+  } }
   async cleanup(): Promise<void> {
     // Clean up GPU resources
     for (const texture of this.gpuTextures.values()) {
       try {
         safeDestroyTexture(texture);
-      } catch (error) {
+      } }catch (error) {
         console.error('Error cleaning up GPU texture:', error);
-      }
-    }
+      } }
+    } }
 
     // Clean up neural networks
     try {
       // Narrow type for objects that may expose a cleanup method (sync or async).
-      type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } | undefined;
+      type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } }| undefined;
       const somCleanup = this.som as: unknown as MaybeCleanup;
       if (somCleanup && typeof somCleanup.cleanup === 'function') {
         // Await in case implementation returns a Promise
         await somCleanup.cleanup();
-      }
-    } catch (err) {
-      console.debug('Ignored som cleanup error:', err);'
-    }
+      } }
+    } }catch (err) {
+      console.debug('Ignored som cleanup error:', err);
+    } }
     try {
-      type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } | undefined;
+      type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } }| undefined;
       const autoencoderCleanup = this.autoencoder as: unknown as MaybeCleanup;
       if (autoencoderCleanup && typeof autoencoderCleanup.cleanup === 'function') {
         await autoencoderCleanup.cleanup();
-      }
-    } catch (err) {
-      console.debug('Ignored autoencoder cleanup error:', err);'
-    }
+      } }
+    } }catch (err) {
+      console.debug('Ignored autoencoder cleanup error:', err);
+    } }
 
     // Clean up caches
     try {
       if (this.multiLayerCache && typeof this.multiLayerCache.cleanup === 'function') {
         await this.multiLayerCache.cleanup();
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.debug('Ignored multiLayerCache cleanup error:', err);` }`'
 
     // Clear maps
@@ -933,8 +922,8 @@ export class MultiDimensionalImageCache {
     this.gpuTextures.clear();
     this.dimensionalIndices.clear();
     console.log('🧹 Multi-Dimensional Image Cache cleaned up');
-  }
-}
+  } }
+} }
 
 // Lightweight interface for the subset of MultiLayerCache methods used here
 interface IMultiLayerCache {
@@ -942,7 +931,7 @@ interface IMultiLayerCache {
   set?: (collection: string, key: string, value: any, ttlSeconds?: number) => Promise<void>;
   get?: (collection: string, key: string) => Promise<unknown>;
   cleanup?: () => Promise<void>;
-}
+} }
 
 // Add a lightweight typed interface for the reinforcement learning cache to avoid `any`
 interface IReinforcementLearningCache {
@@ -950,7 +939,7 @@ interface IReinforcementLearningCache {
   set?: (key: string, value: ImageCacheEntry) => Promise<void>;
   get?: (key: string) => Promise<unknown>;
   cleanup?: () => Promise<void>;
-}
+} }
 
 // Export singleton instance
 export const multiDimensionalImageCache = new MultiDimensionalImageCache();
@@ -959,8 +948,8 @@ export const multiDimensionalImageCache = new MultiDimensionalImageCache();
 interface CacheLayerStats { name: string;, capacity: number;
   priority: number;
   ttl: number;
-}
-interface CacheMetrics {, totalQueries: number;, cacheHits: number;
+} }
+interface CacheMetrics { totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   compressionSavings: number;
   generationTime: number;
@@ -974,55 +963,55 @@ interface CacheMetrics {, totalQueries: number;, cacheHits: number;
   cacheSize: number;
   gpuTextureCount: number;
  , layerStats: CacheLayerStats[];
-}
+} }
 
 // Small helper to safely destroy GPU resources without using `any`
 function safeDestroyTexture(obj: any): void {
-  // the GPU texture matrix may have nested: "texture";, or: "gpuBuffer" objects with destroy methods
+  // the GPU texture matrix may have nested: "texture"; or: "gpuBuffer" objects with destroy methods
   const t = obj as
     | {
-        texture?: { destroy?: () => void } | undefined;
-        gpuBuffer?: { destroy?: () => void } | undefined;
-      }
+        texture?: { destroy?: () => void } }| undefined;
+        gpuBuffer?: { destroy?: () => void } }| undefined;
+      } }
     | undefined;
   if (!t) return;
   try {
     if (t.texture && typeof t.texture.destroy === 'function') {
       t.texture.destroy();
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.debug('Ignored error destroying texture.texture:', err);
-  }
+  } }
   try {
     if (t.gpuBuffer && typeof t.gpuBuffer.destroy === 'function') {
       t.gpuBuffer.destroy();
-    }
-  } catch (err) {
-    console.debug('Ignored error destroying texture.gpuBuffer: ', err);'` }'`
-}
+    } }
+  } }catch (err) {
+    console.debug('Ignored error destroying texture.gpuBuffer: ', err);'` } }`
+} }
 
 // ----------------- ADDED: small helpers to avoid `any` and provide defaults -----------------
-function isPosition(obj: any): obj is { x: number;, y: number } {
+function isPosition(obj: any): obj is { x: number; y: number } }{
   if (obj === null || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return typeof o['x'] === 'number' && typeof o['y'] === 'number';
-}
+} }
 function extractLabel(n: GraphNode): string {
   const l = n.metadata?.label;
   if (typeof l === 'string' && l.length > 0) return l;
   if (typeof n.type === 'string' && n.type.length > 0) return n.type;
   return String(n.id);
-}
-function extractPosition(n: GraphNode): { x: number;, y: number } {
+} }
+function extractPosition(n: GraphNode): { x: number; y: number } }{
   const p = n.metadata?.position;
   if (isPosition(p)) return p;
   return { x: 0, y: 0 };
-}
+} }
 function extractFeatures(n: GraphNode): number[] {
   const f = n.metadata?.features;
   if (Array.isArray(f) && f.every(v => typeof v === 'number')) return f as: number[];
   return [];
-}
+} }
 function mapEdgeToAE(e: GraphEdge, idx: number): AEGraphEdge {
   const maybe = e as: unknown as Record<string, unknown>;
   return {
@@ -1032,34 +1021,34 @@ function mapEdgeToAE(e: GraphEdge, idx: number): AEGraphEdge {
     target: e.target,
     type: e.type,
     weight: typeof maybe.weight === 'number' ? (maybe.weight, as: number) : 1,
-    metadata: e.metadata ?? {}
-  } as AEGraphEdge;
-}
+    metadata: e.metadata ?? {} }
+  } }as AEGraphEdge;
+} }
 // ----------------- end added helpers -----------------
 
 // -----------------, ADDED: metadata sanitizer to satisfy AE metadata type -----------------
-function sanitizeMetadata(m?: { [key: string]: any } | undefined): { [key: string]: string | number | boolean | undefined } {
-  const, out: { [key: string]: string | number | boolean | undefined } = {};
+function sanitizeMetadata(m?: { [key: string]: any } }| undefined): { [key: string]: string | number | boolean | undefined } }{
+  const, out: { [key: string]: string | number | boolean | undefined } }= {};
   if (!m || typeof m !== 'object') return out;
   for (const [k, v] of Object.entries(m as Record<string, unknown>)) {
     if (v === null || v === undefined) {
       out[k] = undefined;
       continue;
-    }
+    } }
     const t = typeof v;
     if (t === 'string' || t === 'number' || t === 'boolean') {
       out[k] = v as: string | number | boolean;
-    } else {
+    } }else {
       // ignore complex types (arrays/objects); if simple serializable: string exists, use it
       try {
         out[k] = String(v);
-      } catch {
+      } }catch {
         out[k] = undefined;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return out;
-}
+} }
 // ----------------- end sanitizer -----------------
 
 // Batch feature extraction for all nodes, using parallelization if possible
@@ -1071,8 +1060,8 @@ async function batchExtractFeatures(nodes: GraphNode[]): Promise<number[][]> {
     // In production, use a real worker pool or offload to GPU if available
     // For now, fallback to synchronous for small graphs
     return nodes.map(extractFeatures);
-  } else {
+  } }else {
     // Synchronous batch extraction
     return nodes.map(extractFeatures);
-  }
+  } }
 }

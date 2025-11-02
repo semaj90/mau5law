@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence, cases, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { vectorService } from '$lib/server/vector/vectorService';
-import { qdrantService } from '$lib/server/services/qdrant-service';
+import type { User } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db';
+import { evidence, cases, legalDocuments } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import { vectorService } }from '$lib/server/vector/vectorService';
+import { qdrantService } }from '$lib/server/services/qdrant-service';
 import Fuse from 'fuse.js';
-import { interpret } from 'xstate';
-import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
-import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
+import { interpret } }from 'xstate';
+import { aiSummaryMachine } }from '$lib/machines/aiSummaryMachine';
+import { ollamaService } }from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
 
 // Request payload for summary generation
 export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';, targetId: string;
@@ -19,12 +19,12 @@ export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' |
   enableStreaming: boolean;
   chunkSize?: number;
   userId?: string;
-}
-export interface AILLMOutput {, content: string;, model: string;
+} }
+export interface AILLMOutput { content: string;, model: string;
   confidence: number;
   tokens: number;
- , processingTime: number;
-}
+  processingTime: number;
+} }
 // Basic shape for vector search results (loose to accommodate both services)
 export interface BasicVectorResult {
   id: string;
@@ -33,64 +33,64 @@ export interface BasicVectorResult {
   score?: number;
   relevance?: number;
   source?: string;
-}
-export interface EnhancedRAGOutput {, relevantDocs: Array<any>;, contextSummary: string;
-  searchMetrics: {, vectorSearchTime: number;, documentsRetrieved: number;
+} }
+export interface EnhancedRAGOutput { relevantDocs: Array<any>;, contextSummary: string;
+  searchMetrics: { vectorSearchTime: number;, documentsRetrieved: number;
     averageRelevance: number;
   };
-}
-export interface UserActivityContext {, recentQueries: string[];, preferredTopics: string[];
-  interactionPatterns: {, timeOfDay: string;, commonActions: string[];
+} }
+export interface UserActivityContext { recentQueries: string[];, preferredTopics: string[];
+  interactionPatterns: { timeOfDay: string;, commonActions: string[];
     focusAreas: string[];
   };
   recommendations: string[];
-}
-export interface SynthesizedOutput {, summary: string;, keyInsights: string[];
+} }
+export interface SynthesizedOutput { summary: string;, keyInsights: string[];
   actionItems: string[];
   confidence: number;
   sources: Array<any>;
- , nextSteps: string[];
+  nextSteps: string[];
   relatedCases?: string[];
   warnings?: string[];
-}
+} }
 // XState Machine Service for orchestrating AI mix workflow
 // Create actor for the summary machine and start it defensively to support XState v4/v5.
 const summaryService = interpret(aiSummaryMachine);
 try {
   summaryService.start?.();
-} catch (err) {
+} }catch (err) {
   console.warn('summaryService.start() failed or is not required in this environment', err);
-}
+} }
 
 // small helper to extract user id from locals (stable for tests/dev)
 function getUserId(locals: any): string {
   return (locals?.user?.id as: string) || (locals?.user as: any) || 'anonymous';
-}
+} }
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals?.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
-    }
+    } }
     const summaryRequest: SummaryRequest = await request.json();
     const userId = getUserId(locals);
     // Initialize XState machine with request context
     summaryService.send({ type: 'GENERATE_SUMMARY' });
     if (summaryRequest.enableStreaming) {
       return handleStreamingSummary(summaryRequest, userId);
-    } else {
+    } }else {
       return handleBatchSummary(summaryRequest, userId);
-    }
-  } catch (error: any) {
-    console.error('Summaries API error:', error);'
+    } }
+  } }catch (error: any) {
+    console.error('Summaries API error:', error);
     return json(
       {
         error: 'Failed to generate summary',
         details: error?.message || String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 async function handleBatchSummary(request: SummaryRequest, userId: string): Promise<any> {
@@ -114,15 +114,15 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
       success: true,
       result: synthesizedResult,
       metadata: {
-       , processingTime: totalTime,
+  processingTime: totalTime,
         request: request,
         timestamp: new Date().toISOString(),
         version: '1.0.0'
-      }
+      } }
     },
-    { status: 200 }
+    { status: 200 } }
   );
-}
+} }
 
 async function handleStreamingSummary(request: SummaryRequest, userId: string): Promise<any> {
   // Create SSE stream for real-time updates
@@ -134,7 +134,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'status',
+  type: 'status',
               message: 'Starting AI summary generation...',
               progress: 0
             })}\n\n`
@@ -145,7 +145,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'llm_chunk',
+  type: 'llm_chunk',
                 content: chunk,
                 progress: 33
               })}\n\n`
@@ -156,7 +156,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'status',
+  type: 'status',
               message: 'Retrieving relevant documents...',
               progress: 50
             })}\n\n`
@@ -167,7 +167,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'status',
+  type: 'status',
               message: 'Analyzing user activity patterns...',
               progress: 75
             })}\n\n`
@@ -178,7 +178,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'status',
+  type: 'status',
               message: 'Synthesizing final summary...',
               progress: 90
             })}\n\n`
@@ -194,25 +194,25 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'complete',
+  type: 'complete',
               result: synthesizedResult,
               progress: 100
             })}\n\n`
           )
         );
         controller.close();
-      } catch (error: any) {
+      } }catch (error: any) {
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'error',
+  type: 'error',
               error: error?.message || String(error)
             })}\n\n`
           )
         );
         controller.close();
-      }
-    }
+      } }
+    } }
   });
   return new Response(stream, {
     headers: {
@@ -220,9 +220,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': `Cache-Control` }
+      'Access-Control-Allow-Headers': `Cache-Control` } }
   });
-}
+} }
 
 // AI Mix Function 1: Local LLM Output
 async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> {
@@ -234,42 +234,42 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
       sourceContent = caseData?.[0]?.description || '';
       break;
-    }
+    } }
     case, 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
       sourceContent = evidenceData?.[0]?.description || '';
       break;
-    }
+    } }
     case, 'legal_document': {
       const docData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, request.targetId)).limit(1);
       sourceContent = docData?.[0]?.content || '';
       break;
-    }
+    } }
     default:
       sourceContent = '';
-  }
+  } }
   // Prepare prompt based on depth
   const, depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: ','`'`
-    comprehensive: `Provide a detailed analysis and comprehensive summary;, of: `,
-    forensic: `Conduct a thorough forensic analysis with legal implications;, for:` };
-  const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
+    comprehensive: `Provide a detailed analysis and comprehensive summary; of: `,
+    forensic: `Conduct a thorough forensic analysis with legal implications; for:` };
+  const prompt = `${depthPrompts[request.depth]} }${sourceContent}`;
   // Use chunking for large content
   const chunkSize = request.chunkSize || 2000;
   const chunks = sourceContent.length > chunkSize ? chunkText(sourceContent, chunkSize) : [sourceContent];
   let combinedResponse = '';
   let totalTokens = 0;
   for (const chunk of chunks) {
-    const promptText = chunk.length < sourceContent.length ? `${prompt} (Part of, larger, document): ${chunk}` : prompt;
+    const promptText = chunk.length < sourceContent.length ? `${prompt} }(Part of, larger, document): ${chunk}` : prompt;
     const response = await ollamaService.generateResponse(promptText, {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.3,
       maxTokens: request.depth === 'forensic' ? 1000 : 500
     });
     // normalize the: unknown response to a typed shape (avoid `any`)
-    const { content, tokens } = normalizeLLMResponse(response);
+    const { content, tokens } }= normalizeLLMResponse(response);
     combinedResponse += content + '\n\n';
     totalTokens += tokens || 0;
-  }
+  } }
   const processingTime = Date.now() - startTime;
   return {
     content: combinedResponse.trim(),
@@ -278,7 +278,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
     tokens: totalTokens,
     processingTime
   };
-}
+} }
 
 // AI Mix Function 2: Enhanced RAG Output with pgvector + Qdrant
 async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRAGOutput> {
@@ -288,17 +288,17 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   switch (request.type) {
     case, 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
-      searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || '` }`.substring(0, 200);'`
+      searchQuery = `${caseData?.[0]?.title || ''} }${caseData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
-    }
+    } }
     case, 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
-      searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || '` }`.substring(0, 200);'`
+      searchQuery = `${evidenceData?.[0]?.title || ''} }${evidenceData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
-    }
+    } }
     default:
       searchQuery = '';
-  }
+  } }
   // Dual vector, search: PostgreSQL pgvector + Qdrant
   const [pgResults, qdrantResults] = await Promise.all([
     vectorService.search(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
@@ -324,22 +324,22 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.2,
       maxTokens: 300
-    }
+    } }
   );
   // use normalizer to safely read content
-  const { content: normalizedContextSummary } = normalizeLLMResponse(contextSummaryResp);
+  const { content: normalizedContextSummary } }= normalizeLLMResponse(contextSummaryResp);
   const processingTime = Date.now() - startTime;
   return {
     relevantDocs,
     contextSummary: normalizedContextSummary || '',
     searchMetrics: {
-     , vectorSearchTime: processingTime,
+  vectorSearchTime: processingTime,
       documentsRetrieved: uniqueResults.length,
       averageRelevance:
         relevantDocs.length > 0 ? relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length : 0
-    }
+    } }
   };
-}
+} }
 
 // AI Mix Function 3: User Activity Context with Loki.js
 async function getUserActivityContext(userId: string): Promise<UserActivityContext> {
@@ -354,7 +354,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     updatedAt?: string | null;
   };
   type EvidenceRecord = {
-   , id: string;
+  id: string;
     title?: string | null;
     description?: string | null;
     uploadedBy?: string | null;
@@ -400,13 +400,13 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     recentQueries,
     preferredTopics,
     interactionPatterns: {
-     , timeOfDay: 'morning',
+  timeOfDay: 'morning',
       commonActions: ['case_analysis', 'evidence_upload', 'report_generation'],
       focusAreas: preferredTopics.slice(0, 3)
     },
     recommendations
   };
-}
+} }
 
 // AI Mix Function 4: XState-powered Synthesis Engine
 async function synthesizeOutputs({
@@ -415,8 +415,8 @@ async function synthesizeOutputs({
   userActivity,
   request
 }: { llmOutput: AILLMOutput;, ragOutput: EnhancedRAGOutput | null;
- , userActivity: UserActivityContext | null;
- , request: SummaryRequest;
+  userActivity: UserActivityContext | null;
+  request: SummaryRequest;
 }): Promise<SynthesizedOutput> {
   // Update XState machine with collected data
   summaryService.send({ type: `SYNTHESIZE_INSIGHTS` });
@@ -434,7 +434,7 @@ async function synthesizeOutputs({
     (Object.keys(weights) as WeightKey[]).forEach(key => {
       weights[key] = weights[key] / totalWeight;
     });
-  }
+  } }
 
   const allContent = [
     llmOutput.content,
@@ -456,36 +456,33 @@ async function synthesizeOutputs({
     actionItems,
     confidence,
     sources: [
-      {,
-        type: 'llm',
+      { type: 'llm',
         contribution: weights.llm,
         details: {
-         , model: llmOutput?.model || 'unknown',
+  model: llmOutput?.model || 'unknown',
           tokens: llmOutput.tokens,
           processingTime: llmOutput.processingTime
-        }
+        } }
       },
       ...(ragOutput
         ? [
-            {,
-              type: 'rag' as const,
+            { type: 'rag' as const,
               contribution: weights.rag,
               details: {
-               , documentsUsed: ragOutput.relevantDocs.length,
+  documentsUsed: ragOutput.relevantDocs.length,
                 averageRelevance: ragOutput.searchMetrics.averageRelevance
-              }
+              } }
             },
           ]
         : []),
       ...(userActivity
         ? [
-            {,
-              type: 'user_activity' as const,
+            { type: 'user_activity' as const,
               contribution: weights.userActivity,
               details: {
-               , recentQueries: userActivity.recentQueries.length,
+  recentQueries: userActivity.recentQueries.length,
                 preferences: userActivity.preferredTopics.length
-              }
+              } }
             },
           ]
         : []),
@@ -494,16 +491,16 @@ async function synthesizeOutputs({
     relatedCases,
     warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0)
   };
-}
+} }
 
 // Helper Functions
 function chunkText(text: string, chunkSize: number): string[] {
   const chunks: string[] = [];
   for (let i = 0; i < text.length; i += chunkSize) {
     chunks.push(text.substring(i, i + chunkSize));
-  }
+  } }
   return chunks;
-}
+} }
 
 async function getLocalLLMOutputStreaming(
   request: SummaryRequest,
@@ -512,7 +509,7 @@ async function getLocalLLMOutputStreaming(
   // This would implement streaming response from Ollama
   // For now, return the same as batch mode
   return getLocalLLMOutput(request);
-}
+} }
 
 function extractTopics(texts: string[]): string[] {
   const allText = texts.join(' ').toLowerCase();
@@ -525,7 +522,7 @@ function extractTopics(texts: string[]): string[] {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([word]) => word);
-}
+} }
 
 // Use Fuse<string> and actually read search results to avoid unused-arg lint.
 // Provide concise recommendations enriched with matching recent queries.
@@ -539,12 +536,12 @@ function generateRecommendations(topics: string[], fuse: Fuse<string>): string[]
       .slice(0, 2);
     if (matches.length > 0) {
       recs.push(`Consider exploring: "${topic}" in related cases such, as: ${matches.join('; ')}`);
-    } else {
-      recs.push(`Consider exploring ${topic} in related cases`);
-    }
-  }
+    } }else {
+      recs.push(`Consider exploring ${topic} }in related cases`);
+    } }
+  } }
   return recs;
-}
+} }
 
 async function extractKeyInsights(contents: string[]): Promise<string[]> {
   const combined = contents.join(' ');
@@ -553,47 +550,47 @@ async function extractKeyInsights(contents: string[]): Promise<string[]> {
     .sort((a, b) => b.length - a.length)
     .slice(0, 5)
     .map(s => s.trim());
-}
+} }
 
 async function generateActionItems(llmContent: string, ragOutput: EnhancedRAGOutput | null): Promise<string[]> {
   const actionItems: string[] = [];
   if (llmContent.toLowerCase().includes('evidence')) {
     actionItems.push('Review additional evidence');
-  }
+  } }
   if (llmContent.toLowerCase().includes('witness')) {
     actionItems.push('Schedule witness interviews');
-  }
+  } }
   if (ragOutput && ragOutput.relevantDocs.length > 0) {
     actionItems.push('Analyze related legal precedents');
-  }
+  } }
   return actionItems.length > 0 ? actionItems : ['Continue investigation'];
-}
+} }
 
 async function generateNextSteps(insights: string[], actionItems: string[], type: string): Promise<string[]> {
   const nextSteps = [...actionItems];
   if (type === 'case') {
     nextSteps.push('Update case status');
     nextSteps.push('Notify relevant stakeholders');
-  }
+  } }
   return nextSteps.slice(0, 5);
-}
+} }
 
 async function findRelatedCases(targetId: string, type: string): Promise<string[]> {
   if (type !== 'case') return [];
   const casesData = await db.select().from(cases).limit(5);
   return (casesData || []).map((c: any) => c.id).filter((id: string) => id !== targetId);
-}
+} }
 
 function generateWarnings(confidence: number, docsRetrieved: number): string[] {
   const warnings: string[] = [];
   if (confidence < 0.7) {
     warnings.push('Low confidence in results - consider additional analysis');
-  }
+  } }
   if (docsRetrieved < 3) {
     warnings.push('Limited contextual information available');
-  }
+  } }
   return warnings;
-}
+} }
 
 // GET endpoint for summary status and health check
 export const GET: RequestHandler = async ({ url }) => {
@@ -605,9 +602,9 @@ export const GET: RequestHandler = async ({ url }) => {
         summaryId,
         timestamp: new Date().toISOString()
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  }
+  } }
   return json(
     {
       service: 'AI Mix Summaries API',
@@ -623,15 +620,15 @@ export const GET: RequestHandler = async ({ url }) => {
       version: '1.0.0',
       timestamp: new Date().toISOString()
     },
-    { status: 200 }
+    { status: 200 } }
   );
 };
 
 // Add a small runtime-normalizer to avoid casting to `any`
-function normalizeLLMResponse(resp: any): { content: string;, tokens: number } {
+function normalizeLLMResponse(resp: any): { content: string; tokens: number } }{
   if (!resp || typeof resp !== 'object') {
     return { content: String(resp ?? ''), tokens: 0 };
-  }
+  } }
   const r = resp as Record<string, unknown>;
   const content =
     typeof r.content === 'string'
@@ -643,4 +640,5 @@ function normalizeLLMResponse(resp: any): { content: string;, tokens: number } {
           : '';
   const tokens = typeof r.tokens === 'number' ? r.tokens : 0;
   return { content, tokens };
-}
+} }
+

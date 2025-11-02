@@ -14,8 +14,8 @@ export interface ChatMessage { id: string;, content: string;
     processingTime?: number;
     [key: string]: any;
   };
-}
-export interface ChatSession {, id: string;, model: string;
+} }
+export interface ChatSession { id: string;, model: string;
   createdAt: string | Date; // was Date
   updatedAt?: string | Date; // was Date
   messageCount?: number;
@@ -26,12 +26,12 @@ export interface ChatSession {, id: string;, model: string;
     tags?: string[];
     [key: string]: any;
   };
-}
-export interface ChatState {, messages: ChatMessage[];, currentSession: ChatSession | null;
+} }
+export interface ChatState { messages: ChatMessage[];, currentSession: ChatSession | null;
   isLoading: boolean;
   error: string | null;
-}
-export interface OllamaResponse {, model: string;, createdAt: string | Date; // maps from created_at
+} }
+export interface OllamaResponse { model: string;, createdAt: string | Date; // maps from created_at
   response: string;
   done: boolean;
   context?: number[];
@@ -41,14 +41,14 @@ export interface OllamaResponse {, model: string;, createdAt: string | Date; //
   promptEvalDuration?: number; // maps from prompt_eval_duration
   evalCount?: number; // maps from eval_count
   evalDuration?: number; // maps from eval_duration
-}
+} }
 export interface ChatRequest {
   message: string;
   context?: ChatMessage[];
   sessionId?: string;
   model?: string;
   stream?: boolean;
-}
+} }
 export interface ChatResponse {
   response: string;
   confidence?: number;
@@ -56,4 +56,5 @@ export interface ChatResponse {
   processingTime?: number;
  , model: string;
   metadata?: any;
-}
+} }
+

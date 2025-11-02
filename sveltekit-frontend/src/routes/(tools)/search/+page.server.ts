@@ -1,8 +1,8 @@
-import type { SearchResult } from '$lib/types';
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import type { PageServerLoad, Actions } from './$types';
-import { z } from 'zod';
+import type { SearchResult } }from '$lib/types';
+import { superValidate } }from 'sveltekit-superforms';
+import { zod } }from 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions } }from './$types';
+import { z } }from 'zod';
 
 // ===== SEARCH FORM SCHEMA =====
 export const SearchFormSchema = z.object({
@@ -32,12 +32,12 @@ interface SearchResult { id: string;, title: string;
   content: string;
  , similarity: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 interface SearchState { results: SearchResult[];, query: string;
   responseTime: number;
   timestamp: string;
-}
+} }
 
 // ===== LOAD =====
 export const, load: PageServerLoad = async () => {
@@ -49,21 +49,19 @@ export const, load: PageServerLoad = async () => {
 };
 
 // ===== ACTIONS =====
-export const actions: Actions = {
- , search: async ({ request }) => {
+export const actions: Actions = { search: async ({ request }) => {
     const form = await superValidate(request, zod(SearchFormSchema));
 
     if (!form.valid) {
       return { form };
-    }
+    } }
 
     try {
       // Call the pgvector search endpoint
       const response = await fetch('http://localhost:5173/api/search-pgvector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , query: form.data.query,
+        body: JSON.stringify({ query: form.data.query,
           topK: form.data.topK,
           threshold: form.data.threshold,
           filters: form.data.filters
@@ -73,7 +71,7 @@ export const actions: Actions = {
       if (!response.ok) {
         form.errors._problem = [`Search failed: ${response.statusText}`];
         return { form };
-      }
+      } }
 
       const searchResults = (await response.json()) as { results: SearchResult[];, responseTime: number;
        , timestamp: string;
@@ -82,18 +80,18 @@ export const actions: Actions = {
       // Store results in form data for display
       return {
         form,
-        searchState: {
-         , results: searchResults.results,
+        searchState: { results: searchResults.results,
           query: form.data.query,
           responseTime: searchResults.responseTime,
           timestamp: searchResults.timestamp
-        } as SearchState
+        } }as SearchState
       };
-    } catch (err) {
+    } }catch (err) {
       form.errors._problem = [
         err instanceof Error ? err.message : 'Search service error',
       ];
       return { form };
-    }
-  }
+    } }
+  } }
 };
+

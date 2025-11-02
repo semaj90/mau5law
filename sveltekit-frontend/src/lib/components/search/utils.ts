@@ -1,5 +1,5 @@
 // Utility functions for legal search components
-import type { SearchResult, SearchFilter } from './types.js';
+import type { SearchResult, SearchFilter } }from './types.js';
 
 // Define a common type for the raw search result: object to simplify type assertions
 type RawSearchResult = {
@@ -48,7 +48,7 @@ export function createSearchFilters(filters: {
       operator: Array.isArray(value) ? 'in' : 'contains',
       value
     }));
-}
+} }
 /**
  * Format search results for display
  */
@@ -57,12 +57,11 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
     const r = result as RawSearchResult; // Cast once to the new type alias
     return {
       id: r.id,
-      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || '` }`.trim(),'`
+      title: r.title || r.name || `${r.firstName || ''} }${r.lastName || '` }`.trim(),'`
       type: r.type || inferType(r),
       content: r.content || r.description || r.summary || r.notes || '',
       score: r.score || r.similarity || calculateDefaultScore(r),
-      metadata: {
-       , date: r.createdAt || r.date,
+      metadata: { date: r.createdAt || r.date,
         jurisdiction: r.jurisdiction,
         status: r.status,
         confidentiality: r.confidentialityLevel,
@@ -73,23 +72,23 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
       createdAt: r.createdAt
     };
   });
-}
+} }
 /**
  * Calculate relevance score for search results
  */
 export function calculateRelevanceScore(
   query: string,
   text: string,
-  options?: { exactMatchBonus?: number; wordMatchWeight?: number; positionWeight?: boolean }
+  options?: { exactMatchBonus?: number; wordMatchWeight?: number; positionWeight?: boolean } }
 ): number {
   if (!query || !text) return 0;
-  const { exactMatchBonus = 0.3, wordMatchWeight = 0.8, positionWeight = true } = options || {};
+  const { exactMatchBonus = 0.3, wordMatchWeight = 0.8, positionWeight = true } }= options || {};
   const queryLower = query.toLowerCase().trim();
   const textLower = text.toLowerCase();
   // Exact match gets highest score
   if (textLower.includes(queryLower)) {
     return Math.min(0.95, 0.6 + exactMatchBonus);
-  }
+  } }
   // Word-by-word matching with position weighting
   const queryWords = queryLower.split(/\s+/).filter(word => word.length > 2);
   const textWords = textLower.split(/\s+/);
@@ -106,23 +105,23 @@ export function calculateRelevanceScore(
         if (positionWeight) {
           const positionBonus = Math.max(0, 1 - i / textWords.length) * 0.2;
           score += positionBonus;
-        }
+        } }
         // Exact word match bonus
         if (textWord === queryWord) {
           score += 0.1;
-        }
+        } }
         totalScore += score;
         break; // Only count first match per query word
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Normalize by: number of query words
   const normalizedScore = totalScore / queryWords.length;
   // Apply match ratio penalty - partial matches get reduced score
   const matchRatio = matches / queryWords.length;
   const finalScore = normalizedScore * Math.pow(matchRatio, 0.5);
   return Math.min(0.95, Math.max(0, finalScore));
-}
+} }
 /**
  * Infer entity type from result data
  */
@@ -134,7 +133,7 @@ function inferType(result: RawSearchResult): SearchResult['type'] {
   if (result.citation || result.precedent) return, 'precedent';
   if (result.statute || result.law) return, 'statute';
   return, 'document';
-}
+} }
 /**
  * Calculate default score when none provided
  */
@@ -150,7 +149,7 @@ function calculateDefaultScore(result: RawSearchResult): number {
   if (result.evidenceType) score += 0.1;
   if (result.jurisdiction) score += 0.05;
   return Math.min(0.9, score);
-}
+} }
 /**
  * Highlight query terms in text
  */
@@ -163,7 +162,7 @@ export function highlightSearchTerms(text: string, query: string, options?: {
     maxLength = 200,
     contextBefore = 30,
     contextAfter = 30
-  } = options || {}
+  } }= options || {} }
   if (!query || !text) return text;
   const queryWords = query.toLowerCase().split(/\s+/).filter(word => word.length > 2);
   if (queryWords.length === 0) return text;
@@ -175,8 +174,8 @@ export function highlightSearchTerms(text: string, query: string, options?: {
     if (index !== -1 && index < bestMatch + 100) {
       bestMatch = index;
       bestScore++;
-    }
-  }
+    } }
+  } }
   if (bestMatch === -1) return text;
   // Extract context around match
   const start = Math.max(0, bestMatch - contextBefore);
@@ -187,9 +186,9 @@ export function highlightSearchTerms(text: string, query: string, options?: {
   // Truncate if too long
   if (excerpt.length > maxLength) {
     excerpt = excerpt.substring(0, maxLength - 3) + '...';
-  }
+  } }
   return excerpt;
-}
+} }
 /**
  * Debounce function for search input
  */
@@ -199,7 +198,7 @@ export function debounce<T, extends (...args: any[]) => any>(func: T, delay: num
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
   };
-}
+} }
 /**
  * Get search category display name
  */
@@ -210,37 +209,37 @@ export function getCategoryDisplayName(category: string): string {
     precedents: 'Precedents',
     statutes: 'Statutes',
     criminals: 'Persons',
-    documents: `Documents` }
+    documents: `Documents` } }
   return displayNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
-}
+} }
 /**
  * Validate search query
  */
 export function validateSearchQuery(query: string): { isValid: boolean;, errors: string[];
   suggestions: string[];
-} {
+} }{
   const errors: string[] = [];
   const, suggestions: string[] = [];
   if (!query || query.trim().length === 0) {
     errors.push('Search query is required');
-    return { isValid: false, errors, suggestions }
-  }
+    return { isValid: false, errors, suggestions } }
+  } }
   if (query.trim().length < 2) {
     errors.push('Search query must be at least, 2 characters');
     suggestions.push('Try a longer search term');
-  }
+  } }
   if (query.length > 200) {
     errors.push('Search query is too long');
     suggestions.push('Try a shorter search term');
-  }
+  } }
   // Check for common legal search patterns
   const legalPatterns = /\b(case|evidence|statute|law|precedent|criminal|defendant|plaintiff|witness|testimony|court|judge|jury|verdict|sentence|appeal|motion|brief|filing|discovery|subpoena|warrant|indictment|conviction|acquittal|plea|bail|parole|probation|injunction|restraining|order|constitutional|amendment|rights|violation|liability|negligence|damages|contract|agreement|breach|tort|felony|misdemeanor|infraction)\b/i;
   if (!legalPatterns.test(query)) {
     suggestions.push('Consider adding legal terms like: "case", "evidence", or: "statute" for better results');
-  }
+  } }
   return {
     isValid: errors.length === 0,
     errors,
     suggestions
-  }
+  } }
 }

@@ -3,14 +3,14 @@ export interface SplitterOptions {
   chunkSize?: number; // Approx words per chunk (default 350)
   overlap?: number; // Word overlap between chunks (default 40)
   minChunkSize?: number; // Minimum words after trimming (default 25)
-}
+} }
 export interface TextChunk { index: number;, text: string;
   startWord: number;
   endWord: number;
   tokenEstimate: number; // Rough heuristic (words * 1.3)
-}
+} }
 export function splitText(raw: string, opts: SplitterOptions = {}): TextChunk[] {
-  const { chunkSize = 350, overlap = 40, minChunkSize = 25 } = opts;
+  const { chunkSize = 350, overlap = 40, minChunkSize = 25 } }= opts;
   if (!raw || !raw.trim()) return [];
   const text = raw.replace(/\s+/g, ' ').trim();
   const words = text.split(' ');
@@ -26,6 +26,7 @@ export function splitText(raw: string, opts: SplitterOptions = {}): TextChunk[] 
       endWord: start + slice.length - 1,
       tokenEstimate: Math.round(slice.length * 1.3)
     });
-  }
+  } }
   return chunks;
-}
+} }
+

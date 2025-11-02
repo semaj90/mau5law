@@ -7,14 +7,14 @@ export interface WebGPUCapabilities {
   available: boolean;
   adapter?: GPUAdapter;
   device?: GPUDevice;
-  limits: {, maxBufferSize: number;, maxComputeWorkgroupSizeX: number;
+  limits: { maxBufferSize: number;, maxComputeWorkgroupSizeX: number;
     maxComputeWorkgroupSizeY: number;
     maxComputeWorkgroupSizeZ: number;
   };
   features: string[];
-}
+} }
 
-export interface VectorOperation {, type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';, inputA: Float32Array;
+export interface VectorOperation { type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';, inputA: Float32Array;
   inputB?: Float32Array;
   dimensions: number;
   options?: {
@@ -22,13 +22,13 @@ export interface VectorOperation {, type: 'similarity' | 'clustering' | 'embeddi
     cluster_count?: number;
     iterations?: number;
   };
-}
+} }
 
-export interface ComputeResult {, type: string;, result: Float32Array;
+export interface ComputeResult { type: string;, result: Float32Array;
   executionTime: number;
   workgroupsDispatched: number;
   bufferSize: number;
-}
+} }
 
 class WebGPUAccelerator {
   private capabilities: WebGPUCapabilities | null = null;
@@ -40,7 +40,7 @@ class WebGPUAccelerator {
   // Clean WGSL shader sources (minimal and syntactically valid)
   private readonly shaderSources: Record<string, string> = {
     vectorSimilarity: '
-      struct Params {, dims: u32 };
+      struct Params { dims: u32 };
       @group(0) @binding(0) var<storage, read> vectorA: array<f32>;
       @group(0) @binding(1) var<storage, read> vectorB: array<f32>;
       @group(0) @binding(2) var<storage, read_write> result: array<f32>;
@@ -48,27 +48,27 @@ class WebGPUAccelerator {
 
       @compute @workgroup_size(1)
       fn main(@builtin(global_invocation_id) id : vec3<u32>) {
-        if (id.x != 0u) { return; }
+        if (id.x != 0u) { return; } }
         let dims = params.dims;
         var dot : f32 = 0.0;
         var normA : f32 = 0.0;
         var normB : f32 = 0.0;
         var i : u32 = 0u;
         loop {
-          if (i >= dims) { break; }
+          if (i >= dims) { break; } }
           let a = vectorA[i];
           let b = vectorB[i];
           dot = dot + a * b;
           normA = normA + a * a;
           normB = normB + b * b;
           i = i + 1u;
-        }
+        } }
         var similarity : f32 = 0.0;
         if (normA > 0.0 && normB > 0.0) {
           similarity = dot / (sqrt(normA) * sqrt(normB));
-        }
+        } }
         result[0] = similarity;
-      }
+      } }
     ' };'
 
   async initialize(): Promise<WebGPUCapabilities> {
@@ -100,12 +100,11 @@ class WebGPUAccelerator {
       await this.initializeShaders();
       this.initialized = true;
       return this.capabilities;
-    } catch (err) {
+    } }catch (err) {
       // graceful fallback
       this.capabilities = {
         available: false,
-        limits: {
-         , maxBufferSize: 0,
+        limits: { maxBufferSize: 0,
           maxComputeWorkgroupSizeX: 0,
           maxComputeWorkgroupSizeY: 0,
           maxComputeWorkgroupSizeZ: 0
@@ -113,8 +112,8 @@ class WebGPUAccelerator {
         features: []
       };
       return this.capabilities;
-    }
-  }
+    } }
+  } }
 
   private async initializeShaders(): Promise<void> {
     if (!this.device) return;
@@ -122,17 +121,17 @@ class WebGPUAccelerator {
       try {
         const shaderModule = this.device.createShaderModule({ code: source, label: '${name}_module' });
         this.computeShaders.set(name, shaderModule);
-      } catch (err) {
+      } }catch (err) {
         console.error('Shader creation failed for', name, err);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Compute cosine similarity using GPU when available, otherwise CPU fallback
   async computeVectorSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
     if (vectorA.length !== vectorB.length) {
       throw new Error('Vectors must have the same length');
-    }
+    } }
     const dims = vectorA.length;
 
     // CPU fallback if no device or shader
@@ -146,10 +145,10 @@ class WebGPUAccelerator {
         dot += a * b;
         na += a * a;
         nb += b * b;
-      }
+      } }
       if (na === 0 || nb === 0) return 0;
       return dot / (Math.sqrt(na) * Math.sqrt(nb));
-    }
+    } }
 
     const start = performance.now();
     const device = this.device!; // non-null asserted because we checked above
@@ -182,25 +181,25 @@ class WebGPUAccelerator {
     const shader = this.computeShaders.get('vectorSimilarity')!;
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
-        {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } }},
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } }},
         // result buffer is writable by the shader
-        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `storage` } },
+        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: `storage` } }},
         // params are provided as a uniform
-        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `uniform` } }
+        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: `uniform` } }} }
       ]
     });
 
-    const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-      compute: {, module: shader, entryPoint: 'main' }'` });'`
+    const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+      compute: { module: shader, entryPoint: 'main' } }` });'`
 
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        {, binding: 0, resource: {, buffer: aBuf } },
-        { binding: 1, resource: {, buffer: bBuf } },
-        { binding: 2, resource: {, buffer: resultBuf } },
-        { binding: 3, resource: {, buffer: paramsBuf } }
+        { binding: 0, resource: { buffer: aBuf } }},
+        { binding: 1, resource: { buffer: bBuf } }},
+        { binding: 2, resource: { buffer: resultBuf } }},
+        { binding: 3, resource: { buffer: paramsBuf } }} }
       ]
     });
 
@@ -222,42 +221,42 @@ class WebGPUAccelerator {
       const arrayView = new Float32Array(mapped);
       const similarity = arrayView[0] ?? 0;
       return similarity;
-    } finally {
+    } }finally {
       try {
         readBuf.unmap();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       // cleanup GPU buffers
       try {
         aBuf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       try {
         bBuf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       try {
         resultBuf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       try {
         paramsBuf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       try {
         readBuf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
+      } }
       const time = performance.now() - start;
       console.debug(`computeVectorSimilarity GPU time: ${time.toFixed(2)}ms`);
-    }
-  }
+    } }
+  } }
 
   // Simple CPU matrix multiply fallback (keeps API stable)
   async matrixMultiply(
@@ -274,12 +273,12 @@ class WebGPUAccelerator {
         let sum = 0;
         for (let k = 0; k < K; k++) {
           sum += matrixA[m * K + k] * matrixB[k * N + n];
-        }
+        } }
         out[m * N + n] = sum;
-      }
-    }
+      } }
+    } }
     return out;
-  }
+  } }
 
   // Placeholder for K-means: not GPU-accelerated here, returns CPU stub
   async performKMeansClustering(dataPoints: Float32Array, dimensions: number, numClusters: number, iterations = 10) {
@@ -288,7 +287,7 @@ class WebGPUAccelerator {
     for (let i = 0; i < numPoints; i++) assignments[i] = Math.floor(Math.random() * numClusters);
     const centroids = new Float32Array(numClusters * dimensions);
     return { centroids, assignments };
-  }
+  } }
 
   getPerformanceMetrics(): any {
     return {
@@ -297,23 +296,23 @@ class WebGPUAccelerator {
       shadersLoaded: this.computeShaders.size,
       buffersActive: this.bufferPool.size
     };
-  }
+  } }
 
   dispose(): void {
     for (const buf of this.bufferPool.values()) {
       try {
         buf.destroy();
-      } catch {
+      } }catch {
         /* ignore */
-      }
-    }
+      } }
+    } }
     this.bufferPool.clear();
     this.computeShaders.clear();
     this.device = null;
     this.capabilities = null;
     this.initialized = $state(false);
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const webGPUAccelerator = new WebGPUAccelerator();

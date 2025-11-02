@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Simplified Mock API Sync System
  * Clean, minimal implementation used for testing and to unblock formatting/typechecks.
@@ -11,7 +11,7 @@ const mockDb = {
     // eslint-disable-next-line no-console
     console.log('Mock DB, Query:', sql);
     return { rows: [] };
-  }
+  } }
 };
 
 // Mock data generators (small, valid implementations)
@@ -25,14 +25,14 @@ export const mockDataGenerators = {
       const type = documentTypes[i % documentTypes.length];
       docs.push({
         id: `mock_doc_${Date.now()}_${i}`,
-        title: `Mock ${type} Document ${i + 1}`,
-        content: `This is a mock ${type} document for testing.`,
+        title: `Mock ${type} }Document ${i + 1}`,
+        content: `This is a mock ${type} }document for testing.`,
         type,
         status: 'active',
         embedding: makeVec(),
         createdAt: new Date().toISOString()
       });
-    }
+    } }
     return docs;
   },
 
@@ -40,7 +40,7 @@ export const mockDataGenerators = {
     const states = [] as: any[];
     for (let i = 0; i < count; i++) {
       states.push({ id: `qlora_state_${Date.now()}_${i}`, complexity: Math.random() });
-    }
+    } }
     return states;
   },
 
@@ -48,15 +48,15 @@ export const mockDataGenerators = {
     const preds = [] as: any[];
     for (let i = 0; i < count; i++) {
       preds.push({ id: `pred_${Date.now()}_${i}`, score: Math.random() });
-    }
+    } }
     return preds;
   },
 
   async generateMockEmbeddingShards(count: number = 15) {
     const shards = [] as: any[];
     for (let i = 0; i < count; i++) {
-      shards.push({ shardId: `shard_${Date.now()}_${i}`, vec: Array.from({, length: 128 }, () => Math.random()) });
-    }
+      shards.push({ shardId: `shard_${Date.now()}_${i}`, vec: Array.from({ length: 128 }, () => Math.random()) });
+    } }
     return shards;
   },
 
@@ -64,9 +64,9 @@ export const mockDataGenerators = {
     const manifests = [] as: any[];
     for (let i = 0; i < count; i++) {
       manifests.push({ id: `chr_${Date.now()}_${i}`, keys: [`k_${i}`] });
-    }
+    } }
     return manifests;
-  }
+  } }
 };
 
 // Database sync operations (simplified mock)
@@ -78,11 +78,11 @@ export const databaseSync = {
       const docs = await mockDataGenerators.generateMockLegalDocuments(20);
       await mockDb.query('INSERT INTO legal_documents (...) -- mock');
       return { success: true, count: docs.length };
-    } catch (err: any) {
+    } }catch (err: any) {
       // eslint-disable-next-line no-console
       console.error('Failed to sync mock legal documents:', err);
       return { success: false, error: err?.message ?? String(err), count: 0 };
-    }
+    } }
   },
 
   async syncQLoRATrainingData() {
@@ -92,11 +92,11 @@ export const databaseSync = {
       const states = await mockDataGenerators.generateMockQLoRAStates(10);
       await mockDb.query('INSERT INTO qlora_training_jobs (...) -- mock');
       return { success: true, count: states.length };
-    } catch (err: any) {
+    } }catch (err: any) {
       // eslint-disable-next-line no-console
       console.error('Failed to sync QLoRA training data:', err);
       return { success: false, error: err?.message ?? String(err), count: 0 };
-    }
+    } }
   },
 
   async syncPredictiveAssetCache() {
@@ -106,12 +106,13 @@ export const databaseSync = {
       const preds = await mockDataGenerators.generateMockAssetPredictions(15);
       await mockDb.query('INSERT INTO predictive_asset_cache (...) -- mock');
       return { success: true, count: preds.length };
-    } catch (err: any) {
+    } }catch (err: any) {
       // eslint-disable-next-line no-console
       console.error('Failed to sync predictive asset cache:', err);
       return { success: false, error: err?.message ?? String(err), count: 0 };
-    }
-  }
+    } }
+  } }
 };
 // (Intentionally no vectorSearch or orchestrator helpers here)
 // This file provides only small mock generators and sync helpers used in tests.
+

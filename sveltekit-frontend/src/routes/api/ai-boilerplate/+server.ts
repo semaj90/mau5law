@@ -1,27 +1,27 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
+import type { Case } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json, error } }from '@sveltejs/kit';
+import { legalAIResultCache } }from '$lib/services/advanced-result-cache.js';
 /*
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
  */
 import postgres from 'postgres';
-import { z } from 'zod';
+import { z } }from 'zod';
 // Configuration
-const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
+const CONFIG = { database: { connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' } } },
   olloma: {
-   , url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+  url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
     model: import.meta.env.LLM_MODEL || 'gemma3-legal' },
   boilerplate: {
-   , minProsecutionScore: 70,
+  minProsecutionScore: 70,
     maxTemplates: 5,
     templateLength: 300
-  }
+  } }
 };
 // Validation schemas
 const BoilerplateRequestSchema = z.object({
- , type: z.enum([
+  type: z.enum([
     'prosecution_argument',
     'evidence_summary',
     'legal_motion',
@@ -33,7 +33,7 @@ const BoilerplateRequestSchema = z.object({
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   context: z
     .object({
-     , case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
+  case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
       defendant_name: z.string().optional(),
       charges: z.array(z.string()).optional(),
       evidence_types: z.array(z.string()).optional(),
@@ -54,16 +54,16 @@ interface HighPerformingPhrase { phrase: string;, avg_prosecution_score: number
   frequency: number;
   correlation_strength: number;
   usage_count: string;
-}
+} }
 
 const BoilerplateResponseSchema = z.object({
- , boilerplate_text: z.string(),
+  boilerplate_text: z.string(),
   source_phrases: z.array(z.string()),
   confidence_score: z.number(),
   prosecution_strength: z.number(),
   suggested_edits: z.array(z.string()),
   metadata: z.object({
-   , template_type: z.string(),
+  template_type: z.string(),
     jurisdiction: z.string().optional(),
     generation_time_ms: z.number()
   })
@@ -74,9 +74,9 @@ let sql: ReturnType<typeof postgres> | null = null;
 function getDB() {
   if (!sql) {
     sql = postgres(CONFIG.database.connectionString, { max: 10 });
-  }
+  } }
   return sql;
-}
+} }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
@@ -101,50 +101,50 @@ export const POST: RequestHandler = async ({ request }) => {
       prosecution_strength: boilerplateResult.prosecutionStrength,
       suggested_edits: suggestedEdits,
       metadata: {
-       , template_type: validatedRequest.type,
+  template_type: validatedRequest.type,
         jurisdiction: validatedRequest.jurisdiction,
         generation_time_ms: Date.now() - startTime
-      }
+      } }
     };
     // Validate response
     const validatedResponse = BoilerplateResponseSchema.parse(response);
     return json(validatedResponse);
-  } catch (err: any) {
+  } }catch (err: any) {
     const errorId = crypto.randomUUID();
-    console.error(`❌ AI Boilerplate generation error [${errorId}]: ', err);'`
+    console.error(`❌ AI Boilerplate generation error [${errorId} }: ', err);'`
     if (err instanceof z.ZodError) {
       return json(
         {
           message: 'Invalid request format',
           errors: err.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     return json(
       { message: `AI Boilerplate service temporarily unavailable. Error, ID: ${errorId}`,
         details: err instanceof Error ? err.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function getHighPerformingPhrases(
   type: BoilerplateType,
   jurisdiction?: string,
   context?: BoilerplateRequestContext
 ): Promise<HighPerformingPhrase[]> {
-  const cacheKeyInput = { type, jurisdiction, context: context ?? {} };
+  const cacheKeyInput = { type, jurisdiction, context: context ?? {} }};
   const cacheKey = await legalAIResultCache.generateCacheKey(cacheKeyInput);
   const cachedResult = await legalAIResultCache.getCachedLegalResults<HighPerformingPhrase[]>(cacheKey);
   if (cachedResult) {
     console.log(`CACHE HIT for high performing phrases: ${type}`);
     return cachedResult;
-  }
+  } }
   console.log(`CACHE MISS for high performing phrases: ${type}`);
 
   const db = getDB();
 
-  // Performance note: The join condition `...;, ILIKE: '%' || spr.phrase || '%'` is inefficient
+  // Performance note: The join condition `...; ILIKE: '%' || spr.phrase || '%'` is inefficient
   // and can cause slow queries. Consider using Full-Text Search or a trigram index (pg_trgm)
   // on `legal_documents_processed.semantic_phrases` for better performance.
   const result = await db`
@@ -156,11 +156,11 @@ async function getHighPerformingPhrases(
       COUNT(ldp.id) AS usage_count
     FROM semantic_phrases_ranking spr
     JOIN legal_documents_processed ldp
-      ON ldp.semantic_phrases::text;, ILIKE: '%' || spr.phrase || '%'
-    WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore}
-    ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``}
-    ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db`` }
-    ${db.unsafe(getTypeSpecificFilter(type))}
+      ON ldp.semantic_phrases::text; ILIKE: '%' || spr.phrase || '%'
+    WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore} }
+    ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``} }
+    ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db`` } }
+    ${db.unsafe(getTypeSpecificFilter(type))} }
     GROUP BY
       spr.phrase,
       spr.avg_prosecution_score,
@@ -170,7 +170,7 @@ async function getHighPerformingPhrases(
       spr.avg_prosecution_score DESC,
       usage_count DESC,
       spr.correlation_strength DESC
-    LIMIT ${CONFIG.boilerplate.maxTemplates}
+    LIMIT ${CONFIG.boilerplate.maxTemplates} }
   `;`
 
   const phrases = result.map((row: any) => ({
@@ -184,27 +184,27 @@ async function getHighPerformingPhrases(
   await legalAIResultCache.cacheLegalResults(cacheKey, phrases, 60 * 60 * 1000); // 1 hour cache
 
   return phrases;
-}
+} }
 
 function getTypeSpecificFilter(type: BoilerplateType): string {
   const typeFilters: Record<BoilerplateType, string> = {
     'prosecution_argument':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%prosecution%' OR ldp.semantic_phrases::text;, ILIKE: '%argument%' OR ldp.semantic_phrases::text;, ILIKE: '%evidence%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%prosecution%' OR ldp.semantic_phrases::text; ILIKE: '%argument%' OR ldp.semantic_phrases::text; ILIKE: '%evidence%')",
     'evidence_summary':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%evidence%' OR ldp.semantic_phrases::text;, ILIKE: '%testimony%' OR ldp.semantic_phrases::text;, ILIKE: '%proof%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%evidence%' OR ldp.semantic_phrases::text; ILIKE: '%testimony%' OR ldp.semantic_phrases::text; ILIKE: '%proof%')",
     'legal_motion':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%motion%' OR ldp.semantic_phrases::text;, ILIKE: '%request%' OR ldp.semantic_phrases::text;, ILIKE: '%order%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%motion%' OR ldp.semantic_phrases::text; ILIKE: '%request%' OR ldp.semantic_phrases::text; ILIKE: '%order%')",
     'case_analysis':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%analysis%' OR ldp.semantic_phrases::text;, ILIKE: '%precedent%' OR ldp.semantic_phrases::text;, ILIKE: '%ruling%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%analysis%' OR ldp.semantic_phrases::text; ILIKE: '%precedent%' OR ldp.semantic_phrases::text; ILIKE: '%ruling%')",
     'sentencing_memo':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%sentencing%' OR ldp.semantic_phrases::text;, ILIKE: '%punishment%' OR ldp.semantic_phrases::text;, ILIKE: '%mitigation%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%sentencing%' OR ldp.semantic_phrases::text; ILIKE: '%punishment%' OR ldp.semantic_phrases::text; ILIKE: '%mitigation%')",
     'plea_agreement':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%plea%' OR ldp.semantic_phrases::text;, ILIKE: '%agreement%' OR ldp.semantic_phrases::text;, ILIKE: '%guilty%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%plea%' OR ldp.semantic_phrases::text; ILIKE: '%agreement%' OR ldp.semantic_phrases::text; ILIKE: '%guilty%')",
     'discovery_request':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%discovery%' OR ldp.semantic_phrases::text;, ILIKE: '%documents%' OR ldp.semantic_phrases::text;, ILIKE: '%disclosure%')"
+      " AND (ldp.semantic_phrases::text; ILIKE: '%discovery%' OR ldp.semantic_phrases::text; ILIKE: '%documents%' OR ldp.semantic_phrases::text; ILIKE: '%disclosure%')"
   };
   return typeFilters[type] || '';
-}
+} }
 
 /**
  * Generates legal boilerplate text using an LLM based on the provided request and high-performing phrases.
@@ -216,42 +216,42 @@ function getTypeSpecificFilter(type: BoilerplateType): string {
 async function generateBoilerplate(
   request: BoilerplateRequest,
   sourcePhrases: HighPerformingPhrase[]
-): Promise<{ text: string; confidence: number;, prosecutionStrength: number }> {
+): Promise<{ text: string; confidence: number; prosecutionStrength: number }> {
   const avgProsecutionScore =
     sourcePhrases.reduce((sum, p) => sum + p.avg_prosecution_score, 0) / (sourcePhrases.length || 1);
   const systemPrompt = buildSystemPrompt(request.type, request.tone || 'formal');
   const contextPrompt = buildContextPrompt(request.context);
   const phraseText = sourcePhrases.map(p => `- "${p.phrase}"`).join('\n');
   const fullPrompt = `${systemPrompt}`
-${contextPrompt}
+${contextPrompt} }
 Based on these high-performing legal phrases that have shown strong prosecution correlation:
-${phraseText}
-Generate a ${request.length || 'standard'} length ${request.type} that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal` } tone.'`, Requirements:
+${phraseText} }
+Generate a ${request.length || 'standard'} }length ${request.type} }that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal` } }tone.'`, Requirements:
 - Use clear, persuasive legal language
 - Incorporate the provided high-scoring phrases naturally
 - Maintain professional legal writing standards
 - Focus on strength of argument and evidence
-- Length: ${getLengthGuidance(request.length)}
+- Length: ${getLengthGuidance(request.length)} }
 Generate the boilerplate text:`;`
   try {
     const response = await fetch(`${CONFIG.olloma.url}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , model: CONFIG.olloma.model || 'unknown',
+  model: CONFIG.olloma.model || 'unknown',
         prompt: fullPrompt,
         stream: false,
         options: {
-         , temperature: 0.4,
+  temperature: 0.4,
           top_p: 0.9,
           repeat_penalty: 1.1,
           num_predict: getLengthTokens(request.length)
-        }
+        } }
       })
     });
     if (!response.ok) {
       throw new Error(`LLM request failed: ${response.status}`);
-    }
+    } }
     const data = (await response.json()) as { response: string };
     const generatedText = data.response.trim();
     // Calculate confidence based on phrase usage
@@ -264,12 +264,12 @@ Generate the boilerplate text:`;`
       confidence,
       prosecutionStrength: avgProsecutionScore
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('LLM generation failed:', error);
     // Fallback to template-based generation
     return generateFallbackBoilerplate(request.type, sourcePhrases);
-  }
-}
+  } }
+} }
 function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
   const basePrompt = 'You are an expert legal writer specializing in prosecution documents. ';
   const typePrompts: Record<BoilerplateType, string> = {
@@ -289,28 +289,28 @@ function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
     'aggressive': "Use strong, assertive language that emphasizes the strength of the prosecution's case.",'
     'neutral': 'Use objective, fact-based language that presents information clearly and impartially.',
     'persuasive': `Use compelling, convincing language that builds a strong case for the prosecution.` };
-  return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
-}
+  return `${basePrompt}${typePrompts[type]} }${toneAdjustments[tone]}`;
+} }
 function buildContextPrompt(context?: BoilerplateRequestContext): string {
   if (!context) return, '';
   let contextPrompt = 'Context for this document:\n';
   if (context.defendant_name) {
     contextPrompt += `- Defendant: ${context.defendant_name}\n`;
-  }
+  } }
   if (context.charges && context.charges.length > 0) {
     contextPrompt += `- Charges: ${context.charges.join(', ')}\n`;
-  }
+  } }
   if (context.evidence_types && context.evidence_types.length > 0) {
     contextPrompt += `- Evidence Types: ${context.evidence_types.join(', ')}\n`;
-  }
+  } }
   if (context.precedents && context.precedents.length > 0) {
     contextPrompt += `- Relevant Precedents: ${context.precedents.join(', ')}\n`;
-  }
+  } }
   if (context.custom_context) {
     contextPrompt += `- Additional Context: ${context.custom_context}\n`;
-  }
+  } }
   return contextPrompt + '\n';
-}
+} }
 function getLengthGuidance(length?: string): string {
   switch (length) {
     case, 'brief':
@@ -318,8 +318,8 @@ function getLengthGuidance(length?: string): string {
     case, 'detailed':
       return, '4-6 paragraphs (400-600 words)';
     default: return, '2-4 paragraphs (200-400 words)';
-  }
-}
+  } }
+} }
 function getLengthTokens(length?: string): number {
   switch (length) {
     case, 'brief':
@@ -327,8 +327,8 @@ function getLengthTokens(length?: string): number {
     case, 'detailed':
       return 800;
     default: return 500;
-  }
-}
+  } }
+} }
 function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighPerformingPhrase[]) {
   const templates: Partial<Record<BoilerplateType, string>> = {
     'prosecution_argument': 'Based on the compelling evidence presented, the prosecution has demonstrated beyond a reasonable doubt that the defendant is guilty of the charges. The evidence includes ${sourcePhrases'
@@ -356,22 +356,22 @@ function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighP
     confidence: 0.6,
     prosecutionStrength: 75
   };
-}
+} }
 async function generateSuggestedEdits(text: string, type: BoilerplateType): Promise<string[]> {
   const suggestions = [];
   // Basic suggestions based on text analysis
   if (!text.includes('evidence')) {
     suggestions.push('Consider adding specific evidence references');
-  }
+  } }
   if (!text.includes('precedent') && type === 'legal_motion') {
     suggestions.push('Include relevant legal precedents');
-  }
+  } }
   if (text.length < 200) {
     suggestions.push('Consider expanding with additional supporting arguments');
-  }
+  } }
   if (!text.includes('defendant')) {
     suggestions.push('Make sure to clearly identify the defendant');
-  }
+  } }
   // Type-specific suggestions
   const typeSpecificSuggestions: Partial<Record<BoilerplateType, string[]>> = {
     'prosecution_argument': ['Add specific statutory citations', 'Include burden of proof language'],
@@ -380,17 +380,17 @@ async function generateSuggestedEdits(text: string, type: BoilerplateType): Prom
   };
   if (typeSpecificSuggestions[type]) {
     suggestions.push(...typeSpecificSuggestions[type]);
-  }
+  } }
   return suggestions.slice(0, 5); // Limit to, 5 suggestions
-}
+} }
 // GET endpoint for available templates
 export const GET: RequestHandler = async () => {
   try {
     const db = getDB();
 
     interface DbStats { total_phrases: string;, avg_score: string;
-     , high_performing_phrases: string;
-    }
+  high_performing_phrases: string;
+    } }
 
     // Get statistics about available templates
     const stats = await db<DbStats[]>`
@@ -401,8 +401,7 @@ export const GET: RequestHandler = async () => {
             FROM semantic_phrases_ranking
         `;`
     const templates = [
-      {,
-        type: 'prosecution_argument',
+      { type: 'prosecution_argument',
         name: 'Prosecution Argument',
         description: 'Compelling arguments for establishing guilt',
         available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
@@ -435,13 +434,14 @@ export const GET: RequestHandler = async () => {
     return json({
       templates,
       statistics: {
-       , total_phrases: parseInt(stats[0]?.total_phrases || '0'),
+  total_phrases: parseInt(stats[0]?.total_phrases || '0'),
         average_score: parseFloat(stats[0]?.avg_score || '0'),
         high_performing_count: parseInt(stats[0]?.high_performing_phrases || '0')
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Template listing error:', err);'
+  } }catch (err: any) {
+    console.error('Template listing error:', err);
     throw error(500, 'Unable to fetch template information');
-  }
+  } }
 };
+

@@ -2,15 +2,15 @@
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db/connection';
-import { documents, cases } from '$lib/server/schema/documents';
-import { eq, desc, and, sql } from 'drizzle-orm';
-import { createEmbedding } from '$lib/services/embedding-service';
-import { redis } from '$lib/server/redis';
-import type { Document, NewDocument } from '$lib/server/schema/documents';
-import type { SQL } from 'drizzle-orm'; // <-- added, type, import
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/connection';
+import { documents, cases } }from '$lib/server/schema/documents';
+import { eq, desc, and, sql } }from 'drizzle-orm';
+import { createEmbedding } }from '$lib/services/embedding-service';
+import { redis } }from '$lib/server/redis';
+import type { Document, NewDocument } }from '$lib/server/schema/documents';
+import type { SQL } }from 'drizzle-orm'; // <-- added, type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
@@ -21,7 +21,7 @@ async function deleteKeysByPattern(pattern: string): Promise<void> {
 
     // Typed signature for redis.scan to avoid casting to `any`
     type RedisScanFn = (cursor: string, ...args: (string | number)[]) => Promise<[string, string[]]>;
-    const scanFn = (redis as: unknown as {, scan: RedisScanFn }).scan;
+    const scanFn = (redis as: unknown as { scan: RedisScanFn }).scan;
 
     do {
       const reply = await scanFn(cursor, 'MATCH', pattern, 'COUNT', 100);
@@ -30,15 +30,15 @@ async function deleteKeysByPattern(pattern: string): Promise<void> {
       for (const key of keys) {
         try {
           await redis.del(key);
-        } catch (err) {
+        } }catch (err) {
           console.warn('Failed to delete redis key', key, err);
-        }
-      }
-    } while (cursor !== '0');
-  } catch (err) {
+        } }
+      } }
+    } }while (cursor !== '0');
+  } }catch (err) {
     console.warn('Failed to scan redis keys for pattern', pattern, err);
-  }
-}
+  } }
+} }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const cached = await redis.get(cacheKey);
     if (cached) {
       return json(JSON.parse(cached));
-    }
+    } }
 
     // Strongly type conditions as an array of SQL expressions
     const conditions: SQL[] = [];
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
           OR to_tsvector('english', ${documents.content}) @@ plainto_tsquery('english', ${search})
         )`
       );
-    }
+    } }
     if (caseId) conditions.push(eq(documents.case_id, caseId) as: unknown as SQL);
     if (documentType) conditions.push(eq(documents.document_type, documentType) as: unknown as SQL);
     if (riskLevel) conditions.push(eq(documents.risk_level, riskLevel) as: unknown as SQL);
@@ -125,20 +125,20 @@ export const GET: RequestHandler = async ({ url }) => {
         pages: Math.max(1, Math.ceil(total / limit)),
         hasNext: page * limit < total,
         hasPrev: page > 1
-      }
+      } }
     };
 
     // node-redis, v4: use set with EX option
     await redis.set(cacheKey, JSON.stringify(response), { EX: CACHE_TTL });
 
     return json(response);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching documents:', error);
     return json(
       { error: 'Failed to fetch documents', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!data.title || !data.content) {
       return json({ error: 'Title and content are required' }, { status: 400 });
-    }
+    } }
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
@@ -163,14 +163,14 @@ export const POST: RequestHandler = async ({ request }) => {
         titleEmbedding = await createEmbedding(data.title || '');
         if (data.ai_summary) {
           summaryEmbedding = await createEmbedding(data.ai_summary);
-        }
-      } catch (embeddingError) {
+        } }
+      } }catch (embeddingError) {
         console.warn('Failed to generate embeddings:', embeddingError);
-      }
-    }
+      } }
+    } }
 
     const documentData: NewDocument = {
-     , title: data.title!,
+  title: data.title!,
       content: data.content!,
       document_type: data.document_type || 'general',
       confidence_level: data.confidence_level || 0,
@@ -206,8 +206,8 @@ export const POST: RequestHandler = async ({ request }) => {
         updates.is_indexed = true;
         updates.processed_at = new Date();
         await db.update(documents).set(updates).where(eq(documents.id, newDocument.id)).execute();
-      }
-    }
+      } }
+    } }
 
     // Safe cache invalidation: use scanIterator to avoid keys() typing issues
     const cachePattern = 'documents:*';
@@ -218,15 +218,15 @@ export const POST: RequestHandler = async ({ request }) => {
         document: newDocument,
         embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
         message: `Document created successfully' },'`
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error) {
+  } }catch (error) {
     console.error('Error creating document:', error);
     return json(
       { error: 'Failed to create document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const PUT: RequestHandler = async ({ request, url }) => {
@@ -234,7 +234,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
       return json({ error: `Document ID is required` }, { status: 400 });
-    }
+    } }
 
     const data = (await request.json()) as Partial<Document> & { auto_embed?: boolean };
 
@@ -242,7 +242,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 
     if (existingDocument.length === 0) {
       return json({ error: 'Document not found' }, { status: 404 });
-    }
+    } }
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
@@ -251,14 +251,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     if (data.auto_embed !== false) {
       if (data.content && data.content !== existingDocument[0].content) {
         embedding = await createEmbedding(data.content);
-      }
+      } }
       if (data.title && data.title !== existingDocument[0].title) {
         titleEmbedding = await createEmbedding(data.title);
-      }
+      } }
       if (data.ai_summary && data.ai_summary !== existingDocument[0].ai_summary) {
         summaryEmbedding = await createEmbedding(data.ai_summary);
-      }
-    }
+      } }
+    } }
 
     const updateData: Partial<Document> = {
       ...data,
@@ -269,7 +269,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       updateData.embedding = sql`${JSON.stringify(embedding)}::vector`;
       updateData.is_indexed = true;
       updateData.processed_at = new Date();
-    }
+    } }
     if (titleEmbedding) updateData.title_embedding = sql`${JSON.stringify(titleEmbedding)}::vector`;
     if (summaryEmbedding) updateData.summary_embedding = sql'${JSON.stringify(summaryEmbedding)}::vector';
 
@@ -291,13 +291,13 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully' });'' } catch (error) {
+      message: 'Document updated successfully' });'' } }catch (error) {
     console.error('Error updating document:', error);
     return json(
       { error: 'Failed to update document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -305,7 +305,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
       return json({ error: `Document ID is required` }, { status: 400 });
-    }
+    } }
 
     const [deletedDocument] = await db
       .update(documents)
@@ -319,22 +319,23 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     if (!deletedDocument) {
       return json({ error: 'Document not found' }, { status: 404 });
-    }
+    } }
 
     {
       // Replace keys+spread deletion with scanIterator helper
       await deleteKeysByPattern('documents:*');
-    }
+    } }
 
     return json({
       message: 'Document deleted successfully',
       document_id: documentId
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error deleting document:', error);
     return json(
       { error: 'Failed to delete document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

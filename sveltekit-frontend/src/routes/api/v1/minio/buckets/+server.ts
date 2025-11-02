@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
+import type { RequestHandler } }from './$types.js';
+import { minioService, BUCKETS } }from '$lib/server/storage/minio-service';
 
 // Add a minimal typed shape for files returned by minioService.listFiles
 type MinioFile = {
@@ -27,10 +27,10 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
 
     // Get bucket details
     const includeStats = url.searchParams.get('stats') === 'true';
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
               // use typed MinioFile and nullish coalescing instead of `any`
               totalSize: files.reduce((sum: number, file: MinioFile) => sum + (file.size ?? 0), 0)
             };
-          } catch (error) {
+          } }catch (error) {
             return {
               name: bucket.name,
               creationDate: bucket.creationDate,
@@ -63,14 +63,14 @@ export const GET: RequestHandler = async ({ url }) => {
               totalSize: 0,
               error: error instanceof Error ? error.message : 'Unknown error'
             };
-          }
+          } }
         })
       );
 
       bucketDetails = detailedBuckets.map(result =>
         result.status === 'fulfilled' ? result.value : (result as PromiseRejectedResult).reason
       );
-    }
+    } }
 
     // Show expected vs actual buckets
     const expectedBuckets = Object.values(BUCKETS);
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         buckets: bucketDetails,
         summary: {
-         , total: buckets.length,
+  total: buckets.length,
           expected: expectedBuckets.length,
           missing: missingBuckets,
           allBucketsReady: missingBuckets.length === 0
@@ -91,11 +91,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  } catch (error) {
-    console.error('Bucket listing error:', error);'
+  } }catch (error) {
+    console.error('Bucket listing error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to list buckets',
@@ -103,15 +103,15 @@ export const GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { action, bucketName } = body;
+    const { action, bucketName } }= body;
     // Initialize MinIO service
     const initialized = await minioService.initialize();
     if (!initialized) {
@@ -121,10 +121,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     if (action === 'ensure-all') {
       // Ensure all standard buckets exist
       const results = await minioService.ensureAllBuckets();
@@ -137,10 +137,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     if (action === 'create' && bucketName) {
       // Create specific bucket
       const created = await minioService.createBucket(bucketName);
@@ -154,21 +154,21 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: created ? 200 : 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     return new Response(
       JSON.stringify({ error: 'Invalid action. Supported, actions: ensure-all, create',
         availableActions: ['ensure-all', 'create']
       }),
       {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  } catch (error) {
-    console.error('Bucket management error:', error);'
+  } }catch (error) {
+    console.error('Bucket management error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to manage buckets',
@@ -176,14 +176,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { bucketName, force = false } = await request.json();
+    const { bucketName, force = false } }= await request.json();
     if (!bucketName) {
       return new Response(
         JSON.stringify({
@@ -191,10 +191,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Prevent deletion of standard buckets unless forced
     const standardBuckets = Object.values(BUCKETS);
     if (standardBuckets.includes(bucketName) && !force) {
@@ -206,10 +206,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 403,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Initialize MinIO service
     const initialized = await minioService.initialize();
     if (!initialized) {
@@ -219,10 +219,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Check if bucket is empty before deletion
     const files = (await minioService.listFiles(bucketName, undefined, 1)) as MinioFile[];
     if (files.length > 0 && !force) {
@@ -234,9 +234,9 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }'` }'`
+          headers: { 'Content-Type': 'application/json' } }` } }`
       );
-    }
+    } }
     // Delete bucket (implementation needed in MinIO service)
     const deleted = await minioService.deleteBucket(bucketName, force);
     return new Response(
@@ -249,11 +249,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: deleted ? 200 : 500,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  } catch (error) {
-    console.error('Bucket deletion error:', error);'
+  } }catch (error) {
+    console.error('Bucket deletion error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to delete bucket',
@@ -261,8 +261,9 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  }
+  } }
 };
+

@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /**
  * SearchStore - Unified Search & Filtering
  *
@@ -9,13 +9,13 @@ import type { SearchResult } from '$lib/types';
  * - search-filters.ts
  *
  *, Usage:
- *   import { searchStore } from '$lib/stores/unified';
+ *   import { searchStore } }from '$lib/stores/unified';
  *
  *   await searchStore.search('statute, 42 USC');
  *   $: results = $searchStore.results;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -29,7 +29,7 @@ export interface SearchResult { id: string;, type: SearchScope;
  , score: number;
   metadata?: Record<string, unknown>;
   url?: string;
-}
+} }
 
 export interface SearchFilters {
   dateRange?: { start: number;, end: number;
@@ -40,15 +40,15 @@ export interface SearchFilters {
   tags?: string[];
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-}
+} }
 
-export interface SavedSearch {, id: string;, name: string;
+export interface SavedSearch { id: string;, name: string;
   query: string;
   filters: SearchFilters;
   scope: SearchScope[];
   mode: SearchMode;
   createdAt: number;
-}
+} }
 
 /**
  * Search Store State
@@ -80,10 +80,9 @@ interface SearchStoreState {
   isSearching: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: SearchStoreState = {
- , query: '',
+const initialState: SearchStoreState = { query: '',
   searchMode: 'hybrid',
   searchScope: ['all'],
   results: [],
@@ -104,7 +103,7 @@ const initialState: SearchStoreState = {
  * Create Search Store
  */
 function createSearchStore() {
-  const { subscribe, update } = writable<SearchStoreState>(initialState);
+  const { subscribe, update } }= writable<SearchStoreState>(initialState);
 
   return {
     subscribe,
@@ -135,7 +134,7 @@ function createSearchStore() {
           lastSearchQuery: query
         }));
         return;
-      }
+      } }
 
       update(s => ({ ...s, isSearching: true, error: null, query }));
 
@@ -149,7 +148,7 @@ function createSearchStore() {
             query,
             mode,
             scope,
-            filters: {}
+            filters: {} }
           }),
           credentials: `include` });
 
@@ -170,13 +169,13 @@ function createSearchStore() {
             isSearching: false,
             lastUpdated: Date.now()
           }));
-        } else {
+        } }else {
           throw new Error('Search failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Search failed';
         update(s => ({ ...s, error: errorMsg, isSearching: false }));
-      }
+      } }
     },
 
     /**
@@ -205,11 +204,11 @@ function createSearchStore() {
           }));
 
           return results;
-        }
-      } catch (error) {
-        console.error('Vector search error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Vector search error:', error);
         update(s => ({ ...s, isSearching: false }));
-      }
+      } }
 
       return [];
     },
@@ -286,8 +285,7 @@ function createSearchStore() {
     async saveSearch(name: string) {
       let state = { query: '', filters: {}, scope: [] as SearchScope[], mode: 'hybrid' as SearchMode };
       subscribe(s => {
-        state = {
-         , query: s.query,
+        state = { query: s.query,
           filters: s.filters,
           scope: s.searchScope,
           mode: s.searchMode
@@ -327,7 +325,7 @@ function createSearchStore() {
           mode: savedSearch.mode,
           scope: savedSearch.scope
         });
-      }
+      } }
     },
 
     /**
@@ -357,7 +355,7 @@ function createSearchStore() {
      * Export search results
      */
     async exportResults(format: 'csv' | 'json' | 'pdf') {
-      const state: { results: SearchResult[] } = {, results: [] };
+      const state: { results: SearchResult[] } }= { results: [] };
       subscribe(s => {
         state.results = s.results;
       })();
@@ -366,8 +364,7 @@ function createSearchStore() {
         const response = await fetch('/api/search/export', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , results: state.results,
+          body: JSON.stringify({ results: state.results,
             format
           }),
           credentials: `include` });
@@ -380,8 +377,8 @@ function createSearchStore() {
           a.download = `search-results.${format}`;
           a.click();
           URL.revokeObjectURL(url);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Export error: ', error);` }`'
     },
 
@@ -410,13 +407,13 @@ function createSearchStore() {
       return results.filter(r => {
         if (filters.caseIds?.length && !filters.caseIds.includes(r.metadata?.caseId as: string)) {
           return false;
-        }
+        } }
         if (filters.entityTypes?.length && !filters.entityTypes.includes(r.type)) {
           return false;
-        }
+        } }
         if (filters.tags?.length && !filters.tags.some(t => (r.metadata?.tags as: string[])?.includes(t))) {
           return false;
-        }
+        } }
         return true;
       });
     },
@@ -427,11 +424,11 @@ function createSearchStore() {
       if (filters.caseIds?.length) labels.push(`cases: ${filters.caseIds.length}`);
       if (filters.entityTypes?.length) labels.push(`types: ${filters.entityTypes.length}`);
       if (filters.tags?.length) labels.push(`tags: ${filters.tags.length}`);
-      if (filters.priority) labels.push('priority: ${filters.priority}');
+      if (filters.priority) labels.push('priority: ${filters.priority} });
       return labels;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -466,9 +463,10 @@ export const activeFilters = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { search, vectorSearch } from '$lib/stores/search-store'
- *   import { commandSearch } from '$lib/stores/command-search'
+ *   import { search, vectorSearch } }from '$lib/stores/search-store'
+ *   import { commandSearch } }from '$lib/stores/command-search'
  *
  * New imports:
- *   import { searchStore, searchResults, isSearching, activeFilters } from '$lib/stores/unified'
+ *   import { searchStore, searchResults, isSearching, activeFilters } }from '$lib/stores/unified'
  */
+

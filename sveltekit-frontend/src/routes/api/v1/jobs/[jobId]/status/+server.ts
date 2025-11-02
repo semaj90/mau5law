@@ -3,10 +3,10 @@
  * Single endpoint to access all vector systems: WebGPU SOM, WebAssembly RAG,
  * PageRank, Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedVectorOrchestrator } from, '$lib/services/unified-vector-orchestrator';
-import type { UnifiedVectorRequest } from, '$lib/services/unified-vector-orchestrator';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { unifiedVectorOrchestrator } }from '$lib/services/unified-vector-orchestrator';
+import type { UnifiedVectorRequest } }from '$lib/services/unified-vector-orchestrator';
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'info';
@@ -14,21 +14,21 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'health') {
       const health = (await unifiedVectorOrchestrator?.healthCheck?.()) ?? { unifiedVector: false };
       return json({
-       , success: true,
+  success: true,
         health,
         allSystemsOperational: Object.values(health).every(status => Boolean(status)),
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     if (action === 'analytics') {
       const analytics = (await unifiedVectorOrchestrator?.getPerformanceAnalytics?.()) ?? { queries: 0 };
       return json({
-       , success: true,
+  success: true,
         analytics,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     // info / default
     return json({
@@ -37,9 +37,9 @@ export const GET: RequestHandler = async ({ url }) => {
       availableActions: ['health', 'analytics'],
       timestamp: new Date().toISOString()
     });
-  } catch (err) {
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -47,7 +47,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json().catch(() => null)) as UnifiedVectorRequest | null;
     // Echo back request for now; integration happens behind feature flags in main code.
     return json({ success: true, received: body ?? null });
-  } catch (err) {
+  } }catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

@@ -3,9 +3,9 @@
  * Demonstrates: Redis → Array Processing → LokiJS → Fuse.js → Service Worker → Storage
  *, Features: nomic-embed-text, compression, batch processing, offline-first
  */
-import { cache } from '$lib/server/cache/redis';
-import { vectorService } from '$lib/server/vector/EnhancedVectorService';
-import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import { cache } }from '$lib/server/cache/redis';
+import { vectorService } }from '$lib/server/vector/EnhancedVectorService';
+import { LokiEvidenceService } }from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
 
 export interface SearchPipelineResult { id: string;, content: string;
@@ -15,7 +15,7 @@ export interface SearchPipelineResult { id: string;, content: string;
  , metadata: Record<string, unknown>;
   source: 'redis' | 'vector' | 'keyword';
   processingTime: number;
-}
+} }
 
 //, New: strongly-typed vector search item (replaces `any`)
 export interface VectorSearchItem {
@@ -26,7 +26,7 @@ export interface VectorSearchItem {
   embedding?: number[];
   // allow extra fields from different backends — avoid `any`
   [key: string]: any;
-}
+} }
 
 // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
 export type HybridSearchOptions = {
@@ -35,7 +35,7 @@ export type HybridSearchOptions = {
   [key: string]: any;
 };
 
-export type EvidenceRecord = {, id: string;, title: string;
+export type EvidenceRecord = { id: string;, title: string;
   description: string;
   type: string;
   tags: any[];
@@ -56,17 +56,17 @@ export class EndToEndPipeline {
       threshold: 0.3,
       includeScore: true
     });
-  }
+  } }
 
   // Helper: safe base64 encoding that works in both Node and browser environments
   private encodeBase64(input: string): string {
     if (typeof globalThis !== 'undefined' && typeof (globalThis as: any).Buffer === 'function') {
       // Node.js / bundler environments that polyfill Buffer
       return (globalThis as: any).Buffer.from(input, 'utf8').toString('base64');
-    }
+    } }
     // Browser fallback
     return btoa(unescape(encodeURIComponent(input)));
-  }
+  } }
 
   // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
   // (moved type aliases to top-level)
@@ -79,15 +79,14 @@ export class EndToEndPipeline {
       ? (obj.embedding as: unknown[]).map(v => (typeof v === 'number' ? v : Number(v))).filter(n => !Number.isNaN(n)) as: number[]
       : undefined;
 
-    return {
-     , id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined),
+    return { id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined),
       content: typeof obj.content === 'string' ? obj.content : (typeof obj.text === 'string' ? obj.text : ''),
       score: typeof obj.score === 'number' ? obj.score : (typeof obj.similarity === 'number' ? obj.similarity : undefined),
       metadata: (obj.metadata && typeof obj.metadata === 'object') ? obj.metadata as Record<string, unknown> : {},
       embedding,
       ...obj, // keep extra fields but typed as: unknown via the index signature on VectorSearchItem
     };
-  }
+  } }
 
   /**
    * 1️⃣ Redis Cache (Hot Layer) - Array Processing Pattern
@@ -95,7 +94,7 @@ export class EndToEndPipeline {
    */
   async batchProcessQueries(queries: string[]): Promise<SearchPipelineResult[]> {
     const allResults: SearchPipelineResult[] = [];
-    console.log(`🔄 Processing ${queries.length} queries through pipeline`);
+    console.log(`🔄 Processing ${queries.length} }queries through pipeline`);
 
     for (const query of queries) {
       const startTime = Date.now();
@@ -109,7 +108,7 @@ export class EndToEndPipeline {
         const embedding = await vectorService.generateEmbedding(query);
 
         // Use a properly-typed options: object
-        const opts: HybridSearchOptions = {, limit: 20, threshold: 0.7 };
+        const opts: HybridSearchOptions = { limit: 20, threshold: 0.7 };
         const, rawSearchResults: any = await vectorService.hybridSearch(query, opts);
 
         // normalize/marshal into VectorSearchItem[] (no `any`)
@@ -138,22 +137,22 @@ export class EndToEndPipeline {
 
         // Cache results for, 15 minutes (900 seconds) - adapter may expect ms or secs; original used ms so keep ms
         await cache.set(cacheKey, results, 900000);
-        console.log(`💾 Cached ${results.length} results for: ${query}`);
-      } else {
-        console.log(`⚡ Cache hit for: ${query} (${results.length} results)`);
-      }
+        console.log(`💾 Cached ${results.length} }results for: ${query}`);
+      } }else {
+        console.log(`⚡ Cache hit for: ${query} }(${results.length} }results)`);
+      } }
       allResults.push(...results);
-    }
+    } }
 
     return allResults;
-  }
+  } }
 
   /**
    * 2️⃣ Array Loop Processing → LokiJS → Fuse.js
    * Each result flows through client-side storage and indexing
    */
   async processArrayLoop(results: SearchPipelineResult[]): Promise<void> {
-    console.log(`🔄 Processing ${results.length} results through array loop`);
+    console.log(`🔄 Processing ${results.length} }results through array loop`);
 
     // Use for..of to allow awaiting each operation and simpler error handling
     for (let index = 0; index < results.length; index++) {
@@ -181,8 +180,8 @@ export class EndToEndPipeline {
             embedding: result.embedding,
             score: result.score,
             source: result.source
-          } as Record<string, unknown>
-        } as EvidenceRecord);
+          } }as Record<string, unknown>
+        } }as EvidenceRecord);
 
         // B) Fuse.js - Add to fuzzy search index
         // Fuse v6 supports .add
@@ -190,12 +189,12 @@ export class EndToEndPipeline {
 
         // C) Service Worker routing (simulated)
         await this.serviceWorkerRoute(result);
-      } catch (error: any) {
-        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }: ', String(error));'` }'`
-    }
+      } }catch (error: any) {
+        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }: ', String(error));'` } }`
+    } }
 
-    console.log(`✅ Array loop completed: ${results.length} items processed`);
-  }
+    console.log(`✅ Array loop completed: ${results.length} }items processed`);
+  } }
 
   /**
    * 3️⃣ Fuse.js Fuzzy Search on Processed Arrays
@@ -209,7 +208,7 @@ export class EndToEndPipeline {
       ...sr.item,
       score: typeof sr.score === 'number' ? 1 - sr.score : sr.item.score
     }));
-  }
+  } }
 
   /**
    * 4️⃣ Service Worker Routing
@@ -220,16 +219,16 @@ export class EndToEndPipeline {
       if (result.metadata?.type === 'document' && result.content.length > 1000) {
         // Large documents → MinIO
         await this.routeToMinIO(result);
-      }
+      } }
       if (Array.isArray(result.embedding) && result.embedding.length > 0) {
         // Embeddings → pgvector
         await this.routeToPgVector(result);
-      }
+      } }
       // All results → PostgreSQL metadata
       await this.routeToPostgreSQL(result);
-    } catch (error) {
-      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);'' }'`
-  }
+    } }catch (error) {
+      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);'' } }`
+  } }
 
   /**
    * 5️⃣ Backend Storage Routes
@@ -238,32 +237,29 @@ export class EndToEndPipeline {
     await fetch('/api/v1/upload/webhook', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-       , id: result.id,
+      body: JSON.stringify({ id: result.id,
         content: result.content,
         metadata: result.metadata,
         bucket: 'legal-documents' })'` });'`
-  }
+  } }
 
   private async routeToPgVector(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v2/vector-pipeline', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-       , id: result.id,
+      body: JSON.stringify({ id: result.id,
         embedding: result.embedding,
         content: result.content,
         metadata: result.metadata
       })
     });
-  }
+  } }
 
   private async routeToPostgreSQL(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v1/unified', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-       , id: result.id,
+      body: JSON.stringify({ id: result.id,
         title: result.metadata?.title,
         content: result.content.substring(0, 500),
         score: result.score,
@@ -271,7 +267,7 @@ export class EndToEndPipeline {
         metadata: result.metadata
       })
     });
-  }
+  } }
 
   /**
    * 🚀 Complete End-to-End Pipeline Execution
@@ -306,8 +302,8 @@ export class EndToEndPipeline {
       processingTime,
       fuzzySearchResults: fuzzyResults
     };
-  }
-}
+  } }
+} }
 
 // Export singleton for use across the app
 export const pipeline = new EndToEndPipeline();

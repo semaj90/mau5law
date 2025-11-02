@@ -16,7 +16,7 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('q');
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
     status: 410,
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': `/api/v2/evidence?action=search` }
+      'X-Migrate-To': `/api/v2/evidence?action=search` } }
   });
 };
 
@@ -46,3 +46,4 @@ export const POST: RequestHandler = async () => {
   return json({
     deprecated: true,
     message: 'Use GET /api/v2/evidence?action=search instead' }, { status: 410 });'` };'`
+

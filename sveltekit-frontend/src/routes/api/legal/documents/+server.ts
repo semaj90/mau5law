@@ -1,23 +1,23 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 // Legal Documents API - SvelteKit Server Endpoint
-import { db } from '$lib/server/db/index';
-import { json } from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { json } }from '@sveltejs/kit';
 
-import { eq, desc, like, or, and } from 'drizzle-orm';
+import { eq, desc, like, or, and } }from 'drizzle-orm';
 // Import with fallback for different schema files
 let schema: any = {};
 try {
   schema = await import('$lib/server/db/unified-schema.js');
-} catch (error: any) {
+} }catch (error: any) {
   try {
     schema = await import('$lib/server/db/schema-postgres.js');
-  } catch (error2) {
+  } }catch (error2) {
     console.warn('No database schema available');
-  }
-}
-const { legalDocuments } = schema;
+  } }
+} }
+const { legalDocuments } }= schema;
 // Legal document interface
 export interface LegalDocument {
   id?: string;
@@ -30,9 +30,9 @@ export interface LegalDocument {
   updatedAt?: Date;
   wordCount?: number;
   metadata?: { [key: string]: any };
-}
+} }
 // GET - List all legal documents
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const searchParams = url.searchParams;
     const caseId = searchParams.get('caseId');
@@ -45,8 +45,7 @@ export const, GET: RequestHandler = async ({ url }) => {
     if (!legalDocuments) {
       console.warn('Legal documents table not available, returning mock data');
       return json([
-        {,
-          id: 'doc-1',
+        { id: 'doc-1',
           title: 'Motion to Dismiss - Case 2024-001',
           documentType: 'motion',
           status: 'draft',
@@ -68,26 +67,26 @@ export const, GET: RequestHandler = async ({ url }) => {
           content: 'Sample brief content...'
         },
       ]);
-    }
+    } }
     // Build query conditions
     const conditions = [];
     if (caseId) {
       conditions.push(eq(legalDocuments.caseId, caseId));
-    }
+    } }
     if (documentType) {
       conditions.push(eq(legalDocuments.documentType, documentType));
-    }
+    } }
     if (status) {
       conditions.push(eq(legalDocuments.status, status));
-    }
+    } }
     if (search) {
       conditions.push(or(like(legalDocuments.title, `%${search}%`), like(legalDocuments.content, `%${search}%`)));
-    }
+    } }
     // Execute query
     const query = db.select().from(legalDocuments).orderBy(desc(legalDocuments.updatedAt)).limit(limit).offset(offset);
     if (conditions.length > 0) {
       query.where(and(...conditions));
-    }
+    } }
     const documents = await query;
     // Calculate word count for each document
     const documentsWithWordCount = documents.map(doc => ({
@@ -95,10 +94,10 @@ export const, GET: RequestHandler = async ({ url }) => {
       wordCount: doc.content ? doc.content.split(/\s+/).length : 0
     }));
     return json(documentsWithWordCount);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error fetching legal documents:', error);
     return json({ error: 'Failed to fetch legal documents' }, { status: 500 });
-  }
+  } }
 };
 // POST - Create new legal document
 export const POST: RequestHandler = async ({ request }) => {
@@ -107,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!data.title || !data.content || !data.documentType) {
       return json({ error: 'Missing required, fields: title, content, documentType' }, { status: 400 });
-    }
+    } }
     // Handle case where schema is not available
     if (!legalDocuments) {
       console.warn('Legal documents table not available, returning mock response');
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
         updatedAt: new Date(),
         wordCount: data.content.split(/\s+/).length
       });
-    }
+    } }
     // Calculate word count
     const wordCount = data.content.split(/\s+/).length;
     // Create document
@@ -138,10 +137,10 @@ export const POST: RequestHandler = async ({ request }) => {
       .returning();
     const newDocument = Array.isArray(result) ? result[0] : result;
     return json(newDocument, { status: 201 });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error creating legal document:', error);
     return json({ error: 'Failed to create legal document' }, { status: 500 });
-  }
+  } }
 };
 // PUT - Update legal document
 export const PUT: RequestHandler = async ({ request, params }) => {
@@ -149,7 +148,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     const documentId = params?.id;
     if (!documentId) {
       return json({ error: 'Document ID is required' }, { status: 400 });
-    }
+    } }
     const data: Partial<LegalDocument> = await request.json();
     // Handle case where schema is not available
     if (!legalDocuments) {
@@ -160,7 +159,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         updatedAt: new Date(),
         wordCount: data.content ? data.content.split(/\s+/).length : 0
       });
-    }
+    } }
     // Calculate word count if content is provided
     const updateData: any = {
       ...data,
@@ -168,7 +167,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     };
     if (data.content) {
       updateData.wordCount = data.content.split(/\s+/).length;
-    }
+    } }
     // Update document
     const [updatedDocument] = await db
       .update(legalDocuments)
@@ -177,12 +176,12 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       .returning();
     if (!updatedDocument) {
       return json({ error: 'Document not found' }, { status: 404 });
-    }
+    } }
     return json(updatedDocument);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error updating legal document:', error);
     return json({ error: 'Failed to update legal document` }, { status: 500 });'`
-  }
+  } }
 };
 // DELETE - Delete legal document
 export const DELETE: RequestHandler = async ({ params }) => {
@@ -190,21 +189,22 @@ export const DELETE: RequestHandler = async ({ params }) => {
     const documentId = params?.id;
     if (!documentId) {
       return json({ error: `Document ID is required` }, { status: 400 });
-    }
+    } }
     // Handle case where schema is not available
     if (!legalDocuments) {
       console.warn('Legal documents table not available, returning mock response');
       return json({ success: true });
-    }
+    } }
     // Delete document
     const deleteResult = await db.delete(legalDocuments).where(eq(legalDocuments.id, documentId)).returning();
     const deletedDocument = Array.isArray(deleteResult) ? deleteResult[0] : deleteResult;
     if (!deletedDocument) {
       return json({ error: `Document not found` }, { status: 404 });
-    }
+    } }
     return json({ success: true });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error deleting legal document: ', error);'`'`
     return json({ error: `Failed to delete legal document` }, { status: 500 });
-  }
+  } }
 };
+

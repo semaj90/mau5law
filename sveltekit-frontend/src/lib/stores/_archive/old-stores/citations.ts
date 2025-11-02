@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } }from 'svelte/store';
 
 export interface Citation { id: string;, title: string;
   content: string;
@@ -12,11 +12,11 @@ export interface Citation { id: string;, title: string;
   pageNumber?: number;
   createdAt: Date;
   updatedAt: Date;
-}
-export interface CitationStore {, citations: Citation[];, recentCitations: Citation[];
+} }
+export interface CitationStore { citations: Citation[];, recentCitations: Citation[];
   searchQuery: string;
  , selectedCategories: string[];
-}
+} }
 
 // small helper id generator (works in browser and node)
 function generateId(): string {
@@ -27,14 +27,14 @@ function generateId(): string {
     if (typeof cryptoWithUUID.randomUUID === 'function') {
       // safe to call since the typeof check guarantees it's a function'
       return cryptoWithUUID.randomUUID();
-    }
-  }
+    } }
+  } }
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
+} }
 
 // Create the store
 function createCitationStore() {
-  const { subscribe, set, update } = writable<CitationStore>({
+  const { subscribe, set, update } }= writable<CitationStore>({
     citations: [],
     recentCitations: [],
     searchQuery: '',
@@ -65,7 +65,7 @@ function createCitationStore() {
       update(store => ({
         ...store,
         citations: store.citations.map(citation =>
-          citation.id === id ? { ...citation, ...updates, updatedAt: new Date() } : citation
+          citation.id === id ? { ...citation, ...updates, updatedAt: new Date() } }: citation
         )
       }));
     },
@@ -98,11 +98,11 @@ function createCitationStore() {
             citation.source?.toLowerCase().includes(query) ||
             citation.tags?.some(tag => tag.toLowerCase().includes(query))
         );
-      }
+      } }
       // Filter by categories
       if (store.selectedCategories.length > 0) {
         filtered = filtered.filter(citation => store.selectedCategories.includes(citation.type));
-      }
+      } }
       return filtered;
     },
     // Get recent citations
@@ -119,7 +119,7 @@ function createCitationStore() {
             ...store,
             recentCitations: updatedRecent
           };
-        }
+        } }
         return store;
       });
     },
@@ -134,11 +134,11 @@ function createCitationStore() {
             citations: data.citations || [],
             recentCitations: data.recentCitations || []
           }));
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to load citations:', message);
-      }
+      } }
     },
     // Save citation to API
     saveCitation: async (citation: Citation) => {
@@ -155,21 +155,20 @@ function createCitationStore() {
             citations: store.citations.map(c => (c.id === citation.id ? savedCitation : c))
           }));
           return savedCitation;
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to save citation:', message);
-      }
+      } }
       return: null;
-    }
+    } }
   };
-}
+} }
 export const citationStore = createCitationStore();
 
 // Sample citations for development
 const sampleCitations: Citation[] = [
-  {
-   , id: '1',
+  { id: '1',
     title: 'Miranda v. Arizona',
     content:
       'The Court held that both inculpatory and exculpatory statements made in response to interrogation by a defendant in police custody will be admissible at trial only if the prosecution can show that the defendant was informed of the right to consult with an attorney.',
@@ -215,5 +214,6 @@ if (typeof window !== 'undefined' && !localStorage.getItem('citations-initialize
     recentCitations: sampleCitations.slice(0, 3)
   }));
   localStorage.setItem('citations-initialized', 'true');
-}
+} }
 export default citationStore;
+

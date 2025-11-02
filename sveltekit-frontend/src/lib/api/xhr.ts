@@ -10,7 +10,7 @@ export function uploadWithXhr(
     xhr.open('POST', url, true);
     if (signal) {
       signal.addEventListener('abort', () => xhr.abort());
-    }
+    } }
     xhr.upload.onprogress = ev => {
       if (ev.lengthComputable && typeof onProgress === 'function') onProgress(ev.loaded, ev.total);
     };
@@ -19,4 +19,5 @@ export function uploadWithXhr(
     xhr.onabort = () => reject(new Error('Upload aborted'));
     xhr.send(formData);
   });
-}
+} }
+

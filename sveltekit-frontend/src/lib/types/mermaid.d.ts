@@ -4,4 +4,5 @@ declare module, 'mermaid' {
   export function parse(src: string): void;
   const mermaid: any;
   export default mermaid;
-}
+} }
+

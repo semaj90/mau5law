@@ -1,37 +1,36 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * LangChain Service Logic Layer with Database Sync
  * Decoupled reactive store that handles complex LangChain/Ollama operations
  * with full database synchronization via REST API
  */
-import { writable, derived, type Readable } from 'svelte/store';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
-import { browser } from '$app/environment';
+import { writable, derived, type Readable } }from 'svelte/store';
+import { langExtractService } }from '$lib/services/langextract-ollama-service.js';
+import { browser } }from '$app/environment';
 // Simple state interfaces for UI consumption
 export interface LangChainState { isProcessing: boolean;, isAvailable: boolean;
   error: string | null;
   models: string[];
-}
-export interface DocumentProcessingState {, isProcessing: boolean;, progress: number;
+} }
+export interface DocumentProcessingState { isProcessing: boolean;, progress: number;
   result: ProcessedDocument | null;
   error: string | null;
   sessionId: string | null;
   documentId: string | null;
-}
-export interface ProcessedDocument {, id: string;, summary: string;
+} }
+export interface ProcessedDocument { id: string;, summary: string;
   keyTerms: string[];
   entities: any[];
   contractTerms: any[];
   processingTime: number;
   cacheHit: boolean;
   sessionId: string;
-}
-export interface ChatState {, messages: Array<any>;, isTyping: boolean;
+} }
+export interface ChatState { messages: Array<any>;, isTyping: boolean;
   error: string | null;
-}
+} }
 // Internal reactive stores
-const langchainState = writable<LangChainState>({
- , isProcessing: false,
+const langchainState = writable<LangChainState>({ isProcessing: false,
   isAvailable: false,
   error: null,
   models: []
@@ -65,11 +64,11 @@ class LangChainServiceLogic {
       if (isAvailable) {
         try {
           models = await langExtractService.listAvailableModels();
-        } catch (error) {
+        } }catch (error) {
           console.warn('Could not fetch models:', error);
           // Continue with empty models array
-        }
-      }
+        } }
+      } }
       langchainState.set({
         isProcessing: false,
         isAvailable,
@@ -77,15 +76,15 @@ class LangChainServiceLogic {
         models
       });
       this.initialized = true;
-    } catch (error) {
+    } }catch (error) {
       langchainState.set({
         isProcessing: false,
         isAvailable: false,
         error: error instanceof Error ? error.message : 'Initialization failed',
         models: []
       });
-    }
-  }
+    } }
+  } }
   async processDocument(
     text: string,
     documentType: 'contract' | 'case' | 'statute' | 'brief' = 'case',
@@ -120,7 +119,7 @@ class LangChainServiceLogic {
         throw new Error(
           (errorData as: any).error || `HTTP ${(response as: any).status}: ${(response as: any).statusText}`
         );
-      }
+      } }
       const result: ProcessedDocument = await (response, as: any).json();
       documentProcessingState.update(state => ({ ...state, progress: 100 }));
       // Update state with successful result
@@ -132,7 +131,7 @@ class LangChainServiceLogic {
         sessionId: (result as { sessionId?: any; id?: any }).sessionId,
         documentId: (result as { sessionId?: any; id?: any }).id
       });
-    } catch (error) {
+    } }catch (error) {
       documentProcessingState.set({
         isProcessing: false,
         progress: 0,
@@ -141,8 +140,8 @@ class LangChainServiceLogic {
         sessionId: null,
         documentId: null
       });
-    }
-  }
+    } }
+  } }
   async loadSession(sessionId: string): Promise<void> {
     if (!browser) return;
     documentProcessingState.update(state => ({ ...state, isProcessing: true, error: null }));
@@ -158,25 +157,24 @@ class LangChainServiceLogic {
         // Convert session documents to a summary format
         result:
           sessionData.documents && sessionData.documents.length > 0
-            ? {
-               , id: sessionData.documents[0].id,
-                summary: `Session with ${sessionData.documents.length} documents`,
+            ? { id: sessionData.documents[0].id,
+                summary: `Session with ${sessionData.documents.length} }documents`,
                 keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []),
                 entities: [],
                 contractTerms: [],
                 processingTime: 0,
                 cacheHit: true,
                 sessionId: sessionData.id
-              }
+              } }
             : null
       }));
-    } catch (error) {
+    } }catch (error) {
       documentProcessingState.update(state => ({
         ...state,
         isProcessing: false,
         error: error instanceof Error ? error.message : `Failed to load session` }));
-    }
-  }
+    } }
+  } }
   async deleteDocument(documentId: string): Promise<void> {
     if (!browser) return;
     try {
@@ -186,7 +184,7 @@ class LangChainServiceLogic {
         throw new Error(
           `Failed to delete document: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`
         );
-      }
+      } }
       // Clear current result if it was the deleted document
       documentProcessingState.update(state => {
         if (state.result?.id === documentId) {
@@ -195,18 +193,18 @@ class LangChainServiceLogic {
             result: null,
             documentId: null
           };
-        }
+        } }
         return state;
       });
-    } catch (error) {
+    } }catch (error) {
       documentProcessingState.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message : 'Failed to delete document' }));'` }'`
-  }
+        error: error instanceof Error ? error.message : 'Failed to delete document' }));'` } }`
+  } }
   async sendChatMessage(message: string): Promise<void> {
     chatState.update(state => ({
       ...state,
-      messages: [...state.messages, { role: 'user', content: message }],
+      messages: [...state.messages, { role: 'user', content: message } },
       isTyping: true,
       error: null
     }));
@@ -215,15 +213,15 @@ class LangChainServiceLogic {
       // removed unused response assignment
       chatState.update(state => ({
         ...state,
-        messages: [...state.messages, { role: 'assistant', content: `` }],
+        messages: [...state.messages, { role: 'assistant', content: `` } },
         isTyping: false
       }));
-    } catch (error) {
+    } }catch (error) {
       chatState.update(state => ({
         ...state,
         isTyping: false,
-        error: error instanceof Error ? error.message : 'Chat message failed' }));'` }'`
-  }
+        error: error instanceof Error ? error.message : 'Chat message failed' }));'` } }`
+  } }
   clearDocumentProcessing(): void {
     documentProcessingState.set({
       isProcessing: false,
@@ -233,15 +231,15 @@ class LangChainServiceLogic {
       sessionId: null,
       documentId: null
     });
-  }
+  } }
   clearChat(): void {
     chatState.set({
       messages: [],
       isTyping: false,
       error: null
     });
-  }
-}
+  } }
+} }
 // Singleton service instance
 export const langchainServiceLogic = new LangChainServiceLogic();
 // Read-only stores for UI consumption
@@ -251,8 +249,7 @@ export const langchainService: Readable<LangChainState> = {
 export const documentProcessing: Readable<DocumentProcessingState> = {
   subscribe: documentProcessingState.subscribe
 };
-export const chatService: Readable<ChatState> = {
- , subscribe: chatState.subscribe
+export const chatService: Readable<ChatState> = { subscribe: chatState.subscribe
 };
 // Derived computed states
 export const isLangChainReady = derived(
@@ -262,3 +259,4 @@ export const isLangChainReady = derived(
 export const availableModels = derived(langchainService, $service => $service.models);
 // Auto-initialize on import
 langchainServiceLogic.initialize();
+

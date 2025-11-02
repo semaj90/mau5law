@@ -1,11 +1,11 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 // Lightweight Markov-chain predictor for next-action precomputation (RNN-inspired)
 // Learns P(next|prev) from short user interaction sequences
 // Enhanced with Redis caching for persistence and performance
-import { env } from '$env/dynamic/private';
+import { env } }from '$env/dynamic/private';
 type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:indemnification'
-interface PredictionResult {, action: Action;, p: number;
-}
+interface PredictionResult { action: Action;, p: number;
+} }
 class MarkovPredictorWithRedis {
   // use a flexible type for the shared client to avoid typing mismatches
   private, redis: any;
@@ -19,8 +19,7 @@ class MarkovPredictorWithRedis {
     // Initialize Redis connection with password support
     const redisPassword = env.REDIS_PASSWORD;
     const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
-    const redisConfig: any = {
-     , retryDelayOnFailover: 100,
+    const redisConfig: any = { retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
       lazyConnect: true
     };
@@ -28,7 +27,7 @@ class MarkovPredictorWithRedis {
     // Only add password if explicitly set
     if (redisPassword) {
       redisConfig.password = redisPassword;
-    }
+    } }
 
     this.redis = redis;
     this.cacheEnabled = true;
@@ -39,7 +38,7 @@ class MarkovPredictorWithRedis {
     });
     // Periodic sync to Redis
     setInterval(() => void this.syncToRedis(), 30000); // Sync every, 30 seconds
-  }
+  } }
   async record(userId: string, action: Action) {
     const prev = this.localLastByUser.get(userId);
     if (prev) {
@@ -50,20 +49,20 @@ class MarkovPredictorWithRedis {
       // Update Redis asynchronously if available
       if (this.cacheEnabled) {
         this.updateRedisTransition(prev, action).catch(console.warn);
-      }
+      } }
       this.pendingUpdates++;
-    }
+    } }
     // Update last action for user
     this.localLastByUser.set(userId, action);
     if (this.cacheEnabled) {
       // ioredis has setex, but our shared client typing may differ - keep dynamic call
       this.redis.setex?.(`last_action:${userId}`, 3600, action).catch?.(console.warn);
-    }
+    } }
     // Auto-sync if batch threshold reached
     if (this.pendingUpdates >= this.syncBatchSize) {
       void this.syncToRedis();
-    }
-  }
+    } }
+  } }
   async predictNext(prev: Action, topK = 3): Promise<PredictionResult[]> {
     let transitions: Map<Action, number> | null = null;
     // Try Redis cache first
@@ -75,25 +74,25 @@ class MarkovPredictorWithRedis {
           for (const [action, countStr] of Object.entries(redisData)) {
             const n = parseInt(countStr as: string, 10);
             transitions.set(action as Action, isNaN(n) ? 0 : n);
-          }
-        }
-      } catch (error) {
+          } }
+        } }
+      } }catch (error) {
         console.warn('Redis cache miss:', error);
-      }
-    }
+      } }
+    } }
     // Fallback to local memory
     if (!transitions) {
       transitions = this.localTransitions.get(prev) ?? new Map<Action, number>();
-    }
+    } }
     if (!transitions || transitions.size === 0) {
       return [];
-    }
+    } }
     const total = Array.from(transitions.values()).reduce((a, b) => a + b, 0) || 1;
     return Array.from(transitions.entries())
       .map(([action, count]) => ({ action, p: count / total }))
       .sort((a, b) => b.p - a.p)
       .slice(0, topK);
-  }
+  } }
   // Enhanced prediction with SIMD-accelerated similarity
   async predictNextWithSimilarity(
     prev: Action,
@@ -103,19 +102,19 @@ class MarkovPredictorWithRedis {
     const basepredictions = await this.predictNext(prev, topK * 2);
     if (!context.query && !context.docId) {
       return basepredictions.slice(0, topK);
-    }
+    } }
     // Use CUDA service for semantic similarity if available
     try {
       const cudaResponse = await fetch('http://localhost:8097/api/v1/simd/capabilities');
       if (cudaResponse.ok) {
         // Enhanced predictions with semantic similarity
         return this.enhancePredictionsWithSimilarity(basepredictions, context, topK);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('CUDA service unavailable for enhanced predictions');
-    }
+    } }
     return basepredictions.slice(0, topK);
-  }
+  } }
   private async enhancePredictionsWithSimilarity(
     predictions: PredictionResult[],
     context: { docId?: string; query?: string },
@@ -127,12 +126,12 @@ class MarkovPredictorWithRedis {
       const actionContext = mapActionToCHRContext(pred.action);
       if (context.docId && actionContext.docId === context.docId) {
         boost *= 1.5; // Boost same document actions
-      }
+      } }
       if (context.query && actionContext.query) {
         // Simple keyword overlap boost (could use CUDA similarity here)
         const overlap = this.calculateKeywordOverlap(context.query, actionContext.query);
         boost *= 1.0 + overlap * 0.3;
-      }
+      } }
       return {
         ...pred,
         p: pred.p * boost
@@ -142,22 +141,22 @@ class MarkovPredictorWithRedis {
     enhanced.sort((a, b) => b.p - a.p);
     const total = enhanced.reduce((sum, pred) => sum + pred.p, 0) || 1;
     return enhanced.slice(0, topK).map(pred => ({ ...pred, p: pred.p / total }));
-  }
+  } }
   private calculateKeywordOverlap(query1: string, query2: string): number {
     const words1 = new Set(query1.toLowerCase().split(/\s+/));
     const words2 = new Set(query2.toLowerCase().split(/\s+/));
     const intersection = new Set([...words1].filter(x => words2.has(x)));
     const union = new Set([...words1, ...words2]);
     return union.size > 0 ? intersection.size / union.size : 0;
-  }
+  } }
   private async updateRedisTransition(prev: Action, action: Action) {
     try {
       await this.redis.hincrby?.(`transitions:${prev}`, action, 1);
       await this.redis.expire?.(`transitions:${prev}`, 86400); // 24 hour TTL
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to update Redis transition:', error);
-    }
-  }
+    } }
+  } }
   private async syncToRedis() {
     if (!this.cacheEnabled || this.pendingUpdates === 0) return;
     try {
@@ -165,17 +164,17 @@ class MarkovPredictorWithRedis {
       for (const [prev, transitions] of this.localTransitions.entries()) {
         for (const [action, count] of transitions.entries()) {
           pipeline.hset(`transitions:${prev}`, action, count);
-        }
+        } }
         pipeline.expire(`transitions:${prev}`, 86400);
-      }
+      } }
       await pipeline.exec();
       this.pendingUpdates = 0;
       this.lastSync = Date.now();
-      console.log(`📊 Synced ${this.localTransitions.size} transition patterns to Redis`);
-    } catch (error) {
+      console.log(`📊 Synced ${this.localTransitions.size} }transition patterns to Redis`);
+    } }catch (error) {
       console.warn('Failed to sync to Redis:', error);
-    }
-  }
+    } }
+  } }
   // Analytics and metrics
   async getStats(): Promise<{ totalTransitions: number;, uniqueActions: number;
     cacheEnabled: boolean;
@@ -189,18 +188,18 @@ class MarkovPredictorWithRedis {
         await this.redis.ping();
         redisConnected = true;
         const keys = (await this.redis.keys?.('transitions:*')) ?? [];
-      } catch (error) {
+      } }catch (error) {
         redisConnected = false;
-      }
-    }
+      } }
+    } }
     const uniqueActions = new Set<string>();
     let totalTransitions = 0;
     for (const transitions of this.localTransitions.values()) {
       for (const [action, count] of transitions.entries()) {
         uniqueActions.add(action);
         totalTransitions += count;
-      }
-    }
+      } }
+    } }
     return {
       totalTransitions,
       uniqueActions: uniqueActions.size,
@@ -209,15 +208,15 @@ class MarkovPredictorWithRedis {
       pendingUpdates: this.pendingUpdates,
       redisConnected
     };
-  }
+  } }
   // Cleanup method
   async cleanup() {
     await this.syncToRedis();
     await this.redis.quit?.();
-  }
-}
+  } }
+} }
 export const predictor = new MarkovPredictorWithRedis();
-export function mapActionToCHRContext(a: Action): { docId?: string; query?: string } {
+export function mapActionToCHRContext(a: Action): { docId?: string; query?: string } }{
   // Simple mapping conventions
   if (a.startsWith('open:doc:')) return { docId: a.split(':')[2] };
   if (a.startsWith('hover:doc:')) return { docId: a.split(':')[2] };

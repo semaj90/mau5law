@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 export type User = {
   id?: string;
   name?: string;
@@ -8,3 +8,4 @@ export type User = {
 
 declare const user: User | null;
 export default user;
+

@@ -1,30 +1,29 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Analytics Store - User Activity Tracking (Svelte 5)
  * Handles frontend analytics events and backend reporting
  */
-import { browser } from "$app/environment";
+import { browser } }from "$app/environment";
 export interface AnalyticsEvent { id: string;, type: 'page_view' | 'user_action' | 'ai_interaction' | 'document_upload' | 'search' | 'error' | 'performance';
   action: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any } }
   timestamp: Date;
   userId?: string;
   sessionId?: string;
   userAgent?: string;
   url?: string;
   duration?: number;
-}
-export interface AnalyticsState {, events: AnalyticsEvent[];, isEnabled: boolean;
+} }
+export interface AnalyticsState { events: AnalyticsEvent[];, isEnabled: boolean;
   isLoading: boolean;
   bufferSize: number;
   maxEvents: number;
   autoFlush: boolean;
   flushInterval: number;
   lastFlushAt: number;
-}
+} }
 // Initialize analytics state
-const initialState: AnalyticsState = {
- , events: [],
+const initialState: AnalyticsState = { events: [],
   isEnabled: true,
   isLoading: false,
   bufferSize: 50,
@@ -32,7 +31,7 @@ const initialState: AnalyticsState = {
   autoFlush: true,
   flushInterval: 30000, // 30 seconds
   lastFlushAt: 0
-}
+} }
 // Create reactive analytics store using Svelte, 5 runes
 const createAnalyticsStore = () => {
   // Initialize with initial state using $state
@@ -45,40 +44,40 @@ const createAnalyticsStore = () => {
     // Initialize analytics
     init: (config?: Partial<AnalyticsState>) => {
       if (config) {
-        analyticsState = { ...analyticsState, ...config }
-      }
+        analyticsState = { ...analyticsState, ...config } }
+      } }
       if (browser && analyticsState.autoFlush) {
         startAutoFlush();
-      }
+      } }
     },
     // Log analytics event
     logEvent: (_event: Omit<AnalyticsEvent, 'id' | 'timestamp'>): AnalyticsEvent => {
       if (!analyticsState.isEnabled) {
         return: null as: any;
-      }
+      } }
       const, fullEvent: AnalyticsEvent = {
         ...event,
         id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
         url: browser ? window.location.href : undefined,
         userAgent: browser ? navigator.userAgent : undefined
-      }
+      } }
       analyticsState.events.push(fullEvent);
       // Limit events to prevent memory issues
       if (analyticsState.events.length > analyticsState.maxEvents) {
         analyticsState.events = analyticsState.events.slice(-analyticsState.maxEvents);
-      }
+      } }
       // Auto-flush if buffer is full
       if (analyticsState.autoFlush && analyticsState.events.length >= analyticsState.bufferSize) {
         flushEvents();
-      }
+      } }
       return fullEvent;
     },
     // Flush events to backend
     flushEvents: async (): Promise<boolean> => {
       if (analyticsState.events.length === 0 || analyticsState.isLoading) {
         return true;
-      }
+      } }
       analyticsState.isLoading = true;
       try {
         const eventsToFlush = [...analyticsState.events];
@@ -87,8 +86,7 @@ const createAnalyticsStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Analytics-Batch': 'true' },'`'`
-          body: JSON.stringify({,
-            events: eventsToFlush;
+          body: JSON.stringify({ events: eventsToFlush;
            , timestamp: new Date().toISOString(),
             batchSize: eventsToFlush.length
           })
@@ -99,16 +97,16 @@ const createAnalyticsStore = () => {
           analyticsState.lastFlushAt = Date.now();
           analyticsState.isLoading = $state(false);
           return true;
-        } else {
+        } }else {
           console.warn('Analytics flush failed:', response.status, response.statusText);
           analyticsState.isLoading = $state(false);
           return false;
-        }
-      } catch (error) {
-        console.error('Analytics flush error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Analytics flush error:', error);
         analyticsState.isLoading = $state(false);
         return false;
-      }
+      } }
     },
     // Convenience methods for common events
     logPageView: (page: string, metadata?: { [key: string]: any }) => {
@@ -118,7 +116,7 @@ const createAnalyticsStore = () => {
         metadata: {
           page,
           ...metadata
-        }
+        } }
       });
     },
     logUserAction: (action: string, metadata?: { [key: string]: any }) => {
@@ -132,10 +130,9 @@ const createAnalyticsStore = () => {
       return analyticsStore.logEvent({
         type: 'ai_interaction',
         action,
-        metadata: {
-         , timestamp: new Date().toISOString(),
+        metadata: { timestamp: new Date().toISOString(),
           ...metadata
-        }
+        } }
       });
     },
     logDocumentUpload: (fileName: string, fileSize: number, metadata?: { [key: string]: any }) => {
@@ -146,7 +143,7 @@ const createAnalyticsStore = () => {
           fileName,
           fileSize,
           ...metadata
-        }
+        } }
       });
     },
     logSearch: (query: string, resultsCount: number, metadata?: { [key: string]: any }) => {
@@ -157,7 +154,7 @@ const createAnalyticsStore = () => {
           query,
           resultsCount,
           ...metadata
-        }
+        } }
       });
     },
     logError: (error: string | Error, metadata?: { [key: string]: any }) => {
@@ -166,11 +163,10 @@ const createAnalyticsStore = () => {
       return analyticsStore.logEvent({
         type: 'error',
         action: 'error_occurred',
-        metadata: {
-         , error: errorMessage,
+        metadata: { error: errorMessage,
           stack,
           ...metadata
-        }
+        } }
       });
     },
     logPerformance: (action: string, duration: number, metadata?: { [key: string]: any }) => {
@@ -193,7 +189,7 @@ const createAnalyticsStore = () => {
       analyticsState.events.forEach(event => {
         if (!event.userId) {
           event.userId = userId;
-        }
+        } }
       });
     },
     setSessionId: (sessionId: string) => {
@@ -201,25 +197,24 @@ const createAnalyticsStore = () => {
       analyticsState.events.forEach(event => {
         if (!event.sessionId) {
           event.sessionId = sessionId;
-        }
+        } }
       });
     },
     // Get analytics data
     getEvents: (type?: AnalyticsEvent['type']): AnalyticsEvent[] => {
       if (type) {
         return analyticsState.events.filter(event => event.type === type);
-      }
+      } }
       return analyticsState.events;
     },
     getEventsSince: (since: Date): AnalyticsEvent[] => {
       return analyticsState.events.filter(event => event.timestamp >= since);
     },
-    getStats: () => ({,
-      totalEvents: analyticsState.events.length,
+    getStats: () => ({ totalEvents: analyticsState.events.length,
       eventsByType: analyticsState.events.reduce((acc, event) => {
         acc[event.type] = (acc[event.type] || 0) + 1;
         return acc;
-      }, {} as Record<string, number>),
+      }, {} }as Record<string, number>),
       lastFlushAt: analyticsState.lastFlushAt,
       bufferSize: analyticsState.bufferSize,
       isEnabled: analyticsState.isEnabled,
@@ -228,21 +223,21 @@ const createAnalyticsStore = () => {
     // Clear all events
     clear: () => {
       analyticsState.events = [];
-    }
-  }
+    } }
+  } }
   // Helper functions
   function flushEvents(): Promise<boolean> {
     return analyticsStore.flushEvents();
-  }
+  } }
   function startAutoFlush(): void {
     if (!browser) return;
     setInterval(() => {
       if (analyticsState.events.length > 0) {
         flushEvents();
-      }
+      } }
     }, analyticsState.flushInterval);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const analyticsStore = createAnalyticsStore();
 // Helper functions for accessing reactive state

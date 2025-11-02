@@ -1,35 +1,35 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 /*
  * Vector Intelligence Semantic Analysis API
  * Provides advanced semantic analysis of legal documents and content
  */
-import { json, error } from '@sveltejs/kit';
-import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+import { json, error } }from '@sveltejs/kit';
+import { vectorIntelligenceService } }from '$lib/services/vector-intelligence-service.js';
 
 // Add explicit local types to avoid: 'any' and implicit: any
 type AnalysisResult = unknown;
 interface SystemHealth {
- , systemHealth: string;
+  systemHealth: string;
   modelConfidence?: number;
-}
+} }
 interface VectorIntelligenceServiceAlt {
   analyzeSemanticsWithOptions?: (content: string, options: Record<string, unknown>) => Promise<AnalysisResult>;
   analyzeSemantics: (content: string) => Promise<AnalysisResult>;
   getSystemHealth: () => Promise<SystemHealth>;
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { content, options: $options = {} } = body;
+    const { content, options: $options = {} }} }= body;
     if (!content || typeof content !== 'string') {
       throw error(400, 'Content is required and must be a: string');
-    }
+    } }
     if (content.length > 50000) {
       throw error(400, 'Content too large. Maximum, 50,000 characters allowed');
-    }
-    console.log(`🔬 Performing semantic analysis on ${content.length} characters...`);
+    } }
+    console.log(`🔬 Performing semantic analysis on ${content.length} }characters...`);
     // Perform comprehensive semantic analysis, pass options through as single payload
     // Use a typed alias instead of: 'any' casts
     const svc = vectorIntelligenceService as: unknown as VectorIntelligenceServiceAlt;
@@ -39,25 +39,25 @@ export const POST: RequestHandler = async ({ request }) => {
     const hasAdvanced = typeof svc.analyzeSemanticsWithOptions === 'function';
     if ($options && Object.keys($options).length > 0 && hasAdvanced) {
       analysis = await svc.analyzeSemanticsWithOptions(content, $options);
-    } else {
+    } }else {
       analysis = await svc.analyzeSemantics(content);
-    }
+    } }
     // Get system health for metadata (use typed svc)
     const systemHealth = await svc.getSystemHealth();
     return json({
       success: true,
       analysis,
       metadata: {
-       , contentLength: content.length,
+  contentLength: content.length,
         processingTime: Date.now(),
         systemHealth: {
-         , status: systemHealth.systemHealth,
+  status: systemHealth.systemHealth,
           confidence: systemHealth.modelConfidence
-        }
-      }
+        } }
+      } }
     });
-  } catch (err: any) {
-    console.error('❌ Semantic analysis API error:', err);'
+  } }catch (err: any) {
+    console.error('❌ Semantic analysis API error:', err);
     const errorMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     let statusCode = 500;
     if (err && typeof err === 'object' && 'status' in err) {
@@ -66,10 +66,10 @@ export const POST: RequestHandler = async ({ request }) => {
       else if (typeof s === 'string') {
         const parsed = Number.parseInt(s, 10);
         if (!Number.isNaN(parsed)) statusCode = parsed;
-      }
-    }
+      } }
+    } }
     throw error(statusCode, errorMessage);
-  }
+  } }
 };
 
 export const GET: RequestHandler = async () => {
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
     endpoints: {
       'POST /api/vector/analyze': 'Perform semantic analysis on content` },'`
     parameters: {
-     , content: 'Text content to analyze (required, max, 50,000 chars)',
+  content: 'Text content to analyze (required, max, 50,000 chars)',
       options: `Analysis options (optional)` },'`'`
     analysisFeatures: [
       'Entity extraction (persons, organizations, locations, dates, legal concepts)',
@@ -91,17 +91,18 @@ export const GET: RequestHandler = async () => {
     ],
     entityTypes: ['person', 'organization', 'location', 'date', 'legal_concept'],
     complexityMetrics: ['readability', 'technicalLevel', 'legalComplexity'],
-    usage: {, example: {, method: 'POST',
+    usage: { example: { method: 'POST',
         url: '/api/vector/analyze',
         body: {
-         , content: 'The defendant, John Smith, signed the contract on January, 15, 2024...',
+  content: 'The defendant, John Smith, signed the contract on January, 15, 2024...',
           options: {
-           , extractEntities: true,
+  extractEntities: true,
             analyzeSentiment: true,
             assessComplexity: true
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
   });
 };
+

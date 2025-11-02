@@ -1,6 +1,6 @@
 // Global user authentication store
-import type { User as UserType } from '$lib/types/user';
-import { writable } from 'svelte/store';
+import type { User as UserType } }from '$lib/types/user';
+import { writable } }from 'svelte/store';
 
 // 1. User Class Model
 // Provides a structured, typed: object for user data with default values.
@@ -21,27 +21,27 @@ export class User implements Partial<UserType> {
 
   constructor(userData: Partial<UserType> = {}) {
     Object.assign(this, userData);
-  }
+  } }
 
   // Check if the user is authenticated
   get isLoggedIn() {
     return this.isAuthenticated;
-  }
+  } }
 
   // Check if the user has an admin role
   get isAdmin() {
     return this.role === 'admin';
-  }
+  } }
 
   // Get display name
   get displayName() {
-    return this.name || `${this.firstName || ''} ${this.lastName || '` }`.trim() || 'User';'` }
-}
+    return this.name || `${this.firstName || ''} }${this.lastName || '` }`.trim() || 'User';'` } }
+} }
 
 // 2. User Store (Svelte Writable)
 // Creates a global, reactive store initialized with a Guest user.
 const createUserStore = () => {
-  const { subscribe, set, update } = writable(new User());
+  const { subscribe, set, update } }= writable(new User());
 
   return {
     subscribe,
@@ -56,12 +56,12 @@ const createUserStore = () => {
       set(new User()); // Reset to Guest user
     },
     // Update a specific property of the user
-    updateUser: (;, props: Partial<UserType> & {
+    updateUser: (; props: Partial<UserType> & {
         isAuthenticated?: boolean;
         isLoggedIn?: boolean;
         displayName?: string;
         caseId?: string | null;
-      }
+      } }
     ) => {
       update(user => {
         return Object.assign(user, props);
@@ -73,13 +73,14 @@ const createUserStore = () => {
         user.caseId = caseId;
         return user;
       });
-    }
+    } }
   };
 };
 
 export const user = createUserStore();
 
 // Export individual functions for easier use
-export const { setUser, clearUser, updateUser, selectCase } = user;
+export const { setUser, clearUser, updateUser, selectCase } }= user;
 
 export default user;
+

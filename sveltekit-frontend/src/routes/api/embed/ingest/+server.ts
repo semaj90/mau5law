@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/database'
-import { vectors, document_chunks } from '$lib/server/db/schema-postgres'
-import { json, error } from '@sveltejs/kit'
-import { eq } from 'drizzle-orm'
+import type { RequestHandler } }from './$types.js'
+import { db } }from '$lib/server/database'
+import { vectors, document_chunks } }from '$lib/server/db/schema-postgres'
+import { json, error } }from '@sveltejs/kit'
+import { eq } }from 'drizzle-orm'
 // Ollama embedding service
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -10,20 +10,20 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'nomic-embed-text:latest',
+  model: 'nomic-embed-text:latest',
         prompt: text
       })
     })
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`)
-    }
+    } }
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json()
     return (result as { embedding?: any }).embedding
-  } catch (err) {
+  } }catch (err) {
     console.error('Embedding generation failed:', err)
     throw new Error('Failed to generate embedding')
-  }
-}
+  } }
+} }
 // Chunk text into manageable pieces
 function chunkText(text: string, chunkSize: number = 600, overlap: number = 60): string[] {
   const chunks: string[] = []
@@ -34,15 +34,15 @@ function chunkText(text: string, chunkSize: number = 600, overlap: number = 60):
     chunks.push(chunk.trim());
     if (end >= text.length) break
     start = end - overlap
-  }
+  } }
   return chunks
-}
+} }
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { text, entityType, entityId, metadata } = await request.json()
+    const { text, entityType, entityId, metadata } }= await request.json()
     if (!text || !entityType || !entityId) {
       return error(400, 'Missing required fields: text, entityType, entityId')
-    }
+    } }
     // Chunk the text for better embedding quality
     const chunks = chunkText(text)
     const ingestedChunks = []
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const embedding = await generateEmbedding(chunk)
       if (!embedding || embedding.length !== 768) {
         throw new Error(`Invalid embedding dimension - expected 768D from nomic-embed-text, got ${embedding?.length}`)
-      }
+      } }
       // Store document chunk
       const [chunkRecord] = await db.insert(document_chunks).values({
         evidence_id: entityType === 'evidence' ? entityId : null,
@@ -73,21 +73,21 @@ export const POST: RequestHandler = async ({ request }) => {
         sequence: i,
         embeddingDimensions: embedding.length
       })
-    }
+    } }
     return json({
       success: true,
-      message: `Successfully ingested ${chunks.length} chunks`,
+      message: `Successfully ingested ${chunks.length} }chunks`,
       chunks: ingestedChunks,
       metadata: {
-       , totalChunks: chunks.length,
+  totalChunks: chunks.length,
         entityType,
         entityId,
         embeddingModel: 'nomic-embed-text:latest',
         embeddingDimensions: 384
-      }
+      } }
     })
-  } catch (err) {
+  } }catch (err) {
     console.error('Embedding ingestion error:', err)'
     return error(500, `Ingestion failed: ${err.message}`)
-  }
+  } }
 }

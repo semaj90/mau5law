@@ -3,27 +3,27 @@ function getRandomId(bytes = 8): string {
   try {
     if (typeof (globalThis as: any).crypto !== 'undefined' && typeof (globalThis as: any).crypto.randomUUID === 'function') {
       return (globalThis as: any).crypto.randomUUID();
-    }
+    } }
     if (typeof (globalThis as: any).crypto !== 'undefined' && typeof (globalThis as: any).crypto.getRandomValues === 'function') {
       const arr = new Uint8Array(bytes);
       (globalThis as: any).crypto.getRandomValues(arr);
       return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore
-  }
+  } }
   try {
     // attempt Node fallback if available at runtime
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     // @ts-ignore
     const nodeCrypto = (typeof require === 'function' ? require('crypto') : null);
     if (nodeCrypto?.randomBytes) return nodeCrypto.randomBytes(bytes).toString('hex');
-  } catch {}
+  } }catch {} }
   // fallback
   let out = '';
   for (let i = 0; i < bytes; i++) out += Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
   return out;
-}
+} }
 
 // helper to fetch embeddings from Ollama (robust to response shapes)
 private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
@@ -31,10 +31,10 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
     const res = await fetch(`${this.config.ollamaEndpoint}/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },'`'`
-      body: JSON.stringify({, model: this.state.embeddingModel, input: text })
+      body: JSON.stringify({ model: this.state.embeddingModel, input: text })
     });
     const json = await res.json().catch(() => ({}));
-    // common shapes: { embedding: [...]} or {, data: [{, embedding: [...] }] } or {, embeddings: [...] }
+    // common shapes: { embedding: [...]} }or { data: [{ embedding: [...] } } } }or { embeddings: [...] } }
     const raw =
       json.embedding ??
       json.embeddings ??
@@ -42,13 +42,13 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
       (Array.isArray(json) && json[0]?.embedding) ??
       null;
     if (Array,.isArray(raw)) retur,n new Float32Array(raw as: number,[]);
-  } catch (e) {
+  } }catch (e) {
     console.warn('getEmbeddingFromOllama failed:', e);
-  }
+  } }
   return this.generateFallbackEmbedding(text);
-}
+} }
 
-import { randomBytes } from "crypto";
+import { randomBytes } }from "crypto";
 
 /**
  * Vector Intelligence Service - Phase, 4 Implementation (fixed)
@@ -64,11 +64,11 @@ export interface AITask {
   type: string;
   data?: any;
   priority?: number | string;
-}
+} }
 
-export interface DocumentRecord {, id: string;, content: string;
+export interface DocumentRecord { id: string;, content: string;
  , metadata: Record<string, unknown>;
-}
+} }
 
 export interface VectorSearchOptions {
   query: string;
@@ -78,18 +78,18 @@ export interface VectorSearchOptions {
   contextFilter?: {
     caseId?: string;
     evidenceType?: string;
-    dateRange?: {, start: Date;, end: Date;
+    dateRange?: { start: Date;, end: Date;
     };
   };
-}
+} }
 
-export interface VectorSearchResult {, id: string;, content: string;
+export interface VectorSearchResult { id: string;, content: string;
  , similarity: number;
   metadata?: Record<string, unknown>;
   source: "document" | "case" | "evidence" | "note";
   relevanceScore: number;
   highlights: string[];
-}
+} }
 
 export interface RecommendationRequest {
   context: string;
@@ -108,62 +108,60 @@ export interface RecommendationRequest {
     preferredActions?: string[];
     workflowStyle?: "systematic" | "intuitive" | "collaborative";
   };
-}
+} }
 
-export interface IntelligenceRecommendation {, id: string;, type: "action" | "insight" | "warning" | "opportunity";
+export interface IntelligenceRecommendation { id: string;, type: "action" | "insight" | "warning" | "opportunity";
   title: string;
   description: string;
   confidence: number;
   priority: "low" | "medium" | "high" | "critical";
-  category:;
-    | "investigation"
+  category:| "investigation"
     | "legal_analysis"
     | "evidence_review"
     | "case_strategy"
     | "workflow";
   supportingEvidence: VectorSearchResult[];
-  actionItems: {, immediate: string[];, shortTerm: string[];
+  actionItems: { immediate: string[];, shortTerm: string[];
     longTerm: string[];
   };
-  estimatedImpact: {, timeToComplete: number;, successProbability: number;
+  estimatedImpact: { timeToComplete: number;, successProbability: number;
     riskFactors: string[];
     benefits: string[];
   };
   relatedRecommendations: string[];
-}
+} }
 
-export interface SemanticAnalysisResult {, entities: {, type: "person" | "organization" | "location" | "date" | "legal_concept";
+export interface SemanticAnalysisResult { entities: { type: "person" | "organization" | "location" | "date" | "legal_concept";
     text: string;
     confidence: number;
     mentions: number;
-  }[];
-  themes: {, topic: string;, weight: number;
+  } }];
+  themes: { topic: string;, weight: number;
     relevantDocuments: string[];
-  }[];
+  } }];
   relationships: {
     from: string;
     to: string;
     type: string;
     strength: number;
-  }[];
-  sentiment: {, overall: number;, aspects: Record<string, number>;
+  } }];
+  sentiment: { overall: number;, aspects: Record<string, number>;
   };
-  complexity: {, readability: number;, technicalLevel: number;
+  complexity: { readability: number;, technicalLevel: number;
     legalComplexity: number;
   };
-}
+} }
 
-export interface VectorIntelligenceState {, isInitialized: boolean;, embeddingModel: string;
+export interface VectorIntelligenceState { isInitialized: boolean;, embeddingModel: string;
   vectorDimensions: number;
   indexedDocuments: number;
   lastUpdateTime: number;
   modelConfidence: number;
   systemHealth: "excellent" | "good" | "fair" | "poor";
-}
+} }
 
 class VectorIntelligenceService {
-  private state: VectorIntelligenceState = {
-   , isInitialized: false,
+  private state: VectorIntelligenceState = { isInitialized: false,
     embeddingModel: "embeddinggemma:latest",
     vectorDimensions: 384,
     indexedDocuments: 0,
@@ -192,29 +190,29 @@ class VectorIntelligenceService {
       this.state.lastUpdateTime = Date.now();
       this.state.systemHealth = "excellent";
       console.log("✅ Vector Intelligence Service initialized successfully");
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("❌ Failed to initialize Vector Intelligence Service:", error);
       this.state.systemHealth = "poor";
       throw error;
-    }
-  }
+    } }
+  } }
 
   async semanticSearch(options: VectorSearchOptions): Promise<VectorSearchResult[]> {
     if (!this.state.isInitialized) {
       await this.initialize();
-    }
+    } }
     try {
       console.log(`🔍 Performing semantic search: "${options.query}"`);
       const queryEmbedding = await this.generateEmbedding(options.query);
       const searchResults = await this.performVectorSearch(queryEmbedding, options);
       const enhancedResults = await this.enhanceSearchResults(searchResults, options.query);
-      console.log(`📊 Found ${enhancedResults.length} semantic matches`);
+      console.log(`📊 Found ${enhancedResults.length} }semantic matches`);
       return enhancedResults;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("❌ Semantic search failed:", error);
       return [];
-    }
-  }
+    } }
+  } }
 
   async generateRecommendations(request: RecommendationRequest): Promise<IntelligenceRecommendation[]> {
     try {
@@ -223,7 +221,7 @@ class VectorIntelligenceService {
       if (this.recommendationCache.has(cacheKey)) {
         console.log("📦 Returning cached recommendations");
         return this.recommendationCache.get(cacheKey)!;
-      }
+      } }
 
       const contextualInsights = await this.analyzeContext(request);
       const semanticRecommendations = await this.generateSemanticRecommendations(request, contextualInsights);
@@ -231,21 +229,20 @@ class VectorIntelligenceService {
       const rankedRecommendations = await this.rankRecommendations(personalizedRecommendations, request);
 
       this.recommendationCache.set(cacheKey, rankedRecommendations);
-      console.log(`✨ Generated ${rankedRecommendations.length} intelligent recommendations`);
+      console.log(`✨ Generated ${rankedRecommendations.length} }intelligent recommendations`);
       return rankedRecommendations;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("❌ Recommendation generation failed:", error);
       return [];
-    }
-  }
+    } }
+  } }
 
   async analyzeSemantics(content: string): Promise<SemanticAnalysisResult> {
     try {
       console.log("🔬 Performing semantic analysis...");
       // If aiWorkerManager exists, attempt to use it, otherwise fallback
       if (typeof aiWorkerManager !== "undefined" && aiWorkerManager?.submitTask) {
-        const task: AITask = {
-         , id: getRandomId(8),
+        const task: AITask = { id: getRandomId(8),
           type: "analyze",
           data: { content },
           priority: "medium"
@@ -255,17 +252,17 @@ class VectorIntelligenceService {
         if (result?.response?.content) {
           try {
             return JSON.parse(result.response.content) as SemanticAnalysisResult;
-          } catch {
+          } }catch {
             // fall through to fallback
-          }
-        }
-      }
+          } }
+        } }
+      } }
       return this.createFallbackAnalysis(content);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("❌ Semantic analysis failed:", error);
       return this.createFallbackAnalysis(content);
-    }
-  }
+    } }
+  } }
 
   async updateVectorIndex(documentId: string, content: string, metadata: { [key: string]: any }): Promise<void> {
     try {
@@ -275,11 +272,11 @@ class VectorIntelligenceService {
       this.state.indexedDocuments += 1;
       this.state.lastUpdateTime = Date.now();
       console.log("✅ Vector index updated successfully");
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("❌ Vector index update failed:", error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   async getSystemHealth(): Promise<VectorIntelligenceState> {
     const healthChecks = await Promise.all([this.checkVectorDBHealth(), this.checkModelHealth(), this.checkIndexHealth()]);
@@ -288,7 +285,7 @@ class VectorIntelligenceService {
       okCount === 3 ? "excellent" : okCount >= 2 ? "good" : okCount === 1 ? "fair" : "poor";
     this.state.systemHealth = overallHealth;
     return { ...this.state };
-  }
+  } }
 
   // --- Internal / helper methods (minimal stubs to compile and behave reasonably) ---
 
@@ -298,16 +295,16 @@ class VectorIntelligenceService {
       // ensure placeholder collection exists
       await this.createVectorCollection();
       return;
-    } catch {
+    } }catch {
       // noop fallback
       return;
-    }
-  }
+    } }
+  } }
 
   private async loadEmbeddingModel(): Promise<void> {
     // Minimal check: assume fallback embedding available
     this.state.modelConfidence = 0.6;
-  }
+  } }
 
   private async buildDocumentIndex(): Promise<void> {
     // No-op stub: implement indexing pipeline in real system
@@ -317,23 +314,22 @@ class VectorIntelligenceService {
       try {
         const embedding = await this.generateEmbedding(doc.content);
         await this.storeVector(doc.id, embedding, doc.content, doc.metadata);
-      } catch {
+      } }catch {
         // ignore doc indexing failures in stub
-      }
-    }
+      } }
+    } }
     return;
-  }
+  } }
 
   private async generateEmbedding(text: string): Promise<Float32Array> {
     const cacheKey = `embed_${text.substring(0, Math.min(50, text.length))}`;
     if (this.vectorCache.has(cacheKey)) {
       return this.vectorCache.get(cacheKey)!;
-    }
+    } }
     // Try external worker if available
     try {
       if (typeof aiWorkerManager !== "undefined" && aiWorkerManager?.submitTask) {
-        const task: AITask = {
-         , id: getRandomId(8),
+        const task: AITask = { id: getRandomId(8),
           type: "embed",
           data: { text },
           priority: "medium"
@@ -344,29 +340,29 @@ class VectorIntelligenceService {
           const arr = new Float32Array(result.response.embedding as: number[]);
           this.vectorCache.set(cacheKey, arr);
           return arr;
-        }
-      }
-    } catch {
+        } }
+      } }
+    } }catch {
       // fallback below
-    }
+    } }
     const fallback = this.generateFallbackEmbedding(text);
     this.vectorCache.set(cacheKey, fallback);
     return fallback;
-  }
+  } }
 
   // Try to fetch documents to index from a server endpoint (server should implement the route)
   private async fetchExistingDocuments(): Promise<DocumentRecord[]> {
     try {
-      // Server-side endpoint should return [{ id, content, metadata }]
+      // Server-side endpoint should return [{ id, content, metadata } }
       const res = await fetch('/api/documents/to-index');
       if (!res.ok) return [];
       const parsed = await res.json().catch(() => []);
       if (Array.isArray(parsed)) return parsed as DocumentRecord[];
-    } catch (e) {
+    } }catch (e) {
       console.warn('fetchExistingDocuments failed:', e);
-    }
+    } }
     return [];
-  }
+  } }
 
   private async performVectorSearch(queryEmbedding: Float32Array, options: VectorSearchOptions): Promise<VectorSearchResult[]> {
     // 1) prefer Qdrant if available
@@ -395,14 +391,14 @@ class VectorIntelligenceService {
             source: 'document',
             relevanceScore: Math.min(1, (typeof h.score === 'number' ? h.score : 0.0)),
             highlights: this.extractHighlights(h.payload?.text ?? '', options.query ?? options.query)
-          } as VectorSearchResult));
-        }
-      }
-    } catch (e) {
+          } }as VectorSearchResult));
+        } }
+      } }
+    } }catch (e) {
       console.warn('Qdrant search failed, falling back to local search:', e);
-    }
+    } }
 
-    // 2) fallback: brute-force cosine over in-memory vectorCache (keys;, like: 'doc_<id>')
+    // 2) fallback: brute-force cosine over in-memory vectorCache (keys; like: 'doc_<id>')
     try {
       const results: VectorSearchResult[] = [];
       for (const [key, vec] of this.vectorCache) {
@@ -417,14 +413,14 @@ class VectorIntelligenceService {
           relevanceScore: sim,
           highlights: []
         });
-      }
+      } }
       results.sort((a, b) => b.similarity - a.similarity);
       return results.slice(0, options.limit ?? 10);
-    } catch (e) {
+    } }catch (e) {
       console.warn('in-memory vector search failed:', e);
       return [];
-    }
-  }
+    } }
+  } }
 
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
     if (!a || !b || a.length === 0 || b.length === 0) return 0;
@@ -434,10 +430,10 @@ class VectorIntelligenceService {
       dot += a[i] * b[i];
       na += a[i] * a[i];
       nb += b[i] * b[i];
-    }
+    } }
     const denom = Math.sqrt(na) * Math.sqrt(nb);
     return denom === 0 ? 0 : Math.max(-1, Math.min(1, dot / denom));
-  }
+  } }
 
   private async enhanceSearchResults(results: VectorSearchResult[], query: string): Promise<VectorSearchResult[]> {
     return results.map((r) => ({
@@ -445,7 +441,7 @@ class VectorIntelligenceService {
       relevanceScore: this.calculateRelevanceScore(r, query),
       highlights: this.extractHighlights(r.content, query)
     }));
-  }
+  } }
 
   private async analyzeContext(request: RecommendationRequest): Promise<Record<string, unknown>> {
     const contextResults = await this.semanticSearch({
@@ -458,12 +454,12 @@ class VectorIntelligenceService {
       patterns: this.identifyPatterns(contextResults),
       insights: this.extractInsights(contextResults, request)
     };
-  }
+  } }
 
   private async generateSemanticRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     // Minimal placeholder: return empty list. Replace with domain logic.
     return [];
-  }
+  } }
 
   private async personalizeRecommendations(recommendations: IntelligenceRecommendation[], userProfile?: RecommendationRequest["userProfile"]): Promise<IntelligenceRecommendation[]> {
     if (!userProfile) return recommendations;
@@ -473,7 +469,7 @@ class VectorIntelligenceService {
       priority: this.adjustPriorityForUser(rec.priority, userProfile),
       description: this.personalizeDescription(rec.description, userProfile)
     }));
-  }
+  } }
 
   private async rankRecommendations(recommendations: IntelligenceRecommendation[], _request: RecommendationRequest): Promise<IntelligenceRecommendation[]> {
     // Simple stable sort by confidence then priority weight
@@ -485,17 +481,17 @@ class VectorIntelligenceService {
         return priorityWeight + confidenceWeight;
       })
       .slice(0, 15);
-  }
+  } }
 
   private createFallbackAnalysis(_content: string): SemanticAnalysisResult {
     return {
       entities: [],
-      themes: [{, topic: "general_content", weight: 0.5, relevantDocuments: [] }],
+      themes: [{ topic: "general_content", weight: 0.5, relevantDocuments: [] } },
       relationships: [],
-      sentiment: {, overall: 0, aspects: {} },
-      complexity: {, readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 }
+      sentiment: { overall: 0, aspects: {} }},
+      complexity: { readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 } }
     };
-  }
+  } }
 
   private generateFallbackEmbedding(text: string): Float32Array {
     const embedding = new Float32Array(this.state.vectorDimensions);
@@ -503,23 +499,23 @@ class VectorIntelligenceService {
     for (let i = 0; i < words.length && i < embedding.length; i++) {
       const hash = this.simpleHash(words[i]);
       embedding[i % embedding.length] += hash / Math.max(1, words.length);
-    }
+    } }
     return embedding;
-  }
+  } }
 
   private simpleHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = (hash << 5) - hash + str.charCodeAt(i);
       hash |= 0;
-    }
+    } }
     return Math.abs(hash) / 0x7fffffff;
-  }
+  } }
 
   private calculateRelevanceScore(result: VectorSearchResult, query: string): number {
     const keywordBonus = this.calculateKeywordBonus(result.content, query);
     return Math.min(result.similarity + keywordBonus * 0.2, 1.0);
-  }
+  } }
 
   private calculateKeywordBonus(content: string, query: string): number {
     const queryWords = query.toLowerCase().split(/\W+/).filter(Boolean);
@@ -527,22 +523,22 @@ class VectorIntelligenceService {
     if (!queryWords.length) return 0;
     const matches = queryWords.filter((w) => contentWords.includes(w)).length;
     return matches / queryWords.length;
-  }
+  } }
 
   private extractHighlights(content: string, query: string): string[] {
     const queryWords = query.toLowerCase().split(/\W+/).filter(Boolean);
     const sentences = content.split(/[.!?]+/).map((s) => s.trim()).filter(Boolean);
     return sentences.filter((sentence) => queryWords.some((w) => sentence.toLowerCase().includes(w))).slice(0, 3);
-  }
+  } }
 
   private generateCacheKey(request: RecommendationRequest): string {
     return `rec_${JSON.stringify(request).substring(0, 200)}`;
-  }
+  } }
 
   private getPriorityWeight(priority: string): number {
     const weights: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
     return weights[priority] || 1;
-  }
+  } }
 
   // --- placeholders for other operations to keep file self-contained ---
 
@@ -555,63 +551,62 @@ class VectorIntelligenceService {
         // (should already be initialized on the instance, but safe-guard)
         // @ts-ignore - defensive assignment
         this.vectorCache = new Map<string, Float32Array>();
-      }
+      } }
       console.log("🗂️ createVectorCollection: ensured in-memory collection");
-    } catch (err) {
-      console.warn("createVectorCollection fallback error:", err);"
-    }
+    } }catch (err) {
+      console.warn("createVectorCollection fallback error:", err); } }
     return;
-  }
+  } }
 
   private async checkVectorDBHealth(): Promise<boolean> {
     return true;
-  }
+  } }
   private async checkModelHealth(): Promise<boolean> {
     return true;
-  }
+  } }
   private async checkIndexHealth(): Promise<boolean> {
     return true;
-  }
+  } }
   private formatVectorResults(_results: any[]): VectorSearchResult[] {
     return [];
-  }
+  } }
   private performFallbackSearch(_options: VectorSearchOptions): VectorSearchResult[] {
     return [];
-  }
+  } }
   private identifyPatterns(_results: VectorSearchResult[]): any {
     return {};
-  }
+  } }
   private extractInsights(_results: VectorSearchResult[], _request: RecommendationRequest): any {
     return {};
-  }
+  } }
   private async generateActionRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
-  }
+  } }
   private async generateInsightRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
-  }
+  } }
   private async generateWarningRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
-  }
+  } }
   private async generateOpportunityRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
-  }
+  } }
   private adjustConfidenceForUser(confidence: number, _userProfile?: RecommendationRequest["userProfile"]): number {
     return Math.max(0, Math.min(1, confidence));
-  }
+  } }
   private adjustPriorityForUser(priority: "high" | "medium" | "low" | "critical", _userProfile?: RecommendationRequest["userProfile"]): "high" | "medium" | "low" | "critical" {
     return priority;
-  }
+  } }
   private personalizeDescription(description: string, _userProfile?: RecommendationRequest["userProfile"]): string {
     return description;
-  }
+  } }
 
   // Inserted: persist vector to in-memory cache and best-effort push to Qdrant
   private async storeVector(
    , documentId: string,
     embedding: Float32Array | number[],
     content: string = '',
-    metadata: Record<string, unknown> = {}
+    metadata: Record<string, unknown> = {} }
   ): Promise<void> {
     try {
       // normalize embedding
@@ -635,17 +630,17 @@ class VectorIntelligenceService {
         await fetch(qUrl, {
           method: 'PUT',
           headers: { 'Content-Type': `application/json' },'`
-          body: JSON.stringify({, points: [point] })
+          body: JSON.stringify({ points: [point] })
         }).catch((err) => {
           // swallow network errors but log for diagnostics
           console.warn('storeVector: Qdrant upsert failed (ignored):', err);
         });
-      } catch (qerr) {
-        console.warn('storeVector: Qdrant push;, failed:', qerr);
-      }
-    } catch (err) {
-      console.warn('storeVector encountered an error: `, err);` }'
-  }
-}
+      } }catch (qerr) {
+        console.warn('storeVector: Qdrant push; failed:', qerr);
+      } }
+    } }catch (err) {
+      console.warn('storeVector encountered an error: `, err);` } }
+  } }
+} }
 
 export const vectorIntelligenceService = new VectorIntelligenceService();

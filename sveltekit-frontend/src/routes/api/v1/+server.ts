@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /*
  * Unified JSON API Router v1 - SvelteKit, 2 Production Implementation
  * Integrates all, 37 Go microservices with production-quality endpoints
  * Windows-native deployment with comprehensive error handling
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { dev } from '$app/environment';
-import { ensureError } from '$lib/utils/ensure-error';
-import type { APIResponse } from '$lib/types/index';
-import type { HealthCheckResult } from '$lib/types/api';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { dev } }from '$app/environment';
+import { ensureError } }from '$lib/utils/ensure-error';
+import type { APIResponse } }from '$lib/types/index';
+import type { HealthCheckResult } }from '$lib/types/api';
 
 // Add a concrete ServiceConfig type to avoid: any casts
 type ServiceConfig = {
@@ -35,7 +35,7 @@ type ServiceConfig = {
 const, PRODUCTION_ENDPOINTS: Record<string, ServiceConfig> = {
   // Core AI Services (Tier 1)
   enhancedRAG: {
-   , http: 'http://localhost:8094',
+  http: 'http://localhost:8094',
     grpc: 'localhost:50051',
     quic: 'localhost:8216',
     websocket: 'ws://localhost:8094/ws',
@@ -44,31 +44,31 @@ const, PRODUCTION_ENDPOINTS: Record<string, ServiceConfig> = {
     status: 'active'
   },
   uploadService: {
-   , http: 'http://localhost:8093',
+  http: 'http://localhost:8093',
     health: '/health',
     status: 'active'
   },
   documentProcessor: {
-   , http: 'http://localhost:8081',
+  http: 'http://localhost:8081',
     health: '/api/health',
     status: 'active'
   },
   // AI Enhancement Services (Tier 2)
   advancedCUDA: {
-   , http: 'http://localhost:8095',
+  http: 'http://localhost:8095',
     tier: 'ULTRA_FAST',
     health: '/health',
     status: 'experimental'
   },
   dimensionalCache: {
-   , http: 'http://localhost:8097',
+  http: 'http://localhost:8097',
     tier: 'HIGH_PERF',
     health: '/health',
     status: 'experimental'
   },
   // Multi-Core Ollama Cluster
   ollama: {
-   , primary: 'http://localhost:11434',
+  primary: 'http://localhost:11434',
     secondary: 'http://localhost:11435',
     embeddings: 'http://localhost:11436',
     health: '/api/tags',
@@ -76,83 +76,83 @@ const, PRODUCTION_ENDPOINTS: Record<string, ServiceConfig> = {
   },
   // Database Services
   postgresql: {
-   , host: 'localhost',
+  host: 'localhost',
     port: 5432,
     database: 'legal_ai_db',
     status: 'active'
   },
   redis: {
-   , host: 'localhost',
+  host: 'localhost',
     port: 6379,
     status: 'active'
   },
   qdrant: {
-   , http: 'http://localhost:6333',
+  http: 'http://localhost:6333',
     health: '/health',
     status: 'active'
   },
   // Messaging & State Management
   nats: {
-   , server: 'nats://localhost:4225',
+  server: 'nats://localhost:4225',
     websocket: 'ws://localhost:4226',
     monitor: 'http://localhost:8225',
     health: '/healthz',
     status: 'active'
   },
   xstateManager: {
-   , http: 'http://localhost:8212',
+  http: 'http://localhost:8212',
     health: '/health',
     status: 'active'
   },
   // Infrastructure Services
   clusterManager: {
-   , http: 'http://localhost:8213',
+  http: 'http://localhost:8213',
     health: '/health',
     status: 'active'
   },
   loadBalancer: {
-   , http: 'http://localhost:8224',
+  http: 'http://localhost:8224',
     health: '/health',
     status: 'active'
   },
   // Development & Monitoring
   sveltekit: {
-   , http: 'http://localhost:5173',
+  http: 'http://localhost:5173',
     dev: 'http://localhost:5174',
     status: 'active'
-  }
+  } }
 };
 
 /*
  * Protocol-aware request handler with automatic failover
  */
 async function makeServiceRequest(
- , service: keyof typeof PRODUCTION_ENDPOINTS,
+  service: keyof typeof PRODUCTION_ENDPOINTS,
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {} }
 ): Promise<Response> {
   const serviceConfig = PRODUCTION_ENDPOINTS[service];
   if (!serviceConfig) {
-    throw new Error(`Service ${service} not configured`);
-  }
+    throw new Error(`Service ${service} }not configured`);
+  } }
   // Determine optimal protocol based on service tier
   let baseUrl: string;
   // Use defined values (not just property presence) so types are: string
   if (serviceConfig.tier === 'ULTRA_FAST' && serviceConfig.quic) {
     // Attempt QUIC first for ultra-fast services (quic value may already include scheme)
     baseUrl = serviceConfig.quic.startsWith('http') ? serviceConfig.quic : `http://${serviceConfig.quic}`;
-  } else if (serviceConfig.tier === 'HIGH_PERF' && serviceConfig.grpc) {
+  } }else if (serviceConfig.tier === 'HIGH_PERF' && serviceConfig.grpc) {
     // Use gRPC for high-performance services (normalize if needed)
     baseUrl = serviceConfig.grpc.startsWith('http') ? serviceConfig.grpc : `http://${serviceConfig.grpc}`;
-  } else if (serviceConfig.http) {
+  } }else if (serviceConfig.http) {
     // Standard HTTP fallback
     baseUrl = serviceConfig.http;
-  } else if (serviceConfig.primary) {
+  } }else if (serviceConfig.primary) {
     // Multi-instance services (Ollama)
     baseUrl = serviceConfig.primary;
-  } else {
+  } }else {
     throw new Error(`No valid endpoint for service ${service}`);
-  }
+  } }
   const fullUrl = `${baseUrl}${endpoint}`;
   try {
     const response = await fetch(fullUrl, {
@@ -161,18 +161,18 @@ async function makeServiceRequest(
         'Content-Type': 'application/json',
         'User-Agent': 'SvelteKit-Legal-AI/2.0',
         ...options.headers
-      }
+      } }
     });
     return response;
-  } catch (fetchError) {
+  } }catch (fetchError) {
     // Failover logic for multi-protocol services
     if (serviceConfig.http && baseUrl !== serviceConfig.http) {
-      console.warn(`Service ${service} failover: ${baseUrl} → ${serviceConfig.http}`);
+      console.warn(`Service ${service} }failover: ${baseUrl} }→ ${serviceConfig.http}`);
       return fetch(`${serviceConfig.http}${endpoint}`, options);
-    }
+    } }
     throw fetchError;
-  }
-}
+  } }
+} }
 /*
  * GET /api/v1 - API Discovery & Health Overview
  */
@@ -191,11 +191,11 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleClusterStatus();
       default: {
         const data = {
-         , api: 'Legal AI Platform API v1',
+  api: 'Legal AI Platform API v1',
           version: '2.0.0',
           documentation: 'https://localhost:5173/api/docs',
           endpoints: {
-           , health: '/api/v1?action=health',
+  health: '/api/v1?action=health',
             services: '/api/v1?action=services',
             metrics: '/api/v1?action=metrics',
             cluster: '/api/v1?action=cluster',
@@ -210,33 +210,33 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'production'
         };
         return json({
-         , success: true,
+  success: true,
           data,
           metadata: {
-           , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
             processingTimeMs: Date.now() - started
-          }
-        } satisfies APIResponse<typeof, data>);
-      }
-    }
-  } catch (err: any) {
+          } }
+        } }satisfies APIResponse<typeof, data>);
+      } }
+    } }
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('API v1 Error:', e);
     return json(
       {
         success: false,
         error: {
-         , code: 'INTERNAL_ERROR',
+  code: 'INTERNAL_ERROR',
           message: dev ? e.message : 'Service temporarily unavailable'
         },
         metadata: {
-         , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
           processingTimeMs: Date.now() - started
-        }
-      } satisfies APIResponse<unknown>,
-      { status: 500 }
+        } }
+      } }satisfies APIResponse<unknown>,
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * Comprehensive health check across all services
@@ -262,17 +262,17 @@ async function handleHealthCheck(): Promise<Response> {
             responseTime: (performance.now?.() ?? Date.now()) - reqStarted,
             endpoint: healthEndpoint,
             lastCheck: new Date().toISOString()
-          } as HealthCheckResult;
-        } catch (error: any) {
+          } }as HealthCheckResult;
+        } }catch (error: any) {
           healthChecks[serviceName] = {
             status: 'error',
             error: String(error),
             lastCheck: new Date().toISOString()
-          } as HealthCheckResult;
-        }
+          } }as HealthCheckResult;
+        } }
       })()
     );
-  }
+  } }
   await Promise.allSettled(checkPromises);
   const totalServices = Object.keys(healthChecks).length;
   const healthyServices = Object.values(healthChecks).filter(h => h.status === 'healthy').length;
@@ -282,7 +282,7 @@ async function handleHealthCheck(): Promise<Response> {
     healthScore,
     services: healthChecks,
     summary: {
-     , total: totalServices,
+  total: totalServices,
       healthy: healthyServices,
       unhealthy: totalServices - healthyServices
     },
@@ -290,14 +290,14 @@ async function handleHealthCheck(): Promise<Response> {
     deployment: 'Windows Native'
   };
   return json({
-   , success: true,
+  success: true,
     data,
     metadata: {
-     , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
       processingTimeMs: Date.now() - started
-    }
-  } satisfies APIResponse<typeof, data>);
-}
+    } }
+  } }satisfies APIResponse<typeof, data>);
+} }
 
 /*
  * Service discovery endpoint
@@ -318,18 +318,18 @@ async function handleServiceDiscovery(): Promise<Response> {
     active: services.filter(item => item.config.status === 'active'),
     experimental: services.filter(item => item.config.status === 'experimental'),
     protocolSupport: {
-     , HTTP: services.filter(s => s.protocols.includes('HTTP')).length,
+  HTTP: services.filter(s => s.protocols.includes('HTTP')).length,
       gRPC: services.filter(s => s.protocols.includes('gRPC')).length,
       QUIC: services.filter(s => s.protocols.includes('QUIC')).length,
       WebSocket: services.filter(s => s.protocols.includes('WebSocket')).length
-    }
+    } }
   };
   return json({
     success: true,
     data,
-    metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof, data>);
-}
+    metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }
+  } }satisfies APIResponse<typeof, data>);
+} }
 /*
  * Performance metrics endpoint
  */
@@ -337,16 +337,16 @@ async function handleMetrics(): Promise<Response> {
   const started = Date.now();
   // This would integrate with actual monitoring systems
   // For now, return basic metrics structure
-  const data = { performance: {, averageResponseTime: '< 50ms',
+  const data = { performance: { averageResponseTime: '< 50ms',
       uptime: '99.9%',
       throughput: '1000 req/min` },'`
     resources: {
-     , cpu: '45%',
+  cpu: '45%',
       memory: '6.2GB / 16GB',
       gpu: '87% (RTX, 3060 Ti)',
       storage: `125GB / 500GB` },
     protocols: {
-     , QUIC: '< 5ms, avg',
+  QUIC: '< 5ms, avg',
       gRPC: '< 15ms, avg',
       HTTP: '< 50ms, avg',
       WebSocket: `< 1ms, latency` },
@@ -355,34 +355,34 @@ async function handleMetrics(): Promise<Response> {
   return json({
     success: true,
     data,
-    metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof, data>);
-}
+    metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }
+  } }satisfies APIResponse<typeof, data>);
+} }
 /*
  * Cluster status with Windows-native process monitoring
  */
 async function handleClusterStatus(): Promise<Response> {
   const started = Date.now();
   // This would integrate with actual cluster monitoring
-  const data = { cluster: {, status: 'operational',
+  const data = { cluster: { status: 'operational',
       nodes: 1,
       services: Object.keys(PRODUCTION_ENDPOINTS).length,
       platform: 'Windows Native',
       docker: false
     },
-    processes: {, sveltekit: {, status: 'running', pid: process.pid },
-      goServices: {, status: 'monitoring', count: 37 },
-      ollama: {, status: 'running', instances: 3 },
-      databases: {, status: 'connected', count: 3 }
+    processes: { sveltekit: { status: 'running', pid: process.pid },
+      goServices: { status: 'monitoring', count: 37 },
+      ollama: { status: 'running', instances: 3 },
+      databases: { status: 'connected', count: 3 } }
     },
     timestamp: new Date().toISOString()
   };
   return json({
     success: true,
     data,
-    metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof, data>);
-}
+    metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }
+  } }satisfies APIResponse<typeof, data>);
+} }
 /*
  * Helper function to determine service protocols
  */
@@ -393,4 +393,5 @@ function getServiceProtocols(config: ServiceConfig): string[] {
   if (config.quic) protocols.push('QUIC');
   if (config.websocket) protocols.push('WebSocket');
   return protocols;
-}
+} }
+

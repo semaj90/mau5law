@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { webgpuPolyfill } }from '$lib/webgpu/webgpu-polyfill';
 
 // Add explicit types for the polyfill surface and init result
 type PerformanceStats = Record<string, unknown>;
-type WebGPUInitResult = { isWebGPUAvailable?: boolean } | null;
+type WebGPUInitResult = { isWebGPUAvailable?: boolean } }| null;
 
 interface WebGPUPolyfill {
   init?: () => Promise<WebGPUInitResult>;
@@ -13,22 +13,22 @@ interface WebGPUPolyfill {
   computeSimilarityCPU?: (a: number[], b: number[]) => number;
   computeSimilarity?: (a: number[], b: number[]) => Promise<number> | number;
   getPerformanceStats?: () => PerformanceStats;
-}
+} }
 
 export interface VectorSimilarityRequest { vector1: number[];, vector2: number[];
   mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto';
   returnDiagnostics?: boolean;
-}
-export interface VectorSimilarityResponse {, similarity: number;, mode: 'webgpu' | 'webgl' | 'cpu';
+} }
+export interface VectorSimilarityResponse { similarity: number;, mode: 'webgpu' | 'webgl' | 'cpu';
   executionTimeMs: number;
-  diagnostics?: {, webgpuAvailable: boolean;, webglAvailable: boolean;
+  diagnostics?: { webgpuAvailable: boolean;, webglAvailable: boolean;
     vectorLength: number;
     performanceStats?: any;
   };
   error?: string;
-}
+} }
 // GET endpoint for WebGPU capabilities info
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     const capabilities = {
       endpoint: '/api/webgpu/vector-similarity',
@@ -36,13 +36,13 @@ export const, GET: RequestHandler = async () => {
       webgpuSupported: typeof navigator !== 'undefined' && 'gpu' in navigator,
       methods: ['POST'],
       requestFormat: {
-       , vector1: 'number[] - First vector',
+  vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
         mode: 'string (optional) - "webgpu", "webgl", "cpu", or: "auto" (default)',
         returnDiagnostics: 'boolean (optional) - Include performance diagnostics'
       },
       responseFormat: {
-       , similarity: 'number - Cosine similarity score (-1 to 1)',
+  similarity: 'number - Cosine similarity score (-1 to 1)',
         mode: 'string - Actual computation mode used',
         executionTimeMs: 'number - Execution time in milliseconds',
         diagnostics: 'object (optional) - Performance and capability info'
@@ -55,9 +55,9 @@ export const, GET: RequestHandler = async () => {
       ]
     };
     return json(capabilities);
-  } catch (error: any) {
+  } }catch (error: any) {
     return json({ error: 'Failed to get capabilities' }, { status: 500 });
-  }
+  } }
 };
 // POST endpoint for vector similarity computation
 export const POST: RequestHandler = async ({ request }) => {
@@ -70,24 +70,24 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Basic validation
     if (!Array.isArray(body.vector1) || !Array.isArray(body.vector2)) {
-      return json({ error: 'Both vector1 and vector2 must be arrays of numbers' } as VectorSimilarityResponse, {
+      return json({ error: 'Both vector1 and vector2 must be arrays of numbers' } }as VectorSimilarityResponse, {
         status: 400
       });
-    }
+    } }
     if (body.vector1.length !== body.vector2.length) {
       return json(
-        { error: 'Vector length, mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions' } as VectorSimilarityResponse,
-        { status: 400 }
+        { error: 'Vector length, mismatch: vector1 has ${body.vector1.length} }dimensions, vector2 has ${body.vector2.length} }dimensions' } }as VectorSimilarityResponse,
+        { status: 400 } }
       );
-    }
+    } }
     if (body.vector1.length === 0) {
-      return json({ error: 'Vectors cannot be empty' } as VectorSimilarityResponse, { status: 400 });
-    }
+      return json({ error: 'Vectors cannot be empty' } }as VectorSimilarityResponse, { status: 400 });
+    } }
     // Ensure elements are numbers
     for (let i = 0; i < body.vector1.length; i++) {
       if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number`) {'`
-        return json({ error: 'All vector elements must be numbers' } as VectorSimilarityResponse, { status: 400 });'' }
-    }
+        return json({ error: 'All vector elements must be numbers' } }as VectorSimilarityResponse, { status: 400 });'' } }
+    } }
 
     const mode = body.mode ?? 'auto';
     let actualMode: VectorSimilarityResponse['mode'] = 'cpu';
@@ -102,38 +102,38 @@ export const POST: RequestHandler = async ({ request }) => {
       // detect Promise by duck-typing .then
       if (m && typeof (m as Promise<number>).then === 'function') {
         return await (m as Promise<number>);
-      }
+      } }
       return m as: number;
-    }
+    } }
 
     try {
-      // Try WebGPU for: 'webgpu';, or: 'auto'
+      // Try WebGPU for: 'webgpu'; or: 'auto'
       if (mode === 'webgpu' || mode === 'auto') {
         try {
           if (typeof polyfill.init === 'function') {
             initResult = await polyfill.init();
-          }
+          } }
           const webgpuAvailable =
             !!(initResult && initResult.isWebGPUAvailable) || (typeof navigator !== 'undefined' && 'gpu' in navigator);
 
           if (webgpuAvailable) {
             if (typeof polyfill.computeSimilarityWebGPU === 'function') {
               similarity = await resolveNumberOrPromise(polyfill.computeSimilarityWebGPU(body.vector1, body.vector2));
-            } else if (typeof polyfill.computeSimilarity === 'function') {
+            } }else if (typeof polyfill.computeSimilarity === 'function') {
               similarity = await resolveNumberOrPromise(polyfill.computeSimilarity(body.vector1, body.vector2));
-            } else {
+            } }else {
               throw new Error('WebGPU compute function not available');
-            }
+            } }
             actualMode = 'webgpu';
-          } else if (mode === 'webgpu') {
+          } }else if (mode === 'webgpu') {
             // explicit failure if user requested webgpu only
             throw new Error('WebGPU not available');
-          }
-        } catch (webgpuErr: any) {
+          } }
+        } }catch (webgpuErr: any) {
           // For auto, fall through to try webgl then CPU; for explicit webgpu, rethrow
           if (mode === 'webgpu') throw webgpuErr;
-        }
-      }
+        } }
+      } }
 
       // If still not computed and either mode is: 'webgl' or auto fallback, try WebGL
       if (actualMode !== 'webgpu' && (mode === 'webgl' || mode === 'auto')) {
@@ -141,46 +141,46 @@ export const POST: RequestHandler = async ({ request }) => {
           if (typeof polyfill.computeSimilarityWebGL === 'function') {
             similarity = await resolveNumberOrPromise(polyfill.computeSimilarityWebGL(body.vector1, body.vector2));
             actualMode = 'webgl';
-          } else {
+          } }else {
             throw new Error('WebGL compute function not available');
-          }
-        } catch (webglErr: any) {
+          } }
+        } }catch (webglErr: any) {
           if (mode === 'webgl') throw webglErr;
-        }
-      }
+        } }
+      } }
 
       // Final fallback: CPU
       if (actualMode !== 'webgpu' && actualMode !== 'webgl') {
         if (typeof polyfill.computeSimilarityCPU === 'function') {
           similarity = polyfill.computeSimilarityCPU(body.vector1, body.vector2);
-        } else if (typeof polyfill.computeSimilarity === 'function') {
+        } }else if (typeof polyfill.computeSimilarity === 'function') {
           similarity = await resolveNumberOrPromise(polyfill.computeSimilarity(body.vector1, body.vector2));
-        } else {
+        } }else {
           // Basic local CPU implementation (cosine similarity)
           const dot = body.vector1.reduce((sum, v, i) => sum + v * body.vector2[i], 0);
           const normA = Math.sqrt(body.vector1.reduce((s, v) => s + v * v, 0));
           const normB = Math.sqrt(body.vector2.reduce((s, v) => s + v * v, 0));
           similarity = normA === 0 || normB === 0 ? 0 : dot / (normA * normB);
-        }
+        } }
         actualMode = 'cpu';
-      }
-    } catch (computeError: any) {
+      } }
+    } }catch (computeError: any) {
       // Ultimate fallback to CPU if anything unexpected happens
       try {
         if (typeof polyfill.computeSimilarityCPU === 'function') {
           similarity = polyfill.computeSimilarityCPU(body.vector1, body.vector2);
-        } else {
+        } }else {
           const dot = body.vector1.reduce((sum, v, i) => sum + v * body.vector2[i], 0);
           const normA = Math.sqrt(body.vector1.reduce((s, v) => s + v * v, 0));
           const normB = Math.sqrt(body.vector2.reduce((s, v) => s + v * v, 0));
           similarity = normA === 0 || normB === 0 ? 0 : dot / (normA * normB);
-        }
+        } }
         actualMode = 'cpu';
-      } catch {
+      } }catch {
         // If even CPU fallback fails, rethrow original compute error
         throw computeError;
-      }
-    }
+      } }
+    } }
 
     const executionTime = hasPerf ? performance.now() - startTime : Date.now() - startTime;
     const response: VectorSimilarityResponse = {
@@ -201,10 +201,10 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorLength: body.vector1.length,
         performanceStats: stats
       };
-    }
+    } }
 
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     const hasPerf = typeof performance !== 'undefined' && typeof performance.now === 'function';
     const executionTime = hasPerf ? performance.now() - startTime : Date.now() - startTime;
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -213,8 +213,9 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: 0,
         mode: 'cpu' as const,
         executionTimeMs: executionTime,
-        error: `Vector similarity computation;, failed: ${errMsg}' } as VectorSimilarityResponse,'`
-      { status: 500 }
+        error: `Vector similarity computation; failed: ${errMsg} } } }as VectorSimilarityResponse,'`
+      { status: 500 } }
     );
-  }
+  } }
 };
+

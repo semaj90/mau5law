@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 const ENABLE_TTS = String(process.env.ENABLE_TTS || 'false').toLowerCase() === 'true';
 const TTS_SERVICE_URL = process.env.TTS_SERVICE_URL || 'http://localhost:8098';
@@ -24,7 +24,7 @@ function synthesizePlaceholderWavBase64(text: string): string {
     // clamp and round to nearest integer to avoid fractional writes
     const intVal = Math.round(Math.max(-1, Math.min(1, v)) * 0x7fff);
     samples[i] = intVal;
-  }
+  } }
 
   const blockAlign = numChannels * (bitsPerSample / 8);
   const byteRate = sampleRate * blockAlign;
@@ -51,10 +51,10 @@ function synthesizePlaceholderWavBase64(text: string): string {
   for (let i = 0; i < samples.length; i++) {
     buffer.writeInt16LE(samples[i], offset);
     offset += 2;
-  }
+  } }
 
   return buffer.toString('base64');
-}
+} }
 
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
@@ -82,13 +82,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
         if (resp && resp.ok) {
           const ct = resp.headers.get('content-type') ?? '';
-          // If JSON, expect { audioUrl } or similar
+          // If JSON, expect { audioUrl } }or similar
           if (ct.includes('application/json') || ct.includes('text/json')) {
             const jsonResp = await resp.json().catch(() => null);
             if (jsonResp && (jsonResp.audioUrl || jsonResp.url)) {
               return json({ success: true, audioUrl: jsonResp.audioUrl ?? jsonResp.url });
-            }
-          }
+            } }
+          } }
           // If audio bytes or octet-stream, convert to data URL
           if (ct.includes('audio/') || ct.includes('application/octet-stream') || ct === '') {
             const arrayBuffer = await resp.arrayBuffer().catch(() => null);
@@ -97,22 +97,23 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               const mime = ct.includes('audio/') ? ct.split(';')[0] : 'audio/wav';
               const audioUrl = `data:${mime};base64,${b.toString('base64')}`;
               return json({ success: true, audioUrl });
-            }
-          }
-        }
-      } catch (err) {
+            } }
+          } }
+        } }
+      } }catch (err) {
         // aborted or network error -> fall back
         console.error('External TTS error or timeout, falling back to placeholder:', err);
-      } finally {
+      } }finally {
         clearTimeout(timeout);
-      }
-    }
+      } }
+    } }
 
     const base64 = synthesizePlaceholderWavBase64(String(text));
     const audioUrl = `data:audio/wav;base64,${base64}`;
     return json({ success: true, audioUrl, length: String(text).length }, { status: 200 });
-  } catch (err) {
-    console.error('Text-to-voice error:', err);'
+  } }catch (err) {
+    console.error('Text-to-voice error:', err);
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

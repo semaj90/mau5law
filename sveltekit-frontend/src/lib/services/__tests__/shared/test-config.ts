@@ -7,15 +7,14 @@
  */
 export const TEST_CONFIG = {
   // Environment settings
-  environment: {
-   , nodeEnv: 'test',
+  environment: { nodeEnv: 'test',
     logLevel: 'error', // Reduce noise during tests
     dbUrl: 'postgresql://test:test@localhost:5432/legal_ai_test',
     redisUrl: 'redis://localhost:6379/15', // Use DB, 15 for tests
     testMode: true
   },
   // Authentication settings
-  auth: {, testUser: {, email: 'test@legalai.com',
+  auth: { testUser: { email: 'test@legalai.com',
       password: 'testPassword123',
       username: 'testuser',
       role: 'attorney'
@@ -39,8 +38,7 @@ export const TEST_CONFIG = {
     queryTimeout: 5000, // 5 seconds
   },
   // API testing settings
-  api: {
-   , baseUrl: 'http://localhost:3000',
+  api: { baseUrl: 'http://localhost:3000',
     timeout: 10000, // 10 seconds
     retries: 2,
     // Mock external services
@@ -51,14 +49,12 @@ export const TEST_CONFIG = {
   // Integration test settings
   integration: {
     // Services to test against
-    services: {
-     , authService: 'http://localhost:8080',
+    services: { authService: 'http://localhost:8080',
       sessionService: 'http://localhost:8081',
       evidenceService: 'http://localhost:8082'
     },
     // Timeouts for different operations
-    timeouts: {
-     , auth: 5000,
+    timeouts: { auth: 5000,
       request: 10000,
       cleanup: 3000,
       longOperation: 30000
@@ -70,18 +66,16 @@ export const TEST_CONFIG = {
   // Performance test settings
   performance: {
     // Thresholds for performance assertions
-    thresholds: {
-     , apiResponse: 200, // ms
+    thresholds: { apiResponse: 200, // ms
       dbQuery: 100, // ms
       pageLoad: 1000, // ms
       memoryUsage: 50 * 1024 * 1024, // 50MB
     },
     // Load testing parameters
-    loadTest: {
-     , concurrentUsers: 10,
+    loadTest: { concurrentUsers: 10,
       duration: 30, // seconds
       rampUpTime: 5, // seconds
-    }
+    } }
   },
   // Mock data settings
   mockData: {
@@ -98,36 +92,31 @@ export const TEST_CONFIG = {
     generateMockEmbeddings: true
   },
   // File system settings
-  filesystem: {
-   , tempDir: '/tmp/legal-ai-tests',
+  filesystem: { tempDir: '/tmp/legal-ai-tests',
     uploadDir: '/tmp/legal-ai-tests/uploads',
     cleanupTempFiles: true,
     maxFileSize: 10 * 1024 * 1024, // 10MB
   },
   // WebGPU/WASM test settings
-  gpu: {
-   , enableWebGPU: false, // Disable GPU tests in CI
+  gpu: { enableWebGPU: false, // Disable GPU tests in CI
     mockWebGPU: true,
     wasmTimeout: 15000, // 15 seconds
   },
   // Browser test settings (for E2E)
-  browser: {
-   , headless: true,
-    viewport: {, width: 1280, height: 720 },
+  browser: { headless: true,
+    viewport: { width: 1280, height: 720 },
     timeout: 30000,
     slowMo: 0, // No delay in tests
     // Browser types to test
     browsers: ['chromium'], // Add: 'firefox', 'webkit' as needed
     // Screenshot settings
-    screenshots: {
-     , onFailure: true,
+    screenshots: { onFailure: true,
       onSuccess: false,
       directory: 'test-results/screenshots'
-    }
+    } }
   },
   // Logging and debugging
-  logging: {
-   , level: 'error', // 'debug', 'info', 'warn', 'error'
+  logging: { level: 'error', // 'debug', 'info', 'warn', 'error'
     testOutput: false, // Reduce console noise
     // Test result reporting
     verbose: false,
@@ -138,10 +127,8 @@ export const TEST_CONFIG = {
     slowTestThreshold: 2000, // ms
   },
   // Coverage settings
-  coverage: {
-   , enabled: true,
-    threshold: {
-     , statements: 80,
+  coverage: { enabled: true,
+    threshold: { statements: 80,
       branches: 75,
       functions: 80,
       lines: 80
@@ -170,22 +157,21 @@ export const TEST_CONFIG = {
     realtimeUpdates: false, // WebSocket tests
   },
   // CI/CD specific settings
-  ci: {
-   , isCI: process.env.CI === 'true',
+  ci: { isCI: process.env.CI === 'true',
     parallelJobs: 4,
     timeout: 600000, // 10 minutes total;
     retries: 1,
     // Resource limits
     maxMemory: '2GB',
     maxCPU: '2'
-  }
-} as const;
+  } }
+} }as const;
 // Type-safe configuration access
 export type TestConfig = typeof TEST_CONFI;
 G;
 // Environment-specific overrides
 export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): TestConfig {
-  const baseConfig = { ...TEST_CONFIG }
+  const baseConfig = { ...TEST_CONFIG } }
   switch (env) {
     case, 'ci':
       return {
@@ -194,19 +180,19 @@ export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): Te
         database: { ...baseConfig.database, maxConnections: 2 },
         features: { ...baseConfig.features, performanceTests: false, visualTests: false },
         browser: { ...baseConfig.browser, headless: true },
-        ci: { ...baseConfig.ci, isCI: true }
-      }
+        ci: { ...baseConfig.ci, isCI: true } }
+      } }
     case, 'development':
       return {
         ...baseConfig,
         logging: { ...baseConfig.logging, level: 'info', verbose: true },
         features: { ...baseConfig.features, performanceTests: true },
-        browser: { ...baseConfig.browser, headless: false, slowMo: 100 }
-      }
+        browser: { ...baseConfig.browser, headless: false, slowMo: 100 } }
+      } }
     case, 'local':
     default: return baseConfig;
-  }
-}
+  } }
+} }
 // Helper functions
 export const TestConfigHelpers = {
   /**
@@ -216,7 +202,7 @@ export const TestConfigHelpers = {
     const base = TEST_CONFIG.database.dbUrl || TEST_CONFIG.environment.dbUrl;
     if (testSuiteName) {
       return base.replace('/legal_ai_test', `/legal_ai_test_${testSuiteName.replace(/\s+/g, '_')}`);
-    }
+    } }
     return base;
   },
   /**
@@ -248,7 +234,7 @@ export const TestConfigHelpers = {
       evidence: TEST_CONFIG.mockData.defaultEvidenceCount,
       deterministic: TEST_CONFIG.mockData.useDeterministicData,
       seed: TEST_CONFIG.mockData.seed
-    }
+    } }
   },
   /**
    * Create test-specific environment variables
@@ -264,6 +250,6 @@ export const TestConfigHelpers = {
       JWT_SECRET: TEST_CONFIG.auth.jwtSecret,
       TEST_MODE: 'true',
       ...(testName && { TEST_SUITE: testName })
-    }
-  }
+    } }
+  } }
 }

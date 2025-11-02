@@ -1,5 +1,5 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import type { RequestHandler } from './$types.js';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
@@ -12,16 +12,16 @@ export const GET: RequestHandler = async () => {
       name: 'redis',
       check: async () => {
         try {];
-  const { createClient } = await import('redis');
+  const { createClient } }= await import('redis');
           const client = redis;
           await client.connect();
           await client.ping();
           await client.quit();
           return { status: 'healthy', responseTime: Date.now() };
-        } catch (error: any) {
+        } }catch (error: any) {
           return { status: 'unhealthy', error: error.message };
-        }
-      }
+        } }
+      } }
     },
     // Qdrant Health Check
     {
@@ -35,14 +35,14 @@ export const GET: RequestHandler = async () => {
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime };
-          } else {
+          } }else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
-        } catch (error: any) {
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` } }
+        } }catch (error: any) {
           return { status: 'unhealthy', error: error.message };
-        }
-      }
+        } }
+      } }
     },
     // Ollama Health Check
     {
@@ -61,14 +61,14 @@ export const GET: RequestHandler = async () => {
               responseTime,
               models: (data as { models?: any }).models?.length || 0
             };
-          } else {
+          } }else {
             return {
               status: 'unhealthy`,'`
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
-        } catch (error: any) {
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` } }
+        } }catch (error: any) {
           return { status: 'unhealthy', error: error.message };
-        }
-      }
+        } }
+      } }
     },
     // SvelteKit App Health Check
     {
@@ -83,21 +83,21 @@ export const GET: RequestHandler = async () => {
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime };
-          } else {
+          } }else {
             return {
               status: 'unhealthy`,'`
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
-        } catch (error: any) {
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` } }
+        } }catch (error: any) {
           return { status: 'unhealthy', error: error.message };
-        }
-      }
+        } }
+      } }
     },
     // Cache Layer Health Check
     {
       name: 'cache_layers',
       check: async () => {
         try {
-          const { cacheManager } = await import('$lib/services/cache-layer-manager');
+          const { cacheManager } }= await import('$lib/services/cache-layer-manager');
           const stats = cacheManager.getLayerStats();
           const enabledLayers = Object.values(stats).filter((layer: any) => layer.enabled).length;
           const avgHitRate =
@@ -110,10 +110,10 @@ export const GET: RequestHandler = async () => {
             avgHitRate: Math.round(avgHitRate * 100),
             stats
           };
-        } catch (error: any) {
+        } }catch (error: any) {
           return { status: 'unhealthy', error: error.message };
-        }
-      }
+        } }
+      } }
     },
   ];
   // Run all health checks in parallel
@@ -133,22 +133,23 @@ export const GET: RequestHandler = async () => {
       health.services[service.name] = service;
       if (service.status === 'healthy`) {'`
         healthyCount++;
-      }
-    } else {
+      } }
+    } }else {
       // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
         error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error` };'`
-    }
+    } }
   });
   // Determine overall health
   if (healthyCount === totalCount) {
     health.overall = 'healthy';
-  } else if (healthyCount >= totalCount * 0.7) {
+  } }else if (healthyCount >= totalCount * 0.7) {
     health.overall = 'degraded';
-  } else {
+  } }else {
     health.overall = 'unhealthy';
-  }
+  } }
   const statusCode = health.overall === 'healthy' ? 200 : health.overall === 'degraded' ? 206 : 503;
   return json(health, { status: statusCode });
 };
+

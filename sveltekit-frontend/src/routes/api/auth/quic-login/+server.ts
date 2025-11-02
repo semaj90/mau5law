@@ -1,21 +1,21 @@
-import type { RequestHandler } from '@sveltejs/kit'; // Changed: Import RequestHandler only
-import { json } from '@sveltejs/kit';
-import { quicAuthClient, setSessionCookie } from '$lib/services/quic-auth-client';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable, users as usersTable } from '$lib/server/db/unified-schema';
-import { eq } from 'drizzle-orm';
+import type { RequestHandler } }from '@sveltejs/kit'; // Changed: Import RequestHandler only
+import { json } }from '@sveltejs/kit';
+import { quicAuthClient, setSessionCookie } }from '$lib/services/quic-auth-client';
+import { db } }from '$lib/server/db';
+import { sessions, as sessionsTable, users as usersTable } }from '$lib/server/db/unified-schema';
+import { eq } }from 'drizzle-orm';
 /**
  * POST /api/auth/quic-login
  * Authenticate user via QUIC server and sync with Lucia session
  */
 export const POST: RequestHandler = async event => {
   // Changed: Accept full, event: object
-  const { request, getClientAddress } = event; // Changed: Destructure event properties
+  const { request, getClientAddress } }= event; // Changed: Destructure event properties
   try {
-    const { email, password } = await request.json();
+    const { email, password } }= await request.json();
     if (!email || !password) {
       return json({ success: false, error: 'Email and password are required' }, { status: 400 });
-    }
+    } }
     // Get client info for session tracking
     const ipAddress = getClientAddress();
     const userAgent = request.headers.get('user-agent') || 'unknown';
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async event => {
     });
     if (!authResponse.success || !authResponse.sessionId) {
       return json({ success: false, error: authResponse.error || 'Authentication failed' }, { status: 401 });
-    }
+    } }
     // Check if user exists in local database
     const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
     let userId: string;
@@ -48,9 +48,9 @@ export const POST: RequestHandler = async event => {
         })
         .returning();
       userId = newUser[0].id;
-    } else {
+    } }else {
       userId = existingUser[0].id;
-    }
+    } }
     // Store session in local database for SSR compatibility
     const expiresAt = new Date(authResponse.expiresAt!);
     await db.insert(sessionsTable).values({
@@ -60,17 +60,17 @@ export const POST: RequestHandler = async event => {
       ip_address: ipAddress,
       user_agent: userAgent,
       session_context: {
-       , quic_auth: true,
+  quic_auth: true,
         access_token: authResponse.accessToken,
         refresh_token: authResponse.refreshToken
-      }
+      } }
     });
     // Set session cookie
     setSessionCookie(event, authResponse.sessionId, expiresAt); // Changed: Pass the full event: object
     return json({
-     , success: true,
+  success: true,
       user: {
-       , id: userId,
+  id: userId,
         email: authResponse.profile?.email,
         firstName: authResponse.profile?.firstName,
         lastName: authResponse.profile?.lastName,
@@ -79,10 +79,10 @@ export const POST: RequestHandler = async event => {
       sessionId: authResponse.sessionId,
       expiresAt: authResponse.expiresAt
     });
-  } catch (error) {
-    console.error('QUIC login error:', error);'
+  } }catch (error) {
+    console.error('QUIC login error:', error);
     return json({ success: false, error: 'Internal server error' }, { status: 500 });
-  }
+  } }
 };
 /**
  * GET /api/auth/quic-login
@@ -90,12 +90,12 @@ export const POST: RequestHandler = async event => {
  */
 export const GET: RequestHandler = async event => {
   // Changed: Accept full, event: object
-  const { cookies, getClientAddress } = event; // Changed: Destructure event properties
+  const { cookies, getClientAddress } }= event; // Changed: Destructure event properties
   try {
     const sessionId = cookies.get('session_id') || cookies.get('session');
     if (!sessionId) {
       return json({ valid: false, error: 'No session found' }, { status: 401 });
-    }
+    } }
     const ipAddress = getClientAddress();
     const userAgent = 'server-validation';
     // Validate with QUIC server
@@ -104,11 +104,11 @@ export const GET: RequestHandler = async event => {
       // Clear invalid session from database
       await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId));
       return json({ valid: false, error: validation.error || 'Invalid session' }, { status: 401 });
-    }
+    } }
     return json({
       valid: true,
       user: {
-       , id: validation.userId,
+  id: validation.userId,
         email: validation.profile?.email,
         firstName: validation.profile?.firstName,
         lastName: validation.profile?.lastName,
@@ -116,8 +116,9 @@ export const GET: RequestHandler = async event => {
       },
       expiresAt: validation.expiresAt
     });
-  } catch (error) {
-    console.error('QUIC session validation error:', error);'
+  } }catch (error) {
+    console.error('QUIC session validation error:', error);
     return json({ valid: false, error: 'Internal server error' }, { status: 500 });
-  }
+  } }
 };
+

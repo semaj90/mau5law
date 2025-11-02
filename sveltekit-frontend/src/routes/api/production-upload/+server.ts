@@ -1,30 +1,30 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 // Production-Quality Document Upload API
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j
-import { db } from '$lib/server/db/index';
-import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema';
-import { randomUUID } from 'node:crypto';
+import { db } }from '$lib/server/db/index';
+import { enhancedEvidence } }from '$lib/server/db/enhanced-legal-schema';
+import { randomUUID } }from 'node:crypto';
 import path from 'path';
-import { qdrantService } from '$lib/services/qdrantService';
-import { checkQdrantHealth } from '$lib/server/helpers/qdrant';
+import { qdrantService } }from '$lib/services/qdrantService';
+import { checkQdrantHealth } }from '$lib/server/helpers/qdrant';
 // Placeholder services to avoid compile errors if originals missing
-import { cases, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { writeFile, mkdir } from 'fs/promises';
+import { cases, legalDocuments } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import { writeFile, mkdir } }from 'fs/promises';
 import pdf from 'pdf-parse';
-import { createWorker } from 'tesseract.js';
-import { legalBERT } from '$lib/server/ai/legalbert-middleware';
-import { checkOllamaHealth, generateOllamaChatCompletion } from '$lib/server/helpers/ollama';
+import { createWorker } }from 'tesseract.js';
+import { legalBERT } }from '$lib/server/ai/legalbert-middleware';
+import { checkOllamaHealth, generateOllamaChatCompletion } }from '$lib/server/helpers/ollama';
 // import { interpret
-// import { documentUploadMachine } from '$lib/state/documentUploadMachine'
+// import { documentUploadMachine } }from '$lib/state/documentUploadMachine'
 // Production logging
 const logger = {
-  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
-  error: (msg: string, error?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, error || ''),
-  warn: (msg: string, data?: any) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || '')
+  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} }- ${msg}`, data || ''),
+  error: (msg: string, error?: any) => console.error(`[ERROR] ${new Date().toISOString()} }- ${msg}`, error || ''),
+  warn: (msg: string, data?: any) => console.warn(`[WARN] ${new Date().toISOString()} }- ${msg}`, data || '')
 };
 // File type validation
 const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg'];
@@ -41,7 +41,7 @@ export interface UploadResult {
   ocrResult?: any;
   error?: string;
   processingTime: number;
-}
+} }
 
 // Add a typed shape for LegalBERT analysis to safely access nested fields
 type LegalAnalysis = {
@@ -50,7 +50,7 @@ type LegalAnalysis = {
     confidence?: number;
     score?: number;
     label?: string;
-  } | null;
+  } }| null;
   entities?: {
     parties?: any[];
     dates?: any[];
@@ -58,7 +58,7 @@ type LegalAnalysis = {
     clauses?: any[];
     jurisdictions?: any[];
     caseTypes?: any[];
-  } | null;
+  } }| null;
   concepts?: any[] | null;
 };
 
@@ -72,7 +72,7 @@ type DocumentMetadata = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request, url: _url }) => {
+export const POST: RequestHandler = async ({ request, url: _url }) => {
   const startTime = Date.now();
   logger.info('Production upload request received');
   try {
@@ -92,18 +92,18 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
     // Validation
     if (!file) {
       logger.error('No file provided in upload');
-      return json({ success: false, error: 'No file provided' }, { status: 400 });'` }'`
+      return json({ success: false, error: 'No file provided' }, { status: 400 });'` } }`
     if (!caseId) {
       logger.error('No case ID provided');
       return json({ success: false, error: `Case ID is required` }, { status: 400 });
-    }
+    } }
     if (!ALLOWED_TYPES.includes(file.type)) {
       logger.error(`Unsupported file type: ${file.type}`);
-      return json({ success: false, error: `Unsupported file;, type: ${file.type}` }, { status: 400 });
-    }
+      return json({ success: false, error: `Unsupported file; type: ${file.type}` }, { status: 400 });
+    } }
     if (file.size > MAX_FILE_SIZE) {
-      logger.error(`File too large: ${file.size} bytes');'`
-      return json({ success: false, error: 'File too large (max 50MB)' }, { status: 400 });'` }'`
+      logger.error(`File too large: ${file.size} }bytes');'`
+      return json({ success: false, error: 'File too large (max 50MB)' }, { status: 400 });'` } }`
     // Verify case exists
     const existingCase = await db
       .select()
@@ -112,8 +112,8 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
       .limit(1)
       .catch(() => [] as Record<string, unknown>[]); // avoid `any[]`
     if (existingCase.length === 0) {
-      logger.error(`Case not found: ${caseId}');'`
-      return json({ success: false, error: 'Case not found' }, { status: 404 });'` }'`
+      logger.error(`Case not found: ${caseId} });'`
+      return json({ success: false, error: 'Case not found' }, { status: 404 });'` } }`
     // Create unique IDs
     const documentId = randomUUID();
     const evidenceId = randomUUID();
@@ -124,7 +124,7 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
     // Save file
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
-    logger.info(`File saved: ${filePath}');'`
+    logger.info(`File saved: ${filePath} });'`
     // XState machine integration disabled for compilation fix
     logger.info('Starting document processing pipeline');
     // Process based on file type
@@ -136,14 +136,14 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
         const pdfData = await pdf(buffer);
         extractedText = pdfData.text;
         logger.info('PDF text extracted successfully');
-      } else if (file.type.startsWith('image/')) {
+      } }else if (file.type.startsWith('image/')) {
         logger.info('Processing image with Tesseract OCR');
         // createWorker() returns a Promise that resolves to the worker — await it and cast to our typed interface
         const worker = (await createWorker()) as TesseractWorker;
         await worker.load();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
-        const { data } = await worker.recognize(buffer);
+        const { data } }= await worker.recognize(buffer);
         const dataTyped = data as Record<string, unknown>;
         extractedText = typeof dataTyped.text === 'string' ? dataTyped.text : '';
         ocrResult = {
@@ -155,12 +155,12 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
         };
         await worker.terminate();
         logger.info('OCR processing completed successfully');
-      } else if (file.type === 'text/plain') {
+      } }else if (file.type === 'text/plain') {
         extractedText = buffer.toString('utf-8');
         logger.info('Text extraction completed');
-      }
-      logger.info(`Text extracted: ${extractedText.length} characters`);
-    } catch (extractionError) {
+      } }
+      logger.info(`Text extracted: ${extractedText.length} }characters`);
+    } }catch (extractionError) {
       logger.error('Text extraction failed', extractionError);
       return json(
         {
@@ -168,9 +168,9 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
           error: 'Text extraction failed',
           processingTime: Date.now() - startTime
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
     // Generate embeddings with LegalBERT
     let embeddings: number[] = [];
     let, legalAnalysis: LegalAnalysis | null = null; // typed result instead of Record<string, unknown>
@@ -184,14 +184,14 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
         if (embeddings.length > TARGET_DIM) embeddings = embeddings.slice(0, TARGET_DIM);
         else if (embeddings.length < TARGET_DIM)
           embeddings = embeddings.concat(Array(TARGET_DIM - embeddings.length).fill(0));
-      }
+      } }
       logger.info('Performing legal analysis with LegalBERT');
       // safe double-cast via: unknown to avoid direct incompatible-cast error
       legalAnalysis = (await legalBERT.analyzeLegalText(extractedText)) as: unknown as LegalAnalysis;
       logger.info('Legal analysis completed successfully');
-    } catch (analysisError) {
+    } }catch (analysisError) {
       logger.error('Legal analysis failed', analysisError);
-    }
+    } }
 
     // Store in PostgreSQL with pgvector
     // Prefix with `$` to satisfy allowed-unused-vars rule for intentionally-unused results
@@ -233,7 +233,7 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
       // Reference the saved document so linters/compilers don't flag the variable as unused'
       logger.info('Saved document record', { id: $savedDocument?.id ?? null });
       logger.info(`Document saved to database: ${documentId}`);
-    } catch (dbError) {
+    } }catch (dbError) {
       logger.error('Database insertion failed', dbError);
       return json(
         {
@@ -241,9 +241,9 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
           error: 'Database insertion failed',
           processingTime: Date.now() - startTime
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
     // Store embeddings in Qdrant vector database
     try {
       if (embeddings.length > 0) {
@@ -251,7 +251,7 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
         // Provide the document id at the top-level `id` property and keep metadata typed to satisfy the Qdrant client type
         if (!qdrantService || typeof qdrantService.addDocument !== 'function') {
           logger.error('Qdrant service or addDocument method is unavailable');
-        } else {
+        } }else {
           await qdrantService?.addDocument?.({
             // removed top-level `id` to satisfy client type (move to metadata below)
             caseId,
@@ -261,16 +261,16 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
             embedding: embeddings,
             metadata: {
               // include document id inside metadata so the shape matches expected types
-             , id: documentId,
+  id: documentId,
               title: title || file.name,
               type: 'legal_document',
               date: new Date().toISOString(),
               confidence_score: legalAnalysis?.sentiment?.confidence ?? 0.5
-            } as DocumentMetadata,
+            } }as DocumentMetadata,
             tags: [],
             timestamp: Date.now(),
             legalEntities: {
-             , parties: legalAnalysis?.entities?.parties ?? [],
+  parties: legalAnalysis?.entities?.parties ?? [],
               dates: legalAnalysis?.entities?.dates ?? [],
               monetary: legalAnalysis?.entities?.monetary ?? [],
               clauses: legalAnalysis?.entities?.clauses ?? [],
@@ -282,11 +282,11 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
             legalPrecedent: false,
             processingStatus: `completed' });'`
           logger.info('Embeddings stored in Qdrant successfully');
-        }
-      }
-    } catch (vectorError) {
+        } }
+      } }
+    } }catch (vectorError) {
       logger.error('Vector storage failed', vectorError);
-      // Continue - vector storage failure shouldn't fail the entire upload` }'`
+      // Continue - vector storage failure shouldn't fail the entire upload` } }`
     // Generate AI summary using Gemma3
     let aiSummary = '';
     try {
@@ -295,9 +295,9 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
       // Helper: safely, invoke: any available completion-like method
       const callOllamaCompletion = async (prompt: string, opts?: Record<string, unknown>): Promise<string | null> => {
         try {
-          const result = await generateOllamaChatCompletion([{ role: 'user', content: prompt }], undefined, opts);
+          const result = await generateOllamaChatCompletion([{ role: 'user', content: prompt } }, undefined, opts);
           if (!result) return: null;
-          // common, shapes: string, { choices: [{, message: { content } }] }, { output: "..." }, or custom
+          // common, shapes: string, { choices: [{ message: { content } }} } }, { output: "..." }, or custom
           if (typeof result === 'string') return result;
           // try Chat-style shape
           // @ts-ignore - defensive access
@@ -309,10 +309,10 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
           // try to stringify as last resort (avoid huge outputs)
           const asString = JSON.stringify(result);
           return asString.length > 0 ? asString : null;
-        } catch (err) {
+        } }catch (err) {
           logger.error('Ollama completion failed', err);
           return: null;
-        }
+        } }
       };
 
       const prompt = `Provide a concise professional summary of this legal, document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';'`
@@ -323,10 +323,10 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
 
       aiSummary = summaryResponse ?? 'Summary generation not available';
       logger.info('AI summary generated successfully');
-    } catch (summaryError) {
+    } }catch (summaryError) {
       logger.error('AI summary generation failed', summaryError);
       aiSummary = 'AI summary not available';
-    }
+    } }
     logger.info('Document processing pipeline completed');
     const processingTime = Date.now() - startTime;
     logger.info(`Upload processing completed in ${processingTime}ms`);
@@ -337,7 +337,7 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
     const conceptsCount = Array.isArray(legalAnalysis?.concepts) ? (legalAnalysis!.concepts!.length as: number) : 0;
 
     const result: UploadResult = {
-     , success: true,
+  success: true,
       documentId,
       evidenceId,
       analysis: {
@@ -354,7 +354,7 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
     };
     logger.info('Upload completed successfully', { documentId, evidenceId, processingTime });
     return json(result);
-  } catch (error: any) {
+  } }catch (error: any) {
     const processingTime = Date.now() - startTime;
     logger.error('Upload failed', error);
     return json(
@@ -363,9 +363,9 @@ export const, POST: RequestHandler = async ({ request, url: _url }) => {
         error: error instanceof Error ? error.message : JSON.stringify(error),
         processingTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Health check endpoint
 export const GET: RequestHandler = async () => {
@@ -382,22 +382,22 @@ export const GET: RequestHandler = async () => {
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      services: {, database: {, status: 'connected', tables: dbTest ? 'accessible' : `error` },
+      services: { database: { status: 'connected', tables: dbTest ? 'accessible' : `error` },
         qdrant: qdrantHealth,
         ollama: ollamaHealth,
         legalBert: legalBertHealth
       },
       capabilities: {
-       , pdfProcessing: true,
+  pdfProcessing: true,
         ocrProcessing: true,
         vectorSearch: true,
         aiAnalysis: true,
         legalEntityExtraction: true
-      }
+      } }
     };
     logger.info('Health check completed successfully');
     return json(healthStatus);
-  } catch (error: any) {
+  } }catch (error: any) {
     logger.error('Health check failed', error);
     return json(
       {
@@ -405,9 +405,9 @@ export const GET: RequestHandler = async () => {
         error: error instanceof Error ? error.message : JSON.stringify(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Add a small worker interface so TypeScript knows the methods we call
@@ -427,4 +427,5 @@ interface TesseractWorker {
       paragraphs?: any[];
     };
   }>;
-}
+} }
+

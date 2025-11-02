@@ -10,15 +10,14 @@ export interface BitEncodingConfig { bitDepth: 24 | 16 | 8;, colorSpace: 'RGB' 
 	enableDimensionalSplicing: boolean;
 	enableAutoEncoder: boolean;
 	cacheStrategy: 'aggressive' | 'balanced' | 'minimal';
-}
+} }
 
-export interface BitDictionary {
-, alphabet: Map<string, Uint8Array>;     // A-Z, a-z cached encodings
+export interface BitDictionary { alphabet: Map<string, Uint8Array>;     // A-Z, a-z cached encodings
 	numbers: Map<string, Uint8Array>;      // 0-9 cached encodings
 	symbols: Map<string, Uint8Array>;      // Special characters
 	combinations: Map<string, Uint8Array>; // Common word/phrase combinations
 	frequency: Map<string, number>;        // Usage frequency for optimization
-}
+} }
 
 export interface DimensionalCache {
 	dimensions: number[];                   // [width, height, depth, time]
@@ -26,37 +25,35 @@ export interface DimensionalCache {
   bitMasks: Uint32Array;                 // Bit manipulation masks,
 	compressionRatio: number;
   hitRate: number;
-}
+} }
 
-export interface CacheSplice {, id: string;, dimensions: number[];
+export interface CacheSplice { id: string;, dimensions: number[];
   data: Uint8Array;
   metadata: SpliceMetadata;
   timestamp: number;
   accessCount: number;
-}
+} }
 
-export interface SpliceMetadata {, originalSize: number;, compressedSize: number;
+export interface SpliceMetadata { originalSize: number;, compressedSize: number;
   encoding: string;
   checksum: string;
   version: string;
-}
+} }
 
-export interface AutoEncoderConfig {
-, inputDim: number;      // 768 (standard embedding),
+export interface AutoEncoderConfig { inputDim: number;      // 768 (standard embedding),
 	hiddenDim: number;     // 256 (compressed)
 	outputDim: number;     // 768 (reconstructed),
 	activation: 'relu' | 'sigmoid' | 'tanh' | 'leaky_relu';
 	learningRate: number;
 	epochs: number;
 	deterministic: boolean; // Fixed seed for reproducible results
-}
+} }
 
-export interface ColorEncoding {
-, rgb: [number, number, number];         // 0-255 per channel
+export interface ColorEncoding { rgb: [number, number, number];         // 0-255 per channel
 	packed: number;                        // 24-bit packed RGB,
 	normalized: [number, number, number];  // 0.0-1.0 per channel
 	compressed: Uint8Array;                // Compressed representation
-}
+} }
 // ============================================================================
 // ADVANCED BIT ENCODER CLASS
 // ============================================================================
@@ -66,11 +63,11 @@ export class AdvancedBitEncoder {
 	private dimensionalCache: DimensionalCache;
 	private autoEncoder: AutoEncoder | null = null;
 	private browserBitDepth: number;
-	private performanceMetrics: {, encodeTime: number;, decodeTime: number;
+	private performanceMetrics: { encodeTime: number;, decodeTime: number;
 		compressionRatio: number;
 		cacheHitRate: number;
 	, memoryUsage: number;
-	}
+	} }
 	constructor(config: Partial<BitEncodingConfig> = {}) {
 		this.config = {
 			bitDepth: 24,
@@ -80,21 +77,21 @@ export class AdvancedBitEncoder {
 			enableAutoEncoder: true,
 			cacheStrategy: 'aggressive',
 			...config
-		}
+		} }
 		this.browserBitDepth = this.detectBrowserBitDepth();
 		this.initializeDictionary();
 		this.initializeDimensionalCache();
 		this.initializePerformanceMetrics();
 		if (this.config.enableAutoEncoder) {
 			this.initializeAutoEncoder();
-		}
+		} }
 		console.log('🎨 Advanced Bit Encoder initialized:', {
 			bitDepth: this.config.bitDepth,
 			browserBitDepth: this.browserBitDepth,
 			colorSpace: this.config.colorSpace,
 			dimensionalSplicing: this.config.enableDimensionalSplicing
 		});
-	}
+	} }
 	// ============================================================================
 	// BROWSER BIT DEPTH DETECTION
 	// ============================================================================
@@ -122,7 +119,7 @@ export class AdvancedBitEncoder {
 		if (precision < 10) return, 16;
 		// Otherwise, assume lower depth
 		return 8;
-	}
+	} }
 	// ============================================================================
 	// DICTIONARY INITIALIZATION
 	// ============================================================================
@@ -133,24 +130,24 @@ export class AdvancedBitEncoder {
 			symbols: new Map(),
 			combinations: new Map(),
 			frequency: new Map()
-		}
+		} }
 		// Pre-populate alphabet (A-Z, a-z)
 		for (let i = 0; i < 26; i++) {
 			const upperChar = String.fromCharCode(65 + i); // A-Z
 			const lowerChar = String.fromCharCode(97 + i); // a-z
 			this.dictionary.alphabet.set(upperChar, this.encodeCharacter(upperChar));
 			this.dictionary.alphabet.set(lowerChar, this.encodeCharacter(lowerChar));
-		}
+		} }
 		// Pre-populate numbers (0-9)
 		for (let i = 0; i < 10; i++) {
 			const digit = String(i);
 			this.dictionary.numbers.set(digit, this.encodeCharacter(digit));
-		}
+		} }
 		// Pre-populate common symbols
 		const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`"\'\\';"`
 		for (const symbol of symbols) {
 			this.dictionary.symbols.set(symbol, this.encodeCharacter(symbol));
-		}
+		} }
 		// Pre-populate common combinations
 		const combinations = [
 			'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had',
@@ -161,8 +158,8 @@ export class AdvancedBitEncoder {
 		for (const combo of combinations) {
 			this.dictionary.combinations.set(combo, this.encodeCombination(combo));
 			this.dictionary.frequency.set(combo, 100); // Initial frequency
-		}
-	}
+		} }
+	} }
 	private encodeCharacter(char: string): Uint8Array {
 		// Convert character to optimized bit representation
 		const charCode = char.charCodeAt(0);
@@ -170,17 +167,17 @@ export class AdvancedBitEncoder {
 		if (charCode >= 48 && charCode <= 57) {
 			// Numbers: 4 bits (0-9 fits in, 4 bits)
 			return new Uint8Array([charCode - 48]);
-		} else if (charCode >= 65 && charCode <= 90) {
+		} }else if (charCode >= 65 && charCode <= 90) {
 			// Uppercase: 5 bits (26 letters fit in, 5 bits)
 			return new Uint8Array([charCode - 65 + 16]); // Offset by, 16 to avoid collision
-		} else if (charCode >= 97 && charCode <= 122) {
+		} }else if (charCode >= 97 && charCode <= 122) {
 			// Lowercase: 5 bits (26 letters fit in, 5 bits)
 			return new Uint8Array([charCode - 97 + 42]); // Offset by, 42
-		} else {
+		} }else {
 			// Special characters: full, 8 bits
 			return new Uint8Array([charCode]);
-		}
-	}
+		} }
+	} }
 	private encodeCombination(combination: string): Uint8Array {
 		// Use Huffman-like encoding for common combinations
 		const encoder = new TextEncoder();
@@ -189,9 +186,9 @@ export class AdvancedBitEncoder {
 		const compressed = new Uint8Array(Math.ceil(bytes.length * this.config.compression));
 		for (let i = 0; i < compressed.length; i++) {
 			compressed[i] = bytes[i] || 0;
-		}
+		} }
 		return compressed;
-	}
+	} }
 	// ============================================================================
 	// DIMENSIONAL CACHE INITIALIZATION
 	// ============================================================================
@@ -207,10 +204,10 @@ export class AdvancedBitEncoder {
 			]),
 			compressionRatio: 1.0,
 			hitRate: 0.0
-		}
+		} }
 		// Generate dimensional splice patterns
 		this.generateDimensionalSplices();
-	}
+	} }
 	private generateDimensionalSplices(): void {
 		// Create optimized cache splices for common data patterns
 		const splicePatterns = [
@@ -219,40 +216,37 @@ export class AdvancedBitEncoder {
 			{ name: 'rgb-line', dims: [1920, 3], size: 5760 },  // RGB scanline
 			{ name: 'rgb-block', dims: [32, 32, 3], size: 3072 }, // 32x32 RGB block
 			{ name: 'embedding', dims: [768], size: 768 },       // Standard embedding
-			{ name: 'compressed-embedding', dims: [256], size: 256 } // Compressed embedding
+			{ name: 'compressed-embedding', dims: [256], size: 256 } }// Compressed embedding
 		];
 		for (const pattern of splicePatterns) {
-			const splice: CacheSplice = {
-			, id: pattern.name,
+			const splice: CacheSplice = { id: pattern.name,
 				dimensions: pattern.dims,
 				data: new Uint8Array(pattern.size),
-				metadata: {
-				, originalSize: pattern.size,
+				metadata: { originalSize: pattern.size,
 					compressedSize: Math.floor(pattern.size * this.config.compression),
 					encoding: 'dimensional-splice-v1',
 					checksum: this.calculateChecksum(new Uint8Array(pattern.size)),
 					version: '1.0.0' },'`'`
 				timestamp: Date.now(),
 				accessCount: 0
-			}
+			} }
 			this.dimensionalCache.splices.set(pattern.name, splice);
-		}
-	}
+		} }
+	} }
 	// ============================================================================
 	// AUTO-ENCODER INITIALIZATION
 	// ============================================================================
 	private initializeAutoEncoder(): void {
-		const config: AutoEncoderConfig = {
-		, inputDim: 768,
+		const config: AutoEncoderConfig = { inputDim: 768,
 			hiddenDim: 256,
 			outputDim: 768,
 			activation: 'relu',
 			learningRate: 0.001,
 			epochs: 100,
 			deterministic: true
-		}
+		} }
 		this.autoEncoder = new AutoEncoder(config);
-	}
+	} }
 	// ============================================================================
 	// COLOR ENCODING METHODS
 	// ============================================================================
@@ -284,7 +278,7 @@ export class AdvancedBitEncoder {
 			normalized,
 			compressed
 		};
-	}
+	} }
 	private compressColorData(data: Uint8Array): Uint8Array {
 		// Check cache first
 		const cacheKey = this.generateCacheKey(data);
@@ -292,7 +286,7 @@ export class AdvancedBitEncoder {
 		if (cached) {
 			this.performanceMetrics.cacheHitRate++;
 			return cached;
-		}
+		} }
 		// Apply bit manipulation for compression
 		const compressed = new Uint8Array(Math.ceil(data.length * this.config.compression));
 		for (let i = 0; i < compressed.length; i++) {
@@ -301,23 +295,23 @@ export class AdvancedBitEncoder {
 				const value = data[i];
 				const mask = this.dimensionalCache.bitMasks[i % 4];
 				compressed[i] = (value & (mask >> 24)) >> (i % 4);
-			} else {
+			} }else {
 				compressed[i] = 0;
-			}
-		}
+			} }
+		} }
 		// Cache the result
 		this.cacheData(cacheKey, compressed);
 		return compressed;
-	}
+	} }
 	// ============================================================================
 	// JSON PARSING WITH METADATA ENCODING
 	// ============================================================================
-	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): { encoded: Uint8Array;, metadata: {, originalSize: number;, compressedSize: number;
+	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): { encoded: Uint8Array;, metadata: { originalSize: number;, compressedSize: number;
 			encoding: string;
 			structure: any;
 		, checksum: string;
-		}
-	} {
+		} }
+	} }{
 		const startTime = performance.now();
 
 		// Convert to JSON: string
@@ -347,15 +341,14 @@ export class AdvancedBitEncoder {
 
 		return {
 			encoded,
-			metadata: {
-			, originalSize: originalBytes.length,
+			metadata: { originalSize: originalBytes.length,
 				compressedSize: encoded.length,
 				encoding: 'advanced-bit-encoder-v1',
 				structure,
 				checksum
-			}
+			} }
 		};
-	}
+	} }
 
 	private analyzeJSONStructure(data: Record<string, unknown> | unknown[]): any {
 		const analysis = {
@@ -375,19 +368,19 @@ export class AdvancedBitEncoder {
 					analysis.size += obj.length;
 					for (const item of obj) {
 						analyze(item, depth + 1);
-					}
-				} else {
+					} }
+				} }else {
 					analysis.patterns.add('object');
 					for (const [key, value] of Object.entries(obj)) {
 						const count = analysis.repeatedKeys.get(key) || 0;
 						analysis.repeatedKeys.set(key, count + 1);
 						analysis.size += key.length;
 						analyze(value, depth + 1);
-					}
-				}
-			} else {
+					} }
+				} }
+			} }else {
 				analysis.size += String(obj).length;
-			}
+			} }
 		};
 
 		analyze(data);
@@ -397,7 +390,7 @@ export class AdvancedBitEncoder {
 			patterns: Array.from(analysis.patterns),
 			repeatedKeys: Object.fromEntries(analysis.repeatedKeys)
 		};
-	}
+	} }
 
 	private applyDictionaryEncoding(text: string): Uint8Array {
 		let encoded = text;
@@ -414,11 +407,11 @@ export class AdvancedBitEncoder {
 				const placeholder = `\x00${bytes[0]}\x01`; // Use control characters as placeholders
 				encoded = encoded.replace(regex, placeholder);
 				compressionRatio *= 0.8; // Estimate compression improvement
-			}
-		}
+			} }
+		} }
 		this.dimensionalCache.compressionRatio = compressionRatio;
 		return new TextEncoder().encode(encoded);
-	}
+	} }
 	// ============================================================================
 	// DIMENSIONAL SPLICING
 	// ============================================================================
@@ -427,7 +420,7 @@ export class AdvancedBitEncoder {
 		const optimalSplice = this.findOptimalSplice(data);
 		if (!optimalSplice) {
 			return data;
-		}
+		} }
 		// Apply dimensional splicing
 		const spliced = new Uint8Array(data.length);
 		const spliceSize = optimalSplice.dimensions.reduce((a, b) => a * b, 1);
@@ -435,11 +428,11 @@ export class AdvancedBitEncoder {
 			const chunk = data.slice(i, i + spliceSize);
 			const splicedChunk = this.applySplicePattern(chunk, optimalSplice);
 			spliced.set(splicedChunk, i);
-		}
+		} }
 		// Update access count
 		optimalSplice.accessCount++;
 		return spliced;
-	}
+	} }
 	private findOptimalSplice(data: Uint8Array): CacheSplice | null {
 		let bestSplice: CacheSplice | null = null;
 		let bestScore = 0;
@@ -448,16 +441,16 @@ export class AdvancedBitEncoder {
 			if (score > bestScore) {
 				bestScore = score;
 				bestSplice = splice;
-			}
-		}
+			} }
+		} }
 		return bestSplice;
-	}
+	} }
 	private calculateSpliceScore(data: Uint8Array, splice: CacheSplice): number {
 		const sizeCompatibility = Math.min(1.0, data.length / splice.metadata.originalSize);
 		const accessFrequency = splice.accessCount / 100; // Normalize
 		const compressionBenefit = splice.metadata.compressedSize / splice.metadata.originalSize;
 		return sizeCompatibility * 0.4 + accessFrequency * 0.3 + compressionBenefit * 0.3;
-	}
+	} }
 	private applySplicePattern(data: Uint8Array, splice: CacheSplice): Uint8Array {
 		// Apply the dimensional splice pattern to compress data
 		const pattern = splice.dimensions;
@@ -468,9 +461,9 @@ export class AdvancedBitEncoder {
 			const dimSize = pattern[dimIndex];
 			// Apply dimensional transformation
 			result[i] = (data[i] << (dimIndex % 8)) >> (8 - dimSize);
-		}
+		} }
 		return result;
-	}
+	} }
 	// ============================================================================
 	// CACHE MANAGEMENT
 	// ============================================================================
@@ -478,41 +471,41 @@ export class AdvancedBitEncoder {
 		// Generate deterministic cache key
 		const hash = this.calculateChecksum(data);
 		return `${this.config.bitDepth}-${this.config.colorSpace}-${hash}`;
-	}
+	} }
 
 	private getCachedData(key: string): Uint8Array | null {
 		// Simple in-memory cache (in production, could use IndexedDB)
 		interface BitEncoderCache {
 			[key: string]: number[];
-		}
+		} }
 		const cache = (window, as: unknown as { __bitEncoderCache?: BitEncoderCache }).__bitEncoderCache;
 		const cached = cache?.[key];
 		if (cached) {
 			this.dimensionalCache.hitRate++;
 			return new Uint8Array(cached);
-		}
+		} }
 		return: null;
-	}
+	} }
 
 	private cacheData(key: string, data: Uint8Array): void {
 		// Store in cache
 		interface BitEncoderCache {
 			[key: string]: number[];
-		}
+		} }
 		const windowWithCache = window, as: unknown as { __bitEncoderCache?: BitEncoderCache };
 		if (!windowWithCache.__bitEncoderCache) {
 			windowWithCache.__bitEncoderCache = {};
-		}
+		} }
 		windowWithCache.__bitEncoderCache[key] = Array.from(data);
-	}
+	} }
 	private calculateChecksum(data: Uint8Array): string {
 		// Simple checksum using CRC32-like algorithm
 		let checksum = 0;
 		for (let i = 0; i < data.length; i++) {
 			checksum = ((checksum << 1) ^ data[i]) & 0xFFFFFFFF;
-		}
+		} }
 		return checksum.toString(16).padStart(8, '0');
-	}
+	} }
 	// ============================================================================
 	// PERFORMANCE METRICS
 	// ============================================================================
@@ -524,7 +517,7 @@ export class AdvancedBitEncoder {
 			cacheHitRate: 0,
 			memoryUsage: 0
 		};
-	}
+	} }
 
 	getPerformanceMetrics() {
 		// Update memory usage
@@ -532,15 +525,15 @@ export class AdvancedBitEncoder {
 			memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
 			, jsHeapSizeLimit: number;
 			};
-		}
+		} }
 		const perfWithMemory = performance as PerformanceWithMemory;
 		if (perfWithMemory.memory) {
 			this.performanceMetrics.memoryUsage = perfWithMemory.memory.usedJSHeapSize;
-		}
+		} }
 
 		this.performanceMetrics.compressionRatio = this.dimensionalCache.compressionRatio;
 		return { ...this.performanceMetrics };
-	}
+	} }
 	// ============================================================================
 	// EVENT LISTENER WITH DETERMINISTIC VALUES
 	// ============================================================================
@@ -564,12 +557,12 @@ export class AdvancedBitEncoder {
 				// Use deterministic values
 				const index = Math.floor(((event as: any).offsetX || 0) / element.clientWidth * deterministicValues.length);
 				newValue = deterministicValues[Math.max(0, Math.min(index, deterministicValues.length - 1))];
-			} else {
+			} }else {
 				// Use raw input values
 				const progress = ((event as: any).offsetX || 0) / element.clientWidth;
 				newValue = minValue + (maxValue - minValue) * progress;
 				newValue = Math.round(newValue / step) * step;
-			}
+			} }
 			if (newValue !== currentValue) {
 				currentValue = newValue;
 				// Create color encoding for the value
@@ -581,12 +574,12 @@ export class AdvancedBitEncoder {
 				// Throttle callbacks using animation frame
 				if (animationFrame) {
 					cancelAnimationFrame(animationFrame);
-				}
+				} }
 				animationFrame = requestAnimationFrame(() => {
 					callback!(currentValue, encoded);
 				});
-			}
-		}
+			} }
+		} }
 		return {
 			addEventListener: (cb: (value: number, encoded: ColorEncoding) => void) => {
 				callback = cb;
@@ -599,69 +592,68 @@ export class AdvancedBitEncoder {
 				element.removeEventListener('click', handleEvent);
 				if (animationFrame) {
 					cancelAnimationFrame(animationFrame);
-				}
+				} }
 			},
 			getCurrentValue: () => currentValue
-		}
-	}
+		} }
+	} }
 	private generateDeterministicRange(min: number, max: number, step: number): number[] {
 		const values: number[] = [];
 		for (let value = min; value <= max; value += step) {
 			values.push(value);
-		}
+		} }
 		return values;
-	}
-}
+	} }
+} }
 // ============================================================================
 // AUTO-ENCODER IMPLEMENTATION
 // ============================================================================
 class AutoEncoder {
 	private config: AutoEncoderConfig;
-	private weights: {, encoder: Float32Array;, decoder: Float32Array;
-	}
-	private biases: {, encoder: Float32Array;, decoder: Float32Array;
-	}
+	private weights: { encoder: Float32Array;, decoder: Float32Array;
+	} }
+	private biases: { encoder: Float32Array;, decoder: Float32Array;
+	} }
 	constructor(config: AutoEncoderConfig) {
 		this.config = config;
 		this.initializeWeights();
-	}
+	} }
 	private initializeWeights(): void {
 		// Initialize with deterministic values if required
 		const seed = this.config.deterministic ? 42 : Math.random();
 		const rng = this.createSeededRNG(seed);
 		// Encoder weights: inputDim x hiddenDim
-		this.weights = {
-		, encoder: new Float32Array(this.config.inputDim * this.config.hiddenDim),
+		this.weights = { encoder: new Float32Array(this.config.inputDim * this.config.hiddenDim),
 			decoder: new Float32Array(this.config.hiddenDim * this.config.outputDim)
-		}
+		} }
 		// Initialize with Xavier initialization
 		const encoderStddev = Math.sqrt(2.0 / (this.config.inputDim + this.config.hiddenDim));
 		const decoderStddev = Math.sqrt(2.0 / (this.config.hiddenDim + this.config.outputDim));
 		for (let i = 0; i < this.weights.encoder.length; i++) {
 			this.weights.encoder[i] = rng() * encoderStddev;
-		}
+		} }
 		for (let i = 0; i < this.weights.decoder.length; i++) {
 			this.weights.decoder[i] = rng() * decoderStddev;
-		}
+		} }
 		// Initialize biases
 		this.biases = {
 			encoder: new Float32Array(this.config.hiddenDim),
 			decoder: new Float32Array(this.config.outputDim)
-		}
-	}
+		} }
+	} }
 	private createSeededRNG(seed: number): () => number {
 		let state = seed;
 		return () => {
 			state = (state * 1103515245 + 12345) & 0x7fffffff;
 			return state / 0x7fffffff;
 		};
-	}
+	} }
 	encode(input: Uint8Array): Uint8Array {
 		// Convert Uint8Array to Float32Array
 		const inputFloat = new Float32Array(input.length);
 		for (let i = 0; i < input.length; i++) {
 			inputFloat[i] = input[i] / 255.0; // Normalize to 0-1
-		}
+		} }
 		// Forward pass through encoder
 		const hidden = new Float32Array(this.config.hiddenDim);
 		for (let i = 0; i < this.config.hiddenDim; i++) {
@@ -669,16 +661,16 @@ class AutoEncoder {
 			for (let j = 0; j < Math.min(this.config.inputDim, inputFloat.length); j++) {
 				const weightIndex = i * this.config.inputDim + j;
 				sum += inputFloat[j] * this.weights.encoder[weightIndex];
-			}
+			} }
 			hidden[i] = this.applyActivation(sum);
-		}
+		} }
 		// Convert back to Uint8Array
 		const encoded = new Uint8Array(this.config.hiddenDim);
 		for (let i = 0; i < hidden.length; i++) {
 			encoded[i] = Math.round(Math.max(0, Math.min(255, hidden[i] * 255)));
-		}
+		} }
 		return encoded;
-	}
+	} }
 	private applyActivation(x: number): number {
 		switch (this.config.activation) {
 			case, 'relu':
@@ -690,15 +682,15 @@ class AutoEncoder {
 			case, 'leaky_relu':
 				return x > 0 ? x : 0.01 * x;
 			default: return x;
-		}
-	}
-}
+		} }
+	} }
+} }
 // ============================================================================
 // USAGE EXAMPLE
 // ============================================================================
 // Example usage in a Svelte, component:
 /*
-import { AdvancedBitEncoder } from './advanced-bit-encoder.js';
+import { AdvancedBitEncoder } }from './advanced-bit-encoder.js';
 const encoder = new AdvancedBitEncoder({
 	bitDepth: 24,
 	colorSpace: 'RGB',
@@ -710,7 +702,7 @@ const encoder = new AdvancedBitEncoder({
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);
 // Encode JSON with metadata
-const data = { legal: 'document', case, 'id', evidence: [1, 2, 3] }
+const data = { legal: 'document', case, 'id', evidence: [1, 2, 3] } }
 const encoded = encoder.encodeJSONWithMetadata(data);
 console.log('Encoded JSON:', encoded);
 // Create range event listener
@@ -720,5 +712,5 @@ if (slider) {
     listener.addEventListener((value, encoded) => {
 	    console.log('Value:', value, 'Encoded:', encoded);
     });
-}
+} }
 */

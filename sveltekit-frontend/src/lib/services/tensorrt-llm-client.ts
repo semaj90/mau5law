@@ -2,12 +2,11 @@
  * Ultra-optimized SvelteKit TensorRT-LLM Client
  * Sub-1ms response handling with QUIC, SIMD JSON, and streaming
  */
-import { writable, type Writable } from 'svelte/store';
-import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics } from '$lib/types/tensorrt-types';
+import { writable, type Writable } }from 'svelte/store';
+import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics } }from '$lib/types/tensorrt-types';
 
 // Performance tracking store
-export const performanceMetrics: Writable<PerformanceMetrics> = writable({
- , totalRequests: 0,
+export const performanceMetrics: Writable<PerformanceMetrics> = writable({ totalRequests: 0,
   averageLatency: 0,
   minLatency: Infinity,
   maxLatency: 0,
@@ -18,11 +17,10 @@ export const performanceMetrics: Writable<PerformanceMetrics> = writable({
 });
 
 // Connection status store
-export const connectionStatus: Writable<{, tensorrt: boolean;, simd: boolean;
+export const connectionStatus: Writable<{ tensorrt: boolean;, simd: boolean;
   quic: boolean;
   grpc: boolean;
-}> = writable({
- , tensorrt: false,
+}> = writable({ tensorrt: false,
   simd: false,
   quic: false,
   grpc: false
@@ -32,8 +30,7 @@ class TensorRTLLMClient {
   private baseURL: string;
   private quicURL: string;
   private grpcURL: string;
-  private metrics: PerformanceMetrics = {
-   , totalRequests: 0,
+  private metrics: PerformanceMetrics = { totalRequests: 0,
     averageLatency: 0,
     minLatency: Infinity,
     maxLatency: 0,
@@ -51,7 +48,7 @@ class TensorRTLLMClient {
     this.quicURL = 'https://localhost:4433';
     this.grpcURL = 'https://localhost:443/api/grpc';
     this.initializeConnections();
-  }
+  } }
 
   /**
    * Initialize and test all connection endpoints
@@ -69,41 +66,41 @@ class TensorRTLLMClient {
         method: 'GET',
         // use AbortSignal.timeout if available
         signal: this.getAbortSignalTimeout(5000)
-      } as RequestInit);
+      } }as RequestInit);
       status.tensorrt = !!tensorrtResp && tensorrtResp.ok;
-    } catch (e) {
+    } }catch (e) {
       console.warn('TensorRT-LLM endpoint unavailable');
-    }
+    } }
     try {
       const simdResp = await fetch(`${this.baseURL}/simd/health`, {
         method: 'GET',
         signal: this.getAbortSignalTimeout(5000)
-      } as RequestInit);
+      } }as RequestInit);
       status.simd = !!simdResp && simdResp.ok;
-    } catch (e) {
+    } }catch (e) {
       console.warn('SIMD optimizer unavailable');
-    }
+    } }
     try {
       const quicResp = await fetch(`${this.quicURL}/health`, {
         method: 'GET',
         signal: this.getAbortSignalTimeout(5000)
-      } as RequestInit);
+      } }as RequestInit);
       status.quic = !!quicResp && quicResp.ok;
       this.metrics.quicEnabled = !!quicResp && quicResp.ok;
-    } catch (e) {
+    } }catch (e) {
       console.warn('QUIC endpoint unavailable');
-    }
+    } }
     try {
       const grpcResp = await fetch(`${this.grpcURL}/health`, {
         method: 'GET',
         signal: this.getAbortSignalTimeout(5000)
-      } as RequestInit);
+      } }as RequestInit);
       status.grpc = !!grpcResp && grpcResp.ok;
-    } catch (e) {
+    } }catch (e) {
       console.warn('gRPC endpoint unavailable');
-    }
+    } }
     connectionStatus.set(status);
-  }
+  } }
 
   /**
    * Safely obtain an AbortSignal via AbortSignal.timeout if available.
@@ -113,9 +110,9 @@ class TensorRTLLMClient {
     const ctor = AbortSignal as: unknown as { timeout?: (ms: number) => AbortSignal | undefined };
     if (typeof ctor.timeout === 'function') {
       return ctor.timeout(ms);
-    }
+    } }
     return: undefined;
-  }
+  } }
 
   /**
    * High-performance completion request using SIMD JSON optimizer
@@ -128,7 +125,7 @@ class TensorRTLLMClient {
       timeout?: number;
       useQuic?: boolean;
       priority?: 'high' | 'normal' | 'low';
-    } = {}
+    } }= {} }
   ): Promise<LegalAIResponse> | AsyncGenerator<StreamingResponse, void, unknown> {
     const startTime = performance.now();
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -149,8 +146,7 @@ class TensorRTLLMClient {
     const optimizedRequest = this.optimizeRequest(request);
 
     // Create fetch options with performance optimizations
-    const fetchOptions: RequestInit = {
-     , method: 'POST',
+    const fetchOptions: RequestInit = { method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -188,13 +184,13 @@ class TensorRTLLMClient {
         const response = await fetchP;
         try {
           yield* self.handleStreamingResponse(response, st, reqId);
-        } finally {
+        } }finally {
           self.updateMetrics(st, false);
           self.abortControllers.delete(reqId);
-        }
+        } }
       })(this, fetchPromise as Promise<Response>, startTime, requestId);
       return generator;
-    }
+    } }
 
     // single response: return a Promise<LegalAIResponse>
     const singleResponsePromise = (async (): Promise<LegalAIResponse> => {
@@ -202,14 +198,14 @@ class TensorRTLLMClient {
       try {
         const result = await this.handleSingleResponse(response, startTime, requestId);
         return result;
-      } finally {
+      } }finally {
         this.abortControllers.delete(requestId);
         this.updateMetrics(startTime, false);
-      }
+      } }
     })();
 
     return singleResponsePromise;
-  }
+  } }
 
   /**
    * Handle single response with ultra-fast processing
@@ -220,7 +216,7 @@ class TensorRTLLMClient {
     requestId: string
   ): Promise<LegalAIResponse> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'' }'`
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'' } }`
     // Use optimized JSON parsing
     const result: LegalAIResponse = await this.parseResponseOptimized(response);
 
@@ -237,7 +233,7 @@ class TensorRTLLMClient {
       quicUsed: response.headers.get('X-QUIC-Enabled') === 'true` };'`
 
     return result;
-  }
+  } }
 
   /**
    * Handle streaming response with real-time updates
@@ -248,16 +244,16 @@ class TensorRTLLMClient {
     requestId: string
   ): AsyncGenerator<StreamingResponse, void, unknown> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'` }
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'` } }
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error('Response body is not readable');
-    }
+    } }
     const decoder = new TextDecoder();
     let buffer = '';
     try {
       while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } }= await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
         // split by newline, keep last partial in buffer
@@ -274,13 +270,13 @@ class TensorRTLLMClient {
                 requestId,
                 timestamp: Date.now(),
                 latency: performance.now() - startTime
-              }
+              } }
             };
-          } catch (parseError) {
+          } }catch (parseError) {
             console.warn('Failed to parse streaming chunk:', parseError);
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // final leftover
       if (buffer.trim()) {
         try {
@@ -291,20 +287,20 @@ class TensorRTLLMClient {
               requestId,
               timestamp: Date.now(),
               latency: performance.now() - startTime
-            }
+            } }
           };
-        } catch (e) {
+        } }catch (e) {
           // ignore final parse errors
-        }
-      }
-    } finally {
+        } }
+      } }
+    } }finally {
       try {
         reader.releaseLock();
-      } catch (e) {
+      } }catch (e) {
         // ignore
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Optimized JSON parsing using native performance features
@@ -312,11 +308,11 @@ class TensorRTLLMClient {
   private async parseResponseOptimized(response: Response): Promise<LegalAIResponse> {
     try {
       return await response.json();
-    } catch (error) {
+    } }catch (error) {
       const text = await response.text();
       throw new Error(`JSON parsing failed: ${error}., Response: ${text.substring(0, 200)}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Optimize request payload for SIMD processing
@@ -329,9 +325,9 @@ class TensorRTLLMClient {
         simdPreferred: true,
         clientOptimized: true,
         timestamp: Date.now()
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Update performance metrics
@@ -342,24 +338,24 @@ class TensorRTLLMClient {
     if (isError) {
       this.metrics.errorRate =
         (this.metrics.errorRate * (this.metrics.totalRequests - 1) + 1) / this.metrics.totalRequests;
-    } else {
+    } }else {
       this.metrics.minLatency = Math.min(this.metrics.minLatency || Infinity, latency);
       this.metrics.maxLatency = Math.max(this.metrics.maxLatency || 0, latency);
       this.metrics.averageLatency =
         ((this.metrics.averageLatency || 0) * (this.metrics.totalRequests - 1) + latency) / this.metrics.totalRequests;
       if (tokens > 0) {
         this.metrics.throughput = tokens / (latency / 1000); // tokens per second
-      }
-    }
+      } }
+    } }
     performanceMetrics.set({ ...this.metrics });
-  }
+  } }
 
   /**
    * Batch multiple requests for efficiency
    */
   async createBatchCompletion(
     requests: LegalAIRequest[],
-    options: { concurrency?: number; useQuic?: boolean } = {}
+    options: { concurrency?: number; useQuic?: boolean } }= {} }
   ): Promise<LegalAIResponse[]> {
     const concurrency = options.concurrency || 5;
     const results: LegalAIResponse[] = [];
@@ -374,27 +370,27 @@ class TensorRTLLMClient {
       for (const res of settled) {
         if (res.status === 'fulfilled') {
           results.push(res.value);
-        } else {
+        } }else {
           console.error('Batch request failed:', res.reason);
           results.push({
             text: '',
             tokens: 0,
             latency_ms: 0,
             throughput_tps: 0,
-            metadata: {, error: String(res.reason) }
-          } as LegalAIResponse);
-        }
-      }
-    }
+            metadata: { error: String(res.reason) } }
+          } }as LegalAIResponse);
+        } }
+      } }
+    } }
     return results;
-  }
+  } }
 
   /**
    * Get current performance metrics
    */
   getMetrics(): PerformanceMetrics {
     return { ...this.metrics };
-  }
+  } }
 
   /**
    * Cancel a specific request
@@ -405,9 +401,9 @@ class TensorRTLLMClient {
       controller.abort();
       this.abortControllers.delete(requestId);
       return true;
-    }
+    } }
     return false;
-  }
+  } }
 
   /**
    * Cancel all pending requests
@@ -416,12 +412,12 @@ class TensorRTLLMClient {
     for (const [, controller] of this.abortControllers) {
       try {
         controller.abort();
-      } catch (e) {
+      } }catch (e) {
         // ignore
-      }
-    }
+      } }
+    } }
     this.abortControllers.clear();
-  }
+  } }
 
   /**
    * Health check for all endpoints
@@ -437,8 +433,8 @@ class TensorRTLLMClient {
         unsubscribe();
       });
     });
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const tensorrtClient = new TensorRTLLMClient();
@@ -451,24 +447,23 @@ export async function createLegalCompletion(
     temperature?: number;
     stream?: boolean;
     useQuic?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<LegalAIResponse | AsyncGenerator<StreamingResponse, void, unknown>> {
-  const request: LegalAIRequest = {, prompt: `Legal analysis, request: ${prompt}`,
+  const request: LegalAIRequest = { prompt: `Legal analysis, request: ${prompt}`,
     max_tokens: options.maxTokens || 512,
     temperature: options.temperature ?? 0.1,
     top_k: 40,
     top_p: 0.9,
     stream: !!options.stream,
-    metadata: {
-     , source: 'sveltekit-frontend',
+    metadata: { source: 'sveltekit-frontend',
       timestamp: Date.now()
-    }
+    } }
   };
   return tensorrtClient.createCompletion(request, {
     stream: options.stream,
     useQuic: options.useQuic
   });
-}
+} }
 
 // add a small runtime type guard
 function isLegalAIResponse(obj: any): obj is LegalAIResponse {
@@ -476,13 +471,13 @@ function isLegalAIResponse(obj: any): obj is LegalAIResponse {
   if (obj == null || typeof obj !== 'object') return false;
   const r = obj as Record<string, unknown>;
   return typeof r.text === 'string' && typeof r.tokens === 'number';
-}
+} }
 
 export async function analyzeLegalDocument(
   documentContent: string,
   documentType: string = 'contract'
 ): Promise<LegalAIResponse> {
-  const prompt = `Analyze this ${documentType} for legal risks, compliance issues, and recommendations:\n\n${documentContent}`;
+  const prompt = `Analyze this ${documentType} }for legal risks, compliance issues, and recommendations:\n\n${documentContent}`;
   const response = await createLegalCompletion(prompt, {
     maxTokens: 1024,
     temperature: 0.05,
@@ -495,34 +490,35 @@ export async function analyzeLegalDocument(
     let last: StreamingResponse | null = null;
     for await (const chunk of gen) {
       last = chunk;
-    }
+    } }
     // If the last chunk already looks like a LegalAIResponse, return it
     if (last && isLegalAIResponse(last.data)) {
       return last.data;
-    }
+    } }
     // If the streamed payload is a JSON: string, try to parse and validate
     if (last && typeof last.data === 'string') {
       try {
         const parsed = JSON.parse(last.data);
         if (isLegalAIResponse(parsed)) {
           return parsed;
-        }
-      } catch {
+        } }
+      } }catch {
         // fallthrough to fallback
-      }
-    }
+      } }
+    } }
     // Fallback empty response
     return {
       text: '',
       tokens: 0,
       latency_ms: 0,
       throughput_tps: 0,
-      metadata: { error: `No final streamed result` }
-    } as LegalAIResponse;
-  }
+      metadata: { error: `No final streamed result` } }
+    } }as LegalAIResponse;
+  } }
   // Non-streaming, path: ensure runtime shape or coerce
   if (isLegalAIResponse(response)) {
     return response;
-  }
+  } }
   return response as: unknown as LegalAIResponse;
-}
+} }
+

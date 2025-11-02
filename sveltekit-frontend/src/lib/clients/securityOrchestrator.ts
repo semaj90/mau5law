@@ -14,12 +14,12 @@ interface UserClient extends Record<string, unknown> { email: string;, username
   department?: string;
   jurisdiction?: string;
   badgeNumber?: string;
-}
+} }
 
-export interface SecurityValidationRequestClient {, task: 'security_validation';, fingerprint: Fingerprint;
+export interface SecurityValidationRequestClient { task: 'security_validation';, fingerprint: Fingerprint;
  , user: UserClient;
   context?: Record<string, unknown>;
-}
+} }
 
 export interface SecurityValidationResponseClient { requestId: string;, riskScore: number;
   securityScore: number;
@@ -29,7 +29,7 @@ export interface SecurityValidationResponseClient { requestId: string;, riskSco
   modelVersion: string;
   durationMs: number;
   timestamp: string;
-}
+} }
 
 export async function validateSecurity(
  , payload: SecurityValidationRequestClient
@@ -42,8 +42,7 @@ export async function validateSecurity(
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },'`'`
-    body: JSON.stringify({
-     , email: payload.user.email,
+    body: JSON.stringify({ email: payload.user.email,
       firstName,
       lastName,
       role: payload.user.requestedRole,
@@ -58,16 +57,16 @@ export async function validateSecurity(
     let detail: any = null;
     try {
       detail = await res.json();
-    } catch {
+    } }catch {
       detail = null;
-    }
+    } }
     // Safely pull an error message if present
     const msg =
       detail && typeof detail === 'object' && 'error' in (detail as Record<string, unknown>)
         ? String((detail as Record<string, unknown>)['error'])
         : res.statusText;
     throw new Error(`Security validation failed (${res.status}): ${msg}`);
-  }
+  } }
 
   const apiResponse = (await res.json()) as Record<string, unknown>;
 
@@ -87,9 +86,9 @@ export async function validateSecurity(
     const maybeSignals = (ti as Record<string, unknown>)['signals'];
     if (Array.isArray(maybeSignals))
       signals = maybeSignals.map(s =>
-        typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : { value: s }
+        typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : { value: s } }
       );
-  }
+  } }
 
   const riskLevel = typeof apiResponse['riskLevel'] === 'string' ? String(apiResponse['riskLevel']) : 'low';
   const status: SecurityValidationResponseClient['status'] =
@@ -110,7 +109,7 @@ export async function validateSecurity(
     durationMs,
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   // Guard for SSR - only build WS url if window exists
@@ -123,14 +122,14 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
     let parsed: any = e.data;
     try {
       parsed = JSON.parse(String(e.data));
-    } catch {
+    } }catch {
       // leave parsed as raw data
-    }
+    } }
     try {
       onMessage(parsed);
-    } catch {
+    } }catch {
       // consumer errors should not break socket handling
-    }
+    } }
   };
   return ws;
 }

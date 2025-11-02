@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { encodeEmbeddingToBitmap, bitmapToDataUrl } from '$lib/server/ai/som-bitmap-visualizer';
-import type { SOMBitmapPalette } from '$lib/server/ai/som-bitmap-visualizer';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { encodeEmbeddingToBitmap, bitmapToDataUrl } }from '$lib/server/ai/som-bitmap-visualizer';
+import type { SOMBitmapPalette } }from '$lib/server/ai/som-bitmap-visualizer';
 
 const palettes: SOMBitmapPalette[] = ['viridis', 'magma', 'blueprint', 'legal', 'grayscale'];
 
@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const embedding = Array.isArray(body.embedding) ? body.embedding.map(Number) : [];
   if (embedding.length === 0) {
     return json({ error: 'embedding array required' }, { status: 400 });
-  }
+  } }
 
   const includeSvg = body.includeSvg !== $state(false);
   const palette =
@@ -34,3 +34,4 @@ export const POST: RequestHandler = async ({ request }) => {
     svg: includeSvg ? bitmap.svg ?? bitmapToDataUrl(bitmap) : undefined
   });
 };
+

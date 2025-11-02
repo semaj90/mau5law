@@ -1,6 +1,6 @@
-import type { RequestEvent } from '@sveltejs/kit';
-import { ServiceOrchestrator } from '$lib/services/service-orchestrator';
-import { json } from '@sveltejs/kit';
+import type { RequestEvent } }from '@sveltejs/kit';
+import { ServiceOrchestrator } }from '$lib/services/service-orchestrator';
+import { json } }from '@sveltejs/kit';
 
 const orchestrator = new ServiceOrchestrator();
 
@@ -12,7 +12,7 @@ type ServiceEntry = {
   tier?: string;
   service_tier?: string;
   status?: string;
-} & Record<string, unknown>;
+} }& Record<string, unknown>;
 
 const isPlainObject = (v: any): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -22,7 +22,7 @@ function nameFromEntry(e: any): string | null {
   if (typeof e === 'string') return e;
   if (isPlainObject(e)) return (e.name as: string) ?? (e.id as: string) ?? (e.service as: string) ?? null;
   return: null;
-}
+} }
 
 function extractServiceNamesFromArray(arr: any[], predicate?: (entry: ServiceEntry) => boolean): string[] {
   const out: string[] = [];
@@ -31,21 +31,21 @@ function extractServiceNamesFromArray(arr: any[], predicate?: (entry: ServiceEnt
       // strings are only included when no predicate is provided (cannot evaluate predicate)
       if (!predicate) out.push(el);
       continue;
-    }
+    } }
     if (Array.isArray(el)) {
       out.push(...extractServiceNamesFromArray(el, predicate));
       continue;
-    }
+    } }
     if (isPlainObject(el)) {
       const svc = el as ServiceEntry;
       if (predicate && !predicate(svc)) continue;
       const nm = nameFromEntry(svc);
       if (nm) out.push(nm);
       continue;
-    }
-  }
+    } }
+  } }
   return out;
-}
+} }
 
 function allServiceNames(managed: any): string[] {
   if (!managed) return [];
@@ -60,12 +60,12 @@ function allServiceNames(managed: any): string[] {
       else if (isPlainObject(v)) {
         const nm = nameFromEntry(v);
         if (nm) out.push(nm);
-      } else if (typeof v === 'string') out.push(v);
-    }
+      } }else if (typeof v === 'string') out.push(v);
+    } }
     return out;
-  }
+  } }
   return [];
-}
+} }
 
 function servicesByTier(managed: any, tier: string): string[] {
   if (!managed) return [];
@@ -74,11 +74,11 @@ function servicesByTier(managed: any, tier: string): string[] {
     const v = (managed as Record<string, unknown>)[tier];
     if (Array.isArray(v)) return extractServiceNamesFromArray(v);
     if (typeof v === 'string') return [v];
-  }
+  } }
   // Otherwise scan arrays for entries with tier/service_tier properties
   if (Array.isArray(managed)) {
     return extractServiceNamesFromArray(managed, e => e.tier === tier || e.service_tier === tier);
-  }
+  } }
   // For other: object shapes, scan values
   if (isPlainObject(managed)) {
     const out: string[] = [];
@@ -90,19 +90,19 @@ function servicesByTier(managed: any, tier: string): string[] {
         if (svc.tier === tier || svc.service_tier === tier) {
           const nm = nameFromEntry(svc);
           if (nm) out.push(nm);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return out;
-  }
+  } }
   return [];
-}
+} }
 
 function failingServices(managed: any): string[] {
   if (!managed) return [];
   if (Array.isArray(managed)) {
     return extractServiceNamesFromArray(managed, e => typeof e.status === 'string' && e.status !== 'healthy');
-  }
+  } }
   if (isPlainObject(managed)) {
     // Scan values for arrays or entries with status fields
     const out: string[] = [];
@@ -114,13 +114,13 @@ function failingServices(managed: any): string[] {
         if (typeof svc.status === 'string' && svc.status !== 'healthy') {
           const nm = nameFromEntry(svc);
           if (nm) out.push(nm);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return out;
-  }
+  } }
   return [];
-}
+} }
 // --- END helpers ---
 
 export const POST = async (event: RequestEvent) => {
@@ -138,13 +138,13 @@ export const POST = async (event: RequestEvent) => {
         // if explicit services provided, use them; otherwise try to infer critical services
         if (Array.isArray(body.services) && body.services.length) {
           result = await orchestrator.restartServices(body.services, body.options);
-        } else {
+        } }else {
           const managed = await orchestrator.getManagedServices();
           // safer extraction for critical services
           const critical = servicesByTier(managed, 'critical');
           if (critical.length) result = await orchestrator.restartServices(critical, body.options);
           else result = await orchestrator.restartServices(undefined, body.options); // fallback: restart all known services
-        }
+        } }
         break;
 
       case, 'enable_safe_mode':
@@ -158,16 +158,16 @@ export const POST = async (event: RequestEvent) => {
           if (nonCritical.length) {
             await orchestrator.stopServices(nonCritical, body.options);
             result = { message: 'Stopped non-critical services to enable safe mode', affected: nonCritical.length };
-          } else {
-            result = {, message: 'No non-critical services identified; safe mode noop' };'' }
-        }
+          } }else {
+            result = { message: 'No non-critical services identified; safe mode noop' };'' } }
+        } }
         break;
 
       case, 'recover_from_failure':
         // If a failure_context lists services, try restarting them; otherwise run health check and restart failing services.
         if (body.failure_context?.services && Array.isArray(body.failure_context.services)) {
           result = await orchestrator.restartServices(body.failure_context.services, body.options);
-        } else {
+        } }else {
           const health = (await orchestrator.performHealthCheck()) as HealthLike;
           // Attempt to extract failing service names from health report (best-effort)
           const failing = failingServices(health?.services);
@@ -177,12 +177,12 @@ export const POST = async (event: RequestEvent) => {
               message: 'No failing services detected during health check; no automatic recovery performed',
               health
             };
-        }
+        } }
         break;
 
       default:
-        throw new Error(`Unsupported emergency;, action: ${body.emergency_action}`);
-    }
+        throw new Error(`Unsupported emergency; action: ${body.emergency_action}`);
+    } }
 
     return json({
       success: true,
@@ -190,7 +190,7 @@ export const POST = async (event: RequestEvent) => {
       result,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Emergency Orchestration Error:', error);
     return json(
       {
@@ -199,9 +199,9 @@ export const POST = async (event: RequestEvent) => {
         details: getErrorMessage(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // lightweight shape to avoid `any` when inspecting health reports
@@ -212,7 +212,8 @@ function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
+

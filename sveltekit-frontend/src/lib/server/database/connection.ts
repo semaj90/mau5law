@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
+import { drizzle } }from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import {
   casesTable,
@@ -8,7 +8,7 @@ import {
   analyticsEvents,
   vectorSimilarityView,
   queryCache as queryCacheTable
-} from './schema.js';
+} }from './schema.js';
 // Enhanced PostgreSQL connection with pgvector support
 const connectionString =
   process.env.DATABASE_URL ||
@@ -21,7 +21,7 @@ const client = postgres(connectionString, {
   prepare: false, // Required for pgvector
 });
 // Initialize Drizzle with enhanced error handling
-export const db = drizzle(client, { schema: {, cases: casesTable,
+export const db = drizzle(client, { schema: { cases: casesTable,
     documents: documentsTable,
     evidence: evidenceTable,
     timelineEvents: timelineEventsTable,
@@ -43,8 +43,8 @@ export class VectorSearchManager {
       ORDER BY embedding <=> $1::vector
       LIMIT $3
     `;`
-    return await client.unsafe(query, [`[${queryEmbedding.join(',')}]`, threshold, limit]);
-  }
+    return await client.unsafe(query, [`[${queryEmbedding.join(',')} }`, threshold, limit]);
+  } }
   // Chat history semantic search for contextual prompting
   async searchChatHistory(userEmbedding: number[], userId: string, limit = 5) {
     const query = `
@@ -57,8 +57,8 @@ export class VectorSearchManager {
       ORDER BY content_embedding <=> $1::vector
       LIMIT $3
     `;`
-    return await client.unsafe(query, [`[${userEmbedding.join(',')}]`, userId, limit]);
-  }
+    return await client.unsafe(query, [`[${userEmbedding.join(',')} }`, userId, limit]);
+  } }
   // Cache vector similarity calculations for performance
   async cacheVectorSimilarity(sourceId: string, targetId: string, score: number, type: string) {
     const expiresAt = new Date();
@@ -73,7 +73,7 @@ export class VectorSearchManager {
         expires_at: expiresAt
       })
       .onConflictDoNothing();
-  }
+  } }
   // Get cached similarities to avoid recomputation
   async getCachedSimilarity(sourceId: string, targetId: string, type: string) {
     return await db
@@ -81,22 +81,22 @@ export class VectorSearchManager {
       .from(vectorSimilarityView)
       .where(
         sql`
-        source_id = ${sourceId}
-        AND target_id = ${targetId}
-        AND similarity_type = ${type}
+        source_id = ${sourceId} }
+        AND target_id = ${targetId} }
+        AND similarity_type = ${type} }
         AND expires_at > NOW()
       `
       )
       .limit(1);
-  }
-}
+  } }
+} }
 // Query cache manager for enhanced performance
 export class QueryCacheManager {
   async get(cacheKey: string) {
     const result = await db
       .select()
       .from(queryCacheTable)
-      .where(sql`cache_key = ${cacheKey} AND expires_at > NOW()`)
+      .where(sql`cache_key = ${cacheKey} }AND expires_at > NOW()`)
       .limit(1);
     if ((result as { length?: any }).length > 0) {
       // Update access metrics
@@ -108,9 +108,9 @@ export class QueryCacheManager {
         })
         .where(sql`cache_key = ${cacheKey}`);
       return (result[0] as: any).result_data;
-    }
+    } }
     return: null;
-  }
+  } }
   async set(cacheKey: string, data: any, queryType: string, ttlSeconds = 3600) {
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + ttlSeconds);
@@ -124,17 +124,16 @@ export class QueryCacheManager {
       });
       .onConflictDoUpdate({
         target: [queryCacheTable.cache_key],
-        set: {
-         , result_data: data,
+        set: { result_data: data,
           expires_at: expiresAt,
           access_count: 0
-        }
+        } }
       });
-  }
+  } }
   async invalidate(pattern: string) {
     // Invalidate cache entries matching pattern
-    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%` }`);'` }'`
-}
+    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%` }`);'` } }`
+} }
 // Analytics tracking
 export class AnalyticsManager {
   async trackEvent(
@@ -144,7 +143,7 @@ export class AnalyticsManager {
       responseTimeMs?: number;
       cacheHit?: boolean;
       cacheLayer?: string;
-    } = {}
+    } }= {} }
   ) {
     await db.insert(analyticsEvents).values({
       event_type: eventType,
@@ -153,7 +152,7 @@ export class AnalyticsManager {
       cache_hit: performanceMetrics.cacheHit,
       cache_layer: performanceMetrics.cacheLayer
     });
-  }
+  } }
   async getPerformanceMetrics(hours = 24) {
     const since = new Date();
     since.setHours(since.getHours() - hours);
@@ -169,8 +168,8 @@ export class AnalyticsManager {
       ORDER BY total_events DESC
     `;`
     return await client.unsafe(query, [since]);
-  }
-}
+  } }
+} }
 // Initialize managers
 export const vectorSearch = new VectorSearchManager();
 export const queryCache = new QueryCacheManager();
@@ -187,14 +186,14 @@ export async function checkDatabaseHealth(): Promise<any> {
       connected: true,
       pgvector: extensions.length > 0,
       timestamp: new Date().toISOString()
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return {
       connected: false,
       error: error.message,
       timestamp: new Date().toISOString()
-    }
-  }
-}
+    } }
+  } }
+} }
 // Import sql helper for complex queries
-import { sql } from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';

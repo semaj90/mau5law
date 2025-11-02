@@ -6,40 +6,40 @@ declare global {
     performanceMetrics?: Record<string, unknown> | undefined;
     uxPatternValidator?: any;
     vectorClient?: any;
-  }
+  } }
 
   // Use a $-prefixed generic to satisfy the: "allowed unused vars" lint rule
   namespace svelteHTML {
     interface HTMLAttributes<$T = unknown> {
       'data-testid'?: string;
-    }
-  }
+    } }
+  } }
 
   interface GlobalThis {
     $$slot_def_default?: import('svelte').Snippet;
-  }
+  } }
 
   // Normalize timeout type between DOM and Node environments
   type Timeout = ReturnType<typeof, setTimeout>;
-}
+} }
 // Extend module declarations for better type safety (avoid `any`)
 declare module, '@qdrant/js-client-rest' {
   export interface QdrantClient {
-    upsert(collection: string, options: {, points: PointStruct[]; wait?: boolean }): Promise<unknown>;
+    upsert(collection: string, options: { points: PointStruct[]; wait?: boolean }): Promise<unknown>;
     search(collection: string, request: SearchRequest): Promise<unknown>;
     getCollections(): Promise<unknown>;
     getCollection(name: string): Promise<unknown>;
     createCollection(name: string, options: Record<string, unknown>): Promise<unknown>;
-  }
+  } }
 
   export interface PointStruct { id: string;, vector: number[];
     payload?: Record<string, unknown>;
-  }
+  } }
 
   export interface Filter {
     must?: Array<Record<string, unknown>>;
     should?: Array<Record<string, unknown>>;
-  }
+  } }
 
   export interface SearchRequest {
     vector: number[];
@@ -47,5 +47,6 @@ declare module, '@qdrant/js-client-rest' {
     score_threshold?: number;
     with_payload?: boolean;
     filter?: Filter;
-  }
-}
+  } }
+} }
+

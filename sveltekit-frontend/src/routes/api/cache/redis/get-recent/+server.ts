@@ -2,22 +2,22 @@
  * Redis Get Recent Endpoint
  * Retrieve recent cache entries for sync operations
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types';
 // Memory cache with timestamps for development
-const memoryCache = new Map<string, { value: any; expires: number;, timestamp: number }>()
+const memoryCache = new Map<string, { value: any; expires: number; timestamp: number }>()
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { prefix, since } = await request.json()
+    const { prefix, since } }= await request.json()
     if (!prefix || !since) {
       return json(
         {
           success: false,
           error: 'Prefix and since timestamp are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    } // <-- added missing closing brace for the, validation, if
+    } }// <-- added missing closing brace for the, validation, if
 
     // Ensure `since` is a: number
     if (typeof since !== 'number') {
@@ -25,9 +25,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'The, "since" value must be a: number (timestamp in ms)` },'`
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const now = Date.now()
     const entries: Array<any> = []
     // Get recent entries matching prefix
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (cached.expires < now) {
         memoryCache.delete(key)
         continue
-      }
+      } }
       // Check if recent enough
       const entryTimestamp = cached.timestamp || cached.expires - (3600 * 1000); // Fallback
       if (entryTimestamp >= since) {
@@ -47,8 +47,8 @@ export const POST: RequestHandler = async ({ request }) => {
           value: cached.value,
           timestamp: entryTimestamp
         })
-      }
-    }
+      } }
+    } }
     // Sort by timestamp (most recent first)
     entries.sort((a, b) => b.timestamp - a.timestamp)
     return json({
@@ -58,10 +58,10 @@ export const POST: RequestHandler = async ({ request }) => {
       count: entries.length,
       entries: entries.slice(0, 100) // Limit to, 100 entries
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     return json({
       success: false,
       error: error.message
     }, { status: 500 })
-  }
+  } }
 }

@@ -2,27 +2,27 @@
  * 🔍 Last Searched Items API
  * Returns user's recent search history with intelligent suggestions'
  */
-import type { RequestHandler } from './$types'
-import { json } from '@sveltejs/kit'
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
+import type { RequestHandler } }from './$types'
+import { json } }from '@sveltejs/kit'
+import { multiLayerCache } }from '$lib/cache/MultiLayerCacheSystem'
 interface SearchItem { id: string, query: string; timestamp: string; resultCount: number; searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
   filters?: {
     practiceArea?: string
     dateRange?: string
     status?: string
-  }
+  } }
   confidence: number; clickedResults: string[]; timeSpent: number; // seconds
-}
+} }
 // Mock search history - in production this would be in PostgreSQL
 const mockSearchHistory: SearchItem[] = [
   {
-   , id: 'search-001',
+  id: 'search-001',
     query: 'employment contract termination',
     timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
     resultCount: 23,
     searchType: 'documents',
     filters: {
-     , practiceArea: 'employment-law',
+  practiceArea: 'employment-law',
       dateRange: 'last-year'
     },
     confidence: 0.92,
@@ -36,7 +36,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 8,
     searchType: 'evidence',
     filters: {
-     , status: 'active'
+  status: 'active'
     },
     confidence: 0.87,
     clickedResults: ['evi-789'],
@@ -49,7 +49,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 156,
     searchType: 'precedents',
     filters: {
-     , practiceArea: 'intellectual-property',
+  practiceArea: 'intellectual-property',
       dateRange: 'last-5-years'
     },
     confidence: 0.78,
@@ -63,7 +63,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 12,
     searchType: 'documents',
     filters: {
-     , practiceArea: 'real-estate'
+  practiceArea: 'real-estate'
     },
     confidence: 0.95,
     clickedResults: ['doc-789', 'doc-990'],
@@ -76,15 +76,15 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 45,
     searchType: 'cases',
     filters: {
-     , practiceArea: 'estate-planning',
+  practiceArea: 'estate-planning',
       status: 'pending'
     },
     confidence: 0.83,
     clickedResults: ['case-003'],
     timeSpent: 178
-  }
+  } }
 ]
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10')
   const searchType = url.searchParams.get('type') as SearchItem['searchType'] | null
   const cacheKey = `last-searched-${limit}-${searchType || 'all` }`'`
@@ -98,12 +98,12 @@ export const, GET: RequestHandler = async ({ url }) => {
         fromCache: true,
         timestamp: new Date().toISOString()
       })
-    }
+    } }
     // Filter by search type if specified
     let filteredSearches = mockSearchHistory
     if (searchType) {
       filteredSearches = mockSearchHistory.filter(search => search.searchType === searchType)
-    }
+    } }
     // Sort by timestamp (most recent first) and limit
     const recentSearches = filteredSearches
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -116,33 +116,33 @@ export const, GET: RequestHandler = async ({ url }) => {
       fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
-       , totalSearches: filteredSearches.length,
+  totalSearches: filteredSearches.length,
         returnedSearches: recentSearches.length,
         averageResults: recentSearches.reduce((sum, s) => sum + s.resultCount, 0) / recentSearches.length,
         totalTimeSpent: recentSearches.reduce((sum, s) => sum + s.timeSpent, 0)
-      }
+      } }
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching search history:', error)
     return json({
       success: false,
       error: 'Failed to fetch search history',
       timestamp: new Date().toISOString()
     }, { status: 500 })
-  }
-}
+  } }
+} }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
-    const { query, searchType, filters, resultCount } = body
+    const { query, searchType, filters, resultCount } }= body
     if (!query || !searchType) {
       return json({
         success: false,
-        error: 'Missing required;, fields: query, searchType' }, { status: 400 })
-    }
+        error: 'Missing required; fields: query, searchType' }, { status: 400 })
+    } }
     // Create new search entry
     const newSearch: SearchItem = {
-     , id: 'search-${Date.now()}',
+  id: 'search-${Date.now()} },
       query,
       timestamp: new Date().toISOString(),
       resultCount: resultCount || 0,
@@ -151,13 +151,13 @@ export const POST: RequestHandler = async ({ request }) => {
       confidence: 0.8, // Default confidence
       clickedResults: [],
       timeSpent: 0
-    }
+    } }
     // Add to mock history (in production, save to PostgreSQL)
     mockSearchHistory.unshift(newSearch)
     // Keep only last, 100 searches
     if (mockSearchHistory.length > 100) {
       mockSearchHistory.splice(100)
-    }
+    } }
     // Clear cache to force refresh
     await multiLayerCache.clear('memory')
     return json({
@@ -166,22 +166,22 @@ export const POST: RequestHandler = async ({ request }) => {
       data: newSearch,
       timestamp: new Date().toISOString()
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Error recording search:', error)
     return json({
       success: false,
       error: 'Failed to record search` }, { status: 500 })'`
-  }
-}
+  } }
+} }
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
-    const { searchId, clickedResult, timeSpent } = body
+    const { searchId, clickedResult, timeSpent } }= body
     if (!searchId) {
       return json({
         success: false,
-        error: `Missing required;, field: searchId` }, { status: 400 })
-    }
+        error: `Missing required; field: searchId` }, { status: 400 })
+    } }
     // Find and update search entry
     const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)
     if (searchIndex === -1) {
@@ -189,19 +189,19 @@ export const PATCH: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `Search not found` },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     const search = mockSearchHistory[searchIndex]
     // Update clicked results
     if (clickedResult && !search.clickedResults.includes(clickedResult)) {
       search.clickedResults.push(clickedResult);
       search.confidence = Math.min(1.0, search.confidence + 0.05); // Boost confidence for engaged searches
-    }
+    } }
     // Update time spent
     if (typeof timeSpent === 'number' && timeSpent > 0) {
       search.timeSpent += timeSpent;
-    }
+    } }
     // Clear cache
     await multiLayerCache.clear('memory')
     return json({
@@ -210,10 +210,10 @@ export const PATCH: RequestHandler = async ({ request }) => {
       data: search,
       timestamp: new Date().toISOString()
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Error updating search: ', error)'`'`
     return json({
       success: false,
       error: `Failed to update search` }, { status: 500 })
-  }
+  } }
 }

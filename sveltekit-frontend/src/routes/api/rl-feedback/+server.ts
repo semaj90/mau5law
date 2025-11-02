@@ -3,11 +3,11 @@
  * Collects thumbs up/down feedback for supervised RL training
  * Feeds into QLoRA distilled enhanced RAG model creation
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer';
-import { autoencoderContextSwitcher } from '$lib/orchestration/autoencoder-context-switcher';
-import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { qloraTrainer } }from '$lib/services/qlora-reinforcement-learning-trainer';
+import { autoencoderContextSwitcher } }from '$lib/orchestration/autoencoder-context-switcher';
+import { predictiveAssetEngine } }from '$lib/services/predictive-asset-engine';
 // Feedback data structure
 interface RLFeedbackData { sessionId: string;, userId: string;
   queryId: string;
@@ -15,12 +15,12 @@ interface RLFeedbackData { sessionId: string;, userId: string;
   response: string;
   feedback: 'thumbs_up' | 'thumbs_down';
   feedbackDetails?: {
-   , accuracy: number; // 1-5 scale,
+  accuracy: number; // 1-5 scale,
     helpfulness: number; // 1-5 scale
-   , completeness: number; // 1-5 scale,
+  completeness: number; // 1-5 scale,
     clarity: number; // 1-5 scale
   };
-  context: {, documentType: string;, legalDomain: string;
+  context: { documentType: string;, legalDomain: string;
     complexityLevel: 'basic' | 'intermediate' | 'advanced';
     modelUsed: string;
     responseTime: number;
@@ -29,24 +29,24 @@ interface RLFeedbackData { sessionId: string;, userId: string;
   timestamp: number;
   userCorrections?: string[];
   preferredResponse?: string;
-}
+} }
 // Training data for QLoRA distillation
-interface QLorATrainingExample {, instruction: string;, input: string;
+interface QLorATrainingExample { instruction: string;, input: string;
   output: string;
   preference_score: number;
-  quality_metrics: {, accuracy: number;, relevance: number;
+  quality_metrics: { accuracy: number;, relevance: number;
     completeness: number;
   };
-  metadata: {, domain: string;, model_used: string;
+  metadata: { domain: string;, model_used: string;
     user_feedback: string;
     context_embedding: Float32Array;
   };
-}
+} }
 /**
  * POST /api/rl-feedback
  * Submit thumbs up/down feedback for reinforcement learning
  */
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   // Ensure we read auth from locals (same pattern as GET)
   const authUser = (locals as: any)?.user ?? null;
 
@@ -56,19 +56,19 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     try {
       const mod = await import('$lib/server/db');
       db = mod.default || mod.db || mod;
-    } catch {
+    } }catch {
       db = null;
-    }
-  }
+    } }
+  } }
 
   try {
     const feedbackData: RLFeedbackData = await request.json();
     // Validate required fields
     if (!feedbackData.queryId || !feedbackData.query || !feedbackData.response || !feedbackData.feedback) {
       return json({ error: 'Missing required feedback fields' }, { status: 400 });
-    }
+    } }
 
-    console.log(`👍👎 Received ${feedbackData.feedback} feedback for query: ${feedbackData.queryId}`);
+    console.log(`👍👎 Received ${feedbackData.feedback} }feedback for query: ${feedbackData.queryId}`);
 
     // Convert feedback to numerical score
     const feedbackScore = convertFeedbackToScore(feedbackData);
@@ -76,21 +76,21 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     const contextEmbedding = await generateContextEmbedding(feedbackData);
     // Create training example for QLoRA
     const trainingExample: QLorATrainingExample = {
-     , instruction: generateInstruction(feedbackData.context),
+  instruction: generateInstruction(feedbackData.context),
       input: feedbackData.query,
       output: feedbackData.preferredResponse || feedbackData.response,
       preference_score: feedbackScore,
       quality_metrics: {
-       , accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
+  accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
         relevance: estimateRelevance(feedbackData),
         completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
       },
       metadata: {
-       , domain: feedbackData.context.legalDomain,
+  domain: feedbackData.context.legalDomain,
         model_used: feedbackData.context.modelUsed,
         user_feedback: feedbackData.feedback,
         context_embedding: contextEmbedding
-      }
+      } }
     };
 
     // If DB available and user authenticated, write to real DB; otherwise use existing trainer mock
@@ -109,7 +109,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           training_example: trainingExample
         });
         console.log('✅ Feedback persisted to DB for authenticated user');
-      } catch (err) {
+      } }catch (err) {
         console.error('DB insert failed, falling back to in-memory trainer:', err);
         await qloraTrainer.recordUserFeedback(
           feedbackData.query,
@@ -127,10 +127,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
             practice_area: feedbackData.context.legalDomain,
             complexity_level: feedbackData.context.complexityLevel,
             prior_interactions: []
-          }
+          } }
         );
-      }
-    } else {
+      } }
+    } }else {
       await qloraTrainer.recordUserFeedback(
         feedbackData.query,
         feedbackData.response,
@@ -147,9 +147,9 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           practice_area: feedbackData.context.legalDomain,
           complexity_level: feedbackData.context.complexityLevel,
           prior_interactions: [], // would track in production
-        }
+        } }
       );
-    }
+    } }
 
     // Update context switcher with usage pattern
     await autoencoderContextSwitcher.switchContext(feedbackData.userId, feedbackData.query, {
@@ -168,27 +168,27 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         task: 'feedback_collection',
         legal_domain: feedbackData.context.legalDomain,
         feedback_score: feedbackScore
-      }
+      } }
     );
 
     // Store training example in enhanced RAG dataset (DB-backed when available)
     if (db && authUser?.id && typeof db.storeRAGExample === 'function') {
       try {
         await db.storeRAGExample(trainingExample);
-      } catch (err) {
+      } }catch (err) {
         console.warn('DB storeRAGExample failed, using local store:', err);
         await storeEnhancedRAGExample(trainingExample);
-      }
-    } else {
+      } }
+    } }else {
       await storeEnhancedRAGExample(trainingExample);
-    }
+    } }
 
     // Check if we have enough feedback to trigger model distillation
     const feedbackCount = await getFeedbackCount(authUser?.id || feedbackData.userId, feedbackData.context.legalDomain);
     if (feedbackCount >= 50) {
       // Threshold for domain-specific distillation
       await triggerDomainSpecificDistillation(feedbackData.context.legalDomain, authUser?.id || feedbackData.userId);
-    }
+    } }
 
     return json({
       success: true,
@@ -198,10 +198,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       next_training_eta:
         typeof estimateNextTrainingTime === 'function' ? estimateNextTrainingTime(feedbackCount) : null
     });
-  } catch (error) {
-    console.error('❌ RL Feedback API error:', error);'
+  } }catch (error) {
+    console.error('❌ RL Feedback API error:', error);
     return json({ error: 'Failed to process feedback' }, { status: 500 });
-  }
+  } }
 };
 /**
  * GET /api/rl-feedback/stats
@@ -220,18 +220,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       try {
         const mod = await import('$lib/server/db');
         db = mod.default || mod.db || mod;
-      } catch {
+      } }catch {
         db = null;
-      }
-    }
+      } }
+    } }
 
     // Get training statistics (DB-backed when possible)
     let trainingStats: any;
     if (db && typeof db.getTrainingStats === 'function') {
       trainingStats = await db.getTrainingStats(authUser?.id || userIdParam);
-    } else {
+    } }else {
       trainingStats = qloraTrainer.getTrainingStats();
-    }
+    } }
 
     // Get context switching performance
     const switchingStats = autoencoderContextSwitcher.getPerformanceStats();
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     let domainStats = null;
     if (domain) {
       domainStats = await getDomainSpecificStats(domain, authUser?.id || userIdParam);
-    }
+    } }
 
     // Enhanced RAG stats (DB-backed when available)
     const enhancedCount =
@@ -258,32 +258,32 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         ? await db.getAverageQualityScore()
         : await getAverageQualityScore();
 
-    return json({ training: {, total_feedback: trainingStats.training_queue_size,
+    return json({ training: { total_feedback: trainingStats.training_queue_size,
         successful_training_runs: trainingStats.data_flywheel_status === 'training' ? 1 : 0,
         model_versions: trainingStats.model_versions,
         next_training_eta: trainingStats.next_training_eta
       },
       context_switching: {
-       , switching_latency: switchingStats.switchingLatency,
+  switching_latency: switchingStats.switchingLatency,
         active_models: switchingStats.activeModels,
         total_switches: switchingStats.totalSwitches,
         average_cost: switchingStats.averageSwitchingCost
       },
       prediction: {
-       , success_rate: predictionStats.success_rate,
+  success_rate: predictionStats.success_rate,
         average_confidence: predictionStats.average_confidence,
         cache_improvements: predictionStats.cache_improvements
       },
       domain_specific: domainStats,
       enhanced_rag: {
-       , training_examples: enhancedCount,
+  training_examples: enhancedCount,
         distilled_models: distilledCount,
         average_quality_score: avgQuality
-      }
+      } }
     });
-  } catch (error) {
-    console.error('❌ RL Stats API error: ', error);'
-    return json({ error: 'Failed to retrieve statistics' }, { status: 500 });'` }'`
+  } }catch (error) {
+    console.error('❌ RL Stats API error: ', error);
+    return json({ error: 'Failed to retrieve statistics' }, { status: 500 });'` } }`
 };
 // ===============================
 // HELPER FUNCTIONS
@@ -303,9 +303,9 @@ function convertFeedbackToScore(feedback: RLFeedbackData): number {
           feedback.feedbackDetails.clarity) /
         4;
       score = Math.min(5, 3 + (avgDetail / 5) * 2); // Scale to 3-5 range
-    }
+    } }
     return score;
-  } else {
+  } }else {
     // Base score of, 2, reduced by detail ratings
     let score = 2.0;
     if (feedback.feedbackDetails) {
@@ -316,10 +316,10 @@ function convertFeedbackToScore(feedback: RLFeedbackData): number {
           feedback.feedbackDetails.clarity) /
         4;
       score = Math.max(1, 3 - (avgDetail / 5) * 2); // Scale to 1-3 range
-    }
+    } }
     return score;
-  }
-}
+  } }
+} }
 /**
  * Generate context embedding for training
  */
@@ -330,7 +330,7 @@ async function generateContextEmbedding(feedback: RLFeedbackData): Promise<Float
   queryWords.forEach((word, i) => {
     if (i < 64) {
       embedding[i] = hashString(word) / 1000000; // Normalize
-    }
+    } }
   });
   // Encode context features
   embedding[64] =
@@ -346,19 +346,19 @@ async function generateContextEmbedding(feedback: RLFeedbackData): Promise<Float
   const domainHash = hashString(feedback.context.legalDomain);
   for (let i = 0; i < 32; i++) {
     embedding[68 + i] = ((domainHash * i) % 1000) / 1000;
-  }
+  } }
   return embedding;
-}
+} }
 /**
  * Generate instruction prompt for QLoRA training
  */
 function generateInstruction(context: RLFeedbackData['context']): string {
   return (
     `You are an expert legal AI assistant specializing in ${context.legalDomain}. ` +
-    `Analyze the following ${context.documentType} document with ${context.complexityLevel} complexity. ` +
+    `Analyze the following ${context.documentType} }document with ${context.complexityLevel} }complexity. ` +
     `Provide accurate, detailed, and professionally formatted legal analysis.`
   );
-}
+} }
 /**
  * Estimate accuracy from feedback data
  */
@@ -367,13 +367,13 @@ function estimateAccuracy(feedback: RLFeedbackData): number {
   // Boost accuracy if user provided corrections (implies they found errors)
   if (feedback.userCorrections && feedback.userCorrections.length > 0) {
     accuracy = Math.max(accuracy - feedback.userCorrections.length * 0.1, 0.1);
-  }
+  } }
   // Boost accuracy for high confidence responses
   if (feedback.context.confidence > 0.8) {
     accuracy = Math.min(accuracy + 0.1, 1.0);
-  }
+  } }
   return accuracy;
-}
+} }
 /**
  * Estimate relevance from feedback data
  */
@@ -382,7 +382,7 @@ function estimateRelevance(feedback: RLFeedbackData): number {
   const timeBonus = feedback.context.responseTime < 5000 ? 0.1 : 0;
   const baseRelevance = feedback.feedback === 'thumbs_up' ? 0.85 : 0.45;
   return Math.min(baseRelevance + timeBonus, 1.0);
-}
+} }
 /**
  * Estimate completeness from feedback data
  */
@@ -391,7 +391,7 @@ function estimateCompleteness(feedback: RLFeedbackData): number {
   const lengthBonus = Math.min(feedback.response.length / 2000, 0.2);
   const baseCompleteness = feedback.feedback === 'thumbs_up' ? 0.75 : 0.35;
   return Math.min(baseCompleteness + lengthBonus, 1.0);
-}
+} }
 /**
  * Determine user preference type from feedback
  */
@@ -409,20 +409,20 @@ function determinePrefererenceType(feedback: RLFeedbackData): 'accuracy' | 'comp
       feedback.feedback === 'thumbs_up' ? b - a : a - b
     );
     return sortedScores[0][0] as: 'accuracy' | 'completeness' | 'clarity' | 'relevance';
-  }
+  } }
   // Default to accuracy for legal domain
   return, 'accuracy';
-}
+} }
 /**
  * Calculate confidence delta from feedback
  */
 function calculateConfidenceDelta(feedback: RLFeedbackData): number {
   if (feedback.feedback === 'thumbs_up') {
     return Math.min(0.3, (5 - feedback.context.confidence) * 0.2);
-  } else {
+  } }else {
     return Math.max(-0.3, (feedback.context.confidence - 1) * -0.2);
-  }
-}
+  } }
+} }
 /**
  * Store enhanced RAG training example
  */
@@ -441,10 +441,10 @@ async function storeEnhancedRAGExample(example: QLorATrainingExample): Promise<v
     };
     // Would implement actual storage here
     console.log(`✅ RAG example stored with quality score: ${ragExample.quality_score.toFixed(2)}`);
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Failed to store RAG example:', error);
-  }
-}
+  } }
+} }
 /**
  * Get feedback count for domain-specific training
  */
@@ -456,14 +456,14 @@ async function getFeedbackCount(userId: string | undefined, domain: string): Pro
       const db = mod.default || mod.db || mod;
       if (typeof db.countFeedbackByUserAndDomain === 'function') {
         return await db.countFeedbackByUserAndDomain(userId, domain);
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore and fallback
-    }
-  }
+    } }
+  } }
   // Mock implementation - would query database in production
   return Math.floor(Math.random() * 100);
-}
+} }
 /**
  * Trigger domain-specific model distillation
  */
@@ -482,9 +482,9 @@ async function triggerDomainSpecificDistillation(domain: string, userId: string)
     console.log(`🚀 Starting distillation with config:`, distillationConfig);
     // Update user that specialized model is being created
     await notifyUserOfDistillation(userId, domain, distillationConfig.targetModelName);
-  } catch (error) {
-    console.error(`❌ Distillation failed for domain ${domain}: ', error);'` }
-}
+  } }catch (error) {
+    console.error(`❌ Distillation failed for domain ${domain}: ', error);'` } }
+} }
 /**
  * Estimate next training time based on current feedback count
  */
@@ -494,7 +494,7 @@ function estimateNextTrainingTime(currentCount: number): number | null {
   const remaining = threshold - currentCount;
   // Assume, 1 feedback per, 10 minutes on average
   return remaining * 10 * 60 * 1000; // milliseconds
-}
+} }
 /**
  * Get domain-specific statistics
  */
@@ -505,10 +505,10 @@ async function getDomainSpecificStats(domain: string, userId?: string): Promise<
     const db = mod.default || mod.db || mod;
     if (typeof db.getDomainStats === 'function') {
       return await db.getDomainStats(domain, userId);
-    }
-  } catch {
+    } }
+  } }catch {
     // fallback to mock
-  }
+  } }
 
   // Mock implementation - would query real data in production
   return {
@@ -520,32 +520,32 @@ async function getDomainSpecificStats(domain: string, userId?: string): Promise<
     specialized_models: [`gemma3-legal-${domain}-v1`, `gemma3-legal-${domain}-v2`],
     distillation_ready: Math.random() > 0.5
   };
-}
+} }
 /**
  * Get enhanced RAG example count
  */
 async function getEnhancedRAGExampleCount(): Promise<number> {
   return Math.floor(Math.random() * 1000) + 500;
-}
+} }
 /**
  * Get distilled model count
  */
 async function getDistilledModelCount(): Promise<number> {
   return Math.floor(Math.random() * 10) + 3;
-}
+} }
 /**
  * Get average quality score across all examples
  */
 async function getAverageQualityScore(): Promise<number> {
   return 0.78 + Math.random() * 0.15;
-}
+} }
 /**
  * Notify user of distillation process
  */
 async function notifyUserOfDistillation(userId: string, domain: string, modelName: string): Promise<void> {
-  console.log(`📧 Notifying user ${userId} of new specialized model: ${modelName}`);
+  console.log(`📧 Notifying user ${userId} }of new specialized model: ${modelName}`);
   // Would send actual notification in production
-}
+} }
 /**
  * Simple hash function
  */
@@ -555,6 +555,7 @@ function hashString(str: string): number {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash = hash & hash;
-  }
+  } }
   return Math.abs(hash);
-}
+} }
+

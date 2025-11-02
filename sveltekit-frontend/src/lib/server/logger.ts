@@ -1,17 +1,17 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 import Redis from 'ioredis';
-import { formatErrorResponse } from './errors';
+import { formatErrorResponse } }from './errors';
 
 let _redis: Redis | null = null;
 try {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = parseInt(process.env.REDIS_PORT || '6379', 10);
   _redis = redis;
-} catch (e) {
+} }catch (e) {
   _redis = null;
-}
+} }
 
-export async function logStructuredError(payload: {, source: string;, level: 'error' | 'warn' | 'info';
+export async function logStructuredError(payload: { source: string;, level: 'error' | 'warn' | 'info';
  , event: string;
  , message: string;
   error?: any;
@@ -22,7 +22,7 @@ export async function logStructuredError(payload: {, source: string;, level: 'e
     ...payload,
     error:
       payload.error instanceof Error
-        ? {, message: payload.error.message, stack: (payload.error as Error).stack }
+        ? { message: payload.error.message, stack: (payload.error as Error).stack } }
         : payload.error
   };
 
@@ -37,77 +37,77 @@ export async function logStructuredError(payload: {, source: string;, level: 'e
         const isEnabled = (sentryAdapter as: any).isEnabled;
         if (isEnabled) {
           console.info('[logger] Sentry adapter is active');
-        }
+        } }
         if (payload.level === 'error' && typeof captureException === 'function') {
           captureException(payload.error ?? payload.message, {
             source: payload.source,
             event: payload.event,
             context: payload.context
           });
-        }
-      } catch {
+        } }
+      } }catch {
         // ignore
-      }
+      } }
       return;
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     console.warn('[logger] Redis logging failed, falling back to console', e);
-  }
+  } }
 
   if (payload.level === 'error') console.error('[logger]', record);
   else if (payload.level === 'warn') console.warn('[logger]', record);
   else console.info('[logger]', record);
-}
+} }
 
 export async function captureAndFormat(error: any): Promise<any> {
   try {
     return formatErrorResponse(error);
-  } catch {
+  } }catch {
     return {
       success: false,
-      error: {
-       , message: 'An unexpected error occurred',
+      error: { message: 'An unexpected error occurred',
         code: 'UNKNOWN_ERROR',
         status: 500
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 
 const, counters: Record<string, number> = {};
 export function incrementMetric(name: string, value = 1) {
   counters[name] = (counters[name] || 0) + value;
-}
+} }
 export function getMetricsSnapshot() {
   return { ...counters };
-}
+} }
 
 export class Logger {
   private static instance: Logger;
-  private constructor() {}
+  private constructor() {} }
   static getInstance(): Logger {
     if (!Logger.instance) Logger.instance = new Logger();
     return Logger.instance;
-  }
+  } }
   info(message: string, meta?: any) {
-    console.log(`[INFO] ${new Date().toISOString()} - ${message}`, meta || '');
-  }
+    console.log(`[INFO] ${new Date().toISOString()} }- ${message}`, meta || '');
+  } }
   error(message: string, error?: any) {
-    console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error || '');
-  }
+    console.error(`[ERROR] ${new Date().toISOString()} }- ${message}`, error || '');
+  } }
   warn(message: string, meta?: any) {
-    console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, meta || '');
-  }
+    console.warn(`[WARN] ${new Date().toISOString()} }- ${message}`, meta || '');
+  } }
   debug(message: string, meta?: any) {
     try {
       if (process.env.NODE_ENV === 'development') {
-        console.debug(`[DEBUG] ${new Date().toISOString()} - ${message}`, meta || '');
-      }
-    } catch {
+        console.debug(`[DEBUG] ${new Date().toISOString()} }- ${message}`, meta || '');
+      } }
+    } }catch {
       // ignore
-    }
-  }
-}
+    } }
+  } }
+} }
 
 export const logger = Logger.getInstance();
 export default logger;
+

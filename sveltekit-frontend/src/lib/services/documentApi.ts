@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Document API Service
  * Handles document processing, upload, and management operations
@@ -10,58 +10,56 @@ export interface DocumentMetadata { filename: string;, fileSize: number;
   documentType?: string;
   tags?: string[];
   isConfidential?: boolean;
-}
+} }
 
-export interface ProcessingResult {, documentId: string;, status: 'processing' | 'completed' | 'failed';
+export interface ProcessingResult { documentId: string;, status: 'processing' | 'completed' | 'failed';
   extractedText?: string;
   embeddings?: number[][];
-  analysis?: {, summary: string;, entities: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
+  analysis?: { summary: string;, entities: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
     sentiment: string;
     classification: string;
   };
   error?: string;
-}
+} }
 
-export interface UploadProgress {, documentId: string;, progress: number;
+export interface UploadProgress { documentId: string;, progress: number;
   stage: string;
   status: 'uploading' | 'processing' | 'completed' | 'error';
-}
+} }
 
-export interface ListDocumentsResult {
- , documents: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
+export interface ListDocumentsResult { documents: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
   total: number;
   page: number;
   limit: number;
-}
+} }
 
-export interface SearchDocumentsResult {
- , results: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
+export interface SearchDocumentsResult { results: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
   total: number;
-}
+} }
 
-export interface ProcessingAnalytics {, totalDocuments: number;, processingStats: { completed: number; processing: number; failed: number };
+export interface ProcessingAnalytics { totalDocuments: number;, processingStats: { completed: number; processing: number; failed: number };
   averageProcessingTime: number;
  , documentTypes: Record<string, number>;
-}
+} }
 
 export class DocumentApiService {
   private baseUrl: string;
 
   constructor() {
     this.baseUrl = '/api';
-  }
+  } }
 
   // Helper to convert: unknown errors to, a: string safely
   private formatError(error: any): string {
     return error instanceof Error ? error.message : String(error ?? 'Unknown error');
-  }
+  } }
 
   /**
    * Upload a document with metadata
    */
   async uploadDocument(
     file: File,
-    metadata: Partial<DocumentMetadata> = {}
+    metadata: Partial<DocumentMetadata> = {} }
   ): Promise<{ success: boolean; documentId?: string; error?: string }> {
     try {
       const formData = new FormData();
@@ -71,7 +69,7 @@ export class DocumentApiService {
       Object.entries(metadata).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
-        }
+        } }
       });
 
       const response = await fetch(`${this.baseUrl}/documents/upload`, {
@@ -80,20 +78,20 @@ export class DocumentApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Upload failed: ${response.status} }${response.statusText}`);
+      } }
 
       // cast to expected return shape
       return (await response.json()) as { success: boolean; documentId?: string; error?: string };
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Document upload failed:', message);
       return {
         success: false,
         error: message
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Process document through evidence pipeline
@@ -105,7 +103,7 @@ export class DocumentApiService {
       enableEmbeddings?: boolean;
       enableAnalysis?: boolean;
       caseId?: string;
-    } = {}
+    } }= {} }
   ): Promise<ProcessingResult> {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}/process`, {
@@ -115,11 +113,11 @@ export class DocumentApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`Processing failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Processing failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as ProcessingResult;
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Document processing failed:', message);
       return {
@@ -127,8 +125,8 @@ export class DocumentApiService {
         status: 'failed',
         error: message
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Get processing status
@@ -138,16 +136,16 @@ export class DocumentApiService {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}/status`);
 
       if (!response.ok) {
-        throw new Error(`Status check failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Status check failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as UploadProgress;
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Status check failed:', message);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get document details
@@ -157,23 +155,23 @@ export class DocumentApiService {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}`);
 
       if (!response.ok) {
-        throw new Error(`Get document failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Get document failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as DocumentMetadata & { id?: string; content?: string };
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Get document failed:', message);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * List documents for a case
    */
   async listDocuments(
     caseId?: string,
-    options: { page?: number; limit?: number; type?: string; status?: string } = {}
+    options: { page?: number; limit?: number; type?: string; status?: string } }= {} }
   ): Promise<ListDocumentsResult> {
     try {
       const params = new URLSearchParams();
@@ -186,11 +184,11 @@ export class DocumentApiService {
       const response = await fetch(`${this.baseUrl}/documents?${params.toString()}`);
 
       if (!response.ok) {
-        throw new Error(`List documents failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`List documents failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as ListDocumentsResult;
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('List documents failed:', message);
       return {
@@ -199,8 +197,8 @@ export class DocumentApiService {
         page: options.page ?? 1,
         limit: options.limit ?? 10
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Delete a document
@@ -211,26 +209,26 @@ export class DocumentApiService {
         method: `DELETE` });'`'`
 
       if (!response.ok) {
-        throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Delete failed: ${response.status} }${response.statusText}`);
+      } }
 
       return { success: true };
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Document deletion failed:', message);
       return {
         success: false,
         error: message
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Search documents
    */
   async searchDocuments(
    , query: string,
-    options: { caseId?: string; type?: string; limit?: number; useSemanticSearch?: boolean } = {}
+    options: { caseId?: string; type?: string; limit?: number; useSemanticSearch?: boolean } }= {} }
   ): Promise<SearchDocumentsResult> {
     try {
       const response = await fetch(`${this.baseUrl}/documents/search`, {
@@ -240,16 +238,16 @@ export class DocumentApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Search failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as SearchDocumentsResult;
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Document search failed:', message);
       return { results: [], total: 0 };
-    }
-  }
+    } }
+  } }
 
   /**
    * Get document processing analytics
@@ -262,36 +260,36 @@ export class DocumentApiService {
       const response = await fetch(`${this.baseUrl}/documents/analytics?${params.toString()}`);
 
       if (!response.ok) {
-        throw new Error(`Analytics failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Analytics failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as ProcessingAnalytics;
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Analytics failed:', message);
       return {
         totalDocuments: 0,
-        processingStats: {, completed: 0, processing: 0, failed: 0 },
+        processingStats: { completed: 0, processing: 0, failed: 0 },
         averageProcessingTime: 0,
-        documentTypes: {}
+        documentTypes: {} }
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Integrate with legal ingest API
    */
   async processLegalDocuments(
    , files: File[],
-    options: {, caseId: string; jurisdiction?: string; enhanceRAG?: boolean }
+    options: { caseId: string; jurisdiction?: string; enhanceRAG?: boolean } }
   ): Promise<
     | { success: boolean;, caseId: string;
         documentsProcessed: number;
         totalProcessingTime: number;
        , documents: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
         error?: string;
-      }
-    | { success: false;, error: string }
+      } }
+    | { success: false; error: string } }
   > {
     try {
       const formData = new FormData();
@@ -306,8 +304,8 @@ export class DocumentApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`Legal processing failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Legal processing failed: ${response.status} }${response.statusText}`);
+      } }
 
       return (await response.json()) as
         | { success: boolean;, caseId: string;
@@ -315,18 +313,18 @@ export class DocumentApiService {
             totalProcessingTime: number;
            , documents: Record<string, unknown>[];
             error?: string;
-          }
-        | { success: false;, error: string };
-    } catch (error: any) {
+          } }
+        | { success: false; error: string };
+    } }catch (error: any) {
       const message = this.formatError(error);
       console.error('Legal document processing failed:', message);
       return {
         success: false,
         error: message
       };
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export singleton instance
 export const documentApiService = new DocumentApiService();

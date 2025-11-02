@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Simple test endpoint to verify relay auth works without: any imports
-export const, POST: RequestHandler = async ({ cookies }) => {
+export const POST: RequestHandler = async ({ cookies }) => {
   try {
     console.log('🧪 Test relay endpoint called');
     // Manual session creation without: any external dependencies
@@ -22,18 +22,19 @@ export const, POST: RequestHandler = async ({ cookies }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  } catch (error: any) {
-    console.error('Test relay error:', error);'
+  } }catch (error: any) {
+    console.error('Test relay error:', error);
     return new Response(
       JSON.stringify({ error: 'Test, failed: ' + (error instanceof Error ? error.message : 'Unknown error')
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
+

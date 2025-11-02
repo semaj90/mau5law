@@ -1,21 +1,21 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import { caseTimeline } from, '$lib/server/db/schemas/cases-schema';
-import db from, '$lib/server/db/unified-client';
-import { eq, and } from, 'drizzle-orm/expressions';
-import { z } from, 'zod';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { caseTimeline } }from '$lib/server/db/schemas/cases-schema';
+import db from '$lib/server/db/unified-client';
+import { eq, and } }from 'drizzle-orm/expressions';
+import { z } }from 'zod';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 
 // add a local type describing the auth-aware locals used by these handlers
 type LocalsWithAuth = {
   // session and user may be present on locals depending on your auth hooks
   session?: Record<string, unknown> | null;
-  user?: { id: string; [key: string]: any } | null;
+  user?: { id: string; [key: string]: any } }| null;
 };
 
 // Schema for updating timeline events
 const UpdateTimelineEventSchema = z.object({
- , title: z.string().min(1).optional(),
+  title: z.string().min(1).optional(),
   description: z.string().optional(),
   eventDate: z.string().datetime().optional(),
   eventType: z
@@ -50,13 +50,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
   if (!authLocals.session || !authLocals.user) {
     return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-  }
-  const { user } = authLocals;
+  } }
+  const { user } }= authLocals;
 
   const eventId = params.eventId;
   if (!eventId) {
     return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
-  }
+  } }
 
   // Get the timeline event
   const [timelineEvent] = await db
@@ -68,13 +68,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
   if (!timelineEvent) {
     return error(404, makeHttpErrorPayload({ message: 'Timeline event not found', code: 'NOT_FOUND' }));
-  }
+  } }
 
   return json({
     success: true,
     data: {
-     , event: timelineEvent
-    }
+  event: timelineEvent
+    } }
   });
 };
 
@@ -89,13 +89,13 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
   try {
     if (!authLocals.session || !authLocals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
-    const { user } = authLocals;
+    } }
+    const { user } }= authLocals;
 
     const eventId = params.eventId;
     if (!eventId) {
       return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
-    }
+    } }
 
     const body = await request.json();
     const validatedData = UpdateTimelineEventSchema.parse(body);
@@ -113,14 +113,14 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
         404,
         makeHttpErrorPayload({ message: 'Timeline event not found or access denied', code: 'NOT_FOUND' })
       );
-    }
+    } }
 
     // Prepare update data
-    const { eventDate, ...otherData } = validatedData;
+    const { eventDate, ...otherData } }= validatedData;
     const updateData = {
       ...otherData,
       updatedAt: new Date(),
-      ...(eventDate ? { eventDate: new Date(eventDate) } : {})
+      ...(eventDate ? { eventDate: new Date(eventDate) } }: {})
     };
 
     // Update the timeline event
@@ -135,17 +135,17 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
       success: true,
       message: 'Timeline event updated successfully',
       data: {
-       , event: updatedEvent
-      }
+  event: updatedEvent
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({ message: 'Invalid update payload', code: 'VALIDATION_ERROR', details: err.errors })
       );
-    }
-    console.error('Update timeline event error:', err);'
+    } }
+    console.error('Update timeline event error:', err);
     return error(
       500,
       makeHttpErrorPayload({
@@ -154,7 +154,7 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
         details: err instanceof Error ? err.message : String(err)
       })
     );
-  }
+  } }
 };
 
 /**
@@ -168,13 +168,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!authLocals.session || !authLocals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
-    const { user } = authLocals;
+    } }
+    const { user } }= authLocals;
 
     const eventId = params.eventId;
     if (!eventId) {
       return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
-    }
+    } }
 
     // Check if the event exists and belongs to the user
     const [existingEvent] = await db
@@ -189,7 +189,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         404,
         makeHttpErrorPayload({ message: 'Timeline event not found or access denied', code: 'NOT_FOUND' })
       );
-    }
+    } }
 
     // Delete the timeline event
     await db
@@ -201,11 +201,11 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       message: 'Timeline event deleted successfully',
       data: {
-       , deletedEventId: eventId
-      }
+  deletedEventId: eventId
+      } }
     });
-  } catch (err: any) {
-    console.error('Delete timeline event error:', err);'
+  } }catch (err: any) {
+    console.error('Delete timeline event error:', err);
     return error(
       500,
       makeHttpErrorPayload({
@@ -214,5 +214,5 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         details: err instanceof Error ? err.message : String(err)
       })
     );
-  }
+  } }
 };

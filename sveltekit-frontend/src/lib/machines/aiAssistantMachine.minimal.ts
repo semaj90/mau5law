@@ -3,7 +3,7 @@
  * Stripped down working version for production startup
  * Full feature version to be restored after Phase, 3 stabilization
  */
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } }from 'xstate';
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean };
@@ -12,28 +12,25 @@ export interface AIAssistantContext {
   isProcessing?: boolean;
   error?: string | null;
   [key: string]: any;
-}
+} }
 export type AIAssistantEvent =
-  | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean }
-  | { type: 'SET_MODEL'; model: string }
-  | { type: 'CHECK_SERVICE_HEALTH' }
-  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string }
-  | { type: 'CLEAR_CONVERSATION' }
+  | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean } }
+  | { type: 'SET_MODEL'; model: string } }
+  | { type: 'CHECK_SERVICE_HEALTH' } }
+  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string } }
+  | { type: 'CLEAR_CONVERSATION' } }
   | { type: 'done.invoke.checkHealth'; output: any };
 // Use generics so XState knows the context and event types
-export const aiAssistantMachine = createMachine({
- , id: 'aiAssistant',
+export const aiAssistantMachine = createMachine({ id: 'aiAssistant',
   initial: 'idle',
-  context: {
-   , response: '',
+  context: { response: '',
     conversation: [],
     model: 'gemma3-legal:latest',
     isProcessing: false,
     error: null
-  } as AIAssistantContext,
-  states: {, idle: {, on: {, SEND_MESSAGE: {, target: 'processing',
-          actions: assign({
-           , isProcessing: true,
+  } }as AIAssistantContext,
+  states: { idle: { on: { SEND_MESSAGE: { target: 'processing',
+          actions: assign({ isProcessing: true,
             error: null
           })
         },
@@ -44,55 +41,48 @@ export const aiAssistantMachine = createMachine({
             // Cast via `unknown` first to avoid converting `undefined` directly to a stricter union
             const e = event as: unknown as AIAssistantEvent | { type?: string };
             if (e && e.type === 'SET_MODEL' && 'model' in e) {
-              return { model: (e as {, model: string }).model };
-            }
+              return { model: (e as { model: string }).model };
+            } }
             return {};
           })
         },
-        CHECK_SERVICE_HEALTH: {
-         , target: 'checkingHealth'
+        CHECK_SERVICE_HEALTH: { target: 'checkingHealth'
         },
-        ANALYZE_WITH_CONTEXT7: {
-         , target: 'processing'
+        ANALYZE_WITH_CONTEXT7: { target: 'processing'
         },
-        CLEAR_CONVERSATION: {, actions: assign({, conversation: [],
+        CLEAR_CONVERSATION: { actions: assign({ conversation: [],
             response: '` })'`
-        }
-      }
+        } }
+      } }
     },
-    processing: {, invoke: {, src: fromPromise(async () => {
+    processing: { invoke: { src: fromPromise(async () => {
           // Simulate processing
           await new Promise(resolve => setTimeout(resolve, 100));
           return { success: true };
         }),
-        onDone: {
-         , target: 'idle',
-          actions: assign({
-           , isProcessing: false,
+        onDone: { target: 'idle',
+          actions: assign({ isProcessing: false,
             response: `Processing complete` })
         },
-        onError: {
-         , target: 'idle',
-          actions: assign({
-           , isProcessing: false,
+        onError: { target: 'idle',
+          actions: assign({ isProcessing: false,
             error: `Processing failed` })
-        }
-      }
+        } }
+      } }
     },
-    checkingHealth: {, invoke: {, src: fromPromise(async () => {
+    checkingHealth: { invoke: { src: fromPromise(async () => {
           return { healthy: true };
         }),
-        onDone: {
-         , target: 'idle',
-          actions: assign({, ollamaClusterHealth: {, primary: true }
+        onDone: { target: 'idle',
+          actions: assign({ ollamaClusterHealth: { primary: true } }
           })
         },
-        onError: {
-         , target: 'idle',
-          actions: assign({, ollamaClusterHealth: {, primary: false }
+        onError: { target: 'idle',
+          actions: assign({ ollamaClusterHealth: { primary: false } }
           })
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 });
+

@@ -14,4 +14,5 @@ declare module, 'lucide-svelte' {
   // allow default import if used elsewhere
   const, _default: any;
   export default _default;
-}
+} }
+

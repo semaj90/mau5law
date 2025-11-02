@@ -1,6 +1,6 @@
 // JSON UI Compiler with Matrix Transforms
 // Builds on UnoCSS + Svelte, 5 for GPU-accelerated layouts
-import { mat4 } from 'gl-matrix';
+import { mat4 } }from 'gl-matrix';
 export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | 'grid' | 'evidence-item' | 'panel' | 'text' | 'image' | 'container';, id: string;
   matrix: number[]; // 4x4 transform matrix
   styles: {
@@ -25,49 +25,49 @@ export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | '
     component?: string;
   };
   content?: string;
-  bounds?: {, x: number;, y: number;
+  bounds?: { x: number;, y: number;
     width: number;
     height: number;
   };
-}
-export interface EnhancedWebGLBuffer {, vertices: Float32Array;, indices: Uint16Array;
+} }
+export interface EnhancedWebGLBuffer { vertices: Float32Array;, indices: Uint16Array;
   colors: Float32Array;
   texCoords: Float32Array;
   matrices: Float32Array;
-  metadata: {, vertexCount: number;, indexCount: number;
+  metadata: { vertexCount: number;, indexCount: number;
     nodeCount: number;
     lodLevel: 'low' | 'mid' | 'high';
     shaderComplexity: 'basic' | 'standard' | 'advanced';
   };
-}
-export interface CSSOutput {, classes: string[];, variables: Record<string, string>;
+} }
+export interface CSSOutput { classes: string[];, variables: Record<string, string>;
   animations: string[];
   unoCSS: string;
-}
-export interface EventMapping {, nodeId: string;, events: {, type: string;, handler: string;
+} }
+export interface EventMapping { nodeId: string;, events: { type: string;, handler: string;
     matrix: number[];
     bounds: { x: number; y: number; width: number; height: number };
-  }[];
-}
-export interface CompiledNode {, element: HTMLElement;, matrix: mat4; // Changed from: any to mat4
+  } }];
+} }
+export interface CompiledNode { element: HTMLElement;, matrix: mat4; // Changed from: any to mat4
   cssClasses: string[];
   webglBuffer?: WebGLBuffer;
   enhancedBuffer?: EnhancedWebGLBuffer;
   lodLevel: 'low' | 'mid' | 'high';
-}
+} }
 export class MatrixUICompiler {
   private, gl: WebGL2RenderingContext | null = null;
   private cssCache = new Map<string, string>();
   private bufferCache = new Map<string, WebGLBuffer>();
-  private lodThresholds = { low: {, maxVertices: 1000, maxNodes: 50 },
-    mid: {, maxVertices: 5000, maxNodes: 200 },
-    high: {, maxVertices: 20000, maxNodes: 1000 }
+  private lodThresholds = { low: { maxVertices: 1000, maxNodes: 50 },
+    mid: { maxVertices: 5000, maxNodes: 200 },
+    high: { maxVertices: 20000, maxNodes: 1000 } }
   };
   constructor(canvas?: HTMLCanvasElement) {
     if (canvas) {
       this.gl = canvas.getContext('webgl2');
-    }
-  }
+    } }
+  } }
   /**
    * Enhanced compilation with full Phase, 8 features: JSON → WebGL + CSS + Events
    */
@@ -90,7 +90,7 @@ export class MatrixUICompiler {
     for (const node of optimizedNodes) {
       const compiled = await this.compileNode(node);
       compiledNodes.push(compiled);
-    }
+    } }
     // 4. Generate enhanced WebGL buffers
     const webglBuffer = this.generateEnhancedWebGLBuffers(optimizedNodes, lodLevel);
     // 5. Generate UnoCSS classes and CSS
@@ -104,27 +104,27 @@ export class MatrixUICompiler {
       events: eventMappings,
       optimizations
     };
-  }
+  } }
   /**
    * Legacy compile method for backward compatibility
    */
   async compile(uiDefinition: MatrixUINode[]): Promise<CompiledNode[]> {
     const result = await this.compileEnhanced(uiDefinition);
     return (result as { compiled: CompiledNode[] }).compiled; // Fixed: 'any' type cast
-  }
+  } }
   // Missing method implementations
   private optimizeNodeTree(nodes: MatrixUINode[], optimizations: string[]): MatrixUINode[] {
     // Simple optimization - remove disabled nodes and merge similar ones
     const optimized = nodes.filter((node: MatrixUINode) => !node.styles?.disabled); // Fixed: 'any' type
-    optimizations.push(`Removed ${nodes.length - optimized.length} disabled nodes`);
+    optimizations.push(`Removed ${nodes.length - optimized.length} }disabled nodes`);
     return optimized;
-  }
+  } }
   private calculateLODLevel(nodes: MatrixUINode[]): 'low' | 'mid' | 'high' {
     const nodeCount = nodes.length;
     if (nodeCount < this.lodThresholds.low.maxNodes) return, 'low';
     if (nodeCount < this.lodThresholds.mid.maxNodes) return, 'mid';
     return, 'high';
-  }
+  } }
   private generateEnhancedWebGLBuffers(nodes: MatrixUINode[], lodLevel: 'low' | 'mid' | 'high'): EnhancedWebGLBuffer {
     const vertexCount = nodes.length * 4; // 4 vertices per node
     const vertices = new Float32Array(vertexCount * 3); // x, y, z
@@ -163,9 +163,9 @@ export class MatrixUICompiler {
         indexCount: indices.length,
         nodeCount: nodes.length,
         lodLevel,
-        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard` }'`
+        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard` } }`
     };
-  }
+  } }
   /**
    * Generate UnoCSS classes for a node
    */
@@ -186,9 +186,9 @@ export class MatrixUICompiler {
         break;
       default:
         classes.push('block');
-    }
+    } }
     return classes;
-  }
+  } }
   private async generateEnhancedCSS(
     nodes: MatrixUINode[],
     _xstateContext?: any // Renamed to _xstateContext
@@ -203,14 +203,14 @@ export class MatrixUICompiler {
       // Add AI-specific classes
       if (node.metadata?.aiGenerated) {
         classes.push('ai-generated', 'border-purple-500/50');
-      }
+      } }
       // Add confidence-based styling
       if (node.metadata?.confidence !== undefined) {
         const confidence = node.metadata.confidence;
         if (confidence > 0.8) classes.push('border-green-500');
         else if (confidence > 0.6) classes.push('border-yellow-500');
         else classes.push('border-red-500');
-      }
+      } }
     });
     const unoCSS = classes.join(' ');
     return {
@@ -219,7 +219,7 @@ export class MatrixUICompiler {
       animations,
       unoCSS
     };
-  }
+  } }
   private generateEventMappings(nodes: MatrixUINode[]): EventMapping[] {
     return nodes.map((node: MatrixUINode) => ({
       nodeId: node.id,
@@ -228,10 +228,10 @@ export class MatrixUICompiler {
           type: eventType,
           handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
           matrix: node.matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-          bounds: node.bounds || {, x: 0, y: 0, width: 100, height: 100 }
+          bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 } }
         })) || []
     }));
-  }
+  } }
   /**
    * Compile individual UI node
    */
@@ -270,7 +270,7 @@ export class MatrixUICompiler {
       webglBuffer,
       lodLevel
     };
-  }
+  } }
   /**
    * Create DOM element based on node type
    */
@@ -296,7 +296,7 @@ export class MatrixUICompiler {
         break;
       default:
         element = document.createElement('div');
-    }
+    } }
     element.id = node.id;
     // Add event listeners
     if (node.events) {
@@ -305,9 +305,9 @@ export class MatrixUICompiler {
           this.handleEvent(e, node);
         });
       });
-    }
+    } }
     return element;
-  }
+  } }
   /**
    * Generate CSS classes using UnoCSS patterns
    */
@@ -315,7 +315,7 @@ export class MatrixUICompiler {
     const cacheKey = `${node.type}-${JSON.stringify(node.styles)}`;
     if (this.cssCache.has(cacheKey)) {
       return this.cssCache.get(cacheKey)!.split(' ');
-    }
+    } }
     const classes: string[] = []; // Changed to const
     // Base classes from UnoCSS shortcuts
     switch (node.type) {
@@ -326,38 +326,38 @@ export class MatrixUICompiler {
         classes.push('yorha-card');
         if (node.metadata?.priority) {
           classes.push(`yorha-priority-${node.metadata.priority}`);
-        }
+        } }
         break;
       case, 'evidence-item':
         classes.push('yorha-evidence-item');
         if (node.metadata?.evidenceType) {
           classes.push(`evidence-type-${node.metadata.evidenceType}`);
-        }
+        } }
         break;
-    }
+    } }
     // Add style modifiers
     if (node.styles.base) {
       classes.push(...node.styles.base.split(' '));
-    }
+    } }
     // AI confidence styling
     if (node.metadata?.confidence !== undefined) {
       if (node.metadata.confidence > 80) {
         classes.push('vector-confidence-high');
-      } else if (node.metadata.confidence > 60) {
+      } }else if (node.metadata.confidence > 60) {
         classes.push('vector-confidence-medium');
-      } else {
+      } }else {
         classes.push('vector-confidence-low');
-      }
-    }
+      } }
+    } }
     // Matrix transform classes
     const transformClass = this.generateTransformCSS(node.matrix);
     if (transformClass) {
       classes.push(transformClass);
-    }
+    } }
     const classString = classes.join(' ');
     this.cssCache.set(cacheKey, classString);
     return classes;
-  }
+  } }
   /**
    * Generate CSS transform from matrix
    */
@@ -379,11 +379,11 @@ export class MatrixUICompiler {
     if (!document.querySelector(`style[data-matrix="${className}"]`)) {
       const style = document.createElement('style');
       style.setAttribute('data-matrix', className);
-      style.textContent = `.${className} { transform: ${transformValue} }`;
+      style.textContent = `.${className} }{ transform: ${transformValue} }}`;
       document.head.appendChild(style);
-    }
+    } }
     return className;
-  }
+  } }
   /**
    * Create WebGL buffer for GPU acceleration
    */
@@ -392,7 +392,7 @@ export class MatrixUICompiler {
     const cacheKey = node.id;
     if (this.bufferCache.has(cacheKey)) {
       return this.bufferCache.get(cacheKey);
-    }
+    } }
     // Create vertex data for UI quad
     const vertices = new Float32Array([
       -0.5,
@@ -424,16 +424,16 @@ export class MatrixUICompiler {
       vertices[i] = transformed[0];
       vertices[i + 1] = transformed[1];
       vertices[i + 2] = transformed[2];
-    }
+    } }
     // Create and upload buffer
     const buffer = this.gl.createBuffer();
     if (buffer) {
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
       this.gl.bufferData(this.gl.ARRAY_BUFFER, vertices, this.gl.STATIC_DRAW);
       this.bufferCache.set(cacheKey, buffer);
-    }
+    } }
     return buffer;
-  }
+  } }
   /**
    * Calculate Level of Detail based on viewport and AI context
    */
@@ -441,32 +441,32 @@ export class MatrixUICompiler {
     // High LOD for AI-flagged important elements
     if (node.metadata?.aiGenerated && node.metadata?.confidence && node.metadata.confidence > 80) {
       return, 'high';
-    }
+    } }
     // High LOD for critical priority elements
     if (node.metadata?.priority === 'critical') {
       return, 'high';
-    }
+    } }
     // Medium LOD for evidence items
     if (node.type === 'evidence-item') {
       return, 'mid';
-    }
+    } }
     // Default to low LOD
     return, 'low';
-  }
+  } }
   /**
    * Handle UI events with matrix context
    */
   private handleEvent(_event: Event, node: MatrixUINode): void {
     // Emit custom event with matrix context
-    const matrixEvent = new CustomEvent('matrix-ui-event', { detail: {, originalEvent: _event,
+    const matrixEvent = new CustomEvent('matrix-ui-event', { detail: { originalEvent: _event,
         nodeId: node.id,
         nodeType: node.type,
         matrix: node.matrix,
         metadata: node.metadata
-      }
+      } }
     });
     _event.target?.dispatchEvent(matrixEvent);
-  }
+  } }
   /**
    * Update node matrix and recompile
    */
@@ -474,14 +474,14 @@ export class MatrixUICompiler {
     // Update buffer cache
     if (this.bufferCache.has(nodeId)) {
       this.bufferCache.delete(nodeId);
-    }
+    } }
     // Find and update DOM element
     const element = document.getElementById(nodeId);
     if (element) {
       const transformClass = this.generateTransformCSS(newMatrix);
       element.className = element.className.replace(/matrix-transform-\w+/, transformClass);
-    }
-  }
+    } }
+  } }
   /**
    * Cleanup WebGL resources
    */
@@ -490,17 +490,18 @@ export class MatrixUICompiler {
       this.bufferCache.forEach(buffer => {
         this.gl?.deleteBuffer(buffer);
       });
-    }
+    } }
     this.bufferCache.clear();
     this.cssCache.clear();
-  }
-}
+  } }
+} }
 // Integration with Svelte, 5 components
 export function createMatrixComponent(_node: MatrixUINode) {
   return {
     destroy() {
       // Cleanup when component unmounts
-    }
+    } }
   };
-}
+} }
 export default MatrixUICompiler;
+

@@ -1,11 +1,11 @@
-import { writable } from 'svelte/store';
+import { writable } }from 'svelte/store';
 
 // Define the ShortcutItem interface for consistency
 export interface ShortcutItem { key: string;, description: string;
  , action: () => void;
   aiScore?: number;
   aiSummary?: string;
-}
+} }
 
 // Initialize with an empty array of ShortcutItem
 export const keyboardShortcuts = writable<ShortcutItem[]>([]);
@@ -19,4 +19,5 @@ export async function loadShortcutsFromAI(): Promise<void> {
   // const response = await fetch('/api/ai/shortcuts');
   // const aiShortcuts = await response.json();
   // keyboardShortcuts.update(current => [...current, ...aiShortcuts]);
-}
+} }
+

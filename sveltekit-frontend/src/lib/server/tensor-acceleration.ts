@@ -6,31 +6,31 @@
 interface GPUTensorConfig { tileSize: number;, workgroupSize: [number, number, number];
   precision: 'fp16' | 'fp32';
   memoryOptimized: boolean;
-}
+} }
 export interface TensorAccelerationOptions {
   gpuTile?: boolean;
   tileSize?: number;
   operation?: 'similarity' | 'transform' | 'analyze' | 'compress';
   precision?: 'fp16' | 'fp32';
   batchSize?: number;
-}
+} }
 
 // Add typed result interfaces to replace Promise<any>
-interface GPUMeta {, gpuProcessed: boolean;, tileSize: number;
+interface GPUMeta { gpuProcessed: boolean;, tileSize: number;
   computeTime: number;
   memoryUsage: number;
   kernelType: string;
   precision: string;
-}
+} }
 
-export interface SimilarityResult {, similarity: number;, gpuMeta: GPUMeta;
-}
+export interface SimilarityResult { similarity: number;, gpuMeta: GPUMeta;
+} }
 
-export interface TransformResult {, transformed: Float32Array;, gpuMeta: GPUMeta;
-}
+export interface TransformResult { transformed: Float32Array;, gpuMeta: GPUMeta;
+} }
 
-export interface ImageAnalysisResult {, features: Float32Array;, gpuMeta: GPUMeta;
-}
+export interface ImageAnalysisResult { features: Float32Array;, gpuMeta: GPUMeta;
+} }
 
 export class TensorAccelerator {
   private device: GPUDevice | null = null;
@@ -44,7 +44,7 @@ export class TensorAccelerator {
       precision: 'fp16',
       memoryOptimized: true
     };
-  }
+  } }
   /**
    * Lazy initialization of WebGPU device
    */
@@ -54,32 +54,31 @@ export class TensorAccelerator {
       if (!navigator.gpu) {
         console.warn('WebGPU not available for tensor acceleration');
         return false;
-      }
+      } }
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
       if (!adapter) {
         console.warn('No WebGPU adapter found');
         return false;
-      }
+      } }
       this.device = await adapter.requestDevice({
         requiredFeatures: ['shader-f16'] as GPUFeatureName[],
-        requiredLimits: {
-         , maxComputeWorkgroupSizeX: 256,
+        requiredLimits: { maxComputeWorkgroupSizeX: 256,
           maxComputeWorkgroupSizeY: 256,
           maxComputeInvocationsPerWorkgroup: 256,
           maxBufferSize: 2 * 1024 * 1024 * 1024, // 2GB
-        }
+        } }
       });
       await this.createComputePipelines();
       this.initialized = true;
       console.log('🚀 WebGPU Tensor Accelerator initialized');
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize WebGPU Tensor Accelerator:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Create specialized compute pipelines for different operations
    */
@@ -96,17 +95,17 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let tile_size = params.y;
-        if (index >= length) { return }
+        if (index >= length) { return } }
         // Tiled dot product computation
         var sum = 0.0;
         let tile_start = (index / tile_size) * tile_size;
         let tile_end = min(tile_start + tile_size, length);
         for (var i = tile_start; i < tile_end; i++) {
           sum += vectorA[i] * vectorB[i];
-        }
+        } }
         // Atomic add for partial results
         result[index / tile_size] += sum;
-      }
+      } }
     `;`
     // Transform pipeline for embedding processing
     const transformShader = `
@@ -118,23 +117,23 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let transform_type = params.y;
-        if (index >= length) { return }
+        if (index >= length) { return } }
         let value = input[index];
         var result_value = value;
         // L2 normalization
         if (transform_type == 0u) {
           result_value = value * f32(params.z) / 1000.0; // Scale factor
-        }
+        } }
         // Quantization
         else if (transform_type == 1u) {
           result_value = round(value * f32(params.z)) / f32(params.z);
-        }
+        } }
         // Activation function (ReLU)
         else if (transform_type == 2u) {
           result_value = max(0.0, value);
-        }
+        } }
         output[index] = result_value;
-      }
+      } }
     `;`
     // Image analysis pipeline for visual document processing
     const imageAnalysisShader = `
@@ -148,7 +147,7 @@ export class TensorAccelerator {
         let width = params.x;
         let height = params.y;
         let tile_size = params.w;
-        if (x >= width || y >= height) { return }
+        if (x >= width || y >= height) { return } }
         // Tiled feature extraction
         let tile_x = x / tile_size;
         let tile_y = y / tile_size;
@@ -166,7 +165,7 @@ export class TensorAccelerator {
         atomicAdd(&features[tile_index * 4u + 1u], g); // Avg G
         atomicAdd(&features[tile_index * 4u + 2u], b); // Avg B
         atomicAdd(&features[tile_index * 4u + 3u], luminance); // Avg luminance
-      }
+      } }
     `;`
     // Create compute pipelines
     const similarityModule = this.device.createShaderModule({ code: similarityShader });
@@ -176,39 +175,39 @@ export class TensorAccelerator {
       'similarity',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: similarityModule, entryPoint: 'main' }
+        compute: { module: similarityModule, entryPoint: 'main' } }
       })
     );
     this.computePipelines.set(
       'transform',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: transformModule, entryPoint: 'main' }
+        compute: { module: transformModule, entryPoint: 'main' } }
       })
     );
     this.computePipelines.set(
       'image',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: imageModule, entryPoint: 'main' }
+        compute: { module: imageModule, entryPoint: 'main' } }
       })
     );
-  }
+  } }
   /**
    * GPU-accelerated similarity computation between embeddings
    */
   async computeSimilarity(
     vectorA: Float32Array,
     vectorB: Float32Array,
-    options: TensorAccelerationOptions = {}
+    options: TensorAccelerationOptions = {} }
   ): Promise<SimilarityResult> {
     const startTime = performance.now();
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
-    }
+    } }
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
-    }
+    } }
     const tileSize = options.tileSize || this.config.tileSize;
     const numTiles = Math.ceil(vectorA.length / tileSize);
     try {
@@ -242,10 +241,10 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          {, binding: 0, resource: {, buffer: bufferA } },
-          { binding: 1, resource: {, buffer: bufferB } },
-          { binding: 2, resource: {, buffer: resultBuffer } },
-          { binding: 3, resource: {, buffer: uniformBuffer } }
+          { binding: 0, resource: { buffer: bufferA } }},
+          { binding: 1, resource: { buffer: bufferB } }},
+          { binding: 2, resource: { buffer: resultBuffer } }},
+          { binding: 3, resource: { buffer: uniformBuffer } }} }
         ]
       });
       // Execute compute shader
@@ -268,7 +267,7 @@ export class TensorAccelerator {
       let similarity = 0;
       for (let i = 0; i < results.length; i++) {
         similarity += results[i];
-      }
+      } }
       // Normalize by vector magnitudes
       const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0));
       const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0));
@@ -279,33 +278,32 @@ export class TensorAccelerator {
       const computeTime = performance.now() - startTime;
       return {
         similarity,
-        gpuMeta: {
-         , gpuProcessed: true,
+        gpuMeta: { gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
           kernelType: 'tiled-similarity',
-          precision: options.precision || 'fp32' }'` };'`
-    } catch (error) {
+          precision: options.precision || 'fp32' } }` };'`
+    } }catch (error) {
       console.error('GPU similarity computation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * GPU-accelerated embedding transformation
    */
   async transformEmbedding(
     embedding: Float32Array,
     operation: 'normalize' | 'quantize' | 'activate',
-    options: TensorAccelerationOptions = {}
+    options: TensorAccelerationOptions = {} }
   ): Promise<TransformResult> {
     const startTime = performance.now();
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
-    }
+    } }
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
-    }
+    } }
     try {
       // Create buffers
       const inputBuffer = this.device.createBuffer({
@@ -332,9 +330,9 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          {, binding: 0, resource: {, buffer: inputBuffer } },
-          { binding: 1, resource: {, buffer: outputBuffer } },
-          { binding: 2, resource: {, buffer: uniformBuffer } }
+          { binding: 0, resource: { buffer: inputBuffer } }},
+          { binding: 1, resource: { buffer: outputBuffer } }},
+          { binding: 2, resource: { buffer: uniformBuffer } }} }
         ]
       });
       const commandEncoder = this.device.createCommandEncoder();
@@ -357,20 +355,19 @@ export class TensorAccelerator {
       const computeTime = performance.now() - startTime;
       return {
         transformed,
-        gpuMeta: {
-         , gpuProcessed: true,
+        gpuMeta: { gpuProcessed: true,
           tileSize: options.tileSize || this.config.tileSize,
           computeTime,
           memoryUsage: embedding.byteLength * 2,
           kernelType: `transform-${operation}`,
           precision: options.precision || 'fp32'
-        }
+        } }
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('GPU embedding transformation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * GPU-accelerated image analysis for visual documents
    */
@@ -378,15 +375,15 @@ export class TensorAccelerator {
     imageData: Uint32Array,
     width: number,
     height: number,
-    options: TensorAccelerationOptions = {}
+    options: TensorAccelerationOptions = {} }
   ): Promise<ImageAnalysisResult> {
     const startTime = performance.now();
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
-    }
+    } }
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
-    }
+    } }
     const tileSize = options.tileSize || 16;
     const tilesX = Math.ceil(width / tileSize);
     const tilesY = Math.ceil(height / tileSize);
@@ -414,9 +411,9 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          {, binding: 0, resource: {, buffer: imageBuffer } },
-          { binding: 1, resource: {, buffer: featureBuffer } },
-          { binding: 2, resource: {, buffer: uniformBuffer } }
+          { binding: 0, resource: { buffer: imageBuffer } }},
+          { binding: 1, resource: { buffer: featureBuffer } }},
+          { binding: 2, resource: { buffer: uniformBuffer } }} }
         ]
       });
       const commandEncoder = this.device.createCommandEncoder();
@@ -438,46 +435,44 @@ export class TensorAccelerator {
       const pixelsPerTile = tileSize * tileSize;
       for (let i = 0; i < features.length; i++) {
         features[i] /= pixelsPerTile;
-      }
+      } }
       stagingBuffer.unmap();
       [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach(b => b.destroy());
       const computeTime = performance.now() - startTime;
       return {
         features,
-        gpuMeta: {
-         , gpuProcessed: true,
+        gpuMeta: { gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
           kernelType: 'tiled-image-analysis',
-          precision: options.precision || 'fp32' }'` };'`
-    } catch (error) {
+          precision: options.precision || 'fp32' } }` };'`
+    } }catch (error) {
       console.error('GPU image analysis failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Check if WebGPU is available
    */
   static isAvailable(): boolean {
     return typeof navigator !== 'undefined' && !!navigator.gpu;
-  }
+  } }
   /**
    * Get device capabilities
    */
   async getCapabilities() {
     if (!this.initialized && !(await this.initialize())) {
       return: null;
-    }
+    } }
     return this.device
-      ? {
-         , maxBufferSize: this.device.limits.maxBufferSize,
+      ? { maxBufferSize: this.device.limits.maxBufferSize,
           maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
           maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup,
           features: Array.from(this.device.features)
-        }
+        } }
       : null;
-  }
+  } }
   /**
    * Cleanup resources
    */
@@ -485,22 +480,22 @@ export class TensorAccelerator {
     if (this.device) {
       this.device.destroy();
       this.device = null;
-    }
+    } }
     this.computePipelines.clear();
     this.initialized = false;
-  }
-}
+  } }
+} }
 // Singleton instance
 export const tensorAccelerator = new TensorAccelerator();
 // Convenience functions with opt-in GPU tiling
 export async function acceleratedSimilarity(
   vectorA: Float32Array,
   vectorB: Float32Array,
-  options: TensorAccelerationOptions = {}
+  options: TensorAccelerationOptions = {} }
 ): Promise<SimilarityResult> {
   if (options.gpuTile && TensorAccelerator.isAvailable()) {
     return await tensorAccelerator.computeSimilarity(vectorA, vectorB, options);
-  }
+  } }
   // CPU fallback
   let dotProduct = 0;
   let normA = 0;
@@ -509,52 +504,50 @@ export async function acceleratedSimilarity(
     dotProduct += vectorA[i] * vectorB[i];
     normA += vectorA[i] * vectorA[i];
     normB += vectorB[i] * vectorB[i];
-  }
+  } }
   const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   return {
     similarity,
-    gpuMeta: {
-     , gpuProcessed: false,
+    gpuMeta: { gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,
       kernelType: 'cpu-similarity',
-      precision: `fp64` }
+      precision: `fp64` } }
   };
-}
+} }
 export async function acceleratedTransform(
  , embedding: Float32Array,
   operation: 'normalize' | 'quantize' | 'activate',
-  options: TensorAccelerationOptions = {}
+  options: TensorAccelerationOptions = {} }
 ): Promise<TransformResult> {
   if (options.gpuTile && TensorAccelerator.isAvailable()) {
     return await tensorAccelerator.transformEmbedding(embedding, operation, options);
-  }
+  } }
   // CPU fallback
   const transformed = new Float32Array(embedding.length);
   if (operation === 'normalize') {
     const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     for (let i = 0; i < embedding.length; i++) {
       transformed[i] = embedding[i] / norm;
-    }
-  } else if (operation === 'quantize') {
+    } }
+  } }else if (operation === 'quantize') {
     const scale = 127;
     for (let i = 0; i < embedding.length; i++) {
       transformed[i] = Math.round(embedding[i] * scale) / scale;
-    }
-  } else if (operation === 'activate') {
+    } }
+  } }else if (operation === 'activate') {
     for (let i = 0; i < embedding.length; i++) {
       transformed[i] = Math.max(0, embedding[i]);
-    }
-  }
+    } }
+  } }
   return {
     transformed,
-    gpuMeta: {
-     , gpuProcessed: false,
+    gpuMeta: { gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,
       kernelType: `cpu-${operation}`,
-      precision: `fp64` }
+      precision: `fp64` } }
   };
 }

@@ -1,26 +1,26 @@
-import { db } from '$lib/server/db/index.js';
-import { chatRecommendations, cases, evidence } from '$lib/server/db/schema-unified.js';
-import { eq } from 'drizzle-orm';
+import { db } }from '$lib/server/db/index.js';
+import { chatRecommendations, cases, evidence } }from '$lib/server/db/schema-unified.js';
+import { eq } }from 'drizzle-orm';
 import {
   searchSimilarMessages,
   searchSimilarEvidence,
   searchAcrossAllVectors,
   type VectorSearchResult
-} from '$lib/server/db/pgvector-utils.js';
+} }from '$lib/server/db/pgvector-utils.js';
 
 export interface GraphNode { id: string;, type: 'case' | 'evidence' | 'precedent' | 'person';
  , properties: Record<string, string>;
-}
+} }
 
 export interface GraphRelationship { fromNode: string;, toNode: string;
   relationshipType: string;
   weight: number;
-}
+} }
 
-export interface GraphContext {, relatedNodes: GraphNode[];, relationships: GraphRelationship[];
-}
+export interface GraphContext { relatedNodes: GraphNode[];, relationships: GraphRelationship[];
+} }
 
-export interface ContextualSuggestion {, content: string;, type: string;
+export interface ContextualSuggestion { content: string;, type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -32,8 +32,8 @@ export interface ContextualSuggestion {, content: string;, type: string;
    , category: string;
     evidenceType?: string;
     evidenceTypeDetails?: Record<string, unknown>;
-  } & Record<string, unknown>;
-}
+  } }& Record<string, unknown>;
+} }
 
 type VectorSearchContext = { documentId: string;, content: string;
   similarityScore: number;
@@ -45,7 +45,7 @@ export class VectorSuggestionsService {
   private readonly similarityThreshold = 0.7;
   private readonly maxResults = 10;
 
-  constructor() {}
+  constructor() {} }
 
   /**
    * Generate contextual suggestions using vector similarity search
@@ -74,23 +74,23 @@ export class VectorSuggestionsService {
       // From graph context
       if (graphContext) {
         suggestions.push(...(await this.extractSuggestionsFromGraphContext(graphContext, content)));
-      }
+      } }
 
       // Similar case suggestions
       if (caseId) {
         suggestions.push(...(await this.getSimilarCaseSuggestions(contentEmbedding, caseId)));
-      }
+      } }
 
       // Evidence based suggestions
       suggestions.push(...(await this.getEvidenceBasedSuggestions(contentEmbedding, content)));
 
       // Deduplicate and rank
       return this.deduplicateAndRankSuggestions(suggestions);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Vector contextual suggestions failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get vector context from similar chat messages and recommendations using pgvector
@@ -116,7 +116,7 @@ export class VectorSuggestionsService {
             })
             .from(chatRecommendations)
             .where(eq(chatRecommendations.messageId, result.id))
-            .limit(3)) as Array<{ content: string; recommendationType: string;, confidence: number }>;
+            .limit(3)) as Array<{ content: string; recommendationType: string; confidence: number }>;
 
           const baseMetadata =
             typeof result.metadata === 'object' && result.metadata !== null
@@ -130,14 +130,13 @@ export class VectorSuggestionsService {
             documentType: String(result.documentType ?? 'chat_message'),
             metadata: {
               ...baseMetadata,
-              recommendations: recs.map(r => ({
-               , content: r.content,
+              recommendations: recs.map(r => ({ content: r.content,
                 type: r.recommendationType,
                 confidence: r.confidence
               }))
-            }
+            } }
           });
-        } catch (err) {
+        } }catch (err) {
           console.warn('Failed to fetch recommendations for message:', (result as: any)?.id, err);
           const fallbackMetadata =
             typeof result.metadata === 'object' && result.metadata !== null
@@ -150,15 +149,15 @@ export class VectorSuggestionsService {
             documentType: String(result.documentType ?? 'chat_message'),
             metadata: fallbackMetadata
           });
-        }
-      }
+        } }
+      } }
 
       return vectorContext.sort((a, b) => b.similarityScore - a.similarityScore);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to get vector context:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Get graph context for a specific case
@@ -179,15 +178,13 @@ export class VectorSuggestionsService {
       }>;
 
       const nodes: GraphNode[] = [
-        {
-         , id: caseData.id,
+        { id: caseData.id,
           type: 'case',
-          properties: {
-           , title: caseData.title || '',
+          properties: { title: caseData.title || '',
             description: caseData.description || '',
             status: caseData.status || '',
             caseNumber: caseData.caseNumber || ''
-          }
+          } }
         },
       ];
 
@@ -195,15 +192,13 @@ export class VectorSuggestionsService {
 
       relatedEvidence.forEach(ev => {
         const evMetadata = ev.metadata ?? {};
-        nodes.push({
-         , id: ev.id,
+        nodes.push({ id: ev.id,
           type: 'evidence',
-          properties: {
-           , description: ev.description ?? '',
+          properties: { description: ev.description ?? '',
             evidenceType: String(ev.type ?? (evMetadata as Record<string, unknown>).evidenceType ?? ''),
             source: String(ev.source ?? (evMetadata as Record<string, unknown>).source ?? ''),
             significance: String(ev.significance ?? (evMetadata as Record<string, unknown>).significance ?? '')
-          }
+          } }
         });
         relationships.push({
           fromNode: caseData.id,
@@ -214,11 +209,11 @@ export class VectorSuggestionsService {
       });
 
       return { relatedNodes: nodes, relationships };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to get graph context:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Extract suggestions from vector search results
@@ -238,13 +233,12 @@ export class VectorSuggestionsService {
           type: rec.type || 'vector_based',
           confidence: Math.min(1, (Number(rec.confidence ?? 0.7) || 0.7) * ctx.similarityScore),
           reasoning: `Based on similar content with ${(ctx.similarityScore * 100).toFixed(1)}% similarity`,
-          metadata: {
-           , source: 'vector_search',
+          metadata: { source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'similarity_based` }'`
+            category: 'similarity_based` } }`
         });
-      }
+      } }
 
       // pattern suggestion
       if (this.hasCommonLegalPatterns(ctx.content, currentContent)) {
@@ -253,17 +247,16 @@ export class VectorSuggestionsService {
           type: 'pattern_analysis',
           confidence: ctx.similarityScore * 0.8,
           reasoning: 'Similar documents used effective legal analysis patterns',
-          metadata: {
-           , source: 'vector_search',
+          metadata: { source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'pattern_matching` }'`
+            category: 'pattern_matching` } }`
         });
-      }
-    }
+      } }
+    } }
 
     return suggestions;
-  }
+  } }
 
   /**
    * Extract suggestions from graph context
@@ -279,14 +272,13 @@ export class VectorSuggestionsService {
 
     if (caseNode && evidenceNodes.length > 0) {
       suggestions.push({
-        content: `Consider referencing the ${evidenceNodes.length} pieces of evidence associated with this case to strengthen your analysis.`,
+        content: `Consider referencing the ${evidenceNodes.length} }pieces of evidence associated with this case to strengthen your analysis.`,
         type: 'evidence_integration',
         confidence: 0.8,
         reasoning: 'Multiple evidence items available in case context',
-        metadata: {
-         , source: 'graph_context',
+        metadata: { source: 'graph_context',
           contextNodes: evidenceNodes.map(n => n.id),
-          category: 'case_integration` }'`
+          category: 'case_integration` } }`
       });
 
       const evidenceTypes = new Set(evidenceNodes.map(n => n.properties.evidenceType).filter(Boolean));
@@ -296,17 +288,16 @@ export class VectorSuggestionsService {
           type: 'evidence_correlation',
           confidence: 0.75,
           reasoning: 'Multiple evidence types available for cross-validation',
-          metadata: {
-           , source: 'graph_context',
+          metadata: { source: 'graph_context',
             contextNodes: evidenceNodes.map(n => n.id),
             keywords: Array.from(evidenceTypes),
-            category: 'evidence_analysis` }'`
+            category: 'evidence_analysis` } }`
         });
-      }
-    }
+      } }
+    } }
 
     return suggestions;
-  }
+  } }
 
   /**
    * Get suggestions based on similar cases using vector search
@@ -349,29 +340,28 @@ export class VectorSuggestionsService {
             const sim = typeof res.similarity === 'number' ? res.similarity : Number(res.similarity) || 0;
 
             suggestions.push({
-              content: `Review similar case, "${case_data.title}" which has ${evidenceType} evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
+              content: `Review similar case, "${case_data.title}" which has ${evidenceType} }evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
               type: 'case_precedent',
               confidence: Math.min(1, sim * 0.8),
               reasoning: 'Similar evidence found in related case with notable vector similarity',
-              metadata: {
-               , source: 'similar_cases',
+              metadata: { source: 'similar_cases',
                 sourceDocumentId: caseId,
                 similarityScore: sim,
                 keywords: [case_data.status || '', case_data.caseType || '', evidenceType].filter(Boolean),
                 category: 'precedent_analysis',
                 evidenceType
-              }
+              } }
             });
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       return suggestions.slice(0, 3);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to get similar case suggestions:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Get evidence-based contextual suggestions using vector search
@@ -395,64 +385,61 @@ export class VectorSuggestionsService {
 
         if (sim > 0.6) {
           suggestions.push({
-            content: `Based on similar ${evidenceType} cases, ensure proper authentication and chain of custody documentation for admissibility.`,
+            content: `Based on similar ${evidenceType} }cases, ensure proper authentication and chain of custody documentation for admissibility.`,
             type: 'evidence_authentication',
             confidence: Math.min(1, sim * 0.8),
-            reasoning: `High similarity (${(sim * 100).toFixed(1)}%) with ${evidenceType} evidence requiring authentication`,
-            metadata: {
-             , source: 'evidence_analysis',
+            reasoning: `High similarity (${(sim * 100).toFixed(1)}%) with ${evidenceType} }evidence requiring authentication`,
+            metadata: { source: 'evidence_analysis',
               sourceDocumentId: String(res.id),
               similarityScore: sim,
               keywords: [evidenceType, 'authentication', 'chain of custody'],
               category: 'procedural_compliance',
               evidenceType
-            }
+            } }
           });
-        }
+        } }
 
         if (!evidenceTypesSeen.has(evidenceType) && sim > 0.4) {
           evidenceTypesSeen.add(evidenceType);
           suggestions.push({
-            content: `For ${evidenceType} evidence similar to your case, review collection procedures and ensure compliance with handling protocols.`,
+            content: `For ${evidenceType} }evidence similar to your case, review collection procedures and ensure compliance with handling protocols.`,
             type: 'evidence_procedure',
             confidence: Math.min(1, sim * 0.7),
-            reasoning: `Similar ${evidenceType} evidence found requiring specific handling procedures`,
-            metadata: {
-             , source: 'evidence_analysis',
+            reasoning: `Similar ${evidenceType} }evidence found requiring specific handling procedures`,
+            metadata: { source: 'evidence_analysis',
               sourceDocumentId: String(res.id),
               similarityScore: sim,
               keywords: [evidenceType, 'procedures', 'handling'],
               category: 'evidence_handling',
               evidenceType
-            }
+            } }
           });
-        }
-      }
+        } }
+      } }
 
       const commonEvidenceTypes = ['digital', 'physical', 'documentary', 'testimonial', 'forensic'];
       for (const type of commonEvidenceTypes) {
         if (contentLower.includes(type) && !evidenceTypesSeen.has(type)) {
           suggestions.push({
-            content: `Given the ${type} evidence mentioned, ensure compliance with specific ${type} evidence standards and admissibility requirements.`,
+            content: `Given the ${type} }evidence mentioned, ensure compliance with specific ${type} }evidence standards and admissibility requirements.`,
             type: 'evidence_standards',
             confidence: 0.75,
-            reasoning: `Content mentions ${type} evidence which has specific legal requirements`,
-            metadata: {
-             , source: 'evidence_analysis',
+            reasoning: `Content mentions ${type} }evidence which has specific legal requirements`,
+            metadata: { source: 'evidence_analysis',
               keywords: [type, 'standards', 'admissibility'],
               category: 'legal_compliance',
               evidenceType: type;
-            }
+            } }
           });
-        }
-      }
+        } }
+      } }
 
       return suggestions.slice(0, 5);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to get evidence-based suggestions:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate embedding using the enhanced embedding service
@@ -465,18 +452,18 @@ export class VectorSuggestionsService {
       if (typeof gen !== 'function') {
         console.warn('generateEnhancedEmbedding not found in embeddings-enhanced module');
         return [];
-      }
+      } }
       const embedding = await (gen as (c: string, opts?: Record<string, unknown>) => Promise<number[]>)(content, {
         provider: 'nomic-embed',
         legalDomain: true,
         cache: true
       });
       return embedding ?? [];
-    } catch (err: any) {
+    } }catch (err: any) {
       console.error('Failed to generate embedding:', err);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Calculate cosine similarity between two embeddings
@@ -490,10 +477,10 @@ export class VectorSuggestionsService {
       dot += a[i] * b[i];
       na += a[i] * a[i];
       nb += b[i] * b[i];
-    }
+    } }
     const denom = Math.sqrt(na) * Math.sqrt(nb);
     return denom === 0 ? 0 : dot / denom;
-  }
+  } }
 
   /**
    * Simple text similarity calculation (placeholder)
@@ -514,7 +501,7 @@ export class VectorSuggestionsService {
     const intersection = new Set([...words1].filter(w => words2.has(w)));
     const union = new Set([...words1, ...words2]);
     return union.size === 0 ? 0 : intersection.size / union.size;
-  }
+  } }
 
   /**
    * Check if two pieces of content have common legal patterns
@@ -538,7 +525,7 @@ export class VectorSuggestionsService {
     const patterns2 = legalPatterns.filter(p => (content2 || '').toLowerCase().includes(p));
     const common = patterns1.filter(p => patterns2.includes(p));
     return common.length >= 2;
-  }
+  } }
 
   /**
    * Deduplicate and rank suggestions by confidence
@@ -551,11 +538,11 @@ export class VectorSuggestionsService {
       if (!seen.has(key)) {
         seen.add(key);
         unique.push(s);
-      }
-    }
+      } }
+    } }
     return unique.sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0)).slice(0, 8);
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const vectorSuggestionsService = new VectorSuggestionsService();
@@ -570,4 +557,5 @@ export async function generateVectorContextualSuggestions(
   caseId?: string
 ): Promise<ContextualSuggestion[]> {
   return await vectorSuggestionsService.generateVectorContextualSuggestions(content, reportType, userId, caseId);
-}
+} }
+

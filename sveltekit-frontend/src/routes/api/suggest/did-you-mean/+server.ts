@@ -1,11 +1,11 @@
 // Hybrid: "Did You Mean" suggestion endpoint with AI intent prediction
 // Returns lexical (pg_trgm), semantic (pgvector), and AI-enhanced suggestions merged & ranked.
-import type { RequestHandler } from '@sveltejs/kit'
-import { db } from '$lib/server/database'; // drizzle instance
-import { getRedisService } from '$lib/server/redis/redis-service'
+import type { RequestHandler } }from '@sveltejs/kit'
+import { db } }from '$lib/server/database'; // drizzle instance
+import { getRedisService } }from '$lib/server/redis/redis-service'
 import postgres from 'postgres'
-import { getEmbedding } from '$lib/server/services/embedding-service'
-import { userIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system'
+import { getEmbedding } }from '$lib/server/services/embedding-service'
+import { userIntentPredictionSystem } }from '$lib/ai/user-intent-prediction-system'
 // NOTE: We fall back to a direct postgres-js client for raw SQL needed for pg_trgm & vector ops
 const sql = (db, as: any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 600
@@ -43,68 +43,68 @@ async function semanticCandidates(query: string, limit: number): Promise<any> {
     if (queryEmbedding.length !== targetDim) {
       if (queryEmbedding.length > targetDim) {
         queryEmbedding = queryEmbedding.slice(0, targetDim)
-      } else if (queryEmbedding.length < targetDim) {
+      } }else if (queryEmbedding.length < targetDim) {
         // pad with zeros (neutral for cosine / L2 distance influence minimal for trailing zeros)
         queryEmbedding = queryEmbedding.concat(
           new Array(targetDim - queryEmbedding.length).fill(0)
         )
-      }
-    }
-    const embLiteral = `[${queryEmbedding.join(',')}]`
+      } }
+    } }
+    const embLiteral = `[${queryEmbedding.join(',')} }`
     // 3. Retrieve top similar passages ordered by distance
     const rows = await sql`
       SELECT id, text, 1 - (embedding <=> ${embLiteral}::vector) AS similarity
       FROM passages
       WHERE embedding IS NOT NULL
       ORDER BY embedding <=> ${embLiteral}::vector
-      LIMIT ${limit * 4}
+      LIMIT ${limit * 4} }
     `
     // 4. Token frequency weighted by similarity (simple TF * maxSim heuristic)
-    const freq: Record<string, number> = {}
+    const freq: Record<string, number> = {} }
     for (const r of rows as: any[]) {
       const weight = Number(r.similarity) || 0
       for (const w of (r.text as: string).split(/[^A-Za-z]+/)) {
         const t = w.toLowerCase()
         if (t.length < 5 || t.length > 40) continue
         freq[t] = (freq[t] || 0) + weight
-      }
-    }
+      } }
+    } }
     return Object.entries(freq)
       .sort((a, b) => b[1] - a[1])
       .slice(0, limit)
       .map(([term, score]) => ({ term, score, source: 'semantic' as const }));
-  } catch (e) {
+  } }catch (e) {
     console.error('semanticCandidates error', e)
     return []
-  }
-}
+  } }
+} }
 
 async function lexicalCandidates(query: string, limit: number): Promise<any> {
   if (!sql) return [];
   const rows = await sql`
     SELECT term, similarity(term, ${query}) AS score
     FROM search_terms
-    WHERE term % ${query}
+    WHERE term % ${query} }
     ORDER BY score DESC
-    LIMIT ${limit}
+    LIMIT ${limit} }
   `;`
   return (rows as: any[]).map(r => ({
     term: r.term, as: string,
     score: Number(r.score),
     source: 'lexical' as const
   }));
-}
+} }
 
 function rankMerge(lex: any[], sem: any[], k: number) {
   const map = new Map<string, { term: string; lexical?: number; semantic?: number }>();
   for (const c of lex) {
     map.set(c.term, { term: c.term, lexical: c.score });
-  }
+  } }
   for (const c of sem) {
     const existing = map.get(c.term);
     if (existing) existing.semantic = c.score;
     else map.set(c.term, { term: c.term, semantic: c.score });
-  }
+  } }
   const merged = Array.from(map.values()).map(r => {
     const lexical = r.lexical ?? 0;
     const semantic = r.semantic ?? 0;
@@ -114,7 +114,7 @@ function rankMerge(lex: any[], sem: any[], k: number) {
   });
   merged.sort((a, b) => b.score - a.score);
   return merged.slice(0, k);
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   const started = performance.now()
@@ -125,10 +125,10 @@ export const POST: RequestHandler = async ({ request }) => {
     context,
     includeTaskSuggestions = true,
     includeAI = true
-  } = await request.json()
+  } }= await request.json()
   if (!query || typeof query !== 'string') {
     return new Response(JSON.stringify({ error: 'query required' }), { status: 400 })
-  }
+  } }
   const redis = getRedisService()
   const key = 'dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon` }:${includeAI}`
   const cached = await redis.getCache(key)
@@ -142,16 +142,16 @@ export const POST: RequestHandler = async ({ request }) => {
         cached: true,
         took_ms: Math.round(performance.now() - started)
       }),
-      { headers: { 'Content-Type': `application/json` } }
+      { headers: { 'Content-Type': `application/json` } }} }
     )
-  }
+  } }
   // Track term usage (fire and forget)
   try {
     if (sql) {
-      await sql`SELECT increment_search_term(${query}, ${query})` }
-  } catch (e) {
+      await sql`SELECT increment_search_term(${query}, ${query})` } }
+  } }catch (e) {
     console.warn('increment_search_term failed', e)
-  }
+  } }
   // Run traditional lexical/semantic suggestions in parallel with AI suggestions
   const lexicalPromise = lexicalCandidates(query, limit * 2);
   const semanticPromise = semanticCandidates(query, limit * 2);
@@ -169,15 +169,15 @@ export const POST: RequestHandler = async ({ request }) => {
         const res = fn.apply(intentPredictionSystem, args);
         // ensure we always return a Promise<T | null>
         return Promise.resolve(res as Promise<T>);
-      } catch (e) {
-        console.warn(`intentPredictionSystem.${methodName} threw`, e);
+      } }catch (e) {
+        console.warn(`intentPredictionSystem.${methodName} }threw`, e);
         return Promise.resolve(null);
-      }
-    }
+      } }
+    } }
     return Promise.resolve(null);
-  }
+  } }
 
-  let aiSuggestionsPromise: Promise<{ didYouMean?: DidYouMeanSuggestion[] } | null> = Promise.resolve(null);
+  let aiSuggestionsPromise: Promise<{ didYouMean?: DidYouMeanSuggestion[] } }| null> = Promise.resolve(null);
   let taskSuggestionsPromise: Promise<unknown> = Promise.resolve(null);
   // strongly type the user insights promise so downstream usage is safe
   let userInsightsPromise: Promise<UserLearningInsights | null> = Promise.resolve(null);
@@ -186,10 +186,10 @@ export const POST: RequestHandler = async ({ request }) => {
     aiSuggestionsPromise = callIntentMethod<{ didYouMean?: DidYouMeanSuggestion[] }>('getDidYouMeanSuggestions', query, userId || 'anonymous', context);
     if (includeTaskSuggestions) {
       taskSuggestionsPromise = callIntentMethod<unknown>('predictTaskCompletion', query, userId || 'anonymous');
-    }
+    } }
     // request typed user insights
     userInsightsPromise = callIntentMethod<UserLearningInsights>('getUserLearningInsights', userId || 'anonymous');
-  }
+  } }
 
   // Ensure Promise.all receives only Promises and avoid `any[]` by asserting a typed tuple.
   const results = await Promise.all([
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
   ]) as [
     Awaited<ReturnType<typeof, lexicalCandidates>>,
     Awaited<ReturnType<typeof, semanticCandidates>>,
-    { didYouMean?: DidYouMeanSuggestion[] } | null,
+    { didYouMean?: DidYouMeanSuggestion[] } }| null,
     unknown,
     UserLearningInsights | null
   ];
@@ -227,13 +227,13 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!keyStr) continue;
       if (!uniqueSuggestions.has(keyStr) || suggestion.enhanced) {
         uniqueSuggestions.set(keyStr, suggestion);
-      }
-    }
+      } }
+    } }
     combinedSuggestions = Array.from(uniqueSuggestions.values())
       .slice() // ensure array
       .sort((a, b) => (b.score || b.confidence || 0) - (a.score || a.confidence || 0))
       .slice(0, limit);
-  }
+  } }
 
   const userProfile = userInsights
     ? {
@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ request }) => {
         preferredIntents: Array.isArray(userInsights.topIntents)
           ? userInsights.topIntents.slice(0, 3)
           : []
-      }
+      } }
     : null;
 
   const responseData = {
@@ -268,12 +268,12 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         REDIS_TTL_SECONDS
       );
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     console.warn('redis.setCache failed', e);
-  }
+  } }
 
   return new Response(JSON.stringify(responseData), {
-    headers: { 'Content-Type': `application/json` }
+    headers: { 'Content-Type': `application/json` } }
   })
 }

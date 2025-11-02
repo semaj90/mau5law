@@ -1,5 +1,5 @@
-import { getOllamaEndpoint } from '$lib/server/config/endpoints';
-import { redisClient } from '$lib/server/cache/redis';
+import { getOllamaEndpoint } }from '$lib/server/config/endpoints';
+import { redisClient } }from '$lib/server/cache/redis';
 import crypto from 'crypto';
 
 const EMBEDDING_MODEL = 'nomic-embed-text'; // Or 'embeddinggemma:latest' as per instructions
@@ -20,11 +20,11 @@ async function getEmbedding(text: string): Promise<number[]> {
       if (parsed.embedding && Array.isArray(parsed.embedding)) {
         console.log(`[EmbeddingService] Cache hit for "${text.substring(0, Math.min(text.length, 20))}..."`);
         return parsed.embedding;
-      }
-    }
-  } catch (cacheError) {
+      } }
+    } }
+  } }catch (cacheError) {
     console.warn(`[EmbeddingService] Redis cache read error for key ${cacheKey}: ${cacheError}`);
-  }
+  } }
 
   console.log(`[EmbeddingService] Generating embedding for "${text.substring(0, Math.min(text.length, 20))}..."`);
   try {
@@ -33,31 +33,32 @@ async function getEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        prompt: text,
-      }),
+        prompt: text
+      })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Ollama embedding API error: ${response.status} - ${errorText}`);
-    }
+      throw new Error(`Ollama embedding API error: ${response.status} }- ${errorText}`);
+    } }
 
     const data = await response.json();
     const embedding = data.embedding;
 
     if (!embedding || !Array.isArray(embedding) || embedding.length === 0) {
       throw new Error('Invalid embedding response from Ollama: embedding array is empty or missing.');
-    }
+    } }
 
     // Cache the result with a TTL (e.g., 1 hour = 3600 seconds)
     const cacheValue = JSON.stringify({ embedding, model: EMBEDDING_MODEL, timestamp: new Date().toISOString() });
     await redisClient.set(cacheKey, cacheValue, { EX: 3600 });
 
     return embedding;
-  } catch (error) {
+  } }catch (error) {
     console.error(`[EmbeddingService] Failed to get embedding for text: "${text.substring(0, Math.min(text.length, 50))}..."`, error);
     throw error;
-  }
-}
+  } }
+} }
 
 export { getEmbedding };
+

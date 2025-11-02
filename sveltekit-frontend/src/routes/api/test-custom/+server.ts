@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { FixedDrizzlePostgreSQLAdapter } from '$lib/server/auth/custom-adapter';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { FixedDrizzlePostgreSQLAdapter } }from '$lib/server/auth/custom-adapter';
 export const GET: RequestHandler = async ({ request }) => {
   try {
     console.log('=== CUSTOM ADAPTER TEST ===');
@@ -15,8 +15,8 @@ export const GET: RequestHandler = async ({ request }) => {
         message: 'Custom adapter worked!',
         result: result
       });
-    } catch (error: any) {
-      console.error('Custom adapter error:', error.message);'
+    } }catch (error: any) {
+      console.error('Custom adapter error:', error.message);
       console.error('Custom adapter query:', error.query);
       return json(
         {
@@ -24,10 +24,10 @@ export const GET: RequestHandler = async ({ request }) => {
           error: error.message,
           query: error.query || 'No query available'
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.error('Custom Adapter Test Error:', error);
     return json(
       {
@@ -35,7 +35,8 @@ export const GET: RequestHandler = async ({ request }) => {
         error: error.message,
         stack: error.stack
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -3,11 +3,11 @@
  * Handles file uploads, generates embeddings with embeddinggemma:latest,
  * stores in pgvector, and caches in Redis
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { nanoid } from 'nanoid';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { writeFile, mkdir } }from 'fs/promises';
+import { join } }from 'path';
+import { nanoid } }from 'nanoid';
 
 const UPLOAD_DIR = join(process.cwd(), 'uploads', 'rag-ingest');
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!files || files.length === 0) {
       return json({ error: 'No files provided' }, { status: 400 });
-    }
+    } }
 
     // Ensure upload directory exists
     await mkdir(UPLOAD_DIR, { recursive: true });
@@ -31,9 +31,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        console.warn(`File ${file.name} exceeds max size, skipping`);
+        console.warn(`File ${file.name} }exceeds max size, skipping`);
         continue;
-      }
+      } }
 
       const fileId = nanoid();
       const fileName = `${fileId}-${file.name}`;
@@ -58,10 +58,10 @@ export const POST: RequestHandler = async ({ request }) => {
         embeddings,
         content: textContent.substring(0, 5000), // First 5KB
         metadata: {
-         , size: file.size,
+  size: file.size,
           type: file.type,
           uploadedAt: new Date().toISOString()
-        }
+        } }
       });
 
       uploadedFiles.push({
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type: file.type,
         embeddingsCount: embeddings.length
       });
-    }
+    } }
 
     const processingTime = Date.now() - startTime;
 
@@ -82,15 +82,15 @@ export const POST: RequestHandler = async ({ request }) => {
       processing_time_ms: processingTime,
       context: uploadedFiles.map(f => f.fileName).join(', ')
     });
-  } catch (error) {
-    console.error('RAG ingest error:', error);'
+  } }catch (error) {
+    console.error('RAG ingest error:', error);
     return json(
       {
         error: 'Failed to process files',
         detail: error instanceof Error ? error.message : 'Unknown error' },'`'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 async function generateEmbeddings(text: string, fileName: string): Promise<number[][]> {
@@ -100,7 +100,7 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
     const chunks: string[] = [];
     for (let i = 0; i < text.length; i += chunkSize) {
       chunks.push(text.substring(i, i + chunkSize));
-    }
+    } }
 
     // Generate embeddings using Ollama embeddinggemma:latest
     const, embeddings: number[][] = [];
@@ -111,7 +111,7 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-         , model: 'embeddinggemma:latest',
+  model: 'embeddinggemma:latest',
           prompt: chunk
         })
       });
@@ -119,20 +119,20 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
       if (response.ok) {
         const data = await response.json();
         embeddings.push(data.embedding);
-      } else {
-        console.error(`Ollama embeddings request failed: ${response.status} ${response.statusText}`);
+      } }else {
+        console.error(`Ollama embeddings request failed: ${response.status} }${response.statusText}`);
         const errorText = await response.text();
         console.error(`Error details: ${errorText}`);
-      }
-    }
+      } }
+    } }
 
-    console.log(`✅ Generated ${embeddings.length} embeddings for ${fileName}`);
+    console.log(`✅ Generated ${embeddings.length} }embeddings for ${fileName}`);
     return embeddings;
-  } catch (error) {
+  } }catch (error) {
     console.error('Embedding generation failed:', error);
     return [];
-  }
-}
+  } }
+} }
 
 async function storeInVectorDB(data: any): Promise<any> {
   try {
@@ -176,15 +176,16 @@ async function storeInVectorDB(data: any): Promise<any> {
             data.fileName,
           ]
         );
-      }
+      } }
 
       await client.end();
-      console.log(`✅ Stored ${data.embeddings.length} embeddings in knowledge_base for ${data.fileName}`);
-    } else {
+      console.log(`✅ Stored ${data.embeddings.length} }embeddings in knowledge_base for ${data.fileName}`);
+    } }else {
       console.warn(`⚠️ No embeddings to store for ${data.fileName}`);
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.error('Vector DB storage failed:', error);
     throw error;
-  }
-}
+  } }
+} }
+

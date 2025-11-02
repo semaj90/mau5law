@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types'; // Changed from './$types.js'
+import type { SearchResult } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types'; // Changed from './$types.js'
 // Remove direct imports of embedDocument, embedVision as they will be dynamically loaded
-// import { embedDocument, embedVision } from '$lib/server/ai/embedding';
-import { parallelVectorSearch } from '$lib/utils/fastSearch';
-import { synthesizeNextSteps } from '$lib/server/ai/synthesizer';
-import { recommendNextSteps } from '$lib/server/recommendations';
-import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
+// import { embedDocument, embedVision } }from '$lib/server/ai/embedding';
+import { parallelVectorSearch } }from '$lib/utils/fastSearch';
+import { synthesizeNextSteps } }from '$lib/server/ai/synthesizer';
+import { recommendNextSteps } }from '$lib/server/recommendations';
+import type { DocumentItem, VisionItem } }from '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
 
 // Define the interface for a single search result item, aligning with what synthesizeNextSteps expects
 interface SearchResult { // Renamed from SearchResultItem
@@ -14,7 +14,7 @@ interface SearchResult { // Renamed from SearchResultItem
   score: number;
   snippet: string;
   source: string; //, Added: 'source' property
-}
+} }
 
 // Dynamically import the embedding module once to ensure all related GPU inference functions are available.
 // This ensures consistent loading and potential shared GPU context if the module manages it,
@@ -32,28 +32,28 @@ embeddingModulePromise.then(module => {
 });
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { query, docs = [], images = [] } = await request.json();
+  const { query, docs = [], images = [] } }= await request.json();
   if (!query) return json({ error: 'query required' }, { status: 400 });
 
   // Ensure embedding functions are loaded before proceeding
   if (!embedDocument || !embedVision || !runGPUInference) {
     // Wait for the module to be loaded if it's still pending'
     await embeddingModulePromise;
-  }
+  } }
 
   const embeddedDocs = await Promise.all(docs.map((d: DocumentItem) => embedDocument(d)));
   const embeddedImages = await Promise.all(images.map((i: VisionItem) => embedVision(i)));
 
   // Create a combined list of all embedded items, associating them with their original index.
   // This allows filtering out items with invalid embeddings while preserving a link to the original data.
-  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem;, originalCombinedIndex: number }[] = [];
+  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem; originalCombinedIndex: number } }] = [];
 
   // Process embeddedDocs
   embeddedDocs.forEach((item, index) => {
     // Only include items that are not: null/undefined and have valid, non-empty embeddings
     if (item && item.embeddings && item.embeddings.length > 0) {
       searchableItemsWithOriginalIndex.push({ item, originalCombinedIndex: index });
-    }
+    } }
   });
 
   // Process embeddedImages, adjusting originalCombinedIndex to account for docs
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Only include items that are not: null/undefined and have valid, non-empty embeddings
     if (item && item.embeddings && item.embeddings.length > 0) {
       searchableItemsWithOriginalIndex.push({ item, originalCombinedIndex: embeddedDocs.length + index });
-    }
+    } }
   });
 
   // Extract vectors for search from the filtered and indexed items
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Map search results back to the original items using the stored originalCombinedIndex
   const mappedResults: SearchResult[] = searchResults.map(r => { // Use SearchResult type
-    const {, item: originalSearchableItem } = searchableItemsWithOriginalIndex[r.index];
+    const { item: originalSearchableItem } }= searchableItemsWithOriginalIndex[r.index];
 
     let snippet = '';
     let, itemId: string; // To hold the, guaranteed: string ID
@@ -84,19 +84,19 @@ export const POST: RequestHandler = async ({ request }) => {
       snippet = originalSearchableItem.text || '';
       itemId = originalSearchableItem.id || `doc-${r.index}`; // Fallback ID
       itemSource = originalSearchableItem.id || `document-source-${r.index}`; // Fallback source
-    } else if ('imageUrl' in originalSearchableItem) {
+    } }else if ('imageUrl' in originalSearchableItem) {
       snippet = `Image: ${originalSearchableItem.id || originalSearchableItem.imageUrl}`;
       itemId = originalSearchableItem.id || `img-${r.index}`; // Fallback ID
       itemSource = originalSearchableItem.id || `image-source-${r.index}`; // Fallback source
-    } else {
+    } }else {
       // Generic fallback for unexpected types
       itemId = `unknown-${r.index}`;
       itemSource = `unknown-source-${r.index}`;
-    }
+    } }
 
     return {
-     , id: itemId, // Now guaranteed to be a: string
-     , score: r.score,
+  id: itemId, // Now guaranteed to be a: string
+  score: r.score,
       snippet: snippet,
       source: itemSource // Now populated
     };
@@ -109,3 +109,4 @@ export const POST: RequestHandler = async ({ request }) => {
 
   return json({ searchResults: mappedResults, llmOutput, recommendations: recs });
 };
+

@@ -1,10 +1,10 @@
 /**
  * Enhanced Inline Suggestion Service - corrected implementation
  */
-import { createActor } from "xstate";
-import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } from "$lib/machines";
-import { enhancedRAGStore } from "$lib/stores";
-import { debounce } from "$lib/utils";
+import { createActor } }from "xstate";
+import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } }from "$lib/machines";
+import { enhancedRAGStore } }from "$lib/stores";
+import { debounce } }from "$lib/utils";
 
 // --- Types ---
 export interface SuggestionContext { text: string;, cursorPosition: number;
@@ -13,9 +13,9 @@ export interface SuggestionContext { text: string;, cursorPosition: number;
   documentType?: 'legal' | 'evidence' | 'notes' | 'general';
   caseId?: string;
   userId?: string;
-}
+} }
 
-export interface InlineSuggestion {, id: string;, type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
+export interface InlineSuggestion { id: string;, type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
   text: string;
   replacement?: string;
   confidence: number;
@@ -26,9 +26,9 @@ export interface InlineSuggestion {, id: string;, type: 'completion' | 'grammar
     relevanceScore?: number;
     legalAccuracy?: number;
   };
-}
+} }
 
-export interface SuggestionOptions {, enableAutoComplete: boolean;, enableGrammarCheck: boolean;
+export interface SuggestionOptions { enableAutoComplete: boolean;, enableGrammarCheck: boolean;
   enableLegalTerms: boolean;
   enableCaseReferences: boolean;
   enableCitations: boolean;
@@ -36,31 +36,30 @@ export interface SuggestionOptions {, enableAutoComplete: boolean;, enableGramm
   maxSuggestions: number;
   suggestionDelay: number;
   aiModel: string;
-}
+} }
 
-export interface AITaskResult<T = unknown> {
- , success: boolean;
+export interface AITaskResult<T = unknown> { success: boolean;
   taskId?: string;
   result?: T;
   error?: string;
-}
+} }
 
 type AIActor = ReturnType<typeof, createActor<typeof, aiProcessingMachine>>;
 type GoActor = ReturnType<typeof, createActor<typeof, goMicroserviceMachine>>;
 
 // Simple LRUMap implementation
 class LRUMap<K, V> extends Map<K, V> {
-  constructor(private maxSize = 50) { super(); }
+  constructor(private maxSize = 50) { super(); } }
   set(key: K, value: V) {
     if (this.has(key)) super.delete(key);
     super.set(key, value);
     if (this.size > this.maxSize) {
       const firstKey = this.keys().next().value as K | undefined;
       if (firstKey !== undefined) super.delete(firstKey);
-    }
+    } }
     return this;
-  }
-}
+  } }
+} }
 
 // --- Service implementation ---
 export class InlineSuggestionService {
@@ -89,7 +88,7 @@ export class InlineSuggestionService {
     };
     // lazy initialization (safe for SSR)
     this.initialize();
-  }
+  } }
 
   private initialize() {
     if (typeof window === 'undefined') return; // defer in SSR
@@ -102,11 +101,11 @@ export class InlineSuggestionService {
       // Example connect event (adjust as machines expect)
       this.goServiceActor.send({ type: 'CONNECT', endpoint: 'http://localhost:8080' });
       this.isInitialized = true;
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('[InlineSuggestionService] init failed', err);
       this.isInitialized = $state(false);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate AI-powered suggestions for the given context
@@ -118,7 +117,7 @@ export class InlineSuggestionService {
 
     if (!context || (context.text?.length ?? 0) < this.options.minCharacters) {
       return [];
-    }
+    } }
 
     const parallel: Promise<InlineSuggestion[]>[] = [];
 
@@ -133,60 +132,60 @@ export class InlineSuggestionService {
     for (const res of settled) {
       if (res.status === 'fulfilled' && Array.isArray(res.value)) {
         suggestions.push(...res.value);
-      } else {
+      } }else {
         // log reject reason if available
         // eslint-disable-next-line no-console
         console.warn('[InlineSuggestionService] suggestion generator failed', res);
-      }
-    }
+      } }
+    } }
 
     return suggestions
       .sort((a, b) => b.confidence - a.confidence)
       .slice(0, this.options.maxSuggestions);
-  }
+  } }
 
   // --- Helper generators (lightweight safe stubs) ---
   private async generateCompletionSuggestions(_context: SuggestionContext): Promise<InlineSuggestion[]> {
     // TODO: call actual AI task creator - returning empty array for now
     return [];
-  }
+  } }
 
   private async generateGrammarSuggestions(_context: SuggestionContext): Promise<InlineSuggestion[]> {
     // TODO: call actual AI task creator - returning empty array for now
     return [];
-  }
+  } }
 
   private async generateLegalTermSuggestions(_context: SuggestionContext): Promise<InlineSuggestion[]> {
     try {
       // Example of using enhancedRAGStore; keep simple and safe
       // const ragResults = await enhancedRAGStore.search(_context.contextBefore, { topK: 5 });
       // TODO: map ragResults -> InlineSuggestion[]
-    } catch (e) {
+    } }catch (e) {
       console.warn('[InlineSuggestionService] legal term suggestions failed', e);
-    }
+    } }
     return [];
-  }
+  } }
 
   private async generateCaseReferenceSuggestions(_context: SuggestionContext): Promise<InlineSuggestion[]> {
     if (!_context.caseId) return [];
     // TODO: call RAG or case index to build suggestions
     return [];
-  }
+  } }
 
   private async generateCitationSuggestions(_context: SuggestionContext): Promise<InlineSuggestion[]> {
     // TODO: call AI to suggest citations
     return [];
-  }
+  } }
 
   /**
    * Execute AI task - safe stub to be replaced with real integration.
    * Keeps consistent signature and timeout handling.
    */
-  private async executeAITask(task: any, opts: { timeoutMs?: number; signal?: AbortSignal } = {}): Promise<AITaskResult> {
-    const { timeoutMs = 15000, signal } = opts;
+  private async executeAITask(task: any, opts: { timeoutMs?: number; signal?: AbortSignal } }= {}): Promise<AITaskResult> {
+    const { timeoutMs = 15000, signal } }= opts;
     if (!this.aiActor) {
       return { success: false, error: 'ai actor not initialized' };
-    }
+    } }
 
     // Minimal promise that resolves, with: "not-implemented" after timeout or when aborted
     return await new Promise<AITaskResult>((resolve) => {
@@ -196,7 +195,7 @@ export class InlineSuggestionService {
       if (signal) {
         if (signal.aborted) return onAbort();
         signal.addEventListener('abort', onAbort, { once: true });
-      }
+      } }
       const timer = setTimeout(() => {
         if (signal) signal.removeEventListener('abort', onAbort);
         resolve({ success: false, taskId: task?.id, error: 'not-implemented' });
@@ -205,27 +204,27 @@ export class InlineSuggestionService {
       // If the real machines are wired, send the START_PROCESSING event here.
       try {
         this.aiActor!.send({ type: 'START_PROCESSING', task });
-      } catch (e) {
+      } }catch (e) {
         // best-effort: log debug info if actor send fails
         // keeps catch non-empty to satisfy linter/TS
         console.debug('[InlineSuggestionService] aiActor send failed', e);
-      }
+      } }
 
       // cleanup will be handled by timeout or abort
       // ensure timer cleared if aborted
       if (signal) {
         signal.addEventListener('abort', () => clearTimeout(timer));
-      }
+      } }
     });
-  }
+  } }
 
   // --- Options and lifecycle ---
   updateOptions(options: Partial<SuggestionOptions>) {
     this.options = { ...this.options, ...options };
     if (!options.aiModel && this.options.aiModel === 'gemma3-legal' && this.defaultModel !== 'gemma3-legal') {
       this.options.aiModel = this.defaultModel;
-    }
-  }
+    } }
+  } }
 
   isReady(): boolean {
     if (!this.isInitialized || !this.aiActor || !this.goServiceActor) return false;
@@ -250,33 +249,33 @@ export class InlineSuggestionService {
       })();
 
       return aiMatchesIdle && goConnected;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
 
   destroy() {
     try {
       this.aiActor?.stop();
-    } catch (e) {
+    } }catch (e) {
       console.warn('[InlineSuggestionService] failed to stop aiActor', e);
-    }
+    } }
     try {
       this.goServiceActor?.stop();
-    } catch (e) {
+    } }catch (e) {
       console.warn('[InlineSuggestionService] failed to stop goServiceActor', e);
-    }
+    } }
     this.pendingTasks.clear();
     this.abortedTaskIds.clear();
     this.isInitialized = $state(false);
-  }
+  } }
 
   cancelAll() {
     for (const [taskId] of this.pendingTasks) {
       this.abortedTaskIds.add(taskId);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Singleton and utilities
 export const inlineSuggestionService = new InlineSuggestionService();
@@ -291,7 +290,7 @@ export const debouncedSuggestionGenerator = debounce(
 export const createSuggestionContext = (
   text: string,
   cursorPosition: number,
-  options: Partial<SuggestionContext> = {}
+  options: Partial<SuggestionContext> = {} }
 ): SuggestionContext => ({
   text,
   cursorPosition,
@@ -305,19 +304,19 @@ export const applySuggestionToText = (
   text: string,
   suggestion: InlineSuggestion,
   cursorPosition: number
-): { newText: string;, newCursorPosition: number } => {
+): { newText: string; newCursorPosition: number } }=> {
   if (suggestion.type === 'completion') {
     const newText = text.slice(0, cursorPosition) + suggestion.text + text.slice(cursorPosition);
     return {
       newText,
       newCursorPosition: cursorPosition + suggestion.text.length
     };
-  } else if (suggestion.replacement && suggestion.range) {
+  } }else if (suggestion.replacement && suggestion.range) {
     const newText = text.slice(0, suggestion.range.start) + suggestion.replacement + text.slice(suggestion.range.end);
     return {
       newText,
       newCursorPosition: suggestion.range.start + suggestion.replacement.length
     };
-  }
-  return {, newText: text, newCursorPosition: cursorPosition };
+  } }
+  return { newText: text, newCursorPosition: cursorPosition };
 };

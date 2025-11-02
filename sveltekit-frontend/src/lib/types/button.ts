@@ -24,10 +24,11 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   label?: string;
-}
+} }
 // Optional utility interface for components
 export interface ButtonProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   label?: string;
-}
+} }
+

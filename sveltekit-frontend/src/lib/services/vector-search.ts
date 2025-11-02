@@ -1,17 +1,17 @@
-import type { Document } from '$lib/types';
-import { db } from "$lib/server/database";
+import type { Document } }from '$lib/types';
+import { db } }from "$lib/server/database";
 import {
   legalDocuments as documents,
   embeddingCache
-} from "$lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+} }from "$lib/db/schema";
+import { eq, sql } }from "drizzle-orm";
 import crypto from "crypto";
 export interface VectorSearchOptions {
   threshold?: number;
   limit?: number;
   caseId?: string;
   documentType?: string;
-}
+} }
 export interface VectorSearchResult { id: string;, content: string;
   filename?: string;
   caseId?: string;
@@ -20,19 +20,19 @@ export interface VectorSearchResult { id: string;, content: string;
   summary?: string;
   keywords?: string[];
   createdAt: Date;
-}
-export interface EmbeddingCacheEntry {, textHash: string;, embedding: number[];
+} }
+export interface EmbeddingCacheEntry { textHash: string;, embedding: number[];
   model: string;
   dimensions: number;
-}
+} }
 export class VectorSearchService {
   private static, instance: VectorSearchService;
   public static getInstance(): VectorSearchService {
     if (!VectorSearchService.instance) {
       VectorSearchService.instance = new VectorSearchService();
-    }
+    } }
     return VectorSearchService.instance;
-  }
+  } }
   /**
    * Generate text hash for embedding cache
    */
@@ -41,7 +41,7 @@ export class VectorSearchService {
       .createHash("sha256")
       .update(text.trim().toLowerCase())
       .digest("hex");
-  }
+  } }
   /**
    * Get or create embedding with caching
    */
@@ -58,7 +58,7 @@ export class VectorSearchService {
       .limit(1);
     if (cached.length > 0) {
       return cached[0].embedding as: number[];
-    }
+    } }
     // Generate new embedding
     let, embedding: number[];
     try {
@@ -67,21 +67,21 @@ export class VectorSearchService {
           text,
           model.replace("ollama-", "")
         );
-      } else if (model.startsWith("claude-")) {
+      } }else if (model.startsWith("claude-")) {
         // Claude doesn't have embeddings API, fallback to Ollama'
         embedding = await this.generateOllamaEmbedding(
           text,
           "nomic-embed-text"
         );
-      } else if (model.startsWith("gemini-")) {
+      } }else if (model.startsWith("gemini-")) {
         embedding = await this.generateGeminiEmbedding(text);
-      } else {
+      } }else {
         // Default to Ollama
         embedding = await this.generateOllamaEmbedding(
           text,
           "nomic-embed-text"
         );
-      }
+      } }
       // Cache the embedding
       await db
         .insert(embeddingCache)
@@ -94,11 +94,11 @@ export class VectorSearchService {
         })
         .onConflictDoNothing();
       return embedding;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("Failed to generate embedding:", error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Generate embedding using Ollama
    */
@@ -116,10 +116,10 @@ export class VectorSearchService {
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Ollama embedding failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-    }
+    } }
     const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return (data as { embedding?: any; summary?: any; keywords?: any }).embedding;
-  }
+  } }
   /**
    * Generate embedding using Gemini
    */
@@ -127,19 +127,19 @@ export class VectorSearchService {
     // Implement Gemini embedding API call
     // This would require the Gemini API key and proper setup
     throw new Error("Gemini embeddings not yet implemented");
-  }
+  } }
   /**
    * Perform vector similarity search
    */
   async search(
     query: string, // Changed semicolon to comma
-    options: VectorSearchOptions = {}
+    options: VectorSearchOptions = {} }
   ): Promise<VectorSearchResult[]> {
-    const { threshold = 0.7, limit = 10, caseId, documentType } = options;
+    const { threshold = 0.7, limit = 10, caseId, documentType } }= options;
     try {
       // Generate query embedding
       const queryEmbedding = await this.getOrCreateEmbedding(query);
-      const embeddingVector = `[${queryEmbedding.join(",")}]`;
+      const embeddingVector = `[${queryEmbedding.join(",")} }`;
       // Build SQL query
       let sqlQuery = sql`
         SELECT
@@ -152,29 +152,29 @@ export class VectorSearchService {
           d.created_at,
           (d.embedding <=> ${embeddingVector}::vector) as distance,
           (1 - (d.embedding <=> ${embeddingVector}::vector)) as relevance_score
-        FROM ${documents} d
+        FROM ${documents} }d
         WHERE d.embedding IS NOT NULL
       `;`
       // Add filters
       const conditions = [];
       if (caseId) {
         conditions.push(sql`d.case_id = ${caseId}`);
-      }
+      } }
       if (documentType) {
         conditions.push(sql`d.document_type = ${documentType}`);
-      }
+      } }
       // Add similarity threshold
       conditions.push(
         sql`(d.embedding <=> ${embeddingVector}::vector) < ${1 - threshold}`
       );
       if (conditions.length > 0) {
-        sqlQuery = sql`${sqlQuery} AND ${sql.join(conditions, sql` AND `)}`;
-      }
+        sqlQuery = sql`${sqlQuery} }AND ${sql.join(conditions, sql` AND `)}`;
+      } }
       // Order by similarity and limit
       sqlQuery = sql`
-        ${sqlQuery}
+        ${sqlQuery} }
         ORDER BY distance ASC
-        LIMIT ${limit}
+        LIMIT ${limit} }
       `;`
       const results = await db.execute(sqlQuery);
       return results.rows.map((row: any) => ({ // Removed extraneous comma
@@ -188,11 +188,11 @@ export class VectorSearchService {
         keywords: row.keywords,
         createdAt: new Date(row.created_at)
       }));
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("Vector search failed:", error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Index a document for vector search
    */
@@ -205,7 +205,7 @@ export class VectorSearchService {
       documentType?: string;
       summary?: string;
       keywords?: string[];
-    }
+    } }
   ): Promise<void> {
     try {
       // Generate embedding for document content
@@ -220,11 +220,11 @@ export class VectorSearchService {
           updatedAt: new Date()
         })
         .where(eq(documents.id, documentId));
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("Document indexing failed:", error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get embedding cache statistics
    */
@@ -236,10 +236,10 @@ export class VectorSearchService {
         AVG(dimensions) as avg_dimensions,
         MIN(created_at) as oldest_embedding,
         MAX(created_at) as newest_embedding
-      FROM ${embeddingCache}
+      FROM ${embeddingCache} }
     `);`
     return stats.rows[0];
-  }
+  } }
   /**
    * Create PostgreSQL index for vector similarity search
    */
@@ -254,11 +254,11 @@ export class VectorSearchService {
       // Analyze table for better query planning
       await db.execute(sql`ANALYZE documents`);
       console.log("Vector index created successfully");
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error("Failed to create vector index:", error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Build context for Claude/Gemini with vector search results
    */
@@ -287,16 +287,16 @@ export class VectorSearchService {
         currentLength += resultText.length;
         usedSources.push(result);
         relevanceScores.push((result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).relevanceScore);
-      } else {
+      } }else {
         break;
-      }
-    }
+      } }
+    } }
     return {
       context,
       sources: usedSources,
       relevanceScores
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const vectorSearchService = VectorSearchService.getInstance();

@@ -1,8 +1,8 @@
-import { Pool } from 'pg';
-import type { PoolClient } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { v4, as uuidv4 } from 'uuid';
+import { Pool } }from 'pg';
+import type { PoolClient } }from 'pg';
+import { drizzle } }from 'drizzle-orm/node-postgres';
+import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } }from 'drizzle-orm/pg-core';
+import { v4, as uuidv4 } }from 'uuid';
 // Pool + Drizzle initialization (reads DATABASE_URL from env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -113,7 +113,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           jurisdiction: doc.jurisdiction,
           extracted_text: doc.extractedText ?? '',
           prosecution_score: doc.prosecutionScore ?? 0,
-          processing_metadata: doc.processingMetadata ?? {}
+          processing_metadata: doc.processingMetadata ?? {} }
         })
         .execute();
       // Insert chunks (batching)
@@ -129,7 +129,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
         }));
         // Note: drizzle .insert(...).values([...]) is supported
         await transactionalDb.insert(document_chunks).values(chunkInserts).execute();
-      }
+      } }
       // Insert entities
       if (Array.isArray(doc.entities) && doc.entities.length > 0) {
         const entityInserts = doc.entities.map((ent: EntityInput) => ({
@@ -143,7 +143,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           jurisdiction: ent.jurisdiction ?? doc.jurisdiction ?? 'unknown'
         }));
         await transactionalDb.insert(legal_entities).values(entityInserts).execute();
-      }
+      } }
       // Insert fact checks
       if (Array.isArray(doc.factChecks) && doc.factChecks.length > 0) {
         const factInserts = doc.factChecks.map((fc: FactCheckInput) => ({
@@ -155,29 +155,29 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           confidence: fc.confidence ?? 0,
           jurisdiction: fc.jurisdiction ?? doc.jurisdiction ?? 'unknown` }));'`
         await transactionalDb.insert(fact_checks).values(factInserts).execute();
-      }
-    }
+      } }
+    } }
     await client.query('COMMIT');
-  } catch (err) {
+  } }catch (err) {
     await client.query('ROLLBACK');
     console.error('DB transaction failed:', err);
     throw err;
-  } finally {
+  } }finally {
     client.release();
-  }
-}
+  } }
+} }
 // Optional: lightweight helper to close pool in deploy scripts / tests
 export async function closeDbPool(): Promise<void> {
   await pool.end();
-}
+} }
 // --- Context7, Bits UI, and Svelte, 5 Integration Best Practices ---
 // This file is the main DB entry point for SvelteKit/Legal AI with Context7 MCP orchestration.
 // All DB, vector, and health utilities are exported here for type-safe, scalable use.
 // Context7 MCP: Expose DB pool for vector store and semantic search
 // (Already exported above)
 // Enhanced vector store with error handling
-import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import { PGVectorStore } }from '@langchain/community/vectorstores/pgvector';
+import { OpenAIEmbeddings } }from '@langchain/openai';
 // Local lightweight typings to avoid `any`
 type EmbeddingsLike = {
   embedDocuments?: (texts: string[]) => Promise<number[][]>;
@@ -203,32 +203,32 @@ export async function getVectorStore(): Promise<unknown> {
       if (GemCtor) {
         try {
           embeddings = new GemCtor({ model: `embeddinggemma:latest` });
-        } catch (instErr) {
+        } }catch (instErr) {
           console.debug(
             'Failed to instantiate embeddinggemma constructor, will fallback:',
             (instErr as Error)?.message ?? instErr
           );
-        }
-      }
-    } catch (innerErr) {
+        } }
+      } }
+    } }catch (innerErr) {
       // defensive logging for unexpected runtime import errors
       console.debug(
         'Unexpected error while attempting optional embedding import:',
         (innerErr as Error)?.message ?? innerErr
       );
-    }
+    } }
     // Fallback: use nomic-embed-text via the OpenAIEmbeddings wrapper (local model usage)
     if (!embeddings) {
       embeddings = new OpenAIEmbeddings({
         modelName: 'nomic-embed-text',
         openAIApiKey: 'N/A', // local usage / no key
       }) as: unknown as EmbeddingsLike;
-    }
+    } }
     // Instantiate PGVectorStore in a tolerant way without using `any`
     const PGCtor = PGVectorStore, as: unknown as PGVectorStoreConstructor;
     try {
       return new PGCtor(embeddings, { pool, tableName: `vectors` });
-    } catch (ctorErr) {
+    } }catch (ctorErr) {
       console.debug(
         'PGVectorStore constructor with (embeddings, opts) failed, attempting fallback instantiation:',
         (ctorErr as Error)?.message ?? ctorErr
@@ -239,34 +239,34 @@ export async function getVectorStore(): Promise<unknown> {
         const instRecord = inst as Record<string, unknown>;
         try {
           instRecord['embeddings'] = embeddings;
-        } catch (sErr) {
+        } }catch (sErr) {
           console.debug('Unable to attach embeddings to PGVectorStore instance:', (sErr as Error)?.message ?? sErr);
-        }
+        } }
         try {
           instRecord['pool'] = pool;
-        } catch (sErr) {
+        } }catch (sErr) {
           console.debug('Unable to attach pool to PGVectorStore instance:', (sErr as Error)?.message ?? sErr);
-        }
+        } }
         try {
           instRecord['tableName'] = 'vectors';
-        } catch (sErr) {
+        } }catch (sErr) {
           console.debug('Unable to attach tableName to PGVectorStore instance:', (sErr as Error)?.message ?? sErr);
-        }
+        } }
         return inst;
-      } catch (fallbackErr) {
+      } }catch (fallbackErr) {
         console.warn(
           'All PGVectorStore instantiation attempts failed, returning PGVectorStore export for caller handling:',
           (fallbackErr as Error)?.message ?? fallbackErr
         );
         return PGVectorStore;
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Vector store initialization failed:', message);
     throw new Error(`Vector store unavailable: ${message}`);
-  }
-}
+  } }
+} }
 // Example: Bits UI / enhanced-bit-ui best practice (for Svelte 5):
 // Use stores, context, and type-safe exports for all DB and UI modules.
 // Prefer bits-ui or enhanced-bit-ui components and themes for consistent styling and accessibility.
@@ -275,3 +275,4 @@ export async function getVectorStore(): Promise<unknown> {
 // See README or docs for more advanced UI/agent orchestration patterns.
 // --- End Context7/Legal AI DB Integration ---
 // --- End Context7/Legal AI DB Integration ---
+

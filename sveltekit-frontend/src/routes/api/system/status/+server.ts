@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit'
-import { apiRegistry } from '$lib/server/api/service-registry'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import { apiRegistry } }from '$lib/server/api/service-registry'
+import type { RequestHandler } }from './$types.js'
 
 // Define the ServiceStatus type based on usage in this file and inferred properties from apiRegistry.
 // This interface should align with the ServiceCheckResult type returned by apiRegistry.checkAllServices().
@@ -14,24 +14,24 @@ interface ServiceStatus { status: 'healthy' | 'degraded' | 'unhealthy' | 'unknow
   message?: string; // Common property for service status
   responseTimeMs?: number; // Common property for service status
   lastChecked?: string; // Common property for service status
-}
+} }
 
 // Define the type for the report returned by apiRegistry.validateApiRoutes()
 interface ApiRouteValidationReport { registered: string[];, existing: string[];
   missing: string[];
   extra: string[];
   error?: string;
-}
+} }
 
 // Define the comprehensive type for the system status response
-interface SystemStatusResponse {, system: {, timestamp: string;
+interface SystemStatusResponse { system: { timestamp: string;
     uptime: number;
     platform: NodeJS.Platform;
     nodeVersion: string;
     memory: NodeJS.MemoryUsage;
     pid: number;
   };
-  summary: {, overall: {, status: 'operational' | 'degraded' | 'error';
+  summary: { overall: { status: 'operational' | 'degraded' | 'error';
       healthScore: number;
       servicesHealthy: number;
       servicesTotal: number;
@@ -39,24 +39,24 @@ interface SystemStatusResponse {, system: {, timestamp: string;
       requiredTotal: number;
       error?: string; // Added for error case in catch block
     };
-    models: {, chat: string;, embeddings: string;
+    models: { chat: string;, embeddings: string;
       dimensions: number;
     };
     database: string;
-    features: {, vectorSearch: boolean;, aiProcessing: boolean;
+    features: { vectorSearch: boolean;, aiProcessing: boolean;
       enhancedRag: boolean;
       gpuAcceleration: boolean;
       objectStorage: boolean;
       caching: boolean;
     };
   };
- , services: Record<string, ServiceStatus>;
+  services: Record<string, ServiceStatus>;
   details?: { apiRoutes: ReturnType<typeof, apiRegistry.generateServiceReport>;, environment: Record<string, string>;
   };
   routes?: ApiRouteValidationReport; // Changed to the resolved type
-}
+} }
 
-export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
+export const GET: RequestHandler = async ({ url }: { url: URL }) => {
   const showDetails = url.searchParams.has('details');
   const checkRoutes = url.searchParams.has('routes');
   try {
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
     const summary: SystemStatusResponse['summary'] = {
       // Explicitly type the summary: object
       overall: {
-       , status: healthyRequiredServices.length === requiredServices.length ? 'operational' : 'degraded',
+  status: healthyRequiredServices.length === requiredServices.length ? 'operational' : 'degraded',
         healthScore: Math.round((healthyServices.length / services.length) * 100),
         servicesHealthy: healthyServices.length,
         servicesTotal: services.length,
@@ -87,13 +87,13 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
         requiredTotal: requiredServices.length
       },
       models: {
-       , chat: 'gemma3-legal:latest',
+  chat: 'gemma3-legal:latest',
         embeddings: 'embeddinggemma:latest',
         dimensions: 768
       },
       database: 'legal_ai_db',
       features: {
-       , vectorSearch:
+  vectorSearch:
           serviceStatuses.get('qdrant')?.status === 'healthy' ||
           serviceStatuses.get('postgresql')?.status === 'healthy',
         aiProcessing: serviceStatuses.get('ollama')?.status === 'healthy',
@@ -101,12 +101,12 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
         gpuAcceleration: serviceStatuses.get('gpu_orchestrator')?.status === 'healthy',
         objectStorage: serviceStatuses.get('minio')?.status === 'healthy',
         caching: serviceStatuses.get('redis')?.status === 'healthy'
-      }
+      } }
     };
     // Build response based on query parameters
     const response: SystemStatusResponse = {
       // Changed to const and added SystemStatusResponse type
-     , system: systemInfo,
+  system: systemInfo,
       summary,
       services: Object.fromEntries(serviceStatuses)
     };
@@ -114,17 +114,17 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
       response.details = {
         apiRoutes: apiRegistry.generateServiceReport(),
         environment: {
-         , DATABASE_URL: import.meta.env.DATABASE_URL ? 'configured' : 'missing',
+  DATABASE_URL: import.meta.env.DATABASE_URL ? 'configured' : 'missing',
           OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL || 'not set',
           EMBEDDING_MODEL: import.meta.env.EMBEDDING_MODEL || 'not set',
           REDIS_URL: import.meta.env.REDIS_URL ? 'configured' : 'missing',
           QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing'
-        }
+        } }
       };
-    }
+    } }
     if (checkRoutes) {
       response.routes = await apiRegistry.validateApiRoutes();
-    }
+    } }
     // Set appropriate HTTP status
     const httpStatus =
       summary.overall.status === 'operational' ? 200 : summary.overall.status === 'degraded' ? 206 : 503;
@@ -135,20 +135,20 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
         'X-Health-Score': summary.overall.healthScore.toString(),
         'X-Services': `${summary.overall.servicesHealthy}/${summary.overall.servicesTotal}`,
         'X-Required-Services': `${summary.overall.requiredHealthy}/${summary.overall.requiredTotal}`,
-        'Cache-Control': 'no-cache, must-revalidate` }'`
+        'Cache-Control': 'no-cache, must-revalidate` } }`
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown system status error';
     console.error('System status check failed:', error);
     // Return a response that conforms to SystemStatusResponse, even in error cases
-    const errorResponse: SystemStatusResponse = {, system: {, timestamp: new Date().toISOString(),
+    const errorResponse: SystemStatusResponse = { system: { timestamp: new Date().toISOString(),
         uptime: 0, // Default value for uptime in error
         platform: process.platform,
         nodeVersion: process.version,
         memory: process.memoryUsage(),
         pid: process.pid
       },
-      summary: {, overall: {, status: 'error',
+      summary: { overall: { status: 'error',
           error: msg,
           healthScore: 0,
           servicesHealthy: 0,
@@ -156,20 +156,20 @@ export const GET: RequestHandler = async ({ url }: {, url: URL }) => {
           requiredHealthy: 0,
           requiredTotal: 0
         },
-        models: {, chat: '', embeddings: '', dimensions: 0 }, // Default values
+        models: { chat: '', embeddings: '', dimensions: 0 }, // Default values
         database: '', // Default value
         features: {
           // Default values
-         , vectorSearch: false,
+  vectorSearch: false,
           aiProcessing: false,
           enhancedRag: false,
           gpuAcceleration: false,
           objectStorage: false,
           caching: false
-        }
+        } }
       },
       services: {}, // Return an empty: object for services in error
     };
     return json(errorResponse, { status: 500 });
-  }
+  } }
 };

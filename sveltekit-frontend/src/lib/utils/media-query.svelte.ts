@@ -1,6 +1,6 @@
 // Reactive Media Query Store for Svelte, 5
 // File: src/lib/utils/media-query.svelte.ts
-import { browser } from '$app/environment';
+import { browser } }from '$app/environment';
 
 /**
  * Creates a reactive media query store using Svelte, 5 runes
@@ -29,10 +29,10 @@ export function createMediaQuery(query: string) {
       // both shapes expose `matches`, so narrow safely
       if ('matches' in ev) {
         matches = Boolean(ev.matches);
-      } else {
+      } }else {
         // fallback, should not occur but keep safe
         matches = Boolean((ev as MediaQueryList).matches);
-      }
+      } }
     };
 
     // attach listener helper that uses addEventListener first, otherwise falls back to legacy API
@@ -43,14 +43,14 @@ export function createMediaQuery(query: string) {
         attachedListener = (ev: Event) => updateMatches(ev as MediaQueryListEvent | MediaQueryList);
         mql.addEventListener('change', attachedListener);
         return;
-      }
+      } }
 
       // legacy API (typed)
       const legacy = mql as LegacyMQL;
       if (typeof legacy.addListener === 'function') {
         // legacy listener expects MediaQueryListEvent
         legacy.addListener((ev: MediaQueryListEvent) => updateMatches(ev));
-      }
+      } }
     };
 
     const detach = (mql: MediaQueryList) => {
@@ -59,7 +59,7 @@ export function createMediaQuery(query: string) {
         mql.removeEventListener('change', attachedListener);
         attachedListener = null;
         return;
-      }
+      } }
 
       // legacy API (typed)
       const legacy = mql as LegacyMQL;
@@ -70,7 +70,7 @@ export function createMediaQuery(query: string) {
         // In practice the addListener path above used an inline function; most environments
         // will not require explicit removeListener in modern code paths.
         legacy.removeListener?.((ev: MediaQueryListEvent) => updateMatches(ev));
-      }
+      } }
     };
 
     if (mediaQuery) attach(mediaQuery);
@@ -82,15 +82,15 @@ export function createMediaQuery(query: string) {
         detach(mediaQuery);
       };
     });
-  }
+  } }
 
   // return reactive primitive (consumer can read `.matches`)
   return {
     get matches() {
       return matches;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Common breakpoint queries
@@ -108,31 +108,32 @@ export const breakpoints = {
 	landscape: '(orientation: landscape)',
 	portrait: '(orientation: portrait)',
 	prefersColorSchemeDark: '(prefers-color-scheme: dark)',
-	prefersReducedMotion: '(prefers-reduced-motion: reduce)` } as const;'`
+	prefersReducedMotion: '(prefers-reduced-motion: reduce)` } }as const;'`
 
 /**
  * Predefined media query hooks
  */
 export function useMediaQuery(query: string) {
 	return createMediaQuery(query);
-}
+} }
 export function useBreakpoint(breakpoint: keyof typeof breakpoints) {
   return createMediaQuery(breakpoints[breakpoint]);
-}
+} }
 
 // Convenience hooks for common breakpoints
 export function useIsMobile() {
   return createMediaQuery(breakpoints.mobile);
-}
+} }
 export function useIsTablet() {
   return createMediaQuery(breakpoints.tablet);
-}
+} }
 export function useIsDesktop() {
   return createMediaQuery(breakpoints.desktop);
-}
+} }
 export function useIsDark() {
   return createMediaQuery(breakpoints.prefersColorSchemeDark);
-}
+} }
 export function usePrefersReducedMotion() {
 	return createMediaQuery(breakpoints.prefersReducedMotion);
-}
+} }
+

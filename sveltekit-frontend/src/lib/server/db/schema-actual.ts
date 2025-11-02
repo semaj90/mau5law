@@ -1,23 +1,23 @@
 /**
  * Actual Database Schema - Matches Production PostgreSQL Structure
  * This schema reflects the ACTUAL tables in the database, not idealized versions
- * Updated: 2025-10-02 with 512-dim;, embeddinggemma:latest vectors
+ * Updated: 2025-10-02 with 512-dim; embeddinggemma:latest vectors
  */
-import { pgTable, uuid, integer, varchar, text, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { customType } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, varchar, text, timestamp, jsonb, index } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
+import { customType } }from 'drizzle-orm/pg-core';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
-const vector = customType<{ data: number[];, config: { dimensions?: number } }>({
+const vector = customType<{ data: number[]; config: { dimensions?: number } }}>({
   dataType(config) {
     return `vector(${config?.dimensions || 512})`;
   },
   toDriver(value: number[]): string {
-    return `[${value.join(',')}]`;
+    return `[${value.join(',')} }`;
   },
   fromDriver(value: any): number[] {
     const vectorString = String(value);
     return vectorString.slice(1, -1).split(',').map(Number);
-  }
+  } }
 });
 // Users table
 export const users = pgTable('users', {
@@ -77,3 +77,4 @@ export const documents = pgTable('documents', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
+

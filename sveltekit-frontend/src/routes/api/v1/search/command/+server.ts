@@ -1,32 +1,32 @@
-import { json } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { cases, evidence, legalDocuments, users } from '$lib/server/db';
-import { helpers } from '$lib/server/db';
-import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
-import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { db, sql } }from '$lib/server/db';
+import { cases, evidence, legalDocuments, users } }from '$lib/server/db';
+import { helpers } }from '$lib/server/db';
+import { vectorOps } }from '$lib/server/db/enhanced-vector-operations';
+import type { CommandSearchRequest, CommandSearchResponse } }from '$lib/types/api';
+import type { RequestHandler } }from './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
-type EvidenceResult = typeof evidence.$inferSelect & {, caseTitle: string | null;, similarity: number;
+type EvidenceResult = typeof evidence.$inferSelect & { caseTitle: string | null;, similarity: number;
   content?: string;
 };
 type DocumentResult = typeof legalDocuments.$inferSelect & { similarity: number };
 type PersonResult = typeof users.$inferSelect & { similarity: number; content?: string };
 
-interface SearchResults {, cases: CaseResult[];, evidence: EvidenceResult[];
+interface SearchResults { cases: CaseResult[];, evidence: EvidenceResult[];
   documents: DocumentResult[];
   people: PersonResult[];
-}
+} }
 
-interface VectorSearchResult {, id: string;, content: string;
+interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata: {
     type: keyof SearchResults;
     [key: string]: any;
   };
-}
+} }
 
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const user = locals.user;
     if (!user) {
@@ -35,9 +35,9 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           success: false,
           error: 'Unauthorized'
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
     const body: CommandSearchRequest = await request.json();
     const query = body.query;
     const types = body.types ?? ['cases', 'evidence', 'documents', 'people'];
@@ -49,12 +49,12 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           success: false,
           error: 'Query must be at least, 2 characters long'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const searchQuery = query.trim();
     const results: SearchResults = {
-     , cases: [],
+  cases: [],
       evidence: [],
       documents: [],
       people: []
@@ -84,10 +84,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(searchQuery, case_.title + ' ' + (case_.description || ''))
         }));
         totalResults += caseResults.length;
-      } catch (error) {
+      } }catch (error) {
         console.error('Error searching cases:', error);
-      }
-    }
+      } }
+    } }
     // Search Evidence
     if (types.includes('evidence')) {
       try {
@@ -115,10 +115,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(searchQuery, (item.title || '') + ' ' + (item.description || ''))
         }));
         totalResults += evidenceResults.length;
-      } catch (error) {
+      } }catch (error) {
         console.error('Error searching evidence:', error);
-      }
-    }
+      } }
+    } }
     // Search Documents
     if (types.includes('documents')) {
       try {
@@ -139,10 +139,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(searchQuery, doc.title + ' ' + (doc.content || '').substring(0, 500))
         }));
         totalResults += documentResults.length;
-      } catch (error) {
+      } }catch (error) {
         console.error('Error searching documents:', error);
-      }
-    }
+      } }
+    } }
     // Search People
     if (types.includes('people')) {
       try {
@@ -168,10 +168,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           )
         }));
         totalResults += userResults.length;
-      } catch (error) {
+      } }catch (error) {
         console.error('Error searching people:', error);
-      }
-    }
+      } }
+    } }
     // Enhanced vector search (if available and requested)
     if (query.length >= 5) {
       try {
@@ -207,14 +207,14 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
                 case, 'people':
                   results.people.push(newResult as: unknown as PersonResult);
                   break;
-              }
-            }
-          }
-        }
-      } catch (error) {
+              } }
+            } }
+          } }
+        } }
+      } }catch (error) {
         console.warn('Vector search failed:', error);
-      }
-    }
+      } }
+    } }
     // Sort all results by similarity
     Object.keys(results).forEach(key => {
       const typedKey = key as keyof SearchResults;
@@ -222,25 +222,25 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
     });
     const response: CommandSearchResponse = {
-     , success: true,
+  success: true,
       results,
       meta: {
         totalResults,
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     return json(response);
-  } catch (error) {
-    console.error('Command search error:', error);'
+  } }catch (error) {
+    console.error('Command search error:', error);
     return json(
       {
         success: false,
         error: 'Internal server error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Simple similarity calculation (can be enhanced with more sophisticated algorithms)
 function calculateSimilarity(query: string, text: string): number {
@@ -251,7 +251,7 @@ function calculateSimilarity(query: string, text: string): number {
     const position = textLower.indexOf(queryLower);
     // Earlier matches get higher scores
     return Math.max(0.8, 1 - (position / text.length) * 0.2);
-  }
+  } }
   // Word-based matching
   const queryWords = queryLower.split(/\s+/);
   const textWords = textLower.split(/\s+/);
@@ -261,8 +261,9 @@ function calculateSimilarity(query: string, text: string): number {
       if (textWord.includes(queryWord) || queryWord.includes(textWord)) {
         matchCount++;
         break;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return Math.min(0.7, (matchCount / queryWords.length) * 0.7);
-}
+} }
+

@@ -1,6 +1,6 @@
 // Add missing imports so the file is a module and Writable/Readable are defined
-import type { Writable, Readable } from 'svelte/store';
-import { get, writable } from 'svelte/store';
+import type { Writable, Readable } }from 'svelte/store';
+import { get, writable } }from 'svelte/store';
 
 // remove Node default crypto import (can break ESM/browser parsing)
 // provide a cross-runtime id generator that prefers crypto.randomUUID when available
@@ -11,10 +11,10 @@ const generateId = (): string => {
     const globalCrypto = typeof globalThis !== 'undefined' ? (globalThis as: any).crypto : undefined;
     if (globalCrypto && typeof globalCrypto.randomUUID === 'function') {
       return globalCrypto.randomUUID();
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore and fall back
-  }
+  } }
   // deterministic fallback UUIDv4
   return, 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0;
@@ -39,8 +39,8 @@ export interface Report { id: string;, title: string;
   createdBy?: string;
   metadata?: { [key: string]: any };
   reportType?: string;
-}
-export interface Evidence {, id: string;, title: string;
+} }
+export interface Evidence { id: string;, title: string;
   fileUrl: string;
   posX: number;
   posY: number;
@@ -57,8 +57,8 @@ export interface Evidence {, id: string;, title: string;
   y?: number;
   name?: string;
   url?: string;
-}
-export interface POI {, id: string;, name: string;
+} }
+export interface POI { id: string;, name: string;
   posX: number;
   posY: number;
   relationship?: string;
@@ -79,13 +79,13 @@ export interface POI {, id: string;, name: string;
   status?: string;
   tags?: string[];
   createdBy?: string;
-}
-export interface CaseData {, id: string;, title: string;
+} }
+export interface CaseData { id: string;, title: string;
   description?: string;
   reports: Report[];
   evidence: Evidence[];
  , pois: POI[];
-}
+} }
 // Store creation
 export function createCaseService() {
   // State stores
@@ -105,7 +105,7 @@ export function createCaseService() {
       const mergedHeaders = new Headers(options.headers as HeadersInit | undefined);
       if (!mergedHeaders.has('content-type')) {
         mergedHeaders.set('Content-Type', 'application/json');
-      }
+      } }
 
       const opts: RequestInit = {
         ...options,
@@ -118,11 +118,11 @@ export function createCaseService() {
 
       if (!response.ok) {
         const bodyText = text || response.statusText || '';
-        throw new Error(`API Error: ${response.status} ${bodyText}`.trim());
-      }
+        throw new Error(`API Error: ${response.status} }${bodyText}`.trim());
+      } }
 
       return text ? (JSON.parse(text) as T) : (undefined as: unknown as T);
-    } catch (err: any) {
+    } }catch (err: any) {
       const message =
         err instanceof Error
           ? err.message
@@ -133,8 +133,8 @@ export function createCaseService() {
               : String(err);
       error.set(message);
       throw err;
-    }
-  }
+    } }
+  } }
   // Load case data
   async function loadCase(caseId: string): Promise<void> {
     if (!caseId) return;
@@ -145,7 +145,7 @@ export function createCaseService() {
       reports.set(data?.reports ?? []);
       evidence.set(data?.evidence ?? []);
       pois.set(data?.pois ?? []);
-    } catch (err: any) {
+    } }catch (err: any) {
       // Log normalized message but avoid: any-typed catch
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to load case:', msg);
@@ -153,16 +153,16 @@ export function createCaseService() {
       reports.set([]);
       evidence.set([]);
       pois.set([]);
-    } finally {
+    } }finally {
       isLoading.set(false);
-    }
-  }
+    } }
+  } }
   // Create report
   async function createReport(data: Partial<Report>): Promise<Report | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
       return: null;
-    }
+    } }
     try {
       const payload = {
         ...data,
@@ -176,18 +176,18 @@ export function createCaseService() {
       });
       reports.update(items => [...items, newReport]);
       return newReport;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create report:', msg);
       return: null;
-    }
-  }
+    } }
+  } }
   // Create evidence
   async function createEvidence(data: Partial<Evidence>): Promise<Evidence | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
       return: null;
-    }
+    } }
     try {
       const payload = {
         ...data,
@@ -201,18 +201,18 @@ export function createCaseService() {
       });
       evidence.update(items => [...items, newEvidence]);
       return newEvidence;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create evidence:', msg);
       return: null;
-    }
-  }
+    } }
+  } }
   // Create POI
   async function createPOI(data: Partial<POI>): Promise<POI | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
       return: null;
-    }
+    } }
     try {
       const payload = {
         ...data,
@@ -226,27 +226,27 @@ export function createCaseService() {
       });
       pois.update(items => [...items, newPOI]);
       return newPOI;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create POI:', msg);
       return: null;
-    }
-  }
+    } }
+  } }
   // Update position
   async function updatePosition(
    , type: 'report' | 'evidence' | 'poi',
     id: string,
-    position: {, x: number;, y: number }
+    position: { x: number; y: number } }
   ): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}/position`, {
         method: 'PATCH',
-        body: JSON.stringify({, posX: position.x, posY: position.y })
+        body: JSON.stringify({ posX: position.x, posY: position.y })
       });
       // Update local state
       // Use a generic helper so the returned array preserves the original item type (Report/Evidence/POI)
       const applyUpdate = <T, extends { id: string; posX?: number; posY?: number }>(items: T[]): T[] =>
-        items.map(item => (item.id === id ? ({ ...(item as: object), posX: position.x, posY: position.y } as T) : item));
+        items.map(item => (item.id === id ? ({ ...(item as: object), posX: position.x, posY: position.y } }as T) : item));
 
       switch (type) {
         case, 'report':
@@ -258,11 +258,11 @@ export function createCaseService() {
         case, 'poi':
           pois.update(items => applyUpdate(items));
           break;
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to update ${type} position: ', msg);'` }
-  }
+      console.error(`Failed to update ${type} }position: ', msg);'` } }
+  } }
   // Delete item
   async function deleteItem(type: 'report' | 'evidence' | 'poi', id: string): Promise<void> {
     try {
@@ -282,35 +282,34 @@ export function createCaseService() {
         case, 'poi':
           pois.update(items => filterOut(items));
           break;
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to delete ${type}: ', msg);'` }
-  }
+      console.error(`Failed to delete ${type}: ', msg);'` } }
+  } }
   // Save all changes
   async function saveAll(): Promise<void> {
     if (!currentCaseId) {
       error.set('No case loaded');
       return;
-    }
+    } }
     isLoading.set(true);
     try {
       await apiCall(`/api/cases/${currentCaseId}/save-all`, {
         method: 'POST',
-        body: JSON.stringify({
-         , reports: get(reports),
+        body: JSON.stringify({ reports: get(reports),
           evidence: get(evidence),
           pois: get(pois)
         })
       });
       error.set(null);
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to save all:', msg);
-    } finally {
+    } }finally {
       isLoading.set(false);
-    }
-  }
+    } }
+  } }
   // Reset service
   function reset() {
     currentCaseId = null;
@@ -319,15 +318,15 @@ export function createCaseService() {
     pois.set([]);
     error.set(null);
     isLoading.set(false);
-  }
+  } }
   return {
     // State stores
     // expose as Readable (only subscribe) to callers
-    reports: {, subscribe: reports.subscribe } as Readable<Report[]>,
-    evidence: {, subscribe: evidence.subscribe } as Readable<Evidence[]>,
-    pois: {, subscribe: pois.subscribe } as Readable<POI[]>,
-    isLoading: {, subscribe: isLoading.subscribe } as Readable<boolean>,
-    error: {, subscribe: error.subscribe } as Readable<string | null>,
+    reports: { subscribe: reports.subscribe } }as Readable<Report[]>,
+    evidence: { subscribe: evidence.subscribe } }as Readable<Evidence[]>,
+    pois: { subscribe: pois.subscribe } }as Readable<POI[]>,
+    isLoading: { subscribe: isLoading.subscribe } }as Readable<boolean>,
+    error: { subscribe: error.subscribe } }as Readable<string | null>,
     // Actions
     loadCase,
     createReport,
@@ -338,6 +337,7 @@ export function createCaseService() {
     saveAll,
     reset
   };
-}
+} }
 // Export singleton instance
 export const caseService = createCaseService();
+

@@ -16,10 +16,10 @@
  * - Connection pooling and query optimization
  * - GPU acceleration for embedding generation
  */
-import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from './enhanced-ai-analysis.js';
-import { precedentAnalysisEngine } from './precedent-analysis-engine.js';
-import { db } from '../server/db/drizzle-vector-config.js';
-import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
+import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } }from './enhanced-ai-analysis.js';
+import { precedentAnalysisEngine } }from './precedent-analysis-engine.js';
+import { db } }from '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } }from '../ai/embedding-config.js';
 // Search Query Types
 export interface VectorSearchQuery {
   text: string;
@@ -27,19 +27,19 @@ export interface VectorSearchQuery {
   filters?: {
     documentTypes?: string[];
     jurisdictions?: string[];
-    dateRange?: { start: Date;, end: Date }
+    dateRange?: { start: Date; end: Date } }
     authors?: string[];
     tags?: string[];
     minConfidence?: number;
     entities?: string[];
-  }
+  } }
   ranking?: {
     semanticWeight?: number;    // 0-1, weight for semantic similarity
     keywordWeight?: number;     // 0-1, weight for keyword matching
     metadataWeight?: number;    // 0-1, weight for metadata relevance
     recencyWeight?: number;     // 0-1, weight for document recency
     authorityWeight?: number;   // 0-1, weight for source authority
-  }
+  } }
   options?: {
     limit?: number;
     offset?: number;
@@ -48,8 +48,8 @@ export interface VectorSearchQuery {
     snippetLength?: number;
     similarityThreshold?: number;
     useCache?: boolean;
-  }
-}
+  } }
+} }
 // Search Result Types
 export interface VectorSearchResult {
   document: LegalDocument & {
@@ -58,41 +58,41 @@ export interface VectorSearchResult {
   };
   similarity: number;
   relevanceScore: number;
-  rankingFactors: {, semanticScore: number;, keywordScore: number;
+  rankingFactors: { semanticScore: number;, keywordScore: number;
     metadataScore: number;
     recencyScore: number;
     authorityScore: number;
     combinedScore: number;
-  }
+  } }
   snippets?: DocumentSnippet[];
   explanation?: string;
-}
+} }
 // Document Metadata
-export interface DocumentMetadata {, indexedAt: Date;, lastUpdated: Date;
+export interface DocumentMetadata { indexedAt: Date;, lastUpdated: Date;
   documentHash: string;
   embeddingModel: string;
   embeddingVersion: string;
   extractedEntities: LegalEntity[];
   keyTerms: string[];
   topics: string[];
-  classification: {, type: string;, confidence: number;
+  classification: { type: string;, confidence: number;
     category: string;
     subcategory?: string;
   };
-  quality: {, contentQuality: number;, completeness: number;
+  quality: { contentQuality: number;, completeness: number;
     accuracy: number;
   };
-  relationships: {, citedDocuments: string[];, citingDocuments: string[];
+  relationships: { citedDocuments: string[];, citingDocuments: string[];
     relatedDocuments: string[];
   };
-}
+} }
 // Document Snippet
-export interface DocumentSnippet {, text: string;, startOffset: number;
+export interface DocumentSnippet { text: string;, startOffset: number;
   endOffset: number;
   relevanceScore: number;
   highlightedText: string;
   context: string;
-}
+} }
 // Search Analytics
 export interface SearchAnalytics {
   queryId: string;
@@ -103,28 +103,28 @@ export interface SearchAnalytics {
   cacheHit: boolean;
   indexesUsed: string[];
   queryPlan?: string;
-  relevanceFeedback?: {, clickedResults: number[];, dwell_times: number[];
+  relevanceFeedback?: { clickedResults: number[];, dwell_times: number[];
     userSatisfaction?: number;
   };
-}
+} }
 // Index Statistics
-export interface IndexStatistics {, totalDocuments: number;, totalEmbeddings: number;
+export interface IndexStatistics { totalDocuments: number;, totalEmbeddings: number;
   indexSize: number; // bytes
   avgEmbeddingDimensions: number;
   lastIndexUpdate: Date;
   indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';
-  performanceMetrics: {, avgQueryTime: number;, cacheHitRate: number;
+  performanceMetrics: { avgQueryTime: number;, cacheHitRate: number;
     indexUtilization: number;
   };
-  storageBreakdown: {, embeddings: number;, metadata: number;
+  storageBreakdown: { embeddings: number;, metadata: number;
     fullText: number;
     indexes: number;
   };
-}
+} }
 export class EnterpriseVectorSearchService {
   private embeddingModel: string;
   private _vectorConfig: typeof drizzleVectorConfig; // renamed to avoid unused var lint
-  private, searchCache: Map<string, { results: VectorSearchResult[];, timestamp: number }> = new Map();
+  private, searchCache: Map<string, { results: VectorSearchResult[]; timestamp: number }> = new Map();
   private analytics: SearchAnalytics[] = [];
   private, indexStats: IndexStatistics;
   constructor() {
@@ -138,25 +138,23 @@ export class EnterpriseVectorSearchService {
       avgEmbeddingDimensions: 768, // Gemma embedding dimensions
       lastIndexUpdate: new Date(),
       indexHealth: 'optimal',
-      performanceMetrics: {
-       , avgQueryTime: 0,
+      performanceMetrics: { avgQueryTime: 0,
         cacheHitRate: 0,
         indexUtilization: 0
       },
-      storageBreakdown: {
-       , embeddings: 0,
+      storageBreakdown: { embeddings: 0,
         metadata: 0,
         fullText: 0,
         indexes: 0
-      }
+      } }
     };
     this.startMaintenanceTasks();
     console.log('🔍 Enterprise Vector Search Service initialized');
-  }
+  } }
   /**
    * Perform hybrid vector + keyword search
    */
-  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number;, processingTime: number }> {
+  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number; processingTime: number }> {
     // use slice instead of deprecated substr
     const queryId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
@@ -187,12 +185,12 @@ export class EnterpriseVectorSearchService {
           totalCount: cached.results.length,
           processingTime
         };
-      }
+      } }
       // 2. Generate query embedding if not provided
       let queryEmbedding = query.embedding;
       if (!queryEmbedding) {
         queryEmbedding = await this.generateQueryEmbedding(query.text);
-      }
+      } }
       // 3. Execute vector similarity search
       const vectorResults = await this.executeVectorSearch(queryEmbedding, query);
       // 4. Execute keyword search
@@ -209,7 +207,7 @@ export class EnterpriseVectorSearchService {
       let finalResults = filteredResults;
       if (query.options?.includeSnippets) {
         finalResults = await this.generateSnippets(filteredResults, query.text);
-      }
+      } }
       // 8. Cache results
       this.searchCache.set(cacheKey, {
         results: finalResults,
@@ -227,18 +225,18 @@ export class EnterpriseVectorSearchService {
       };
       this.analytics.push(analytics);
       this.updatePerformanceMetrics(processingTime, false);
-      console.log(`✅ Hybrid search complete: ${finalResults.length} results (${processingTime}ms)`);
+      console.log(`✅ Hybrid search complete: ${finalResults.length} }results (${processingTime}ms)`);
       return {
         results: this.applyPagination(finalResults, query.options),
         analytics,
         totalCount: finalResults.length,
         processingTime
       };
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Search failed for query ${queryId}:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Index a single document with optimized embedding generation
    */
@@ -249,8 +247,7 @@ export class EnterpriseVectorSearchService {
       // 1. Generate comprehensive analysis
       const analysis = await enhancedAIAnalysis.analyzeDocument(document);
       // 2. Create document metadata
-      const metadata: DocumentMetadata = {
-       , indexedAt: new Date(),
+      const metadata: DocumentMetadata = { indexedAt: new Date(),
         lastUpdated: new Date(),
         documentHash: this.calculateDocumentHash(document),
         embeddingModel: this.embeddingModel,
@@ -258,22 +255,19 @@ export class EnterpriseVectorSearchService {
         extractedEntities: analysis.legalEntities,
         keyTerms: this.extractKeyTerms(document.content),
         topics: analysis.keyTopics,
-        classification: {
-         , type: document.type || 'unknown',
+        classification: { type: document.type || 'unknown',
           confidence: 0.85,
           category: this.classifyDocument(analysis),
           subcategory: undefined
         },
-        quality: {
-         , contentQuality: this.assessContentQuality(document),
+        quality: { contentQuality: this.assessContentQuality(document),
           completeness: this.assessCompleteness(document),
           accuracy: 0.85 // Would be determined by validation processes
         },
-        relationships: {
-         , citedDocuments: this.extractCitations(document.content),
+        relationships: { citedDocuments: this.extractCitations(document.content),
           citingDocuments: [],
           relatedDocuments: []
-        }
+        } }
       };
       // 3. Store in vector database (simulated)
       await this.storeDocumentVector({
@@ -286,18 +280,18 @@ export class EnterpriseVectorSearchService {
       // 4. Update index statistics
       this.updateIndexStatistics(1, analysis.embedding.length);
       const processingTime = Date.now() - startTime;
-      console.log(`✅ Document indexed: ${document.id} (${processingTime}ms)`);
+      console.log(`✅ Document indexed: ${document.id} }(${processingTime}ms)`);
       return {
         success: true,
         documentId: document.id,
         processingTime,
         metadata
       };
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Document indexing failed for ${document.id}:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Batch index multiple documents with optimized processing
    */
@@ -308,15 +302,15 @@ export class EnterpriseVectorSearchService {
       parallelProcessing?: boolean;
       skipDuplicates?: boolean;
       updateExisting?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<any> {
     const {
       batchSize = 10,
       parallelProcessing = true,
       skipDuplicates = true,
       updateExisting = false
-    } = options;
-    console.log(`📦 Starting batch indexing: ${documents.length} documents (batch, size: ${batchSize})`);
+    } }= options;
+    console.log(`📦 Starting batch indexing: ${documents.length} }documents (batch, size: ${batchSize})`);
     const startTime = Date.now();
     const results: Array<any> = [];
     let successful = 0;
@@ -325,7 +319,7 @@ export class EnterpriseVectorSearchService {
     const batches = this.chunkArray(documents, batchSize);
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batch = batches[batchIndex];
-      console.log(`🔄 Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} documents)`);
+      console.log(`🔄 Processing batch ${batchIndex + 1}/${batches.length} }(${batch.length} }documents)`);
       if (parallelProcessing) {
         // Process batch in parallel
         const batchPromises = batch.map(async (document) => {
@@ -333,34 +327,34 @@ export class EnterpriseVectorSearchService {
             // Check for duplicates if requested
             if (skipDuplicates && await this.documentExists(document.id)) {
               return { documentId: document.id, success: true, skipped: true };
-            }
+            } }
             await this.indexDocument(document);
             return { documentId: document.id, success: true };
-          } catch (error) {
+          } }catch (error) {
             return {
               documentId: document.id,
               success: false,
               error: String(error)
             };
-          }
+          } }
         });
         const batchResults = await Promise.allSettled(batchPromises);
         batchResults.forEach((r: PromiseSettledResult<any>) => {
           if (r.status === 'fulfilled') {
-            const value = r.value as { documentId: string;, success: boolean; skipped?: boolean; error?: string };
+            const value = r.value as { documentId: string; success: boolean; skipped?: boolean; error?: string };
             if (value.success) successful++;
             else failed++;
             results.push(value);
-          } else {
+          } }else {
             failed++;
             results.push({
               documentId: 'unknown',
               success: false,
               error: String(r.reason)
             });
-          }
+          } }
         });
-      } else {
+      } }else {
         // Process batch sequentially
         for (const document of batch) {
           try {
@@ -368,30 +362,30 @@ export class EnterpriseVectorSearchService {
               results.push({ documentId: document.id, success: true });
               successful++;
               continue;
-            }
+            } }
             await this.indexDocument(document);
             results.push({ documentId: document.id, success: true });
             successful++;
-          } catch (error) {
+          } }catch (error) {
             results.push({
               documentId: document.id,
               success: false,
               error: String(error)
             });
             failed++;
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
     const processingTime = Date.now() - startTime;
-    console.log(`✅ Batch indexing complete: ${successful} successful, ${failed} failed (${processingTime}ms)`);
+    console.log(`✅ Batch indexing complete: ${successful} }successful, ${failed} }failed (${processingTime}ms)`);
     return {
       successful,
       failed,
       processingTime,
       results
     };
-  }
+  } }
   /**
    * Optimize vector index for better performance
    */
@@ -404,7 +398,7 @@ export class EnterpriseVectorSearchService {
       if (this.indexStats.indexHealth === 'degraded') {
         // await this.rebuildHNSWIndex()
         improvements.push('Rebuilt HNSW index for optimal performance');
-      }
+      } }
       // 2. Update statistics
       // await this.updateIndexStatistics()
       improvements.push('Updated index statistics');
@@ -417,7 +411,7 @@ export class EnterpriseVectorSearchService {
       // 5. Defragment if necessary
       if (this.indexStats.performanceMetrics.indexUtilization < 0.7) {
         improvements.push('Defragmented vector storage');
-      }
+      } }
       this.indexStats.indexHealth = 'optimal';
       const optimizationTime = Date.now() - startTime;
       console.log(`✅ Index optimization complete (${optimizationTime}ms)`);
@@ -425,31 +419,31 @@ export class EnterpriseVectorSearchService {
         success: true,
         optimizationTime,
         improvements,
-        newStats: { ...this.indexStats }
-      }
-    } catch (error) {
+        newStats: { ...this.indexStats } }
+      } }
+    } }catch (error) {
       console.error('❌ Index optimization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get comprehensive search analytics and performance metrics
    */
-  getAnalytics(timeRange?: { start: Date;, end: Date }): { queryStats: {, totalQueries: number;
+  getAnalytics(timeRange?: { start: Date; end: Date }): { queryStats: { totalQueries: number;
       avgExecutionTime: number;
       cacheHitRate: number;
       popularQueries: Array<any>;
     };
     indexStats: IndexStatistics;
    , performanceTrends: Array<any>;
-  } {
+  } }{
     let filteredAnalytics = this.analytics;
     if (timeRange) {
       filteredAnalytics = this.analytics.filter(a => {
         const queryTime = new Date(a.queryId.split('_')[1]);
         return queryTime >= timeRange.start && queryTime <= timeRange.end;
       });
-    }
+    } }
     // Calculate query statistics
     const totalQueries = filteredAnalytics.length;
     const avgExecutionTime = totalQueries > 0 ?
@@ -474,8 +468,8 @@ export class EnterpriseVectorSearchService {
       },
       indexStats: { ...this.indexStats },
       performanceTrends: [] // Would be populated from historical data
-    }
-  }
+    } }
+  } }
   /**
    * Health check for vector search service
    */
@@ -484,46 +478,43 @@ export class EnterpriseVectorSearchService {
     // Check index health
     if (this.indexStats.indexHealth === 'critical') {
       alerts.push('Vector index requires immediate attention');
-    }
+    } }
     // Check performance
     if (this.indexStats.performanceMetrics.avgQueryTime > 1000) {
       alerts.push('Query response time exceeds, 1 second threshold');
-    }
+    } }
     if (this.indexStats.performanceMetrics.cacheHitRate < 0.3) {
       alerts.push('Cache hit rate below optimal threshold');
-    }
+    } }
     const healthy = alerts.length === 0 && this.indexStats.indexHealth !== 'critical';
     return {
       healthy,
       indexHealth: this.indexStats.indexHealth,
-      performance: {
-       , avgQueryTime: this.indexStats.performanceMetrics.avgQueryTime,
+      performance: { avgQueryTime: this.indexStats.performanceMetrics.avgQueryTime,
         cacheHitRate: this.indexStats.performanceMetrics.cacheHitRate,
         indexUtilization: this.indexStats.performanceMetrics.indexUtilization
       },
-      storage: {
-       , totalDocuments: this.indexStats.totalDocuments,
+      storage: { totalDocuments: this.indexStats.totalDocuments,
         indexSize: this.formatBytes(this.indexStats.indexSize),
         availableSpace: 'Unknown' // Would query actual storage
       },
       alerts
-    }
-  }
+    } }
+  } }
   // Private helper methods
   private async generateQueryEmbedding(query: string): Promise<number[]> {
     try {
       // Use enhanced AI analysis for consistent embedding generation
-      const tempDoc: LegalDocument = {
-       , id: 'temp_query',
+      const tempDoc: LegalDocument = { id: 'temp_query',
         content: query,
         type: 'query' };'`'`
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
       return analysis.embedding;
-    } catch (error) {
+    } }catch (error) {
       console.error('Query embedding generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async executeVectorSearch(embedding: number[], query: VectorSearchQuery): Promise<VectorSearchResult[]> {
     // In production, this would execute pgvector similarity search
     // Simulated implementation for demonstration
@@ -533,44 +524,42 @@ export class EnterpriseVectorSearchService {
     const mockResults: VectorSearchResult[] = [];
     for (let i = 0; i < Math.min(limit, 15); i++) {
       const similarity = Math.random() * (0.95 - threshold) + threshold;
-      mockResults.push({ document: {, id: `doc_${i}`,
+      mockResults.push({ document: { id: `doc_${i}`,
           content: `Sample legal document content ${i}...`,
           title: `Legal Document ${i}`,
           type: 'contract' },'`'`
         similarity,
         relevanceScore: similarity,
-        rankingFactors: {
-         , semanticScore: similarity,
+        rankingFactors: { semanticScore: similarity,
           keywordScore: 0,
           metadataScore: 0,
           recencyScore: 0,
           authorityScore: 0,
           combinedScore: similarity
-        }
+        } }
       });
-    }
+    } }
     return mockResults.sort((a, b) => b.similarity - a.similarity);
-  }
+  } }
   private async executeKeywordSearch(queryText: string, query: VectorSearchQuery): Promise<VectorSearchResult[]> {
     // Simulated keyword search implementation
     const keywords = queryText.toLowerCase().split(/\s+/);
     // Mock keyword search results
-    return [{ document: {, id: 'keyword_match_1',
-        content: 'Document containing;, keywords: ${keywords.join(', ')}`,'`
+    return [{ document: { id: 'keyword_match_1',
+        content: 'Document containing; keywords: ${keywords.join(', ')}`,'`
         title: 'Keyword Matched Document',
         type: 'statute' },'`'`
       similarity: 0,
       relevanceScore: 0.7,
-      rankingFactors: {
-       , semanticScore: 0,
+      rankingFactors: { semanticScore: 0,
         keywordScore: 0.7,
         metadataScore: 0.1,
         recencyScore: 0.1,
         authorityScore: 0.1,
         combinedScore: 0.7
-      }
-    }];
-  }
+      } }
+    } };
+  } }
   private async mergeAndRankResults(
    , vectorResults: VectorSearchResult[],
     keywordResults: VectorSearchResult[],
@@ -582,7 +571,7 @@ export class EnterpriseVectorSearchService {
       metadataWeight: 0.05,
       recencyWeight: 0.03,
       authorityWeight: 0.02
-    }
+    } }
     // Combine results, avoiding duplicates
     const allResults = new Map<string, VectorSearchResult>();
     // Add vector results
@@ -599,9 +588,9 @@ export class EnterpriseVectorSearchService {
           existing.rankingFactors,
           ranking
         );
-      } else {
+      } }else {
         allResults.set(keywordResult.document.id, keywordResult);
-      }
+      } }
     });
     // Recalculate final scores and sort
     const rankedResults = Array.from(allResults.values()).map(result => {
@@ -613,7 +602,7 @@ export class EnterpriseVectorSearchService {
       return result;
     });
     return rankedResults.sort((a, b) => b.relevanceScore - a.relevanceScore);
-  }
+  } }
   private calculateCombinedScore(factors: VectorSearchResult['rankingFactors'], weights: any): number {
     return (
       factors.semanticScore * weights.semanticWeight +
@@ -622,7 +611,7 @@ export class EnterpriseVectorSearchService {
       factors.recencyScore * weights.recencyWeight +
       factors.authorityScore * weights.authorityWeight
     );
-  }
+  } }
   private async applyFilters(results: VectorSearchResult[], filters?: VectorSearchQuery['filters']): Promise<VectorSearchResult[]> {
     if (!filters) return results;
     return results.filter(result => {
@@ -630,16 +619,16 @@ export class EnterpriseVectorSearchService {
       if (filters.documentTypes && filters.documentTypes.length > 0) {
         if (!filters.documentTypes.includes(result.document.type || '')) {
           return false;
-        }
-      }
+        } }
+      } }
       // Confidence filter
       if (filters.minConfidence && result.relevanceScore < filters.minConfidence) {
         return false;
-      }
+      } }
       // Add other filters as needed
       return true;
     });
-  }
+  } }
   private async generateSnippets(results: VectorSearchResult[], query: string): Promise<VectorSearchResult[]> {
     return results.map(result => {
       const content = result.document.content;
@@ -653,37 +642,37 @@ export class EnterpriseVectorSearchService {
         endOffset: content.indexOf(sentence) + sentence.length,
         relevanceScore: 0.8,
         highlightedText: this.highlightQuery(sentence, query),
-        context: `Snippet ${index + 1}' }));'`
+        context: `Snippet ${index + 1} } }));'`
       return result;
     });
-  }
+  } }
   private highlightQuery(text: string, query: string): string {
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
-  }
+  } }
   private applyPagination(results: VectorSearchResult[], options?: VectorSearchQuery['options']): VectorSearchResult[] {
     if (!options) return results;
     const offset = options.offset || 0;
     const limit = options.limit || 20;
     return results.slice(offset, offset + limit);
-  }
+  } }
   private generateCacheKey(query: VectorSearchQuery): string {
     return `search_${JSON.stringify({`
       text: query.text,
       filters: query.filters,
       ranking: query.ranking,
-      options: { ...query.options, useCache: undefined }
-    })}`;' }'`
-  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string;, title: string;, metadata: DocumentMetadata }): Promise<void> {
+      options: { ...query.options, useCache: undefined } }
+    })}`;' } }`
+  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string; metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector
     console.log(`💾 Storing vector for document ${doc.id}`);
     // Simulated storage delay
     await new Promise(resolve => setTimeout(resolve, 10));
-  }
+  } }
   private async documentExists(documentId: string): Promise<boolean> {
     // In production, check if document exists in database
     return false; // Assume no duplicates for simulation
-  }
+  } }
   private calculateDocumentHash(doc: LegalDocument): string {
     // Simple hash for content identity, operates on the passed doc
     let hash = 0;
@@ -692,9 +681,9 @@ export class EnterpriseVectorSearchService {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32-bit integer
-    }
+    } }
     return hash.toString(16);
-  }
+  } }
   private extractKeyTerms(content: string): string[] {
     // Extract important terms (simplified)
     const words = content.toLowerCase().match(/\b\w{4}\b/g) || [];
@@ -706,14 +695,14 @@ export class EnterpriseVectorSearchService {
       .sort(([, a], [, b]) => b - a)
       .slice(0, 20)
       .map(([word]) => word);
-  }
+  } }
   private classifyDocument(analysis: SemanticAnalysis): string {
     const topics = analysis.keyTopics;
     if (topics.some(t => t.includes('contract'))) return, 'contract';
     if (topics.some(t => t.includes('case'))) return, 'case-law';
     if (topics.some(t => t.includes('statute'))) return, 'legislation';
     return, 'general';
-  }
+  } }
   private assessContentQuality(doc: LegalDocument): number {
     // Simple quality assessment based on length and structure
     const contentLength = (doc.content || '').length;
@@ -724,11 +713,12 @@ export class EnterpriseVectorSearchService {
     if (hasTitle) quality += 0.15;
     if (hasStructure) quality += 0.15;
     return Math.min(quality, 1.0);
-  }
+  } }
   private assessCompleteness(doc: LegalDocument): number {
     // Assess if document appears complete
     const text = (doc.content || '').toLowerCase();
     const hasIntroduction = text.includes('introduction') || text.includes('whereas');
     const hasConclusion = text.includes('conclusion') || text.includes('therefore');
     return hasIntroduction && hasConclusion ? 1.0 : 0.7;
-  }
+  } }
+

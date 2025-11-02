@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 interface PrecedentSearchRequest {
   query?: string
   factPattern?: string
@@ -8,43 +8,43 @@ interface PrecedentSearchRequest {
   courtLevel?: string
   practiceArea?: string
   dateRange?: { start: string, end: string
-  }
+  } }
   precedentialValue?: string[]
   maxResults?: number
   sortBy?: 'similarity' | 'date' | 'citations' | 'authority'
-}
-interface PrecedentMatch {, id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string
+} }
+interface PrecedentMatch { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string
   judges?: string[];
-  similarityScore: number; factualSimilarity: number; legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'; keyFacts: string[]; legalHolding: string; reasoningChain: string[]; citationCount: number; recentCitations: number; distinguishingFactors: string[]; applicabilityScore: number; strengthIndicators: {, factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number; temporalRelevance: number
-  }
+  similarityScore: number; factualSimilarity: number; legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'; keyFacts: string[]; legalHolding: string; reasoningChain: string[]; citationCount: number; recentCitations: number; distinguishingFactors: string[]; applicabilityScore: number; strengthIndicators: { factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number; temporalRelevance: number
+  } }
   relatedTopics: string[]; practiceAreas: string[]
   embedding?: number[]
-}
-interface CitationNetwork {, caseId: string, citingCases: string[]; citedCases: string[]; authorityScore: number; influenceRank: number; networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: {, depth: number, breadth: number; clusters: string[]
-  }
-}
-interface LegalReasoningStep {, stepNumber: number;, legalPrinciple: string;
+} }
+interface CitationNetwork { caseId: string, citingCases: string[]; citedCases: string[]; authorityScore: number; influenceRank: number; networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: { depth: number, breadth: number; clusters: string[]
+  } }
+} }
+interface LegalReasoningStep { stepNumber: number;, legalPrinciple: string;
   supportingCases: string[];
   factualBasis: string;
   logicalConnection: string;
   strengthScore: number;
   vulnerabilities: string[];
   counterarguments: string[];
-}
+} }
 
-interface LegalReasoningChain {, steps: LegalReasoningStep[];, overallCoherence: number;
+interface LegalReasoningChain { steps: LegalReasoningStep[];, overallCoherence: number;
   logicalGaps: string[];
   alternativeTheories: string[];
-}
+} }
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: PrecedentSearchRequest = await request.json();
-    const { query, factPattern, jurisdiction, courtLevel, practiceArea } = searchRequest;
+    const { query, factPattern, jurisdiction, courtLevel, practiceArea } }= searchRequest;
     // Validate input
     if (!query && !factPattern) {
       return json({ success: false, error: 'Either query or fact pattern is required' }, { status: 400 });
-    }
+    } }
     const startTime = Date.now();
     // Perform precedent search
     const searchResults = await performPrecedentSearch(searchRequest);
@@ -60,27 +60,27 @@ export const, POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results: {
-       , matches: searchResults.matches,
+  matches: searchResults.matches,
         total: searchResults.total,
         citationNetworks,
         reasoningChain,
         applicabilityAnalysis,
         strategicRecommendations,
         searchMetadata: {
-         , query: query || 'Fact pattern analysis',
+  query: query || 'Fact pattern analysis',
           jurisdiction,
           courtLevel,
           practiceArea,
           processingTime,
           searchMode: query ? 'semantic' : 'fact-pattern',
           confidenceScore: calculateOverallConfidence(searchResults.matches)
-        }
-      }
+        } }
+      } }
     });
-  } catch (error: any) {
-    console.error('Precedent search error:', error);'
+  } }catch (error: any) {
+    console.error('Precedent search error:', error);
     return json({ success: false, error: 'Precedent search failed', results: null }, { status: 500 });
-  }
+  } }
 };
 async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<any> {
   const {
@@ -93,22 +93,22 @@ async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<
     precedentialValue,
     maxResults,
     sortBy
-  } = request;
+  } }= request;
   // In production, this would perform vector similarity search against legal database
   // For now, generate comprehensive mock results based on request parameters
   let mockMatches = generateMockPrecedents(query || factPattern || '', request);
   // Apply filters
   if (jurisdiction) {
     mockMatches = mockMatches.filter(item => item.jurisdiction?.toLowerCase().includes(jurisdiction.toLowerCase()));
-  }
+  } }
   if (courtLevel) {
     mockMatches = mockMatches.filter(item => item.court?.toLowerCase().includes(courtLevel.toLowerCase()));
-  }
+  } }
   if (practiceArea) {
     mockMatches = mockMatches.filter(item =>
       item.practiceAreas?.some(pa => pa.toLowerCase().includes(practiceArea.toLowerCase()))
     );
-  }
+  } }
   // Apply date range filter
   if (dateRange?.start && dateRange?.end) {
     const startDate = new Date(dateRange.start);
@@ -117,11 +117,11 @@ async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<
       const itemDate = new Date(item.dateDecided);
       return itemDate >= startDate && itemDate <= endDate;
     });
-  }
+  } }
   // Apply precedential value filter
   if (precedentialValue && precedentialValue.length > 0) {
     mockMatches = mockMatches.filter(item => precedentialValue.includes(item.precedentialValue));
-  }
+  } }
   // Apply sorting
   switch (sortBy) {
     case, 'similarity':
@@ -140,14 +140,14 @@ async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<
           b.citationCount - a.citationCount
       );
       break;
-  }
+  } }
   // Limit results
   const limitedMatches = mockMatches.slice(0, maxResults);
   return {
     matches: limitedMatches,
     total: mockMatches.length
   };
-}
+} }
 async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<CitationNetwork[]> {
   return matches.map(match => ({
     caseId: match.id,
@@ -157,17 +157,16 @@ async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<Citatio
     influenceRank: Math.floor(Math.random() * 1000) + 1,
     networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL',
     citationGraph: {
-     , depth: Math.min(6, Math.floor(match.citationCount / 20)),
+  depth: Math.min(6, Math.floor(match.citationCount / 20)),
       breadth: Math.min(15, Math.floor(match.citationCount / 10)),
       clusters: generateMockClusters(match.practiceAreas)
-    }
+    } }
   }));
-}
+} }
 async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<LegalReasoningChain> {
   // Generate legal reasoning steps based on precedent matches
   const steps = [
-    {,
-      stepNumber: 1,
+    { stepNumber: 1,
       legalPrinciple: 'Foundational Legal Framework',
       supportingCases: matches.slice(0, 2).map(m => m.id),
       factualBasis: 'Established legal principles provide foundation for analysis',
@@ -223,7 +222,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
     logicalGaps,
     alternativeTheories
   };
-}
+} }
 async function analyzeApplicability(matches: PrecedentMatch[], _request: PrecedentSearchRequest): Promise<any> {
   const bindingCount = matches.filter(item => item.precedentialValue === 'BINDING').length;
   const persuasiveCount = matches.filter(item => item.precedentialValue === 'PERSUASIVE').length;
@@ -236,7 +235,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
     legalPrincipleAlignment: matches.some(m => m.legalSimilarity > 0.85) ? 'STRONG' : 'MODERATE',
     temporalRelevance: recentCount > matches.length * 0.6 ? 'HIGH' : 'MEDIUM',
     factors: {
-     , bindingPrecedents: bindingCount,
+  bindingPrecedents: bindingCount,
       persuasivePrecedents: persuasiveCount,
       averageSimilarity: avgSimilarity,
       recentAuthority: recentCount,
@@ -254,7 +253,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
         : 'Leverage recent favorable developments',
     ]
   };
-}
+} }
 async function generateStrategicRecommendations(matches: PrecedentMatch[], reasoningChain: LegalReasoningChain): Promise<any> {
   const bindingMatches = matches.filter(m => m.precedentialValue === 'BINDING');
   const strongMatches = matches.filter(m => m.similarityScore > 0.8);
@@ -289,11 +288,11 @@ async function generateStrategicRecommendations(matches: PrecedentMatch[], reaso
         : 'Strengthen primary legal theory with additional support',
     ]
   };
-}
+} }
 function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchRequest): PrecedentMatch[] {
   const basePrecedents: Partial<PrecedentMatch>[] = [
     {
-     , title: `${searchTerm} - Supreme Court Landmark Decision`,
+  title: `${searchTerm} }- Supreme Court Landmark Decision`,
       court: 'Supreme Court of the United States',
       jurisdiction: 'Federal',
       precedentialValue: 'BINDING',
@@ -301,7 +300,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
       practiceAreas: ['Constitutional Law', 'Civil Rights']
     },
     {
-      title: `${searchTerm} - Circuit Court Analysis`,
+      title: `${searchTerm} }- Circuit Court Analysis`,
       court: '9th Circuit Court of Appeals',
       jurisdiction: 'Federal',
       precedentialValue: 'BINDING',
@@ -309,7 +308,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
       practiceAreas: ['Contract Law', 'Business Law']
     },
     {
-      title: `${searchTerm} - District Court Interpretation`,
+      title: `${searchTerm} }- District Court Interpretation`,
       court: 'U.S. District Court Northern District of California',
       jurisdiction: 'Federal',
       precedentialValue: 'PERSUASIVE',
@@ -317,7 +316,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
       practiceAreas: ['Tort Law', 'Litigation']
     },
     {
-      title: `${searchTerm} - State Supreme Court Ruling`,
+      title: `${searchTerm} }- State Supreme Court Ruling`,
       court: 'California Supreme Court',
       jurisdiction: 'State',
       precedentialValue: 'BINDING',
@@ -325,7 +324,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
       practiceAreas: ['State Law', 'Property Law']
     },
     {
-      title: `${searchTerm} - Federal Trade Commission Decision`,
+      title: `${searchTerm} }- Federal Trade Commission Decision`,
       court: 'Federal Trade Commission',
       jurisdiction: 'Federal',
       precedentialValue: 'PERSUASIVE',
@@ -354,7 +353,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
     distinguishingFactors: Math.random() > 0.7 ? generateMockDistinguishingFactors() : [],
     applicabilityScore: Math.random() * 0.3 + 0.65,
     strengthIndicators: {
-     , factualAlignment: Math.floor(Math.random() * 30) + 70,
+  factualAlignment: Math.floor(Math.random() * 30) + 70,
       legalPrinciples: Math.floor(Math.random() * 25) + 75,
       jurisdictionalRelevance: Math.floor(Math.random() * 35) + 65,
       temporalRelevance: Math.floor(Math.random() * 40) + 60
@@ -362,28 +361,28 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
     relatedTopics: generateMockRelatedTopics(searchTerm),
     practiceAreas: partial.practiceAreas || ['General Law']
   })) as PrecedentMatch[];
-}
+} }
 function generateMockCitation(court: string, index: number): string {
   if (court.includes('Supreme Court')) {
-    return `${500 + index * 47} U.S. ${123 + index * 23} (${2024 - index})`;
-  } else if (court.includes('Circuit')) {
-    return `${700 + index * 89} F.3d ${234 + index * 45} (${2024 - index})`;
-  } else if (court.includes('District')) {
-    return `${300 + index * 67} F.Supp.3d ${456 + index * 78} (${2024 - index})`;
-  } else {
-    return `${200 + index * 34} State Rptr. ${789 + index * 12} (${2024 - index})`;
-  }
-}
+    return `${500 + index * 47} }U.S. ${123 + index * 23} }(${2024 - index})`;
+  } }else if (court.includes('Circuit')) {
+    return `${700 + index * 89} }F.3d ${234 + index * 45} }(${2024 - index})`;
+  } }else if (court.includes('District')) {
+    return `${300 + index * 67} }F.Supp.3d ${456 + index * 78} }(${2024 - index})`;
+  } }else {
+    return `${200 + index * 34} }State Rptr. ${789 + index * 12} }(${2024 - index})`;
+  } }
+} }
 function generateMockDate(): string {
   const year = 2024 - Math.floor(Math.random() * 5);
   const month = Math.floor(Math.random() * 12) + 1;
   const day = Math.floor(Math.random() * 28) + 1;
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
+} }
 function generateMockJudges(): string[] {
   const judges = ['Judge Smith', 'Judge Johnson', 'Judge Williams', 'Judge Brown', 'Judge Davis'];
   return judges.slice(0, Math.floor(Math.random() * 3) + 1);
-}
+} }
 function generateMockKeyFacts(searchTerm: string): string[] {
   return [
     `Key factual element related to ${searchTerm}`,
@@ -392,9 +391,9 @@ function generateMockKeyFacts(searchTerm: string): string[] {
     'Evidence of good faith negotiations',
     'Material change in circumstances occurred',
   ];
-}
+} }
 function generateMockHolding(searchTerm: string): string {
-  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;` }'`
+  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;` } }`
 function generateMockReasoningChain(): string[] {
   return [
     'Legal precedent establishes foundational framework',
@@ -402,40 +401,40 @@ function generateMockReasoningChain(): string[] {
     'Policy considerations favor consistent application',
     'Procedural requirements must be satisfied',
   ];
-}
+} }
 function generateMockDistinguishingFactors(): string[] {
   return [
     'Different factual context',
     'Alternative legal theory applied',
     'Jurisdictional variation in applicable law',
   ];
-}
+} }
 function generateMockRelatedTopics(searchTerm: string): string[] {
   return [
-    `${searchTerm} precedents`,
+    `${searchTerm} }precedents`,
     'Contract interpretation',
     'Legal standards',
     'Equitable remedies',
     'Procedural requirements',
   ];
-}
+} }
 function generateMockCitingCases(count: number): string[] {
   const cases = [];
   for (let i = 0; i < Math.min(count, 50); i++) {
     cases.push(`CITING-${String(i + 1).padStart(3, '0')}`);
-  }
+  } }
   return cases;
-}
+} }
 function generateMockCitedCases(count: number): string[] {
   const cases = [];
   for (let i = 0; i < count; i++) {
     cases.push(`CITED-${String(i + 1).padStart(3, '0')}`);
-  }
+  } }
   return cases;
-}
+} }
 function generateMockClusters(practiceAreas: string[]): string[] {
   return practiceAreas.map(area => `${area}-cluster`);
-}
+} }
 function calculateOverallConfidence(matches: PrecedentMatch[]): number {
   if (matches.length === 0) return 0;
   const avgSimilarity = matches.reduce((sum, match) => sum + match.similarityScore, 0) / matches.length;

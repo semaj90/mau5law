@@ -11,45 +11,42 @@ class QdrantService {
       await fetch('http://localhost:6333/collections/legal_evidence/points', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , points: [
-            {,
-              id,
+        body: JSON.stringify({ points: [
+            { id,
               vector: embedding,
               payload: {
                 ...metadata,
                 tags: metadata.tags || [],
                 case_id: metadata.caseId,
                 evidence_type: metadata.type
-              }
+              } }
             },
           ]
         })
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Qdrant upsert failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   static async searchWithFilters(queryVector: number[], filters: any, limit = 10) {
     try {
       const response = await fetch('http://localhost:6333/collections/legal_evidence/points/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , vector: queryVector,
+        body: JSON.stringify({ vector: queryVector,
           filter: filters,
           limit,
           with_payload: true
         })
       });
       return await (response as { json?: any }).json();
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Qdrant search failed:', error);
       return { result: [] };
-    }
-  }
-}
+    } }
+  } }
+} }
 // GPU Vector Processor for batch operations
 class GPUVectorProcessor {
   static async batchEmbeddings(texts: string[]): Promise<number[][]> {
@@ -59,21 +56,20 @@ class GPUVectorProcessor {
         const response = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-           , model: 'nomic-embed-text',
+          body: JSON.stringify({ model: 'nomic-embed-text',
             prompt: text
           })
         });
         const result = await (response as { json?: any }).json();
         embeddings.push((result as { embedding?: any }).embedding);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error('Embedding failed:', error);
         embeddings.push([]);
-      }
-    }
+      } }
+    } }
     return embeddings;
-  }
-}
+  } }
+} }
 export class WebGPUVectorProcessor {
   private device: GPUDevice | null = null;
   private, queue: GPUQueue | null = null;
@@ -83,22 +79,22 @@ export class WebGPUVectorProcessor {
       if (!('gpu' in navigator)) {
         console.warn('WebGPU not supported in this browser');
         return false;
-      }
+      } }
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         console.warn('WebGPU adapter not available');
         return false;
-      }
+      } }
       this.device = await adapter.requestDevice();
       this.queue = this.device.queue;
       this.initialized = true;
       console.log('✅ WebGPU initialized for legal AI vector processing');
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('WebGPU initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * GPU-accelerated dot product for normalized vectors
    * Since vectors are normalized on server, cosine similarity = dot product
@@ -106,7 +102,7 @@ export class WebGPUVectorProcessor {
   async computeDotProducts(queryVector: number[], candidateVectors: number[][]): Promise<number[]> {
     if (!this.initialized || !this.device) {
       return this.fallbackDotProducts(queryVector, candidateVectors);
-    }
+    } }
     try {
       const vectorSize = queryVector.length;
       const numCandidates = candidateVectors.length;
@@ -139,29 +135,28 @@ export class WebGPUVectorProcessor {
           @compute @workgroup_size(64)
           fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             let index = global_id.x;
-            if (index >= ${numCandidates}u) { return; }
+            if (index >= ${numCandidates}u) { return; } }
             var dot_product: f32 = 0.0;
             let offset = index * ${vectorSize}u;
             for (var, i: u32 = 0u; i < ${vectorSize}u; i++) {
               dot_product += query[i] * candidates[offset + i];
-            }
+            } }
             results[index] = dot_product;
-          }
+          } }
         ' });'
       // Create compute pipeline
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-         , module: shaderModule,
-          entryPoint: 'main' }
+        compute: { module: shaderModule,
+          entryPoint: 'main' } }
       });
       // Create bind group
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          {, binding: 0, resource: {, buffer: queryBuffer } },
-          { binding: 1, resource: {, buffer: candidatesBuffer } },
-          { binding: 2, resource: {, buffer: resultsBuffer } }
+          { binding: 0, resource: { buffer: queryBuffer } }},
+          { binding: 1, resource: { buffer: candidatesBuffer } }},
+          { binding: 2, resource: { buffer: resultsBuffer } }} }
         ]
       });
       // Execute compute shader
@@ -179,17 +174,17 @@ export class WebGPUVectorProcessor {
       const results = Array.from(new Float32Array(arrayBuffer));
       stagingBuffer.unmap();
       return results;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('GPU dot product computation failed:', error);
       return this.fallbackDotProducts(queryVector, candidateVectors);
-    }
-  }
+    } }
+  } }
   /**
    * CPU fallback for dot product computation
    */
   private fallbackDotProducts(queryVector: number[], candidateVectors: number[][]): number[] {
     return candidateVectors.map(candidate => queryVector.reduce((sum, val, i) => sum + val * candidate[i], 0));
-  }
+  } }
   /**
    * GPU-accelerated vector similarity search with payload filters
    */
@@ -211,11 +206,11 @@ export class WebGPUVectorProcessor {
       // Search with payload filters
       const results = await QdrantService.searchWithFilters(queryEmbedding, filters, limit);
       return results.result || [];
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('GPU similarity search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Generate embedding using Ollama
    */
@@ -224,18 +219,17 @@ export class WebGPUVectorProcessor {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({
-         , model: 'nomic-embed-text',
+        body: JSON.stringify({ model: 'nomic-embed-text',
           prompt: text
         })
       });
       const result = await (response as { json?: any }).json();
       return (result as { embedding?: any }).embedding;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Embedding generation failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Batch process multiple evidence files with GPU acceleration
    * Note: MinIO upload happens server-side, this handles client-side analysis
@@ -248,7 +242,7 @@ export class WebGPUVectorProcessor {
         const arrayBuffer = await file.arrayBuffer();
         if (file.type === 'text/plain') {
           return new TextDecoder().decode(arrayBuffer);
-        }
+        } }
         return `File: ${file.name}`;
       })
     );
@@ -267,7 +261,7 @@ export class WebGPUVectorProcessor {
           fileType: file.type,
           tags: ['batch_processed']
         });
-      }
+      } }
       results.push({
         fileId,
         fileName: file.name,
@@ -275,10 +269,10 @@ export class WebGPUVectorProcessor {
         processed: true,
         clientSideProcessing: true
       });
-    }
+    } }
     return results;
-  }
-}
+  } }
+} }
 // Singleton instance for browser use
 export const webGPUProcessor = new WebGPUVectorProcessor();
 // Initialize on module load (browser only)
@@ -286,8 +280,9 @@ if (typeof window !== 'undefined') {
   webGPUProcessor.initialize().then(success => {
     if (success) {
       console.log('🚀 WebGPU Legal AI processor ready');
-    } else {
+    } }else {
       console.log('⚠️ Falling back to CPU vector processing');
-    }
+    } }
   });
-}
+} }
+

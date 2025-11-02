@@ -1,4 +1,4 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /**
  * Legal Citations API Routes
  *
@@ -6,8 +6,8 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * GET    /api/v1/citations - Get citations for a case
  * POST   /api/v1/citations - Add citation
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 // Citation schemas
 const CitationsQuerySchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -64,12 +64,11 @@ const CreateCitationSchema = z.object({
  * Citations Service
  */
 class CitationsService {
-  constructor(private userId: string) {}
+  constructor(private userId: string) {} }
   async getCitations(query: z.infer<typeof, CitationsQuerySchema>) {
     // Sample citations data - in production, query citations table
     const sampleCitations = [
-      {,
-        id: crypto.randomUUID(),
+      { id: crypto.randomUUID(),
         caseId: query.caseId,
         citationType: 'case_law',
         title: 'Miranda v. Arizona',
@@ -110,13 +109,13 @@ class CitationsService {
     let filteredCitations = sampleCitations;
     if (query.citationType) {
       filteredCitations = filteredCitations.filter(c => c.citationType === query.citationType);
-    }
+    } }
     if (query.verified !== undefined) {
       filteredCitations = filteredCitations.filter(c => c.verified === query.verified);
-    }
+    } }
     if (query.minRelevance) {
       filteredCitations = filteredCitations.filter(c => c.relevanceScore >= query.minRelevance);
-    }
+    } }
     // Sort by relevance score (highest first)
     filteredCitations.sort((a, b) => b.relevanceScore - a.relevanceScore);
     // Apply pagination
@@ -125,15 +124,15 @@ class CitationsService {
     return {
       data: paginatedCitations,
       pagination: {
-       , page: query.page,
+  page: query.page,
         limit: query.limit,
         total: filteredCitations.length,
         totalPages: Math.max(1, Math.ceil(filteredCitations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredCitations.length / query.limit),
         hasPrev: query.page > 1
-      }
+      } }
     };
-  }
+  } }
   async createCitation(data: z.infer<typeof, CreateCitationSchema>) {
     // In production, insert into citations table
     const newCitation = {
@@ -145,7 +144,7 @@ class CitationsService {
       dateModified: new Date().toISOString()
     };
     return newCitation;
-  }
+  } }
   async verifyCitation(citationId: string) {
     // In production, verify citation against legal databases
     // For now, return mock verification result
@@ -155,8 +154,8 @@ class CitationsService {
       verifiedDate: new Date().toISOString(),
       verificationNotes: 'Citation verified against legal database'
     };
-  }
-}
+  } }
+} }
 
 type RequestLocals = {
   session?: any;
@@ -165,14 +164,14 @@ type RequestLocals = {
     email?: string;
     role?: string;
     // ...other user props if needed...
-  } | null;
+  } }| null;
 };
 
 // Add helper to extract user id from locals
 function getUserId(locals: RequestLocals): string {
   // prefer explicit user id, fallback to anonymous for tests
   return typeof locals?.user?.id === 'string' ? (locals.user as { id: string }).id : 'anonymous';
-}
+} }
 
 /**
  * GET /api/v1/citations
@@ -182,7 +181,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 });
-    }
+    } }
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const validatedQuery = CitationsQuerySchema.parse(queryParams);
     const citationsService = new CitationsService(getUserId(locals));
@@ -217,7 +216,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         success: z.literal(true),
         data: z.array(CitationItem),
         pagination: z.object({
-         , page: z.number(),
+  page: z.number(),
           limit: z.number(),
           total: z.number(),
           totalPages: z.number(),
@@ -232,26 +231,26 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       data: result.data,
       pagination: result.pagination,
       meta: {
-       , caseId: validatedQuery.caseId,
+  caseId: validatedQuery.caseId,
         userId: getUserId(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     const validated = CitationsListResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Citations list response validation failed', validated.error);
-      return error(500, { message: 'Invalid response shape' });'' }
+      return error(500, { message: 'Invalid response shape' });'' } }
     return json(payload);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching citations:', err);
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid query parameters', details: err.errors }, { status: 400 });
-    }
+    } }
     if (err instanceof Error) {
       return json({ success: false, message: 'Failed to fetch citations', details: err.message }, { status: 500 });
-    }
+    } }
     return json({ success: false, message: 'Failed to fetch citations', details: String(err) }, { status: 500 });
-  }
+  } }
 };
 /**
  * POST /api/v1/citations
@@ -260,8 +259,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: `Authentication required' }, { status: 401 });'`
-    }
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });'' } }
     const body = await request.json();
     const validatedData = CreateCitationSchema.parse(body);
     const citationsService = new CitationsService(getUserId(locals));
@@ -284,24 +282,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: newCitation,
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     const validated = CreateCitationResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Create citation response validation failed', validated.error);
-      return error(500, { message: `Invalid response shape' });'`
-    }
+      return error(500, { message: 'Invalid response shape' });'' } }
     return json(payload, { status: 201 });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error creating citation:', err);
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid citation data', details: err.errors }, { status: 400 });
-    }
+    } }
     if (err instanceof Error) {
       return json({ success: false, message: 'Failed to create citation', details: err.message }, { status: 500 });
-    }
+    } }
     return json({ success: false, message: 'Failed to create citation', details: String(err) }, { status: 500 });
-  }
+  } }
 };
+

@@ -3,8 +3,8 @@
  * Production-grade vector encoding with adaptive scaling and GPU acceleration
  * Integrates with Nintendo memory architecture and ShaderBundle system
  */
-import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus';
-import { validateVectorDimensions, adaptiveScalingDecision } from '$lib/gpu/types';
+import { telemetryBus, measureAsync } }from '$lib/telemetry/event-bus';
+import { validateVectorDimensions, adaptiveScalingDecision } }from '$lib/gpu/types';
 
 export interface VectorMetadata { id: string;, originalDimensions: number;
   encodedDimensions: number;
@@ -14,19 +14,19 @@ export interface VectorMetadata { id: string;, originalDimensions: number;
   timestamp: number;
   processingTime: number;
   gpuAccelerated: boolean;
-}
+} }
 
-export interface EncodingBatch {, vectors: Float32Array[];, metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
+export interface EncodingBatch { vectors: Float32Array[];, metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
   totalSize: number;
-}
+} }
 
-export interface AdaptiveEncodingResult {, encoded: VectorMetadata[];, scalingApplied: boolean;
+export interface AdaptiveEncodingResult { encoded: VectorMetadata[];, scalingApplied: boolean;
   recommendedConfig: Partial<VectorEncodingConfig>; // Updated
-  metrics: {, totalTime: number;, avgCompressionRatio: number;
+  metrics: { totalTime: number;, avgCompressionRatio: number;
     gpuUtilization: number;
     memoryEfficiency: number;
   };
-}
+} }
 
 // --- START: Local type declarations to replace missing exported types ---
 /**
@@ -38,32 +38,32 @@ export interface AdaptiveEncodingResult {, encoded: VectorMetadata[];, scalingA
 type VectorDimensions = number;
 type QuantizationLevel = 'int8' | 'int4' | 'binary';
 
-interface VectorEncodingConfig {, dimensions: VectorDimensions;, quantization: QuantizationLevel;
+interface VectorEncodingConfig { dimensions: VectorDimensions;, quantization: QuantizationLevel;
   compressionTarget: number;
   adaptiveDimensions: boolean;
  , batchSize: number;
-}
+} }
 
 interface HybridGPUContext {
   getBackendType(): string;
   // concrete implementations may expose more methods; keep optional/loose here
-}
+} }
 
 interface ShaderBundle { name: string;, backend: string;
   compute: string;
   entryPoint: string;
-}
+} }
 
 type AdaptiveScalingMode = 'balanced' | 'performance' | 'memory';
 
-interface GPUPerformanceMetrics {, renderTime: number;, memoryUsage: number;
+interface GPUPerformanceMetrics { renderTime: number;, memoryUsage: number;
   gpuUtilization: number;
   temperature: number;
   powerConsumption: number;
   contextSwitches: number;
   frameRate: number;
   lastMeasurement: number;
-}
+} }
 // --- END: Local type declarations ---
 
 export class VectorMetadataEncoder {
@@ -82,11 +82,11 @@ export class VectorMetadataEncoder {
       compressionTarget: Math.min(Math.max(config.compressionTarget ?? 0.5, 0.1), 0.9),
       adaptiveDimensions: config.adaptiveDimensions ?? true,
       batchSize: Math.max(config.batchSize ?? 32, 1)
-    } as VectorEncodingConfig; // Cast initial assignment
+    } }as VectorEncodingConfig; // Cast initial assignment
     this.gpuContext = gpuContext;
     // try initializing GPU resources but don't throw if not available'
     void this.initializeGPUResources();
-  }
+  } }
 
   async encodeVector(vector: Float32Array, id = this.generateId()): Promise<VectorMetadata> {
     return measureAsync(
@@ -96,7 +96,7 @@ export class VectorMetadataEncoder {
         let workingConfig: VectorEncodingConfig = { ...this.config }; // Explicitly typed
         if (this.config.adaptiveDimensions) {
           workingConfig = this.adaptConfigurationForPerformance();
-        }
+        } }
         const processedVector = await this.preprocessVector(vector, workingConfig.dimensions);
         const encoded =
           this.gpuContext && this.shaderBundle
@@ -127,7 +127,7 @@ export class VectorMetadataEncoder {
       },
       'VectorEncoder'
     );
-  }
+  } }
 
   async encodeBatch(batch: EncodingBatch): Promise<AdaptiveEncodingResult> {
     return measureAsync(
@@ -153,9 +153,9 @@ export class VectorMetadataEncoder {
               adaptiveConfig.dimensions = newConfig.dimensions;
               adaptiveConfig.quantization = newConfig.quantization;
               scalingApplied = true;
-            }
-          }
-        }
+            } }
+          } }
+        } }
 
         const totalTime = performance.now() - startTime;
         const avgCompressionRatio = encoded.length
@@ -188,7 +188,7 @@ export class VectorMetadataEncoder {
       },
       'VectorEncoder'
     );
-  }
+  } }
 
   async decodeVector(metadata: VectorMetadata): Promise<Float32Array> {
     return measureAsync(
@@ -196,12 +196,12 @@ export class VectorMetadataEncoder {
       async () => {
         if (this.gpuContext && this.shaderBundle && metadata.gpuAccelerated) {
           return this.decodeVectorGPU(metadata);
-        }
+        } }
         return this.decodeVectorCPU(metadata);
       },
       'VectorEncoder'
     );
-  }
+  } }
 
   updateConfig(newConfig: Partial<VectorEncodingConfig>): void {
     // Updated
@@ -216,27 +216,25 @@ export class VectorMetadataEncoder {
           ? Math.min(Math.max(newConfig.compressionTarget, 0.1), 0.9)
           : this.config.compressionTarget,
       batchSize: newConfig.batchSize ? Math.max(newConfig.batchSize, 1) : this.config.batchSize
-    } as VectorEncodingConfig; // Cast assignment
+    } }as VectorEncodingConfig; // Cast assignment
     if (newConfig.dimensions) {
       void this.initializeGPUResources();
-    }
-  }
+    } }
+  } }
 
   getPerformanceMetrics(): { currentConfig: VectorEncodingConfig; // Updated, recentPerformance: GPUPerformanceMetrics[];
-    memoryUsage: {, l1GpuUsage: number;, l2RamUsage: number;
+    memoryUsage: { l1GpuUsage: number;, l2RamUsage: number;
       totalVectors: number;
     };
-  } {
-    return {
-     , currentConfig: { ...this.config },
+  } }{
+    return { currentConfig: { ...this.config },
       recentPerformance: [...this.performanceHistory.slice(-10)],
-      memoryUsage: {
-       , l1GpuUsage: this.estimateGPUMemoryUsage(),
+      memoryUsage: { l1GpuUsage: this.estimateGPUMemoryUsage(),
         l2RamUsage: this.estimateRAMUsage(),
         totalVectors: this.performanceHistory.length
-      }
+      } }
     };
-  }
+  } }
 
   private async initializeGPUResources(): Promise<void> {
     if (!this.gpuContext) return;
@@ -248,12 +246,12 @@ export class VectorMetadataEncoder {
         memoryUsed: this.estimateGPUMemoryUsage(),
         temperature: 50
       });
-    } catch (err) {
+    } }catch (err) {
       console.warn('[VectorEncoder] GPU initialization failed, falling back to CPU:', err);
       this.gpuContext = undefined;
       this.shaderBundle = undefined;
-    }
-  }
+    } }
+  } }
 
   private async createVectorEncodingShader(): Promise<ShaderBundle> {
     if (!this.gpuContext) throw new Error('No GPU context available');
@@ -268,40 +266,40 @@ export class VectorMetadataEncoder {
         let index = global_id.x;
         if (index >= u32(params.x)) {
           return;
-        }
+        } }
         let value = input[index];
         let scaled = (value - params.z) * params.y;  // Apply offset and scale
         // Quantization based on level
         if (params.w == 1.0) {          // int8
           output[index] = i32(clamp(scaled, -128.0, 127.0));
-        } else if (params.w == 2.0) {   // int4
+        } }else if (params.w == 2.0) {   // int4
           output[index] = i32(clamp(scaled, -8.0, 7.0));
-        } else {                        // binary
+        } }else {                        // binary
           output[index] = select(0, 1, scaled > 0.0);
-        }
-      }
+        } }
+      } }
     `;`
     return {
       name: 'VectorQuantization',
       backend: this.gpuContext.getBackendType(),
       compute: computeShader,
       entryPoint: 'main` };'`
-  }
+  } }
 
   private async preprocessVector(vector: Float32Array, targetDimensions: VectorDimensions): Promise<Float32Array> {
     // Updated
     if (vector.length === targetDimensions) {
       return vector;
-    }
+    } }
     // Dimension reduction using simple truncation or PCA-style projection
     if (vector.length > targetDimensions) {
       return vector.slice(0, targetDimensions);
-    }
+    } }
     // Dimension expansion with zero padding
     const expanded = new Float32Array(targetDimensions);
     expanded.set(vector);
     return expanded;
-  }
+  } }
 
   private async encodeVectorGPU(
     vector: Float32Array,
@@ -309,11 +307,11 @@ export class VectorMetadataEncoder {
   ): Promise<Float32Array | Int8Array | Uint8Array> {
     if (!this.gpuContext || !this.shaderBundle) {
       return this.encodeVectorCPU(vector, config);
-    }
+    } }
     // GPU implementation would go here
     // For now, fall back to CPU
     return this.encodeVectorCPU(vector, config);
-  }
+  } }
 
   private encodeVectorCPU(
     vector: Float32Array,
@@ -327,8 +325,8 @@ export class VectorMetadataEncoder {
       case, 'binary':
         return this.quantizeToBinary(vector);
       default: return vector; // No quantization
-    }
-  }
+    } }
+  } }
 
   private async encodeBatchGPU(
    , vectors: Float32Array[],
@@ -346,10 +344,10 @@ export class VectorMetadataEncoder {
         encoding: encoded,
         processingTime,
         compressionRatio: encoded.byteLength / (vectors[i].length * 4)
-      } as VectorMetadata);
-    }
+      } }as VectorMetadata);
+    } }
     return results;
-  }
+  } }
 
   private async encodeBatchCPU(
     vectors: Float32Array[],
@@ -365,14 +363,14 @@ export class VectorMetadataEncoder {
         encoding: encoded,
         processingTime,
         compressionRatio: encoded.byteLength / (vector.length * 4)
-      } as VectorMetadata;
+      } }as VectorMetadata;
     });
-  }
+  } }
 
   private async decodeVectorGPU(metadata: VectorMetadata): Promise<Float32Array> {
     // GPU decoding implementation
     return this.decodeVectorCPU(metadata);
-  }
+  } }
 
   private decodeVectorCPU(metadata: VectorMetadata): Float32Array {
     switch (metadata.quantization) {
@@ -383,8 +381,8 @@ export class VectorMetadataEncoder {
       case, 'binary':
         return this.dequantizeFromBinary(metadata.encoding as Uint8Array, metadata.encodedDimensions);
       default: return metadata.encoding as Float32Array;
-    }
-  }
+    } }
+  } }
 
   // Quantization implementations
   private quantizeToInt8(vector: Float32Array): Int8Array {
@@ -393,9 +391,9 @@ export class VectorMetadataEncoder {
     const scale = 127 / maxAbs;
     for (let i = 0; i < vector.length; i++) {
       result[i] = Math.round(vector[i] * scale);
-    }
+    } }
     return result;
-  }
+  } }
 
   private quantizeToInt4(vector: Float32Array): Uint8Array {
     const result = new Uint8Array(Math.ceil(vector.length / 2));
@@ -405,9 +403,9 @@ export class VectorMetadataEncoder {
       const val1 = Math.round(vector[i] * scale) + 8; // Shift to 0-15 range
       const val2 = i + 1 < vector.length ? Math.round(vector[i + 1] * scale) + 8 : 0;
       result[Math.floor(i / 2)] = (val1 & 0xf) | ((val2 & 0xf) << 4);
-    }
+    } }
     return result;
-  }
+  } }
 
   private quantizeToBinary(vector: Float32Array): Uint8Array {
     const result = new Uint8Array(Math.ceil(vector.length / 8));
@@ -416,19 +414,19 @@ export class VectorMetadataEncoder {
       const bitIndex = i % 8;
       if (vector[i] > 0) {
         result[byteIndex] |= 1 << bitIndex;
-      }
-    }
+      } }
+    } }
     return result;
-  }
+  } }
 
   private dequantizeFromInt8(data: Int8Array, dimensions: number): Float32Array {
     const result = new Float32Array(dimensions);
     const scale = 1 / 127;
     for (let i = 0; i < Math.min(data.length, dimensions); i++) {
       result[i] = data[i] * scale;
-    }
+    } }
     return result;
-  }
+  } }
 
   private dequantizeFromInt4(data: Uint8Array, dimensions: number): Float32Array {
     const result = new Float32Array(dimensions);
@@ -438,9 +436,9 @@ export class VectorMetadataEncoder {
       const isHighNibble = i % 2 === 1;
       const nibble = isHighNibble ? (data[byteIndex] >> 4) & 0xf : data[byteIndex] & 0xf;
       result[i] = (nibble - 8) * scale; // Shift back to signed range
-    }
+    } }
     return result;
-  }
+  } }
 
   private dequantizeFromBinary(data: Uint8Array, dimensions: number): Float32Array {
     const result = new Float32Array(dimensions);
@@ -448,9 +446,9 @@ export class VectorMetadataEncoder {
       const byteIndex = Math.floor(i / 8);
       const bitIndex = i % 8;
       result[i] = data[byteIndex] & (1 << bitIndex) ? 1 : -1;
-    }
+    } }
     return result;
-  }
+  } }
 
   // Adaptive scaling logic
   private adaptConfigurationForPerformance(): VectorEncodingConfig {
@@ -473,9 +471,9 @@ export class VectorMetadataEncoder {
         dimensions: decision.recommendedDimensions,
         quantization: decision.recommendedQuantization
       };
-    }
+    } }
     return this.config;
-  }
+  } }
 
   private adaptConfigurationForBatch(batch: EncodingBatch): VectorEncodingConfig {
     // Updated
@@ -490,18 +488,18 @@ export class VectorMetadataEncoder {
         quantization: 'int4' as QuantizationLevel,
         batchSize: Math.max(16, Math.floor(this.config.batchSize / 2))
       };
-    }
+    } }
     return this.config;
-  }
+  } }
 
   private shouldApplyAdaptiveScaling(): boolean {
     return this.config.adaptiveDimensions && this.performanceHistory.length >= 3;
-  }
+  } }
 
   // Utility methods
   private generateId(): string {
     return `vec_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-  }
+  } }
 
   private calculateAverageMetrics(metrics: GPUPerformanceMetrics[]): GPUPerformanceMetrics {
     const avg = metrics.reduce(
@@ -524,7 +522,7 @@ export class VectorMetadataEncoder {
         contextSwitches: 0,
         frameRate: 0,
         lastMeasurement: 0
-      }
+      } }
     );
     const count = metrics.length;
     return {
@@ -537,39 +535,39 @@ export class VectorMetadataEncoder {
       frameRate: avg.frameRate / count,
       lastMeasurement: avg.lastMeasurement
     };
-  }
+  } }
 
   private updatePerformanceHistory(metrics: GPUPerformanceMetrics): void {
     this.performanceHistory.push(metrics);
     if (this.performanceHistory.length > this.maxHistorySize) {
       this.performanceHistory.shift();
-    }
-  }
+    } }
+  } }
 
   private async getGPUUtilization(): Promise<number> {
     // Would integrate with actual GPU monitoring APIs
     return this.gpuContext ? Math.random() * 80 : 0; // Placeholder
-  }
+  } }
 
   private calculateMemoryEfficiency(inputSize: number, encoded: VectorMetadata[]): number {
     const totalEncodedSize = encoded.reduce((sum, e) => sum + e.encoding.byteLength, 0);
     return inputSize <= 0 ? 0 : (1 - totalEncodedSize / inputSize) * 100;
-  }
+  } }
 
   private estimateGPUMemoryUsage(): number {
     return this.config.dimensions * this.config.batchSize * 4; // Rough estimate
-  }
+  } }
 
   private estimateRAMUsage(): number {
     return this.performanceHistory.length * 1024; // Rough estimate
-  }
+  } }
 
   // Define a type for the metrics: object used in generateRecommendedConfig
-  private generateRecommendedConfig(metrics: {, avgCompressionRatio: number;, memoryEfficiency: number;
+  private generateRecommendedConfig(metrics: { avgCompressionRatio: number;, memoryEfficiency: number;
   }): Partial<VectorEncodingConfig> {
     // Updated
     return {
       dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 : 512,
       quantization: metrics.memoryEfficiency < 50 ? 'int4' : 'int8` };'`
-  }
+  } }
 }

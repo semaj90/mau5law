@@ -1,6 +1,6 @@
-import { pipeline, env } from '@xenova/transformers';
-import { browser } from '$app/environment';
-import { $state } from 'svelte/internal'; // Svelte, 5 runes
+import { pipeline, env } }from '@xenova/transformers';
+import { browser } }from '$app/environment';
+import { $state } }from 'svelte/internal'; // Svelte, 5 runes
 
 // Configure Transformers.js for WebGPU
 if (browser) {
@@ -11,7 +11,7 @@ if (browser) {
   env.backends.onnx.wasm.cpu.enabled = false; // Prefer GPU
   env.backends.onnx.wasm.webgpu.enabled = true; // Enable WebGPU
   env.backends.onnx.wasm.webgpu.powerPreference = 'high-performance';
-}
+} }
 
 export interface TransformersAIConfig { modelName: string;, quantized: boolean;
   maxTokens: number;
@@ -21,16 +21,16 @@ export interface TransformersAIConfig { modelName: string;, quantized: boolean;
   enableSIMD: boolean;
  , enableMultiCore: boolean;
   modelPath?: string; // Optional, if not using default Xenova CDN
-}
+} }
 
-export interface TransformersAIResponse { content: string;, metadata: {, tokensGenerated: number;, processingTime: number;
+export interface TransformersAIResponse { content: string;, metadata: { tokensGenerated: number;, processingTime: number;
     confidence: number;
     method: 'transformers.js' | 'webgpu';
     modelUsed: string;
    , fromCache: boolean;
     gpuAccelerated?: boolean;
   };
-}
+} }
 
 export class TransformersAIAdapter {
   private initialized = $state(false);
@@ -51,7 +51,7 @@ export class TransformersAIAdapter {
       enableMultiCore: true,
       ...config
     };
-  }
+  } }
 
   /**
    * Initialize Transformers.js pipeline and load the model.
@@ -60,10 +60,10 @@ export class TransformersAIAdapter {
     if (!browser) {
       console.warn('[Transformers.js AI] Not running in browser environment');
       return false;
-    }
+    } }
     if (this.initialized) {
       return true;
-    }
+    } }
 
     try {
       console.log(`[Transformers.js AI] Initializing with model: ${this.config.modelName}`);
@@ -73,7 +73,7 @@ export class TransformersAIAdapter {
       if (!this.gpuAvailable && this.config.enableGPU) {
         console.warn('[Transformers.js AI] WebGPU not available, falling back to WebAssembly/CPU.');
         this.config.enableGPU = false; // Disable GPU if not available
-      }
+      } }
 
       // Create the text generation pipeline
       this.generator = await pipeline(
@@ -85,19 +85,19 @@ export class TransformersAIAdapter {
           // config_file_path: this.config.modelPath?.replace('.onnx', '.json'),
           // tokenizer_file_path: this.config.modelPath?.replace('.onnx', '.tokenizer.json'),
           // cache_dir: '/models', // Cache directory for models
-        }
+        } }
       );
       this.modelLoaded = true;
       this.initialized = true;
-      console.log(`[Transformers.js AI] Model ${this.config.modelName} loaded successfully.`);
+      console.log(`[Transformers.js AI] Model ${this.config.modelName} }loaded successfully.`);
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('[Transformers.js AI] Initialization failed:', error);
       this.initialized = false;
       this.modelLoaded = false;
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Detect WebGPU availability.
@@ -107,12 +107,12 @@ export class TransformersAIAdapter {
       if (navigator.gpu) {
         const adapter = await navigator.gpu.requestAdapter();
         return !!adapter;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('[Transformers.js AI] WebGPU detection failed:', error);
-    }
+    } }
     return false;
-  }
+  } }
 
   /**
    * Generate text with streaming support.
@@ -126,11 +126,11 @@ export class TransformersAIAdapter {
       maxTokens?: number;
       temperature?: number;
       stream?: boolean;
-    } = {}
+    } }= {} }
   ): AsyncGenerator<string, TransformersAIResponse, undefined> {
     if (!this.initialized || !this.generator) {
       throw new Error('Transformers.js AI adapter not initialized.');
-    }
+    } }
 
     const startTime = performance.now();
     let generatedText = '';
@@ -150,27 +150,25 @@ export class TransformersAIAdapter {
         generatedText = output.generated_text;
         tokensGenerated++; // Simple token count, can be improved
         yield chunk;
-      }
+      } }
 
       const processingTime = performance.now() - startTime;
-      const response: TransformersAIResponse = {
-       , content: generatedText,
-        metadata: {
-         , tokensGenerated: tokensGenerated,
+      const response: TransformersAIResponse = { content: generatedText,
+        metadata: { tokensGenerated: tokensGenerated,
           processingTime: processingTime,
           confidence: 0.9, // Placeholder confidence
           method: this.gpuAvailable && this.config.enableGPU ? 'webgpu' : 'transformers.js',
           modelUsed: this.config.modelName,
           fromCache: false,
           gpuAccelerated: this.gpuAvailable && this.config.enableGPU
-        }
+        } }
       };
       return response;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('[Transformers.js AI] Text generation failed:', error);
       throw new Error(`Text generation failed: ${error.message}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get health status of the adapter.
@@ -179,15 +177,14 @@ export class TransformersAIAdapter {
     gpuAvailable: boolean;
     gpuEnabled: boolean;
     modelName: string;
-  } {
-    return {
-     , initialized: this.initialized,
+  } }{
+    return { initialized: this.initialized,
       modelLoaded: this.modelLoaded,
       gpuAvailable: this.gpuAvailable,
       gpuEnabled: this.config.enableGPU,
       modelName: this.config.modelName
     };
-  }
+  } }
 
   /**
    * Clean up resources.
@@ -196,11 +193,12 @@ export class TransformersAIAdapter {
     if (this.generator) {
       // No explicit dispose method for Transformers.js pipeline, but can clear reference
       this.generator = null;
-    }
+    } }
     this.initialized = false;
     this.modelLoaded = false;
     console.log('[Transformers.js AI] Adapter disposed.');
-  }
-}
+  } }
+} }
 
 export const transformersAIAdapter = new TransformersAIAdapter();
+

@@ -4,34 +4,34 @@
  * Allows enqueueing embedding and other processing jobs
  * Integrates with enhanced embedding worker system
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { enhancedEmbeddingWorker } }from '$lib/workers/embedding-worker-enhanced.js'
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { jobType, ...jobData } = body;
+    const { jobType, ...jobData } }= body;
     if (!jobType) {
       return json(
         {
           success: false,
           error: 'jobType is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     switch (jobType) {
       case, 'embedding': {
-        const { text, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
+        const { text, model = 'embeddinggemma:latest', meta = {}, priority = 1 } }= jobData;
         if (!text) {
           return json(
             {
               success: false,
               error: 'text is required for embedding jobs'
             },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const jobId = await enhancedEmbeddingWorker.enqueueJob({
           text,
           model,
@@ -45,18 +45,18 @@ export const POST: RequestHandler = async ({ request }) => {
           statusEndpoint: `/api/jobs/stream?jobIds=${jobId}`,
           estimatedDuration: Math.ceil(text.length * 0.1) + 1000, // rough estimate
         });
-      }
+      } }
       case, 'batch-embedding': {
-        const { texts, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
+        const { texts, model = 'embeddinggemma:latest', meta = {}, priority = 1 } }= jobData;
         if (!Array.isArray(texts) || texts.length === 0) {
           return json(
             {
               success: false,
               error: 'texts array is required for batch embedding jobs` },'`
-            { status: 400 }
+            { status: 400 } }
           );
-        }
-        const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)}';'`
+        } }
+        const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)} };'`
         const jobIds: string[] = [];
         // Enqueue all texts as separate jobs with shared batch ID
         for (let i = 0; i < texts.length; i++) {
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
             priority
           });
           jobIds.push(jobId);
-        }
+        } }
         return json({
           success: true,
           batchId,
@@ -84,23 +84,23 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedDuration:
             Math.ceil((texts.reduce((sum: number, text: string) => sum + text.length, 0) * 0.1) / 10) + 2000
         });
-      }
+      } }
       default: return json(
           {
-           , success: false,
-            error: `Unknown job;, type: ${jobType}` },``
-          { status: 400 }
+  success: false,
+            error: `Unknown job; type: ${jobType}` },``
+          { status: 400 } }
         );
-    }
-  } catch (error) {
-    console.error('Job enqueueing error: ', error);'
+    } }
+  } }catch (error) {
+    console.error('Job enqueueing error: ', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async () => {
   try {
@@ -112,8 +112,7 @@ export const GET: RequestHandler = async () => {
       queueStatus,
       workerStats,
       availableJobTypes: [
-        {,
-         , type: 'embedding',
+        { type: 'embedding',
           description: 'Generate embedding for a single text',
           requiredFields: ['text'],
           optionalFields: ['model', 'meta', 'priority']
@@ -126,13 +125,13 @@ export const GET: RequestHandler = async () => {
         },
       ]
     });
-  } catch (error) {
-    console.error('Queue status error: ', error);'
+  } }catch (error) {
+    console.error('Queue status error: ', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

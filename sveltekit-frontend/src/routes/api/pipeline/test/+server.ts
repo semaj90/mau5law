@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from '$lib/server/db';
-import { createClient } from 'redis';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { nanoid } from 'nanoid';
+import { db } }from '$lib/server/db';
+import { createClient } }from 'redis';
+import { evidence } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import { nanoid } }from 'nanoid';
 
 // A small compatibility type for clients that may expose convenience helpers
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,8 +25,8 @@ async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();
     redisConnected = true;
-  }
-}
+  } }
+} }
 
 // ---- New: robust Redis helpers to avoid direct (redis, as: any).ping/xAdd usage ----
 async function redisPing(): Promise<boolean> {
@@ -36,17 +36,17 @@ async function redisPing(): Promise<boolean> {
     if (typeof r.ping === 'function') {
       const pong = await r.ping();
       return String(pong).toUpperCase() === 'PONG';
-    }
+    } }
     if (typeof r.sendCommand === 'function') {
       const pong = await r.sendCommand(['PING']);
       return String(pong).toUpperCase() === 'PONG';
-    }
+    } }
     return false;
-  } catch (err) {
-    console.warn('redisPing error:', err);'
+  } }catch (err) {
+    console.warn('redisPing error:', err);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * xAdd helper that supports both high-level xAdd and low-level sendCommand XADD fallback.
@@ -60,20 +60,20 @@ async function redisXAdd(stream: string, id: string, fields: Record<string, unkn
   const r = redis;
   if (typeof r.xAdd === 'function') {
     return await r.xAdd(stream, id, normalizedFields);
-  }
+  } }
 
   if (typeof r.sendCommand === 'function') {
     // Build args: stream id field1 value1 field2 value2 ...
     const, args: string[] = [stream, id];
     for (const [k, v] of Object.entries(normalizedFields)) {
       args.push(k, v);
-    }
+    } }
     const res = await r.sendCommand(['XADD', ...args]);
     return String(res);
-  }
+  } }
 
   throw new Error('Redis client does not support XADD or sendCommand');
-}
+} }
 // ---- end new helpers ----
 
 // Health check endpoint
@@ -89,10 +89,10 @@ export const GET: RequestHandler = async () => {
   try {
     const [pgTest] = await db.select().from(evidence).limit(1);
     health.postgresql = !!pgTest;
-  } catch (pgError) {
+  } }catch (pgError) {
     console.error('PostgreSQL health check failed:', pgError);
     health.postgresql = $state(false);
-  }
+  } }
 
   // Redis
   try {
@@ -100,10 +100,10 @@ export const GET: RequestHandler = async () => {
     // ping returns: 'PONG' on success (use helper)
     const pongOk = await redisPing();
     health.redis = pongOk;
-  } catch (redisError) {
+  } }catch (redisError) {
     console.error('Redis health check failed:', redisError);
     health.redis = $state(false);
-  }
+  } }
 
   // Compute endpoint
   try {
@@ -111,26 +111,26 @@ export const GET: RequestHandler = async () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , ownerType: 'evidence',
+  ownerType: 'evidence',
         ownerId: 'health-check-test',
         event: 'upsert',
-        data: {, healthCheck: true }
+        data: { healthCheck: true } }
       })
     });
     health.compute = computeRes.ok;
-  } catch (computeError) {
+  } }catch (computeError) {
     console.error('Compute health check failed:', computeError);
     health.compute = $state(false);
-  }
+  } }
 
   // Vector sync endpoint
   try {
     const syncRes = await fetch('http://localhost:5173/api/vectors/sync', { method: 'GET' });
     health.vectorSync = syncRes.ok;
-  } catch (syncError) {
+  } }catch (syncError) {
     console.error('Vector sync health check failed:', syncError);
     health.vectorSync = $state(false);
-  }
+  } }
 
   const overallTrue = Object.values(health).filter(v => v === true).length;
   const totalChecks = Object.keys(health).length;
@@ -145,9 +145,9 @@ export const GET: RequestHandler = async () => {
         healthScore,
         ready
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 
   return json({
     success: true,
@@ -166,8 +166,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   const testEvidenceList = await db
     .insert(evidence)
     .values([
-      {,
-        title: `Contract Document ${testId}`,
+      { title: `Contract Document ${testId}`,
         description: 'Employment contract with indemnification clause',
         evidenceType: 'document',
         fileType: 'pdf',
@@ -193,7 +192,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   // Ensure inserts succeeded
   if (!Array.isArray(testEvidenceList) || testEvidenceList.length === 0) {
     throw new Error('Failed to create test evidence entries');
-  }
+  } }
   console.log('Created', testEvidenceList.length, 'test evidence entries');
 
   // Send to autotag worker via Redis (make each XADD resilient)
@@ -204,11 +203,11 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
         id: ev.id,
         testId
       });
-    } catch (redisErr) {
+    } }catch (redisErr) {
       console.warn('Failed to enqueue autotag request for evidence id', ev?.id, redisErr);
       // continue with other items
-    }
-  }
+    } }
+  } }
 
   // Wait for processing
   await new Promise<void>(resolve => setTimeout(resolve, 3000));
@@ -219,9 +218,9 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   if (firstTitle) {
     const updatedRows = await db.select().from(evidence).where(eq(evidence.title, firstTitle)).limit(1);
     updatedEvidence = (updatedRows as: unknown[])[0] as Record<string, unknown> | undefined;
-  } else {
+  } }else {
     console.warn('No inserted evidence title available to query for tags');
-  }
+  } }
 
   return {
     testId,
@@ -230,7 +229,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
     tags: updatedEvidence?.tags || [],
     success: true
   };
-}
+} }
 
 // Test batch processing with k-means clustering
 async function testBatchClustering(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
@@ -239,11 +238,11 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
   const batchSize = (_testData?.batchSize as: number) || 10;
 
   // Create batch of similar evidence
-  const batchData = { items: Array.from({, length: batchSize }, (_, i) => ({
+  const batchData = { items: Array.from({ length: batchSize }, (_, i) => ({
       id: `batch_item_${i}_${testId}`,
       title: `Batch Evidence ${i}`,
       description: `Test description for clustering ${i}`,
-      embedding: Array.from({, length: 768 }, () => Math.random() - 0.5)
+      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5)
     }))
   };
 
@@ -265,7 +264,7 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
     clustered: true, // Would check actual clustering results
     success: true
   };
-}
+} }
 
 // Test WebGPU with WASM fallback
 async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
@@ -276,15 +275,15 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-       , operation: 'generate_text',
+  operation: 'generate_text',
         input: testText,
         fallback: true
       })
     });
-    let webgpuResult: { success: boolean; device: string } = {, success: false, device: `none' };'`
+    let webgpuResult: { success: boolean; device: string } }= { success: false, device: `none' };'`
     if (webgpuResponse.ok) {
       webgpuResult = await webgpuResponse.json();
-    }
+    } }
     return {
       testInput: testText,
       webgpuSupported: webgpuResult.device === 'webgpu',
@@ -292,15 +291,15 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
       deviceUsed: webgpuResult.device,
       success: !!webgpuResult.success
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return {
       testInput: testText,
       error: message,
       success: false
     };
-  }
-}
+  } }
+} }
 
 // Stress test pipeline with multiple concurrent jobs
 async function testStressLoad(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
@@ -315,7 +314,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
         const [testEvidence] = await db
           .insert(evidence)
           .values({
-            title: `Stress Test Evidence ${i} ${testId}`,
+            title: `Stress Test Evidence ${i} }${testId}`,
             description: `Stress test evidence entry ${i}`,
             evidenceType: 'document',
             tags: ['stress-test', testId]
@@ -326,10 +325,10 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
           method: 'POST',
           headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
-           , ownerType: 'evidence',
+  ownerType: 'evidence',
             ownerId: testEvidence.id,
             event: 'upsert',
-            data: {, stressTest: true, index: i }
+            data: { stressTest: true, index: i } }
           })
         });
 
@@ -340,14 +339,14 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
           jobId: result?.jobId,
           success: !!result?.jobId
         };
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
         return {
           index: i,
           error: msg,
           success: false
         };
-      }
+      } }
     })()
   );
 
@@ -360,8 +359,8 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
       const v = (r as PromiseFulfilledResult<Record<string, unknown>>).value;
       if (v && typeof v === 'object' && 'success' in v && v.success) {
         return acc + 1;
-      }
-    }
+      } }
+    } }
     return acc;
   }, 0);
 
@@ -380,7 +379,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
     throughputJobsPerSecond: totalTime > 0 ? concurrentJobs / (totalTime / 1000) : 0,
     success: successfulJobs > 0
   };
-}
+} }
 
 // export test helpers so the module ends cleanly and utilities are accessible
 export const _pipelineTests = {
@@ -389,3 +388,4 @@ export const _pipelineTests = {
   testWebGPUFallback,
   testStressLoad
 };
+

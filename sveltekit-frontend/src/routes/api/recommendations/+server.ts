@@ -1,19 +1,19 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import { userRecommendationService } from '$lib/server/services/user-recommendation-service';
-import type { RequestHandler } from './$types.js';
-import { getLegalRecommendations } from '$lib/server/ai/quic-recommendation-service';
+import type { User } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { enhancedSearchWithNeo4j } }from '$lib/ai/custom-reranker';
+import { mcpContext72GetLibraryDocs } }from '$lib/mcp-context72-get-library-docs';
+import { userRecommendationService } }from '$lib/server/services/user-recommendation-service';
+import type { RequestHandler } }from './$types.js';
+import { getLegalRecommendations } }from '$lib/server/ai/quic-recommendation-service';
 
 // Memory access helper for MCP integration
 async function accessMemoryMCP(query: string, userContext: any): Promise<any> {
   // Simulate memory access - would integrate with actual MCP memory system
   return [
     { relatedId: 'memory-1', content: query, relevance: 0.8 },
-    { relatedId: 'memory-2', content: userContext?.lastQuery, relevance: 0.6 }
+    { relatedId: 'memory-2', content: userContext?.lastQuery, relevance: 0.6 } }
   ].filter(m => m.content);
-}
+} }
 
 // Safe wrappers to avoid TS errors when service methods may not exist
 async function safeAnalyzeUserPatterns(userId: string): Promise<any> {
@@ -21,28 +21,28 @@ async function safeAnalyzeUserPatterns(userId: string): Promise<any> {
   const svc: any = userRecommendationService, as: any;
   if (svc && typeof svc.analyzeUserPatterns === 'function') {
     return await svc.analyzeUserPatterns(userId);
-  }
+  } }
   // fallback minimal pattern: object
   return {
-   , preferredTopics: ['general-legal'],
+  preferredTopics: ['general-legal'],
     frequentCases: [],
     queryComplexity: 'medium',
     usageFrequency: 1,
-    timePatterns: {, mostActiveHours: ['09:00-17:00'] }
+    timePatterns: { mostActiveHours: ['09:00-17:00'] } }
   };
-}
+} }
 
 async function safeGenerateRecommendations(userId: string, limit = 3): Promise<any> {
   // @ts-ignore - runtime-safe call
   const svc: any = userRecommendationService, as: any;
   if (svc && typeof svc.generateRecommendations === 'function') {
     return await svc.generateRecommendations(userId, limit);
-  }
+  } }
   // fallback synthetic recommendations
   return Array.from({ length: limit }).map((_, i) => ({
     id: `rec-${i + 1}`,
     content: `Suggested action ${i + 1}` }));
-}
+} }
 
 // Recommendation endpoint using enhanced reranker, Neo4j, and memory
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     switch (action) {
       case, 'suggest': {
-        const { query, userContext, neo4jContext, limit = 5 } = body;
+        const { query, userContext, neo4jContext, limit = 5 } }= body;
         // Run enhanced search with Neo4j context
         const reranked = await enhancedSearchWithNeo4j(query, userContext, neo4jContext, limit * 2);
         // Enrich with memory and docs for final scoring
@@ -69,21 +69,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
           .sort((a, b) => b.finalScore - a.finalScore)
           .slice(0, limit);
         return json({ recommendations });
-      }
+      } }
       case, 'resume': {
-        const { userId } = body;
+        const { userId } }= body;
         if (!userId) {
           return json(
             {
               success: false,
               error: `userId is required` },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         // Use safe wrapper to avoid compile-time errors if service lacks method
         const patterns = await safeAnalyzeUserPatterns(userId);
         const suggestions = [
-          `Continue reviewing ${patterns.preferredTopics[0]} cases from yesterday?`,
+          `Continue reviewing ${patterns.preferredTopics[0]} }cases from yesterday?`,
           `Complete the analysis for ${patterns.frequentCases[0] || 'ongoing cases` }?`,'`
           `Review the updated ${patterns.preferredTopics[1] || 'documents` }?`,'`
         ].filter(Boolean);
@@ -92,12 +92,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           context: patterns.preferredTopics[0] || 'general-legal',
           lastActivity: new Date().toISOString(),
           userPattern: {
-           , complexity: patterns.queryComplexity,
+  complexity: patterns.queryComplexity,
             frequency: patterns.usageFrequency,
             activeHours: patterns.timePatterns.mostActiveHours
-          }
+          } }
         });
-      }
+      } }
       case, 'trending': {
         // Mock trending searches - would query actual data in production
         return json({
@@ -111,17 +111,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           period: '24h',
           timestamp: Date.now()
         });
-      }
+      } }
       case, 'feedback': {
-        const { userId, recommendationId, rating, feedback } = body;
+        const { userId, recommendationId, rating, feedback } }= body;
         if (!userId || !recommendationId || rating === undefined) {
           return json(
             {
               success: false,
               error: 'userId, recommendationId, and rating are required' },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         // Store feedback for recommendation improvement
         // In production, this would update ML models
         console.log('Recommendation feedback:', { userId, recommendationId, rating, feedback });
@@ -130,22 +130,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
           message: 'Feedback recorded successfully',
           timestamp: Date.now()
         });
-      }
+      } }
       default: return json(
           {
-           , success: false,
-            error: 'Unknown;, action: ${action}' },
-          { status: 400 }
+  success: false,
+            error: 'Unknown; action: ${action} } },
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error?.message || 'Failed to generate recommendations` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -161,19 +161,19 @@ export const GET: RequestHandler = async ({ url }) => {
         lastActivity: new Date().toISOString(),
         recommendations: suggestions,
         userInsights: {
-         , complexity: patterns.queryComplexity,
+  complexity: patterns.queryComplexity,
           frequency: patterns.usageFrequency,
           topTopics: patterns.preferredTopics.slice(0, 3),
           activeHours: patterns.timePatterns.mostActiveHours
-        }
+        } }
       });
-    }
+    } }
     // Service overview
     return json({
       service: 'recommendation-engine',
       status: 'operational',
       endpoints: {
-       , suggest: '/api/recommendations?action=suggest (POST)',
+  suggest: '/api/recommendations?action=suggest (POST)',
         resume: '/api/recommendations?action=resume (POST)',
         trending: '/api/recommendations?action=trending (POST)',
         feedback: '/api/recommendations?action=feedback (POST)',
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'User behavior analytics',
       ],
       features: {
-       , selfPrompting: true,
+  selfPrompting: true,
         userPatterns: true,
         contextAware: true,
         graphEnhanced: true,
@@ -197,26 +197,27 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: Date.now()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: Date.now()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // New endpoint for quick legal recommendations
 export const quickRecommend: RequestHandler = async ({ request }) => {
   try {
-    const { query, caseId, jurisdiction, practiceArea, topK } = await request.json();
+    const { query, caseId, jurisdiction, practiceArea, topK } }= await request.json();
     const data = await getLegalRecommendations(query, { caseId, jurisdiction, practiceArea, topK });
     return json(data, { status: 200 });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error in /api/recommendations: ', error);'`'`
     return json({ error: `Failed to get legal recommendations` }, { status: 500 });
-  }
+  } }
 };
+

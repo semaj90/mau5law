@@ -8,13 +8,13 @@
  * - aiHistoryStore.ts
  *
  *, Usage:
- *   import { aiAssistantStore } from '$lib/stores/unified';
+ *   import { aiAssistantStore } }from '$lib/stores/unified';
  *
  *   await aiAssistantStore.sendMessage('Analyze this case');
  *   $: messages = $aiAssistantStore.messages;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -29,7 +29,7 @@ export interface Message { id: string;, role: MessageRole;
   tokens?: number;
   confidence?: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface Conversation { id: string;, title: string;
   messages: Message[];
@@ -38,7 +38,7 @@ export interface Conversation { id: string;, title: string;
   createdAt: number;
   updatedAt: number;
   pinned: boolean;
-}
+} }
 
 export interface AnalysisContext {
   caseId?: string;
@@ -46,7 +46,7 @@ export interface AnalysisContext {
   reportId?: string;
   citationId?: string;
   poiId?: string;
-}
+} }
 
 /**
  * AI Assistant Store State
@@ -89,10 +89,9 @@ interface AIAssistantStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: AIAssistantStoreState = {
- , messages: [],
+const initialState: AIAssistantStoreState = { messages: [],
   currentQuery: '',
   isProcessing: false,
   isStreaming: false,
@@ -122,7 +121,7 @@ const initialState: AIAssistantStoreState = {
  * Create AI Assistant Store
  */
 function createAIAssistantStore() {
-  const { subscribe, update } = writable<AIAssistantStoreState>(initialState);
+  const { subscribe, update } }= writable<AIAssistantStoreState>(initialState);
 
   return {
     subscribe,
@@ -136,8 +135,7 @@ function createAIAssistantStore() {
       const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       // Add user message
-      const userMessage: Message = {
-       , id: messageId,
+      const userMessage: Message = { id: messageId,
         role: 'user',
         content: query,
         timestamp: Date.now()
@@ -152,8 +150,7 @@ function createAIAssistantStore() {
       }));
 
       try {
-        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } = {
-         , activeContext: {},
+        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } }= { activeContext: {},
           aiModel: 'gemma3',
           temperature: 0.7
         };
@@ -177,8 +174,7 @@ function createAIAssistantStore() {
 
         if (response.ok) {
           const data = await response.json();
-          const assistantMessage: Message = {
-           , id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             role: 'assistant',
             content: data.response,
             model: state.aiModel,
@@ -195,10 +191,10 @@ function createAIAssistantStore() {
           }));
 
           return assistantMessage;
-        } else {
+        } }else {
           throw new Error('AI response failed');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to get AI response';
         update(s => ({
           ...s,
@@ -206,7 +202,7 @@ function createAIAssistantStore() {
           isProcessing: false
         }));
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -234,16 +230,15 @@ function createAIAssistantStore() {
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
-          const { done, value } = await reader.read();
+          const { done, value } }= await reader.read();
           if (done) break;
 
           const chunk = decoder.decode(value);
           fullResponse += chunk;
           onChunk(chunk);
-        }
+        } }
 
-        const assistantMessage: Message = {
-         , id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           role: 'assistant',
           content: fullResponse,
           timestamp: Date.now()
@@ -256,11 +251,11 @@ function createAIAssistantStore() {
         }));
 
         return assistantMessage;
-      } catch (error) {
-        console.error('Streaming error:', error);'
+      } }catch (error) {
+        console.error('Streaming error:', error);
         update(s => ({ ...s, isStreaming: false }));
         throw error;
-      }
+      } }
     },
 
     /**
@@ -283,7 +278,7 @@ function createAIAssistantStore() {
     updateContext(context: Partial<AnalysisContext>) {
       update(s => ({
         ...s,
-        activeContext: { ...s.activeContext, ...context }
+        activeContext: { ...s.activeContext, ...context } }
       }));
     },
 
@@ -311,11 +306,11 @@ function createAIAssistantStore() {
           }));
 
           return data;
-        }
-      } catch (error) {
-        console.error('Context retrieval error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Context retrieval error:', error);
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     // ========== AI CONFIGURATION ==========
@@ -406,8 +401,7 @@ function createAIAssistantStore() {
      * Save conversation
      */
     async saveConversation() {
-      const state: { currentConversationId: string | null; messages: Message[] } = {
-       , currentConversationId: null,
+      const state: { currentConversationId: string | null; messages: Message[] } }= { currentConversationId: null,
         messages: []
       };
 
@@ -422,8 +416,7 @@ function createAIAssistantStore() {
         const response = await fetch(`/api/conversations/${state.currentConversationId}`, {
           method: 'PUT',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , messages: state.messages
+          body: JSON.stringify({ messages: state.messages
           }),
           credentials: `include' });'`
 
@@ -432,9 +425,9 @@ function createAIAssistantStore() {
             ...s,
             lastUpdated: Date.now()
           }));
-        }
-      } catch (error) {
-        console.error('Save conversation error: `, error);` }'
+        } }
+      } }catch (error) {
+        console.error('Save conversation error: `, error);` } }
     },
 
     /**
@@ -452,9 +445,9 @@ function createAIAssistantStore() {
             conversations: s.conversations.filter(c => c.id !== conversationId),
             currentConversationId: s.currentConversationId === conversationId ? null : s.currentConversationId
           }));
-        }
-      } catch (error) {
-        console.error('Delete error: `, error);` }'
+        } }
+      } }catch (error) {
+        console.error('Delete error: `, error);` } }
     },
 
     /**
@@ -464,7 +457,7 @@ function createAIAssistantStore() {
       update(s => ({
         ...s,
         conversations: s.conversations.map(c =>
-          c.id === conversationId ? { ...c, pinned: !c.pinned } : c
+          c.id === conversationId ? { ...c, pinned: !c.pinned } }: c
         )
       }));
     },
@@ -481,17 +474,17 @@ function createAIAssistantStore() {
         const response = await fetch(`/api/ai/analyze/${scope}`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({, context: {} }),
+          body: JSON.stringify({ context: {} }}),
           credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
           return data.analysis;
-        }
-      } catch (error) {
-        console.error('Analysis error: `, error);` } finally {'
+        } }
+      } }catch (error) {
+        console.error('Analysis error: `, error);` } }finally {'
         update(s => ({ ...s, isProcessing: false }));
-      }
+      } }
     },
 
     /**
@@ -504,17 +497,17 @@ function createAIAssistantStore() {
         const response = await fetch(`/api/ai/generate-report/${scope}`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },'`'`
-          body: JSON.stringify({, context: {} }),
+          body: JSON.stringify({ context: {} }}),
           credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
           return data.report;
-        }
-      } catch (error) {
-        console.error('Report generation error: `, error);` } finally {'
+        } }
+      } }catch (error) {
+        console.error('Report generation error: `, error);` } }finally {'
         update(s => ({ ...s, isProcessing: false }));
-      }
+      } }
     },
 
     /**
@@ -533,12 +526,12 @@ function createAIAssistantStore() {
           }));
 
           return data.suggestions;
-        }
-      } catch (error) {
-        console.error('Suggestions error: `, error);` }'
-    }
+        } }
+      } }catch (error) {
+        console.error('Suggestions error: `, error);` } }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -573,10 +566,11 @@ export const conversations = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { sendMessage, messages  } from '$lib/stores/unified'
- *   import { chatStore  } from '$lib/stores/unified'
- *   import { aiUnified } from '$lib/stores/ai-unified'
+ *   import { sendMessage, messages  } }from '$lib/stores/unified'
+ *   import { chatStore  } }from '$lib/stores/unified'
+ *   import { aiUnified } }from '$lib/stores/ai-unified'
  *
  * New imports:
- *   import { aiAssistantStore, messages, isProcessing } from '$lib/stores/unified'
+ *   import { aiAssistantStore, messages, isProcessing } }from '$lib/stores/unified'
  */
+

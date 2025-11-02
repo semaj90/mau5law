@@ -55,22 +55,9 @@ if (Test-Path "logs\gpu-filtered-files.json") {
     Write-Host "   📋 Processing $filtered filtered files`n" -ForegroundColor Cyan
 }
 
-# Stage 2: Regex-based fixes (Phase 30v2)
+# Stage 2: Regex-based fixes — HARD DISABLE (regex retired)
 if ($Stage -eq '2' -or $Stage -eq 'all') {
-    Write-Host "🔧 Stage 2: Import-Safe Regex Fixes" -ForegroundColor Cyan
-    Write-Host "   Conservative pattern matching with keyword protection..." -ForegroundColor Gray
-    
-    node phase30-ts1005-surgical-fix-v2.cjs $dryRunFlag $fromJson
-    
-    if (-not $DryRun) {
-        Write-Host "`n   📊 Checking progress..." -ForegroundColor Yellow
-        $afterV2 = (npx tsc --noEmit --skipLibCheck 2>&1 | Select-String "error TS" | Measure-Object).Count
-        $reduction = $baselineErrors - $afterV2
-        Write-Host "   After v2: $afterV2 errors (-$reduction)" -ForegroundColor $(if ($reduction -gt 0) { "Green" } else { "Yellow" })
-        $baselineErrors = $afterV2
-    }
-    
-    Write-Host "   ✅ Stage 2 complete`n" -ForegroundColor Green
+    Write-Host "⏭️  Stage 2 disabled permanently (regex retired). Use Stage 3 AST." -ForegroundColor Yellow
 }
 
 # Stage 3: AST-based fixes (Phase 30v3)

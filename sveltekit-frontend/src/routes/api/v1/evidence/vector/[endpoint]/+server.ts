@@ -1,9 +1,9 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /**
  * Minimal Vector Evidence API - Simplified for error reduction
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 
 // Request schema + inferred type
 const VectorRequestSchema = z.object({
@@ -16,26 +16,26 @@ type VectorRequest = z.infer<typeof, VectorRequestSchema>;
 interface SearchResult { id: string;, similarity: number;
   title: string;
   type?: 'document' | 'snippet' | string;
-}
+} }
 
-interface SimilarityPair {, source: string;, target: string;
+interface SimilarityPair { source: string;, target: string;
   score: number;
-}
+} }
 
-interface ClusterResult {, cluster: number;, documents: string[];
-}
+interface ClusterResult { cluster: number;, documents: string[];
+} }
 
-interface HealthStatus {, status: string;, timestamp: string;
-}
+interface HealthStatus { status: string;, timestamp: string;
+} }
 
-interface EmbedResult {, id: string;, vector: number[];
+interface EmbedResult { id: string;, vector: number[];
   dimensions: number;
-}
+} }
 
 interface GenericResponse {
   message: string;
   query?: string;
-}
+} }
 
 // Union of all possible data item shapes
 type VectorData = SearchResult | SimilarityPair | ClusterResult | HealthStatus | EmbedResult | GenericResponse;
@@ -46,8 +46,8 @@ interface VectorResponse {
   data?: VectorData[];
   error?: string;
   endpoint?: string;
-}
-export const, GET: RequestHandler = async ({ params, url }) => {
+} }
+export const GET: RequestHandler = async ({ params, url }) => {
   try {
     const endpoint = params.endpoint;
     // parse limit, default, 10, clamp to 1..100
@@ -55,7 +55,7 @@ export const, GET: RequestHandler = async ({ params, url }) => {
     if (Number.isNaN(limit)) limit = 10;
     limit = Math.min(Math.max(limit, 1), 100);
     const response: VectorResponse = {
-     , success: true,
+  success: true,
       data: [],
       endpoint
     };
@@ -63,11 +63,11 @@ export const, GET: RequestHandler = async ({ params, url }) => {
       case, 'search':
         response.data = [
           { id: '1', similarity: 0.95, title: 'Sample Evidence 1' },
-          { id: '2', similarity: 0.87, title: 'Sample Evidence 2' }
+          { id: '2', similarity: 0.87, title: 'Sample Evidence 2' } }
         ];
         break;
       case, 'similarity':
-        response.data = [{ source: '1', target: '2', score: 0.85 }];
+        response.data = [{ source: '1', target: '2', score: 0.85 } };
         break;
       case, 'cluster':
         response.data = [
@@ -76,25 +76,25 @@ export const, GET: RequestHandler = async ({ params, url }) => {
         ];
         break;
       case, 'health':
-        response.data = [{ status: 'ok', timestamp: new Date().toISOString() }];
+        response.data = [{ status: 'ok', timestamp: new Date().toISOString() } };
         break;
       default:
-        return json({, success: false, error: 'Unknown endpoint' }, { status: 404 });
-    }
+        return json({ success: false, error: 'Unknown endpoint' }, { status: 404 });
+    } }
     // apply the requested limit to array responses
     if (Array.isArray(response.data)) {
       response.data = response.data.slice(0, limit);
-    }
+    } }
     return json(response);
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
@@ -108,11 +108,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
           success: false,
           error: 'Invalid request data'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const response: VectorResponse = {
-     , success: true,
+  success: true,
       data: [],
       endpoint
     };
@@ -120,17 +120,15 @@ export const POST: RequestHandler = async ({ params, request }) => {
     switch (endpoint) {
       case, 'search':
         response.data = [
-          {,
-            id: 'evidence-1',
+          { id: 'evidence-1',
             similarity: 0.92,
-            title: `Evidence;, matching: ${validatedData.data.query}`,
-            type: 'document` }'`
+            title: `Evidence; matching: ${validatedData.data.query}`,
+            type: 'document` } }`
         ];
         break;
       case, 'embed':
         response.data = [
-          {,
-            id: 'embed-1',
+          { id: 'embed-1',
             vector: Array(384)
               .fill(0)
               .map(() => Math.random()),
@@ -139,15 +137,16 @@ export const POST: RequestHandler = async ({ params, request }) => {
         ];
         break;
       default:
-        response.data = [{, message: `Processed ${endpoint} request`, query: validatedData.data.query }];
-    }
+        response.data = [{ message: `Processed ${endpoint} }request`, query: validatedData.data.query } };
+    } }
     return json(response);
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Processing error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

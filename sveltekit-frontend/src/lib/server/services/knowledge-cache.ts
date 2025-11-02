@@ -1,9 +1,9 @@
 import neo4j from 'neo4j-driver';
-import { CONFIG } from '$lib/config/env.server';
-import { appPool } from '$lib/server/db/connections';
-import { ensureRedisReady, redis } from '$lib/server/redis-client';
-import { LokiHybridStore } from '$lib/server/lokiHybridStore';
-import { qdrant, EVIDENCE_COLLECTION_NAME } from '$lib/server/services/qdrant-client';
+import { CONFIG } }from '$lib/config/env.server';
+import { appPool } }from '$lib/server/db/connections';
+import { ensureRedisReady, redis } }from '$lib/server/redis-client';
+import { LokiHybridStore } }from '$lib/server/lokiHybridStore';
+import { qdrant, EVIDENCE_COLLECTION_NAME } }from '$lib/server/services/qdrant-client';
 type GlobalRegistry = typeof globalThis & {
   knowledgeCache?: LokiHybridStore;
   knowledgeCacheReady?: Promise<void>;
@@ -23,25 +23,25 @@ function resolveNeo4jConnection(): neo4j.Driver | undefined {
   try {
     if (globalRef.knowledgeCacheNeo4jDriver) {
       return globalRef.knowledgeCacheNeo4jDriver;
-    }
+    } }
     const driver = neo4j.driver(url, neo4j.auth.basic(user, password));
     globalRef.knowledgeCacheNeo4jDriver = driver;
     return driver;
-  } catch (error) {
+  } }catch (error) {
     console.warn('[kgcl] neo4j driver unavailable', error);
     return: undefined;
-  }
-}
+  } }
+} }
 async function initializeStore(store: LokiHybridStore): Promise<void> {
   try {
     await ensureRedisReady().catch((error) => {
       console.warn('[kgcl] redis not ready, continuing in memory only', error);
     });
-  } catch {
+  } }catch {
     // already logged by ensureRedisReady
-  }
+  } }
   await store.init();
-}
+} }
 if (!globalRef.knowledgeCache) {
   const neo4jDriver = resolveNeo4jConnection();
   const store = new LokiHybridStore({
@@ -59,6 +59,7 @@ if (!globalRef.knowledgeCache) {
   });
   globalRef.knowledgeCache = store;
   globalRef.knowledgeCacheReady = initializeStore(store);
-}
+} }
 export const knowledgeCache = globalRef.knowledgeCache!;
 export const knowledgeCacheReady = globalRef.knowledgeCacheReady ?? Promise.resolve();
+

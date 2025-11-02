@@ -6,37 +6,36 @@ export interface TransportConfig { webtransportUrl: string;, websocketUrl: stri
   httpUrl: string;
   maxReconnectAttempts: number;
   reconnectInterval: number;
-}
+} }
 
 export type TransportType = 'webtransport' | 'websocket' | 'http' | 'none';
 
-export interface TransportState {, activeTransport: TransportType;, isConnected: boolean;
+export interface TransportState { activeTransport: TransportType;, isConnected: boolean;
   latency: number;
   reconnectAttempts: number;
   error: string | null;
-}
+} }
 
 // Add lightweight typed interfaces for WebTransport-like streams
-interface BidirectionalStream {, readable: ReadableStream<Uint8Array>;, writable: WritableStream<Uint8Array>;
-}
+interface BidirectionalStream { readable: ReadableStream<Uint8Array>;, writable: WritableStream<Uint8Array>;
+} }
 
-interface WebTransportLike {, incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;, incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
+interface WebTransportLike { incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;, incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
   createBidirectionalStream(): Promise<BidirectionalStream>;
   ready: Promise<void>;
  , closed: Promise<void>;
   close(): void;
-}
+} }
 
 // Replace the untyped `any` declaration with a constructor signature that produces WebTransportLike.
 // This keeps runtime checks (typeof WebTransport !== 'undefined') valid while avoiding `any`.
-declare const WebTransport: { new (url: string): WebTransportLike } | undefined;
+declare const WebTransport: { new (url: string): WebTransportLike } }| undefined;
 
 export class WebTransportService {
   private transport: WebTransportLike | null = null;
   private ws: WebSocket | null = null;
   private config: TransportConfig;
-  private state: TransportState = {
-   , activeTransport: 'none',
+  private state: TransportState = { activeTransport: 'none',
     isConnected: false,
     latency: 0,
     reconnectAttempts: 0,
@@ -48,7 +47,7 @@ export class WebTransportService {
 
   constructor(config: TransportConfig) {
     this.config = config;
-  }
+  } }
 
   // Connect with automatic fallback
   async connect(): Promise<void> {
@@ -60,19 +59,19 @@ export class WebTransportService {
         await this.connectWebTransport();
         console.log('✅ Connected via WebTransport (HTTP/3)');
         return;
-      } catch (error) {
+      } }catch (error) {
         console.warn('⚠️ WebTransport connection failed:', error);
-      }
-    }
+      } }
+    } }
 
     // Fallback to WebSocket
     try {
       await this.connectWebSocket();
       console.log('✅ Connected via WebSocket');
       return;
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ WebSocket connection failed:', error);
-    }
+    } }
 
     // Final fallback to HTTP
     this.setState({
@@ -80,12 +79,12 @@ export class WebTransportService {
       isConnected: true,
       error: 'Using HTTP fallback (reduced real-time capabilities)' });
     console.log('📡 Using HTTP-only mode');
-  }
+  } }
 
   // Check if WebTransport is supported
   private isWebTransportSupported(): boolean {
     return typeof WebTransport !== 'undefined';
-  }
+  } }
 
   // Connect using WebTransport (HTTP/3 with QUIC)
   private async connectWebTransport(): Promise<void> {
@@ -94,7 +93,7 @@ export class WebTransportService {
         // Guard: ensure the WebTransport constructor is available at runtime and narrow its type
         if (typeof WebTransport === 'undefined' || WebTransport === undefined) {
           return reject(new Error('WebTransport is not supported in this environment'));
-        }
+        } }
 
         const WT = WebTransport as { new (url: string): WebTransportLike };
         this.transport = new WT(this.config.webtransportUrl);
@@ -131,11 +130,11 @@ export class WebTransportService {
           .catch(err => {
             console.debug('[WebTransport] closed() rejected', err);
           });
-      } catch (error) {
+      } }catch (error) {
         reject(error);
-      }
+      } }
     });
-  }
+  } }
 
   // Setup WebTransport handlers
   private setupWebTransportHandlers(): void {
@@ -152,23 +151,23 @@ export class WebTransportService {
           const stream = res.value;
           if (!stream) {
             console.debug('[WebTransport] received: undefined bidirectional stream, skipping');
-          } else {
+          } }else {
             // handle concurrently (preserve original behavior)
             void this.handleBidirectionalStream(stream).catch(err =>
               console.error('❌ Bidirectional handler failed:', err)
             );
-          }
+          } }
           res = await reader.read();
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.error('❌ Error reading incoming bidirectional streams:', err);
-      } finally {
+      } }finally {
         try {
           reader.releaseLock();
-        } catch (e) {
+        } }catch (e) {
           console.debug('[WebTransport] releaseLock (bidirectional) failed:', e);
-        }
-      }
+        } }
+      } }
     })();
 
     // Handle incoming unidirectional streams
@@ -181,24 +180,24 @@ export class WebTransportService {
           const stream = res.value;
           if (!stream) {
             console.debug('[WebTransport] received: undefined unidirectional stream, skipping');
-          } else {
+          } }else {
             void this.handleUnidirectionalStream(stream).catch(err =>
               console.error('❌ Unidirectional handler failed:', err)
             );
-          }
+          } }
           res = await reader.read();
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.error('❌ Error reading incoming unidirectional streams:', err);
-      } finally {
+      } }finally {
         try {
           reader.releaseLock();
-        } catch (e) {
+        } }catch (e) {
           console.debug('[WebTransport] releaseLock (unidirectional) failed:', e);
-        }
-      }
+        } }
+      } }
     })();
-  }
+  } }
 
   // Handle bidirectional stream
   private async handleBidirectionalStream(stream: BidirectionalStream): Promise<void> {
@@ -220,22 +219,22 @@ export class WebTransportService {
         // Echo response (for testing)
         const response = `Echo: ${message}`;
         await writer.write(new TextEncoder().encode(response));
-      }
-    } catch (error) {
-      console.error('❌ Stream error:', error);'
-    } finally {
+      } }
+    } }catch (error) {
+      console.error('❌ Stream error:', error);
+    } }finally {
       try {
         reader.releaseLock();
-      } catch (e) {
+      } }catch (e) {
         console.debug('Failed to release bidirectional reader lock:', e);
-      }
+      } }
       try {
         writer.releaseLock();
-      } catch (e) {
+      } }catch (e) {
         console.debug('Failed to release bidirectional writer lock:', e);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Handle unidirectional stream
   private async handleUnidirectionalStream(stream: ReadableStream<Uint8Array>): Promise<void> {
@@ -251,23 +250,23 @@ export class WebTransportService {
         const value = res.value;
         const message = new TextDecoder().decode(value);
         console.log('📥 Received (unidirectional):', message);
-      }
-    } catch (error) {
-      console.error('❌ Stream error:', error);'
-    } finally {
+      } }
+    } }catch (error) {
+      console.error('❌ Stream error:', error);
+    } }finally {
       try {
         reader.releaseLock();
-      } catch (e) {
+      } }catch (e) {
         console.debug('Failed to release unidirectional reader lock:', e);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Send data via WebTransport
   async sendViaWebTransport(data: any): Promise<void> {
     if (!this.transport) {
       throw new Error('WebTransport not connected');
-    }
+    } }
 
     try {
       // Create bidirectional stream
@@ -279,11 +278,11 @@ export class WebTransportService {
       await writer.close();
 
       console.log('📤 Sent via WebTransport:', data);
-    } catch (error) {
-      console.error('❌ Send error:', error);'
+    } }catch (error) {
+      console.error('❌ Send error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Connect using WebSocket
   private async connectWebSocket(): Promise<void> {
@@ -306,7 +305,7 @@ export class WebTransportService {
         };
 
         this.ws.onerror = error => {
-          console.error('❌ WebSocket error:', error);'
+          console.error('❌ WebSocket error:', error);
           reject(error);
         };
 
@@ -323,24 +322,24 @@ export class WebTransportService {
           if (this.ws?.readyState !== WebSocket.OPEN) {
             this.ws?.close();
             reject(new Error('WebSocket connection timeout'));
-          }
+          } }
         }, 5000);
-      } catch (error) {
+      } }catch (error) {
         reject(error);
-      }
+      } }
     });
-  }
+  } }
 
   // Send data via WebSocket
   async sendViaWebSocket(data: any): Promise<void> {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       throw new Error('WebSocket not connected');
-    }
+    } }
 
     const message = JSON.stringify(data);
     this.ws.send(message);
     console.log('📤 Sent via WebSocket:', data);
-  }
+  } }
 
   // Send data via HTTP
   async sendViaHTTP(data: any): Promise<unknown> {
@@ -354,17 +353,17 @@ export class WebTransportService {
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      } }
 
       const result = await response.json();
       console.log('📤 Sent via HTTP:', data);
       console.log('📥 Received:', result);
       return result;
-    } catch (error) {
-      console.error('❌ HTTP error:', error);'
+    } }catch (error) {
+      console.error('❌ HTTP error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Unified send method with automatic transport selection
   async send(data: any): Promise<unknown | void> {
@@ -382,12 +381,12 @@ export class WebTransportService {
           return await this.sendViaHTTP(data);
         default:
           throw new Error('No active transport');
-      }
+      } }
 
       const latency = performance.now() - startTime;
       this.setState({ latency });
       console.log(`⚡ Latency: ${latency.toFixed(2)}ms (${this.state.activeTransport})`);
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Send failed on ${this.state.activeTransport}: ', error);'`
 
       // Try fallback
@@ -395,15 +394,15 @@ export class WebTransportService {
         console.log('🔄 Falling back to WebSocket...');
         await this.connectWebSocket();
         return this.send(data);
-      } else if (this.state.activeTransport === 'websocket') {
+      } }else if (this.state.activeTransport === 'websocket') {
         console.log('🔄 Falling back to HTTP...');
         this.setState({ activeTransport: 'http', isConnected: true });
         return this.send(data);
-      }
+      } }
 
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Schedule reconnection with exponential backoff
   private scheduleReconnection(): void {
@@ -414,7 +413,7 @@ export class WebTransportService {
         isConnected: false
       });
       return;
-    }
+    } }
 
     const delay = this.config.reconnectInterval * Math.pow(2, this.state.reconnectAttempts);
     console.log(
@@ -427,13 +426,13 @@ export class WebTransportService {
       });
       this.connect();
     }, delay);
-  }
+  } }
 
   // Update state and notify listeners
   private setState(updates: Partial<TransportState>): void {
     this.state = { ...this.state, ...updates };
     this.stateChangeCallbacks.forEach(cb => cb(this.state));
-  }
+  } }
 
   // Subscribe to state changes
   onStateChange(callback: (state: TransportState) => void): () => void {
@@ -442,31 +441,31 @@ export class WebTransportService {
       const index = this.stateChangeCallbacks.indexOf(callback);
       if (index > -1) {
         this.stateChangeCallbacks.splice(index, 1);
-      }
+      } }
     };
-  }
+  } }
 
   // Get current state
   getState(): TransportState {
     return { ...this.state };
-  }
+  } }
 
   // Disconnect all transports
   disconnect(): void {
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
-    }
+    } }
 
     if (this.transport) {
       this.transport.close();
       this.transport = null;
-    }
+    } }
 
     if (this.ws) {
       this.ws.close();
       this.ws = null;
-    }
+    } }
 
     this.setState({
       activeTransport: 'none',
@@ -475,7 +474,7 @@ export class WebTransportService {
     });
 
     console.log('🔌 All transports disconnected');
-  }
+  } }
 
   // Measure latency with ping
   async measureLatency(): Promise<number> {
@@ -486,11 +485,12 @@ export class WebTransportService {
       const latency = performance.now() - start;
       this.setState({ latency });
       return latency;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Latency measurement failed:', error);
       return -1;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 export default WebTransportService;
+

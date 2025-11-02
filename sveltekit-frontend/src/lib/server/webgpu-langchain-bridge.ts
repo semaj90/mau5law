@@ -3,40 +3,40 @@
  * High-performance bridge connecting WebGPU-optimized caching with LangChain extraction pipeline
  * Provides GPU-accelerated embedding generation and caching for legal document processing
  */
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from './embedding-cache-middleware.js';
-import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } }from './embedding-cache-middleware.js';
+import { webgpuRedisOptimizer, optimizedCache } }from './webgpu-redis-optimizer.js';
+import { langExtractService } }from '$lib/services/langextract-ollama-service.js';
 export interface LangChainWebGPUConfig { useWebGPUCache: boolean;, batchSize: number;
   cacheEmbeddings: boolean;
   compressVectors: boolean;
   practiceArea: string;
   documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
-}
-export interface ProcessingResult {, extraction: {, summary: string;
+} }
+export interface ProcessingResult { extraction: { summary: string;
     keyTerms: string[];
     entities: any[];
     contractTerms?: any[];
     caseCitations?: any[];
     legalDates?: any[];
     risks?: string[];
-  }
+  } }
   embeddings: {
     documentEmbedding: Float32Array;
     sectionEmbeddings?: Float32Array[];
     compressionRatio: number;
     processingTime: number;
     cacheHit: boolean;
-  }
-  performance: {, totalTime: number;, extractionTime: number;
+  } }
+  performance: { totalTime: number;, extractionTime: number;
     embeddingTime: number;
     webgpuUtilized: boolean;
     throughput: number;
-  }
-  metadata: {, documentLength: number;, embeddingDimensions: number;
+  } }
+  metadata: { documentLength: number;, embeddingDimensions: number;
     sectionsProcessed: number;
     cacheStrategy: string;
-  }
-}
+  } }
+} }
 export class WebGPULangChainBridge {
   private, config: LangChainWebGPUConfig;
   constructor(config: Partial<LangChainWebGPUConfig> = {}) {
@@ -47,18 +47,18 @@ export class WebGPULangChainBridge {
       compressVectors: config.compressVectors ?? true,
       practiceArea: config.practiceArea || 'general',
       documentType: config.documentType || 'general'
-    }
-  }
+    } }
+  } }
   /**
    * Process legal document with integrated LangChain extraction + WebGPU caching
    */
   async processLegalDocument(
    , documentText: string,
-    options: Partial<LangChainWebGPUConfig> = {}
+    options: Partial<LangChainWebGPUConfig> = {} }
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
-    const mergedConfig = { ...this.config, ...options }
-    console.log(`🔗 WebGPU-LangChain Bridge: Processing ${documentText.length} chars`);
+    const mergedConfig = { ...this.config, ...options } }
+    console.log(`🔗 WebGPU-LangChain Bridge: Processing ${documentText.length} }chars`);
     // Phase 1: Parallel LangChain extraction and embedding generation
     const [extractionResult, embeddingResult] = await Promise.all([
       this.extractWithLangChain(documentText, mergedConfig),
@@ -75,22 +75,21 @@ export class WebGPULangChainBridge {
         webgpuUtilized: embeddingResult.webgpuUtilized,
         throughput: documentText.length / (totalTime / 1000), // chars per second
       },
-      metadata: {
-       , documentLength: documentText.length,
+      metadata: { documentLength: documentText.length,
         embeddingDimensions: embeddingResult.documentEmbedding.length,
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
-        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard' }'` }'`
-  }
+        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard' } }` } }`
+  } }
   /**
    * Batch process multiple documents with WebGPU optimization
    */
   async processBatchDocuments(
-   , documents: Array<{, id: string;, content: string; metadata?: any }>,
-    options: Partial<LangChainWebGPUConfig> = {}
+   , documents: Array<{ id: string; content: string; metadata?: any }>,
+    options: Partial<LangChainWebGPUConfig> = {} }
   ): Promise<ProcessingResult[]> {
-    const mergedConfig = { ...this.config, ...options }
+    const mergedConfig = { ...this.config, ...options } }
     const batchSize = mergedConfig.batchSize;
-    console.log(`📦 Batch processing ${documents.length} documents (batch size: ${batchSize})`);
+    console.log(`📦 Batch processing ${documents.length} }documents (batch size: ${batchSize})`);
     const results: ProcessingResult[] = [];
     // Process in optimized batches
     for (let i = 0; i < documents.length; i += batchSize) {
@@ -100,23 +99,23 @@ export class WebGPULangChainBridge {
       results.push(...batchResults);
       // Log progress
       console.log(`✅ Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`);
-    }
+    } }
     return results;
-  }
+  } }
   /**
    * Extract legal information using LangChain + Ollama
    */
   private async extractWithLangChain(
     text: string,
     config: LangChainWebGPUConfig,
-  ): Promise<{ data: {, summary: string;
+  ): Promise<{ data: { summary: string;
       keyTerms: string[];
       entities: any[];
       contractTerms: any[];
       caseCitations: any[];
       legalDates: any[];
       risks: any[];
-    }
+    } }
    , processingTime: number;
   }> {
     const startTime = Date.now();
@@ -125,7 +124,7 @@ export class WebGPULangChainBridge {
       const isAvailable = await langExtractService.isOllamaAvailable();
       if (!isAvailable) {
         throw new Error('Ollama service not available');
-      }
+      } }
       // Parallel extraction of different legal elements
       const [summary, contractTerms, entities, risks] = await Promise.all([
         langExtractService
@@ -156,7 +155,7 @@ export class WebGPULangChainBridge {
         Promise.resolve([]),
       ]);
       const processingTime = Date.now() - startTime;
-      return { data: {, summary: summary?.summary || 'Summary not available',
+      return { data: { summary: summary?.summary || 'Summary not available',
           keyTerms: summary?.keyTerms || [],
           entities: entities || [],
           contractTerms: contractTerms?.terms || [],
@@ -165,10 +164,10 @@ export class WebGPULangChainBridge {
           risks: risks || []
         },
         processingTime
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('LangChain extraction failed:', error);
-      return { data: {, summary: 'Extraction failed - using fallback',
+      return { data: { summary: 'Extraction failed - using fallback',
           keyTerms: this.extractKeyTermsFallback(text),
           entities: [],
           contractTerms: [],
@@ -177,9 +176,9 @@ export class WebGPULangChainBridge {
           risks: []
         },
         processingTime: Date.now() - startTime
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Generate embeddings with WebGPU optimization
    */
@@ -218,14 +217,14 @@ export class WebGPULangChainBridge {
           processingTime: Date.now() - startTime,
           cacheHit,
           webgpuUtilized: true
-        }
-      } else {
+        } }
+      } }else {
         // Standard embedding generation
         const legalQuery = {
           text,
           documentType: config.documentType === 'general' ? 'case' : config.documentType,
           practiceArea: config.practiceArea
-        }
+        } }
         const result = await getLegalEmbedding(legalQuery);
         cacheHit = (result as { metadata?: any; embedding?: any }).metadata.cacheHit;
         return {
@@ -234,9 +233,9 @@ export class WebGPULangChainBridge {
           processingTime: Date.now() - startTime,
           cacheHit,
           webgpuUtilized: false
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.error('WebGPU embedding generation failed:', error);
       // Fallback to dummy embedding
       return {
@@ -245,9 +244,9 @@ export class WebGPULangChainBridge {
         processingTime: Date.now() - startTime,
         cacheHit: false,
         webgpuUtilized: false
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Split document into logical sections for hierarchical processing
    */
@@ -260,16 +259,16 @@ export class WebGPULangChainBridge {
       if ((currentSection + paragraph).length > maxSectionLength && currentSection) {
         sections.push(currentSection.trim());
         currentSection = paragraph;
-      } else {
+      } }else {
         currentSection += (currentSection ? '\n\n' : '') + paragraph;
-      }
-    }
+      } }
+    } }
     if (currentSection.trim()) {
       sections.push(currentSection.trim());
-    }
+    } }
     // Ensure we have at least one section
     return sections.length > 0 ? sections : [text];
-  }
+  } }
   /**
    * Fallback key term extraction using simple text analysis
    */
@@ -304,28 +303,28 @@ export class WebGPULangChainBridge {
     words.forEach(word => {
       if (legalTerms.includes(word)) {
         wordCount.set(word, (wordCount.get(word) || 0) + 1);
-      }
+      } }
     });
     // Return top terms by frequency
     return Array.from(wordCount.entries())
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
       .map(([term]) => term);
-  }
+  } }
   /**
    * Get comprehensive processing statistics
    */
   async getProcessingStats(): Promise<{ webgpuOptimizer: any;, embeddingCache: any;
-    langchainService: {, available: boolean;, models: string[];
-    }
+    langchainService: { available: boolean;, models: string[];
+    } }
   }> {
     const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
       webgpuRedisOptimizer.getOptimizationStats(),
       (
-        embeddingCache as { getCacheStats?: () => Promise<unknown>; getStats?: () => Promise<unknown> }
+        embeddingCache as { getCacheStats?: () => Promise<unknown>; getStats?: () => Promise<unknown> } }
       ).getCacheStats?.() ??
         (
-          embeddingCache as { getCacheStats?: () => Promise<unknown>; getStats?: () => Promise<unknown> }
+          embeddingCache as { getCacheStats?: () => Promise<unknown>; getStats?: () => Promise<unknown> } }
         ).getStats?.() ??
         Promise.resolve({}),
       langExtractService.isOllamaAvailable(),
@@ -333,18 +332,18 @@ export class WebGPULangChainBridge {
     return {
       webgpuOptimizer: webgpuStats,
       embeddingCache: cacheStats,
-      langchainService: {, available: ollamaAvailable;, models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
-      }
-    }
-  }
+      langchainService: { available: ollamaAvailable;, models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
+      } }
+    } }
+  } }
   /**
    * Update configuration
    */
   updateConfig(newConfig: Partial<LangChainWebGPUConfig>): void {
-    this.config = { ...this.config, ...newConfig }
+    this.config = { ...this.config, ...newConfig } }
     console.log('🔧 WebGPU-LangChain Bridge config updated:', this.config);
-  }
-}
+  } }
+} }
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
   useWebGPUCache: true,
@@ -359,13 +358,13 @@ export async function processLegalDocumentWithWebGPU(
   options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult> {
   return webgpuLangChainBridge.processLegalDocument(text, options);
-}
+} }
 export async function processBatchDocumentsWithWebGPU(
-  documents: Array<{, id: string;, content: string; metadata?: any }>,
+  documents: Array<{ id: string; content: string; metadata?: any }>,
   options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult[]> {
   return webgpuLangChainBridge.processBatchDocuments(documents, options);
-}
+} }
 export async function getLangChainWebGPUStats(): Promise<any> {
   return webgpuLangChainBridge.getProcessingStats();
 }

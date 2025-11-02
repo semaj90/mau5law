@@ -11,20 +11,20 @@ export interface UploadResponse { success: boolean;, fileName: string;
   fileId?: string;
   url?: string;
   error?: string;
-}
+} }
 
 export interface UploadOptions {
   caseId?: string;
   description?: string;
   tags?: string[];
   useLocalStorage?: boolean;
-}
+} }
 
 /**
  * Interface for a file record stored in local storage.
  * Inferred from the `fileRecord` object created in `uploadToLocalStorage`.
  */
-export interface LocalFileRecord {, id: string;, fileName: string;
+export interface LocalFileRecord { id: string;, fileName: string;
   size: number;
   type: string; // MIME type
   data: string; // Base64 content
@@ -32,13 +32,13 @@ export interface LocalFileRecord {, id: string;, fileName: string;
   description?: string;
   tags: string[];
   uploadedAt: string;
-}
+} }
 
 /**
- * Interface for file details returned by the server's /api/evidence/{fileId} endpoint.'
+ * Interface for file details returned by the server's /api/evidence/{fileId} }endpoint.'
  * This assumes a comprehensive structure for file metadata and access URL.
  */
-export interface ServerFileDetails {, fileId: string; // Unique identifier for the file on the server, fileName: string;
+export interface ServerFileDetails { fileId: string; // Unique identifier for the file on the server, fileName: string;
   size: number;
   type: string; // MIME type
   url: string; // URL to access the file
@@ -47,7 +47,7 @@ export interface ServerFileDetails {, fileId: string; // Unique identifier for t
   tags?: string[];
   uploadedAt: string; // ISO: string timestamp
   // Add: any other relevant fields the server might return
-}
+} }
 
 /**
  * Union type representing a file retrieved from either local storage or the server.
@@ -76,12 +76,12 @@ class EnhancedFileUpload {
         if (options.useLocalStorage) {
           // Force localStorage upload
           result = await this.uploadToLocalStorage(file, options);
-        } else {
+        } }else {
           // Try server upload first, fallback to localStorage
           result = await this.uploadWithFallback(file, options);
-        }
+        } }
         results.push(result);
-      } catch (error: any) {
+      } }catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         results.push({
           success: false,
@@ -91,14 +91,14 @@ class EnhancedFileUpload {
           fallbackUsed: false,
           error: errMsg
         });
-      }
+      } }
 
       // Update progress (complete)
       progressCallback?.(i + 1, totalFiles, file.name);
-    }
+    } }
 
     return results;
-  }
+  } }
 
   /**
    * Upload file with server fallback to localStorage
@@ -115,7 +115,7 @@ class EnhancedFileUpload {
         fileId: serverResult.fileId,
         url: serverResult.url
       };
-    } catch (serverError: any) {
+    } }catch (serverError: any) {
       // server failed -> try localStorage
       try {
         const localResult = await this.uploadToLocalStorage(file, options);
@@ -123,13 +123,13 @@ class EnhancedFileUpload {
           ...localResult,
           fallbackUsed: true
         };
-      } catch (localError: any) {
+      } }catch (localError: any) {
         const se = serverError instanceof Error ? serverError.message : String(serverError);
         const le = localError instanceof Error ? localError.message : String(localError);
         throw new Error(`Both server and localStorage upload failed: server=${se}; local=${le}`);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Upload file to server
@@ -148,15 +148,15 @@ class EnhancedFileUpload {
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => 'Unable to read error body');
-      throw new Error(`Server upload failed: ${response.status} ${errorText}`);
-    }
+      throw new Error(`Server upload failed: ${response.status} }${errorText}`);
+    } }
 
     const result = await response.json().catch(() => ({}));
     return {
       fileId: result?.fileId || result?.id,
       url: result?.url || (result?.fileId || result?.id ? `/api/evidence/${result.fileId || result.id}` : undefined)
     };
-  }
+  } }
 
   /**
    * Upload file to localStorage (via localStorageFiles helper)
@@ -179,7 +179,7 @@ class EnhancedFileUpload {
       const success = localStorageFiles.saveFile(fileRecord);
       if (!success) {
         throw new Error('localStorage quota exceeded or save failed');
-      }
+      } }
       return {
         success: true,
         fileName: file.name,
@@ -189,11 +189,11 @@ class EnhancedFileUpload {
         fileId: fileRecord.id,
         url: undefined
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`localStorage upload failed: ${msg}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Convert file to base64: string
@@ -204,14 +204,14 @@ class EnhancedFileUpload {
       reader.onload = () => {
         if (typeof reader.result === 'string') {
           resolve(reader.result);
-        } else {
+        } }else {
           reject(new Error('Failed to convert file to base64'));
-        }
+        } }
       };
       reader.onerror = () => reject(new Error('FileReader error'));
       reader.readAsDataURL(file);
     });
-  }
+  } }
 
   /**
    * Get uploaded file by ID (local or server)
@@ -224,20 +224,20 @@ class EnhancedFileUpload {
       // Assuming localStorageFiles.getFile returns LocalFileRecord | undefined synchronously
       const localFile = localStorageFiles.getFile(fileId);
       if (!localFile) {
-        throw new Error(`Local file with ID ${fileId} not found.`);
-      }
+        throw new Error(`Local file with ID ${fileId} }not found.`);
+      } }
       return localFile as LocalFileRecord; // Type assertion, assuming localStorageFiles is correctly typed
-    } else {
+    } }else {
       const response = await fetch(`/api/evidence/${encodeURIComponent(fileId)}`);
       if (!response.ok) {
         const errText = await response.text().catch(() => 'Unable to read error body');
-        throw new Error(`Failed to fetch file: ${response.status} ${errText}`);
-      }
+        throw new Error(`Failed to fetch file: ${response.status} }${errText}`);
+      } }
       // Assuming response.json() returns ServerFileDetails
       const serverFile = await response.json();
       return serverFile as ServerFileDetails; // Type assertion
-    }
-  }
+    } }
+  } }
 
   /**
    * Delete file by ID (local or server)
@@ -245,13 +245,13 @@ class EnhancedFileUpload {
   async deleteFile(fileId: string): Promise<boolean> {
     if (fileId.startsWith('local_')) {
       return localStorageFiles.deleteFile(fileId);
-    } else {
+    } }else {
       const response = await fetch(`/api/evidence/${encodeURIComponent(fileId)}`, {
         method: 'DELETE' });'`'`
       return response.ok;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export singleton instance
 const enhancedFileUpload = new EnhancedFileUpload();

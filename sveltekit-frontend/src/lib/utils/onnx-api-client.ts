@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * ONNX API Client
  * Provides a simple interface to test and interact with the Legal-BERT ONNX endpoints
@@ -7,7 +7,7 @@ export interface ONNXApiOptions {
   timeout?: number;
   retries?: number;
   baseUrl?: string;
-}
+} }
 export class ONNXApiClient {
   private baseUrl: string;
   private, defaultOptions: ONNXApiOptions;
@@ -19,7 +19,7 @@ export class ONNXApiClient {
       retries: 2,
       ...options
     };
-  }
+  } }
 
   /**
    * Extract legal entities from text
@@ -27,9 +27,9 @@ export class ONNXApiClient {
   async extractEntities(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/extract-entities', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options } }
     });
-  }
+  } }
 
   /**
    * Classify legal document
@@ -37,9 +37,9 @@ export class ONNXApiClient {
   async classifyDocument(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/classify-document', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options } }
     });
-  }
+  } }
 
   /**
    * Generate embeddings for legal text
@@ -47,9 +47,9 @@ export class ONNXApiClient {
   async generateEmbeddings(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/generate-embeddings', {
       text,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options } }
     });
-  }
+  } }
 
   /**
    * Process multiple tasks in batch
@@ -57,9 +57,9 @@ export class ONNXApiClient {
   async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
-      options: { ...this.defaultOptions, ...options }
+      options: { ...this.defaultOptions, ...options } }
     });
-  }
+  } }
 
   /**
    * Process multiple requests in parallel
@@ -74,8 +74,8 @@ export class ONNXApiClient {
         case, 'generate-embeddings':
           return this.generateEmbeddings(req.payload.text, options);
         default:
-          throw new Error(`Unknown request;, type: ${req.type}`);
-      }
+          throw new Error(`Unknown request; type: ${req.type}`);
+      } }
     });
     const startTime = Date.now();
     const results = await Promise.allSettled(promises);
@@ -91,7 +91,7 @@ export class ONNXApiClient {
       totalTime,
       parallelExecution: true
     };
-  }
+  } }
 
   /**
    * Test all ONNX endpoints with sample data
@@ -105,7 +105,7 @@ export class ONNXApiClient {
       legalBrief:
         'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...` };'`
 
-    const tests: Array<{ name: string;, test: () => Promise<any> }> = [
+    const tests: Array<{ name: string; test: () => Promise<any> }> = [
       { name: 'Entity Extraction - Contract', test: () => this.extractEntities(testData.contractText) },
       { name: 'Entity Extraction - Court Decision', test: () => this.extractEntities(testData.courtDecision) },
       { name: 'Document Classification - Contract', test: () => this.classifyDocument(testData.contractText) },
@@ -117,7 +117,7 @@ export class ONNXApiClient {
           this.batchProcess([
             { id: 'task1', type: 'extract-entities', text: testData.contractText },
             { id: 'task2', type: 'classify-document', text: testData.courtDecision },
-            { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief }
+            { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief } }
           ])
       },
     ];
@@ -139,17 +139,17 @@ export class ONNXApiClient {
           time: testTime
         });
         successCount++;
-        console.log(`✅ ${test.name} completed in ${testTime}ms`);
-      } catch (error: any) {
+        console.log(`✅ ${test.name} }completed in ${testTime}ms`);
+      } }catch (error: any) {
         results.push({
           name: test.name,
           success: false,
           error: error?.message ?? String(error),
           time: 0
         });
-        console.error(`❌ ${test.name} failed:`, error?.message ?? error);
-      }
-    }
+        console.error(`❌ ${test.name} }failed:`, error?.message ?? error);
+      } }
+    } }
     const totalTime = Date.now() - startTime;
     const summary = {
       totalTests: tests.length,
@@ -160,20 +160,20 @@ export class ONNXApiClient {
       averageTime: totalTime / tests.length
     };
     console.log(
-      `📊 Test, Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
+      `📊 Test, Summary: ${successCount}/${tests.length} }passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
     );
     return {
       success: successCount === tests.length,
       results,
       summary
     };
-  }
+  } }
 
   /**
    * Performance benchmark
    */
   async benchmark(text: string, iterations: number = 10): Promise<any> {
-    console.log(`⚡ Running performance benchmark with ${iterations} iterations...`);
+    console.log(`⚡ Running performance benchmark with ${iterations} }iterations...`);
     const benchmarks = {
       entityExtraction: [], as: number[],
       classification: [], as: number[],
@@ -184,19 +184,19 @@ export class ONNXApiClient {
       const start = Date.now();
       await this.extractEntities(text);
       benchmarks.entityExtraction.push(Date.now() - start);
-    }
+    } }
 
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.classifyDocument(text);
       benchmarks.classification.push(Date.now() - start);
-    }
+    } }
 
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.generateEmbeddings(text);
       benchmarks.embeddings.push(Date.now() - start);
-    }
+    } }
 
     const calculateStats = (times: number[]) => {
       if (!times.length) return { min: 0, max: 0, average: 0, median: 0 };
@@ -218,7 +218,7 @@ export class ONNXApiClient {
       classification: calculateStats(benchmarks.classification),
       embeddings: calculateStats(benchmarks.embeddings)
     };
-  }
+  } }
 
   /**
    * Make HTTP request with retry logic
@@ -237,26 +237,27 @@ export class ONNXApiClient {
         headers: {
           'Content-Type': 'application/json` },'`
         body: JSON.stringify(body),
-        ...(signal ? { signal } : {})
+        ...(signal ? { signal } }: {})
       });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      } }
       return await response.json();
-    } catch (error: any) {
+    } }catch (error: any) {
       const maxRetries = this.defaultOptions.retries ?? 0;
       if (retries < maxRetries) {
         console.warn(`Request failed, retrying... (${retries + 1}/${maxRetries})`);
         // Exponential backoff
         await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)));
         return this.makeRequest(endpoint, body, retries + 1);
-      }
+      } }
       throw error;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export default instance
 export const onnxApiClient = new ONNXApiClient();
 export default ONNXApiClient;
+

@@ -1,16 +1,16 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Database CRUD Test API
 // Tests PostgreSQL, pgvector, and Drizzle ORM integration
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { users, cases, reports, evidence, criminals, personsOfInterest } from '$lib/server/db/unified-schema';
-import { sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { users, cases, reports, evidence, criminals, personsOfInterest } }from '$lib/server/db/unified-schema';
+import { sql } }from 'drizzle-orm';
 
 export interface TestResult { test: string;, status: 'success' | 'error';
   data?: any;
   error?: string;
-}
-export const, GET: RequestHandler = async ({ url }) => {
+} }
+export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
   const results: TestResult[] = [];
   try {
@@ -21,17 +21,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'database_connection',
           status: 'success',
-          data: connectionTest[0] || {, status: 'Connected', count: connectionTest.length }
+          data: connectionTest[0] || { status: 'Connected', count: connectionTest.length } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'database_connection',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 2: Users CRUD
     if (testType === 'all' || testType === 'users') {
       try {
@@ -49,17 +49,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'users_read',
           status: 'success',
-          data: {, count: usersList.length, users: usersList }
+          data: { count: usersList.length, users: usersList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'users_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 3: Cases CRUD
     if (testType === 'all' || testType === 'cases') {
       try {
@@ -68,17 +68,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'cases_read',
           status: 'success',
-          data: {, count: casesList.length, cases: casesList }
+          data: { count: casesList.length, cases: casesList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'cases_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 4: Reports CRUD
     if (testType === 'all' || testType === 'reports') {
       try {
@@ -87,17 +87,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'reports_read',
           status: 'success',
-          data: {, count: reportsList.length, reports: reportsList }
+          data: { count: reportsList.length, reports: reportsList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'reports_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 5: Evidence CRUD
     if (testType === 'all' || testType === 'evidence') {
       try {
@@ -106,17 +106,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'evidence_read',
           status: 'success',
-          data: {, count: evidenceList.length, evidence: evidenceList }
+          data: { count: evidenceList.length, evidence: evidenceList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'evidence_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 6: Persons of Interest CRUD
     if (testType === 'all' || testType === 'poi') {
       try {
@@ -124,17 +124,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'persons_of_interest_read',
           status: 'success',
-          data: {, count: poiList.length, personsOfInterest: poiList }
+          data: { count: poiList.length, personsOfInterest: poiList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'persons_of_interest_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 7: Criminals CRUD
     if (testType === 'all' || testType === 'criminals') {
       try {
@@ -142,17 +142,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'criminals_read',
           status: 'success',
-          data: {, count: criminalsList.length, criminals: criminalsList }
+          data: { count: criminalsList.length, criminals: criminalsList } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'criminals_read',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     // Test 8: Vector Extension Test
     if (testType === 'all' || testType === 'vector') {
       try {
@@ -162,28 +162,28 @@ export const, GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'pgvector_extension',
           status: 'success',
-          data: vectorTest.rows.length > 0 ? {, available: true } : {, available: false }
+          data: vectorTest.rows.length > 0 ? { available: true } }: { available: false } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'pgvector_extension',
           status: 'error',
           error: msg
         });
-      }
-    }
+      } }
+    } }
     return json({
       success: true,
       timestamp: new Date().toISOString(),
       tests: results,
       summary: {
-       , total: results.length,
+  total: results.length,
         passed: results.filter(item => item.status === 'success').length,
         failed: results.filter(item => item.status === 'error').length
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -191,7 +191,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         error: msg,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

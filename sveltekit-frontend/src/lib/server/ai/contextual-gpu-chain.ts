@@ -1,14 +1,13 @@
-import type { User } from '$lib/types';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { ChatOllama } from '@langchain/community/chat_models/ollama';
-import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';
-import { Neo4jGraph } from '@langchain/community/graphs/neo4j';
-import { RedisChatMemory } from 'langchain/memory/redis';
-import { createClient, type RedisClientType } from 'redis';
-import { CONFIG } from '$lib/config/env.server';
-import { TensorRtEmbeddings } from '$lib/server/ai/tensorrt-embeddings';
-const redisMemoryClient: RedisClientType = createClient({
- , url: process.env.REDIS_URL ?? CONFIG.REDIS_URL
+import type { User } }from '$lib/types';
+import { RunnableSequence } }from '@langchain/core/runnables';
+import { ChatOllama } }from '@langchain/community/chat_models/ollama';
+import { QdrantVectorStore } }from '@langchain/community/vectorstores/qdrant';
+import { Neo4jGraph } }from '@langchain/community/graphs/neo4j';
+import { RedisChatMemory } }from 'langchain/memory/redis';
+import { createClient, type RedisClientType } }from 'redis';
+import { CONFIG } }from '$lib/config/env.server';
+import { TensorRtEmbeddings } }from '$lib/server/ai/tensorrt-embeddings';
+const redisMemoryClient: RedisClientType = createClient({ url: process.env.REDIS_URL ?? CONFIG.REDIS_URL
 });
 const memoryReady = redisMemoryClient.connect().catch((error) => {
   console.warn('[contextualChain] redis memory unavailable', error);
@@ -32,7 +31,7 @@ const graph = new Neo4jGraph({
 export interface ContextualChainInput {
   input: string;
   userId?: string;
-}
+} }
 export const contextualChain = RunnableSequence.from<ContextualChainInput, string>([
   async ({ input, userId }) => {
     const [vectorStore] = await Promise.all([vectorStorePromise, memoryReady]);
@@ -60,7 +59,7 @@ export const contextualChain = RunnableSequence.from<ContextualChainInput, strin
     ];
     if (!contextChunks.length) {
       return input;
-    }
+    } }
     const contextBlock = contextChunks.map((chunk, idx) => `Context ${idx + 1}:\n${chunk}`).join('\n\n');
     return `You are a legal AI assistant.\n\n${contextBlock}\n\nQuestion:\n${input}`;
   },
@@ -78,6 +77,7 @@ export async function invokeContextualChain(input: string, userId?: string): Pro
   const response = await contextualChain.invoke({ input, userId });
   if (memory) {
     await memory.saveContext({ input }, { output: typeof response === 'string' ? response : String(response) });
-  }
+  } }
   return typeof response === 'string' ? response : JSON.stringify(response);
-}
+} }
+

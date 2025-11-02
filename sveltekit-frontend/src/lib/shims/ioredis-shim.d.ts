@@ -19,5 +19,6 @@ declare module, 'ioredis' {
     exists?(_key: string): Promise<number>;
     // allow: any other access
     [key: string]: any;
-  }
-}
+  } }
+} }
+

@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { pgTable, serial, varchar, text, integer, timestamp, jsonb, vector, boolean, real } from 'drizzle-orm/pg-core';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { pgTable, serial, varchar, text, integer, timestamp, jsonb, vector, boolean, real } }from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } }from 'drizzle-zod';
+import { z } }from 'zod';
+import { eq } }from 'drizzle-orm';
 // Cases table for organizing documents
 export const cases = pgTable('cases', {
   id: serial('id').primaryKey(),
@@ -153,3 +153,4 @@ export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[
     [JSON.stringify(queryEmbedding), threshold, limit]
   );
 };
+

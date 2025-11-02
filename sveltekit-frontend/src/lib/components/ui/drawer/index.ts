@@ -1,9 +1,9 @@
 // Drawer component barrel export
-export { default, as Drawer } from './Drawer.svelte';
-export { default, as DrawerContent } from './drawer-content.svelte';
-export { default, as DrawerFooter } from './drawer-footer.svelte';
-export { default, as DrawerHeader } from './drawer-header.svelte';
-export { default, as DrawerTrigger } from './drawer-trigger.svelte';
+export { default, as Drawer } }from './Drawer.svelte';
+export { default, as DrawerContent } }from './drawer-content.svelte';
+export { default, as DrawerFooter } }from './drawer-footer.svelte';
+export { default, as DrawerHeader } }from './drawer-header.svelte';
+export { default, as DrawerTrigger } }from './drawer-trigger.svelte';
 // Types
 export type DrawerProps = {
   open?: boolean;
@@ -16,3 +16,4 @@ export type DrawerTriggerProps = {
   class?: string;
   asChild?: boolean;
 };
+

@@ -21,7 +21,7 @@ function generateSlotKey(): string {
   // generate a reproducible single-character slot key (a-z)
   const c = Math.floor(Math.random() * 26);
   return String.fromCharCode(97 + c);
-}
+} }
 export const canonicalResultCache = {
   async retrieveRankingSet(slotKey: string): Promise<RankingSet | undefined> {
     return slotMap.get(slotKey);
@@ -32,7 +32,7 @@ export const canonicalResultCache = {
     // ensure uniqueness (small loop because slot space small)
     for (let i = 0; i < 100 && slotMap.has(key); i++) {
       key = generateSlotKey();
-    }
+    } }
     slotMap.set(key, rankingSet);
     return key;
   },
@@ -41,6 +41,6 @@ export const canonicalResultCache = {
   },
   async clear() {
     slotMap.clear();
-  }
+  } }
 };
 export default canonicalResultCache;

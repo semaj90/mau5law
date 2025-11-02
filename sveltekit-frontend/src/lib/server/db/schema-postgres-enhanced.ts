@@ -1,10 +1,10 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // @ts-nocheck
-import { pgTable, text, timestamp, uuid, boolean, integer, real, jsonb } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+import { pgTable, text, timestamp, uuid, boolean, integer, real, jsonb } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { relations } }from 'drizzle-orm/relations';
 // ===============================
 // Lucia v3: users + sessions
 // ===============================
@@ -265,3 +265,4 @@ export type NewConversation = typeof conversations.$inferInsert;
 export type NewMessage = typeof messages.$inferInsert;
 export type NewUserActivity = typeof userActivity.$inferInsert;
 export type NewSystemConfig = typeof systemConfig.$inferInsert;
+

@@ -9,8 +9,8 @@ export class ComponentError extends Error {
   ) {
     super(message);
     this.name = 'ComponentError';
-  }
-}
+  } }
+} }
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -19,8 +19,8 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = 'ApiError';
-  }
-}
+  } }
+} }
 export class ValidationError extends Error {
   constructor(
     message: string,
@@ -29,8 +29,8 @@ export class ValidationError extends Error {
   ) {
     super(message);
     this.name = 'ValidationError';
-  }
-}
+  } }
+} }
 // Safe fetch wrapper with error handling
 export async function safeFetch<T = unknown>(
   url: string,
@@ -40,30 +40,30 @@ export async function safeFetch<T = unknown>(
     const response = await fetch(url, options);
     if (!response.ok) {
       throw new ApiError(`HTTP error! status: ${response.status}`, response.status, url);
-    }
+    } }
     const data = (await response.json()) as T;
     return { data, success: true };
-  } catch (error) {
+  } }catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('API call failed:', error);
     return { error: errorMessage, success: false };
-  }
-}
+  } }
+} }
 // Safe JSON parsing
-export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?: T; error?: string; success: boolean } {
+export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?: T; error?: string; success: boolean } }{
   try {
     const data = JSON.parse(json) as T;
     return { data, success: true };
-  } catch (error) {
+  } }catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'JSON parsing failed';
-    console.error('JSON parsing error:', error);'
+    console.error('JSON parsing error:', error);
     return {
       data: fallback,
       error: errorMessage,
       success: false
     };
-  }
-}
+  } }
+} }
 // Error boundary hook for Svelte, 5
 export function createErrorBoundary() {
   let errorMessage = $state<string>('');
@@ -72,11 +72,11 @@ export function createErrorBoundary() {
     console.error(`Error${context ? ` in ${context}` : '' }: ', error);'`
     errorMessage = error.message;
     hasError = true;
-  }
+  } }
   function clearError() {
     errorMessage = '';
     hasError = false;
-  }
+  } }
   function withErrorBoundary<T, extends (...args: readonly, unknown[]) => unknown>(fn: T, context?: string): T {
     const wrapper = (...args: Parameters<T>): ReturnType<T> => {
       try {
@@ -87,15 +87,15 @@ export function createErrorBoundary() {
             captureError(error instanceof Error ? error : new Error(String(error)), context);
             throw error;
           }) as ReturnType<T>;
-        }
+        } }
         return result as ReturnType<T>;
-      } catch (error: any) {
+      } }catch (error: any) {
         captureError(error instanceof Error ? error : new Error(String(error)), context);
         throw error;
-      }
+      } }
     };
     return wrapper as T;
-  }
+  } }
   return {
     get errorMessage() {
       return errorMessage;
@@ -107,27 +107,27 @@ export function createErrorBoundary() {
     clearError,
     withErrorBoundary
   };
-}
+} }
 // Validation helpers
 export function validateRequired<T>(value: T, fieldName: string): T {
   if (value === null || value === undefined || (typeof value === 'string' && value === '')) {
-    throw new ValidationError(`${fieldName} is required`, fieldName, value);
-  }
+    throw new ValidationError(`${fieldName} }is required`, fieldName, value);
+  } }
   return value;
-}
+} }
 export function validateEmail(email: string): string {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     throw new ValidationError('Invalid email format', 'email', email);
-  }
+  } }
   return email;
-}
+} }
 export function validateType<T>(value: any, type: string, fieldName: string): T {
   if (typeof value !== type) {
-    throw new ValidationError(`${fieldName} must be of type ${type}`, fieldName, value);
-  }
+    throw new ValidationError(`${fieldName} }must be of type ${type}`, fieldName, value);
+  } }
   return value as T;
-}
+} }
 // Canvas error handling
 export function safeGetContext(canvas: HTMLCanvasElement, contextType: '2d'): CanvasRenderingContext2D;
 export function safeGetContext(canvas: HTMLCanvasElement, contextType: 'webgl'): WebGLRenderingContext;
@@ -139,17 +139,17 @@ export function safeGetContext(
   // Call getContext without an: any cast and narrow the returned union based on contextType
   const context = canvas.getContext(contextType);
   if (!context) {
-    throw new ComponentError(`Could not get ${contextType} context`, 'Canvas', { contextType });
-  }
+    throw new ComponentError(`Could not get ${contextType} }context`, 'Canvas', { contextType });
+  } }
 
   if (contextType === '2d') {
     return context as CanvasRenderingContext2D;
-  } else if (contextType === 'webgl') {
+  } }else if (contextType === 'webgl') {
     return context as WebGLRenderingContext;
-  } else {
+  } }else {
     return context as WebGL2RenderingContext;
-  }
-}
+  } }
+} }
 // WebGL error checking
 export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingContext): void {
   const error = gl.getError();
@@ -173,19 +173,19 @@ export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingConte
         break;
       default:
         errorString = `Unknown error ${error}`;
-    }
+    } }
     throw new ComponentError(`WebGL, error: ${errorString}`, 'WebGL');
-  }
-}
+  } }
+} }
 // Async operation wrapper
-export async function withLoading<T>(operation: () => Promise<T>, loadingState: {, value: boolean }): Promise<T> {
+export async function withLoading<T>(operation: () => Promise<T>, loadingState: { value: boolean }): Promise<T> {
   loadingState.value = true;
   try {
     return await operation();
-  } finally {
+  } }finally {
     loadingState.value = false;
-  }
-}
+  } }
+} }
 // Retry mechanism
 export async function withRetry<T>(
   operation: () => Promise<T>,
@@ -196,13 +196,14 @@ export async function withRetry<T>(
   for (let i = 0; i <= maxRetries; i++) {
     try {
       return await operation();
-    } catch (error) {
+    } }catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       if (i === maxRetries) {
         throw lastError;
-      }
+      } }
       await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
-    }
-  }
+    } }
+  } }
   throw lastError!;
-}
+} }
+

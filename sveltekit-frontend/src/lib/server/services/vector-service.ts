@@ -2,8 +2,8 @@
  * Production Vector Service - Real Implementation
  * Integrates Redis Vector DB, Qdrant, and Ollama for production use
  */
-// { redisVectorService } from '../../../services/redis-vector-service.js'
-// TODO: Fix import - // Orphaned;, content: import {  // Temporary stub for redis vector service
+// { redisVectorService } }from '../../../services/redis-vector-service.js'
+// TODO: Fix import - // Orphaned; content: import {  // Temporary stub for redis vector service
 export interface EmbeddingOptions {
   contentType?: string;
   metadata?: Metadata;
@@ -11,7 +11,7 @@ export interface EmbeddingOptions {
   userId?: string;
   caseId?: string;
   conversationId?: string;
-}
+} }
 
 type Metadata = Record<string, unknown>;
 
@@ -21,8 +21,8 @@ type StoredDocument = { id: string;, embedding: number[];
 };
 
 export type AnalysisResult =
-  | { analysis: any; type: string; timestamp: string }
-  | {, analysis: string; error?: string };
+  | { analysis: any; type: string; timestamp: string } }
+  | { analysis: string; error?: string };
 
 // Add a lightweight in-memory store used by the stubbed redisVectorService
 const inMemoryVectorStore = new Map<string, StoredDocument>();
@@ -45,7 +45,7 @@ const redisVectorService = {
   },
   async searchSimilar(
     _embedding: number[],
-    _options?: { topK?: number; threshold?: number; filter?: any }
+    _options?: { topK?: number; threshold?: number; filter?: any } }
   ): Promise<Array<StoredDocument & { score?: number }>> {
     // naive stub: return stored docs with a placeholder score
     return Array.from(inMemoryVectorStore.values()).map(d => ({ ...d, score: 1 }));
@@ -54,8 +54,8 @@ const redisVectorService = {
     return inMemoryVectorStore.get(_id) ?? null;
   },
   async deleteDocument(_id: string): Promise<{ success: boolean }> {
-    return {, success: inMemoryVectorStore.delete(_id) };
-  }
+    return { success: inMemoryVectorStore.delete(_id) };
+  } }
 };
 
 // Export helper so other modules can call getOllamaEndpoint() instead of hardcoding Ollama URLs.
@@ -67,7 +67,7 @@ export const getOllamaEndpoint = (): string => {
 export class VectorService {
   private static get ollamaUrl(): string {
     return getOllamaEndpoint();
-  }
+  } }
   private static embeddingModel = 'embeddinggemma';
 
   /**
@@ -87,36 +87,36 @@ export class VectorService {
 
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
-      // Expecting { embedding: number[] }
+      // Expecting { embedding: number[] } }
       return Array.isArray(data.embedding) ? (data.embedding as: number[]) : [];
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error generating embedding:', message);
       throw new Error(message);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate embedding with metadata
    */
   static async generateEmbeddingWithMetadata(
     content: string,
-    options: EmbeddingOptions = {}
-  ): Promise<{ embedding: number[];, model: string }> {
+    options: EmbeddingOptions = {} }
+  ): Promise<{ embedding: number[]; model: string }> {
     const embedding = await this.generateEmbedding(content, options);
     return {
       embedding,
       model: options.model || this.embeddingModel
     };
-  }
+  } }
 
   /**
    * Store evidence vector in Redis (stubbed redisVectorService)
    */
-  static async storeEvidenceVector(evidence: {, id: string;, content: string;
+  static async storeEvidenceVector(evidence: { id: string;, content: string;
     metadata?: Metadata;
     evidenceId?: string;
   }): Promise<void> {
@@ -125,18 +125,17 @@ export class VectorService {
       id: `evidence:${evidence.evidenceId || evidence.id}`,
       embedding,
       content: evidence.content,
-      metadata: {
-       , type: 'evidence',
+      metadata: { type: 'evidence',
         evidenceId: evidence.evidenceId || evidence.id,
         ...(evidence.metadata || {})
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Store case embedding
    */
-  static async storeCaseEmbedding(data: {, caseId: string;, content: string;
+  static async storeCaseEmbedding(data: { caseId: string;, content: string;
     metadata?: Metadata;
     embedding?: number[];
   }): Promise<void> {
@@ -145,18 +144,17 @@ export class VectorService {
       id: `case:${data.caseId}`,
       embedding,
       content: data.content,
-      metadata: {
-       , type: 'case',
+      metadata: { type: 'case',
         caseId: data.caseId,
         ...(data.metadata || {})
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Store chat embedding
    */
-  static async storeChatEmbedding(data: {, conversationId: string;, messageId: string;
+  static async storeChatEmbedding(data: { conversationId: string;, messageId: string;
    , content: string;
     userId?: string;
     role?: string;
@@ -167,27 +165,26 @@ export class VectorService {
       id: `chat:${data.conversationId}:${data.messageId}`,
       embedding,
       content: data.content,
-      metadata: {
-       , type: 'chat',
+      metadata: { type: 'chat',
         conversationId: data.conversationId,
         messageId: data.messageId,
         userId: data.userId,
         role: data.role
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Find similar vectors using Redis search
    */
   static async findSimilar(
     embedding: number[],
-    options: { limit?: number; threshold?: number; type?: string; userId?: string } = {}
+    options: { limit?: number; threshold?: number; type?: string; userId?: string } }= {} }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     const results = await redisVectorService.searchSimilar(embedding, {
       topK: options.limit ?? 10,
       threshold: options.threshold ?? 0.7,
-      filter: options.type ? {, type: options.type } : undefined
+      filter: options.type ? { type: options.type } }: undefined
     });
 
     return results.map(result => ({
@@ -196,18 +193,18 @@ export class VectorService {
       content: result.content,
       metadata: result.metadata
     }));
-  }
+  } }
 
   /**
    * Semantic search with text query
    */
   static async semanticSearch(
     query: string,
-    options: { limit?: number; threshold?: number; type?: string; userId?: string } = {}
+    options: { limit?: number; threshold?: number; type?: string; userId?: string } }= {} }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     const queryEmbedding = await this.generateEmbedding(query);
     return this.findSimilar(queryEmbedding, options);
-  }
+  } }
 
   /**
    * Store document with automatic embedding
@@ -216,21 +213,20 @@ export class VectorService {
     documentId: string,
     documentType: string,
     text: string,
-    metadata: Metadata = {}
-  ): Promise<{ id: string;, type: string }> {
+    metadata: Metadata = {} }
+  ): Promise<{ id: string; type: string }> {
     const embedding = await this.generateEmbedding(text);
     await redisVectorService.storeDocument({
       id: `doc:${documentId}`,
       embedding,
       content: text,
-      metadata: {
-       , type: documentType,
+      metadata: { type: documentType,
         documentId,
         ...metadata
-      }
+      } }
     });
     return { id: documentId, type: documentType };
-  }
+  } }
 
   /**
    * Analyze document using Ollama
@@ -240,8 +236,7 @@ export class VectorService {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: 'gemma3-legal',
+        body: JSON.stringify({ model: 'gemma3-legal',
           prompt: `Analyze this document for ${analysisType}:\n\n${text}\n\nProvide a structured, analysis:`,
           stream: false
         })
@@ -249,7 +244,7 @@ export class VectorService {
 
       if (!response.ok) {
         throw new Error(`Ollama generate API error: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       return {
@@ -257,25 +252,25 @@ export class VectorService {
         type: analysisType,
         timestamp: new Date().toISOString()
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error analyzing document:', message);
       return {
         analysis: 'Analysis failed',
         error: message
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Search documents with semantic similarity
    */
   static async search(
    , query: string,
-    options: { limit?: number; threshold?: number; type?: string } = {}
+    options: { limit?: number; threshold?: number; type?: string } }= {} }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     return this.semanticSearch(query, options);
-  }
+  } }
 
   /**
    * Find similar documents to a given document
@@ -288,12 +283,12 @@ export class VectorService {
       const doc = await redisVectorService.getDocument(`doc:${documentId}`);
       if (!doc) return [];
       return this.findSimilar(doc.embedding, { limit, threshold: 0.7 });
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error finding similar documents:', message);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Store user embedding (legacy compatibility)
@@ -302,30 +297,29 @@ export class VectorService {
     userId: string,
     content: string,
     embedding: number[],
-    options: EmbeddingOptions = {}
+    options: EmbeddingOptions = {} }
   ): Promise<string> {
     await redisVectorService.storeDocument({
       id: `user:${userId}:${Date.now()}`,
       embedding,
       content,
-      metadata: {
-       , type: 'user_content',
+      metadata: { type: 'user_content',
         userId,
         ...(options.metadata || {})
-      }
+      } }
     });
     return userId;
-  }
+  } }
 
   static async getUserEmbeddings(
     userId: string
   ): Promise<
-    Array<{ userId: string; content?: string;, embedding: number[]; metadata?: Metadata; createdAt?: any }>
+    Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: any }>
   > {
     const results = await redisVectorService.searchSimilar(new Array(384).fill(0), {
       topK: 100,
       threshold: 0,
-      filter: { userId }
+      filter: { userId } }
     });
     return results.map(result => ({
       userId,
@@ -334,7 +328,7 @@ export class VectorService {
       metadata: result.metadata,
       createdAt: (result.metadata as Metadata & { timestamp?: any })?.timestamp
     }));
-  }
+  } }
 
   /**
    * Update evidence metadata
@@ -345,31 +339,32 @@ export class VectorService {
     if (doc) {
       doc.metadata = { ...(doc.metadata || {}), ...metadata };
       await redisVectorService.storeDocument(doc);
-    }
-  }
+    } }
+  } }
 
   /**
    * Delete evidence vector
    */
   static async deleteEvidenceVector(evidenceId: string): Promise<void> {
     await redisVectorService.deleteDocument(`evidence:${evidenceId}`);
-  }
+  } }
 
   /**
    * Simple similarity search (legacy compatibility)
    */
   static async searchSimilar(
     query: string,
-    options: { limit?: number; threshold?: number } = {}
+    options: { limit?: number; threshold?: number } }= {} }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     return this.semanticSearch(query, { limit: options.limit, threshold: options.threshold });
-  }
+  } }
 
   /**
    * Health check
    */
   static async healthCheck(): Promise<boolean> {
     return redisVectorService.healthCheck();
-  }
-}
+  } }
+} }
 export default VectorService;
+

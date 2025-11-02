@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import { browser } from '$app/environment';
-import { writable } from 'svelte/store';
+import { browser } }from '$app/environment';
+import { writable } }from 'svelte/store';
 
 // Short, local type definitions to avoid incorrect imports and wide `any` usage
 type Evidence = {
@@ -19,12 +19,12 @@ interface Collection<T = Record<string, unknown>> {
   update(doc: T): void;
   findAndRemove(query: any): void;
   clear(): void;
-}
+} }
 
 interface LokiDB {
   getCollection<T = Record<string, unknown>>(name: string): Collection<T> | null;
   addCollection<T = Record<string, unknown>>(name: string, options?: Record<string, unknown>): Collection<T>;
-}
+} }
 
 let lokiDb: LokiDB | null = null;
 let evidenceCollection: Collection<Evidence> | null = null;
@@ -43,11 +43,11 @@ async function initLoki(): Promise<void> {
       autoloadCallback: databaseInitialize,
       autosave: true,
       autosaveInterval: 5000
-    } as Record<string, unknown>);
-  } catch (error: any) {
+    } }as Record<string, unknown>);
+  } }catch (error: any) {
     console.error('Failed to initialize Loki:', error);
-  }
-}
+  } }
+} }
 
 function databaseInitialize() {
   // Evidence collection
@@ -57,7 +57,7 @@ function databaseInitialize() {
       indices: ['id', 'caseId', 'type', 'tags'],
       unique: ['id']
     });
-  }
+  } }
   // Canvas states collection
   canvasStateCollection = lokiDb?.getCollection<Record<string, unknown>>('canvasStates') ?? null;
   if (!canvasStateCollection && lokiDb) {
@@ -65,7 +65,7 @@ function databaseInitialize() {
       indices: ['reportId'],
       unique: ['reportId']
     });
-  }
+  } }
   // Notes collection
   notesCollection = lokiDb?.getCollection<Record<string, unknown>>('notes') ?? null;
   if (!notesCollection && lokiDb) {
@@ -73,8 +73,8 @@ function databaseInitialize() {
       indices: ['id', 'reportId', 'type', 'tags'],
       unique: ['id']
     });
-  }
-}
+  } }
+} }
 
 // Store for Loki operations
 export const lokiStore = writable({
@@ -97,9 +97,9 @@ export const loki = {
       const existing = evidenceCollection.findOne({ id: evidence.id });
       if (existing) {
         evidenceCollection.update({ ...existing, ...evidence });
-      } else {
+      } }else {
         evidenceCollection.insert(evidence);
-      }
+      } }
       this.refreshStore();
     },
     getAll(): Evidence[] {
@@ -114,9 +114,9 @@ export const loki = {
       if (!evidenceCollection || !query) return this.getAll();
       return evidenceCollection.find({
         $or: [
-          {, fileName: {, $regex: new RegExp(query, 'i') } },
-          { description: {, $regex: new RegExp(query, 'i') } },
-          { tags: {, $contains: query } }
+          { fileName: { $regex: new RegExp(query, 'i') } }},
+          { description: { $regex: new RegExp(query, 'i') } }},
+          { tags: { $contains: query } }} }
         ]
       });
     },
@@ -130,7 +130,7 @@ export const loki = {
         ...state,
         evidence: this.getAll()
       }));
-    }
+    } }
   },
   // Canvas state operations
   canvasState: {
@@ -144,9 +144,9 @@ export const loki = {
       };
       if (existing) {
         canvasStateCollection.update({ ...existing, ...stateData });
-      } else {
+      } }else {
         canvasStateCollection.insert(stateData);
-      }
+      } }
       this.refreshStore();
     },
     load(reportId: string) {
@@ -176,7 +176,7 @@ export const loki = {
         ...state,
         canvasStates: this.getAll()
       }));
-    }
+    } }
   },
   // Convenience methods for API compatibility
   async saveCanvasState(canvasState: Record<string, unknown>) {
@@ -184,14 +184,14 @@ export const loki = {
     const existing = canvasStateCollection.findOne({ id: canvasState.id });
     if (existing) {
       canvasStateCollection.update({ ...existing, ...canvasState });
-    } else {
+    } }else {
       canvasStateCollection.insert({
         ...canvasState,
         id: (canvasState.id, as: string) || crypto.randomUUID(),
         createdAt: (canvasState.createdAt, as: string) || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
-    }
+    } }
     this.canvasState.refreshStore();
   },
   async getCanvasState(id: string) {
@@ -210,14 +210,14 @@ export const loki = {
       const existing = notesCollection.findOne({ id: note.id });
       if (existing) {
         notesCollection.update({ ...existing, ...note });
-      } else {
+      } }else {
         notesCollection.insert({
           ...note,
           id: (note.id, as: string) || crypto.randomUUID(),
           createdAt: (note.createdAt, as: string) || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
-      }
+      } }
       this.refreshStore();
     },
     getByReportId(reportId: string) {
@@ -228,9 +228,9 @@ export const loki = {
       if (!notesCollection || !query) return this.getAll();
       return notesCollection.find({
         $or: [
-          {, title: {, $regex: new RegExp(query, 'i') } },
-          { content: {, $regex: new RegExp(query, 'i') } },
-          { tags: {, $contains: query } }
+          { title: { $regex: new RegExp(query, 'i') } }},
+          { content: { $regex: new RegExp(query, 'i') } }},
+          { tags: { $contains: query } }} }
         ]
       });
     },
@@ -248,7 +248,7 @@ export const loki = {
         ...state,
         notes: this.getAll()
       }));
-    }
+    } }
   },
   // Clear all data
   clearAll() {
@@ -261,5 +261,6 @@ export const loki = {
       canvasStates: [],
       notes: []
     }));
-  }
+  } }
 };
+

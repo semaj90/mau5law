@@ -1,5 +1,5 @@
-import { redirect } from '@sveltejs/kit';
-import type { LayoutServerLoad } from './$types';
+import { redirect } }from '@sveltejs/kit';
+import type { LayoutServerLoad } }from './$types';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
   // Return user and session data to all pages
@@ -9,3 +9,4 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     session: locals.session
   };
 };
+

@@ -1,6 +1,6 @@
 export interface Route { name: string;, href: string;
   children?: Route[];
-}
+} }
 
 // Dynamically get all +page.svelte files
 export function getRoutes(): Route[] {
@@ -23,4 +23,5 @@ export function getRoutes(): Route[] {
 
   // Optional: sort alphabetically
   return routes.sort((a, b) => a.name.localeCompare(b.name));
-}
+} }
+

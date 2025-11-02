@@ -1,4 +1,4 @@
-import { WebGPUBufferUtils, toFloat32Array, type BufferLike } from '../utils/buffer-conversion.js';
+import { WebGPUBufferUtils, toFloat32Array, type BufferLike } }from '../utils/buffer-conversion.js';
 
 export interface WebGPUCapabilities {
   isSupported: boolean;
@@ -6,60 +6,59 @@ export interface WebGPUCapabilities {
   device?: GPUDevice;
   features: GPUFeatureName[]; // Changed from: string[]
  , limits: GPUSupportedLimits; // Changed from Record<string, number>
-}
+} }
 
 export interface ComputeShaderConfig {
   workgroupSize: [number, number, number];
   entryPoint: string;
   bindingLayout: GPUBindGroupLayoutDescriptor;
-}
+} }
 
-export interface AIComputeJob {, id: string;, type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
+export interface AIComputeJob { id: string;, type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
   inputData: BufferLike;
   shape: number[];
   attentionWeights?: BufferLike;
   modelParams?: any; // Changed from: any
   priority: 'high' | 'medium' | 'low';
   createdAt: number;
-}
+} }
 
 // New interfaces for return types
-export interface DimensionalArrayProcessingResult {, result: Float32Array;, processingTime: number;
+export interface DimensionalArrayProcessingResult { result: Float32Array;, processingTime: number;
   gpuMemoryUsed: number;
   recommendations: string[];
-}
+} }
 
-export interface T5InferenceResult {, result: Float32Array;, processingTime: number;
+export interface T5InferenceResult { result: Float32Array;, processingTime: number;
   recommendations: string[];
-}
+} }
 
-export interface CustomAILibrary {
- , DimensionalProcessor: {
+export interface CustomAILibrary { DimensionalProcessor: {
     process(data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult>;
   };
   AttentionKernel: {
     splice(
      , data: Float32Array,
       kernelSize: number;
-    ): { data: Float32Array; attentionScore: number; startIndex: number }[];
+    ): { data: Float32Array; attentionScore: number; startIndex: number } }];
   };
  , ModularSwitch: {
-    switch(moduleName: string, config: any): { switched: boolean; module: string;, config: any };
+    switch(moduleName: string, config: any): { switched: boolean; module: string; config: any };
     getActive(): string;
   };
   T5Accelerator: {
     process(text: string, task: 'summarize' | 'translate' | 'qa'): Promise<T5InferenceResult>;
   };
-}
+} }
 
 export interface EnginePerformanceStats { jobsProcessed: number;, cachedShaders: number;
   averageProcessingTime: number;
   gpuUtilization: number;
-}
+} }
 
-export interface EngineCapabilities {, webgpu: WebGPUCapabilities;, performance: EnginePerformanceStats;
+export interface EngineCapabilities { webgpu: WebGPUCapabilities;, performance: EnginePerformanceStats;
   recommendations: string[];
-}
+} }
 
 export class WebGPUAIEngine {
   private, capabilities: WebGPUCapabilities | null = null;
@@ -76,34 +75,34 @@ export class WebGPUAIEngine {
   constructor(autoInit = true) {
     if (autoInit && typeof navigator !== 'undefined' && 'gpu' in navigator) {
       this.initPromise = this.initializeWebGPU();
-    } else if (typeof navigator === 'undefined') {
+    } }else if (typeof navigator === 'undefined') {
       // SSR environment – mark unsupported but defer real detection to client
-      this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
-    } else if (!('gpu' in navigator)) {
+      this.capabilities = { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }; // Cast limits
+    } }else if (!('gpu' in navigator)) {
       // Changed from !(navigator as: any).gpu
       console.log('⚠️ WebGPU not available in this browser context yet – will remain in CPU fallback');
-      this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
-    }
-  }
+      this.capabilities = { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }; // Cast limits
+    } }
+  } }
 
   /** public lazy initialization */
   init(): Promise<void> {
     if (!this.initPromise) {
       if (typeof navigator === 'undefined' || !('gpu' in navigator)) {
         // Changed from !(navigator as: any).gpu
-        this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
+        this.capabilities = { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }; // Cast limits
         this.initPromise = Promise.resolve();
-      } else {
+      } }else {
         this.initPromise = this.initializeWebGPU();
-      }
-    }
+      } }
+    } }
     return this.initPromise;
-  }
+  } }
 
   /** whether GPU path is ready */
   isReady(): boolean {
     return !!(this.isInitialized && this.capabilities?.isSupported);
-  }
+  } }
 
   /** await readiness (with timeout) */
   async waitForReady(timeoutMs = 5000): Promise<boolean> {
@@ -113,10 +112,10 @@ export class WebGPUAIEngine {
         new Promise((_r, reject) => setTimeout(() => reject(new Error('WebGPU init timeout')), timeoutMs)),
       ]);
       return this.isReady();
-    } catch (e) {
+    } }catch (e) {
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Initialize WebGPU with feature detection
@@ -125,34 +124,31 @@ export class WebGPUAIEngine {
     if (typeof navigator === 'undefined' || !('gpu' in navigator)) {
       // Changed from !(navigator as: any).gpu
       // Not in a browser / not supported
-      this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
+      this.capabilities = { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }; // Cast limits
       return;
-    }
+    } }
     try {
-      const adapter = await navigator.gpu.requestAdapter({
-       , powerPreference: 'high-performance'
+      const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance'
       });
       if (!adapter) {
         throw new Error('No WebGPU adapter available');
-      }
+      } }
       const device = await adapter.requestDevice({
         requiredFeatures: ['shader-f16'], // Changed from as: any[]
-       , requiredLimits: {
-         , maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
+       , requiredLimits: { maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
           maxComputeWorkgroupSizeX: 1024,
           maxComputeWorkgroupSizeY: 1024
-        }
+        } }
       });
       // GPUSupportedFeatures is iterable but not typed as standard Iterable<string> in some TS lib versions – coerce manually
       const featureList: GPUFeatureName[] = []; // Changed type to GPUFeatureName[]
       try {
         for (const f of adapter.features) featureList.push(f); // Removed as: any
-      } catch {
+      } }catch {
         // Fallback if iteration fails (though Set.prototype.forEach is standard)
         adapter.features.forEach((f: GPUFeatureName) => featureList.push(f)); // Removed as: any as: string[]
-      }
-      this.capabilities = {
-       , isSupported: true,
+      } }
+      this.capabilities = { isSupported: true,
         adapter,
         device,
         features: featureList,
@@ -164,16 +160,16 @@ export class WebGPUAIEngine {
       // Dispatch a custom event so UI can react
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities }));
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Changed from error: any
       console.error('WebGPU initialization, failed:', error);
-      this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
+      this.capabilities = { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }; // Cast limits
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: {, error: String(error) } }));
-      }
-    }
-  }
+        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } }}));
+      } }
+    } }
+  } }
 
   /**
    * Create optimized compute shader for kernel attention
@@ -185,7 +181,7 @@ export class WebGPUAIEngine {
         outputSize: u32,
         kernelSize: u32,
         attentionHeads: u32
-      }
+      } }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> attentionWeights: array<f32>;
       @group(0) @binding(2) var<storage, read_write> output: array<f32>;
@@ -193,7 +189,7 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(64, 1, 1)
       fn kernelAttention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let index = globalId.x;
-        if (index >= params.outputSize) { return; }
+        if (index >= params.outputSize) { return; } }
         var sum: f32 = 0.0;
         var weightSum: f32 = 0.0;
         // Kernel attention computation
@@ -204,12 +200,12 @@ export class WebGPUAIEngine {
           let weight = attentionWeights[attentionIndex];
           sum += value * weight;
           weightSum += weight;
-        }
+        } }
         // Normalize output
         output[index] = select(0.0, sum / weightSum, weightSum > 0.0);
-      }
+      } }
     `;`
-  }
+  } }
   /**
    * Create T5-style transformer shader
    */
@@ -220,7 +216,7 @@ export class WebGPUAIEngine {
         hiddenSize: u32,
         numHeads: u32,
         headDim: u32
-      }
+      } }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> queryWeights: array<f32>;
       @group(0) @binding(2) var<storage, read> keyWeights: array<f32>;
@@ -230,9 +226,9 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(32, 1, 1)
       fn t5Attention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let seqIdx = globalId.x;
-        if (seqIdx >= params.sequenceLength) { return; }
+        if (seqIdx >= params.sequenceLength) { return; } }
         let hiddenIdx = globalId.y;
-        if (hiddenIdx >= params.hiddenSize) { return; }
+        if (hiddenIdx >= params.hiddenSize) { return; } }
         let inputOffset = seqIdx * params.hiddenSize + hiddenIdx;
         // Simplified T5 attention computation
         var attentionSum: f32 = 0.0;
@@ -244,10 +240,10 @@ export class WebGPUAIEngine {
           // Attention score (simplified)
           let score = exp(queryValue * keyValue / sqrt(f32(params.headDim)));
           attentionSum += score * valueValue;
-        }
+        } }
         output[inputOffset] = attentionSum;
-      }
-    `;` }
+      } }
+    `;` } }
   /**
    * Process dimensional array with kernel attention
    */
@@ -260,7 +256,7 @@ export class WebGPUAIEngine {
     // Updated return type
     if (!this.capabilities?.isSupported || !this.capabilities.device) {
       throw new Error('WebGPU not available');
-    }
+    } }
     const startTime = performance.now();
     const device = this.capabilities.device;
     // Create or get cached compute pipeline
@@ -272,19 +268,18 @@ export class WebGPUAIEngine {
       });
       const bindGroupLayout = device.createBindGroupLayout({
         entries: [
-          {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
-          { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
-          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'storage' } },
-          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `uniform` } }'`'`
+          { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } }},
+          { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } }},
+          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }},
+          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: `uniform` } }} }`'`
         ]
       });
-      pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-        compute: {
-         , module: shaderModule,
-          entryPoint: `kernelAttention` }
+      pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+        compute: { module: shaderModule,
+          entryPoint: `kernelAttention` } }
       });
       this.shaderCache.set(shaderKey, pipeline);
-    }
+    } }
     // Create buffers
     const dataArray = toFloat32Array(data); // Convert input data early
     const weightsArray = toFloat32Array(attentionWeights); // Convert weights early
@@ -314,10 +309,10 @@ export class WebGPUAIEngine {
     const bindGroup = device.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries: [
-        {, binding: 0, resource: {, buffer: inputBuffer } },
-        { binding: 1, resource: {, buffer: attentionBuffer } },
-        { binding: 2, resource: {, buffer: outputBuffer } },
-        { binding: 3, resource: {, buffer: paramsBuffer } }
+        { binding: 0, resource: { buffer: inputBuffer } }},
+        { binding: 1, resource: { buffer: attentionBuffer } }},
+        { binding: 2, resource: { buffer: outputBuffer } }},
+        { binding: 3, resource: { buffer: paramsBuffer } }} }
       ]
     });
     // Execute compute shader
@@ -355,7 +350,7 @@ export class WebGPUAIEngine {
         'Enable caching for repeated computations',
       ]
     };
-  }
+  } }
 
   /**
    * Process T5 transformer inference
@@ -369,7 +364,7 @@ export class WebGPUAIEngine {
     // Updated return type
     if (!this.capabilities?.isSupported || !this.capabilities.device) {
       throw new Error('WebGPU not available');
-    }
+    } }
     const startTime = performance.now();
     const device = this.capabilities.device;
     // Create T5 transformer pipeline
@@ -378,9 +373,8 @@ export class WebGPUAIEngine {
     });
     const pipeline = device.createComputePipeline({
       layout: 'auto',
-      compute: {
-       , module: shaderModule,
-        entryPoint: `t5Attention` }
+      compute: { module: shaderModule,
+        entryPoint: `t5Attention` } }
     });
     // Create buffers for T5 computation
     const tokensArray = toFloat32Array(tokens); // Convert tokens early
@@ -412,12 +406,12 @@ export class WebGPUAIEngine {
     const bindGroup = device.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries: [
-        {, binding: 0, resource: {, buffer: inputBuffer } },
-        { binding: 1, resource: {, buffer: weightsBuffer } },
-        { binding: 2, resource: {, buffer: weightsBuffer } }, // Reuse for demo
-        { binding: 3, resource: {, buffer: weightsBuffer } }, // Reuse for demo
-        { binding: 4, resource: {, buffer: outputBuffer } },
-        { binding: 5, resource: {, buffer: paramsBuffer } }
+        { binding: 0, resource: { buffer: inputBuffer } }},
+        { binding: 1, resource: { buffer: weightsBuffer } }},
+        { binding: 2, resource: { buffer: weightsBuffer } }}, // Reuse for demo
+        { binding: 3, resource: { buffer: weightsBuffer } }}, // Reuse for demo
+        { binding: 4, resource: { buffer: outputBuffer } }},
+        { binding: 5, resource: { buffer: paramsBuffer } }} }
       ]
     });
     // Execute
@@ -454,7 +448,7 @@ export class WebGPUAIEngine {
         'Enable mixed precision for speed',
       ]
     };
-  }
+  } }
 
   /**
    * Get modular AI recommendations
@@ -466,18 +460,18 @@ export class WebGPUAIEngine {
   ): { pickUpWhereLeftOff: string;, didYouMean: string[];
     othersSearched: string[];
    , cuttingEdge: string[];
-  } {
+  } }{
     const recentJobs = computationHistory.filter(
       job => Date.now() - job.createdAt < 86400000 // Last, 24, hours
     );
     return {
       pickUpWhereLeftOff:
-        recentJobs.length > 0 ? `Resume ${recentJobs[0].type} computation?` : 'Start new AI computation?',
+        recentJobs.length > 0 ? `Resume ${recentJobs[0].type} }computation?` : 'Start new AI computation?',
       didYouMean: [
-        `${context} with kernel attention?`,
-        `${context} using T5 transformer?`,
-        `${context} with WebGPU acceleration?`,
-        `${context} with modular switching?`,
+        `${context} }with kernel attention?`,
+        `${context} }using T5 transformer?`,
+        `${context} }with WebGPU acceleration?`,
+        `${context} }with modular switching?`,
       ],
       othersSearched: [
         'kernel splicing attention',
@@ -494,15 +488,15 @@ export class WebGPUAIEngine {
         'Self-optimizing attention weights',
       ]
     };
-  }
+  } }
   /**
    * Create custom AI library components
    */
   createCustomLibrary(): CustomAILibrary {
     // Updated return type
-    return { DimensionalProcessor: {, process: async (data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult> => {
+    return { DimensionalProcessor: { process: async (data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult> => {
           return await this.processDimensionalArray(data, shape, new Float32Array(Math.min(8, data.length)).fill(0.8));
-        }
+        } }
       },
       AttentionKernel: class {
         static splice(data: Float32Array, kernelSize: number) {
@@ -515,9 +509,9 @@ export class WebGPUAIEngine {
               attentionScore: slice.reduce((sum, val) => sum + val, 0) / slice.length,
               startIndex: i
             });
-          }
+          } }
           return slices.sort((a, b) => b.attentionScore - a.attentionScore);
-        }
+        } }
       },
       ModularSwitch: class {
         private static, activeModule: string = 'default';
@@ -527,33 +521,31 @@ export class WebGPUAIEngine {
           this.activeModule = moduleName;
           // Hot-swappable module loading
           return { switched: true, module: moduleName, config };
-        }
+        } }
         static getActive() {
           return this.activeModule;
-        }
+        } }
       },
-      T5Accelerator: {
-       , process: async (text: string, _task: 'summarize' | 'translate' | 'qa'): Promise<T5InferenceResult> => {
+      T5Accelerator: { process: async (text: string, _task: 'summarize' | 'translate' | 'qa'): Promise<T5InferenceResult> => {
           // Renamed to _task
           // Convert text to tokens (simplified)
           const tokens = new Float32Array(text.length);
           for (let i = 0; i < text.length; i++) {
             tokens[i] = text.charCodeAt(i) / 255.0;
-          }
+          } }
           return await this.processT5Inference(tokens, text.length);
-        }
-      }
+        } }
+      } }
     };
-  }
+  } }
 
   /**
    * Get engine capabilities and stats
    */
   getCapabilities(): EngineCapabilities {
     // Updated return type
-    return { webgpu: this.capabilities || {, isSupported: false, features: [], limits: {} as GPUSupportedLimits }, // Cast limits
-      performance: {
-       , jobsProcessed: this.computeJobs.size,
+    return { webgpu: this.capabilities || { isSupported: false, features: [], limits: {} }as GPUSupportedLimits }, // Cast limits
+      performance: { jobsProcessed: this.computeJobs.size,
         cachedShaders: this.shaderCache.size,
         averageProcessingTime: 50, // Placeholder
         gpuUtilization: 0.75, // Placeholder
@@ -566,7 +558,8 @@ export class WebGPUAIEngine {
         'Use memory pools to reduce allocation overhead',
       ]
     };
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const webgpuAI = new WebGPUAIEngine();
+

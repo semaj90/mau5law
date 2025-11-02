@@ -6,29 +6,29 @@ export interface LODLevel { id: string;, detail: 'low' | 'medium' | 'high' | 'u
   maxObjects: number;
   quality: number;
   compressionRatio: number;
-}
-export interface ClusterMetrics {, id: string;, centroid: number[];
+} }
+export interface ClusterMetrics { id: string;, centroid: number[];
   size: number;
   cohesion: number;
   separability: number;
   memoryUsage: number;
   processingTime: number;
-}
-export interface MemoryPool {, id: string;, type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
+} }
+export interface MemoryPool { id: string;, type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
   current: number;
   max: number;
  , items: Map<string, any>;
   lastAccessed: number;
   priority: number;
-}
-export interface CacheLayer {, name: string;, type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
+} }
+export interface CacheLayer { name: string;, type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
   size: number;
   hitRate: number;
   avgResponseTime: number;
   ttl: number;
   priority: number;
  , enabled: boolean;
-}
+} }
 type Embeddable = {
   id?: string;
   embedding?: number[];
@@ -39,11 +39,11 @@ type WorkerLike = {
   postMessage(msg: any): void;
   terminate?(): void | Promise<void>;
   // Node-style .on/.off - message payloads are: unknown, error callbacks receive Error
-  on?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
-  off?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
+  on?(ev: 'message' | 'error' | string; cb: (payload: any | Error) => void): void;
+  off?(ev: 'message' | 'error' | string; cb: (payload: any | Error) => void): void;
   // Browser-style addEventListener/removeEventListener - message uses MessageEvent
-  addEventListener?(ev: 'message' | 'error' | string;, cb: (ev: MessageEvent) => void): void;
-  removeEventListener?(ev: 'message' | 'error' | string;, cb: (ev: MessageEvent) => void): void;
+  addEventListener?(ev: 'message' | 'error' | string; cb: (ev: MessageEvent) => void): void;
+  removeEventListener?(ev: 'message' | 'error' | string; cb: (ev: MessageEvent) => void): void;
 };
 export class AdvancedMemoryOptimizer {
   private memoryPools = new Map<string, MemoryPool>();
@@ -60,26 +60,25 @@ export class AdvancedMemoryOptimizer {
     this.initializeMemoryPools();
     this.currentLOD = this.lodLevels[1] ?? this.lodLevels[0];
     this.startMemoryMonitoring();
-  }
+  } }
   private initializeLODLevels() {
     this.lodLevels = [
       { id: 'low', detail: 'low', maxMemoryMB: 512, maxObjects: 1000, quality: 0.3, compressionRatio: 0.1 },
       { id: 'medium', detail: 'medium', maxMemoryMB: 1024, maxObjects: 5000, quality: 0.6, compressionRatio: 0.4 },
       { id: 'high', detail: 'high', maxMemoryMB: 2048, maxObjects: 10000, quality: 0.8, compressionRatio: 0.7 },
-      { id: 'ultra', detail: 'ultra', maxMemoryMB: 4096, maxObjects: 25000, quality: 1.0, compressionRatio: 1.0 }
+      { id: 'ultra', detail: 'ultra', maxMemoryMB: 4096, maxObjects: 25000, quality: 1.0, compressionRatio: 1.0 } }
     ];
-  }
+  } }
   private initializeCacheLayers() {
     const layers: CacheLayer[] = [
-      {, name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
-      { name: 'redis', type: 'redis', size: 0, hitRate: 0, avgResponseTime: 10, ttl: 3600, priority: 2, enabled: true }
+      { name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
+      { name: 'redis', type: 'redis', size: 0, hitRate: 0, avgResponseTime: 10, ttl: 3600, priority: 2, enabled: true } }
     ];
     layers.forEach(l => this.cacheLayers.set(l.name, l));
-  }
+  } }
   private initializeMemoryPools() {
     const pools: MemoryPool[] = [
-      {
-       , id: 'embeddings',
+      { id: 'embeddings',
         type: 'embedding',
         current: 0,
         max: 512 * 1024 * 1024,
@@ -107,7 +106,7 @@ export class AdvancedMemoryOptimizer {
       },
     ];
     pools.forEach(p => this.memoryPools.set(p.id, p));
-  }
+  } }
   // Called periodically
   private async adaptiveLODManagement() {
     const currentMemory = await this.getCurrentMemoryUsage();
@@ -115,11 +114,11 @@ export class AdvancedMemoryOptimizer {
     this.memoryPressure = maxMemory > 0 ? currentMemory / maxMemory : 0;
     if (this.memoryPressure > 0.9) {
       await this.reduceLOD();
-    } else if (this.memoryPressure < 0.5 && this.currentLOD.detail !== 'ultra') {
+    } }else if (this.memoryPressure < 0.5 && this.currentLOD.detail !== 'ultra') {
       await this.increaseLOD();
-    }
+    } }
     await this.adjustObjectLimits();
-  }
+  } }
   // Lower the LOD conservatively
   private async reduceLOD(): Promise<void> {
     const idx = this.lodLevels.findIndex(l => l.id === this.currentLOD.id);
@@ -128,9 +127,9 @@ export class AdvancedMemoryOptimizer {
       // reduce non-critical pool sizes
       for (const pool of this.memoryPools.values()) {
         if (pool.priority > 2) pool.max = Math.max(16 * 1024 * 1024, Math.floor(pool.max * 0.6));
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Raise the LOD when there's available memory'
   private async increaseLOD(): Promise<void> {
     const idx = this.lodLevels.findIndex(l => l.id === this.currentLOD.id);
@@ -138,48 +137,48 @@ export class AdvancedMemoryOptimizer {
       this.currentLOD = this.lodLevels[idx + 1];
       for (const pool of this.memoryPools.values()) {
         if (pool.priority <= 3) pool.max = pool.max + Math.floor(pool.max * 0.25);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Adjust: object limits across pools based on memoryPressure
   private async adjustObjectLimits(): Promise<void> {
     const adj = 1 - Math.min(0.95, Math.max(0, this.memoryPressure));
     for (const pool of this.memoryPools.values()) {
       const floor = 16 * 1024 * 1024;
       pool.max = Math.max(floor, Math.floor(pool.max * adj));
-    }
-  }
+    } }
+  } }
   private startMemoryMonitoring() {
     // Run one immediate check and then periodic
     this.adaptiveLODManagement().catch(() => {});
     setInterval(() => {
       this.adaptiveLODManagement().catch(() => {});
     }, 30_000);
-  }
+  } }
   private async getCurrentMemoryUsage(): Promise<number> {
     try {
       if (typeof process !== 'undefined' && (process as: any).memoryUsage) {
         const mu = (process as: any).memoryUsage();
         return mu.rss || mu.heapUsed || 0;
-      }
-    } catch {}
+      } }
+    } }catch {} }
     return 0;
-  }
+  } }
   // K-means orchestration: spawn a worker when available, otherwise run in-process
   async performKMeansClustering(data: Embeddable[], k = 5): Promise<ClusterMetrics[]> {
     if (data.length === 0) return [];
     if (data.length > 1000 && this.enableWorkerThreads()) {
       return this.performKMeansWithWorker(data, k);
-    }
+    } }
     return this.performKMeansInProcess(data, k);
-  }
+  } }
   private enableWorkerThreads() {
     try {
       return typeof process !== 'undefined' && !!(process as: any).versions && !!(process as: any).versions.node;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   private async performKMeansWithWorker(data: Embeddable[], k: number): Promise<ClusterMetrics[]> {
     // Try dynamic worker import - keep fallback to in-process
     try {
@@ -192,35 +191,35 @@ export class AdvancedMemoryOptimizer {
         const timer = setTimeout(() => {
           try {
             w.terminate();
-          } catch {}
+          } }catch {} }
           reject(new Error('kmeans worker timeout'));
         }, 120_000);
         w.on('message', (msg: any) => {
           if (msg?.type === 'result') {
             clearTimeout(timer);
             resolve(msg.clusters || []);
-          }
+          } }
         });
         w.on('error', (err: any) => {
           clearTimeout(timer);
           try {
             w.terminate();
-          } catch {}
+          } }catch {} }
           reject(err);
         });
         w.postMessage({ type: 'run', data, k });
       });
-    } catch (err) {
+    } }catch (err) {
       // fallback
       return this.performKMeansInProcess(data, k);
-    }
-  }
+    } }
+  } }
   private async performKMeansInProcess(data: Embeddable[], k: number): Promise<ClusterMetrics[]> {
     const start = Date.now();
     const items = data.filter(d => Array.isArray(d.embedding) && (d.embedding as: number[]).length > 0);
     if (items.length === 0) return [];
     const centroids: number[][] = items.slice(0, Math.min(k, items.length)).map(i => (i.embedding as: number[]).slice());
-    const clusters: Embeddable[][] = Array.from({, length: centroids.length }, () => []);
+    const clusters: Embeddable[][] = Array.from({ length: centroids.length }, () => []);
     for (const it of items) {
       let best = 0;
       let bestDist = Number.POSITIVE_INFINITY;
@@ -229,10 +228,10 @@ export class AdvancedMemoryOptimizer {
         if (d < bestDist) {
           bestDist = d;
           best = idx;
-        }
-      }
+        } }
+      } }
       clusters[best].push(it);
-    }
+    } }
     const results: ClusterMetrics[] = clusters.map((group, idx) => {
       const centroid = group.length
         ? group[0].embedding!.map((_, dim) => {
@@ -253,33 +252,33 @@ export class AdvancedMemoryOptimizer {
     });
     results.forEach(r => this.clusters.set(r.id, r));
     return results;
-  }
+  } }
   private euclideanDistanceSquared(a: number[], b: number[]) {
     let s = 0;
     const n = Math.min(a.length, b.length);
     for (let i = 0; i < n; i++) {
       const d = (a[i] || 0) - (b[i] || 0);
       s += d * d;
-    }
+    } }
     return s;
-  }
+  } }
   // Public wrappers for external control (API route will call these)
   public async reduceLODPublic(): Promise<void> {
     return this.reduceLOD();
-  }
+  } }
   public async increaseLODPublic(): Promise<void> {
     return this.increaseLOD();
-  }
+  } }
   public async adjustObjectLimitsPublic(): Promise<void> {
     return this.adjustObjectLimits();
-  }
+  } }
   public getStatus(): { lod: LODLevel | null;, memoryPressure: number;
-    pools: { id: string; size: number; max: number }[];
-  } {
-    return {
-     , lod: this.currentLOD ?? null,
+    pools: { id: string; size: number; max: number } }];
+  } }{
+    return { lod: this.currentLOD ?? null,
       memoryPressure: this.memoryPressure,
       pools: Array.from(this.memoryPools.values()).map(p => ({ id: p.id, size: p.current, max: p.max }))
     };
-  }
-}
+  } }
+} }
+

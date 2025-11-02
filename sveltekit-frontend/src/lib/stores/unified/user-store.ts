@@ -9,7 +9,7 @@
  * - userDataStore.svelte.ts
  *
  *, Usage:
- *   import { userStore } from '$lib/stores/unified';
+ *   import { userStore } }from '$lib/stores/unified';
  *
  *   // Subscribe to user state
  *   $: user = $userStore.currentUser;
@@ -21,8 +21,8 @@
  *   await userStore.updateProfile({ name: 'New Name' });
  */
 
-import { writable, derived } from 'svelte/store';
-import type { User } from '$lib/data/types';
+import { writable, derived } }from 'svelte/store';
+import type { User } }from '$lib/data/types';
 
 /**
  * User Store State
@@ -32,10 +32,9 @@ interface UserStoreState { currentUser: User | null;, isAuthenticated: boolean;
   sessionToken: string | null;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: UserStoreState = {
- , currentUser: null,
+const initialState: UserStoreState = { currentUser: null,
   isAuthenticated: false,
   isLoading: true,
   sessionToken: null,
@@ -47,7 +46,7 @@ const initialState: UserStoreState = {
  * Create User Store
  */
 function createUserStore() {
-  const { subscribe, set, update } = writable<UserStoreState>(initialState);
+  const { subscribe, set, update } }= writable<UserStoreState>(initialState);
 
   return {
     subscribe,
@@ -61,7 +60,7 @@ function createUserStore() {
       try {
         const response = await fetch('/api/auth/me', {
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' } }
         });
 
         if (response.ok) {
@@ -73,18 +72,18 @@ function createUserStore() {
             isAuthenticated: true,
             lastUpdated: Date.now()
           }));
-        } else {
+        } }else {
           update(s => ({ ...s, isAuthenticated: false }));
-        }
-      } catch (error) {
-        console.error('Session initialization error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Session initialization error:', error);
         update(s => ({
           ...s,
           error: error instanceof Error ? error.message : 'Session init failed'
         }));
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -111,17 +110,17 @@ function createUserStore() {
             lastUpdated: Date.now()
           }));
           return { success: true };
-        } else {
+        } }else {
           update(s => ({ ...s, error: data.error || 'Login failed' }));
           return { success: false, error: data.error };
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Login failed';
         update(s => ({ ...s, error: errorMsg }));
         return { success: false, error: errorMsg };
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -148,17 +147,17 @@ function createUserStore() {
             lastUpdated: Date.now()
           }));
           return { success: true };
-        } else {
+        } }else {
           update(s => ({ ...s, error: data.error || 'Registration failed' }));
           return { success: false, error: data.error };
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Registration failed';
         update(s => ({ ...s, error: errorMsg }));
         return { success: false, error: errorMsg };
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -170,11 +169,11 @@ function createUserStore() {
           method: 'POST',
           credentials: 'include'
         });
-      } catch (error) {
-        console.error('Logout error:', error);'
-      } finally {
+      } }catch (error) {
+        console.error('Logout error:', error);
+      } }finally {
         set(initialState);
-      }
+      } }
     },
 
     /**
@@ -199,17 +198,17 @@ function createUserStore() {
             lastUpdated: Date.now()
           }));
           return { success: true };
-        } else {
+        } }else {
           update(s => ({ ...s, error: data.error || 'Profile update failed' }));
           return { success: false, error: data.error };
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Profile update failed';
         update(s => ({ ...s, error: errorMsg }));
         return { success: false, error: errorMsg };
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -229,22 +228,22 @@ function createUserStore() {
           const data = await response.json();
           update(s => ({
             ...s,
-            currentUser: s.currentUser ? { ...s.currentUser, ...data.preferences } : null,
+            currentUser: s.currentUser ? { ...s.currentUser, ...data.preferences } }: null,
             lastUpdated: Date.now()
           }));
           return { success: true };
-        } else {
+        } }else {
           const data = await response.json();
           update(s => ({ ...s, error: data.error || 'Preferences update failed' }));
           return { success: false, error: data.error };
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Preferences update failed';
         update(s => ({ ...s, error: errorMsg }));
         return { success: false, error: errorMsg };
-      } finally {
+      } }finally {
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     /**
@@ -287,9 +286,9 @@ function createUserStore() {
         loading = s.isLoading;
       })();
       return loading;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -324,16 +323,16 @@ export const userError = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { user  } from '$lib/stores/unified'
- *   import { profile } from '$lib/stores/user-profile'
- *   import { isLoading  } from '$lib/stores/unified'
- *   import { sessionToken } from '$lib/stores/auth.svelte'
+ *   import { user  } }from '$lib/stores/unified'
+ *   import { profile } }from '$lib/stores/user-profile'
+ *   import { isLoading  } }from '$lib/stores/unified'
+ *   import { sessionToken } }from '$lib/stores/auth.svelte'
  *
  * New imports:
- *   import { userStore, isAuthenticated, currentUser, userLoading } from '$lib/stores/unified'
+ *   import { userStore, isAuthenticated, currentUser, userLoading } }from '$lib/stores/unified'
  *
  * Usage patterns:
- *  ;, Old: $user?.id, $profile?.name
+ *  ; Old: $user?.id, $profile?.name
  *   New: $currentUser?.id, $currentUser?.name
  *
  *   Old: $isLoading from auth
@@ -342,3 +341,4 @@ export const userError = derived(
  *  , Old: await login(email, password)
  *   New: await userStore.login(email, password)
  */
+

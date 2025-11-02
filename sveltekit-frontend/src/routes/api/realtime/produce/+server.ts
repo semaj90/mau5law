@@ -1,10 +1,10 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { produceTokenChunk } from '$lib/server/redis-streams';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { produceTokenChunk } }from '$lib/server/redis-streams';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    // Simple auth: Bearer token in Authorization header or session;, cookie: 'sessionId'
+    // Simple auth: Bearer token in Authorization header or session; cookie: 'sessionId'
     const authHeader = request.headers.get('authorization') || '';
     const bearer = authHeader.startsWith('Bearer, ') ? authHeader.substring(7).trim() : '';
     const sessionId = cookies.get('sessionId');
@@ -13,12 +13,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     if (!disableAuth) {
       if (!bearer && !sessionId) {
         return json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-      }
+      } }
       // TODO: validate bearer token or session against auth provider if available
-    }
+    } }
 
     const body = (await request.json().catch(() => ({}) as: unknown)) as Record<string, unknown>;
-    const { requestId, seq, chunk, meta } = body as {
+    const { requestId, seq, chunk, meta } }= body as {
       requestId?: string;
       seq?: number;
       chunk?: string;
@@ -26,11 +26,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     };
     if (!requestId || typeof seq !== 'number' || typeof chunk !== 'string') {
       return json({ ok: false, error: 'Invalid payload' }, { status: 400 });
-    }
+    } }
     const lastId = await produceTokenChunk(requestId, seq, chunk, meta || {});
     return json({ ok: true, lastId });
-  } catch (err) {
+  } }catch (err) {
     console.error('Failed to produce token chunk:', err);
     return json({ ok: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

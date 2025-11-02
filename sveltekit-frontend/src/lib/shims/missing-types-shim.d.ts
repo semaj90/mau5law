@@ -1,12 +1,12 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // Missing type definitions shim for common global types
 // Progressive replacement: Using proper Svelte, 5 TypeScript patterns
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
   WorkerStatus as ProperWorkerStatus
-} from '../types/svelte5-patterns';
+} }from '../types/svelte5-patterns';
 // AI/LLM Types - Using proper definitions
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
@@ -19,8 +19,7 @@ declare global {
     data: any;
     timestamp: Date;
   };
-  type EnhancedRAGEngine = {
-   , query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
+  type EnhancedRAGEngine = { query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
     embed: (text: string) => Promise<number[]>;
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<unknown[]>;
   };
@@ -41,9 +40,9 @@ declare global {
     fallbackUsed?: boolean;
     error?: string;
   };
-  type ErrorProcessingPipeline = {, processErrors: (errors: Error[]) => Promise<Array<unknown>>;, analyzeError: (error: Error) => Promise<unknown>;
+  type ErrorProcessingPipeline = { processErrors: (errors: Error[]) => Promise<Array<unknown>>;, analyzeError: (error: Error) => Promise<unknown>;
   };
-}
+} }
 // API Request/Response Types - Using proper definitions
 import type {
   CaseCreateRequest as ProperCaseCreateRequest,
@@ -54,7 +53,7 @@ import type {
   EvidenceSearchRequest as ProperEvidenceSearchRequest,
   BulkOperationResponse as ProperBulkOperationResponse,
   FormSubmissionResult as ProperFormSubmissionResult
-} from '../types/svelte5-patterns';
+} }from '../types/svelte5-patterns';
 declare global {
   type CaseCreateRequest = ProperCaseCreateRequest;
   type CaseUpdateRequest = ProperCaseUpdateRequest;
@@ -71,14 +70,14 @@ declare global {
   };
   type BulkOperationResponse = ProperBulkOperationResponse;
   type FormSubmissionResult<T = unknown> = ProperFormSubmissionResult<T>;
-}
+} }
 // Database Types - Using proper definitions
 import type {
   CaseState,
   EvidenceState,
   VectorSearchResult as ProperVectorSearchResult,
   VectorSearchOptions as ProperVectorSearchOptions
-} from '../types/svelte5-patterns';
+} }from '../types/svelte5-patterns';
 declare module, '$lib/types/database' {
   export type LegalDocument = { id: string;, title: string;
     content: string;
@@ -100,7 +99,7 @@ declare module, '$lib/types/database' {
     createdAt: Date;
     embedding?: number[];
   };
-  export type AutoTag = {, id: string;, entityId: string;
+  export type AutoTag = { id: string;, entityId: string;
     entityType: 'case' | 'evidence' | 'document';
     tag: string;
     confidence: number;
@@ -110,7 +109,7 @@ declare module, '$lib/types/database' {
   export type Evidence = EvidenceState;
   export type VectorSearchOptions = ProperVectorSearchOptions;
   export type VectorSearchResult = ProperVectorSearchResult;
-}
+} }
 // Service Types
 declare global {
   type DocumentCache = unknown;
@@ -122,10 +121,10 @@ declare global {
     delete?: (options?: any) => Promise<void>;
     [key: string]: any;
   };
-  type QueryResult = {, content: string;, score: number;
+  type QueryResult = { content: string;, score: number;
     sources?: any[];
   };
-}
+} }
 // XState Types
 declare global {
   type RecommendationMachineContext = {
@@ -135,13 +134,13 @@ declare global {
   type ConcurrencyContext = unknown;
   type ConcurrencyTask = unknown;
   type WorkerResult = unknown;
-}
+} }
 // External Library Types
 declare module, '$lib/types' {
   // Duplicate removed: // Duplicate; removed: export type Case = any
-}
+} }
 declare global {
-  type GGUFInferenceRequest = {, prompt: string;, maxTokens: number;
+  type GGUFInferenceRequest = { prompt: string;, maxTokens: number;
     temperature: number;
     topP: number;
     topK: number;
@@ -149,10 +148,10 @@ declare global {
     stopTokens: string[];
     priority: any;
   };
-}
+} }
 // Row/Database result types
 declare global {
-  interface RowList<T> {
-   , rows: T;
-  }
-}
+  interface RowList<T> { rows: T;
+  } }
+} }
+

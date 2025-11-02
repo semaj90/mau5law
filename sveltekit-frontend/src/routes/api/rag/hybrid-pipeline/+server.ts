@@ -8,25 +8,25 @@
  * - GET /api/rag/hybrid-pipeline/status - Pipeline status
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { hybridBridge } from '$lib/services/hybrid-rag-simd-bridge';
-import type { RAGDocument } from '$lib/services/rag-knowledge-pipeline';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { hybridBridge } }from '$lib/services/hybrid-rag-simd-bridge';
+import type { RAGDocument } }from '$lib/services/rag-knowledge-pipeline';
 
 /**
  * POST /api/rag/hybrid-pipeline
  * Execute full hybrid pipeline: Redis → SIMD → RAG
  */
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { cacheKey, query, config } = await request.json();
+    const { cacheKey, query, config } }= await request.json();
 
     if (!cacheKey || !query) {
       return json(
         { error: 'Missing required, fields: cacheKey, query' },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     console.log(`📨 POST /api/rag/hybrid-pipeline`);
     console.log(`   Cache Key: ${cacheKey}`);
@@ -40,22 +40,22 @@ export const, POST: RequestHandler = async ({ request }) => {
       performance: result.performance,
       metadata: result.metadata,
       summary: {
-       , totalDocuments: result.finalDocuments.length,
+  totalDocuments: result.finalDocuments.length,
         simdResults: result.simdResults.totalResults,
         ragProcessed: result.ragResults.totalProcessed,
         topScore: result.finalDocuments[0]?.combinedScore || 0
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('❌ Hybrid pipeline error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Hybrid pipeline error:', error);
     return json(
       {
         error: 'Pipeline execution failed',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -64,18 +64,18 @@ export const, POST: RequestHandler = async ({ request }) => {
  */
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { documents, query, config } = await request.json();
+    const { documents, query, config } }= await request.json();
 
     if (!documents || !Array.isArray(documents) || !query) {
       return json(
         { error: 'Missing required, fields: documents (array), query' },'`'`
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     console.log(`📨 PUT /api/rag/hybrid-pipeline/direct`);
     console.log(`   Documents: ${documents.length}`);
-    console.log('   Query: ${query}');
+    console.log('   Query: ${query} });
 
     const result = await hybridBridge.processDirectDocuments(
       documents as RAGDocument[],
@@ -89,21 +89,21 @@ export const PUT: RequestHandler = async ({ request }) => {
       timing: result.timing,
       metadata: result.metadata,
       summary: {
-       , totalDocuments: result.documents.length,
+  totalDocuments: result.documents.length,
         processed: result.totalProcessed,
         topScore: result.documents[0]?.combinedScore || 0
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('❌ Direct processing error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Direct processing error:', error);
     return json(
       {
         error: 'Direct processing failed',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -116,11 +116,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
 
     if (!query) {
-      return json({ error: 'Missing query, parameter: q' }, { status: 400 });'' }
+      return json({ error: 'Missing query, parameter: q' }, { status: 400 });'' } }
 
     console.log(`📨 GET /api/rag/hybrid-pipeline/search`);
     console.log(`   Query: ${query}`);
-    console.log('   Limit: ${limit}');
+    console.log('   Limit: ${limit} });
 
     const results = await hybridBridge.searchKnowledgeBase(query, limit);
 
@@ -128,21 +128,21 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       results,
       summary: {
-       , totalResults: results.length,
+  totalResults: results.length,
         topScore: results[0]?.combinedScore || 0,
         query
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('❌ Search error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Search error:', error);
     return json(
       {
         error: 'Search failed',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -158,14 +158,15 @@ export const PATCH: RequestHandler = async () => {
       status,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('❌ Status error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Status error:', error);
     return json(
       {
         error: 'Status check failed',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

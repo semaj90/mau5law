@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🚀 Production-Ready Unified Legal SIMD + PGVector Integration
  *
@@ -13,7 +13,7 @@ import type { Case } from '$lib/types';
  * All mocks replaced with production-ready adapters.
  */
 
-import { getServiceAdapters, type ServiceEnvironment } from '$lib/server/adapters/service-integrations';
+import { getServiceAdapters, type ServiceEnvironment } }from '$lib/server/adapters/service-integrations';
 import type {
 	OllamaClient,
 	QdrantClient,
@@ -21,7 +21,7 @@ import type {
 	PgVectorClient,
 	QdrantVectorPayload,
 	QdrantSearchResult
-} from '$lib/types/external-services';
+} }from '$lib/types/external-services';
 
 // ===== Type Definitions =====
 
@@ -33,43 +33,43 @@ export interface LegalDocument { id: string;, title: string;
 	metadata?: Record<string, unknown>;
 	createdAt?: Date;
 	updatedAt?: Date;
-}
+} }
 
 export interface ExtractedEntity { text: string;, type: string;
 	confidence: number;
 	startIndex: number;
 	endIndex: number;
-}
+} }
 
-export interface DidYouMeanSuggestion {, original: string;, suggestion: string;
+export interface DidYouMeanSuggestion { original: string;, suggestion: string;
 	confidence: number;
 	type: 'spelling' | 'legal_term' | 'entity';
-}
+} }
 
-export interface ParsedDocument {, content: string;, entities: ExtractedEntity[];
+export interface ParsedDocument { content: string;, entities: ExtractedEntity[];
 	suggestions: DidYouMeanSuggestion[];
 	confidence: number;
 	processingTime: number;
-}
+} }
 
-export interface EmbeddingResult {, documentId: string;, contentEmbedding: number[];
+export interface EmbeddingResult { documentId: string;, contentEmbedding: number[];
 	entityEmbeddings: number[][];
 	legalTermEmbeddings: number[][];
 	confidence: number;
 	processingTimeMs: number;
-}
+} }
 
-export interface VectorSearchResult {, document: LegalDocument;, similarityScore: number;
+export interface VectorSearchResult { document: LegalDocument;, similarityScore: number;
 	matchingEntities: ExtractedEntity[];
 	suggestedImprovements: DidYouMeanSuggestion[];
 	relevanceExplanation: string;
-}
+} }
 
-export interface SystemStats {, totalDocuments: number;, totalVectors: number;
+export interface SystemStats { totalDocuments: number;, totalVectors: number;
 	avgProcessingTime: number;
 	cacheHitRate: number;
 , servicesHealth: Record<string, boolean>;
-}
+} }
 
 export interface ParsingConfig {
 	enableSpellCheck?: boolean;
@@ -79,7 +79,7 @@ export interface ParsingConfig {
 	maxSuggestions?: number;
 	cacheResults?: boolean;
 	batchSize?: number;
-}
+} }
 
 // ===== Main Production Class =====
 
@@ -120,7 +120,7 @@ export class UnifiedLegalSIMDPGVector {
 		};
 
 		console.log('🚀 UnifiedLegalSIMDPGVector initialized (PRODUCTION MODE)');
-	}
+	} }
 
 	/**
 	 * Initialize all services and create indexes
@@ -129,7 +129,7 @@ export class UnifiedLegalSIMDPGVector {
 		if (this.isInitialized) {
 			console.log('✅ System already initialized');
 			return;
-		}
+		} }
 
 		console.log('⚙️ Initializing Production Legal AI System...');
 
@@ -151,11 +151,11 @@ export class UnifiedLegalSIMDPGVector {
 
 			this.isInitialized = true;
 			console.log('✅ Production Legal AI System initialized successfully');
-		} catch (error) {
+		} }catch (error) {
 			console.error('❌ Failed to initialize system:', error);
 			throw new Error(`Initialization failed: ${error}`);
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Check Redis connection and set test key
@@ -170,14 +170,14 @@ export class UnifiedLegalSIMDPGVector {
 			if (result === 'ok') {
 				console.log(`✅ Redis connected: ${this.env.redisConfig.url}`);
 				await this.redis.del(testKey);
-			} else {
+			} }else {
 				throw new Error('Redis test failed');
-			}
-		} catch (error) {
+			} }
+		} }catch (error) {
 			console.warn('⚠️ Redis unavailable:', error);
 			console.log('💡 Continuing without cache - performance may be reduced');
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Ensure PostgreSQL pgvector extension is installed
@@ -187,11 +187,11 @@ export class UnifiedLegalSIMDPGVector {
 			console.log('🔄 Ensuring pgvector extension...');
 			await this.pgvector.createExtension?.();
 			console.log('✅ pgvector extension ready');
-		} catch (error) {
+		} }catch (error) {
 			console.error('❌ Failed to create pgvector extension:', error);
 			throw error;
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Create Qdrant collection for legal documents (768-dimensional vectors)
@@ -201,11 +201,11 @@ export class UnifiedLegalSIMDPGVector {
 			console.log('🔄 Ensuring Qdrant collection...');
 			await this.qdrant.createCollection?.('legal_documents', 768);
 			console.log('✅ Qdrant collection ready');
-		} catch (error) {
+		} }catch (error) {
 			// Collection might already exist, that's okay'
 			console.log('💡 Qdrant collection already exists or unavailable');
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Create optimized database indexes
@@ -241,10 +241,10 @@ export class UnifiedLegalSIMDPGVector {
       `);`
 
 			console.log('✅ Database indexes created');
-		} catch (error) {
+		} }catch (error) {
 			console.warn('⚠️ Index creation warning:', error);
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Check Ollama connection and models
@@ -258,11 +258,11 @@ export class UnifiedLegalSIMDPGVector {
 			console.log(`✅ Ollama connected: ${this.env.ollamaConfig.baseUrl}`);
 			console.log(`   📦 Embedding model: ${this.env.ollamaConfig.embeddingModel}`);
 			console.log(`   💬 Chat model: ${this.env.ollamaConfig.chatModel}`);
-		} catch (error) {
+		} }catch (error) {
 			console.error('❌ Ollama connection failed:', error);
 			throw new Error('Ollama is required for embeddings');
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Parse legal document with entity extraction and suggestions
@@ -287,7 +287,7 @@ export class UnifiedLegalSIMDPGVector {
 			confidence: 0.85,
 			processingTime
 		};
-	}
+	} }
 
 	/**
 	 * Extract entities from text (simple pattern matching, upgrade to ML model)
@@ -307,7 +307,7 @@ export class UnifiedLegalSIMDPGVector {
 				startIndex: match.index,
 				endIndex: match.index + match[0].length
 			});
-		}
+		} }
 
 		// Pattern: Statutes (e.g., "42 U.S.C. § 1983")
 		const statuteRegex = /(\d+)\s+([A-Z]\.[\w.]+)\s*§\s*(\d+)/g;
@@ -319,10 +319,10 @@ export class UnifiedLegalSIMDPGVector {
 				startIndex: match.index,
 				endIndex: match.index + match[0].length
 			});
-		}
+		} }
 
 		return entities;
-	}
+	} }
 
 	/**
 	 * Generate legal term suggestions
@@ -330,7 +330,7 @@ export class UnifiedLegalSIMDPGVector {
 	private generateSuggestions(text: string): DidYouMeanSuggestion[] {
 		// Placeholder for ML-based suggestions
 		return [];
-	}
+	} }
 
 	/**
 	 * Generate embeddings for a document using Ollama
@@ -344,9 +344,9 @@ export class UnifiedLegalSIMDPGVector {
 			if (cached) {
 				this.stats.cacheHits++;
 				return cached;
-			}
+			} }
 			this.stats.cacheMisses++;
-		}
+		} }
 
 		// Generate embedding using Ollama
 		const contentEmbedding = await this.ollama.embed(content, {
@@ -365,8 +365,8 @@ export class UnifiedLegalSIMDPGVector {
 					model: this.env.ollamaConfig.embeddingModel
 				});
 				entityEmbeddings.push(entityEmbed);
-			} catch {}
-		}
+			} }catch {} }
+		} }
 
 		const result: EmbeddingResult = {
 			documentId,
@@ -380,13 +380,13 @@ export class UnifiedLegalSIMDPGVector {
 		// Cache result
 		if (this.config.cacheResults) {
 			await this.cacheEmbedding(documentId, result);
-		}
+		} }
 
 		this.stats.documentsProcessed++;
 		this.stats.totalProcessingTime += result.processingTimeMs;
 
 		return result;
-	}
+	} }
 
 	/**
 	 * Get cached embedding from Redis
@@ -396,10 +396,10 @@ export class UnifiedLegalSIMDPGVector {
 			const cached = await this.redis.get(`embedding:${documentId}`);
 			if (cached) {
 				return JSON.parse(cached);
-			}
-		} catch {}
+			} }
+		} }catch {} }
 		return: null;
-	}
+	} }
 
 	/**
 	 * Cache embedding in Redis (24 hour TTL)
@@ -407,10 +407,10 @@ export class UnifiedLegalSIMDPGVector {
 	private async cacheEmbedding(documentId: string, result: EmbeddingResult): Promise<void> {
 		try {
 			await this.redis.setex(`embedding:${documentId}`, 86400, JSON.stringify(result));
-		} catch (error) {
+		} }catch (error) {
 			console.warn('Failed to cache embedding:', error);
-		}
-	}
+		} }
+	} }
 
 	/**
 	 * Index document in both Qdrant and PostgreSQL
@@ -421,30 +421,26 @@ export class UnifiedLegalSIMDPGVector {
 
 		// Index in Qdrant for fast similarity search
 		try {
-			const payload: QdrantVectorPayload = {
-			, id: document.id,
+			const payload: QdrantVectorPayload = { id: document.id,
 				vector: embedding.contentEmbedding,
-				payload: {
-				, title: document.title,
+				payload: { title: document.title,
 					documentType: document.documentType,
 					jurisdiction: document.jurisdiction,
 					practiceAreas: document.practiceAreas,
 					confidence: embedding.confidence
-				}
+				} }
 			};
 
 			await this.qdrant.upsert?.('legal_documents', [payload]);
-		} catch (error) {
+		} }catch (error) {
 			console.warn('Qdrant indexing failed, continuing with pgvector:', error);
-		}
+		} }
 
 		// Index in PostgreSQL with pgvector
 		await this.pgvector.insert('legal_documents', [
-			{,
-				id: document.id,
+			{ id: document.id,
 				vector: embedding.contentEmbedding,
-				metadata: {
-				, title: document.title,
+				metadata: { title: document.title,
 					content: document.content.substring(0, 1000), // Store excerpt
 					documentType: document.documentType,
 					jurisdiction: document.jurisdiction,
@@ -452,12 +448,12 @@ export class UnifiedLegalSIMDPGVector {
 					confidence: embedding.confidence,
 					createdAt: document.createdAt?.toISOString(),
 					updatedAt: document.updatedAt?.toISOString()
-				}
-			}
+				} }
+			} }
 		]);
 
 		console.log(`✅ Indexed document: ${document.id}`);
-	}
+	} }
 
 	/**
 	 * Search for similar documents using hybrid Qdrant + pgvector
@@ -473,13 +469,13 @@ export class UnifiedLegalSIMDPGVector {
 
 		// Try Qdrant first (faster)
 		try {
-			const qdrantResults = await this.qdrant.search<{ title: string;, documentType: string }>(
+			const qdrantResults = await this.qdrant.search<{ title: string; documentType: string }>(
 				'legal_documents',
 				queryEmbedding,
 				limit
 			);
 
-			return qdrantResults.map((result) => ({ document: {, id: result.id,
+			return qdrantResults.map((result) => ({ document: { id: result.id,
 					title: result.payload?.title || 'Untitled',
 					content: '',
 					documentType: (result.payload?.documentType, as: any) || 'brief',
@@ -488,15 +484,15 @@ export class UnifiedLegalSIMDPGVector {
 				similarityScore: result.score,
 				matchingEntities: [],
 				suggestedImprovements: [],
-				relevanceExplanation: `Semantic;, similarity: ${(result.score * 100).toFixed(1)}%' }));'`
-		} catch (error) {
+				relevanceExplanation: `Semantic; similarity: ${(result.score * 100).toFixed(1)}%' }));'`
+		} }catch (error) {
 			console.warn('Qdrant search failed, falling back to pgvector:', error);
-		}
+		} }
 
 		// Fallback to pgvector
 		const pgResults = await this.pgvector.search('legal_documents', queryEmbedding, limit);
 
-		return pgResults.map((result) => ({ document: {, id: result.id,
+		return pgResults.map((result) => ({ document: { id: result.id,
 				title: (result.metadata.title, as: string) || 'Untitled',
 				content: (result.metadata.content, as: string) || '',
 				documentType: (result.metadata.documentType, as: any) || 'brief',
@@ -505,8 +501,8 @@ export class UnifiedLegalSIMDPGVector {
 			similarityScore: result.similarity,
 			matchingEntities: [],
 			suggestedImprovements: [],
-			relevanceExplanation: `Cosine;, similarity: ${(result.similarity * 100).toFixed(1)}%' }));'`
-	}
+			relevanceExplanation: `Cosine; similarity: ${(result.similarity * 100).toFixed(1)}%' }));'`
+	} }
 
 	/**
 	 * Get system statistics
@@ -527,14 +523,13 @@ export class UnifiedLegalSIMDPGVector {
 				this.stats.cacheHits + this.stats.cacheMisses > 0
 					? this.stats.cacheHits / (this.stats.cacheHits + this.stats.cacheMisses)
 					: 0,
-			servicesHealth: {
-			, redis: true, // Simplified, add real health checks
+			servicesHealth: { redis: true, // Simplified, add real health checks
 				postgres: true,
 				ollama: true,
 				qdrant: true
-			}
+			} }
 		};
-	}
+	} }
 
 	/**
 	 * Cleanup and disconnect all services
@@ -544,8 +539,8 @@ export class UnifiedLegalSIMDPGVector {
 		await this.redis.disconnect();
 		await this.pgvector.disconnect();
 		console.log('✅ Cleanup complete');
-	}
-}
+	} }
+} }
 
 // ===== Singleton Instance =====
 
@@ -557,6 +552,7 @@ let instance: UnifiedLegalSIMDPGVector | null = null;
 export function getUnifiedLegalSystem(config?: Partial<ParsingConfig>): UnifiedLegalSIMDPGVector {
 	if (!instance) {
 		instance = new UnifiedLegalSIMDPGVector(config);
-	}
+	} }
 	return instance;
-}
+} }
+

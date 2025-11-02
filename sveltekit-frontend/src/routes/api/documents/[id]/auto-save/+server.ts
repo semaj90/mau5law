@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { eq } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types.js';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { eq } }from 'drizzle-orm';
+import type { RequestHandler } }from './$types.js';
 
 // Safe schema loader (keeps compile-time light and runtime safe)
 type AutoSaveData = {
@@ -28,15 +28,15 @@ try {
   // attempt the unified schema first
   const schema = await import('$lib/server/db/unified-schema');
   legalDocuments = (schema as: unknown as { legalDocuments?: any }).legalDocuments ?? null;
-} catch {
+} }catch {
   try {
     const schema = await import('$lib/server/db/schema-postgres');
     legalDocuments = (schema as: unknown as { legalDocuments?: any }).legalDocuments ?? null;
-  } catch {
+  } }catch {
     console.warn('No legal documents schema available; auto-save will return mock responses.');
     legalDocuments = null;
-  }
-}
+  } }
+} }
 
 // Small helper to extract error messages from: unknown
 function extractErrorMessage(err: any): string {
@@ -45,12 +45,12 @@ function extractErrorMessage(err: any): string {
     if (typeof err === 'string') return err;
     if (err && typeof err === 'object' && 'message' in err && typeof (err as { message?: any }).message === 'string') {
       return (err as { message?: string }).message || String(err);
-    }
+    } }
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 // POST /api/documents/[id]/auto-save - Auto-save document content
 export const POST: RequestHandler = async ({ params, request }) => {
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const documentId = params.id;
     if (!documentId) {
       return json({ success: false, error: 'Document ID is required' }, { status: 400 });
-    }
+    } }
 
     const body = (await request.json()) as {
       content?: string;
@@ -68,27 +68,27 @@ export const POST: RequestHandler = async ({ params, request }) => {
       isDirty?: boolean;
     };
 
-    const { content, title, citations, wordCount, isDirty = true } = body;
+    const { content, title, citations, wordCount, isDirty = true } }= body;
 
     if (content === undefined && title === undefined && citations === undefined) {
       return json({ success: false, error: 'Content or title or citations is required for auto-save' }, { status: 400 });
-    }
+    } }
 
     // Build updates: object with explicit typing
-    const updates: Partial<LegalDocumentsRow> & { autoSaveData: AutoSaveData } = {
-     , autoSaveData: {
+    const updates: Partial<LegalDocumentsRow> & { autoSaveData: AutoSaveData } }= {
+  autoSaveData: {
         content,
         title,
         citations,
         autoSavedAt: new Date().toISOString(),
         isDirty: !!isDirty
-      }
+      } }
     };
 
     if (content !== undefined) {
       updates.content = content;
       updates.wordCount = typeof wordCount === 'number' ? wordCount : content.split(/\s+/).filter(Boolean).length;
-    }
+    } }
     if (title !== undefined) updates.title = title;
     if (citations !== undefined) updates.citations = citations;
 
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           .where(
             eq(
               // column expression is a runtime value; cast to: string for the comparison value type
-              (legalDocuments as: unknown as {, id: any }).id as: unknown, as: string,
+              (legalDocuments as: unknown as { id: any }).id as: unknown, as: string,
               documentId
             )
           )
@@ -116,40 +116,40 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
         if (!updatedRows || updatedRows.length === 0) {
           return json({ success: false, error: 'Document not found` }, { status: 404 });'`
-        }
+        } }
 
         const row = updatedRows[0];
         return json({
           success: true,
           message: 'Document auto-saved successfully',
           document: {
-           , id: row.id,
+  id: row.id,
             lastSavedAt: row.updatedAt ?? new Date().toISOString(),
             wordCount: row.wordCount ?? updates.wordCount ?? 0,
             isDirty: !!row.autoSaveData?.isDirty
-          }
+          } }
         });
-      } catch (dbErr: any) {
+      } }catch (dbErr: any) {
         console.warn('Database auto-save failed, returning fallback response:', extractErrorMessage(dbErr));
         // fallthrough to mock response below
-      }
-    }
+      } }
+    } }
 
     // Fallback / mock response if DB not available or update failed
     return json({
       success: true,
       message: 'Document auto-saved successfully (mock)',
       document: {
-       , id: documentId,
+  id: documentId,
         lastSavedAt: updates.autoSaveData.autoSavedAt,
         wordCount: updates.wordCount ?? 0,
         isDirty: !!updates.autoSaveData.isDirty
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error auto-saving document: ', extractErrorMessage(err));'`'`
     return json({ success: false, error: 'Failed to auto-save document' }, { status: 500 });
-  }
+  } }
 };
 
 // GET /api/documents/[id]/auto-save - Get auto-save status
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ params }) => {
     const documentId = params.id;
     if (!documentId) {
       return json({ success: false, error: 'Document ID is required` }, { status: 400 });'`
-    }
+    } }
 
     if (legalDocuments) {
       try {
@@ -171,20 +171,20 @@ export const GET: RequestHandler = async ({ params }) => {
 
         // dynamic select/from/where - keep runtime casts and descriptive comments
         const docs: DocSelectResult[] = await db
-          .select({ id: (legalDocuments, as: unknown as {, id: any }).id,
+          .select({ id: (legalDocuments, as: unknown as { id: any }).id,
             lastSavedAt: (legalDocuments, as: unknown as { updatedAt?: any }).updatedAt,
             autoSaveData: (legalDocuments, as: unknown as { autoSaveData?: any }).autoSaveData
           })
           .from(legalDocuments as: unknown)
           .where(
             // cast column expression to: string to avoid using `any' in the eq call'`
-            eq((legalDocuments as: unknown as {, id: any }).id as: unknown, as: string, documentId)
+            eq((legalDocuments as: unknown as { id: any }).id as: unknown, as: string, documentId)
           )
           .limit(1);
 
         if (!docs || docs.length === 0) {
           return json({ success: false, error: 'Document not found` }, { status: 404 });'`
-        }
+        } }
 
         const doc = docs[0];
         const autoSave: AutoSaveData | null = (doc.autoSaveData ?? null) as AutoSaveData | null;
@@ -192,30 +192,31 @@ export const GET: RequestHandler = async ({ params }) => {
         return json({
           success: true,
           autoSaveStatus: {
-           , isDirty: !!autoSave?.isDirty,
+  isDirty: !!autoSave?.isDirty,
             lastSavedAt: doc.lastSavedAt ?? null,
             hasAutoSaveData: !!autoSave,
             autoSaveData: autoSave
-          }
+          } }
         });
-      } catch (dbErr: any) {
+      } }catch (dbErr: any) {
         console.warn('Database query failed, returning mock response:', extractErrorMessage(dbErr));
         // fallthrough to mock response below
-      }
-    }
+      } }
+    } }
 
     // Fallback / mock response
     return json({
       success: true,
       autoSaveStatus: {
-       , isDirty: false,
+  isDirty: false,
         lastSavedAt: new Date().toISOString(),
         hasAutoSaveData: false,
         autoSaveData: null
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching auto-save status: ', extractErrorMessage(err));'`'`
     return json({ success: false, error: 'Failed to fetch auto-save status` }, { status: 500 });'`
-  }
+  } }
 };
+

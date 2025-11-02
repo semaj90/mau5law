@@ -2,9 +2,9 @@
  * Modern UI Components - SvelteKit, 2 + Svelte, 5 + Bits-UI + Melt-UI
  * Golden ratio spacing, CSS Grid/Flexbox, no prop drilling
  */
-export { default, as ModernCard } from './ModernCard.svelte.js';
-export { default, as ModernButton } from './ModernButton.svelte.js';
-export { default, as ModernDialog } from './ModernDialog.svelte.js';
+export { default, as ModernCard } }from './ModernCard.svelte.js';
+export { default, as ModernButton } }from './ModernButton.svelte.js';
+export { default, as ModernDialog } }from './ModernDialog.svelte.js';
 // Type exports for better TypeScript support (Svelte, 5 compatible)
 // Explicit prop interfaces (align with component internal Props declarations)
 export interface ModernCardProps {
@@ -21,7 +21,7 @@ export interface ModernCardProps {
   footer?: import('svelte').Snippet;
   actions?: import('svelte').Snippet;
   onclick?: () => void;
-}
+} }
 export interface ModernButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'success';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -34,7 +34,7 @@ export interface ModernButtonProps {
   icon?: import('svelte').Snippet;
   children?: import('svelte').Snippet;
   onclick?: (_event: MouseEvent) => void;
-}
+} }
 export interface ModernDialogProps {
   open?: boolean;
   title: string;
@@ -46,7 +46,7 @@ export interface ModernDialogProps {
   trigger?: import('svelte').Snippet;
   footer?: import('svelte').Snippet;
   onClose?: () => void;
-}
+} }
 // Component variants for easier usage
 export const cardVariants = ['default', 'elevated', 'outline', 'ghost'] as const;
 export const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'danger', 'success'] as const;
@@ -55,10 +55,10 @@ export const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 export const goldenRatio = 1.618;
 export function goldenSpacing(multiplier: number = 1): string {
   return `calc(1rem * ${goldenRatio * multiplier})`;
-}
+} }
 export function goldenScale(base: number, level: number): number {
   return base * Math.pow(goldenRatio, level);
-}
+} }
 // CSS custom property helpers
 export const cssVars = {
   // Golden ratio spacing
@@ -93,4 +93,5 @@ export const cssVars = {
   accentGreen: 'var(--yorha-accent-green)',
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)` } as const;'`
+  borderAccent: 'var(--yorha-border-accent)` } }as const;'`
+

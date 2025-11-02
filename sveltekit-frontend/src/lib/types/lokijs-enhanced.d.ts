@@ -14,7 +14,7 @@ declare module, 'lokijs' {
     env?: 'NODEJS' | 'BROWSER' | 'CORDOVA';
     throttledSaves?: boolean;
     serializationMethod?: 'normal' | 'pretty' | 'destructured';
-  }
+  } }
   interface Collection<T = any> { name: string;, data: T[];
     idIndex: number[];
     binaryIndices: { [key: string]: any };
@@ -79,7 +79,7 @@ declare module, 'lokijs' {
     addDynamicView(name: string): DynamicView<T>;
     getDynamicView(name: string): DynamicView<T> | null;
     removeDynamicView(name: string): void;
-  }
+  } }
   interface Resultset<T = any> { collection: Collection<T>;, filteredrows: number[];
    , filterInitialized: boolean;
     // Filtering
@@ -115,7 +115,7 @@ declare module, 'lokijs' {
     transform(transform: string, parameters?: any): Resultset<T>;
     // Paging
     page(pageSize: number): T[][];
-  }
+  } }
   interface DynamicView<T = any> { name: string;, collection: Collection<T>;
     persistent: boolean;
     sortPriority: 'passive' | 'active';
@@ -142,30 +142,30 @@ declare module, 'lokijs' {
     // Persistence
     toJSON(): any;
     fromJSON(obj: any): void;
-  }
+  } }
   interface LokiPersistenceAdapter {
     mode?: string;
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
     deleteDatabase?(dbname: string, callback?: (err?: Error) => void): void;
-  }
+  } }
   class LokiMemoryAdapter implements LokiPersistenceAdapter {
     mode: string;
     constructor();
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  }
+  } }
   class LokiPartitioningAdapter implements LokiPersistenceAdapter { mode: string;, adapter: LokiPersistenceAdapter;
     constructor(adapter: LokiPersistenceAdapter, options?: any);
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  }
+  } }
   class LokiCryptedFileAdapter implements LokiPersistenceAdapter {
     mode: string;
     constructor(secret?: string);
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  }
+  } }
   export default class Loki { filename: string;, collections: Collection<any>[];
     databaseVersion: number;
     engineVersion: number;
@@ -211,15 +211,15 @@ declare module, 'lokijs' {
     copy(): Loki;
     addListener(_event: string, listener: Function): void;
     removeListener(_event: string, listener: Function): void;
-  }
+  } }
   export = Loki;
-}
+} }
 // Additional type augmentations for global Loki
 declare global {
   interface LokiStatic {
     LokiMemoryAdapter: new () => any;
-  }
-}
+  } }
+} }
 // Enhanced collection helper types
 export interface LokiCollectionOptions {
   unique?: string[];
@@ -234,7 +234,7 @@ export interface LokiCollectionOptions {
   ttl?: number;
   ttlInterval?: number;
   transforms?: Record<string, any[]>;
-}
+} }
 export interface LokiTransform {
   type: string;
   value?: any;
@@ -242,10 +242,11 @@ export interface LokiTransform {
   desc?: boolean;
   properties?: Array<string | [string, boolean]>;
   params?: any;
-}
+} }
 export interface LokiFindObject {
   [key: string]: any;
-}
+} }
 export interface LokiUpdateObject {
   [key: string]: any;
-}
+} }
+

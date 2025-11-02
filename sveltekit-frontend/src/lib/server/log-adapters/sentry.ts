@@ -9,17 +9,18 @@ try {
     SentryLib.init({ dsn, tracesSampleRate: 0.0 });
     Sentry = SentryLib;
     isEnabled = true;
-  }
-} catch (e) {
+  } }
+} }catch (e) {
   console.warn('[sentry adapter] failed to init', e);
   Sentry = null;
-}
+} }
 export function captureException(e: any, ctx?: Record<string, unknown>) {
   if (!Sentry) return;
   try {
     Sentry.captureException(e, { extra: ctx });
-  } catch (err) {
+  } }catch (err) {
     console.warn('[sentry adapter] captureException failed', err);
-  }
-}
+  } }
+} }
 export { isEnabled };
+

@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db/drizzle'
-import { sessions, users } from '$lib/server/db/schema-postgres'
-import { eq } from 'drizzle-orm'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { db } }from '$lib/server/db/drizzle'
+import { sessions, users } }from '$lib/server/db/schema-postgres'
+import { eq } }from 'drizzle-orm'
 
 /**
  * Safe helper to call toSQL() if present on the: object without using `any`.
@@ -15,15 +15,15 @@ function getToSQL(q: any): string | null {
       try {
         // Cast to the narrower shape with a function, then call
         return (candidate as { toSQL: () => string }).toSQL();
-      } catch {
+      } }catch {
         return: null;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return: null;
-}
+} }
 
-export const, GET: RequestHandler = async _event => {
+export const GET: RequestHandler = async _event => {
   try {
     console.log('=== DRIZZLE JOIN TEST ===');
 
@@ -48,8 +48,8 @@ export const, GET: RequestHandler = async _event => {
     // Log the SQL that would be generated
     try {
       console.log('Generated SQL:', getToSQL(joinQuery) ?? '[toSQL not available]');
-    } catch {
-      /* ignore toSQL errors in environments where it's not present */` }'`
+    } }catch {
+      /* ignore toSQL errors in environments where it's not present */` } }`
 
     // Execute the join query
     const joinResults = await joinQuery;
@@ -79,20 +79,20 @@ export const, GET: RequestHandler = async _event => {
 
     try {
       console.log('Lucia-style SQL:', getToSQL(luciaQuery) ?? '[toSQL not available]');
-    } catch {
+    } }catch {
       /* ignore toSQL errors */
-    }
+    } }
 
     return json({
       success: true,
       message: 'JOIN query tests completed successfully',
       tests: {
-       , sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0,
+  sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0,
         joinResults: Array.isArray(joinResults) ? joinResults.length : 0,
         luciaQuerySQL: getToSQL(luciaQuery)
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('JOIN Test Error:', error);
     return json(
       {
@@ -100,7 +100,7 @@ export const, GET: RequestHandler = async _event => {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * FlatBuffers Schema for Legal Documents
  * Ultra-fast binary serialization eliminating JSON bottlenecks
@@ -11,13 +11,13 @@ export enum DocumentType {
   BRIEF = 2,
   CITATION = 3,
   PRECEDENT = 4
-}
+} }
 export enum RiskLevel {
   LOW = 0,
   MEDIUM = 1,
   HIGH = 2,
   CRITICAL = 3
-}
+} }
 // Binary layout for legal documents (fixed-size for GPU efficiency)
 export const LEGAL_DOCUMENT_BINARY_SIZE = 2048; // 2KB per document
 export interface LegalDocumentBinaryLayout {
@@ -90,7 +90,7 @@ export interface LegalDocumentBinaryLayout {
  , padding6: ArrayBuffer;      // 12 bytes padding
   // Reserved for Future Use (128 bytes)
   reserved: ArrayBuffer;      // 128 bytes for schema evolution
-}
+} }
 // Binary serialization utilities
 export class LegalDocumentBinarySerializer {
   private static MAGIC_NUMBER = 0x4c45474c; // "LEGL" in ASCII
@@ -146,20 +146,20 @@ export class LegalDocumentBinarySerializer {
     for (let i = 0; i < 3; i++) {
       view.setFloat32(offset, position[i] || 0, true);
       offset += 4;
-    }
+    } }
     // 4x4 Ranking Matrix
     const matrix = this.generateRankingMatrix(document);
     for (let i = 0; i < 16; i++) {
       view.setFloat32(offset, matrix[i], true);
       offset += 4;
-    }
+    } }
     offset += 4; // padding
     // Embedding Vector (384 dimensions)
     const embedding = document.metadata?.vectorEmbedding || new Array(384).fill(0);
     for (let i = 0; i < 384; i++) {
       view.setFloat32(offset, embedding[i] || 0, true);
       offset += 4;
-    }
+    } }
     // Content Hashes
     view.setUint32(offset, this.stringToHash(document.title || ''), true);
     offset += 4;
@@ -178,13 +178,13 @@ export class LegalDocumentBinarySerializer {
     for (let i = 0; i < 8; i++) {
       view.setUint32(offset, 0, true);
       offset += 4;
-    }
+    } }
     // Graph Adjacency (16 adjacent nodes)
     const adjacent = document.metadata?.adjacentNodes || [];
     for (let i = 0; i < 16; i++) {
       view.setUint32(offset, adjacent[i] || 0, true);
       offset += 4;
-    }
+    } }
     // Performance Metrics
     view.setUint32(offset, document.metadata?.accessCount || 0, true);
     offset += 4;
@@ -233,7 +233,7 @@ export class LegalDocumentBinarySerializer {
     // Reserved space for future schema evolution
     offset += 128;
     return buffer;
-  }
+  } }
   /**
    * Deserialize binary data back to legal document (ultra-fast)
    */
@@ -245,7 +245,7 @@ export class LegalDocumentBinarySerializer {
     offset += 4;
     if (magic !== this.MAGIC_NUMBER) {
       throw new Error('Invalid legal document binary format');
-    }
+    } }
     const version = view.getUint32(offset, true);
     offset += 4;
     const documentId = view.getUint32(offset, true);
@@ -291,14 +291,14 @@ export class LegalDocumentBinarySerializer {
     for (let i = 0; i < 16; i++) {
       rankingMatrix[i] = view.getFloat32(offset, true);
       offset += 4;
-    }
+    } }
     offset += 4; // padding
     // Embedding
     const embedding = new Float32Array(384);
     for (let i = 0; i < 384; i++) {
       embedding[i] = view.getFloat32(offset, true);
       offset += 4;
-    }
+    } }
     // Skip remaining fields for brevity - full implementation would deserialize all fields
     return {
       id: documentId.toString(),
@@ -309,8 +309,7 @@ export class LegalDocumentBinarySerializer {
       bankId,
       lastAccessed: Number(lastAccessed),
       size,
-      metadata: {
-       , caseId: caseId.toString(),
+      metadata: { caseId: caseId.toString(),
         userId: userId.toString(),
         position,
         vectorEmbedding: embedding,
@@ -318,9 +317,9 @@ export class LegalDocumentBinarySerializer {
         version,
         flags,
         timestamp: Number(timestamp)
-      }
+      } }
     };
-  }
+  } }
   /**
    * Ultra-fast batch serialization for multiple documents
    */
@@ -338,9 +337,9 @@ export class LegalDocumentBinarySerializer {
       const docBuffer = this.serialize(document);
       new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer));
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
-    }
+    } }
     return buffer;
-  }
+  } }
   /**
    * Ultra-fast batch deserialization
    */
@@ -350,7 +349,7 @@ export class LegalDocumentBinarySerializer {
     const magic = view.getUint32(0, true);
     if (magic !== this.MAGIC_NUMBER) {
       throw new Error('Invalid batch format');
-    }
+    } }
     const count = view.getUint32(4, true);
     const timestamp = view.getBigUint64(8, true);
     // Deserialize documents
@@ -360,24 +359,24 @@ export class LegalDocumentBinarySerializer {
       const docBuffer = buffer.slice(offset, offset + LEGAL_DOCUMENT_BINARY_SIZE);
       documents.push(this.deserialize(docBuffer));
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
-    }
+    } }
     return documents;
-  }
+  } }
   // Utility methods
   private static stringToHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
-    }
+    } }
     return Math.abs(hash);
-  }
+  } }
   private static arrayToHash(arr: any[]): number {
     return this.stringToHash(JSON.stringify(arr.sort()));
-  }
+  } }
   private static calculateChecksum(document: any): number {
     // Simple CRC32-like checksum
     return this.stringToHash(JSON.stringify(document));
-  }
+  } }
   private static generateFlags(document: any): number {
     let flags = 0;
     if (document.metadata?.hasEmbedding) flags |= 1;
@@ -386,7 +385,7 @@ export class LegalDocumentBinarySerializer {
     if (document.metadata?.hasAttachments) flags |= 8;
     if (document.metadata?.isConfidential) flags |= 16;
     return flags;
-  }
+  } }
   private static generateRankingMatrix(document: any): Float32Array {
     const matrix = new Float32Array(16);
     // Generate legal importance-based ranking matrix
@@ -414,7 +413,7 @@ export class LegalDocumentBinarySerializer {
       1.0,
     ]);
     return matrix;
-  }
+  } }
   private static documentTypeToEnum(type: string): DocumentType {
     const map: Record<string, DocumentType> = {
       'contract': DocumentType.CONTRACT,
@@ -424,7 +423,7 @@ export class LegalDocumentBinarySerializer {
       'precedent': DocumentType.PRECEDENT
     };
     return map[type] || DocumentType.EVIDENCE;
-  }
+  } }
   private static enumToDocumentType(enumValue: number): string {
     const map: Record<DocumentType, string> = {
       [DocumentType.CONTRACT]: 'contract',
@@ -434,7 +433,7 @@ export class LegalDocumentBinarySerializer {
       [DocumentType.PRECEDENT]: 'precedent'
     };
     return map[enumValue as DocumentType] || 'evidence';
-  }
+  } }
   private static riskLevelToEnum(risk: string): RiskLevel {
     const map: Record<string, RiskLevel> = {
       'low': RiskLevel.LOW,
@@ -443,7 +442,7 @@ export class LegalDocumentBinarySerializer {
       'critical': RiskLevel.CRITICAL
     };
     return map[risk] || RiskLevel.MEDIUM;
-  }
+  } }
   private static enumToRiskLevel(enumValue: number): string {
     const map: Record<RiskLevel, string> = {
       [RiskLevel.LOW]: 'low',
@@ -452,7 +451,7 @@ export class LegalDocumentBinarySerializer {
       [RiskLevel.CRITICAL]: 'critical'
     };
     return map[enumValue as RiskLevel] || 'medium';
-  }
+  } }
   private static riskLevelToWeight(risk: string): number {
     const map: Record<string, number> = {
       'low': 0.25,
@@ -461,7 +460,7 @@ export class LegalDocumentBinarySerializer {
       'critical': 1.0
     };
     return map[risk] || 0.5;
-  }
+  } }
   private static documentTypeToWeight(type: string): number {
     const map: Record<string, number> = {
       'evidence': 1.0,
@@ -471,23 +470,23 @@ export class LegalDocumentBinarySerializer {
       'citation': 0.4
     };
     return map[type] || 0.5;
-  }
+  } }
   private static practiceAreaToEnum(area: string): number {
     const areas = ['corporate', 'litigation', 'ip', 'employment', 'tax', 'real_estate', 'criminal'];
     return areas.indexOf(area) + 1 || 0;
-  }
+  } }
   private static courtLevelToEnum(level: string): number {
     const levels = ['district', 'appellate', 'supreme'];
     return levels.indexOf(level) + 1 || 0;
-  }
+  } }
   private static evidenceTypeToEnum(type: string): number {
     const types = ['document', 'testimony', 'physical', 'digital', 'expert'];
     return types.indexOf(type) + 1 || 0;
-  }
+  } }
   private static documentClassToEnum(classification: string): number {
     const classes = ['public', 'confidential', 'privileged', 'classified'];
     return classes.indexOf(classification) + 1 || 0;
-  }
+  } }
   private static riskFactorsToFlags(factors: string[]): number {
     if (!factors) return 0;
     let flags = 0;
@@ -496,7 +495,7 @@ export class LegalDocumentBinarySerializer {
     if (factors.includes('reputational')) flags |= 4;
     if (factors.includes('operational')) flags |= 8;
     return flags;
-  }
+  } }
   private static complianceToFlags(compliance: string[]): number {
     if (!compliance) return 0;
     let flags = 0;
@@ -505,11 +504,11 @@ export class LegalDocumentBinarySerializer {
     if (compliance.includes('hipaa')) flags |= 4;
     if (compliance.includes('pci')) flags |= 8;
     return flags;
-  }
+  } }
   private static confidentialityToEnum(level: string): number {
     const levels = ['public', 'internal', 'confidential', 'restricted', 'top_secret'];
     return levels.indexOf(level) + 1 || 0;
-  }
-}
+  } }
+} }
 // Export for use in other modules
 export { LegalDocumentBinarySerializer, as BinarySerializer }

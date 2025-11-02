@@ -1,7 +1,7 @@
 // XState Graph Cache Machine - Orchestrates cache states and background refresh
 // Implements the recommended runtime flow with idle signals and telemetry
-import { createMachine, assign } from 'xstate';
-import type { ActorRefFrom } from 'xstate';
+import { createMachine, assign } }from 'xstate';
+import type { ActorRefFrom } }from 'xstate';
 // Types for the graph cache system
 export interface GraphCacheContext { query: string | null;, params: Record<string, unknown>;
   result: any;
@@ -11,7 +11,7 @@ export interface GraphCacheContext { query: string | null;, params: Record<stri
   cacheHit: boolean;
   latency: number;
   queryHash: string | null;
-  telemetry: {, totalQueries: number;, cacheHits: number;
+  telemetry: { totalQueries: number;, cacheHits: number;
     cacheMisses: number;
     hitRate: number;
     avgLatencyMs: number;
@@ -24,33 +24,31 @@ export interface GraphCacheContext { query: string | null;, params: Record<stri
   backgroundRefreshEnabled: boolean;
   retryCount: number;
   maxRetries: number;
-}
+} }
 export type GraphCacheEvent =
-  | { type: 'QUERY';, query: string; params?: Record<string, unknown> }
-  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source']; latency: number }
-  | { type: 'CACHE_MISS'; queryHash: string }
-  | { type: 'WASM_RESULT'; result: any; latency: number }
-  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source']; latency: number }
-  | { type: 'BACKGROUND_REFRESH'; queryHash: string }
-  | { type: 'REFRESH_COMPLETE'; result: any }
-  | { type: 'REFRESH_FAILED'; error: string }
-  | { type: 'ENABLE_BACKGROUND_REFRESH' }
-  | { type: 'DISABLE_BACKGROUND_REFRESH' }
-  | { type: 'RESET_TELEMETRY' }
-  | { type: 'GET_TELEMETRY' }
-  | { type: 'WORKER_READY' }
-  | { type: 'WORKER_ERROR'; error: string }
-  | { type: 'INVALIDATE_CACHE'; key?: string }
-  | { type: 'IDLE_CALLBACK' }
+  | { type: 'QUERY'; query: string; params?: Record<string, unknown> } }
+  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source']; latency: number } }
+  | { type: 'CACHE_MISS'; queryHash: string } }
+  | { type: 'WASM_RESULT'; result: any; latency: number } }
+  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source']; latency: number } }
+  | { type: 'BACKGROUND_REFRESH'; queryHash: string } }
+  | { type: 'REFRESH_COMPLETE'; result: any } }
+  | { type: 'REFRESH_FAILED'; error: string } }
+  | { type: 'ENABLE_BACKGROUND_REFRESH' } }
+  | { type: 'DISABLE_BACKGROUND_REFRESH' } }
+  | { type: 'RESET_TELEMETRY' } }
+  | { type: 'GET_TELEMETRY' } }
+  | { type: 'WORKER_READY' } }
+  | { type: 'WORKER_ERROR'; error: string } }
+  | { type: 'INVALIDATE_CACHE'; key?: string } }
+  | { type: 'IDLE_CALLBACK' } }
   | { type: 'RETRY' };
 // XState machine for graph cache orchestration
 export const graphCacheMachine = createMachine(
-  {
-   , id: 'graphCache',
+  { id: 'graphCache',
     initial: 'initializing',
-    // Note: predictableActionArguments removed for version compatibility; context: {
-     , query: null,
-      params: {} as Record<string, unknown>,
+    // Note: predictableActionArguments removed for version compatibility; context: { query: null,
+      params: {} }as Record<string, unknown>,
       result: null,
       source: 'indexeddb_cache',
       isStale: false,
@@ -58,8 +56,7 @@ export const graphCacheMachine = createMachine(
       cacheHit: false,
       latency: 0,
       queryHash: null,
-      telemetry: {
-       , totalQueries: 0,
+      telemetry: { totalQueries: 0,
         cacheHits: 0,
         cacheMisses: 0,
         hitRate: 0,
@@ -73,74 +70,62 @@ export const graphCacheMachine = createMachine(
       backgroundRefreshEnabled: true,
       retryCount: 0,
       maxRetries: 3
-    } satisfies GraphCacheContext,
-    states: {, initializing: {, entry: 'initializeWorker',
-        on: {
-         , WORKER_READY: 'idle',
+    } }satisfies GraphCacheContext,
+    states: { initializing: { entry: 'initializeWorker',
+        on: { WORKER_READY: 'idle',
           WORKER_ERROR: 'error'
-        }
+        } }
       },
-      idle: {
-       , entry: 'scheduleIdleCallback',
-        on: {
-         , QUERY: 'querying',
-          GET_TELEMETRY: {, actions: 'provideTelemetry' },
-          RESET_TELEMETRY: {, actions: 'resetTelemetry' },
-          ENABLE_BACKGROUND_REFRESH: {, actions: 'enableBackgroundRefresh' },
-          DISABLE_BACKGROUND_REFRESH: {, actions: 'disableBackgroundRefresh' },
-          INVALIDATE_CACHE: {, actions: 'invalidateCache' },
+      idle: { entry: 'scheduleIdleCallback',
+        on: { QUERY: 'querying',
+          GET_TELEMETRY: { actions: 'provideTelemetry' },
+          RESET_TELEMETRY: { actions: 'resetTelemetry' },
+          ENABLE_BACKGROUND_REFRESH: { actions: 'enableBackgroundRefresh' },
+          DISABLE_BACKGROUND_REFRESH: { actions: 'disableBackgroundRefresh' },
+          INVALIDATE_CACHE: { actions: 'invalidateCache' },
           IDLE_CALLBACK: [
-            {,
-              target: 'backgroundRefreshing',
+            { target: 'backgroundRefreshing',
               guard: 'shouldBackgroundRefresh'
             },
           ]
-        }
+        } }
       },
-      querying: {
-       , entry: ['setQuery', 'incrementQueryCount'],
+      querying: { entry: ['setQuery', 'incrementQueryCount'],
         initial: 'checkingCache',
-        states: {, checkingCache: {, entry: 'queryWorker',
-            on: {, CACHE_HIT: {, target: 'cacheHit',
+        states: { checkingCache: { entry: 'queryWorker',
+            on: { CACHE_HIT: { target: 'cacheHit',
                 actions: 'setCacheResult'
               },
               CACHE_MISS: 'cacheMiss'
-            }
+            } }
           },
-          cacheHit: {
-           , entry: ['notifyCacheHit', 'updateTelemetry'],
-            after: {
-             , 100: [
-                {,
-                  target: '#graphCache.backgroundRefreshing',
+          cacheHit: { entry: ['notifyCacheHit', 'updateTelemetry'],
+            after: { 100: [
+                { target: '#graphCache.backgroundRefreshing',
                   guard: 'isStaleResult'
                 },
                 {
                   target: '#graphCache.idle'
                 },
               ]
-            }
+            } }
           },
-          cacheMiss: {
-           , entry: 'notifyCacheMiss',
+          cacheMiss: { entry: 'notifyCacheMiss',
             initial: 'wasmQuery',
-            states: {, wasmQuery: {, entry: 'queryWasmWorker',
-                on: {, WASM_RESULT: {, target: 'authoritativeQuery',
+            states: { wasmQuery: { entry: 'queryWasmWorker',
+                on: { WASM_RESULT: { target: 'authoritativeQuery',
                     actions: ['setWasmResult', 'notifyProvisionalResult']
-                  }
+                  } }
                 },
-                after: {
-                 , 5000: 'authoritativeQuery', // Fallback if WASM times out
-                }
+                after: { 5000: 'authoritativeQuery', // Fallback if WASM times out
+                } }
               },
-              authoritativeQuery: {
-               , entry: 'queryAuthoritativeSource',
-                on: {, AUTHORITATIVE_RESULT: {, target: '#graphCache.rehydrated',
+              authoritativeQuery: { entry: 'queryAuthoritativeSource',
+                on: { AUTHORITATIVE_RESULT: { target: '#graphCache.rehydrated',
                     actions: 'setAuthoritativeResult'
                   },
                   REFRESH_FAILED: [
-                    {,
-                      target: 'authoritativeQuery',
+                    { target: 'authoritativeQuery',
                       guard: 'canRetry',
                       actions: 'incrementRetry'
                     },
@@ -150,10 +135,8 @@ export const graphCacheMachine = createMachine(
                     },
                   ]
                 },
-                after: {
-                 , 10000: [
-                    {,
-                      target: 'authoritativeQuery',
+                after: { 10000: [
+                    { target: 'authoritativeQuery',
                       guard: 'canRetry',
                       actions: 'incrementRetry'
                     },
@@ -161,47 +144,37 @@ export const graphCacheMachine = createMachine(
                       target: '#graphCache.error'
                     },
                   ]
-                }
-              }
-            }
-          }
-        }
+                } }
+              } }
+            } }
+          } }
+        } }
       },
-      backgroundRefreshing: {
-       , entry: ['setRefreshJob', 'queryAuthoritativeSource'],
-        on: {, REFRESH_COMPLETE: {, target: 'revalidated',
+      backgroundRefreshing: { entry: ['setRefreshJob', 'queryAuthoritativeSource'],
+        on: { REFRESH_COMPLETE: { target: 'revalidated',
             actions: ['setAuthoritativeResult', 'clearRefreshJob']
           },
-          REFRESH_FAILED: {
-           , target: 'idle',
+          REFRESH_FAILED: { target: 'idle',
             actions: 'clearRefreshJob'
-          }
+          } }
         },
         after: {
-          15000: {
-           , target: 'idle',
+          15000: { target: 'idle',
             actions: 'clearRefreshJob'
-          }
-        }
+          } }
+        } }
       },
-      rehydrated: {
-       , entry: ['notifyRehydration', 'updateCaches', 'updateTelemetry'],
-        after: {
-         , 500: 'idle'
-        }
+      rehydrated: { entry: ['notifyRehydration', 'updateCaches', 'updateTelemetry'],
+        after: { 500: 'idle'
+        } }
       },
-      revalidated: {
-       , entry: ['notifyRevalidation', 'updateCaches', 'updateTelemetry'],
-        after: {
-         , 500: 'idle'
-        }
+      revalidated: { entry: ['notifyRevalidation', 'updateCaches', 'updateTelemetry'],
+        after: { 500: 'idle'
+        } }
       },
-      error: {
-       , entry: 'notifyError',
-        on: {
-         , RETRY: [
-            {,
-             , target: 'querying',
+      error: { entry: 'notifyError',
+        on: { RETRY: [
+            { , target: 'querying',
               cond: 'canRetry',
               actions: 'incrementRetry'
             },
@@ -211,14 +184,12 @@ export const graphCacheMachine = createMachine(
           ],
           QUERY: 'querying'
         },
-        after: {
-         , 5000: 'idle', // Auto-recover after, 5 seconds
-        }
-      }
-    }
+        after: { 5000: 'idle', // Auto-recover after, 5 seconds
+        } }
+      } }
+    } }
   },
-  { actions: {, initializeWorker: assign({
-       , worker: () => {
+  { actions: { initializeWorker: assign({ worker: () => {
           if (typeof Worker !== 'undefined') {
             const worker = new Worker('/src/lib/workers/graph-worker.js');
             worker.onmessage = (event: MessageEvent) => {
@@ -229,40 +200,40 @@ export const graphCacheMachine = createMachine(
                   // Handle in machine (post WORKER_READY to parent machine if desired)
                   break;
                 case, 'query_result': {
-                  const $data = (payload as { type: 'query_result';, data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result'; data: WorkerQueryResultData }).data;
                   // Example: if worker indicates a cache hit, you might post CACHE_HIT
                   if ($data?.cache_hit) {
                     // send an event into the machine from outside caller if needed
                     // e.g. interpreter.send({ type: 'CACHE_HIT', result: $data.result, source: $data.source, latency: $data.latency })
-                  } else {
+                  } }else {
                     // handle miss or provisional data
-                  }
+                  } }
                   break;
-                }
+                } }
                 case, 'query_result_authoritative': {
-                  const $data = (payload as { type: 'query_result_authoritative';, data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result_authoritative'; data: WorkerQueryResultData }).data;
                   // send AUTHORITATIVE_RESULT handling here
                   break;
-                }
+                } }
                 case, 'refresh_complete': {
                   const $data = (payload as { type: 'refresh_complete'; data?: WorkerQueryResultData }).data;
                   // handle refresh complete
                   break;
-                }
+                } }
                 case, 'worker_error': {
-                  const err = (payload as { type: 'worker_error';, error: string }).error;
-                  console.error('Worker error:', err);'
+                  const err = (payload as { type: 'worker_error'; error: string }).error;
+                  console.error('Worker error:', err);
                   break;
-                }
+                } }
                 default:
                   //; safety:, log: unknown messages
                   console.log('Worker message (unknown type):', payload);
-              }
+              } }
             };
             return worker;
-          }
+          } }
           return: null;
-        }
+        } }
       }),
       // functional assign so event can be strongly typed and narrowed
       setQuery: assign((context, event: GraphCacheEvent) => {
@@ -275,16 +246,15 @@ export const graphCacheMachine = createMachine(
           const char = str.charCodeAt(i);
           hash = (hash << 5) - hash + char;
           hash = hash & hash;
-        }
+        } }
         return {
           query,
           params,
           queryHash: hash.toString(),
           retryCount: 0
-        } as Partial<GraphCacheContext>;
+        } }as Partial<GraphCacheContext>;
       }),
-      incrementQueryCount: assign({
-       , telemetry: context => ({
+      incrementQueryCount: assign({ telemetry: context => ({
           ...context.telemetry,
           totalQueries: context.telemetry.totalQueries + 1
         })
@@ -299,8 +269,8 @@ export const graphCacheMachine = createMachine(
           telemetry: {
             ...context.telemetry,
             cacheHits: context.telemetry.cacheHits + 1
-          }
-        } as Partial<GraphCacheContext>;
+          } }
+        } }as Partial<GraphCacheContext>;
       }),
       setWasmResult: assign((_, event: GraphCacheEvent) => {
         if (event.type !== 'WASM_RESULT') return {};
@@ -308,7 +278,7 @@ export const graphCacheMachine = createMachine(
           result: event.result,
           source: 'wasm' as const,
           latency: event.latency ?? 0
-        } as Partial<GraphCacheContext>;
+        } }as Partial<GraphCacheContext>;
       }),
       setAuthoritativeResult: assign((_, event: GraphCacheEvent) => {
         if (event.type === 'AUTHORITATIVE_RESULT' || event.type === 'REFRESH_COMPLETE') {
@@ -318,35 +288,29 @@ export const graphCacheMachine = createMachine(
             source: src,
             isAuthoritative: true,
             lastRefresh: Date.now()
-          } as Partial<GraphCacheContext>;
-        }
+          } }as Partial<GraphCacheContext>;
+        } }
         return {};
       }),
-      setRefreshJob: assign({
-       , refreshJob: context => `refresh_${context.queryHash}_${Date.now()}` }),
-      clearRefreshJob: assign({
-       , refreshJob: () => null
+      setRefreshJob: assign({ refreshJob: context => `refresh_${context.queryHash}_${Date.now()}` }),
+      clearRefreshJob: assign({ refreshJob: () => null
       }),
-      incrementRetry: assign({
-       , retryCount: context => context.retryCount + 1
+      incrementRetry: assign({ retryCount: context => context.retryCount + 1
       }),
-      enableBackgroundRefresh: assign({
-       , backgroundRefreshEnabled: () => true
+      enableBackgroundRefresh: assign({ backgroundRefreshEnabled: () => true
       }),
-      disableBackgroundRefresh: assign({
-       , backgroundRefreshEnabled: () => false
+      disableBackgroundRefresh: assign({ backgroundRefreshEnabled: () => false
       }),
-      updateTelemetry: assign({
-       , telemetry: context => {
+      updateTelemetry: assign({ telemetry: context => {
           const total = context.telemetry.cacheHits + context.telemetry.cacheMisses;
           return {
             ...context.telemetry,
             hitRate: total > 0 ? (context.telemetry.cacheHits / total) * 100 : 0,
             // Additional metrics can be computed here
           };
-        }
+        } }
       }),
-      resetTelemetry: assign({, telemetry: () => ({, totalQueries: 0,
+      resetTelemetry: assign({ telemetry: () => ({ totalQueries: 0,
           cacheHits: 0,
           cacheMisses: 0,
           hitRate: 0,
@@ -359,12 +323,11 @@ export const graphCacheMachine = createMachine(
         if (context.worker && context.query) {
           context.worker.postMessage({
             type: 'query',
-            data: {
-             , query: context.query,
+            data: { query: context.query,
               params: context.params
-            }
+            } }
           });
-        }
+        } }
       },
       // remove unused param to avoid lint/ts warnings
       queryWasmWorker: () => {
@@ -378,7 +341,7 @@ export const graphCacheMachine = createMachine(
         const ric = (
           globalThis as: unknown as {
             requestIdleCallback?: (cb: (deadline: any) => void, options?: { timeout?: number }) => number;
-          }
+          } }
         ).requestIdleCallback;
         if (typeof ric !== 'undefined') {
           ric(
@@ -386,9 +349,9 @@ export const graphCacheMachine = createMachine(
               // send IDLE_CALLBACK event to the interpreter where appropriate
               console.log('⏰ Idle callback triggered');
             },
-            { timeout: 5000 }
+            { timeout: 5000 } }
           );
-        }
+        } }
       },
       notifyCacheHit: context => {
         console.log('✅ Cache, hit:', context.source, `${context.latency}ms`);
@@ -418,17 +381,16 @@ export const graphCacheMachine = createMachine(
             type: 'cache_clear',
             key
           });
-        }
+        } }
       },
       provideTelemetry: context => {
         console.log('📊, Telemetry:', context.telemetry);
       },
       setError: () => {
         console.error('❌ Query failed after max retries');
-      }
+      } }
     },
-    guards: {
-     , shouldBackgroundRefresh: context => {
+    guards: { shouldBackgroundRefresh: context => {
         return (
           context.backgroundRefreshEnabled && context.queryHash !== null && Date.now() - context.lastRefresh > 300000
         ); // 5 minutes
@@ -438,9 +400,9 @@ export const graphCacheMachine = createMachine(
       },
       canRetry: context => {
         return context.retryCount < context.maxRetries;
-      }
-    }
-  }
+      } }
+    } }
+  } }
 );
 // Helper types for external usage
 export type GraphCacheMachine = typeof graphCacheMachine;
@@ -448,7 +410,7 @@ export type GraphCacheActor = ActorRefFrom<GraphCacheMachine>;
 // Export machine service for SvelteKit integration
 export function createGraphCacheService() {
   return graphCacheMachine;
-}
+} }
 // Add typed shapes for messages coming from the worker
 type WorkerQueryResultData = {
   cache_hit?: boolean;
@@ -457,11 +419,12 @@ type WorkerQueryResultData = {
   latency?: number;
 };
 type WorkerToMainMessage =
-  | { type: 'worker_ready' }
-  | { type: 'worker_error'; error: string }
-  | { type: 'query_result'; data: WorkerQueryResultData }
-  | { type: 'query_result_authoritative'; data: WorkerQueryResultData }
-  | { type: 'refresh_complete'; data?: WorkerQueryResultData }
-  | { type: 'log'; message: string; level?: 'info' | 'warn' | 'error` }'`
+  | { type: 'worker_ready' } }
+  | { type: 'worker_error'; error: string } }
+  | { type: 'query_result'; data: WorkerQueryResultData } }
+  | { type: 'query_result_authoritative'; data: WorkerQueryResultData } }
+  | { type: 'refresh_complete'; data?: WorkerQueryResultData } }
+  | { type: 'log'; message: string; level?: 'info' | 'warn' | 'error` } }`
   // allow safe: unknown extension points from worker
-  | {, type: string; [k: string]: any };
+  | { type: string; [k: string]: any };
+

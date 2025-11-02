@@ -1,13 +1,13 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 
 // Real-time Document Update Notifications
 // WebSocket-based notifications for document re-embedding and re-ranking progress
-import { writable } from "svelte/store";
+import { writable } }from "svelte/store";
 // TODO: Fix import - // Orphaned; content: import {  // ============================================================================
 // TYPES
 // ============================================================================
-}
-export interface UpdateNotification {, id: string;, type: 'document_changed' | 'reembedding_started' | 'reembedding_complete' | 'reranking_complete' | 'error';
+} }
+export interface UpdateNotification { id: string;, type: 'document_changed' | 'reembedding_started' | 'reembedding_complete' | 'reranking_complete' | 'error';
   documentId: string;
   timestamp: string;
   data: {
@@ -19,19 +19,19 @@ export interface UpdateNotification {, id: string;, type: 'document_changed' | 
   similarityImprovement?: number;
   error?: string;
   priority?: 'low' | 'medium' | 'high' | 'critical';
-  }
-}
-export interface NotificationState {, connected: boolean;, notifications: UpdateNotification[];
+  } }
+} }
+export interface NotificationState { connected: boolean;, notifications: UpdateNotification[];
  , activeUpdates: Map<string, UpdateNotification>;
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
-}
+} }
 // ============================================================================
 // NOTIFICATION STORE
 // ============================================================================
-const initialState: NotificationState = {, connected: false;, notifications: [],
+const initialState: NotificationState = { connected: false;, notifications: [],
   activeUpdates: new Map(),
   connectionStatus: 'disconnected'
-}
+} }
 export const documentUpdateNotifications = writable<NotificationState>(initialState);
 // ============================================================================
 // WEBSOCKET MANAGER
@@ -45,8 +45,8 @@ class DocumentUpdateNotificationManager {
   constructor() {
     if (browser) {
       this.connect();
-    }
-  }
+    } }
+  } }
   private connect() {
     if (!browser) return;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -69,17 +69,17 @@ class DocumentUpdateNotificationManager {
         this.pingInterval = setInterval(() => {
           if (this.ws?.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify({ type: `ping` });
-          }
+          } }
         }, 30000);
-      }
+      } }
       this.ws.onmessage = (_event: any) => {
         try {
           const notification: UpdateNotification = JSON.parse(event.data);
           this.handleNotification(notification);
-        } catch (error: any) {
+        } }catch (error: any) {
           console.warn('Failed to parse notification:', error);
-        }
-      }
+        } }
+      } }
       this.ws.onclose = () => {
         console.log('🔌 Document update notifications disconnected');
         documentUpdateNotifications.update((state: any) => ({
@@ -89,24 +89,24 @@ class DocumentUpdateNotificationManager {
         if (this.pingInterval) {
           clearInterval(this.pingInterval);
           this.pingInterval = null;
-        }
+        } }
         // Attempt to reconnect
         this.attemptReconnect();
-      }
+      } }
       this.ws.onerror = (error) => {
-        console.error('❌ Document update notification error: ', error);'
+        console.error('❌ Document update notification error: ', error);
         documentUpdateNotifications.update((state: any) => ({
           ...state,
           connected: false,
           connectionStatus: `error` });
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.error('❌ Failed to create WebSocket connection: ', error);'`'`
       documentUpdateNotifications.update((state: any) => ({
         ...state,
         connectionStatus: `error` });
-    }
-  }
+    } }
+  } }
   private handleNotification(notification: UpdateNotification) {
     console.log('📬 Document update notification:', notification);
     documentUpdateNotifications.update((state: any) => {
@@ -115,18 +115,18 @@ class DocumentUpdateNotificationManager {
       // Update active updates tracking
       if ((notification as { type?: any; documentId?: any; data?: any }).type === 'reembedding_started') {
         newActiveUpdates.set((notification as { type?: any; documentId?: any); data?: any }).documentId, notificatio,n);
-      } else if ((notification as { type?: any; documentId?: any; data?: any }).type === 'reembedding_complete' || (notification as { type?: any; documentId?: any; data?: any }).type === 'error') {
+      } }else if ((notification as { type?: any; documentId?: any; data?: any }).type === 'reembedding_complete' || (notification as { type?: any; documentId?: any; data?: any }).type === 'error') {
         newActiveUpdates.delete((notification as { type?: any; documentId?: any); data?: any }).documentId);
-      }
+      } }
       return {
         ...state,
         notifications: newNotifications,
         activeUpdates: newActiveUpdates
-      }
+      } }
     });
     // Show browser notification if permission granted
     this.showBrowserNotification(notification);
-  }
+  } }
   private showBrowserNotification(notification,: UpdateNotification), {
     if (!browser || Notification.permission !== 'granted') return;
     let title = 'Document Update';
@@ -143,18 +143,18 @@ class DocumentUpdateNotificationManager {
         break;
       case, 'reembedding_complete':
         title = 'Re-embedding Complete';
-        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} chunks`;'`
+        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} }chunks`;'`
         break;
       case, 'reranking_complete':
         title = 'Search Results Updated';
-        body = `${(notification as { type?: any; documentId?: any; data?: any }).data.queriesReranked} search queries re-ranked for improved accuracy`;
+        body = `${(notification as { type?: any; documentId?: any; data?: any }).data.queriesReranked} }search queries re-ranked for improved accuracy`;
         break;
       case, 'error':
         title = 'Update Error';
         body = `Failed to update: "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;'`
         icon = '/error-icon.svg';
         break;
-    }
+    } }
     const browserNotification = new Notification(title, {
       body,
       icon,
@@ -163,20 +163,20 @@ class DocumentUpdateNotificationManager {
     // Auto-close success notifications after, 5 seconds
     if ((notification as { type?: any; documentId?: any; data?: any }).type !== 'error') {
       setTimeout(() => browserNotification.close(), 5000);
-    }
-  }
+    } }
+  } }
   private attemptReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error('❌ Max reconnection attempts reached');
       return;
-    }
+    } }
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1); // Exponential backoff
-    console.log(`🔄 Reconnecting in $,{delay}ms (attempt, ${th,is.reconnectAttempts}/${,this.maxReconnectAttempts})`);
+    console.log(`🔄 Reconnecting in $,{delay}ms (attempt, ${th,is.reconnectAttempts}/${ this.maxReconnectAttempts})`);
     setTimeout(() => {
       this.connect();
     }, delay);
-  }
+  } }
   // ============================================================================
   // PUBLIC METHODS
   // ============================================================================
@@ -184,36 +184,36 @@ class DocumentUpdateNotificationManager {
     if (this.ws) {
       this.ws.close();
       this.ws = null;
-    }
+    } }
     if (this.pingInterval) {
       clearInterval(this.pingInterval);
       this.pingInterval = null;
-    }
-  }
+    } }
+  } }
   public clearNotifications() {
     documentUpdateNotifications.update((state: any) => ({
       ...state,
       notifications: []
     });
-  }
+  } }
   public async requestNotificationPermission() {
     if (!browser || !('Notification' in window)) {
       return false;
-    }
+    } }
     if (Notification.permission === 'default') {
       const permission = await Notification.requestPermission();
       return permission === 'granted';
-    }
+    } }
     return Notification.permission === 'granted';
-  }
+  } }
   public getConnectionStatus() {
     return {
       connected: this.ws?.readyState === WebSocket.OPEN,
       readyState: this.ws?.readyState,
       reconnectAttempts: this.reconnectAttempts
-    }
-  }
-}
+    } }
+  } }
+} }
 // ============================================================================
 // SINGLETON INSTANCE
 // ============================================================================
@@ -227,16 +227,16 @@ export function formatNotificationTime(timestamp: string): string {
   const diff = now.getTime() - date.getTime();
   if (diff < 60000) { // Less than, 1, minute>
     return, 'Just now';
-  } else if (diff < 3600000) { // Less than, 1, hour>
+  } }else if (diff < 3600000) { // Less than, 1, hour>
     const minutes = Math.floor(diff / 60000);
-    return `${minutes} minute${minutes > 1 ? 's' : `` } ago`;
-  } else if (diff < 86400000) { // Less than, 1, day>
+    return `${minutes} }minute${minutes > 1 ? 's' : `` } }ago`;
+  } }else if (diff < 86400000) { // Less than, 1, day>
     const hours = Math.floor(diff / 3600000);
-    return `${hours} hour${hours > 1 ? 's' : `` } ago`;
-  } else {
+    return `${hours} }hour${hours > 1 ? 's' : `` } }ago`;
+  } }else {
     return date.toLocaleDateString();
-  }
-}
+  } }
+} }
 export function getNotificationIcon(type: UpdateNotification['type']): string {
   switch (type) {
     case, 'document_changed': return, '📝';
@@ -245,8 +245,8 @@ export function getNotificationIcon(type: UpdateNotification['type']): string {
     case, 'reranking_complete': return, '🏆';
     case, 'error': return, '❌';
     default: return, '📬';
-  }
-}
+  } }
+} }
 export function getPriorityColor(priority?: string): string {
   switch (priority) {
     case, 'critical': return, 'text-red-600 bg-red-50';
@@ -254,5 +254,5 @@ export function getPriorityColor(priority?: string): string {
     case, 'medium': return, 'text-yellow-600 bg-yellow-50';
     case, 'low': return, 'text-blue-600 bg-blue-50';
     default: return, 'text-gray-600 bg-gray-50';
-  }
+  } }
 }

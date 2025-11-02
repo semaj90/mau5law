@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * User-Owned Data Store (Svelte 5)
  * Manages all user-specific data: AI assistant history, reports, citations, cases, evidence, etc.
  * Integrates with session store and provides drizzle-orm ready structure
  */
 // Session data is now passed from server via SvelteKit data flow
-import { browser } from '$app/environment';
-import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
+import { browser } }from '$app/environment';
+import { formatRelativeTime, formatDetailedTimestamp } }from '$lib/utils/formatting';
 // ===== TYPES =====
 export interface UserCase { id: string;, title: string;
   description?: string;
@@ -20,8 +20,8 @@ export interface UserCase { id: string;, title: string;
   evidenceCount: number;
   citationCount: number;
   reportCount: number;
-}
-export interface UserEvidence {, id: string;, caseId: string;
+} }
+export interface UserEvidence { id: string;, caseId: string;
   filename: string;
   fileType: string;
   fileSize: number;
@@ -32,8 +32,8 @@ export interface UserEvidence {, id: string;, caseId: string;
   notes?: string;
   metadata: { [key: string]: any };
   aiAnalysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
-}
-export interface UserCitation {, id: string;, userId: string;
+} }
+export interface UserCitation { id: string;, userId: string;
   caseId?: string;
   title: string;
   source: string;
@@ -45,8 +45,8 @@ export interface UserCitation {, id: string;, userId: string;
   createdAt: Date;
   updatedAt: Date;
   isFavorite: boolean;
-}
-export interface UserReport {, id: string;, userId: string;
+} }
+export interface UserReport { id: string;, userId: string;
   caseId?: string;
   title: string;
   reportType: 'analysis' | 'summary' | 'timeline' | 'evidence_review' | 'legal_memo' | 'custom';
@@ -57,8 +57,8 @@ export interface UserReport {, id: string;, userId: string;
   updatedAt: Date;
   wordCount: number;
   tags: string[];
-}
-export interface AIAssistantMessage {, id: string;, userId: string;
+} }
+export interface AIAssistantMessage { id: string;, userId: string;
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -67,8 +67,8 @@ export interface AIAssistantMessage {, id: string;, userId: string;
   contextId?: string;
   tokens?: number;
   model?: string;
-}
-export interface AIConversation {, id: string;, userId: string;
+} }
+export interface AIConversation { id: string;, userId: string;
   title: string;
   contextType?: 'case' | 'evidence' | 'citation' | 'general';
   contextId?: string;
@@ -77,8 +77,8 @@ export interface AIConversation {, id: string;, userId: string;
   createdAt: Date;
   isArchived: boolean;
   tags: string[];
-}
-export interface UserActivity {, id: string;, userId: string;
+} }
+export interface UserActivity { id: string;, userId: string;
   action: string;
   resourceType: 'case' | 'evidence' | 'citation' | 'report' | 'ai_chat' | 'system';
   resourceId?: string;
@@ -86,8 +86,8 @@ export interface UserActivity {, id: string;, userId: string;
   timestamp: Date;
   ipAddress?: string;
   userAgent?: string;
-}
-export interface UserDataState {, cases: UserCase[];, evidence: UserEvidence[];
+} }
+export interface UserDataState { cases: UserCase[];, evidence: UserEvidence[];
   citations: UserCitation[];
   reports: UserReport[];
   aiConversations: AIConversation[];
@@ -95,7 +95,7 @@ export interface UserDataState {, cases: UserCase[];, evidence: UserEvidence[];
   isLoading: boolean;
   lastSyncAt: number;
  , cachedAt: number;
-}
+} }
 // ===== STORE IMPLEMENTATION =====
 const createUserDataStore = () => {
   // Initialize with empty state using $state
@@ -135,7 +135,7 @@ const createUserDataStore = () => {
           cachedAt: 0
         };
         return;
-      }
+      } }
       currentUserId = userId;
       userDataState.isLoading = true;
       try {
@@ -143,10 +143,10 @@ const createUserDataStore = () => {
         await loadFromCache(userId);
         // Then sync with server
         await syncWithServer(userId);
-      } catch (error) {
+      } }catch (error) {
         console.error('Failed to initialize user data:', error);
         userDataState.isLoading = $state(false);
-      }
+      } }
     },
     // Sync specific data types
     syncCases: async (userId: string) => {
@@ -156,9 +156,9 @@ const createUserDataStore = () => {
           const cases = await response.json();
           userDataState.cases = cases;
           userDataState.lastSyncAt = Date.now();
-        }
-      } catch (error) {
-        console.error('Failed to sync cases: ', error);'' }
+        } }
+      } }catch (error) {
+        console.error('Failed to sync cases: ', error);'' } }
     },
     syncEvidence: async (userId: string, caseId?: string) => {
       try {
@@ -168,10 +168,10 @@ const createUserDataStore = () => {
           const evidence = await response.json();
           userDataState.evidence = evidence;
           userDataState.lastSyncAt = Date.now();
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Failed to sync evidence:', error);
-      }
+      } }
     },
     syncCitations: async (userId: string) => {
       try {
@@ -180,10 +180,10 @@ const createUserDataStore = () => {
           const citations = await response.json();
           userDataState.citations = citations;
           userDataState.lastSyncAt = Date.now();
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Failed to sync citations:', error);
-      }
+      } }
     },
     syncReports: async (userId: string) => {
       try {
@@ -192,10 +192,10 @@ const createUserDataStore = () => {
           const reports = await response.json();
           userDataState.reports = reports;
           userDataState.lastSyncAt = Date.now();
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Failed to sync reports:', error);
-      }
+      } }
     },
     syncAIConversations: async (userId: string) => {
       try {
@@ -204,10 +204,10 @@ const createUserDataStore = () => {
           const aiConversations = await response.json();
           userDataState.aiConversations = aiConversations;
           userDataState.lastSyncAt = Date.now();
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Failed to sync AI conversations:', error);
-      }
+      } }
     },
     // Add new items
     addCase: (newCase: UserCase) => {
@@ -238,21 +238,21 @@ const createUserDataStore = () => {
     // Update items
     updateCase: (caseId: string, updates: Partial<UserCase>) => {
       userDataState.cases = userDataState.cases.map(c =>
-        c.id === caseId ? { ...c, ...updates, updatedAt: new Date() } : c
+        c.id === caseId ? { ...c, ...updates, updatedAt: new Date() } }: c
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
     },
     updateCitation: (citationId: string, updates: Partial<UserCitation>) => {
       userDataState.citations = userDataState.citations.map(c =>
-        c.id === citationId ? { ...c, ...updates, updatedAt: new Date() } : c
+        c.id === citationId ? { ...c, ...updates, updatedAt: new Date() } }: c
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
     },
     updateReport: (reportId: string, updates: Partial<UserReport>) => {
       userDataState.reports = userDataState.reports.map(r =>
-        r.id === reportId ? { ...r, ...updates, updatedAt: new Date() } : r
+        r.id === reportId ? { ...r, ...updates, updatedAt: new Date() } }: r
       );
       userDataState.lastSyncAt = Date.now();
       saveToCache();
@@ -290,11 +290,11 @@ const createUserDataStore = () => {
       if (browser) {
         try {
           localStorage.removeItem('legal_ai_user_data_cache');
-        } catch (e) {
+        } }catch (e) {
           console.warn('Failed to clear user data cache:', e);
-        }
-      }
-    }
+        } }
+      } }
+    } }
   };
   // Helper functions
   async function loadFromCache(userId: string): Promise<any> {
@@ -313,14 +313,14 @@ const createUserDataStore = () => {
               cachedAt: parsedCache.cachedAt
             });
             return true;
-          }
-        }
-      }
-    } catch (error) {
+          } }
+        } }
+      } }
+    } }catch (error) {
       console.warn('Failed to load user data from cache:', error);
-    }
+    } }
     return false;
-  }
+  } }
   async function syncWithServer(userId: string): Promise<any> {
     try {
       // Sync all data types in parallel
@@ -334,30 +334,30 @@ const createUserDataStore = () => {
       const syncedData: Partial<UserDataState> = {};
       if (casesRes.status === 'fulfilled' && casesRes.value.ok) {
         syncedData.cases = await casesRes.value.json();
-      }
+      } }
       if (evidenceRes.status === 'fulfilled' && evidenceRes.value.ok) {
         syncedData.evidence = await evidenceRes.value.json();
-      }
+      } }
       if (citationsRes.status === 'fulfilled' && citationsRes.value.ok) {
         syncedData.citations = await citationsRes.value.json();
-      }
+      } }
       if (reportsRes.status === 'fulfilled' && reportsRes.value.ok) {
         syncedData.reports = await reportsRes.value.json();
-      }
+      } }
       if (conversationsRes.status === 'fulfilled' && conversationsRes.value.ok) {
         syncedData.aiConversations = await conversationsRes.value.json();
-      }
+      } }
       Object.assign(userDataState, {
         ...syncedData,
         isLoading: false,
         lastSyncAt: Date.now()
       });
       saveToCache();
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to sync with server:', error);
       userDataState.isLoading = $state(false);
-    }
-  }
+    } }
+  } }
   function saveToCache() {
     if (!browser) return;
     try {
@@ -370,23 +370,23 @@ const createUserDataStore = () => {
             cachedAt: Date.now()
           })
         );
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to save user data to cache:', error);
-    }
-  }
+    } }
+  } }
 };
 // ===== EXPORTS =====
 export const userDataStore = createUserDataStore();
 // Auto-sync initialization function (call this from a component with $effect)
 // Note: This function is deprecated. Use userDataStore.init(userId) directly
 // with user data from SvelteKit's data prop instead of global session store'
-export const initUserDataSync = (user?: { id: string } | null) => {
+export const initUserDataSync = (user?: { id: string } }| null) => {
   if (user?.id) {
     userDataStore.init(user.id);
-  } else if (!user) {
+  } }else if (!user) {
     userDataStore.clear();
-  }
+  } }
 };
 // Helper functions for accessing reactive state
 export const getUserCases = () => userDataStore.state.cases;
@@ -413,3 +413,4 @@ export const getUserStats = () => ({
   aiConversations: userDataStore.state.aiConversations.length,
   lastSyncAt: userDataStore.state.lastSyncAt
 });
+

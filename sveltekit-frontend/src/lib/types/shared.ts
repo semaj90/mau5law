@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /** Shared, portable types used by client and server */
 
 /** High-level data categories cached and synced across layers */
@@ -15,15 +15,15 @@ export interface BaseMetadata {
   lastUpdated?: number;
   // Changed: replace `any` with `unknown` to avoid unexpected-any lint/TS error
   [key: string]: any;
-}
+} }
 
 /** Generic stored: object format used by RAG pipelines */
-export interface RAGObject {, id: string;, type: DataType;
+export interface RAGObject { id: string;, type: DataType;
   title: string;
   content: string;
   embedding?: EmbeddingVector;
   metadata?: BaseMetadata;
-}
+} }
 
 // ------------------ Added types to fix cross-file references ------------------
 
@@ -40,7 +40,7 @@ export interface LegalDocument {
   content?: string;
   metadata?: BaseMetadata;
   embedding?: EmbeddingVector;
-}
+} }
 
 /**
  * CUDA memory region abstraction used by GPU/CUDA bridge code.
@@ -57,18 +57,18 @@ export interface CUDAMemoryRegion {
   data?: ArrayBuffer | Uint8Array | Float32Array;
   // Added: optional start address used by GPU pattern generation logic
   startAddr?: number;
-}
+} }
 
 /**
  * Minimal NES memory stats shape referenced by GPU sync logic.
  * Updated to include totalRAM/totalCHR since synchronization code uses both used/total values.
  */
-export interface NESMemoryStats {, usedPRG: number;, totalPRG: number;
+export interface NESMemoryStats { usedPRG: number;, totalPRG: number;
   usedRAM: number;
   totalRAM: number;
   usedCHR: number;
  , totalCHR: number;
-}
+} }
 
 /**
  * Lightweight GPU texture / buffer stub used by texture cache helpers.
@@ -78,7 +78,7 @@ export interface GPUResourceStub {
   destroy?: () => void;
   // Changed: avoid `any` for runtime-specific fields; use `unknown` to force callers to narrow
   [key: string]: any;
-}
+} }
 
 export interface TextureCacheEntry {
   textureId: string;
@@ -87,7 +87,7 @@ export interface TextureCacheEntry {
   width?: number;
   height?: number;
   createdAt?: number;
-}
+} }
 
 /**
  * Search result / response types used by NATS QUIC search service and front-end.
@@ -98,11 +98,12 @@ export interface SearchResult {
   snippet?: string;
   score?: number;
   metadata?: BaseMetadata;
-}
+} }
 
 export interface SearchResponse {
   searchId?: string;
  , results: SearchResult[];
   total?: number;
   tookMs?: number;
-}
+} }
+

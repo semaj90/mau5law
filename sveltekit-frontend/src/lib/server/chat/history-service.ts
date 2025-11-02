@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db/client';
-import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
-import { desc, eq, sql } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { db } }from '$lib/server/db/client';
+import { chatSessions, chatMessages } }from '$lib/server/db/schema-unified';
+import { desc, eq, sql } }from 'drizzle-orm';
+import { randomUUID } }from 'crypto';
 // Use InferModel or define types directly for better compatibility
 type NewChatSession = typeof chatSessions.$inferInsert;
 type NewChatMessage = typeof chatMessages.$inferInsert;
@@ -11,33 +11,33 @@ export class ChatHistoryService {
     return (db as: any)
       .select()
       .from(chatSessions)
-      .where(sql`${(chatSessions as: any).metadata} ->> 'userId' = ${userId}`)
+      .where(sql`${(chatSessions as: any).metadata} }->> 'userId' = ${userId}`)
       .orderBy(desc(chatSessions.updatedAt))
       .limit(limit);
-  }
+  } }
   static async getMessages(sessionId: string) {
     return db
       .select()
       .from(chatMessages)
       .where(eq(chatMessages.sessionId, sessionId))
       .orderBy(desc(chatMessages.createdAt));
-  }
+  } }
   static async createSession(userId: string, model = 'gemma3-legal') {
     const id = randomUUID();
     const session: NewChatSession = {
       id,
       userId,
       title: 'Chat Session',
-      context: {} as { [key: string]: any },
+      context: {} }as { [key: string]: any },
       metadata: {
         model,
         messageCount: 0
-      }
+      } }
     };
     await db.insert(chatSessions).values(session);
     return id;
-  }
-  static async addMessage(params: {, sessionId: string;, role: 'user' | 'assistant' | 'system';
+  } }
+  static async addMessage(params: { sessionId: string;, role: 'user' | 'assistant' | 'system';
    , content: string;
     model?: string;
     metadata?: any;
@@ -49,10 +49,9 @@ export class ChatHistoryService {
       role: params.role,
       content: params.content,
       embedding: null,
-      metadata: {
-       , model: params?.model || 'unknown',
+      metadata: { model: params?.model || 'unknown',
         ...(params.metadata || {})
-      }
+      } }
     };
     await db.insert(chatMessages).values(msg);
     // Update session metadata with incremented message count
@@ -69,7 +68,8 @@ export class ChatHistoryService {
           updatedAt: new Date()
         })
         .where(eq(chatSessions.id, params.sessionId));
-    }
+    } }
     return id;
-  }
-}
+  } }
+} }
+

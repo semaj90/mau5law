@@ -2,29 +2,28 @@
  * RAG State Machine - XState Implementation
  * Manages complex RAG system states and transitions
  */
-import { createMachine, assign } from 'xstate';
+import { createMachine, assign } }from 'xstate';
 export interface RAGResult { id: string;, score: number;
   source: string;
  , content: string;
   metadata?: Record<string, any>;
-}
+} }
 export interface RAGContext { query: string;, results: RAGResult[];
   error: string | null;
   retryCount: number;
   searchStartTime: number;
   cacheStatus: 'miss' | 'hit' | 'partial';
   optimizationLevel: 'basic' | 'enhanced' | 'neural';
-}
+} }
 export type RAGEvent =
-  | { type: 'SEARCH_START'; query: string }
-  | { type: 'SEARCH_SUCCESS'; results: RAGResult[]; cacheStatus?: 'miss' | 'hit' | 'partial' } // Added cacheStatus to event
-  | { type: 'SEARCH_ERROR'; error: string }
-  | { type: 'RETRY' }
-  | { type: 'OPTIMIZE' }
-  | { type: 'CACHE_HIT'; results: RAGResult[] }
+  | { type: 'SEARCH_START'; query: string } }
+  | { type: 'SEARCH_SUCCESS'; results: RAGResult[]; cacheStatus?: 'miss' | 'hit' | 'partial' } }// Added cacheStatus to event
+  | { type: 'SEARCH_ERROR'; error: string } }
+  | { type: 'RETRY' } }
+  | { type: 'OPTIMIZE' } }
+  | { type: 'CACHE_HIT'; results: RAGResult[] } }
   | { type: 'RESET' };
-const initialRAGContext: RAGContext = {
- , query: '',
+const initialRAGContext: RAGContext = { query: '',
   results: [],
   error: null,
   retryCount: 0,
@@ -40,107 +39,90 @@ function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAG
     case, 'enhanced':
       return, 'neural';
     default: return, 'neural';
-  }
-}
+  } }
+} }
 export const ragStateMachine = createMachine({
   id: 'ragSystem',
-  types: {} as {, context: RAGContext;, events: RAGEvent;
+  types: {} }as { context: RAGContext;, events: RAGEvent;
   },
   initial: 'idle',
   context: initialRAGContext,
-  states: { // Correctly define the: 'states' object;, idle: {, on: {, SEARCH_START: {
-         , target: 'searching',
-          actions: assign({
-           , query: ({ event }) => event.query,
+  states: { // Correctly define the: 'states' object; idle: { on: { SEARCH_START: { target: 'searching',
+          actions: assign({ query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
           })
-        }
-      }
+        } }
+      } }
     },
-    searching: {, on: {, SEARCH_SUCCESS: {
-         , target: 'success',
-          actions: assign({
-           , results: ({ event }) => event.results,
+    searching: { on: { SEARCH_SUCCESS: { target: 'success',
+          actions: assign({ results: ({ event }) => event.results,
             cacheStatus: ({ event }) => event.cacheStatus ?? 'miss', // Default to: 'miss' if not provided
           })
         },
-        SEARCH_ERROR: {
-         , target: 'error',
-          actions: assign({
-           , error: ({ event }) => event.error
+        SEARCH_ERROR: { target: 'error',
+          actions: assign({ error: ({ event }) => event.error
           })
         },
-        CACHE_HIT: {
-         , target: 'success',
-          actions: assign({
-           , results: ({ event }) => event.results,
+        CACHE_HIT: { target: 'success',
+          actions: assign({ results: ({ event }) => event.results,
             cacheStatus: 'hit'
           })
-        }
-      }
+        } }
+      } }
     },
-    success: {, on: {, SEARCH_START: {
-         , target: 'searching',
-          actions: assign({
-           , query: ({ event }) => event.query,
+    success: { on: { SEARCH_START: { target: 'searching',
+          actions: assign({ query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
           })
         },
-        OPTIMIZE: {
-         , target: 'optimizing'
+        OPTIMIZE: { target: 'optimizing'
         },
-        RESET: {
-         , target: 'idle',
+        RESET: { target: 'idle',
           actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
-        }
-      }
+        } }
+      } }
     },
-    error: {, on: {, RESET: {
-         , target: 'idle',
+    error: { on: { RESET: { target: 'idle',
           actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
         },
-        RETRY: {
-         , target: 'searching',
+        RETRY: { target: 'searching',
           cond: ({ context }) => context.retryCount < 3, // Correct context access, for, guard
-          actions: assign({
-           , retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
+          actions: assign({ retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
             error: null
           })
         },
         SEARCH_START: { // Allow starting a new search from error state
          , target: 'searching',
-          actions: assign({
-           , query: ({ event }) => event.query,
+          actions: assign({ query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
           })
-        }
-      }
+        } }
+      } }
     },
     optimizing: {
       after: {
-        2000: {
-         , target: 'success',
+        2000: { target: 'success',
           actions: assign({
-            // Upgrade optimization level: basic -> enhanced -> neural;, optimizationLevel: ({ context }) => getNextOptimizationLevel(context.optimizationLevel)
+            // Upgrade optimization level: basic -> enhanced -> neural; optimizationLevel: ({ context }) => getNextOptimizationLevel(context.optimizationLevel)
           })
-        }
+        } }
       },
-      on: {, SEARCH_START: {, target: 'searching',
-          actions: assign({
-           , query: ({ event }) => event.query,
+      on: { SEARCH_START: { target: 'searching',
+          actions: assign({ query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
           })
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 });
 });
+

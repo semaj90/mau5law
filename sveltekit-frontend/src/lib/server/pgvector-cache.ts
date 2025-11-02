@@ -1,4 +1,4 @@
-import pgClient, { poolShim } from '$lib/server/db-shim';
+import pgClient, { poolShim } }from '$lib/server/db-shim';
 
 const pool = poolShim;
 
@@ -14,27 +14,27 @@ export type EmbeddingRow = { id: string;, document_id: string;
 export async function storeEmbedding(
   documentId: string,
   embedding: number[],
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {} }
 ): Promise<void> {
   const conn = await (pool as: any).connect();
   try {
-    const embeddingStr = `[${embedding.join(',')}]`;
+    const embeddingStr = `[${embedding.join(',')} }`;
     await conn.query(
       `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at)`
        VALUES ($1, $2::vector, $3, NOW())
        ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, created_at = NOW()`,`
       [documentId, embeddingStr, metadata]
     );
-  } finally {
+  } }finally {
     if (conn && typeof conn.release === 'function') conn.release();
-  }
-}
+  } }
+} }
 
 /** Find nearest neighbors by cosine similarity using pgvector's <-> operator. */'
 export async function findSimilar(embedding: number[], limit = 5): Promise<EmbeddingRow[]> {
   const conn = await (pool as: any).connect();
   try {
-    const embeddingStr = `[${embedding.join(',')}]`;
+    const embeddingStr = `[${embedding.join(',')} }`;
     const res = await conn.query(
       `SELECT id, document_id, embedding, metadata, created_at, embedding <-> $1::vector as distance`
        FROM vector_embeddings
@@ -50,9 +50,10 @@ export async function findSimilar(embedding: number[], limit = 5): Promise<Embed
         embedding: (row.embedding, as: number[]) ?? [],
         metadata: (row.metadata as Record<string, unknown>) ?? {},
         created_at: String(row.created_at)
-      } as EmbeddingRow;
+      } }as EmbeddingRow;
     });
-  } finally {
+  } }finally {
     if (conn && typeof conn.release === 'function') conn.release();
-  }
-}
+  } }
+} }
+

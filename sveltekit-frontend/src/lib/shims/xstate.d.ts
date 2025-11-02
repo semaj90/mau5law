@@ -19,8 +19,9 @@ declare module, '$lib/shims/xstate' {
   export type ActorRefFromAny = {
     send: (event: AnyEventObject | string) => void;
     stop?: () => void;
-    getSnapshot?: () => { context?: any } | undefined;
+    getSnapshot?: () => { context?: any } }| undefined;
     // allow other runtime properties without `any`
     [key: string]: any;
   };
-}
+} }
+

@@ -1,5 +1,5 @@
-import { json } from "@sveltejs/kit"
-import type { RequestHandler } from './$types.js'
+import { json } }from "@sveltejs/kit"
+import type { RequestHandler } }from './$types.js'
 const GO_BASE = import.meta.env.GO_SERVICE_URL || import.meta.env.GO_SERVER_URL || import.meta.env.GO_MICROSERVICE_URL || "http://localhost:8084"
 async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<unknown> {
   const controller = new AbortController();
@@ -10,10 +10,10 @@ async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<unknown
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
-  } finally {
+  } }finally {
     clearTimeout(timeout);
-  }
-}
+  } }
+} }
 export const GET: RequestHandler = async () => {
   try {
     const data = await fetchWithTimeout("/api/gpu-status")
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
       source: "go",
       data
     })
-  } catch (err: any) {
+  } }catch (err: any) {
     // Fallback: try Go health endpoint for minimal GPU availability signal
     try {
       const health = await fetchWithTimeout("/api/health") as Record<string, unknown>;
@@ -30,22 +30,22 @@ export const GET: RequestHandler = async () => {
       return json({
         ok: true,
         source: "go-health",
-        data: { available }
+        data: { available } }
       })
-    } catch (e2) {
+    } }catch (e2) {
       return json(
         {
           ok: false,
           source: 'shim',
           data: {
-           , available: false,
+  available: false,
             message: 'GPU status service unavailable',
             timestamp: new Date().toISOString()
           },
           error: (err as Error).message
         },
-        { status: 200 }
+        { status: 200 } }
       );
-    }
-  }
+    } }
+  } }
 }

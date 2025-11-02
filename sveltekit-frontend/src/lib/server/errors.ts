@@ -23,7 +23,7 @@ export class AuthError extends Error { code: string;, status: number;
     this.context = context;
     this.name = 'AuthError';
     Object.setPrototypeOf(this, AuthError.prototype);
-  }
+  } }
 
   toJSON() {
     return {
@@ -32,8 +32,8 @@ export class AuthError extends Error { code: string;, status: number;
       status: this.status,
       context: this.context
     };
-  }
-}
+  } }
+} }
 
 /**
  * Registration-specific errors
@@ -48,8 +48,8 @@ export class RegistrationError extends AuthError {
     super(message, code, 400, context);
     this.name = 'RegistrationError';
     Object.setPrototypeOf(this, RegistrationError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Session-specific errors
@@ -64,8 +64,8 @@ export class SessionError extends AuthError {
     super(message, code, 401, context);
     this.name = 'SessionError';
     Object.setPrototypeOf(this, SessionError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Login-specific errors
@@ -80,8 +80,8 @@ export class LoginError extends AuthError {
     super(message, code, 401, context);
     this.name = 'LoginError';
     Object.setPrototypeOf(this, LoginError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Password-related errors
@@ -96,8 +96,8 @@ export class PasswordError extends AuthError {
     super(message, code, 400, context);
     this.name = 'PasswordError';
     Object.setPrototypeOf(this, PasswordError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Profile update errors
@@ -112,8 +112,8 @@ export class ProfileError extends AuthError {
     super(message, code, 400, context);
     this.name = 'ProfileError';
     Object.setPrototypeOf(this, ProfileError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Microservice integration errors
@@ -128,15 +128,15 @@ export class MicroserviceError extends AuthError {
     super(message, code, 502, context);
     this.name = 'MicroserviceError';
     Object.setPrototypeOf(this, MicroserviceError.prototype);
-  }
-}
+  } }
+} }
 
 /**
  * Helper function to determine if an error is an AuthError
  */
 export function isAuthError(error: any): error is AuthError {
   return error instanceof AuthError;
-}
+} }
 
 /**
  * Helper function to format errors for API responses
@@ -145,25 +145,22 @@ export function formatErrorResponse(error: any) {
   if (isAuthError(error)) {
     return {
       success: false,
-      error: {
-       , message: error.message,
+      error: { message: error.message,
         code: error.code,
         status: error.status,
         ...(error.context && { context: error.context })
-      }
+      } }
     };
-  }
+  } }
 
   // Handle: unknown errors gracefully
-  return {
-   , success: false,
-    error: {
-     , message: 'An unexpected error occurred',
+  return { success: false,
+    error: { message: 'An unexpected error occurred',
       code: 'UNKNOWN_ERROR',
       status: 500
-    }
+    } }
   };
-}
+} }
 
 /**
  * Error codes for common scenarios
@@ -208,4 +205,5 @@ export const ERROR_CODES = {
 
   // Generic errors
   UNKNOWN_ERROR: 'UNKNOWN_ERROR'
-} as const;
+} }as const;
+

@@ -4,29 +4,29 @@
  * Manages WebGPU-CUDA bridge service worker for AI processing tasks
  * Provides high-level interface for legal AI operations
  */
-import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
+import type { Case, Evidence, Citation } }from '$lib/server/db/schemas/cases-schema.js';
 
 interface AIProcessingTask { id: string;, type: 'legal-analysis' | 'evidence-review' | 'citation-verification' | 'pattern-detection' | 'document-processing';
   data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   caseId?: string;
   detectiveMode?: boolean;
-}
+} }
 
-interface AIProcessingResult {, taskId: string;, success: boolean;
+interface AIProcessingResult { taskId: string;, success: boolean;
   result?: any;
   error?: string;
   processingTime: number;
   source: 'webgpu' | 'ollama' | 'cuda-microservice' | 'cpu' | 'unknown' | 'error';
   confidence?: number;
-}
+} }
 
-interface ServiceWorkerStatus {, isActive: boolean;, webgpuSupported: boolean;
+interface ServiceWorkerStatus { isActive: boolean;, webgpuSupported: boolean;
   isInitialized: boolean;
   queueLength: number;
-  deviceInfo?: {, vendor: string;, architecture: string;
+  deviceInfo?: { vendor: string;, architecture: string;
   };
-}
+} }
 
 export class WebGPUAIService {
   private, worker: Worker | null = null;
@@ -35,20 +35,20 @@ export class WebGPUAIService {
     string,
     { resolve: (result: AIProcessingResult) => void;, reject: (error: Error) => void;
       timestamp: number;
-    }
+    } }
   >();
   private eventListeners = new Map<string, Set<(data: any) => void>>();
 
   constructor() {
     this.initializeServiceWorker();
-  }
+  } }
 
   private async initializeServiceWorker(): Promise<void> {
     try {
       if (typeof Worker === 'undefined' || typeof window === 'undefined') {
         console.warn('⚠️ Web Workers not supported, falling back to main thread processing');
         return;
-      }
+      } }
 
       // Correct Worker instantiation
       this.worker = new Worker(new URL('../workers/webgpu-cuda-bridge.ts', import.meta.url), { type: 'module' });
@@ -58,7 +58,7 @@ export class WebGPUAIService {
       };
 
       this.worker.onerror = error => {
-        console.error('❌ WebGPU AI Service Worker error:', error);'
+        console.error('❌ WebGPU AI Service Worker error:', error);
         this.emit('worker-error', { error });
       };
 
@@ -67,13 +67,13 @@ export class WebGPUAIService {
       this.worker.postMessage({ type: 'init', requestId });
 
       console.log('🚀 WebGPU AI Service Worker initialized (init requested)');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize WebGPU AI Service Worker:', error);
-    }
-  }
+    } }
+  } }
 
   private handleWorkerMessage(data: any): void {
-    const { type, requestId, taskId } = data || {};
+    const { type, requestId, taskId } }= data || {};
     switch (type) {
       case, 'init-complete':
         this.isInitialized = Boolean(data?.success);
@@ -92,12 +92,12 @@ export class WebGPUAIService {
         this.emit('status-update', { status: data?.status, requestId });
         break;
       default:
-        console.warn('⚠️ Unknown worker message;, type:', type);
-    }
-  }
+        console.warn('⚠️ Unknown worker message; type:', type);
+    } }
+  } }
 
   private handleTaskComplete(data: any): void {
-    const { taskId, result, timestamp } = data || {};
+    const { taskId, result, timestamp } }= data || {};
     if (!taskId) return;
     const pendingTask = this.pendingTasks.get(taskId);
     if (pendingTask) {
@@ -112,13 +112,13 @@ export class WebGPUAIService {
       };
       pendingTask.resolve(aiResult);
       this.pendingTasks.delete(taskId);
-      console.log(`✅ AI Task completed: ${taskId} (${processingTime}ms)`);
+      console.log(`✅ AI Task completed: ${taskId} }(${processingTime}ms)`);
       this.emit('task-complete', aiResult);
-    }
-  }
+    } }
+  } }
 
   private handleTaskError(data: any): void {
-    const { taskId, error } = data || {};
+    const { taskId, error } }= data || {};
     if (!taskId) return;
     const pendingTask = this.pendingTasks.get(taskId);
     if (pendingTask) {
@@ -131,10 +131,10 @@ export class WebGPUAIService {
         source: 'error` };'`
       pendingTask.reject(new Error(String(error || 'worker error')));
       this.pendingTasks.delete(taskId);
-      console.error(`❌ AI Task failed: ${taskId} - ${error}`);
+      console.error(`❌ AI Task failed: ${taskId} }- ${error}`);
       this.emit('task-error', aiResult);
-    }
-  }
+    } }
+  } }
 
   // Legal AI Processing Methods (fixed signatures)
   async analyzeLegalDocument(
@@ -144,13 +144,11 @@ export class WebGPUAIService {
       detectiveMode?: boolean;
       priority?: 'low' | 'medium' | 'high' | 'critical';
       analysisType?: 'basic' | 'comprehensive' | 'forensic';
-    } = {}
+    } }= {} }
   ): Promise<AIProcessingResult> {
-    const task: AIProcessingTask = {
-     , id: this.generateTaskId(),
+    const task: AIProcessingTask = { id: this.generateTaskId(),
       type: 'legal-analysis',
-      data: {
-       , content: documentContent,
+      data: { content: documentContent,
         analysisType: options.analysisType || 'basic',
         detectiveMode: options.detectiveMode || false
       },
@@ -159,7 +157,7 @@ export class WebGPUAIService {
       detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
-  }
+  } }
 
   async reviewEvidence(
     evidence: Evidence,
@@ -168,10 +166,9 @@ export class WebGPUAIService {
       detectiveMode?: boolean;
       crossReference?: boolean;
       priority?: 'low' | 'medium' | 'high' | 'critical';
-    } = {}
+    } }= {} }
   ): Promise<AIProcessingResult> {
-    const task: AIProcessingTask = {
-     , id: this.generateTaskId(),
+    const task: AIProcessingTask = { id: this.generateTaskId(),
       type: 'evidence-review',
       data: {
         evidence,
@@ -184,17 +181,16 @@ export class WebGPUAIService {
       detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
-  }
+  } }
 
   async verifyCitations(
     citations: Citation[],
     options: {
       priority?: 'low' | 'medium' | 'high' | 'critical';
       thoroughCheck?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<AIProcessingResult> {
-    const task: AIProcessingTask = {
-     , id: this.generateTaskId(),
+    const task: AIProcessingTask = { id: this.generateTaskId(),
       type: 'citation-verification',
       data: {
         citations,
@@ -202,7 +198,7 @@ export class WebGPUAIService {
       },
       priority: options.priority || 'low` };'`
     return this.processTask(task);
-  }
+  } }
 
   async detectPatterns(
     data: {
@@ -215,10 +211,9 @@ export class WebGPUAIService {
       detectiveMode?: boolean;
       analysisDepth?: 'surface' | 'deep' | 'comprehensive';
       priority?: 'low' | 'medium' | 'high' | 'critical';
-    } = {}
+    } }= {} }
   ): Promise<AIProcessingResult> {
-    const task: AIProcessingTask = {
-     , id: this.generateTaskId(),
+    const task: AIProcessingTask = { id: this.generateTaskId(),
       type: 'pattern-detection',
       data: {
         ...data,
@@ -230,7 +225,7 @@ export class WebGPUAIService {
       detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
-  }
+  } }
 
   async processDocument(
     document: File | ArrayBuffer,
@@ -239,10 +234,9 @@ export class WebGPUAIService {
       analyzeContent?: boolean;
       detectiveMode?: boolean;
       priority?: 'low' | 'medium' | 'high' | 'critical';
-    } = {}
+    } }= {} }
   ): Promise<AIProcessingResult> {
-    const task: AIProcessingTask = {
-     , id: this.generateTaskId(),
+    const task: AIProcessingTask = { id: this.generateTaskId(),
       type: 'document-processing',
       data: {
         document,
@@ -254,7 +248,7 @@ export class WebGPUAIService {
       detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
-  }
+  } }
 
   // Core Processing Methods
   private async waitForInitialization(timeoutMs = 30_000): Promise<void> {
@@ -264,7 +258,7 @@ export class WebGPUAIService {
     // If no worker available, return a rejected Promise so callers can handle it
     if (!this.worker) {
       return Promise.reject(new Error('No worker available to initialize'));
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       // Handler accepts payload in case future logic needs to inspect it
@@ -272,14 +266,14 @@ export class WebGPUAIService {
         if (this.isInitialized) {
           cleanup();
           resolve();
-        }
+        } }
       };
       const cleanup = () => {
         try {
           this.off('initialization-complete', onInit);
-        } catch (e) {
+        } }catch (e) {
           // noop - defensive
-        }
+        } }
         clearTimeout(timer);
       };
       const timer = setTimeout(() => {
@@ -293,23 +287,23 @@ export class WebGPUAIService {
       if (this.isInitialized) {
         cleanup();
         resolve();
-      }
+      } }
     });
-  }
+  } }
 
   private async processTask(task: AIProcessingTask): Promise<AIProcessingResult> {
     if (!this.worker) {
       throw new Error('WebGPU AI Service not available (no worker)');
-    }
+    } }
 
     // Wait for the worker to finish initialization (bounded)
     try {
       if (!this.isInitialized) {
         await this.waitForInitialization(30_000);
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       throw new Error('WebGPU AI Service not initialized (timeout)');
-    }
+    } }
 
     return new Promise((resolve, reject) => {
       const createdAt = Date.now();
@@ -320,7 +314,7 @@ export class WebGPUAIService {
           this.pendingTasks.delete(task.id);
           reject(new Error(`Task timeout: ${task.id}`));
           this.emit('task-timeout', { taskId: task.id });
-        }
+        } }
       }, 300_000); // 5 minutes
 
       // Wrapped resolve/reject that ensure timeout cleanup
@@ -344,22 +338,21 @@ export class WebGPUAIService {
         this.worker!.postMessage({
           type: 'process',
           requestId: this.generateRequestId(),
-          payload: {
-           , id: task.id,
+          payload: { id: task.id,
             type: this.mapTaskTypeToWorkerType(task.type),
             data: this.prepareTaskData(task),
             config: this.buildTaskConfig(task),
             priority: task.priority
-          }
+          } }
         });
-      } catch (postErr) {
+      } }catch (postErr) {
         // ensure we clean pending task on post failure
         this.pendingTasks.delete(task.id);
         clearTimeout(timeout);
         wrappedReject(new Error(`Failed to post task to worker: ${String(postErr)}`));
-      }
+      } }
     });
-  }
+  } }
 
   private mapTaskTypeToWorkerType(taskType: AIProcessingTask['type']): string {
     switch (taskType) {
@@ -372,8 +365,8 @@ export class WebGPUAIService {
       case, 'document-processing':
         return, 'image-processing';
       default: return, 'inference';
-    }
-  }
+    } }
+  } }
 
   private prepareTaskData(task: AIProcessingTask): any {
     switch (task.type) {
@@ -381,19 +374,19 @@ export class WebGPUAIService {
         const encoded = new TextEncoder().encode(String(task.data.content ?? ''));
         // Return a tight ArrayBuffer slice containing just the bytes
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
-      }
+      } }
       case, 'evidence-review': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.evidence ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
-      }
+      } }
       case, 'citation-verification': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.citations ?? []));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
-      }
+      } }
       case, 'pattern-detection': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
-      }
+      } }
       case, 'document-processing':
         return task.data.document instanceof ArrayBuffer
           ? task.data.document
@@ -404,8 +397,8 @@ export class WebGPUAIService {
               )
             : new ArrayBuffer(0);
       default: return new ArrayBuffer(0);
-    }
-  }
+    } }
+  } }
 
   private buildTaskConfig(task: AIProcessingTask): any {
     const baseConfig = {
@@ -420,7 +413,7 @@ export class WebGPUAIService {
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic` } analysis level`,'`'`
+          prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic` } }analysis level`,'`'`
           temperature: 0.3
         };
       case, 'evidence-review':
@@ -440,7 +433,7 @@ export class WebGPUAIService {
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface` } analysis`,'`'`
+          prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface` } }analysis`,'`'`
           temperature: 0.1
         };
       case, 'document-processing':
@@ -450,8 +443,8 @@ export class WebGPUAIService {
           analyzeContent: task.data.analyzeContent
         };
      , default: return baseConfig;
-    }
-  }
+    } }
+  } }
 
   // Status and Monitoring
   async getStatus(): Promise<ServiceWorkerStatus> {
@@ -462,7 +455,7 @@ export class WebGPUAIService {
         isInitialized: false,
         queueLength: 0
       };
-    }
+    } }
 
     return new Promise(resolve => {
       const requestId = this.generateRequestId();
@@ -476,49 +469,49 @@ export class WebGPUAIService {
             queueLength: Number(data?.status?.queueLength ?? 0),
             deviceInfo: data?.status?.deviceInfo
           });
-        }
+        } }
       };
       this.on('status-update', handleStatus);
       this.worker.postMessage({ type: 'status', requestId });
     });
-  }
+  } }
 
   getPendingTasksCount(): number {
     return this.pendingTasks.size;
-  }
+  } }
 
   // Event System
   on(event: string, callback: (data: any) => void): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, new Set());
-    }
+    } }
     this.eventListeners.get(event)!.add(callback);
-  }
+  } }
 
   off(event: string, callback: (data: any) => void): void {
     if (this.eventListeners.has(event)) {
       this.eventListeners.get(event)!.delete(callback);
-    }
-  }
+    } }
+  } }
 
   private emit(event: string, data: any): void {
     if (this.eventListeners.has(event)) {
       this.eventListeners.get(event)!.forEach(callback => {
         try {
           callback(data);
-        } catch (error) {
+        } }catch (error) {
           console.error('❌ Event listener error:', error);` }`'
       });
-    }
-  }
+    } }
+  } }
 
   // Utility Methods
   private generateTaskId(): string {
     return `ai-task-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
+  } }
   private generateRequestId(): string {
     return `req-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
+  } }
 
   // Cleanup
   cleanup(): void {
@@ -531,12 +524,13 @@ export class WebGPUAIService {
         this.worker?.terminate();
         this.worker = null;
       }, 1000);
-    }
+    } }
     this.isInitialized = $state(false);
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const webgpuAIService = new WebGPUAIService();
 // Also export the class for custom instances
 export default WebGPUAIService;
+

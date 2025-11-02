@@ -7,15 +7,15 @@
  * - Redis for state persistence and caching
  * - Gemma3 LLM for agentic reasoning
  */
-import { hmmStateMachine } from './hmm-state-machine';
-import { getRedisClient, cognitiveCache } from '$lib/server/cache';
+import { hmmStateMachine } }from './hmm-state-machine';
+import { getRedisClient, cognitiveCache } }from '$lib/server/cache';
 import type {
   ContextualState,
   ConversationTurn,
   NextStepPrediction,
   LegalEntity,
   HMMState
-} from '$lib/types/sharedTypes';
+} }from '$lib/types/sharedTypes';
 const CONTEXT_TTL_SECONDS = 3600; // 1 hour
 const MAX_HISTORY_LENGTH = 50; // Keep last, 50 conversation turns
 /**
@@ -36,7 +36,7 @@ export class ContextualUnderstandingService {
     if (cached) {
       console.log('✅ Contextual state cache HIT');
       return cached;
-    }
+    } }
     console.log('⚠️ Contextual state cache MISS - creating new state');
     // Create new contextual state
     const newState: ContextualState = {
@@ -45,8 +45,7 @@ export class ContextualUnderstandingService {
       conversationHistory: [],
       currentIntent: 'greeting',
       extractedEntities: [],
-      hmmState: {
-       , currentState: 0, // GREETING
+      hmmState: { currentState: 0, // GREETING
         transitionProb: 1.0,
         emissionProb: 0,
         pattern: [],
@@ -59,7 +58,7 @@ export class ContextualUnderstandingService {
     // Store in Redis
     await cognitiveCache.storeJsonbDocument(cacheKey, newState, CONTEXT_TTL_SECONDS);
     return newState;
-  }
+  } }
   /**
    * Update contextual state with new conversation turn
    */
@@ -75,13 +74,12 @@ export class ContextualUnderstandingService {
     // Get current state
     const currentState = await this.getContextualState(sessionId, userId);
     // Create new conversation turn
-    const newTurn: ConversationTurn = {
-     , timestamp: Date.now(),
+    const newTurn: ConversationTurn = { timestamp: Date.now(),
       userMessage,
       agentResponse,
       intent,
       entities,
-      ...(embedding !== undefined ? { embedding } : {})
+      ...(embedding !== undefined ? { embedding } }: {})
     };
     // Update conversation history (keep last N turns)
     const updatedHistory = [
@@ -94,7 +92,7 @@ export class ContextualUnderstandingService {
       newTurn
     );
     // Predict next steps
-    const { predictions } = hmmStateMachine.predictNextState(
+    const { predictions } }= hmmStateMachine.predictNextState(
       updatedHMMState.currentState,
       updatedHistory
     );
@@ -124,7 +122,7 @@ export class ContextualUnderstandingService {
     console.log(`   Confidence: ${updatedState.confidence.toFixed(2)}`);
     console.log(`   Next predictions: ${predictions.map(p => p.action).join(', ')}`);
     return updatedState;
-  }
+  } }
   /**
    * Get next-step predictions based on current context
    */
@@ -136,14 +134,14 @@ export class ContextualUnderstandingService {
     // If we already have predictions, return them
     if (state.nextStepPredictions.length > 0) {
       return state.nextStepPredictions;
-    }
+    } }
     // Generate predictions based on HMM state
-    const { predictions } = hmmStateMachine.predictNextState(
+    const { predictions } }= hmmStateMachine.predictNextState(
       state.hmmState.currentState,
       state.conversationHistory
     );
     return predictions;
-  }
+  } }
   /**
    * Extract legal entities from text (simplified - integrate with LangExtract)
    */
@@ -151,19 +149,18 @@ export class ContextualUnderstandingService {
     const entities: LegalEntity[] = [];
     // Simple regex-based extraction (replace with actual LangExtract)
     // Extract dates
-    const dateRegex = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g;
+    const dateRegex = /\b\d{1,2} }/-]\d{1,2} }/-]\d{2,4}\b/g;
     let match;
     while ((match = dateRegex.exec(text)) !== null) {
       entities.push({
         type: 'date',
         value: match[0],
         confidence: 0.8,
-        span: {
-         , start: match.index,
+        span: { start: match.index,
           end: match.index + match[0].length
-        }
+        } }
       });
-    }
+    } }
     // Extract case numbers (simplified pattern)
     const caseNumRegex = /\b\d{1,2}:\d{2}-cv-\d+\b/gi;
     while ((match = caseNumRegex.exec(text)) !== null) {
@@ -171,12 +168,11 @@ export class ContextualUnderstandingService {
         type: 'case_number',
         value: match[0],
         confidence: 0.9,
-        span: {
-         , start: match.index,
+        span: { start: match.index,
           end: match.index + match[0].length
-        }
+        } }
       });
-    }
+    } }
     // Extract statute references
     const statuteRegex = /\b\d+\s+U\.S\.C\.\s+§\s*\d+/gi;
     while ((match = statuteRegex.exec(text)) !== null) {
@@ -184,14 +180,13 @@ export class ContextualUnderstandingService {
         type: 'statute',
         value: match[0],
         confidence: 0.85,
-        span: {
-         , start: match.index,
+        span: { start: match.index,
           end: match.index + match[0].length
-        }
+        } }
       });
-    }
+    } }
     return entities;
-  }
+  } }
   /**
    * Deduplicate entities by value
    */
@@ -203,10 +198,10 @@ export class ContextualUnderstandingService {
       if (!seen.has(key)) {
         seen.add(key);
         unique.push(entity);
-      }
-    }
+      } }
+    } }
     return unique;
-  }
+  } }
   /**
    * Calculate confidence score based on conversation history and HMM state
    */
@@ -224,7 +219,7 @@ export class ContextualUnderstandingService {
     const patternFactor = hmmState.pattern.length > 0 ? 0.8 : 0.5;
     const confidence = (turnFactor * 0.4) + (transitionFactor * 0.4) + (patternFactor * 0.2);
     return Math.min(Math.max(confidence, 0.1), 1.0); // Clamp between 0.1 and 1.0
-  }
+  } }
   /**
    * Get conversation summary for context injection
    */
@@ -239,7 +234,7 @@ export class ContextualUnderstandingService {
       `Turn ${idx + 1}:\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse}`
     ).join('\n\n');
     return summary;
-  }
+  } }
   /**
    * Clear contextual state for a session
    */
@@ -249,7 +244,7 @@ export class ContextualUnderstandingService {
     const cacheKey = `contextual_state:${sessionId}`;
     await redis.del(cacheKey);
     console.log(`✅ Cleared contextual state for session ${sessionId}`);
-  }
+  } }
   /**
    * Get statistics for analytics
    */
@@ -276,7 +271,8 @@ export class ContextualUnderstandingService {
       currentState: hmmStateMachine.getStateName(state.hmmState.currentState),
       patternFrequency: topPatternFreq
     };
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const contextualUnderstanding = new ContextualUnderstandingService();
+

@@ -2,7 +2,7 @@
  * Ollama Service for local LLM integration
  * Provides lightweight, typed wrappers for the local Ollama HTTP API.
  */
-import { logger } from '../logger.js';
+import { logger } }from '../logger.js';
 export interface OllamaModel {
   name: string;
   size?: string;
@@ -11,7 +11,7 @@ export interface OllamaModel {
   families?: string[];
   parameter_size?: string;
   quantization_level?: string;
-}
+} }
 export interface OllamaResponse {
   model?: string;
   created_at?: string;
@@ -24,52 +24,51 @@ export interface OllamaResponse {
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-}
+} }
 export class OllamaService {
   private readonly baseUrl: string;
   private readonly, timeout: number;
   constructor(baseUrl = process.env.OLLAMA_URL || 'http://localhost:11434', timeout = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = timeout;
-  }
+  } }
   async isHealthy(): Promise<boolean> {
     try {
       const res = await fetch(`${this.baseUrl}/api/models`, { signal: AbortSignal.timeout(5000) });
       return res.ok;
-    } catch (err) {
+    } }catch (err) {
       logger.error('Ollama health check failed', err);
       return false;
-    }
-  }
+    } }
+  } }
   async listModels(): Promise<OllamaModel[]> {
     try {
       const res = await fetch(`${this.baseUrl}/api/models`, { signal: AbortSignal.timeout(this.timeout) });
       if (!res.ok) {
         logger.warn('Ollama listModels returned non-ok status', { status: res.status });
         return [];
-      }
-      const data = (await res.json()) as { models?: OllamaModel[] } | unknown;
+      } }
+      const data = (await res.json()) as { models?: OllamaModel[] } }| unknown;
       const models = (data as { models?: OllamaModel[] })?.models;
       return Array.isArray(models) ? models : [];
-    } catch (err) {
+    } }catch (err) {
       logger.error('Failed to list Ollama models', err);
       return [];
-    }
-  }
+    } }
+  } }
   async generate(
     model: string,
     prompt: string,
-    options: { temperature?: number; max_tokens?: number; stream?: boolean } = {}
+    options: { temperature?: number; max_tokens?: number; stream?: boolean } }= {} }
   ): Promise<string> {
     try {
       const body = {
         model,
         prompt,
         stream: options.stream ?? false,
-        options: {
-         , temperature: options.temperature ?? 0.7,
+        options: { temperature: options.temperature ?? 0.7,
           num_predict: options.max_tokens ?? 1000
-        }
+        } }
       };
       const res = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
@@ -79,18 +78,18 @@ export class OllamaService {
       });
       if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`Ollama API error: ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);'' }
+        throw new Error(`Ollama API error: ${res.status} }${res.statusText}${text ? ' - ' + text : '' }`);'' } }
       const data = (await res.json()) as OllamaResponse;
       return data.response ?? '';
-    } catch (err) {
+    } }catch (err) {
       logger.error('Failed to generate with Ollama', { model, err });
       throw err;
-    }
-  }
+    } }
+  } }
   // Backwards-compatible alias
   async generateCompletion(model: string, prompt: string, options?: { temperature?: number; max_tokens?: number }) {
     return this.generate(model, prompt, options);
-  }
+  } }
   async embeddings(model: string, prompt: string): Promise<number[]> {
     try {
       const res = await fetch(`${this.baseUrl}/api/embeddings`, {
@@ -101,24 +100,25 @@ export class OllamaService {
       });
       if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);'' }
+        throw new Error(`Ollama embeddings error: ${res.status} }${res.statusText}${text ? ' - ' + text : '' }`);'' } }
       const data = (await res.json()) as
-        | { embedding?: number[] }
-        | { data?: Array<{ embedding?: number[] }> }
+        | { embedding?: number[] } }
+        | { data?: Array<{ embedding?: number[] }> } }
         | Record<string, unknown>;
       if (Array.isArray((data as { embedding?: number[] }).embedding)) {
         return (data as { embedding: number[] }).embedding;
-      }
+      } }
       const maybeData = (data as { data?: Array<{ embedding?: number[] }> }).data;
       if (Array.isArray(maybeData) && Array.isArray(maybeData[0]?.embedding)) {
         return maybeData[0].embedding as: number[];
-      }
+      } }
       return [];
-    } catch (err) {
+    } }catch (err) {
       logger.error('Failed to get embeddings from Ollama', { model, err });
       throw err;
-    }
-  }
-}
+    } }
+  } }
+} }
 export const ollamaService = new OllamaService();
 export default ollamaService;
+

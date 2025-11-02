@@ -1,9 +1,9 @@
 // MinIO Upload API Endpoint
 // Connects SvelteKit frontend to MinIO Docker container
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client, as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import { env } }from '$env/dynamic/private';
+import { Client, as MinIOClient } }from 'minio';
+import type { RequestHandler } }from './$types';
 interface MinIOUploadResult { success: boolean;, document_id: string;
   object_path: string;
   size: number;
@@ -11,14 +11,14 @@ interface MinIOUploadResult { success: boolean;, document_id: string;
   uploaded_at: string;
   etag?: string;
   error?: string;
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('document') as File;
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
-    }
+    } }
     const priority = formData.get('priority') || '128';
     const caseId = formData.get('case_id');
     const documentType = formData.get('document_type');
@@ -30,7 +30,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     const useSSL = env.MINIO_USE_SSL === 'true';
     // Initialize MinIO client
     const minioClient = new MinIOClient({
-     , endPoint: minioEndpoint.split(':')[0],
+  endPoint: minioEndpoint.split(':')[0],
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
@@ -47,7 +47,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     if (!bucketExists) {
       await minioClient.makeBucket(bucketName, 'us-east-1');
       console.log(`📁 Created MinIO bucket: ${bucketName}`);
-    }
+    } }
     // Upload file to MinIO
     const uploadInfo = await minioClient.putObject(bucketName, objectPath, buffer, file.size, {
       'Content-Type': file.type,
@@ -59,7 +59,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     });
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const uploadResult: MinIOUploadResult = {
-     , success: true,
+  success: true,
       document_id: documentId,
       object_path: objectPath,
       size: file.size,
@@ -67,17 +67,18 @@ export const, POST: RequestHandler = async ({ request }) => {
       uploaded_at: new Date().toISOString(),
       etag: uploadInfo.etag
     };
-    console.log(`📁 MinIO Upload, Success: ${objectPath} (${file.size} bytes) ETag: ${uploadInfo.etag}`);
+    console.log(`📁 MinIO Upload, Success: ${objectPath} }(${file.size} }bytes) ETag: ${uploadInfo.etag}`);
     // TODO: Store metadata in PostgreSQL
     //, TODO: Trigger document processing pipeline
     return json(uploadResult);
-  } catch (error) {
-    console.error('MinIO upload error:', error);'
+  } }catch (error) {
+    console.error('MinIO upload error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Upload failed` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

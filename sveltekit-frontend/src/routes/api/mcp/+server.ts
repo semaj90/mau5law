@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { fetchMcpServerData } from '$lib/services/mcp-registry';
-import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { randomUUID } from 'node:crypto';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { fetchMcpServerData } }from '$lib/services/mcp-registry';
+import { aiOrchestrator } }from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
+import { randomUUID } }from 'node:crypto';
 
 const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
 const OLLAMA_URL = process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL, as: string | undefined) ?? FALLBACK_OLLAMA_URL;
@@ -12,9 +12,9 @@ const AVAILABLE_MODELS = ['gemma3-legal:latest', 'gemma270:m', 'embeddinggemma:l
 function coerceModel(requested?: any): string {
   if (typeof requested === 'string' && AVAILABLE_MODELS.includes(requested)) {
     return requested;
-  }
+  } }
   return AVAILABLE_MODELS[0];
-}
+} }
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const serverName = body?.serverName;
     if (!serverName || typeof serverName !== 'string') {
       return json({ success: false, error: 'Missing serverName' }, { status: 400 });
-    }
+    } }
 
     const useFunctions = Boolean(body?.useFunctions);
     const stream = Boolean(body?.stream);
@@ -30,12 +30,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     if (stream && useFunctions) {
       return json({ success: false, error: 'Streaming with function calling is not supported yet.' }, { status: 400 });
-    }
+    } }
 
     const record = await fetchMcpServerData(serverName);
     if (!record) {
       return json({ success: false, error: 'Server not found' }, { status: 404 });
-    }
+    } }
 
     const serverPayload = {
       serverName: record.name,
@@ -53,9 +53,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const chatBody = {
         model: selectedModel,
         messages: [
-          {,
-            role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for;, UI:\n${JSON.stringify(`
+          { role: 'user',
+            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(`
               serverPayload,
               null,
               2
@@ -74,81 +73,79 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const message = await ollamaResponse.text();
         return json(
           { success: false, error: 'Ollama streaming request failed', details: message },
-          { status: ollamaResponse.status }
+          { status: ollamaResponse.status } }
         );
-      }
+      } }
 
       const encoder = new TextEncoder();
       const decoder = new TextDecoder();
 
       const streamBody = new ReadableStream({
         async start(controller) {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({, type: 'record', record: serverPayload })}\n\n`));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'record', record: serverPayload })}\n\n`));
 
           const reader = ollamaResponse.body!.getReader();
           while (true) {
-            const { done, value } = await reader.read();
+            const { done, value } }= await reader.read();
             if (done) break;
             if (value) {
               const chunk = decoder.decode(value, { stream: true });
               controller.enqueue(encoder.encode(chunk));
-            }
-          }
+            } }
+          } }
 
           controller.close();
-        }
+        } }
       });
 
       return new Response(streamBody, {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          Connection: 'keep-alive' }
+          Connection: 'keep-alive' } }
       });
-    }
+    } }
 
     if (useFunctions) {
       const firstBody = {
         model: selectedModel,
         messages: [
-          {,
-            role: 'user',
-            content: 'Retrieve MCP server data;, for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
+          { role: 'user',
+            content: 'Retrieve MCP server data; for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities } } },
         ],
         functions: [
-          {,
-            name: 'getMcpServerData',
+          { name: 'getMcpServerData',
             description: 'Retrieve MCP server information by name and dataset',
             parameters: {
-             , type: 'object',
-              properties: {, serverName: {, type: 'string' },
+  type: 'object',
+              properties: { serverName: { type: 'string' },
                 cores: {
-                 , type: 'array',
+  type: 'array',
                   items: {
-                   , type: 'object',
-                    properties: {, id: {, type: 'string' },
-                      role: {, type: 'string' },
-                      status: {, type: 'string' }
-                    }
-                  }
+  type: 'object',
+                    properties: { id: { type: 'string' },
+                      role: { type: 'string' },
+                      status: { type: 'string' } }
+                    } }
+                  } }
                 },
                 endpoints: {
-                 , type: 'array',
+  type: 'array',
                   items: {
-                   , type: 'object',
-                    properties: {, id: {, type: 'string' },
-                      url: {, type: `string` },'`'`
-                      protocol: {, type: `string` }
-                    }
-                  }
+  type: 'object',
+                    properties: { id: { type: 'string' },
+                      url: { type: `string` },'`'`
+                      protocol: { type: `string` } }
+                    } }
+                  } }
                 },
                 capabilities: {
-                 , type: 'array',
-                  items: {, type: `string` }
-                }
+  type: 'array',
+                  items: { type: `string` } }
+                } }
               },
               required: ['serverName']
-            }
+            } }
           },
         ],
         stream: false
@@ -167,21 +164,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
       if (msg?.tool_calls?.length) {
         fnName = msg.tool_calls[0]?.function?.name;
         fnArgsRaw = msg.tool_calls[0]?.function?.arguments;
-      } else if (msg?.function_call) {
+      } }else if (msg?.function_call) {
         fnName = msg.function_call?.name;
         fnArgsRaw = msg.function_call?.arguments;
-      } else if (firstOut?.name || firstOut?.arguments) {
+      } }else if (firstOut?.name || firstOut?.arguments) {
         fnName = firstOut?.name;
         fnArgsRaw = firstOut?.arguments;
-      }
+      } }
 
       if (fnName === 'getMcpServerData') {
         let fnArgs: any = {};
         try {
           fnArgs = typeof fnArgsRaw === 'string' ? JSON.parse(fnArgsRaw) : (fnArgsRaw ?? {});
-        } catch {
+        } }catch {
           fnArgs = { serverName };
-        }
+        } }
 
         const history = firstBody.messages ? [...firstBody.messages] : [];
         const toolMessage = {
@@ -213,7 +210,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           modelUsed: selectedModel,
           availableModels: AVAILABLE_MODELS
         });
-      }
+      } }
 
       return json({
         success: true,
@@ -223,21 +220,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         modelUsed: selectedModel,
         availableModels: AVAILABLE_MODELS
       });
-    }
+    } }
 
     const resp = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: selectedModel,
+  model: selectedModel,
         messages: [
-          {,
-            role: 'user',
-            content: 'Summarize this MCP server info and return helpful fields for;, UI:\n${JSON.stringify('
+          { role: 'user',
+            content: 'Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify('
               serverPayload,
               null,
               2
-            )}' },'
+            )} } },'
         ],
         stream: false
       })
@@ -251,7 +247,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       modelUsed: selectedModel,
       availableModels: AVAILABLE_MODELS
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const requestId = randomUUID();
     try {
       aiOrchestrator.handleMcpError(err?.message ?? 'Unknown MCP error', {
@@ -259,14 +255,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         stage: 'api.mcp.post',
         error: err
       });
-    } catch {}
+    } }catch {} }
     return json(
       {
         success: false,
         error: err?.message ?? String(err),
         requestId,
         path: url?.pathname ?? '/api/mcp` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

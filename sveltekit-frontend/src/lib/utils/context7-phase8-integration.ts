@@ -14,23 +14,23 @@ export interface MatrixUINode {
     [key: string]: any;
   };
   [key: string]: any;
-}
+} }
 // Type definitions
 export interface LegalFormContext {
   evidenceFiles: File[];
   evidenceType?: string;
   confidence: number;
   [key: string]: any;
-}
-export interface Context7Phase8Query {, component: string;, context: 'legal-ai' | 'performance' | 'ui-ux';
+} }
+export interface Context7Phase8Query { component: string;, context: 'legal-ai' | 'performance' | 'ui-ux';
   area?: 'performance' | 'ui-ux' | 'ai-enhancement';
   feature?: string;
   requirements?: string;
   xstateContext?: LegalFormContext;
   currentState?: StateValue;
   matrixNodes?: MatrixUINode[];
-}
-export interface Phase8Recommendation {, id: string;, type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
+} }
+export interface Phase8Recommendation { id: string;, type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
   priority: 'critical' | 'high' | 'medium' | 'low';
   title: string;
   description: string;
@@ -45,23 +45,23 @@ export interface Phase8Recommendation {, id: string;, type: 'ui-optimization' |
   benefits: string[];
   risks: string[];
   relatedStates?: string[];
-}
-export interface RerankResult {, id: string;, content: string;
-  metadata: {, type: string;, priority: string;
+} }
+export interface RerankResult { id: string;, content: string;
+  metadata: { type: string;, priority: string;
     confidence: number;
     component: string;
   };
   originalScore: number;
   rerankScore: number;
   confidence: number;
-}
-export interface UserContext {, intent: string;, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+} }
+export interface UserContext { intent: string;, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement: string;
   currentCase: string;
   recentActions: string[];
   userRole: string;
   workflowState: string;
-}
+} }
 //, New: typed shapes for external API responses to avoid `any`
 type Priority = 'critical' | 'high' | 'medium' | 'low';
 interface MCPRecommendation {
@@ -74,18 +74,18 @@ interface MCPRecommendation {
   timeEstimate?: string;
   benefits?: string[];
   risks?: string[];
-}
+} }
 interface MCPAnalysisResponse {
   recommendations?: MCPRecommendation[];
-}
+} }
 interface RAGResult {
   score?: number;
   title?: string;
   content?: string;
-}
+} }
 interface RAGResponse {
   results?: RAGResult[];
-}
+} }
 export class Context7Phase8Integrator {
   private mcpEndpoint = 'http://localhost:8000/api';
   private ragEndpoint = 'http://localhost:8000/api/rag';
@@ -107,12 +107,12 @@ export class Context7Phase8Integrator {
       recommendations.push(...this.mergeRecommendations(stackAnalysis, ragInsights, workflowRecs, performanceRecs));
       // 6. Apply AI reranking based on current context
       return this.rerankRecommendations(recommendations, query);
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Context7 Phase, 8 integration error:', msg);'
+      console.error('Context7 Phase, 8 integration error:', msg);
       return this.getFallbackRecommendations(query);
-    }
-  }
+    } }
+  } }
   /**
    * Get Context7 MCP stack analysis recommendations
    */
@@ -120,8 +120,7 @@ export class Context7Phase8Integrator {
     const response = await fetch(`${this.mcpEndpoint}/mcp/analyze-stack`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-       , component: query.component,
+      body: JSON.stringify({ component: query.component,
         context: query.context
       })
     });
@@ -135,8 +134,7 @@ export class Context7Phase8Integrator {
         description: rec?.description || '',
         context7Source: 'stack-analysis',
         aiConfidence: rec?.confidence ?? 75,
-        implementation: {
-         , component: query.component,
+        implementation: { component: query.component,
           code: rec?.code,
           dependencies: rec?.dependencies,
           timeEstimate: rec?.timeEstimate
@@ -145,7 +143,7 @@ export class Context7Phase8Integrator {
         risks: rec?.risks || []
       })) as Partial<Phase8Recommendation>[]) || []
     );
-  }
+  } }
   /**
    * Get RAG-powered legal AI insights
    */
@@ -154,8 +152,7 @@ export class Context7Phase8Integrator {
     const response = await fetch(`${this.ragEndpoint}/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-       , query: ragQuery,
+      body: JSON.stringify({ query: ragQuery,
         context: 'legal-ai',
         limit: 5
       })
@@ -166,18 +163,17 @@ export class Context7Phase8Integrator {
       (insights.results?.map((result: RAGResult) => ({
         type: 'ai-enhancement' as const,
         priority: this.calculatePriorityFromScore(result?.score ?? 0),
-        title: 'Legal AI;, Enhancement: ${result?.title ?? 'Suggestion` }`,
+        title: 'Legal AI; Enhancement: ${result?.title ?? 'Suggestion` }`,
         description: result?.content ?? '',
         context7Source: 'rag-legal',
         aiConfidence: Math.round((result?.score ?? 0) * 100),
-        implementation: {
-         , component: query.component,
+        implementation: { component: query.component,
           timeEstimate: `2-4 hours` },
         benefits: this.extractBenefits(result?.content ?? ''),
         risks: []
       })) as Partial<Phase8Recommendation>[]) || []
     );
-  }
+  } }
   /**
    * Get XState workflow recommendations based on current state
    */
@@ -193,14 +189,13 @@ export class Context7Phase8Integrator {
         description: 'Current evidence upload requires multiple clicks. Consider drag-and-drop or bulk upload.',
         context7Source: 'xstate-analysis',
         aiConfidence: 85,
-        implementation: {
-         , component: 'EvidenceUpload',
+        implementation: { component: 'EvidenceUpload',
           code: `
 // Enhanced drag-and-drop evidence upload
 <div
   class="drop-zone yorha-panel border-dashed border-2 p-8"
-  ondrop={handleDrop}
-  ondragover={handleDragOver}
+  ondrop={handleDrop} }
+  ondragover={handleDragOver} }
 >
   <FileUploadIcon />
   <p>Drag evidence files here or click to browse</p>
@@ -211,7 +206,7 @@ export class Context7Phase8Integrator {
         risks: ['Browser compatibility'],
         relatedStates: ['evidenceUpload']
       });
-    }
+    } }
     // Check for AI confidence optimization
     if (typeof query.xstateContext.confidence === 'number' && query.xstateContext.confidence < 70) {
       recommendations.push({
@@ -221,16 +216,15 @@ export class Context7Phase8Integrator {
         description: 'Current AI confidence is below optimal. Add validation rules and user feedback loops.',
         context7Source: 'confidence-analysis',
         aiConfidence: 78,
-        implementation: {
-         , component: 'ConfidenceBooster',
+        implementation: { component: 'ConfidenceBooster',
           timeEstimate: `3-4 hours` },
         benefits: ['Higher AI accuracy', 'Better recommendations', 'Improved user trust'],
         risks: ['Increased complexity'],
         relatedStates: ['caseDetails', 'review']
       });
-    }
+    } }
     return recommendations;
-  }
+  } }
   /**
    * Get Matrix UI performance recommendations
    */
@@ -248,25 +242,24 @@ export class Context7Phase8Integrator {
         type: 'performance-boost',
         priority: 'high',
         title: 'Optimize Matrix UI LOD System',
-        description: `Detected ${highComplexityNodes.length} high-complexity nodes. Consider LOD optimization.`,
+        description: `Detected ${highComplexityNodes.length} }high-complexity nodes. Consider LOD optimization.`,
         context7Source: 'matrix-performance',
         aiConfidence: 82,
-        implementation: {
-         , component: 'MatrixLODSystem',
+        implementation: { component: 'MatrixLODSystem',
           code: `
 // Enhanced LOD with adaptive quality
-const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
-  mid: {, vertexCount: 500, shaderComplexity: `standard` },
-  high: {, vertexCount: 1000, shaderComplexity: `advanced` }
+const adaptiveLOD = { low: { vertexCount: 100, shaderComplexity: `basic` },
+  mid: { vertexCount: 500, shaderComplexity: `standard` },
+  high: { vertexCount: 1000, shaderComplexity: `advanced` } }
 }`,`
           timeEstimate: `4-6 hours` },
         benefits: ['60% performance improvement', 'Smoother animations', 'Better mobile experience'],
         risks: ['Visual quality trade-offs'],
         relatedStates: ['review', 'submitting']
       });
-    }
+    } }
     return recommendations;
-  }
+  } }
   /**
    * Merge recommendations from different sources
    */
@@ -289,11 +282,11 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
             risks: rec.risks || [],
             relatedStates: rec.relatedStates || []
           });
-        }
+        } }
       });
     });
     return merged;
-  }
+  } }
   /**
    * Rerank recommendations using AI context
    */
@@ -305,8 +298,7 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
     const rerankInput: RerankResult[] = recommendations.map((rec) => ({
       id: rec.id,
       content: `${rec.title}: ${rec.description}`,
-      metadata: {
-       , type: rec.type,
+      metadata: { type: rec.type,
         priority: rec.priority,
         confidence: rec.aiConfidence,
         component: query.component
@@ -316,8 +308,7 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
       confidence: rec.aiConfidence
     }));
 
-    const userContext: UserContext = {
-     , intent: 'review',
+    const userContext: UserContext = { intent: 'review',
       timeOfDay: this.getTimeOfDay(),
       focusedElement: query.component,
       currentCase: 'PHASE8_OPTIMIZATION',
@@ -348,73 +339,71 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
         .sort((a, b) => b.aiConfidence - a.aiConfidence);
 
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Reranking failed, using original order:', msg);
       // Fallback: return recommendations sorted by original aiConfidence
       return recommendations.slice().sort((a, b) => b.aiConfidence - a.aiConfidence);
-    }
-  }
+    } }
+  } }
   /**
    * Helper functions
    */
   private buildRagQuery(query: Context7Phase8Query): string {
-    let ragQuery = `${query.component} optimization`;
+    let ragQuery = `${query.component} }optimization`;
     if (query.context === 'legal-ai') {
       ragQuery += ' legal AI case management evidence';
-    }
+    } }
     if (query.xstateContext?.evidenceType) {
-      ragQuery += ` ${query.xstateContext.evidenceType} evidence`;
-    }
+      ragQuery += ` ${query.xstateContext.evidenceType} }evidence`;
+    } }
     if (query.currentState) {
       ragQuery += ` workflow state ${query.currentState}`;
-    }
+    } }
     return ragQuery;
-  }
+  } }
   private calculatePriorityFromScore(score: number): 'critical' | 'high' | 'medium' | 'low' {
     if (score > 0.9) return, 'critical';
     if (score > 0.7) return, 'high';
     if (score > 0.5) return, 'medium';
     return, 'low';
-  }
+  } }
   private extractBenefits(content: string): string[] {
     // Simple keyword extraction for benefits
     const benefitKeywords = ['improve', 'optimize', 'enhance', 'faster', 'better', 'reduce', 'increase'];
     const benefits: string[] = [];
     benefitKeywords.forEach(keyword => {
       if (content.toLowerCase().includes(keyword)) {
-        benefits.push(`May ${keyword} system performance`);
-      }
+        benefits.push(`May ${keyword} }system performance`);
+      } }
     });
     return benefits.slice(0, 3); // Limit to top, 3
-  }
+  } }
   private getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
     if (hour < 12) return, 'morning';
     if (hour < 17) return, 'afternoon';
     if (hour < 21) return, 'evening';
     return, 'night';
-  }
+  } }
   private getFallbackRecommendations(query: Context7Phase8Query): Phase8Recommendation[] {
     return [
-      {,
-        id: 'fallback-1',
+      { id: 'fallback-1',
         type: 'ui-optimization',
         priority: 'medium',
         title: 'Basic Component Optimization',
-        description: `Consider optimizing ${query.component} for better performance.`,
+        description: `Consider optimizing ${query.component} }for better performance.`,
         context7Source: 'fallback',
         aiConfidence: 60,
-        implementation: {
-         , component: query.component,
+        implementation: { component: query.component,
           timeEstimate: `1-2 hours` },
         benefits: ['Improved performance'],
         risks: [],
         relatedStates: []
       },
     ];
-  }
-}
+  } }
+} }
 // Convenience functions for common Context7 + Phase, 8 queries
 export const commonContext7Phase8Queries = {
   /**

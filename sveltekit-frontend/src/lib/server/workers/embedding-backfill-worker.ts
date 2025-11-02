@@ -4,9 +4,9 @@
  * Automatically generates embeddings for evidence files that don't have them yet.'
  * Integrates with the existing evidence upload pipeline and embedding API.
  */
-import { query } from '$lib/server/db/client.js';
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { embeddingService } from '$lib/services/embedding-service.js';
+import { query } }from '$lib/server/db/client.js';
+import { minioService } }from '$lib/server/storage/minio-service.js';
+import { embeddingService } }from '$lib/services/embedding-service.js';
 interface EvidenceFile { id: number;, title: string;
   description?: string;
   storage_bucket: string;
@@ -14,8 +14,8 @@ interface EvidenceFile { id: number;, title: string;
   mime_type: string;
   file_type: string;
   case_id?: string;
-}
-interface BackfillResult {, processed: number;, success: number;
+} }
+interface BackfillResult { processed: number;, success: number;
   failed: number;
  , errors: Array<any>
 export class EmbeddingBackfillWorker {
@@ -26,22 +26,22 @@ export class EmbeddingBackfillWorker {
     batchSize?: number;
     retryCount?: number;
     enableTextExtraction?: boolean;
-  } = {}) {
+  } }= {}) {
     this.batchSize = options.batchSize || 10;
     this.retryCount = options.retryCount || 3;
-  }
+  } }
   /**
    * Process all evidence files that don't have embeddings yet'
    */
   async processAll(): Promise<BackfillResult> {
     if (this.isRunning) {
       throw new Error('Backfill worker is already running');
-    }
+    } }
     this.isRunning = true;
     console.log('🔄 Starting embedding backfill process...');
     try {
       // Get all evidence files without embeddings
-      const { rows: evidenceFiles } = await query<EvidenceFile>(
+      const { rows: evidenceFiles } }= await query<EvidenceFile>(
         `
         SELECT id, title, description, storage_bucket, object_name, mime_type, file_type, case_id
         FROM evidence_files
@@ -51,13 +51,12 @@ export class EmbeddingBackfillWorker {
       `,`
         [this.batchSize]
       );
-      console.log(`📋 Found ${evidenceFiles.length} files to process`);
-      const result: BackfillResult = {
-       , processed: 0,
+      console.log(`📋 Found ${evidenceFiles.length} }files to process`);
+      const result: BackfillResult = { processed: 0,
         success: 0,
         failed: 0,
         errors: []
-      }
+      } }
       // Process in batches to avoid overwhelming the system
       for (let i = 0; i < evidenceFiles.length; i += this.batchSize) {
         const batch = evidenceFiles.slice(i, i + this.batchSize);
@@ -67,24 +66,24 @@ export class EmbeddingBackfillWorker {
             try {
               await this.processEvidenceFile(file);
               (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success++;
-              console.log(`✅ Processed ${file.title} (ID: ${file.id})`);
-            } catch (error) {
+              console.log(`✅ Processed ${file.title} }(ID: ${file.id})`);
+            } }catch (error) {
               (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed++;
               const errorMsg = error instanceof Error ? error.message: 'Unknown error';
               (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).errors.push({ id: file.id, error: errorMsg });
-              console.error(`❌ Failed to process ${file.title} (ID: ${file.id}):`, errorMsg);
-            }
+              console.error(`❌ Failed to process ${file.title} }(ID: ${file.id}):`, errorMsg);
+            } }
           })
         );
         // Small delay between batches to prevent overwhelming the system
         await new Promise(resolve => setTimeout(resolve, 1000);
-      }
+      } }
       console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
       return result;
-    } finally {
+    } }finally {
       this.isRunning = false;
-    }
-  }
+    } }
+  } }
   /**
    * Process a single evidence file and generate its embeddings
    */
@@ -94,7 +93,7 @@ export class EmbeddingBackfillWorker {
     if (!textContent || textContent.trim().length === 0) {
       console.warn(`⚠️  No extractable text content for ${file.title}`);
       return;
-    }
+    } }
     // Generate embeddings using our existing embedding service
     let embeddingResult;
     for (let attempt = 1; attempt <= this.retryCount; attempt++) {
@@ -102,18 +101,18 @@ export class EmbeddingBackfillWorker {
         // Use mock model for now - can be switched to real models when configured
         embeddingResult = await this.generateEmbedding(textContent);
         break;
-      } catch (error) {
-        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}: ', error);'`
+      } }catch (error) {
+        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} }failed for ${file.title}: ', error);'`
         if (attempt === this.retryCount) throw error;
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt); // Exponential backoff
-      }
-    }
+      } }
+    } }
     if (!embeddingResult?.embedding) {
       throw new Error('Failed to generate embedding');
-    }
+    } }
     // Store embeddings in the database
     await this.storeEmbedding(file.id, embeddingResult.embedding);
-  }
+  } }
   /**
    * Extract text content from evidence file
    */
@@ -125,7 +124,7 @@ export class EmbeddingBackfillWorker {
     let textContent = file.title;
     if (file.description) {
       textContent += '\n\n' + file.description;
-    }
+    } }
     // TODO: Add file content extraction for different types
     // - PDF text extraction using pdf-parse
     // - DOCX text extraction using mammoth
@@ -139,8 +138,8 @@ export class EmbeddingBackfillWorker {
           // removed unused response assignment
           const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
-        } catch (error) {
-          console.warn(`Failed to extract text from ${file.object_name}: ', error);'' }'`
+        } }catch (error) {
+          console.warn(`Failed to extract text from ${file.object_name}: ', error);'' } }`
         break;
       case, 'application/json':
         try {
@@ -148,16 +147,16 @@ export class EmbeddingBackfillWorker {
           // removed unused response assignment
           const jsonData = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).json();
           textContent += '\n\n' + JSON.stringify(jsonData, null, 2);
-        } catch (error) {
+        } }catch (error) {
           console.warn(`Failed to extract JSON from ${file.object_name}:`, error);
-        }
+        } }
         break;
       default:
         // For unsupported file types, use just title and description
         console.log(`📄 Using metadata for ${file.mime_type}: ${file.object_name}`);
-    }
+    } }
     return textContent;
-  }
+  } }
   /**
    * Generate embedding for text content
    */
@@ -166,27 +165,26 @@ export class EmbeddingBackfillWorker {
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({,
-        text: text.substring(0, 50000), // Limit text length
+      body: JSON.stringify({ text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to: 'openai'; or: 'nomic' when ready;
        , dimensions: 768
       })
     });
     if (!(response as { text?: any; json?: any; ok?: any; statusText?: any }).ok) {
       throw new Error(`Embedding API error: ${(response as { text?: any; json?: any; ok?: any; statusText?: any }).statusText}`);
-    }
+    } }
     const result = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).json();
     if (!(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).embedding) {
       throw new Error('No embedding returned from API');
-    }
+    } }
     return result;
-  }
+  } }
   /**
    * Store embedding vector in database
    */
   private async storeEmbedding(fileId: number, embedding: number[]): Promise<void> {
     // Convert embedding array to PostgreSQL vector format
-    const embeddingVector = `[${embedding.join(',')}]`;
+    const embeddingVector = `[${embedding.join(',')} }`;
     await query(
       `
       UPDATE evidence_files
@@ -195,7 +193,7 @@ export class EmbeddingBackfillWorker {
     `,`
       [embeddingVector, fileId]
     );
-  }
+  } }
   /**
    * Get statistics about embedding status
    */
@@ -213,9 +211,9 @@ export class EmbeddingBackfillWorker {
       withEmbeddings,
       withoutEmbeddings,
       percentage: Math.round(percentage * 100) / 100
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const embeddingBackfillWorker = new EmbeddingBackfillWorker({
   batchSize: 10,

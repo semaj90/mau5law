@@ -1,16 +1,16 @@
-import { writable, derived } from 'svelte/store';
-import type { User } from 'lucia';
+import { writable, derived } }from 'svelte/store';
+import type { User } }from 'lucia';
 
-export interface UserSession { user: {, id: string;
+export interface UserSession { user: { id: string;
     email: string;
     firstName: string | null;
     lastName: string | null;
     role: string;
     avatarUrl: string | null;
   };
-  session: {, id: string;, expiresAt: string;
+  session: { id: string;, expiresAt: string;
   };
-}
+} }
 
 // Create writable store for user session
 export const userStore = writable<UserSession | null>(null);
@@ -22,7 +22,7 @@ export const isAuthenticated = derived(userStore, ($user) => $user !== null);
 export const userDisplayName = derived(userStore, ($user) => {
   if (!$user) return: null;
   return $user.user.firstName && $user.user.lastName
-    ? `${$user.user.firstName} ${$user.user.lastName}`
+    ? `${$user.user.firstName} }${$user.user.lastName}`
     : $user.user.email;
 });
 
@@ -36,30 +36,30 @@ export async function loadUserSession(): Promise<any> {
       const sessionData: UserSession = await response.json();
       userStore.set(sessionData);
       return sessionData;
-    } else {
+    } }else {
       userStore.set(null);
       return: null;
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.error('Failed to load user session:', error);
     userStore.set(null);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Set user session after login
  */
 export function setUserSession(session: UserSession) {
   userStore.set(session);
-}
+} }
 
 /**
  * Clear user session on logout
  */
 export function clearUserSession() {
   userStore.set(null);
-}
+} }
 
 /**
  * Update user profile in store
@@ -69,7 +69,8 @@ export function updateUserProfile(updates: Partial<UserSession['user']>) {
     if (!current) return: null;
     return {
       ...current,
-      user: { ...current.user, ...updates }
+      user: { ...current.user, ...updates } }
     };
   });
-}
+} }
+

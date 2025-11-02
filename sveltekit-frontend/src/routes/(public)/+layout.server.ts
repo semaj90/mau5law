@@ -1,4 +1,4 @@
-import type { LayoutServerLoad } from './$types';
+import type { LayoutServerLoad } }from './$types';
 export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies }) => {
   const path = url.pathname;
   // Public routes are accessible to everyone
@@ -17,13 +17,13 @@ export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies })
       description: 'Interactive demonstration of YoRHa Legal AI Platform capabilities',
       keywords: 'legal AI demo, neural networks demo, AI showcase'
     };
-  } else if (path.startsWith('/showcase')) {
+  } }else if (path.startsWith('/showcase')) {
     pageMetadata = {
       title: 'Showcase - YoRHa Legal AI',
       description: 'Showcase of YoRHa Legal AI Platform features and capabilities',
       keywords: 'legal AI showcase, platform features, AI capabilities'
     };
-  }
+  } }
   return {
     user,
     session,
@@ -32,3 +32,4 @@ export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies })
     pageMetadata
   };
 };
+

@@ -2,12 +2,13 @@
 export interface RedisClientLike {
   zadd: (key: string, score: number, value: string) => Promise<void>;
   incr: (key: string) => Promise<number>;
-}
+} }
 
 export interface RabbitPublisherLike {
   publish: (queue: string, msg: any) => Promise<void>;
   enqueue?: (queue: string, msg: any) => Promise<void>;
-}
+} }
 
 export type OptionalRedis = Partial<RedisClientLike>;
 export type OptionalRabbit = Partial<RabbitPublisherLike>;
+

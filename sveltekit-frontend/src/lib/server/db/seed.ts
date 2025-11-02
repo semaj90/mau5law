@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import { db, pool } from './drizzle';
-import { users, cases, evidence } from './schema';
+import type { User } }from '$lib/types';
+import { db, pool } }from './drizzle';
+import { users, cases, evidence } }from './schema';
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
+import { eq } }from 'drizzle-orm';
 // Sample embeddings (normally produced by an AI model)
-const sampleEmbeddings = { financial: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.1),
-  legal: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.2),
-  criminal: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.3)
+const sampleEmbeddings = { financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
+  legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
+  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
 };
 async function seed(): Promise<any> {
   console.log('[seed] Starting database seed...');
@@ -15,8 +15,7 @@ async function seed(): Promise<any> {
     const passwordHash = await bcrypt.hash('password123', 12);
     const demoPasswordHash = await bcrypt.hash('demo123', 12);
     const seedUsers = [
-      {,
-        email: 'demo@legal-ai.local',
+      { email: 'demo@legal-ai.local',
         name: 'Demo User',
         firstName: 'Demo',
         lastName: 'User',
@@ -60,7 +59,7 @@ async function seed(): Promise<any> {
           const [created] = await db.insert(users).values(user).returning();
           insertedUsers.push(created);
           console.log(`  [seed] created user ${user.email}`);
-        } else {
+        } }else {
           const [updated] = await db
             .update(users)
             .set({
@@ -76,11 +75,11 @@ async function seed(): Promise<any> {
             .returning();
           insertedUsers.push(updated);
           console.log(`  [seed] refreshed user ${user.email}`);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.error(`  [seed] failed to upsert ${user.email}:`, err);
-      }
-    }
+      } }
+    } }
     console.log(`[seed] Users ready: ${insertedUsers.length}`);
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
@@ -104,8 +103,7 @@ async function seed(): Promise<any> {
     const insertedCases = await db
       .insert(cases)
       .values([
-        {,
-          title: 'Financial Fraud Investigation',
+        { title: 'Financial Fraud Investigation',
           description:
             'Complex financial fraud case involving multiple entities and cryptocurrency transactions.',
           priority: 'high',
@@ -121,26 +119,25 @@ async function seed(): Promise<any> {
       .returning();
     console.log('[seed] Creating sample evidence...');
     await db.insert(evidence).values([
-      {,
-        caseId: insertedCases[0].id,
+      { caseId: insertedCases[0].id,
         title: 'Bank Transaction Records',
         description: 'Suspicious transaction patterns showing structured deposits.',
         evidenceType: 'financial_document',
         tags: ['transactions', 'banking', 'offshore'],
         uploadedBy: insertedUsers[0].id,
         aiSummary: 'Strong indicators of layering and placement activity.',
-        aiAnalysis: {, confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] },
+        aiAnalysis: { confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] },
         embedding: sampleEmbeddings.financial
       },
     ]);
-  } catch (error) {
-    console.error('[seed] fatal error:', error);'
+  } }catch (error) {
+    console.error('[seed] fatal error:', error);
     throw error;
-  } finally {
+  } }finally {
     await pool.end();
     console.log('[seed] Connection pool closed.');
-  }
-}
+  } }
+} }
 seed()
   .then(() => {
     console.log('[seed] completed');
@@ -151,3 +148,4 @@ seed()
     process.exit(1);
   });
 export { seed };
+

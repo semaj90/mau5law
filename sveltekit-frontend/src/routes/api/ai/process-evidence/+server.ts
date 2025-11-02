@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,11 +17,11 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib/server/endpoints';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { getUser } }from '$lib/server/auth';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint, getEnhancedRagEndpoint } }from '$lib/server/endpoints';
 
 // --- Types added to replace `any` usages ---
 type EvidenceItem = Record<string, unknown>;
@@ -37,9 +37,9 @@ interface User {
   id: string;
   role?: string;
   legalSpecialties?: string[];
-}
+} }
 
-interface EnhancedContext {, caseId: string;, evidence: EvidenceItem[];
+interface EnhancedContext { caseId: string;, evidence: EvidenceItem[];
   userId: string;
   analysisType: string;
   model: string;
@@ -52,20 +52,20 @@ interface EnhancedContext {, caseId: string;, evidence: EvidenceItem[];
     userSpecialties?: string[];
     timestamp?: string;
   };
-}
+} }
 
-interface ModelCheck {, available: boolean;, models: string[];
-}
+interface ModelCheck { available: boolean;, models: string[];
+} }
 
-interface RiskAssessment {, level: 'low' | 'medium' | 'high';, factors: string[];
-}
+interface RiskAssessment { level: 'low' | 'medium' | 'high';, factors: string[];
+} }
 
-interface AuditLog {, userId: string;, caseId: string;
+interface AuditLog { userId: string;, caseId: string;
   analysisType: string;
- , model: string;
+  model: string;
   confidence?: number;
   processingTime?: number;
-}
+} }
 
 // Add a narrow RAG response type
 type RAGResponse = {
@@ -74,7 +74,7 @@ type RAGResponse = {
   sources?: Source[];
   confidence?: number;
   tokenCount?: number;
-} & Record<string, unknown>;
+} }& Record<string, unknown>;
 
 // --- Docker-first endpoint helpers (use consistent naming) ---
 // Replace ad-hoc OLLAMA URL hardcoding by a single exported helper.
@@ -82,18 +82,18 @@ type RAGResponse = {
 // export function getEnvUrl(envName: string, dockerHost: string, localFallback?: string) {
 //   // prefer process.env, then docker host, then optional local fallback
 //   return process.env[envName] || dockerHost || localFallback || '';
-// }
+// } }
 
 // // Exported central Ollama helper so callers/importers use this instead of embedding URLs.
 // export function getOllamaEndpoint(): string {
 //   // docker-first with optional local fallback
 //   return getEnvUrl('OLLAMA_URL', 'http://ollama:11434', 'http://localhost:11434');
-// }
+// } }
 
 // function getEnhancedRagEndpoint(): string {
 //   // keep docker-first pattern for other services
 //   return getEnvUrl('ENHANCED_RAG_URL', 'http://enhanced-rag:8094', 'http://localhost:8094');
-// }
+// } }
 
 export interface ProcessEvidenceRequest { caseId: string;, evidence: EvidenceItem[];
   userId: string;
@@ -102,25 +102,25 @@ export interface ProcessEvidenceRequest { caseId: string;, evidence: EvidenceIt
   temperature?: number;
   maxTokens?: number;
   stream?: boolean;
-}
-export interface LegalAnalysisResponse {, summary: string;, sources: Source[];
+} }
+export interface LegalAnalysisResponse { summary: string;, sources: Source[];
   confidence: number;
   legalConcepts: string[];
   recommendations: string[];
   riskAssessment?: RiskAssessment;
   processingTime: number;
   tokenCount: number;
-}
+} }
 const, originalPOSTHandler: RequestHandler = async event => {
   // receive full RequestEvent so we can pass it to getUser()
-  const { request } = event;
+  const { request } }= event;
   const startTime = performance.now();
   try {
     // Authentication check - pass the full event
     const userRes = await getUser(event);
     const user = (userRes as { user?: User }).user || null;
     if (!user) {
-      return json({ error: 'Authentication required' }, { status: 401 });'' }
+      return json({ error: 'Authentication required' }, { status: 401 });'' } }
     // Parse request body
     const body: ProcessEvidenceRequest = await request.json();
     const {
@@ -132,27 +132,27 @@ const, originalPOSTHandler: RequestHandler = async event => {
       temperature = 0.3, // Lower for legal precision
       maxTokens = 2048,
       stream = false
-    } = body;
+    } }= body;
     // Validate required fields
     if (!caseId || !evidence || !userId) {
       return json(
         { error: `Missing required, fields: caseId, evidence, userId` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Verify user matches authenticated user
     if (userId !== user.id) {
       return json({ error: 'User ID mismatch' }, { status: 403 });
-    }
+    } }
     // Check Ollama model availability
     const modelCheck = await checkOllamaModel(model);
     if (!modelCheck.available) {
       return json(
         {
-          error: 'Model ${model} not available. Available, models: ${modelCheck.models.join(', `)}' },'`
-        { status: 503 }
+          error: 'Model ${model} }not available. Available, models: ${modelCheck.models.join(', `)} } },'`
+        { status: 503 } }
       );
-    }
+    } }
     // Prepare enhanced context for legal analysis
     const enhancedContext: EnhancedContext = {
       caseId,
@@ -165,10 +165,10 @@ const, originalPOSTHandler: RequestHandler = async event => {
       maxTokens,
       stream,
       metadata: {
-       , userRole: user.role,
+  userRole: user.role,
         userSpecialties: user.legalSpecialties || [],
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     // Route to Enhanced RAG service GPU processing
     const ragResponse = await fetch(`${getEnhancedRagEndpoint()}/api/gpu/compute`, {
@@ -179,7 +179,7 @@ const, originalPOSTHandler: RequestHandler = async event => {
         'X-Case-ID': caseId
       },
       body: JSON.stringify({
-       , input_data: enhancedContext,
+  input_data: enhancedContext,
         operation: 'legal_analysis',
         model: model,
         context: enhancedContext
@@ -190,20 +190,20 @@ const, originalPOSTHandler: RequestHandler = async event => {
       console.warn('Enhanced RAG service unavailable, falling back to direct Ollama');
       const directResult = await processWithDirectOllama(enhancedContext, startTime);
       return json(directResult);
-    }
+    } }
     let ragResult: RAGResponse = {};
     try {
       const parsed = (await ragResponse.json().catch(() => ({}))) as: unknown;
       if (typeof parsed === 'object' && parsed !== null) {
         ragResult = parsed as RAGResponse;
-      } else {
+      } }else {
         ragResult = {};
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('RAG service response parsing failed, falling back to direct Ollama');
       const directResult = await processWithDirectOllama(enhancedContext, startTime);
       return json(directResult);
-    }
+    } }
     // Enhance response with additional legal analysis
     const summaryText = ragResult.summary ?? ragResult.response ?? '';
     const confidenceValue = typeof ragResult.confidence === 'number' ? ragResult.confidence : 0.85;
@@ -212,7 +212,7 @@ const, originalPOSTHandler: RequestHandler = async event => {
       typeof ragResult.tokenCount === 'number' ? ragResult.tokenCount : estimateTokenCount(String(summaryText));
 
     const enhancedResult: LegalAnalysisResponse = {
-     , summary: String(summaryText),
+  summary: String(summaryText),
       sources: sourcesValue,
       confidence: confidenceValue,
       legalConcepts: extractLegalConcepts(String(summaryText)),
@@ -231,26 +231,26 @@ const, originalPOSTHandler: RequestHandler = async event => {
       processingTime: enhancedResult.processingTime
     });
     return json(enhancedResult);
-  } catch (err) {
+  } }catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('Evidence processing error:', message);'
+    console.error('Evidence processing error:', message);
     return json(
       {
         error: 'Failed to process evidence',
         details: message,
         processingTime: performance.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Check Ollama model availability
 async function checkOllamaModel(model: string): Promise<ModelCheck> {
   // move type-guard to function root (not inside try/catch)
-  function hasModelsField(obj: any): obj is { models: Array<{ name?: string }> } {
+  function hasModelsField(obj: any): obj is { models: Array<{ name?: string }> } }{
     return typeof obj === 'object' && obj !== null && Array.isArray((obj as { models?: any }).models);
-  }
+  } }
 
   try {
     const url = `${getOllamaEndpoint()}/api/tags`;
@@ -261,7 +261,7 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
     let, availableModels: string[] = [];
     if (hasModelsField(data)) {
       availableModels = data.models.map(m => m.name ?? '').filter(Boolean);
-    } else if (Array.isArray(data)) {
+    } }else if (Array.isArray(data)) {
       // handle top-level array of model descriptors
       availableModels = (data as Array<Record<string, unknown>>)
         .map(m => {
@@ -269,14 +269,14 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
           return typeof name === 'string' ? name : '';
         })
         .filter(Boolean);
-    }
+    } }
     return { available: availableModels.includes(model), models: availableModels };
-  } catch (err) {
+  } }catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('Ollama availability check failed: ', message);'`'`
     return { available: false, models: [] };
-  }
-}
+  } }
+} }
 
 // Get specialized system prompt for legal analysis
 function getLegalSystemPrompt(analysisType: string): string {
@@ -297,7 +297,7 @@ Format: Comprehensive research memo with citations and legal analysis.`,`
 Focus, on: Similarities/differences in facts, legal issues, holdings, and reasoning.
 Format: Comparative analysis highlighting relevant patterns and distinctions.' };`'`
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
-}
+} }
 
 // Fallback processing with direct Ollama integration
 async function processWithDirectOllama(context: EnhancedContext, startTime: number): Promise<LegalAnalysisResponse> {
@@ -311,11 +311,11 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
       body: JSON.stringify({
-       , model: context?.model || 'unknown',
+  model: context?.model || 'unknown',
         prompt,
         system: context.systemPrompt,
         options: {
-         , temperature: context.temperature,
+  temperature: context.temperature,
           num_predict: context.maxTokens,
           top_p: 0.9,
           repeat_penalty: 1.1
@@ -326,12 +326,12 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
     clearTimeout(timeout);
     if (!resp.ok) {
       const text = await resp.text().catch(() => '');
-      throw new Error(`Ollama error: ${resp.status} ${text}`);
-    }
+      throw new Error(`Ollama error: ${resp.status} }${text}`);
+    } }
     const parsed = (await resp.json().catch(() => ({}))) as Record<string, unknown>;
     const summaryText = String(parsed['response'] ?? parsed['summary'] ?? '');
     const responseObj: LegalAnalysisResponse = {
-     , summary: summaryText,
+  summary: summaryText,
       sources: [],
       confidence: 0.75,
       legalConcepts: extractLegalConcepts(summaryText),
@@ -341,12 +341,12 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
       tokenCount: estimateTokenCount(summaryText)
     };
     return responseObj;
-  } catch (err) {
+  } }catch (err) {
     clearTimeout(timeout);
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`Direct Ollama processing failed: ${message}`);
-  }
-}
+  } }
+} }
 
 // Create optimized prompt for legal analysis
 function createLegalPrompt(context: EnhancedContext): string {
@@ -354,11 +354,11 @@ function createLegalPrompt(context: EnhancedContext): string {
     .map((item, index) => `Evidence ${index + 1}: ${JSON.stringify(item)}`)
     .join('\n\n');
   return `Case ID: ${context.caseId}`
-Analysis Type: ${context.analysisType}
+Analysis Type: ${context.analysisType} }
 Evidence to, Analyze:
-${evidenceText}
-Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this evidence.
-Include relevant legal principles, potential issues, and actionable insights.`;' }'`
+${evidenceText} }
+Please provide a comprehensive ${context.analysisType.replace('_', ' ')} }of this evidence.
+Include relevant legal principles, potential issues, and actionable insights.`;' } }`
 
 // Extract legal concepts from analysis text
 function extractLegalConcepts(text: string): string[] {
@@ -387,7 +387,7 @@ function extractLegalConcepts(text: string): string[] {
   const t = (text || '').toLowerCase();
   const concepts = legalTerms.filter(term => t.includes(term));
   return [...new Set(concepts)]; // Remove duplicates
-}
+} }
 
 // Generate contextual recommendations
 function generateRecommendations(
@@ -401,15 +401,15 @@ function generateRecommendations(
       'Document all evidence thoroughly',
       'Consider early settlement negotiations if liability is clear'
     );
-  } else if (analysisType === 'legal_research') {
+  } }else if (analysisType === 'legal_research') {
     recommendations.push(
       'Review recent case law in this jurisdiction',
       'Check for updated statutory requirements',
       'Consult specialized legal databases'
     );
-  }
+  } }
   return recommendations;
-}
+} }
 
 // Assess legal risk level
 function assessLegalRisk(
@@ -425,19 +425,19 @@ function assessLegalRisk(
   if (riskCount > 2 || evidenceCount > 10) {
     level = 'high';
     factors.push('Multiple risk indicators identified', 'Substantial evidence volume');
-  } else if (riskCount > 0 || evidenceCount > 5) {
+  } }else if (riskCount > 0 || evidenceCount > 5) {
     level = 'medium';
     factors.push('Some risk indicators present', 'Moderate evidence complexity');
-  } else {
+  } }else {
     factors.push('Limited risk indicators', 'Manageable evidence volume');
-  }
+  } }
   return { level, factors };
-}
+} }
 
 // Estimate token count (rough approximation)
 function estimateTokenCount(text: string): number {
   return Math.ceil(text.split(/\s+/).length * 1.3); // Rough token estimation
-}
+} }
 
 // Log analysis for audit trail
 async function logAnalysis(data: AuditLog): Promise<void> {
@@ -447,9 +447,9 @@ async function logAnalysis(data: AuditLog): Promise<void> {
       timestamp: new Date().toISOString(),
       ...data
     });
-  } catch (err) {
+  } }catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.warn('Failed to log analysis:', message);
-  }
-}
+  } }
+} }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

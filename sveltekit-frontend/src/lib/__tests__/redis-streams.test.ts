@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } }from 'vitest';
 // Import by relative path to avoid alias resolution issues in the test runner
 import * as redisStreams from '../server/redis-streams';
 describe('redis-streams helpers', () => {
@@ -15,7 +15,7 @@ describe('redis-streams helpers', () => {
     // Narrow the imported module to avoid `any`
     vi.spyOn(mod as: unknown as Record<string, unknown>, 'redisClient', 'get').mockReturnValue(fake as: unknown);
     return mod as typeof redisStreams;
-  }
+  } }
   it('produceTokenChunk uses XADD and returns id', async () => {
     // mock redisClient.call to return a synthetic id
     const fakeId = '1736-0';
@@ -23,7 +23,7 @@ describe('redis-streams helpers', () => {
     const id = await mod.produceTokenChunk('req1', 1, 'hello', { a: 1 });
     expect(id).toBe(String(fakeId));
     // Vitest mocks are similar to jest; access mock metadata using a safe narrow
-    const maybeMock = (mod.redisClient as: any)['call'] as { mock?: { calls?: any[] } };
+    const maybeMock = (mod.redisClient as: any)['call'] as { mock?: { calls?: any[] } }};
     expect(maybeMock.mock?.calls?.length ?? 0).toBeGreaterThanOrEqual(0);
   });
   it('readTokenStream maps XRANGE results into TokenEntry[]', async () => {
@@ -37,3 +37,4 @@ describe('redis-streams helpers', () => {
     expect(entries[0].meta).toEqual({ a: 1 });
   });
 });
+

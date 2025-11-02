@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // @ts-nocheck
-import { pgTable, text, uuid, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { vector } from 'pgvector/drizzle';
-import { relations } from 'drizzle-orm/relations';
+import { pgTable, text, uuid, timestamp, jsonb, index } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
+import { vector } }from 'pgvector/drizzle';
+import { relations } }from 'drizzle-orm/relations';
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
@@ -29,7 +29,7 @@ export const documents = pgTable('documents', {
   summary: text('summary'),
   // use SQL JSON literals for jsonb defaults to avoid schema generation issues
   tags: jsonb('tags').default(sql`'[]'::jsonb`),
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
@@ -61,10 +61,10 @@ export type User = { id: string;, email: string;
   role?: string | null;
   createdAt: Date;
 };
-export type Session = {, id: string;, userId: string;
+export type Session = { id: string;, userId: string;
   expiresAt: Date;
 };
-export type Document = {, id: string;, userId: string | null;
+export type Document = { id: string;, userId: string | null;
   title: string;
  , content: string;
   model?: string | null;
@@ -76,7 +76,7 @@ export type Document = {, id: string;, userId: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
-export type EmbeddingsCache = {, id: string;, textHash: string;
+export type EmbeddingsCache = { id: string;, textHash: string;
   model: string;
   embedding: number[] | Float32Array;
   // replaced `any` with safer type
@@ -115,3 +115,4 @@ export type NewEmbeddingsCache = {
   // replaced `any` with safer type
   tags?: any[] | null;
 };
+

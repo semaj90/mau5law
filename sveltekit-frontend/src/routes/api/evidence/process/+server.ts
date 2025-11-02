@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId
 // GET:  ?jobId=... -> returns processing status
 //, DELETE: ?jobId=... -> cancels job
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import { randomUUID } }from 'crypto';
 
 // Type definitions for evidence processing
 export type StepName =
@@ -21,12 +21,12 @@ export type StepName =
 
 export interface ProcessingRequest { evidenceId: string;, steps: StepName[];
   options?: ProcessingOptions;
-}
+} }
 export interface ProcessingResult {
   sessionId?: string;
   jobId: string;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'error';
- , progress: number;
+  progress: number;
   steps?: StepName[];
   currentStep?: StepName | null;
   stepProgress?: number;
@@ -37,14 +37,14 @@ export interface ProcessingResult {
   endTime?: Date;
   processingTime?: number;
   gpuAccelerated?: boolean;
-}
+} }
 export interface ProcessingOptions {
   useGPUAcceleration?: boolean;
   priority?: 'low' | 'medium' | 'high' | 'normal';
   notify?: boolean;
   saveIntermediateResults?: boolean;
   overrideExisting?: boolean;
-}
+} }
 export interface EvidenceData {
   id: string;
   caseId?: string;
@@ -57,24 +57,24 @@ export interface EvidenceData {
   fileType?: string | null;
   location?: string | null;
   uploadedAt?: string | Date | null;
-}
+} }
 
 // Added: typed results for each processing step and a union used as StepResult
-export interface OCRResult {, text: string;, confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   ocrEngine?: string;
   pages?: number;
-}
+} }
 
 export interface EmbeddingResult {
   embedding: number[];
   model?: string;
   dimensions?: number;
-}
+} }
 
-export interface AnalysisResult {, summary: string;, keywords: string[];
+export interface AnalysisResult { summary: string;, keywords: string[];
   confidence?: number;
   insights?: Record<string, unknown> | null;
-}
+} }
 
 export interface ClassificationResult {
   significance: 'low' | 'medium' | 'high';
@@ -82,16 +82,16 @@ export interface ClassificationResult {
   admissibility?: string;
   priority?: 'routine' | 'urgent' | string;
   categories?: string[];
-}
+} }
 
-export interface EntityExtractionResult {, entities: Array<{, text: string;
+export interface EntityExtractionResult { entities: Array<{ text: string;
     type: string;
     confidence?: number;
     start?: number;
     end?: number;
   }>;
   method?: string;
-}
+} }
 
 export interface SimilarEvidenceResult {
   similarEvidence: Array<{
@@ -100,13 +100,13 @@ export interface SimilarEvidenceResult {
     snippet?: string;
   }>;
   totalFound: number;
-}
+} }
 
 export interface IndexResult {
   indexed: boolean;
   vectorId?: string;
   collection?: string;
-}
+} }
 
 // Union type used for typed step results throughout the service
 export type StepResult =
@@ -122,15 +122,15 @@ export type StepResult =
 class EvidenceProcessingService {
   private static instance: EvidenceProcessingService | null = null;
   private, processingJobs: Map<string, ProcessingResult> = new Map();
-  private constructor() {}
+  private constructor() {} }
   static getInstance(): EvidenceProcessingService {
     if (!EvidenceProcessingService.instance) {
       EvidenceProcessingService.instance = new EvidenceProcessingService();
-    }
+    } }
     return EvidenceProcessingService.instance;
-  }
+  } }
   // Return a typed shape instead of: any
-  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string;, jobId: string }> {
+  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string; jobId: string }> {
     const sessionId = randomUUID();
     const jobId = randomUUID();
     const processingResult: ProcessingResult = {
@@ -150,7 +150,7 @@ class EvidenceProcessingService {
     this.processingJobs.set(jobId, processingResult);
     // Background processing (non-blocking)
     this.processEvidence(sessionId, jobId, request).catch((err: any) => {
-      console.error('Processing background error:', err);'
+      console.error('Processing background error:', err);
       const r = this.processingJobs.get(jobId);
       if (r) {
         r.status = 'error';
@@ -158,10 +158,10 @@ class EvidenceProcessingService {
         r.endTime = new Date();
         r.processingTime = r.startTime ? Date.now() - r.startTime.getTime() : 0;
         this.processingJobs.set(jobId, r);
-      }
+      } }
     });
     return { sessionId, jobId };
-  }
+  } }
 
   private async processEvidence(sessionId: string, jobId: string, request: ProcessingRequest): Promise<void> {
     const result = this.processingJobs.get(jobId);
@@ -173,13 +173,13 @@ class EvidenceProcessingService {
         const rows = await db.select().from(evidence).where(eq(evidence.id, request.evidenceId)).limit(1);
         if (rows && rows.length > 0) {
           evidenceData = rows[0] as EvidenceData;
-        }
-      } catch (e: any) {
+        } }
+      } }catch (e: any) {
         console.warn('Failed to load evidence from DB, continuing with provided id.', e);
-      }
+      } }
       if (!evidenceData) {
         evidenceData = { id: request.evidenceId, title: undefined, description: undefined };
-      }
+      } }
       const totalSteps = Math.max(1, request.steps.length);
       const results: Record<string, StepResult> = {};
       for (let i = 0; i < request.steps.length; i++) {
@@ -207,17 +207,17 @@ class EvidenceProcessingService {
         if (handler) {
           try {
             stepResult = await handler(evidenceData, request.options);
-          } catch (e: any) {
+          } }catch (e: any) {
             stepResult = { error: e instanceof Error ? e.message : String(e) };
-          }
-        } else {
+          } }
+        } }else {
           stepResult = { error: `unknown_step` };
-        }
+        } }
         results[step] = stepResult;
         result.stepProgress = 100;
         result.progress = Math.floor(((i + 1) / totalSteps) * 100);
         this.processingJobs.set(jobId, result);
-      }
+      } }
 
       result.status = 'completed';
       result.results = results;
@@ -229,31 +229,31 @@ class EvidenceProcessingService {
       await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: any) => {
         console.warn('Failed to persist results:', e);
       });
-    } catch (err: any) {
+    } }catch (err: any) {
       result.status = 'error';
       result.error = err instanceof Error ? err.message : String(err);
       result.endTime = new Date();
       result.processingTime = result.startTime ? Date.now() - result.startTime.getTime() : 0;
       this.processingJobs.set(jobId, result);
-    }
-  }
+    } }
+  } }
 
   private async performOCR(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<OCRResult> {
     // Queue OCR job in RabbitMQ for async processing
-    const { publishJob } = await import('$lib/server/services');
+    const { publishJob } }= await import('$lib/server/services');
     await publishJob('ocr-processing', {
       evidenceId: evidenceData.id,
       fileUrl: evidenceData.fileUrl
     });
     return { text: evidenceData.description || evidenceData.title || '', confidence: 0.9, ocrEngine: `tesseract-gpu` };
-  }
+  } }
   private async generateEmbedding(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<EmbeddingResult> {
     // Use real Ollama embeddings (embeddinggemma:latest)
-    const { generateEmbedding } = await import('$lib/server/services');
-    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
+    const { generateEmbedding } }= await import('$lib/server/services');
+    const text = `${evidenceData.title || ''} }${evidenceData.description || '` }`.trim();'`
     const embedding = await generateEmbedding(text, evidenceData.id);
     return { embedding, model: 'embeddinggemma:latest', dimensions: embedding.length };
-  }
+  } }
   private async performAnalysis(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<AnalysisResult> {
     await new Promise(r => setTimeout(r, 120));
     return {
@@ -261,9 +261,9 @@ class EvidenceProcessingService {
       keywords: evidenceData.tags || [],
       confidence: 0.8
     };
-  }
+  } }
   private async performClassification(
-   , _evidenceData: EvidenceData,
+  _evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<ClassificationResult> {
     await new Promise(r => setTimeout(r, 80));
@@ -274,49 +274,49 @@ class EvidenceProcessingService {
       priority: 'routine',
       categories: []
     };
-  }
+  } }
   private async extractEntities(
-   , evidenceData: EvidenceData,
+  evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<EntityExtractionResult> {
     await new Promise(r => setTimeout(r, 60));
-    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`;'`
-    return { entities: text ? [{, text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: `stub` };
-  }
+    const text = `${evidenceData.title || ''} }${evidenceData.description || '` }`;'`
+    return { entities: text ? [{ text: text.slice(0, 30), type: 'text', confidence: 0.5 } } : [], method: `stub` };
+  } }
   private async findSimilarEvidence(
-   , evidenceData: EvidenceData,
+  evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<SimilarEvidenceResult> {
     // Use real vector search (Qdrant + pgvector)
-    const { searchSimilarDocuments } = await import('$lib/server/services');
-    const query = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
+    const { searchSimilarDocuments } }= await import('$lib/server/services');
+    const query = `${evidenceData.title || ''} }${evidenceData.description || '` }`.trim();'`
     const results = await searchSimilarDocuments(query, 5);
 
-    return { similarEvidence: results.map((r: any) => ({, id: r.id,
+    return { similarEvidence: results.map((r: any) => ({ id: r.id,
         score: r.score || r.similarity,
         snippet: r.payload?.title || '` })),'`
       totalFound: results.length
     };
-  }
+  } }
   private async indexEvidence(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<IndexResult> {
     // Index in both Qdrant and PostgreSQL + pgvector
-    const { indexDocument } = await import('$lib/server/services');
-    const content = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
+    const { indexDocument } }= await import('$lib/server/services');
+    const content = `${evidenceData.title || ''} }${evidenceData.description || '` }`.trim();'`
 
     await indexDocument({
       id: evidenceData.id,
       content,
       title: evidenceData.title,
       metadata: {
-       , type: 'evidence',
+  type: 'evidence',
         caseId: evidenceData.caseId,
         uploadedAt: evidenceData.uploadedAt,
         fileType: evidenceData.fileType
-      }
+      } }
     });
 
     return { indexed: true, vectorId: evidenceData.id, collection: `legal_documents` };
-  }
+  } }
   private async updateEvidenceWithResults(evidenceId: string, results: Record<string, unknown>): Promise<void> {
     // use a generic record to avoid `any`
     const updateData: Record<string, unknown> = { updatedAt: new Date() };
@@ -326,28 +326,28 @@ class EvidenceProcessingService {
       if (analysis.summary) updateData.aiSummary = analysis.summary;
       if (Array.isArray(analysis.keywords)) updateData.aiTags = analysis.keywords as: string[];
       updateData.aiAnalysis = analysis;
-    }
+    } }
     // embedding
     if (results.embedding && typeof results.embedding === 'object' && results.embedding !== null) {
       const emb = results.embedding as { embedding?: any };
       if (Array.isArray(emb.embedding)) {
         try {
           updateData.embedding = JSON.stringify(emb.embedding);
-        } catch {
+        } }catch {
           // ignore serialization failure
-        }
-      }
-    }
+        } }
+      } }
+    } }
     try {
       await db.update(evidence).set(updateData).where(eq(evidence.id, evidenceId));
-    } catch (e: any) {
+    } }catch (e: any) {
       // ignore persistence errors (best-effort)
       console.warn('DB update failed:', e);
-    }
-  }
+    } }
+  } }
   getProcessingStatus(jobId: string): ProcessingResult | null {
     return this.processingJobs.get(jobId) ?? null;
-  }
+  } }
   cancelProcessing(jobId: string): boolean {
     const r = this.processingJobs.get(jobId);
     if (r && r.status === 'processing') {
@@ -357,31 +357,31 @@ class EvidenceProcessingService {
       r.processingTime = r.startTime ? Date.now() - r.startTime.getTime() : 0;
       this.processingJobs.set(jobId, r);
       return true;
-    }
+    } }
     return false;
-  }
-}
+  } }
+} }
 const processingService = EvidenceProcessingService.getInstance();
 // POST endpoint: start processing
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { evidenceId, steps, options = {} } = body ?? {};
+    const { evidenceId, steps, options = {} }} }= body ?? {};
     if (!evidenceId || !steps || !Array.isArray(steps)) {
       return json({ error: 'evidenceId and steps array are required' }, { status: 400 });
-    }
+    } }
     const processingRequest: ProcessingRequest = {
       evidenceId,
       steps: steps as StepName[],
       options: {
-       , useGPUAcceleration: !!options.useGPUAcceleration,
+  useGPUAcceleration: !!options.useGPUAcceleration,
         priority: options.priority ?? 'normal',
         notify: !!options.notify,
         saveIntermediateResults: !!options.saveIntermediateResults,
         overrideExisting: !!options.overrideExisting
-      }
+      } }
     };
-    const { sessionId, jobId } = await processingService.startProcessing(processingRequest);
+    const { sessionId, jobId } }= await processingService.startProcessing(processingRequest);
     return json({
       sessionId,
       jobId,
@@ -389,43 +389,44 @@ export const, POST: RequestHandler = async ({ request }) => {
       steps: processingRequest.steps,
       options: processingRequest.options
     });
-  } catch (err: any) {
-    console.error('POST processing error:', err);'
+  } }catch (err: any) {
+    console.error('POST processing error:', err);
     const message = err instanceof Error ? err.message : 'Processing request failed';
     return json({ error: message }, { status: 500 });
-  }
+  } }
 };
 // GET endpoint: get status
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {
       return json({ error: 'jobId is required' }, { status: 400 });
-    }
+    } }
     const status = processingService.getProcessingStatus(jobId);
     if (!status) {
       return json({ error: 'Job not found` }, { status: 404 });'`
-    }
+    } }
     return json(status);
-  } catch (err: any) {
-    console.error('GET status error:', err);'
+  } }catch (err: any) {
+    console.error('GET status error:', err);
     return json({ error: `Failed to get status` }, { status: 500 });
-  }
+  } }
 };
 // DELETE endpoint: cancel job
-export const, DELETE: RequestHandler = async ({ url }) => {
+export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {
       return json({ error: `jobId is required` }, { status: 400 });
-    }
+    } }
     const cancelled = processingService.cancelProcessing(jobId);
     return json({
       cancelled,
       jobId,
       message: cancelled ? 'Processing cancelled' : `Job not found or not cancellable` });
-  } catch (err: any) {
-    console.error('DELETE error: ', err);'
+  } }catch (err: any) {
+    console.error('DELETE error: ', err);
     return json({ error: `Failed to cancel processing` }, { status: 500 });
-  }
+  } }
 };
+

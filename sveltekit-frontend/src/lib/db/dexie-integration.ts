@@ -4,7 +4,7 @@
  * Replaces raw IndexedDB with clean async/await syntax
  * Provides reactive Svelte stores for real-time UI updates
  */
-import Dexie, { type Table, liveQuery } from 'dexie';
+import Dexie, { type Table, liveQuery } }from 'dexie';
 // ============================================================================
 // DATABASE SCHEMA DEFINITIONS
 // ============================================================================
@@ -21,9 +21,9 @@ export interface ChatMessage {
       documentType?: string;
       jurisdiction?: string;
       practiceArea?: string;
-    }
-  }
-}
+    } }
+  } }
+} }
 export interface LegalDocument {
   id?: number;
   title: string;
@@ -36,12 +36,12 @@ export interface LegalDocument {
   created: Date;
   modified: Date;
   tags: string[];
-}
+} }
 export interface GraphNode {
   id?: number;
  , nodeId: string; // Neo4j node ID,
   label: string;
-  position: { x: number; y: number; z?: number } // Layout coordinates
+  position: { x: number; y: number; z?: number } }// Layout coordinates
  , embedding: number[]; // 384d vector from nomic-embed,
   rankingMatrix: number[]; // 4x4 matrix flattened to, 16 elements
   varianceMatrix: number[]; // 4x4 variance matrix,
@@ -51,9 +51,9 @@ export interface GraphNode {
     practiceArea?: string;
     confidence: number;
     lastUpdated: Date;
-  }
+  } }
   connections: string[]; // Connected node IDs
-}
+} }
 export interface GraphEdge {
   id?: number;
   fromNodeId: string;
@@ -61,14 +61,14 @@ export interface GraphEdge {
   weight: number;
  , edgeType: 'citation' | 'reference' | 'similarity' | 'precedent';
   metadata?: Record<string, unknown>; // Changed from: any
-}
+} }
 
 export interface SessionActivity {
   // New interface for session activities
   type: 'search' | 'chat' | 'document_view' | 'graph_explore';
  , data: Record<string, unknown>; // Changed from: any
   timestamp: Date;
-}
+} }
 
 export interface UserSession {
   id?: number;
@@ -77,7 +77,7 @@ export interface UserSession {
   startTime: Date;
   endTime?: Date;
   activities: Array<SessionActivity>; // Changed from Array<any>
-}
+} }
 export interface CacheEntry {
   id?: number;
   key: string;
@@ -86,15 +86,15 @@ export interface CacheEntry {
   expiresAt: Date;
   size: number;
   hitCount: number;
-}
+} }
 
 // New interface for exported data structure
-export interface ExportedData {, chatHistory: ChatMessage[];, legalDocuments: LegalDocument[];
+export interface ExportedData { chatHistory: ChatMessage[];, legalDocuments: LegalDocument[];
   graphNodes: GraphNode[];
   graphEdges: GraphEdge[];
   userSessions: UserSession[];
   exportedAt: string; //, ISO: string
-}
+} }
 
 // ============================================================================
 // DEXIE DATABASE CLASS
@@ -144,7 +144,7 @@ export class LegalAIDatabase extends Dexie {
        , lastUpdated: new Date(), // Explicitly set or override lastUpdated
       };
     });
-  }
+  } }
   // ========================================================================
   // CHAT HISTORY METHODS
   // ========================================================================
@@ -153,44 +153,44 @@ export class LegalAIDatabase extends Dexie {
       ...message,
       timestamp: new Date()
     });
-  }
+  } }
   // Reactive query - automatically updates UI when data changes
   getChatHistory(limit = 100) {
     return liveQuery(() => this.chatHistory.orderBy('timestamp').reverse().limit(limit).toArray());
-  }
+  } }
   getChatHistoryByContext(legalContext: { documentType?: string; jurisdiction?: string; practiceArea?: string }) {
     return liveQuery(() => {
       let query = this.chatHistory.toCollection();
       if (legalContext.documentType) {
         query = query.filter(msg => msg.metadata?.legalContext?.documentType === legalContext.documentType);
-      }
+      } }
       if (legalContext.jurisdiction) {
         query = query.filter(msg => msg.metadata?.legalContext?.jurisdiction === legalContext.jurisdiction);
-      }
+      } }
       if (legalContext.practiceArea) {
         query = query.filter(msg => msg.metadata?.legalContext?.practiceArea === legalContext.practiceArea);
-      }
+      } }
       return query.reverse().limit(50).toArray();
     });
-  }
+  } }
   async clearChatHistory(): Promise<void> {
     await this.chatHistory.clear();
-  }
+  } }
   // ========================================================================
   // LEGAL DOCUMENT METHODS
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ..._document, // Changed: 'document'; to: '_document';, created: new Date(),
+      ..._document, // Changed: 'document'; to: '_document'; created: new Date(),
       modified: new Date()
     });
-  }
+  } }
   getLegalDocuments() {
     return liveQuery(() => this.legalDocuments.orderBy('modified').reverse().toArray());
-  }
+  } }
   getLegalDocumentsByType(documentType: LegalDocument['documentType']) {
     return liveQuery(() => this.legalDocuments.where('documentType').equals(documentType).reverse().toArray());
-  }
+  } }
   async searchLegalDocuments(query: string): Promise<LegalDocument[]> {
     const searchTerm = query.toLowerCase();
     return await this.legalDocuments
@@ -203,7 +203,7 @@ export class LegalAIDatabase extends Dexie {
           item.tags.some(tag => tag.toLowerCase().includes(searchTerm))
       )
       .toArray();
-  }
+  } }
   // ========================================================================
   // GRAPH DATA METHODS
   // ========================================================================
@@ -213,16 +213,16 @@ export class LegalAIDatabase extends Dexie {
       metadata: {
         ...node.metadata,
         lastUpdated: new Date()
-      }
+      } }
     });
-  }
+  } }
   async addGraphEdge(edge: Omit<GraphEdge, 'id'>): Promise<number> {
     return await this.graphEdges.add(edge);
-  }
+  } }
   getGraphNodes() {
     return liveQuery(() => this.graphNodes.toArray()); // Added missing: ')'
-  }
-  getGraphNodesByRegion(bounds: { x: number; y: number;, width: number;, height: number }) {
+  } }
+  getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
     return liveQuery(() =>
       this.graphNodes
         .filter(
@@ -234,17 +234,17 @@ export class LegalAIDatabase extends Dexie {
         )
         .toArray()
     );
-  }
+  } }
   async getConnectedNodes(nodeId: string): Promise<GraphNode[]> {
     const edges = await this.graphEdges.where('fromNodeId').equals(nodeId).or('toNodeId').equals(nodeId).toArray();
     const connectedNodeIds = edges
       .map(edge => (edge.fromNodeId === nodeId ? edge.toNodeId : edge.fromNodeId))
       .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
     return await this.graphNodes.where('nodeId').anyOf(connectedNodeIds).toArray();
-  }
-  async updateGraphNodePosition(nodeId: string, position: {, x: number;, y: number; z?: number }): Promise<void> {
+  } }
+  async updateGraphNodePosition(nodeId: string, position: { x: number; y: number; z?: number }): Promise<void> {
     await this.graphNodes.where('nodeId').equals(nodeId).modify({ position });
-  }
+  } }
   // ========================================================================
   // CACHE METHODS
   // ========================================================================
@@ -261,7 +261,7 @@ export class LegalAIDatabase extends Dexie {
       size,
       hitCount: 0
     });
-  }
+  } }
   async getCache(key: string): Promise<unknown | null> {
     const entry = await this.cache.where('key').equals(key).first();
     if (!entry) return: null;
@@ -269,17 +269,17 @@ export class LegalAIDatabase extends Dexie {
     if (entry.expiresAt < new, Date()) {
       await this.cache.where('key').equals(key).delete();
       return: null;
-    }
+    } }
     // Increment hit count
     await this.cache
       .where('key')
       .equals(key)
       .modify({ hitCount: entry.hitCount + 1 });
     return entry.data;
-  }
+  } }
   async clearExpiredCache(): Promise<void> {
     await this.cache.where('expiresAt').below(new Date()).delete();
-  }
+  } }
   // ========================================================================
   // SESSION TRACKING
   // ========================================================================
@@ -290,10 +290,10 @@ export class LegalAIDatabase extends Dexie {
       startTime: new Date(),
       activities: []
     });
-  }
+  } }
   async addSessionActivity(
     sessionId: string,
-    activity: {, type: 'search' | 'chat' | 'document_view' | 'graph_explore';, data: Record<string, unknown> } // Updated data type
+    activity: { type: 'search' | 'chat' | 'document_view' | 'graph_explore'; data: Record<string, unknown> } }// Updated data type
   ): Promise<void> {
     const session = await this.userSessions.where('sessionId').equals(sessionId).first();
     if (session) {
@@ -305,16 +305,16 @@ export class LegalAIDatabase extends Dexie {
       await this.userSessions.where('sessionId').equals(sessionId).modify({
         activities: session.activities
       });
-    }
-  }
+    } }
+  } }
   async endSession(sessionId: string): Promise<void> {
     await this.userSessions.where('sessionId').equals(sessionId).modify({
       endTime: new Date()
     });
-  }
+  } }
   getActiveSession(sessionId: string) {
     return liveQuery(() => this.userSessions.where('sessionId').equals(sessionId).first());
-  }
+  } }
   // ========================================================================
   // MAINTENANCE & ANALYTICS
   // ========================================================================
@@ -336,13 +336,12 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: nodesCount,
       graphEdges: edgesCount,
       userSessions: sessionsCount,
-      cache: {
-       , entries: cacheCount,
+      cache: { entries: cacheCount,
         totalSize: cacheSize
       },
       estimatedSize: cacheSize + chatCount * 1000 + documentsCount * 5000, // Rough estimate
     };
-  }
+  } }
   async cleanupDatabase(): Promise<void> {
     // Clear expired cache
     await this.clearExpiredCache();
@@ -350,12 +349,12 @@ export class LegalAIDatabase extends Dexie {
     const oldMessages = await this.chatHistory.orderBy('timestamp').reverse().offset(1000).primaryKeys();
     if (oldMessages.length > 0) {
       await this.chatHistory.bulkDelete(oldMessages);
-    }
+    } }
     // Remove old sessions (keep last, 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     await this.userSessions.where('startTime').below(thirtyDaysAgo).delete();
     console.log('✅ Database cleanup completed');
-  }
+  } }
   async exportData() {
     const data = {
       chatHistory: await this.chatHistory.toArray(),
@@ -366,7 +365,7 @@ export class LegalAIDatabase extends Dexie {
       exportedAt: new Date().toISOString()
     };
     return data;
-  }
+  } }
   async importData(data: ExportedData): Promise<void> {
     await this.transaction('rw', this.tables, async () => {
       if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory);
@@ -376,8 +375,8 @@ export class LegalAIDatabase extends Dexie {
       if (data.userSessions) await this.userSessions.bulkAdd(data.userSessions);
     });
     console.log('✅ Data import completed');
-  }
-}
+  } }
+} }
 // ============================================================================
 // SINGLETON INSTANCE
 // ============================================================================

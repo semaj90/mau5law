@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { unifiedLegalProcessor } }from '$lib/services/unified-legal-simd-pgvector';
 /*
  * SIMD GPU + PGVector Legal Document Processing API
  * Handles high-performance legal document parsing and semantic indexing
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { content, title, documentType, metadata, action } = await request.json();
+    const { content, title, documentType, metadata, action } }= await request.json();
     console.log(`📝 Processing legal document via SIMD + PGVector API: ${action}`);
     switch (action) {
       case, 'process': {
@@ -16,14 +16,14 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             { error: 'Missing required, fields: content, title, documentType'
             },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const result = await unifiedLegalProcessor.processAndStoreLegalDocument(
           content,
           title,
           documentType,
-          metadata || {}
+          metadata || {} }
         );
         return json({
           success: true,
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any })
             .parsedDocument.confidence,
           processingStats: (
-            result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }
+            result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any } }
           ).processingStats,
           simdStats: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any })
             .parsedDocument.processingTime,
@@ -44,17 +44,17 @@ export const POST: RequestHandler = async ({ request }) => {
           vectorized: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any })
             .vectorized
         });
-      }
+      } }
       case, 'search': {
-        const { query, options = {} } = await request.json();
+        const { query, options = {} }} }= await request.json();
         if (!query) {
           return json(
             {
               error: 'Query is required for semantic search'
             },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const searchResults = await unifiedLegalProcessor.semanticSearch(query, options);
         return json({
           success: true,
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
           totalResults: searchResults.length,
           processingMethod: 'pgvector_similarity'
         });
-      }
+      } }
       case, 'stats': {
         const systemStats = await unifiedLegalProcessor.getSystemStats();
         return json({
@@ -71,26 +71,26 @@ export const POST: RequestHandler = async ({ request }) => {
           systemStats,
           timestamp: new Date().toISOString()
         });
-      }
+      } }
       default: {
         return json(
-          {, error: 'Invalid action. Supported, actions: process, search, stats'
+          { error: 'Invalid action. Supported, actions: process, search, stats'
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
-    }
-  } catch (error) {
-    console.error('❌ SIMD + PGVector API error:', error);'
+      } }
+    } }
+  } }catch (error) {
+    console.error('❌ SIMD + PGVector API error:', error);
     return json(
       {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -101,45 +101,46 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         systemStats,
         endpoints: {
-         , process: 'POST /api/legal/simd-process (action: "process")',
+  process: 'POST /api/legal/simd-process (action: "process")',
           search: 'POST /api/legal/simd-process (action: "search")',
           stats: 'GET /api/legal/simd-process?action=stats'
         },
         systemInfo: {
-         , simdEnabled: true,
+  simdEnabled: true,
           gpuAccelerated: true,
           pgvectorEnabled: true,
           threadSafe: true
         },
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     if (action === 'health') {
       // Basic health check
       return json({
         success: true,
         status: 'healthy',
         services: {
-         , simd_parser: 'operational',
+  simd_parser: 'operational',
           pgvector: 'operational',
           gpu_orchestrator: 'operational',
           cognitive_cache: 'operational` },'`
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     return json(
       {
         error: `Invalid action parameter` },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Health check failed:', error);
     return json(
       {
         success: false,
         status: 'degraded',
         error: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

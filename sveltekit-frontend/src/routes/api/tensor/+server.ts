@@ -2,9 +2,9 @@
  * SvelteKit API Route - Go Tensor Service Bridge
  * Bridges SvelteKit frontend with Go microservice on port, 8095
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client'
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } }from '$lib/services/go-tensor-service-client'
 
 // --- Start of local stubs for missing exports ---
 // NOTE: These are temporary stubs to resolve compilation errors.
@@ -12,14 +12,14 @@ import type { RequestHandler } from './$types.js';
 
 export interface TensorRequest { id: string;, documentId: string;
   data: Float32Array;
- , operation: 'vectorize' | 'process' | 'analyze' | 'similarity' | 'test';
+  operation: 'vectorize' | 'process' | 'analyze' | 'similarity' | 'test';
   options?: Record<string, unknown>;
-}
+} }
 
 // Define specific types for health and metrics responses
 interface HealthCheckResponse { status: string;, timestamp: string;
   error?: string;
-}
+} }
 
 interface MetricsResponse {
   totalRequests: number;
@@ -28,8 +28,8 @@ interface MetricsResponse {
   uptime: number;
   memoryUsage?: number;
   lastUpdate?: string;
- , mock: boolean;
-}
+  mock: boolean;
+} }
 
 interface IGoTensorServiceClient {
   init(): Promise<void>;
@@ -37,7 +37,7 @@ interface IGoTensorServiceClient {
   getMetrics(): Promise<MetricsResponse>;
   processTensor(request: TensorRequest): Promise<GoTensorServiceResponseRaw>;
   processBatch(requests: TensorRequest[]): Promise<GoTensorServiceResponseRaw[]>;
-}
+} }
 
 const goTensorService: IGoTensorServiceClient = {
   //, Removed: 'export'
@@ -56,9 +56,9 @@ const goTensorService: IGoTensorServiceClient = {
       id: request.id,
       success: true,
       result: {
-       , embeddings: request.operation === 'vectorize' ? mockTensorData(768) : undefined,
+  embeddings: request.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 100,
-        metadata: {, mock: true, operation: request.operation }
+        metadata: { mock: true, operation: request.operation } }
       },
       timestamp: new Date(),
       source: 'mock-stub'
@@ -70,14 +70,14 @@ const goTensorService: IGoTensorServiceClient = {
       id: req.id,
       success: true,
       result: {
-       , embeddings: req.operation === 'vectorize' ? mockTensorData(768) : undefined,
+  embeddings: req.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 150,
-        metadata: {, mock: true, operation: req.operation }
+        metadata: { mock: true, operation: req.operation } }
       },
       timestamp: new Date(),
       source: 'mock-stub'
     }));
-  }
+  } }
 };
 
 export function generateTensorRequest(
@@ -91,13 +91,13 @@ export function generateTensorRequest(
     documentId,
     data,
     operation,
-    options: options || {}
+    options: options || {} }
   };
-}
+} }
 
 export function mockTensorData(length: number): Float32Array {
   return new Float32Array(Array.from({ length }, () => Math.random()));
-}
+} }
 // --- End of local stubs ---
 
 // Define interfaces for the Go Tensor Service's raw response'
@@ -107,7 +107,7 @@ interface GoTensorProcessingResultRaw {
   metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
   similarity?: number;
   processingTime?: number;
-}
+} }
 
 interface GoTensorServiceResponseRaw {
   id?: string;
@@ -115,25 +115,25 @@ interface GoTensorServiceResponseRaw {
   result?: GoTensorProcessingResultRaw;
   error?: string;
   timestamp?: Date | string; // Assuming timestamp can be Date: object or ISO: string
-}
+} }
 
 // Define interface for the POST request body
 interface PostRequestBody { operation: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed, from: string, documentId: string;
- , data: number[] | Float32Array; // Explicitly type data to have a length property
+  data: number[] | Float32Array; // Explicitly type data to have a length property
   options?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
-}
+} }
 
 // Define interface for individual batch request items
 interface BatchTensorRequestItem {
   documentId?: string;
   data: number[] | Float32Array;
   operation?: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed, from: string
-  options?: Record<string, unknown>; // Changed: 'any';, to: 'unknown' }
+  options?: Record<string, unknown>; // Changed: 'any'; to: 'unknown' } }
 
 // Define interface for the PUT request body (batch processing)
 interface PutRequestBody {
   requests: BatchTensorRequestItem[];
-}
+} }
 
 // Initialize tensor service connection
 let isInitialized = $state<boolean>(false);
@@ -143,14 +143,14 @@ async function ensureInitialized(): Promise<void> {
       await goTensorService.init();
       isInitialized = true;
       console.log('Go tensor service initialized via API route');
-    } catch (error) {
+    } }catch (error) {
       console.log('Go tensor service not available, using mock mode');
       // Continue with mock responses when service is unavailable
-    }
-  }
-}
+    } }
+  } }
+} }
 // GET: Health check and service status
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   await ensureInitialized();
   const endpoint = url.searchParams.get('endpoint');
   switch (endpoint) {
@@ -161,14 +161,14 @@ export const, GET: RequestHandler = async ({ url }) => {
           success: true,
           data: health
         });
-      } catch (error) {
+      } }catch (error) {
         return json({
           success: false,
           data: {
-           , status: 'offline',
+  status: 'offline',
             lastCheck: new Date(),
-            error: error instanceof Error ? error.message : 'Unknown error' }'` });'`
-      }
+            error: error instanceof Error ? error.message : 'Unknown error' } }` });'`
+      } }
     case, 'metrics':
       try {
         const metrics = await goTensorService.getMetrics();
@@ -176,20 +176,20 @@ export const, GET: RequestHandler = async ({ url }) => {
           success: true,
           data: metrics
         });
-      } catch (error) {
+      } }catch (error) {
         // Return mock metrics when service is unavailable
         return json({
           success: true,
           data: {
-           , totalRequests: Math.floor(Math.random() * 1000) + 500,
+  totalRequests: Math.floor(Math.random() * 1000) + 500,
             activeConnections: Math.floor(Math.random() * 10) + 1,
             averageLatency: Math.floor(Math.random() * 50) + 20,
             uptime: Math.floor(Math.random() * 86400) + 3600,
             memoryUsage: Math.floor(Math.random() * 30) + 40,
             lastUpdate: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
     case, 'test': {
       // Added opening brace
       // Generate test tensor data
@@ -197,50 +197,50 @@ export const, GET: RequestHandler = async ({ url }) => {
       const testRequest = generateTensorRequest('test-doc-123', testData, 'vectorize');
       return json({
         success: true,
-        data: {, request: {, id: testRequest.id,
+        data: { request: { id: testRequest.id,
             documentId: testRequest.documentId,
             dataLength: testRequest.data.length,
             operation: testRequest.operation
           },
           testVector: Array.from(testData).slice(0, 10), // First, 10 values for preview
-          message: `Test tensor data generated successfully` }
+          message: 'Test tensor data generated successfully' } }
       });
-    } // Added closing brace
+    } }// Added closing brace
     default: return json(
         {
-         , success: false,
-          error: `Unknown endpoint.;, Available: health, metrics, test` },
-        { status: 400 }
+  success: false,
+          error: `Unknown endpoint.; Available: health, metrics, test` },
+        { status: 400 } }
       );
-  }
+  } }
 };
 // POST: Process tensor data
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   await ensureInitialized();
   try {
     const body: PostRequestBody = await request.json(); // Type the request body
-    const { operation, documentId, data, options } = body;
+    const { operation, documentId, data, options } }= body;
     // Validate request
     if (!operation || !documentId || !data) {
       return json(
         {
           success: false,
-          error: 'Missing required;, fields: operation, documentId, data' },
-        { status: 400 }
+          error: 'Missing required; fields: operation, documentId, data' },
+        { status: 400 } }
       );
-    }
+    } }
     // Create tensor request
     const tensorRequest: TensorRequest = {
-     , id: 'api_${Date.now()}_${Math.random().toString(36).slice(2, 11)}', // Changed substr to slice
+  id: 'api_${Date.now()}_${Math.random().toString(36).slice(2, 11)} }, // Changed substr to slice
       documentId,
       data: Array.isArray(data) ? new Float32Array(data) : data,
       operation,
       options: {
-       , batchSize: options?.batchSize || 1,
+  batchSize: options?.batchSize || 1,
         timeout: options?.timeout || 10000,
         priority: options?.priority || 5,
         ...options
-      }
+      } }
     };
     // Try to process with Go service
     try {
@@ -248,35 +248,35 @@ export const, POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         data: {
-         , id: response.id,
+  id: response.id,
           success: response.success,
           result: response.result
             ? {
-               , processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
+  processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
                 embeddings: response.result.embeddings ? Array.from(response.result.embeddings) : undefined,
                 metadata: response.result.metadata,
                 similarity: response.result.similarity,
                 processingTime: response.result.processingTime
-              }
+              } }
             : undefined,
           error: response.error,
           timestamp: response.timestamp,
-          source: 'go-service' }'` });'`
-    } catch (serviceError) {
+          source: 'go-service' } }` });'`
+    } }catch (serviceError) {
       // Fallback to mock processing
       console.log('Go service unavailable, using mock processing');
       const mockResult = {
         id: tensorRequest.id,
         success: true,
         result: {
-         , processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed: 'as { length?: any }'
-         , embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
+  processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed: 'as { length?: any } }
+  embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation,
             documentId,
             processedAt: new Date().toISOString(),
-            dataSize: data.length, // Removed: 'as { length?: any }'
-           , mockMode: true
+            dataSize: data.length, // Removed: 'as { length?: any } }
+  mockMode: true
           },
           similarity: operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,
           processingTime: Math.random() * 1000 + 500
@@ -284,33 +284,33 @@ export const, POST: RequestHandler = async ({ request }) => {
         timestamp: new Date(),
         source: `mock-fallback` };
       return json({
-       , success: true,
+  success: true,
         data: mockResult
       });
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : `Request processing failed` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // PUT: Batch processing
-export const, PUT: RequestHandler = async ({ request }) => {
+export const PUT: RequestHandler = async ({ request }) => {
   await ensureInitialized();
   try {
     const body: PutRequestBody = await request.json(); // Apply type to body
-    const { requests } = body;
+    const { requests } }= body;
     if (!Array.isArray(requests) || requests.length === 0) {
       return json(
         {
           success: false,
           error: `Invalid or empty requests array` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Convert to tensor requests
     const tensorRequests: TensorRequest[] = requests.map((req: BatchTensorRequestItem, index: number) => ({
       // Apply type to req
@@ -318,43 +318,43 @@ export const, PUT: RequestHandler = async ({ request }) => {
       documentId: req.documentId || `doc-${index}`,
       data: Array.isArray(req.data) ? new Float32Array(req.data) : req.data,
       operation: (req.operation || 'process') as TensorRequest['operation'], // Explicitly cast to TensorRequest['operation']
-      options: req.options || {}
+      options: req.options || {} }
     }));
     try {
       // Process batch with Go service
       const responses: GoTensorServiceResponseRaw[] = await goTensorService.processBatch(tensorRequests);
       return json({
         success: true,
-        data: {, responses: responses.map((response: GoTensorServiceResponseRaw) => ({, id: response.id,
+        data: { responses: responses.map((response: GoTensorServiceResponseRaw) => ({ id: response.id,
             success: response.success,
             result: response.result
               ? {
-                 , processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
+  processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
                   embeddings: response.result.embeddings ? Array.from(response.result.embeddings) : undefined,
                   metadata: response.result.metadata,
                   similarity: response.result.similarity,
                   processingTime: response.result.processingTime
-                }
+                } }
               : undefined,
             error: response.error,
             timestamp: response.timestamp
           })),
           batchSize: responses.length,
-          source: 'go-service' }'` });'`
-    } catch (serviceError) {
+          source: 'go-service' } }` });'`
+    } }catch (serviceError) {
       // Fallback to mock batch processing
       console.log('Go service unavailable, using mock batch processing');
       const mockResponses = tensorRequests.map(req => ({
         id: req.id,
         success: true,
         result: {
-         , processedData:
+  processedData:
             req.operation === 'process'
               ? Array.from(mockTensorData(Array.isArray(req.data) ? req.data.length : 768))
               : undefined,
           embeddings: ['vectorize', 'analyze'].includes(req.operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
-           , operation: req.operation,
+  operation: req.operation,
             documentId: req.documentId,
             processedAt: new Date().toISOString(),
             mockMode: true
@@ -367,17 +367,18 @@ export const, PUT: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         data: {
-         , responses: mockResponses,
+  responses: mockResponses,
           batchSize: mockResponses.length,
-          source: `mock-fallback` }
+          source: `mock-fallback` } }
       });
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : `Batch processing failed` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

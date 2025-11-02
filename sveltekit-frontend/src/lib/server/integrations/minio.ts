@@ -14,18 +14,18 @@ interface MinIOConfig {
   accessKey: string;
  , secretKey: string;
   region?: string;
-}
+} }
 
 interface UploadOptions {
   contentType?: string;
   metadata?: Record<string, string>;
   tags?: Record<string, string>;
-}
+} }
 
 interface PresignedUrlOptions {
   expirySeconds?: number;
   responseHeaders?: Record<string, string>;
-}
+} }
 
 class MinIOStorageService {
   private client: Minio.Client;
@@ -41,15 +41,14 @@ class MinIOStorageService {
       region: config.region || process.env.MINIO_REGION || 'us-east-1'
     };
 
-    this.client = new Minio.Client({
-     , endPoint: this.config.endPoint,
+    this.client = new Minio.Client({ endPoint: this.config.endPoint,
       port: this.config.port,
       useSSL: this.config.useSSL,
       accessKey: this.config.accessKey,
       secretKey: this.config.secretKey,
       region: this.config.region
     });
-  }
+  } }
 
   /**
    * Create bucket if it doesn't exist'
@@ -59,9 +58,9 @@ class MinIOStorageService {
 
     if (!exists) {
       await this.client.makeBucket(bucketName, region || this.config.region);
-      console.log(`Bucket, '${bucketName}' created successfully`);
-    }
-  }
+      console.log(`Bucket, '${bucketName} } created successfully`);
+    } }
+  } }
 
   /**
    * Upload file from buffer
@@ -91,7 +90,7 @@ class MinIOStorageService {
       etag: result.etag,
       versionId: result.versionId
     };
-  }
+  } }
 
   /**
    * Upload file from stream
@@ -122,7 +121,7 @@ class MinIOStorageService {
       etag: result.etag,
       versionId: result.versionId
     };
-  }
+  } }
 
   /**
    * Download file as buffer
@@ -137,14 +136,14 @@ class MinIOStorageService {
       stream.on('end', () => resolve(Buffer.concat(chunks)));
       stream.on('error', reject);
     });
-  }
+  } }
 
   /**
    * Download file as stream
    */
   async downloadStream(bucketName: string, objectName: string): Promise<NodeJS.ReadableStream> {
     return await this.client.getObject(bucketName, objectName);
-  }
+  } }
 
   /**
    * Get presigned URL for upload (POST)
@@ -161,7 +160,7 @@ class MinIOStorageService {
       objectName,
       expiry
     );
-  }
+  } }
 
   /**
    * Get presigned URL for download (GET)
@@ -179,14 +178,14 @@ class MinIOStorageService {
       expiry,
       options?.responseHeaders
     );
-  }
+  } }
 
   /**
    * Delete file
    */
   async deleteFile(bucketName: string, objectName: string): Promise<void> {
     await this.client.removeObject(bucketName, objectName);
-  }
+  } }
 
   /**
    * Delete multiple files
@@ -195,7 +194,7 @@ class MinIOStorageService {
     if (objectNames.length === 0) return;
 
     await this.client.removeObjects(bucketName, objectNames);
-  }
+  } }
 
   /**
    * List files in bucket with prefix
@@ -204,11 +203,11 @@ class MinIOStorageService {
     bucketName: string,
     prefix?: string,
     recursive: boolean = false
-  ): Promise<Array<{ name: string; size: number; etag: string;, lastModified: Date }>> {
+  ): Promise<Array<{ name: string; size: number; etag: string; lastModified: Date }>> {
     const stream = this.client.listObjects(bucketName, prefix, recursive);
 
     return new Promise((resolve, reject) => {
-      const objects: Array<{ name: string; size: number; etag: string;, lastModified: Date }> = [];
+      const objects: Array<{ name: string; size: number; etag: string; lastModified: Date }> = [];
 
       stream.on('data', (obj) => {
         if (obj.name) {
@@ -218,13 +217,13 @@ class MinIOStorageService {
             etag: obj.etag,
             lastModified: obj.lastModified
           });
-        }
+        } }
       });
 
       stream.on('end', () => resolve(objects));
       stream.on('error', reject);
     });
-  }
+  } }
 
   /**
    * Check if file exists
@@ -233,13 +232,13 @@ class MinIOStorageService {
     try {
       await this.client.statObject(bucketName, objectName);
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       if (error.code === 'NotFound') {
         return false;
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get file metadata
@@ -258,7 +257,7 @@ class MinIOStorageService {
       contentType: stat.metaData?.['content-type'],
       metadata: stat.metaData
     };
-  }
+  } }
 
   /**
    * Copy file within MinIO
@@ -279,21 +278,21 @@ class MinIOStorageService {
     );
 
     return { etag: result.etag };
-  }
+  } }
 
   /**
    * Set bucket policy (JSON policy document)
    */
   async setBucketPolicy(bucketName: string, policy: string): Promise<void> {
     await this.client.setBucketPolicy(bucketName, policy);
-  }
+  } }
 
   /**
    * Get bucket policy
    */
   async getBucketPolicy(bucketName: string): Promise<string> {
     return await this.client.getBucketPolicy(bucketName);
-  }
+  } }
 
   /**
    * Health check
@@ -305,10 +304,10 @@ class MinIOStorageService {
         status: 'healthy',
         buckets: buckets.map(b => b.name)
       };
-    } catch (error) {
-      return { status: 'unavailable' };'' }
-  }
-}
+    } }catch (error) {
+      return { status: 'unavailable' };'' } }
+  } }
+} }
 
 // Singleton instance
 let, minioInstance: MinIOStorageService | null = null;
@@ -316,8 +315,8 @@ let, minioInstance: MinIOStorageService | null = null;
 export function getMinIOStorage(config?: Partial<MinIOConfig>): MinIOStorageService {
   if (!minioInstance || config) {
     minioInstance = new MinIOStorageService(config);
-  }
+  } }
   return minioInstance;
-}
+} }
 
 export { MinIOStorageService };

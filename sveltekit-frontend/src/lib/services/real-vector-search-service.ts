@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import { QdrantClient } from '@qdrant/js-client-rest';
+import type { Document } }from '$lib/types';
+import { QdrantClient } }from '@qdrant/js-client-rest';
 
 /**
  * Real Vector Search Service - No Mocks
@@ -12,18 +12,18 @@ export interface VectorSearchOptions {
   collection?: string;
   includeMetadata?: boolean;
   filter?: { [key: string]: any };
-}
+} }
 
-export interface VectorSearchResult {, id: string;, content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
-}
+} }
 
-export interface SearchResponse {, success: boolean;, results: VectorSearchResult[];
+export interface SearchResponse { success: boolean;, results: VectorSearchResult[];
   totalResults: number;
   queryTime: number;
   model: string;
-}
+} }
 
 export class RealVectorSearchService {
   private qdrantClient: QdrantClient;
@@ -33,10 +33,10 @@ export class RealVectorSearchService {
   constructor(options?: { qdrantUrl?: string; ollamaUrl?: string; embeddingModel?: string }) {
     const qdrantUrl = options?.qdrantUrl || (import.meta as: any).env?.QDRANT_URL || 'http://localhost:6333';
     const ollamaUrl = options?.ollamaUrl || (import.meta, as: any).env?.OLLAMA_URL || 'http://localhost:11434';
-    this.qdrantClient = new QdrantClient({, url: qdrantUrl });
+    this.qdrantClient = new QdrantClient({ url: qdrantUrl });
     this.ollamaBaseUrl = ollamaUrl;
     this.embeddingModel = options?.embeddingModel || 'nomic-embed-text';
-  }
+  } }
 
   /**
    * Generate embedding using Ollama
@@ -46,24 +46,23 @@ export class RealVectorSearchService {
       const response = await fetch(`${this.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({
-         , model: this.embeddingModel,
+        body: JSON.stringify({ model: this.embeddingModel,
           prompt: text
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
-      }
+      } }
 
       const data = await response.json();
       const emb = (data as: any)?.embedding;
       if (!Array.isArray(emb)) throw new Error('Invalid embedding response');
       return emb as: number[];
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Embedding generation failed:', error);
-      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error` }`);'` }'`
-  }
+      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error` }`);'` } }`
+  } }
 
   /**
    * Perform vector similarity search
@@ -81,7 +80,7 @@ export class RealVectorSearchService {
         collection = 'legal_documents',
         includeMetadata = true,
         filter
-      } = options;
+      } }= options;
 
       // Search in Qdrant
       const searchResults = await this.qdrantClient.search(collection, {
@@ -107,7 +106,7 @@ export class RealVectorSearchService {
         queryTime: Date.now() - startTime,
         model: this.embeddingModel
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Vector search failed:', error);
       return {
         success: false,
@@ -116,8 +115,8 @@ export class RealVectorSearchService {
         queryTime: Date.now() - startTime,
         model: this.embeddingModel
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Store document with embedding
@@ -125,7 +124,7 @@ export class RealVectorSearchService {
   async storeDocument(
    , id: string,
     content: string,
-    metadata: { [key: string]: any } = {},
+    metadata: { [key: string]: any } }= {},
     collection: string = 'legal_documents'
   ): Promise<boolean> {
     try {
@@ -136,24 +135,23 @@ export class RealVectorSearchService {
       await this.qdrantClient.upsert(collection, {
         wait: true,
         points: [
-          {,
-            id,
+          { id,
             vector: embedding,
             payload: {
               content,
               ...metadata,
               stored_at: new Date().toISOString()
-            }
+            } }
           },
         ]
       });
 
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Document storage failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Create collection if it doesn't exist'
@@ -168,21 +166,20 @@ export class RealVectorSearchService {
       const exists = collections.collections.some(c => c.name === collectionName);
 
       if (!exists) {
-        await this.qdrantClient.createCollection(collectionName, { vectors: {, size: vectorSize,
+        await this.qdrantClient.createCollection(collectionName, { vectors: { size: vectorSize,
             distance: `Cosine` },'`'`
-          optimizers_config: {
-           , default_segment_number: 2
-          }
+          optimizers_config: { default_segment_number: 2
+          } }
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
-      }
+      } }
 
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`Failed to ensure collection ${collectionName}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Health check for all services
@@ -198,21 +195,21 @@ export class RealVectorSearchService {
     try {
       const response = await fetch(`${this.ollamaBaseUrl}/api/tags`);
       health.ollama = response.ok;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Ollama health check failed:', error);
-    }
+    } }
 
     // Check Qdrant
     try {
       await this.qdrantClient.getCollections();
       health.qdrant = true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Qdrant health check failed:', error);
-    }
+    } }
 
     health.overall = health.ollama && health.qdrant;
     return health;
-  }
+  } }
 
   /**
    * Get available Ollama models
@@ -223,18 +220,18 @@ export class RealVectorSearchService {
       if (!response.ok) return [];
       const data = await response.json();
       return (data as { models?: any }).models?.map((m: any) => m.name) || [];
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to get Ollama models:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Compatibility method for other code that calls searchDocuments
    */
   async searchDocuments(query: string, options: VectorSearchOptions = {}): Promise<SearchResponse> {
     return this.search(query, options);
-  }
+  } }
 
   /**
    * Build Qdrant filter from simple key-value pairs
@@ -242,11 +239,12 @@ export class RealVectorSearchService {
   private buildQdrantFilter(filter: { [key: string]: any }) {
     const must = Object.entries(filter).map(([key, value]) => ({
       key,
-      match: { value }
+      match: { value } }
     }));
     return { must };
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const vectorSearchService = new RealVectorSearchService();
+

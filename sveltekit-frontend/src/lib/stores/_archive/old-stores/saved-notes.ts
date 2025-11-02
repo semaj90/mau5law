@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { derived, writable } from 'svelte/store';
+import { browser } }from '$app/environment';
+import { derived, writable } }from 'svelte/store';
 
 // Stronger types for the lightweight Fuse fallback
 type FuseKey<T> = { name: keyof T | string; weight?: number };
@@ -20,7 +20,7 @@ class FuseFallback<T> {
     this.list = list;
     // options.keys may be an array of objects with name property
     this.keys = Array.isArray(options.keys) ? options.keys.map(k => (k && String(k.name)) || String(k)) : [];
-  }
+  } }
 
   search(term: string): Array<FuseSearchResult<T>> {
     const lower = String(term || '').toLowerCase();
@@ -35,8 +35,8 @@ class FuseFallback<T> {
         })
       )
       .map(i => ({ item: i }));
-  }
-}
+  } }
+} }
 
 // Use a typed global cast instead of: "any"
 const GlobalWithMaybeFuse = globalThis, as: unknown as { Fuse?: any };
@@ -65,7 +65,7 @@ const idbUtils = {
   keys: async (): Promise<string[]> => Object.keys(localStorage).filter(k => k.startsWith('note:')),
   set: async <T = unknown>(_key: string, value: T): Promise<void> => {
     localStorage.setItem(_key, JSON.stringify(value));
-  }
+  } }
 };
 
 export interface SavedNote { id: string;, title: string;
@@ -79,11 +79,11 @@ export interface SavedNote { id: string;, title: string;
   userId: string;
   savedAt: Date;
   metadata?: any;
-}
-export interface NoteFilters {, search: string;, noteType: string;
+} }
+export interface NoteFilters { search: string;, noteType: string;
  , tags: string[];
   caseId?: string;
-}
+} }
 // Main store for saved notes
 export const savedNotes = writable<SavedNote[]>([]);
 // Filters store
@@ -99,28 +99,28 @@ export const filteredNotes = derived([savedNotes, noteFilters], ([$savedNotes, $
   // Apply basic filters first
   if ($noteFilters.noteType) {
     notes = notes.filter(note => note.noteType === $noteFilters.noteType);
-  }
+  } }
   if ($noteFilters.caseId) {
     notes = notes.filter(note => note.caseId === $noteFilters.caseId);
-  }
+  } }
   if ($noteFilters.tags.length > 0) {
     notes = notes.filter(note => $noteFilters.tags.some(tag => note.tags.includes(tag)));
-  }
+  } }
   // Apply fuzzy search
   if ($noteFilters.search && $noteFilters.search.trim()) {
     const fuse = new Fuse<SavedNote>($savedNotes, {
       keys: [
-        {, name: 'title', weight: 0.4 },
+        { name: 'title', weight: 0.4 },
         { name: 'content', weight: 0.3 },
         { name: 'markdown', weight: 0.2 },
-        { name: 'tags', weight: 0.1 }
+        { name: 'tags', weight: 0.1 } }
       ],
       threshold: 0.4,
       includeScore: true
     });
     const results = fuse.search($noteFilters.search);
     return results.map(result => result.item);
-  }
+  } }
   return notes.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
 });
 // Derived stores for quick stats
@@ -131,7 +131,7 @@ export const noteStats = derived(savedNotes, $savedNotes => ({
       acc[note.noteType] = (acc[note.noteType] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} }as Record<string, number>
   ),
   totalTags: Array.from(new Set($savedNotes.flatMap(note => note.tags))).length
 }));
@@ -142,9 +142,9 @@ class NotesManager {
   static getInstance(): NotesManager {
     if (!NotesManager.instance) {
       NotesManager.instance = new NotesManager();
-    }
+    } }
     return NotesManager.instance;
-  }
+  } }
   // Save note to both store and IndexedDB
   async saveNote(note: Omit<SavedNote, 'savedAt'>): Promise<void> {
     const noteWithTimestamp: SavedNote = {
@@ -157,30 +157,30 @@ class NotesManager {
       if (existingIndex >= 0) {
         notes[existingIndex] = noteWithTimestamp;
         return [...notes];
-      } else {
+      } }else {
         return [noteWithTimestamp, ...notes];
-      }
+      } }
     });
     // Save to IndexedDB for offline access
     if (browser) {
       try {
         await idbUtils.set(`${this.dbPrefix}${note.id}`, noteWithTimestamp);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.warn('Failed to save note to IndexedDB:', error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Remove note from store and IndexedDB
   async removeNote(noteId: string): Promise<void> {
     savedNotes.update(notes => notes.filter(n => n.id !== noteId));
     if (browser) {
       try {
         await idbUtils.del(`${this.dbPrefix}${noteId}`);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.warn('Failed to remove note from IndexedDB:', error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Load all notes from IndexedDB on app start
   async loadSavedNotes(): Promise<void> {
     if (!browser) return;
@@ -195,23 +195,23 @@ class NotesManager {
             // Ensure savedAt is a Date: object
             (maybeNote as SavedNote).savedAt = new Date((maybeNote as SavedNote).savedAt);
             notes.push(maybeNote as SavedNote);
-          }
-        } catch (error: any) {
+          } }
+        } }catch (error: any) {
           console.warn('Failed to load note from IndexedDB:', key, error);
-        }
-      }
+        } }
+      } }
       savedNotes.set(notes.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()));
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Failed to load notes from IndexedDB:', error);
-    }
-  }
+    } }
+  } }
   // Sync with server
   async syncWithServer(apiEndpoint: string = '/api/notes'): Promise<void> {
     try {
       const response: Response = await fetch(`${apiEndpoint}/sync`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json` }'`
+          'Content-Type': 'application/json` } }`
       });
 
       if (response.ok) {
@@ -238,22 +238,22 @@ class NotesManager {
               const localNote = merged.get(serverNote.id);
               if (!localNote || new Date(serverNote.savedAt) > new Date(localNote.savedAt)) {
                 merged.set(serverNote.id, serverNote);
-              }
+              } }
             });
             return Array.from(merged.values()).sort(
               (a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
             );
           });
-        } else {
+        } }else {
           console.warn('Unexpected server response shape for notes sync:', json);
-        }
-      } else {
+        } }
+      } }else {
         console.warn('Failed to sync notes, server responded with status', response.status);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('Failed to sync with server:', error);
-    }
-  }
+    } }
+  } }
   // Utility to check if: object is a valid note
   private isValidNote(obj: any): obj is SavedNote {
     if (!obj || typeof obj !== 'object') return false;
@@ -261,7 +261,7 @@ class NotesManager {
     return (
       typeof o.id === 'string' && typeof o.title === 'string' && typeof o.content === 'string' && Array.isArray(o.tags)
     );
-  }
+  } }
   // Export notes to file
   async exportNotes(format: 'json' | 'markdown' = 'json'): Promise<void> {
     if (!browser) return;
@@ -282,11 +282,11 @@ class NotesManager {
         .join('');
       filename = `notes-export-${new Date().toISOString().split('T')[0]}.md`;
       mimeType = 'text/markdown';
-    } else {
+    } }else {
       content = JSON.stringify(notes, null, 2);
       filename = `notes-export-${new Date().toISOString().split('T')[0]}.json`;
       mimeType = 'application/json';
-    }
+    } }
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -296,23 +296,23 @@ class NotesManager {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const notesManager = NotesManager.getInstance();
 // Convenience functions
 export async function saveNoteForLater(note: Omit<SavedNote, 'savedAt'>): Promise<void> {
   await notesManager.saveNote(note);
-}
+} }
 export async function removeSavedNote(noteId: string): Promise<void> {
   await notesManager.removeNote(noteId);
-}
+} }
 export async function loadSavedNotes(): Promise<void> {
   await notesManager.loadSavedNotes();
-}
+} }
 export function setNoteFilter(filter: Partial<NoteFilters>) {
   noteFilters.update(current => ({ ...current, ...filter }));
-}
+} }
 export function clearNoteFilters() {
   noteFilters.set({
     search: '',
@@ -320,5 +320,6 @@ export function clearNoteFilters() {
     tags: [],
     caseId: undefined
   });
-}
+} }
 export default notesManager;
+

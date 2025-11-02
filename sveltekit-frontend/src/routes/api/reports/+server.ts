@@ -1,8 +1,8 @@
-// Repaired imports (file previously had fragmented: 'type { RequestEvent }, { json }')
-import { json, type RequestEvent } from '@sveltejs/kit';
-import { aiReports, canvasStates, reports } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import { eq, and, or, like, desc, sql, type SQL } from 'drizzle-orm';
+// Repaired imports (file previously had fragmented: 'type { RequestEvent }, { json } })
+import { json, type RequestEvent } }from '@sveltejs/kit';
+import { aiReports, canvasStates, reports } }from '$lib/server/db/schema-postgres';
+import { db } }from '$lib/server/db/index';
+import { eq, and, or, like, desc, sql, type SQL } }from 'drizzle-orm';
 
 // Define types for Drizzle schema inference
 type AiReport = typeof aiReports.$inferSelect;
@@ -27,22 +27,22 @@ type ReportMetadata = {
 };
 
 // Define the structure of the GET response
-interface GetReportsResponse {, reports: (ReportUnion & {, canvasState: CanvasState | null })[];
+interface GetReportsResponse { reports: (ReportUnion & { canvasState: CanvasState | null })[];
   totalCount: number;
   hasMore: boolean;
-  pagination: {, limit: number;, offset: number;
-   , total: number;
+  pagination: { limit: number;, offset: number;
+  total: number;
   };
-}
+} }
 
 export async function GET({ url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const caseId = url.searchParams.get('caseId');
     const reportType = url.searchParams.get('reportType');
     const status = url.searchParams.get('status');
@@ -56,24 +56,24 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     let query;
     try {
       query = db.select().from(aiReports);
-    } catch (error: any) {
-      // Changed: 'any';, to: 'unknown'
+    } }catch (error: any) {
+      // Changed: 'any'; to: 'unknown'
       useAiReports = false;
       console.warn('aiReports table not found, using reports table');
       query = db.select().from(reports);
-    }
-    const conditions: SQL[] = []; // Changed: 'any[]';, to: 'SQL[]'
+    } }
+    const conditions: SQL[] = []; // Changed: 'any[]'; to: 'SQL[]'
     // Add filters (use correct schema)
     if (caseId) {
       conditions.push(eq(useAiReports ? aiReports.caseId : reports.caseId, caseId));
-    }
+    } }
     if (reportType) {
       conditions.push(eq(useAiReports ? aiReports.reportType : reports.reportType, reportType));
-    }
+    } }
     if (status && !useAiReports) {
       // aiReports does not have status, only filter if using reports
       conditions.push(eq(reports.status, status));
-    }
+    } }
     // Add search filter
     if (search) {
       conditions.push(
@@ -82,11 +82,11 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
           like(useAiReports ? aiReports.content : reports.content, `%${search}%`)
         )
       );
-    }
+    } }
     // Apply filters
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    }
+    } }
     // Add sorting
     const orderColumn =
       sortBy === 'title'
@@ -111,14 +111,14 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     query = query.limit(limit).offset(offset);
     const reportResults: ReportUnion[] = await query; // Explicitly type reportResults
     // Get total count for pagination
-    const baseCountQuery = db.select({, count: sql<number>`count(*)` }).from(useAiReports ? aiReports : reports);'`'`
+    const baseCountQuery = db.select({ count: sql<number>`count(*)` }).from(useAiReports ? aiReports : reports);'`'`
     const finalCountQuery = conditions.length > 0 ? baseCountQuery.where(and(...conditions)) : baseCountQuery;
     const totalCountResult = await finalCountQuery;
     const totalCount = totalCountResult[0]?.count || 0;
     // Get associated canvas states for each report
     const enrichedReports = await Promise.all(
       reportResults.map(async (report: ReportUnion) => {
-        // Changed: 'any';, to: 'ReportUnion'
+        // Changed: 'any'; to: 'ReportUnion'
         try {
           const canvasState = await db
             .select()
@@ -129,14 +129,14 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
             ...report,
             canvasState: canvasState[0] || null
           };
-        } catch (error: any) {
+        } }catch (error: any) {
           // Changed: 'any'; to: 'unknown'
           console.warn('Error fetching canvas, state:', error);
           return {
             ...report,
             canvasState: null
           };
-        }
+        } }
       })
     );
     return json({
@@ -152,27 +152,27 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       // TODO: Add GraphQL endpoint for flexible querying
       //, TODO: Add service worker for predictive prefetching and caching
       //, TODO: Add advanced analytics and event streaming
-    } satisfies GetReportsResponse); // Use: 'satisfies' to ensure type compatibility
-  } catch (error: any) {
+    } }satisfies GetReportsResponse); // Use: 'satisfies' to ensure type compatibility
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Error fetching, reports:', error);
     return json({ error: 'Failed to fetch reports' }, { status: 500 });
-  }
-}
+  } }
+} }
 export async function POST({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any';, to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const data = await request.json();
     // Validate required fields
     if (!data.title || !data.caseId) {
       return json({ error: 'Title and case ID are required' }, { status: 400 });
-    }
+    } }
     // Calculate word count and estimated read time
     const textContent = data.content ? data.content.replace(/<[^>]*>/g, '').trim() : '';
     const wordCount = textContent.split(/\s+/).filter((word: string) => word.length > 0).length;
@@ -196,39 +196,39 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
         aiSummary: data.aiSummary || null,
         aiTags: data.aiTags || [],
         templateId: data.templateId || null
-      } as ReportMetadata, // Explicitly cast to ReportMetadata
+      } }as ReportMetadata, // Explicitly cast to ReportMetadata
       createdBy: locals.user.id, // Replaced getUserId(locals)
     };
     const [newReport] = await db.insert(reports).values(reportData).returning();
     return json(newReport satisfies Report, { status: 201 }); // Use: 'satisfies' for type checking
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Error creating, report:', error);
     return json({ error: 'Failed to create report' }, { status: 500 });
-  }
-}
+  } }
+} }
 export async function PUT({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any';, to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const data = await request.json();
     if (!data.id) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
     // Ensure the ID is a: number (cast if needed)
     const reportId = typeof data.id === 'string' ? Number(data.id) : data.id;
     if (isNaN(reportId)) {
       return json({ error: 'Invalid report ID' }, { status: 400 });
-    }
+    } }
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
     // Calculate word count and estimated read time (streaming for large content)
     let wordCount = 0;
     if (data.content) {
@@ -239,14 +239,14 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
         const char = textContent[i];
         if (/\s/.test(char)) {
           inWord = false;
-        } else if (!inWord) {
+        } }else if (!inWord) {
           wordCount++;
           inWord = true;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     const updateDataObj: Partial<Report> = {
-     , updatedAt: new Date()
+  updatedAt: new Date()
     };
     // Only update provided fields
     if (data.title !== undefined) updateDataObj.title = data.title;
@@ -260,95 +260,96 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
         ...(data.metadata || {}),
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200)
-      } as ReportMetadata; // Explicitly cast to ReportMetadata
-    }
+      } }as ReportMetadata; // Explicitly cast to ReportMetadata
+    } }
     const [updatedReport] = await db.update(reports).set(updateDataObj).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Error updating, report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });
-  }
-}
+  } }
+} }
 export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any';, to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const reportId = url.searchParams.get('id');
     if (!reportId) {
       return json({ error: 'Report ID is required' }, { status: 400 });
-    }
+    } }
     // Check if report exists
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: 'Report not found' }, { status: 404 });
-    }
+    } }
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
     return json({ success: true, deletedReport: deletedReport satisfies Report }); // Use: 'satisfies' for type checking
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Error deleting, report:', error);
     return json({ error: 'Failed to delete report' }, { status: 500 });
-  }
-}
+  } }
+} }
 // PATCH endpoint for partial updates
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any';, to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available` }, { status: 500 });'`
-    }
+    } }
     const reportId = url.searchParams.get('id');
     if (!reportId) {
       return json({ error: `Report ID is required` }, { status: 400 });
-    }
+    } }
     const data = await request.json();
     // Check if report exists
     const existingReport = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!existingReport.length) {
       return json({ error: `Report not found` }, { status: 404 });
-    }
+    } }
     const updateData: Partial<Report> = {
-     , updatedAt: new Date()
+  updatedAt: new Date()
     };
     // Handle specific patch operations
     if (data.operation === 'publish') {
       updateData.status = 'published';
       updateData.isPublic = data.isPublic || false;
-    } else if (data.operation === 'archive') {
+    } }else if (data.operation === 'archive') {
       updateData.status = 'archived';
-    } else if (data.operation === 'draft') {
+    } }else if (data.operation === 'draft') {
       updateData.status = 'draft';
-    } else if (data.operation === 'addTag') {
+    } }else if (data.operation === 'addTag') {
       const currentTags = (existingReport[0].tags as: string[]) || [];
       if (!currentTags.includes(data.tag)) {
         updateData.tags = [...currentTags, data.tag];
-      }
-    } else if (data.operation === 'removeTag') {
+      } }
+    } }else if (data.operation === 'removeTag') {
       const currentTags = (existingReport[0].tags as: string[]) || [];
       updateData.tags = currentTags.filter(tag => tag !== data.tag);
-    } else {
+    } }else {
       // Regular field updates
       Object.keys(data).forEach(key => {
         if (key !== 'operation') {
           updateData[key] = data[key];
-        }
+        } }
       });
-    }
+    } }
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     console.error('Error patching, report: ', error);'`'`
     return json({ error: `Failed to update report` }, { status: 500 });
-  }
-}
+  } }
+} }
+

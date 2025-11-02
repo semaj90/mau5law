@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalAI } from '$lib/server/unified/legal-ai-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { legalAI } }from '$lib/server/unified/legal-ai-service';
 
 // Helper to safely extract an error message from: unknown
 function getErrorMessage(err: any): string {
@@ -11,10 +11,10 @@ function getErrorMessage(err: any): string {
   // Try JSON stringify fallback
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -27,10 +27,10 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       useRecommendations = true,
       cacheResults = true
-    } = body;
+    } }= body;
     if (!query || query.trim().length === 0) {
       return json({ error: 'Query is required' }, { status: 400 });
-    }
+    } }
     // Use unified search across all systems
     const searchResults = await legalAI.searchDocuments({
       query: query.trim(),
@@ -52,18 +52,19 @@ export const POST: RequestHandler = async ({ request }) => {
         threshold,
         caseId: caseId || null,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Use the safe extractor to avoid `any`
     const message = getErrorMessage(error);
-    console.error('Unified search error:', message);'
+    console.error('Unified search error:', message);
     return json(
       {
         error: 'Search failed',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

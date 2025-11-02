@@ -2,33 +2,32 @@
  * Semantic Search Service
  * Integrates with vector search database and AI embeddings
  */
-import { vectorSearch, getVectorSearchStats } from '$lib/server/db/vector-search.js';
-import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
+import { vectorSearch, getVectorSearchStats } }from '$lib/server/db/vector-search.js';
+import type { VectorSearchOptions, VectorSearchResult } }from '$lib/types/vector-search.js';
 export interface SemanticSearchOptions extends VectorSearchOptions {
   semanticExpansion?: boolean;
   queryRewriting?: boolean;
   filters?: {
     documentType?: string[];
-    dateRange?: { start?: Date; end?: Date }
+    dateRange?: { start?: Date; end?: Date } }
     tags?: string[];
     source?: string[];
-  }
-}
+  } }
+} }
 export interface SemanticSearchResult {
-  results: Array<{,
-    id,: string;
+  results: Array<{ id,: string;
     content: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any } }
     similarity: number;
     score: number;
   }>;
-  analytics: {, searchStrategy: string;, queryComplexity: string;
+  analytics: { searchStrategy: string;, queryComplexity: string;
     semanticConcepts: string[];
     cacheHit: boolean;
    , processingTime: number;
-  }
+  } }
   suggestions?: string[];
-}
+} }
 class SemanticSearchService {
   /**
    * Perform semantic search using vector embeddings
@@ -48,19 +47,18 @@ class SemanticSearchService {
       // Transform to semantic search result format
       return {
         results: vectorResult.results,
-        analytics: {
-         , searchStrategy: vectorResult.searchStrategy,
+        analytics: { searchStrategy: vectorResult.searchStrategy,
           queryComplexity: this.analyzeQueryComplexity(query),
           semanticConcepts: this.extractSemanticConcepts(query),
           cacheHit: false,
           processingTime: vectorResult.queryTime
         },
         suggestions: options.semanticExpansion ? this.generateSuggestions(query) : undefined
-      }
-    } catch (error) {
-      console.error('Semantic search error:', error);'
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-  }
+      } }
+    } }catch (error) {
+      console.error('Semantic search error:', error);
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+  } }
   /**
    * Generate embedding for query text
    * TODO: Integrate with Gemma embedding service
@@ -69,7 +67,7 @@ class SemanticSearchService {
     // Placeholder - replace with actual Gemma embedding generation
     // For now, return a dummy 768-dimensional vector
     return new Array(768).fill(0).map(() => Math.random());
-  }
+  } }
   /**
    * Analyze query complexity for analytics
    */
@@ -78,7 +76,7 @@ class SemanticSearchService {
     if (wordCount <= 3) return, 'simple';
     if (wordCount <= 10) return, 'medium';
     return, 'complex';
-  }
+  } }
   /**
    * Extract semantic concepts from query
    */
@@ -89,19 +87,19 @@ class SemanticSearchService {
       .filter(word => word.length > 3)
       .slice(0, 5);
     return concepts;
-  }
+  } }
   /**
    * Generate search suggestions
    */
   private generateSuggestions(query: string): string[] {
     // Placeholder for query expansion logic
     return [];
-  }
+  } }
   /**
    * Get search statistics
    */
   async getStats() {
     return await getVectorSearchStats();
-  }
-}
+  } }
+} }
 export const semanticSearchService = new SemanticSearchService();

@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { getPipelineHistogram } from '$lib/services/pipeline-metrics';
+import type { RequestHandler } }from './$types.js';
+import { getPipelineHistogram } }from '$lib/services/pipeline-metrics';
 export const GET: RequestHandler = async () => {
   const hist = getPipelineHistogram();
   // CSV header: stage,index,ms
@@ -8,8 +8,9 @@ export const GET: RequestHandler = async () => {
     (row.recentSamples || []).forEach((v, i) => {
       lines.push(`${row.stage},${i},${v}`);
     });
-  }
+  } }
   return new Response(lines.join('\n'), {
     status: 200,
-    headers: { 'content-type': 'text/csv', 'cache-control': 'no-store' }'' });
+    headers: { 'content-type': 'text/csv', 'cache-control': 'no-store' } } });
 };
+

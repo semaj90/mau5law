@@ -1,38 +1,38 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 /*
  * Binary-Optimized GPU Shader Cache API
  * Combines GPU shader caching with binary encoding middleware for maximum performance
  */
-import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
-import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
+import { binaryGPUShaderCache } }from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { binaryEncoder } }from '../../../../../lib/middleware/binary-encoding.js';
 // URL is globally available in SvelteKit; avoid Node: 'url' import
 // GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>
-export const, GET: RequestHandler = async ({ url, request }) => {
+export const GET: RequestHandler = async ({ url, request }) => {
   try {
     const cacheKey = url.searchParams.get('key');
     if (!cacheKey) {
       return json({ error: 'Missing cache key' }, { status: 400 });
-    }
+    } }
     // Retrieve shader with binary optimization (use safe helper to avoid: void-check issue)
     const shader = await safeRetrieveShader(cacheKey);
     if (!shader) {
       return json({ error: 'Shader not found' }, { status: 404 });
-    }
+    } }
     // Detect client's preferred encoding format'
     const acceptHeader = request.headers.get('accept') || '';
     let preferredFormat: 'cbor' | 'msgpack' | 'json' = 'json';
     if (acceptHeader.includes('application/cbor')) {
       preferredFormat = 'cbor';
-    } else if (acceptHeader.includes('application/msgpack')) {
+    } }else if (acceptHeader.includes('application/msgpack')) {
       preferredFormat = 'msgpack';
-    }
+    } }
     // Encode response with optimal format
     // ensure cacheKey is a concrete: string for consumers/type-checking
     const safeCacheKey = typeof cacheKey === 'string' ? cacheKey : '';
     const safeCompressionRatio = Number(shader.metrics?.compressionRatio ?? 1);
     const safeDecodingTime = Number(shader.metrics?.decodingTime ?? 0);
-    const responseData = { shader: {, sourceCode: shader.sourceCode,
+    const responseData = { shader: { sourceCode: shader.sourceCode,
         metadata: shader.metadata,
         metrics: shader.metrics
       },
@@ -42,9 +42,9 @@ export const, GET: RequestHandler = async ({ url, request }) => {
       decodingTime: '${safeDecodingTime.toFixed(2)}ms' };
     if (preferredFormat === 'json') {
       return json(responseData);
-    }
+    } }
     // Binary encoding for better performance
-    const { encoded, format: rawFormat, metrics } = await binaryEncoder.encode(responseData, preferredFormat);
+    const { encoded, format: rawFormat, metrics } }= await binaryEncoder.encode(responseData, preferredFormat);
     // Ensure format is a: string for header usage (defensive cast, from: unknown)
     const format = typeof rawFormat === 'string' ? rawFormat : String(rawFormat ?? 'unknown');
     const contentType = format === 'cbor' ? 'application/cbor' : 'application/msgpack';
@@ -54,12 +54,12 @@ export const, GET: RequestHandler = async ({ url, request }) => {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': String(metrics?.compressionRatio ?? ''),
-        'x-encode-time': '${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms` }'`
+        'x-encode-time': '${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms` } }`
     });
-  } catch (error: any) {
-    console.error('Binary shader cache GET error:', getErrorMessage(error));'
+  } }catch (error: any) {
+    console.error('Binary shader cache GET error:', getErrorMessage(error));
     return json({ error: `Internal server error` }, { status: 500 });
-  }
+  } }
 };
 // POST /api/v1/gpu-cache/binary/shader
 export const POST: RequestHandler = async ({ request }) => {
@@ -69,15 +69,15 @@ export const POST: RequestHandler = async ({ request }) => {
     let requestData: any;
     if (contentType.includes('application/cbor')) {
       const buffer = await request.arrayBuffer();
-      const { decoded } = await binaryEncoder.decode(buffer, 'cbor');
+      const { decoded } }= await binaryEncoder.decode(buffer, 'cbor');
       requestData = decoded;
-    } else if (contentType.includes('application/msgpack')) {
+    } }else if (contentType.includes('application/msgpack')) {
       const buffer = await request.arrayBuffer();
-      const { decoded } = await binaryEncoder.decode(buffer, 'msgpack');
+      const { decoded } }= await binaryEncoder.decode(buffer, 'msgpack');
       requestData = decoded;
-    } else {
+    } }else {
       requestData = await request.json();
-    }
+    } }
 
     // Narrow payload safely
     const payload = requestData && typeof requestData === 'object' ? (requestData as Record<string, unknown>) : {};
@@ -91,34 +91,34 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!sourceCode || compiledBinaryRaw === undefined) {
       return json({ error: `Missing required, fields: sourceCode, compiledBinary` }, { status: 400 });
-    }
+    } }
 
     // Convert to ArrayBuffer using helper
     const binaryData = await toArrayBuffer(compiledBinaryRaw);
     if (!binaryData) {
       return json({ error: `Unsupported compiledBinary format` }, { status: 400 });
-    }
+    } }
 
     // Store shader with binary optimization
     const entry = await safeStoreShader({
       sourceCode,
       compiledBinary: binaryData,
-      metadata: metadata || {}
+      metadata: metadata || {} }
     });
 
     // Get workflow optimization recommendations
     let optimizationRecommendations = null;
     if (workflowType) {
       optimizationRecommendations = await safeOptimizeForLegalWorkflow(workflowType);
-    }
+    } }
 
     // Coerce fields to primitives to avoid: 'unknown' -> string/number errors in downstream typing
     const response = {
-     , success: true,
+  success: true,
       message: 'Shader stored successfully',
       cacheKey: String(entry.cacheKey ?? ''),
       entry: {
-       , id: entry.id,
+  id: entry.id,
         shaderType: String(entry.shaderType ?? 'unknown'),
         encodingFormat: String(entry.encodingFormat ?? 'unknown'),
         compressionRatio: Number(entry.compressionRatio ?? 1),
@@ -126,28 +126,28 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       optimizationRecommendations,
       metrics: {
-       , compressionSavings: `${((1 - 1 / Number(entry.compressionRatio ?? 1)) * 100).toFixed(1)}%`,
+  compressionSavings: `${((1 - 1 / Number(entry.compressionRatio ?? 1)) * 100).toFixed(1)}%`,
         memoryReduction: `${(Number(entry.memoryFootprint ?? 0) / 1024).toFixed(1)}KB`,
         storageEfficiency:
           Number(entry.compressionRatio ?? 1) > 1.5
             ? 'excellent'
             : Number(entry.compressionRatio ?? 1) > 1.2
               ? 'good'
-              : `moderate` }
+              : `moderate` } }
     };
     return json(response);
-  } catch (error: any) {
-    console.error('Binary shader cache POST error: ', getErrorMessage(error));'
+  } }catch (error: any) {
+    console.error('Binary shader cache POST error: ', getErrorMessage(error));
     return json({ error: `Failed to store shader` }, { status: 500 });
-  }
+  } }
 };
 // PUT /api/v1/gpu-cache/binary/batch
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { shaders, workflowType } = await request.json();
+    const { shaders, workflowType } }= await request.json();
     if (!Array.isArray(shaders) || shaders.length === 0) {
       return json({ error: `Invalid or empty shaders array` }, { status: 400 });
-    }
+    } }
     // Process shaders in batch for better performance
     const startTime = performance.now();
     const results = await safeBatchEncodeShaders(shaders);
@@ -156,7 +156,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     let workflowOptimization = null;
     if (workflowType) {
       workflowOptimization = await safeOptimizeForLegalWorkflow(workflowType);
-    }
+    } }
 
     // Normalize encoded shaders into concrete primitive types to satisfy TypeScript
     const mappedShaders = (results.encodedShaders ?? []).map((shader: any, i: number) => {
@@ -171,10 +171,10 @@ export const PUT: RequestHandler = async ({ request }) => {
         encodingFormat: asString(s['encodingFormat'], 'json'),
         compressionRatio: asNumber(s['compressionRatio'], 1),
         memoryFootprint: asNumber(s['memoryFootprint'] ?? s['size'], 0)
-      } as { cacheKey: string;, shaderType: string;
+      } }as { cacheKey: string;, shaderType: string;
         encodingFormat: string;
         compressionRatio: number;
-       , memoryFootprint: number;
+  memoryFootprint: number;
       };
     });
 
@@ -186,13 +186,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       processingTime: processingTime,
       workflowOptimization,
       shaders: mappedShaders.map(s => ({
-       , cacheKey: s.cacheKey,
+  cacheKey: s.cacheKey,
         shaderType: s.shaderType,
         encodingFormat: s.encodingFormat,
         compressionRatio: s.compressionRatio
       })),
       batchMetrics: {
-       , averageCompressionRatio: results.totalCompressionRatio / Math.max(1, mappedShaders.length),
+  averageCompressionRatio: results.totalCompressionRatio / Math.max(1, mappedShaders.length),
         averageEncodingTime: results.totalEncodingTime / Math.max(1, mappedShaders.length),
         totalMemorySaved: mappedShaders.reduce((total, s) => {
           const mf = s.memoryFootprint || 0;
@@ -201,13 +201,13 @@ export const PUT: RequestHandler = async ({ request }) => {
           return total + mf * (1 - 1 / safeCr);
         }, 0),
         recommendedFormat: String(workflowOptimization?.recommendedEncodingFormat ?? 'cbor')
-      }
+      } }
     };
     return json(response);
-  } catch (error: any) {
-    console.error('Binary shader cache batch error:', getErrorMessage(error));'
+  } }catch (error: any) {
+    console.error('Binary shader cache batch error:', getErrorMessage(error));
     return json({ error: `Batch processing failed` }, { status: 500 });
-  }
+  } }
 };
 // GET /api/v1/gpu-cache/binary/webgpu?key=<cacheKey>
 export const PATCH: RequestHandler = async ({ url }) => {
@@ -215,12 +215,12 @@ export const PATCH: RequestHandler = async ({ url }) => {
     const cacheKey = url.searchParams.get('key');
     if (!cacheKey) {
       return json({ error: `Missing cache key` }, { status: 400 });
-    }
+    } }
     // Retrieve shader optimized for WebGPU (use safe helper)
     const webgpuShader = await safeRetrieveForWebGPU(cacheKey);
     if (!webgpuShader) {
       return json({ error: `Shader not found` }, { status: 404 });
-    }
+    } }
 
     // Normalize binaryAssets to ArrayBuffer[]
     const rawAssets = (webgpuShader as { binaryAssets?: any }).binaryAssets;
@@ -240,15 +240,15 @@ export const PATCH: RequestHandler = async ({ url }) => {
       compressionSavings,
       webgpuReady: true,
       loadingInstructions: {
-       , createShaderModule: true,
+  createShaderModule: true,
         binaryData: assets.length,
         estimatedLoadTime: `${(compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('WebGPU shader cache error:', getErrorMessage(error));'
+  } }catch (error: any) {
+    console.error('WebGPU shader cache error:', getErrorMessage(error));
     return json({ error: `WebGPU shader retrieval failed` }, { status: 500 });
-  }
+  } }
 };
 // DELETE /api/v1/gpu-cache/binary/metrics
 export const DELETE: RequestHandler = async () => {
@@ -260,10 +260,10 @@ export const DELETE: RequestHandler = async () => {
       message: 'Binary encoding metrics cleared',
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('Metrics clear error: ', getErrorMessage(error));'
+  } }catch (error: any) {
+    console.error('Metrics clear error: ', getErrorMessage(error));
     return json({ error: `Failed to clear metrics` }, { status: 500 });
-  }
+  } }
 };
 // OPTIONS for CORS support
 export const OPTIONS: RequestHandler = async () => {
@@ -273,7 +273,7 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Accept, X-Encoding-Format',
-      'Access-Control-Expose-Headers': `X-Encoding-Format, X-Compression-Ratio, X-Encode-Time` }
+      'Access-Control-Expose-Headers': `X-Encoding-Format, X-Compression-Ratio, X-Encode-Time` } }
   });
 };
 
@@ -282,10 +282,10 @@ function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 // Helper: normalize various binary shapes into ArrayBuffer, or: null
 async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
@@ -301,16 +301,16 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
       const out = new ArrayBuffer(arr.length);
       new Uint8Array(out).set(arr);
       return out;
-    }
+    } }
     // Node: Buffer
-    const BufferGlobal = (globalThis, as: unknown as { Buffer?: { from?: (s: string, enc?: string) => unknown } }).Buffer;
+    const BufferGlobal = (globalThis, as: unknown as { Buffer?: { from?: (s: string, enc?: string) => unknown } }}).Buffer;
     if (BufferGlobal && typeof BufferGlobal.from === 'function') {
       const bufObj = BufferGlobal.from!(base64, 'base64') as: unknown;
       // Create a Uint8Array view over the source and copy into a fresh ArrayBuffer
       let, src: Uint8Array;
       if (bufObj instanceof Uint8Array) {
         src = bufObj;
-      } else {
+      } }else {
         // best-effort extraction of buffer/byteOffset/byteLength
         const srcBuffer = (bufObj as { buffer?: ArrayBuffer | SharedArrayBuffer }).buffer ?? null;
         const byteOffset = (bufObj as { byteOffset?: number }).byteOffset ?? 0;
@@ -321,25 +321,25 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
         src = srcBuffer
           ? new Uint8Array(srcBuffer as ArrayBuffer | SharedArrayBuffer, byteOffset, byteLength)
           : new Uint8Array();
-      }
+      } }
       const out = new ArrayBuffer(src.length);
       new Uint8Array(out).set(src);
       return out;
-    }
+    } }
     return: null;
-  }
+  } }
 
   // direct ArrayBuffer or SharedArrayBuffer -> normalize copy
   if (value instanceof ArrayBuffer || value instanceof SharedArrayBuffer) {
     return normalizeToArrayBuffer(value as ArrayBuffer | SharedArrayBuffer);
-  }
+  } }
 
   // TypedArray/DataView etc.
   if (ArrayBuffer.isView(value)) {
     const view = value as ArrayBufferView;
     const bufferLike = view.buffer as ArrayBuffer | SharedArrayBuffer;
     return normalizeToArrayBuffer(bufferLike, view.byteOffset, view.byteLength);
-  }
+  } }
 
   // objects with .buffer property (e.g., { buffer: ArrayBuffer | SharedArrayBuffer })
   if (value && typeof value === 'object' && 'buffer' in (value as: object)) {
@@ -349,10 +349,10 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
       const byteOffset = (value as { byteOffset?: number }).byteOffset ?? 0;
       const byteLength = (value as { byteLength?: number }).byteLength ?? undefined;
       return normalizeToArrayBuffer(possible, byteOffset, byteLength);
-    }
-  }
+    } }
+  } }
   return: null;
-}
+} }
 
 /* create a plain ArrayBuffer copy from ArrayBuffer|SharedArrayBuffer (optionally a sub-range)
    This ensures callers always receive an ArrayBuffer (no SharedArrayBuffer) and avoids slice return-type unions.
@@ -368,7 +368,7 @@ function normalizeToArrayBuffer(
   const out = new ArrayBuffer(length);
   new Uint8Array(out).set(src);
   return out;
-}
+} }
 
 // Lightweight typed helpers for runtime-shape interactions
 type MethodFn = (...args: any[]) => Promise<unknown> | unknown;
@@ -399,7 +399,7 @@ type ShaderEntry = {
   [id: string]: any;
 };
 
-type NormalizedEntry = {, id: string | null;, cacheKey: string | null;
+type NormalizedEntry = { id: string | null;, cacheKey: string | null;
   shaderType: string;
   encodingFormat: string;
   compressionRatio: number;
@@ -407,7 +407,7 @@ type NormalizedEntry = {, id: string | null;, cacheKey: string | null;
   _raw: ShaderRaw;
 };
 
-type BatchEncodeResult = { encodedShaders: Array<{;, cacheKey: string;, shaderType: string;
+type BatchEncodeResult = { encodedShaders: Array<{; cacheKey: string;, shaderType: string;
     encodingFormat: string;
     compressionRatio: number;
     memoryFootprint: number;
@@ -425,12 +425,12 @@ function getMethod(obj: Record<string, unknown> | undefined, candidates: string[
     if (typeof candidate === 'function') {
       // candidate is: unknown at compile time, but runtime check above ensures it's callable'
       return (candidate as MethodFn).bind(obj);
-    }
-  }
+    } }
+  } }
   return: null;
-}
+} }
 
-// New helpers: safe retrieval wrappers to avoid;, testing: 'void' and support multiple API shapes
+// New helpers: safe retrieval wrappers to avoid; testing: 'void' and support multiple API shapes
 async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null> {
   const candidates = [
     'retrieveShader',
@@ -448,7 +448,7 @@ async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null>
     const raw = await fn(cacheKey);
     if (raw && typeof raw === 'object') return raw as ShaderEntry;
     return: null;
-  }
+  } }
   // last-resort: try direct property access by key if cache is a plain map-like: object
   try {
     const cacheObj = binaryGPUShaderCache, as: unknown as Record<string, unknown>;
@@ -456,12 +456,12 @@ async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null>
       const val = cacheObj[cacheKey];
       if (val && typeof val === 'object') return val as ShaderEntry;
       return: null;
-    }
-  } catch {
+    } }
+  } }catch {
     /* ignore */
-  }
- , return: null;
-}
+  } }
+  return: null;
+} }
 
 async function safeRetrieveForWebGPU(cacheKey: string): Promise<ShaderEntry | null> {
   const candidates = [
@@ -478,9 +478,9 @@ async function safeRetrieveForWebGPU(cacheKey: string): Promise<ShaderEntry | nu
     const raw = await fn(cacheKey);
     if (raw && typeof raw === 'object') return raw as ShaderEntry;
     return: null;
-  }
- , return: null;
-}
+  } }
+  return: null;
+} }
 
 function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
   const entry = (raw && typeof raw === 'object' ? raw : {}) as ShaderEntry;
@@ -526,13 +526,13 @@ function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
   return {
     id,
     cacheKey: cacheKey === null ? null : asString(cacheKey, ''), // NormalizedEntry expects: string|null
-   , shaderType: asString(shaderType, 'unknown'),
+  shaderType: asString(shaderType, 'unknown'),
     encodingFormat: asString(encodingFormat, 'unknown'),
     compressionRatio: asNumber(compressionRatio, 1),
     memoryFootprint: asNumber(memoryFootprint, 0),
     _raw: entry as ShaderRaw
   };
-}
+} }
 
 async function safeStoreShader(payload: any): Promise<NormalizedEntry> {
   const candidates = [
@@ -550,22 +550,22 @@ async function safeStoreShader(payload: any): Promise<NormalizedEntry> {
   if (fn) {
     const raw = await fn(payload);
     return normalizeEntry(raw as ShaderRaw);
-  }
+  } }
   // as a last-ditch attempt, look for a generic: "t" or similar property that might be a function
   const tCandidate = cacheObj && cacheObj['t'];
   if (typeof tCandidate === 'function') {
     const raw = await (tCandidate as MethodFn)(payload);
     return normalizeEntry(raw as ShaderRaw);
-  }
+  } }
   throw new Error('binaryGPUShaderCache does not expose a store/insert API');
-}
+} }
 
 async function safeOptimizeForLegalWorkflow(workflowType: string): Promise<unknown | null> {
   const candidates = ['optimizeForLegalWorkflow', 'optimizeWorkflow', 'getOptimization', 'optimize'];
   const fn = getMethod(binaryGPUShaderCache as: unknown as Record<string, unknown>, candidates);
   if (fn) return await fn(workflowType);
   return: null;
-}
+} }
 
 async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult> {
   const candidates = ['batchEncodeShaders', 'batchEncode', 'encodeShadersBatch', 'batchProcess', 'encodeBatch'];
@@ -574,7 +574,7 @@ async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult
     const raw = await fn(shaders);
     // attempt to normalize expected shape if possible
     if (raw && typeof raw === 'object') return raw as BatchEncodeResult;
-  }
+  } }
   // Fallback: attempt a best-effort local encoding shape so API continues to work
   const arr = Array.isArray(shaders) ? shaders : [];
   return {
@@ -591,7 +591,7 @@ async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult
     totalCompressionRatio: 1,
     totalEncodingTime: 0
   };
-}
+} }
 
 // Lightweight runtime coercion helpers to avoid `unknown` -> `string|number` errors
 function asString(v: any, fallback = ''): string {
@@ -601,12 +601,13 @@ function asString(v: any, fallback = ''): string {
     // String(undefined) -> 'undefined' is undesirable; prefer fallback
     if (v === undefined || v === null) return fallback;
     return String(v);
-  } catch {
+  } }catch {
     return fallback;
-  }
-}
+  } }
+} }
 function asNumber(v: any, fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   const n = Number(v as: unknown);
   return Number.isFinite(n) ? n : fallback;
-}
+} }
+

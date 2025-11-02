@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 
 // Fallback stub: neo4j service may not be available; provide a simple health response
 const getNeo4jService = () => ({
   async getHealthStatus() {
     return { connected: false, mode: 'stub' };
-  }
+  } }
 });
 
 export const GET: RequestHandler = async () => {
@@ -17,21 +17,22 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       }),
       {
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  } catch (error) {
+  } }catch (error) {
     return new Response(
-      JSON.stringify({ neo4j: {, connected: false,
+      JSON.stringify({ neo4j: { connected: false,
           mode: 'error',
           error: error instanceof Error ? error.message : 'Unknown error',
           timestamp: new Date().toISOString()
-        }
+        } }
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
+

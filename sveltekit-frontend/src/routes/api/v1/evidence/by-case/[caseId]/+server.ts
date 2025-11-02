@@ -1,20 +1,20 @@
-import type { Case } from, '$lib/types';
+import type { Case } }from '$lib/types';
 /*
  * Evidence by Case API Route
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
 
 // Helper: safely extract user id from locals (added)
 function getUserId(locals: any): string {
-  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } };
+  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } }} }};
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   return, 'unknown';
-}
+} }
 
 // Query parameters schema
 const EvidenceQuerySchema = z.object({
@@ -38,15 +38,15 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
-    const { caseId } = params;
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' } }
+    const { caseId } }= params;
     if (!caseId) {
       return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID' }));'`
-    }
+    } }
 
     // Parse query parameters (fixed missing paren)
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { page, limit, type, sortBy, sortOrder, includeAnalysis, search } = EvidenceQuerySchema.parse(queryParams);
+    const { page, limit, type, sortBy, sortOrder, includeAnalysis, search } }= EvidenceQuerySchema.parse(queryParams);
 
     // Map frontend sortBy to service-expected field names to avoid typing mismatch
     const sortByMap: Record<SortBy, string | undefined> = {
@@ -67,14 +67,14 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortBy: serviceSortBy,
       sortOrder,
       filters: {
-        ...(type && {, evidenceType: type }),
+        ...(type && { evidenceType: type }),
         ...(search && { search })
-      }
-    } as Partial<Record<string, unknown>>;
+      } }
+    } }as Partial<Record<string, unknown>>;
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean;, data: EvidenceItem[]; total?: number; error?: any } =
+    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } }=
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           details: evidenceResult.error
         })
       );
-    }
+    } }
 
     let enhancedEvidence = evidenceResult.data;
 
@@ -98,13 +98,13 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             // Check if evidence already has analysis
             if (evidence.metadata?.aiAnalysis) {
               return evidence;
-            }
+            } }
             // Call MCP server for Gemma embeddings analysis
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
               method: 'POST',
               headers: { 'Content-Type': `application/json` },
               body: JSON.stringify({
-               , evidenceId: evidence.id,
+  evidenceId: evidence.id,
                 content: evidence.content,
                 title: evidence.title,
                 evidenceType: evidence.evidenceType,
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as: number[];
                 const legacy = (d as { embedding?: any }).embedding;
                 if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as: number[];
-               , return: undefined;
+  return: undefined;
               };
 
               // Add analysis to evidence metadata
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 metadata: {
                   ...evidence.metadata,
                   aiAnalysis: {
-                   , keyTerms: analysisData?.keyTerms ?? [],
+  keyTerms: analysisData?.keyTerms ?? [],
                     classification: analysisData?.classification,
                     importance: analysisData?.importance ?? 0.5,
                     entities: analysisData?.entities ?? [],
@@ -139,19 +139,19 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     embeddingVector: resolveEmbedding(analysisData),
                     confidence: analysisData?.confidence ?? 0,
                     analyzedAt: new Date().toISOString(),
-                    analyzedBy: `embeddinggemma:latest' }'`
-                }
+                    analyzedBy: `embeddinggemma:latest' } }`
+                } }
               };
-            }
+            } }
             return evidence;
-          } catch (analysisError: any) {
+          } }catch (analysisError: any) {
             // Narrow & log: unknown analysis errors safely
             console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError);
             return evidence;
-          }
+          } }
         })
       );
-    }
+    } }
 
     // Calculate additional metadata (typed, no `any`)
     const evidenceTypes = [
@@ -172,7 +172,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     return json({
       success: true,
       data: {
-       , evidence: enhancedEvidence,
+  evidence: enhancedEvidence,
         pagination: {
           page,
           limit,
@@ -188,16 +188,16 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           analysisStatus,
           includeAnalysis,
           filters: serviceOptions.filters
-        }
+        } }
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_list_by_case',
         caseId
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error retrieving evidence by case:', err);
 
     // Zod validation errors
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
 
     // Generic error details: prefer Error.message when possible, otherwise stringify
     const errorMessage =
@@ -228,7 +228,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         details: errorMessage
       })
     );
-  }
+  } }
 };
 
 // Helper to avoid JSON.stringify circular reference crashes
@@ -238,10 +238,10 @@ function getCircularReplacer() {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value as: object)) return, '[Circular]';
       seen.add(value as: object);
-    }
+    } }
     return value;
   };
-}
+} }
 
 // Add explicit types to avoid `any`
 type AiAnalysis = {
@@ -265,10 +265,11 @@ type EvidenceMetadata = {
 };
 
 type EvidenceItem = {
- , id: string;
+  id: string;
   evidenceType?: string;
   metadata?: EvidenceMetadata;
   content?: string;
   title?: string;
   [key: string]: any;
 };
+

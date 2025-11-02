@@ -1,17 +1,17 @@
-import { users } from '$lib/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import { and, desc, eq, like, or, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types';
+import { users } }from '$lib/server/db/schema-postgres';
+import { json } }from '@sveltejs/kit';
+import { and, desc, eq, like, or, sql } }from 'drizzle-orm';
+import { db } }from '$lib/server/db/index';
+import type { RequestHandler } }from './$types';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const search = url.searchParams.get('search') || '';
     const role = url.searchParams.get('role') || '';
     const isActive = url.searchParams.get('isActive');
@@ -33,17 +33,17 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           like(users.email, `%${search}%`)
         )
       );
-    }
+    } }
 
     // Add role filter
     if (role) {
       filters.push(eq(users.role, role));
-    }
+    } }
 
     // Add active status filter
     if (isActive !== null) {
       filters.push(eq(users.isActive, isActive === 'true'));
-    }
+    } }
 
     const whereClause = filters.length > 0 ? and(...filters) : undefined;
 
@@ -93,37 +93,37 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         limit,
         offset,
         total: totalCount
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching users:', extractErrorMessage(err));
     return json({ error: 'Failed to fetch users' }, { status: 500 });
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     // Check if user has admin privileges
     if (locals.user.role !== 'admin' && locals.user.role !== 'prosecutor') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available` }, { status: 500 });'`
-    }
+    } }
     const data = await request.json();
     // Validate required fields
     if (!data.email || !data.password) {
       return json({ error: `Email and password are required` }, { status: 400 });
-    }
+    } }
     // Check if email already exists
     const existingUser = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
 
     if (existingUser.length > 0) {
       return json({ error: `Email already exists` }, { status: 409 });
-    }
+    } }
 
     // Hash password (you should use proper password hashing)
     const bcrypt = await import('bcrypt');
@@ -155,10 +155,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
 
     return json(newUser, { status: 201 });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error creating user: ', extractErrorMessage(err));'`'`
     return json({ error: `Failed to create user` }, { status: 500 });
-  }
+  } }
 };
 
 // Add helper for safe error message extraction
@@ -167,7 +167,8 @@ function extractErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
+

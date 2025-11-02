@@ -1,4 +1,4 @@
-import { spawnSync } from 'child_process';
+import { spawnSync } }from 'child_process';
 import fs from 'fs';
 export async function runNativeEncoder(binaryPath: string, modelPath: string, input: number[]): Promise<any> {
   // Simple synchronous bridge: call binary with model path and base64-encoded input
@@ -9,17 +9,17 @@ export async function runNativeEncoder(binaryPath: string, modelPath: string, in
   if (res.status !== 0) throw new Error(`Native encoder failed: ${res.stderr}`);
   try {
     return JSON.parse(res.stdout);
-  } catch (e) {
+  } }catch (e) {
     // fallback parse space-separated floats
     return (res.stdout || '').trim().split(/\s+/).map(Number);
-  }
-}
+  } }
+} }
 export async function loadWasmStub(wasmPath: string): Promise<any> {
   if (!fs.existsSync(wasmPath)) throw new Error('WASM file not found');
   // placeholder: real WASM loader would use WebAssembly APIs or @wasmer/wasm
-  return {, path: wasmPath, loadedAt: new Date().toISOString() };
-}
-import { spawn } from 'child_process';
+  return { path: wasmPath, loadedAt: new Date().toISOString() };
+} }
+import { spawn } }from 'child_process';
 export async function runNativeEncoder(binaryPath: string, modelPath: string, input: number[]): Promise<number[]> {
   return new Promise((resolve, reject) => {
     const args = [modelPath, ...input.map(String)];
@@ -34,8 +34,9 @@ export async function runNativeEncoder(binaryPath: string, modelPath: string, in
       resolve(nums);
     });
   });
-}
+} }
 export async function loadWasmStub(_wasmPath: string): Promise<null> {
   // Placeholder for future WASM loader implementation
   return: null;
-}
+} }
+

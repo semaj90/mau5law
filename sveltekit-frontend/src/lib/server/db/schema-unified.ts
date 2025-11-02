@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Unified Database Schema with PostgreSQL + pgvector Support
  * Production-ready schema for Legal AI Platform
@@ -16,9 +16,9 @@ import {
   jsonb,
   real,
   index
-} from 'drizzle-orm/pg-core';
+} }from 'drizzle-orm/pg-core';
 // Custom pgvector support (production-ready)
-import { customType } from 'drizzle-orm/pg-core';
+import { customType } }from 'drizzle-orm/pg-core';
 const vector = customType({
   dataType(config) {
     return `vector(${config?.dimensions})`;
@@ -26,14 +26,14 @@ const vector = customType({
   fromDriver(_value: string): number[] {
     if (typeof _value === 'string' && _value.startsWith('[') && _value.endsWith(']')) {
       return _value.slice(1, -1).split(',').map(Number);
-    }
+    } }
     return [];
   },
   toDriver(_value: number[]): string {
-    return `[${_value.join(',')}]`;
-  }
+    return `[${_value.join(',')} }`;
+  } }
 });
-import { relations } from 'drizzle-orm/relations';
+import { relations } }from 'drizzle-orm/relations';
 // Export types for TypeScript
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -411,3 +411,4 @@ export const schema = {
   chatRecommendationsRelations
 };
 export default schema;
+

@@ -2,7 +2,7 @@
 export interface ToastOptions {
   duration?: number;
   type?: 'success' | 'error' | 'warning' | 'info';
-}
+} }
 export const toast = {
   success: (message: string, options: ToastOptions = {}) => {
     showToast(message, 'success', options);
@@ -15,7 +15,7 @@ export const toast = {
   },
   info: (message: string, options: ToastOptions = {}) => {
     showToast(message, 'info', options);
-  }
+  } }
 };
 function showToast(message: string, type: string, options: ToastOptions) {
   // Create toast element
@@ -37,7 +37,7 @@ function showToast(message: string, type: string, options: ToastOptions) {
       document.body.removeChild(toast);
     }, 300);
   }, options.duration || 3000);
-}
+} }
 function getToastStyles(type: string): string {
   const styles = {
     success: 'bg-green-500 text-white',
@@ -45,4 +45,5 @@ function getToastStyles(type: string): string {
     warning: 'bg-yellow-500 text-black',
     info: 'bg-blue-500 text-white` };'`
   return styles[type as keyof typeof styles] || styles.info;
-}
+} }
+

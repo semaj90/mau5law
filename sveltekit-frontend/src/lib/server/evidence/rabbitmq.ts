@@ -4,18 +4,18 @@ export async function connectRabbit(): Promise<void> {
   const conn = await amqp.connect(RABBITMQ_URL);
   const channel = await conn.createChannel();
   return { conn, channel };
-}
+} }
 export async function publish(queue: string, msg: any): Promise<any> {
-  const { conn, channel } = await connectRabbit();
+  const { conn, channel } }= await connectRabbit();
   try {
     await channel.assertQueue(queue, { durable: true });
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(msg)), { persistent: true });
-  } finally {
+  } }finally {
     setTimeout(() => conn.close(), 500);
-  }
-}
+  } }
+} }
 export async function consume(queue: string, onMessage: (msg: any) => Promise<void>) {
-  const { conn, channel } = await connectRabbit();
+  const { conn, channel } }= await connectRabbit();
   await channel.assertQueue(queue, { durable: true });
   channel.prefetch(1);
   channel.consume(queue, async m => {
@@ -24,10 +24,11 @@ export async function consume(queue: string, onMessage: (msg: any) => Promise<vo
       const payload = JSON.parse(m.content.toString());
       await onMessage(payload);
       channel.ack(m);
-    } catch (err) {
+    } }catch (err) {
       console.error('Worker error', err);
       channel.nack(m, false, false);
-    }
+    } }
   });
   return { conn, channel };
-}
+} }
+

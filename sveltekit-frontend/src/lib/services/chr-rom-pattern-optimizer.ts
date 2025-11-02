@@ -3,15 +3,15 @@
  * Hybrid SVG + Pixelated PNG system for optimal visual quality and performance
  *
  * This service determines the best format for each pattern type:
- * -;, SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
+ * -; SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
  * - PNG: Authentic 8-bit pixel art (NES aesthetic)
  */
-// Removed: import type { CHRROMPattern } from './chr-rom-precomputation.js';
+// Removed: import type { CHRROMPattern } }from './chr-rom-precomputation.js';
 
 // Define CHRROMPattern interface based on usage in this file
 export interface CHRROMPattern { type: 'icon' | 'indicator' | 'gauge' | 'heatmap' | 'badge' | 'graph' | 'color' | 'default';, size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'scalable';
   data: string; //, SVG: string, PNG data URL, or hex color
-  metadata: {, confidence: number;, timestamp: number;
+  metadata: { confidence: number;, timestamp: number;
     version: string;
     // Added properties for format optimization
     format?: 'svg' | 'png' | 'hybrid' | 'hex';
@@ -20,19 +20,18 @@ export interface CHRROMPattern { type: 'icon' | 'indicator' | 'gauge' | 'heatmap
     dimensions?: string;
     [key: string]: any; // Allow other metadata properties
   };
-}
+} }
 // Pattern format specifications
-export interface PatternFormatSpec {, format: 'svg' | 'png' | 'hybrid';, aesthetic: 'nes-8bit' | 'snes-16bit' | 'modern';
+export interface PatternFormatSpec { format: 'svg' | 'png' | 'hybrid';, aesthetic: 'nes-8bit' | 'snes-16bit' | 'modern';
   renderingHint: 'pixelated' | 'crisp-edges' | 'auto';
  , targetSize: string; // e.g., '16x16', '32x32', 'scalable'
   colorPalette: 'nes-54' | 'snes-256' | 'modern-unlimited';
   compressionTarget: number; // bytes
-}
+} }
 // Format specifications for each pattern type
 const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
   // UI Icons - SNES 16-bit aesthetic with SVG scalability
-  doc_summary_icon: {
-   , format: 'svg',
+  doc_summary_icon: { format: 'svg',
     aesthetic: 'snes-16bit',
     renderingHint: 'crisp-edges',
     targetSize: 'scalable',
@@ -40,8 +39,7 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 300
   },
   // Status indicators - NES 8-bit pixel art for authenticity
-  status_indicator: {
-   , format: 'png',
+  status_indicator: { format: 'png',
     aesthetic: 'nes-8bit',
     renderingHint: 'pixelated',
     targetSize: '16x16',
@@ -49,8 +47,7 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 150
   },
   // Risk gauges - Modern SVG for smooth animations
-  risk_gauge: {
-   , format: 'svg',
+  risk_gauge: { format: 'svg',
     aesthetic: 'modern',
     renderingHint: 'auto',
     targetSize: 'scalable',
@@ -58,8 +55,7 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 200
   },
   // Entity heatmaps - NES 8-bit pixel grid
-  entity_heatmap: {
-   , format: 'png',
+  entity_heatmap: { format: 'png',
     aesthetic: 'nes-8bit',
     renderingHint: 'pixelated',
     targetSize: '32x32',
@@ -67,8 +63,7 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 400
   },
   // Confidence badges - SNES 16-bit clean design
-  confidence_badge: {
-   , format: 'svg',
+  confidence_badge: { format: 'svg',
     aesthetic: 'snes-16bit',
     renderingHint: 'crisp-edges',
     targetSize: 'scalable',
@@ -76,8 +71,7 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 250
   },
   // Similarity graphs - SVG for mathematical precision
-  similarity_graph: {
-   , format: 'svg',
+  similarity_graph: { format: 'svg',
     aesthetic: 'modern',
     renderingHint: 'crisp-edges',
     targetSize: 'scalable',
@@ -85,15 +79,14 @@ const, PATTERN_FORMAT_SPECS: Record<string, PatternFormatSpec> = {
     compressionTarget: 350
   },
   // Category colors - Just hex strings (most efficient)
-  category_color: {
-   , format: 'svg', // Actually just text, but categorized as SVG;
+  category_color: { format: 'svg', // Actually just text, but categorized as SVG;
     aesthetic: 'modern',
     renderingHint: 'auto',
     targetSize: '1x1',
     colorPalette: 'modern-unlimited',
     compressionTarget: 10
-  }
-}
+  } }
+} }
 // NES color palette (54 colors total)
 const NES_PALETTE = [
   '#7C7C7C', '#0000FC', '#0000BC', '#4428BC', '#940084', '#A80020', '#A81000', '#881400',
@@ -137,8 +130,8 @@ export class CHRROMPatternOptimizer {
     if (typeof window !== 'undefined') {
       this.canvas = document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d', { alpha: true });
-    }
-  }
+    } }
+  } }
   /**
    * Generate optimized pattern based on type and spec
    */
@@ -149,7 +142,7 @@ export class CHRROMPatternOptimizer {
     const spec = PATTERN_FORMAT_SPECS[patternType];
     if (!spec) {
       throw new Error(`Unknown pattern type: ${patternType}`);
-    }
+    } }
     switch (spec.format) {
       case, 'svg':
         return await this.generateSVGPattern(patternType, data, spec);
@@ -158,9 +151,9 @@ export class CHRROMPatternOptimizer {
       case, 'hybrid':
         return await this.generateHybridPattern(patternType, data, spec);
       default:
-        throw new Error(`Unsupported;, format: ${spec.format}`);
-    }
-  }
+        throw new Error(`Unsupported; format: ${spec.format}`);
+    } }
+  } }
   /**
    * Generate SVG pattern (SNES 16-bit or modern aesthetic)
    */
@@ -189,30 +182,28 @@ export class CHRROMPatternOptimizer {
           type: 'badge' as const,
           size: 'xs' as const,
           data: this.selectColorFromPalette(data.category, spec.colorPalette),
-          metadata: {
-           , confidence: 1.0,
+          metadata: { confidence: 1.0,
             timestamp: Date.now(),
             version: '2.0',
             format: 'hex',
-            renderingHint: `auto` }
+            renderingHint: `auto` } }
         };
      , default:
         svgContent = this.generateDefaultSVG();
-    }
+    } }
     return {
       type: this.getPatternType(patternType),
       size: this.getPatternSize(spec.targetSize),
       data: svgContent,
-      metadata: {
-       , confidence: data.confidence || 0.8,
+      metadata: { confidence: data.confidence || 0.8,
         timestamp: Date.now(),
         version: '2.0',
         format: 'svg',
         aesthetic: spec.aesthetic,
         renderingHint: spec.renderingHint
-      }
+      } }
     };
-  }
+  } }
   /**
    * Generate PNG pattern (NES 8-bit pixel art aesthetic)
    */
@@ -224,7 +215,7 @@ export class CHRROMPatternOptimizer {
     if (!this.canvas || !this.ctx) {
       // Fallback to SVG if canvas not available
       return this.generateSVGPattern(patternType, data, spec);
-    }
+    } }
     const [width, height] = this.parseSize(spec.targetSize);
     this.canvas.width = width;
     this.canvas.height = height;
@@ -242,21 +233,20 @@ export class CHRROMPatternOptimizer {
         break;
       default:
         pngDataURL = this.generateDefaultPNG(width, height);
-    }
+    } }
     return {
       type: this.getPatternType(patternType),
       size: this.getPatternSize(spec.targetSize),
       data: pngDataURL,
-      metadata: {
-       , confidence: data.confidence || 0.8,
+      metadata: { confidence: data.confidence || 0.8,
         timestamp: Date.now(),
         version: '2.0',
         format: 'png',
         aesthetic: spec.aesthetic,
         renderingHint: spec.renderingHint,
-        dimensions: `${width}x${height}` }
+        dimensions: `${width}x${height}` } }
     };
-  }
+  } }
   /**
    * Generate SVG document icon with SNES 16-bit aesthetic
    */
@@ -278,7 +268,7 @@ export class CHRROMPatternOptimizer {
       </defs>
       <rect, x="1" y="1" width="14" height="14" rx="2" fill="url(#docGrad)" stroke="${colors.border}" stroke-width="0.5"/>
       <text, x="8" y="11" text-anchor="middle" font-family="monospace" font-size="7" font-weight="bold" fill="${colors.text}">${letter}</text>
-    </svg>`;` }
+    </svg>`;` } }
   /**
    * Generate SVG risk gauge with smooth modern design
    */
@@ -293,7 +283,7 @@ export class CHRROMPatternOptimizer {
         <animate, attributeName="width" from="0" to="${percentage * 0.6}" dur="0.5s" fill="freeze"/>
       </rect>
       <text, x="62" y="6" font-family="monospace" font-size="6" fill="#374151">${percentage}%</text>
-    </svg>`;' }'`
+    </svg>`;' } }`
   /**
    * Generate PNG status indicator with authentic NES 8-bit pixels
    */
@@ -330,9 +320,9 @@ export class CHRROMPatternOptimizer {
       default:
         // Draw clock/waiting icon
         this.drawPixelClock(width, height, color);
-    }
+    } }
     return this.canvas!.toDataURL('image/png');
-  }
+  } }
   /**
    * Generate PNG entity heatmap with NES pixel grid
    */
@@ -360,10 +350,10 @@ export class CHRROMPatternOptimizer {
         const colorIndex = Math.floor(intensity * (heatColors.length - 1));
         this.ctx!.fillStyle = heatColors[colorIndex];
         this.ctx!.fillRect(x, y, 1, 1);
-      }
-    }
+      } }
+    } }
     return this.canvas!.toDataURL('image/png');
-  }
+  } }
   /**
    * Draw pixel-perfect checkmark
    */
@@ -391,10 +381,10 @@ export class CHRROMPatternOptimizer {
       for (let x = 0; x < Math.min(width, 16); x++) {
         if (checkPattern[y] && checkPattern[y][x]) {
           this.ctx!.fillRect(x, y, 1, 1);
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
   /**
    * Draw other pixel art patterns
    */
@@ -408,15 +398,15 @@ export class CHRROMPatternOptimizer {
     this.ctx!.fillRect(centerX + 3, centerY, 2, 2);
     this.ctx!.fillRect(centerX, centerY + 3, 2, 2);
     this.ctx!.fillRect(centerX - 3, centerY, 2, 2);
-  }
+  } }
   private drawPixelX(width: number, height: number, color: string): void {
     this.ctx!.fillStyle = color;
     // Draw X pattern
     for (let i = 0; i < Math.min(width, height); i++) {
       this.ctx!.fillRect(i, i, 1, 1);
       this.ctx!.fillRect(width - 1 - i, i, 1, 1);
-    }
-  }
+    } }
+  } }
   private drawPixelClock(width: number, height: number, color: string): void {
     this.ctx!.fillStyle = color;
     const centerX = Math.floor(width / 2);
@@ -430,28 +420,28 @@ export class CHRROMPatternOptimizer {
     // Draw clock hands
     this.ctx!.fillRect(centerX, centerY, 1, -4); // Hour hand
     this.ctx!.fillRect(centerX, centerY, 3, 1);   // Minute hand
-  }
+  } }
   /**
    * Helper methods
    */
-  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
-    const, schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {, contract: {, primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
-      nda: {, primary: '#FF6347', secondary: '#FF7F50', border: '#8B0000', text: '#FFFFFF' },
-      agreement: {, primary: '#32CD32', secondary: '#90EE90', border: '#006400', text: '#000000' },
-      lease: {, primary: '#DAA520', secondary: '#F4A460', border: '#B8860B', text: '#000000' },
-      default: {, primary: '#808080', secondary: '#A0A0A0', border: '#404040', text: '#FFFFFF' }
+  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } }{
+    const, schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = { contract: { primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
+      nda: { primary: '#FF6347', secondary: '#FF7F50', border: '#8B0000', text: '#FFFFFF' },
+      agreement: { primary: '#32CD32', secondary: '#90EE90', border: '#006400', text: '#000000' },
+      lease: { primary: '#DAA520', secondary: '#F4A460', border: '#B8860B', text: '#000000' },
+      default: { primary: '#808080', secondary: '#A0A0A0', border: '#404040', text: '#FFFFFF' } }
     };
     return schemes[docType] || schemes.default;
-  }
+  } }
 
-  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
-    const, schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {, contract: {, primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
-      nda: {, primary: '#EF4444', secondary: '#F87171', border: '#B91C1C', text: '#FFFFFF' },
-      agreement: {, primary: '#10B981', secondary: '#34D399', border: '#047857', text: '#FFFFFF' },
-      lease: {, primary: '#F59E0B', secondary: '#FBBF24', border: '#D97706', text: '#000000' },
-      default: {, primary: '#6B7280', secondary: '#9CA3AF', border: '#374151', text: '#FFFFFF' }'` };'`
+  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } }{
+    const, schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = { contract: { primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
+      nda: { primary: '#EF4444', secondary: '#F87171', border: '#B91C1C', text: '#FFFFFF' },
+      agreement: { primary: '#10B981', secondary: '#34D399', border: '#047857', text: '#FFFFFF' },
+      lease: { primary: '#F59E0B', secondary: '#FBBF24', border: '#D97706', text: '#000000' },
+      default: { primary: '#6B7280', secondary: '#9CA3AF', border: '#374151', text: '#FFFFFF' } }` };'`
     return schemes[docType] || schemes.default;
-  }
+  } }
 
   private selectColorFromPalette(category: string | undefined, palette: PatternFormatSpec['colorPalette']): string {
     if (palette === 'nes-54') {
@@ -463,7 +453,7 @@ export class CHRROMPatternOptimizer {
         default: NES_PALETTE[0x0F] // Gray
       };
       return colorMap[category || 'default'] || colorMap.default;
-    }
+    } }
     if (palette === 'snes-256') {
       const colorMap: Record<string, string> = {
         contract: '#4169E1',
@@ -472,7 +462,7 @@ export class CHRROMPatternOptimizer {
         lease: '#DAA520',
         default: `#808080` };
       return colorMap[category || 'default'] || colorMap.default;
-    }
+    } }
     // Modern unlimited palette
     const, colorMap: Record<string, string> = {
       contract: '#3B82F6',
@@ -481,7 +471,7 @@ export class CHRROMPatternOptimizer {
       lease: '#F59E0B',
       default: `#6B7280` };
     return colorMap[category || 'default'] || colorMap.default;
-  }
+  } }
 
   private async generateHybridPattern(
    , patternType: string,
@@ -494,9 +484,9 @@ export class CHRROMPatternOptimizer {
     console.warn(`Hybrid pattern generation not fully implemented for ${patternType}. Falling back.`);
     if (spec.aesthetic === 'nes-8bit') {
       return this.generatePNGPattern(patternType, data, spec);
-    }
+    } }
     return this.generateSVGPattern(patternType, data, spec);
-  }
+  } }
 
   private generateSVGConfidenceBadge(data: PatternInputData, spec: PatternFormatSpec): string {
     const confidence = (data.confidence as: number) ?? 0.75;
@@ -508,7 +498,7 @@ export class CHRROMPatternOptimizer {
     return `<svg viewBox="0, 0, 40, 12" xmlns="http://www.w3.org/2000/svg">`
       <rect, x="0" y="0" width="40" height="12" rx="3" fill="${color}"/>
       <text, x="20" y="8" text-anchor="middle" font-family="monospace" font-size="8" fill="${textColor}">${percentage}%</text>
-    </svg>`;` }
+    </svg>`;` } }
 
   private generateSVGSimilarityGraph(data: PatternInputData, spec: PatternFormatSpec): string {
     const similarities = (data.analysis?.similarities as: number[]) || [0.8, 0.7, 0.6, 0.5, 0.4];
@@ -527,17 +517,17 @@ export class CHRROMPatternOptimizer {
       bars += `<rect, x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${color}" rx="1"/>`;
     });
 
-    return `<svg, viewBox="0, 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+    return `<svg, viewBox="0, 0 ${width} }${height}" xmlns="http://www.w3.org/2000/svg">`
       <rect, x="0" y="0" width="${width}" height="${height}" fill="#E5E7EB" rx="2"/>
-      ${bars}
+      ${bars} }
     </svg>`;`
-  }
+  } }
 
   private generateDefaultSVG(): string {
     return `<svg viewBox="0, 0, 16, 16" xmlns="http://www.w3.org/2000/svg">`
       <rect, x="0" y="0" width="16" height="16" fill="#CCCCCC"/>
       <text, x="8" y="10" text-anchor="middle" font-family="monospace" font-size="8" fill="#FFFFFF">?</text>
-    </svg>`;` }
+    </svg>`;` } }
 
   private getPatternType(patternType: string): CHRROMPattern['type'] {
     // Map internal: string to a valid CHRROMPattern type
@@ -550,8 +540,8 @@ export class CHRROMPatternOptimizer {
       case, 'similarity_graph': return, 'graph';
       case, 'category_color': return, 'color';
       default: return, 'default';
-    }
-  }
+    } }
+  } }
 
   private getPatternSize(targetSize: string): CHRROMPattern['size'] {
     // Map targetSize: string to a valid CHRROMPattern size
@@ -563,8 +553,8 @@ export class CHRROMPatternOptimizer {
       case, '256x256': return, 'xl';
       case, 'scalable': return, 'scalable';
       default: return, 'scalable'; // Default to scalable for: unknown
-    }
-  }
+    } }
+  } }
 
   private generateDefaultPNG(width: number, height: number): string {
     if (!this.canvas || !this.ctx) return, '';
@@ -579,20 +569,20 @@ export class CHRROMPatternOptimizer {
     this.ctx.textBaseline = 'middle';
     this.ctx.fillText('?', width / 2, height / 2);
     return this.canvas.toDataURL('image/png');
-  }
+  } }
 
   private parseSize(sizeStr: string): [number, number] {
     if (sizeStr === 'scalable') {
       return [64, 64]; // Default size for scalable, can be adjusted
-    }
+    } }
     const parts = sizeStr.split('x');
     if (parts.length === 2) {
       const width = parseInt(parts[0], 10);
       const height = parseInt(parts[1], 10);
       if (!isNaN(width) && !isNaN(height)) {
         return [width, height];
-      }
-    }
+      } }
+    } }
     return [16, 16]; // Default fallback
-  }
+  } }
 }

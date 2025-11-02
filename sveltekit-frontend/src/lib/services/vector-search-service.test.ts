@@ -1,20 +1,20 @@
-import type { SearchResult } from '$lib/types';
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { SearchResult } }from '$lib/types';
+import { describe, it, expect, beforeEach } }from 'vitest';
 
 // Mock VectorSearchService for testing - actual service has @ts-nocheck
 interface SearchResult { documentId: string;, similarity: number;
   source: 'qdrant' | 'postgres';
-}
+} }
 
 interface VectorSearchConfig {
   qdrantUrl?: string;
   postgresUrl?: string;
   redisUrl?: string;
   timeout?: number;
-}
+} }
 
-interface CollectionStatus {, vectorDimension: number;, documentCount: number;
-}
+interface CollectionStatus { vectorDimension: number;, documentCount: number;
+} }
 
 // Mock service implementation
 class MockVectorSearchService {
@@ -24,15 +24,15 @@ class MockVectorSearchService {
 
   constructor(config: VectorSearchConfig) {
     this.config = config;
-  }
+  } }
 
   async initialize() {
     this.initialized = true;
-    return { qdrant: {, status: 'connected' },
-      postgres: {, status: 'connected' },
-      redis: { status: 'connected' }
+    return { qdrant: { status: 'connected' },
+      postgres: { status: 'connected' },
+      redis: { status: 'connected' } }
     };
-  }
+  } }
 
   async search(
    , embedding: number[],
@@ -41,17 +41,16 @@ class MockVectorSearchService {
   ): Promise<SearchResult[]> {
     if (!this.initialized) {
       throw new Error('Service not initialized');
-    }
+    } }
 
     const cacheKey = `${embedding.join(',')}_${limit}_${threshold}`;
     if (this.searchCache.has(cacheKey)) {
       return this.searchCache.get(cacheKey)!;
-    }
+    } }
 
     // Mock results
     const results: SearchResult[] = [
-      {
-       , documentId: 'doc1',
+      { documentId: 'doc1',
         similarity: 0.95,
         source: 'qdrant' as const
       },
@@ -64,24 +63,24 @@ class MockVectorSearchService {
         documentId: 'doc3',
         similarity: 0.82,
         source: 'qdrant' as const
-      }
+      } }
     ].filter((r) => !threshold || r.similarity >= threshold).slice(0, limit);
 
     this.searchCache.set(cacheKey, results);
     return results;
-  }
+  } }
 
   async searchQdrant(embedding: number[], limit: number): Promise<SearchResult[]> {
     return this.search(embedding, limit).then((results) =>
       results.filter((r) => r.source === 'qdrant')
     );
-  }
+  } }
 
   async searchPgVector(embedding: number[], limit: number): Promise<SearchResult[]> {
     return this.search(embedding, limit).then((results) =>
       results.filter((r) => r.source === 'postgres')
     );
-  }
+  } }
 
   async mergeResults(
     qdrantResults: SearchResult[],
@@ -105,28 +104,28 @@ class MockVectorSearchService {
         similarity: Math.min(score / 2, 1),
         source: 'qdrant' as const
       }));
-  }
+  } }
 
   async ensureCollections() {
-    return { qdrant: {, name: 'legal_documents', vectorSize: 384 },
-      postgres: {, name: 'embeddings', vectorSize: 384 }
+    return { qdrant: { name: 'legal_documents', vectorSize: 384 },
+      postgres: { name: 'embeddings', vectorSize: 384 } }
     };
-  }
+  } }
 
   async getCollections(): Promise<string[]> {
     return ['legal_documents', 'case_law', 'statutes', 'regulations'];
-  }
+  } }
 
   async getCollectionStatus(): Promise<CollectionStatus> {
     return {
       vectorDimension: 384,
       documentCount: 1500
     };
-  }
+  } }
 
   async invalidateCache() {
     this.searchCache.clear();
-  }
+  } }
 
   async getSearchStats() {
     return {
@@ -134,8 +133,8 @@ class MockVectorSearchService {
       averageResponseTime: 150,
       cacheHitRate: 0.65
     };
-  }
-}
+  } }
+} }
 
 describe('VectorSearchService (Integration)', () => {
   let vectorSearch: MockVectorSearchService;
@@ -244,13 +243,13 @@ describe('VectorSearchService (Integration)', () => {
 
     it('should merge results from multiple sources using Reciprocal Rank Fusion', async () => {
       const qdrantResults: SearchResult[] = [
-        {, documentId: 'doc1', similarity: 0.95, source: 'qdrant' },
-        { documentId: 'doc2', similarity: 0.85, source: 'qdrant' }
+        { documentId: 'doc1', similarity: 0.95, source: 'qdrant' },
+        { documentId: 'doc2', similarity: 0.85, source: 'qdrant' } }
       ];
 
       const pgResults: SearchResult[] = [
-        {, documentId: 'doc2', similarity: 0.87, source: `postgres` },'`'`
-        { documentId: 'doc3', similarity: 0.80, source: `postgres` }
+        { documentId: 'doc2', similarity: 0.87, source: `postgres` },'`'`
+        { documentId: 'doc3', similarity: 0.80, source: `postgres` } }
       ];
 
       const merged = await vectorSearch.mergeResults(qdrantResults, pgResults);
@@ -383,3 +382,4 @@ describe('VectorSearchService (Integration)', () => {
     });
   });
 });
+

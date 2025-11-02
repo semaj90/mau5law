@@ -15,7 +15,7 @@
  * @module qdrant-auto-tagger
  */
 
-import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
+import type { ErrorMetadata, ErrorCategory } }from '$lib/services/mcp-simd-parser';
 
 /**
  * Qdrant collection configuration for error storage
@@ -31,7 +31,7 @@ export interface QdrantErrorCollectionConfig {
   quantization: boolean;
   /** Store vectors on disk */
  , onDisk: boolean;
-}
+} }
 
 /**
  * Qdrant point payload with auto-generated tags
@@ -63,7 +63,7 @@ export interface QdrantErrorPayload {
  , timestamp: string;
   /** Additional metadata */
   metadata?: Record<string, any>;
-}
+} }
 
 /**
  * Hybrid search parameters (vector + filters)
@@ -90,7 +90,7 @@ export interface HybridSearchParams {
   /** Time range filter */
   timeRange?: { start: Date;, end: Date;
   };
-}
+} }
 
 /**
  * Search result with score and payload
@@ -102,7 +102,7 @@ export interface QdrantSearchResult {
   score: number;
   /** Point payload */
   payload: QdrantErrorPayload;
-}
+} }
 
 /**
  * Auto-tagging rules for error classification
@@ -116,7 +116,7 @@ interface TaggingRule {
  , tags: string[];
   /** Priority (higher = applied first) */
   priority: number;
-}
+} }
 
 /**
  * Qdrant Auto-Tagger Service
@@ -151,7 +151,7 @@ export class QdrantAutoTagger {
     this.baseUrl = baseUrl;
     this.collectionName = collectionName;
     this.taggingRules = this.initializeTaggingRules();
-  }
+  } }
 
   /**
    * Initialize tagging rules for error classification
@@ -198,9 +198,9 @@ export class QdrantAutoTagger {
       { name: 'sveltekit', pattern: /sveltekit|\+page|\+server|\+layout/i, tags: ['sveltekit', 'framework', 'routing'], priority: 10 },
       { name: 'vite', pattern: /vite|build|compile/i, tags: ['vite', 'build-tool', 'bundler'], priority: 10 },
       { name: 'drizzle', pattern: /drizzle|schema/i, tags: ['drizzle', 'orm', 'database'], priority: 10 },
-      { name: 'xstate', pattern: /xstate|machine|state/i, tags: ['xstate', 'state-machine', 'state-management'], priority: 10 }
+      { name: 'xstate', pattern: /xstate|machine|state/i, tags: ['xstate', 'state-machine', 'state-management'], priority: 10 } }
     ];
-  }
+  } }
 
   /**
    * Initialize Qdrant collection with quantization
@@ -208,8 +208,7 @@ export class QdrantAutoTagger {
    * @param config - Optional collection configuration
    */
   async initialize(config?: Partial<QdrantErrorCollectionConfig>): Promise<void> {
-    const collectionConfig: QdrantErrorCollectionConfig = {
-     , name: config?.name || this.collectionName,
+    const collectionConfig: QdrantErrorCollectionConfig = { name: config?.name || this.collectionName,
       vectorSize: config?.vectorSize || 768,
       distance: config?.distance || 'Cosine',
       quantization: config?.quantization ?? true,
@@ -224,52 +223,50 @@ export class QdrantAutoTagger {
         console.log(`✅ Qdrant collection: "${collectionConfig.name}" already exists`);
         this.initialized = true;
         return;
-      }
+      } }
 
       // Create collection with scalar quantization
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({, vectors: {, size: collectionConfig.vectorSize,
+        body: JSON.stringify({ vectors: { size: collectionConfig.vectorSize,
             distance: collectionConfig.distance,
             // Scalar quantization for 4x memory savings
             quantization_config: collectionConfig.quantization
-              ? {, scalar: {, type: 'int8',
+              ? { scalar: { type: 'int8',
                     quantile: 0.99,
                     always_ram: true
-                  }
-                }
+                  } }
+                } }
               : undefined
           },
-          optimizers_config: {
-           , default_segment_number: 2,
+          optimizers_config: { default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 10000
           },
-          hnsw_config: {
-           , m: 16,
+          hnsw_config: { m: 16,
             ef_construct: 100,
             full_scan_threshold: 10000,
             on_disk: collectionConfig.onDisk
-          }
+          } }
         })
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Failed to create collection: ${error}`);
-      }
+      } }
 
       // Create payload indexes for efficient filtering
       await this.createPayloadIndexes();
 
       this.initialized = true;
       console.log(`✅ Qdrant collection: "${collectionConfig.name}" created with scalar quantization`);
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Qdrant initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Create payload indexes for hybrid search
@@ -284,7 +281,7 @@ export class QdrantAutoTagger {
       { field: 'source', type: 'keyword' },
       { field: 'tags', type: 'keyword` },'`
       { field: 'errorFamily', type: `keyword` },
-      { field: 'filePattern', type: `keyword` }
+      { field: 'filePattern', type: `keyword` } }
     ];
 
     for (const index of indexes) {
@@ -292,16 +289,15 @@ export class QdrantAutoTagger {
         await fetch(`${this.baseUrl}/collections/${this.collectionName}/index`, {
           method: 'PUT',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , field_name: index.field,
+          body: JSON.stringify({ field_name: index.field,
             field_schema: index.type
           })
         });
-      } catch (error) {
+      } }catch (error) {
         console.warn(`⚠️ Failed to create index for ${index.field}:`, error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Apply auto-tagging rules to error metadata
@@ -316,19 +312,19 @@ export class QdrantAutoTagger {
     const sortedRules = [...this.taggingRules].sort((a, b) => b.priority - a.priority);
 
     for (const rule of sortedRules) {
-      const target = `${error.errorCode} ${error.message} ${error.filePath}`;
+      const target = `${error.errorCode} }${error.message} }${error.filePath}`;
 
       let matches = $state<boolean>(false);
       if (rule.pattern instanceof RegExp) {
         matches = rule.pattern.test(target);
-      } else {
+      } }else {
         matches = target.includes(rule.pattern);
-      }
+      } }
 
       if (matches) {
         rule.tags.forEach((tag) => tags.add(tag));
-      }
-    }
+      } }
+    } }
 
     // Add base category tags
     tags.add(error.category);
@@ -336,7 +332,7 @@ export class QdrantAutoTagger {
     tags.add(error.source);
 
     return Array.from(tags);
-  }
+  } }
 
   /**
    * Extract file pattern for filtering (e.g., "lib/services/*.ts")
@@ -352,7 +348,7 @@ export class QdrantAutoTagger {
     const ext = filePath.split('.').pop() || '*';
 
     return `${dir}/*.${ext}`;
-  }
+  } }
 
   /**
    * Determine error family from error code
@@ -365,7 +361,7 @@ export class QdrantAutoTagger {
     if (errorCode.startsWith('TS7')) return, 'typescript-modules';
     if (errorCode.startsWith('ESL')) return, 'eslint';
     return, 'unknown';
-  }
+  } }
 
   /**
    * Store errors in Qdrant with auto-tagging
@@ -376,17 +372,16 @@ export class QdrantAutoTagger {
   async storeErrors(errors: ErrorMetadata[], embeddings: number[][]): Promise<void> {
     if (!this.initialized) {
       throw new Error('Qdrant auto-tagger not initialized. Call initialize() first.');
-    }
+    } }
 
     if (errors.length !== embeddings.length) {
       throw new Error('Error count and embedding count must match');
-    }
+    } }
 
     const points = errors.map((error, index) => ({
       id: crypto.randomUUID(),
       vector: embeddings[index],
-      payload: {
-       , errorId: crypto.randomUUID(),
+      payload: { errorId: crypto.randomUUID(),
         errorCode: error.errorCode,
         filePath: error.filePath,
         line: error.line,
@@ -398,11 +393,10 @@ export class QdrantAutoTagger {
         filePattern: this.extractFilePattern(error.filePath),
         errorFamily: this.getErrorFamily(error.errorCode),
         timestamp: error.timestamp.toISOString(),
-        metadata: {
-         , column: error.column,
+        metadata: { column: error.column,
           rawText: error.rawText
-        }
-      } as QdrantErrorPayload
+        } }
+      } }as QdrantErrorPayload
     }));
 
     try {
@@ -415,14 +409,14 @@ export class QdrantAutoTagger {
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Failed to store errors: ${error}`);
-      }
+      } }
 
-      console.log(`✅ Stored ${points.length} errors with auto-tagging in Qdrant`);
-    } catch (error) {
+      console.log(`✅ Stored ${points.length} }errors with auto-tagging in Qdrant`);
+    } }catch (error) {
       console.error('❌ Error storage failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Hybrid search: vector similarity + metadata filters
@@ -433,52 +427,50 @@ export class QdrantAutoTagger {
   async hybridSearch(params: HybridSearchParams): Promise<QdrantSearchResult[]> {
     if (!this.initialized) {
       throw new Error('Qdrant auto-tagger not initialized. Call initialize() first.');
-    }
+    } }
 
     const filters: any[] = [];
 
     // Build filter conditions
     if (params.errorCode) {
-      filters.push({ key: 'errorCode', match: {, value: params.errorCode } });
-    }
+      filters.push({ key: 'errorCode', match: { value: params.errorCode } }});
+    } }
     if (params.severity) {
-      filters.push({ key: 'severity', match: {, value: params.severity } });
-    }
+      filters.push({ key: 'severity', match: { value: params.severity } }});
+    } }
     if (params.category) {
-      filters.push({ key: 'category', match: {, value: params.category } });
-    }
+      filters.push({ key: 'category', match: { value: params.category } }});
+    } }
     if (params.filePattern) {
-      filters.push({ key: 'filePattern', match: {, value: params.filePattern } });
-    }
+      filters.push({ key: 'filePattern', match: { value: params.filePattern } }});
+    } }
     if (params.errorFamily) {
-      filters.push({ key: 'errorFamily', match: {, value: params.errorFamily } });
-    }
+      filters.push({ key: 'errorFamily', match: { value: params.errorFamily } }});
+    } }
     if (params.tags && params.tags.length > 0) {
       filters.push({
         key: 'tags',
-        match: {, any: params.tags }
+        match: { any: params.tags } }
       });
-    }
+    } }
     if (params.timeRange) {
       filters.push({
         key: 'timestamp',
-        range: {
-         , gte: params.timeRange.start.toISOString(),
+        range: { gte: params.timeRange.start.toISOString(),
           lte: params.timeRange.end.toISOString()
-        }
+        } }
       });
-    }
+    } }
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , vector: params.queryVector,
+        body: JSON.stringify({ vector: params.queryVector,
           limit: params.limit || 10,
           with_payload: true,
           with_vector: false,
-          filter: filters.length > 0 ? {, must: filters } : undefined,
+          filter: filters.length > 0 ? { must: filters } }: undefined,
           score_threshold: params.scoreThreshold || 0.7
         })
       });
@@ -486,7 +478,7 @@ export class QdrantAutoTagger {
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Search failed: ${error}`);
-      }
+      } }
 
       const data = await response.json();
       return data.result.map((item: any) => ({
@@ -494,11 +486,11 @@ export class QdrantAutoTagger {
         score: item.score,
         payload: item.payload
       }));
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Hybrid search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Get all unique tags in the collection
@@ -511,8 +503,7 @@ export class QdrantAutoTagger {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/scroll`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , limit: 1000,
+        body: JSON.stringify({ limit: 1000,
           with_payload: true,
           with_vector: false
         })
@@ -520,7 +511,7 @@ export class QdrantAutoTagger {
 
       if (!response.ok) {
         throw new Error(`Failed to fetch tags: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       const tags = new Set<string>();
@@ -528,15 +519,15 @@ export class QdrantAutoTagger {
       data.result.points.forEach((point: any) => {
         if (point.payload.tags) {
           point.payload.tags.forEach((tag: string) => tags.add(tag));
-        }
+        } }
       });
 
       return Array.from(tags).sort();
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to fetch tags:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Get collection statistics
@@ -549,7 +540,7 @@ export class QdrantAutoTagger {
 
       if (!response.ok) {
         throw new Error(`Failed to fetch stats: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       const tags = await this.getAllTags();
@@ -559,11 +550,11 @@ export class QdrantAutoTagger {
         uniqueTags: tags.length,
         tags
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to fetch stats:', error);
       return { totalErrors: 0, uniqueTags: 0, tags: [] };
-    }
-  }
+    } }
+  } }
 
   /**
    * Health check for Qdrant server
@@ -572,14 +563,15 @@ export class QdrantAutoTagger {
     try {
       const response = await fetch(`${this.baseUrl}/healthz`);
       return response.ok;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Qdrant health check failed:', error);
       return false;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * Singleton instance for global access
  */
 export const qdrantAutoTagger = new QdrantAutoTagger();
+

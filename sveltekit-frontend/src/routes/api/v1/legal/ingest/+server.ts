@@ -8,9 +8,9 @@
  * - Metadata caching (Redis)
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getLegalAIPipeline } }from '$lib/server/integrations';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -18,26 +18,26 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Parse request body
     const body = await request.json();
-    const { content, metadata, file } = body;
+    const { content, metadata, file } }= body;
 
     // Validate inputs
     if (!content || typeof content !== 'string') {
       throw error(400, 'Invalid or missing: "content" field');
-    }
+    } }
 
     if (!metadata || typeof metadata !== 'object') {
       throw error(400, 'Invalid or missing: "metadata" field');
-    }
+    } }
 
     // Convert base64 file to Buffer if provided
     let fileBuffer: Buffer | undefined;
     if (file && typeof file === 'string') {
       try {
         fileBuffer = Buffer.from(file, 'base64');
-      } catch (e) {
+      } }catch (e) {
         throw error(400, 'Invalid base64 file encoding');
-      }
-    }
+      } }
+    } }
 
     // Ingest document
     const result = await pipeline.ingestDocument(content, metadata, fileBuffer);
@@ -45,21 +45,21 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-       , id: result.id,
+  id: result.id,
         metadata: result.metadata,
         cached: result.cached,
         embeddingDimensions: result.embedding.length
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Ingest API error:', err);'
+  } }catch (err: any) {
+    console.error('Ingest API error:', err);
 
     if (err.status) {
       throw err; // Re-throw SvelteKit errors
-    }
+    } }
 
     throw error(500, err.message || 'Failed to ingest document');
-  }
+  } }
 };
 
 /**
@@ -72,11 +72,11 @@ export const PUT: RequestHandler = async ({ request }) => {
     const pipeline = getLegalAIPipeline();
 
     const body = await request.json();
-    const { documents, batchSize = 10 } = body;
+    const { documents, batchSize = 10 } }= body;
 
     if (!Array.isArray(documents) || documents.length === 0) {
       throw error(400, 'Invalid or missing: "documents" array');
-    }
+    } }
 
     // Convert files if provided
     const processedDocs = documents.map(doc => ({
@@ -90,17 +90,18 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-       , ingested: results.length,
+  ingested: results.length,
         ids: results.map(r => r.id)
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Batch ingest API error:', err);'
+  } }catch (err: any) {
+    console.error('Batch ingest API error:', err);
 
     if (err.status) {
       throw err;
-    }
+    } }
 
     throw error(500, err.message || 'Failed to batch ingest documents');
-  }
+  } }
 };
+

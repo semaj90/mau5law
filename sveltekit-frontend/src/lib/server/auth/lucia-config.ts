@@ -12,7 +12,8 @@ if (!resolved) {
     "lucia-config: could not resolve a Lucia instance from '../auth'. " +
       'Ensure the canonical auth module exports the Lucia instance (e.g. `export const lucia = ...` or `export default lucia`).'
   );
-}
+} }
 // Export as: unknown to avoid, unsafe: any; consumers can narrow to the real Lucia type.
 // If you have the Lucia type available, replace `unknown` with that type (e.g. `as Lucia`).
 export const lucia: any = resolved;
+

@@ -1,8 +1,8 @@
 // XState Machine for Vector Job Status Tracking
 // Manages lifecycle of vector processing jobs through Redis Streams + CUDA worker
-import { createMachine, assign, type ActorReffrom type DoneInvokeEvent } from 'xstate';
+import { createMachine, assign, type ActorReffrom type DoneInvokeEvent } }from 'xstate';
 import interpret from 'xstate'; // corrected import (default)
-import type { VectorJobResult } from '$lib/types/vector-jobs';
+import type { VectorJobResult } }from '$lib/types/vector-jobs';
 
 export interface VectorJobContext { jobId: string | null;, ownerType: 'evidence' | 'report' | 'case' | 'document' | null;
   ownerId: string | null;
@@ -26,48 +26,47 @@ export interface VectorJobContext { jobId: string | null;, ownerType: 'evidence
   // WebGPU fallback
   useWebGPU: boolean;
   webGPUAvailable: boolean;
-}
+} }
 
 export type VectorJobEvent =
-  | {, type: 'SUBMIT_JOB';, jobId: string;
+  | { type: 'SUBMIT_JOB';, jobId: string;
       ownerType: VectorJobContext['ownerType'];
       ownerId: string;
       operation: VectorJobContext['operation'];
       data?: any;
       priority?: VectorJobContext['priority'];
-    }
-  | { type: 'JOB_QUEUED'; jobId: string }
-  | { type: 'PROCESSING_STARTED' }
-  | { type: 'CUDA_PROCESSING'; progress?: number }
-  | { type: 'WEBGPU_FALLBACK' }
-  | { type: 'PROCESSING_COMPLETED'; result: VectorJobResult }
-  | { type: 'PROCESSING_FAILED'; error: string }
-  | { type: 'RETRY' }
-  | { type: 'CANCEL' }
-  | {, type: 'RESET' };
+    } }
+  | { type: 'JOB_QUEUED'; jobId: string } }
+  | { type: 'PROCESSING_STARTED' } }
+  | { type: 'CUDA_PROCESSING'; progress?: number } }
+  | { type: 'WEBGPU_FALLBACK' } }
+  | { type: 'PROCESSING_COMPLETED'; result: VectorJobResult } }
+  | { type: 'PROCESSING_FAILED'; error: string } }
+  | { type: 'RETRY' } }
+  | { type: 'CANCEL' } }
+  | { type: 'RESET' };
 
 // helper to normalize thrown errors
 function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   try {
     return String(e);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 // Services for external API calls (implemented as async functions)
 const vectorJobServices = {
   // rename `event` -> `_event` to satisfy unused-arg linting (allowed unused args must start with _)
-  submitToAPI: async ({ context, _event }: { context: VectorJobContext;, _event: any }) => {
+  submitToAPI: async ({ context, _event }: { context: VectorJobContext; _event: any }) => {
     try {
       const jobData = {
         owner_type: context.ownerType,
         owner_id: context.ownerId,
         event: context.operation,
         vector: context.vector,
-        payload: {
-         , operation: context.operation,
+        payload: { operation: context.operation,
           data: context.inputData,
           ...(context.payload ?? {})
         },
@@ -80,50 +79,49 @@ const vectorJobServices = {
         body: JSON.stringify(jobData)
       });
       if (!response.ok) {
-        throw new Error(`Failed to submit job: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Failed to submit job: ${response.status} }${response.statusText}`);
+      } }
       return await response.json();
-    } catch (err: any) {
+    } }catch (err: any) {
       throw new Error(getErrorMessage(err) || 'submitToAPI failed');
-    }
+    } }
   },
 
-  checkJobStatus: async ({ jobId }: {, jobId: string }) => {
+  checkJobStatus: async ({ jobId }: { jobId: string }) => {
     try {
       const response = await fetch(`/api/v1/vector/jobs/${encodeURIComponent(jobId)}/status`);
       if (!response.ok) {
-        throw new Error(`Failed to check job status: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Failed to check job status: ${response.status} }${response.statusText}`);
+      } }
       return await response.json();
-    } catch (err: any) {
+    } }catch (err: any) {
       throw new Error(getErrorMessage(err) || 'checkJobStatus failed');
-    }
+    } }
   },
 
-  processWithWebGPU: async ({ context }: {, context: VectorJobContext }) => {
+  processWithWebGPU: async ({ context }: { context: VectorJobContext }) => {
     try {
       const hasNavigator = typeof navigator !== 'undefined';
       const gpuAvailable = hasNavigator && 'gpu' in navigator;
       if (!gpuAvailable && !context.webGPUAvailable) {
         throw new Error('WebGPU not available for fallback processing');
-      }
+      } }
       const response = await fetch('/api/v1/webgpu/process', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , operation: context.operation,
+        body: JSON.stringify({ operation: context.operation,
           data: context.inputData,
           vector: context.vector,
           payload: context.payload
         })
       });
       if (!response.ok) {
-        throw new Error(`WebGPU processing failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`WebGPU processing failed: ${response.status} }${response.statusText}`);
+      } }
       return await response.json();
-    } catch (err: any) {
+    } }catch (err: any) {
       throw new Error(getErrorMessage(err) || 'processWithWebGPU failed');
-    }
+    } }
   },
 
   pollJobProgress: async ({ jobId, signal }: { jobId: string; signal?: AbortSignal }) => {
@@ -133,34 +131,33 @@ const vectorJobServices = {
       while (attempts < maxAttempts) {
         if (signal?.aborted) {
           throw new Error('Polling cancelled');
-        }
+        } }
         const response = await fetch(`/api/v1/vector/jobs/${encodeURIComponent(jobId)}/status`, { signal });
         if (!response.ok) {
-          throw new Error(`Failed to poll job status: ${response.status} ${response.statusText}`);
-        }
+          throw new Error(`Failed to poll job status: ${response.status} }${response.statusText}`);
+        } }
         const status = await response.json();
         if (status.status === 'completed') {
           return status;
-        } else if (status.status === 'failed') {
+        } }else if (status.status === 'failed') {
           throw new Error(status.error || 'Job processing failed');
-        }
+        } }
         // delay
         await new Promise(resolve => setTimeout(resolve, 5000));
         attempts++;
-      }
+      } }
       throw new Error('Job processing timeout');
-    } catch (err: any) {
+    } }catch (err: any) {
       throw new Error(getErrorMessage(err) || 'pollJobProgress failed');
-    }
-  }
+    } }
+  } }
 };
 
 export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
   {
     id: 'vectorJob',
     initial: 'idle',
-    context: {
-     , jobId: null,
+    context: { jobId: null,
       ownerType: null,
       ownerId: null,
       operation: null,
@@ -179,11 +176,10 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
       useWebGPU: false,
       webGPUAvailable: false
     },
-    states: {, idle: {, on: {, SUBMIT_JOB: {, target: 'submitting',
+    states: { idle: { on: { SUBMIT_JOB: { target: 'submitting',
             actions: assign((context, event: any) => {
               const ev = event as Extract<VectorJobEvent, { type: `SUBMIT_JOB` }>;
-              return {
-               , jobId: ev.jobId,
+              return { jobId: ev.jobId,
                 ownerType: ev.ownerType,
                 ownerId: ev.ownerId,
                 operation: ev.operation,
@@ -195,15 +191,14 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
                 result: undefined
               };
             })
-          }
-        }
+          } }
+        } }
       },
-      submitting: {, invoke: {, id: 'submitJob',
+      submitting: { invoke: { id: 'submitJob',
           src: 'submitToAPI',
           // removed unused `event` from the input passed to the service
-          input: ({ context }: {, context: VectorJobContext }) => ({ context }),
-          onDone: {
-           , target: 'queued',
+          input: ({ context }: { context: VectorJobContext }) => ({ context }),
+          onDone: { target: 'queued',
             actions: assign((ctx, ev: DoneInvokeEvent<unknown>) => {
               const out = (ev.output ?? {}) as Record<string, unknown>;
               return {
@@ -211,25 +206,21 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
               };
             })
           },
-          onError: {
-           , target: 'failed',
+          onError: { target: 'failed',
             actions: assign((_, ev: { data?: any }) => ({
               error: ev.data ? getErrorMessage(ev.data) : 'Failed to submit job'
             }))
-          }
-        }
+          } }
+        } }
       },
-      queued: {
-       , entry: assign(() => ({
+      queued: { entry: assign(() => ({
           // safer runtime check for WebGPU
           webGPUAvailable: typeof navigator !== 'undefined' && 'gpu' in navigator
         })),
-        invoke: {
-         , id: 'pollProgress',
+        invoke: { id: 'pollProgress',
           src: 'pollJobProgress',
-          input: ({ context }: {, context: VectorJobContext }) => ({ jobId: context.jobId! }),
-          onDone: {
-           , target: 'completed',
+          input: ({ context }: { context: VectorJobContext }) => ({ jobId: context.jobId! }),
+          onDone: { target: 'completed',
             actions: assign((context, ev: DoneInvokeEvent<unknown>) => ({
               result: ev.output as VectorJobResult,
               endTime: new Date(),
@@ -237,8 +228,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             }))
           },
           onError: [
-            {,
-              target: 'webgpuFallback',
+            { target: 'webgpuFallback',
               cond: (ctx: VectorJobContext) => ctx.webGPUAvailable && !ctx.useWebGPU,
               actions: assign(() => ({ useWebGPU: true }))
             },
@@ -259,126 +249,111 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             },
           ]
         },
-        on: {
-         , PROCESSING_STARTED: 'processing',
-          CANCEL: 'cancelled' }
+        on: { PROCESSING_STARTED: 'processing',
+          CANCEL: 'cancelled' } }
       },
-      processing: {, on: {, CUDA_PROCESSING: {
-           , actions: assign((_, event: { progress?: number }) => ({
+      processing: { on: { CUDA_PROCESSING: { actions: assign((_, event: { progress?: number }) => ({
               cudaResponse: event
             }))
           },
           WEBGPU_FALLBACK: 'webgpuFallback',
-          PROCESSING_COMPLETED: {
-           , target: 'completed',
-            actions: assign((context, event: {, result: VectorJobResult }) => ({
+          PROCESSING_COMPLETED: { target: 'completed',
+            actions: assign((context, event: { result: VectorJobResult }) => ({
               result: event.result,
               endTime: new Date(),
               processingTimeMs: Date.now() - (context.startTime?.getTime() ?? Date.now())
             }))
           },
-          PROCESSING_FAILED: {
-           , target: 'retrying',
+          PROCESSING_FAILED: { target: 'retrying',
             cond: (ctx: VectorJobContext) => ctx.attempts < ctx.maxAttempts,
             actions: assign((ctx: VectorJobContext, event: { error?: string }) => ({
               attempts: ctx.attempts + 1,
               error: event.error
             }))
           },
-          CANCEL: `cancelled` }
+          CANCEL: `cancelled` } }
       },
-      webgpuFallback: {, entry: assign(() => ({, useWebGPU: true })),
-        invoke: {
-         , id: 'webgpuProcess',
+      webgpuFallback: { entry: assign(() => ({ useWebGPU: true })),
+        invoke: { id: 'webgpuProcess',
           src: 'processWithWebGPU',
-          input: ({ context }: {, context: VectorJobContext }) => ({ context }),
-          onDone: {
-           , target: 'completed',
+          input: ({ context }: { context: VectorJobContext }) => ({ context }),
+          onDone: { target: 'completed',
             actions: assign((context, ev: DoneInvokeEvent<unknown>) => ({
               result: ev.output as VectorJobResult,
               endTime: new Date(),
               processingTimeMs: Date.now() - (context.startTime?.getTime() ?? Date.now())
             }))
           },
-          onError: {
-           , target: 'failed',
-            actions: assign((_, ev: { data?: any }) => ({ error: `WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }','`
+          onError: { target: 'failed',
+            actions: assign((_, ev: { data?: any }) => ({ error: `WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` } },'`
               endTime: new Date()
             }))
-          }
+          } }
         },
-        on: {
-         , CANCEL: `cancelled` }
+        on: { CANCEL: `cancelled` } }
       },
       retrying: {
         after: {
-          2000: {
-           , target: 'submitting',
+          2000: { target: 'submitting',
             actions: assign(() => ({
               error: undefined
             }))
-          }
+          } }
         },
-        on: {
-         , RETRY: 'submitting',
-          CANCEL: `cancelled` }
+        on: { RETRY: 'submitting',
+          CANCEL: `cancelled` } }
       },
-      completed: {
-       , type: 'final',
+      completed: { type: 'final',
         entry: [
-          ({ context }: {, context: VectorJobContext }) => {,
-            console.log(`✅ Vector job ${context.jobId} completed in ${context.processingTimeMs}ms`);
+          ({ context }: { context: VectorJobContext }) => { console.log(`✅ Vector job ${context.jobId} }completed in ${context.processingTimeMs}ms`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
-                new CustomEvent('vectorJobCompleted', { detail: {, jobId: context.jobId,
+                new CustomEvent('vectorJobCompleted', { detail: { jobId: context.jobId,
                     ownerType: context.ownerType,
                     ownerId: context.ownerId,
                     result: context.result,
                     processingTime: context.processingTimeMs,
                     usedWebGPU: context.useWebGPU
-                  }
+                  } }
                 })
               );
-            }
+            } }
           },
         ],
-        on: {
-         , RESET: `idle` }
+        on: { RESET: `idle` } }
       },
       failed: {
         entry: [
-          ({ context }: {, context: VectorJobContext }) => {,
-            console.error(`❌ Vector job ${context.jobId} failed: ${context.error}`);
+          ({ context }: { context: VectorJobContext }) => { console.error(`❌ Vector job ${context.jobId} }failed: ${context.error}`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
-                new CustomEvent('vectorJobFailed', { detail: {, jobId: context.jobId,
+                new CustomEvent('vectorJobFailed', { detail: { jobId: context.jobId,
                     error: context.error,
                     attempts: context.attempts,
                     usedWebGPU: context.useWebGPU
-                  }
+                  } }
                 })
               );
-            }
+            } }
           },
         ],
-        on: {, RETRY: {, target: 'submitting',
+        on: { RETRY: { target: 'submitting',
             cond: (ctx: VectorJobContext) => ctx.attempts < ctx.maxAttempts,
             actions: assign(() => ({ error: undefined }))
           },
-          RESET: `idle` }
+          RESET: `idle` } }
       },
       cancelled: {
         entry: [
-          ({ context }: {, context: VectorJobContext }) => console.log(`🚫 Vector job ${context.jobId} cancelled`)
+          ({ context }: { context: VectorJobContext }) => console.log(`🚫 Vector job ${context.jobId} }cancelled`)
         ],
-        on: {
-         , RESET: `idle` }
-      }
-    }
+        on: { RESET: `idle` } }
+      } }
+    } }
   },
   {
     services: vectorJobServices
-  }
+  } }
 );
 
 export type VectorJobMachine = typeof vectorJobMachine;
@@ -403,13 +378,13 @@ export function createVectorJob(
     operation,
     data,
     priority
-  } as Extract<VectorJobEvent, { type: `SUBMIT_JOB` }>);
+  } }as Extract<VectorJobEvent, { type: `SUBMIT_JOB` }>);
   return service;
-}
+} }
 
 // Utility for batch vector job processing
 export function processBatchVectorJobs(
-  jobs: Array<{, ownerType: VectorJobContext['ownerType'];, ownerId: string;
+  jobs: Array<{ ownerType: VectorJobContext['ownerType'];, ownerId: string;
    , operation: VectorJobContext['operation'];
     data?: any;
     priority?: VectorJobContext['priority'];

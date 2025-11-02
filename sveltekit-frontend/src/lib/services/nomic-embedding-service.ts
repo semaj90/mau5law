@@ -4,15 +4,15 @@
  * - Fallback: nomic-embed-text:latest
  * - Fixed TypeScript/logic issues from original file
  */
-import { OllamaEmbeddings } from '@langchain/ollama';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import type { Readable } from 'svelte/store';
-import { db } from '$lib/server/db';
-import { evidence, cases, legalDocuments } from '$lib/server/db/unified-schema';
-import { eq, sql } from 'drizzle-orm';
+import { OllamaEmbeddings } }from '@langchain/ollama';
+import { MemoryVectorStore } }from 'langchain/vectorstores/memory';
+import { RecursiveCharacterTextSplitter } }from 'langchain/text_splitter';
+import type { Readable } }from 'svelte/store';
+import { db } }from '$lib/server/db';
+import { evidence, cases, legalDocuments } }from '$lib/server/db/unified-schema';
+import { eq, sql } }from 'drizzle-orm';
 // lightweight stub for external legalNLP module (keep import path same as original)
-import { legalNLP } from './sentence-transformer.js';
+import { legalNLP } }from './sentence-transformer.js';
 
 export interface EmbeddingConfig { model: string;, dimensions: number;
   batchSize: number;
@@ -22,36 +22,36 @@ export interface EmbeddingConfig { model: string;, dimensions: number;
   enableCaching: boolean;
   enableGpuAcceleration: boolean;
   normalization: boolean;
-}
+} }
 
-export interface DocumentChunk {, id: string;, content: string;
-  metadata: {, source: string;, chunkIndex: number;
+export interface DocumentChunk { id: string;, content: string;
+  metadata: { source: string;, chunkIndex: number;
     totalChunks: number;
     startIndex: number;
     endIndex: number;
     [key: string]: any;
   };
-}
+} }
 
-export interface EmbeddingResult {, id: string;, embedding: number[];
+export interface EmbeddingResult { id: string;, embedding: number[];
   content: string;
   metadata: { [key: string]: any };
   processingTime: number;
-}
+} }
 
-export interface SimilaritySearchResult {, document: DocumentChunk;, similarity: number;
+export interface SimilaritySearchResult { document: DocumentChunk;, similarity: number;
   embedding: number[];
   metadata: { [key: string]: any };
-}
+} }
 
-export interface BatchEmbeddingResult {, results: EmbeddingResult[];, totalProcessed: number;
+export interface BatchEmbeddingResult { results: EmbeddingResult[];, totalProcessed: number;
   averageTime: number;
   errors: Array<any>;
-  metrics: {, tokenCount: number;, embeddingDimensions: number;
+  metrics: { tokenCount: number;, embeddingDimensions: number;
     cacheHits: number;
     cacheMisses: number;
   };
-}
+} }
 
 class NomicEmbeddingService {
   private static instance: NomicEmbeddingService;
@@ -59,7 +59,7 @@ class NomicEmbeddingService {
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: any;
   private config: EmbeddingConfig;
-  private, cache: Map<string, { embedding: number[];, timestamp: number }> = new Map();
+  private, cache: Map<string, { embedding: number[]; timestamp: number }> = new Map();
   private initialized = $state(false);
   private processing = $state(false);
   private cacheHits = 0;
@@ -67,14 +67,14 @@ class NomicEmbeddingService {
 
   private constructor() {
     this.config = this.getDefaultConfig();
-  }
+  } }
 
   public static getInstance(): NomicEmbeddingService {
     if (!NomicEmbeddingService.instance) {
       NomicEmbeddingService.instance = new NomicEmbeddingService();
-    }
+    } }
     return NomicEmbeddingService.instance;
-  }
+  } }
 
   private getDefaultConfig(): EmbeddingConfig {
     return {
@@ -88,7 +88,7 @@ class NomicEmbeddingService {
       enableGpuAcceleration: true,
       normalization: true
     };
-  }
+  } }
 
   private async initializeServices(): Promise<void> {
     if (this.initialized) return;
@@ -108,7 +108,7 @@ class NomicEmbeddingService {
             // this is best-effort; exact options depend on client lib
            , numGpu: this.config.enableGpuAcceleration ? 1 : 0,
             mainGpu: 0
-          } as: any
+          } }as: any
         }, as: any);
 
         // text splitter init
@@ -116,7 +116,7 @@ class NomicEmbeddingService {
           chunkSize: this.config.chunkSize,
           chunkOverlap: this.config.chunkOverlap,
           separators: ['\n\n', '\n', '. ', ' ', '']
-        } as: any);
+        } }as: any);
 
         // in-memory vector store
         this.vectorStore = new MemoryVectorStore(this.embeddings as: any);
@@ -125,15 +125,15 @@ class NomicEmbeddingService {
         this.config.model = modelName;
         console.log(`✅ Embedding service initialized with model: ${modelName}`);
         return;
-      } catch (err) {
+      } }catch (err) {
         lastError = err;
-        console.warn(`Model init failed for ${modelName}, trying next: ', err);'' }'`
-    }
+        console.warn(`Model init failed for ${modelName}, trying next: ', err);'' } }`
+    } }
     console.error('❌ Failed to initialize embedding service with all candidate models:', lastError);
     throw lastError;
-  }
+  } }
 
-  public async generateEmbedding(text: string, metadata: { [key: string]: any } = {}): Promise<EmbeddingResult> {
+  public async generateEmbedding(text: string, metadata: { [key: string]: any } }= {}): Promise<EmbeddingResult> {
     const startTime = Date.now();
     try {
       if (!this.initialized) await this.initializeServices();
@@ -149,7 +149,7 @@ class NomicEmbeddingService {
           metadata,
           processingTime: Date.now() - startTime
         };
-      }
+      } }
 
       // generate embedding
       const embedding = await this.embeddings.embedQuery(text);
@@ -158,7 +158,7 @@ class NomicEmbeddingService {
       if (this.config.enableCaching) {
         this.cache.set(cacheKey, { embedding: normalizedEmbedding, timestamp: Date.now() });
         this.cacheMisses++;
-      }
+      } }
 
       return {
         id: this.generateId(),
@@ -167,15 +167,15 @@ class NomicEmbeddingService {
         metadata,
         processingTime: Date.now() - startTime
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to generate embedding:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   public async generateBatchEmbeddings(
     texts: string[],
-    metadata?: { [key: string]: any }[],
+    metadata?: { [key: string]: any } }],
     onProgress?: (processed: number, total: number) => void
   ): Promise<BatchEmbeddingResult> {
     const startTime = Date.now();
@@ -192,7 +192,7 @@ class NomicEmbeddingService {
         const batch = texts.slice(i, i + this.config.batchSize);
         const batchMetadata = metadata?.slice(i, i + this.config.batchSize) || [];
 
-        const uncached: { text: string; idx: number;, md: any }[] = [];
+        const uncached: { text: string; idx: number; md: any } }] = [];
         // check cache
         batch.forEach((t, bi) => {
           const key = this.getCacheKey(t);
@@ -206,10 +206,10 @@ class NomicEmbeddingService {
               processingTime: 0
             });
             cacheHits++;
-          } else {
-            uncached.push({ text: t, idx: bi, md: batchMetadata[bi] || {} });
+          } }else {
+            uncached.push({ text: t, idx: bi, md: batchMetadata[bi] || {} }});
             cacheMisses++;
-          }
+          } }
         });
 
         if (uncached.length > 0) {
@@ -229,7 +229,7 @@ class NomicEmbeddingService {
                 processingTime: (Date.now() - startTime) / Math.max(1, docs.length)
               });
             });
-          } catch (batchError) {
+          } }catch (batchError) {
             // record per-item errors
             uncached.forEach(u => {
               errors.push({
@@ -238,16 +238,16 @@ class NomicEmbeddingService {
                 error: batchError instanceof Error ? batchError.message : String(batchError)
               });
             });
-          }
-        }
+          } }
+        } }
 
         if (onProgress) onProgress(Math.min(i + this.config.batchSize, texts.length), texts.length);
 
         // small throttle
         if (i + this.config.batchSize < texts.length) {
           await new Promise(resolve => setTimeout(resolve, 100));
-        }
-      }
+        } }
+      } }
 
       const totalTime = Date.now() - startTime;
       const averageTime = results.length > 0 ? totalTime / results.length : 0;
@@ -258,30 +258,28 @@ class NomicEmbeddingService {
         totalProcessed: results.length,
         averageTime,
         errors,
-        metrics: {
-         , tokenCount: this.estimateTokenCount(texts),
+        metrics: { tokenCount: this.estimateTokenCount(texts),
           embeddingDimensions: this.config.dimensions,
           cacheHits,
           cacheMisses
-        }
+        } }
       };
-    } catch (err) {
+    } }catch (err) {
       this.processing = $state(false);
       console.error('Failed to generate batch embeddings:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   public async processDocument(
     content: string,
-    metadata: {
-     , source: string;
+    metadata: { source: string;
       title?: string;
      , entityType: string;
      , entityId: string;
       [key: string]: any;
-    }
-  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[];, indexedCount: number; analysis?: any }> {
+    } }
+  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[]; indexedCount: number; analysis?: any }> {
     try {
       if (!this.initialized) await this.initializeServices();
 
@@ -289,22 +287,22 @@ class NomicEmbeddingService {
       try {
         if (legalNLP && typeof legalNLP.analyzeLegalDocument === 'function') {
           documentAnalysis = await legalNLP.analyzeLegalDocument(content);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.warn('Legal analysis failed, continuing:', err);
-      }
+      } }
 
       let textChunks: string[] = [];
       try {
         if (legalNLP && typeof legalNLP.chunkText === 'function') {
           textChunks = legalNLP.chunkText(content, this.config.chunkSize, this.config.chunkOverlap);
-        } else {
+        } }else {
           textChunks = await this.textSplitter.splitText(content);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.warn('Chunking failed, using fallback splitter:', err);
         textChunks = await this.textSplitter.splitText(content);
-      }
+      } }
 
       const chunks: DocumentChunk[] = textChunks.map((chunk, idx) => ({
         id: this.generateId(),
@@ -320,9 +318,9 @@ class NomicEmbeddingService {
                 legalDomain: documentAnalysis.legalDomain,
                 complexity: documentAnalysis.complexity,
                 keywords: documentAnalysis.keywords
-              }
+              } }
             : {})
-        }
+        } }
       }));
 
       const chunkTexts = chunks.map(c => c.content);
@@ -337,13 +335,13 @@ class NomicEmbeddingService {
         String(metadata.entityId)
       );
 
-      console.log(`✅ Processed document: ${chunks.length} chunks, ${indexedCount} indexed`);
+      console.log(`✅ Processed document: ${chunks.length} }chunks, ${indexedCount} }indexed`);
       return { chunks, embeddings: embeddingResult.results, indexedCount, analysis: documentAnalysis };
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to process document:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   public async similaritySearch(
     query: string,
@@ -353,10 +351,10 @@ class NomicEmbeddingService {
       entityType?: string;
       entityId?: string;
       metadata?: { [key: string]: any };
-    } = {}
+    } }= {} }
   ): Promise<SimilaritySearchResult[]> {
     try {
-      const { k = 10, threshold = 0.7, entityType } = options;
+      const { k = 10, threshold = 0.7, entityType } }= options;
 
       const queryEmbedding = await this.generateEmbedding(query);
 
@@ -373,10 +371,10 @@ class NomicEmbeddingService {
             caseId: evidence.caseId
           })
           .from(evidence)
-          .where(sql`${evidence.titleEmbedding} IS NOT NULL`)
+          .where(sql`${evidence.titleEmbedding} }IS NOT NULL`)
           .limit(k);
         for (const r of ev) results.push({ ...r, entityType: 'evidence', entityId: r.id });
-      }
+      } }
 
       if (!entityType || entityType === 'case') {
         const cs = await db
@@ -388,10 +386,10 @@ class NomicEmbeddingService {
             caseNumber: cases.caseNumber
           })
           .from(cases)
-          .where(sql`${cases.titleEmbedding} IS NOT NULL`)
+          .where(sql`${cases.titleEmbedding} }IS NOT NULL`)
           .limit(k);
         for (const r of cs) results.push({ ...r, entityType: 'case', entityId: r.id });
-      }
+      } }
 
       if (!entityType || entityType === 'legal_document') {
         const ld = await db
@@ -403,42 +401,41 @@ class NomicEmbeddingService {
             docType: legalDocuments.documentType
           })
           .from(legalDocuments)
-          .where(sql`${legalDocuments.titleEmbedding} IS NOT NULL`)
+          .where(sql`${legalDocuments.titleEmbedding} }IS NOT NULL`)
           .limit(k);
         for (const r of ld) results.push({ ...r, entityType: 'legal_document', entityId: r.id });
-      }
+      } }
 
       const similarities: SimilaritySearchResult[] = [];
       for (const r of results) {
         if (!r.embedding) continue;
         const similarity = this.cosineSimilarity(queryEmbedding.embedding, r.embedding as: number[]);
         if (similarity >= threshold) {
-          similarities.push({ document: {, id: r.id,
+          similarities.push({ document: { id: r.id,
               content: r.content,
-              metadata: {
-               , source: r.entityType || 'search_index',
+              metadata: { source: r.entityType || 'search_index',
                 chunkIndex: 0,
                 totalChunks: 1,
                 startIndex: 0,
                 endIndex: (r.content || '').length,
-                ...(r.title ? { title: r.title } : {}),
+                ...(r.title ? { title: r.title } }: {}),
                 entityType: r.entityType,
                 entityId: r.entityId
-              }
-            } as DocumentChunk,
+              } }
+            } }as DocumentChunk,
             similarity,
             embedding: r.embedding, as: number[],
             metadata: r
           });
-        }
-      }
+        } }
+      } }
 
       return similarities.sort((a, b) => b.similarity - a.similarity).slice(0, k);
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to perform similarity search:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   private async storeEmbeddingsInDatabase(
     embeddings: EmbeddingResult[],
@@ -457,7 +454,7 @@ class NomicEmbeddingService {
                 updatedAt: new Date()
               })
               .where(eq(evidence.id, entityId));
-          } else if (entityType === 'case') {
+          } }else if (entityType === 'case') {
             await db
               .update(cases)
               .set({
@@ -465,7 +462,7 @@ class NomicEmbeddingService {
                 updatedAt: new Date()
               })
               .where(eq(cases.id, entityId));
-          } else if (entityType === 'legal_document') {
+          } }else if (entityType === 'legal_document') {
             await db
               .update(legalDocuments)
               .set({
@@ -473,17 +470,17 @@ class NomicEmbeddingService {
                 updatedAt: new Date()
               })
               .where(eq(legalDocuments.id, entityId));
-          }
+          } }
           insertedCount++;
-        } catch (updateError) {
-          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);'' }'`
-      }
+        } }catch (updateError) {
+          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);'' } }`
+      } }
       return insertedCount;
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to store embeddings in database:', err);
       return 0;
-    }
-  }
+    } }
+  } }
 
   public getStatistics() {
     return {
@@ -491,19 +488,18 @@ class NomicEmbeddingService {
       cacheHitRate: this.cacheHits + this.cacheMisses > 0 ? this.cacheHits / (this.cacheHits + this.cacheMisses) : 0,
       isProcessing: this.processing,
       config: this.config,
-      performance: {
-       , averageTime: 0,
+      performance: { averageTime: 0,
         totalProcessed: 0
-      }
+      } }
     };
-  }
+  } }
 
   public clearCache(): void {
     this.cache.clear();
     this.cacheHits = 0;
     this.cacheMisses = 0;
     console.log('✅ Embedding cache cleared');
-  }
+  } }
 
   public async updateConfig(newConfig: Partial<EmbeddingConfig>): Promise<void> {
     this.config = { ...this.config, ...newConfig };
@@ -511,9 +507,9 @@ class NomicEmbeddingService {
     if (newConfig.model || typeof newConfig.enableGpuAcceleration === 'boolean') {
       this.initialized = $state(false);
       await this.initializeServices();
-    }
+    } }
     console.log('✅ Embedding service configuration updated');
-  }
+  } }
 
   // Utility methods
   private getCacheKey(text: string): string {
@@ -522,18 +518,18 @@ class NomicEmbeddingService {
       const char = text.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash |= 0;
-    }
+    } }
     return `${hash}`;
-  }
+  } }
 
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).slice(2);
-  }
+  } }
 
   private normalizeVector(vector: number[]): number[] {
     const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
     return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
-  }
+  } }
 
   private cosineSimilarity(a: number[], b: number[]): number {
     if (!a || !b || a.length !== b.length) return 0;
@@ -544,27 +540,28 @@ class NomicEmbeddingService {
       dot += a[i] * b[i];
       na += a[i] * a[i];
       nb += b[i] * b[i];
-    }
+    } }
     const denom = Math.sqrt(na) * Math.sqrt(nb);
     return denom > 0 ? dot / denom : 0;
-  }
+  } }
 
   private estimateTokenCount(texts: string[]): number {
     return texts.reduce((total, text) => total + Math.ceil(text.length / 4), 0);
-  }
+  } }
 
   // getters
   public get isInitialized(): boolean {
     return this.initialized;
-  }
+  } }
   public get isProcessing(): boolean {
     return this.processing;
-  }
+  } }
   public get currentConfig(): EmbeddingConfig {
     return { ...this.config };
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const nomicEmbeddingService = NomicEmbeddingService.getInstance();
 export default nomicEmbeddingService;
+

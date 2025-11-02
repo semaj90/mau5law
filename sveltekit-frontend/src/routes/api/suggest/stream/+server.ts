@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types';
-import { console, as _console } from 'node:console';
-import { searchDatabase, searchWithFuzzy, type Suggestion } from '$routes/api/suggest/+server';
-import { redis } from '$lib/server/cache/redis.js';
+import type { RequestHandler } }from './$types';
+import { console, as _console } }from 'node:console';
+import { searchDatabase, searchWithFuzzy, type Suggestion } }from '$routes/api/suggest/+server';
+import { redis } }from '$lib/server/cache/redis.js';
 
 // Helper: generator-based rerank stream using existing agentic reranker
-import { gemma3AgenticRerank } from '$lib/server/ai/gemma3-agentic-functions';
+import { gemma3AgenticRerank } }from '$lib/server/ai/gemma3-agentic-functions';
 
 async function* rerankSuggestionsStream(
   query: string,
@@ -15,16 +15,16 @@ async function* rerankSuggestionsStream(
   for (let i = 0; i < suggestions.length; i += chunkSize) {
     const chunk = suggestions.slice(i, i + chunkSize);
     const prompt = `Query: "${query}"\nRate each candidate 0–1:\n${chunk`
-      .map((s, idx) => `${idx + 1}. ${s.label} — ${s.description}`)
+      .map((s, idx) => `${idx + 1}. ${s.label} }— ${s.description}`)
       .join('\n')}\nReturn JSON { "<label>": score }`;`
 
     let aiResp: Record<string, number> | null = null;
     try {
       aiResp = await gemma3AgenticRerank(prompt);
-    } catch (e) {
+    } }catch (e) {
       console.warn('Rerank agent failed for chunk, falling back to original scores', e);
       aiResp = null;
-    }
+    } }
 
     const updated = chunk.map(s => ({
       ...s,
@@ -32,8 +32,8 @@ async function* rerankSuggestionsStream(
     }));
 
     yield updated.sort((a, b) => b.score - a.score);
-  }
-}
+  } }
+} }
 
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('q') ?? '';
@@ -50,11 +50,11 @@ export const GET: RequestHandler = async ({ url }) => {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          'X-Cache-Hit': 'true' }'' });
-    }
-  } catch (e) {
+          'X-Cache-Hit': 'true' } } });
+    } }
+  } }catch (e) {
     console.warn('Redis fetch failed (continuing):', e);
-  }
+  } }
 
   const encoder = new TextEncoder();
 
@@ -80,31 +80,32 @@ export const GET: RequestHandler = async ({ url }) => {
           // store partial chunk in Redis (optional, short TTL)
           try {
             await redis?.set(`${cacheKey}:partial`, JSON.stringify(chunk), { EX: 30 });
-          } catch (e) {
+          } }catch (e) {
             _console.warn('Failed to set partial cache', e);
-          }
+          } }
           controller.enqueue(encoder.encode(`event: update\ndata: ${JSON.stringify(chunk)}\n\n`));
-        }
+        } }
 
         // Cache full result (combined) for quick hits later
         try {
           await redis?.set(cacheKey, JSON.stringify(baseCandidates), { EX: 60 });
-        } catch (e) {
+        } }catch (e) {
           _console.warn('Failed to set cache', e);
-        }
+        } }
 
         controller.enqueue(encoder.encode('event: done\ndata: {}\n\n'));
         controller.close();
-      } catch (err) {
+      } }catch (err) {
         controller.enqueue(encoder.encode(`event: error\ndata: "${err instanceof Error ? err.message : String(err)}"\n\n`));
         controller.close();
-      }
-    }
+      } }
+    } }
   });
 
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive' }'' });
+      Connection: 'keep-alive' } } });
 };
+

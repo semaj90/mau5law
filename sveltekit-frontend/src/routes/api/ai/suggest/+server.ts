@@ -1,5 +1,5 @@
-import type { AIResponse } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,27 +17,27 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
-import { ollamaService } from '$lib/server/ai/ollama-service.js'; // Added import
+import { json } }from '@sveltejs/kit';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
+import { ollamaService } }from '$lib/server/ai/ollama-service.js'; // Added import
 
 // --- New Interfaces for AI Response ---
 interface Action { type: string;, text: string;
- , data: Record<string, unknown>;
-}
+  data: Record<string, unknown>;
+} }
 
 interface AIResponse { text: string;, suggestions: string[];
   actions: Action[];
-}
+} }
 // --- End New Interfaces ---
 
 const, originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
   try {
-    const { prompt, vibe, context } = await request.json();
+    const { prompt, vibe, context } }= await request.json();
     if (!prompt || typeof prompt !== 'string') {
       return json({ error: 'Prompt is required' }, { status: 400 });
-    }
+    } }
     // Use Ollama for real AI response
     const response: AIResponse = await generateAIResponse(prompt, vibe, context); // Changed type
     return json({
@@ -45,11 +45,11 @@ const, originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
       suggestions: response.suggestions,
       actions: response.actions
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed type from: any to: unknown
-    console.error('AI suggestion, error:', error);'
+    console.error('AI suggestion, error:', error);
     return json({ error: error instanceof Error ? error.message : 'An: unknown error occurred' }, { status: 500 }); // Safely access error message
-  }
+  } }
 };
 async function generateAIResponse(
   prompt: string,
@@ -67,20 +67,20 @@ async function generateAIResponse(
     const aiResponse = await ollamaService.generate(enhancedPrompt, {
       options: {
         // Nested temperature and maxTokens inside options
-       , temperature: getTemperatureForVibe(vibe),
+  temperature: getTemperatureForVibe(vibe),
         num_predict: 500, // maxTokens typically maps to num_predict
-      }
+      } }
     });
     // Parse and structure the response
     const structuredResponse = parseAIResponse(aiResponse.response, prompt); // Access aiResponse.response
     return structuredResponse;
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed type from: any to: unknown
-    console.error('Ollama integration, error:', error);'
+    console.error('Ollama integration, error:', error);
     // Fallback to mock response if Ollama fails
     return generateMockResponse(prompt, vibe, context);
-  }
-}
+  } }
+} }
 function createSystemPrompt(vibe: string, context?: any): string {
   const basePrompt = `You are an AI assistant for legal case management. You help prosecutors and legal professionals analyze cases, organize evidence, and provide insights.`;
   const vibeInstructions = {
@@ -94,13 +94,13 @@ function createSystemPrompt(vibe: string, context?: any): string {
     context === 'canvas'
       ? ' You are specifically helping with an interactive case canvas where users can visualize evidence, timelines, and case relationships.'
       : '';
-  return `${basePrompt} ${vibeInstructions[vibe as keyof typeof vibeInstructions] || vibeInstructions.professional}${contextInstruction}`
+  return `${basePrompt} }${vibeInstructions[vibe as keyof typeof vibeInstructions] || vibeInstructions.professional}${contextInstruction}`
 When responding:
 1. Provide actionable insights
 2. Suggest specific next steps
 3. Focus on legal case management context
 4. Be helpful and constructive
-Format your response as clear, professional advice.`;' }'`
+Format your response as clear, professional advice.`;' } }`
 function getTemperatureForVibe(vibe: string): number {
   const temperatureMap = {
     professional: 0.3,
@@ -111,7 +111,7 @@ function getTemperatureForVibe(vibe: string): number {
     collaborative: 0.5
   };
   return temperatureMap[vibe as keyof typeof temperatureMap] || 0.3;
-}
+} }
 function parseAIResponse(aiResponse: string, originalPrompt: string): AIResponse {
   // Changed return type
   // Extract suggestions and actions from the AI response
@@ -122,7 +122,7 @@ function parseAIResponse(aiResponse: string, originalPrompt: string): AIResponse
     suggestions: suggestions,
     actions: actions
   };
-}
+} }
 function extractSuggestions(response: string, prompt: string): string[] {
   // Smart extraction of actionable suggestions from AI response
   const defaultSuggestions = [
@@ -133,7 +133,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
     'Consider legal precedents',
   ];
   // Try to extract specific suggestions from the AI response
-  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed;, extra: ')'
+  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed; extra: ')'
   const matches = response.match(suggestionPattern);
   if (matches && matches.length > 0) {
     const extracted = matches
@@ -142,18 +142,18 @@ function extractSuggestions(response: string, prompt: string): string[] {
       .filter((s: string) => s.length > 10 && s.length < 100);
     if (extracted.length > 0) {
       return extracted;
-    }
-  }
+    } }
+  } }
   // Return context-aware defaults based on prompt content
   if (prompt.toLowerCase().includes('evidence')) {
     return ['Organize evidence by category', 'Create evidence timeline', 'Verify evidence authenticity'];
-  } else if (prompt.toLowerCase().includes('witness')) {
+  } }else if (prompt.toLowerCase().includes('witness')) {
     return ['Map witness locations', 'Compare testimonies', 'Identify testimony gaps'];
-  } else if (prompt.toLowerCase().includes('timeline')) {
+  } }else if (prompt.toLowerCase().includes('timeline')) {
     return ['Create visual timeline', 'Mark key events', 'Verify chronology'];
-  }
+  } }
   return defaultSuggestions.slice(0, 3);
-}
+} }
 function extractActions(response: string, prompt: string): Action[] {
   // Changed type from: any[] to Action[]
   // Generate actionable items based on response content and prompt
@@ -162,33 +162,33 @@ function extractActions(response: string, prompt: string): Action[] {
     actions.push({
       type: 'highlight',
       text: 'Mark important evidence',
-      data: {, priority: 'high' }
+      data: { priority: 'high' } }
     });
-  }
+  } }
   if (response.toLowerCase().includes('timeline') || prompt.toLowerCase().includes('timeline')) {
     actions.push({
       type: 'annotation',
       text: 'Add timeline notes',
-      data: {, category: 'timeline' }
+      data: { category: 'timeline' } }
     });
-  }
+  } }
   if (response.toLowerCase().includes('research') || response.toLowerCase().includes('precedent')) {
     actions.push({
       type: 'research',
       text: 'Research legal precedents',
-      data: {, keywords: extractKeywords(prompt) }
+      data: { keywords: extractKeywords(prompt) } }
     });
-  }
+  } }
   // Ensure we always have at least one action
   if (actions.length === 0) {
     actions.push({
       type: 'annotation',
       text: 'Add detailed notes',
-      data: {, category: 'general' }
+      data: { category: 'general' } }
     });
-  }
+  } }
   return actions.slice(0, 3);
-}
+} }
 // Fallback mock response (original implementation)
 async function generateMockResponse(
   prompt: string,
@@ -198,37 +198,37 @@ async function generateMockResponse(
   // Changed type from: any to AIResponse, renamed context to _context
   // Simulate AI processing delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-  const vibeResponses = { professional: {, prefix: 'Based on my analysis of the case materials,',
+  const vibeResponses = { professional: { prefix: 'Based on my analysis of the case materials,',
       style: 'formal and detailed'
     },
     creative: {
-     , prefix: 'Looking at this from a fresh perspective,',
+  prefix: 'Looking at this from a fresh perspective,',
       style: `innovative and exploratory` },'`'`
     analytical: {
-     , prefix: 'From a systematic examination of the evidence,',
+  prefix: 'From a systematic examination of the evidence,',
       style: `logical and methodical` },
     collaborative: {
-     , prefix: "Building on the team's previous work,",'
-      style: `inclusive and building` }
+  prefix: "Building on the team's previous work,",'
+      style: `inclusive and building` } }
   };
   const currentVibe = vibeResponses[vibe as keyof typeof vibeResponses] || vibeResponses.professional;
   // Generate response based on prompt content
-  let responseText = `${currentVibe.prefix} `;
+  let responseText = `${currentVibe.prefix} }`;
   if (prompt.toLowerCase().includes('evidence')) {
     responseText +=
       'I recommend focusing on the documentary evidence patterns that show consistency in the timeline. Consider cross-referencing witness statements with physical evidence locations.';
-  } else if (prompt.toLowerCase().includes('timeline')) {
+  } }else if (prompt.toLowerCase().includes('timeline')) {
     responseText +=
-      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";` } else if (prompt.toLowerCase().includes('witness')) {'`
+      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";` } }else if (prompt.toLowerCase().includes('witness')) {'`
     responseText +=
       'The witness testimony reveals interesting correlations. Consider mapping their locations and perspectives to identify potential blind spots or confirmatory evidence.';
-  } else if (prompt.toLowerCase().includes('analysis')) {
+  } }else if (prompt.toLowerCase().includes('analysis')) {
     responseText +=
       'A multi-layered approach would be beneficial here. I suggest breaking down the components into discrete elements for individual examination before synthesis.';
-  } else {
+  } }else {
     responseText +=
       'This presents an interesting challenge that would benefit from systematic documentation and cross-referencing with existing case law precedents.';
-  }
+  } }
   // Add context-specific suggestions
   const suggestions = [
     'Review similar cases in the database',
@@ -239,20 +239,19 @@ async function generateMockResponse(
   ];
   // Generate actionable items
   const actions = [
-    {,
-      type: 'highlight',
+    { type: 'highlight',
       text: 'Mark key evidence for review',
-      data: {, priority: `high` }
+      data: { priority: `high` } }
     },
     {
       type: 'annotation',
       text: 'Add detailed notes to timeline',
-      data: {, category: `timeline` }
+      data: { category: `timeline` } }
     },
     {
       type: 'research',
       text: 'Search for similar case precedents',
-      data: {, keywords: extractKeywords(prompt) }
+      data: { keywords: extractKeywords(prompt) } }
     },
   ];
   return {
@@ -260,7 +259,7 @@ async function generateMockResponse(
     suggestions: suggestions.slice(0, 3), // Return top, 3 suggestions
     actions: actions
   };
-}
+} }
 function extractKeywords(text: string): string[] {
   // Simple keyword extraction - in production would use NLP
   const commonWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
@@ -270,5 +269,6 @@ function extractKeywords(text: string): string[] {
     .split(/\s+/)
     .filter((word: string) => word.length > 3 && !commonWords.includes(word));
   return [...new Set(words)].slice(0, 5);
-}
+} }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+

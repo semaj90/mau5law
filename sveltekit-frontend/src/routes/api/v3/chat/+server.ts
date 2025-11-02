@@ -1,15 +1,15 @@
-import type { Message } from '$lib/types';
+import type { Message } }from '$lib/types';
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { ollamaChatStream } }from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats as _searchSimilarChats, // Rename the problematic import
   type VectorSearchResult
-} from '$lib/server/services/vectorDBService';
-import { chatRateLimiter } from '$lib/server/middleware/rate-limiter';
+} }from '$lib/server/services/vectorDBService';
+import { chatRateLimiter } }from '$lib/server/middleware/rate-limiter';
 
 // Define the expected signature for searchSimilarChats.
 // The actual function in $lib/server/services/vectorDBService.ts needs to be updated
@@ -20,7 +20,7 @@ type ExpectedSearchSimilarChats = (query: string, limit: number, threshold: numb
 const searchSimilarChats: ExpectedSearchSimilarChats = _searchSimilarChats as ExpectedSearchSimilarChats;
 
 // Define interfaces for robust logging
-interface LoggerBindings extends Record<string, unknown> {}
+interface LoggerBindings extends Record<string, unknown> {} }
 
 interface Logger {
   info: (message: string, component: string, metadata?: LoggerBindings) => void;
@@ -28,7 +28,7 @@ interface Logger {
   error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) => void;
   withRequestId: (requestId: string) => Logger;
   child: (bindings: LoggerBindings) => Logger;
-}
+} }
 
 // Helper function to create child loggers, avoiding: 'this' aliasing in the main, logger: object
 function createChildLoggerInstance(parentLogger: Logger, bindings: LoggerBindings): Logger {
@@ -42,23 +42,23 @@ function createChildLoggerInstance(parentLogger: Logger, bindings: LoggerBinding
     withRequestId: (requestId: string) => createChildLoggerInstance(parentLogger, { ...bindings, requestId }),
     child: (newBindings: LoggerBindings) => createChildLoggerInstance(parentLogger, { ...bindings, ...newBindings })
   };
-}
+} }
 
 // Simple console logger for now
 const logger: Logger = {
- , info: (message: string, component: string, metadata?: LoggerBindings) =>
+  info: (message: string, component: string, metadata?: LoggerBindings) =>
     console.log(
-      `[${new Date().toLocaleTimeString()}] INFO [${component}] ${message}`,
+      `[${new Date().toLocaleTimeString()} } INFO [${component} } ${message}`,
       metadata ? JSON.stringify(metadata) : ''
     ),
   warn: (message: string, component: string, metadata?: LoggerBindings) =>
     console.warn(
-      `[${new Date().toLocaleTimeString()}] WARN [${component}] ${message}`,
+      `[${new Date().toLocaleTimeString()} } WARN [${component} } ${message}`,
       metadata ? JSON.stringify(metadata) : ''
     ),
   error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) =>
     console.error(
-      `[${new Date().toLocaleTimeString()}] ERROR [${component}] ${message}`,
+      `[${new Date().toLocaleTimeString()} } ERROR [${component} } ${message}`,
       error?.message || '',
       metadata ? JSON.stringify(metadata) : ''
     ),
@@ -67,20 +67,20 @@ const logger: Logger = {
   },
   child: function (bindings: LoggerBindings): Logger {
     return createChildLoggerInstance(this, bindings);
-  }
+  } }
 };
-import { createHash } from 'node:crypto';
+import { createHash } }from 'node:crypto';
 
 // New interface for recommendations
 export interface Recommendation {
   text: string;
   score?: number;
   // Add: any other properties recommendations might have
-}
+} }
 
-interface RateLimitResult {, allowed: boolean;, resetTime: number;
- , remaining: number;
-}
+interface RateLimitResult { allowed: boolean;, resetTime: number;
+  remaining: number;
+} }
 
 // Initialize database on startup (attempt to create embeddings table once)
 let chatDbInitialized = $state<boolean>(false);
@@ -92,19 +92,19 @@ async function ensureDbInitialized(): Promise<void> {
     await initializeChatEmbeddingsTable();
     chatDbInitialized = true;
     console.log('[chat-api-v3] Chat embeddings table initialized');
-  } catch (err: any) {
+  } }catch (err: any) {
     // Non-fatal: log and continue (keeps API available even if DB is down)
     const msg = err instanceof Error ? err.message : String(err);
     console.warn('[chat-api-v3] Failed to initialize chat embeddings table:', msg);
     // mark initialized to avoid repeated expensive attempts; remove if you want retries
     chatDbInitialized = true;
-  }
+  } }
   return Promise.resolve();
-}
+} }
 // Generate request ID for tracking
 function generateRequestId(): string {
   return `req_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`;
-}
+} }
 // Rate limiting wrapper
 async function withRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
   const result = chatRateLimiter.check(request) as RateLimitResult;
@@ -123,44 +123,44 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
           'Retry-After': retryAfter.toString(),
           'X-RateLimit-Remaining': '0',
           'X-RateLimit-Reset': result.resetTime.toString()
-        }
-      }
+        } }
+      } }
     );
-  }
+  } }
   const response = await handler();
   // Add rate limit headers
   response.headers.set('X-RateLimit-Remaining', result.remaining.toString());
   response.headers.set('X-RateLimit-Reset', result.resetTime.toString());
   return response;
-}
+} }
 // Define interface for health check results
 interface HealthCheckResults { ollama: boolean;, database: boolean;
-}
+} }
 
 // Health check for dependencies
 async function performHealthChecks(): Promise<HealthCheckResults> {
-  const results: HealthCheckResults = {, ollama: false, database: false };
+  const results: HealthCheckResults = { ollama: false, database: false };
   try {
     const ollamaResponse = await fetch(getOllamaEndpoint('api/version'), {
       signal: AbortSignal.timeout(3000)
     });
     results.ollama = ollamaResponse.ok;
-  } catch {
+  } }catch {
     results.ollama = false;
-  }
+  } }
   try {
     await ensureDbInitialized();
     results.database = true;
-  } catch {
+  } }catch {
     results.database = false;
-  }
+  } }
   return results;
-}
+} }
 // Validate request input
-function validateChatRequest(body: any): { valid: boolean; error?: string } {
+function validateChatRequest(body: any): { valid: boolean; error?: string } }{
   if (body === null || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
-  }
+  } }
 
   const obj = body as Record<string, unknown>;
 
@@ -170,30 +170,30 @@ function validateChatRequest(body: any): { valid: boolean; error?: string } {
 
   if (!hasMessage && !hasMessagesArray) {
     return { valid: false, error: 'Message or messages array is required' };
-  }
+  } }
 
   if (hasMessage) {
     const msg = String(obj.message);
     if (msg.length > 8000) {
-      return { valid: false, error: 'Message too long (max, 8000 characters)' };'` }'`
-  }
+      return { valid: false, error: 'Message too long (max, 8000 characters)' };'` } }`
+  } }
 
   if (obj.temperature !== undefined) {
     if (typeof obj.temperature !== 'number' || obj.temperature < 0 || obj.temperature > 2) {
       return { valid: false, error: `Temperature must be, a: number between, 0 and 2` };
-    }
-  }
+    } }
+  } }
 
   if (obj.maxTokens !== undefined) {
     if (typeof obj.maxTokens !== 'number' || obj.maxTokens < 1 || obj.maxTokens > 8192) {
       return { valid: false, error: `Max tokens must be, a: number between, 1 and 8192` };
-    }
-  }
+    } }
+  } }
 
   return { valid: true };
-}
-export interface ChatMessage {, role: 'system' | 'user' | 'assistant';, content: string;
-}
+} }
+export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
+} }
 export interface EnhancedChatRequest {
   message: string;
   messages?: ChatMessage[];
@@ -209,14 +209,14 @@ export interface EnhancedChatRequest {
   useGrpoRecommendations?: boolean;
   enableThinkingCapture?: boolean;
   thinkingType?: 'analysis' | 'planning' | 'verification' | 'citation' | string;
-}
+} }
 export interface ChatResponse {
   success: boolean;
   response?: string;
   conversationId?: string;
   requestId?: string;
   sources?: VectorSearchResult[];
-  metadata?: {, model: string;, temperature: number;
+  metadata?: { model: string;, temperature: number;
     processingTimeMs: number;
     vectorSearchUsed: boolean;
     sourcesCount: number;
@@ -224,7 +224,7 @@ export interface ChatResponse {
     timestamp: string;
   };
   error?: string;
-}
+} }
 
 // Define the structure of metadata within a chat stream chunk
 interface ChatStreamMetadata {
@@ -233,11 +233,11 @@ interface ChatStreamMetadata {
   sources?: VectorSearchResult[];
   recommendations?: Recommendation[];
   // Add other metadata properties as needed
-}
+} }
 
 // Define the structure of a chat stream chunk
-interface ChatStreamChunk {, text: string;, metadata: ChatStreamMetadata;
-}
+interface ChatStreamChunk { text: string;, metadata: ChatStreamMetadata;
+} }
 
 type AllowedThinking = 'analysis' | 'synthesis' | 'evaluation' | 'application';
 function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
@@ -254,10 +254,10 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
     case, 'planning':
       return, 'application';
     default: return: undefined;
-  }
-}
+  } }
+} }
 // GET method for health check and service info
-export const, GET: RequestHandler = async ({ url, request }) => {
+export const GET: RequestHandler = async ({ url, request }) => {
   return await withRateLimit(request, async () => {
     const requestId = generateRequestId();
     const requestLogger = logger.withRequestId(requestId);
@@ -275,7 +275,7 @@ export const, GET: RequestHandler = async ({ url, request }) => {
           service: 'enhanced-chat-v3',
           requestId,
           features: {
-           , pgvectorEmbeddings: true,
+  pgvectorEmbeddings: true,
             keywordFallback: true,
             streamingSupport: true,
             vectorCache: true,
@@ -284,12 +284,12 @@ export const, GET: RequestHandler = async ({ url, request }) => {
             productionReady: true
           },
           health: {
-           , ollama: healthChecks.ollama,
+  ollama: healthChecks.ollama,
             database: healthChecks.database,
             overall: overallHealth
           },
           performance: {
-           , responseTimeMs: Date.now() - startTime
+  responseTimeMs: Date.now() - startTime
           },
           timestamp: new Date().toISOString()
         };
@@ -300,7 +300,7 @@ export const, GET: RequestHandler = async ({ url, request }) => {
         return json(response, {
           status: overallHealth ? 200 : 503
         });
-      }
+      } }
       if (action === 'search') {
         const query = url.searchParams.get('q');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '5'), 20);
@@ -309,14 +309,14 @@ export const, GET: RequestHandler = async ({ url, request }) => {
           return json(
             {
               success: false,
-              error: 'Query;, parameter: "q" is required and must be at least, 3 characters long',
+              error: 'Query; parameter: "q" is required and must be at least, 3 characters long',
               requestId
             },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const results = await searchSimilarChats(query, limit, 0.6);
-        requestLogger.info(`Search completed: ${results.length} results`, 'chat-api-v3', {
+        requestLogger.info(`Search completed: ${results.length} }results`, 'chat-api-v3', {
           query,
           resultCount: results.length,
           duration: Date.now() - startTime
@@ -328,11 +328,11 @@ export const, GET: RequestHandler = async ({ url, request }) => {
           results,
           count: results.length,
           performance: {
-           , searchTimeMs: Date.now() - startTime
+  searchTimeMs: Date.now() - startTime
           },
           timestamp: new Date().toISOString()
         });
-      }
+      } }
       requestLogger.warn('Invalid action requested', 'chat-api-v3', { action });
       return json(
         {
@@ -341,9 +341,9 @@ export const, GET: RequestHandler = async ({ url, request }) => {
           requestId,
           availableActions: ['health', 'search']
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed from: any, to: unknown
       const errorMessage = error instanceof Error ? error.message : String(error);
       requestLogger.error('GET request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
@@ -359,9 +359,9 @@ export const, GET: RequestHandler = async ({ url, request }) => {
           requestId,
           timestamp: new Date().toISOString()
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
+    } }
   });
 };
 // POST method for enhanced chat with vector embeddings
@@ -375,7 +375,7 @@ export const POST: RequestHandler = async ({ request }) => {
       let body: EnhancedChatRequest;
       try {
         body = (await request.json()) as EnhancedChatRequest;
-      } catch (parseError: any) {
+      } }catch (parseError: any) {
         // Changed from: any, to: unknown
         const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
         requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage });
@@ -386,9 +386,9 @@ export const POST: RequestHandler = async ({ request }) => {
             requestId,
             timestamp: new Date().toISOString()
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
+      } }
       // Validate input
       const validation = validateChatRequest(body);
       if (!validation.valid) {
@@ -400,9 +400,9 @@ export const POST: RequestHandler = async ({ request }) => {
             requestId,
             timestamp: new Date().toISOString()
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
+      } }
       const {
         message,
         messages,
@@ -417,7 +417,7 @@ export const POST: RequestHandler = async ({ request }) => {
         useGrpoRecommendations = true, // Enable GRPO recommendations by default
         enableThinkingCapture = true, // Enable thinking response capture
         thinkingType = 'analysis', // Default thinking type
-      } = body;
+      } }= body;
       const userMessage = message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
       // Use requestLogger directly since withConversation might not be available
       const conversationLogger = requestLogger.child({ conversationId });
@@ -455,23 +455,23 @@ export const POST: RequestHandler = async ({ request }) => {
                 if (chunk.metadata?.type === 'sources') {
                   sources = chunk.metadata.sources || []; // Removed: 'as: any'
                   const sourcesChunk = {
-                   , type: 'sources',
+  type: 'sources',
                     sources,
                     requestId,
                     timestamp: new Date().toISOString()
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
-                } else if (chunk.metadata?.type === 'recommendations') {
+                } }else if (chunk.metadata?.type === 'recommendations') {
                   const recommendations = chunk.metadata.recommendations || []; // Removed: 'as: any'
                   const recommendationsChunk = {
-                   , type: 'grpo-recommendations',
+  type: 'grpo-recommendations',
                     recommendations,
                     count: recommendations.length,
                     requestId,
                     timestamp: new Date().toISOString()
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`));
-                } else if (chunk.metadata?.type === 'text') {
+                } }else if (chunk.metadata?.type === 'text') {
                   const textChunk = {
                     type: 'text',
                     text: chunk.text,
@@ -479,7 +479,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     requestId
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
-                } else if (chunk.metadata?.type === 'final') {
+                } }else if (chunk.metadata?.type === 'final') {
                   const finalChunk = {
                     type: 'final',
                     conversationId,
@@ -489,21 +489,21 @@ export const POST: RequestHandler = async ({ request }) => {
                     sources
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
-                }
-              }
+                } }
+              } }
               controller.enqueue(encoder.encode('data: [DONE]\n\n'));
               controller.close();
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
                 duration: Date.now() - startTime
               });
-            } catch (error: any) {
+            } }catch (error: any) {
               // Changed from: any, to: unknown
               const errorMessage = error instanceof Error ? error.message : String(error);
               conversationLogger.error(
                 'Streaming response failed',
                 'chat-api-v3',
                 error instanceof Error ? error : undefined,
-                { errorMessage }
+                { errorMessage } }
               );
               const errorChunk = {
                 type: 'error',
@@ -513,8 +513,8 @@ export const POST: RequestHandler = async ({ request }) => {
               };
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
               controller.close();
-            }
-          }
+            } }
+          } }
         });
         return new Response(readable, {
           headers: {
@@ -524,9 +524,9 @@ export const POST: RequestHandler = async ({ request }) => {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type',
             'X-Request-ID': requestId
-          }
+          } }
         });
-      }
+      } }
       // For non-streaming responses
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
       let fullResponse = '';
@@ -550,10 +550,10 @@ export const POST: RequestHandler = async ({ request }) => {
         if (chunk.metadata?.type === 'sources') {
           sources = chunk.metadata.sources || []; // Removed: 'as: any'
           vectorSearchUsed = sources.length > 0;
-        } else if (chunk.metadata?.type === 'text') {
+        } }else if (chunk.metadata?.type === 'text') {
           fullResponse += chunk.text;
-        }
-      }
+        } }
+      } }
       const processingTime = Date.now() - startTime;
       conversationLogger.info('Chat response completed', 'chat-api-v3', {
         responseLength: fullResponse.length,
@@ -562,7 +562,7 @@ export const POST: RequestHandler = async ({ request }) => {
         duration: processingTime
       });
       const response: ChatResponse = {
-       , success: true,
+  success: true,
         response: fullResponse,
         conversationId,
         requestId,
@@ -575,10 +575,10 @@ export const POST: RequestHandler = async ({ request }) => {
           sourcesCount: sources.length,
           requestId,
           timestamp: new Date().toISOString()
-        }
+        } }
       };
       return json(response);
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed from: any, to: unknown
       const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -592,12 +592,13 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'Internal server error occurred while processing your request',
           requestId,
           metadata: {
-           , processingTimeMs: processingTime,
+  processingTimeMs: processingTime,
             timestamp: new Date().toISOString()
-          }
+          } }
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
   });
 };
+

@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config';
-import { searchQdrantFiltered, searchQdrant } from '$lib/server/vector/qdrant';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { OLLAMA_CONFIG } }from '$lib/services/providers/ollama/config';
+import { searchQdrantFiltered, searchQdrant } }from '$lib/server/vector/qdrant';
 
 async function tryExtractPdfText(file: File): Promise<string> {
   try {
@@ -12,28 +12,28 @@ async function tryExtractPdfText(file: File): Promise<string> {
       const buf = Buffer.from(await file.arrayBuffer());
       const res = await pdfParse.default(buf);
       if (res?.text && typeof res.text === 'string') return res.text;
-    }
-  } catch {}
+    } }
+  } }catch {} }
   if (file.type === 'text/plain') {
-    try { return await file.text(); } catch {}
-  }
+    try { return await file.text(); } }catch {} }
+  } }
   return, '';
-}
+} }
 
-async function embed(text: string): Promise<{ vector: number[];, ms: number }> {
+async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify({, model: 'embeddinggemma', prompt: text.slice(0, 8000) })
+    body: JSON.stringify({ model: 'embeddinggemma', prompt: text.slice(0, 8000) })
   });
   const ms = Date.now() - started;
-  if (!res.ok) throw new Error(`Embedding failed: ${res.status} ${res.statusText}`);
+  if (!res.ok) throw new Error(`Embedding failed: ${res.status} }${res.statusText}`);
   const data = await res.json();
   const vec = Array.isArray(data?.embedding) ? (data.embedding as: number[]) : [];
   return { vector: vec, ms };
-}
+} }
 
 async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any; ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
@@ -45,25 +45,25 @@ Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slic
   const res = await fetch(`${baseUrl}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify({, model: 'gemma3-legal:latest', prompt, stream: false })
+    body: JSON.stringify({ model: 'gemma3-legal:latest', prompt, stream: false })
   });
   const ms = Date.now() - started;
-  if (!res.ok) throw new Error(`LLM analysis failed: ${res.status} ${res.statusText}`);
+  if (!res.ok) throw new Error(`LLM analysis failed: ${res.status} }${res.statusText}`);
   const data = await res.json();
   const raw = (data?.response ?? '').trim();
   let parsed: any = null;
-  try { parsed = JSON.parse(raw); } catch {}
+  try { parsed = JSON.parse(raw); } }catch {} }
   if (!parsed) {
     const i = raw.indexOf('{');
-    const j = raw.lastIndexOf(' }');
+    const j = raw.lastIndexOf(' } });
     if (i >= 0 && j > i) {
-      try { parsed = JSON.parse(raw.slice(i, j + 1)); } catch {}
-    }
-  }
+      try { parsed = JSON.parse(raw.slice(i, j + 1)); } }catch {} }
+    } }
+  } }
   if (!parsed) parsed = { who: [], what: [], why: [], how: [], evidence: [], poi: [], legalIssues: [], recommendations: [], confidence: 0.4 };
   parsed.confidence = Math.max(0, Math.min(1, Number(parsed.confidence ?? 0.5)));
   return { analysis: parsed, ms };
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -89,17 +89,17 @@ export const POST: RequestHandler = async ({ request }) => {
       if (typeof cid === 'string' && cid.trim()) caseId = cid.trim();
       const furl = form.get('fileUrl');
       if (typeof furl === 'string' && furl.trim()) fileUrl = furl.trim();
-    } else {
+    } }else {
       const body = await request.json().catch(() => ({}));
       if (typeof body?.text === 'string' && body.text.trim()) text = body.text.trim();
       if (Array.isArray(body?.tags)) tags = body.tags.filter((x: any) => typeof x === 'string');
       if (typeof body?.topK === 'number') topK = Math.max(1, Math.min(20, body.topK));
       if (typeof body?.caseId === 'string') caseId = body.caseId;
       if (typeof body?.fileUrl === 'string' && body.fileUrl.trim()) fileUrl = body.fileUrl.trim();
-    }
+    } }
 
     if (!file && !fileUrl && (!text || text.length < 10)) {
-      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least, 10 characters of text.' }, { status: 400 });'` }'`
+      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least, 10 characters of text.' }, { status: 400 });'` } }`
 
     // 1) Extract
     const t0 = Date.now();
@@ -116,17 +116,17 @@ export const POST: RequestHandler = async ({ request }) => {
           if (pdfParse && typeof pdfParse.default === 'function') {
             const pr = await pdfParse.default(Buffer.from(ab));
             if (pr?.text && typeof pr.text === 'string') extracted = pr.text;
-          }
-        }
-      } catch {
+          } }
+        } }
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
     const extractMs = Date.now() - t0;
     if (!extracted) extracted = 'PDF text unavailable; using provided metadata context.';
 
     // 2) Embed
-    const { vector, ms: embedMs } = await embed(extracted);
+    const { vector, ms: embedMs } }= await embed(extracted);
 
     // 3) Search (filtered if tags/caseId provided)
     const t2 = Date.now();
@@ -143,21 +143,22 @@ export const POST: RequestHandler = async ({ request }) => {
     const searchMs = Date.now() - t2;
 
     // 4) LLM analysis
-    const { analysis, ms: llmMs } = await analyzeLLM(extracted, similar);
+    const { analysis, ms: llmMs } }= await analyzeLLM(extracted, similar);
 
     return json({
       success: true,
       data: {
-       , model: 'gemma3-legal:latest',
+  model: 'gemma3-legal:latest',
         extractedText: extracted,
         embedding: vector,
         similar,
         analysis,
-        timings: { extractMs, embedMs, searchMs, llmMs }
-      }
+        timings: { extractMs, embedMs, searchMs, llmMs } }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[v1/legal/compare-pdf] Error:', err);
     return json({ success: false, error: 'Failed to analyze PDF', details: err?.message || String(err) }, { status: 500 });
-  }
+  } }
 };
+

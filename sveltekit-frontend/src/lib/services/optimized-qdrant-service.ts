@@ -3,46 +3,46 @@
  * Integrates SOM clustering, NES cache orchestrator, and PostgreSQL sync
  * Low memory usage with intelligent caching and batch processing
  */
-import { QdrantClient, type Filter } from '@qdrant/js-client-rest';
+import { QdrantClient, type Filter } }from '@qdrant/js-client-rest';
 // Attempt dynamic import of optional SOM implementation, fallback to a lightweight stub.
 // This prevents startup/import-time crashes if: './som-clustering.js' is not present.
 type LegalDocumentSOM = {
-  cluster(vector: number[]): Promise<{ x: number; y: number;, confidence: number }>;
+  cluster(vector: number[]): Promise<{ x: number; y: number; confidence: number }>;
 };
 
 class FallbackLegalDocumentSOM implements LegalDocumentSOM {
   async cluster(_vector: number[]) {
     // Return a safe default cluster so SOM-dependent flows can still run.
     return { x: 0, y: 0, confidence: 0.0 };
-  }
-}
+  } }
+} }
 
-import { NESCacheOrchestrator } from './nes-cache-orchestrator.js';
-import { db } from '$lib/server/db/index.js';
-import { evidence, cases, legalDocuments } from '$lib/server/db/unified-schema.js';
-import { sql, inArray, desc, type InferSelectModel } from 'drizzle-orm';
+import { NESCacheOrchestrator } }from './nes-cache-orchestrator.js';
+import { db } }from '$lib/server/db/index.js';
+import { evidence, cases, legalDocuments } }from '$lib/server/db/unified-schema.js';
+import { sql, inArray, desc, type InferSelectModel } }from 'drizzle-orm';
 
 // Local type definitions to avoid import issues
 interface CollectionInfo {
   name: string;
-}
+} }
 
-interface QdrantPoint {, id: string | number;, vector: number[];
+interface QdrantPoint { id: string | number;, vector: number[];
   payload?: Record<string, unknown>;
-}
+} }
 
 interface QdrantScoredPoint { id: string | number;, version: number;
  , score: number;
   payload?: Record<string, unknown>;
   vector?: number[];
-}
+} }
 
 interface QdrantSearchParams { vector: number[];, limit: number;
   score_threshold?: number;
   with_payload?: boolean;
   with_vector?: boolean;
   filter?: Filter; // Using: 'any' as a pragmatic workaround for Filter type import issues
-}
+} }
 
 // Corrected dimensions for nomic-embed-text and, embeddinggemma:latest (768, not 384)
 const NOMIC_EMBED_DIMENSIONS = 768;
@@ -58,7 +58,7 @@ export interface QdrantConfig {
   enableSOMClustering?: boolean;
   enableNESCache?: boolean;
   memoryLimit?: number;
-}
+} }
 
 export interface VectorSearchResult { id: string;, score: number;
  , payload: Record<string, unknown>;
@@ -66,13 +66,13 @@ export interface VectorSearchResult { id: string;, score: number;
     content: string;
     type: 'evidence' | 'case' | 'legal_document';
   };
-}
+} }
 
-export interface SearchStats {, totalResults: number;, searchTimeMs: number;
+export interface SearchStats { totalResults: number;, searchTimeMs: number;
   cacheHit: boolean;
   somClusterUsed?: string;
  , memoryUsage: number;
-}
+} }
 
 type EvidenceSelect = InferSelectModel<typeof, evidence>;
 type CaseSelect = InferSelectModel<typeof, cases>;
@@ -83,7 +83,7 @@ export class OptimizedQdrantService {
   private, config: Required<QdrantConfig>;
   private somCluster?: LegalDocumentSOM; // LegalDocumentSOM - commenting out missing type
   private nesCache?: NESCacheOrchestrator;
-  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number;, stats: SearchStats }>();
+  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number; stats: SearchStats }>();
   private batchQueue: Array<QdrantPoint> = [];
   private memoryUsage = 0;
   private processingBatch = $state(false);
@@ -98,18 +98,17 @@ export class OptimizedQdrantService {
       enableNESCache: config.enableNESCache ?? true,
       memoryLimit: config.memoryLimit || MAX_MEMORY_USAGE
     };
-    this.client = new QdrantClient({
-     , url: this.config.url,
+    this.client = new QdrantClient({ url: this.config.url,
       apiKey: this.config.apiKey || undefined
     });
     // initializeEnhancedFeatures may attempt to dynamically load optional modules.
     this.initializeEnhancedFeatures();
     this.setupMemoryMonitoring();
-  }
+  } }
   private async initializeEnhancedFeatures(): Promise<void> {
     if (this.config.enableNESCache) {
       this.nesCache = new NESCacheOrchestrator();
-    }
+    } }
     if (this.config.enableSOMClustering) {
       // Try to dynamically import an optional SOM implementation.
       // If it doesn't exist, use a minimal fallback implementation so searches still work.'
@@ -123,20 +122,20 @@ export class OptimizedQdrantService {
             { width: 10, height: 10, dimensions: NOMIC_EMBED_DIMENSIONS },
             /* redis */ null
           );
-        } else {
+        } }else {
           // Use fallback stub
           this.somCluster = new FallbackLegalDocumentSOM();
-        }
-      } catch {
+        } }
+      } }catch {
         this.somCluster = new FallbackLegalDocumentSOM();
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private setupMemoryMonitoring(): void {
     setInterval(() => {
       this.cleanupMemory();
     }, 30000); // Cleanup every, 30 seconds
-  }
+  } }
   /**
    * Ensure collection exists with correct nomic-embed dimensions
    */
@@ -145,34 +144,32 @@ export class OptimizedQdrantService {
       const collections = await this.getRawCollections();
       const exists = collections.collections?.some((c: CollectionInfo) => c.name === this.config.collectionName);
       if (!exists) {
-        await this.client.createCollection(this.config.collectionName, { vectors: {, size: NOMIC_EMBED_DIMENSIONS, // Corrected to, 768 for nomic-embed
+        await this.client.createCollection(this.config.collectionName, { vectors: { size: NOMIC_EMBED_DIMENSIONS, // Corrected to, 768 for nomic-embed
             distance: 'Cosine'
           },
-          optimizers_config: {
-           , default_segment_number: 4,
+          optimizers_config: { default_segment_number: 4,
             max_segment_size: 20000,
             memmap_threshold: 10000,
             indexing_threshold: 20000
           },
-          hnsw_config: {
-           , m: 16,
+          hnsw_config: { m: 16,
             ef_construct: 200,
             full_scan_threshold: 10000
           },
-          quantization_config: {, scalar: {, type: 'int8',
+          quantization_config: { scalar: { type: 'int8',
               quantile: 0.99,
               always_ram: false
-            }
-          }
+            } }
+          } }
         });
         console.log(`✅ Created optimized Qdrant collection: ${this.config.collectionName}`);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
       console.error('❌ Failed to ensure Qdrant, collection:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Memory-efficient vector search with intelligent caching
    */
@@ -184,8 +181,8 @@ export class OptimizedQdrantService {
       threshold?: number;
       useCache?: boolean;
       enableSOM?: boolean;
-    } = {}
-  ): Promise<{ results: VectorSearchResult[];, stats: SearchStats }> {
+    } }= {} }
+  ): Promise<{ results: VectorSearchResult[]; stats: SearchStats }> {
     const startTime = Date.now();
     const limit = options.limit || 10;
     const threshold = options.threshold || 0.7;
@@ -204,8 +201,8 @@ export class OptimizedQdrantService {
           searchTimeMs: Date.now() - startTime
         };
         return { results: cached.results, stats };
-      }
-    }
+      } }
+    } }
     let searchResults: QdrantScoredPoint[] = [];
     let, somClusterUsed: string | undefined;
     try {
@@ -215,11 +212,10 @@ export class OptimizedQdrantService {
         somClusterUsed = `${clusterResult.x},${clusterResult.y}`;
         // Search within the identified cluster first
         searchResults = await this.searchInCluster(queryVector, clusterResult, limit, options.filter);
-      }
+      } }
       // Fallback to standard vector search if SOM didn't find enough results'
       if (searchResults.length < limit) {
-        const searchParams: QdrantSearchParams = {
-         , vector: queryVector,
+        const searchParams: QdrantSearchParams = { vector: queryVector,
           limit: limit,
           score_threshold: threshold,
           with_payload: true,
@@ -227,15 +223,14 @@ export class OptimizedQdrantService {
         };
         if (options.filter) {
           searchParams.filter = options.filter;
-        }
+        } }
         const qdrantResults = await this.client.search(this.config.collectionName, searchParams);
         searchResults = qdrantResults.slice(0, limit);
-      }
+      } }
       // Process results and enrich with document data
       const results = await this.enrichSearchResults(searchResults);
       // Calculate stats
-      const stats: SearchStats = {
-       , totalResults: results.length,
+      const stats: SearchStats = { totalResults: results.length,
         searchTimeMs: Date.now() - startTime,
         cacheHit: false,
         somClusterUsed,
@@ -245,35 +240,35 @@ export class OptimizedQdrantService {
       if (useCache && this.memoryUsage + stats.memoryUsage < this.config.memoryLimit) {
         this.searchCache.set(cacheKey, { results, timestamp: Date.now(), stats });
         this.memoryUsage += stats.memoryUsage;
-      }
+      } }
       return { results, stats };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Qdrant search, error:', error);'
+      console.error('❌ Qdrant search, error:', error);
       if (error instanceof Error) {
         // Type guard for accessing error.message
         throw new Error(`Vector search failed: ${error.message}`);
-      }
+      } }
       throw new Error('Vector search failed: An: unknown error occurred');
-    }
-  }
+    } }
+  } }
   /**
    * Batch upsert vectors with memory optimization
    */
-  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number;, errors: number }> {
+  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
     if (this.config.enableBatching) {
       // Add to batch queue
       this.batchQueue.push(...vectors);
       // Process batch if it reaches the limit
       if (this.batchQueue.length >= BATCH_SIZE) {
         return await this.processBatch();
-      }
+      } }
       return { success: vectors.length, errors: 0 };
-    } else {
+    } }else {
       // Direct upsert
       return await this.upsertBatch(vectors);
-    }
-  }
+    } }
+  } }
   /**
    * Sync from PostgreSQL with memory-efficient streaming
    */
@@ -282,8 +277,8 @@ export class OptimizedQdrantService {
       fullSync?: boolean;
       batchSize?: number;
       sinceTimestamp?: Date;
-    } = {}
-  ): Promise<{ synced: number; errors: number;, duration: number }> {
+    } }= {} }
+  ): Promise<{ synced: number; errors: number; duration: number }> {
     const startTime = Date.now();
     const batchSize = _options.batchSize || BATCH_SIZE;
     let synced = 0;
@@ -306,46 +301,44 @@ export class OptimizedQdrantService {
       synced += legalDocsResult.synced;
       errors += legalDocsResult.errors;
       const duration = Date.now() - startTime;
-      console.log(`✅ PostgreSQL sync completed: ${synced} synced, ${errors} errors in ${duration}ms`);
+      console.log(`✅ PostgreSQL sync completed: ${synced} }synced, ${errors} }errors in ${duration}ms`);
       return { synced, errors, duration };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
       console.error('❌ PostgreSQL sync, failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // Private helper methods
   private async searchInCluster(
     queryVector: number[],
-    clusterResult: { x: number; y: number;, confidence: number },
+    clusterResult: { x: number; y: number; confidence: number },
     limit: number,
     filter?: Filter // Using: 'any' as a pragmatic workaround for Filter type import issues
   ): Promise<QdrantScoredPoint[]> {
     // Implementation for cluster-based search
     // This would search within the identified SOM cluster
-    const searchParams: QdrantSearchParams = {
-     , vector: queryVector,
+    const searchParams: QdrantSearchParams = { vector: queryVector,
       limit: Math.ceil(limit * 1.5), // Search a bit more in cluster
       with_payload: true,
       with_vector: false,
-      filter: {
-       , must: [
+      filter: { must: [
           ...(filter?.must || []),
           {
             key: 'som_cluster',
-            match: {, value: `${clusterResult.x},${clusterResult.y}' }'`
+            match: { value: `${clusterResult.x},${clusterResult.y} } } }`
           },
         ]
-      }
+      } }
     };
     try {
       return await this.client.search(this.config.collectionName, searchParams);
-    } catch (error: any) {
-      // Changed: 'any';, to: 'unknown'
+    } }catch (error: any) {
+      // Changed: 'any'; to: 'unknown'
       console.warn('⚠️ Cluster search failed, falling back to standard search');
       return [];
-    }
-  }
+    } }
+  } }
   private async enrichSearchResults(searchResults: QdrantScoredPoint[]): Promise<VectorSearchResult[]> {
     const results: VectorSearchResult[] = [];
     // Group results by type for efficient database queries
@@ -358,7 +351,7 @@ export class OptimizedQdrantService {
       if (type === 'evidence') evidenceIds.push(String(result.id));
       else if (type === 'case') caseIds.push(String(result.id));
       else if (type === 'legal_document') legalDocIds.push(String(result.id));
-    }
+    } }
     // Batch fetch documents from PostgreSQL
     const [evidenceData, caseData, legalDocData] = (await Promise.all([
       evidenceIds.length > 0 ? db.select().from(evidence).where(inArray(evidence.id, evidenceIds)) : [],
@@ -384,8 +377,8 @@ export class OptimizedQdrantService {
             content: evidenceDoc.description || '',
             type: 'evidence' as const
           };
-        }
-      } else if (type === 'case') {
+        } }
+      } }else if (type === 'case') {
         const caseDoc = caseMap.get(String(result.id));
         if (caseDoc) {
           document = {
@@ -394,8 +387,8 @@ export class OptimizedQdrantService {
             content: caseDoc.description || '',
             type: 'case' as const
           };
-        }
-      } else if (type === 'legal_document') {
+        } }
+      } }else if (type === 'legal_document') {
         const legalDoc = legalDocMap.get(String(result.id));
         if (legalDoc) {
           document = {
@@ -404,67 +397,66 @@ export class OptimizedQdrantService {
             content: legalDoc.content,
             type: 'legal_document' as const
           };
-        }
-      }
-      results.push({
-       , id: String(result.id),
+        } }
+      } }
+      results.push({ id: String(result.id),
         score: result.score || 0,
         payload,
         document
       });
-    }
+    } }
     return results;
-  }
+  } }
   private async streamEvidenceVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]';, to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
           .from(evidence)
-          .where(sql`${evidence.updatedAt} > ${sinceTimestamp} AND ${evidence.titleEmbedding} IS NOT NULL`)
+          .where(sql`${evidence.updatedAt} }> ${sinceTimestamp} }AND ${evidence.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(evidence.updatedAt))
       : db
           .select()
           .from(evidence)
-          .where(sql`${evidence.titleEmbedding} IS NOT NULL`)
+          .where(sql`${evidence.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(evidence.updatedAt));
     return this.createBatchStream(query, batchSize);
-  }
+  } }
   private async streamCaseVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]';, to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
           .from(cases)
-          .where(sql`${cases.updatedAt} > ${sinceTimestamp} AND ${cases.titleEmbedding} IS NOT NULL`)
+          .where(sql`${cases.updatedAt} }> ${sinceTimestamp} }AND ${cases.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(cases.updatedAt))
       : db
           .select()
           .from(cases)
-          .where(sql`${cases.titleEmbedding} IS NOT NULL`)
+          .where(sql`${cases.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(cases.updatedAt));
     return this.createBatchStream(query, batchSize);
-  }
+  } }
   private async streamLegalDocumentVectors(
     batchSize: number,
     sinceTimestamp?: Date
   ): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]';, to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
           .from(legalDocuments)
-          .where(sql`${legalDocuments.updatedAt} > ${sinceTimestamp} AND ${legalDocuments.titleEmbedding} IS NOT NULL`)
+          .where(sql`${legalDocuments.updatedAt} }> ${sinceTimestamp} }AND ${legalDocuments.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(legalDocuments.updatedAt))
       : db
           .select()
           .from(legalDocuments)
-          .where(sql`${legalDocuments.titleEmbedding} IS NOT NULL`)
+          .where(sql`${legalDocuments.titleEmbedding} }IS NOT NULL`)
           .orderBy(desc(legalDocuments.updatedAt));
     return this.createBatchStream(query, batchSize);
-  }
+  } }
   private async *createBatchStream<T>(
-    query: {, limit: (arg0: number) => {, offset: (arg0: number) => Promise<T[]> } },
+    query: { limit: (arg0: number) => { offset: (arg0: number) => Promise<T[]> } }},
     batchSize: number
   ): AsyncIterable<T[]> {
     let offset = 0;
@@ -474,12 +466,12 @@ export class OptimizedQdrantService {
       if (batch.length > 0) {
         yield batch;
         offset += batchSize;
-      }
-    } while (batch.length === batchSize);
-  }
+      } }
+    } }while (batch.length === batchSize);
+  } }
   private async processVectorStream(
-    stream: AsyncIterable<unknown[]>, // Changed: 'any[]'; to: 'unknown[]';, type: 'evidence' | 'case' | 'legal_document'
-  ): Promise<{ synced: number;, errors: number }> {
+    stream: AsyncIterable<unknown[]>, // Changed: 'any[]'; to: 'unknown[]'; type: 'evidence' | 'case' | 'legal_document'
+  ): Promise<{ synced: number; errors: number }> {
     let synced = 0;
     let errors = 0;
     for await (const batch of stream) {
@@ -490,7 +482,7 @@ export class OptimizedQdrantService {
         // validate vector
         if (!Array.isArray(rawVector) || rawVector.length === 0 || !rawVector.every(v => typeof v === 'number')) {
           continue;
-        }
+        } }
         const rawId = r.id;
         if (rawId === undefined || rawId === null) continue;
         const id: string | number = typeof rawId === 'string' || typeof rawId === 'number' ? rawId : String(rawId);
@@ -508,38 +500,37 @@ export class OptimizedQdrantService {
         if (type === 'case') {
           if (r.caseNumber !== undefined) payload.case_number = r.caseNumber;
           if (r.status !== undefined) payload.status = r.status;
-        }
+        } }
         if (type === 'evidence') {
           if (r.evidenceType !== undefined) payload.evidence_type = r.evidenceType;
           if (r.caseId !== undefined) payload.case_id = r.caseId;
-        }
+        } }
         if (type === 'legal_document') {
           if (r.documentType !== undefined) payload.document_type = r.documentType;
           if (r.caseId !== undefined) payload.case_id = r.caseId;
-        }
+        } }
 
         vectors.push({
           id,
           vector: rawVector, as: number[],
           payload
         });
-      }
+      } }
       if (vectors.length > 0) {
         const result = await this.upsertBatch(vectors);
         synced += result.success;
         errors += result.errors;
-      }
+      } }
       // Memory cleanup between batches
       if (this.memoryUsage > this.config.memoryLimit * 0.8) {
         await this.cleanupMemory();
-      }
-    }
+      } }
+    } }
     return { synced, errors };
-  }
+  } }
   private async upsertBatch(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
     try {
-      const points: QdrantPoint[] = vectors.map(v => ({
-       , id: v.id,
+      const points: QdrantPoint[] = vectors.map(v => ({ id: v.id,
         vector: v.vector,
         payload: v.payload
       }));
@@ -548,28 +539,28 @@ export class OptimizedQdrantService {
         points
       });
       return { success: vectors.length, errors: 0 };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Batch upsert, error:', error);'
+      console.error('❌ Batch upsert, error:', error);
       return { success: 0, errors: vectors.length };
-    }
-  }
-  private async processBatch(): Promise<{ success: number;, errors: number }> {
+    } }
+  } }
+  private async processBatch(): Promise<{ success: number; errors: number }> {
     if (this.processingBatch || this.batchQueue.length === 0) {
       return { success: 0, errors: 0 };
-    }
+    } }
     this.processingBatch = true;
     const batch = this.batchQueue.splice(0, BATCH_SIZE);
     try {
       const result = await this.upsertBatch(batch);
       return result;
-    } finally {
+    } }finally {
       this.processingBatch = false;
-    }
-  }
+    } }
+  } }
   private generateCacheKey(
     queryVector: number[],
-    options: { limit?: number; threshold?: number; filter?: Filter } = {}
+    options: { limit?: number; threshold?: number; filter?: Filter } }= {} }
   ): string {
     const hashInput = JSON.stringify({
       vector: queryVector.slice(0, 10), // Use first, 10 dimensions for key
@@ -583,12 +574,12 @@ export class OptimizedQdrantService {
       const char = hashInput.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
-    }
+    } }
     return `qdrant_${hash}`;
-  }
+  } }
   private calculateMemoryUsage(results: VectorSearchResult[]): number {
     return JSON.stringify(results).length * 2; // Rough estimate in bytes
-  }
+  } }
   private async cleanupMemory(): Promise<void> {
     // Clean expired search cache
     const now = Date.now();
@@ -597,18 +588,18 @@ export class OptimizedQdrantService {
       if (now - cached.timestamp > cacheExpiry) {
         this.memoryUsage -= cached.stats.memoryUsage;
         this.searchCache.delete(key);
-      }
-    }
+      } }
+    } }
     // Force garbage collection if available
     if (global.gc) {
       global.gc();
-    }
-  }
+    } }
+  } }
   /**
    * Health check method
    */
   async healthCheck(): Promise<unknown> {
-    // Changed: 'any';, to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     try {
       const collections = await this.getRawCollections();
       const collectionExists = collections.collections?.some(
@@ -621,16 +612,15 @@ export class OptimizedQdrantService {
         cacheHits: this.searchCache.size,
         lastSync: new Date().toISOString()
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      return {
-       , status: 'unhealthy',
+      return { status: 'unhealthy',
         collections: 0,
         memoryUsage: this.memoryUsage,
         cacheHits: this.searchCache.size
       };
-    }
-  }
+    } }
+  } }
 
   // small helper to safely obtain collections from different qdrant client shapes
   private async getRawCollections(): Promise<any> {
@@ -639,27 +629,26 @@ export class OptimizedQdrantService {
       const anyClient = this.client as: any;
       if (typeof anyClient.getCollections === 'function') {
         return await anyClient.getCollections();
-      }
+      } }
       if (
         anyClient.collections &&
         typeof anyClient.collections === 'object' &&
         typeof anyClient.collections.get === 'function'
       ) {
         return await anyClient.collections.get();
-      }
+      } }
       if (anyClient.api && typeof anyClient.api.getCollections === 'function') {
         return await anyClient.api.getCollections();
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore and fall through
-    }
+    } }
     return { collections: [] };
-  }
-}
+  } }
+} }
 
 // Export singleton instance
-export const optimizedQdrantService = new OptimizedQdrantService({
- , enableBatching: true,
+export const optimizedQdrantService = new OptimizedQdrantService({ enableBatching: true,
   enableSOMClustering: true,
   enableNESCache: true,
   memoryLimit: MAX_MEMORY_USAGE

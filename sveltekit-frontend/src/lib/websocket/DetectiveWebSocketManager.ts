@@ -4,8 +4,7 @@
 type TypingContext = unknown;
 
 export interface DetectiveWebSocketMessage {
-  type:;
-    | 'user_typing'
+  type:| 'user_typing'
     | 'connection_map_update'
     | 'evidence_analysis'
     | 'contextual_prompt'
@@ -16,14 +15,14 @@ export interface DetectiveWebSocketMessage {
   sessionId?: string;
   timestamp?: string;
   data?: any;
-}
+} }
 
-export interface CollaborativeUser {, id: string;, name: string;
+export interface CollaborativeUser { id: string;, name: string;
   typing: boolean;
   lastActivity: string;
   currentFocus?: 'evidence' | 'connections' | 'analysis';
   analytics?: TypingContext;
-}
+} }
 
 export default class DetectiveWebSocketManager {
   private ws: WebSocket | null = null;
@@ -41,7 +40,7 @@ export default class DetectiveWebSocketManager {
     this.caseId = caseId;
     this.userId = userId;
     this.sessionId = sessionId ?? `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-  }
+  } }
 
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
@@ -58,31 +57,31 @@ export default class DetectiveWebSocketManager {
       this.ws.onclose = () => {
         this.ws = null;
       };
-    } catch (err) {
+    } }catch (err) {
       // Keep this conservative: don't change behavior, just log'
       // eslint-disable-next-line no-console
       console.error('[DetectiveWS] Connection failed:', err);
-    }
-  }
+    } }
+  } }
 
   send(message: DetectiveWebSocketMessage): void {
     if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify(message));
-  }
+  } }
 
   disconnect(): void {
     if (!this.ws) return;
     try {
       this.ws.close(1000, 'Normal closure');
-    } catch (err) {
+    } }catch (err) {
       // ignore close errors in this conservative sweep; reference err to satisfy linters
       // eslint-disable-next-line @typescript-eslint/no-unused-vars: void err;
-    }
+    } }
     this.ws = null;
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
-    }
-  }
+    } }
+  } }
 
   getCollaborationStats() {
     const users = Array.from(this.collaborativeUsers.values());
@@ -91,5 +90,6 @@ export default class DetectiveWebSocketManager {
       typingUsers: users.filter(u => u.typing),
       lastActivity: users.length ? Math.max(...users.map(u => new Date(u.lastActivity).getTime())) : 0
     };
-  }
-}
+  } }
+} }
+

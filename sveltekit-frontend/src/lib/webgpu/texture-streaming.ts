@@ -14,7 +14,7 @@ import {
   BufferTypeGuards,
   type BufferLike,
   BufferDebugUtils
-} from '../utils/buffer-conversion.js';
+} }from '../utils/buffer-conversion.js';
 // Memory constraints (Nintendo NES inspired)
 const MEMORY_CONSTRAINTS = {
   RAM: 2048, // 2KB for active textures (like NES)
@@ -23,8 +23,8 @@ const MEMORY_CONSTRAINTS = {
   PRG_ROM: 32768, // 32KB for program data
   SPRITE_LIMIT: 64, // Max sprites on screen
   PALETTE_COLORS: 52 // NES-like color palette
-} as const;
-export interface NESTexture {, id: string;, data: ArrayBuffer;
+} }as const;
+export interface NESTexture { id: string;, data: ArrayBuffer;
   width: number;
   height: number;
   format: GPUTextureFormat;
@@ -32,14 +32,14 @@ export interface NESTexture {, id: string;, data: ArrayBuffer;
   lastUsed: number;
   priority: number;
   compressed: boolean;
-  legalContext?: {, documentType: 'contract' | 'evidence' | 'brief' | 'citation';, confidenceLevel: number;
+  legalContext?: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, confidenceLevel: number;
     riskIndicator: boolean;
-  }
-}
-export interface MemoryRegion {, name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';, size: number;
+  } }
+} }
+export interface MemoryRegion { name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';, size: number;
   used: number;
  , textures: Map<string, NESTexture>;
-}
+} }
 export class WebGPUTextureStreamer {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
@@ -57,7 +57,7 @@ export class WebGPUTextureStreamer {
   private workerUrl: string | null = null;
   constructor() {
     this.initializeMemoryRegions();
-  }
+  } }
   private initializeMemoryRegions() {
     this.memoryRegions.set('RAM', {
       name: 'RAM',
@@ -77,7 +77,7 @@ export class WebGPUTextureStreamer {
       used: 0,
       textures: new Map()
     });
-  }
+  } }
   async initialize(canvas?: HTMLCanvasElement): Promise<boolean> {
     try {
       // Try WebGPU first
@@ -85,19 +85,19 @@ export class WebGPUTextureStreamer {
         console.log('✅ WebGPU texture streaming initialized');
         this.isInitialized = true;
         return true;
-      }
+      } }
       // Fallback to WebGL2
       if (this.initWebGL2(canvas)) {
         console.log('✅ WebGL2 texture streaming fallback initialized');
         this.isInitialized = true;
         return true;
-      }
+      } }
       throw new Error('Neither WebGPU nor WebGL2 available');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Texture streaming initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   private async initWebGPU(canvas?: HTMLCanvasElement): Promise<boolean> {
     if (!navigator.gpu) return false;
     try {
@@ -117,16 +117,16 @@ export class WebGPUTextureStreamer {
             format: 'bgra8unorm',
             alphaMode: 'premultiplied'
           });
-        }
-      }
+        } }
+      } }
       // Initialize compression worker
       this.setupCompressionWorker();
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('WebGPU initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   private initWebGL2(canvas?: HTMLCanvasElement): boolean {
     if (!canvas) return false;
     try {
@@ -142,17 +142,17 @@ export class WebGPUTextureStreamer {
       this.gl.enable(this.gl.BLEND);
       this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('WebGL2 initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   private setupCompressionWorker() {
     // Create worker for texture compression
     const workerCode = `
       // Meshoptimizer-style compression for textures
       self.onmessage = function(e) {
-        const { textureData, width, height, format, legalContext } = e.data;
+        const { textureData, width, height, format, legalContext } }= e.data;
         try {
           // Simple RLE compression for NES-style textures
           const compressed = compressTexture(textureData, legalContext);
@@ -161,10 +161,10 @@ export class WebGPUTextureStreamer {
             originalSize: textureData.byteLength,
             compressedSize: compressed.data.byteLength
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           self.postMessage({ success: false, error: error.message });
-        }
-      }
+        } }
+      } }
       function compressTexture(data, legalContext) {
         const input = new Uint8Array(data);
         const output = [];
@@ -177,24 +177,24 @@ export class WebGPUTextureStreamer {
           // Count consecutive values (RLE encoding)
           while (i + count < input.length && input[i + count] === value && count < 255 * contextMultiplier) {
             count++;
-          }
+          } }
           if (count > 3) {
             // Use RLE for sequences
             output.push(0xFF, count, value);
-          } else {
+          } }else {
             // Raw data for short sequences
             for (let j = 0; j < count; j++) {
               output.push(value);
-            }
-          }
+            } }
+          } }
           i += count;
-        }
+        } }
         const compressed = new Uint8Array(output);
         return {
           data: compressed.buffer,
           ratio: input.length / compressed.length
-        }
-      }
+        } }
+      } }
     `;`
     const blob = new Blob([workerCode], { type: 'application/javascript' });'`'`
     this.workerUrl = URL.createObjectURL(blob);
@@ -204,15 +204,15 @@ export class WebGPUTextureStreamer {
       if (this.workerUrl) {
         URL.revokeObjectURL(this.workerUrl);
         this.workerUrl = null;
-      }
+      } }
     });
     this.compressionWorker.addEventListener('messageerror', () => {
       if (this.workerUrl) {
         URL.revokeObjectURL(this.workerUrl);
         this.workerUrl = null;
-      }
+      } }
     });
-  }
+  } }
   async loadTexture(
     id: string,
     data: BufferLike,
@@ -223,14 +223,14 @@ export class WebGPUTextureStreamer {
       legalContext?: NESTexture['legalContext'];
       region?: 'RAM' | 'CHR_ROM' | 'PRG_ROM';
       compress?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<boolean> {
     const {
       priority = 1,
       legalContext,
       region = 'CHR_ROM',
       compress = true
-    } = options;
+    } }= options;
     try {
       // Check memory constraints
       const textureSize = width * height * 4; // RGBA
@@ -239,21 +239,21 @@ export class WebGPUTextureStreamer {
         // Try garbage collection
         await this.garbageCollect(region);
         if (memoryRegion.used + textureSize > memoryRegion.size) {
-          console.warn(`❌ Not enough memory in ${region} for texture ${id}`);
+          console.warn(`❌ Not enough memory in ${region} }for texture ${id}`);
           return false;
-        }
-      }
+        } }
+      } }
       // Convert to ArrayBuffer and compress texture if enabled
       let finalData = toArrayBuffer(data);
       let compressed = $state<boolean>(false);
       if (compress && this.compressionWorker) {
         finalData = await this.compressTexture(finalData, width, height, legalContext);
         compressed = true;
-      }
+      } }
       // Debug buffer info for legal context textures
       if (legalContext?.riskIndicator) {
         BufferDebugUtils.logBuffer(data, `Legal Risk Texture ${id}`);
-      }
+      } }
       // Clean up existing texture if it exists to prevent duplicates
       await this.unloadTexture(id);
       // Create NES texture metadata
@@ -268,23 +268,23 @@ export class WebGPUTextureStreamer {
         priority,
         compressed,
         legalContext
-      }
+      } }
       // Store in appropriate memory region
       memoryRegion.textures.set(id, nesTexture);
       memoryRegion.used += nesTexture.size;
       // Create GPU/WebGL texture
       if (this.device) {
         await this.createWebGPUTexture(nesTexture);
-      } else if (this.gl) {
+      } }else if (this.gl) {
         this.createWebGLTexture(nesTexture);
-      }
-      console.log(`✅ Loaded texture ${id} in ${region} (${this.formatBytes(nesTexture.size)})`);
+      } }
+      console.log(`✅ Loaded texture ${id} }in ${region} }(${this.formatBytes(nesTexture.size)})`);
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Failed to load texture ${id}: ', error);'`
       return false;
-    }
-  }
+    } }
+  } }
   private async compressTexture(
     data: ArrayBuffer,
     width: number;
@@ -300,12 +300,12 @@ export class WebGPUTextureStreamer {
         clearTimeout(timeout);
         this.compressionWorker!.removeEventListener('message', handleMessage);
         if (e.data.success) {
-          console.log(`🗜️ Compressed texture: ${this.formatBytes(e.data.originalSize)} → ${this.formatBytes(e.data.compressedSize)} (${e.data.compressionRatio.toFixed(2)}x)`);
+          console.log(`🗜️ Compressed texture: ${this.formatBytes(e.data.originalSize)} }→ ${this.formatBytes(e.data.compressedSize)} }(${e.data.compressionRatio.toFixed(2)}x)`);
           resolve(e.data.compressedData);
-        } else {
+        } }else {
           reject(new Error(e.data.error));
-        }
-      }
+        } }
+      } }
       this.compressionWorker!.addEventListener('message', handleMessage);
       this.compressionWorker!.postMessage({
         textureData: data,
@@ -315,10 +315,10 @@ export class WebGPUTextureStreamer {
         legalContext
       });
     });
-  }
+  } }
   private async createWebGPUTexture(nesTexture: NESTexture): Promise<void> {
     if (!this.device) return;
-    const texture = this.device.createTexture({ size: {, width: nesTexture.width, height: nesTexture.height },
+    const texture = this.device.createTexture({ size: { width: nesTexture.width, height: nesTexture.height },
       format: nesTexture.format,
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
@@ -329,10 +329,10 @@ export class WebGPUTextureStreamer {
       { texture },
       textureData,
       { bytesPerRow: nesTexture.width * 4, rowsPerImage: nesTexture.height },
-      { width: nesTexture.width, height: nesTexture.height }
+      { width: nesTexture.width, height: nesTexture.height } }
     );
     this.textureCache.set(nesTexture.id, texture);
-  }
+  } }
   private createWebGLTexture(nesTexture: NESTexture): void {
     if (!this.gl) return;
     const texture = this.gl.createTexture();
@@ -359,7 +359,7 @@ export class WebGPUTextureStreamer {
       textureData
     );
     this.webglTextures.set(nesTexture.id, texture);
-  }
+  } }
   private async garbageCollect(region: string): Promise<void> {
     const memoryRegion = this.memoryRegions.get(region);
     if (!memoryRegion) return;
@@ -370,7 +370,7 @@ export class WebGPUTextureStreamer {
       const [, textureB] = b;
       if (textureA.priority !== textureB.priority) {
         return textureA.priority - textureB.priority;
-      }
+      } }
       return textureA.lastUsed - textureB.lastUsed;
     });
     // Remove textures until we're under the threshold'
@@ -380,9 +380,9 @@ export class WebGPUTextureStreamer {
       // Don't remove high-priority legal textures'
       if (texture.legalContext?.riskIndicator || texture.priority > 8) continue;
       await this.unloadTexture(id, region);
-      console.log(`🗑️ GC removed texture ${id} from ${region}`);
-    }
-  }
+      console.log(`🗑️ GC removed texture ${id} }from ${region}`);
+    } }
+  } }
   async unloadTexture(id: string, region?: string): Promise<void> {
     // Remove from all regions if none specified
     const regionsToCheck = region ? [region] : ['RAM', 'CHR_ROM', 'PRG_ROM'];
@@ -399,15 +399,15 @@ export class WebGPUTextureStreamer {
       if (gpuTexture) {
         gpuTexture.destroy();
         this.textureCache.delete(id);
-      }
+      } }
       // Remove WebGL texture
       const webglTexture = this.webglTextures.get(id);
       if (webglTexture && this.gl) {
         this.gl.deleteTexture(webglTexture);
         this.webglTextures.delete(id);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   getTexture(id: string): GPUTexture | WebGLTexture | null {
     // Update last used time
     for (const region of this.memoryRegions.values()) {
@@ -415,18 +415,18 @@ export class WebGPUTextureStreamer {
       if (texture) {
         texture.lastUsed = Date.now();
         break;
-      }
-    }
+      } }
+    } }
     return this.textureCache.get(id) || this.webglTextures.get(id) || null;
-  }
+  } }
   getMemoryStats() {
     const stats = {
       total: MEMORY_CONSTRAINTS.TOTAL,
-        regions: {} as Record<string, { used: number; size: number; utilization: number;, textureCount: number }>,
+        regions: {} }as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl
-    }
+    } }
     let totalUsed = 0;
     let totalTextures = 0;
     for (const [name, region] of this.memoryRegions) {
@@ -435,45 +435,45 @@ export class WebGPUTextureStreamer {
         size: region.size,
         utilization: region.used / region.size,
         textureCount: region.textures.size
-      }
+      } }
       totalUsed += region.used;
       totalTextures += region.textures.size;
-    }
+    } }
     stats.textures = totalTextures;
     return stats;
-  }
+  } }
   private formatBytes(bytes: number): string {
     if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
+  } }
   async destroy(): Promise<void> {
     // Clean up all textures
     for (const region of this.memoryRegions.keys()) {
       const memoryRegion = this.memoryRegions.get(region)!;
       for (const id of memoryRegion.textures.keys()) {
         await this.unloadTexture(id, region);
-      }
-    }
+      } }
+    } }
     // Clean up GPU resources
     if (this.device) {
       this.device.destroy();
       this.device = null;
-    }
+    } }
     if (this.compressionWorker) {
       this.compressionWorker.terminate();
       this.compressionWorker = null;
-    }
+    } }
     // Clean up worker URL
     if (this.workerUrl) {
       URL.revokeObjectURL(this.workerUrl);
       this.workerUrl = null;
-    }
+    } }
     this.gl = null;
     this.isInitialized = $state(false);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const textureStreamer = new WebGPUTextureStreamer();

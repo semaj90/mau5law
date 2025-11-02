@@ -7,10 +7,10 @@
  * - POST /api/agent/tool/execute - Execute specific tool
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { agenticOrchestrator } from '$lib/services/agentic-rag-orchestrator';
-import type { RAGDocument } from '$lib/services/rag-knowledge-pipeline';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { agenticOrchestrator } }from '$lib/services/agentic-rag-orchestrator';
+import type { RAGDocument } }from '$lib/services/rag-knowledge-pipeline';
 
 /**
  * POST /api/agent/orchestrate
@@ -18,11 +18,11 @@ import type { RAGDocument } from '$lib/services/rag-knowledge-pipeline';
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, documents, context, config } = await request.json();
+    const { query, documents, context, config } }= await request.json();
 
     if (!query) {
       return json({ error: 'Missing required, field: query' }, { status: 400 });
-    }
+    } }
 
     console.log(`📨 POST /api/agent/orchestrate`);
     console.log(`   Query: ${query}`);
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const result = await customOrchestrator.run(
         query,
         documents as RAGDocument[] || [],
-        context || {}
+        context || {} }
       );
 
       return json({
@@ -44,18 +44,18 @@ export const POST: RequestHandler = async ({ request }) => {
         toolCalls: result.toolCalls,
         conversationHistory: result.conversationHistory,
         summary: {
-         , toolsUsed: result.toolCalls.length,
+  toolsUsed: result.toolCalls.length,
           successfulTools: result.toolCalls.filter(t => t.success).length,
           totalExecutionTime: result.toolCalls.reduce((sum, t) => sum + t.executionTime, 0)
-        }
+        } }
       });
-    }
+    } }
 
     // Use default orchestrator
     const result = await agenticOrchestrator.run(
       query,
       documents as RAGDocument[] || [],
-      context || {}
+      context || {} }
     );
 
     return json({
@@ -64,21 +64,21 @@ export const POST: RequestHandler = async ({ request }) => {
       toolCalls: result.toolCalls,
       conversationHistory: result.conversationHistory,
       summary: {
-       , toolsUsed: result.toolCalls.length,
+  toolsUsed: result.toolCalls.length,
         successfulTools: result.toolCalls.filter(t => t.success).length,
         totalExecutionTime: result.toolCalls.reduce((sum, t) => sum + t.executionTime, 0)
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('❌ Agent orchestration error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Agent orchestration error:', error);
     return json(
       {
         error: 'Agent orchestration failed',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -94,14 +94,15 @@ export const GET: RequestHandler = async () => {
       tools,
       count: tools.length
     });
-  } catch (error: any) {
-    console.error('❌ Get tools error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Get tools error:', error);
     return json(
       {
         error: 'Failed to get tools',
         details: error.message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

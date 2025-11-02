@@ -10,26 +10,26 @@
  * Routes to enhanced-rag-service.exe for semantic search
  * Integrates with your WebAssembly Graph Engine
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { enhancedRAGClient } from '$lib/services/enhanced-rag-client';
-import { db } from '$lib/server/db';
-import { contentEmbeddings, caseEmbeddings, evidenceVectors } from '$lib/server/db/schema-postgres';
-import { desc, sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { enhancedRAGClient } }from '$lib/services/enhanced-rag-client';
+import { db } }from '$lib/server/db';
+import { contentEmbeddings, caseEmbeddings, evidenceVectors } }from '$lib/server/db/schema-postgres';
+import { desc, sql } }from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { query, type = 'content', limit = 10, threshold = 0.7 } = body;
+    const { query, type = 'content', limit = 10, threshold = 0.7 } }= body;
 
     if (!query) {
       return json(
         {
           error: 'Query is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     console.log(`🎯 Vector search: "${query}" (type: ${type})`);
 
@@ -43,19 +43,19 @@ export const POST: RequestHandler = async ({ request }) => {
       });
 
       if (ragResponse.success && ragResponse.data) {
-        console.log(`✅ Enhanced-RAG returned ${ragResponse.data.results?.length || 0} results`);
+        console.log(`✅ Enhanced-RAG returned ${ragResponse.data.results?.length || 0} }results`);
         return json({
           results: ragResponse.data.results || [],
           metadata: {
             ...ragResponse.data.metadata,
             source: 'enhanced-rag',
             processingTime: ragResponse.processingTime
-          }
+          } }
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.log(`⚠️ Enhanced-RAG failed, falling back to database: ${error}`);
-    }
+    } }
 
     // Fallback to database-only search
     let results;
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: // 'content'
         results = await db
           .select({
-           , id: contentEmbeddings.id,
+  id: contentEmbeddings.id,
             contentId: contentEmbeddings.contentId,
             contentType: contentEmbeddings.contentType,
             textContent: contentEmbeddings.textContent,
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .orderBy(desc(contentEmbeddings.createdAt))
           .limit(limit);
         break;
-    }
+    } }
 
     // TODO: Calculate actual similarity scores with enhanced-rag-service.exe
     const enrichedResults = results.map((result, index) => ({
@@ -114,20 +114,20 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         count: results.length,
         threshold,
-        source: 'database', // Will be: 'enhanced-rag' when connected;, processingTime: Date.now() % 100, // Mock processing time
-      }
+        source: 'database', // Will be: 'enhanced-rag' when connected; processingTime: Date.now() % 100, // Mock processing time
+      } }
     });
-  } catch (error) {
-    console.error('❌ Vector search error:', error);'
+  } }catch (error) {
+    console.error('❌ Vector search error:', error);
     return json(
       {
         error: 'Vector search failed',
         results: [],
-        metadata: {, query: '', count: 0, source: `error' }'`
+        metadata: { query: '', count: 0, source: `error' } }`
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
       wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     return json({
       status: 'degraded',
       service: 'vector-search',
@@ -153,5 +153,6 @@ export const GET: RequestHandler = async ({ url }) => {
       wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
       timestamp: new Date().toISOString()
     });
-  }
+  } }
 };
+

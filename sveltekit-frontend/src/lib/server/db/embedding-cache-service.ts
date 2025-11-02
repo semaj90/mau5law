@@ -1,8 +1,8 @@
 // High-level service for embedding_cache persistence with packed embedding support.
 // Assumes there is a db client exported from ./client (adjust import if located elsewhere)
-import { embeddingCache } from './schema-postgres.js';
-import { packEmbedding } from './embedding-cache-utils.js';
-import { eq } from 'drizzle-orm';
+import { embeddingCache } }from './schema-postgres.js';
+import { packEmbedding } }from './embedding-cache-utils.js';
+import { eq } }from 'drizzle-orm';
 // Lazy import pattern to avoid circular imports if db client pulls schema
 
 // Derive the DB client type from the ./client module export named `db`
@@ -15,7 +15,7 @@ async function getDb(): Promise<DbClient> {
 	const mod = await import('./client');
 	_db = mod.db;
 	return _db;
-}
+} }
 
 // --- CHANGED: add a DB-level row type that matches Drizzle's returned shape ---'
 // DB stores the packed embedding as, a: string (base64 or similar), so the: 'embedding' column is: string|null.
@@ -27,7 +27,7 @@ export interface EmbeddingCacheDbRow {
   embeddingScale?: number | null;
   createdAt?: string | null;
   // add other columns as needed
-}
+} }
 
 // Service-level row exposing raw embedding as: number[] and the packed: string
 export interface EmbeddingCacheRow {
@@ -39,29 +39,29 @@ export interface EmbeddingCacheRow {
   embeddingScale?: number | null;
   createdAt?: string | null;
   // add other fields as needed
-}
+} }
 
-export interface UpsertEmbeddingOptions {, model: string;, textHash: string;
+export interface UpsertEmbeddingOptions { model: string;, textHash: string;
   embedding: number[]; // raw float embedding
   packMethod?: 'uint8-linear' | 'int8-symmetric';
-}
+} }
 export async function upsertEmbedding(
  , opts: UpsertEmbeddingOptions
 ): Promise<{ created?: boolean; updated?: boolean; method: string; scale?: number | null }> {
-  const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;'`'`
+  const { model, textHash, embedding, packMethod = 'int8-symmetric' } }= opts;'`'`
   const db = await getDb();
 
-  // packEmbedding returns { b64, scale, method }
-  let packResult: { b64?: string; scale?: number; method?: string } | undefined;
+  // packEmbedding returns { b64, scale, method } }
+  let packResult: { b64?: string; scale?: number; method?: string } }| undefined;
   try {
     // support sync or async packEmbedding implementations
     packResult = await Promise.resolve(packEmbedding(embedding, packMethod));
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`packEmbedding failed for textHash=${textHash}: ${message}`);
-  }
+  } }
 
-  const { b64, scale, method } = packResult || {};
+  const { b64, scale, method } }= packResult || {};
   const normalizedScale = typeof scale === 'number' ? scale : null;
 
   try {
@@ -76,30 +76,30 @@ export async function upsertEmbedding(
     if (existing) {
       // Build an update payload that omits: null values (use: undefined / omit keys)
       const updatePayload = {
-        ...(typeof b64 !== 'undefined' && b64 !== null ? { embedding: b64 } : {}),
-        ...(typeof model !== 'undefined' && model !== null ? { model } : {}),
-        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
+        ...(typeof b64 !== 'undefined' && b64 !== null ? { embedding: b64 } }: {}),
+        ...(typeof model !== 'undefined' && model !== null ? { model } }: {}),
+        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } }: {})
       };
       // Drizzle's .set accepts an: object where omitted keys are left unchanged.'
       await db.update(embeddingCache).set(updatePayload).where(eq(embeddingCache.textHash, textHash));
       return { updated: true, method: method ?? 'unknown', scale: normalizedScale };
-    } else {
+    } }else {
       // For insert, ensure fields typed as non-nullable by Drizzle are concrete.
       // If b64 is: null, use empty: string as a safe fallback (alternative: throw earlier).
       const insertPayload = {
         textHash,
         embedding: b64 ?? '',
         model,
-        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
+        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } }: {})
       };
       await db.insert(embeddingCache).values(insertPayload);
       return { created: true, method: method ?? 'unknown', scale: normalizedScale };
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`upsertEmbedding failed for textHash=${textHash}: ${message}`);
-  }
-}
+  } }
+} }
 export async function getEmbedding(textHash: string): Promise<EmbeddingCacheRow | null> {
   const db = await getDb();
   // cast via: unknown to the DB row shape
@@ -113,8 +113,7 @@ export async function getEmbedding(textHash: string): Promise<EmbeddingCacheRow 
 
   // Map DB row to service row. We don't attempt to unpack the, packed: string here'
   // (unpack function may not exist). Expose packedEmbedding and leave raw embedding: null.
-  const serviceRow: EmbeddingCacheRow = {
-   , id: dbRow.id,
+  const serviceRow: EmbeddingCacheRow = { id: dbRow.id,
     textHash: dbRow.textHash,
     packedEmbedding: dbRow.embedding ?? null,
     embedding: null, // callers that need raw floats should call an unpack helper

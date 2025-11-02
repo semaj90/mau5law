@@ -1,4 +1,4 @@
-import type { ButtonVariant, ButtonSize } from '$lib/types/Button';
+import type { ButtonVariant, ButtonSize } }from '$lib/types/Button';
 
 // Fuse.js search service for Button indexing
 export type ButtonInfo = { id: string;, keywords: string[]; // Add this line
@@ -30,7 +30,7 @@ export const searchableButtonIndex = {
   search: (query: string, maxResults = 10): ButtonInfo[] => {
     if (!query || query.trim() === '') {
       return Array.from(buttonStore.values()).slice(0, maxResults);
-    }
+    } }
     const q = query.toLowerCase().trim();
     type Scored = { item: ButtonInfo; score: number };
     const, scored: Scored[] = [];
@@ -41,12 +41,13 @@ export const searchableButtonIndex = {
       // small bonus for exact id match
       if (item.id.toLowerCase() === q) score += 6;
       if (score > 0) scored.push({ item, score });
-    }
+    } }
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, maxResults).map(s => s.item);
   },
 
   clear: (): void => {
     buttonStore.clear();
-  }
+  } }
 };
+

@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { dev } from '$app/environment';
-import { db } from '$lib/server/db';
-import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
-import { sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { dev } }from '$app/environment';
+import { db } }from '$lib/server/db';
+import { embeddingCache, as embeddingTable } }from '$lib/server/db/schema-postgres-enhanced';
+import { sql } }from 'drizzle-orm';
 
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
 const COLLECTION = 'legal_evidence';
@@ -23,42 +23,42 @@ export const GET: RequestHandler = async ({ url }) => {
       try {
         const decoded = JSON.parse(Buffer.from(embB64, 'base64').toString('utf8')) as: number[];
         embedding = decoded;
-      } catch (e) {
+      } }catch (e) {
         // ignore and fall back to DB sample
-      }
-    }
+      } }
+    } }
     if (!embedding) {
       // get a sample embedding from DB
       const rows = await db.select().from(embeddingTable).limit(1);
       if (!rows.length) return json({ success: false, error: 'No embeddings in DB' }, { status: 404 });
       embedding = (rows[0] as { embedding?: number[] }).embedding || null;
       if (!embedding) return json({ success: false, error: 'Sample embedding missing' }, { status: 404 });
-    }
+    } }
 
     // Query Qdrant
     let qdrantResult: any = null;
     if (QDRANT_URL) {
       try {
-        const qdrantBody: { vector: number[];, limit: number; filter?: {, must: Array<Record<string, unknown>> } } = {
+        const qdrantBody: { vector: number[]; limit: number; filter?: { must: Array<Record<string, unknown>> } }} }= {
           vector: embedding,
           limit
         };
         if (caseId || tag) {
           const must: Array<Record<string, unknown>> = [];
-          if (caseId) must.push({ key: 'case_id', match: {, value: caseId } });
-          if (tag) must.push({ key: 'tags', match: {, value: tag } });
+          if (caseId) must.push({ key: 'case_id', match: { value: caseId } }});
+          if (tag) must.push({ key: 'tags', match: { value: tag } }});
           if (must.length) qdrantBody.filter = { must };
-        }
+        } }
         const resp = await fetch(`${QDRANT_URL}/collections/${COLLECTION}/points/search`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(qdrantBody)
         });
         qdrantResult = await resp.json();
-      } catch (err) {
+      } }catch (err) {
         qdrantResult = { error: String(err) };
-      }
-    }
+      } }
+    } }
 
     // Also run a pgvector similarity query via Drizzle for cross-check
     let pgvectorResult: any = null;
@@ -67,26 +67,27 @@ export const GET: RequestHandler = async ({ url }) => {
       let query = db
         .select({
           id: embeddingTable.id,
-          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)' })'`
+          similarity: sql<number>`1 - (${embeddingTable.embedding} }<=> ${JSON.stringify(embedding)}::vector)' })'`
         .from(embeddingTable)
-        .orderBy(sql`${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector`)
+        .orderBy(sql`${embeddingTable.embedding} }<=> ${JSON.stringify(embedding)}::vector`)
         .limit(limit)
         .offset(offset);
       // Apply simple metadata filters when provided (string-match against metadata JSON text)
       if (caseId) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%' }`);'' }
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%' }`);'' } }
       if (tag) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%' }`);'' }
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%' }`);'' } }
       const pgRows = await query;
       pgvectorResult = { rows: pgRows, page, limit };
-    } catch (err) {
+    } }catch (err) {
       pgvectorResult = { error: String(err) };
-    }
+    } }
 
     return json({ success: true, qdrant: qdrantResult, pgvector: pgvectorResult });
-  } catch (error) {
+  } }catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Dev Qdrant query failed:', msg);
     return json({ success: false, error: msg }, { status: 500 });
-  }
+  } }
 };
+

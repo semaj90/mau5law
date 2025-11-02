@@ -1,12 +1,12 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { evidence } from '$lib/server/db/schema-unified';
-import { error, fail } from '@sveltejs/kit';
-import { helpers } from '$lib/server/db';
-import { zod } from 'sveltekit-superforms/adapters';
-import { db } from '$lib/server/db/index';
-import type { PageServerLoad } from './$types.js';
-import { z } from 'zod';
-import { URL } from 'url';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { evidence } }from '$lib/server/db/schema-unified';
+import { error, fail } }from '@sveltejs/kit';
+import { helpers } }from '$lib/server/db';
+import { zod } }from 'sveltekit-superforms/adapters';
+import { db } }from '$lib/server/db/index';
+import type { PageServerLoad } }from './$types.js';
+import { z } }from 'zod';
+import { URL } }from 'url';
 // Schema for validating evidence form data
 const evidenceSchema = z.object({
   id: z.string().optional(),
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       caseId: url.searchParams.get('caseId'),
       user: null
     };
-  }
+  } }
   try {
     // Get case ID from URL params or default to user's cases'
     const caseId = url.searchParams.get('caseId');
@@ -42,20 +42,21 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         .where(
           helpers.and(helpers.eq(evidence.caseId, caseId) as: any, helpers.eq(evidence.userId, user.id) as: any) as: any
         );
-    } else {
+    } }else {
       evidenceData = await db
         .select()
         .from(evidence)
         .where(helpers.eq(evidence.userId, user.id) as: any)
         .limit(50);
-    }
+    } }
     return {
       evidence: evidenceData,
       caseId,
       user
     };
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Failed to load evidence:', err);
     throw error(500, 'Failed to load evidence data');
-  }
+  } }
 };
+

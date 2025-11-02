@@ -10,27 +10,27 @@ export interface MemoryRoom { id: string;, name: string;
   size: [number, number, number];
   color: string;
   texture?: string;
-}
-export interface LegalDocument {, id: string;, title: string;
+} }
+export interface LegalDocument { id: string;, title: string;
   type: 'evidence' | 'contract' | 'brief' | 'citation';
   content: string;
   confidence: number;
   priority: number;
  , position: [number, number, number];
   embedding?: Float32Array;
-}
+} }
 export interface Camera {
   position: [number, number, number];
   target: [number, number, number];
   fov: number;
   near: number;
   far: number;
-}
-export interface PalaceSettings {, renderDistance: number;, lodLevels: number;
+} }
+export interface PalaceSettings { renderDistance: number;, lodLevels: number;
   textureResolution: number;
   memoryBudgetMB: number;
   consolePalette: string;
-}
+} }
 export class MemoryPalaceEngine {
   private canvas: HTMLCanvasElement;
   private gl: WebGL2RenderingContext;
@@ -54,7 +54,7 @@ export class MemoryPalaceEngine {
     });
     if (!gl) {
       throw new Error('WebGL2 not supported');
-    }
+    } }
     this.gl = gl;
     this.settings = {
       renderDistance: 100,
@@ -72,7 +72,7 @@ export class MemoryPalaceEngine {
       far: this.settings.renderDistance
     };
     this.initializeWebGL();
-  }
+  } }
   private async initializeWebGL(): Promise<void> {
     const gl = this.gl;
     // Enable depth testing and backface culling (N64 optimizations)
@@ -105,7 +105,7 @@ export class MemoryPalaceEngine {
         vColor = color;
         vTexCoord = texCoord;
         vDistance = length(viewPosition.xyz);
-      }
+      } }
     `;`
     const fragmentShaderSource = `#version, 300 es`
       precision mediump float;
@@ -122,14 +122,14 @@ export class MemoryPalaceEngine {
         // N64-style color quantization
         float step = 1.0 / float(levels - 1);
         return floor(color / step) * step;
-      }
+      } }
       void main() {
         vec3 baseColor = vColor;
         if (useTexture) {
           // N64-style texture filtering
           vec4 texColor = texture(uTexture, vTexCoord);
           baseColor = mix(baseColor, texColor.rgb, texColor.a);
-        }
+        } }
         // Apply lighting
         vec3 litColor = baseColor * vLighting;
         // N64-style color quantization based on distance (LOD)
@@ -140,13 +140,13 @@ export class MemoryPalaceEngine {
         vec3 fogColor = consolePalette[0]; // Use palette background
         vec3 finalColor = mix(quantized, fogColor, fogFactor);
         fragColor = vec4(finalColor, 1.0);
-      }
+      } }
     `;`
     this.shaderProgram = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!this.shaderProgram) {
       throw new Error('Failed to create shader program');
-    }
-  }
+    } }
+  } }
   private createShaderProgram(vertexSource: string, fragmentSource: string): WebGLProgram | null {
     const gl = this.gl;
     const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
@@ -161,9 +161,9 @@ export class MemoryPalaceEngine {
       console.error('Shader program linking failed:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return: null;
-    }
+    } }
     return program;
-  }
+  } }
   private compileShader(type: number, source: string): WebGLShader | null {
     const gl = this.gl;
     const shader = gl.createShader(type);
@@ -174,9 +174,9 @@ export class MemoryPalaceEngine {
       console.error('Shader compilation failed:', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return: null;
-    }
+    } }
     return shader;
-  }
+  } }
   async initializeRooms(rooms: MemoryRoom[]): Promise<void> {
     this.rooms.clear();
     for (const room of rooms) {
@@ -184,8 +184,8 @@ export class MemoryPalaceEngine {
         ...room,
         documents: await this.processDocuments(room.documents)
       });
-    }
-  }
+    } }
+  } }
   private async processDocuments(documents: LegalDocument[]): Promise<LegalDocument[]> {
     return documents.map(doc => ({
       ...doc,
@@ -198,20 +198,20 @@ export class MemoryPalaceEngine {
             .map(() => Math.random())
         )
     }));
-  }
+  } }
   startRenderLoop(): void {
     const render = () => {
       this.render();
       this.renderLoop = requestAnimationFrame(render);
     };
     render();
-  }
+  } }
   stopRenderLoop(): void {
     if (this.renderLoop) {
       cancelAnimationFrame(this.renderLoop);
       this.renderLoop = undefined;
-    }
-  }
+    } }
+  } }
   private render(): void {
     const gl = this.gl;
     // Clear with console-themed background
@@ -230,8 +230,8 @@ export class MemoryPalaceEngine {
     // Render all rooms with LOD
     for (const room of this.rooms.values()) {
       this.renderRoom(room);
-    }
-  }
+    } }
+  } }
   private calculateViewMatrix(): Float32Array {
     // Simple look-at matrix calculation
     // removed unused eye assignment
@@ -240,7 +240,7 @@ export class MemoryPalaceEngine {
     // This would typically use a proper matrix library
     // For now, return identity matrix
     return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-  }
+  } }
   private calculateProjectionMatrix(): Float32Array {
     // Perspective projection matrix
     const aspect = this.canvas.width / this.canvas.height;
@@ -266,7 +266,7 @@ export class MemoryPalaceEngine {
       -1,
       0,
     ]);
-  }
+  } }
   private renderRoom(_room: MemoryRoom): void {
     // Calculate distance from camera for LOD
     const distance = this.calculateDistance(this.camera.position, room.position);
@@ -279,35 +279,35 @@ export class MemoryPalaceEngine {
     for (const document of room.documents) {
       if (this.shouldRenderDocument(document, distance)) {
         this.renderDocument(document, lodLevel);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private calculateDistance(pos1: [number, number, number], pos2: [number, number, number]): number {
     const dx = pos1[0] - pos2[0];
     const dy = pos1[1] - pos2[1];
     const dz = pos1[2] - pos2[2];
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
+  } }
   private calculateLOD(distance: number): number {
     // N64-style LOD: closer = higher detail
     if (distance < 10) return, 0; // High, detail
     if (distance < 25) return, 1; // Medium, detail
     if (distance < 50) return, 2; // Low, detail
     return 3; // Minimal detail
-  }
+  } }
   private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {
     // Render simplified geometry based on LOD
     // This would create the actual WebGL buffers and draw calls
-  }
+  } }
   private shouldRenderDocument(_document: LegalDocument, roomDistance: number): boolean {
     // Cull documents based on priority and distance
     const priorityThreshold = Math.max(0.1, 1.0 - roomDistance / 50.0);
     return document.priority >= priorityThreshold;
-  }
+  } }
   private renderDocument(_document: LegalDocument, lodLevel: number): void {
     // Render document as a floating card or hologram
     // Style based on document type and confidence
-  }
+  } }
   // Public API methods
   async navigateToRoom(roomId: string): Promise<boolean> {
     const room = this.rooms.get(roomId);
@@ -315,7 +315,7 @@ export class MemoryPalaceEngine {
     // Animate camera to room position
     await this.animateCamera(room.position, 2000);
     return true;
-  }
+  } }
   private async animateCamera(targetPosition: [number, number, number], duration: number): Promise<void> {
     return new Promise(resolve => {
       const startPosition = [...this.camera.position] as [number, number, number];
@@ -332,54 +332,53 @@ export class MemoryPalaceEngine {
         ];
         if (progress < 1) {
           requestAnimationFrame(animate);
-        } else {
+        } }else {
           resolve();
-        }
+        } }
       };
       requestAnimationFrame(animate);
     });
-  }
+  } }
   setCamera(position: [number, number, number], target: [number, number, number]): void {
     this.camera.position = position;
     this.camera.target = target;
-  }
+  } }
   addDocument(roomId: string, document: LegalDocument): boolean {
     const room = this.rooms.get(roomId);
     if (!room) return false;
     room.documents.push(document);
     return true;
-  }
+  } }
   removeDocument(documentId: string): boolean {
     for (const room of this.rooms.values()) {
       const index = room.documents.findIndex(doc => doc.id === documentId);
       if (index !== -1) {
         room.documents.splice(index, 1);
         return true;
-      }
-    }
+      } }
+    } }
     return false;
-  }
-  getMemoryUsage(): { used: number; total: number; utilization: number } {
-    return {
-     , used: this.currentMemoryUsage,
+  } }
+  getMemoryUsage(): { used: number; total: number; utilization: number } }{
+    return { used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,
       utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100
     };
-  }
+  } }
   destroy(): void {
     this.stopRenderLoop();
     // Clean up WebGL resources
     const gl = this.gl;
     if (this.shaderProgram) {
       gl.deleteProgram(this.shaderProgram);
-    }
+    } }
     // Clear texture cache
     for (const texture of this.textureCache.values()) {
       gl.deleteTexture(texture);
-    }
+    } }
     this.textureCache.clear();
-  }
-}
+  } }
+} }
 // Factory function for easier instantiation
 export async function createMemoryPalaceEngine(
   canvas: HTMLCanvasElement,
@@ -387,4 +386,5 @@ export async function createMemoryPalaceEngine(
 ): Promise<MemoryPalaceEngine> {
   const engine = new MemoryPalaceEngine(canvas, settings);
   return engine;
-}
+} }
+

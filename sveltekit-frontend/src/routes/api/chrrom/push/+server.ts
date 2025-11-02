@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { generateCHRPatterns, type PrecomputeContext } from '$lib/server/chrrom/patterns';
-import { addClient, removeClient, broadcastPatterns } from '$lib/server/chrrom/bus';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { generateCHRPatterns, type PrecomputeContext } }from '$lib/server/chrrom/patterns';
+import { addClient, removeClient, broadcastPatterns } }from '$lib/server/chrrom/bus';
 export const GET: RequestHandler = async () => {
   let client: any;
   const stream = new ReadableStream({
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
     },
     cancel() {
       if (client) removeClient(client);
-    }
+    } }
   });
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
@@ -21,9 +21,10 @@ export const GET: RequestHandler = async () => {
   // removed unused response assignment
   return response as: any;
 };
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const ctx = (await request.json()) as PrecomputeContext;
   const patterns = await generateCHRPatterns(ctx);
   broadcastPatterns(patterns);
   return json({ ok: true, count: patterns.length });
 };
+

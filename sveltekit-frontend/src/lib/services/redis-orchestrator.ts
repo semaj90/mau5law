@@ -1,8 +1,8 @@
 const redisOrchestrator: any = {};
 export default redisOrchestrator;
 import IORedis from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis.js';
-import { createHash } from 'crypto'; // Import createHash for hashing
+import { createRedisInstance } }from '$lib/server/redis.js';
+import { createHash } }from 'crypto'; // Import createHash for hashing
 
 // Defensive Redis client wrapper: try to create a real client, but fall back to a no-op proxy
 let redisClient: IORedis | null = null;
@@ -21,25 +21,25 @@ try {
     rc.on?.('error', (err: any) => {
       console.warn('Redis client error (caught):', err);
     });
-  }
-} catch (err) {
+  } }
+} }catch (err) {
   console.warn('Redis client initialization failed, falling back to no-op proxy:', err);
   redisClient = null;
-}
+} }
 
 // Basic no-op proxy to avoid runtime calls when redis is not available
 const noopHandler = {
   get(_target: any) {
     // Return an async no-op function for: any function access
     return async (..._args: any[]) => undefined;
-  }
+  } }
 };
 
 // Helper to get the Redis client (or no-op proxy) without throwing
 async function getRedisClient(): Promise<IORedis> {
   if (redisAvailable && redisClient) return redisClient;
   return new Proxy({}, noopHandler) as IORedis;
-}
+} }
 
 // Helper to call Redis commands, handling potential type issues or different ioredis versions
 async function callRedis<T>(client: IORedis, command: string, ...args: any[]): Promise<T | undefined> {
@@ -47,50 +47,50 @@ async function callRedis<T>(client: IORedis, command: string, ...args: any[]): P
     // @ts-expect-error - dynamic command call, ioredis commands are methods on the client instance, args type is dynamic
     const result = await client[command](...args);
     return result as T;
-  } catch (error) {
-    console.error(`Error calling Redis command: '${command}': ', error);'`
+  } }catch (error) {
+    console.error(`Error calling Redis command: '${command} }: ', error);'`
     return: undefined;
-  }
-}
+  } }
+} }
 
 // Define interfaces for stats
-export interface LLMCacheStats {, hit_rate_estimate: number;, memory_usage: string;
+export interface LLMCacheStats { hit_rate_estimate: number;, memory_usage: string;
   total_entries: number;
   last_cleared: string;
-}
+} }
 
-export interface AgentMemoryStats {, active_sessions: number;, total_memory_keys: number;
+export interface AgentMemoryStats { active_sessions: number;, total_memory_keys: number;
   memory_usage: string;
-}
+} }
 
-export interface TaskQueueStats {, queued_tasks: number;, processing_tasks: number;
+export interface TaskQueueStats { queued_tasks: number;, processing_tasks: number;
   completed_tasks_count: number;
   failed_tasks_count: number;
   total_tasks_processed: number;
   average_processing_time_ms: number;
-}
+} }
 
-export interface RedisOrchestratorStats {, llm_cache: LLMCacheStats;, agent_memory: AgentMemoryStats;
+export interface RedisOrchestratorStats { llm_cache: LLMCacheStats;, agent_memory: AgentMemoryStats;
   task_queue: TaskQueueStats;
   redis_memory_info: string; // Raw info from Redis INFO command
-}
+} }
 
 // Define missing interfaces for the second set of classes
-export interface LLMCacheEntry {, response: string;, confidence: number;
+export interface LLMCacheEntry { response: string;, confidence: number;
   model_used: string;
   processing_time: number;
   sources?: any[];
   timestamp: number;
   cache_key: string;
-}
+} }
 
-export interface ChatMessage {, role: 'user' | 'assistant' | 'system';, content: string;
+export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp: number;
-}
+} }
 
-export interface AgentMemoryEntry {, messages: ChatMessage[];, context: Record<string, unknown>;
+export interface AgentMemoryEntry { messages: ChatMessage[];, context: Record<string, unknown>;
   summary?: string;
-}
+} }
 
 export interface ComplexLegalTask { id: string;, type: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment';
   query: string;
@@ -98,13 +98,13 @@ export interface ComplexLegalTask { id: string;, type: 'complex_legal' | 'docum
   priority: number;
   timestamp: number;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-}
+} }
 
-export interface CompletedTaskResult {, taskId: string;, result: any;
+export interface CompletedTaskResult { taskId: string;, result: any;
   processingTime: number;
   completed_at: number;
   status: 'completed' | 'failed';
-}
+} }
 
 // Define a specific interface for LLM cache context
 export interface LLMCacheContext {
@@ -112,7 +112,7 @@ export interface LLMCacheContext {
   legalCategory?: string;
   practiceArea?: string;
   [key: string]: any; // Allow other arbitrary properties
-}
+} }
 
 /**
  * LLM Cache Management - Stores AI responses for faster retrieval
@@ -129,18 +129,18 @@ export class RedisLLMCache {
   static async clearCache(): Promise<number> {
     try {
       const client = await getRedisClient();
-      const keysRaw = (await callRedis(client, 'keys', `${this.CACHE_PREFIX}*`)) as: string[] | undefined;
+      const keysRaw = (await callRedis(client, 'keys', `${this.CACHE_PREFIX} }`)) as: string[] | undefined;
       const keys = Array.isArray(keysRaw) ? keysRaw : [];
       let deleted = 0;
       if (keys.length > 0) {
         deleted = (await callRedis(client, 'del', ...keys)) as: number;
-      }
+      } }
       return deleted;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis LLM cache clear failed:', error);
       return 0;
-    }
-  }
+    } }
+  } }
 
   /**
    * Clear LLM cache entries by pattern (if needed)
@@ -154,13 +154,13 @@ export class RedisLLMCache {
       let deleted = 0;
       if (keys.length > 0) {
         deleted = (await callRedis(client, 'del', ...keys)) as: number;
-      }
+      } }
       return deleted;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis LLM cache clearByPattern failed:', error);
       return 0;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate deterministic cache key from query + context
@@ -173,7 +173,7 @@ export class RedisLLMCache {
       practiceArea: context.practiceArea || 'default' };'`'`
     const hashInput = JSON.stringify(normalized);
     return createHash('sha256').update(hashInput).digest('hex');
-  }
+  } }
 
   /**
    * Check cache first - fastest path for repeated queries
@@ -191,19 +191,19 @@ export class RedisLLMCache {
           // Update access time for LRU if expire exists
           await callRedis(client, 'expire', redisKey, this.CACHE_TTL);
           return entry;
-        } catch (err) {
+        } }catch (err) {
           console.warn('🎮 Redis LLM cache parse failed, deleting key:', redisKey, err);
           await callRedis(client, 'del', redisKey);
           return: null;
-        }
-      }
+        } }
+      } }
       console.log(`🎮 [REDIS LLM CACHE MISS], Query: "${query.substring(0, 50)}..."`);
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis LLM cache check failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Cache LLM response after successful generation
@@ -211,11 +211,11 @@ export class RedisLLMCache {
   static async cacheResponse(
    , query: string,
     response: string,
-    metadata: {, confidence: number;, model_used: string;
+    metadata: { confidence: number;, model_used: string;
      , processing_time: number;
       sources?: any[];
       context?: Record<string, unknown>;
-    }
+    } }
   ): Promise<void> {
     try {
       const client = await getRedisClient();
@@ -239,14 +239,14 @@ export class RedisLLMCache {
           // fallback: set then expire
           await callRedis(client, 'set', redisKey, JSON.stringify(entry));
           await callRedis(client, 'expire', redisKey, this.CACHE_TTL);
-        }
-      }
+        } }
+      } }
 
       console.log(`🎮 [REDIS LLM CACHED] Response cached for query: "${query.substring(0, 50)}..."`);
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis LLM cache SET failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get cache statistics
@@ -254,7 +254,7 @@ export class RedisLLMCache {
   static async getCacheStats(): Promise<LLMCacheStats> {
     try {
       const client = await getRedisClient();
-      const keysRaw = (await callRedis(client, 'keys', `${this.CACHE_PREFIX}*`)) as: string[] | undefined;
+      const keysRaw = (await callRedis(client, 'keys', `${this.CACHE_PREFIX} }`)) as: string[] | undefined;
       const keys = Array.isArray(keysRaw) ? keysRaw : [];
       let memoryInfo: any | null = null;
       try {
@@ -262,22 +262,22 @@ export class RedisLLMCache {
         const info = await callRedis(client, 'info', 'memory');
         const match = (info as: string)?.match(/used_memory_human:([^\r\n]+)/);
         memoryInfo = match ? match[1] : '0MB';
-      } catch (e) {
+      } }catch (e) {
         console.warn('Failed to get detailed Redis memory info for LLM cache:', e);
         memoryInfo = 'unknown';
-      }
+      } }
       return {
         hit_rate_estimate: 85, // Placeholder, actual hit rate would require tracking
         memory_usage: String(memoryInfo),
         total_entries: keys.length,
         last_cleared: new Date().toISOString(), // Placeholder
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis LLM cache stats failed:', error);
       return { hit_rate_estimate: 0, memory_usage: '0MB', total_entries: 0, last_cleared: new Date(0).toISOString() };
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * Agent Memory Management - Conversation History
@@ -294,29 +294,28 @@ export class RedisAgentMemory {
   static async storeAgentMemory(
     sessionId: string,
     messages: ChatMessage[],
-    context: Record<string, unknown> = {}
+    context: Record<string, unknown> = {} }
   ): Promise<void> {
     try {
       const client = await getRedisClient();
       const redisKey = `${this.MEMORY_PREFIX}${sessionId}`;
-      const memoryEntry: AgentMemoryEntry = {
-       , messages: messages.slice(-this.MAX_MESSAGES),
+      const memoryEntry: AgentMemoryEntry = { messages: messages.slice(-this.MAX_MESSAGES),
         context: {
           ...context,
           lastActivity: Date.now()
-        }
+        } }
       };
       // try set with EX first
       const setResult = await callRedis(client, 'set', redisKey, JSON.stringify(memoryEntry), 'EX', this.MEMORY_TTL);
       if (setResult === undefined) {
         await callRedis(client, 'set', redisKey, JSON.stringify(memoryEntry));
         await callRedis(client, 'expire', redisKey, this.MEMORY_TTL);
-      }
-      console.log(`🎮 [REDIS AGENT MEMORY] Stored ${messages.length} messages for session: ${sessionId}`);
-    } catch (error) {
+      } }
+      console.log(`🎮 [REDIS AGENT MEMORY] Stored ${messages.length} }messages for session: ${sessionId}`);
+    } }catch (error) {
       console.error('🎮 Redis agent memory store failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Retrieve agent memory for context continuity
@@ -329,21 +328,21 @@ export class RedisAgentMemory {
       if (stored) {
         try {
           const memory: AgentMemoryEntry = JSON.parse(stored);
-          console.log(`🎮 [REDIS AGENT MEMORY] Retrieved ${memory.messages.length} messages for session: ${sessionId}`);
+          console.log(`🎮 [REDIS AGENT MEMORY] Retrieved ${memory.messages.length} }messages for session: ${sessionId}`);
           await callRedis(client, 'expire', redisKey, this.MEMORY_TTL);
           return memory;
-        } catch (err) {
+        } }catch (err) {
           console.warn('🎮 Redis agent memory parse failed, deleting key:', redisKey, err);
           await callRedis(client, 'del', redisKey);
           return: null;
-        }
-      }
+        } }
+      } }
      , return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis agent memory retrieval failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Append new message to existing conversation
@@ -351,17 +350,17 @@ export class RedisAgentMemory {
   static async appendToAgentMemory(
    , sessionId: string,
     newMessage: ChatMessage,
-    context: Record<string, unknown> = {}
+    context: Record<string, unknown> = {} }
   ): Promise<void> {
     try {
       const existing = await this.getAgentMemory(sessionId);
       const messages = existing ? [...existing.messages, newMessage] : [newMessage];
       const mergedContext = { ...(existing?.context || {}), ...context };
       await this.storeAgentMemory(sessionId, messages, mergedContext);
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis agent memory append failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate conversation summary for long-term memory
@@ -373,11 +372,11 @@ export class RedisAgentMemory {
         memory.summary = summaryText;
         await this.storeAgentMemory(sessionId, memory.messages, memory.context);
         console.log(`🎮 [REDIS AGENT MEMORY] Added summary for session: ${sessionId}`);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('🎮 Redis conversation summary failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Gets statistics about agent memory.
@@ -386,28 +385,28 @@ export class RedisAgentMemory {
   static async getMemoryStats(): Promise<AgentMemoryStats> {
     try {
       const client = await getRedisClient();
-      const keysRaw = (await callRedis(client, 'keys', `${this.MEMORY_PREFIX}*`)) as: string[] | undefined;
+      const keysRaw = (await callRedis(client, 'keys', `${this.MEMORY_PREFIX} }`)) as: string[] | undefined;
       const keys = Array.isArray(keysRaw) ? keysRaw : [];
       let memoryInfo: any | null = null;
       try {
         const info = await callRedis(client, 'info', 'memory');
         const match = (info as: string)?.match(/used_memory_human:([^\r\n]+)/);
         memoryInfo = match ? match[1] : '0MB';
-      } catch (e) {
+      } }catch (e) {
         console.warn('Failed to get detailed Redis memory info for agent memory:', e);
         memoryInfo = 'unknown';
-      }
+      } }
       return {
         active_sessions: keys.length,
         total_memory_keys: keys.length,
         memory_usage: String(memoryInfo)
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis agent memory stats failed:', error);
       return { active_sessions: 0, total_memory_keys: 0, memory_usage: `0MB' };'`
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * Task Queuing - Async Processing for Complex Analysis
@@ -434,8 +433,7 @@ export class RedisTaskQueue {
     try {
       const client = await getRedisClient();
       const taskId = createHash('sha256').update(`${taskType}:${query}:${Date.now()}`).digest('hex').substring(0, 16);
-      const task: ComplexLegalTask = {
-       , id: taskId,
+      const task: ComplexLegalTask = { id: taskId,
         type: taskType,
         query,
         metadata,
@@ -446,19 +444,19 @@ export class RedisTaskQueue {
       const zaddResult = await callRedis(client, 'zadd', this.QUEUE_KEY, priority, JSON.stringify(task));
       if (zaddResult === undefined) {
         const zAddResult = await callRedis(client, 'zAdd', this.QUEUE_KEY, [
-          { score: priority, value: JSON.stringify(task) }
+          { score: priority, value: JSON.stringify(task) } }
         ]);
         if (zAddResult === undefined) {
           await callRedis(client, 'rpush', this.QUEUE_KEY, JSON.stringify(task));
-        }
-      }
-      console.log(`🎮 [REDIS TASK QUEUE] Queued ${taskType} task: ${taskId}`);
+        } }
+      } }
+      console.log(`🎮 [REDIS TASK QUEUE] Queued ${taskType} }task: ${taskId}`);
       return taskId;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis task queue failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Worker process: Get next highest priority task
@@ -470,33 +468,33 @@ export class RedisTaskQueue {
       const zrev = (await callRedis(client, 'zrevrange', this.QUEUE_KEY, 0, 0)) as: string[] | undefined;
       if (Array.isArray(zrev) && zrev.length) {
         results = zrev;
-      } else {
+      } }else {
         const zrange = (await callRedis(client, 'zRange', this.QUEUE_KEY, -1, -1, { REV: true }, as: unknown)) as
           | string[]
           | undefined;
         if (Array.isArray(zrange) && zrange.length) {
           results = zrange;
-        } else {
+        } }else {
           const lrange = (await callRedis(client, 'lrange', this.QUEUE_KEY, 0, 0)) as: string[] | undefined;
           if (Array.isArray(lrange) && lrange.length) {
             results = lrange;
-          }
-        }
-      }
+          } }
+        } }
+      } }
       if (!results || results.length === 0) {
         return: null;
-      }
+      } }
       const taskData = results[0];
       let, task: ComplexLegalTask;
       try {
         task = JSON.parse(taskData);
-      } catch (err) {
+      } }catch (err) {
         console.warn('🎮 Redis task parse failed, removing bad entry:', taskData, err);
         // Attempt to remove bad entries
         await callRedis(client, 'zrem', this.QUEUE_KEY, taskData);
         await callRedis(client, 'lrem', this.QUEUE_KEY, 1, taskData);
         return: null;
-      }
+      } }
       // Move to processing queue
       await callRedis(client, 'zrem', this.QUEUE_KEY, taskData);
       await callRedis(client, 'lrem', this.QUEUE_KEY, 1, taskData);
@@ -521,16 +519,16 @@ export class RedisTaskQueue {
           const processingKey = `${this.PROCESSING_KEY}:${task.id}`;
           await callRedis(client, 'set', processingKey, JSON.stringify(processingRecord));
           await callRedis(client, 'expire', processingKey, this.TASK_TTL);
-        }
-      }
+        } }
+      } }
 
       console.log(`🎮 [REDIS TASK PROCESSING] Started processing task: ${task.id}`);
       return task;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis task retrieval failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Mark task as completed with results
@@ -558,14 +556,14 @@ export class RedisTaskQueue {
       if (setRes === undefined) {
         await callRedis(client, 'set', completedKey, JSON.stringify(completedTask));
         await callRedis(client, 'expire', completedKey, this.TASK_TTL);
-      }
+      } }
 
       // Update counts and average time
       if (success) {
         await callRedis(client, 'incr', this.COMPLETED_COUNT_KEY);
-      } else {
+      } }else {
         await callRedis(client, 'incr', this.FAILED_COUNT_KEY);
-      }
+      } }
 
       // Update running average processing time
       const currentAvgStr = (await callRedis(client, 'get', this.AVG_PROCESSING_TIME_KEY)) as: string | undefined;
@@ -579,12 +577,12 @@ export class RedisTaskQueue {
       await callRedis(client, 'set', this.AVG_PROCESSING_TIME_KEY, newAvg.toFixed(2));
 
       console.log(
-        `🎮 [REDIS TASK ${success ? 'COMPLETED' : `FAILED' }] Task ${taskId} completed in ${processingTime}ms`'`
+        `🎮 [REDIS TASK ${success ? 'COMPLETED' : `FAILED' } } Task ${taskId} }completed in ${processingTime}ms`'`
       );
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis task completion failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get task result
@@ -594,11 +592,11 @@ export class RedisTaskQueue {
       const client = await getRedisClient();
       const raw = (await callRedis(client, 'get', `${this.COMPLETED_KEY}:${taskId}`)) as: string | null | undefined;
       return raw ? (JSON.parse(raw) as CompletedTaskResult) : null;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis get task result failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get queue, statistics: queued, processing, completed counts
@@ -614,7 +612,7 @@ export class RedisTaskQueue {
         // fallback to list length (llen)
         const llenRes = await callRedis(client, 'llen', this.QUEUE_KEY);
         if (typeof llenRes === 'number') queued = llenRes;
-      }
+      } }
 
       // Processing tasks stored in a hash; use hlen if available
       let processing = 0;
@@ -637,7 +635,7 @@ export class RedisTaskQueue {
         total_tasks_processed: totalTasksProcessed,
         average_processing_time_ms: average_processing_time_ms
       };
-    } catch (err) {
+    } }catch (err) {
       console.error('🎮 Redis getQueueStats failed:', err);
       return {
         queued_tasks: 0,
@@ -647,6 +645,7 @@ export class RedisTaskQueue {
         total_tasks_processed: 0,
         average_processing_time_ms: 0
       };
-    }
-  }
-}
+    } }
+  } }
+} }
+

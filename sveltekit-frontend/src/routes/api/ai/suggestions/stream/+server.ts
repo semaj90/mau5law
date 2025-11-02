@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestEvent } from '@sveltejs/kit'
-import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js'
-import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
+import type { RequestEvent } }from '@sveltejs/kit'
+import { ollamaSuggestionsService } }from '$lib/services/ollama-suggestions-service.js'
+import { enhancedRAGSuggestionsService } }from '$lib/services/enhanced-rag-suggestions-service.js';
 
 /*
  * Server-Sent Events endpoint for streaming AI suggestions
@@ -31,10 +31,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       useOllamaStreaming = true,
       useRAGStreaming = true,
       maxSuggestions = 5
-    } = data;
+    } }= data;
     if (!content) {
       return new Response('Content is required', { status: 400 });
-    }
+    } }
     // Set up Server-Sent Events headers
     const headers = {
       'Content-Type': 'text/event-stream',
@@ -57,14 +57,14 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
             metadata:
               typeof obj.metadata === 'object' && obj.metadata !== null
                 ? (obj.metadata as Record<string, unknown>)
-                : {}
+                : {} }
           };
         };
         // Send initial connection message
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({`
-             , type: 'connection',
+  type: 'connection',
               message: 'Streaming AI suggestions started',
               timestamp: new Date().toISOString()
             })}\\n\\n`
@@ -91,10 +91,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                     controller.enqueue(
                       encoder.encode(
                         `data: ${JSON.stringify({`
-                         , type: 'suggestion',
+  type: 'suggestion',
                           source: 'ollama',
                           suggestion: {
-                           , id: `ollama-stream-${suggestionCount}`,
+  id: `ollama-stream-${suggestionCount}`,
                             content: suggestion.content,
                             type: suggestion.type,
                             confidence: suggestion.confidence,
@@ -102,31 +102,31 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                             metadata: {
                               ...suggestion.metadata,
                               streamOrder: suggestionCount
-                            }
+                            } }
                           },
                           progress: {
-                           , current: suggestionCount,
+  current: suggestionCount,
                             total: maxTotal
-                          }
+                          } }
                         })}\\n\\n`
                       )
                     ); // Added semicolon
-                  }
-                } catch (error: any) {
+                  } }
+                } }catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({`
-                       , type: 'error',
+  type: 'error',
                         source: 'ollama',
                         message: 'Ollama streaming failed',
                         error: error instanceof Error ? error.message : String(error ?? 'Unknown error')
                       })}\\n\\n`
                     )
                   ); // Added semicolon
-                }
+                } }
               })()
             );
-          }
+          } }
           // Enhanced RAG streaming
           if (useRAGStreaming && suggestionCount < maxTotal) {
             streamPromises.push(
@@ -144,10 +144,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                     controller.enqueue(
                       encoder.encode(
                         `data: ${JSON.stringify({`
-                         , type: 'suggestion',
+  type: 'suggestion',
                           source: 'enhanced-rag',
                           suggestion: {
-                           , id: `rag-stream-${suggestionCount}`,
+  id: `rag-stream-${suggestionCount}`,
                             content: suggestion.content,
                             type: suggestion.type,
                             confidence: suggestion.confidence,
@@ -155,67 +155,67 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                             metadata: {
                               ...suggestion.metadata,
                               streamOrder: suggestionCount
-                            }
+                            } }
                           },
                           progress: {
-                           , current: suggestionCount,
+  current: suggestionCount,
                             total: maxTotal
-                          }
+                          } }
                         })}\\n\\n`
                       )
                     ); // Added semicolon
-                  }
-                } catch (error: any) {
+                  } }
+                } }catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({`
-                       , type: 'error',
+  type: 'error',
                         source: 'enhanced-rag',
                         message: 'Enhanced RAG streaming failed',
                         error: error instanceof Error ? error.message : String(error ?? 'Unknown error')
                       })}\\n\\n`
                     )
                   ); // Added semicolon
-                }
+                } }
               })()
             );
-          }
+          } }
           // Wait for all streaming services to complete
           await Promise.allSettled(streamPromises);
           // Send completion message
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'complete',
+  type: 'complete',
                 message: 'All AI suggestion streams completed',
                 totalSuggestions: suggestionCount,
                 timestamp: new Date().toISOString()
               })}\\n\\n`
             )
           );
-        } catch (error: any) {
+        } }catch (error: any) {
           // Send error message
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'error',
+  type: 'error',
                 message: 'Streaming failed',
                 error: error instanceof Error ? error.message : String(error ?? 'Unknown error'),
                 timestamp: new Date().toISOString()
               })}\\n\\n`
             )
           );
-        } finally {
+        } }finally {
           // Close the stream
           controller.close();
-        }
-      }
+        } }
+      } }
     });
     return new Response(stream, { headers });
-  } catch (error: any) {
-    // Changed: 'any';, to: 'unknown'
+  } }catch (error: any) {
+    // Changed: 'any'; to: 'unknown'
     const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
-    console.error('Streaming endpoint error:', msg);'
+    console.error('Streaming endpoint error:', msg);
     return new Response(
       JSON.stringify({
         error: 'Failed to start streaming',
@@ -223,10 +223,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }'' }
+        headers: { 'Content-Type': 'application/json' } } } }
     );
-  }
-}
+  } }
+} }
 /*
  * Handle GET requests for stream testing
  */
@@ -235,7 +235,7 @@ export async function GET({ url }: RequestEvent): Promise<Response> {
   const reportType = url.searchParams.get('report_type') || 'prosecution_memo';
   if (!content) {
     return new Response('Content parameter is required', { status: 400 });
-  }
+  } }
   // Convert GET to POST format and reuse the streaming logic
   const mockRequest = new Request('', {
     method: 'POST',
@@ -248,5 +248,5 @@ export async function GET({ url }: RequestEvent): Promise<Response> {
       maxSuggestions: parseInt(url.searchParams.get('max') || '5')
     })
   });
-  return await POST({ request: mockRequest } as RequestEvent);
+  return await POST({ request: mockRequest } }as RequestEvent);
 }

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Enhanced AI Types for Legal Document Processing
 // SvelteKit, 2 + Svelte, 5 Compatible Types
 export type PracticeArea =
@@ -39,8 +39,8 @@ export interface EnhancedSearchOptions {
   filters?: {
     [key: string]: any;
   };
-}
-export interface EnhancedSearchResult {, id: string;, title: string;
+} }
+export interface EnhancedSearchResult { id: string;, title: string;
   content: string;
   similarity: number;
   practiceArea: PracticeArea;
@@ -55,8 +55,8 @@ export interface EnhancedSearchResult {, id: string;, title: string;
     createdAt?: Date;
     updatedAt?: Date;
   };
-  highlights?: {, field: string;, matches: string[];
-  }[];
+  highlights?: { field: string;, matches: string[];
+  } }];
   confidence: number;
   relevanceScore: number;
   analysisResults?: {
@@ -64,26 +64,25 @@ export interface EnhancedSearchResult {, id: string;, title: string;
     risks?: string[];
     recommendations?: string[];
   };
-}
-export interface AIAnalysisResult {, summary: string;, keyPoints: string[];
+} }
+export interface AIAnalysisResult { summary: string;, keyPoints: string[];
   legalConcepts: string[];
   citations: string[];
   recommendations: string[];
   confidence: number;
   processingTime: number;
-}
-export interface VectorSearchOptions {
- , query: string;
+} }
+export interface VectorSearchOptions { query: string;
   embedding?: number[];
   limit?: number;
   threshold?: number;
   filters?: Record<string, unknown>;
   includeMetadata?: boolean;
-}
+} }
 export interface VectorSearchResult { id: string;, content: string;
   score: number;
  , metadata: Record<string, unknown>;
-}
+} }
 // Enhanced AI Processing Types
 export interface EnhancedProcessingOptions {
   useGoMicroservice?: boolean;
@@ -93,7 +92,7 @@ export interface EnhancedProcessingOptions {
   maxConcurrency?: number;
   includeAnalysis?: boolean;
   analysisDepth?: 'basic' | 'detailed' | 'comprehensive';
-}
+} }
 export interface ProcessingResult {
   success: boolean;
   data?: any;
@@ -101,7 +100,7 @@ export interface ProcessingResult {
   processingTime: number;
   cacheHit?: boolean;
   source?: 'go-microservice' | 'local-ai' | 'cache';
-}
+} }
 // AI Model Configuration
 export interface AIModelConfig {
   modelName: string;
@@ -112,11 +111,11 @@ export interface AIModelConfig {
   repeatPenalty?: number;
   contextWindow?: number;
   systemPrompt?: string;
-}
+} }
 // Legal-specific AI types
-export interface LegalDocumentAnalysis {, documentType: string;, practiceArea: PracticeArea;
+export interface LegalDocumentAnalysis { documentType: string;, practiceArea: PracticeArea;
   jurisdiction: Jurisdiction;
-  keyEntities: {, persons: string[];, organizations: string[];
+  keyEntities: { persons: string[];, organizations: string[];
     locations: string[];
     dates: string[];
     amounts: string[];
@@ -126,8 +125,8 @@ export interface LegalDocumentAnalysis {, documentType: string;, practiceArea: 
   riskFactors: string[];
   recommendations: string[];
   confidenceScore: number;
-}
-export interface CaseAnalysis {, caseId: string;, title: string;
+} }
+export interface CaseAnalysis { caseId: string;, title: string;
   summary: string;
   precedents: string[];
   legalIssues: string[];

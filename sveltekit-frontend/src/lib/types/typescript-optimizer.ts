@@ -8,7 +8,7 @@ export interface TypeScriptError { file: string;, line: number;
   context: string;
   severity?: 'error' | 'warning' | 'info';
   category?: string;
-}
+} }
 export interface TypeScriptFix { file: string;, line: number;
   column: number;
   original_code: string;
@@ -17,13 +17,13 @@ export interface TypeScriptFix { file: string;, line: number;
   confidence: number;
   strategy_used?: string;
   processing_time_ms?: number;
-}
+} }
 export interface TypeScriptFixResult { success: boolean;, message: string;
   fixed_code: string;
   explanation: string;
   confidence: number;
   metadata?: { [key: string]: any };
-}
+} }
 // Request Types
 export interface AutoSolveRequest {
   errors: TypeScriptError[];
@@ -32,7 +32,7 @@ export interface AutoSolveRequest {
   use_thinking?: boolean;
   quality_threshold?: number;
   timeout_ms?: number;
-}
+} }
 export interface OptimizedFixRequest {
   errors: TypeScriptError[];
   strategy?: string;
@@ -44,12 +44,12 @@ export interface OptimizedFixRequest {
   quality_threshold?: number; // 0.0 - 1.0
   batch_size?: number;
   priority?: 'low' | 'normal' | 'high' | 'urgent';
-}
+} }
 export interface BenchmarkRequest { error_count: number;, strategy: 'speed' | 'quality' | 'comparison';
   iterations?: number;
   endpoints?: string[];
   parameters?: { [key: string]: any };
-}
+} }
 // Response Types
 export interface AutoSolveResponse { success: boolean;, fixes_applied: number;
   remaining_errors: number;
@@ -57,13 +57,13 @@ export interface AutoSolveResponse { success: boolean;, fixes_applied: number;
   processing_time: number;
   strategy: string;
   metadata: { [key: string]: any };
-}
+} }
 export interface OptimizedFixResponse { success: boolean;, processed_count: number;
   successful_count: number;
   results: TypeScriptFixResult[];
   processing_stats: ProcessingStats;
   optimization_meta: { [key: string]: any };
-}
+} }
 export interface ProcessingStats {
   total_time: number; // milliseconds,
   processed_count: number;
@@ -72,7 +72,7 @@ export interface ProcessingStats {
   throughput_errors_per_second?: number;
   cache_hit_ratio?: number;
   gpu_utilization?: number;
-}
+} }
 // Performance & Analytics Types
 export interface BatchProcessingStats { total_processing_time_ms: number;, go_service_time_ms: number;
   overhead_ms: number;
@@ -80,7 +80,7 @@ export interface BatchProcessingStats { total_processing_time_ms: number;, go_s
   success_rate: number;
   performance_grade: string;
   bottlenecks?: string[];
-}
+} }
 export interface GPUProcessingStats { total_time_ms: number;, gpu_processing_time_ms: number;
   gpu_utilization_percent: number;
   memory_usage_mb: number;
@@ -89,7 +89,7 @@ export interface GPUProcessingStats { total_time_ms: number;, gpu_processing_ti
   gpu_efficiency_score: number;
   performance_vs_cpu_multiplier: number;
   temperature_celsius?: number;
-}
+} }
 export interface BenchmarkResult { endpoint: string;, strategy: string;
   avg_latency_ms?: number;
   throughput_eps?: number; // errors per second
@@ -101,24 +101,24 @@ export interface BenchmarkResult { endpoint: string;, strategy: string;
   all_results?: number[];
   quality_distribution?: number[];
   resource_usage?: ResourceUsage;
-}
+} }
 export interface ResourceUsage { cpu_percent: number;, memory_mb: number;
   gpu_percent?: number;
   gpu_memory_mb?: number;
   disk_io_mb?: number;
   network_kb?: number;
-}
+} }
 export interface PerformanceComparison { total_time_ms: number;, fastest_endpoint: string;
   most_accurate: string;
   best_overall: string;
   performance_summary: { [key: string]: any };
   resource_efficiency: Record<string, number>;
   scaling_analysis?: ScalingAnalysis;
-}
+} }
 export interface ScalingAnalysis { linear_scaling: boolean;, optimal_batch_size: number;
   performance_by_batch_size: any[];
   resource_scaling: any[];
-}
+} }
 // Service Status Types
 export interface OptimizerStatus { service: string;, status: 'operational' | 'degraded' | 'down';
   version: string;
@@ -129,7 +129,7 @@ export interface OptimizerStatus { service: string;, status: 'operational' | 'd
   performance: any;
   capabilities: OptimizerCapabilities;
   endpoints: Record<string, string>;
-}
+} }
 export interface OptimizerCapabilities { auto_solve: boolean;, gpu_acceleration: boolean;
   go_llama_direct: boolean;
   batch_processing: boolean;
@@ -138,7 +138,7 @@ export interface OptimizerCapabilities { auto_solve: boolean;, gpu_acceleration
   supported_strategies: string[];
   min_batch_size?: number;
   max_batch_size?: number;
-}
+} }
 export interface GPUStatus {
   gpu_available: boolean;
   gpu_model?: string;
@@ -149,7 +149,7 @@ export interface GPUStatus {
   utilization?: number;
   memory_used?: number;
   memory_total?: number;
-}
+} }
 // Configuration Types
 export interface OptimizerConfig { default_strategy: string;, gpu_enabled: boolean;
   llama_enabled: boolean;
@@ -163,11 +163,11 @@ export interface OptimizerConfig { default_strategy: string;, gpu_enabled: bool
   performance_targets: { latency_ms: number;, throughput_eps: number;
     success_rate: number;
   };
-}
+} }
 export interface ProcessingPriority { level: 'low' | 'normal' | 'high' | 'urgent';, timeout_multiplier: number;
   resource_allocation: number; // 0.0 - 1.0,
   queue_priority: number;
-}
+} }
 // Error Categories & Analysis
 export interface ErrorCategoryAnalysis { category: string;, count: number;
   percentage: number;
@@ -175,20 +175,20 @@ export interface ErrorCategoryAnalysis { category: string;, count: number;
   common_patterns: string[];
   fix_strategies: string[];
   difficulty_score: number; // 1-10
-}
+} }
 export interface ProcessingInsights { total_errors: number;, category_breakdown: ErrorCategoryAnalysis[];
   performance_metrics: { avg_processing_time: number;, success_rate: number;
     confidence_distribution: number[];
   };
   optimization_opportunities: string[];
   recommendations: string[];
-}
+} }
 // Real-time Processing Types
 export interface StreamingProcessingRequest { session_id: string;, errors: TypeScriptError[];
   stream: boolean;
   chunk_size?: number;
   progress_callback?: boolean;
-}
+} }
 export interface StreamingProcessingResponse { session_id: string;, chunk_index: number;
   total_chunks: number;
   processed_in_chunk: number;
@@ -196,7 +196,7 @@ export interface StreamingProcessingResponse { session_id: string;, chunk_index
   progress_percent: number;
   estimated_time_remaining: number;
   is_final: boolean;
-}
+} }
 export interface ProcessingSession { id: string;, created_at: string;
   status: 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled';
   total_errors: number;
@@ -205,28 +205,28 @@ export interface ProcessingSession { id: string;, created_at: string;
   current_strategy: string;
   estimated_completion: string;
   progress_percent: number;
-}
+} }
 // WebSocket Event Types for Real-time Updates
 export interface WebSocketEvent { type: 'progress' | 'completed' | 'error' | 'status';, session_id: string;
   data: any;
   timestamp: string;
-}
+} }
 export interface ProgressEvent extends WebSocketEvent { type: 'progress';, data: { processed: number;, total: number;
     current_file: string;
     fixes_applied: number;
     estimated_remaining_ms: number;
   };
-}
+} }
 export interface CompletedEvent extends WebSocketEvent { type: 'completed';, data: { total_fixes: number;, processing_time: number;
     success_rate: number;
     download_url?: string;
   };
-}
+} }
 export interface ErrorEvent extends WebSocketEvent { type: 'error';, data: { error_message: string;, error_code: string;
     recoverable: boolean;
     retry_available: boolean;
   };
-}
+} }
 // Export utility types
 export type ProcessingStrategy =
   | 'auto'

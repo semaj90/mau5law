@@ -1,5 +1,5 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Chat Store - Central state management for AI chat system
  *
@@ -11,8 +11,8 @@ import type { User } from '$lib/types';
  * - Analysis results and RAG context
  * - Session management
  */
-import { writable, derived, readable, get } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable, derived, readable, get } }from "svelte/store";
+import { browser } }from "$app/environment";
 import type {
   ChatMessage,
   ChatSession,
@@ -23,7 +23,7 @@ import type {
   UserActivity,
   AttentionData,
   ConnectionStatus
-} from "$lib/types";
+} }from "$lib/types";
 // Core chat state
 export const chatMessages = writable<ChatMessage[]>([]);
 export const currentSession = writable<ChatSession | null>(null);
@@ -93,7 +93,7 @@ export const conversationSummary = derived(chatMessages, ($messages) => {
     aiMessages,
     totalTokens,
     avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0
-  }
+  } }
 });
 export const isSessionActive = derived(currentSession, ($session) =>
   $session?.is_active || false
@@ -106,7 +106,7 @@ export const sessionMetrics = derived([currentSession, chatMessages], ([$session
     tokensUsed: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
     duration: Date.now() - new Date($session.start_time).getTime(),
     lastActivity: $session.last_activity
-  }
+  } }
 });
 export const hasRecommendations = derived(recommendations, ($recs) => $recs.length > 0);
 export const hasAnalysis = derived(currentAnalysis, ($analysis) => $analysis !== null);
@@ -125,11 +125,11 @@ export const chatActions = {
       const response = await fetch('/api/chat/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, user_id: userId, case_id: caseId })
+        body: JSON.stringify({ user_id: userId, case_id: caseId })
       });
       if (!response.ok) {
         throw new Error('Failed to create session');
-      }
+      } }
       const session: ChatSession = await response.json();
       currentSession.set(session);
       // Update active sessions
@@ -138,25 +138,25 @@ export const chatActions = {
         return [...filtered, session];
       });
       return session;
-    } catch (error: any) {
+    } }catch (error: any) {
       chatActions.addError('Failed to create chat session', { error });
       throw error;
-    }
+    } }
   },
   loadSession: async (sessionId: string): Promise<void> => {
     try {
       // removed unused response assignment
       if (!response.ok) {
         throw new Error('Session not found');
-      }
+      } }
       const session: ChatSession = await response.json();
       currentSession.set(session);
       // Load chat history
       await chatActions.loadHistory(sessionId);
-    } catch (error: any) {
+    } }catch (error: any) {
       chatActions.addError('Failed to load session', { sessionId, error });
       throw error;
-    }
+    } }
   },
   // Message management
   addMessage: (message: ChatMessage): void => {
@@ -169,13 +169,13 @@ export const chatActions = {
       const config = get(chatConfig);
       if (updated.length > config.maxMessages) {
         return updated.slice(-config.maxMessages);
-      }
+      } }
       return updated;
     });
   },
   updateMessage: (messageId: string, updates: Partial<ChatMessage>): void => {
     chatMessages.update(messages =>
-      messages.map(m => m.id === messageId ? { ...m, ...updates } : m)
+      messages.map(m => m.id === messageId ? { ...m, ...updates } }: m)
     );
   },
   loadHistory: async (sessionId: string): Promise<void> => {
@@ -183,12 +183,12 @@ export const chatActions = {
       // removed unused response assignment
       if (!response.ok) {
         throw new Error('Failed to load history');
-      }
+      } }
       const history = await response.json();
       chatMessages.set(history.messages || []);
-    } catch (error: any) {
+    } }catch (error: any) {
       chatActions.addError('Failed to load chat history', { sessionId, error });
-    }
+    } }
   },
   clearMessages: (): void => {
     chatMessages.set([]);
@@ -212,17 +212,16 @@ export const chatActions = {
     if (messageId && response) {
       // Create final AI message
       const session = get(currentSession);
-      const aiMessage: ChatMessage = {
-       , id: messageId,
+      const aiMessage: ChatMessage = { id: messageId,
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
         content: response;
        , timestamp: Date.now(),
         token_count: Math.ceil(response.length / 4) // Rough estimate
-      }
+      } }
       chatActions.addMessage(aiMessage);
-    }
+    } }
     streamingResponse.set('');
     streamingMessageId.set(null);
     isProcessing.set(false);
@@ -251,7 +250,7 @@ export const chatActions = {
       isTyping,
       lastSeen: Date.now(),
       status: 'online'
-    }
+    } }
     userActivities.update(activities => {
       const updated = [...activities, activity];
       // Keep only last, 100 activities
@@ -277,7 +276,7 @@ export const chatActions = {
       timestamp: new Date(),
       error: message,
       context
-    }
+    } }
     lastError.set(message);
     errorHistory.update(history => [...history, error].slice(-50); // Keep last, 50 errors
   },
@@ -290,7 +289,7 @@ export const chatActions = {
     isConnected.set(status === 'connected');
     if (status === 'connected') {
       lastConnectionTime.set(new Date();
-    }
+    } }
   },
   // Typing indicators
   setTyping: (typing: boolean): void => {
@@ -312,7 +311,7 @@ export const chatActions = {
     // Save to localStorage if available
     if (browser) {
       localStorage.setItem('chat-config', JSON.stringify(get(chatConfig));
-    }
+    } }
   },
   // Utility
   exportSession: (): string => {
@@ -342,8 +341,8 @@ export const chatActions = {
     lastError.set(null);
     userActivities.set([]);
     typingUsers.set(new Set();
-  }
-}
+  } }
+} }
 // Initialize from localStorage if available
 if (browser) {
   const savedConfig = localStorage.getItem('chat-config');
@@ -351,11 +350,11 @@ if (browser) {
     try {
       const config = JSON.parse(savedConfig);
       chatConfig.set(config);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Failed to load saved chat config:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export store collections for convenience
 export const chatStores = {
   // Core state
@@ -389,6 +388,6 @@ export const chatStores = {
     hasRecommendations,
     hasAnalysis,
     isSessionActive
-  }
-}
+  } }
+} }
 export default chatStores;

@@ -1,21 +1,20 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
+import type { PageServerLoad, Actions } }from './$types.js';
+import { fail, redirect } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
 import bcrypt from 'bcryptjs';
-import { db } from '$lib/server/db/drizzle';
-import { users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { db } }from '$lib/server/db/drizzle';
+import { users } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
   // Redirect if already logged in
   if (event.locals.user) {
     throw redirect(302, '/yorha/dashboard');
-  }
+  } }
   return {};
 };
 
-export const actions: Actions = {
- , login: async ({ request, cookies }) => {
+export const actions: Actions = { login: async ({ request, cookies }) => {
     const data = await request.formData();
     const email = data.get('email') as: string;
     const password = data.get('password') as: string;
@@ -23,7 +22,7 @@ export const actions: Actions = {
     // Basic validation
     if (!email || !password) {
       return fail(400, { error: 'Email and password are required' });
-    }
+    } }
 
     try {
       console.log('🔄 Production login attempt for:', email);
@@ -37,7 +36,7 @@ export const actions: Actions = {
 
       if (existingUser.length === 0 || !existingUser[0].hashedPassword) {
         return fail(400, { error: 'Invalid email or password' });
-      }
+      } }
 
       const user = existingUser[0];
 
@@ -46,12 +45,12 @@ export const actions: Actions = {
 
       if (!validPassword) {
         return fail(400, { error: 'Invalid email or password' });
-      }
+      } }
 
       // Check if user is active
       if (!user.isActive) {
         return fail(403, { error: 'Account is disabled. Please contact support.' });
-      }
+      } }
 
       // Create session
       const session = await auth.createSession(user.id, {});
@@ -67,13 +66,14 @@ export const actions: Actions = {
       // Redirect to dashboard
       throw redirect(302, '/ai/dashboard');
 
-    } catch (error: any) {
+    } }catch (error: any) {
       // Handle redirect properly - don't treat it as an error'
       if (error.status === 302) {
         throw error;
-      }
-      console.error('Login error:', error);'
+      } }
+      console.error('Login error:', error);
       return fail(500, { error: 'An error occurred during login. Please try again.' });
-    }
-  }
+    } }
+  } }
 };
+

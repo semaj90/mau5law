@@ -1,11 +1,11 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { minioService } from '$lib/server/storage/minio-service';
-import { upsertToQdrant } from '$lib/server/vector/qdrant';
-import { enhancedRAGPipeline } from '$lib/server/ai/rag-pipeline-enhanced';
-import { eq } from 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema-postgres';
+import { minioService } }from '$lib/server/storage/minio-service';
+import { upsertToQdrant } }from '$lib/server/vector/qdrant';
+import { enhancedRAGPipeline } }from '$lib/server/ai/rag-pipeline-enhanced';
+import { eq } }from 'drizzle-orm';
 
 /**
  * Evidence Upload Endpoint - Full Stack Integration
@@ -20,7 +20,7 @@ import { eq } from 'drizzle-orm';
  * Stack: SvelteKit + Drizzle ORM + PostgreSQL + pgvector + Qdrant + RAG
  */
 
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // 1. Parse multipart form data
     const formData = await request.formData();
@@ -36,14 +36,14 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     // Validation
     if (!file) {
       return json({ success: false, error: 'No file provided' }, { status: 400 });
-    }
+    } }
 
     if (!title || !caseId) {
       return json(
-        { success: false, error: 'Missing required;, fields: title, caseId' },
-        { status: 400 }
+        { success: false, error: 'Missing required; fields: title, caseId' },
+        { status: 400 } }
       );
-    }
+    } }
 
     // Get user ID from session (Lucia v3 auth)
     // TEMPORARY: Allow anonymous uploads for testing
@@ -52,16 +52,16 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     //, TODO: Re-enable auth in production
     // if (!userId) {
     //   return json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    // }
+    // } }
 
     // 2. Upload file to MinIO
     const minioInitialized = await minioService.initialize();
     if (!minioInitialized) {
       return json(
         { success: false, error: 'MinIO storage unavailable' },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
+    } }
 
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket: 'evidence',
@@ -70,26 +70,26 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         evidenceType,
         uploadedBy: userId,
         title
-      }
+      } }
     });
 
     if (!uploadResult.success) {
       return json(
         { success: false, error: uploadResult.error || 'File upload failed' },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
 
     // 3. Extract text from file for embedding generation
     let textContent = '';
     if (file.type === 'text/plain') {
       textContent = await file.text();
-    } else if (file.type === 'application/pdf') {
+    } }else if (file.type === 'application/pdf') {
       // TODO: Integrate PDF text extraction (pdfjs or similar)
       textContent = description || title;
-    } else {
+    } }else {
       textContent = description || title;
-    }
+    } }
 
     // 4. Generate embeddings using Ollama (gemma3-legal:latest)
     let embeddingVector: number[] = [];
@@ -103,7 +103,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-         , model: 'gemma3-legal:latest', // Specialized legal AI model
+  model: 'gemma3-legal:latest', // Specialized legal AI model
           prompt: textContent.slice(0, 8000), // Limit to 8K chars for performance
         })
       });
@@ -111,10 +111,10 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       if (embeddingResponse.ok) {
         const embeddingData = await embeddingResponse.json();
         embeddingVector = embeddingData.embedding || [];
-        console.log(`[Evidence Upload] Generated embedding with gemma3-legal: ${embeddingVector.length} dimensions`);
-      } else {
+        console.log(`[Evidence Upload] Generated embedding with gemma3-legal: ${embeddingVector.length} }dimensions`);
+      } }else {
         console.warn('[Evidence Upload] Embedding generation failed:', embeddingResponse.status);
-      }
+      } }
 
       // Generate AI summary if we have content (using legal model)
       if (textContent.length > 100) {
@@ -123,8 +123,8 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-             , model: 'gemma3-legal:latest',
-              prompt: `Summarize this legal document in 2-3;, sentences:\n\n${textContent.slice(0, 4000)}`,
+  model: 'gemma3-legal:latest',
+              prompt: `Summarize this legal document in 2-3; sentences:\n\n${textContent.slice(0, 4000)}`,
               stream: false
             })
           });
@@ -133,15 +133,15 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
             const summaryData = await summaryResponse.json();
             aiSummary = summaryData.response || '';
             console.log('[Evidence Upload] Generated AI summary with gemma3-legal');
-          }
-        } catch (summaryError) {
+          } }
+        } }catch (summaryError) {
           console.warn('[Evidence Upload] Summary generation failed:', summaryError);
-        }
-      }
-    } catch (embeddingError) {
+        } }
+      } }
+    } }catch (embeddingError) {
       console.warn('[Evidence Upload] Embedding generation failed:', embeddingError);
       // Continue without embeddings - we can generate them later via background job
-    }
+    } }
 
     // Parse tags
     const tagsArray = tags
@@ -166,8 +166,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         aiSummary,
         aiAnalysis: {},
         chainOfCustody: [
-          {,
-           , action: 'uploaded',
+          { action: 'uploaded',
             timestamp: new Date().toISOString(),
             userId,
             notes: 'Initial upload'
@@ -187,25 +186,25 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
             content: textContent,
             embeddings: embeddingVector,
             metadata: {
-             , caseId: evidenceRecord.caseId,
+  caseId: evidenceRecord.caseId,
               evidenceType: evidenceRecord.evidenceType,
               title: evidenceRecord.title,
               tags: tagsArray,
               uploadedBy: userId,
               createdAt: evidenceRecord.uploadedAt
-            }
+            } }
           }, as: any,
-          { url: process.env.QDRANT_URL || 'http://localhost:6333' }
+          { url: process.env.QDRANT_URL || 'http://localhost:6333' } }
         );
 
         if (!qdrantResult.ok) {
           console.warn('[Evidence Upload] Qdrant indexing failed - will retry in background');
-        }
-      } catch (qdrantError) {
-        console.warn('[Evidence Upload] Qdrant error:', qdrantError);'
+        } }
+      } }catch (qdrantError) {
+        console.warn('[Evidence Upload] Qdrant error:', qdrantError);
         // Continue - vector search will be available after background reindexing
-      }
-    }
+      } }
+    } }
 
     // 7. Index in RAG pipeline for semantic search
     try {
@@ -213,22 +212,22 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         id: evidenceRecord.id,
         content: textContent,
         metadata: {
-         , type: 'evidence',
+  type: 'evidence',
           caseId: evidenceRecord.caseId,
           title: evidenceRecord.title,
           evidenceType: evidenceRecord.evidenceType
-        }
+        } }
       });
-    } catch (ragError) {
+    } }catch (ragError) {
       console.warn('[Evidence Upload] RAG indexing failed:', ragError);
       // Continue - can be indexed later
-    }
+    } }
 
     // 8. Return success with evidence record
     return json({
       success: true,
       data: {
-       , id: evidenceRecord.id,
+  id: evidenceRecord.id,
         caseId: evidenceRecord.caseId,
         title: evidenceRecord.title,
         description: evidenceRecord.description,
@@ -242,7 +241,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         uploadedAt: evidenceRecord.uploadedAt,
         hasEmbedding: embeddingVector.length > 0
       },
-      message: 'Evidence uploaded and indexed successfully' });'` } catch (err: any) {'`
+      message: 'Evidence uploaded and indexed successfully' });'` } }catch (err: any) {'`
     console.error('[Evidence Upload] Error:', err);
     console.error('[Evidence Upload] Stack:', err.stack);
     return json(
@@ -252,9 +251,9 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         details: err.message,
         stack: err.stack
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -266,7 +265,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!evidenceId) {
       return json({ error: `Evidence ID required` }, { status: 400 });
-    }
+    } }
 
     const evidenceRecord = await db.query.evidence.findFirst({
       where: eq(evidence.id, evidenceId)
@@ -274,11 +273,12 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!evidenceRecord) {
       return json({ error: `Evidence not found` }, { status: 404 });
-    }
+    } }
 
     return json({ success: true, data: evidenceRecord });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[Evidence GET] Error:', err);
     return json({ error: 'Failed to fetch evidence', details: err.message }, { status: 500 });
-  }
+  } }
 };
+

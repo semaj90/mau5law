@@ -1,4 +1,4 @@
-import { WSRegistry } from './ws-registry';
+import { WSRegistry } }from './ws-registry';
 
 /**
  * Dynamic WebSocket client for legal AI platform
@@ -14,7 +14,7 @@ export interface WSClientConfig<T = unknown> {
   keepaliveInterval?: number; // Ping interval in ms
   onMessage?: (data: T) => void;
   onStatusChange?: (status: WSConnectionStatus) => void;
-}
+} }
 
 export class DynamicWebSocketClient<T = unknown> {
   private ws: WebSocket | null = null;
@@ -32,7 +32,7 @@ export class DynamicWebSocketClient<T = unknown> {
       onStatusChange: () => {},
       ...config
     };
-  }
+  } }
 
   /**
    * Get WebSocket URL using UUID-based service registry
@@ -44,11 +44,11 @@ export class DynamicWebSocketClient<T = unknown> {
     // If endpoint starts with /ws/, it's a UUID-based path from registry'
     if (this.config.endpoint.startsWith('/ws/')) {
       return `${protocol}//${host}${this.config.endpoint}`;
-    }
+    } }
 
     // Legacy path-based routing
     return `${protocol}//${host}${this.config.endpoint}`;
-  }
+  } }
 
   connect() {
     const url = this.getWebSocketURL();
@@ -71,9 +71,9 @@ export class DynamicWebSocketClient<T = unknown> {
         try {
           const data = JSON.parse(event.data) as T;
           this.config.onMessage(data);
-        } catch (err) {
+        } }catch (err) {
           console.warn('[WebSocket] Failed to parse message:', event.data);
-        }
+        } }
       };
 
       this.ws.onerror = error => {
@@ -87,11 +87,11 @@ export class DynamicWebSocketClient<T = unknown> {
         this.updateStatus('disconnected');
         this.attemptReconnect();
       };
-    } catch (err) {
+    } }catch (err) {
       console.error('[WebSocket] Failed to create connection:', err);
       this.updateStatus('error');
-    }
-  }
+    } }
+  } }
 
   /**
    * Send keepalive pings to prevent timeout on public WiFi
@@ -101,22 +101,22 @@ export class DynamicWebSocketClient<T = unknown> {
     this.keepaliveTimer = setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
         this.ws.send('ping');
-      }
+      } }
     }, this.config.keepaliveInterval);
-  }
+  } }
 
   private stopKeepalive() {
     if (this.keepaliveTimer) {
       clearInterval(this.keepaliveTimer);
       this.keepaliveTimer = undefined;
-    }
-  }
+    } }
+  } }
 
   private attemptReconnect() {
     if (this.reconnectAttempts >= this.config.maxReconnectAttempts) {
       console.error('[WebSocket] Max reconnection attempts reached');
       return;
-    }
+    } }
 
     this.reconnectAttempts++;
     console.log(`[WebSocket] Reconnecting... (${this.reconnectAttempts}/${this.config.maxReconnectAttempts})`);
@@ -124,33 +124,33 @@ export class DynamicWebSocketClient<T = unknown> {
     setTimeout(() => {
       this.connect();
     }, this.config.reconnectDelay);
-  }
+  } }
 
   send(data: T) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
-    } else {
+    } }else {
       console.warn('[WebSocket] Cannot send, connection not open');
-    }
-  }
+    } }
+  } }
 
   disconnect() {
     this.stopKeepalive();
     if (this.ws) {
       this.ws.close();
       this.ws = null;
-    }
-  }
+    } }
+  } }
 
   private updateStatus(status: WSConnectionStatus) {
     this.status = status;
     this.config.onStatusChange(status);
-  }
+  } }
 
   getStatus(): WSConnectionStatus {
     return this.status;
-  }
-}
+  } }
+} }
 
 // Helper factory for common services
 export const createWSClient = <T = unknown>(serviceName: string, config?: Partial<WSClientConfig<T>>) => {
@@ -160,3 +160,4 @@ export const createWSClient = <T = unknown>(serviceName: string, config?: Partia
     ...config
   });
 };
+

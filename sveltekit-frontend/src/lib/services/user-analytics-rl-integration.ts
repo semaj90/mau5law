@@ -1,22 +1,21 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * User Analytics & Reinforcement Learning Integration Service
  * Combines user.history and user.analytics with QLorA training and Moogle Graph Synthesizer
  * Provides concurrent data parallelism with caching for enhanced user productivity
  */
-import { writable, derived } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { qloraTrainingService, userAnalytics as qloraAnalytics } from './qlora-training-service.js';
-import { recommendationOrchestrator } from './recommendation-orchestrator.js';
-import { MoogleGraphSynthesizer } from '../ai/moogle-graph-synthesizer.js';
+import { writable, derived } }from 'svelte/store';
+import type { Writable, Readable } }from 'svelte/store';
+import { browser } }from '$app/environment';
+import { qloraTrainingService, userAnalytics as qloraAnalytics } }from './qlora-training-service.js';
+import { recommendationOrchestrator } }from './recommendation-orchestrator.js';
+import { MoogleGraphSynthesizer } }from '../ai/moogle-graph-synthesizer.js';
 
 export interface UserHistoryEntry { id: string;, userId: string;
   sessionId: string;
   timestamp: number;
   action: {
-    type:;
-      | 'document_open'
+    type:| 'document_open'
       | 'search'
       | 'ai_query'
       | 'case_create'
@@ -29,13 +28,13 @@ export interface UserHistoryEntry { id: string;, userId: string;
     parameters: Record<string, unknown>;
     context: Record<string, unknown>;
   };
-  outcome: {, success: boolean;, duration: number;
+  outcome: { success: boolean;, duration: number;
     result?: any;
     error?: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
   };
-  environment: {, page: string;, viewport: { width: number; height: number };
+  environment: { page: string;, viewport: { width: number; height: number };
     userAgent: string;
     timestamp: number;
   };
@@ -45,44 +44,42 @@ export interface UserHistoryEntry { id: string;, userId: string;
     tags?: string[];
     complexity?: number;
   };
-}
+} }
 
-export interface UserAnalyticsProfile {, userId: string;, createdAt: number;
+export interface UserAnalyticsProfile { userId: string;, createdAt: number;
   lastUpdated: number;
-  patterns: {
-   , activeHours: Record<number, number>;
+  patterns: { activeHours: Record<number, number>;
     // use structured generic records instead of Array<any>
     commonWorkflows: Array<Record<string, unknown>>;
-    documentPreferences: {
-     , types: Record<string, number>;
+    documentPreferences: { types: Record<string, number>;
       complexityRange: { min: number; max: number; preferred: number };
      , averageProcessingTime: Record<string, number>;
     };
-    searchPatterns: {, commonTerms: string[]; // tightened, queryComplexity: number;
+    searchPatterns: { commonTerms: string[]; // tightened, queryComplexity: number;
       refinementRate: number;
     };
   };
-  performance: {, overallProductivity: number;, taskCompletionRate: number;
+  performance: { overallProductivity: number;, taskCompletionRate: number;
     averageTaskDuration: number;
     accuracyRate: number;
     learningVelocity: number;
     expertiseLevel: 'novice' | 'intermediate' | 'advanced' | 'expert';
   };
-  reinforcement: {, rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
+  reinforcement: { rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
     explorationTendency: number;
     adaptationRate: number;
-    convergenceMetrics: {, stability: number;, consistency: number;
+    convergenceMetrics: { stability: number;, consistency: number;
       improvement: number;
     };
   };
-  predictions: {, nextLikelyActions: NextLikelyAction[]; // tightened, optimalWorkflow: string[];
+  predictions: { nextLikelyActions: NextLikelyAction[]; // tightened, optimalWorkflow: string[];
     recommendedComplexity: number;
    , estimatedTaskTimes: Record<string, number>;
     riskFactors: string[]; // tightened
   };
-}
+} }
 
-export interface ProductivityCache {, id: string;, userId: string;
+export interface ProductivityCache { id: string;, userId: string;
   context: {
     caseId?: string;
     documentTypes: string[];
@@ -94,60 +91,59 @@ export interface ProductivityCache {, id: string;, userId: string;
     analysis: any;          // tightened from: any
     timestamp: number;
   };
-  performance: {, cacheHitRate: number;, averageResponseTime: number;
+  performance: { cacheHitRate: number;, averageResponseTime: number;
     concurrentProcesses: number;
   };
-}
+} }
 
 // New: explicit types to avoid `any`
 type ActionType = UserHistoryEntry['action']['type'];
 
-interface GraphNode {, id: string;, type: ActionType;
-  properties: {, target: string;, frequency: number;
+interface GraphNode { id: string;, type: ActionType;
+  properties: { target: string;, frequency: number;
     avgDuration: number;
     successRate: number;
     lastAccessed: number;
   };
-  metadata: {, complexity: number;, timestamp: number;
+  metadata: { complexity: number;, timestamp: number;
   };
   score?: number;
-}
+} }
 
-interface GraphEdge {, id: string;, source: string;
+interface GraphEdge { id: string;, source: string;
   target: string;
   type: 'sequence';
   weight: number;
-  properties: {, timeDelta: number;, success: boolean;
+  properties: { timeDelta: number;, success: boolean;
   };
-}
+} }
 
-interface GraphPath {, id: string;, nodes: GraphNode[];
+interface GraphPath { id: string;, nodes: GraphNode[];
   edges: GraphEdge[];
   totalScore: number;
-  metadata: {, pathType: string;, sessionId: string;
+  metadata: { pathType: string;, sessionId: string;
     userId: string;
   };
-}
+} }
 
 interface NodePosition {
   id: string;
   pageRankScore?: number;
   avgDuration?: number;
   [key: string]: any;
-}
+} }
 
 interface Visualization {
   metadata?: {
     nodePositions?: NodePosition[];
     [k: string]: any;
   };
-}
+} }
 
-interface NextLikelyAction {
- , action: string;
+interface NextLikelyAction { action: string;
   probability?: number;
   confidence?: number;
-}
+} }
 
 interface PredictionsPayload {
   nextLikelyActions?: NextLikelyAction[];
@@ -155,25 +151,25 @@ interface PredictionsPayload {
   recommendedComplexity?: number;
   estimatedTaskTimes?: Record<string, number>;
   riskFactors?: string[];
-}
+} }
 
 interface PatternPayload {
   description?: string;
   confidence?: number;
   [k: string]: any;
-}
+} }
 
-interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {}
+interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {} }
 
 //, New: typed reward entry (replaces Array<any> uses)
 interface RewardEntry { timestamp: number;, reward: number;
   action: string;
   context?: string;
   state?: string; // added to carry encoded RL state
-}
+} }
 
 // New: recommendation types to avoid `any` casts
-interface Recommendation {, id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
+interface Recommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
  , title: string;
   description?: string;
   confidence?: number;
@@ -182,12 +178,12 @@ interface Recommendation {, id: string;, type: 'detective' | 'legal' | 'evidenc
   action?: (() => void) | string;
   createdAt?: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 interface RecommendationOrchestrator {
   addRecommendation(rec: Recommendation): void;
   updateDetectiveContext?(ctx: Record<string, unknown>): void;
-}
+} }
 
 export class UserAnalyticsRLIntegration {
   private userHistory: Writable<UserHistoryEntry[]>;
@@ -216,7 +212,7 @@ export class UserAnalyticsRLIntegration {
     this.userId = this.generateUserId();
     this.startTime = Date.now();
     this.initializeService();
-  }
+  } }
   /**
    * Initialize the service and load existing data
    */
@@ -232,10 +228,10 @@ export class UserAnalyticsRLIntegration {
       // Start cache management
       this.startCacheManagement();
       console.log('🧠 User Analytics & RL Integration initialized with concurrent processing');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize User Analytics RL Integration:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize concurrent processing workers
    */
@@ -251,31 +247,29 @@ export class UserAnalyticsRLIntegration {
         worker.postMessage({
           type: 'init',
           workerId: i,
-          config: {
-           , enableReinforcement: true,
+          config: { enableReinforcement: true,
             cacheStrategy: 'aggressive',
             concurrentProcessing: true
-          }
+          } }
         });
         this.processingWorkers.push(worker);
-      }
+      } }
       // Cache management worker
       this.cacheWorker = new Worker('/workers/cache-manager.js');
       this.cacheWorker.onmessage = event => this.handleCacheMessage(event.data);
       this.cacheWorker.postMessage({
         type: 'init',
-        config: {
-         , maxCacheSize: 500,
+        config: { maxCacheSize: 500,
           ttl: 30 * 60 * 1000, // 30 minutes
           cleanupInterval: 5 * 60 * 1000, // 5 minutes
-        }
+        } }
       });
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize workers:', error);
       // if worker init fails, ensure flag reflects that we're not processing'
       this.isProcessing = $state(false);
-    }
-  }
+    } }
+  } }
   /**
    * Track user action and update analytics
    */
@@ -283,30 +277,26 @@ export class UserAnalyticsRLIntegration {
     actionType: UserHistoryEntry['action']['type'],
     target: string,
     parameters: Record<string, unknown> = {},
-    context: Record<string, unknown> = {}
+    context: Record<string, unknown> = {} }
   ): Promise<string> {
     // use slice instead of deprecated substr
     const actionId = `action_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-    const historyEntry: UserHistoryEntry = {
-     , id: actionId,
+    const historyEntry: UserHistoryEntry = { id: actionId,
       userId: this.userId,
       sessionId: this.sessionId,
       timestamp: Date.now(),
-      action: {
-       , type: actionType,
+      action: { type: actionType,
         target,
         parameters,
         context
       },
-      outcome: {
-       , success: false, // Will be updated when action completes
+      outcome: { success: false, // Will be updated when action completes
         duration: 0
       },
       environment: {
         // guard browser-only globals
        , page: browser ? window.location.pathname : '/server',
-        viewport: {
-         , width: browser ? window.innerWidth : 0,
+        viewport: { width: browser ? window.innerWidth : 0,
           height: browser ? window.innerHeight : 0
         },
         userAgent: browser ? navigator.userAgent : 'server',
@@ -317,7 +307,7 @@ export class UserAnalyticsRLIntegration {
         documentIds: (context, as: any).documentIds || [],
         tags: (context, as: any).tags || [],
         complexity: (context, as: any).complexity || 0.5
-      }
+      } }
     };
 
     // Add to history
@@ -325,19 +315,18 @@ export class UserAnalyticsRLIntegration {
     // Send to processing worker for real-time analysis
     await this.processActionAnalytics(historyEntry);
     return actionId;
-  }
+  } }
   /**
    * Complete tracked action with outcome
    */
   async completeAction(
     actionId: string,
-    outcome: {
-     , success: boolean;
+    outcome: { success: boolean;
       result?: any; // tightened, from: any -> unknown
       error?: string;
       userFeedback?: 'positive' | 'negative' | 'neutral';
       confidence?: number;
-    }
+    } }
   ): Promise<void> {
     const endTime = Date.now();
     // Use immutable update to avoid accidental mutations and parser issues
@@ -351,7 +340,7 @@ export class UserAnalyticsRLIntegration {
             ...entry.outcome,
             ...outcome,
             duration: endTime - entry.timestamp
-          }
+          } }
         };
         completedAction = updated;
         return updated;
@@ -367,7 +356,7 @@ export class UserAnalyticsRLIntegration {
 
     // Generate recommendations based on completed action (await to ensure sequencing)
     await this.generateActionBasedRecommendations(actionId, outcome);
-  }
+  } }
   /**
    * Process action analytics with concurrent workers
    */
@@ -376,18 +365,17 @@ export class UserAnalyticsRLIntegration {
     if (availableWorker) {
       availableWorker.postMessage({
         type: 'process_action',
-        action: {
-         , id: action.id,
+        action: { id: action.id,
           type: action.action.type,
           target: action.action.target,
           parameters: action.action.parameters,
           context: action.action.context,
           timestamp: action.timestamp,
           userId: action.userId
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
   /**
    * Update reinforcement learning based on action outcomes
    */
@@ -399,8 +387,7 @@ export class UserAnalyticsRLIntegration {
     this.analyticsProfile.update(profile => {
       if (!profile) return profile;
       // Add to reward history (now strongly typed)
-      const rewardEntry: RewardEntry = {
-       , timestamp: action.timestamp,
+      const rewardEntry: RewardEntry = { timestamp: action.timestamp,
         reward,
         action: actionKey,
         context: JSON.stringify(action.action.context),
@@ -415,7 +402,7 @@ export class UserAnalyticsRLIntegration {
           successRate: 0,
           averageReward: 0
         };
-      }
+      } }
       const pref = profile.reinforcement.actionPreferences[actionKey];
       const historyForKey = profile.reinforcement.rewardHistory.filter((r: RewardEntry) => r.action === actionKey);
       const count = Math.max(1, historyForKey.length);
@@ -426,18 +413,18 @@ export class UserAnalyticsRLIntegration {
       // Limit history size
       if (profile.reinforcement.rewardHistory.length > 1000) {
         profile.reinforcement.rewardHistory = profile.reinforcement.rewardHistory.slice(-500);
-      }
+      } }
       return profile;
     });
 
     // Send to NES-RL agent in recommendation orchestrator (typed)
     const recOrch = recommendationOrchestrator as: unknown as RecommendationOrchestrator;
     if (recOrch.updateDetectiveContext) {
-      recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} -> ${reward.toFixed(3)}`,
+      recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} }-> ${reward.toFixed(3)}`,
         timeInMode: Date.now() - this.startTime,
-        encodedState: state, // include state so it's actually used by the orchestrator` } as Record<string, unknown>);'`
-    }
-  }
+        encodedState: state, // include state so it's actually used by the orchestrator` } }as Record<string, unknown>);'`
+    } }
+  } }
   /**
    * Calculate reward based on action outcome
    */
@@ -468,13 +455,13 @@ export class UserAnalyticsRLIntegration {
     const complexity = action.metadata.complexity ?? 0.5;
     if (complexity > 0.7) reward *= 1.2; // Bonus for handling complex tasks
     return Math.max(-2, Math.min(2, reward));
-  }
+  } }
   /**
    * Encode action state for reinforcement learning
    */
   private encodeActionState(action: UserHistoryEntry): string {
     return `${action.action.type}_${action.environment.page}_${Math.floor((action.metadata.complexity ?? 0.5) * 10)}`;
-  }
+  } }
   /**
    * Update productivity cache with completed actions
    */
@@ -482,19 +469,17 @@ export class UserAnalyticsRLIntegration {
     if (!this.cacheWorker) return;
     this.cacheWorker.postMessage({
       type: 'update_cache',
-      data: {
-       , actionId: action.id,
+      data: { actionId: action.id,
         actionType: action.action.type,
         success: action.outcome.success,
         duration: action.outcome.duration,
-        context: {
-         , caseId: action.metadata.caseId,
+        context: { caseId: action.metadata.caseId,
           complexity: action.metadata.complexity,
           page: action.environment.page
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
   /**
    * Generate action-based recommendations using Moogle Graph Synthesizer
    */
@@ -513,13 +498,12 @@ export class UserAnalyticsRLIntegration {
         paths,
         {
           layout: 'legal-context',
-          reinforcementLearning: {
-           , enabled: true,
+          reinforcementLearning: { enabled: true,
             showTrainingProgress: false,
             highlightOptimalPaths: true,
             showRewardHeatmap: true,
             qValueVisualization: false
-          }
+          } }
         },
         profile,
         reinforcementData
@@ -539,17 +523,16 @@ export class UserAnalyticsRLIntegration {
           source: 'user-analytics-rl',
           action: insight.action,
           createdAt: Date.now(),
-          metadata: {
-           , basedOnAction: actionId,
+          metadata: { basedOnAction: actionId,
             reinforcementScore: insight.reinforcementScore,
             productivityImpact: insight.productivityImpact
-          }
+          } }
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to generate action-based recommendations:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Convert user actions to graph paths for Moogle analysis
    */
@@ -564,27 +547,25 @@ export class UserAnalyticsRLIntegration {
         nodeMap.set(nodeId, {
           id: nodeId,
           type: action.action.type,
-          properties: {
-           , target: action.action.target,
+          properties: { target: action.action.target,
             frequency: 1,
             avgDuration: action.outcome.duration,
             successRate: action.outcome.success ? 1 : 0,
             lastAccessed: action.timestamp
           },
-          metadata: {
-           , complexity: action.metadata.complexity ?? 0.5,
+          metadata: { complexity: action.metadata.complexity ?? 0.5,
             timestamp: action.timestamp
           },
           score: action.outcome.success ? 0.8 : 0.3
         });
-      } else {
+      } }else {
         const node = nodeMap.get(nodeId)!;
         node.properties.frequency++;
         node.properties.avgDuration = (node.properties.avgDuration + action.outcome.duration) / 2;
         node.properties.successRate = (node.properties.successRate + (action.outcome.success ? 1 : 0)) / 2;
         node.properties.lastAccessed = Math.max(node.properties.lastAccessed, action.timestamp);
-      }
-    }
+      } }
+    } }
     // Create edges between sequential actions
     for (let i = 0; i < actions.length - 1; i++) {
       const sourceNode = `${actions[i].action.type}_${actions[i].action.target}`;
@@ -595,26 +576,24 @@ export class UserAnalyticsRLIntegration {
         target: targetNode,
         type: 'sequence',
         weight: 1 / Math.max(1, (actions[i + 1].timestamp - actions[i].timestamp) / 1000),
-        properties: {
-         , timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
+        properties: { timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
           success: !!(actions[i].outcome.success && actions[i + 1].outcome.success)
-        }
+        } }
       });
-    }
+    } }
     // Create a single path from all nodes and edges
     paths.push({
       id: 'user_workflow_path',
       nodes: Array.from(nodeMap.values()),
       edges,
       totalScore: Array.from(nodeMap.values()).reduce((sum, node) => sum + (node.score ?? 0), 0),
-      metadata: {
-       , pathType: 'user_workflow',
+      metadata: { pathType: 'user_workflow',
         sessionId: this.sessionId,
         userId: this.userId
-      }
+      } }
     });
     return paths;
-  }
+  } }
   /**
    * Extract actionable insights from Moogle visualization
    */
@@ -641,14 +620,14 @@ export class UserAnalyticsRLIntegration {
       insights.push({
         type: 'ai',
         title: 'High-Value Action Identified',
-        description: `Based on your usage patterns, "${topNode.id}" shows high productivity value (${Math.round((topNode.pageRankScore ?? 0) * 100)} score).`,
+        description: `Based on your usage patterns, "${topNode.id}" shows high productivity value (${Math.round((topNode.pageRankScore ?? 0) * 100)} }score).`,
         confidence: 0.85,
         priority: 'medium',
         reinforcementScore: topNode.pageRankScore ?? 0,
         productivityImpact: 0.7,
         action: () => this.suggestWorkflowOptimization(topNode.id)
       });
-    }
+    } }
     // Identify workflow bottlenecks
     const slowNodes = nodePositions
       .filter(node => (typeof node.avgDuration === 'number' ? (node.avgDuration ?? 0) > 10000 : false))
@@ -664,7 +643,7 @@ export class UserAnalyticsRLIntegration {
         productivityImpact: 0.9,
         action: () => this.provideOptimizationTips(slowNodes[0].id)
       });
-    }
+    } }
     // Suggest next best actions
     const profile = this.getAnalyticsProfile();
     if (
@@ -677,42 +656,42 @@ export class UserAnalyticsRLIntegration {
       insights.push({
         type: 'ai',
         title: 'Suggested Next Action',
-        description: `Based on your patterns, consider: ${nextAction.action} (${Math.round((nextAction.probability ?? 0) * 100)}% likely)`,
+        description: `Based on your patterns, consider: ${nextAction.action} }(${Math.round((nextAction.probability ?? 0) * 100)}% likely)`,
         confidence: nextAction.confidence ?? 0.5,
         priority: 'low',
         reinforcementScore: 0.3,
         productivityImpact: 0.5,
         action: () => this.executeNextAction(nextAction.action)
       });
-    }
+    } }
     return insights;
-  }
+  } }
 
   // Worker message handlers
-  private handleWorkerMessage(_workerId: number, data: {, type: string; payload?: any }) {
-    const { type, payload } = data;
+  private handleWorkerMessage(_workerId: number, data: { type: string; payload?: any }) {
+    const { type, payload } }= data;
     switch (type) {
       case, 'analytics_updated':
         if (payload && typeof payload === 'object') {
           this.updateAnalyticsProfile(payload as AnalyticsUpdatePayload);
-        }
+        } }
         break;
       case, 'pattern_identified':
         if (payload && typeof payload === 'object') {
           this.handlePatternIdentified(payload as PatternPayload);
-        }
+        } }
         break;
       case, 'prediction_generated':
         if (payload && typeof payload === 'object') {
           this.updatePredictions(payload as PredictionsPayload);
-        }
+        } }
         break;
       default: break;
-    }
-  }
+    } }
+  } }
 
-  private handleCacheMessage(data: {, type: string; payload?: any }) {
-    const { type, payload } = data;
+  private handleCacheMessage(data: { type: string; payload?: any }) {
+    const { type, payload } }= data;
     switch (type) {
       case, 'cache_updated':
         if (payload && typeof payload === 'object' && 'id' in payload) {
@@ -721,87 +700,80 @@ export class UserAnalyticsRLIntegration {
             const existingIndex = cache.findIndex(c => c.id === p.id);
             if (existingIndex >= 0) {
               cache[existingIndex] = p;
-            } else {
+            } }else {
               cache.push(p);
-            }
+            } }
             return cache.slice(0, 100); // Limit cache size
           });
-        }
+        } }
         break;
       case, 'cache_hit':
         console.log('Cache hit:', payload);
         break;
       default: break;
-    }
-  }
+    } }
+  } }
   // Utility methods
   private getAvailableWorker(): Worker | null {
     return this.processingWorkers.length > 0 ? this.processingWorkers[0] : null;
-  }
+  } }
   private updateAnalyticsProfile(updates: Partial<UserAnalyticsProfile>) {
     this.analyticsProfile.update(profile => {
       if (!profile) {
         const def = this.createDefaultProfile();
         return { ...def, ...updates, lastUpdated: Date.now() };
-      }
+      } }
       return { ...profile, ...updates, lastUpdated: Date.now() };
     });
-  }
+  } }
   private createDefaultProfile(): UserAnalyticsProfile {
     return {
       userId: this.userId,
       createdAt: Date.now(),
       lastUpdated: Date.now(),
-      patterns: {
-       , activeHours: {},
+      patterns: { activeHours: {},
         commonWorkflows: [],
-        documentPreferences: {
-         , types: {},
-          complexityRange: {, min: 0.2, max: 0.8, preferred: 0.5 },
-          averageProcessingTime: {}
+        documentPreferences: { types: {},
+          complexityRange: { min: 0.2, max: 0.8, preferred: 0.5 },
+          averageProcessingTime: {} }
         },
-        searchPatterns: {
-         , commonTerms: [],
+        searchPatterns: { commonTerms: [],
           queryComplexity: 0.5,
           refinementRate: 0.2
-        }
+        } }
       },
-      performance: {
-       , overallProductivity: 0.5,
+      performance: { overallProductivity: 0.5,
         taskCompletionRate: 0.5,
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
         expertiseLevel: `novice` },'`'`
-      reinforcement: {
-       , rewardHistory: [],
+      reinforcement: { rewardHistory: [],
         actionPreferences: {},
         explorationTendency: 0.3,
         adaptationRate: 0.1,
-        convergenceMetrics: {, stability: 0.5, consistency: 0.5, improvement: 0.5 }
+        convergenceMetrics: { stability: 0.5, consistency: 0.5, improvement: 0.5 } }
       },
-      predictions: {
-       , nextLikelyActions: [],
+      predictions: { nextLikelyActions: [],
         optimalWorkflow: [],
         recommendedComplexity: 0.5,
         estimatedTaskTimes: {},
         riskFactors: []
-      }
+      } }
     };
-  }
+  } }
   private handlePatternIdentified(pattern: PatternPayload) {
     const recOrch = recommendationOrchestrator as: unknown as RecommendationOrchestrator;
-    recOrch.addRecommendation({
-     , id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+    recOrch.addRecommendation({ id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       type: 'ai',
       title: 'Usage Pattern Identified',
-      description: 'New pattern;, detected: ${pattern.description ?? 'unspecified` }`,
+      description: 'New pattern; detected: ${pattern.description ?? 'unspecified` }`,
       confidence: pattern.confidence ?? 0.5,
       priority: 'low',
       source: 'user-analytics-rl',
       createdAt: Date.now()
     });
-  }
+  } }
 
   private updatePredictions(predictions: PredictionsPayload) {
     this.analyticsProfile.update(profile => {
@@ -809,17 +781,17 @@ export class UserAnalyticsRLIntegration {
       profile.predictions = { ...profile.predictions, ...predictions };
       return profile;
     });
-  }
+  } }
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-  }
+  } }
   private generateUserId(): string {
     // Safe access to localStorage only in browser
     if (browser && typeof localStorage !== 'undefined') {
       return localStorage.getItem('userId') || `user_${Date.now()}`;
-    }
+    } }
     return `user_${Date.now()}`;
-  }
+  } }
   private async loadUserData() {
     // Load from localStorage and server
     try {
@@ -829,12 +801,12 @@ export class UserAnalyticsRLIntegration {
           const data = JSON.parse(stored);
           this.analyticsProfile.set(data.profile || this.createDefaultProfile());
           this.userHistory.set(data.history || []);
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('Failed to load stored user data:', error);
-    }
-  }
+    } }
+  } }
   private setupUserTracking() {
     if (!browser) return;
     // Auto-save data periodically
@@ -842,7 +814,7 @@ export class UserAnalyticsRLIntegration {
     // Use a stable handler so we can remove it in destroy()
     this.unloadHandler = () => this.saveUserData();
     window.addEventListener('beforeunload', this.unloadHandler);
-  }
+  } }
   private saveUserData() {
     try {
       if (!browser || typeof localStorage === 'undefined') return;
@@ -851,10 +823,10 @@ export class UserAnalyticsRLIntegration {
         history: this.getUserHistory().slice(0, 500), // Limit stored history
       };
       localStorage.setItem(`user_analytics_${this.userId}`, JSON.stringify(data));
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to save user data:', error);
-    }
-  }
+    } }
+  } }
   private startCacheManagement() {
     // Cleanup cache periodically
     setInterval(
@@ -865,69 +837,68 @@ export class UserAnalyticsRLIntegration {
       },
       5 * 60 * 1000
     );
-  }
+  } }
   // Action suggestion methods
   private suggestWorkflowOptimization(nodeId: string) {
     console.log('Suggesting workflow optimization for:', nodeId);
-  }
+  } }
   private provideOptimizationTips(nodeId: string) {
     console.log('Providing optimization tips for:', nodeId);
-  }
+  } }
   private executeNextAction(action: string) {
-    console.log('Executing suggested next action: ', action);'` }'`
+    console.log('Executing suggested next action: ', action);'` } }`
   // Getters for stores
   private getUserHistory(): UserHistoryEntry[] {
     let value: UserHistoryEntry[] = [];
     const unsub = this.userHistory.subscribe(v => (value = v));
     unsub();
     return value;
-  }
+  } }
   private getAnalyticsProfile(): UserAnalyticsProfile | null {
     let value: UserAnalyticsProfile | null = null;
     const unsub = this.analyticsProfile.subscribe(v => (value = v));
     unsub();
     return value;
-  }
+  } }
   private getAction(actionId: string): UserHistoryEntry | undefined {
     return this.getUserHistory().find(a => a.id === actionId);
-  }
+  } }
   // Public API
   public getUserHistoryStore(): Readable<UserHistoryEntry[]> {
     return this.userHistory;
-  }
+  } }
   public getAnalyticsProfileStore(): Readable<UserAnalyticsProfile | null> {
     return this.analyticsProfile;
-  }
+  } }
   public getProductivityCacheStore(): Readable<ProductivityCache[]> {
     return this.productivityCache;
-  }
+  } }
   public async clearHistory(): Promise<void> {
     this.userHistory.set([]);
     localStorage.removeItem(`user_analytics_${this.userId}`);
-  }
+  } }
   public async exportData(): Promise<{ userId: string;, history: UserHistoryEntry[];
     analytics: UserAnalyticsProfile | null;
     exportedAt: number;
   }> {
-    return {
-     , userId: this.userId,
+    return { userId: this.userId,
       history: this.getUserHistory(),
       analytics: this.getAnalyticsProfile(),
       exportedAt: Date.now()
     };
-  }
+  } }
   public isCurrentlyProcessing(): boolean {
     // small accessor to make `isProcessing` used/read externally if needed
     return this.isProcessing;
-  }
+  } }
   public destroy() {
     // Cleanup workers
     for (const worker of this.processingWorkers) {
       try {
         worker.terminate();
-      } catch (e) {
+      } }catch (e) {
         /* ignore */
-      }
-    }
+      } }
+    } }
     this.processingWorkers = [];
     if

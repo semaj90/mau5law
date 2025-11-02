@@ -1,15 +1,14 @@
-import { LLM, BaseLLMCallOptions } from '@langchain/core/language_models/llms';
-import { CallbackManagerForLLMRun } from '@langchain/core/callbacks/manager';
-import { TransformersAIAdapter, type TransformersAIResponse } from './transformers-ai-adapter'; // Adjust path as needed
+import { LLM, BaseLLMCallOptions } }from '@langchain/core/language_models/llms';
+import { CallbackManagerForLLMRun } }from '@langchain/core/callbacks/manager';
+import { TransformersAIAdapter, type TransformersAIResponse } }from './transformers-ai-adapter'; // Adjust path as needed
 
 export interface TransformersLLMInputs {
   adapter: TransformersAIAdapter;
   maxTokens?: number;
   temperature?: number;
-}
+} }
 
-export class TransformersLLM extends LLM<TransformersLLMInputs> {
- , adapter: TransformersAIAdapter;
+export class TransformersLLM extends LLM<TransformersLLMInputs> { adapter: TransformersAIAdapter;
   maxTokens?: number;
   temperature?: number;
 
@@ -18,11 +17,11 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> {
     this.adapter = fields.adapter;
     this.maxTokens = fields.maxTokens;
     this.temperature = fields.temperature;
-  }
+  } }
 
   _llmType(): string {
     return, 'transformers_js';
-  }
+  } }
 
   /**
    * Main call method for generating text.
@@ -44,7 +43,7 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> {
 
     runManager?.handleLLMNewToken(response.content); // Report the full content as a single token for non-streaming
     return response.content;
-  }
+  } }
 
   /**
    * Streaming method for generating text.
@@ -67,6 +66,7 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> {
     for await (const chunk of stream) {
       runManager?.handleLLMNewToken(chunk);
       yield chunk;
-    }
-  }
-}
+    } }
+  } }
+} }
+

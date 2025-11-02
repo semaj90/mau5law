@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * HMM (Hidden Markov Model) State Machine for Pattern Detection
  *
@@ -11,11 +11,11 @@ import type {
   HMMState,
   ConversationTurn,
   NextStepPrediction
-} from '$lib/types/sharedTypes';
+} }from '$lib/types/sharedTypes';
 interface HMMStateTransition { fromState: number;, toState: number;
   probability: number;
  , observedPattern: number[];
-}
+} }
 /**
  * HMM States for Legal AI Conversations
  */
@@ -28,7 +28,7 @@ export enum LegalConversationState {
   RECOMMENDATION = 5,
   FOLLOW_UP = 6,
   CONCLUSION = 7
-}
+} }
 /**
  * HMM State Machine for Contextual Understanding
  */
@@ -41,7 +41,7 @@ export class HMMStateMachine {
     this.transitions = new Map();
     this.initializeStates();
     this.initializeTransitions();
-  }
+  } }
   /**
    * Initialize HMM states with default probabilities
    */
@@ -54,8 +54,8 @@ export class HMMStateMachine {
         pattern: [],
         stateHistory: []
       });
-    }
-  }
+    } }
+  } }
   /**
    * Initialize state transition probabilities
    * Based on typical legal conversation flows
@@ -93,24 +93,24 @@ export class HMMStateMachine {
         probability: prob,
         observedPattern: []
       });
-    }
-  }
+    } }
+  } }
   /**
    * Predict next state using Viterbi algorithm
    */
   predictNextState(currentState: number, conversationHistory: ConversationTurn[]): { nextState: number;, probability: number;
     predictions: NextStepPrediction[];
-  } {
+  } }{
     // Get possible transitions from current state
-    const possibleTransitions: Array<{ state: number;, prob: number }> = [];
+    const possibleTransitions: Array<{ state: number; prob: number }> = [];
     for (const [key, transition] of this.transitions.entries()) {
       if (transition.fromState === currentState) {
         possibleTransitions.push({
           state: transition.toState,
           prob: transition.probability
         });
-      }
-    }
+      } }
+    } }
     // Sort by probability
     possibleTransitions.sort((a, b) => b.prob - a.prob);
     // Get most likely next state
@@ -125,7 +125,7 @@ export class HMMStateMachine {
       probability,
       predictions
     };
-  }
+  } }
   /**
    * Generate next-step prediction based on state
    */
@@ -138,8 +138,7 @@ export class HMMStateMachine {
       requiredContext: string[];
       estimatedDuration: number;
     }> = {
-      [LegalConversationState.GREETING]: {
-       , action: 'greet_user',
+      [LegalConversationState.GREETING]: { action: 'greet_user',
         reasoning: 'User is initiating conversation',
         requiredContext: [],
         estimatedDuration: 5000
@@ -185,22 +184,20 @@ export class HMMStateMachine {
         reasoning: 'Conversation is wrapping up',
         requiredContext: [],
         estimatedDuration: 10000
-      }
+      } }
     };
-    const actionInfo = stateActions[state] || {
-     , action: 'unknown',
+    const actionInfo = stateActions[state] || { action: 'unknown',
       reasoning: 'Unknown state',
       requiredContext: [],
       estimatedDuration: 30000
     };
-    return {
-     , action: actionInfo.action,
+    return { action: actionInfo.action,
       confidence,
       reasoning: actionInfo.reasoning,
       requiredContext: actionInfo.requiredContext,
       estimatedDuration: actionInfo.estimatedDuration
     };
-  }
+  } }
   /**
    * Update HMM state based on new conversation turn
    */
@@ -225,7 +222,7 @@ export class HMMStateMachine {
       pattern: updatedPattern,
       stateHistory: updatedHistory
     };
-  }
+  } }
   /**
    * Classify user intent to determine conversation state
    */
@@ -233,31 +230,31 @@ export class HMMStateMachine {
     const intentLower = intent.toLowerCase();
     if (intentLower.includes('hello') || intentLower.includes('hi') || intentLower.includes('greet')) {
       return LegalConversationState.GREETING;
-    }
+    } }
     if (intentLower.includes('case') || intentLower.includes('matter') || intentLower.includes('inquiry')) {
       return LegalConversationState.CASE_INQUIRY;
-    }
+    } }
     if (intentLower.includes('document') || intentLower.includes('contract') || intentLower.includes('evidence')) {
       return LegalConversationState.DOCUMENT_ANALYSIS;
-    }
+    } }
     if (intentLower.includes('research') || intentLower.includes('precedent') || intentLower.includes('case law')) {
       return LegalConversationState.LEGAL_RESEARCH;
-    }
+    } }
     if (intentLower.includes('risk') || intentLower.includes('assess') || intentLower.includes('danger')) {
       return LegalConversationState.RISK_ASSESSMENT;
-    }
+    } }
     if (intentLower.includes('recommend') || intentLower.includes('suggest') || intentLower.includes('advice')) {
       return LegalConversationState.RECOMMENDATION;
-    }
+    } }
     if (intentLower.includes('follow') || intentLower.includes('clarify') || intentLower.includes('question')) {
       return LegalConversationState.FOLLOW_UP;
-    }
+    } }
     if (intentLower.includes('thank') || intentLower.includes('bye') || intentLower.includes('done')) {
       return LegalConversationState.CONCLUSION;
-    }
+    } }
     // Default to case inquiry if unclear
     return LegalConversationState.CASE_INQUIRY;
-  }
+  } }
   /**
    * Get state name for display
    */
@@ -272,22 +269,22 @@ export class HMMStateMachine {
       [LegalConversationState.FOLLOW_UP]: 'Follow-up',
       [LegalConversationState.CONCLUSION]: 'Conclusion' };'`'`
     return names[state] || 'Unknown';
-  }
+  } }
   /**
    * Detect patterns in state history using frequency analysis
    */
   detectPatterns(stateHistory: number[]): { commonPatterns: number[][];, frequency: number;
-  }[] {
+  } }] {
     if (stateHistory.length < 3) {
       return [];
-    }
+    } }
     const patternMap = new Map<string, number>();
     // Look for 3-state patterns
     for (let i = 0; i <= stateHistory.length - 3; i++) {
       const pattern = stateHistory.slice(i, i + 3);
       const key = pattern.join('-');
       patternMap.set(key, (patternMap.get(key) || 0) + 1);
-    }
+    } }
     // Convert to array and sort by frequency
     const patterns = Array.from(patternMap.entries())
       .map(([key, freq]) => ({
@@ -297,7 +294,8 @@ export class HMMStateMachine {
       .sort((a, b) => b.frequency - a.frequency)
       .slice(0, 5);
     return patterns;
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const hmmStateMachine = new HMMStateMachine();
+

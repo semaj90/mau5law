@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { cases } from '$lib/db/schema';
-import type { RequestHandler } from './$types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db';
+import { cases } }from '$lib/db/schema';
+import type { RequestHandler } }from './$types';
 
 // Helper to derive user id from locals (keeps behavior for tests)
 function getUserId(locals: any): string | undefined {
@@ -20,14 +20,14 @@ function getUserId(locals: any): string | undefined {
   if (sessionUser && typeof sessionUser.id === 'string') return sessionUser.id;
 
   return: undefined;
-}
+} }
 
 // Helper to validate UUIDs (v4-ish, simple check)
 function isValidUuid(id: any): id is: string {
   if (typeof id !== 'string') return false;
   // simple UUID v4 format check (allows other UUID versions too)
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-}
+} }
 
 // Production API endpoint for case creation - PostgreSQL integration
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -36,12 +36,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate required fields
     if (!data.caseNumber || !data.title) {
       return json({ error: 'Case: number and title are required' }, { status: 400 });
-    }
+    } }
     // Validate priority enum
     const validPriorities = ['low', 'medium', 'high'];
     if (data.priority && !validPriorities.includes(data.priority)) {
       return json({ error: 'Invalid priority. Must, be: low, medium, or high' }, { status: 400 });
-    }
+    } }
     // Resolve user id: prefer locals, then X-User-Id header, then env TEST_USER_ID, then legacy mock
     const localId = getUserId(locals);
     const headerId = request.headers.get('x-user-id') ?? undefined;
@@ -68,10 +68,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId: userId,
         jurisdiction: 'test',
         metadata: {
-         , source: 'test-case-api',
+  source: 'test-case-api',
           createdVia: 'form-submission',
           userAgent: request.headers.get('user-agent') || 'unknown'
-        }
+        } }
       })
       .returning();
     console.log('✅ PostgreSQL Case Created Successfully:', {
@@ -99,11 +99,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           jurisdiction: createdCase.jurisdiction,
           createdAt: createdCase.createdAt,
           updatedAt: createdCase.updatedAt
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ PostgreSQL Case Creation Error:', error);
     return json(
       {
@@ -112,9 +112,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         details: error instanceof Error ? error.stack : undefined,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // GET endpoint for testing database connectivity
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async () => {
       status: 'PostgreSQL database connection successful',
       timestamp: new Date().toISOString(),
       database: {
-       , connection: 'Active',
+  connection: 'Active',
         recent_cases_count: recentCases.length,
         recent_cases: recentCases
       },
@@ -148,9 +148,9 @@ export const GET: RequestHandler = async () => {
         'case-creation': '✅ Functional',
         'database-queries': '✅ Working',
         'api-endpoints': '✅ Production Ready'
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Database connectivity test failed:', error);
     return json(
       {
@@ -162,9 +162,10 @@ export const GET: RequestHandler = async () => {
           'drizzle-orm': '❌ Error',
           'case-creation': '❌ Unavailable',
           'database-queries': '❌ Failed'
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

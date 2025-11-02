@@ -4,13 +4,13 @@ export interface QdrantPoint {
   payload?: { text?: string; metadata?: Record<string, unknown> };
   vector?: number[];
   score?: number;
-}
+} }
 
 export async function queryQdrant(
   vec: number[],
   limit = 200,
   temperature = 0.3
-): Promise<{ ann: Array<{, id: string;
+): Promise<{ ann: Array<{ id: string;
     text: string;
     metadata: Record<string, unknown>;
     embedding: number[] | null;
@@ -27,14 +27,15 @@ export async function queryQdrant(
     headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(body)
   });
-  if (!r.ok) throw new Error(`Qdrant search failed: ${r.status} ${await r.text()}`);
+  if (!r.ok) throw new Error(`Qdrant search failed: ${r.status} }${await r.text()}`);
   const j = await r.json();
   const results: QdrantPoint[] = (j.result || []) as QdrantPoint[];
-  return { ann: results.map(p => ({, id: String(p.id),
+  return { ann: results.map(p => ({ id: String(p.id),
       text: p.payload?.text ?? '',
       metadata: p.payload?.metadata ?? {},
       embedding: p.vector ?? null,
       score: p.score ?? null
     }))
   };
-}
+} }
+

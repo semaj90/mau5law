@@ -1,15 +1,15 @@
 import, 'dotenv/config';
-import { drizzle } from 'drizzle-orm/postgres-js';
+import { drizzle } }from 'drizzle-orm/postgres-js';
 import pgClient from '$lib/server/db-shim';
-import { document_chunks } from '$lib/db/schema';
-import { cache } from '$lib/server/cache/redis';
-import { globalLoki } from '$lib/stores/global-loki';
-import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
-import { jobMachine } from '$lib/workers/job-state';
-import { sql } from 'drizzle-orm';
-import { redis } from '$lib/server/redis';
-import { closeRabbitMQ } from '$lib/server/rabbitmq';
-import { emitCacheEvent } from '$lib/server/cache/cache-events';
+import { document_chunks } }from '$lib/db/schema';
+import { cache } }from '$lib/server/cache/redis';
+import { globalLoki } }from '$lib/stores/global-loki';
+import { getEmbeddingViaGate } }from '$lib/server/embedding-gateway';
+import { jobMachine } }from '$lib/workers/job-state';
+import { sql } }from 'drizzle-orm';
+import { redis } }from '$lib/server/redis';
+import { closeRabbitMQ } }from '$lib/server/rabbitmq';
+import { emitCacheEvent } }from '$lib/server/cache/cache-events';
 // Use postgres-js client from db-shim for Drizzle
 const db = drizzle(pgClient as: any);
 let shuttingDown = $state<boolean>(false);
@@ -20,10 +20,10 @@ let shuttingDown = $state<boolean>(false);
     if (raw) {
       globalLoki.initRedis(raw);
       console.log('🧠 globalLoki wired to Redis');
-    } else {
+    } }else {
       console.log('🧠 globalLoki running without Redis');
-    }
-  } catch (error) {}
+    } }
+  } }catch (error) {} }
 })();
 // Ensure DB-level idempotency support: unique index on metadata->>'jobId'
 async function ensureDbIndexes(): Promise<any> {
@@ -32,11 +32,11 @@ async function ensureDbIndexes(): Promise<any> {
       sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId'));`
     );
     console.log('🧱 Ensured unique index document_chunks_jobid_uidx');
-  } catch (e: any) {
+  } }catch (e: any) {
     console.warn('⚠️ Failed to ensure unique index for jobId (non-fatal):', e?.message || e);
-  }
-}
-async function processJob(job: {, id: string;, text: string; model?: string }): Promise<any> {
+  } }
+} }
+async function processJob(job: { id: string; text: string; model?: string }): Promise<any> {
   console.log('📥 Processing job:', job.id);
   // Dedupe: skip if already processed
   try {
@@ -45,10 +45,10 @@ async function processJob(job: {, id: string;, text: string; model?: string }): 
       console.log('⏭️  Skipping already-processed job', job.id);
       try {
         await globalLoki.updateJob(job.id, { state: 'skipped', reason: `dedupe` });
-      } catch (error) {}
+      } }catch (error) {} }
       return;
-    }
-  } catch (error) {}
+    } }
+  } }catch (error) {} }
   // Acquire in-flight dedupe lock (24h) using NX
   try {
     let locked: any = null;
@@ -57,37 +57,37 @@ async function processJob(job: {, id: string;, text: string; model?: string }): 
         NX: true,
         EX: 24 * 60 * 60
       });
-    } catch {
+    } }catch {
       // older ioredis style
       try {
         locked = await (redis as: any).set(`job:processed:${job.id}`, '1', 'NX', 'EX', 24 * 60 * 60);
-      } catch (error) {}
-    }
+      } }catch (error) {} }
+    } }
     if (!locked) {
       console.log('⏭️  Skipping job due to NX lock (already being processed):', job.id);
       try {
         await globalLoki.updateJob(job.id, { state: 'skipped', reason: 'dedupe-nx' });
-      } catch (error) {}
+      } }catch (error) {} }
       return;
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     console.warn('⚠️ NX dedupe lock failed (continuing):', (e as Error).message || e);
-  }
+  } }
 
   // --- Changed: use safeJobMachine instead of jobMachine directly ---
   await safeJobMachine.createJob(job.id, { model: job?.model || 'unknown' }); // @ts-ignore - Model property access
   try {
     await globalLoki.startJob({ id: job.id, model: job?.model || 'unknown', text: job.text }); // @ts-ignore - Model property access
-  } catch (error) {}
+  } }catch (error) {} }
   const started = await safeJobMachine.startJob(job.id);
   if (!started) {
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
-  }
+  } }
   try {
     const result = await getEmbeddingViaGate(fetch as: any, job.text, { model: job?.model || 'unknown` }); // @ts-ignore - Model property access'`
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(
-      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown` }`'`
+      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} }using model ${result?.model || 'unknown` }`'`
     );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
@@ -98,12 +98,11 @@ async function processJob(job: {, id: string;, text: string; model?: string }): 
         chunk_text: job.text,
         chunk_index: 0,
         embedding: emb as: unknown, as: any,
-        metadata: {
-         , source: 'pipeline',
+        metadata: { source: 'pipeline',
           jobId: job.id,
           model: result?.model || 'unknown', // @ts-ignore - Model property access
           backend: (result as { embedding?: any; backend?: any }).backend
-        } as: any
+        } }as: any
       }, as: any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as: any });
     // We can't directly know if inserted; do a cheap existence check'
@@ -115,7 +114,7 @@ async function processJob(job: {, id: string;, text: string; model?: string }): 
     await safeJobMachine.completeJob(job.id);
     try {
       await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length : 0 });
-    } catch (error) {}
+    } }catch (error) {} }
     // Notify clients to invalidate embedding caches
     try {
       emitCacheEvent({
@@ -126,51 +125,51 @@ async function processJob(job: {, id: string;, text: string; model?: string }): 
         ts: Date.now(),
         inserted
       });
-    } catch (error) {}
+    } }catch (error) {} }
     try {
       // ioredis and node-redis expose slightly different APIs
       if ((redis as: any).setex) {
         await (redis as: any).setex(`jobs:done:${job.id}`, 7 * 24 * 3600, '1');
-      } else {
+      } }else {
         await (redis as: any).set(`jobs:done:${job.id}`, '1', 'EX', 7 * 24 * 3600);
-      }
-    } catch (error) {}
+      } }
+    } }catch (error) {} }
     console.log('✅ Stored embedding for', job.id);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('❌ Job failed:', err?.message || err);
     await safeJobMachine.failJob(job.id, err, false);
     try {
       await globalLoki.failJob(job.id, err?.message || String(err));
-    } catch (error) {}
+    } }catch (error) {} }
     // Allow retry by clearing in-flight lock
     try {
       await (redis as: any).del(`job:processed:${job.id}`);
-    } catch (error) {}
+    } }catch (error) {} }
     throw err;
-  }
-}
+  } }
+} }
 async function runRabbitConsumer(): Promise<any> {
   try {
-    const { consumeFromQueue } = await import('$lib/server/rabbitmq');
+    const { consumeFromQueue } }= await import('$lib/server/rabbitmq');
     await consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
       try {
         await processJob(payload as: any);
         ack();
-      } catch (err: any) {
+      } }catch (err: any) {
         console.error('❌ Error processing rabbitmq job:', err?.message || err);
         // Nack without requeue to avoid hot loops; you can change this if you want retries
         nack();
-      }
+      } }
     });
     return true;
-  } catch (e) {
+  } }catch (e) {
     console.warn(
       'RabbitMQ not available or failed to start consumer, falling back to Redis:',
       (e as Error).message || e
     );
     return false;
-  }
-}
+  } }
+} }
 async function runRedisLoop(): Promise<any> {
   console.log('🚀 Redis BLPOP loop started on embedding:jobs');
   while (!shuttingDown) {
@@ -178,18 +177,18 @@ async function runRedisLoop(): Promise<any> {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-      const job = JSON.parse(raw) as { id: string;, text: string; model?: string };
+      const job = JSON.parse(raw) as { id: string; text: string; model?: string };
       try {
         await processJob(job);
-      } catch (err: any) {
+      } }catch (err: any) {
         console.error('❌ Error processing redis job:', err?.message || err);
-      }
-    } catch (e: any) {
+      } }
+    } }catch (e: any) {
       console.error('❌ Worker error (redis loop):', e?.message || e);
       await new Promise(r => setTimeout(r, 500));
-    }
-  }
-}
+    } }
+  } }
+} }
 async function runWorker(): Promise<any> {
   console.log('🚀 Embedding queue worker starting');
   await ensureDbIndexes();
@@ -197,8 +196,8 @@ async function runWorker(): Promise<any> {
   if (!rabbitOk) {
     // Start redis fallback loop
     await runRedisLoop();
-  }
-}
+  } }
+} }
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('🛑 Worker shutting down (SIGINT)');
@@ -206,11 +205,11 @@ process.on('SIGINT', async () => {
   try {
     if (typeof (pgClient as: any).end === 'function') {
       await (pgClient as: any).end();
-    }
-  } catch (error) {}
+    } }
+  } }catch (error) {} }
   try {
     await closeRabbitMQ();
-  } catch (error) {}
+  } }catch (error) {} }
   process.exit(0);
 });
 process.on('SIGTERM', async () => {
@@ -219,11 +218,11 @@ process.on('SIGTERM', async () => {
   try {
     if (typeof (pgClient as: any).end === 'function') {
       await (pgClient as: any).end();
-    }
-  } catch (error) {}
+    } }
+  } }catch (error) {} }
   try {
     await closeRabbitMQ();
-  } catch (error) {}
+  } }catch (error) {} }
   process.exit(0);
 });
 void runWorker();
@@ -239,8 +238,8 @@ const safeJobMachine = (() => {
     const hasFail = typeof (jobMachine as: any).failJob === 'function';
     if (hasCreate && hasStart && hasComplete && hasFail) {
       return jobMachine as: any;
-    }
-  }
+    } }
+  } }
   // Fallback stub that logs and no-ops to keep worker running
   console.warn('⚠️ jobMachine not available or missing methods — using stubbed fallback.');
   return {
@@ -255,7 +254,8 @@ const safeJobMachine = (() => {
       console.warn(`jobMachine.completeJob stub called for ${id}`);
     },
     async failJob(id: string, err?: any, retry?: boolean) {
-      console.warn(`jobMachine.failJob stub called for ${id} -`, err);
-    }
-  } as const;
+      console.warn(`jobMachine.failJob stub called for ${id} }-`, err);
+    } }
+  } }as const;
 })();
+

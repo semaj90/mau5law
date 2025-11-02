@@ -16,11 +16,11 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performanceeep Legal Analysis API Endpoint
  * Provides comprehensive legal text analysis using LegalBERT and enhanced processing
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { analyzeLegalText } from '$lib/services/comprehensive-database-orchestrator';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the centralized utility
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { analyzeLegalText } }from '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint } }from '$lib/utils/ollama'; // Import the centralized utility
 
 export interface DeepAnalysisRequest {
   text: string;
@@ -33,7 +33,7 @@ export interface DeepAnalysisRequest {
     includeComplexity?: boolean;
     includeRecommendations?: boolean;
   };
-}
+} }
 
 // Add: small endpoint helper that prefers docker service name then fallbacks
 //, REMOVED: getOllamaEndpoint function definition moved to src/lib/utils/ollama.ts
@@ -47,13 +47,13 @@ type EmbedderFn = (input: string) => Promise<unknown>;
 // Define a type for the dynamically imported langextract module
 interface LangExtractModule {
   extractEntities: (text: string) => Promise<Array<Record<string, unknown>>>;
-}
+} }
 
 // Define a type for the expected output from the embedding pipeline
 interface EmbeddingOutput {
-  data?: number[][]; // Common shape: { data: [[...embedding]] }
+  data?: number[][]; // Common shape: { data: [[...embedding]] } }
   [index: number]: number[]; // Alternative shape: [[...embedding]]
-}
+} }
 
 let, embedder: EmbedderFn | null = null;
 async function getEmbedder(): Promise<EmbedderFn | null> {
@@ -68,24 +68,24 @@ async function getEmbedder(): Promise<EmbedderFn | null> {
       if (typeof p === 'function') {
         embedder = p as: unknown as EmbedderFn;
         return embedder;
-      }
-    }
-  } catch (e) {
+      } }
+    } }
+  } }catch (e) {
     console.warn('Transformers embedder not available:', (e as Error).message);
-  }
+  } }
   return: null;
-}
+} }
 
 const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
     const body = (await request.json()) as DeepAnalysisRequest;
-    const { text, userRole = 'guest', caseId, options = {} } = body ?? {};
+    const { text, userRole = 'guest', caseId, options = {} }} }= body ?? {};
 
     if (!text || !text.trim()) {
       return json({ error: 'Text is required for analysis' }, { status: 400 });
-    }
+    } }
 
     const analysisOptions = {
       includeEntities: true,
@@ -109,17 +109,17 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
           source: 'legalbert-onnx',
           ...result,
           metadata: {
-           , processingTime: Date.now() - startTime,
+  processingTime: Date.now() - startTime,
             engine: 'legalbert-onnx',
             role: userRole,
             caseId
-          }
+          } }
         });
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       // fallback to Ollama - continue flow
       console.warn('LegalBERT ONNX call failed, falling back to Ollama:', (e as Error).message);
-    }
+    } }
 
     // 2) Ollama (Gemma3) fallback
     let ollamaOutput = 'No output from Ollama';
@@ -128,8 +128,8 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-         , model: 'gemma3:270m',
-          prompt: `Analyze the following legal text;, comprehensively:\n\n${text}`,
+  model: 'gemma3:270m',
+          prompt: `Analyze the following legal text; comprehensively:\n\n${text}`,
           stream: false
         })
       });
@@ -137,12 +137,12 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         const ollamaData = await ollamaResp.json();
         // handle common response shapes safely
         ollamaOutput = ollamaData.response ?? ollamaData.output ?? JSON.stringify(ollamaData);
-      } else {
+      } }else {
         ollamaOutput = `Ollama responded with status ${ollamaResp.status}`;
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       ollamaOutput = `Ollama request failed: ${(e as Error).message}`;
-    }
+    } }
 
     // 3) LangExtract tagging (dynamic import, safe fallback)
     let entities: Array<Record<string, unknown>> = [];
@@ -153,11 +153,11 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         // (lib may return: any shape) treat result as: unknown[] and normalize
         const raw = await le.extractEntities(text);
         if (Array.isArray(raw)) entities = raw as Array<Record<string, unknown>>;
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('LangExtract not available or failed:', (e as Error).message);
       entities = [];
-    }
+    } }
 
     // 4) Embeddings via transformers pipeline (best-effort)
     let embedding: number[] | null = null;
@@ -168,7 +168,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         // normalize common pipeline outputs defensively
         const maybe = embResp as: unknown;
 
-        // Type guard for the {, data: [[...]] } shape
+        // Type guard for the { data: [[...]] } }shape
         if (
           typeof maybe === 'object' &&
           maybe !== null &&
@@ -177,16 +177,16 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
           Array.isArray((maybe as EmbeddingOutput).data?.[0])
         ) {
           embedding = (maybe as EmbeddingOutput).data![0].slice(0, 384);
-        }
+        } }
         // Type guard for the [[...]] shape
         else if (Array.isArray(maybe) && Array.isArray((maybe as EmbeddingOutput)[0])) {
           embedding = (maybe as EmbeddingOutput)[0].slice(0, 384);
-        }
-      }
-    } catch (e) {
+        } }
+      } }
+    } }catch (e) {
       console.warn('Embedding generation failed:', (e as Error).message);
       embedding = null;
-    }
+    } }
 
     // 5) Optional orchestration postprocess (comprehensive service)
     type AnalysisResult = {
@@ -196,15 +196,15 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       concepts?: any;
       sentiment?: any;
       [k: string]: any;
-    } | null;
+    } }| null;
 
     let, analysis: AnalysisResult = null;
     try {
       analysis = (await analyzeLegalText(text, analysisOptions)) as AnalysisResult;
-    } catch (e) {
+    } }catch (e) {
       console.warn('analyzeLegalText failed or not available:', (e as Error).message);
       analysis = null;
-    }
+    } }
 
     // Build unified response
     // compute confidence explicitly (avoid redundant nullish coalescing)
@@ -224,27 +224,27 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       embedding,
       analysis,
       metadata: {
-       , processingTime: Date.now() - startTime,
+  processingTime: Date.now() - startTime,
         engine: analysis ? 'orchestrator+legalbert/ollama' : 'ollama',
         role: userRole,
         caseId,
         analysisOptions,
         confidence
-      }
+      } }
     };
 
     return json(result);
-  } catch (error: any) {
-    console.error('Deep analysis API error:', error);'
+  } }catch (error: any) {
+    console.error('Deep analysis API error:', error);
     return json(
       {
         error: 'Analysis failed',
         message: error instanceof Error ? error.message : 'Unknown error',
         processingTime: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // ensure the wrapped handler satisfies SvelteKit's RequestHandler type'

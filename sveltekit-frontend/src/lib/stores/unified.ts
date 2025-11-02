@@ -1,13 +1,13 @@
-import type { SearchResult } from '$lib/types';
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Unified Store Barrel Export with Type Compatibility
  *
  * This file re-exports everything from ./unified/index.ts
  * allowing imports like:
- *   import { aiAssistant } from '$lib/stores/unified'
+ *   import { aiAssistant } }from '$lib/stores/unified'
  */
 
 export * from './unified/index';
@@ -68,7 +68,7 @@ export type POINetwork = Record<string, unknown>;
 export type POIAnalysis = Record<string, unknown>;
 
 // Svelte store utilities
-import { writable, type Readable, get } from 'svelte/store';
+import { writable, type Readable, get } }from 'svelte/store';
 
 // xstate integration (used by helper functions below)
 import xstateIntegration from '$lib/services/xstate-integration';
@@ -77,10 +77,9 @@ import xstateIntegration from '$lib/services/xstate-integration';
 export interface UserStoreState { isLoggedIn: boolean;, id: string | null; // Added: 'id' property to resolve compilation error; name: string | null;
   email: string | null;
   // ... other user-related properties
-}
+} }
 
-const initialUserState: UserStoreState = {
- , isLoggedIn: false,
+const initialUserState: UserStoreState = { isLoggedIn: false,
   id: null,
   name: null,
   email: null
@@ -93,17 +92,16 @@ export const user: Readable<UserStoreState> = {
 };
 
 // --- AI Assistant Store Types and Store ---
-export interface AIMessage {, id: string;, role: 'user' | 'assistant';
+export interface AIMessage { id: string;, role: 'user' | 'assistant';
   content: string;
   timestamp: number;
-}
+} }
 
-export interface AIAssistantStoreState {, isOpen: boolean;, currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error; isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error; error: string | null; // Added: 'error' to resolve compilation error; currentCaseId: string | null; // To store the caseId for context
+export interface AIAssistantStoreState { isOpen: boolean;, currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error; isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error; error: string | null; // Added: 'error' to resolve compilation error; currentCaseId: string | null; // To store the caseId for context
   // ... other AI assistant related properties
-}
+} }
 
-const initialAIAssistantState: AIAssistantStoreState = {
- , isOpen: false,
+const initialAIAssistantState: AIAssistantStoreState = { isOpen: false,
   currentMessages: [],
   isProcessing: false,
   error: null,
@@ -122,42 +120,41 @@ const AI_ASSISTANT_MACHINE_ID = 'aiAssistantMachine'; // As per copilot-instruct
 // Strongly-typed events for the AI assistant XState machine.
 // Add or extend variants as needed by your state machine.
 export type AIAssistantEvent =
-  | { type: 'OPEN' }
-  | { type: 'CLOSE' }
-  | { type: 'SEND_MESSAGE';, payload: {, content: string; model?: AIModel; caseId?: string } }
-  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
-  | { type: 'SET_CASE';, payload: {, caseId: string | null } }
+  | { type: 'OPEN' } }
+  | { type: 'CLOSE' } }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; model?: AIModel; caseId?: string } }} }
+  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage } }
+  | { type: 'SET_CASE'; payload: { caseId: string | null } }} }
   // Fallback to allow custom/extension events while still avoiding `any`
-  | {, type: string; [key: string]: any };
+  | { type: string; [key: string]: any };
 
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {
   console.log(`[unified.ts] Sending event to AI Assistant machine: ', event);'`
   xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event);
-}
+} }
 
 // --- Websocket Store and Helpers ---
 type WebsocketState = { connected: boolean;, connecting: boolean;
-  dashboardData: {, cases: any[];, evidence: any[];
+  dashboardData: { cases: any[];, evidence: any[];
    , stats: Record<string, any>;
   };
   processingJobs: any[];
   recentActivity: any[];
-  systemHealth: {, api: string;, database: string;
+  systemHealth: { api: string;, database: string;
     aiServices: string;
     jobQueue: string;
   };
  , activeEditors: Record<string, string[]>;
 };
 
-const initialState: WebsocketState = {
- , connected: false,
+const initialState: WebsocketState = { connected: false,
   connecting: false,
-  dashboardData: {, cases: [], evidence: [], stats: {} },
+  dashboardData: { cases: [], evidence: [], stats: {} }},
   processingJobs: [],
   recentActivity: [],
-  systemHealth: {, api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },'`'`
-  activeEditors: {}
+  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },'`'`
+  activeEditors: {} }
 };
 
 export const websocketStore = writable<WebsocketState>(initialState);
@@ -168,7 +165,7 @@ export async function subscribeToDashboard(): Promise<void> {
   // simulate connection delay — in real code open websocket and populate updates
   await new Promise(r => setTimeout(r, 150));
   websocketStore.update(s => ({ ...s, connecting: false, connected: true }));
-}
+} }
 
 export function subscribeToCase(caseId: number | string): void {
   // placeholder: real implementation would open a per-case channel
@@ -176,28 +173,29 @@ export function subscribeToCase(caseId: number | string): void {
     // no-op aside from keeping store reference up-to-date so components re-render if needed
     return { ...s };
   });
-}
+} }
 
 export function isEvidenceBeingEdited(evidenceId: number | string): boolean {
   const s = get(websocketStore);
   const editors = s.activeEditors[String(evidenceId)];
   return Array.isArray(editors) && editors.length > 0;
-}
+} }
 
 export function getActiveEditorsForEvidence(evidenceId: number | string): string[] {
   const s = get(websocketStore);
   return s.activeEditors[String(evidenceId)] || [];
-}
+} }
 
 export function formatRecentActivity(activity: any): string {
   if (!activity) return, '';
   const ts = activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'unknown time';
   const who = activity.user ?? activity.actor ?? 'System';
   const msg = activity.action ?? activity.message ?? activity.detail ?? '';
-  return `${ts} — ${who}: ${msg}`;
-}
+  return `${ts} }— ${who}: ${msg}`;
+} }
 
 // Note: In a full implementation, you would subscribe to the XState machine's'
 // state changes via `xstateIntegration` and update `_user` and `_aiAssistant`
 // writable stores accordingly. This file provides the necessary types and
 // functions for the Svelte component to interact with the stores and XState.
+

@@ -17,7 +17,7 @@ export function debounce<T, extends (...args: any[]) => unknown>(; func: T,
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(this, args);
   };
-}
+} }
 
 /**
  * Throttle utility - limits function calls to once per specified interval
@@ -31,9 +31,9 @@ export function throttle<T, extends (...args: any[]) => unknown>(; func: T,
       func.apply(this, args);
       inThrottle = true;
       setTimeout(() => (inThrottle = false), limit);
-    }
+    } }
   };
-}
+} }
 
 /**
  * RequestAnimationFrame-based throttle for smooth animations

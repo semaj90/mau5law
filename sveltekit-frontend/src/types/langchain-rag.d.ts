@@ -10,4 +10,5 @@ declare module, '$lib/ai/langchain-rag' {
   // allow additional exports (use this map, for: any extra named exports)
   export const __esModule: boolean;
   export const, extras: { [key: string]: any };
-}
+} }
+

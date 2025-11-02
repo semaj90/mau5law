@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { librarySyncService } from '$lib/services/library-sync-service';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { librarySyncService } }from '$lib/services/library-sync-service';
+import type { RequestHandler } }from './$types.js';
 import crypto from 'crypto';
 
 // helper to safely stringify: unknown errors
@@ -8,10 +8,10 @@ function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
-  } catch {
+  } }catch {
     return String(error);
-  }
-}
+  } }
+} }
 
 // GET /api/agent-logs - Get recent agent logs
 export const GET: RequestHandler = async ({ url }) => {
@@ -25,10 +25,10 @@ export const GET: RequestHandler = async ({ url }) => {
       logs,
       count: logs.length
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to get agent logs:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to get agent logs' }, { status: 500 });
-  }
+  } }
 };
 // POST /api/agent-logs - Log a new agent call
 export const POST: RequestHandler = async ({ request }) => {
@@ -45,8 +45,9 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Agent call logged successfully',
       logId: agentLog.id
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to log agent call:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to log agent call' }, { status: 500 });
-  }
+  } }
 };
+

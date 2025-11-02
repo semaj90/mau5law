@@ -1,15 +1,15 @@
-import { cognitiveCache } from '$lib/server/cache';
+import { cognitiveCache } }from '$lib/server/cache';
 
 export interface Candidate { id: string;, text: string;
-}
+} }
 
-export interface RerankInput {, query: string;, candidates: Candidate[];
-}
+export interface RerankInput { query: string;, candidates: Candidate[];
+} }
 
-export interface RerankOutput {, id: string;, text: string;
+export interface RerankOutput { id: string;, text: string;
  , score: number;
   vector?: number[];
-}
+} }
 
 const DEFAULT_TTL = 60 * 5; // 5 minutes
 
@@ -22,9 +22,9 @@ async function modelAdapter(input: RerankInput): Promise<RerankOutput[]> {
   return input.candidates.map((c) => ({
     ...c,
     score: Math.random() * 0.5 + (c.text.includes(input.query) ? 0.5 : 0),
-    vector: Array.from({, length: 768 }, () => Math.random()), // dummy embedding
+    vector: Array.from({ length: 768 }, () => Math.random()), // dummy embedding
   }));
-}
+} }
 
 /**
  * Apply Maximal Marginal Relevance (MMR) diversification
@@ -46,12 +46,12 @@ function applyMMRDiversification(candidates: RerankOutput[], lambda = 0.7, topK 
       if (combined > bestScore) {
         bestScore = combined;
         bestIdx = i;
-      }
-    }
+      } }
+    } }
     selected.push(pool.splice(bestIdx, 1)[0]);
-  }
+  } }
   return selected;
-}
+} }
 
 /**
  * Apply cross-encoder reranking (simulate server-side GPU)
@@ -69,7 +69,7 @@ async function applyCrossEncoderReranking(input: RerankInput): Promise<RerankOut
   // Cache results
   await cognitiveCache.storeJsonbDocument(cacheKey, reranked, DEFAULT_TTL);
   return reranked;
-}
+} }
 
 /**
  * Generate a comprehensive summary (server-side GPU simulation)
@@ -84,6 +84,6 @@ export async function generateComprehensiveSummary(docs: string[]): Promise<stri
 
   await cognitiveCache.storeJsonbDocument(cacheKey, summary, DEFAULT_TTL);
   return summary;
-}
+} }
 
 export const serverRerank = applyCrossEncoderReranking;

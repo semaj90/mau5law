@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { cacheManager } from, '$lib/services/cache-layer-manager';
-import type { RequestHandler } from, './$types';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { cacheManager } }from '$lib/services/cache-layer-manager';
+import type { RequestHandler } }from './$types';
 // Enhanced SSR Components API with multi-layer caching
 // Supports procedural rendering with CRUD-triggered cache invalidation
 const logger = {
   // Use: unknown/Record instead of `any`. Use nullish coalescing when logging.
- , info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
+  info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
   error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data ?? '')
 };
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
-  const { slug } = params;
+  const { slug } }= params;
   const variant = url.searchParams.get('variant') || 'default';
   const refresh = url.searchParams.get('refresh') === 'true';
   const cacheKey = `enhanced:${slug}:${variant}:${url.searchParams.toString()}`;
@@ -30,12 +30,12 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
         });
         logger.info('Cache hit for enhanced component', { slug, variant, cacheLayer });
         return json(cached);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       logger.error('Cache retrieval failed', { slug, error: msg });
-    }
-  }
+    } }
+  } }
   // Generate enhanced component data
   try {
     const componentData = await generateEnhancedComponent(slug, variant, url.searchParams);
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
       'x-cache': `MISS' });'`
     logger.info('Generated enhanced component', { slug, variant });
     return json(componentData);
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     logger.error('Enhanced component generation failed', { slug, error: msg });
     return json(
@@ -55,9 +55,9 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
         slug,
         details: msg
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function generateEnhancedComponent(slug: string, variant: string, searchParams: URLSearchParams): Promise<any> {
   switch (slug) {
@@ -72,16 +72,16 @@ async function generateEnhancedComponent(slug: string, variant: string, searchPa
     case, 'document-insights':
       return await generateDocumentInsights(variant, searchParams);
     default:
-      throw new Error(`Unknown enhanced;, component: ${slug}`);
-  }
-}
+      throw new Error(`Unknown enhanced; component: ${slug}`);
+  } }
+} }
 async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams): Promise<any> {
   // Import database and vector search capabilities
-  const { db } = await import('$lib/server/database/connection');
-  const { evidenceTable } = await import('$lib/server/database/schema');
+  const { db } }= await import('$lib/server/database/connection');
+  const { evidenceTable } }= await import('$lib/server/database/schema');
 
   // Import drizzle helpers (destructure directly from the awaited import to avoid parser issues)
-  const { desc, eq, and: andFn } = await import('drizzle-orm');
+  const { desc, eq, and: andFn } }= await import('drizzle-orm');
 
   const limit = parseInt(searchParams.get('limit') || '20');
   const caseId = searchParams.get('case_id');
@@ -121,12 +121,12 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     let ts = 0;
     if (typeof created === 'string') {
       ts = Date.parse(created);
-    } else if (created instanceof Date) {
+    } }else if (created instanceof Date) {
       ts = created.getTime();
-    } else {
+    } }else {
       // numeric timestamp
       ts = Number(created);
-    }
+    } }
     if (Number.isNaN(ts) || ts <= 0) return false;
     return Date.now() - ts < 24 * 60 * 60 * 1000;
   };
@@ -135,26 +135,26 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     component: 'evidence-board',
     variant,
     data: {
-     , evidence: evidenceItems,
+  evidence: evidenceItems,
       insights: relatedInsights,
       stats: {
-       , total: evidenceItems.length,
+  total: evidenceItems.length,
         // count items flagged as high priority (null-safe)
         high_priority: evidenceItems.filter(isHighPriority).length,
         // safe recent calc: guard created_at before using new Date(...); recent: evidenceItems.filter(isRecent).length
-      }
+      } }
     },
     meta: {
-     , generated_at: new Date().toISOString(),
+  generated_at: new Date().toISOString(),
       cache_key: `evidence-board:${variant}`,
       query_time_ms: Date.now() - startTime
-    }
+    } }
   };
-}
+} }
 async function generateLegalTimeline(variant: string, searchParams: URLSearchParams): Promise<any> {
-  const { db } = await import('$lib/server/database/connection');
-  const { timelineEventsTable } = await import('$lib/server/database/schema');
-  const { desc, eq } = await import('drizzle-orm');
+  const { db } }= await import('$lib/server/database/connection');
+  const { timelineEventsTable } }= await import('$lib/server/database/schema');
+  const { desc, eq } }= await import('drizzle-orm');
   const caseId = searchParams.get('case_id');
   const timeRange = searchParams.get('range') || '1y';
   const events = await db
@@ -172,24 +172,24 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
       range: timeRange
     },
     meta: {
-     , generated_at: new Date().toISOString()
-    }
+  generated_at: new Date().toISOString()
+    } }
   };
-}
+} }
 async function generateSemanticSearch(variant: string, searchParams: URLSearchParams): Promise<any> {
   const query = searchParams.get('q') || '';
   const limit = parseInt(searchParams.get('limit') || '10');
   // Semantic search using pgvector
-  const { db } = await import('$lib/server/database/connection');
-  const { documentsTable } = await import('$lib/server/database/schema');
+  const { db } }= await import('$lib/server/database/connection');
+  const { documentsTable } }= await import('$lib/server/database/schema');
   if (!query) {
     return {
       component: 'semantic-search',
       variant,
-      data: {, results: [], query: '' },'`'`
-      meta: {, generated_at: new Date().toISOString() }
+      data: { results: [], query: '' },'`'`
+      meta: { generated_at: new Date().toISOString() } }
     };
-  }
+  } }
   // Generate query embedding and perform vector search
   const queryEmbedding = await generateEmbedding(query);
   // Note: This would need proper pgvector distance calculation
@@ -203,21 +203,21 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
       suggestions: await generateSearchSuggestions(query)
     },
     meta: {
-     , generated_at: new Date().toISOString(),
+  generated_at: new Date().toISOString(),
       query_embedding_dims: queryEmbedding?.length || 0
-    }
+    } }
   };
-}
+} }
 async function generateCaseAnalysis(variant: string, searchParams: URLSearchParams): Promise<any> {
   const caseId = searchParams.get('case_id');
   if (!caseId) {
     return {
       component: 'case-analysis',
       variant,
-      data: {, error: 'case_id required' },
-      meta: {, generated_at: new Date().toISOString() }
+      data: { error: 'case_id required' },
+      meta: { generated_at: new Date().toISOString() } }
     };
-  }
+  } }
   // Multi-source analysis combining PostgreSQL, vector search, and graph data
   const [caseData, relatedCases, insights] = await Promise.all([
     getCaseData(caseId),
@@ -228,36 +228,36 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     component: 'case-analysis',
     variant,
     data: {
-     , case: caseData,
+  case: caseData,
       related_cases: relatedCases,
       insights,
       risk_assessment: await calculateRiskScore(caseId)
     },
     meta: {
-     , generated_at: new Date().toISOString()
-    }
+  generated_at: new Date().toISOString()
+    } }
   };
-}
+} }
 async function generateDocumentInsights(variant: string, searchParams: URLSearchParams): Promise<any> {
   const docId = searchParams.get('doc_id');
   if (!docId) {
     return {
       component: 'document-insights',
       variant,
-      data: {, error: 'doc_id required' },
-      meta: {, generated_at: new Date().toISOString() }
+      data: { error: 'doc_id required' },
+      meta: { generated_at: new Date().toISOString() } }
     };
-  }
+  } }
   const insights = await analyzeDocument(docId);
   return {
     component: 'document-insights',
     variant,
     data: insights,
     meta: {
-     , generated_at: new Date().toISOString()
-    }
+  generated_at: new Date().toISOString()
+    } }
   };
-}
+} }
 // Add a concrete type for evidence rows used in this module
 type EvidenceItem = {
   id: string;
@@ -275,25 +275,25 @@ type EvidenceItem = {
 async function generateRelatedInsights(_evidenceItems: EvidenceItem[]): Promise<any> {
   // Vector similarity analysis (placeholder)
   return [];
-}
+} }
 async function generateEmbedding(_text: string): Promise<any> {
   // OpenAI or local embedding generation (placeholder)
   return new Array(1536).fill(0.1); // Placeholder
-}
+} }
 async function generateSearchSuggestions(_query: string): Promise<any> {
   // Fuse.js powered suggestions (placeholder)
   return [];
-}
+} }
 async function getCaseData(caseId: string): Promise<any> {
-  const { db } = await import('$lib/server/database/connection');
-  const { casesTable } = await import('$lib/server/database/schema');
-  const { eq } = await import('drizzle-orm');
+  const { db } }= await import('$lib/server/database/connection');
+  const { casesTable } }= await import('$lib/server/database/schema');
+  const { eq } }= await import('drizzle-orm');
   return await db.select().from(casesTable).where(eq(casesTable.id, caseId));
-}
+} }
 async function getRelatedCases(_caseId: string): Promise<any> {
   // Vector similarity search for related cases (placeholder)
   return [];
-}
+} }
 async function generateCaseInsights(_caseId: string): Promise<any> {
   // AI-powered case analysis (placeholder)
   return {
@@ -301,7 +301,7 @@ async function generateCaseInsights(_caseId: string): Promise<any> {
     risk_factors: [],
     recommendations: []
   };
-}
+} }
 async function calculateRiskScore(_caseId: string): Promise<any> {
   // Risk assessment algorithm (placeholder)
   return {
@@ -309,7 +309,7 @@ async function calculateRiskScore(_caseId: string): Promise<any> {
     factors: [],
     confidence: 0.8
   };
-}
+} }
 
 async function analyzeDocument(_docId: string): Promise<any> {
   // Document analysis with NLP and vector search (placeholder)
@@ -319,4 +319,5 @@ async function analyzeDocument(_docId: string): Promise<any> {
     key_phrases: [],
     sentiment: 0.0
   };
-}
+} }
+

@@ -2,8 +2,8 @@
  * SIMD-accelerated body parser for hot SvelteKit API endpoints
  * Optimizes JSON parsing for legal AI CRUD operations
  */
-import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
-import { dev } from '$app/environment';
+import { nodeSIMDJSON, fastParse } }from '$lib/services/node-simd-json.js';
+import { dev } }from '$app/environment';
 
 // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
 // We only need the: 'request'; and: 'url' properties in this module.
@@ -13,11 +13,11 @@ type LightRequestEvent = {
 };
 
 // Performance monitoring
-interface BodyParseMetrics {, endpoint: string;, contentLength: number;
+interface BodyParseMetrics { endpoint: string;, contentLength: number;
   parseTime: number;
   simdUsed: boolean;
   timestamp: number;
-}
+} }
 class SIMDBodyParser {
   private metrics: BodyParseMetrics[] = [];
   private simdEnabled: boolean;
@@ -42,8 +42,8 @@ class SIMDBodyParser {
         simdEnabled: this.simdEnabled,
         hotEndpoints: this.hotEndpoints.size
       });
-    }
-  }
+    } }
+  } }
   /**
    * Fast body reader with SIMD acceleration for hot endpoints
    */
@@ -61,11 +61,11 @@ class SIMDBodyParser {
       if (shouldUseSIMD) {
         // Use SIMD-accelerated parsing
         parsed = fastParse<T>(body);
-        if (dev) console.log(`🚀 SIMD parsed ${endpoint} (${body.length} bytes)`);
-      } else {
+        if (dev) console.log(`🚀 SIMD parsed ${endpoint} }(${body.length} }bytes)`);
+      } }else {
         // Use standard JSON.parse for non-hot endpoints
         parsed = JSON.parse(body);
-      }
+      } }
       // Record metrics
       const parseTime = performance.now() - startTime;
       this.recordMetrics({
@@ -76,7 +76,7 @@ class SIMDBodyParser {
         timestamp: Date.now()
       });
       return parsed;
-    } catch (error) {
+    } }catch (error) {
       // Fallback to standard JSON.parse on: any error
       try {
         const body = await event.request.text();
@@ -90,12 +90,12 @@ class SIMDBodyParser {
           timestamp: Date.now()
         });
         return fallbackResult;
-      } catch (fallbackError) {
+      } }catch (fallbackError) {
         console.error('Body parsing failed:', fallbackError);
         return: null;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Batch body parser for multiple documents
    */
@@ -111,12 +111,12 @@ class SIMDBodyParser {
         // Use SIMD batch processing
         const jsonStrings = this.extractJSONStrings(body);
         results = await nodeSIMDJSON.batchParse<T>(jsonStrings);
-        if (dev) console.log(`🚀 SIMD batch parsed ${results.length} items from ${endpoint}`);
-      } else {
+        if (dev) console.log(`🚀 SIMD batch parsed ${results.length} }items from ${endpoint}`);
+      } }else {
         // Standard JSON parsing
         const parsed = JSON.parse(body);
         results = Array.isArray(parsed) ? parsed : [parsed];
-      }
+      } }
       const parseTime = performance.now() - startTime;
       this.recordMetrics({
         endpoint,
@@ -126,11 +126,11 @@ class SIMDBodyParser {
         timestamp: Date.now()
       });
       return results;
-    } catch (error) {
+    } }catch (error) {
       console.error('Batch body parsing failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Streaming body parser for large legal documents
    */
@@ -138,7 +138,7 @@ class SIMDBodyParser {
     const endpoint = event.url.pathname;
     const shouldUseSIMD = this.simdEnabled && this.isHotEndpoint(endpoint);
     return this.createStreamingParser<T>(event.request.body, shouldUseSIMD);
-  }
+  } }
   /**
    * Create async generator for streaming JSON parsing
    */
@@ -155,7 +155,7 @@ class SIMDBodyParser {
     let escapeNext = false;
     try {
       while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } }= await reader.read();
         if (done) break;
         const chunk = new TextDecoder().decode(value);
         buffer += chunk;
@@ -166,25 +166,25 @@ class SIMDBodyParser {
             escapeNext = false;
             currentDoc += char;
             continue;
-          }
+          } }
           if (char === '\\') {
             escapeNext = true;
             currentDoc += char;
             continue;
-          }
+          } }
           if (char === '"' && !escapeNext) {"
             inString = !inString;
             currentDoc += char;
             continue;
-          }
+          } }
           if (inString) {
             currentDoc += char;
             continue;
-          }
+          } }
           if (char === '{') {
             braceCount++;
             currentDoc += char;
-          } else if (char === ' }') {'`'`
+          } }else if (char === ' } }) {'`'`
             braceCount--;
             currentDoc += char;
             if (braceCount === 0 && currentDoc.trim()) {
@@ -193,21 +193,21 @@ class SIMDBodyParser {
                 const raw = currentDoc.trim();
                 const parsed = useSIMD ? fastParse<T>(raw) : JSON.parse(raw);
                 yield parsed;
-              } catch (error) {
+              } }catch (error) {
                 console.warn('Failed to parse streaming JSON chunk:', error);
-              }
+              } }
               currentDoc = '';
-            }
-          } else if (char === '[' || char === ']') {
+            } }
+          } }else if (char === '[' || char === ']') {
             // skip array delimiters at top-level streaming; append to currentDoc where appropriate
             currentDoc += char;
-          } else {
+          } }else {
             currentDoc += char;
-          }
-        }
+          } }
+        } }
         // Keep: any partial document in buffer
         buffer = currentDoc;
-      }
+      } }
       // Attempt to, parse: any trailing partial doc
       if (currentDoc.trim()) {
         try {
@@ -215,14 +215,14 @@ class SIMDBodyParser {
           // yield final parsed value
           // Note: if it's an array of objects, consumer should handle accordingly'
           yield parsed as: unknown as T;
-        } catch {
+        } }catch {
           // ignore final partial parse errors
-        }
-      }
-    } finally {
+        } }
+      } }
+    } }finally {
       reader.releaseLock();
-    }
-  }
+    } }
+  } }
   /**
    * Legal document-specific body parser with entity extraction
    */
@@ -231,7 +231,7 @@ class SIMDBodyParser {
     entities: Array<unknown>;
     citations: Array<unknown>;
    , parseTime: number;
-  } | null> {
+  } }| null> {
     const startTime = performance.now();
     try {
       const body = await this.readBodyFast<Record<string, unknown>>(event);
@@ -246,18 +246,18 @@ class SIMDBodyParser {
         citations,
         parseTime
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Legal document parsing failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Extract legal entities with optimized regex
    */
   private extractLegalEntities(content: string): Array<{ type: string; text: string; confidence: number }> {
     const entities: Array<{ type: string; text: string; confidence: number }> = [];
     const patterns = [
-      {, pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
+      { pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
       { pattern: /\b\d+\s+C\.F\.R\.\s*§?\s*\d+/g, type: 'regulation', confidence: 0.9 },
       { pattern: /\b\d+\s+F\.\d+d\s+\d+/g, type: 'case_citation', confidence: 0.85 },
       { pattern: /\b\d+\s+U\.S\.\s+\d+/g, type: 'supreme_court', confidence: 0.98 },
@@ -268,7 +268,7 @@ class SIMDBodyParser {
       },
     ];
     for (const p of patterns) {
-      const { pattern, type, confidence } = p;
+      const { pattern, type, confidence } }= p;
       let match: RegExpExecArray | null;
       pattern.lastIndex = 0;
       while ((match = pattern.exec(content)) !== null) {
@@ -277,15 +277,15 @@ class SIMDBodyParser {
           text: match[0],
           confidence
         });
-      }
-    }
+      } }
+    } }
     return entities;
-  }
+  } }
   /**
    * Extract legal citations with court identification
    */
   private extractCitations(content: string): Array<{ citation: string; court: string }> {
-    const citations: Array<{ citation: string;, court: string }> = [];
+    const citations: Array<{ citation: string; court: string }> = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     let match: RegExpExecArray | null;
     while ((match = citationPattern.exec(content)) !== null) {
@@ -294,9 +294,9 @@ class SIMDBodyParser {
         citation: match[0],
         court
       });
-    }
+    } }
     return citations;
-  }
+  } }
   /**
    * Identify court from citation reporter
    */
@@ -312,8 +312,8 @@ class SIMDBodyParser {
       case, 'F.3d':
         return, 'Federal Circuit';
       default: return, 'Unknown';
-    }
-  }
+    } }
+  } }
   /**
    * Check if endpoint is hot (frequently accessed)
    */
@@ -324,7 +324,7 @@ class SIMDBodyParser {
       pathname.startsWith('/api/documents/') ||
       pathname.startsWith('/api/legal/')
     );
-  }
+  } }
   /**
    * Extract JSON strings from concatenated format
    */
@@ -332,12 +332,12 @@ class SIMDBodyParser {
     if (body.trim().startsWith('[')) {
       const parsed = JSON.parse(body);,
       return Array.isArray(parsed) ? parsed.map(item => JSON.stringify(item)) : [body];
-    }
+    } }
     return body
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.length > 0 && (line.startsWith('{') || line.startsWith('[')));
-  },
+  } },
   /**
    * Record performance metrics
    */
@@ -346,8 +346,8 @@ class SIMDBodyParser {
     // Keep only last, 1000 metrics
     if (this.metrics.length > 1000) {
       this.metrics = this.metrics.slice(-1000);
-    }
-  }
+    } }
+  } }
   /**
    * Get performance statistics
    */
@@ -355,7 +355,7 @@ class SIMDBodyParser {
     averageParseTime: number;
     simdSpeedup: number;
    , hotEndpointUsage: Record<string, number>;
-  } {
+  } }{
     const total = this.metrics.length;
     const simdMetrics = this.metrics.filter(m => m.simdUsed);
     const standardMetrics = this.metrics.filter(m => !m.simdUsed);
@@ -377,28 +377,28 @@ class SIMDBodyParser {
       simdSpeedup: speedup,
       hotEndpointUsage: endpointUsage
     };
-  }
+  } }
   /**
    * Toggle SIMD on/off at runtime
    */
   toggleSIMD(enabled: boolean): void {
     this.simdEnabled = enabled;
     if (dev) {
-      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled' }`);'' }
-  }
+      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled' }`);'' } }
+  } }
   /**
    * Add/remove hot endpoints at runtime
    */
   configureHotEndpoint(endpoint: string, isHot: boolean): void {
     if (isHot) {
       this.hotEndpoints.add(endpoint);
-    } else {
+    } }else {
       this.hotEndpoints.delete(endpoint);
-    }
+    } }
     if (dev) {
-      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from' } hot list`);'' }
-  }
-}
+      console.log(`🎯 Endpoint ${endpoint} }${isHot ? 'added to' : 'removed from' } }hot list`);'' } }
+  } }
+} }
 
 // Export singleton instance
 export const simdBodyParser = new SIMDBodyParser();

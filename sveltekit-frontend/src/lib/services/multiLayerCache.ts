@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import Loki from 'lokijs';
 import Fuse from 'fuse.js'; // Removed FuseResult from here
-import { browser } from '$app/environment';
-import type { SearchResult } from './aiPipeline.js';
+import { browser } }from '$app/environment';
+import type { SearchResult } }from './aiPipeline.js';
 
 // Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
 type Collection<T, extends, object> = {
@@ -34,21 +34,21 @@ interface SearchableValue {
   summary?: string;
   // Allow other properties for flexibility
   [key: string]: any;
-}
+} }
 
 // Define the structure for items stored in the search index
-interface SearchIndexEntry {, id: string;, type: CacheEntry['metadata']['type'];
+interface SearchIndexEntry { id: string;, type: CacheEntry['metadata']['type'];
   userId?: string;
   content: string;
   title?: string;
   summary?: string;
   metadata: CacheEntry['metadata'];
   tags?: string[];
-}
+} }
 
-export interface CacheEntry {, id: string;, key: string;
+export interface CacheEntry { id: string;, key: string;
   value: CacheValue; // Use the defined CacheValue type
-  metadata: {, type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';, createdAt: Date;
+  metadata: { type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';, createdAt: Date;
     lastAccessed: Date;
     accessCount: number;
     ttl: number; // Time to live in seconds
@@ -56,8 +56,8 @@ export interface CacheEntry {, id: string;, key: string;
     userId?: string;
     tags?: string[];
   };
-}
-export interface CacheStats {, totalEntries: number;, totalSize: number;
+} }
+export interface CacheStats { totalEntries: number;, totalSize: number;
   hitRate: number;
   evictionCount: number;
   avgAccessTime: number;
@@ -65,13 +65,12 @@ export interface CacheStats {, totalEntries: number;, totalSize: number;
     persistent: { entries: number; size: number; hitRate: number };
     search: { entries: number; queries: number };
   };
-}
-export interface FuseSearchOptions {
- , keys: string[];
+} }
+export interface FuseSearchOptions { keys: string[];
   threshold?: number;
   limit?: number;
   includeScore?: boolean;
-}
+} }
 
 // Add a concrete LokiCondition type (avoid `any` and remove unused generic)
 type LokiCondition<T> = {
@@ -86,7 +85,7 @@ interface IFuseResult<T> {
   item: T;
   score?: number | null;
   refIndex?: number;
-}
+} }
 
 export class MultiLayerCache {
   private memoryDb: Loki;
@@ -122,10 +121,10 @@ export class MultiLayerCache {
     // Initialize persistent storage if in browser
     if (browser) {
       this.initPersistentStorage();
-    }
+    } }
     // Start cleanup interval
     this.startCleanupInterval();
-  }
+  } }
   /**
    * Initialize persistent storage using IndexedDB
    */
@@ -139,37 +138,34 @@ export class MultiLayerCache {
       });
 
       // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
-      type LokiWithLoad = { loadDatabase(opts: any;, callback: () => void): void };
+      type LokiWithLoad = { loadDatabase(opts: any; callback: () => void): void };
       await new Promise<void>(resolve => {
         (this.persistentDb as: unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to initialize persistent storage:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Set a value in the cache with multi-layer storage
    */
   async set(
     key: string,
     value: CacheValue,
-    options: {
-     , type: CacheEntry['metadata']['type'];
+    options: { type: CacheEntry['metadata']['type'];
       ttl?: number;
       userId?: string;
       tags?: string[];
       persistent?: boolean;
-    }
+    } }
   ): Promise<void> {
     const startTime = Date.now();
     try {
       const size = this.calculateSize(value);
-      const entry: CacheEntry = {
-       , id: crypto.randomUUID(),
+      const entry: CacheEntry = { id: crypto.randomUUID(),
         key,
         value,
-        metadata: {
-         , type: options.type,
+        metadata: { type: options.type,
           createdAt: new Date(),
           lastAccessed: new Date(),
           accessCount: 0,
@@ -177,7 +173,7 @@ export class MultiLayerCache {
           size,
           userId: options.userId,
           tags: options.tags
-        }
+        } }
       };
       // Check memory size and evict if necessary
       await this.evictIfNecessary(size);
@@ -187,19 +183,19 @@ export class MultiLayerCache {
       if (options.persistent && this.persistentDb) {
         const persistentCollection = this.getPersistentCollection(options.type);
         persistentCollection.insert(entry);
-      }
+      } }
       // Update search index if it's searchable content'
       if (options.type === 'document' || options.type === 'search') {
         this.updateSearchIndex(entry);
-      }
+      } }
       // Update access time stats
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
-    } catch (error: any) {
-      console.error('Cache set error:', error);'
+    } }catch (error: any) {
+      console.error('Cache set error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get a value from the cache (checks all layers)
    */
@@ -215,7 +211,7 @@ export class MultiLayerCache {
         this.stats.hits++;
         this.updateAccessMetadata(entry);
         return entry.value as T;
-      }
+      } }
       // Check persistent cache if available
       if (this.persistentDb) {
         const collections: CacheEntry['metadata']['type'][] = [
@@ -238,16 +234,16 @@ export class MultiLayerCache {
             this.cacheCollection.insert(entry);
             this.updateAccessMetadata(entry);
             return entry.value as T;
-          }
-        }
-      }
+          } }
+        } }
+      } }
       this.stats.misses++;
       return: null;
-    } finally {
+    } }finally {
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
-    }
-  }
+    } }
+  } }
   /**
    * Perform fuzzy search using Fuse.js
    */
@@ -265,7 +261,7 @@ export class MultiLayerCache {
       const docs = this.searchCollection.find({ type: collectionName });
       if (docs.length === 0) {
         return [];
-      }
+      } }
       // Create Fuse instance with configuration (typed)
       fuse = new Fuse<SearchIndexEntry>(docs, {
         keys: options.keys,
@@ -278,7 +274,7 @@ export class MultiLayerCache {
         useExtendedSearch: true
       });
       this.fuseInstances.set(fuseKey, fuse);
-    }
+    } }
     // Perform search and assert typed results
     const results = fuse.search(query).slice(0, options.limit || 10) as: unknown as IFuseResult<SearchIndexEntry>[];
     return results.map(result => ({
@@ -286,7 +282,7 @@ export class MultiLayerCache {
      , item: result.item as T,
       score: result.score ?? undefined
     }));
-  }
+  } }
   /**
    * Search for documents with advanced filtering
    */
@@ -296,8 +292,8 @@ export class MultiLayerCache {
       type?: string;
       userId?: string;
       tags?: string[];
-      dateRange?: { start: Date;, end: Date };
-    }
+      dateRange?: { start: Date; end: Date };
+    } }
   ): Promise<SearchResult[]> {
     // Build Loki query
     // Define a type for Loki.js queries on SearchIndexEntry that allows dot-notation: string keys
@@ -305,16 +301,16 @@ export class MultiLayerCache {
       'metadata.createdAt'?: LokiCondition<Date>;
     };
 
-    const lokiQuery: LokiQueryForSearchIndexEntry = {, type: `document' };'`
+    const lokiQuery: LokiQueryForSearchIndexEntry = { type: `document' };'`
     if (filters?.userId) {
       lokiQuery['userId'] = filters.userId;
-    }
+    } }
     if (filters?.dateRange) {
       lokiQuery['metadata.createdAt'] = {
         $gte: filters.dateRange.start,
         $lte: filters.dateRange.end
       };
-    }
+    } }
     // Get documents from search collection
     const documents = this.searchCollection.find(lokiQuery);
     // Use Fuse.js for fuzzy search on content (typed)
@@ -333,7 +329,7 @@ export class MultiLayerCache {
         const docTags = result.item.tags || [];
         return filters.tags!.some((tag: string) => docTags.includes(tag));
       });
-    }
+    } }
     // Convert to SearchResult format
     return filteredResults.map(result => ({
       id: result.item.id,
@@ -341,21 +337,21 @@ export class MultiLayerCache {
       score: 1 - (result.score || 0), // Convert Fuse score to similarity
       metadata: result.item.metadata
     }));
-  }
+  } }
   /**
    * Invalidate cache entries
    */
   async invalidate(
     pattern: string | RegExp,
-    options?: { type?: CacheEntry['metadata']['type']; userId?: string }
+    options?: { type?: CacheEntry['metadata']['type']; userId?: string } }
   ): Promise<number> {
     const query: Partial<CacheEntry['metadata']> = {};
     if (options?.type) {
       query['type'] = options.type;
-    }
+    } }
     if (options?.userId) {
       query['userId'] = options.userId;
-    }
+    } }
     // Find matching entries
     const entries = this.cacheCollection.find(query);
     let invalidatedCount = 0;
@@ -364,8 +360,8 @@ export class MultiLayerCache {
       if (matches) {
         this.cacheCollection.remove(entry);
         invalidatedCount++;
-      }
-    }
+      } }
+    } }
     // Also invalidate in persistent storage
     if (this.persistentDb && options?.type) {
       const collection = this.getPersistentCollection(options.type);
@@ -374,11 +370,11 @@ export class MultiLayerCache {
         const matches = pattern instanceof RegExp ? pattern.test(entry.key) : entry.key.includes(pattern);
         if (matches) {
           collection.remove(entry);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return invalidatedCount;
-  }
+  } }
   /**
    * Get cache statistics
    */
@@ -398,22 +394,20 @@ export class MultiLayerCache {
       hitRate,
       evictionCount: this.stats.evictions,
       avgAccessTime,
-      layerStats: {, memory: {, entries: memoryEntries,
+      layerStats: { memory: { entries: memoryEntries,
           size: memorySize,
           hitRate
         },
-        persistent: {
-         , entries: 0, // Would need to count from persistent DB
+        persistent: { entries: 0, // Would need to count from persistent DB
           size: 0,
           hitRate: 0
         },
-        search: {
-         , entries: searchEntries,
+        search: { entries: searchEntries,
           queries: this.fuseInstances.size
-        }
-      }
+        } }
+      } }
     };
-  }
+  } }
   /**
    * Clear all cache entries
    */
@@ -429,9 +423,9 @@ export class MultiLayerCache {
         for (const type of types) {
           const collection = this.getPersistentCollection(type);
           collection.clear();
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       // Clear specific entries
       const query: Partial<CacheEntry['metadata']> = {};
       if (options.type) query['type'] = options.type;
@@ -439,13 +433,13 @@ export class MultiLayerCache {
       const entries = this.cacheCollection.find(query);
       for (const entry of entries) {
         this.cacheCollection.remove(entry);
-      }
+      } }
       // Clear from search index
       const searchEntries = this.searchCollection.find(query);
       for (const entry of searchEntries) {
         this.searchCollection.remove(entry);
-      }
-    }
+      } }
+    } }
     // Reset stats
     this.stats = {
       hits: 0,
@@ -454,16 +448,16 @@ export class MultiLayerCache {
       totalAccessTime: 0,
       accessCount: 0
     };
-  }
+  } }
   /**
    * Calculate size of a value
    */
   private calculateSize(value: CacheValue): number {
     if (typeof value === 'string') {
       return value.length * 2; // Approximate UTF-16 size
-    }
+    } }
     return JSON.stringify(value).length * 2;
-  }
+  } }
   /**
    * Evict entries if necessary
    */
@@ -474,7 +468,7 @@ export class MultiLayerCache {
     ); // Explicitly type sum and entry
     if (currentSize + requiredSize <= this.maxMemorySize) {
       return;
-    }
+    } }
     // Sort by last accessed (LRU) - manual sort since simplesort has issues with nested properties
     const allEntries = this.cacheCollection.data;
     const sortedEntries = allEntries.sort((a: CacheEntry, b: CacheEntry) => {
@@ -487,15 +481,15 @@ export class MultiLayerCache {
     for (const entry of sortedEntries) {
       if (currentSize - freedSize + requiredSize <= this.maxMemorySize) {
         break;
-      }
+      } }
       this.cacheCollection.remove(entry);
       freedSize += entry.metadata.size;
       this.stats.evictions++;
-    }
+    } }
 
     // ensure function returns (async functions implicitly return a resolved Promise<void> when done)
     return;
-  }
+  } }
   /**
    * Update access metadata
    */
@@ -503,7 +497,7 @@ export class MultiLayerCache {
     entry.metadata.lastAccessed = new Date();
     entry.metadata.accessCount++;
     this.cacheCollection.update(entry);
-  }
+  } }
   /**
    * Update search index
    */
@@ -522,15 +516,15 @@ export class MultiLayerCache {
       });
       // Clear Fuse instances to force rebuild
       this.fuseInstances.clear();
-    }
-  }
+    } }
+  } }
   /**
    * Get persistent collection by type
    */
   private getPersistentCollection(type: CacheEntry['metadata']['type']): Collection<CacheEntry> {
     if (!this.persistentDb) {
       throw new Error('Persistent storage not initialized');
-    }
+    } }
     // Cast Loki's getCollection/addCollection results to the local Collection type'
     let collection = this.persistentDb.getCollection(`cache_${type}`) as: unknown as Collection<CacheEntry> | null;
     if (!collection) {
@@ -538,9 +532,9 @@ export class MultiLayerCache {
         indices: ['key'],
         ttl: this.defaultTTL * 1000 * 10, // 10x TTL for persistent
       }) as: unknown as Collection<CacheEntry>;
-    }
+    } }
     return collection;
-  }
+  } }
   /**
    * Start cleanup interval
    */
@@ -555,24 +549,24 @@ export class MultiLayerCache {
           entries.slice(10).forEach(([key]) => {
             this.fuseInstances.delete(key);
           });
-        }
+        } }
       }, 60000); // Every minute
-    }
-  }
-}
+    } }
+  } }
+} }
 // IndexedDB adapter for Loki.js
 class LokiIndexedAdapter {
   private db: IDBDatabase | null = null;
 
-  constructor(private, dbName: string) {}
+  constructor(private, dbName: string) {} }
 
   private async getDb(): Promise<IDBDatabase> {
     if (this.db) {
       return this.db;
-    }
+    } }
     this.db = await this.openDB();
     return this.db;
-  }
+  } }
 
   // Accept: 'opts', as: unknown to match how Loki may call the adapter
   async loadDatabase(opts: any, callback: (data: string | null) => void): Promise<void> {
@@ -588,11 +582,11 @@ class LokiIndexedAdapter {
       request.onerror = () => {
         callback(null);
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to load database:', error);
       callback(null);
-    }
-  }
+    } }
+  } }
   async saveDatabase(dbname: string, dbstring: string, callback: () => void): Promise<void> {
     try {
       const db = await this.getDb();
@@ -606,11 +600,11 @@ class LokiIndexedAdapter {
         console.error('Failed to save database');
         callback();
       };
-    } catch (error: any) {
-      console.error('Database save error:', error);'
+    } }catch (error: any) {
+      console.error('Database save error:', error);
       callback();
-    }
-  }
+    } }
+  } }
   private openDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, 1);
@@ -620,10 +614,10 @@ class LokiIndexedAdapter {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('database')) {
           db.createObjectStore('database', { keyPath: `id' });'`
-        }
+        } }
       };
     });
-  }
+  } }
   /**
    * Cleanup cache resources
    */
@@ -632,8 +626,9 @@ class LokiIndexedAdapter {
     if (browser && typeof window !== 'undefined' && this.db) {
       this.db.close();
       this.db = null;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const multiLayerCache = new MultiLayerCache();
+

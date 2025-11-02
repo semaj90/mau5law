@@ -1,4 +1,4 @@
-import { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask } from '../services/context7-multicore.js';
+import { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask } }from '../services/context7-multicore.js';
 /**
  * Comprehensive Agent Orchestration with Context7 Multicore Integration
  * Wires together all agents (Claude, CrewAI, AutoGen) with the Context7 multicore service
@@ -9,19 +9,18 @@ export interface ClaudeAgentRequest {
   prompt: string;
   context?: any;
   options?: any;
-}
+} }
 export interface CrewAIAgentRequest {
   prompt: string;
   context?: any;
   options?: any;
-}
+} }
 export interface AutoGenAgentRequest {
   prompt: string;
   context?: any;
   options?: any;
-}
-export interface ComprehensiveAgentRequest {
- , prompt: string;
+} }
+export interface ComprehensiveAgentRequest { prompt: string;
   context?: any;
   options?: {
     agents?: ('claude' | 'crewai' | 'autogen')[];
@@ -33,8 +32,8 @@ export interface ComprehensiveAgentRequest {
     errorAnalysis?: boolean;
     caseId?: string;
     evidenceIds?: string[];
-  }
-}
+  } }
+} }
 
 // --- Replace loose `any` uses with concrete types ---
 type Priority = 'low' | 'medium' | 'high' | 'critical';
@@ -43,52 +42,50 @@ export type AgentResult = { output: string;, score: number;
  , metadata: Record<string, unknown>;
 };
 
-export interface ComprehensiveAgentResponse { bestResult: {, output: string;
+export interface ComprehensiveAgentResponse { bestResult: { output: string;
     score: number;
     agent: string;
    , metadata: Record<string, unknown>;
   };
-  allResults: Array<{, agent: string;, output: string;
+  allResults: Array<{ agent: string;, output: string;
     score: number;
    , metadata: Record<string, unknown>;
   }>;
   multicoreAnalysis?: MulticoreAnalysis;
-  systemStatus: {, agentsExecuted: number;, totalProcessingTime: number;
+  systemStatus: { agentsExecuted: number;, totalProcessingTime: number;
     multicoreTasksCompleted: number;
     errorReduction?: number;
   };
-}
+} }
 
 interface WorkerStatus {
   id?: string;
   status: 'healthy' | 'unhealthy' | string;
   [key: string]: any;
-}
+} }
 
-interface SystemStatus {
- , workers: WorkerStatus[];
+interface SystemStatus { workers: WorkerStatus[];
   metrics?: Record<string, unknown>;
   [key: string]: any;
-}
+} }
 
 export interface TaskWaitResult {
   status: 'pending' | 'completed' | 'failed';
   result?: any;
-}
+} }
 
-export interface MulticoreAnalysis {
- , recommendations: string[];
+export interface MulticoreAnalysis { recommendations: string[];
   errorPatterns?: any;
   performanceMetrics?: Record<string, unknown>;
   tasksCompleted?: number;
-}
+} }
 
 // New: explicit result type for error analysis (replace `any`)
 export interface ErrorAnalysisResult { analysis: any | null;, recommendations: string[];
  , fixSuggestions: string[];
   taskId?: string;
   status?: TaskWaitResult['status'];
-}
+} }
 
 interface Context7MulticoreService {
   getSystemStatus(): SystemStatus;
@@ -96,7 +93,7 @@ interface Context7MulticoreService {
   generateRecommendations(req: RecommendationRequest, priority?: Priority): Promise<ProcessingTask>;
   waitForTask(taskId: string, timeoutMs?: number): Promise<TaskWaitResult>;
   // extend with other members if you use them later
-}
+} }
 
 export class ComprehensiveAgentOrchestrator {
   // narrow to the local interface so TS knows which members exist
@@ -111,7 +108,7 @@ export class ComprehensiveAgentOrchestrator {
       maxConcurrentTasks: 25,
       enableGPU: true
     }) as: unknown as Context7MulticoreService;
-  }
+  } }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     console.log('🚀 Initializing Comprehensive Agent Orchestrator...');
@@ -121,15 +118,15 @@ export class ComprehensiveAgentOrchestrator {
         const status: SystemStatus = this.multicoreService.getSystemStatus();
         if (status.workers.length > 0 && status.workers.some((w: WorkerStatus) => w.status === 'healthy')) {
           resolve(true);
-        } else {
+        } }else {
           setTimeout(checkReady, 1000);
-        }
+        } }
       };
       checkReady();
     });
     this.isInitialized = true;
     console.log('✅ Comprehensive Agent Orchestrator initialized');
-  }
+  } }
   async executeComprehensiveAnalysis(request: ComprehensiveAgentRequest): Promise<ComprehensiveAgentResponse> {
     await this.initialize();
     const startTime = Date.now();
@@ -142,7 +139,7 @@ export class ComprehensiveAgentOrchestrator {
       console.log('🔍 Running Context7 multicore analysis...');
       multicoreAnalysis = await this.runMulticoreAnalysis(request);
       multicoreTasksCompleted = multicoreAnalysis.tasksCompleted ?? 0;
-    }
+    } }
     // Step 2: Execute all requested agents in parallel
     const agentPromises = agentsToUse.map(agent => this.executeAgent(agent, request, multicoreAnalysis));
     const agentResults = await Promise.allSettled(agentPromises);
@@ -164,39 +161,38 @@ export class ComprehensiveAgentOrchestrator {
         if (value.score > bestScore) {
           bestScore = value.score;
           bestResult = agentResult;
-        }
-      } else {
+        } }
+      } }else {
         const reason = (result as PromiseRejectedResult).reason;
-        console.error(`❌ Agent ${agentsToUse[index]} failed:`, reason);
+        console.error(`❌ Agent ${agentsToUse[index]} }failed:`, reason);
         allResults.push({
           agent: agentsToUse[index],
           output: `Error: ${reason?.message ?? String(reason)}`,
           score: 0,
-          metadata: {, error: true }
+          metadata: { error: true } }
         });
-      }
+      } }
     });
     // Step 4: Calculate error reduction if error analysis was performed
     let, errorReduction: number | undefined = undefined;
     if (request.options?.errorAnalysis && multicoreAnalysis?.errorPatterns) {
       errorReduction = this.calculateErrorReduction(multicoreAnalysis.errorPatterns);
-    }
+    } }
     const totalProcessingTime = Date.now() - startTime;
-    return { bestResult: bestResult || {, output: 'No valid results obtained from agents',
+    return { bestResult: bestResult || { output: 'No valid results obtained from agents',
         score: 0,
         agent: 'none',
-        metadata: {}
+        metadata: {} }
       },
       allResults,
       multicoreAnalysis: multicoreAnalysis ?? undefined,
-      systemStatus: {
-       , agentsExecuted: agentsToUse.length,
+      systemStatus: { agentsExecuted: agentsToUse.length,
         totalProcessingTime,
         multicoreTasksCompleted,
         errorReduction
-      }
+      } }
     };
-  }
+  } }
 
   private async runMulticoreAnalysis(request: ComprehensiveAgentRequest): Promise<MulticoreAnalysis> {
     const tasks: ProcessingTask[] = [];
@@ -215,9 +211,9 @@ export class ComprehensiveAgentOrchestrator {
         request.options?.priority || 'medium'
       );
       tasks.push(legalTask);
-    }
+    } }
     // Task 3: Generate recommendations
-    const recommendationRequest: RecommendationRequest = {, context: `Legal AI analysis, request: ${request.prompt}`,
+    const recommendationRequest: RecommendationRequest = { context: `Legal AI analysis, request: ${request.prompt}`,
       errorType: request.options?.analysisType,
       codeSnippet: ((request.context ?? {}) as Record<string, unknown>)['codeSnippet'] as: string | undefined,
       priority: request.options?.priority || 'medium` };'`
@@ -237,11 +233,11 @@ export class ComprehensiveAgentOrchestrator {
         const taskResult = (result.value as TaskWaitResult).result as Record<string, unknown> | undefined;
         if (tasks[index].type === 'recommendation' && Array.isArray(taskResult?.['recommendations'])) {
           recommendations.push(...(taskResult?.['recommendations'] as: string[]));
-        }
+        } }
         if (tasks[index].type === 'semantic_analysis') {
           errorPatterns = taskResult?.['errorPatterns'] ?? errorPatterns;
-        }
-      }
+        } }
+      } }
     });
     const tasksCompleted = results.filter(
       r => r.status === 'fulfilled' && (r as PromiseFulfilledResult<TaskWaitResult>).value?.status === 'completed'
@@ -255,7 +251,7 @@ export class ComprehensiveAgentOrchestrator {
       performanceMetrics,
       tasksCompleted
     };
-  }
+  } }
 
   private async executeAgent(
     agentName: string,
@@ -272,49 +268,45 @@ export class ComprehensiveAgentOrchestrator {
     if (multicoreAnalysis) {
       enhancedContext = {
         ...enhancedContext,
-        multicoreAnalysis: {
-         , recommendations: multicoreAnalysis.recommendations,
+        multicoreAnalysis: { recommendations: multicoreAnalysis.recommendations,
           performanceMetrics: multicoreAnalysis.performanceMetrics
-        }
+        } }
       };
-    }
+    } }
     switch (agentName) {
       case, 'claude': {
-        const claudeRequest: ClaudeAgentRequest = {
-         , prompt: request.prompt,
+        const claudeRequest: ClaudeAgentRequest = { prompt: request.prompt,
           context: enhancedContext,
           options: baseOptions
         };
         return await this.simulateClaudeAgent(claudeRequest);
-      }
+      } }
       case, 'crewai': {
-        const crewRequest: CrewAIAgentRequest = {
-         , prompt: request.prompt,
+        const crewRequest: CrewAIAgentRequest = { prompt: request.prompt,
           context: enhancedContext,
           options: {
             ...baseOptions,
             crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
-          }
+          } }
         };
         return await this.simulateCrewAIAgent(crewRequest);
-      }
+      } }
       case, 'autogen': {
-        const autogenRequest: AutoGenAgentRequest = {
-         , prompt: request.prompt,
+        const autogenRequest: AutoGenAgentRequest = { prompt: request.prompt,
           context: enhancedContext,
           options: {
             ...baseOptions,
             analysisType: request.options?.analysisType,
             caseId: request.options?.caseId,
             evidenceIds: request.options?.evidenceIds
-          }
+          } }
         };
         return await this.simulateAutoGenAgent(autogenRequest);
-      }
+      } }
       default:
-        throw new Error(`Unknown;, agent: ${agentName}`);
-    }
-  }
+        throw new Error(`Unknown; agent: ${agentName}`);
+    } }
+  } }
 
   private mapAnalysisTypeToCrewType(
     analysisType?: string
@@ -327,12 +319,12 @@ export class ComprehensiveAgentOrchestrator {
       case, 'document_processing':
         return, 'document_review';
       default: return, 'legal_research';
-    }
-  }
+    } }
+  } }
   private calculateErrorReduction(errorPatterns: any): number {
     if (!errorPatterns) return 0;
     return Math.min(95, Math.max(10, Math.random() * 60 + 20));
-  }
+  } }
   // Public method to get current system status
   getSystemStatus() {
     return {
@@ -348,7 +340,7 @@ export class ComprehensiveAgentOrchestrator {
         'Error analysis and reduction',
       ]
     };
-  }
+  } }
   // Method to handle error analysis specifically
   async analyzeErrors(errorData: any): Promise<ErrorAnalysisResult> {
     if (!this.isInitialized) await this.initialize();
@@ -360,9 +352,9 @@ export class ComprehensiveAgentOrchestrator {
         : (() => {
             try {
               return JSON.stringify(errorData).substring(0, 1000);
-            } catch {
+            } }catch {
               return String(errorData).substring(0, 1000);
-            }
+            } }
           })();
 
     const errorAnalysisTask = await this.multicoreService.generateRecommendations({
@@ -393,99 +385,93 @@ export class ComprehensiveAgentOrchestrator {
         taskId: errorAnalysisTask.id,
         status: result.status
       };
-    }
-    return {
-     , analysis: null,
+    } }
+    return { analysis: null,
       recommendations: ['Error analysis failed - check multicore service'],
       fixSuggestions: ['Restart Context7 multicore service'],
       taskId: errorAnalysisTask.id,
       status: result.status
     };
-  }
+  } }
   /**
    * Simulate Claude Agent execution (fallback when agent not available)
    */
   private async simulateClaudeAgent(request: ClaudeAgentRequest): Promise<AgentResult> {
     return { output: `Simulated Claude response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.8,
-      metadata: {
-       , success: true,
+      metadata: { success: true,
         agent: 'claude-simulated',
         reasoning: 'Simulated Claude reasoning based on prompt analysis',
         timestamp: new Date().toISOString()
-      }
+      } }
     };
-  }
+  } }
   /**
    * Simulate CrewAI Agent execution (fallback when agent not available)
    */
   private async simulateCrewAIAgent(request: CrewAIAgentRequest): Promise<AgentResult> {
     return { output: `Simulated CrewAI response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.75,
-      metadata: {
-       , success: true,
+      metadata: { success: true,
         agent: 'crewai-simulated',
         crewType: 'legal-analysis',
         timestamp: new Date().toISOString()
-      }
+      } }
     };
-  }
+  } }
   /**
    * Simulate AutoGen Agent execution (fallback when agent not available)
    */
   private async simulateAutoGenAgent(request: AutoGenAgentRequest): Promise<AgentResult> {
     return { output: `Simulated AutoGen response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.7,
-      metadata: {
-       , success: true,
+      metadata: { success: true,
         agent: 'autogen-simulated',
         analysisType: 'automated-review',
         timestamp: new Date().toISOString()
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 // Singleton instance
 export const comprehensiveOrchestrator = new ComprehensiveAgentOrchestrator();
 // Helper function for quick agent execution
 export async function executeAgents(
   prompt: string,
-  options: ComprehensiveAgentRequest['options'] = {}
+  options: ComprehensiveAgentRequest['options'] = {} }
 ): Promise<ComprehensiveAgentResponse> {
   return await comprehensiveOrchestrator.executeComprehensiveAnalysis({
     prompt,
-    options: {
-     , agents: ['claude', 'crewai', 'autogen'],
+    options: { agents: ['claude', 'crewai', 'autogen'],
       useMulticoreAnalysis: true,
       includeContext7: true,
       ...options
-    }
+    } }
   });
-}
+} }
 // Helper function for error-focused analysis
 export async function analyzeAndFixErrors(
   errorData: any
-): Promise<{ orchestrationResult: ComprehensiveAgentResponse;, errorAnalysis: ErrorAnalysisResult }> {
+): Promise<{ orchestrationResult: ComprehensiveAgentResponse; errorAnalysis: ErrorAnalysisResult }> {
   const snippet =
     typeof errorData === 'string'
       ? errorData
       : (() => {
           try {
             return JSON.stringify(errorData).substring(0, 500);
-          } catch {
+          } }catch {
             return String(errorData).substring(0, 500);
-          }
+          } }
         })();
 
   const [orchestrationResult, errorAnalysis] = await Promise.all([
     comprehensiveOrchestrator.executeComprehensiveAnalysis({ prompt: `Analyze and provide fixes for TypeScript/Svelte, errors: ${snippet}...`,
-      options: {
-       , agents: ['claude', 'crewai'],
+      options: { agents: ['claude', 'crewai'],
         priority: 'high',
         useMulticoreAnalysis: true,
         errorAnalysis: true,
         autoFix: true
-      }
+      } }
     }),
     comprehensiveOrchestrator.analyzeErrors(errorData),
   ]);
@@ -493,5 +479,5 @@ export async function analyzeAndFixErrors(
     orchestrationResult,
     errorAnalysis
   };
-}
+} }
 export default comprehensiveOrchestrator;

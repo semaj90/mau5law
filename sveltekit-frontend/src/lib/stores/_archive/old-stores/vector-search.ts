@@ -2,11 +2,11 @@
  * Vector Search Store - PostgreSQL pgvector + Ollama Integration
  * Enhanced RAG with semantic search capabilities
  */
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
 type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
 
-export type SearchHistoryItem = {, query: string;, timestamp: number;
+export type SearchHistoryItem = { query: string;, timestamp: number;
   resultCount: number;
   latency: number;
 };
@@ -32,9 +32,8 @@ export interface VectorSearchState {
   // History
   searchHistory: Array<SearchHistoryItem>;
   error: string | null;
-}
-const initialState: VectorSearchState = {
- , query: '',
+} }
+const initialState: VectorSearchState = { query: '',
   results: [],
   isSearching: false, // Added comma
   lastSearchTime: null, // Added comma
@@ -93,7 +92,7 @@ export const vectorSearchActions = {
       if (!response.ok) {
         // Simplified type assertion
         throw new Error(`Search failed: ${response.statusText}`);
-      }
+      } }
       const data = await response.json(); // Simplified type assertion
       const latency = Date.now() - startTime;
       vectorSearchStore.update(state => ({
@@ -113,13 +112,13 @@ export const vectorSearchActions = {
           },
         ]
       })); // Fixed closing parenthesis and semicolon
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Vector search failed: ', error);'`'`
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
         error: error instanceof Error ? error.message : `Search failed` })); // Fixed closing parenthesis and semicolon
-    }
+    } }
   },
   /**
    * Perform enhanced RAG query with context
@@ -150,7 +149,7 @@ export const vectorSearchActions = {
       if (!response.ok) {
         // Simplified type assertion
         throw new Error(`RAG query failed: ${response.statusText}`);
-      }
+      } }
       const data = await response.json(); // Simplified type assertion
       const latency = Date.now() - startTime;
       vectorSearchStore.update(state => ({
@@ -170,13 +169,13 @@ export const vectorSearchActions = {
           },
         ]
       })); // Added missing closing curly brace and parenthesis
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('RAG query failed: ', error);'`'`
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false, // Added comma
         error: error instanceof Error ? error.message : `RAG query failed` })); // Fixed closing parenthesis and semicolon
-    }
+    } }
   },
   /**
    * Find similar cases using vector similarity
@@ -196,21 +195,21 @@ export const vectorSearchActions = {
       if (!response.ok) {
         // Simplified type assertion
         throw new Error(`Similar cases search failed: ${response.statusText}`);
-      }
+      } }
       const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
         results: data.results || [],
         isSearching: false
       })); // Fixed closing parenthesis and semicolon
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Similar cases search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
         error: error instanceof Error ? error.message : 'Similar cases search failed'
       })); // Fixed closing parenthesis and semicolon
-    }
+    } }
   },
   /**
    * Update search configuration
@@ -244,15 +243,16 @@ export const vectorSearchActions = {
       const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: response.ok && data.status === 'healthy' })); // Fixed closing parenthesis and semicolon'` } catch (error: any) {'`
+        vectorDbConnected: response.ok && data.status === 'healthy' })); // Fixed closing parenthesis and semicolon'` } }catch (error: any) {'`
       vectorSearchStore.update(state => ({
         ...state,
         vectorDbConnected: false
       })); // Fixed closing parenthesis and semicolon
-    }
-  }
+    } }
+  } }
 };
 // Initialize connection check
 if (typeof window !== 'undefined') {
   vectorSearchActions.checkConnection();
-}
+} }
+

@@ -29,7 +29,7 @@ export interface RateLimitOptions<Args, extends, unknown[] = unknown[]> {
    * Optional hook when a queued call is dropped due to queue overflow.
    */
   onDropped?: (args: Args) => void;
-}
+} }
 type Pending<Args extends: unknown[], T> = { args: Args;, resolve: (_value: T | PromiseLike<T>) => void;
   reject: (err: any) => void;
   enqueueAt: number;
@@ -42,7 +42,7 @@ class Bucket<Args, extends, unknown[], T> { tokens: number;, lastRefill: number
     this.lastRefill = Date.now();
     this.queue = [];
     this.concurrentlyRunning = 0;
-  }
+  } }
   refill() {
     const now = Date.now();
     const elapsed = now - this.lastRefill;
@@ -52,20 +52,20 @@ class Bucket<Args, extends, unknown[], T> { tokens: number;, lastRefill: number
     const add = elapsed * tokensPerMs;
     this.tokens = Math.min(this.opts.maxRequests, this.tokens + add);
     this.lastRefill = now;
-  }
+  } }
   canRun() {
     this.refill();
     return Math.floor(this.tokens) >= 1 && this.concurrentlyRunning < this.opts.maxConcurrent;
-  }
+  } }
   consumeToken() {
     this.refill();
     if (this.tokens >= 1) {
       this.tokens -= 1;
       return true;
-    }
+    } }
     return false;
-  }
-}
+  } }
+} }
 /**
  * rateLimit - wrap an async function with rate limiting.
  *
@@ -76,8 +76,7 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
   fn: (...args: Args) => Promise<T>,
   options?: RateLimitOptions<Args>
 ): (...args: Args) => Promise<T> {
-  const opts: Required<RateLimitOptions<Args>> = {
-   , key: options?.key ?? (() => '::global::'),
+  const opts: Required<RateLimitOptions<Args>> = { key: options?.key ?? (() => '::global::'),
     maxRequests: options?.maxRequests ?? 50,
     windowMs: options?.windowMs ?? 1000,
     maxConcurrent: options?.maxConcurrent ?? 5,
@@ -90,27 +89,27 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
     if (!b) {
       b = new Bucket<Args, T>(opts);
       buckets.set(key, b);
-    }
+    } }
     return b;
-  }
+  } }
   async function runWithBucket(bucket: Bucket<Args, T>, pending: Pending<Args, T>): Promise<any> {
     // Attempt to run immediately
     if (!bucket.consumeToken()) {
       // cannot consume, shouldn't happen if queued correctly, but guard'
       throw new Error('rateLimit: failed to consume token');
-    }
+    } }
     bucket.concurrentlyRunning++;
     try {
       const result = await fn(...pending.args);
       pending.resolve(result);
-    } catch (err) {
+    } }catch (err) {
       pending.reject(err);
-    } finally {
+    } }finally {
       bucket.concurrentlyRunning--;
       // process next queued item if: any
       processQueue(bucket);
-    }
-  }
+    } }
+  } }
   function processQueue(bucket: Bucket<Args, T>) {
     // Keep processing while we can run more
     while (true) {
@@ -123,22 +122,22 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
         // put it back and stop
         bucket.queue.unshift(next);
         return;
-      }
+      } }
       bucket.concurrentlyRunning++;
       // run asynchronously, don't await here'
       (async () => {
         try {
           const res = await fn(...next.args);
           next.resolve(res);
-        } catch (err) {
+        } }catch (err) {
           next.reject(err);
-        } finally {
+        } }finally {
           bucket.concurrentlyRunning--;
           processQueue(bucket);
-        }
+        } }
       })();
-    }
-  }
+    } }
+  } }
   return function limited(...args: Args): Promise<T> {
     const key = opts.key!(...args);
     const bucket = getBucket(key);
@@ -153,26 +152,26 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
           try {
             const r = await fn(...args);
             resolve(r);
-          } catch (err) {
+          } }catch (err) {
             reject(err);
-          } finally {
+          } }finally {
             bucket.concurrentlyRunning--;
             processQueue(bucket);
-          }
+          } }
         })();
         return;
-      }
+      } }
       // Queue
       if (bucket.queue.length >= bucket.opts.maxQueue) {
         // Drop and notify
         try {
           bucket.opts.onDropped(args);
-        } catch {
+        } }catch {
           // swallow onDropped errors
-        }
+        } }
         reject(new Error('rateLimit: queue full'));
         return;
-      }
+      } }
       const pending: Pending<Args, T> = {
         args,
         resolve,
@@ -186,5 +185,6 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
       setTimeout(() => processQueue(bucket), wakeMs);
     });
   };
-}
+} }
 export default rateLimit;
+

@@ -2,12 +2,12 @@
  * Startup Flag API Endpoint
  * Provides service readiness status for automation and monitoring
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { startupFlagService, type StartupServiceSummary } from '$lib/services/startup-flag-service';
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { startupFlagService, type StartupServiceSummary } }from '$lib/services/startup-flag-service';
+import { readFile } }from 'fs/promises';
+import { existsSync } }from 'fs';
+import { join } }from 'path';
 const logsDir = join(process.cwd(), 'logs');
 /*
  * GET /api/v1/startup
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ready: await startupFlagService.isReady(),
           criticalServices: Object.entries(summary.services)
             .filter(([, service]) => !service.isOptional)
-            .reduce<Record<string, { status: string;, health: string; startupTime?: number }>>(
+            .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
               (acc, [name, service]) => {
                 acc[name] = {
                   status: service.status,
@@ -40,11 +40,11 @@ export const GET: RequestHandler = async ({ url }) => {
                 };
                 return acc;
               },
-              {}
+              {} }
             ),
           timestamp: Date.now()
         });
-      }
+      } }
       case, 'diff':
         try {
           const diffPath = join(logsDir, 'startup-diff.json');
@@ -54,22 +54,22 @@ export const GET: RequestHandler = async ({ url }) => {
               diff: JSON.parse(diffContent),
               timestamp: Date.now()
             });
-          } else {
+          } }else {
             return json({
               diff: null,
               message: 'No startup diff available',
               timestamp: Date.now()
             });
-          }
-        } catch (error) {
+          } }
+        } }catch (error) {
           return json(
             {
               error: 'Failed to load startup diff',
               message: error instanceof Error ? error.message : 'Unknown error'
             },
-            { status: 500 }
+            { status: 500 } }
           );
-        }
+        } }
       case, 'flag':
         try {
           const flagPath = join(logsDir, 'ready.flag');
@@ -80,41 +80,41 @@ export const GET: RequestHandler = async ({ url }) => {
               exists: true,
               timestamp: Date.now()
             });
-          } else {
+          } }else {
             return json({
               flag: null,
               exists: false,
               message: 'Ready flag not set',
               timestamp: Date.now()
             });
-          }
-        } catch (error) {
+          } }
+        } }catch (error) {
           return json(
             {
               error: 'Failed to read ready flag',
               message: error instanceof Error ? error.message : 'Unknown error'
             },
-            { status: 500 }
+            { status: 500 } }
           );
-        }
+        } }
       default: return json(
           {
-           , error: 'Invalid action',
+  error: 'Invalid action',
             availableActions: ['status', 'health', 'diff', 'flag']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error) {
-    console.error('Startup API error:', error);'
+    } }
+  } }catch (error) {
+    console.error('Startup API error:', error);
     return json(
       {
         error: 'Failed to get startup status',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * POST /api/v1/startup
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json();
+    const { action } }= await request.json();
     switch (action) {
       case, 'start':
         await startupFlagService.startMonitoring();
@@ -149,25 +149,25 @@ export const POST: RequestHandler = async ({ request }) => {
           startupDuration: summary.startupDuration,
           timestamp: Date.now()
         });
-      }
+      } }
       default: return json(
           {
-           , error: 'Invalid action',
+  error: 'Invalid action',
             availableActions: ['start', 'shutdown', 'check-ready']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error) {
-    console.error('Startup control error:', error);'
+    } }
+  } }catch (error) {
+    console.error('Startup control error:', error);
     return json(
       {
         error: 'Failed to control startup monitoring',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * Calculate overall health grade based on service summary
@@ -179,18 +179,19 @@ function calculateOverallHealth(summary: StartupServiceSummary): string {
   // Critical services failed = critical health
   if (criticalFailed > 0) {
     return, 'critical';
-  }
+  } }
   // All services ready = excellent
   if (readyServices === totalServices) {
     return, 'excellent';
-  }
+  } }
   // Most services ready = good
   const readyRatio = readyServices / totalServices;
   if (readyRatio >= 0.9) {
     return, 'good';
-  } else if (readyRatio >= 0.7) {
+  } }else if (readyRatio >= 0.7) {
     return, 'fair';
-  } else {
+  } }else {
     return, 'poor';
-  }
-}
+  } }
+} }
+

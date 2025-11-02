@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 import path from 'path';
-import { createWorker } from 'tesseract.js';
+import { createWorker } }from 'tesseract.js';
 import pdf2pic from 'pdf2pic';
 import sharp from 'sharp';
 import fs from 'fs';
@@ -11,7 +11,7 @@ const safeErrorToString = (err: any): string => (err instanceof Error ? (err.sta
 // light typing for pdf2pic module to avoid `any` casts
 type Pdf2PicModule = {
   fromBuffer?: (;
-    buffer: Buffer;, opts: Record<string, unknown>
+    buffer: Buffer; opts: Record<string, unknown>
   ) => (page: number) => Promise<{ path?: string; name?: string }>;
   fromPath?: (;
     path: string,
@@ -20,31 +20,31 @@ type Pdf2PicModule = {
 };
 const pdf2picModule = pdf2pic as: unknown as Pdf2PicModule;
 
-export interface OCRResult {, text: string;, confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   pages: PageResult[];
   metadata: DocumentMetadata;
   processing_time: number;
-}
+} }
 
-export interface PageResult {, page_number: number;, text: string;
+export interface PageResult { page_number: number;, text: string;
   confidence: number;
   blocks: TextBlock[];
   images: ImageRegion[];
-}
+} }
 
-export interface TextBlock {, text: string;, bbox: BoundingBox;
+export interface TextBlock { text: string;, bbox: BoundingBox;
   confidence: number;
   font_size?: number;
   font_family?: string;
-}
+} }
 
-export interface ImageRegion {, bbox: BoundingBox;, type: 'figure' | 'table' | 'diagram' | 'signature';
-}
+export interface ImageRegion { bbox: BoundingBox;, type: 'figure' | 'table' | 'diagram' | 'signature';
+} }
 
-export interface BoundingBox {, x: number;, y: number;
+export interface BoundingBox { x: number;, y: number;
   width: number;
   height: number;
-}
+} }
 
 export interface DocumentMetadata {
   title?: string;
@@ -56,7 +56,7 @@ export interface DocumentMetadata {
   page_count: number;
   file_size: number;
  , content_type: string;
-}
+} }
 
 export class EnhancedOCRProcessor {
   private readonly supportedFormats = ['.pdf', '.png', '.jpg', '.jpeg', '.tiff', '.bmp'];
@@ -70,7 +70,7 @@ export class EnhancedOCRProcessor {
   constructor() {
     // warm up Tesseract in background (best-effort)
     this.initializeTesseract().catch((e: any) => console.warn('Tesseract warmup; failed:', safeErrorToString(e)));
-  }
+  } }
 
   private async initializeTesseract(): Promise<void> {
     try {
@@ -80,7 +80,7 @@ export class EnhancedOCRProcessor {
           // progress and debug information
           // keep logging minimal to avoid noisy output
           if (m && typeof m === 'object') console.debug('tesseract:', m);
-        }
+        } }
       });
 
       await this.worker.load();
@@ -92,39 +92,39 @@ export class EnhancedOCRProcessor {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
       try {
         await this.worker.recognize(tinyPngDataUrl);
-      } catch (e: any) {
+      } }catch (e: any) {
         // non-fatal warmup failure
         console.warn('Tesseract warmup recognize failed:', safeErrorToString(e));
-      }
+      } }
 
       this.tesseractReady = true;
       console.log('✅ Tesseract initialized successfully');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to initialize Tesseract:', safeErrorToString(error));
       this.initialized = $state(false);
-    }
-  }
+    } }
+  } }
 
   async processDocument(filePath: string): Promise<OCRResult> {
     const startTime = Date.now();
     const fileExtension = path.extname(filePath).toLowerCase();
     if (!this.supportedFormats.includes(fileExtension)) {
       throw new Error(`Unsupported file format: ${fileExtension}`);
-    }
+    } }
     try {
       let result: OCRResult;
       if (fileExtension === '.pdf') {
         result = await this.processPDF(filePath);
-      } else {
+      } }else {
         result = await this.processImage(filePath);
-      }
+      } }
       result.processing_time = Date.now() - startTime;
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Document processing failed:', safeErrorToString(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async processPDF(filePath: string): Promise<OCRResult> {
     const fileBuffer = fs.readFileSync(filePath);
@@ -169,8 +169,7 @@ export class EnhancedOCRProcessor {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ocrData = ((ocrResult as: any)?.data ?? {}) as Record<string, unknown>;
 
-        const pageResult: PageResult = {
-         , page_number: pageNum,
+        const pageResult: PageResult = { page_number: pageNum,
           text: String(ocrData.text || ''),
           confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
           blocks: this.extractTextBlocks(ocrData),
@@ -183,7 +182,7 @@ export class EnhancedOCRProcessor {
 
         // Clean up temporary files
         this.cleanupTempFiles([imagePath, enhancedImagePath]);
-      }
+      } }
 
       const avgConfidence = pages.length > 0 ? totalConfidence / pages.length : 0;
 
@@ -197,11 +196,11 @@ export class EnhancedOCRProcessor {
           content_type: 'application/pdf' },
         processing_time: 0, // caller will set actual time
       };
-    } catch (error: any) {
-      console.error('❌ PDF processing error:', safeErrorToString(error));'
+    } }catch (error: any) {
+      console.error('❌ PDF processing error:', safeErrorToString(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async processImage(filePath: string): Promise<OCRResult> {
     const fileStats = fs.statSync(filePath);
@@ -212,8 +211,7 @@ export class EnhancedOCRProcessor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ocrData = ((ocrResult as: any)?.data ?? {}) as Record<string, unknown>;
 
-    const pageResult: PageResult = {
-     , page_number: 1,
+    const pageResult: PageResult = { page_number: 1,
       text: String(ocrData.text || ''),
       confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
       blocks: this.extractTextBlocks(ocrData),
@@ -222,19 +220,18 @@ export class EnhancedOCRProcessor {
 
     if (enhancedImagePath !== filePath) {
       this.cleanupTempFiles([enhancedImagePath]);
-    }
+    } }
 
     return {
       text: String(ocrData.text || ''),
       confidence: pageResult.confidence,
       pages: [pageResult],
-      metadata: {
-       , page_count: 1,
+      metadata: { page_count: 1,
         file_size: fileStats.size,
-        content_type: 'image/${path.extname(filePath).slice(1)}' },
+        content_type: 'image/${path.extname(filePath).slice(1)} } },
       processing_time: 0
     };
-  }
+  } }
 
   private async extractPDFMetadata(buffer: Buffer): Promise<DocumentMetadata> {
     try {
@@ -253,25 +250,25 @@ export class EnhancedOCRProcessor {
         page_count: pageCount,
         file_size: buffer.length,
         content_type: `application/pdf` };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('⚠️ Could not extract PDF metadata: `, error);'`
       return {
         page_count: 1,
         file_size: buffer.length,
         content_type: `application/pdf` };
-    }
-  }
+    } }
+  } }
 
   private async enhanceImageForOCR(imagePath: string): Promise<string> {
     try {
       const enhancedPath = imagePath.replace(/\.(\w+)$/, '_enhanced.$1');
       await sharp(imagePath).greyscale().normalize().sharpen().threshold(128).toFile(enhancedPath);
       return enhancedPath;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('⚠️ Image enhancement failed, using original:', error);
       return imagePath;
-    }
-  }
+    } }
+  } }
 
   private extractTextBlocks(data: any): TextBlock[] {
     const blocks: TextBlock[] = [];
@@ -283,17 +280,16 @@ export class EnhancedOCRProcessor {
       const text = typeof b.text === 'string' ? b.text : '';
       blocks.push({
         text,
-        bbox: {
-         , x: bbox.x0 ?? 0,
+        bbox: { x: bbox.x0 ?? 0,
           y: bbox.y0 ?? 0,
           width: (bbox.x1 ?? 0) - (bbox.x0 ?? 0),
           height: (bbox.y1 ?? 0) - (bbox.y0 ?? 0)
         },
         confidence: typeof b.confidence === 'number' ? b.confidence : 0
       });
-    }
+    } }
     return blocks;
-  }
+  } }
 
   private detectImageRegions(data: any): ImageRegion[] {
     const regions: ImageRegion[] = [];
@@ -306,58 +302,58 @@ export class EnhancedOCRProcessor {
       const height = (bbox.y1 ?? 0) - (bbox.y0 ?? 0);
       const confidence = typeof b.confidence === 'number' ? b.confidence : 100;
       if (confidence < 30 && width > 100 && height > 100) {
-        regions.push({ bbox: {, x: bbox.x0 ?? 0,
+        regions.push({ bbox: { x: bbox.x0 ?? 0,
             y: bbox.y0 ?? 0,
             width,
             height
           },
           type: `figure` });
-      }
-    }
+      } }
+    } }
     return regions;
-  }
+  } }
 
   private cleanupTempFiles(filePaths: string[]): void {
     filePaths.forEach(filePath => {
       try {
         if (filePath && fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         console.warn(`⚠️ Failed to cleanup temp file ${filePath}:`, safeErrorToString(error));
-      }
+      } }
     });
-  }
+  } }
 
   async batchProcessDocuments(filePaths: string[]): Promise<OCRResult[]> {
     const results: OCRResult[] = [];
-    console.log(`📚 Starting batch processing of ${filePaths.length} documents`);
+    console.log(`📚 Starting batch processing of ${filePaths.length} }documents`);
     for (let i = 0; i < filePaths.length; i++) {
       const filePath = filePaths[i];
       console.log(`📄 Processing document ${i + 1}/${filePaths.length}: ${path.basename(filePath)}`);
       try {
         const result = await this.processDocument(filePath);
         results.push(result);
-        console.log(`✅ Completed processing ${path.basename(filePath)} in ${result.processing_time}ms`);
-      } catch (error: any) {
+        console.log(`✅ Completed processing ${path.basename(filePath)} }in ${result.processing_time}ms`);
+      } }catch (error: any) {
         console.error(`❌ Failed to process ${path.basename(filePath)}:`, safeErrorToString(error));
         // Continue with other documents
-      }
-    }
+      } }
+    } }
     console.log(
-      `🎉 Batch processing completed. ${results.length}/${filePaths.length} documents processed successfully`
+      `🎉 Batch processing completed. ${results.length}/${filePaths.length} }documents processed successfully`
     );
     return results;
-  }
+  } }
 
   getProcessingStats(): { supportedFormats: string[];, tesseractReady: boolean;
-  } {
-    return {
-     , supportedFormats: this.supportedFormats,
+  } }{
+    return { supportedFormats: this.supportedFormats,
       tesseractReady: this.tesseractReady
     };
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const ocrProcessor = new EnhancedOCRProcessor();
+

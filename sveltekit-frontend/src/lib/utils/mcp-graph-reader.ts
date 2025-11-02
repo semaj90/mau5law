@@ -1,8 +1,8 @@
 // Fixed MCP Graph Reader with proper Drizzle ORM query patterns
-import { db } from '$lib/server/db';
-import { cases, evidence, reports, users } from '$lib/server/db/schema-unified';
+import { db } }from '$lib/server/db';
+import { cases, evidence, reports, users } }from '$lib/server/db/schema-unified';
 // Removed `eq, and, or, desc, count, like` noisy/compat imports; keep only `sql`
-import { sql } from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';
 
 export interface GraphQuery {
   nodeTypes?: string[];
@@ -12,7 +12,7 @@ export interface GraphQuery {
   includeAI?: boolean;
   maxDepth?: number;
   limit?: number;
-}
+} }
 
 // Lightweight typed shapes used in this reader
 interface GraphNode { id: string;, type: string;
@@ -20,14 +20,14 @@ interface GraphNode { id: string;, type: string;
  , data: Record<string, unknown>;
   connections: any[];
  , metadata: Record<string, unknown>;
-}
+} }
 interface GraphRelation {
   from: string;
   to: string;
  , type: string;
   weight?: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 /* Row shapes returned by Drizzle queries (minimal necessary fields) */
 interface CaseRow {
@@ -40,9 +40,9 @@ interface CaseRow {
     updatedAt?: Date | string;
     createdBy?: string | null;
   };
-  creator?: { id: string; name?: string; email?: string } | null;
-}
-interface EvidenceRow {, evidence: {, id: string;
+  creator?: { id: string; name?: string; email?: string } }| null;
+} }
+interface EvidenceRow { evidence: { id: string;
     title: string;
     description?: string;
     evidenceType?: string | null;
@@ -55,10 +55,10 @@ interface EvidenceRow {, evidence: {, id: string;
     caseId?: string | null;
     uploadedBy?: string | null;
   };
-  case?: { id: string; title?: string } | null;
-  creator?: { id: string; name?: string } | null;
-}
-interface ReportRow {, report: {, id: string;
+  case?: { id: string; title?: string } }| null;
+  creator?: { id: string; name?: string } }| null;
+} }
+interface ReportRow { report: { id: string;
    , title: string;
     content?: string;
     reportType?: string | null;
@@ -69,9 +69,9 @@ interface ReportRow {, report: {, id: string;
     caseId?: string | null;
     createdBy?: string | null;
   };
-  case?: { id: string; title?: string } | null;
-  creator?: {, id: string; name?: string } | null;
-}
+  case?: { id: string; title?: string } }| null;
+  creator?: { id: string; name?: string } }| null;
+} }
 
 export class MCPGraphReader {
   /**
@@ -79,8 +79,8 @@ export class MCPGraphReader {
    */
   private static combineAnd(fragments: ReturnType<typeof, sql>[]) {
     if (!fragments.length) return: undefined;
-    return fragments.reduce((acc, frag) => sql`${acc} AND ${frag}`);
-  }
+    return fragments.reduce((acc, frag) => sql`${acc} }AND ${frag}`);
+  } }
 
   /**
    * Read case nodes
@@ -88,25 +88,24 @@ export class MCPGraphReader {
   private static async readCaseNodes(query: GraphQuery): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
     const, whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
-      whereFragments.push(sql`${cases.createdBy} = ${query.userId}`);
-    }
+      whereFragments.push(sql`${cases.createdBy} }= ${query.userId}`);
+    } }
     if (query.caseId) {
-      whereFragments.push(sql`${cases.id} = ${query.caseId}`);
-    }
+      whereFragments.push(sql`${cases.id} }= ${query.caseId}`);
+    } }
     const whereClause = this.combineAnd(whereFragments);
 
     // Build query using sql for join conditions (avoids eq/and/or API differences)
     const caseQuery = db
       .select({
         case cases,
-        creator: {
-         , id: users.id,
+        creator: { id: users.id,
           name: users.name,
           email: users.email
-        }
+        } }
       })
       .from(cases)
-      .leftJoin(users, sql`${cases.createdBy} = ${users.id}`);
+      .leftJoin(users, sql`${cases.createdBy} }= ${users.id}`);
 
     const caseData = whereClause
       ? ((await caseQuery.where(whereClause).execute()) as CaseRow[])
@@ -115,12 +114,10 @@ export class MCPGraphReader {
     const nodes: GraphNode[] = caseData.map(item => {
       const c = item.case;
       const creator = item.creator ?? null;
-      return {
-       , id: c.id,
+      return { id: c.id,
         type: 'case',
         label: c.title,
-        data: {
-         , title: c.title,
+        data: { title: c.title,
           description: c.description,
           status: c.status,
           priority: c.priority,
@@ -128,11 +125,10 @@ export class MCPGraphReader {
           creator
         },
         connections: [],
-        metadata: {
-         , createdAt: c.createdAt,
+        metadata: { createdAt: c.createdAt,
           updatedAt: c.updatedAt,
           weight: c.priority === 'high' ? 10 : c.priority === 'medium' ? 7 : 5
-        }
+        } }
       };
     });
 
@@ -143,11 +139,11 @@ export class MCPGraphReader {
         to: item.case.id,
         type: 'owns',
         weight: 8,
-        metadata: {, relationship: `case_owner' }'`
+        metadata: { relationship: `case_owner' } }`
       }));
 
     return { nodes, relations };
-  }
+  } }
 
   /**
    * Read evidence nodes
@@ -157,11 +153,11 @@ export class MCPGraphReader {
   ): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
     const, whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
-      whereFragments.push(sql`${evidence.uploadedBy} = ${query.userId}`);
-    }
+      whereFragments.push(sql`${evidence.uploadedBy} }= ${query.userId}`);
+    } }
     if (query.caseId) {
-      whereFragments.push(sql`${evidence.caseId} = ${query.caseId}`);
-    }
+      whereFragments.push(sql`${evidence.caseId} }= ${query.caseId}`);
+    } }
     const whereClause = this.combineAnd(whereFragments);
 
     const evidenceQuery = db
@@ -171,14 +167,13 @@ export class MCPGraphReader {
           id: cases.id,
           title: cases.title
         },
-        creator: {
-         , id: users.id,
+        creator: { id: users.id,
           name: users.name
-        }
+        } }
       })
       .from(evidence)
-      .leftJoin(cases, sql`${evidence.caseId} = ${cases.id}`)
-      .leftJoin(users, sql`${evidence.uploadedBy} = ${users.id}`);
+      .leftJoin(cases, sql`${evidence.caseId} }= ${cases.id}`)
+      .leftJoin(users, sql`${evidence.uploadedBy} }= ${users.id}`);
 
     const evidenceData = whereClause
       ? ((await evidenceQuery.where(whereClause).execute()) as EvidenceRow[])
@@ -186,12 +181,10 @@ export class MCPGraphReader {
 
     const nodes: GraphNode[] = evidenceData.map(item => {
       const e = item.evidence;
-      return {
-       , id: e.id,
+      return { id: e.id,
         type: 'evidence',
         label: e.title,
-        data: {
-         , title: e.title,
+        data: { title: e.title,
           description: e.description,
           evidenceType: e.evidenceType,
           filePath: e.fileUrl,
@@ -203,10 +196,9 @@ export class MCPGraphReader {
           creator: item.creator ?? null
         },
         connections: [],
-        metadata: {
-         , createdAt: e.uploadedAt,
+        metadata: { createdAt: e.uploadedAt,
           weight: e.evidenceType === 'critical' ? 10 : e.evidenceType === 'digital' ? 8 : 6
-        }
+        } }
       };
     });
 
@@ -218,7 +210,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 9,
-          metadata: {, relationship: `evidence_in_case' }'`
+          metadata: { relationship: `evidence_in_case' } }`
         })),
       ...evidenceData
         .filter(item => !!item.creator)
@@ -227,13 +219,13 @@ export class MCPGraphReader {
           to: item.evidence.id,
           type: 'owns' as const,
           weight: 7,
-          metadata: {, relationship: `evidence_owner' }'`
+          metadata: { relationship: `evidence_owner' } }`
         })),
     ];
 
     // <-- FIX: return nodes, and, relations
     return { nodes, relations };
-  }
+  } }
 
   /**
    * Read report nodes
@@ -243,11 +235,11 @@ export class MCPGraphReader {
     const, whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
       // assume reports.createdBy column
-      whereFragments.push(sql`${reports.createdBy} = ${query.userId}`);
-    }
+      whereFragments.push(sql`${reports.createdBy} }= ${query.userId}`);
+    } }
     if (query.caseId) {
-      whereFragments.push(sql`${reports.caseId} = ${query.caseId}`);
-    }
+      whereFragments.push(sql`${reports.caseId} }= ${query.caseId}`);
+    } }
     const whereClause = this.combineAnd(whereFragments);
 
     // Build the query (left join cases and users similar to others)
@@ -258,14 +250,13 @@ export class MCPGraphReader {
           id: cases.id,
           title: cases.title
         },
-        creator: {
-         , id: users.id,
+        creator: { id: users.id,
           name: users.name
-        }
+        } }
       })
       .from(reports)
-      .leftJoin(cases, sql`${reports.caseId} = ${cases.id}`)
-      .leftJoin(users, sql`${reports.createdBy} = ${users.id}`);
+      .leftJoin(cases, sql`${reports.caseId} }= ${cases.id}`)
+      .leftJoin(users, sql`${reports.createdBy} }= ${users.id}`);
 
     const reportData = whereClause
       ? ((await reportQuery.where(whereClause).execute()) as ReportRow[])
@@ -273,12 +264,10 @@ export class MCPGraphReader {
 
     const nodes: GraphNode[] = reportData.map(item => {
       const r = item.report;
-      return {
-       , id: r.id,
+      return { id: r.id,
         type: 'report',
         label: r.title,
-        data: {
-         , title: r.title,
+        data: { title: r.title,
           content: r.content,
           reportType: r.reportType,
           status: r.status,
@@ -287,11 +276,10 @@ export class MCPGraphReader {
           creator: item.creator ?? null
         },
         connections: [],
-        metadata: {
-         , createdAt: r.createdAt,
+        metadata: { createdAt: r.createdAt,
           updatedAt: r.updatedAt,
           weight: r.reportType === 'person_of_interest' ? 9 : r.reportType === 'case_analysis' ? 8 : 6
-        }
+        } }
       };
     });
 
@@ -303,7 +291,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 8,
-          metadata: {, relationship: 'report_for_case' }'' })),
+          metadata: { relationship: 'report_for_case' } } })),
       ...reportData
         .filter(item => !!item.creator)
         .map(item => ({
@@ -311,18 +299,18 @@ export class MCPGraphReader {
           to: item.report.id,
           type: 'generated_from' as const,
           weight: 7,
-          metadata: {, relationship: `report_generator' }'`
+          metadata: { relationship: `report_generator' } }`
         })),
     ];
 
     return { nodes, relations };
-  }
+  } }
 
   /**
    * Main read graph method
    */
   static async readGraph(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[];
-    metadata: { totalNodes: number; queryTime: number;, mcpSource: string };
+    metadata: { totalNodes: number; queryTime: number; mcpSource: string };
   }> {
     const startTime = Date.now();
     const nodes: GraphNode[] = [];
@@ -332,31 +320,31 @@ export class MCPGraphReader {
         const caseNodes = await this.readCaseNodes(query);
         nodes.push(...caseNodes.nodes);
         relations.push(...caseNodes.relations);
-      }
+      } }
       if (!query.nodeTypes || query.nodeTypes.includes('evidence')) {
         const evidenceNodes = await this.readEvidenceNodes(query);
         nodes.push(...evidenceNodes.nodes);
         relations.push(...evidenceNodes.relations);
-      }
+      } }
       if (!query.nodeTypes || query.nodeTypes.includes('report')) {
         const reportNodes = await this.readReportNodes(query);
         nodes.push(...reportNodes.nodes);
         relations.push(...reportNodes.relations);
-      }
+      } }
       return {
         nodes,
         relations,
-        metadata: {
-         , totalNodes: nodes.length,
+        metadata: { totalNodes: nodes.length,
           queryTime: Date.now() - startTime,
-          mcpSource: `drizzle-postgres-graph-reader' }'`
+          mcpSource: `drizzle-postgres-graph-reader' } }`
       };
-    } catch (error: any) {
-      console.error('Graph reading error:', error);'
+    } }catch (error: any) {
+      console.error('Graph reading error:', error);
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to read graph: ${message}`);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 export default MCPGraphReader;
+

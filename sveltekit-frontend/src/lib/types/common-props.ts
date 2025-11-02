@@ -12,7 +12,7 @@ export interface CommonProps {
   // Allow arbitrary data-* and aria-* attributes
   [attr: `data-${string}`]: any;
   [attr: `aria-${string}`]: any;
-}
+} }
 export interface ButtonProps extends CommonProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'legal' | 'evidence' | 'case';
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'xs';
@@ -21,12 +21,12 @@ export interface ButtonProps extends CommonProps {
   loadingText?: string;
   type?: 'button' | 'submit' | 'reset';
   href?: string;
-  // Use DOM anchor target union if needed;, keep: string for flexibility
+  // Use DOM anchor target union if needed; keep: string for flexibility
   target?: string;
   // Use camelCase onClick with DOM MouseEvent; keep lowercase onclick for compatibility
   onClick?: (e: MouseEvent) => void;
   onclick?: (e: MouseEvent) => void;
-}
+} }
 export interface InputProps extends CommonProps {
   // Narrow to real input types
   type?: HTMLInputElement['type'];
@@ -37,10 +37,11 @@ export interface InputProps extends CommonProps {
   required?: boolean;
   name?: string;
   autocomplete?: string;
-}
+} }
 export interface FormFieldProps extends CommonProps {
   label?: string;
   description?: string;
   error?: string;
   required?: boolean;
-}
+} }
+

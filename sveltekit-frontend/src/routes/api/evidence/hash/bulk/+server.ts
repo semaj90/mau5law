@@ -1,8 +1,8 @@
-import { json, error as kitError } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { eq, inArray, desc } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import { cases, evidence } from '$lib/server/db/schema-postgres';
+import { json, error as kitError } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { eq, inArray, desc } }from 'drizzle-orm';
+import { db } }from '$lib/server/db/index';
+import { cases, evidence } }from '$lib/server/db/schema-postgres';
 
 type BulkHashRequest = {
   hashes?: string[];
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw kitError(401, 'Not authenticated');
-  }
+  } }
 
   const body = (await request.json()) as BulkHashRequest;
   const hashes = Array.isArray(body.hashes) ? body.hashes : [];
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (hashes.length === 0 && evidenceIds.length === 0) {
     throw kitError(400, 'Either hashes or evidenceIds array required');
-  }
+  } }
 
   const results: Array<Record<string, unknown>> = [];
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         evidence: relatedEvidence
       });
     });
-  }
+  } }
 
   if (evidenceIds.length > 0) {
     const evidenceItems = await db
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         uploadedAt: item.uploadedAt
       });
     });
-  }
+  } }
 
   const stats = {
     totalProcessed: results.length,
@@ -84,14 +84,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     success: true,
     results,
     stats,
-    message: `Processed ${results.length} item(s) for bulk hash operations' });'`
-};
+    message: 'Processed ${results.length} }item(s) for bulk hash operations' });'' };
 
 export const GET: RequestHandler = async ({ locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw kitError(401, 'Not authenticated');
-  }
+  } }
 
   const recentEvidence = await db
     .select({
@@ -124,4 +123,5 @@ export const GET: RequestHandler = async ({ locals }) => {
 
 function getUserId(locals: App.Locals): string | null {
   return locals?.user?.id ?? null;
-}
+} }
+

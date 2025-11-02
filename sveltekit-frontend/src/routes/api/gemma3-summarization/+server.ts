@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json, error } }from '@sveltejs/kit';
 const GEMMA3_SUMMARIZATION_SERVICE_URL = 'http://localhost:8080';
 // Health check endpoint
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
   if (endpoint === 'health') {
     try {
@@ -14,7 +14,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         backend: healthData
       });
-    } catch (err) {
+    } }catch (err) {
       return json(
         {
           status: 'unavailable',
@@ -22,10 +22,10 @@ export const, GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
           error: 'Service unreachable'
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
-  }
+    } }
+  } }
   error(404, 'Not found');
 };
 // Summarization endpoints
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         break;
       default:
         error(404, 'Endpoint not found');
-    }
+    } }
     const response = await fetch(`${GEMMA3_SUMMARIZATION_SERVICE_URL}${backendEndpoint}`, {
       method: 'POST',
       headers: {
@@ -53,14 +53,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       error(response.status, errorData.error || 'Summarization service error');
-    }
+    } }
     const result = await response.json();
     return json(result);
-  } catch (err) {
-    console.error('Summarization API error:', err);'
+  } }catch (err) {
+    console.error('Summarization API error:', err);
     if (err instanceof Error && err.message.includes('fetch')) {
       error(503, 'Summarization service unavailable');
-    }
+    } }
     error(500, 'Internal server error');
-  }
+  } }
 };
+

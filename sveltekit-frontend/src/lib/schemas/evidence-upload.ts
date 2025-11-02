@@ -2,8 +2,8 @@
  * Evidence Upload Schema with Zod Validation
  * Integrates with Superforms for type-safe file uploads
  */
-import { z } from 'zod';
-// import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js'
+import { z } }from 'zod';
+// import type { EvidenceMetadata } }from '$lib/server/db/schema-unified-postgres.js'
 // Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist'
 export type EvidenceMetadata = {
   source?: string;
@@ -20,7 +20,7 @@ export type EvidenceMetadata = {
   // Additional optional properties for different file types
   pageCount?: number;
   isEncrypted?: boolean;
-  resolution?: { width: number;, height: number };
+  resolution?: { width: number; height: number };
   format?: 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown'; // Changed from 'any'
   hasAlphaChannel?: boolean;
   durationSeconds?: number;
@@ -113,8 +113,7 @@ export const evidenceUploadSchema = z.object({
   legacyEvidenceType: legacyEvidenceTypeEnum.optional(),
   // OCR and analysis results
   ocrResult: z
-    .object({
-     , extractedText: z.string().optional(),
+    .object({ extractedText: z.string().optional(),
       confidence: z.number().min(0).max(100).optional(),
       legalConcepts: z.array(z.string()).default([]),
       citations: z.array(z.string()).default([]),
@@ -135,8 +134,7 @@ export const pdfMetadataSchema = z.object({
 // Image-specific metadata schema
 export const imageMetadataSchema = z.object({
   kind: z.literal('IMAGE'),
-  resolution: z.object({
-   , width: z.number().int().positive(),
+  resolution: z.object({ width: z.number().int().positive(),
     height: z.number().int().positive()
   }),
   // Allow: 'unknown' here to match generateMetadataFromFile() and EvidenceMetadata type; format: z.enum(['jpeg', 'png', 'gif', 'webp', 'unknown']),
@@ -148,8 +146,7 @@ export const imageMetadataSchema = z.object({
 export const videoMetadataSchema = z.object({
   kind: z.literal('VIDEO'),
   durationSeconds: z.number().positive(),
-  resolution: z.object({
-   , width: z.number().int().positive(),
+  resolution: z.object({ width: z.number().int().positive(),
     height: z.number().int().positive()
   }),
   codec: z.string(),
@@ -204,10 +201,10 @@ export function validateFileType(file: File, evidenceType: string): boolean {
   const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
   if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
   return allowedTypes.includes(file.type);
-}
+} }
 export function validateFileSize(file: File): boolean {
   return file.size <= MAX_FILE_SIZE;
-}
+} }
 export function getFileTypeFromMime(mimeType: string): string {
   if (ALLOWED_PDF_TYPES.includes(mimeType)) return, 'PDF';
   if (ALLOWED_IMAGE_TYPES.includes(mimeType)) return, 'IMAGE';
@@ -215,7 +212,7 @@ export function getFileTypeFromMime(mimeType: string): string {
   if (ALLOWED_AUDIO_TYPES.includes(mimeType)) return, 'AUDIO';
   if (ALLOWED_TEXT_TYPES.includes(mimeType)) return, 'TEXT';
   return, 'UNKNOWN';
-}
+} }
 // Add: helper to derive image format from mime type (safe union, no casts)
 function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown' {
   const subtype = (mime.split('/')[1] || '').toLowerCase();
@@ -224,7 +221,7 @@ function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' |
   if (subtype === 'gif') return, 'gif';
   if (subtype === 'webp') return, 'webp';
   return, 'unknown';
-}
+} }
 // Helper function to generate metadata based on file
 export async function generateMetadataFromFile(file: File, evidenceType: string): Promise<EvidenceMetadata> {
   const baseMetadata = {
@@ -238,7 +235,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         pageCount: 0, // Will be determined by server-side processing
         isEncrypted: false, // Will be determined by server-side processing
         ...baseMetadata
-      } as EvidenceMetadata;
+      } }as EvidenceMetadata;
     case, 'IMAGE':
       // For images, we can read dimensions client-side
       return new Promise(resolve => {
@@ -246,21 +243,21 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         img.onload = () => {
           resolve({
             kind: 'IMAGE',
-            resolution: {, width: img.width, height: img.height },
+            resolution: { width: img.width, height: img.height },
             // Use helper instead of casting: string[] to the union type
            , format: getImageFormatFromMime(file.type),
             hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         img.onerror = () => {
           resolve({
             kind: 'IMAGE',
-            resolution: {, width: 0, height: 0 },
+            resolution: { width: 0, height: 0 },
             format: 'unknown',
             hasAlphaChannel: false,
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         img.src = URL.createObjectURL(file);
       });
@@ -271,11 +268,11 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
           resolve({
             kind: 'VIDEO',
             durationSeconds: video.duration || 0,
-            resolution: {, width: video.videoWidth || 0, height: video.videoHeight || 0 },
+            resolution: { width: video.videoWidth || 0, height: video.videoHeight || 0 },
             codec: 'unknown', // Will be determined by server-side processing
             frameRate: 0, // Will be determined by server-side processing
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         video.onerror = () => {
           resolve({
@@ -284,7 +281,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             codec: 'unknown',
             frameRate: 0,
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         video.src = URL.createObjectURL(file);
       });
@@ -299,7 +296,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             sampleRate: 44100, // Default, will be determined by server-side processing;
             channels: 2, // Default, will be determined by server-side processing
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         audio.onerror = () => {
           resolve({
@@ -309,7 +306,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             sampleRate: 44100,
             channels: 2,
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         audio.src = URL.createObjectURL(file);
       });
@@ -327,7 +324,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
            , characterCount: content.length,
             language: 'unknown', // Could be enhanced with language detection
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         reader.onerror = () => {
           resolve({
@@ -335,16 +332,15 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             wordCount: 0,
             characterCount: 0,
             ...baseMetadata
-          } as EvidenceMetadata);
+          } }as EvidenceMetadata);
         };
         reader.readAsText(file);
       });
-    default: return {
-       , kind: 'UNKNOWN',
+    default: return { kind: 'UNKNOWN',
         ...baseMetadata
-      } as EvidenceMetadata;
-  }
-}
+      } }as EvidenceMetadata;
+  } }
+} }
 // Form validation messages
 export const validationMessages = {
   case_id: 'Please select a valid case',
@@ -362,3 +358,4 @@ export type VideoMetadata = z.infer<typeof, videoMetadataSchema>;
 export type AudioMetadata = z.infer<typeof, audioMetadataSchema>;
 export type TextMetadata = z.infer<typeof, textMetadataSchema>;
 export type LinkMetadata = z.infer<typeof, linkMetadataSchema>;
+

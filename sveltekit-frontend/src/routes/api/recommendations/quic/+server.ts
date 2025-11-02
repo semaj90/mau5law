@@ -1,12 +1,12 @@
 // Ultra-Fast QUIC Neo4j Recommendations API - 5-15ms Response Target
 // Integrates with running QUIC Tensor Server (port 4433)
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json, error } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 
 // --- Added: minimal engine typings to avoid `any` ---
 type RecommendationResult = {
- , processingTime: number;
+  processingTime: number;
   protocol?: string;
   cacheHit?: boolean;
   tensorMetrics?: { tensorCoresUsed?: boolean };
@@ -17,7 +17,7 @@ type RecommendationResult = {
 
 type QuicRecommendationEngine = {
   getRecommendations(options: {
-   , query: string;
+  query: string;
     caseId?: string | null;
     practiceArea?: string | null;
     jurisdiction?: string | null;
@@ -68,13 +68,13 @@ async function getQuicEngine(): Promise<QuicRecommendationEngine> {
       // instantiate then cast to our interface (structural typing)
       const instance = new (module.QuicNeo4jRecommendationEngine as new () => unknown)();
       QuicEngine = instance as QuicRecommendationEngine;
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to load QUIC engine: ', err);'`'`
       throw error(503, makeHttpErrorPayload({ message: 'QUIC recommendation engine unavailable' }));
-    }
-  }
+    } }
+  } }
   return QuicEngine;
-}
+} }
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
@@ -87,8 +87,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const useTensorCores = url.searchParams.get('useTensorCores') !== 'false';
     const benchmark = url.searchParams.get('benchmark') === 'true';
     if (!query) {
-      throw error(400, makeHttpErrorPayload({ message: `Query parameter (q or query) is required` }));
-    }
+      throw error(400, makeHttpErrorPayload({ message: 'Query parameter (q or query) is required' }));
+    } }
     const engine = await getQuicEngine();
     // Run benchmark if requested
     if (benchmark) {
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
         benchmark: benchmarkResults,
         connection: engine.getConnectionInfo(),
         message: 'QUIC Neo4j Recommendation Engine benchmark completed' });
-    }
+    } }
     // Execute ultra-fast QUIC recommendation
     const startTime = performance.now();
     const recommendations = await engine.getRecommendations({
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
         query,
         ...recommendations,
         performance: {
-         , totalApiTime: totalTime,
+  totalApiTime: totalTime,
           engineProcessingTime: recommendations.processingTime,
           overhead: totalTime - (recommendations.processingTime ?? 0),
           targetMet: (recommendations.processingTime ?? Infinity) <= 15,
@@ -134,13 +134,13 @@ export const GET: RequestHandler = async ({ url }) => {
         },
         connection: engine.getConnectionInfo()
       },
-      { status: 200, headers }
+      { status: 200, headers } }
     );
-  } catch (err) {
-    console.error('QUIC recommendations API error:', err);'
+  } }catch (err) {
+    console.error('QUIC recommendations API error:', err);
     if (err.status) {
       throw err; // Re-throw SvelteKit errors
-    }
+    } }
     return json(
       {
         success: false,
@@ -148,9 +148,9 @@ export const GET: RequestHandler = async ({ url }) => {
         fallback: 'Consider using /api/search for HTTP fallback',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -165,11 +165,11 @@ export const POST: RequestHandler = async ({ request }) => {
       useGPU = true,
       useTensorCores = true,
       batchQueries
-    } = body as PostBody; // cast to typed body
+    } }= body as PostBody; // cast to typed body
 
     if (!query && !(batchQueries && batchQueries.length)) {
       throw error(400, makeHttpErrorPayload({ message: 'Query or batchQueries required' }));
-    }
+    } }
     const engine = await getQuicEngine();
     const startTime = performance.now();
     // Handle batch processing for multiple queries
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
         batchQueries.map((batchQuery: BatchQueryOrString) => {
           const isString = typeof batchQuery === 'string';
           const q = isString ? (batchQuery as: string) : (batchQuery as BatchQuery).query || '';
-          const bq = isString ? ({} as BatchQuery) : (batchQuery as BatchQuery);
+          const bq = isString ? ({} }as BatchQuery) : (batchQuery as BatchQuery);
           return engine.getRecommendations({
             query: q,
             caseId: bq.caseId ?? caseId,
@@ -204,18 +204,18 @@ export const POST: RequestHandler = async ({ request }) => {
         results: batchResults.map(result => {
           if (result.status === 'fulfilled') {
             return (result as PromiseFulfilledResult<RecommendationResult>).value;
-          } else {
+          } }else {
             const reason = (result as PromiseRejectedResult).reason;
             return { error: reason instanceof Error ? reason.message : String(reason) };
-          }
+          } }
         }),
         performance: {
-         , totalBatchTime: totalTime,
+  totalBatchTime: totalTime,
           averagePerQuery: totalTime / batchQueries.length,
           successRate: successful.length / batchQueries.length
-        }
+        } }
       });
-    }
+    } }
     // Single query processing
     const recommendations = await engine.getRecommendations({
       query,
@@ -233,26 +233,26 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       ...recommendations,
       performance: {
-       , totalApiTime: totalTime,
+  totalApiTime: totalTime,
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
         targetMet: recommendations.processingTime <= 15
-      }
+      } }
     });
-  } catch (err) {
-    console.error('QUIC recommendations POST error:', err);'
+  } }catch (err) {
+    console.error('QUIC recommendations POST error:', err);
     if (err.status) {
       throw err;
-    }
+    } }
     return json(
       {
         success: false,
         error: err instanceof Error ? err.message : 'QUIC recommendation failed',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const OPTIONS: RequestHandler = async () => {
 	// CORS preflight for QUIC connections
@@ -265,6 +265,6 @@ export const OPTIONS: RequestHandler = async () => {
 			'Access-Control-Max-Age': '86400',
 			'Alt-Svc': 'h3=":4433"; ma=3600', // Advertise QUIC/HTTP3, 'X-API-Version': '1.0',
 			'X-Supported-Protocols': 'QUIC, HTTP/2, HTTP/1.1',
-			'X-Target-Latency': '5-15ms' }
+			'X-Target-Latency': '5-15ms' } }
 	})
 }

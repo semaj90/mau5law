@@ -1,23 +1,23 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 interface SearchRequest { query: string, mode: 'semantic' | 'boolean' | 'phrase'; filters: {
     jurisdiction?: string
     court?: string
     documentType?: string
     dateRange?: string
     precedentialValue?: string
-  }
+  } }
   sort: string; page: number; limit: number
-}
-interface LegalDocument {, id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string; documentType: string; precedentialValue: string; summary: string; keyTopics: string[]; relevanceScore: number; citedBy: number; url: string
+} }
+interface LegalDocument { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string; documentType: string; precedentialValue: string; summary: string; keyTopics: string[]; relevanceScore: number; citedBy: number; url: string
   content?: string
   embedding?: number[]
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: SearchRequest = await request.json()
-    const { query, mode, filters, sort, page, limit } = searchRequest
+    const { query, mode, filters, sort, page, limit } }= searchRequest
     // Vector search for semantic mode
     if (mode === 'semantic') {
       const results = await performSemanticSearch(query, filters, sort, page, limit)
@@ -29,7 +29,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         searchMode: mode,
         processingTime: results.processingTime
       })
-    }
+    } }
     // Boolean/phrase search
     const results = await performKeywordSearch(query, mode, filters, sort, page, limit)
     return json({
@@ -40,11 +40,11 @@ export const, POST: RequestHandler = async ({ request }) => {
       searchMode: mode,
       processingTime: results.processingTime
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Legal research search error:', error)'
     return json({ success: false, error: 'Search failed', results: [], total: 0 }, { status: 500 });
-  }
-}
+  } }
+} }
 async function performSemanticSearch(
   query: string,
   filters: Record<string, unknown>,
@@ -72,22 +72,22 @@ async function performSemanticSearch(
     $sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction as: string);
     paramIndex++;
-  }
+  } }
   if (filters.court) {
     $sql += ` AND ld.court = $${paramIndex}`;
     params.push(filters.court as: string);
     paramIndex++;
-  }
+  } }
   if (filters.documentType) {
     $sql += ` AND ld.document_type = $${paramIndex}`;
     params.push(filters.documentType as: string);
     paramIndex++;
-  }
+  } }
   if (filters.precedentialValue) {
     $sql += ` AND ld.precedential_value = $${paramIndex}`;
     params.push(filters.precedentialValue as: string);
     paramIndex++;
-  }
+  } }
   // Group by for aggregation
   $sql += ` GROUP BY ld.id, ld.embedding`;
   // Apply sorting
@@ -108,9 +108,9 @@ async function performSemanticSearch(
       break;
     default:
       $sql += ` ORDER BY relevance_score DESC`;
-  }
+  } }
   // Apply pagination
-  $sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  $sql += ` LIMIT $${paramIndex} }OFFSET $${paramIndex + 1}`;
   params.push(limit, (page - 1) * limit);
   try {
     // Mock database query for demo - in production, use actual database connection
@@ -123,11 +123,11 @@ async function performSemanticSearch(
       relatedTopics,
       processingTime
     };
-  } catch (error) {
-    console.error('Database query error:', error);'
+  } }catch (error) {
+    console.error('Database query error:', error);
     throw error;
-  }
-}
+  } }
+} }
 async function performKeywordSearch(
   query: string,
   mode: 'boolean' | 'phrase',
@@ -155,7 +155,7 @@ async function performKeywordSearch(
     `;`
     params.push(query);
     paramIndex++;
-  } else {
+  } }else {
     // Boolean search
     $sql = `
       SELECT
@@ -170,28 +170,28 @@ async function performKeywordSearch(
     `;`
     params.push(query.replace(/\s+/g, ' & ')); // Convert to: boolean query
     paramIndex++;
-  }
+  } }
   // Apply filters (same as semantic search)
   if (filters.jurisdiction) {
     $sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction as: string);
     paramIndex++;
-  }
+  } }
   if (filters.court) {
     $sql += ` AND ld.court = $${paramIndex}`;
     params.push(filters.court as: string);
     paramIndex++;
-  }
+  } }
   if (filters.documentType) {
     $sql += ` AND ld.document_type = $${paramIndex}`;
     params.push(filters.documentType as: string);
     paramIndex++;
-  }
+  } }
   if (filters.precedentialValue) {
     $sql += ` AND ld.precedential_value = $${paramIndex}`;
     params.push(filters.precedentialValue as: string);
     paramIndex++;
-  }
+  } }
   $sql += ` GROUP BY ld.id`;
   // Apply sorting
   switch (sort) {
@@ -203,8 +203,8 @@ async function performKeywordSearch(
       break;
     default:
       $sql += ` ORDER BY relevance_score DESC`;
-  }
-  $sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  } }
+  $sql += ` LIMIT $${paramIndex} }OFFSET $${paramIndex + 1}`;
   params.push(limit, (page - 1) * limit);
   try {
     // Mock implementation for demo
@@ -217,11 +217,11 @@ async function performKeywordSearch(
       relatedTopics,
       processingTime
     };
-  } catch (error) {
-    console.error('Keyword search error:', error);'
+  } }catch (error) {
+    console.error('Keyword search error:', error);
     throw error;
-  }
-}
+  } }
+} }
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   try {
     // In production, call your embedding service (OpenAI, local model, etc.)
@@ -229,25 +229,25 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-       , model: 'nomic-embed-text',
+  model: 'nomic-embed-text',
         prompt: query
       })
     });
     if (response.ok) {
       const data = await response.json();
       return data.embedding;
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.error('Embedding generation failed:', error);
-  }
+  } }
   // Fallback: return mock embedding
-  return Array.from({, length: 768 }, () => Math.random() - 0.5);
-}
+  return Array.from({ length: 768 }, () => Math.random() - 0.5);
+} }
 function generateMockSemanticResults(query: string, filters: Record<string, unknown>, page: number, limit: number) {
   const allResults: LegalDocument[] = [
     {
-     , id: '1',
-      title: `${query} - Supreme Court Decision`,
+  id: '1',
+      title: `${query} }- Supreme Court Decision`,
       citation: '567 U.S. 123 (2023)',
       fullCitation: `Legal Case on ${query}, 567 U.S. 123 (2023)`,
       court: 'Supreme Court of the United States',
@@ -255,14 +255,14 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       dateDecided: '2023-06-15',
       documentType: 'case',
       precedentialValue: 'High',
-      summary: `Landmark Supreme Court decision regarding ${query} that establishes new precedent for constitutional interpretation...`,
+      summary: `Landmark Supreme Court decision regarding ${query} }that establishes new precedent for constitutional interpretation...`,
       keyTopics: [query.split(' ')[0], 'Constitutional Law', 'Supreme Court'],
       relevanceScore: 0.95,
       citedBy: 156,
-      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
+      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')} } },'`'`
     {
       id: '2',
-      title: `Federal Statute - ${query} Regulations`,
+      title: `Federal Statute - ${query} }Regulations`,
       citation: '15 U.S.C. § 1601',
       fullCitation: `Federal Regulations on ${query}, 15 U.S.C. § 1601 (2022)`,
       court: 'Federal Register',
@@ -270,11 +270,11 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       dateDecided: '2022-12-01',
       documentType: 'statute',
       precedentialValue: 'High',
-      summary: `Federal statutory provisions governing ${query} with comprehensive regulatory framework...`,
+      summary: `Federal statutory provisions governing ${query} }with comprehensive regulatory framework...`,
       keyTopics: [query.split(' ')[0], 'Federal Law', 'Regulations'],
       relevanceScore: 0.89,
       citedBy: 89,
-      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
+      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')} } },'`'`
     {
       id: '3',
       title: `Circuit Court Analysis of ${query}`,
@@ -285,23 +285,23 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       dateDecided: '2021-08-30',
       documentType: 'case',
       precedentialValue: 'Medium',
-      summary: `Detailed circuit court analysis of ${query} providing guidance on application and interpretation...`,
+      summary: `Detailed circuit court analysis of ${query} }providing guidance on application and interpretation...`,
       keyTopics: [query.split(' ')[0], 'Circuit Court', 'Appeals'],
       relevanceScore: 0.82,
       citedBy: 43,
-      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
+      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')} } },'`'`
   ];
   // Apply filters
   let filteredResults = allResults;
   if (filters.jurisdiction) {
     filteredResults = filteredResults.filter(r => r.jurisdiction === filters.jurisdiction);
-  }
+  } }
   if (filters.documentType) {
     filteredResults = filteredResults.filter(r => r.documentType === filters.documentType);
-  }
+  } }
   if (filters.precedentialValue) {
     filteredResults = filteredResults.filter(r => r.precedentialValue === filters.precedentialValue);
-  }
+  } }
   // Pagination
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
@@ -310,9 +310,9 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
     documents: paginatedResults,
     total: filteredResults.length
   };
-}
+} }
 function generateMockKeywordResults(
- , query: string,
+  query: string,
   mode: string,
   filters: Record<string, unknown>,
   page: number,
@@ -325,7 +325,7 @@ function generateMockKeywordResults(
     doc.relevanceScore = Math.max(0.6, doc.relevanceScore - 0.1);
   });
   return results;
-}
+} }
 function generateRelatedTopics(query: string): string[] {
   const baseTopics = [
     'Constitutional interpretation',
@@ -340,9 +340,9 @@ function generateRelatedTopics(query: string): string[] {
   const relatedTopics: string[] = []; // <-- typed to avoid, implicit, any[]
   queryWords.forEach(word => {
     if (word.length > 3) {
-      relatedTopics.push(`${word} precedents`);
-      relatedTopics.push(`${word} regulations`);
-    }
+      relatedTopics.push(`${word} }precedents`);
+      relatedTopics.push(`${word} }regulations`);
+    } }
   });
   return [...relatedTopics.slice(0, 3), ...baseTopics.slice(0, 3)];
 }

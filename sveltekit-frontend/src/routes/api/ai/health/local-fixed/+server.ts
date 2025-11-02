@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ollamaService } from '$lib/services/ollama-service';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { ollamaService } }from '$lib/services/ollama-service';
 
 // Added local types
 type OllamaModel = { name?: string };
@@ -12,7 +12,7 @@ type HealthResult = { success: boolean;, message: string;
 
 type GenerationResponse = { response?: string | string[] | null };
 type GenerationResult =
-  | { success: true; provider: string; model: string; response: string | string[] | null; executionTime: number }
+  | { success: true; provider: string; model: string; response: string | string[] | null; executionTime: number } }
   | { success: false; provider: string; error: string; executionTime: number; troubleshooting?: string[] };
 
 //, Updated: Test Ollama connection directly
@@ -24,7 +24,7 @@ async function testOllamaConnection(): Promise<HealthResult> {
     });
     if (!versionResponse.ok) {
       return { success: false, message: 'Ollama not responding on port 11434' };
-    }
+    } }
 
     const modelsResponse = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
@@ -36,18 +36,18 @@ async function testOllamaConnection(): Promise<HealthResult> {
       const modelNames = (modelsData.models ?? []).map(m => m.name ?? '').filter(Boolean);
       return {
         success: true,
-        message: `Ollama is running with ${modelNames.length} models`,
+        message: `Ollama is running with ${modelNames.length} }models`,
         models: modelNames
       };
-    }
+    } }
 
     return {
-     , success: true,
+  success: true,
       message: 'Ollama is running but model list unavailable' };
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'Ollama connection; failed: ${msg}' };'` }'`
-}
+    return { success: false, message: 'Ollama connection; failed: ${msg} } };'` } }`
+} }
 
 //, Updated: Test llama.cpp connection
 async function testLlamaCppConnection(): Promise<HealthResult> {
@@ -58,14 +58,14 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
     });
 
     if (response.ok) {
-      return { success: true, message: 'llama.cpp server is running' };'' } else {
-      return {, success: false, message: 'llama.cpp server not responding properly' };
-    }
-  } catch (error: any) {
+      return { success: true, message: 'llama.cpp server is running' };'' } }else {
+      return { success: false, message: 'llama.cpp server not responding properly' };
+    } }
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'llama.cpp connection; failed: ${msg}' };
-  }
-}
+    return { success: false, message: 'llama.cpp connection; failed: ${msg} } };
+  } }
+} }
 
 // Normalizes various return shapes, to: string[]
 function mapModelsToNames(input: any): string[] {
@@ -79,12 +79,12 @@ function mapModelsToNames(input: any): string[] {
         // common keys that may carry a model name
         const candidate = anyItem.name ?? anyItem.model ?? anyItem.id ?? '';
         return typeof candidate === 'string' ? candidate : String(candidate);
-      }
+      } }
       return, '';
     })
     .map(s => s.trim())
     .filter(Boolean);
-}
+} }
 
 export const GET: RequestHandler = async () => {
   const startTime = Date.now();
@@ -102,9 +102,9 @@ export const GET: RequestHandler = async () => {
             const svcModels = ollamaService.getAvailableModels();
             models = mapModelsToNames(svcModels);
             gemmaModel = typeof ollamaService.getGemma3Model === 'function' ? ollamaService.getGemma3Model() : null;
-          } catch (_) {
+          } }catch (_) {
             // swallow — handled below
-          }
+          } }
 
           if (!available) {
             // Try to initialize
@@ -114,13 +114,13 @@ export const GET: RequestHandler = async () => {
             models = mapModelsToNames(svcModels.length ? svcModels : models);
             gemmaModel =
               typeof ollamaService.getGemma3Model === 'function' ? ollamaService.getGemma3Model() : gemmaModel;
-          }
+          } }
 
           return { available, models, gemmaModel };
-        } catch (error: any) {
+        } }catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           return { available: false, error: msg };
-        }
+        } }
       })(),
       testOllamaConnection(),
       testLlamaCppConnection(),
@@ -131,13 +131,13 @@ export const GET: RequestHandler = async () => {
       success: true,
       timestamp: new Date().toISOString(),
       executionTime,
-      services: {, ollama: {, service: ollamaServiceCheck,
+      services: { ollama: { service: ollamaServiceCheck,
           direct: ollamaDirectCheck
         },
         llamaCpp: llamaCppCheck
       },
       recommendations: {
-       , preferredService: ollamaDirectCheck?.success ? 'ollama' : llamaCppCheck?.success ? 'llamacpp' : 'none',
+  preferredService: ollamaDirectCheck?.success ? 'ollama' : llamaCppCheck?.success ? 'llamacpp' : 'none',
         message:
           ollamaDirectCheck?.success || llamaCppCheck?.success
             ? 'Local LLM services are operational'
@@ -148,9 +148,9 @@ export const GET: RequestHandler = async () => {
           'Check if llama.cpp is running on port 8080',
           'Ensure Gemma3 model is loaded in Ollama',
         ]
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Local AI health check failed:', msg);
     return json(
@@ -158,23 +158,23 @@ export const GET: RequestHandler = async () => {
         success: false,
         available: false,
         error: msg,
-        services: {, ollama: {, available: false },
-          llamaCpp: {, available: false }
-        }
+        services: { ollama: { available: false },
+          llamaCpp: { available: false } }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Test generation endpoint
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { prompt = 'What are the key elements of a valid contract?', service = 'auto` } = body ?? {};'`
+    const { prompt = 'What are the key elements of a valid contract?', service = 'auto` } }= body ?? {};'`
     const startTime = Date.now();
     let result: GenerationResult = {
-     , success: false,
+  success: false,
       provider: 'none',
       error: 'No available local LLM services',
       executionTime: Date.now() - startTime
@@ -186,13 +186,13 @@ export const POST: RequestHandler = async ({ request }) => {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-           , model: 'gemma3-legal',
+  model: 'gemma3-legal',
             prompt,
             stream: false,
             options: {
-             , temperature: 0.7,
+  temperature: 0.7,
               num_predict: 200
-            }
+            } }
           }),
           signal: AbortSignal.timeout(30000)
         });
@@ -206,19 +206,19 @@ export const POST: RequestHandler = async ({ request }) => {
             response: data?.response ?? null,
             executionTime: Date.now() - startTime
           };
-        } else {
+        } }else {
           // fallback model
           const fallbackResponse = await fetch('http://localhost:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-             , model: 'gemma2:2b',
+  model: 'gemma2:2b',
               prompt,
               stream: false,
               options: {
-               , temperature: 0.7,
+  temperature: 0.7,
                 num_predict: 200
-              }
+              } }
             }),
             signal: AbortSignal.timeout(30000)
           });
@@ -232,25 +232,25 @@ export const POST: RequestHandler = async ({ request }) => {
               response: data?.response ?? null,
               executionTime: Date.now() - startTime
             };
-          } else {
+          } }else {
             result = {
               success: false,
               provider: 'ollama',
-              error: `Generation;, failed: ${response.statusText}`,
+              error: `Generation; failed: ${response.statusText}`,
               executionTime: Date.now() - startTime
             };
-          }
-        }
-      } catch (error: any) {
+          } }
+        } }
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         result = {
           success: false,
           provider: 'ollama',
-          error: `Generation;, error: ${msg}`,
+          error: `Generation; error: ${msg}`,
           executionTime: Date.now() - startTime
         };
-      }
-    }
+      } }
+    } }
 
     if (!result.success && service === 'auto') {
       result = {
@@ -264,17 +264,18 @@ export const POST: RequestHandler = async ({ request }) => {
           'Verify ports, 11434 (Ollama) or, 8080 (llama.cpp) are accessible',
         ]
       };
-    }
+    } }
 
     return json(result);
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return json(
       {
         success: false,
         error: msg
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

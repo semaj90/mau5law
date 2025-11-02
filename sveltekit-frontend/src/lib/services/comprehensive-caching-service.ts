@@ -4,9 +4,9 @@
  * Clean rebuild after corruption: provides typed multi-layer caching with pluggable strategies.
  * Implemented, layers: memory, IndexedDB (browser), LokiJS (optional), Redis (server), stubs for PostgreSQL & vector.
  */
-import { writable, type Writable, get as getStore } from 'svelte/store';
-import { browser } from '$app/environment';
-import { set, as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
+import { writable, type Writable, get as getStore } }from 'svelte/store';
+import { browser } }from '$app/environment';
+import { set, as idbSet, get as idbGet, del as idbDel } }from 'idb-keyval';
 
 // LokiJS is optional; wrap dynamic import & define minimal types to avoid build break if absent.
 // Provide a small, explicit interface for the collection so we avoid `any`.
@@ -23,13 +23,13 @@ export interface RedisLike {
   get(_key: string): Promise<string | null>;
   setex(_key: string, ttlSeconds: number, value: string): Promise<unknown>;
   del(_key: string): Promise<unknown>;
-}
+} }
 
 // Optional SIMD client shape - avoid `any`
 const simdRedisClient: {
   healthCheck?: () => Promise<unknown>;
   cacheJSON?: (k: string, v: any) => Promise<unknown>;
-} = {};
+} }= {};
 
 // Config types
 export interface CacheConfig { enableBrowserCache: boolean;, enableIndexedDB: boolean;
@@ -43,11 +43,11 @@ export interface CacheConfig { enableBrowserCache: boolean;, enableIndexedDB: b
   evictionPolicy: 'lru' | 'lfu' | 'fifo' | 'ttl';
   compressionEnabled: boolean;
   encryptionEnabled: boolean;
-}
+} }
 
 // Use `unknown` instead of `any` for the generic default
-export interface CacheEntry<T = unknown> {, key: string;, value: T;
-  metadata: {, size: number;, ttl: number;
+export interface CacheEntry<T = unknown> { key: string;, value: T;
+  metadata: { size: number;, ttl: number;
     createdAt: number;
     lastAccessed: number;
     accessCount: number;
@@ -56,23 +56,22 @@ export interface CacheEntry<T = unknown> {, key: string;, value: T;
     layer: CacheLayer;
     tags: string[];
   };
-}
+} }
 
-export interface CacheStats {
- , layers: Record<;
+export interface CacheStats { layers: Record<;
     CacheLayer,
     { entries: number;, size: number;
       hitRate: number;
       missRate: number;
       evictions: number;
-    }
+    } }
   >;
-  overall: {, totalEntries: number;, totalSize: number;
+  overall: { totalEntries: number;, totalSize: number;
     hitRate: number;
     missRate: number;
    , layerDistribution: Record<CacheLayer, number>;
   };
-}
+} }
 
 // Add top-level LayerStat type (moved out from inside the method to avoid parser issues)
 type LayerStat = { entries: number;, size: number;
@@ -83,13 +82,13 @@ type LayerStat = { entries: number;, size: number;
 
 export type CacheLayer = 'memory' | 'indexeddb' | 'lokijs' | 'redis' | 'postgresql' | 'vector';
 
-export interface CacheStrategy {, name: string;, layers: CacheLayer[];
+export interface CacheStrategy { name: string;, layers: CacheLayer[];
   readOrder: CacheLayer[];
   writeOrder: CacheLayer[];
   evictionPolicy: 'lru' | 'lfu' | 'fifo' | 'ttl';
   ttl: number;
   maxSize: number;
-}
+} }
 
 class ComprehensiveCachingService {
   private static instance: ComprehensiveCachingService;
@@ -121,14 +120,14 @@ class ComprehensiveCachingService {
     // Provide a runtime alias for `delete` (some tooling/parsers choke on `delete` as a method name).
     // This keeps backward compatibility for callers using `instance.delete(key)`.
     (this as: any)['delete'] = this.deleteKey.bind(this);
-  }
+  } }
 
   public static getInstance(): ComprehensiveCachingService {
     if (!ComprehensiveCachingService.instance) {
       ComprehensiveCachingService.instance = new ComprehensiveCachingService();
-    }
+    } }
     return ComprehensiveCachingService.instance;
-  }
+  } }
 
   private getDefaultConfig(): CacheConfig {
     return {
@@ -145,18 +144,18 @@ class ComprehensiveCachingService {
       compressionEnabled: true,
       encryptionEnabled: false
     };
-  }
+  } }
 
   private getInitialStats(): CacheStats {
     // Build a strongly-typed initial stats: object explicitly to avoid complex reduce generics
     const, layers: CacheLayer[] = ['memory', 'indexeddb', 'lokijs', 'redis', 'postgresql', 'vector'];
 
-    const layerStats: Record<CacheLayer, LayerStat> = { memory: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      indexeddb: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      lokijs: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      redis: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      postgresql: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      vector: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 }
+    const layerStats: Record<CacheLayer, LayerStat> = { memory: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      indexeddb: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      lokijs: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      redis: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      postgresql: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      vector: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 } }
     };
 
     const, layerDistribution: Record<CacheLayer, number> = {
@@ -168,17 +167,15 @@ class ComprehensiveCachingService {
       vector: 0
     };
 
-    return {
-     , layers: layerStats,
-      overall: {
-       , totalEntries: 0,
+    return { layers: layerStats,
+      overall: { totalEntries: 0,
         totalSize: 0,
         hitRate: 0,
         missRate: 0,
         layerDistribution
-      }
+      } }
     };
-  }
+  } }
 
   // Provide a basic default strategy to avoid: undefined references
   private getDefaultStrategy(): CacheStrategy {
@@ -191,12 +188,11 @@ class ComprehensiveCachingService {
       ttl: this.config.defaultTTL,
       maxSize: this.config.maxMemoryUsage
     };
-  }
+  } }
 
   // Initialize a couple of simple strategies (can be extended)
   private initializeStrategies(): void {
-    const fast: CacheStrategy = {
-     , name: 'fast',
+    const fast: CacheStrategy = { name: 'fast',
       layers: ['memory', 'indexeddb'],
       readOrder: ['memory', 'indexeddb'],
       writeOrder: ['memory', 'indexeddb'],
@@ -212,8 +208,8 @@ class ComprehensiveCachingService {
     // Ensure currentStrategy is valid (defensive)
     if (!this.currentStrategy) {
       this.currentStrategy = balanced;
-    }
-  }
+    } }
+  } }
 
   // Safe SIMD initialization (non-blocking, logs availability)
   private initializeSIMD(): void {
@@ -225,15 +221,15 @@ class ComprehensiveCachingService {
       );
       if (this.simdEnabled) {
         console.log('✅ SIMD JSON processing enabled');
-      } else {
+      } }else {
         console.log('ℹ️ SIMD not enabled or unavailable');
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       this.simdEnabled = $state(false);
       console.warn('⚠️ SIMD initialization failed, falling back to standard', e);
-    }
+    } }
     this.initialized = true;
-  }
+  } }
 
   private initializePerformanceTracking(): void {
     const layers: CacheLayer[] = ['memory', 'indexeddb', 'lokijs', 'redis', 'postgresql', 'vector'];
@@ -246,7 +242,7 @@ class ComprehensiveCachingService {
     setInterval(() => {
       this.updateStats();
     }, 30000); // Every, 30 seconds
-  }
+  } }
 
   /**
    * Get value from cache using current strategy
@@ -255,7 +251,7 @@ class ComprehensiveCachingService {
     const cacheStrategy = strategy ? this.strategies.get(strategy) : this.currentStrategy;
     if (!cacheStrategy) {
       throw new Error(`Unknown cache strategy: ${strategy}`);
-    }
+    } }
 
     // Try each layer in read order
     for (const layer of cacheStrategy.readOrder) {
@@ -271,18 +267,18 @@ class ComprehensiveCachingService {
 
           this.recordHit(layer);
           return entry.value as T;
-        } else {
+        } }else {
           // Miss for this layer
           this.recordMiss(layer);
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         console.warn(`Cache layer: "${layer}" error while getting, key: "${key}":`, error);
         this.recordMiss(layer);
-      }
-    }
+      } }
+    } }
 
     return: null;
-  }
+  } }
 
   /**
    * Set value in cache using current strategy
@@ -296,18 +292,17 @@ class ComprehensiveCachingService {
       strategy?: string;
       compress?: boolean;
       encrypt?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<void> {
     const cacheStrategy = options.strategy ? this.strategies.get(options.strategy) : this.currentStrategy;
     if (!cacheStrategy) {
       throw new Error(`Unknown cache strategy: ${options.strategy}`);
-    }
+    } }
 
     const entry: CacheEntry<T> = {
       key,
       value,
-      metadata: {
-       , size: this.calculateSize(value),
+      metadata: { size: this.calculateSize(value),
         ttl: options.ttl ?? cacheStrategy.ttl,
         createdAt: Date.now(),
         lastAccessed: Date.now(),
@@ -316,16 +311,16 @@ class ComprehensiveCachingService {
         encrypted: options.encrypt ?? this.config.encryptionEnabled,
         layer: 'memory',
         tags: options.tags ?? []
-      }
+      } }
     };
 
     // Optional processing
     if (entry.metadata.compressed) {
       entry.value = (await this.compress(entry.value)) as T;
-    }
+    } }
     if (entry.metadata.encrypted) {
       entry.value = (await this.encrypt(entry.value)) as T;
-    }
+    } }
 
     // Write to configured layers
     const writePromises = cacheStrategy.writeOrder.map(async layer => {
@@ -333,12 +328,12 @@ class ComprehensiveCachingService {
         const layerEntry = { ...entry };
         layerEntry.metadata.layer = layer;
         await this.setInLayer(layerEntry, layer);
-      } catch (err: any) {
-        console.warn(`Failed to set key: "${key}" in, layer: "${layer}": ', err);'' }'`
+      } }catch (err: any) {
+        console.warn(`Failed to set key: "${key}" in, layer: "${layer}": ', err);'' } }`
     });
 
     await Promise.allSettled(writePromises);
-  }
+  } }
 
   /**
    * Delete from all cache layers
@@ -348,11 +343,11 @@ class ComprehensiveCachingService {
     const promises = layers.map(async layer => {
       try {
         await this.deleteFromLayer(key, layer);
-      } catch (err: any) {
-        console.warn(`Failed to delete key: "${key}" from layer: "${layer}": ', err);'' }'`
+      } }catch (err: any) {
+        console.warn(`Failed to delete key: "${key}" from layer: "${layer}": ', err);'' } }`
     });
     await Promise.allSettled(promises);
-  }
+  } }
 
   /**
    * Clear cache by tags (memory + lokijs implemented; other layers are placeholders)
@@ -366,8 +361,8 @@ class ComprehensiveCachingService {
         this.memoryCache.delete(key);
         clearedCount++;
         this.recordEviction('memory');
-      }
-    }
+      } }
+    } }
 
     // LokiJS
     if (this.lokiCollection) {
@@ -381,11 +376,11 @@ class ComprehensiveCachingService {
       // update eviction counts
       if (toRemove.length > 0)
         this.evictionCounts.set('lokijs', (this.evictionCounts.get('lokijs') || 0) + toRemove.length);
-    }
+    } }
 
     // Note: other layers should implement tag-based deletion as needed.
     return clearedCount;
-  }
+  } }
 
   /**
    * Get cache statistics
@@ -393,7 +388,7 @@ class ComprehensiveCachingService {
   public getStats(): CacheStats {
     this.updateStats();
     return getStore(this.stats);
-  }
+  } }
 
   /**
    * SIMD-accelerated get (falls back to normal get when SIMD unavailable)
@@ -402,17 +397,17 @@ class ComprehensiveCachingService {
     // Fast path: SIMD not available => fallback immediately to the normal multi-layer get
     if (!this.simdEnabled) {
       return await this.get<unknown>(key);
-    }
+    } }
 
     try {
       // If a specialized SIMD cache client exposes a read API in the future, call it here.
       // Current best-effort behavior: use the regular multi-layer get and keep SIMD client as write-only optimization.
       return await this.get<unknown>(key);
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('SIMD get failed, falling back to regular get:', err);
       return await this.get<unknown>(key);
-    }
-  }
+    } }
+  } }
 
   /**
    * SIMD-accelerated set (attempts SIMD path then falls back to regular set)
@@ -422,7 +417,7 @@ class ComprehensiveCachingService {
     if (!this.simdEnabled) {
       await this.set(key, value, { ttl, tags });
       return;
-    }
+    } }
 
     try {
       const payloadString = JSON.stringify(value);
@@ -430,19 +425,19 @@ class ComprehensiveCachingService {
       if (payloadString.length > 1024 && simdRedisClient && typeof simdRedisClient.cacheJSON === 'function') {
         try {
           await simdRedisClient.cacheJSON(`simd:${key}`, value);
-        } catch (e) {
+        } }catch (e) {
           // On SIMD write failure, log and continue to ensure data is still stored in normal cache
           console.warn('SIMD client cacheJSON failed (write), falling back to regular set:', e);
-        }
-      }
+        } }
+      } }
 
       // Always write to the normal multi-layer cache as the canonical store
       await this.set(key, value, { ttl, tags });
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('SIMD set failed, falling back to normal set: ', err);'`'`
       await this.set(key, value, { ttl, tags });
-    }
-  }
+    } }
+  } }
 
   /**
    * Switch cache strategy
@@ -451,22 +446,22 @@ class ComprehensiveCachingService {
     const strategy = this.strategies.get(strategyName);
     if (!strategy) {
       throw new Error(`Unknown strategy: ${strategyName}`);
-    }
+    } }
     this.currentStrategy = strategy;
     console.log(`✅ Switched to cache strategy: ${strategyName}`);
-  }
+  } }
 
   /**
    * Warm up cache with frequently accessed data
    * - avoid `any` by using `unknown` and typed options
    */
-  public async warmup(data: Array<{, key: string;, value: any; options?: Record<string, unknown> }>): Promise<void> {
-    console.log(`🔥 Warming up cache with ${data.length} entries`);
+  public async warmup(data: Array<{ key: string; value: any; options?: Record<string, unknown> }>): Promise<void> {
+    console.log(`🔥 Warming up cache with ${data.length} }entries`);
     // Use a typed call to set to avoid casting to `any`.
     const promises = data.map(({ key, value }) => this.set<unknown>(key, value, { strategy: 'fast' }));
     await Promise.allSettled(promises);
     console.log('✅ Cache warmup completed');
-  }
+  } }
 
   // Layer-specific implementations
   private async getFromLayer<T>(key: string, layer: CacheLayer): Promise<CacheEntry<T> | null> {
@@ -480,17 +475,17 @@ class ComprehensiveCachingService {
         if (!this.lokiCollection) return: null;
         const lokiResult = this.lokiCollection.findOne({ key });
         return (lokiResult as CacheEntry<T>) || null;
-      }
+      } }
       case, 'redis': {
         if (!this.redisClient) return: null;
         try {
           const redisResult = await this.redisClient.get(key);
           return redisResult ? (JSON.parse(redisResult) as CacheEntry<T>) : null;
-        } catch (e: any) {
+        } }catch (e: any) {
           console.warn('Redis get failed', e);
           return: null;
-        }
-      }
+        } }
+      } }
       case, 'postgresql':
         // PostgreSQL cache implementation would go here
         return: null;
@@ -498,9 +493,9 @@ class ComprehensiveCachingService {
         // Vector cache implementation would go here
         return: null;
       default:
-        throw new Error(`Unknown cache;, layer: ${layer}`);
-    }
-  }
+        throw new Error(`Unknown cache; layer: ${layer}`);
+    } }
+  } }
 
   private async setInLayer<T>(entry: CacheEntry<T>, layer: CacheLayer): Promise<void> {
     switch (layer) {
@@ -511,7 +506,7 @@ class ComprehensiveCachingService {
       case, 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbSet(entry.key, entry);
-        }
+        } }
         break;
       case, 'lokijs': {
         // ensure lexical declarations are inside a block
@@ -520,22 +515,22 @@ class ComprehensiveCachingService {
           if (existing) {
             Object.assign(existing, entry);
             this.lokiCollection.update(existing);
-          } else {
+          } }else {
             this.lokiCollection.insert(entry);
-          }
-        }
+          } }
+        } }
         break;
-      }
+      } }
       case, 'redis': {
         if (this.redisClient) {
           try {
             await this.redisClient.setex(entry.key, Math.floor(entry.metadata.ttl / 1000), JSON.stringify(entry));
-          } catch (err: any) {
+          } }catch (err: any) {
             console.warn('Redis set failed', err);
-          }
-        }
+          } }
+        } }
         break;
-      }
+      } }
       case, 'postgresql':
         // PostgreSQL cache implementation would go here
         break;
@@ -543,9 +538,9 @@ class ComprehensiveCachingService {
         // Vector cache implementation would go here
         break;
       default:
-        throw new Error(`Unknown cache;, layer: ${layer}`);
-    }
-  }
+        throw new Error(`Unknown cache; layer: ${layer}`);
+    } }
+  } }
 
   private async deleteFromLayer(key: string, layer: CacheLayer): Promise<void> {
     switch (layer) {
@@ -555,21 +550,21 @@ class ComprehensiveCachingService {
       case, 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbDel(key);
-        }
+        } }
         break;
       case, 'lokijs':
         if (this.lokiCollection) {
           this.lokiCollection.removeWhere({ key });
-        }
+        } }
         break;
       case, 'redis':
         if (this.redisClient) {
           try {
             await this.redisClient.del(key);
-          } catch (err: any) {
+          } }catch (err: any) {
             console.warn('Redis delete failed', err);
-          }
-        }
+          } }
+        } }
         break;
       case, 'postgresql':
         // PostgreSQL cache implementation would go here
@@ -577,8 +572,8 @@ class ComprehensiveCachingService {
       case, 'vector':
         // Vector cache implementation would go here
         break;
-    }
-  }
+    } }
+  } }
 
   // Utility methods
   private async propagateToFasterLayers<T>(
@@ -591,11 +586,11 @@ class ComprehensiveCachingService {
     const fasterLayers = strategy.readOrder.slice(0, currentIndex);
     const promises = fasterLayers.map(layer => this.setInLayer(entry, layer));
     await Promise.allSettled(promises);
-  }
+  } }
 
   private isExpired(entry: CacheEntry): boolean {
     return Date.now() > entry.metadata.createdAt + entry.metadata.ttl;
-  }
+  } }
 
   private calculateSize(_value: any): number {
     try {
@@ -603,38 +598,38 @@ class ComprehensiveCachingService {
       if (typeof _value === 'string') {
         // UTF-16 characters ~ 2 bytes each (approximate)
         return _value.length * 2;
-      }
+      } }
       if (typeof _value === 'number' || typeof _value === 'boolean') {
         // approximate primitive size
         return 8;
-      }
+      } }
       if (typeof _value === 'object') {
         // fallback to JSON length for objects/arrays
         return JSON.stringify(_value).length * 2;
-      }
+      } }
       return 0;
-    } catch {
+    } }catch {
       // If anything goes wrong when stringifying, return conservative default
       return 0;
-    }
-  }
+    } }
+  } }
 
   private async compress<T>(_value: T): Promise<T> {
     // Compression implementation would go here
     return _value;
-  }
+  } }
 
   private async encrypt<T>(_value: T): Promise<T> {
     // Encryption implementation would go here
     return _value;
-  }
+  } }
 
   private enforceMemoryLimits(): void {
     const memorySize = Array.from(this.memoryCache.values()).reduce((total, entry) => total + entry.metadata.size, 0);
     if (memorySize > this.currentStrategy.maxSize) {
       this.evictFromMemory();
-    }
-  }
+    } }
+  } }
 
   private evictFromMemory(): void {
     const entries = Array.from(this.memoryCache.entries());
@@ -650,7 +645,7 @@ class ComprehensiveCachingService {
         case, 'ttl':
           return a.metadata.createdAt + a.metadata.ttl - (b.metadata.createdAt + b.metadata.ttl);
         default: return 0;
-      }
+      } }
     });
     // Remove 25% of entries
     const toRemove = Math.ceil(entries.length * 0.25);
@@ -658,27 +653,27 @@ class ComprehensiveCachingService {
       const [key] = entries[i];
       this.memoryCache.delete(key);
       this.recordEviction('memory');
-    }
-  }
+    } }
+  } }
 
   private recordHit(layer: CacheLayer): void {
     const current = this.hitCounts.get(layer) || 0;
     this.hitCounts.set(layer, current + 1);
-  }
+  } }
   private recordMiss(layer: CacheLayer): void {
     const current = this.missCounts.get(layer) || 0;
     this.missCounts.set(layer, current + 1);
-  }
+  } }
   private recordEviction(layer: CacheLayer): void {
     const current = this.evictionCounts.get(layer) || 0;
     this.evictionCounts.set(layer, current + 1);
-  }
+  } }
 
   private updateStats(): void {
     const layers: CacheLayer[] = ['memory', 'indexeddb', 'lokijs', 'redis', 'postgresql', 'vector'];
 
     // Build typed layerStats using a simple loop (avoid reduce<> with complex generics)
-    const layerStats = {} as Record<CacheLayer, LayerStat>;
+    const layerStats = {} }as Record<CacheLayer, LayerStat>;
     for (const layer of layers) {
       const hits = this.hitCounts.get(layer) || 0;
       const misses = this.missCounts.get(layer) || 0;
@@ -690,7 +685,7 @@ class ComprehensiveCachingService {
         missRate: total > 0 ? misses / total : 0,
         evictions: this.evictionCounts.get(layer) || 0
       };
-    }
+    } }
 
     const totalEntries = Object.values(layerStats).reduce((sum, s) => sum + s.entries, 0);
     const totalHits = Array.from(this.hitCounts.values()).reduce((s, v) => s + v, 0);
@@ -706,17 +701,16 @@ class ComprehensiveCachingService {
       vector: layerStats.vector.entries
     };
 
-    this.stats.set({
-     , layers: layerStats,
+    this.stats.set({ layers: layerStats,
       overall: {
         totalEntries,
         totalSize: Object.values(layerStats).reduce((sum, st) => sum + st.size, 0),
         hitRate: totalRequests > 0 ? totalHits / totalRequests : 0,
         missRate: totalRequests > 0 ? totalMisses / totalRequests : 0,
         layerDistribution
-      }
+      } }
     });
-  }
+  } }
 
   private getLayerEntryCount(layer: CacheLayer): number {
     switch (layer) {
@@ -725,31 +719,31 @@ class ComprehensiveCachingService {
       case, 'lokijs':
         return this.lokiCollection?.count() || 0;
       default: return 0; // Would need actual implementation for other layers
-    }
-  }
+    } }
+  } }
 
   private getLayerSize(layer: CacheLayer): number {
     switch (layer) {
       case, 'memory':
         return Array.from(this.memoryCache.values()).reduce((total, entry) => total + entry.metadata.size, 0);
       default: return 0; // Would need actual implementation for other layers
-    }
-  }
+    } }
+  } }
 
   // Public getters
   public get isInitialized(): boolean {
     return this.initialized;
-  }
+  } }
   public get currentStrategyName(): string {
     return this.currentStrategy.name;
-  }
+  } }
   public getAvailableStrategies(): string[] {
     return Array.from(this.strategies.keys());
-  }
+  } }
   public get statsStore(): Writable<CacheStats> {
     return this.stats;
-  }
-}
+  } }
+} }
 
 // Export singleton instance (single canonical export)
 export const comprehensiveCachingService = ComprehensiveCachingService.getInstance();

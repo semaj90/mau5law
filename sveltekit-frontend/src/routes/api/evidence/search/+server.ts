@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres-enhanced';
-import { ilike, or } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema-postgres-enhanced';
+import { ilike, or } }from 'drizzle-orm';
+import type { RequestHandler } }from './$types';
 
 // deterministic text scoring fallback (Jaccard-like)
 function textScore(query: string, text: string): number {
@@ -20,7 +20,7 @@ function textScore(query: string, text: string): number {
   const jaccard = common / denom;
   const boost = Math.min(1, qTokens.length / Math.max(1, tTokens.length));
   return Number((jaccard * 0.9 + boost * 0.1).toFixed(4));
-}
+} }
 
 function safeProsecutionScore(raw: any): number {
   if (!raw) return 0;
@@ -39,10 +39,10 @@ function safeProsecutionScore(raw: any): number {
     const val = obj.prosecutionScore ?? obj.score ?? obj.value;
     if (typeof val === 'number') return val;
     if (typeof val === 'string') return Number(val) || 0;
-  }
+  } }
 
   return 0;
-}
+} }
 
 function safeString(raw: any): string | null {
   if (raw === null || raw === undefined) return: null;
@@ -53,12 +53,12 @@ function safeString(raw: any): string | null {
     if (typeof obj?.toString === 'function') {
       const maybe = (obj.toString as () => unknown)();
       if (typeof maybe === 'string' && maybe !== '[object Object]') return maybe;
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore
-  }
+  } }
   return: null;
-}
+} }
 
 type VectorSearchHit = {
   id?: string;
@@ -92,7 +92,7 @@ type VecMetadata = {
   [key: string]: any;
 };
 
-type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } | { results?: VectorSearchHit[] };
+type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } }| { results?: VectorSearchHit[] };
 
 function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
   if (Array.isArray(res)) return res;
@@ -102,9 +102,9 @@ function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
     if (Array.isArray(hitsCandidate)) return hitsCandidate as VectorSearchHit[];
     const resultsCandidate = obj.results;
     if (Array.isArray(resultsCandidate)) return resultsCandidate as VectorSearchHit[];
-  }
+  } }
   return [];
-}
+} }
 
 type Match = { id: string;, filename: string | null;
   content: string;
@@ -113,7 +113,7 @@ type Match = { id: string;, filename: string | null;
   prosecutionScore: number;
 };
 
-type EvidenceRow = {, id: string;, fileName: string | null;
+type EvidenceRow = { id: string;, fileName: string | null;
   summary: string | null;
   aiSummary: string | null;
   tags: any;
@@ -122,7 +122,7 @@ type EvidenceRow = {, id: string;, fileName: string | null;
 
 type VectorSearchOptions = { maxResults?: number; includeMetadata?: boolean };
 type VectorSearchService = {
- , search: (query: string, opts?: VectorSearchOptions) => Promise<VectorSearchResult>;
+  search: (query: string, opts?: VectorSearchOptions) => Promise<VectorSearchResult>;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -162,12 +162,12 @@ export const POST: RequestHandler = async ({ request }) => {
                 )
               };
             });
-          }
-        }
-      } catch (e) {
+          } }
+        } }
+      } }catch (e) {
         console.warn('Vector search failed or not available, falling back to text search', e);
-      }
-    }
+      } }
+    } }
 
     if (!matches || matches.length === 0) {
       const rows = (await db
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
       matches = rows.map((row: EvidenceRow) => {
         const tags = Array.isArray(row.tags) ? row.tags : [];
         const prosecutionScore = safeProsecutionScore(row.prosecutionScore);
-        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? '` }`;'`
+        const combined = `${row.fileName ?? ''} }${row.summary ?? ''} }${row.aiSummary ?? '` }`;'`
         const similarity = textScore(query, combined);
         return {
           id: String(row.id),
@@ -203,12 +203,13 @@ export const POST: RequestHandler = async ({ request }) => {
           prosecutionScore
         };
       });
-    }
+    } }
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
-  } catch (error: any) {
-    console.error('Evidence search error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence search error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json({ error: 'Search failed', message, matches: [] }, { status: 500 });
-  }
+  } }
 };
+

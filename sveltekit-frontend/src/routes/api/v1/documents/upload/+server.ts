@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { minioStorage } from '$lib/server/storage/minio';
-import { createId } from '@paralleldrive/cuid2';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { writeFile, unlink, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { db } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
-import { queueVectorEmbedding } from '$lib/server/services/background-job-queue';
-import { generateEmbeddings, as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
-import { queueDocumentProcessing, DocumentProcessingJobData } from '$lib/services/queue-service';
+import type { User } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { minioStorage } }from '$lib/server/storage/minio';
+import { createId } }from '@paralleldrive/cuid2';
+import { exec } }from 'child_process';
+import { promisify } }from 'util';
+import { writeFile, unlink, mkdir } }from 'fs/promises';
+import { join } }from 'path';
+import { tmpdir } }from 'os';
+import { db } }from '$lib/server/db';
+import { sql } }from 'drizzle-orm';
+import { queueVectorEmbedding } }from '$lib/server/services/background-job-queue';
+import { generateEmbeddings, as serverGenerateEmbeddings } }from '$lib/server/services/embedding-service';
+import { queueDocumentProcessing, DocumentProcessingJobData } }from '$lib/services/queue-service';
 
 const execAsync = promisify(exec);
 
@@ -37,14 +37,14 @@ interface UploadResponse { success: boolean;, documentId: string;
   chunks: number;
   processingTime: number;
   minioUrl?: string;
-  metadata: {, bucket: string;, objectName: string;
-   , contentType: string;
+  metadata: { bucket: string;, objectName: string;
+  contentType: string;
     extractedText?: number; // character count
     embedded?: boolean;
     indexed?: boolean;
   };
   error?: string;
-}
+} }
 
 export const POST = async ({ request, locals }) => {
   const startTime = Date.now();
@@ -60,16 +60,16 @@ export const POST = async ({ request, locals }) => {
       name: 'Dev User',
       role: 'user', // changed from 'developer' to permitted role: 'user'
     };
-  }
+  } }
   if (!user) {
     return json(
       {
         message: 'Authentication required',
         code: 'UNAUTHORIZED'
       },
-      { status: 401 }
+      { status: 401 } }
     );
-  }
+  } }
 
   let formData: FormData;
   let file: File;
@@ -86,14 +86,14 @@ export const POST = async ({ request, locals }) => {
           message: 'File is required',
           code: 'MISSING_FILE'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     file = fileEntry;
     caseId = formData.get('caseId')?.toString();
     description = formData.get('description')?.toString();
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     return json(
       {
@@ -101,16 +101,16 @@ export const POST = async ({ request, locals }) => {
         error: message,
         code: 'INVALID_FORM_DATA'
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  }
+  } }
 
   const documentId = createId();
   const filename = file.name;
   const fileSize = file.size;
   const contentType = file.type || 'application/octet-stream';
 
-  console.log(`📄 [Upload] Starting: ${filename} (${fileSize} bytes) for user: ${user.id}`);
+  console.log(`📄 [Upload] Starting: ${filename} }(${fileSize} }bytes) for user: ${user.id}`);
 
   try {
     // 2. Upload to MinIO
@@ -141,23 +141,23 @@ export const POST = async ({ request, locals }) => {
 
       // Call langextract-go CLI
       const langextractPath = process.env.LANGEXTRACT_PATH || '../langextract-go/langextract';
-      const { stdout, stderr } = await execAsync(
-        `${langextractPath} extract: "${tempFilePath}"`,
-        { timeout: 30000 } // 30s timeout
+      const { stdout, stderr } }= await execAsync(
+        `${langextractPath} }extract: "${tempFilePath}"`,
+        { timeout: 30000 } }// 30s timeout
       );
 
       if (stdout) {
         extractedText = stdout.trim();
         extractionMethod = 'langextract-go';
-        console.log(`✅ [Upload] Text extracted: ${extractedText.length} characters`);
-      } else if (stderr) {
+        console.log(`✅ [Upload] Text extracted: ${extractedText.length} }characters`);
+      } }else if (stderr) {
         console.warn('⚠️ [Upload] LangExtract stderr:', stderr);
         throw new Error('LangExtract failed');
-      }
+      } }
 
       // Cleanup temp file
       await unlink(tempFilePath).catch(() => {});
-    } catch (extractError: any) {
+    } }catch (extractError: any) {
       const msg = extractError instanceof Error ? extractError.message : String(extractError);
       console.warn('⚠️ [Upload] LangExtract failed, using fallback:', msg);
 
@@ -165,11 +165,11 @@ export const POST = async ({ request, locals }) => {
       if (contentType.includes('text') || filename.endsWith('.txt')) {
         extractedText = fileBuffer.toString('utf-8');
         extractionMethod = 'utf8-fallback';
-      } else {
-        extractedText = `[Binary file: ${filename}]`;
+      } }else {
+        extractedText = `[Binary file: ${filename} }`;
         extractionMethod = 'binary-placeholder';
-      }
-    }
+      } }
+    } }
 
     // 4. Chunk text (3000 chars, 500 overlap)
     const chunks = chunkText(extractedText, { maxChunkChars: 3000, overlapChars: 500 });
@@ -179,11 +179,11 @@ export const POST = async ({ request, locals }) => {
     let embeddings: number[][] = [];
     let embeddingModel = 'none';
     try {
-      const result = await serverGenerateEmbeddings({, texts: chunks, model: `embeddinggemma:latest' });'`
+      const result = await serverGenerateEmbeddings({ texts: chunks, model: `embeddinggemma:latest' });'`
       embeddings = result.embeddings;
       embeddingModel = result.source || 'server-embedding-service';
-      console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
-    } catch (err: any) {
+      console.log(`✅ [Upload] Generated ${embeddings.length} }embeddings using ${embeddingModel}`);
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn('⚠️ [Upload] Server embedding-service failed, falling back to remote services:', msg);
 
@@ -193,21 +193,21 @@ export const POST = async ({ request, locals }) => {
         const fallbackResp = await fetch(embeddingServiceUrl, {
           method: 'POST',
           headers: { 'Content-Type': `application/json' },'`
-          body: JSON.stringify({, texts: chunks }),
+          body: JSON.stringify({ texts: chunks }),
           signal: AbortSignal.timeout(60000)
         });
         if (fallbackResp.ok) {
           const fallbackData = await fallbackResp.json();
           embeddings = fallbackData.embeddings || [];
           embeddingModel = fallbackData.model || 'nomic-embed-text-fallback';
-          console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using fallback ${embeddingModel}`);
-        } else {
+          console.log(`✅ [Upload] Generated ${embeddings.length} }embeddings using fallback ${embeddingModel}`);
+        } }else {
           console.warn(`⚠️ [Upload] Fallback embedding service returned status: ${fallbackResp.status}`);
-        }
-      } catch (fallbackError: any) {
+        } }
+      } }catch (fallbackError: any) {
         console.warn('⚠️ [Upload] All embedding services failed (fallback):', fallbackError);
-      }
-    }
+      } }
+    } }
 
     // 6. Store in PostgreSQL (documents + document_chunks)
     console.log('💾 [Upload] Step 5/6: Storing in PostgreSQL...');
@@ -231,7 +231,7 @@ export const POST = async ({ request, locals }) => {
           bucket: minioResult.bucket,
           objectName: minioResult.objectName
         })},
-				${'minio://' + minioResult.bucket + '/' + minioResult.objectName}
+				${'minio://' + minioResult.bucket + '/' + minioResult.objectName} }
 			)
 		`);`
 
@@ -247,44 +247,44 @@ export const POST = async ({ request, locals }) => {
 					${documentId},
 					${i},
 					${chunks[i]},
-					${embedding ? sql`${JSON.stringify(embedding)}::vector` : null}
+					${embedding ? sql`${JSON.stringify(embedding)}::vector` : null} }
 				)
-			`);' }'`
+			`);' } }`
 
-    console.log(`✅ [Upload] Stored document and ${chunks.length} chunks in PostgreSQL`);
+    console.log(`✅ [Upload] Stored document and ${chunks.length} }chunks in PostgreSQL`);
 
     // Enqueue vector embedding job for background processing
     try {
       await queueVectorEmbedding('document', documentId, user.id);
       console.log(`[Upload] Enqueued vector embedding job for document ${documentId}`);
-    } catch (qErr: any) {
+    } }catch (qErr: any) {
       const msg = qErr instanceof Error ? qErr.message : String(qErr);
       console.warn('[Upload] Failed to enqueue embedding job:', msg);
-    }
+    } }
 
     // Enqueue document processing job (entity extraction, summary, additional embeddings)
     try {
       const jobData: DocumentProcessingJobData = {
         documentId,
-        content: extractedText || `[Stored at;, minio://${minioResult.bucket}/${minioResult.objectName}]`,
+        content: extractedText || `[Stored at; minio://${minioResult.bucket}/${minioResult.objectName} }`,
         documentType: 'legal',
         caseId: caseId ?? undefined,
         filePath: `minio://${minioResult.bucket}/${minioResult.objectName}`,
         options: {
-         , extractEntities: true,
+  extractEntities: true,
           generateSummary: true,
           assessRisk: false,
           generateEmbedding: false, // embedding job already queued
           storeInDatabase: true,
           useGemma3Legal: true
-        }
+        } }
       };
-      const {, jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as { jobId: string;, estimated: number;
+      const { jobId: procJobId, estimated } }= (await queueDocumentProcessing(jobData, 1)) as { jobId: string;, estimated: number;
       };
-      console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
-    } catch (procErr: any) {
+      console.log(`[Upload] Enqueued document processing job ${procJobId} }(est ${estimated}s)`);
+    } }catch (procErr: any) {
       console.warn('[Upload] Failed to enqueue document processing job:', procErr);
-    }
+    } }
 
     // 7. Index in Qdrant (fire-and-forget)
     console.log('🔍 [Upload] Step 6/6: Indexing in Qdrant...');
@@ -298,15 +298,15 @@ export const POST = async ({ request, locals }) => {
       }).catch(err => {
         console.error('⚠️ [Upload] Qdrant indexing failed (non-blocking):', err);
       });
-    }
+    } }
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`✅ [Upload] Complete: ${documentId} (${processingTime}ms)`);
+    console.log(`✅ [Upload] Complete: ${documentId} }(${processingTime}ms)`);
 
     // 8. Return success response
     const response: UploadResponse = {
-     , success: true,
+  success: true,
       documentId,
       filename,
       size: fileSize,
@@ -314,22 +314,22 @@ export const POST = async ({ request, locals }) => {
       processingTime,
       minioUrl: minioResult.url,
       metadata: {
-       , bucket: minioResult.bucket,
+  bucket: minioResult.bucket,
         objectName: minioResult.objectName,
         contentType,
         extractedText: extractedText.length,
         embedded: embeddings.length > 0,
         indexed: embeddings.length > 0
-      }
+      } }
     };
 
     return json(response, { status: 201 });
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('❌ [Upload] Failed:', message);
 
     const response: UploadResponse = {
-     , success: false,
+  success: false,
       documentId: '',
       filename,
       size: fileSize,
@@ -337,21 +337,21 @@ export const POST = async ({ request, locals }) => {
       processingTime: Date.now() - startTime,
       error: message || 'Upload failed',
       metadata: {
-       , bucket: '',
+  bucket: '',
         objectName: '',
         contentType
-      }
+      } }
     };
 
     return json(response, { status: 500 });
-  }
+  } }
 };
 
 /**
  * Chunk text into overlapping segments
  */
-function chunkText(text: string, options: {, maxChunkChars: number;, overlapChars: number }): string[] {
-  const { maxChunkChars, overlapChars } = options;
+function chunkText(text: string, options: { maxChunkChars: number; overlapChars: number }): string[] {
+  const { maxChunkChars, overlapChars } }= options;
   const chunks: string[] = [];
   let start = 0;
 
@@ -360,10 +360,10 @@ function chunkText(text: string, options: {, maxChunkChars: number;, overlapChar
     const chunk = text.slice(start, end);
     chunks.push(chunk);
     start += maxChunkChars - overlapChars;
-  }
+  } }
 
   return chunks;
-}
+} }
 
 /**
  * Index chunks in Qdrant vector database (fire-and-forget)
@@ -372,11 +372,11 @@ async function indexInQdrant(
   documentId: string,
   chunks: string[],
   embeddings: number[][],
-  metadata: {, filename: string;, userId: string;
+  metadata: { filename: string;, userId: string;
     caseId?: string;
-   , bucket: string;
-   , objectName: string;
-  }
+  bucket: string;
+  objectName: string;
+  } }
 ): Promise<void> {
   try {
     const collectionName = process.env.QDRANT_COLLECTION || 'legal-documents';
@@ -386,8 +386,8 @@ async function indexInQdrant(
     await fetch(`${qdrantUrl}/collections/${collectionName}`, {
       method: 'PUT',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({, vectors: {, size: embeddings[0]?.length || 384,
-          distance: `Cosine` }
+      body: JSON.stringify({ vectors: { size: embeddings[0]?.length || 384,
+          distance: `Cosine` } }
       })
     }).catch(() => {}); // Ignore if already exists
 
@@ -396,13 +396,13 @@ async function indexInQdrant(
       id: `${documentId}_chunk_${i}`,
       vector: embeddings[i],
       payload: {
-       , document_id: documentId,
+  document_id: documentId,
         chunk_index: i,
         text: chunk,
         filename: metadata.filename,
         user_id: metadata.userId,
         case_id: metadata.caseId,
-        source: `minio://${metadata.bucket}/${metadata.objectName}' }'`
+        source: `minio://${metadata.bucket}/${metadata.objectName} } } }`
     }));
 
     await fetch(`${qdrantUrl}/collections/${collectionName}/points`, {
@@ -411,13 +411,13 @@ async function indexInQdrant(
       body: JSON.stringify({ points })
     });
 
-    console.log(`✅ [Qdrant] Indexed ${points.length} points for document: ${documentId}`);
-  } catch (err: any) {
+    console.log(`✅ [Qdrant] Indexed ${points.length} }points for document: ${documentId}`);
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('❌ [Qdrant] Indexing failed:', msg);
     throw err;
-  }
-}
+  } }
+} }
 
 /**
  * GET /api/v1/documents/upload - Info endpoint
@@ -436,10 +436,10 @@ export const GET = async () => {
     ],
     authentication: 'Required (Lucia v3 session or DEV_BYPASS_AUTH)',
     fields: {
-     , file: 'File (required)',
+  file: 'File (required)',
       caseId: 'string (optional)',
       description: `string (optional)` },
-    example: {, curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\`
+    example: { curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\`
   -H, "Cookie: legal_ai_session=..." \\
   -F, "file=@contract.pdf" \\
   -F, "caseId=case_123" \\
@@ -447,3 +447,4 @@ export const GET = async () => {
     timestamp: new Date().toISOString()
   });
 };
+

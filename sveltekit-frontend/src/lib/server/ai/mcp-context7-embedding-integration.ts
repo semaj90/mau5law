@@ -15,8 +15,8 @@
  * @version 1.0.0
  */
 import fetch from 'node-fetch';
-import type { GemmaEmbeddingService } from './gemma-embedding-service';
-import type { PgVectorIndexingService } from './pgvector-indexing-service';
+import type { GemmaEmbeddingService } }from './gemma-embedding-service';
+import type { PgVectorIndexingService } }from './pgvector-indexing-service';
 /**
  * MCP Context7 Configuration
  */
@@ -24,12 +24,11 @@ export interface MCPContext7Config { baseUrl: string;, workers: number;
   timeout: number;
   retryAttempts: number;
   fallbackToLocal: boolean;
-}
+} }
 /**
  * Function Call Request
  */
-export interface FunctionCallRequest {, functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: {
-   , text: string;
+export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: { text: string;
     context?: string;
     query?: string;
     parameters?: Record<string, unknown>;
@@ -37,7 +36,7 @@ export interface FunctionCallRequest {, functionName: 'extractive_qa' | 'summari
   model?: string;
   temperature?: number;
   maxTokens?: number;
-}
+} }
 /**
  * Function Call Response
  */
@@ -46,31 +45,31 @@ export interface FunctionCallResponse { functionName: string;, result: any;
   model: string;
   success: boolean;
   error?: string;
-}
+} }
 /**
  * Parallel Embedding Request
  */
-export interface ParallelEmbeddingRequest {, texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
+export interface ParallelEmbeddingRequest { texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
   parallelism?: number;
   cacheKeys?: string[];
-}
+} }
 /**
  * Parallel Embedding Response
  */
-export interface ParallelEmbeddingResponse {, embeddings: number[][];, processingTime: number;
+export interface ParallelEmbeddingResponse { embeddings: number[][];, processingTime: number;
   workersUsed: number;
   cacheHitCount: number;
   successRate: number;
-}
+} }
 /**
  * Task Distribution Result
  */
-export interface TaskDistributionResult {, taskId: string;, workerIds: string[];
+export interface TaskDistributionResult { taskId: string;, workerIds: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   results?: any[];
   error?: string;
-}
+} }
 /**
  * MCP Context7 Embedding Integration Service
  */
@@ -79,7 +78,7 @@ export class MCPContext7EmbeddingIntegration {
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
   private isAvailable = $state(false);
-  private workerPool: Map<string, { busy: boolean;, tasksCompleted: number }> = new Map();
+  private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
   constructor(
     config: MCPContext7Config,
     embeddingService?: GemmaEmbeddingService,
@@ -89,7 +88,7 @@ export class MCPContext7EmbeddingIntegration {
     this.embeddingService = embeddingService;
     this.vectorService = vectorService;
     this.initializeWorkerPool();
-  }
+  } }
   /**
    * Initialize worker pool
    */
@@ -99,8 +98,8 @@ export class MCPContext7EmbeddingIntegration {
         busy: false,
         tasksCompleted: 0
       });
-    }
-  }
+    } }
+  } }
   /**
    * Check MCP Context7 server availability
    */
@@ -113,13 +112,13 @@ export class MCPContext7EmbeddingIntegration {
         this.isAvailable = true;
         console.log('✅ MCP Context7 multicore server is available');
         return true;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('⚠️ MCP Context7 server unavailable, will fallback to local Ollama');
-    }
+    } }
     this.isAvailable = $state(false);
     return false;
-  }
+  } }
   /**
    * Generate embeddings in parallel using MCP workers
    */
@@ -129,7 +128,7 @@ export class MCPContext7EmbeddingIntegration {
     const startTime = Date.now();
     if (!this.isAvailable || !this.config.fallbackToLocal) {
       return this.localParallelEmbedding(request);
-    }
+    } }
     try {
       const parallelism = Math.min(
         request.parallelism || this.config.workers,
@@ -150,8 +149,8 @@ export class MCPContext7EmbeddingIntegration {
         if (result.success) {
           embeddings.push(...result.embeddings);
           cacheHitCount += result.cacheHitCount;
-        }
-      }
+        } }
+      } }
       return {
         embeddings,
         processingTime: Date.now() - startTime,
@@ -159,11 +158,11 @@ export class MCPContext7EmbeddingIntegration {
         cacheHitCount,
         successRate: results.filter(r => r.success).length / results.length
       };
-    } catch (error) {
+    } }catch (error) {
       console.warn('MCP parallel embedding failed, falling back to local:', error);
       return this.localParallelEmbedding(request);
-    }
-  }
+    } }
+  } }
   /**
    * Process embedding chunk via MCP worker
    */
@@ -187,28 +186,28 @@ export class MCPContext7EmbeddingIntegration {
       });
       if (!response.ok) {
         throw new Error(`Worker error: ${response.statusText}`);
-      }
+      } }
       const data = (await response.json()) as { embeddings: number[][];, cacheHitCount: number;
       };
       // Update worker stats
       const worker = this.workerPool.get(workerId);
       if (worker) {
         worker.tasksCompleted += 1;
-      }
+      } }
       return {
         embeddings: data.embeddings,
         cacheHitCount: data.cacheHitCount,
         success: true
       };
-    } catch (error) {
-      console.error(`Worker ${workerId} failed:`, error);
+    } }catch (error) {
+      console.error(`Worker ${workerId} }failed:`, error);
       return {
         embeddings: [],
         cacheHitCount: 0,
         success: false
       };
-    }
-  }
+    } }
+  } }
   /**
    * Call function on MCP gemma3 model
    */
@@ -216,7 +215,7 @@ export class MCPContext7EmbeddingIntegration {
     const startTime = Date.now();
     if (!this.isAvailable) {
       return this.localFunctionCall(request);
-    }
+    } }
     try {
       const response = await fetch(`${this.config.baseUrl}/function-call`, {
         method: 'POST',
@@ -228,17 +227,16 @@ export class MCPContext7EmbeddingIntegration {
       });
       if (!response.ok) {
         throw new Error(`Function call error: ${response.statusText}`);
-      }
+      } }
       const data = (await response.json()) as { result: any;, model: string;
       };
-      return {
-       , functionName: request.functionName,
+      return { functionName: request.functionName,
         result: data.result,
         processingTime: Date.now() - startTime,
         model: data.model,
         success: true
       };
-    } catch (error) {
+    } }catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn('MCP function call failed:', message);
       return {
@@ -249,8 +247,8 @@ export class MCPContext7EmbeddingIntegration {
         success: false,
         error: message
       };
-    }
-  }
+    } }
+  } }
   /**
    * Batch function calling for multiple inputs
    */
@@ -263,12 +261,12 @@ export class MCPContext7EmbeddingIntegration {
         requests.map((req, index) => {
           if (index % this.config.workers === 0) {
             return this.callFunction(req);
-          }
+          } }
           return this.callFunction(req);
         })
       );
       return results;
-    } catch (error) {
+    } }catch (error) {
       console.error('Batch function call failed:', error);
       return requests.map(req => ({
         functionName: req.functionName,
@@ -278,8 +276,8 @@ export class MCPContext7EmbeddingIntegration {
         success: false,
         error: String(error)
       }));
-    }
-  }
+    } }
+  } }
   /**
    * Local fallback: parallel embedding without MCP
    */
@@ -289,7 +287,7 @@ export class MCPContext7EmbeddingIntegration {
     // const $startTime = Date.now(); // Performance timing for future optimization
     if (!this.embeddingService) {
       throw new Error('Embedding service not available');
-    }
+    } }
     const embeddingRequests = request.texts.map((text, idx) => ({
       text,
       type: request.embeddingType,
@@ -303,7 +301,7 @@ export class MCPContext7EmbeddingIntegration {
       cacheHitCount: response.cacheHitCount,
       successRate: 1.0
     };
-  }
+  } }
   /**
    * Local fallback: function call using direct Ollama
    */
@@ -319,20 +317,20 @@ export class MCPContext7EmbeddingIntegration {
       model: 'local-ollama',
       success: false,
       error: `Local function calling not yet implemented` };
-  }
+  } }
   /**
    * Get worker pool statistics
    */
   getWorkerStats(): { totalWorkers: number;, busyWorkers: number;
     totalTasksCompleted: number;
    , averageTasksPerWorker: number;
-  } {
+  } }{
     let busyCount = 0;
     let totalTasks = 0;
     for (const worker of this.workerPool.values()) {
       if (worker.busy) busyCount += 1;
       totalTasks += worker.tasksCompleted;
-    }
+    } }
     return {
       totalWorkers: this.workerPool.size,
       busyWorkers: busyCount,
@@ -340,7 +338,7 @@ export class MCPContext7EmbeddingIntegration {
       averageTasksPerWorker:
         this.workerPool.size > 0 ? totalTasks / this.workerPool.size : 0
     };
-  }
+  } }
   /**
    *, Utility: chunk array for distribution
    */
@@ -348,10 +346,10 @@ export class MCPContext7EmbeddingIntegration {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size));
-    }
+    } }
     return chunks;
-  }
-}
+  } }
+} }
 /**
  * Factory function to create MCP Context7 Embedding Integration
  */
@@ -368,14 +366,14 @@ export async function createMCPContext7EmbeddingIntegration(
   // Check availability on creation
   await integration.checkAvailability();
   return integration;
-}
+} }
 /**
  * Default MCP Context7 Configuration
  */
-export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = {
- , baseUrl: 'http://localhost:3002',
+export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = { baseUrl: 'http://localhost:3002',
   workers: 8,
   timeout: 30000,
   retryAttempts: 3,
   fallbackToLocal: true
 };
+
