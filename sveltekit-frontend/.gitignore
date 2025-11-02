@@ -67,3 +67,12 @@ svelte-check-errors.txt
 svelte-check-output.txt
 *-check-raw.txt
 *-output.txt
+
+# Any .txt file larger than 10MB
+*.txt
+# Allow small documentation .txt files
+!README*.txt
+!CHANGELOG*.txt
+!LICENSE*.txt
+!TODO*.txt
+!**/docs/**/*.txt
