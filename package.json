@@ -86,6 +86,7 @@
     "drizzle-kit": "^0.31.5",
     "drizzle-orm": "^0.44.6",
     "fabric": "^6.7.1",
+    "gl-matrix": "^3.4.4",
     "ioredis": "^5.8.2",
     "langchain": "^1.0.2",
     "lucia": "^3.2.2",

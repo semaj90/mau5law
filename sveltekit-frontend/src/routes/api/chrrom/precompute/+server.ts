@@ -1,12 +1,1 @@
-import type { RequestHandler  } from './$types.js';
-import { json  } from '@sveltejs/kit';
-import { generateCHRPatterns, type PrecomputeContext  } from '$lib/server/chrrom/patterns';
-import { getUserId  } from '$lib/server/auth/utils';
-export const POST: RequestHandler = async ({ request, locals }) => {
-  const ctx = (await request.json()) as PrecomputeContext;
-  if (!ctx.userId && getUserId(locals)) ctx.userId = getUserId(locals);
-  const patterns = await generateCHRPatterns(ctx);
-  return json({ ok: true, patterns });
-};
-
-
+import type { RequestHandler } from './$types.js'; import { json } from '@sveltejs/kit'; import { generateCHRPatterns, type PrecomputeContext } from '$lib/server/chrrom/patterns'; import { getUserId } from '$lib/server/auth/utils'; export const POST: RequestHandler = async ({ request, locals }) => { const ctx = (await request.json()) as PrecomputeContext; if (!ctx.userId && getUserId(locals)) ctx.userId = getUserId(locals); const patterns = await generateCHRPatterns(ctx); return json({ ok: true, patterns }); }; 

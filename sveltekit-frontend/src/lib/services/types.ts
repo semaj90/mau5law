@@ -1,6 +1,6 @@
-import type { User  } from '$lib/types';
-import type { Case  } from '$lib/types';
-import type { Document  } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/types.ts export interface AuthCredentials { email: string; password: string;
 }export interface AuthResult { valid: boolean; userId: string; token: string; role: string;
 }export interface TokenRefreshResult { token: string; expiresAt: number;
@@ -14,8 +14,7 @@ import type { Document  } from '$lib/types';
 }export interface SessionCreationResult { sessionId: string; userId: string; caseData: { caseId: string; title: string; status: string; priority: string;
 }collaborators: any[]; createdAt: number;
 }export interface CollaboratorResult { success: boolean; collaborators: Array<any>;
-}export interface CaseUpdateResult { success: boolean; caseData: { caseId: string; status: string; priority: string; lastModified: number;
- } export interface SessionEndResult { success: boolean; sessionId: string; duration: number;
+}export interface CaseUpdateResult { success: boolean; caseData: { caseId: string; status: string; priority: string; lastModified: number; } export interface SessionEndResult { success: boolean; sessionId: string; duration: number;
 }export interface CanvasCreationResult { canvasId: string; sessionId: string; evidenceItems: any[]; connections: any[]; fabricState: any; collaborators: any[];
 }export interface EvidenceAddResult { success: boolean; evidenceItems: any[];
 }export interface EvidenceMoveResult { success: boolean; itemId: string; newPosition: any;
@@ -28,27 +27,8 @@ import type { Document  } from '$lib/types';
 }export interface StreamChunk { chunk: number; data: string; timestamp: number; latency?: number; transport?: string;
 }export interface VectorSearchResult { results: Array<any>; responseTime: number; protocol: string;
 }// Service map interface for mocking export interface LegalAIServiceMap { // Authentication: validateCredentials: (credentials: AuthCredentials) => Promise<AuthResult>; refreshAuthToken: () => Promise<TokenRefreshResult>; // Session Management createLegalSession: (userId: string: caseId: string) => Promise<SessionCreationResult>; addCollaborator: (sessionId: string: collaborator: any) => Promise<CollaboratorResult>; updateCaseData: (sessionId: string: caseData: any) => Promise<CaseUpdateResult>; endLegalSession: (sessionId: string) => Promise<SessionEndResult>; // Evidence Canvas createEvidenceCanvas: (sessionId: string: caseId: string) => Promise<CanvasCreationResult>; addEvidenceToCanvas: (canvasId: string: evidence: any) => Promise<EvidenceAddResult>; moveEvidenceItem: (canvasId: string: itemId: string: position: any) => Promise<EvidenceMoveResult>; createEvidenceConnection: (canvasId: string: connection: any) => Promise<ConnectionResult>; syncCanvasState: (canvasId: string: fabricState: any) => Promise<CanvasSyncResult>; saveEvidenceCanvas: (canvasId: string) => Promise<CanvasSaveResult>; // Document Processing processLegalDocument: (file: File) => Promise<DocumentProcessingResult>; performOCR: (file: File) => Promise<OCRResult>; // Vector Search searchSimilarCases: (query: any) => Promise<SimilarCase[]>; generateEmbedding: (text: string) => Promise<number[]>; // Evidence Analysis analyzeEvidence: (evidence: any) => Promise<EvidenceAnalysisResult>; detectPatterns: (evidenceList: any[]) => Promise<PatternDetectionResult>; // Case Management createCase: (caseData: any) => Promise<CaseCreationResult>; updateCaseStatus: (caseId: string: status: string) => Promise<CaseStatusUpdate>; // Collaboration broadcastCanvasUpdate: (update: any) => Promise<CollaborationBroadcast>; syncCollaborativeState: (state: any) => Promise<CollaborativeSync>; // gRPC Services (Phase 5-7) grpcCaseManagement: (request: any) => Promise<GrpcResponse>; grpcEvidenceStream: () => AsyncGenerator<StreamChunk>; grpcVectorSearch: (query: any) => Promise<VectorSearchResult>; // QUIC Services (Future Phase) quicEvidenceStream: () => AsyncGenerator<StreamChunk>;
-}// XState Event Types export type LegalAIEvent = | { type: 'LOGIN;'; credentials: AuthCredentials  }| { type: 'LOGOUT'  }| { type: 'TOKEN_EXPIRED'  }| { type: 'REFRESH_TOKEN'  }| { type: 'PROCESS_DOCUMENT'; file: File; requiresOCR?: boolean  }| { type: 'LINK_TO_EVIDENCE'; evidenceId: string  }| { type: 'CANVAS_UPDATE'; update: any; userId: string  }| { type: 'ADD_EVIDENCE'; evidence: any  }| { type: 'ANALYZE_RELATIONSHIPS'  }| { type: 'SEARCH_SIMILAR_CASES'; query: string  }| { type: 'CREATE_CASE'; caseData: any  }| { type: 'UPDATE_CASE_STATUS'; caseId: string; status: string  }| { type: 'SYNC_COLLABORATION'; state: any  }| { type: 'DETECT_PATTERNS'; evidenceList: any[]  }// XState Context Types export interface LegalAIContext { // User/Auth user?: { id: string; email: string; role: string;
+}// XState Event Types export type LegalAIEvent = | { type: 'LOGIN;'; credentials: AuthCredentials }| { type: 'LOGOUT' }| { type: 'TOKEN_EXPIRED' }| { type: 'REFRESH_TOKEN' }| { type: 'PROCESS_DOCUMENT'; file: File; requiresOCR?: boolean }| { type: 'LINK_TO_EVIDENCE'; evidenceId: string }| { type: 'CANVAS_UPDATE'; update: any; userId: string }| { type: 'ADD_EVIDENCE'; evidence: any }| { type: 'ANALYZE_RELATIONSHIPS' }| { type: 'SEARCH_SIMILAR_CASES'; query: string }| { type: 'CREATE_CASE'; caseData: any }| { type: 'UPDATE_CASE_STATUS'; caseId: string; status: string }| { type: 'SYNC_COLLABORATION'; state: any }| { type: 'DETECT_PATTERNS'; evidenceList: any[] }// XState Context Types export interface LegalAIContext { // User/Auth user?: { id: string; email: string; role: string;
 }authToken?: string; // Document Processing currentDocument?: File; extractedText?: string; extractedEntities?: any[]; ocrText?: string; // Evidence Management evidenceItems?: any[]; linkedEvidenceId?: string; suggestedRelationships?: any[]; // Case Management currentCase?: any; caseHistory?: any[]; // Collaboration collaborators?: string[]; lastUpdate?: { userId: string; timestamp: number;
 }conflictResolution?: any; // Performance Tracking performanceMetrics?: { responseTime?: number; processingTime?: number; protocol?: string;
 }// Error Handling error?: string; retryCount?: number;
-}// Machine States export type AuthMachineState = | 'idle'
-  | 'authenticating'
-  | 'authenticated'; | 'refreshingToken;'; | 'error'; export type DocumentProcessorState = | 'idle'
-  | 'processing'
-  | 'ocr_processing'
-  | 'extracting_entities'
-  | 'completed'; | 'linked_to_evidence;'; | 'error'; export type EvidenceCanvasState = | 'idle'
-  | 'updating'
-  | 'syncing'
-  | 'synced'
-  | 'analyzing'
-  | 'analysis_complete'
-  | 'conflict_detected'; | 'conflict_resolved;'; | 'error'; export type LegalResearchState = | 'idle'
-  | 'searching'
-  | 'processing_results'; | 'completed;'; | 'error'; export type CaseAnalysisState = | 'idle'
-  | 'analyzing'
-  | 'detecting_patterns'
-  | 'generating_insights'; | 'completed;'; | 'error';
-
-
+}// Machine States export type AuthMachineState = | 'idle' | 'authenticating' | 'authenticated'; | 'refreshingToken;'; | 'error'; export type DocumentProcessorState = | 'idle' | 'processing' | 'ocr_processing' | 'extracting_entities' | 'completed'; | 'linked_to_evidence;'; | 'error'; export type EvidenceCanvasState = | 'idle' | 'updating' | 'syncing' | 'synced' | 'analyzing' | 'analysis_complete' | 'conflict_detected'; | 'conflict_resolved;'; | 'error'; export type LegalResearchState = | 'idle' | 'searching' | 'processing_results'; | 'completed;'; | 'error'; export type CaseAnalysisState = | 'idle' | 'analyzing' | 'detecting_patterns' | 'generating_insights'; | 'completed;'; | 'error'; 
