@@ -7,7 +7,7 @@ export const GET: RequestHandler = async () => {
     name: 'YoRHa Legal AI Platform',
     version: '1.0.0',
     type: 'sveltekit',
-    sourceMap: true,
+    sourceMap, true,
     devtools: {
       enabled: true,
       svelte: {
@@ -16,5 +16,6 @@ export const GET: RequestHandler = async () => {
        }
   });
 };
+
 
 

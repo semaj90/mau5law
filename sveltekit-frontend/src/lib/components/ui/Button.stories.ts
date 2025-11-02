@@ -16,7 +16,7 @@ export const Small: Story = { args: { size: 'sm', 'Small Button' }
 } }
 export const Large: Story = { args: { size: 'lg', 'Large Button' }
 } }
-export const Disabled: Story = { args: { disabled: true; 'Disabled Button' }
+export const Disabled: Story = { args: { disabled, true; 'Disabled Button' }
 } }
-export const Loading: Story = { args: { loading: true; 'Loading...' }, parameters: { docs: { description: { story: 'Button with loading state and spinner animation' } } }
+export const Loading: Story = { args: { loading, true; 'Loading...' }, parameters: { docs: { description: { story: 'Button with loading state and spinner animation' } } }
 } 
