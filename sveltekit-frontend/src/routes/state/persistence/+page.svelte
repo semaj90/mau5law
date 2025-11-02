@@ -1,21 +1,21 @@
 <!-- @migration-task Error while migrating Svelte, code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts">
 import type { User } from '$lib/types';
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // XState State Persistence Management import { onMount } from 'svelte'; import { page } from '$app/stores'; import Button from '$lib/components/ui/nes-Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; let mounted = $state<boolean>(false); let persistedStates = $state<any[]>([]); let loading = $state<boolean>(true); let selectedState = $state<any | null>(null); let restoring = $state<boolean>(false); // Mock persisted state data (fixed: object literal syntax) let mockPersistedStates = [ {, id: 'auth_user_123_20240110_143022', machineId: 'auth-machine', userId: 'user_123', state: 'authenticated', context: {, userId: 'user_123', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', sessionId: 'sess_456', permissions: ['read', 'write', 'admin'], lastActivity: '2024-01-10T14:30:22.000Z'
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // XState State Persistence Management import { onMount } from 'svelte'; import { page } from '$app/stores'; import Button from '$lib/components/ui/nes-Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; let mounted = $state<boolean>(false); let persistedStates = $state<any[]>([]); let loading = $state<boolean>(true); let selectedState = $state<any | null>(null); let restoring = $state<boolean>(false); // Mock persisted state data (fixed: object literal syntax) let mockPersistedStates = [ { id: 'auth_user_123_20240110_143022', machineId: 'auth-machine', userId: 'user_123', state: 'authenticated', context: { userId: 'user_123', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', sessionId: 'sess_456', permissions: ['read', 'write', 'admin'], lastActivity: '2024-01-10T14:30:22.000Z'
       }, timestamp: '2024-01-10T14:30:22.000Z', version: '1.0.2', size: 1247, checksum: 'sha256:a1b2c3d4...'
     }, {
-      id: 'case_case_789_20240110_142015', machineId: 'case-management-machine', userId: 'user_123', state: 'reviewing', context: {, caseId: 'case_789', title: 'Smith vs. Johnson Contract Dispute', status: 'under_review', assignedTo: 'user_123', documents: ['doc_001', 'doc_002', 'doc_003'], evidence: ['evidence_456', 'evidence_789'], deadline: '2024-01-15T00:00:00.000Z', notes: 'Awaiting additional documentation from plaintiff.'
+      id: 'case_case_789_20240110_142015', machineId: 'case-management-machine', userId: 'user_123', state: 'reviewing', context: { caseId: 'case_789', title: 'Smith vs. Johnson Contract Dispute', status: 'under_review', assignedTo: 'user_123', documents: ['doc_001', 'doc_002', 'doc_003'], evidence: ['evidence_456', 'evidence_789'], deadline: '2024-01-15T00:00:00.000Z', notes: 'Awaiting additional documentation from plaintiff.'
       }, timestamp: '2024-01-10T14:20:15.000Z', version: '2.1.0', size: 2891, checksum: 'sha256:e5f6g7h8...'
     }, {
-      id: 'rag_pipeline_20240110_141030', machineId: 'rag-pipeline-machine', userId: 'system', state: 'processing', context: {, pipelineId: 'pipeline_001', documents: [ {, id: 'doc_123', status: 'embedded', chunks: 45 }, { id: 'doc_124', status: 'processing', chunks: 0 }, { id: 'doc_125', status: 'queued', chunks: 0 } ], totalChunks: 342, processedChunks: 298, batchSize: 32, modelVersion: 'gemma-3-legal-v1.2'
+      id: 'rag_pipeline_20240110_141030', machineId: 'rag-pipeline-machine', userId: 'system', state: 'processing', context: { pipelineId: 'pipeline_001', documents: [ { id: 'doc_123', status: 'embedded', chunks: 45 }, { id: 'doc_124', status: 'processing', chunks: 0 }, { id: 'doc_125', status: 'queued', chunks: 0 } ], totalChunks: 342, processedChunks: 298, batchSize: 32, modelVersion: 'gemma-3-legal-v1.2'
       }, timestamp: '2024-01-10T14:10:30.000Z', version: '3.0.1', size: 5672, checksum: 'sha256:i9j0k1l2...', ]; $effect(() => { mounted = true; loadPersistedStates(); }); async function loadPersistedStates(): Promise<any> { loading = true; try { // In production: const response = await fetch('/api/state/persistence') await new Promise(resolve => setTimeout(resolve, 1000)); persistedStates = mockPersistedStates; // fixed identifier } catch (error) { console.error('Failed to load persisted states:', error); } finally { loading = false; }
 
   async function restoreState(stateId: string): Promise<any> { restoring = true; try { // await fetch(`/api/state/persistence/${ stateId }/restore`, { method: 'POST' }) console.log('Restoring state:', stateId); await new Promise(resolve => setTimeout(resolve, 1500)); alert('State restored successfully!'); } catch (error) { console.error('Failed to restore state:', error); alert('Failed to restore state'); } finally { restoring = false; }
   } async function deletePersistedState(stateId: string): Promise<void> { if (!confirm('Are you sure you want to delete this persisted state? This action cannot be undone.')) { return; }
     try { // await fetch(`/api/state/persistence/${ stateId }`, { method: 'DELETE' }) console.log('Deleting state:', stateId); persistedStates = persistedStates.filter(s => s.id !== stateId); if (selectedState?.id === stateId) { selectedState = null; }
     } catch (error) { console.error('Failed to delete state:', error); alert('Failed to delete state'); }
-  } function formatBytes(bytes: number) { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  } function formatBytes(bytes: number) { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
 
-  function getStateColor(state: string) { if (state.includes('error')) return, 'bg-red-100 text-red-800'; if (state.includes('processing') || state.includes('reviewing')) return, 'bg-yellow-100 text-yellow-800'; if (state.includes('authenticated') || state.includes('completed')) return, 'bg-green-100 text-green-800'; return, 'bg-blue-100 text-blue-800'; }
+  function getStateColor(state: string) { if (state.includes('error')) return 'bg-red-100 text-red-800'; if (state.includes('processing') || state.includes('reviewing')) return 'bg-yellow-100 text-yellow-800'; if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800'; return 'bg-blue-100 text-blue-800'; }
 
   function getMachineDisplayName(machineId: string) { const names: Record<string string> = {
       'auth-machine': 'Authentication',
@@ -46,13 +46,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .breadcrumb-current { font-weight: 500; }
   .page-header h1 { font-size: 2.5rem; color: #1f2937; margin-bottom: 0.5rem; }
   .page-header p { font-size: 1.125rem; color: #6b7280; }
-  .stats-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; text-align: center; }
   .stat-number { display: block; font-size: 2rem; font-weight: 700; color: #1f2937; }
   .stat-label { font-size: 0.875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
   .loading-state { text-align: center; padding: 4rem; }
   .spinner { width: 40px; height: 40px; border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
-  @keyframes spin { 0% {, transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   .empty-state { text-align: center; padding: 4rem; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
   .empty-state h2 { color: #374151; margin-bottom: 0.5rem; }
   .states-grid { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start; }
@@ -71,7 +71,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .state-details { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; }
   .detail-row { display: flex; justify-content: space-between; align-items: center; }
   .detail-label { font-weight: 500; color: #374151; font-size: 0.875rem; }
-  .detail-value {, color: #6b7280; font-size: 0.875rem; }
+  .detail-value { color: #6b7280; font-size: 0.875rem; }
   .detail-value code, .checksum { background: #e5e7eb;, padding: 0.125rem 0.375rem; border-radius: 4px; font-family: "SF Mono", "SFMono-Regular", Menlo, Monaco, "Courier New", monospace; font-size: 0.75rem; }
   .checksum { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .state-actions { display: flex; gap: 0.75rem; }
@@ -85,11 +85,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .metadata-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
   .metadata-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px; }
   .metadata-label { font-weight: 500; color: #374151; font-size: 0.875rem; }
-  .metadata-value {, color: #6b7280; font-size: 0.875rem; text-align: right; }
+  .metadata-value { color: #6b7280; font-size: 0.875rem; text-align: right; }
   @media (max-width: 1200px) { .states-grid { grid-template-columns: 1fr; }
-    .state-inspector {, position: static; }
+    .state-inspector { position: static; }
   } @media (max-width: 768px) { .page-container { padding: 1rem; }
     .state-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-    .state-actions {, width: 100%; justify-content: space-between; }
+    .state-actions { width: 100%; justify-content: space-between; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
   } </style>

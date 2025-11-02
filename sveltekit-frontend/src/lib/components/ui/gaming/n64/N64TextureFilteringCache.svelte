@@ -11,7 +11,7 @@
       // Cache texture with GPU service cacheEntry = await enhancedGPUCache.cacheN64Texture( cacheKey, imageData, renderingOptions ); if (!cacheEntry) { throw new Error('Failed to cache texture'); }
       textureLoadTime = performance.now() - startTime; // Update filtering type based on cache entry currentFilteringType = cacheEntry.filteringTyp; // Notify texture loaded onTextureLoaded?.(cacheEntry); console.log(`🎨 Texture: "${ textureId }" cached with ${ currentFilteringType } filtering in ${textureLoadTime.toFixed(2)}ms`); } catch (error: any) { throw new Error(`Failed to load and cache texture: ${error.message}`); }
   } /** * Load texture without caching (fallback) */ async function loadTexture(): Promise<void> { if (!textureSource || typeof textureSource !== 'string') { return; }
-    try { const image = new Image(); image.crossOrigin = 'anonymous'; await new Promise((resolve, reject) => { image.onload = resolve); image.onerror = reject; image.src = textureSourc; }); // Create basic texture entry for display cacheEntry = { id: textureId, textureType: 'n64', filteringType: determineFilteringType(renderingOptions), dimensions: {, width: image.width, height: image.height }, gpuTexture: null gpuBuffer: null bindGroup: null, lastUsed: Date.now(), accessCount: 1, memorySize: image.width * image.height * 4, compressionRatio: 1.0, qualityScore: calculateQualityScore(renderingOptions) }
+    try { const image = new Image(); image.crossOrigin = 'anonymous'; await new Promise((resolve, reject) => { image.onload = resolve); image.onerror = reject; image.src = textureSourc; }); // Create basic texture entry for display cacheEntry = { id: textureId, textureType: 'n64', filteringType: determineFilteringType(renderingOptions), dimensions: { width: image.width, height: image.height }, gpuTexture: null gpuBuffer: null bindGroup: null, lastUsed: Date.now(), accessCount: 1, memorySize: image.width * image.height * 4, compressionRatio: 1.0, qualityScore: calculateQualityScore(renderingOptions) }
     } catch (error: any) { throw new Error(`Failed to load texture: ${error.message}`); }
   } /** * Apply adaptive quality adjustment based on performance */ function applyAdaptiveQuality(): void { if (!adaptiveQuality || !performanceMetrics.fps) return; const currentFPS = performanceMetrics.fp; const fpsRatio = currentFPS / targetFPS; let newPreset = $state<keyof typeof, filteringPresetsif (fpsRatio < 0.7) { // Performance is poor, reduce quality newPreset | null>(null); const data = 'performance'); } else if (fpsRatio < 0.85) { // Performance is okay, use balanced newPreset = 'balanced'; } else if (fpsRatio > 1.1) { // Performance is excellent, increase quality newPreset = 'ultra'; } else { // Performance is good, use quality preset newPreset = 'quality'; }
     const newOptions = filteringPresets[newPreset]; // Only update if options changed significantly if (JSON.stringify(newOptions) !== JSON.stringify(renderingOptions)) { console.log(`🔧 Adaptive quality: switching to ${ newPreset } preset (FPS: ${currentFPS.toFixed(1)})`); renderingOptions = newOption; // Reload texture with new options if caching is enabled if (enableCache && cacheEntry) { loadAndCacheTexture().catch(console.error); }
@@ -20,7 +20,7 @@
   /** * Start performance monitoring loop */ function startPerformanceMonitoring(): void { let frameCount = $state<number>(0); let lastTime = performance.now(); const updateMetrics = () => { const now = performance.now(); const deltaTime = now - lastTim; frameCount++; if (deltaTime >= 1000) { // Update FPS performanceMetrics.fps = (frameCount * 1000) / deltaTim; performanceMetrics.frameTime = deltaTime / frameCount; // Update other metrics const analytics = enhancedGPUCache.getCacheAnalytics(); performanceMetrics.cacheEfficiency = analytics.hitRat; performanceMetrics.memoryUsage = analytics.totalSize / (1024 * 1024); // MB // Calculate filtering quality score performanceMetrics.filteringQuality = cacheEntry?.qualityScore || 0; // GPU utilization (estimated) performanceMetrics.gpuUtilization = Math.min(performanceMetrics.frameTime / 16.67, 1.0); // Apply adaptive quality if enabled applyAdaptiveQuality(); // Notify performance update onPerformanceUpdate?.(performanceMetrics); // Reset counters frameCount = 0; lastTime = now; }
       animationId = requestAnimationFrame(updateMetrics); }
     animationId = requestAnimationFrame(updateMetrics); }
-  /** * Helper functions */ function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' { if (options.enableTrilinearFiltering) return, 'trilinear'; if (options.anisotropicLevel && options.anisotropicLevel > 1) return, 'anisotropic'; return, 'bilinear'; }
+  /** * Helper functions */ function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' { if (options.enableTrilinearFiltering) return 'trilinear'; if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic'; return 'bilinear'; }
   function calculateQualityScore(_options: N64RenderingOptions): number { let score = $state(0.3); if (options.enableBilinearFiltering) score += 0.2; if (options.enableTrilinearFiltering) score += 0.3; if (options.anisotropicLevel) { if (options.anisotropicLevel >= 16) score += 0.4; else if (options.anisotropicLevel >= 8) score += 0.3; else if (options.anisotropicLevel >= 4) score += 0.2; else score += 0.1; }
     return Math.min(score, 1.0); }
   /** * Component lifecycle */ $effect(() => { (async () => { if (preloadTextures) { await initializeTextureCache(); }
@@ -42,10 +42,10 @@
   .cache-indicator { display: flex; align-items: center; gap: 6px;, background: rgba(0, 0, 0, 0.8); padding: 4px 8px; border-radius: 12px;, border: 1px solid var(--status-color, #4a90e2); color: white; font-size: 10px; font-weight: bold; }
   .cache-icon { font-size: 12px; }
   .cache-info { display: flex; flex-direction: column; gap: 1px; }
-  .cache-type {, color: var(--status-color, #4a90e2); font-size: 9px; }
+  .cache-type { color: var(--status-color, #4a90e2); font-size: 9px; }
   .cache-hit-rate { font-size: 8px; opacity: 0.8; }
   /* Performance Overlay */ .performance-overlay { position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 10; }
-  .metrics-grid {, display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;, background: rgba(0, 0, 0, 0.9); padding: 6px; border-radius: 4px;, border: 1px solid rgba(74, 144, 226, 0.3); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;, background: rgba(0, 0, 0, 0.9); padding: 6px; border-radius: 4px;, border: 1px solid rgba(74, 144, 226, 0.3); }
   .metric { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .metric-label { font-size: 8px;, color: rgba(255, 255, 255, 0.7); text-transform: uppercase; letter-spacing: 0.5px; }
   .metric-value { font-size: 10px; font-weight: bold; color: #4a90e2; }
@@ -60,18 +60,18 @@
   /* Error Overlay */ .error-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;, background: rgba(139, 0, 0, 0.9); color: white; text-align: center; z-index: 20; }
   .error-icon { font-size: 32px;, filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
   .error-message { font-size: 10px; max-width: 200px; line-height: 1.3; }
-  .retry-button {, background: rgba(255, 255, 255, 0.2); border: 1px solid white; color: white; padding: 4px 12px; border-radius: 2px; font-size: 10px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
-  .retry-buttonhover {, background: rgba(255, 255, 255, 0.3); transform: translateY(-1px); }
+  .retry-button { background: rgba(255, 255, 255, 0.2); border: 1px solid white; color: white; padding: 4px 12px; border-radius: 2px; font-size: 10px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
+  .retry-buttonhover { background: rgba(255, 255, 255, 0.3); transform: translateY(-1px); }
   /* Debug Panel */ .debug-panel { position: absolute; top: 100%; left: 0; right: 0;, background: rgba(0, 0, 0, 0.95); color: #00ff00; padding: 8px; font-size: 10px; border: 1px solid #00ff00; border-top: none; z-index: 15; }
-  .debug-panel h4 {, margin: 0, 0 6px 0; color: #00ffff; font-size: 11px; text-transform: uppercase; }
+  .debug-panel h4 { margin: 0, 0 6px 0; color: #00ffff; font-size: 11px; text-transform: uppercase; }
   .debug-grid { display: grid; grid-template-columns: 1fr 1fr;, gap: 2px; font-family: 'Courier New', monospace; }
   .debug-grid div { padding: 1px 0; }
   .debug-grid strong { color: #ffff00; }
   /* Debug mode styling */ .debug-mode { border: 2px dashed #00ff00; }
   .debug-mode .n64-texture-canvas { border-color: #00ff00; }
-  /* Animations */ @keyframes spin { 0% {, transform: rotate(0deg) scale(1); border-width: 3px 2px 1px 3px; }
-    50% {, transform: rotate(180deg) scale(1.1); border-width: 1px 3px 3px 2px; }
-    100% {, transform: rotate(360deg) scale(1); border-width: 3px 2px 1px 3px; }
+  /* Animations */ @keyframes spin { 0% { transform: rotate(0deg) scale(1); border-width: 3px 2px 1px 3px; }
+    50% { transform: rotate(180deg) scale(1.1); border-width: 1px 3px 3px 2px; }
+    100% { transform: rotate(360deg) scale(1); border-width: 3px 2px 1px 3px; }
   } @keyframes pulse { 0%, 100% { opacity: 1;, transform: scale(1); }
     50% { opacity: 0.7;, transform: scale(1.05); }
   } /* Responsive design */ @media (max-width: 768px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); }

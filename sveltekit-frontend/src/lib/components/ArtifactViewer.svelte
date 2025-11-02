@@ -91,10 +91,10 @@ import type { User } from '$lib/types';
   }
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
-      case, 'high': return, 'destructive';
-      case, 'medium': return, 'secondary';
-      case, 'low': return, 'outline';
-      default: return, 'outline';
+      case, 'high': return 'destructive';
+      case, 'medium': return 'secondary';
+      case, 'low': return 'outline';
+      default: return 'outline';
     }
   }
   const formatTimestamp = (timestamp: string) => {

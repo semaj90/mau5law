@@ -5,7 +5,7 @@
   } $effect(() => { const handleGlobalKeydown = (e: KeyboardEvent) => { if (open) handleKeydown(e); }; document.addEventListener('keydown', handleGlobalKeydown); return () => { document.removeEventListener('keydown', handleGlobalKeydown); }; }); let sizeClasses = $derived.by(() => ({ sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size])); </script> {#if open} <div bind:this={ modalElement } class="modal-backdrop"
     onclick={ handleOutsideClick } role="presentation"
     aria-hidden="true"
-    transitionfade={{, duration: 200 }} >
+    transitionfade={{ duration: 200 }} >
     <div class={['modal-content', sizeClasses].filter(Boolean).join(' ')} role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title': undefined} >

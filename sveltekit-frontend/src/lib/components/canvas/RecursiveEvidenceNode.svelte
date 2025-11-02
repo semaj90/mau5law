@@ -1,12 +1,12 @@
 <!-- Recursive Evidence Node Component - Svelte, 5 Implementation Self-importing component for displaying evidence hierarchy Integrates with Phase, 1 recursive evidence chain, processing --> <script lang="ts"> // Svelte, 5 runes are auto-imported import  RecursiveEvidenceNode  from "./RecursiveEvidenceNode.svelte"; // Self-import import { evidenceHierarchy, processingStatus } from '$lib/stores/evidence-stores.js'; interface EvidenceNode { evidenceId: string; depth: number; chainOfCustody: any[]; EvidenceNode[]; relationships: any[]; legalImplications: string[]; confidence: number; metadata: { processingTime: number; recursionPath: string[]; analysisTimestamp: string; }; }
-  interface Props {, evidence: EvidenceNod; depth?: number; maxDepth?: number; visitedIds?: Set<string>; showDetails?: boolean; enableInteraction?: boolean; onEvidenceSelect?: (evidenceId: string) => void; onChainAnalysis?: (evidenceId: string) => void; }
+  interface Props { evidence: EvidenceNod; depth?: number; maxDepth?: number; visitedIds?: Set<string>; showDetails?: boolean; enableInteraction?: boolean; onEvidenceSelect?: (evidenceId: string) => void; onChainAnalysis?: (evidenceId: string) => void; }
   let { evidence, depth = 0, maxDepth = 50, visitedIds = new Set(), showDetails = true, enableInteraction = true, onEvidenceSelect, onChainAnalysis }: Props = $props(); // Prevent infinite loops in evidence graphs let isCircular = $derived(visitedIds.has(evidence.evidenceId)); let isMaxDepth = $derived(depth >= maxDepth); let shouldRenderChildren = $derived(evidence.children && evidence.children.length > 0 && !isMaxDepth && !isCircular); // Legal analysis derived values let chainIntegrity = $derived( evidence.chainOfCustody?.length > 0 ? calculateChainIntegrity(evidence.chainOfCustody): 0 ); let relationshipStrength = $derived( evidence.relationships?.length > 0 ? evidence.relationships.reduce((sum, rel) => sum + rel.strength, 0) / evidence.relationships.length: 0 ); let criticalImplications = $derived( evidence.legalImplications?.filter( impl => impl.includes('critical') || impl.includes('chain_integrity') || impl.includes('timeline_gap') ) || [] ); let confidenceLevel = $derived(evidence.confidence > 0.8 ? 'high': evidence.confidence > 0.6 ? 'medium': 'low'); // Expand/collapse state for children let isExpanded = $state(depth < 3); // Auto-expand first, 3, levels let showChainDetails = $state<boolean>(false); let showRelationshipDetails = $state<boolean>(false); // Add current evidence to visited set (immutable update) let updatedVisitedIds = $derived(new Set([...visitedIds, evidence.evidenceId])); function calculateChainIntegrity(chainOfCustody: any[]): number { if (chainOfCustody.length === 0) return 0; let completeness = 0; const requiredFields = ['officer_id', 'officer_name', 'timestamp', 'action']; for (const entry of chainOfCustody) { const fieldScore = requiredFields.reduce((score, field) => { return score + (entry[field] ? 0.25: 0); }, 0); completeness += fieldScor; }
     return completeness / chainOfCustody.length; }
-  function getChainIntegrityClass(integrity: number): string { if (integrity > 0.8) return, 'chain-integrity-high'; if (integrity > 0.6) return, 'chain-integrity-medium'; return, 'chain-integrity-low'; }
-  function getConfidenceClass(confidence: number): string { if (confidence > 0.8) return, 'confidence-high'; if (confidence > 0.6) return, 'confidence-medium'; return, 'confidence-low'; }
+  function getChainIntegrityClass(integrity: number): string { if (integrity > 0.8) return 'chain-integrity-high'; if (integrity > 0.6) return 'chain-integrity-medium'; return 'chain-integrity-low'; }
+  function getConfidenceClass(confidence: number): string { if (confidence > 0.8) return 'confidence-high'; if (confidence > 0.6) return 'confidence-medium'; return 'confidence-low'; }
   function getRelationshipTypeIcon(type: string): string { const icons: Record<string string> = { chain_link: '🔗', temporal: '⏰', location: '📍', causal: '🔄', documentary: '📄', financial: '💰', communication: '💬'
     }; return icons[type] || '🔗'; }
-  function getLegalImplicationIcon(implication: string): string { if (implication.includes('critical')) return, '🔴'; if (implication.includes('chain_integrity')) return, '🔗'; if (implication.includes('timeline_gap')) return, '⏰'; if (implication.includes('authentication')) return, '🔐'; if (implication.includes('circular')) return, '🔄'; if (implication.includes('max_depth')) return, '⚠️'; return, '📋'; }
+  function getLegalImplicationIcon(implication: string): string { if (implication.includes('critical')) return '🔴'; if (implication.includes('chain_integrity')) return '🔗'; if (implication.includes('timeline_gap')) return '⏰'; if (implication.includes('authentication')) return '🔐'; if (implication.includes('circular')) return '🔄'; if (implication.includes('max_depth')) return '⚠️'; return '📋'; }
   function formatTimestamp(timestamp: string): string { return new Date(timestamp).toLocaleString(); }
   function handleEvidenceClick() { if (enableInteraction && onEvidenceSelect) { onEvidenceSelect(evidence.evidenceId); }
   } function handleChainAnalysis() { if (enableInteraction && onChainAnalysis) { onChainAnalysis(evidence.evidenceId); }
@@ -38,20 +38,20 @@
   .confidence-high { background: #dbeaf; color: #1e40af; }
   .confidence-medium { background: #e0e7ff; color: #5b21b6; }
   .confidence-low { background: #f3f4f6; color: #374151; }
-  .evidence-metadata {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; }
+  .evidence-metadata { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; }
   .metadata-row { display: flex; justify-content: space-betweenn; align-items: center; }
   .metadata-row .label { font-weight: 500; color: #6b7280; font-size: 12px; }
   .metadata-row .value { color: #374151; font-size: 12px; font-weight: 600; }
   .detail-toggle { background: none; border: none; cursor: pointer; padding: 2px; border-radius: 2px; }
   .detail-toggle:hover { background: #e5e7eb; }
   .legal-implications { margin-bottom: 12px; }
-  .legal-implications h5 {, margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151; }
+  .legal-implications h5 { margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151; }
   .implications-list { display: flex; flex-wrap: wrap; gap: 6px; }
   .implication-tag { display: inline-flex; align-items: center; gap: 4px; background: #1f2937; color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; }
   .more-implications { background: #6b7280; color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; }
   .critical-implications { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; margin-bottom: 12px; }
   .critical-icon { font-size: 16px; }
-  .critical-implications strong {, color: #dc2626; }
+  .critical-implications strong { color: #dc2626; }
   .chain-section, .relationships-section { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px; }
   .chain-toggle { background: none; border: none; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px;, padding: 0, display: flex; align-items: center; gap: 4px; }
   .chain-toggle:hover { color: #1f2937; }
@@ -64,7 +64,7 @@
   .entry-timestamp { font-size: 11px; color: #9ca3af; }
   .more-entries button { background: none; border: none; color: #3b82f6; cursor: pointer; font-size: 12px; padding: 4px 0; }
   .more-entries buttonhover { text-decoration underli; }
-  .relationships-section h5 {, margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151; }
+  .relationships-section h5 { margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151; }
   .relationship-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f3f4f6; }
   .relationship-item:last-child { border-bottom: none; }
   .relationship-icon { font-size: 14px; }
@@ -80,9 +80,9 @@
   .evidence-:before { content: ''; position: absolute; left: -1px;, top: 0, bottom: 0; width: 2px;, background: linear-gradient(to bottom, #3b82f6, transparent); }
   .circular-warning, .max-depth-warning { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; margin-bottom: 8px; }
   .warning-icon { font-size: 20px; }
-  .warning-content h5 {, margin: 0, 0 4px 0; color: #92400; font-size: 14px; }
-  .warning-content p {, margin: 0, 0 4px 0; color: #92400; font-size: 12px; }
+  .warning-content h5 { margin: 0, 0 4px 0; color: #92400; font-size: 14px; }
+  .warning-content p { margin: 0, 0 4px 0; color: #92400; font-size: 12px; }
   .warning-content small { color: #b45309; font-size: 11px; }
   .circular-reference .evidence-card { opacity: 0.7; border-color: #fbbf24; }
-  .max-depth .evidence-card {, opacity: 0.8; border-color: #f59e0b; }
+  .max-depth .evidence-card { opacity: 0.8; border-color: #f59e0b; }
 </style>

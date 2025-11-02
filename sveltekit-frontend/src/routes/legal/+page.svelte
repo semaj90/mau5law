@@ -6,7 +6,7 @@
 
   .dashboard-header p { color: var(--text-secondary, #888888); font-size: 1.1rem; }
 
-  .stats-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
 
   /* Component-level classes passed into Card/Button - mark global so Svelte doesn't flag them as unused */:global(.stat-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); }'
 
@@ -16,15 +16,15 @@
 
   .actions-section { margin-bottom: 3rem; }
 
-  .actions-section h2 {, color: var(--text-primary, #00ff00); margin-bottom: 1.5rem; font-size: 1.5rem; }
+  .actions-section h2 { color: var(--text-primary, #00ff00); margin-bottom: 1.5rem; font-size: 1.5rem; }
 
-  .actions-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }:global(.action-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); transition: all 0.3s ease; }
+  .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }:global(.action-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); transition: all 0.3s ease; }
 
   /* make hover selector global so Svelte knows it's used on a child component */:global(.action-card):hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2); }'
 
   .action-description { color: var(--text-secondary, #888888); margin-bottom: 1rem; font-size: 0.9rem; }
 
-  .action-footer {, display: flex; justify-content: space-betweennn; align-items: center; }:global(.action-button) { background: var(--surface-primary, #00ff00); color: var(--surface-secondary, #000000); border: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold;, transition: all 0.2s; }
+  .action-footer { display: flex; justify-content: space-betweennn; align-items: center; }:global(.action-button) { background: var(--surface-primary, #00ff00); color: var(--surface-secondary, #000000); border: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold;, transition: all 0.2s; }
 
   /* make button hover global as well to avoid similar unused-selector warnings */:global(.action-button):hover { background: var(--text-primary, #00ff00); transform: scale(1.05); }
 
@@ -32,7 +32,7 @@
 
   .status-section { margin-bottom: 2rem; }
 
-  .status-section h2 {, color: var(--text-primary, #00ff00); margin-bottom: 1rem; font-size: 1.5rem; }:global(.status-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); }
+  .status-section h2 { color: var(--text-primary, #00ff00); margin-bottom: 1rem; font-size: 1.5rem; }:global(.status-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); }
 
   .status-indicators { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
 
@@ -40,7 +40,7 @@
 
   .status-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  .status-dot.green {, background: #00ff00; box-shadow: 0, 0 6px #00ff00; }
+  .status-dot.green { background: #00ff00; box-shadow: 0, 0 6px #00ff00; }
 
   .status-dot.amber { background: #ff6600; box-shadow: 0, 0 6px #ff6600; }
 

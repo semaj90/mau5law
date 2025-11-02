@@ -187,18 +187,18 @@ Real-time collaboration interface for multiple investigators working on evidence
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return, 'just, now';
+    if (diffMins < 1) return 'just, now';
     if (diffMins < 60) return `${diffMins}m, ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h, ago`;
     return date.toLocaleDateString();
   }
   function getRoleColor(role: string) {
     switch (role) {
-      case, 'investigator': return, 'bg-blue-100 text-blue-800';
-      case, 'supervisor': return, 'bg-purple-100 text-purple-800';
-      case, 'analyst': return, 'bg-green-100 text-green-800';
-      case, 'legal': return, 'bg-orange-100 text-orange-800';
-      default: return, 'bg-gray-100 text-gray-800';
+      case, 'investigator': return 'bg-blue-100 text-blue-800';
+      case, 'supervisor': return 'bg-purple-100 text-purple-800';
+      case, 'analyst': return 'bg-green-100 text-green-800';
+      case, 'legal': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
   function isCurrentUser(participantUserId: string) {
@@ -444,8 +444,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       transform: translateY(0);
       opacity: 0.4;
     }
-    30% {
-     , transform: translateY(-8px);
+    30% { transform: translateY(-8px);
       opacity: 1;
     }
   }
@@ -461,7 +460,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     background: #c1c1c1;
     border-radius: 2px;
   }
-  .collaboration-panel::-webkit-scrollbar-thumb:hover {
-   , background: #a8a8a8;
+  .collaboration-panel::-webkit-scrollbar-thumb:hover { background: #a8a8a8;
   }
 </style>

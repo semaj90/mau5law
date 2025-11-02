@@ -1,11 +1,11 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { value?: number; max?: number; class?: string; theme?: 'classic' | 'gold' | 'red' | 'blue' | 'green'; animated?: boolean; showPercentage?: boolean; size?: 'sm' | 'md' | 'lg'; retro?: boolean; sparkle?: boolean; }
-  let { value = 0, max = 100, class: className = '', theme = 'classic', animated = true, showPercentage = true, size = 'md', retro = true, sparkle = false; }: Props = $props(); let percentage = $derived(Math.min((value / max) * 100, 100)); // N64 Controller inspired color themes const themes = { classic: {, bg: '#2C2C2C', fill: '#FFD700', border: '#1A1A1A', shadow: '#FFB000'
-    }, gold: {, bg: '#1A1A1A', fill: '#FFD700', border: '#8B7D3A', shadow: '#FFA500'
-    }, red: {, bg: '#2C1A1A', fill: '#FF3030', border: '#8B1A1A', shadow: '#CC0000'
-    }, blue: {, bg: '#1A1A2C', fill: '#4090FF', border: '#1A1A8B', shadow: '#0066CC'
-    }, green: {, bg: '#1A2C1A', fill: '#40FF40', border: '#1A8B1A', shadow: '#00CC00'
+  let { value = 0, max = 100, class: className = '', theme = 'classic', animated = true, showPercentage = true, size = 'md', retro = true, sparkle = false; }: Props = $props(); let percentage = $derived(Math.min((value / max) * 100, 100)); // N64 Controller inspired color themes const themes = { classic: { bg: '#2C2C2C', fill: '#FFD700', border: '#1A1A1A', shadow: '#FFB000'
+    }, gold: { bg: '#1A1A1A', fill: '#FFD700', border: '#8B7D3A', shadow: '#FFA500'
+    }, red: { bg: '#2C1A1A', fill: '#FF3030', border: '#8B1A1A', shadow: '#CC0000'
+    }, blue: { bg: '#1A1A2C', fill: '#4090FF', border: '#1A1A8B', shadow: '#0066CC'
+    }, green: { bg: '#1A2C1A', fill: '#40FF40', border: '#1A8B1A', shadow: '#00CC00'
     } }
-  const sizes = { sm: {, height: '12px', fontSize: '10px' }, md: {, height: '16px', fontSize: '12px' }, lg: {, height: '24px', fontSize: '14px' } }
+  const sizes = { sm: { height: '12px', fontSize: '10px' }, md: { height: '16px', fontSize: '12px' }, lg: { height: '24px', fontSize: '14px' } }
   let currentTheme = $derived(themes[theme]); let currentSize = $derived(sizes[size]); </script> <div class="n64-progress-container { className }" class: retro> <div class="n64-progress-bar"; class:animated;, class:sparkle, style="; --bg-color: {currentTheme.bg} --fill-color: {currentTheme.fill} --border-color: {currentTheme.border} --shadow-color: {currentTheme.shadow} --bar-height: {currentSize.height} --font-size: {currentSize.fontSize}"
     "
     role="progressbar"
@@ -25,7 +25,7 @@
   .segment:last-child { border-right: none; }
   .segment.active { opacity: 0.6; }
   .percentage-display { position: absolute; top: 50%; right: 8px;, transform: translateY(-50%); pointer-events: none; }
-  .percentage-text {, color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000; }
+  .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000; }
   /* Sparkle effects */ .sparkle-container { position: absolute;, top: 0, left: 0; width: 100%; height: 100%; overflow: hidden; }
   .sparkle { position: absolute; width: 4px; height: 4px; background: #FFF; border-radius: 50%; opacity: 0; }
   .sparkle-1 { top: 20%; left: 30%; animation: sparkle 1.2s ease-in-out infinite; }
@@ -41,7 +41,7 @@
   /* Retro styling enhancements */ .retro { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge; }
   .retro .progress-frame { box-shadow: inset -3px -3px 6px rgba(0,0,0,0.9), inset 3px 3px 6px rgba(255,255,255,0.1), 0, 0 0 1px rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.5); }
   /* Animations */ @keyframes shimmer { 0% { background-position ; -200% 0 } 100% { background-position 00% 0 } }
-  @keyframes shine { 0% { transform: translateX(-100%); opacity: 0; } 50% { opacity: 1; } 100% {, transform: translateX(100%); opacity: 0; } }
+  @keyframes shine { 0% { transform: translateX(-100%); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
   @keyframes sparkle { 0%, 100% { opacity: 0;, transform: scale(0); }
     50% { opacity: 1;, transform: scale(1); }
   } /* Responsive adjustments */ @media (max-width: 640px) { .percentage-display { right: 4px; }

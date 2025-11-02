@@ -2,10 +2,10 @@
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { scale, fly } from 'svelte/transition'; import { Bot, MessageCircle, Sparkles, Brain, ChevronUp, Settings, Power } from 'lucide-svelte'
   interface Props { isVisible?: boolean onToggle?: () => void onSettingsClick?: () => void isConnected?: boolean aiMode?: 'idle' | 'thinking' | 'active'
   } let { isVisible = $bindable(true), onToggle = () => , onSettingsClick = () => , isConnected = true, aiMode = $bindable('idle') }: Props = $props() let isExpanded = $state<boolean>(false); let isHovered = $state<boolean>(false); let pulseAnimation = $state<boolean>(true); // Gaming UI inspiration - pulse effect for AI activity const pulseClasses = { idle: 'animate-pulse', thinking: 'animate-bounce', active: 'animate-ping'
-  } // YoRHa/Gaming color scheme const getModeColor = (mode: string) => { switch (mode) { case, 'thinking': return, 'text-amber-400'
-      case, 'active': return, 'text-green-400'
-      default: return, 'text-blue-400'; }
-  } const quickActions = [ {, id: 'analyze', label: 'Analyze Case', icon Brain; color: 'hover:bg-purple-500/20'
+  } // YoRHa/Gaming color scheme const getModeColor = (mode: string) => { switch (mode) { case, 'thinking': return 'text-amber-400'
+      case, 'active': return 'text-green-400'
+      default: return 'text-blue-400'; }
+  } const quickActions = [ { id: 'analyze', label: 'Analyze Case', icon Brain; color: 'hover:bg-purple-500/20'
     }, {
       id: 'search', label: 'Search Evidence', icon MessageCircle; color: 'hover:bg-blue-500/20'
     }, {
@@ -21,7 +21,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     role="region"
     aria-label="AI Assistant Controls"
   > <!-- Quick, Action, Menu --> {#if isExpanded} <div class="flex flex-col gap-2"
-        in:fly={{, y: 20, duration, 200, delay: 100 }} out:fly={{, y: 20, duration, 150 }} >
+        in:fly={{ y: 20, duration, 200, delay: 100 }} out:fly={{ y: 20, duration, 150 }} >
         {#each quickActions as action, index} <button type="button"
             onclick={() => handleQuickAction(action.id)} class="group relative flex" items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl hover:border-gray-500/50 transition-all duration-200 {action.color}";, in:scale={{ duration, 200, delay: index * 50, start: 0.8 }} aria-label={action.label} >"
             <!-- Action, Icon --> <div class="relative"> <svelte:component this={action.icon} class="w-5 h-5 text-gray-300 group-hover:text-white"

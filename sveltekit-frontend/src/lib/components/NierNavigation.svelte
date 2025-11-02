@@ -5,7 +5,7 @@
   import { page } from '$app/stores';
   type Link = { href: string; label: string; icon?: string };
   // Exported props with proper types
-  const { brand } = $props<{, brand: string }>()
+  const { brand } = $props<{ brand: string }>()
   const { version } = $props<{ version: string }>()
   const { links } = $props<{ links: Link[] }>()
   // Reactive derived current path from the page store
@@ -100,8 +100,7 @@
     flex-direction: column;
     gap: 2px;
   }
-  .yorha-brand-text {
-   , color: var(--yorha-secondary, #ffd700);
+  .yorha-brand-text { color: var(--yorha-secondary, #ffd700);
     font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
     font-size: 18px;
     font-weight: 700;
@@ -109,8 +108,7 @@
     text-transform: uppercase;
     line-height: 1;
   }
-  .yorha-brand-version {
-   , color: var(--yorha-text-muted, #808080);
+  .yorha-brand-version { color: var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 11px;
     letter-spacing: 1px;
@@ -137,8 +135,7 @@
     transition: all 0.2s ease;
     overflow: hidden;
   }
-  .yorha-nav-link:hover {
-   , color: var(--yorha-secondary, #ffd700);
+  .yorha-nav-link:hover { color: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-tertiary, #2a2a2a);
   }
@@ -182,8 +179,7 @@
     min-width: 60px;
     height: 60px;
   }
-  .yorha-toolbar-btn:hover {
-   , background: var(--yorha-secondary, #ffd700);
+  .yorha-toolbar-btn:hover { background: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
     box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700);

@@ -68,8 +68,7 @@ import type { Document } from '$lib/types';
       metadata = {
         mockData: true,
         error: 'failure default to mock',
-        fallbackMetadata: {
-         , fileName: file.name,
+        fallbackMetadata: { fileName: file.name,
           fileSize: file.size,
           mimeType: file.type detectedType: $form.evidence_type,
           estimatedProcessingTime: '2-5 minutes',
@@ -123,7 +122,7 @@ import type { Document } from '$lib/types';
   }
   // Format file size for display
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return, '0 B';
+    if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

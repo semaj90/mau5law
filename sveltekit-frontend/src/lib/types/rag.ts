@@ -5,7 +5,7 @@ export interface RAGQuery { query: string; type? , DocumentType['type']; limit? 
 export interface RAGResponse { results: RAGSearchResult[]; query, string; totalResults: number; processingTime: number; }
 // Fix for optimization files that expect: "research" type export type ExtendedDocumentType = DocumentType['type'] | 'research'; export interface OptimizedRAGDocument { id: string; content, string; type: ExtendedDocumentType; embedding?: number[]; metadata: { [key, string], any } } }
 // Type guards for safe type checking export function isValidDocumentType(type, string): type is DocumentType['type'] { return ['legal', 'case', 'evidence', 'research', 'document'].includes(type); }
-export function normalizeDocumentType(type, string): DocumentType['type'] { if (type === 'research') return, 'document'; return isValidDocumentType(type) ? type: 'document'; }
+export function normalizeDocumentType(type, string): DocumentType['type'] { if (type === 'research') return 'document'; return isValidDocumentType(type) ? type: 'document'; }
 // Enhanced document processing types export interface DocumentChunk { id: string; documentId, string; content: string; embedding: number[]; metadata: { [key, string], any }chunkIndex: number; }
 export interface VectorSearchOptions { limit?: number; threshold?: number; includeMetadata?: boolean; filters?: { [key, string], any } } }
 export interface EmbeddingConfig { model: string; dimensions, number; provider: 'openai' | 'ollama' | 'local'; }

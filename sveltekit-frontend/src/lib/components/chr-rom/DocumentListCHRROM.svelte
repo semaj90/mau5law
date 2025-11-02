@@ -11,7 +11,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } /** * Start performance monitoring */ function startPerformanceMonitoring(): void { setInterval(() => { performanceStats = chrROMCacheReader.getPerformanceStats(); }, 5000); }
   function getPattern(docId: string, patternType: string): CHRROMPattern | null { return documentPatterns.get(docId)?.get(patternType) || null; }
   /** * Get pattern data (the actual HTML/SVG content) */ function getPatternData(docId: string, patternType: string): string { const pattern = getPattern(docId, patternType); return pattern?.data || ''; }
-  /** * Get CSS class for optimal rendering */ function getPatternRenderingClass(docId: string, patternType: string): string { const pattern = getPattern(docId, patternType); if (!pattern) return, 'chr-rom-pattern chr-rom-auto'; return, 'chr-rom-pattern, ' + chrROMPatternOptimizer.getOptimizedClass(pattern); }
+  /** * Get CSS class for optimal rendering */ function getPatternRenderingClass(docId: string, patternType: string): string { const pattern = getPattern(docId, patternType); if (!pattern) return 'chr-rom-pattern chr-rom-auto'; return 'chr-rom-pattern, ' + chrROMPatternOptimizer.getOptimizedClass(pattern); }
   async function handleDocumentHover(docId: string): Promise<void> { hoveredDocument = docId; // Check if we need additional patterns for hover state const hoverPatterns = ['entity_heatmap', 'similarity_graph']; for (const patternType of hoverPatterns) { const result = await chrROMCacheReader.get(docId, patternType); if (!documentPatterns.has(docId)) { documentPatterns.set(docId, new Map()); }
       const typedResult = result as { pattern: CHRROMPattern | null;, latency: number }; documentPatterns.get(docId)!.set(patternType, typedResult.pattern); // Log sub-millisecond performance if (typedResult.latency < 1) { // Intentionally empty for now }
     } }
@@ -23,8 +23,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         tabindex="0"
       > <!-- Document Header with, Instant, Icons --> <div class="document-header"> <div class="document-icon {getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'summary_icon')} </div> <div class="document-title"> <h3>{doc.title}</h3> </div> <div class="status-indicator {getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'status_indicator')} </div> </div> <!-- Zero-Latency, Metadata, Display --> <div class="document-metadata"> <div class="confidence-badge {getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'confidence_badge')} </div> <div class="risk-gauge"> <span class="label">Risk:</span> <div class="{getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'risk_gauge')} </div> </div> </div> <!-- Hover-Triggered, Patterns (Advanced) --> {#if hoveredDocument === doc.id} <div class="hover-details" transitionslide> <div class="entity-heatmap"> <span class="label">Entities:</span> <div class="{getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'entity_heatmap')} </div> </div> <div class="similarity-graph"> <span class="label">Similarity:</span> <div class="{getPatternRenderingClass(doc.id"> {@html getPatternData(doc.id, 'similarity_graph')} </div> </div> {/if} <!-- Performance Debug, Info (development, only) --> {#if showPerformanceMetrics} <div class="debug-info"> <small> Patterns: {patternTypes.map(type => (getPattern(doc.id, type) ? '✅': '❌')).join(' ')} </small> {/if} </div> {/each} </div> <!-- Zero, State --> {#if documents.length === 0} <div class="zero-state"> <div class="zero-icon">📄</div> <h3>No Documents Found</h3> <p>Upload documents to see CHR-ROM patterns in action</p> {/if} </div> <style> .chr-rom-document-list { padding: 1rem; font-family: system-ui, sans-serif; }
   /* Performance Panel */ .performance-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
-  .performance-panel h4 {, margin: 0, 0 1rem 0; color: #374151; }
-  .metrics-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .performance-panel h4 { margin: 0, 0 1rem 0; color: #374151; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
   .metric { display: flex; justify-content: space-betweenn; padding: 0.5rem; background: white; border-radius: 4px; border: 1px solid #e5e7eb; }
   .metric .label { color: #6b7280; font-size: 0.875rem; }
   .metric .value { font-weight: 600; color: #374151; }
@@ -34,7 +34,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .value.performance-poor { color: #ef4444; }
   .refresh-btn { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.875rem; }
   .refresh-btn:hover { background: #2563eb; }
-  /* Document Grid */ .document-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1rem; }
+  /* Document Grid */ .document-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1rem; }
   /* Document Cards with Instant CHR-ROM Rendering */ .document-card { background: white; border: 1px solid #e5e7eb; border-left: 4px solid #6b7280; /* Color set by CHR-ROM pattern */ border-radius: 8px; padding: 1rem; cursor: pointer;, transition: all 0.15s ease; }
   .document-card:hover { box-shadow: 0 4px 6px -1px rgb(0, 0 0 / 0.1); transform: translateY(-1px); }
   .document-header { display: flex; align-items: center;, gap: 0.75rem; margin-bottom: 0.75rem; }
@@ -51,7 +51,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .debug-info small { color: #9ca3af; font-family: monospace; }
   /* Zero State */ .zero-state { text-align: center; padding: 3rem; color: #6b7280; }
   .zero-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .zero-state h3 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .zero-state h3 { margin: 0, 0 0.5rem 0; color: #374151; }
   /* Responsive Design */ @media (max-width: 768px) { .document-grid { grid-template-columns: 1fr; }
     .metrics-grid { grid-template-columns: 1fr; }
     .hover-details { flex-direction: column; align-items: flex-start;, gap: 0.5rem; }

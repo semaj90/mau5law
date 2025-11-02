@@ -1,9 +1,9 @@
 <!-- NESTextureStreamingExample.svelte Demonstrates NES-inspired texture chunking and streaming Shows how to integrate N64LODManager with CHR-ROM caching and, WebGPU --> <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'; import Button from '$lib/components/ui/Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; import { lodManager, type LODContext } from '$lib/services/N64LODManager.ts'; // Demo state let selectedDocument = 'legal_contract_2024_001'; let viewportDistance = 50; let scrollVelocity = 0; let memoryPressure = 0.2; let documentComplexity = 0.7; let enableGPU = true; let memoryStats: any = {} let processingTime = 0; // Demo documents (legal AI context) const demoDocuments = [ {, id: 'legal_contract_2024_001', title: 'Commercial Lease Agreement', complexity: 0.7, size: {, width: 1920, height: 2560 }, type: 'contract'
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'; import Button from '$lib/components/ui/Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; import { lodManager, type LODContext } from '$lib/services/N64LODManager.ts'; // Demo state let selectedDocument = 'legal_contract_2024_001'; let viewportDistance = 50; let scrollVelocity = 0; let memoryPressure = 0.2; let documentComplexity = 0.7; let enableGPU = true; let memoryStats: any = {} let processingTime = 0; // Demo documents (legal AI context) const demoDocuments = [ { id: 'legal_contract_2024_001', title: 'Commercial Lease Agreement', complexity: 0.7, size: { width: 1920, height: 2560 }, type: 'contract'
     }, {
-      id: 'evidence_email_2024_042', title: 'Email Evidence Chain', complexity: 0.4, size: {, width: 1024, height: 768 }, type: 'evidence'
+      id: 'evidence_email_2024_042', title: 'Email Evidence Chain', complexity: 0.4, size: { width: 1024, height: 768 }, type: 'evidence'
     }, {
-      id: 'motion_summary_judgment', title: 'Motion for Summary Judgment', complexity: 0.9, size: {, width: 2048, height: 3200 }, type: 'motion'
+      id: 'motion_summary_judgment', title: 'Motion for Summary Judgment', complexity: 0.9, size: { width: 2048, height: 3200 }, type: 'motion'
     } ]; // Derived current document based on selectedDocument let currentDoc = $derived(demoDocuments.find(d => d.id === selectedDocument) || demoDocuments[0]); // Reactive LOD calculation (converted to derived values) let lodContext = $derived({ viewportDistance, scrollVelocity: scrollVelocity > 0 ? scrollVelocity: undefined, memoryPressure: memoryPressure > 0 ?, memoryPressure: undefined documentComplexity } as LODContext); let calculatedLOD = $derived(lodManager.calculateLOD(lodContext)); let lodInfo = $derived(lodManager.LOD_LEVELS[calculatedLOD]); $effect(() => { // Update memory stats periodically const interval = setInterval(() => { memoryStats = lodManager.getMemoryStats(); }, 1000); return () => clearInterval(interval); }); async function processDocument(): Promise<any> { const startTime = performance.now(); try { // Simulate document processing through the pipeline console.log(`🎮 Processing ${currentDoc.title} through NES pipeline...`); // Stream texture at optimal LOD const textureChunk = await lodManager.streamTexture(currentDoc.id, calculatedLOD); processingTime = performance.now() - startTime; if (textureChunk) { console.log(`✅ Document processed in ${processingTime.toFixed(2)}ms`); } else { console.warn('❌ Document processing failed'); }
     } catch (error) { console.error('❌ Processing error:', error); processingTime = performance.now() - startTime; }'
   } async function preloadAllLODs(): Promise<any> { console.log(`🎮 Preloading all LOD levels for ${currentDoc.title}...`); const startTime = performance.now(); const promises = []; for (let lod = 0; lod <= 3; lod++) { promises.push(lodManager.streamTexture(currentDoc.id, lod as, any)); }
@@ -45,7 +45,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .texture-container { position: relative; border: 2px solid #000; }
   .texture-overlay { position: absolute; top: 2px; right: 2px;, background: rgba(0, 0, 0, 0.8); color: white; padding: 2px 6px; font-size: 10px; font-family: monospace; }
   .debug-info { position: absolute; bottom: 2px; left: 2px;, background: rgba(0, 0, 0, 0.8); color: white; padding: 2px 6px; font-size: 8px; font-family: monospace; }
-  .stats-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px; }
   .stat-box { text-align: center; padding: 10px; border: 2px solid #000; background: #f8f8f8; }
   .stat-label { font-size: 10px; text-transform: uppercase; margin-bottom: 5px; color: #666; }
   .stat-value { font-size: 16px; font-weight: bold; font-family: monospace; }
@@ -53,8 +53,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .memory-bars { display: flex; flex-direction: column; gap: 8px; }
   .memory-bar { display: flex; align-items: center; gap: 10px; font-size: 12px; font-family: monospace; }
   .memory-bar span { min-width: 160px; }
-  .bar {, flex: 1, height: 16px; border: 1px solid #000; background: #f0f0f0; position: relative; }
+  .bar { flex: 1, height: 16px; border: 1px solid #000; background: #f0f0f0; position: relative; }
   .bar-fill { height: 100%; transition: width 0.3s ease; }
-  .bar-fill.l1 { background: #00d800 } .bar-fill.l2 { background: #3cbcfc } .bar-fill.l3 {, background: #fc9838 } @media (max-width: 640px) { .texture-display { grid-template-columns: 1fr; }
+  .bar-fill.l1 { background: #00d800 } .bar-fill.l2 { background: #3cbcfc } .bar-fill.l3 { background: #fc9838 } @media (max-width: 640px) { .texture-display { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
   } </style>

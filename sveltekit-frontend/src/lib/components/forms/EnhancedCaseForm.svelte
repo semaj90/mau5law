@@ -391,8 +391,7 @@
     display: grid;
     gap: 2rem;
   }
-  .form-section h3 {
-   , margin: 0, 0 1rem 0;
+  .form-section h3 { margin: 0, 0 1rem 0;
     color: #374151;
     font-size: 1.1rem;
     font-weight: 600;
@@ -430,8 +429,7 @@
   }
   input:focus,
   select:focus,
-  textarea:focus {
-   , outline: none;
+  textarea:focus { outline: none;
     border-color: #3b82f6;
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }

@@ -11,14 +11,13 @@ import type { Document } from '$lib/types';
 
   // explicit props (Svelte, 5 safe, TypeScript-friendly)
   const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
-  const { formDataProp } = $props<{ formDataProp: | {
-       , extracted_entities: any[] }>()
+  const { formDataProp } = $props<{ formDataProp: | { extracted_entities: any[] }>()
         key_facts: string[];
         legal_issues: string[];
         precedents: any[];
       }
     | undefined;
-  const { ocrResultsProp } = $props<{, ocrResultsProp: OCRResult[] | undefined }>()
+  const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
 
   // local state derived from props with safe defaults
   let formData = formDataProp ?? {
@@ -157,7 +156,7 @@ import type { Document } from '$lib/types';
   }
   async function findRelevantPrecedents(): Promise<any[]> {
     const mockPrecedents = [
-      {,
+      {
         case_name: 'Smith v. Jones Contract Dispute',
         relevance: 0.92,
         summary: 'Landmark case establishing principles for contract interpretation in commercial disputes.'
@@ -191,9 +190,9 @@ import type { Document } from '$lib/types';
     formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.9) return, 'bg-green-100 text-green-800';
-    if (confidence >= 0.7) return, 'bg-yellow-100 text-yellow-800';
-    return, 'bg-red-100 text-red-800';
+    if (confidence >= 0.9) return 'bg-green-100 text-green-800';
+    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
   }
   function handleNext() {
     if (!formData.key_facts || formData.key_facts.length === 0) {

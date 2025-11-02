@@ -24,8 +24,7 @@ import type { Document } from '$lib/types';
     estimatedTime: string;
     tools?: string[];
   }
-  interface Props {
-   , open: boolean;
+  interface Props { open: boolean;
     context?: {
       recentCases?: string[];
       currentCase?: string;
@@ -54,7 +53,7 @@ import type { Document } from '$lib/types';
   let thinkingMessage = $state<string>('Analyzing your legal context...');
   let processingSteps = $state<string[]>([]);
   const AI_ANALYSIS_TYPES = [
-    {,
+    {
       value: 'case-analysis',
       label: '⚖️ Case Analysis',
       description: 'Deep analysis of current case strategy and opportunities'
@@ -116,14 +115,14 @@ import type { Document } from '$lib/types';
       usingMockData = true;
       // Fallback to mock AI recommendations (valid JS: object syntax)
       recommendations = [
-        {,
+        {
           id: 'mock-ai-001',
           type: 'case',
           title: 'Employment Dispute Analysis',
           description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
           confidence: 0.87,
           priority: 220,
-          metadata: {, caseType: 'employment', successRate: 0.85 },
+          metadata: { caseType: 'employment', successRate: 0.85 },
           aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
         },
         {
@@ -133,12 +132,12 @@ import type { Document } from '$lib/types';
           description: 'New precedent strengthens constructive dismissal claims',
           confidence: 0.91,
           priority: 240,
-          metadata: {, court: '9th Circuit', date: '2024-02-15' },
+          metadata: { court: '9th Circuit', date: '2024-02-15' },
           aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
         }
       ];
       suggestedActions = [
-        {,
+        {
           action: 'Document Discovery Request',
           description: 'Subpoena HR files including contract amendments',
           priority: 'high',
@@ -186,7 +185,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/ai/execute-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, action: action.action, context })
+        body: JSON.stringify({ action: action.action, context })
       });
       if (!response.ok) {
         throw new Error('Action execution API failed');
@@ -216,16 +215,16 @@ import type { Document } from '$lib/types';
   function getTypeIcon(type: AIRecommendation['type']): string {
     switch (type) {
       case, 'case':
-        return, '⚖️';
+        return '⚖️';
       case, 'document':
-        return, '📄';
+        return '📄';
       case, 'search':
-        return, '🔍';
+        return '🔍';
       case, 'workflow':
-        return, '⚡';
+        return '⚡';
       case, 'precedent':
-        return, '📚';
-      default: return, '🤖';
+        return '📚';
+      default: return '🤖';
     }
   }
   function getConfidenceColor(conf: number): string {
@@ -462,8 +461,7 @@ import type { Document } from '$lib/types';
     transition: all 0.2s;
     text-align: left;
   }
-  .type-btn:hover {
-   , background: rgba(255, 255, 255, 0.1);
+  .type-btn:hover { background: rgba(255, 255, 255, 0.1);
     border-color: rgba(138, 43, 226, 0.5);
   }
   .type-btn.active {
@@ -484,8 +482,7 @@ import type { Document } from '$lib/types';
     color: #fff;
     font-size: 0.9rem;
   }
-  .query-input::placeholder {
-   , color: rgba(255, 255, 255, 0.5);
+  .query-input::placeholder { color: rgba(255, 255, 255, 0.5);
   }
   .analyze-btn {
     padding: 0.75rem 1.5rem;
@@ -506,8 +503,7 @@ import type { Document } from '$lib/types';
     opacity: 0.6;
     cursor: not-allowed;
   }
-  .ai-thinking {
-   , background: rgba(138, 43, 226, 0.1);
+  .ai-thinking { background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 12px;
     padding: 1.5rem;
@@ -556,8 +552,7 @@ import type { Document } from '$lib/types';
     flex: 1;
     overflow-y: auto;
   }
-  .ai-reasoning {
-   , background: rgba(255, 255, 255, 0.05);
+  .ai-reasoning { background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
@@ -603,15 +598,13 @@ import type { Document } from '$lib/types';
     flex-direction: column;
     gap: 1rem;
   }
-  .recommendation-card {
-   , background: rgba(255, 255, 255, 0.03);
+  .recommendation-card { background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
     transition: all 0.2s;
   }
-  .recommendation-card:hover {
-   , background: rgba(255, 255, 255, 0.05);
+  .recommendation-card:hover { background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
   }
   .rec-header {
@@ -626,8 +619,7 @@ import type { Document } from '$lib/types';
   .rec-info {
     flex: 1;
   }
-  .rec-title {
-   , margin: 0, 0 0.5rem 0;
+  .rec-title { margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 500;
@@ -652,8 +644,7 @@ import type { Document } from '$lib/types';
     font-weight: bold;
     text-align: center;
   }
-  .ai-insight {
-   , background: rgba(138, 43, 226, 0.1);
+  .ai-insight { background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.2);
     border-radius: 6px;
     padding: 0.75rem;
@@ -680,8 +671,7 @@ import type { Document } from '$lib/types';
    , color: rgba(255, 255, 255, 0.6);
     margin-bottom: 0.5rem;
   }
-  .metadata-content {
-   , background: rgba(0, 0, 0, 0.2);
+  .metadata-content { background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -692,12 +682,10 @@ import type { Document } from '$lib/types';
     margin-bottom: 0.25rem;
     font-size: 0.75rem;
   }
-  .metadata-key {
-   , color: rgba(255, 255, 255, 0.6);
+  .metadata-key { color: rgba(255, 255, 255, 0.6);
     min-width: 80px;
   }
-  .metadata-value {
-   , color: rgba(255, 255, 255, 0.8);
+  .metadata-value { color: rgba(255, 255, 255, 0.8);
     word-break: break-word;
   }
   .actions-list {
@@ -705,8 +693,7 @@ import type { Document } from '$lib/types';
     flex-direction: column;
     gap: 1rem;
   }
-  .action-card {
-   , background: rgba(255, 255, 255, 0.03);
+  .action-card { background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
@@ -720,8 +707,7 @@ import type { Document } from '$lib/types';
     flex: 1;
     margin-right: 1rem;
   }
-  .action-title {
-   , margin: 0, 0 0.5rem 0;
+  .action-title { margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 500;
@@ -801,8 +787,7 @@ import type { Document } from '$lib/types';
     cursor: pointer;
     transition: all 0.2s;
   }
-  .topic-tag:hover {
-   , background: rgba(138, 43, 226, 0.2);
+  .topic-tag:hover { background: rgba(138, 43, 226, 0.2);
     border-color: rgba(138, 43, 226, 0.5);
   }
   .empty-state {
@@ -819,8 +804,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 1rem;
     opacity: 0.5;
   }
-  .empty-state h3 {
-   , margin: 0, 0 0.5rem 0;
+  .empty-state h3 { margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
   }
   .empty-state p {
@@ -829,7 +813,7 @@ import type { Document } from '$lib/types';
     line-height: 1.5;
   }
   @keyframes spin {
-    0% {, transform: rotate(0deg); }
+    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   @keyframes pulse {
@@ -840,14 +824,11 @@ import type { Document } from '$lib/types';
   .ai-results::-webkit-scrollbar {
     width: 6px;
   }
-  .ai-results::-webkit-scrollbar-track {
-   , background: rgba(0, 0, 0, 0.2);
+  .ai-results::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2);
   }
-  .ai-results::-webkit-scrollbar-thumb {
-   , background: rgba(138, 43, 226, 0.5);
+  .ai-results::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5);
     border-radius: 3px;
   }
-  .ai-results::-webkit-scrollbar-thumb:hover {
-   , background: rgba(138, 43, 226, 0.7);
+  .ai-results::-webkit-scrollbar-thumb:hover { background: rgba(138, 43, 226, 0.7);
   }
 </style>

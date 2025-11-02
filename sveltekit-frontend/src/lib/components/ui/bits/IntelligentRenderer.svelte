@@ -19,5 +19,5 @@ import type { User } from '$lib/types'; // Separate runtime import from type-onl
           Details </svelte:component> </div> </div> </svelte:component> {/if} <!-- ...existing, code... --> <style> /* ...existing styles... */ /* Minimal helper classes to align with previous Card subcomponents (if needed) */ .card-header { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
   .card-title { margin: 0; font-size: 1rem; font-weight: 600; }
   .card-content { padding: 1rem; }
-  /* Modifier class for inner evidence items to avoid nested card styling conflicts */ .enhanced-bits-nier-bits-evidence-item {, background: rgba(30, 34, 54, 0.85); border-radius: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 0.75rem 1rem; border-left-width: 4px; border-left-style: solid; }
+  /* Modifier class for inner evidence items to avoid nested card styling conflicts */ .enhanced-bits-nier-bits-evidence-item { background: rgba(30, 34, 54, 0.85); border-radius: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 0.75rem 1rem; border-left-width: 4px; border-left-style: solid; }
 </style>

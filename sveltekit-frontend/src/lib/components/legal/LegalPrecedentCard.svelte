@@ -34,8 +34,7 @@ import type { Case } from '$lib/types';
     sourceUrl?: string;
     pdfUrl?: string;
   }
-  export interface LegalPrecedentCardProps {
-   , precedent: LegalPrecedent;
+  export interface LegalPrecedentCardProps { precedent: LegalPrecedent;
     currentCaseId?: string;
     showRelevanceScore?: boolean;
     showSimilarityScore?: boolean;
@@ -61,40 +60,37 @@ import type { Case } from '$lib/types';
   let expanded = $state<boolean>(false);
   // Precedent type configurations (use className to avoid JS reserved word)
   const precedentTypeConfig = {
-    binding: {
-     , label: 'Binding Precedent',
+    binding: { label: 'Binding Precedent',
       className: 'bg-green-500/20 text-green-400 border-green-500/30',
       priority: 1
     },
-    persuasive: {
-     , label: 'Persuasive Authority',
+    persuasive: { label: 'Persuasive Authority',
       className: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
       priority: 2
     },
-    distinguishable: {
-     , label: 'Distinguishable',
+    distinguishable: { label: 'Distinguishable',
       className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
       priority: 3
     }
   };
   // Jurisdiction configurations
   const jurisdictionConfig = {
-    federal: {, label: 'Federal', icon: Scale, color: 'text-blue-400' },
-    state: {, label: 'State', icon: MapPin, color: 'text-green-400' },
-    local: {, label: 'Local', icon: MapPin, color: 'text-yellow-400' },
-    international: {, label: 'International', icon: Scale, color: 'text-purple-400' }
+    federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
+    state: { label: 'State', icon: MapPin, color: 'text-green-400' },
+    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
+    international: { label: 'International', icon: Scale, color: 'text-purple-400' }
   };
   // Reactive derived values (avoid using {@const} in template)
   const relevanceLevel = $derived((() => {
-    if (precedent.relevanceScore >= 90) return, 'high');
-    if (precedent.relevanceScore >= 70) return, 'medium';
-    return, 'low';
+    if (precedent.relevanceScore >= 90) return 'high');
+    if (precedent.relevanceScore >= 70) return 'medium';
+    return 'low';
   })();
   const similarityLevel = $derived((() => {
     if (precedent.similarityScore == null) return: null);
-    if (precedent.similarityScore >= 80) return, 'high';
-    if (precedent.similarityScore >= 60) return, 'medium';
-    return, 'low';
+    if (precedent.similarityScore >= 80) return 'high';
+    if (precedent.similarityScore >= 60) return 'medium';
+    return 'low';
   })();
   const jurisdictionInfo = $derived(jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' });
   const JurisdictionIcon = $derived(jurisdictionInfo.icon);
@@ -111,8 +107,8 @@ import type { Case } from '$lib/types';
     return now.getFullYear() - d.getFullYear();
   }
   function truncateText(text: string, maxLength: number): string {
-    if (!text) return, '';
-    if (text.length <= maxLength) return, text;
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
   }
 

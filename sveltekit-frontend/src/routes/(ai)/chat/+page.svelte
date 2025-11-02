@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { Message } from '$lib/types';
 import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Chat (Svelte 5) * Features: File upload, RAG, embeddings, CUDA, Redis, self-prompting * Fallbacks: TensorRT → Ollama → Mock AI */ import NesTypewriterStream from '$lib/components/chat/nes-typewriter-stream.svelte'; // Svelte, 5 runes - production state management let messages = $state< Array<{ id: string; role: 'user' | 'assistant'; content: string;, timestamp: Date; metadata?: any }> >([]); let currentMessage = $state<string>(''); let isLoading = $state<boolean>(false); let chatContainer: HTMLElement; let fileInput = $state<HTMLInputElement | null>(null); // System status let typingIndicator = $state<boolean>(false); let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected'); // make backend optional to satisfy assignments that may not include it, but still keep it available let modelInfo = $state<{ name: string;, status: string; backend?: string } | null>(null); let cudaAvailable = $state<boolean>(false); let uploadedFiles = $state<Array<{ name: string;, id: string }>>([]); let recommendations = $state<string[]>([]); // Service availability let services = $state({ tensorrt: false, ollama: false, integrated: false, redis: false, qdrant: false }); // Check TensorRT service health async function checkServiceHealth(): Promise<any> { try { connectionStatus = 'connecting'; const response = await fetch('http://localhost:8086/api/health'); if (!response.ok) { throw new Error(`Health check failed: ${response.status}`); }
-      const data = await response.json(); connectionStatus = 'connected'; // record that tensorrt is available and set backend explicitly services = { ...services, tensorrt: true }; modelInfo = {, name: 'TensorRT Bridge - Gemma3-Legal', status: String(data.status || 'Running'), backend: 'tensorrt'
+      const data = await response.json(); connectionStatus = 'connected'; // record that tensorrt is available and set backend explicitly services = { ...services, tensorrt: true }; modelInfo = { name: 'TensorRT Bridge - Gemma3-Legal', status: String(data.status || 'Running'), backend: 'tensorrt'
       }; } catch (error) { connectionStatus = 'disconnected'; console.error('Service health check failed:', error); // Show fallback notice const notice = document.createElement('div'); notice.innerHTML = '⚠️ failure default to mock - AI service unavailable'; notice.style.cssText =
-        'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;'; document.body.appendChild(notice); setTimeout(() => notice.remove(), 3000); // Set mock model info and mark backend explicitly services = { ...services, tensorrt: false }; modelInfo = {, name: 'Mock Legal AI - Offline', status: 'Simulated', backend: 'mock'
+        'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;'; document.body.appendChild(notice); setTimeout(() => notice.remove(), 3000); // Set mock model info and mark backend explicitly services = { ...services, tensorrt: false }; modelInfo = { name: 'Mock Legal AI - Offline', status: 'Simulated', backend: 'mock'
       }; }
   } // Send message to TensorRT service async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isLoading) return; const userMessage = { id: crypto.randomUUID(), role: 'user' as const content: currentMessage.trim(), timestamp: new Date() }; messages = [...messages, userMessage]; const messageToSend = currentMessage; currentMessage = ''; isLoading = true; typingIndicator = true; // Scroll to bottom setTimeout(() => { chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' }); }, 100); try { const response = await fetch('http://localhost:8086/api/generate', { method: 'POST', headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify({, model: 'gemma3-legal:latest', prompt: messageToSend, stream: false, options: {, temperature: 0.7, max_tokens: 512 }
+        }, body: JSON.stringify({ model: 'gemma3-legal:latest', prompt: messageToSend, stream: false, options: { temperature: 0.7, max_tokens: 512 }
         }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`); }
       const data = await response.json(); const assistantMessage = { id: crypto.randomUUID(), role: 'assistant' as const content: data.response || data.text || 'No response received', timestamp: new Date() }; messages = [...messages, assistantMessage]; } catch (error) { console.error('Error sending message:', error); // Show fallback notice const notice = document.createElement('div'); notice.innerHTML = '⚠️ failure default to mock'; notice.style.cssText =
         'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;'; document.body.appendChild(notice); setTimeout(() => notice.remove(), 3000); // Generate mock legal AI response const mockResponses = [
@@ -35,7 +35,7 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
   .status-bar { display: flex; justify-content: space-betweenn; align-items: center; gap: 1rem; margin-top: 1rem; }
   .chat-area { min-height: 400px; max-height: 500px; overflow-y: auto; margin: 16px 0; padding: 16px; }
   .welcome-screen { text-align: center; background: #ffffff; color: #212529; padding: 2rem; margin: 2rem 0; }
-  .welcome-screen h2 {, margin: 0, 0 1rem 0; font-size: 1.5rem; }
+  .welcome-screen h2 { margin: 0, 0 1rem 0; font-size: 1.5rem; }
   .welcome-screen p { margin: 0.5rem 0; font-weight: bold; }
   .welcome-screen button { display: block; width: 100%; margin: 0.75rem 0; font-size: 0.875rem; }
   .user-message { margin: 1rem 0; background: #0066cc !important; color: white !important; align-self: flex-end; max-width: 70%; margin-left: auto; }
@@ -53,7 +53,7 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
   /* Scrollbar styling for dark theme */ .chat-area::-webkit-scrollbar { width: 8px; }
   .chat-area::-webkit-scrollbar-track { background: #333; }
   .chat-area::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
-  .chat-area::-webkit-scrollbar-thumb:hover {, background: #888; }
+  .chat-area::-webkit-scrollbar-thumb:hover { background: #888; }
   /* Responsive design for mobile */ @media (max-width: 768px) { .retro-chat-app { padding: 8px; }
     .user-message, .ai-message { max-width: 85%; }
     .button-row { flex-direction: column; }

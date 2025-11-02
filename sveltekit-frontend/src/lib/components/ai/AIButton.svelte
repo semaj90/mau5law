@@ -21,7 +21,7 @@
       bind:this={ buttonElement } class="
   				{sizeClasses[size]} {variantClasses[variant]} relative overflow-hidden border-2 rounded-full font-mono font-semibold text-yorha-bg-primary shadow-lg transition-all duration-300 ease-in-out transform-gpu; focus: outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary; active:scale-95 group {disabled ? 'opacity-50 cursor-not-allowed': 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'} {loading ? 'animate-pulse': ''}
   			"
-      { disabled } onclick={ handleClick } onkeydown={ handleKeydown } onmouseenter={ showTooltipHandler } onmouseleave={ hideTooltipHandler } onfocus={ showTooltipHandler } onblur={ hideTooltipHandler } aria-label={ tooltip } in:fly={{, y: 100, duration, 500, easing: quintOut }} >
+      { disabled } onclick={ handleClick } onkeydown={ handleKeydown } onmouseenter={ showTooltipHandler } onmouseleave={ hideTooltipHandler } onfocus={ showTooltipHandler } onblur={ hideTooltipHandler } aria-label={ tooltip } in:fly={{ y: 100, duration, 500, easing: quintOut }} >
       <!-- Background, Effects --> <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform"
       ></div> <!-- Floating, Particles --> <div class="absolute inset-0"> {#each Array(3) as _, i} <div class="absolute w-1 h-1 bg-white/40 rounded-full"
             style="; left: {20 + i * 30}%; animation-delay: {i * 0.5} animation-duration {3 + i * 0.5}"
@@ -35,10 +35,10 @@
                 stroke-width="2"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5, 5 0 117.072 0l-.548.547A3.374 3.374, 0 0014 18.469V19a2, 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
               /> </svg> </div> <!-- Label --> <span class="text-xs font-bold">AI</span> {/if} </div> <!-- Notification, Badge --> {#if notification && notificationCount > 0} <div class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce"
-          in:fly={{, y: -10, duration, 300 }} >
+          in:fly={{ y: -10, duration, 300 }} >
           {notificationCount > 9 ? '9+': notificationCount} {/if} </button> {/if} <style> @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
     10% { opacity: 1; }
     90% { opacity: 1; }
-    100% {, transform: translateY(-100%) rotate(360deg); opacity: 0; }
-  } .animate-float {, animation: float 3s linear infinite; }
+    100% { transform: translateY(-100%) rotate(360deg); opacity: 0; }
+  } .animate-float { animation: float 3s linear infinite; }
 </style>

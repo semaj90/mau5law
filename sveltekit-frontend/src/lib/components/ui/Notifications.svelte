@@ -23,8 +23,7 @@
       'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/10 dark:border-blue-800 dark:text-blue-200'
   };
 
-  const iconColorClasses = {
-   , success: 'text-green-400',
+  const iconColorClasses = { success: 'text-green-400',
     error: 'text-red-400',
     warning: 'text-yellow-400',
     info: 'text-blue-400'
@@ -60,8 +59,8 @@
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
         ${colorClasses[notification.type ?? 'info']}
       `}`
-      in:fly={{, x: 300, duration: 300, easing: quintOut }}
-      out:fly={{, x: 300, duration: 200, easing: quintOut }}
+      in:fly={{ x: 300, duration: 300, easing: quintOut }}
+      out:fly={{ x: 300, duration: 200, easing: quintOut }}
     >
       <div class="space-y-4 flex">
         <!-- Icon -->
@@ -132,8 +131,7 @@
     from {
       width: 100%;
     }
-    to {
-     , width: 0%;
+    to { width: 0%;
     }
   }
 </style>

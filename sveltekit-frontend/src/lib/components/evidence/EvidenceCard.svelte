@@ -21,7 +21,7 @@
   // Svelte, 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void;
-    compared: (data: {, evidence: Evidence;, result: any }) => void;
+    compared: (data: { evidence: Evidence;, result: any }) => void;
   }>();
   // small helper - use project-wide helper in the future
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434');
@@ -41,7 +41,7 @@
     }
   };
   const formatFileSize = (bytes: number): string => {
-    if (!bytes || bytes === 0) return, "0 Bytes";
+    if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -91,7 +91,7 @@
   class:shadow-2xl={isHovered}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
-  transitionscale={{, duration: 200, easing: quintOut }}
+  transitionscale={{ duration: 200, easing: quintOut }}
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b">

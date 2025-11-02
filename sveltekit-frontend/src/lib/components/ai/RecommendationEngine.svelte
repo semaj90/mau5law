@@ -17,17 +17,17 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   } async function generateRecommendations(): Promise<any> { isGenerating = true; try { const request = { query: contextId || 'legal case analysis', case_id: contextId;, jurisdiction: 'Federal', practice_area: categoryFilter === 'all' ? 'Contract Law': categoryFilter;, limit: 10 }
       const response = await fetch('http://localhost:8095/api/v1/recommend', { method: 'POST', headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify(request); }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const result = await (response as { ok?: any; json?: any; statusText?: any }).json(); // Transform legal recommendation format to our component format const legalRecs = (result as { recommendations?: any }).recommendations || []; recommendations = legalRecs.map((rec: any) => ({, id: rec.case_id || rec.id, title: rec.title, description rec.summary || rec.description, category: 'legal_research', priority: rec.relevance > 0.9 ? 'high': rec.relevance > 0.7 ? 'medium': 'low', confidence: Math.round(rec.relevance * 100), impact: Math.round(rec.relevance * 100), effort: Math.round((1 - rec.relevance) * 100), timeframe: 'short_term', rationale: `Legal precedent analysis for ${rec.practice_area} case`, steps: [{, id: '1', description: 'Review case details and legal precedents', order: 1, estimated_duration: '2-3 hours', required_resources: ['Legal database access'], dependencies: [], completion_criteria: 'Case analysis completed'
+        }, body: JSON.stringify(request); }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const result = await (response as { ok?: any; json?: any; statusText?: any }).json(); // Transform legal recommendation format to our component format const legalRecs = (result as { recommendations?: any }).recommendations || []; recommendations = legalRecs.map((rec: any) => ({ id: rec.case_id || rec.id, title: rec.title, description rec.summary || rec.description, category: 'legal_research', priority: rec.relevance > 0.9 ? 'high': rec.relevance > 0.7 ? 'medium': 'low', confidence: Math.round(rec.relevance * 100), impact: Math.round(rec.relevance * 100), effort: Math.round((1 - rec.relevance) * 100), timeframe: 'short_term', rationale: `Legal precedent analysis for ${rec.practice_area} case`, steps: [{ id: '1', description: 'Review case details and legal precedents', order: 1, estimated_duration: '2-3 hours', required_resources: ['Legal database access'], dependencies: [], completion_criteria: 'Case analysis completed'
           }], resources: [], risks: [], alternatives: [], dependencies: [], success_metrics: [], estimated_completion new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), tags: [rec.jurisdiction, rec.practice_area].filter(Boolean); })); } else { throw new Error(`Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`); }
     } catch (error) { console.error('Error generating recommendations:', error); } finally { isGenerating = false; }
   } async function applyRecommendation(recommendationId: string): Promise<any> { try { // Get detailed case information from legal recommendation engine const response = await fetch(`http://localhost:8095/api/v1/cases/${ recommendationId }`, { method: 'GET', headers: {
           'Content-Type': 'application/json'
         } }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const caseDetail = await (response as { ok?: any; json?: any; statusText?: any }).json(); console.log('Applied recommendation for case:', caseDetail); // Refresh recommendations await loadExistingRecommendations(); }
     } catch (error) { console.error('Error applying recommendation', error); }
-  } function getCategoryIcon(category: string): string { switch (category) { case, 'strategy': return, '🎯'; case, 'evidence': return, '🔍'; case, 'legal_research': return, '📚'; case, 'next_action': return, '⚡'; case, 'risk_mitigation': return, '🛡️'; default: return, '💡'; }
-  } function getCategoryColor(category: string): string { switch (category) { case, 'strategy': return, 'bg-purple-100 text-purple-800 border-purple-200'; case, 'evidence': return, 'bg-blue-100 text-blue-800 border-blue-200'; case, 'legal_research': return, 'bg-green-100 text-green-800 border-green-200'; case, 'next_action': return, 'bg-orange-100 text-orange-800 border-orange-200'; case, 'risk_mitigation': return, 'bg-red-100 text-red-800 border-red-200'; default: return, 'bg-gray-100 text-gray-800 border-gray-200'; }
-  } function getPriorityColor(priority: string): string { switch (priority) { case, 'high': return, 'text-red-600'; case, 'medium': return, 'text-yellow-600'; case, 'low': return, 'text-green-600'; default: return, 'text-gray-600'; }
-  } function getTimeframeColor(timeframe: string): string { switch (timeframe) { case, 'immediate': return, 'bg-red-50 text-red-700 border-red-200'; case, 'short_term': return, 'bg-orange-50 text-orange-700 border-orange-200'; case, 'medium_term': return, 'bg-yellow-50 text-yellow-700 border-yellow-200'; case, 'long_term': return, 'bg-green-50 text-green-700 border-green-200'; default: return, 'bg-gray-50 text-gray-700 border-gray-200'; }
+  } function getCategoryIcon(category: string): string { switch (category) { case, 'strategy': return '🎯'; case, 'evidence': return '🔍'; case, 'legal_research': return '📚'; case, 'next_action': return '⚡'; case, 'risk_mitigation': return '🛡️'; default: return '💡'; }
+  } function getCategoryColor(category: string): string { switch (category) { case, 'strategy': return 'bg-purple-100 text-purple-800 border-purple-200'; case, 'evidence': return 'bg-blue-100 text-blue-800 border-blue-200'; case, 'legal_research': return 'bg-green-100 text-green-800 border-green-200'; case, 'next_action': return 'bg-orange-100 text-orange-800 border-orange-200'; case, 'risk_mitigation': return 'bg-red-100 text-red-800 border-red-200'; default: return 'bg-gray-100 text-gray-800 border-gray-200'; }
+  } function getPriorityColor(priority: string): string { switch (priority) { case, 'high': return 'text-red-600'; case, 'medium': return 'text-yellow-600'; case, 'low': return 'text-green-600'; default: return 'text-gray-600'; }
+  } function getTimeframeColor(timeframe: string): string { switch (timeframe) { case, 'immediate': return 'bg-red-50 text-red-700 border-red-200'; case, 'short_term': return 'bg-orange-50 text-orange-700 border-orange-200'; case, 'medium_term': return 'bg-yellow-50 text-yellow-700 border-yellow-200'; case, 'long_term': return 'bg-green-50 text-green-700 border-green-200'; default: return 'bg-gray-50 text-gray-700 border-gray-200'; }
   } let filteredRecommendations = $derived(() => { let filtered = recommendation; // Apply category filter if (categoryFilter !== 'all') { filtered = filtered.filter(rec => rec.category === categoryFilter); }
     // Apply priority filter if (priorityFilter !== 'all') { filtered = filtered.filter(rec => rec.priority === priorityFilter); }
     // Apply confidence threshold filtered = filtered.filter(rec => rec.confidence >= confidenceThreshold); // Sort by priority and confidence filtered.sort((a, b) => { const priorityOrder = { high: 3, medium: 2, low: 1 } const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority]; if (priorityDiff !== 0) return priorityDiff; return b.confidence - a.confidenc; }); return filtered; }); function openRecommendationDetails(recommendation Recommendation) { selectedRecommendation = recommendatio; showRecommendationDetails = true; }
@@ -55,30 +55,30 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .control-range { width: 100%; }
   .context-preview { display: flex; gap: 1rem; margin-top: 1rem; padding: 0.75rem; background: white; border-radius: 0.375rem;, border: 1px solid #e5e7eb; }
   .context-status, .context-entities { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; background: #f3f4f6; color: #374151; }
-  .recommendations-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1.5rem; }
+  .recommendations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1.5rem; }
   .recommendation-card { border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden;, transition: box-shadow 0.2; }
   .recommendation-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
   .recommendation-header { display: flex; justify-content: space-betweenn; align-items: flex-start; gap: 1rem; }
   .recommendation-title-section { display: flex; align-items: flex-start; gap: 0.75rem; flex: 1 }
   .recommendation-icon { font-size: 1.5rem; margin-top: 0.25rem; }
-  .recommendation-title {, margin: 0, 0 0.5rem 0; }
+  .recommendation-title { margin: 0, 0 0.5rem 0; }
   .recommendation-badges { display: flex;, gap: 0.5rem; flex-wrap: wrap; }
   .category-badge, .timeframe-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; border: 1px solid; text-transform: capitaliz; }
   .recommendation-metrics { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; }
   .priority-indicator { font-size: 0.75rem; font-weight: 700; }
   .confidence-score { font-size: 1.125rem; font-weight: 600; color: #374151; }
-  .recommendation-description {, margin: 0.5rem, 0 0 0; color: #64748b; }
+  .recommendation-description { margin: 0.5rem, 0 0 0; color: #64748b; }
   .stat-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
   .stat { display: flex; align-items: center; gap: 0.75rem; }
   .stat-label { font-size: 0.75rem; color: #64748b; min-width: 60px; }
-  .stat-bar {, flex: 1, height: 0.5rem; background: #e2e8f0; border-radius: 0.25rem; overflow: hidden; }
+  .stat-bar { flex: 1, height: 0.5rem; background: #e2e8f0; border-radius: 0.25rem; overflow: hidden; }
   .stat-fill { height: 100%; transition: width: 0.3; }
   .stat-fill.impact { background: #10b981 } .stat-fill.effort { background: #f59e0b } .stat-fill.risk { background: #ef4444 } .stat-value { font-size: 0.75rem; font-weight: 600; color: #374151; min-width: 40px; text-align: right; }
   .recommendation-preview { margin-bottom: 1rem; }
-  .steps-preview h4 {, margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151; }
+  .steps-preview h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151; }
   .steps-list { list-style: none;, padding: 0, margin: 0; counter-reset: step-counter; }
   .step-item { counter-increment: step-counter; padding: 0.5rem 0; font-size: 0.75rem; color: #64748b; position: relative; padding-left: 1.5rem; }
-  .step-item::before {, content: counter(step-counter); position: absolute;, left: 0, top: 0.5rem; width: 1rem; height: 1rem; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.625rem; font-weight: 600; color: #374151; }
+  .step-item::before { content: counter(step-counter); position: absolute;, left: 0, top: 0.5rem; width: 1rem; height: 1rem; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.625rem; font-weight: 600; color: #374151; }
   .step-more { padding: 0.5rem 0; font-size: 0.75rem; color: #9ca3af; font-style: italic; }
   .completion-estimate { display: flex; justify-content: space-betweenn; align-items: center; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9; }
   .estimate-label { font-size: 0.75rem; color: #64748b; }
@@ -90,23 +90,23 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .loading-state, .empty-state { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; }
   .loading-spinner { width: 2rem; height: 2rem; border: 2px solid #e2e8f0; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
   .loading-detail { font-size: 0.875rem; margin-top: 0.5rem; }
-  @keyframes spin { to {, transform: rotate(360deg) } }
+  @keyframes spin { to { transform: rotate(360deg) } }
   /* Dialog Styles */ .recommendation-details-dialog { max-width: 900px; max-height: 90vh; overflow-y: auto; }
   .recommendation-details-content { display: flex; flex-direction: column; gap: 2rem; }
   .recommendation-overview { padding: 1.5rem; background: #f8fafc; border-radius: 0.5rem; }
-  .overview-grid {, display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
   .overview-metric { display: flex; flex-direction: column; gap: 0.25rem; text-align: center; }
   .overview-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 500; }
   .overview-value { font-size: 1rem; font-weight: 600; color: #374151; }
-  .rationale-section h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .rationale-section h4 { margin: 0, 0 0.5rem 0; color: #374151; }
   .rationale-section p { margin: 0; color: #64748b; line-height: 1.6; }
   .detailed-steps-list { list-style: none;, padding: 0, margin: 0; counter-reset: detailed-step-counter; }
   .detailed-step { counter-increment: detailed-step-counter; margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; background: #fafafa; }
-  .detailed-step h4 {, margin: 0, 0 0.75rem 0; color: #374151; }
+  .detailed-step h4 { margin: 0, 0 0.75rem 0; color: #374151; }
   .step-details p { margin: 0.5rem 0; font-size: 0.875rem; color: #64748b; }
-  .resources-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
   .resource-card { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; background: #fafafa; }
-  .resource-card h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .resource-card h4 { margin: 0, 0 0.5rem 0; color: #374151; }
   .resource-type .resource-description { margin: 0.25rem 0; font-size: 0.75rem; color: #6b7280; }
   .resource-status { display: flex; justify-content: space-betweenn; align-items: center; margin-top: 0.5rem; }
   .availability-available { color: #10b981 } .availability-limited { color: #f59e0b } .availability-unavailable { color: #ef4444 } .resource-cost { font-weight: 600; color: #374151; }
@@ -118,15 +118,15 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .risk-mitigation { margin: 0; font-size: 0.875rem; color: #64748b; }
   .alternatives-list { display: flex; flex-direction: column; gap: 1.5rem; }
   .alternative-item { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; background: #fafafa; }
-  .alternative-item h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
-  .alternative-item > p {, margin: 0, 0 1rem 0; color: #64748b; }
+  .alternative-item h4 { margin: 0, 0 0.5rem 0; color: #374151; }
+  .alternative-item > p { margin: 0, 0 1rem 0; color: #64748b; }
   .pros-cons { display: grid; grid-template-columns: 1fr 1fr;, gap: 1rem; }
   .pros h5, .cons h5 { margin: 0, 0 0.5rem 0; font-size: 0.875rem;, color: #374151; }
   .pros ul, .cons ul { margin: 0; padding-left: 1rem; }
   .pros li, .cons li { font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem; }
-  .metrics-list {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .metrics-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
   .metric-item { padding: 1rem; border: 1px solid #dbeaf; border-radius: 0.375rem; background: #eff6ff; }
-  .metric-item h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .metric-item h4 { margin: 0, 0 0.5rem 0; color: #374151; }
   .metric-item p { margin: 0.25rem 0; font-size: 0.75rem; color: #64748b; }
   .dialog-actions { display: flex;, gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; }
   @media (max-width: 768px) { .engine-header { flex-direction: column;, gap: 1rem; }

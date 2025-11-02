@@ -86,7 +86,7 @@ Content-Type: application/json
         <pre class="nes-text">{@html `{`
   "query": "contract termination clause",
   "results": [
-    {,
+    {
       "id": "doc_123",
       "task_id": "task_456",
       "payload": "Document content...",
@@ -155,8 +155,7 @@ Content-Type: application/json
     margin-bottom: 40px;
     background-color: #2d3436;
   }
-  .feature-grid {
-   , display: grid;
+  .feature-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     margin-top: 20px;
@@ -171,8 +170,7 @@ Content-Type: application/json
     margin-bottom: 40px;
     background-color: #2d3436;
   }
-  .api-details h3 {
-   , margin: 20px, 0 10px 0;
+  .api-details h3 { margin: 20px, 0 10px 0;
     color: #92cc41;
   }
   .code-block {
@@ -189,8 +187,7 @@ Content-Type: application/json
   .system-status {
     background-color: #2d3436;
   }
-  .status-grid {
-   , display: grid;
+  .status-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
     margin-top: 20px;

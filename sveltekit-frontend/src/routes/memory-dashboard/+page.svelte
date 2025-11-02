@@ -57,13 +57,13 @@ if (browser) {
     }
   }
   function getHealthColor(_value: number): string {
-    if (value >= 0.8) return, 'text-green-600';
-    if (value >= 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (value >= 0.8) return 'text-green-600';
+    if (value >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function formatBytes(bytes: number): string {
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return, '0 B';
+    if (bytes === 0) return '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }

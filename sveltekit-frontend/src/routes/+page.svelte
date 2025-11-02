@@ -100,12 +100,12 @@ import type { Case } from '$lib/types';
 	};
 
 	let workerDetails = {
-		ocr: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		embedding: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		autotag: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
+		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
 	};
 
-	let stats = $state({, totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
 	let loading = $state<boolean>(true);
 	let userQuery = $state<string>('');
 	let registerOpen = $state<boolean>(false);
@@ -206,24 +206,24 @@ import type { Case } from '$lib/types';
 	function getStatusColor(status: string) {
 		switch (status) {
 			case, 'online':
-				return, 'is-success'; // NES.css success color
+				return 'is-success'; // NES.css success color
 			case, 'offline':
-				return, 'is-error'; // NES.css error color
+				return 'is-error'; // NES.css error color
 			case, 'degraded':
-				return, 'is-warning'; // NES.css warning color
-			default: return, 'is-disabled'; // NES.css disabled/default color
+				return 'is-warning'; // NES.css warning color
+			default: return 'is-disabled'; // NES.css disabled/default color
 		}
 	}
 
 	function getStatusIcon(status: string) {
 		switch (status) {
 			case, 'online':
-				return, '✅';
+				return '✅';
 			case, 'offline':
-				return, '❌';
+				return '❌';
 			case, 'degraded':
-				return, '⚠️'; // Changed for degraded status
-			default: return, '⏳';
+				return '⚠️'; // Changed for degraded status
+			default: return '⏳';
 		}
 	}
 
@@ -654,8 +654,7 @@ import type { Case } from '$lib/types';
     margin-bottom: 3rem;
   }
 
-  .status-grid-custom {
-   , display: grid;
+  .status-grid-custom { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     padding: 1.5rem;
@@ -672,8 +671,7 @@ import type { Case } from '$lib/types';
     font-weight: 600;
   }
 
-  .workers-grid-custom {
-   , display: grid;
+  .workers-grid-custom { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
@@ -717,8 +715,7 @@ import type { Case } from '$lib/types';
     font-weight: 600;
   }
 
-  .quick-stats-custom {
-   , display: grid;
+  .quick-stats-custom { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
@@ -864,8 +861,7 @@ import type { Case } from '$lib/types';
       transform: scale(1);
       opacity: 1;
     }
-    50% {
-     , transform: scale(1.05);
+    50% { transform: scale(1.05);
       opacity: 0.9;
     }
   }
@@ -907,8 +903,7 @@ import type { Case } from '$lib/types';
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
   }
 
-  .featured-card-custom:hover .featured-button-custom {
-   , background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
+  .featured-card-custom:hover .featured-button-custom { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
     box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
     transform: scale(1.05);
   }

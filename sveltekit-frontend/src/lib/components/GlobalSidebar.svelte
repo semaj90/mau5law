@@ -47,7 +47,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; // Use
                     title={formatDetailedTimestamp(conversation.lastMessageAt)} >
                     {formatRelativeTime(conversation.lastMessageAt)} </span> </div> </a> {/each} <div class="view-all"> <a href="/ai/conversations" class="nes-btn">View All Conversations</a> </div> {:else} <div class="empty-state"> <p class="nes-text">No AI conversations yet</p> <button class="nes-btn" onclick={() => openAIAssistant()}>Start Chat</button> {/if} {/if} {/if} </aside> <style> .global-sidebar { width: 320px; min-height: 100vh; background: #1a1a1a; border-right: 2px solid #495057; display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; overflow-y: auto; transition: all 0.3s ease; position: fixed; left: 0; top: 0; z-index: 1000; }
   .global-sidebar.collapsed { width: 80px; }
-  .global-sidebar.closed {, transform: translateX(-100%); }
+  .global-sidebar.closed { transform: translateX(-100%); }
   /* User Profile */ .user-profile { flex-shrink: 0; }
   .profile-header { display: flex; align-items: center; gap: 0.75rem; }
   .avatar { font-size: 1.5rem; flex-shrink: 0; }
@@ -85,10 +85,10 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; // Use
   .empty-state .nes-btn { margin-top: 0.5rem; }
   /* View all */ .view-all { text-align: center; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
   /* Auth prompt */ .auth-prompt { text-align: center; flex-shrink: 0; }
-  /* Scrollbar */ .global-sidebar::-webkit-scrollbar, .section-content::-webkit-scrollbar {, width: 6px; }
-  .global-sidebar::-webkit-scrollbar-track, .section-content::-webkit-scrollbar-track {, background: #2a2a2a; }
-  .global-sidebar::-webkit-scrollbar-thumb, .section-content::-webkit-scrollbar-thumb {, background: #495057; border-radius: 3px; }
-  .global-sidebar::-webkit-scrollbar-thumb:hover, .section-content::-webkit-scrollbar-thumb:hover {, background: #6c757d; }
+  /* Scrollbar */ .global-sidebar::-webkit-scrollbar, .section-content::-webkit-scrollbar { width: 6px; }
+  .global-sidebar::-webkit-scrollbar-track, .section-content::-webkit-scrollbar-track { background: #2a2a2a; }
+  .global-sidebar::-webkit-scrollbar-thumb, .section-content::-webkit-scrollbar-thumb { background: #495057; border-radius: 3px; }
+  .global-sidebar::-webkit-scrollbar-thumb:hover, .section-content::-webkit-scrollbar-thumb:hover { background: #6c757d; }
   /* Responsive adjustments */ @media (max-width: 768px) { .global-sidebar { width: 280px; }
-    .global-sidebar.collapsed {, width: 60px; }
+    .global-sidebar.collapsed { width: 60px; }
   } </style>

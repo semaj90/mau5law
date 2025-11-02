@@ -15,7 +15,7 @@
 	let animationId: number | null = null;
 	// PS1 surface configurations (cleaned labels)
 	let surfaceConfigs = [
-		{,
+		{
 			id: 'wireframe',
 			name: 'Wireframe',
 			desc: 'Classic PS1 wireframe rendering',
@@ -41,8 +41,7 @@
 		}
 	];
 	// Performance metrics
-	let perfMetrics = $state({
-	, polygonsPerFrame: 0,
+	let perfMetrics = $state({ polygonsPerFrame: 0,
 		vertexOperations: 0,
 		fillRate: 0,
 		frameTime: 0,
@@ -78,8 +77,7 @@
 					z: worldZ,
 					u: x / (gridSize - 1), // UV coordinates
 					v: z / (gridSize - 1),
-					color: {
-					, r: Math.floor((x / gridSize) * 255),
+					color: { r: Math.floor((x / gridSize) * 255),
 						g: Math.floor((z / gridSize) * 255),
 						b: Math.floor(((x + z) / (gridSize * 2)) * 255)
 					}
@@ -418,8 +416,7 @@
 		color: #888;
 		font-size: 14px;
 	}
-	.controls-panel {
-	, background: rgba(0, 0, 0, 0.9);
+	.controls-panel { background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
 		border-radius: 8px;
 		padding: 20px;
@@ -452,8 +449,7 @@
 		border-radius: 3px;
 		transition: all 0.2;
 	}
-	.surface-btn.active {
-	, background: rgba(255, 102, 0, 0.2);
+	.surface-btn.active { background: rgba(255, 102, 0, 0.2);
 		border-color: #ff6600;
 		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.4);
 	}
@@ -511,8 +507,7 @@
 		border-radius: 4px;
 		transition: all 0.2;
 	}
-	.ps1-button:hover {
-	, background: rgba(255, 102, 0, 0.1);
+	.ps1-button:hover { background: rgba(255, 102, 0, 0.1);
 		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.3);
 	}
 	.status-panel {
@@ -711,8 +706,7 @@
 	}
 	.hud-value.status-ok { color: #00ff88; }
 	.hud-value.status-off { color: #888; }
-	.info-panel {
-	, background: rgba(0, 0, 0, 0.9);
+	.info-panel { background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
 		border-radius: 8px;
 		padding: 20px;
@@ -731,8 +725,7 @@
 		margin: 10px 0;
 		padding-left: 20px;
 	}
-	.info-panel li {
-	, margin: 5px 0;
+	.info-panel li { margin: 5px 0;
 		line-height: 1.4;
 	}
 	/* Animations */
@@ -752,8 +745,7 @@
 			transform: scale(1) rotateY(0deg);
 			opacity: 0.8;
 		}
-		50% {
-		, transform: scale(1.1) rotateY(180deg);
+		50% { transform: scale(1.1) rotateY(180deg);
 			opacity: 1;
 		}
 	}
@@ -772,8 +764,7 @@
 			transform: scale(1);
 			opacity: 0.7;
 		}
-		50% {
-		, transform: scale(1.5);
+		50% { transform: scale(1.5);
 			opacity: 1;
 		}
 	}

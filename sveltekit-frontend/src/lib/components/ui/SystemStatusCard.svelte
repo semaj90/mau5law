@@ -10,10 +10,10 @@ https://svelte.dev/e/js_parse_error -->
    // optional Date or ISO: string
   const statusClass = () => {
 	const s = String(status ?? "").toUpperCase();
-	if (s === "OK") return, "status-ok";
-	if (s === "WARN" || s === "WARNING") return, "status-warn";
-	if (s === "ERROR" || s === "FAIL" || s === "FAILED") return, "status-error";
-	return, "status-unknown";
+	if (s === "OK") return "status-ok";
+	if (s === "WARN" || s === "WARNING") return "status-warn";
+	if (s === "ERROR" || s === "FAIL" || s === "FAILED") return "status-error";
+	return "status-unknown";
   }
   // TODO: Convert to $derived: formattedUpdatedAt = updatedAt
 	? (updatedAt instanceof Date ? updatedAt.toLocaleString() : new Date(updatedAt).toLocaleString())

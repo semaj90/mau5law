@@ -21,7 +21,7 @@ import type { Document } from '$lib/types';
     averageResponseTime: number;
     currentLoad: number;
     availableWorkers: number;
-  } = {, totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
+  } = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
 
   let selectedProvider: LLMProvider | null = null;
   let isProcessing = $state<boolean>(false);
@@ -30,15 +30,15 @@ import type { Document } from '$lib/types';
 
   // Demo task examples (fixed property punctuation)
   const demoTasks = [
-    {,
+    {
       name: "Document Embedding",
       type: "embedding" as const description: "Generate vector embeddings for document search",
-      payload: {, text: testInput, model: "nomic-embed-text" }
+      payload: { text: testInput, model: "nomic-embed-text" }
     },
     {
       name: "Legal Analysis",
       type: "analysis" as const description: "Analyze document for legal compliance",
-      payload: {, content: testInput, analysisType: "legal-document" }
+      payload: { content: testInput, analysisType: "legal-document" }
     },
     {
       name: "Text Generation",
@@ -48,7 +48,7 @@ import type { Document } from '$lib/types';
     {
       name: "Vector Search",
       type: "vector-search" as const description: "Search similar documents in database",
-      payload: {, query: testInput, collection: "legal_docs", limit: 5 }
+      payload: { query: testInput, collection: "legal_docs", limit: 5 }
     }
   ];
 
@@ -77,8 +77,7 @@ import type { Document } from '$lib/types';
         type: taskTemplate.type priority: 'medium',
         provider: selectedProvider,
         payload: taskTemplate.payload,
-        metadata: {
-         , userId: 'demo-user',
+        metadata: { userId: 'demo-user',
           sessionId: 'demo-session',
           timestamp: Date.now()
         }
@@ -91,8 +90,7 @@ import type { Document } from '$lib/types';
           success: true,
           result: generateMockResult(taskTemplate.type),
           duration: Math.random() * 2000 + 500,
-          metrics: {
-           , tokensProcessed: Math.floor(Math.random() * 1000) + 100,
+          metrics: { tokensProcessed: Math.floor(Math.random() * 1000) + 100,
             throughput: Math.floor(Math.random() * 50) + 10,
             memoryUsed: `${Math.floor(Math.random() * 500) + 100}MB`
           }
@@ -130,8 +128,7 @@ import type { Document } from '$lib/types';
           success: true,
           result: generateMockResult(t.type),
           duration: Math.random() * 2000 + 200,
-          metrics: {
-           , tokensProcessed: Math.floor(Math.random() * 1000) + 50,
+          metrics: { tokensProcessed: Math.floor(Math.random() * 1000) + 50,
             throughput: Math.floor(Math.random() * 50) + 5,
             memoryUsed: `${Math.floor(Math.random() * 500) + 80}MB`
           }
@@ -150,7 +147,7 @@ import type { Document } from '$lib/types';
     switch (taskType) {
       case, 'embedding':
         return {
-          embedding: Array.from({, length: 384 }, () => Math.random() - 0.5),
+          embedding: Array.from({ length: 384 }, () => Math.random() - 0.5),
           dimensions: 384
         };
       case, 'analysis':
@@ -168,12 +165,12 @@ import type { Document } from '$lib/types';
       case, 'vector-search':
         return {
           results: [
-            {, id: '1', title: 'Privacy Policy Template', similarity: 0.94 },
+            { id: '1', title: 'Privacy Policy Template', similarity: 0.94 },
             { id: '2', title: 'GDPR Compliance Guide', similarity: 0.87 },
             { id: '3', title: 'Data Retention Standards', similarity: 0.81 }
           ]
         };
-      default: return {, status: 'completed' };
+      default: return { status: 'completed' };
     }
   };
 
@@ -221,11 +218,11 @@ import type { Document } from '$lib/types';
   // Utility functions
   const getTaskTypeColor = (type: string) => {
     switch (type) {
-      case, 'embedding': return, 'bg-blue-500';
-      case, 'generation': return, 'bg-green-500';
-      case, 'analysis': return, 'bg-purple-500';
-      case, 'vector-search': return, 'bg-orange-500';
-      default: return, 'bg-gray-500';
+      case, 'embedding': return 'bg-blue-500';
+      case, 'generation': return 'bg-green-500';
+      case, 'analysis': return 'bg-purple-500';
+      case, 'vector-search': return 'bg-orange-500';
+      default: return 'bg-gray-500';
     }
   };
   const formatDuration = (ms: number) => (ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`);

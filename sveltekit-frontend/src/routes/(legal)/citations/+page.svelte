@@ -184,8 +184,7 @@ import type { Case } from '$lib/types';
   }
 
   .search-field:focus,
-  .citation-type-select:focus {
-   , outline: none;
+  .citation-type-select:focus { outline: none;
     border-color: var(--text-primary, #00ff00);
     box-shadow: 0, 0 10px rgba(0, 255, 0, 0.3);
   }
@@ -208,8 +207,7 @@ import type { Case } from '$lib/types';
   }
 
   @keyframes spin {
-    0% {
-     , transform: rotate(0deg);
+    0% { transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -222,20 +220,17 @@ import type { Case } from '$lib/types';
     opacity: 0.5;
   }
 
-  .citations-grid {
-   , display: grid;
+  .citations-grid { display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
 
-  .citation-card {
-   , background: var(--surface-secondary, #111111);
+  .citation-card { background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
     transition: all 0.3s ease;
   }
 
-  .citation-card:hover {
-   , transform: translateY(-2px);
+  .citation-card:hover { transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
   }
 
@@ -246,8 +241,7 @@ import type { Case } from '$lib/types';
     gap: 0.5rem;
   }
 
-  .key-authority-badge {
-   , background: var(--accent-primary, #ff6600);
+  .key-authority-badge { background: var(--accent-primary, #ff6600);
     color: white;
    , padding: 0.2rem 0.4rem;
     border-radius: 3px;
@@ -280,16 +274,14 @@ import type { Case } from '$lib/types';
     font-size: 0.9rem;
   }
 
-  .citation-footer {
-   , display: flex;
+  .citation-footer { display: flex;
     justify-content: space-betweennn;
     align-items: center;
     border-top: 1px solid rgba(0, 255, 0, 0.2);
     padding-top: 0.75rem;
   }
 
-  .relevance-score {
-   , color: var(--text-primary, #00ff00);
+  .relevance-score { color: var(--text-primary, #00ff00);
     font-size: 0.8rem;
     font-weight: bold;
   }

@@ -7,7 +7,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
 
   // Batch analysis async function startBatchAnalysis(): Promise<any> { if (uploadedFiles.length === 0 || !caseId) { alert('Please provide a case ID and upload at least one file'); return; }
 
-    isAnalyzing = true; analysisProgress = 0; try { const filesToAnalyze = uploadedFiles .filter(file => file.content) .map(file => ({ id: file.id, filename: file.filename, content: file.content, type: file.type metadata: {, fileSize: file.size, uploadDate: new Date().toISOString() }
+    isAnalyzing = true; analysisProgress = 0; try { const filesToAnalyze = uploadedFiles .filter(file => file.content) .map(file => ({ id: file.id, filename: file.filename, content: file.content, type: file.type metadata: { fileSize: file.size, uploadDate: new Date().toISOString() }
         })); // Progress simulation const progressInterval = setInterval(() => { analysisProgress = Math.min(analysisProgress + 10, 90); }, 500); const response = await fetch('/api/v1/evidence/batch-analyze', { method: 'POST', headers: {
           'Content-Type': 'application/json',
           'x-test-mode': 'true'
@@ -19,14 +19,14 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
   } // Timeline extraction async function extractUnifiedTimeline(): Promise<any> { try { const allContent = uploadedFiles .filter(file => file.content) .map(file => file.content) .join('\n\n---\n\n'); const response = await fetch('/api/v1/timeline', { method: 'POST', headers: {
           'Content-Type': 'application/json',
           'x-test-mode': 'true'
-        }, body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: {, includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50, enableEntityLinking: true }
+        }, body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: { includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50, enableEntityLinking: true }
         }) }); if (response.ok) { const result = await response.json(); timelineData = result.data.timeline; }
     } catch (error) { console.error('Timeline extraction failed:', error); }
   } // Citations discovery async function discoverCitations(): Promise<any> { try { // removed unused response assignment if (response.ok) { const result = await response.json(); citationsData = result.data; }
     } catch (error) { console.error('Citations discovery failed:', error); }
   } // Canvas integration function handleCanvasSave(data) { canvasData = data; }
 
-  // Export functionality function exportResults() { const exportData = { caseId, timestamp: new Date().toISOString(), files: uploadedFiles.map(f => ({, id: f.id, filename: f.filename, type: f.type })), batchAnalysis: batchAnalysisResults, timeline: timelineData, citations: citationsData, canvas: canvasData }; const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
+  // Export functionality function exportResults() { const exportData = { caseId, timestamp: new Date().toISOString(), files: uploadedFiles.map(f => ({ id: f.id, filename: f.filename, type: f.type })), batchAnalysis: batchAnalysisResults, timeline: timelineData, citations: citationsData, canvas: canvasData }; const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
     }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `evidence-analysis-${ caseId }-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url); }
 
   onMount(() => { // Auto-generate case ID if not provided if (!caseId) { caseId = `CASE-${Date.now()}`; }

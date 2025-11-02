@@ -16,10 +16,10 @@
   .empty-message { font-size: 1.125rem; font-weight: 500; }
   .optimistic-list__items { display: flex; flex-direction column; gap: 0.5rem; }
   .optimistic-list__item { transition all 0.2s ease-in-out; }
-  .optimistic-list__item--optimistic {, opacity: 0.7; background-color: rgba(59, 130, 246, 0.05); border: 1px dashed rgba(59, 130, 246, 0.3); border-radius: 0.375rem; padding: 0.5rem; animation optimisticPulse 2s ease-in-out infinite; }
+  .optimistic-list__item--optimistic { opacity: 0.7; background-color: rgba(59, 130, 246, 0.05); border: 1px dashed rgba(59, 130, 246, 0.3); border-radius: 0.375rem; padding: 0.5rem; animation optimisticPulse 2s ease-in-out infinite; }
   .optimistic-list__loading-more { display: flex; justify-content: center; padding: 1rem; }
   .loading-more-placeholder { display: flex; align-items: center; gap: 0.5rem;, color: rgb(107, 114, 128); font-size: 0.875rem; }
-  @keyframes spin { from {, transform: rotate(0deg); }
+  @keyframes spin { from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   } @keyframes optimisticPulse { 0% { }
     100% { background-color: rgba(59, 130, 246, 0.05); }

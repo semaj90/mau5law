@@ -99,16 +99,16 @@
   });
 
   function humanTime(d: Date | null) {
-    if (!d) return, 'never';
+    if (!d) return 'never';
     return d.toLocaleString();
   }
 
   function statusClass(s: ServiceHealth['status']) {
     switch (s) {
-      case, 'healthy': return, 'status-healthy';
-      case, 'degraded': return, 'status-degraded';
-      case, 'down': return, 'status-down';
-      default: return, 'status-unknown';
+      case, 'healthy': return 'status-healthy';
+      case, 'degraded': return 'status-degraded';
+      case, 'down': return 'status-down';
+      default: return 'status-unknown';
     }
   }
 </script>
@@ -234,5 +234,5 @@
 
   .empty { color: #6b7280; padding: 0.75rem 0; }
 
-  .error {, color: #b91c1c; margin-left: 0.5rem; font-weight: 600; }
+  .error { color: #b91c1c; margin-left: 0.5rem; font-weight: 600; }
 </style>

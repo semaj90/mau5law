@@ -52,16 +52,16 @@
             > Stop </button> </div> </div> <div class="control-group"> <label class="block text-sm font-medium">Visualization</label> <div class="space-y-2"> <label class="flex items-center"> <input type="checkbox" bind:checked={ showSOMVisualization } class="rounded" /> <span class="text-sm">SOM Grid Visualization</span> </label> <label class="flex items-center"> <input type="checkbox" bind:checked={ showPageRankGraph } class="rounded" /> <span class="text-sm">PageRank Graph</span> </label> </div> </div> <div class="performance-info"> <p class="text-slate-300">Performance Metrics:</p> <div class="metrics grid grid-cols-2"> <div class="text-slate-400"> <span>WebGPU:</span> {$webGPUSupported ? '✅': '❌'} </div> <div class="text-slate-400"> <span>Cache Hit:</span> ~95% </div> <div class="text-slate-400"> <span>Embedding:</span> 384D </div> <div class="text-slate-400"> <span>SOM:</span> 20×20 </div> </div> </div> </div> </div> </div> <!-- Footer with Integration, Status --> <footer class="mt-8 pt-6 border-t"> <div class="text-center text-xs"> <p>🧠 Enhanced Semantic Architecture - Integrating pgvector, SOM, PageRank, WebGPU, Redis, Neo4j & MinIO</p> <p class="mt-1"> Status: {Object.values.filter - length}/{Object.keys(errors).length} services online | Cache: {$webGPUSupported ? 'WebGPU Accelerated': 'CPU Optimized'} |, Todos: {$todos.length} generated </p> </div> </footer> </div> <style> .enhanced-semantic-dashboard { font-family:
       'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
   .card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-  .card:hover {, transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
   .animate-spin { animation: spin 1s linear infinite; }
-  @keyframes spin { from {, transform: rotate(0deg); }
+  @keyframes spin { from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   } .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; }
-    50% {, opacity: 0.5; }
-  } /* Custom scrollbar */ .todo-preview::-webkit-scrollbar, .category-list::-webkit-scrollbar {, width: 4px; }
-  .todo-preview::-webkit-scrollbar-track, .category-list::-webkit-scrollbar-track {, background: rgba(51, 65, 85, 0.5); }
-  .todo-preview::-webkit-scrollbar-thumb, .category-list::-webkit-scrollbar-thumb {, background: rgba(139, 92, 246, 0.5); border-radius: 2px; }
-  .todo-preview::-webkit-scrollbar-thumb: hover .category-list::-webkit-scrollbar-thumb:hover {, background: rgba(139, 92, 246, 0.8); }
+    50% { opacity: 0.5; }
+  } /* Custom scrollbar */ .todo-preview::-webkit-scrollbar, .category-list::-webkit-scrollbar { width: 4px; }
+  .todo-preview::-webkit-scrollbar-track, .category-list::-webkit-scrollbar-track { background: rgba(51, 65, 85, 0.5); }
+  .todo-preview::-webkit-scrollbar-thumb, .category-list::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.5); border-radius: 2px; }
+  .todo-preview::-webkit-scrollbar-thumb: hover .category-list::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.8); }
 </style>
 

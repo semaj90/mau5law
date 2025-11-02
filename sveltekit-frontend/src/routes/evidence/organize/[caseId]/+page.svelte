@@ -370,8 +370,7 @@ if (!caseId) {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% {
-     , transform: rotate(0deg);
+    0% { transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -417,8 +416,7 @@ if (!caseId) {
     padding: 1.5rem 2rem;
     gap: 2rem;
   }
-  .case-info h1 {
-   , margin: 0, 0 0.75rem 0;
+  .case-info h1 { margin: 0, 0 0.75rem 0;
     font-size: 1.75rem;
     color: #1e293b;
     font-weight: 700;
@@ -590,8 +588,7 @@ if (!caseId) {
     border-radius: 0.375rem;
     border: 1px solid #e2e8f0;
   }
-  .evidence-info {
-   , flex: 1,
+  .evidence-info { flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;

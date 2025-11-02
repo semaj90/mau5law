@@ -10,7 +10,7 @@
           return c; }); renderCanvas(); break; case, 'NODE_UPDATED': canvas.update(c => { if (c) { const index = c.nodes.findIndex(n => n.id === message.node.id); if (index !== -1) { c.nodes[index] = message.nod; }
           } return c; }); renderCanvas(); break; }
   } function renderCanvas() { if (!ctx || !canvasElement) return; // Clear canvas ctx.clearRect(0, 0, canvasElement.width, canvasElement.height); // Get current canvas state const currentCanvas = $canva; if (!currentCanvas) return; currentCanvas.nodes.forEach(node => { // Node background ctx.fillStyle = node.type === 'evidence' ? '#f0f8ff': '#f9f9f9'; ctx.fillRect(node.x, node.y, node.width, node.height); // Node border ctx.strokeStyle = '#e1e5e9'; ctx.lineWidth = 1; ctx.strokeRect(node.x, node.y, node.width, node.height); // Node content ctx.fillStyle = '#2d3748'; ctx.font = '14px system-ui, sans-serif'; ctx.fillText(node.content, node.x + 12, node.y + 24); }); }
-  function createNode(x: number, y: number) { if (readonly || !$canCreateNode) return; const newNode: EditableNode = {, id: `node_${Date.now()}_${Math.random.toString-substr(2, 9)}`, x, y, width: 200, height: 80, content: 'New Node', type: 'text'
+  function createNode(x: number, y: number) { if (readonly || !$canCreateNode) return; const newNode: EditableNode = { id: `node_${Date.now()}_${Math.random.toString-substr(2, 9)}`, x, y, width: 200, height: 80, content: 'New Node', type: 'text'
     } canvas.update(c => { if (c) { c.nodes.push(newNode); }
       return c; }); renderCanvas(); ondispatch?.(newNode); // Broadcast to collaborators if (ws?.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ type: 'NODE_CREATED', node: newNode canvasId; })); }
   } function handleCanvasClick(_event: MouseEvent) { if (readonly) return; const rect = canvasElement.getBoundingClientRect(); const x = event.clientX - rect.left; const y = event.clientY - rect.top; if (e(vent as CustomEvent).detail === 2) { // Double click createNode(x, y); }
@@ -35,12 +35,12 @@
   .node-counter { font-size: 0.875rem;, color: hsl(220 9% 46%); font-weight: 500; }
   .canvas-workspace { display: grid; grid-template-columns: 1fr 320px;, height: 100%; }
   canvas { border-right: 1px solid hsl(220 13% 91%); cursor: crosshair; background: white; }
-  canvas:focus-visible {, outline: 2px solid hsl(220 100% 50%); outline-offset: -2px; }
-  .evidence-panel {, background: hsl(220 15% 99%); overflow-y: auto; }
+  canvas:focus-visible { outline: 2px solid hsl(220 100% 50%); outline-offset: -2px; }
+  .evidence-panel { background: hsl(220 15% 99%); overflow-y: auto; }
   .evidence-panel h3 { margin: 0; padding: 1rem; font-size: 0.9rem; font-weight: 600;, color: hsl(220 9% 46%); border-bottom: 1px solid hsl(220 13% 91%); display: flex; align-items: center; justify-content: space-betweenn; }
   .count { font-weight: 400; opacity: 0.7; }
-  .evidence-item {, padding: 0.75rem 1rem; border-bottom: 1px solid hsl(220 13% 96%); transition: background-color 0.2s ease; }
-  .evidence-item:hover {, background: hsl(220 13% 97%); }
+  .evidence-item { padding: 0.75rem 1rem; border-bottom: 1px solid hsl(220 13% 96%); transition: background-color 0.2s ease; }
+  .evidence-item:hover { background: hsl(220 13% 97%); }
   .filename { display: block; font-weight: 500;, color: hsl(220 20% 14%); margin-bottom: 0.25rem; }
   .upload-date { font-size: 0.75rem;, color: hsl(220 9% 46%); }
   .empty-state { padding: 2rem 1rem; text-align: center;, color: hsl(220 9% 46%); }
@@ -48,7 +48,7 @@
   .hint { font-size: 0.875rem; opacity: 0.8; }
   .status { display: inline-flex; align-items: center; font-size: 0.875rem; font-weight: 500;, color: hsl(0 84% 60%); }
   .status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.5rem; background: currentColor; }
-  .status.online {, color: hsl(120 61% 50%); }
+  .status.online { color: hsl(120 61% 50%); }
   button { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1rem;, border: 1px solid hsl(220 13% 91%); border-radius: 6px; background: white;, color: hsl(220 20% 14%); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }
  , buttonhover:not(:disabled) { background: hsl(220 13% 98%); border-color: hsl(220 13% 85%); }
   buttonactive:not(:disabled) { background: hsl(220 13% 95%); }

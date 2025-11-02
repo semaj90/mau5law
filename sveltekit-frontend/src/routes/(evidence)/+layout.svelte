@@ -108,8 +108,7 @@
     margin: 0;
   }
 
-  .evidence-badge {
-   , background: var(--nier-accent-warm, #d4af37);
+  .evidence-badge { background: var(--nier-accent-warm, #d4af37);
     color: var(--nier-bg-primary, #0a0a0a);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -177,8 +176,7 @@
     border-radius: 1rem;
   }
 
-  .evidence-placeholder h2 {
-   , color: var(--nier-accent-warm, #d4af37);
+  .evidence-placeholder h2 { color: var(--nier-accent-warm, #d4af37);
     margin-bottom: 1rem;
   }
 
@@ -251,17 +249,14 @@
     width: 8px;
   }
 
-  .evidence-content::-webkit-scrollbar-track {
-   , background: var(--nier-bg-tertiary, #2a2a2a);
+  .evidence-content::-webkit-scrollbar-track { background: var(--nier-bg-tertiary, #2a2a2a);
   }
 
-  .evidence-content::-webkit-scrollbar-thumb {
-   , background: var(--nier-accent-warm, #d4af37);
+  .evidence-content::-webkit-scrollbar-thumb { background: var(--nier-accent-warm, #d4af37);
     border-radius: 4px;
   }
 
-  .evidence-content::-webkit-scrollbar-thumb:hover {
-   , background: var(--nier-accent-cool, #87ceeb);
+  .evidence-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool, #87ceeb);
   }
 </style>
 

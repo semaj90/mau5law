@@ -124,7 +124,7 @@ await checkSystemHealth();
     errorMessage = '';
     searchResults = [];
     try {
-      const requestBody: any = {, query: searchQuery, limit: searchLimit, metadata: {, documentType: 'legal_contract' } };
+      const requestBody: any = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
       if (caseId.trim()) requestBody.caseId = caseId;
       const response = await fetch(`${API_BASE}/search`, {
         method: 'POST',
@@ -148,11 +148,10 @@ await checkSystemHealth();
       const response = await fetch(`${CUDA_BASE}/submit`, {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({
-          , type: 'embedding',
+         body: JSON.stringify({ type: 'embedding',
            priority: 5,
-           payload: {, text: embeddingText, dimension: 768 },
-           metadata: {, source: 'legal_ai_test', gpu_acceleration: true }
+           payload: { text: embeddingText, dimension: 768 },
+           metadata: { source: 'legal_ai_test', gpu_acceleration: true }
          })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -192,21 +191,21 @@ await checkSystemHealth();
   // Narrowed types for helpers
   function getStatusColor(status: string): string {
     switch (status) {
-      case, 'healthy': return, 'text-green-600';
-      case, 'ok': return, 'text-green-600';
-      case, 'completed': return, 'text-green-600';
-      case, 'processing': return, 'text-yellow-600';
-      case, 'error': return, 'text-red-600';
-      case, 'unavailable': return, 'text-red-600';
-      default: return, 'text-gray-600';
+      case, 'healthy': return 'text-green-600';
+      case, 'ok': return 'text-green-600';
+      case, 'completed': return 'text-green-600';
+      case, 'processing': return 'text-yellow-600';
+      case, 'error': return 'text-red-600';
+      case, 'unavailable': return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
   function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;
   }
   function truncateText(text: string, maxLength = 150): string {
-    if (!text) return, '';
-    if (text.length <= maxLength) return, text;
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
 </script>

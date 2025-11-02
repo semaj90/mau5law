@@ -19,8 +19,7 @@
 		responseTime: number;
 		timestamp: number;
 	}
-	const metrics = writable<PerformanceMetrics>({
-	, fps: 0,
+	const metrics = writable<PerformanceMetrics>({ fps: 0,
 		memoryUsage: 0,
 		cpuUsage: 0,
 		gpuUsage: 0,
@@ -160,19 +159,19 @@
 	function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
 		switch (type) {
 			case, 'fps':
-				if (value >= 55) return, 'text-green-400';
-				if (value >= 30) return, 'text-yellow-400';
-				return, 'text-red-400';
+				if (value >= 55) return 'text-green-400';
+				if (value >= 30) return 'text-yellow-400';
+				return 'text-red-400';
 			case, 'memory':
-				if (value <= 50) return, 'text-green-400';
-				if (value <= 80) return, 'text-yellow-400';
-				return, 'text-red-400';
+				if (value <= 50) return 'text-green-400';
+				if (value <= 80) return 'text-yellow-400';
+				return 'text-red-400';
 			case, 'cpu':
 			case, 'gpu':
-				if (value <= 30) return, 'text-green-400';
-				if (value <= 70) return, 'text-yellow-400';
-				return, 'text-red-400';
-			default: return, 'text-gray-400';
+				if (value <= 30) return 'text-green-400';
+				if (value <= 70) return 'text-yellow-400';
+				return 'text-red-400';
+			default: return 'text-gray-400';
 		}
 	}
 </script>

@@ -14,6 +14,6 @@
   .fallback-dialog { background: #1a1a1a; border: 2px solid #ffd700; border-radius: 12px; padding: 2rem; max-width: 90vw; max-height: 90vh;, overflow: auto; box-shadow: 0, 0 40px rgba(255, 215, 0, 0.3); animation: slideIn 0.3s ease-out; }
   @keyframes fadeIn { from { opacity: 0; }
     to { opacity: 1; }
-  } @keyframes slideIn { from {, transform: translateY(-20px); opacity: 0; }
-    to {, transform: translateY(0); opacity: 1; }
+  } @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   } </style>

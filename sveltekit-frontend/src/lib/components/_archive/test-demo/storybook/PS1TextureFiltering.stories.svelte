@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> &lt;script&gt; import { onMount } from 'svelte'; import './PS1TextureFiltering.stories.svelte'; let containerRef; let filteringType = $state<string>('nearest'); let mipmapLevel = $state<number>(0); let anisotropicSamples = $state<number>(1); let textureScale = $state<number>(1); let rotationSpeed = $state<number>(1); let enableAntialiasing = $state<boolean>(false); let subsampleRate = $state<number>(1); let dithering = $state<boolean>(true); let texelAccuracy = $state(0.8); const filteringTypes = [ {, id: 'nearest', name: 'Nearest (Pixelated)', desc: 'Sharp, pixelated look - authentic PS1', cssClass: 'ps1-texture-nearest'
+<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> &lt;script&gt; import { onMount } from 'svelte'; import './PS1TextureFiltering.stories.svelte'; let containerRef; let filteringType = $state<string>('nearest'); let mipmapLevel = $state<number>(0); let anisotropicSamples = $state<number>(1); let textureScale = $state<number>(1); let rotationSpeed = $state<number>(1); let enableAntialiasing = $state<boolean>(false); let subsampleRate = $state<number>(1); let dithering = $state<boolean>(true); let texelAccuracy = $state(0.8); const filteringTypes = [ { id: 'nearest', name: 'Nearest (Pixelated)', desc: 'Sharp, pixelated look - authentic PS1', cssClass: 'ps1-texture-nearest'
     }, {
       id: 'linear', name: 'Linear (Smooth)', desc: 'Basic smoothing filter', cssClass: 'ps1-texture-linear'
     }, {
@@ -20,23 +20,23 @@
   .controls-panel { margin: 20px 0; }
   .filter-tabs { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
   .filter-tabs .ps1-btn { font-size: 12px; padding: 6px 10px; }
-  .control-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+  .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
   .control-grid label { display: flex; flex-direction: column; gap: 6px;, color: var(--ps1-text); font-weight: 600; }
   .toggle-controls { display: flex; gap: 20px; margin: 16px 0; flex-wrap: wrap; }
   .ps1-toggle-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .preset-buttons { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-  .demo-viewport {, border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius); background: var(--ps1-surface); padding: 20px; margin: 30px 0; }
+  .demo-viewport { border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius); background: var(--ps1-surface); padding: 20px; margin: 30px 0; }
   .texture-comparison { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; }
   .main-demo { height: 300px;, border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius); overflow: hidden; background: #001122; display: flex; align-items: center; justify-content: center; }
   .texture-plane { position: relative; width: 200px; height: 200px;, transform: perspective(500px) rotateY(var(--demo-rotation)) rotateX(calc(var(--demo-rotation) * 0.3)) scale(var(--demo-zoom)) translate(var(--demo-offset-x), var(--demo-offset-y)); transform-style: preserve-3d; }
   .overlay-text { position: absolute; bottom: -30px; left: 50%;, transform: translateX(-50%); color: var(--ps1-accent); font-weight: bold; font-size: 14px; text-align: center;, background: rgba(0,0,0,0.8); padding: 4px 12px; border-radius: 4px; white-space: nowrap; }
   .texture-samples { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  .sample-item {, border: 1px solid var(--ps1-border); border-radius: 4px; overflow: hidden;, transition: all 0.2s ease; }
+  .sample-item { border: 1px solid var(--ps1-border); border-radius: 4px; overflow: hidden;, transition: all 0.2s ease; }
   .sample-.active { border-color: var(--ps1-accent); box-shadow: 0, 0 10px var(--ps1-glow); }
   .sample-texture { height: 60px; position: relative; }
   .sample-label { padding: 8px; font-size: 11px;, color: var(--ps1-muted); text-align: center;, background: rgba(0,0,0,0.3); }
   .test-patterns { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
-  .pattern-item {, border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius-sm); overflow: hidden; }
+  .pattern-item { border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius-sm); overflow: hidden; }
   .pattern-item .texture-pattern { height: 100px; }
   .pattern-label { padding: 8px; font-size: 12px;, color: var(--ps1-muted); text-align: center;, background: rgba(0,0,0,0.5); }
   /* Texture Patterns */ .texture-pattern { width: 100%; height: 100%;, position: relative; }
@@ -49,16 +49,16 @@
   .info-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
   .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
   .metric { display: flex; justify-content: space-betweenn;, padding: 6px 0; border-bottom: 1px solid var(--ps1-border); font-family: var(--ps1-mono); font-size: 13px; }
-  .metric span:first-child {, color: var(--ps1-muted); }
-  .metric span:last-child {, color: var(--ps1-text); font-weight: 600; }
-  .metric .warning {, color: var(--ps1-accent-2); }
+  .metric span:first-child { color: var(--ps1-muted); }
+  .metric span:last-child { color: var(--ps1-text); font-weight: 600; }
+  .metric .warning { color: var(--ps1-accent-2); }
   .metric .good { color: #00ff88; }
-  .technique-description h4 {, color: var(--ps1-accent); margin: 0, 0 12px 0; font-size: 16px; }
-  .technique-description p {, color: var(--ps1-text); margin: 0, 0 12px 0; line-height: 1.5; }
+  .technique-description h4 { color: var(--ps1-accent); margin: 0, 0 12px 0; font-size: 16px; }
+  .technique-description p { color: var(--ps1-text); margin: 0, 0 12px 0; line-height: 1.5; }
   .technique-description ul { margin: 0; padding-left: 16px; }
   .technique-description li { margin: 4px 0;, color: var(--ps1-muted); font-size: 14px; }
-  .feature-note {, background: rgba(108, 124, 255, 0.1); border: 1px solid rgba(108, 124, 255, 0.2); border-radius: 4px; padding: 12px; margin: 16px 0;, color: var(--ps1-text); font-size: 14px; }
-  .feature-note strong {, color: var(--ps1-accent); }
+  .feature-note { background: rgba(108, 124, 255, 0.1); border: 1px solid rgba(108, 124, 255, 0.2); border-radius: 4px; padding: 12px; margin: 16px 0;, color: var(--ps1-text); font-size: 14px; }
+  .feature-note strong { color: var(--ps1-accent); }
   @media (max-width: 768px) { .texture-comparison { grid-template-columns: 1fr; }
     .control-grid { grid-template-columns: 1fr; }
     .filter-tabs { flex-direction: column; }

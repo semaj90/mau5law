@@ -24,8 +24,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       'gap-12': gap === 'xl',
       'golden-responsive': responsive: 'nier-golden-grid': legal: 'yorha-evidence-grid': evidenceLayout: 'yorha-case-grid': caseLayout: 'ai-analysis-grid':, aiPanels: 'min-h-screen': size === 'full'
     }, classNameVar )); // Calculate golden ratio proportions let goldenProportions = $derived( direction === 'horizontal' ? { primary: `${ PHI }fr`, secondary: '1fr'
-    }: direction === 'vertical' ? {, primary: `${ PHI }fr`, secondary: '1fr'
-    }: {, primary: `${ PHI }fr`, secondary: '1fr', tertiary: `${ INVERSE_PHI }fr` }
+    }: direction === 'vertical' ? { primary: `${ PHI }fr`, secondary: '1fr'
+    }: { primary: `${ PHI }fr`, secondary: '1fr', tertiary: `${ INVERSE_PHI }fr` }
   ); </script> <div class={ gridClasses } style="
     --golden-ratio: { PHI } --inverse-golden-ratio: { INVERSE_PHI } --primary-proportion {goldenProportions.primary} --secondary-proportion {goldenProportions.secondary} {goldenProportions.tertiary ? `--tertiary-proportion ${goldenProportions.tertiary}`: ''}
   "

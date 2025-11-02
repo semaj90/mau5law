@@ -14,20 +14,20 @@
 		{ id: 'draw', icon: '🎨', label: 'Draw', category: 'drawing' }
 	];
 	const formatActions = [
-		{, id: 'bold', icon: 'B', label: 'Bold' },
+		{ id: 'bold', icon: 'B', label: 'Bold' },
 		{ id: 'italic', icon: 'I', label: 'Italic' },
 		{ id: 'underline', icon: 'U', label: 'Underline' },
 		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
 	];
 	const alignActions = [
-		{, id: 'left', icon: '⟵', label: 'Align Left' },
+		{ id: 'left', icon: '⟵', label: 'Align Left' },
 		{ id: 'center', icon: '↔', label: 'Align Center' },
 		{ id: 'right', icon: '⟶', label: 'Align Right' }
 	];
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
-	let formatting: any = {, color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
-	let drawing: any = {, strokeColor: '#000000', strokeWidth: 2 };
+	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
+	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
 	let canUndo = $state<boolean>(false);
 	let canRedo = $state<boolean>(false);
 	let zoom = 100;
@@ -328,8 +328,7 @@
 	.tool-button:hover,
 	.format-button:hover,
 	.align-button:hover,
-	.action-button:hover {
-	, background: var(--bg-tertiary);
+	.action-button:hover { background: var(--bg-tertiary);
 	}
 	.tool-button.active,
 	.format-button.active,
@@ -414,8 +413,7 @@
 		.size-input input[type='range'] {
 			width: 60px;
 		}
-		.size-label {
-		, display: none;
+		.size-label { display: none;
 		}
 	}
 </style>

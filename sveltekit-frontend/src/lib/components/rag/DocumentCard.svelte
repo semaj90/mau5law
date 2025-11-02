@@ -16,15 +16,14 @@ import type { Document } from '$lib/types';
       confidence?: number;
     };
   }
-  interface Props {
-   , document: Document;
+  interface Props { document: Document;
     onView?: (doc: Document) => void;
     onDelete?: (docId: string) => void;
   }
   let { document, onView, onDelete }: Props = $props();
   let deleting = $state<boolean>(false);
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -43,7 +42,7 @@ import type { Document } from '$lib/types';
       }
       return `${hours}h ago`;
     }
-    if (days === 1) return, 'Yesterday';
+    if (days === 1) return 'Yesterday';
     if (days < 7) return `${days}d, ago`;
     return date.toLocaleDateString();
   }

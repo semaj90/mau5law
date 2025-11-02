@@ -73,8 +73,7 @@
   });
 
   const demoMetadata = {
-    webgpu: {
-     , title: 'WebGPU Cache Optimizer',
+    webgpu: { title: 'WebGPU Cache Optimizer',
       description: 'Hardware-accelerated cache optimization with WebGPU.',
       tags: ['WebGPU', 'Cache', 'Performance']
     },
@@ -108,8 +107,7 @@
       description: 'YoRHa-inspired caching system with Redis integration.',
       tags: ['Cache', 'Gaming', 'Redis']
     },
-    performance: {
-     , title: 'Cache Performance Dashboard',
+    performance: { title: 'Cache Performance Dashboard',
       description: 'Real-time cache performance monitoring and optimization.',
       tags: ['Performance', 'Cache', 'Monitoring']
     },
@@ -144,7 +142,7 @@
 
   // safely index metadata by casting slug as key of demoMetadata
   let metadata = $derived(
-    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? {, title: 'Unknown Demo', description: '', tags: [] }
+    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: '', tags: [] }
   );
 </script>
 
@@ -227,8 +225,7 @@
     margin-bottom: 1rem;
   }
 
-  .breadcrumb-link {
-   , color: var(--nier-accent-warm);
+  .breadcrumb-link { color: var(--nier-accent-warm);
     text-decoration: none;
   }
 
@@ -272,8 +269,7 @@
     padding: 2rem;
   }
 
-  .demo-wrapper {
-   , background: var(--nier-bg-primary);
+  .demo-wrapper { background: var(--nier-bg-primary);
   }
 
   .demo-loading,
@@ -303,8 +299,7 @@
   }
 
   @keyframes spin {
-    0% {
-     , transform: rotate(0deg);
+    0% { transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -350,8 +345,7 @@
     gap: 1rem;
   }
 
-  .demo-placeholder a {
-   , color: var(--nier-accent-cool);
+  .demo-placeholder a { color: var(--nier-accent-cool);
     text-decoration: none;
   }
 
@@ -364,8 +358,7 @@
       padding: 1.5rem;
     }
 
-    .demo-content {
-     , padding: 1.5rem 1rem;
+    .demo-content { padding: 1.5rem 1rem;
     }
 
     .error-actions {

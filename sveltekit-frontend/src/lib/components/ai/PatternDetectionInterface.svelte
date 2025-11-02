@@ -10,9 +10,9 @@
           'Content-Type': 'application/json'
         }, body: JSON.stringify(analysisRequest) }); if (response.ok) { const result = await response.json(); analysisResults = result.analysis ?? null; patterns = result.patterns || []; } else { throw new Error(`Analysis failed: ${response.statusText}`); }
     } catch (error) { console.error('Error running pattern analysis:', error); } finally { isAnalyzing = false; }
-  } function getPatternTypeIcon(type: string): string { switch (type) { case, 'temporal': return, '⏰'; case, 'behavioral': return, '👤'; case, 'financial': return, '💰'; case, 'communication': return, '📞'; case, 'location': return, '📍'; default: return, '🔍'; }
-  } function getPatternTypeColor(type: string): string { switch (type) { case, 'temporal': return, 'bg-blue-100 text-blue-800 border-blue-200'; case, 'behavioral': return, 'bg-purple-100 text-purple-800 border-purple-200'; case, 'financial': return, 'bg-green-100 text-green-800 border-green-200'; case, 'communication': return, 'bg-orange-100 text-orange-800 border-orange-200'; case, 'location': return, 'bg-indigo-100 text-indigo-800 border-indigo-200'; default: return, 'bg-gray-100 text-gray-800 border-gray-200'; }
-  } function getRiskLevelColor(risk: string): string { switch (risk) { case, 'critical': return, 'text-red-600'; case, 'high': return, 'text-orange-600'; case, 'medium': return, 'text-yellow-600'; case, 'low': return, 'text-green-600'; default: return, 'text-gray-600'; }
+  } function getPatternTypeIcon(type: string): string { switch (type) { case, 'temporal': return '⏰'; case, 'behavioral': return '👤'; case, 'financial': return '💰'; case, 'communication': return '📞'; case, 'location': return '📍'; default: return '🔍'; }
+  } function getPatternTypeColor(type: string): string { switch (type) { case, 'temporal': return 'bg-blue-100 text-blue-800 border-blue-200'; case, 'behavioral': return 'bg-purple-100 text-purple-800 border-purple-200'; case, 'financial': return 'bg-green-100 text-green-800 border-green-200'; case, 'communication': return 'bg-orange-100 text-orange-800 border-orange-200'; case, 'location': return 'bg-indigo-100 text-indigo-800 border-indigo-200'; default: return 'bg-gray-100 text-gray-800 border-gray-200'; }
+  } function getRiskLevelColor(risk: string): string { switch (risk) { case, 'critical': return 'text-red-600'; case, 'high': return 'text-orange-600'; case, 'medium': return 'text-yellow-600'; case, 'low': return 'text-green-600'; default: return 'text-gray-600'; }
   } let filteredPatterns = $derived(() => { let filtered = patterns.slice(); // Apply type filter if (patternTypeFilter !== 'all') { filtered = filtered.filter(p => p.type === patternTypeFilter); }
     // Apply confidence threshold filtered = filtered.filter(p => p.confidence >= confidenceThreshold); // Sort by significance (highest first) filtered.sort((a, b) => b.significance - a.significance); return filtered; }); function openPatternDetails(pattern: DetectedPattern) { selectedPattern = pattern; showPatternDetails = true; }
   function formatDuration(duration: string): string { // Convert duration: string to human readable format (expects, like: "3d", or: "12h", or: "30m") const match = duration.match(/(\d+)([dhm])/); if (match) { const value = match[1]; const unit = match[2]; switch (unit) { case, 'd': return `${ value } day${value !== '1' ? 's': ''}`; case, 'h': return `${ value } hour${value !== '1' ? 's': ''}`; case, 'm': return `${ value } minute${value !== '1' ? 's': ''}`; }
@@ -28,7 +28,7 @@
   .detection-title { font-size: 2rem; font-weight: 700; color: #1e293b; margin: 0; }
   .detection-subtitle { color: #64748b;, margin: 0.5rem, 0 0 0; }
   .controls-section { margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 0.5rem; }
-  .controls-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+  .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
   .control-group { display: flex; flex-direction: column; gap: 0.5rem; }
   .control-group label { font-size: 0.875rem; font-weight: 500; color: #374151; }
   .control-select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; }
@@ -37,25 +37,25 @@
   .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer; }
   .results-summary { margin-bottom: 2rem; }
   .summary-card { border: 1px solid #e2e8f0; }
-  .summary-metrics {, display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1rem; }
+  .summary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1rem; }
   .metric { text-align: center; }
   .metric-value { display: block; font-size: 2rem; font-weight: 700; color: #1e293b; }
   .metric-label { display: block; font-size: 0.875rem; color: #64748b; margin-top: 0.25rem; }
-  .insights-section h4 {, margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151; }
+  .insights-section h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151; }
   .insights-list { list-style: none; padding: 0; margin: 0; }
   .insights-list li { padding: 0.5rem; margin-bottom: 0.25rem; background: #f0f9ff; border-left: 3px solid #3b82f6; border-radius: 0.25rem; font-size: 0.875rem; }
-  .patterns-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; }
+  .patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; }
   .pattern-card { border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden; transition: box-shadow 0.2s;, padding: 1rem; }
   .pattern-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
   .pattern-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
   .pattern-title-section { display: flex; align-items: flex-start; gap: 0.75rem; }
   .pattern-icon { font-size: 1.5rem; margin-top: 0.25rem; }
-  .pattern-title {, margin: 0, 0 0.5rem 0; }
+  .pattern-title { margin: 0, 0 0.5rem 0; }
   .pattern-type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; border: 1px solid; text-transform: uppercase; }
   .pattern-metrics-header { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; }
   .confidence-score { font-size: 1.25rem; font-weight: 700; color: #374151; }
   .risk-level { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-  .pattern-description {, margin: 0.5rem, 0 0 0; color: #64748b; }
+  .pattern-description { margin: 0.5rem, 0 0 0; color: #64748b; }
   .pattern-stats { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
   .stat { display: flex; align-items: center; gap: 0.75rem; }
   .stat-label { font-size: 0.75rem; color: #64748b; min-width: 80px; }
@@ -71,19 +71,19 @@
   .loading-state, .empty-state { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; }
   .loading-spinner { width: 2rem; height: 2rem; border: 2px solid #e2e8f0; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
   .loading-detail { font-size: 0.875rem; margin-top: 0.5rem; }
-  @keyframes spin { to {, transform: rotate(360deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
   /* Dialog Styles */ .pattern-details-dialog { max-width: 900px; max-height: 90vh; overflow-y: auto; }
   .pattern-details-content { display: flex; flex-direction: column; gap: 2rem; }
   .pattern-overview { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 0.5rem; }
-  .overview-metrics {, display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .overview-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .overview-metric { display: flex; flex-direction: column; gap: 0.25rem; }
   .overview-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 500; }
   .overview-value { font-size: 1rem; font-weight: 600; color: #374151; }
-  .timeframe-info h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .timeframe-info h4 { margin: 0, 0 0.5rem 0; color: #374151; }
   .timeframe-info p { margin: 0.25rem 0; font-size: 0.875rem; color: #64748b; }
-  .entities-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .entities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .entity-card { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; background: #fafafa; }
-  .entity-card h4 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .entity-card h4 { margin: 0, 0 0.5rem 0; color: #374151; }
   .entity-type .entity-role { margin: 0.25rem 0; font-size: 0.75rem; color: #6b7280; }
   .involvement-meter { width: 100%; height: 0.5rem; background: #e5e7eb; border-radius: 0.25rem; overflow: hidden;, margin: 0.5rem, 0 0.25rem 0; }
   .involvement-fill { height: 100%; background: #3b82f6; transition: width: 0.3s; }
@@ -96,7 +96,7 @@
   .correlation-description { margin: 0; font-size: 0.875rem; color: #64748b; }
   .recommendations-list { list-style: none; padding: 0; margin: 0; }
   .recommendation-item { padding: 0.75rem; margin-bottom: 0.5rem; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 0.25rem; font-size: 0.875rem; color: #374151; }
-  .evidence-list {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
+  .evidence-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
   .evidence-item { padding: 0.5rem; background: #f3f4f6; border-radius: 0.25rem; font-size: 0.75rem; color: #6b7280; font-family: monospace; }
   .dialog-actions { display: flex;, gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; }
   @media (max-width: 768px) { .detection-header { flex-direction: column;, gap: 1rem; }

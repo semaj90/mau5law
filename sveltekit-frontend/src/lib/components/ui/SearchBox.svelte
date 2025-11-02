@@ -181,8 +181,7 @@ import type { Document } from '$lib/types';
     display: flex;
     align-items: center;
   }
-  .search-input {
-   , flex: 1;
+  .search-input { flex: 1;
     padding-right: 80px;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;

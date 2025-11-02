@@ -5,12 +5,12 @@
     'realistic'
   ); let selectedProvider = $state<'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback'>('fallback'); let advancedMode = $state<boolean>(false); // Advanced parameters let width = $state<number>(512); let height = $state<number>(512); let steps = $state<number>(20); let cfgScale = $state(7.5); let seed = $state(-1); // UI state let showHistory = $state<boolean>(false); let selectedImage = $state<ImageGenerationResult | null>(null); // use local type let generationHistory = $state<ImageGenerationResult[]>([]); // Provider status let providerStatus = $state<Map<string string>>(new Map()); // fixed generic and initialization $effect(() => { // Load provider status providerStatus = imageGenerationService.getProviderStatus(); // Load generation history loadHistory(); }); async function loadHistory(): Promise<any> { try { generationHistory = await imageGenerationService.getGenerationHistory(); } catch (error) { console.error('Failed to load generation history:', error); }
   } async function generateImage(): Promise<any> { if (!prompt.trim()) { alert('Please enter a prompt'); return; }
-    try { const request: ImageGenerationRequest = {, prompt: prompt.trim(), negativePrompt: negativePrompt.trim() || undefined, width, height, steps, cfgScale, seed: seed === -1 ?, undefined: seed, style: selectedStyle, provider: selectedProvider }; const result = await imageGenerationService.generateImage(request); // Update history generationHistory = [result, ...generationHistory]; selectedImage = result; // Notify parent component onImageGenerated(result); } catch (error) { console.error('Image generation failed:', error); alert(`Image generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`); }
-  } function useImageAsEvidence(result: ImageGenerationResult) { if (caseId && onImageGenerated) { const evidence = { id: `generated_${result.id}`, title: `AI, Generated: ${result.prompt?.substring(0, 50) ?? 'generated image'}...`, description `Generated image from prompt: ${result.prompt}`, evidenceType: 'image', fileUrl: result.imageUrl, metadata: {, aiGenerated: true, provider: result.provider, parameters: result.parameters, generatedAt: result.timestamp }, tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle] }; // parent callback — still call with result (evidence creation handled outside) onImageGenerated(result); }
+    try { const request: ImageGenerationRequest = { prompt: prompt.trim(), negativePrompt: negativePrompt.trim() || undefined, width, height, steps, cfgScale, seed: seed === -1 ?, undefined: seed, style: selectedStyle, provider: selectedProvider }; const result = await imageGenerationService.generateImage(request); // Update history generationHistory = [result, ...generationHistory]; selectedImage = result; // Notify parent component onImageGenerated(result); } catch (error) { console.error('Image generation failed:', error); alert(`Image generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`); }
+  } function useImageAsEvidence(result: ImageGenerationResult) { if (caseId && onImageGenerated) { const evidence = { id: `generated_${result.id}`, title: `AI, Generated: ${result.prompt?.substring(0, 50) ?? 'generated image'}...`, description `Generated image from prompt: ${result.prompt}`, evidenceType: 'image', fileUrl: result.imageUrl, metadata: { aiGenerated: true, provider: result.provider, parameters: result.parameters, generatedAt: result.timestamp }, tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle] }; // parent callback — still call with result (evidence creation handled outside) onImageGenerated(result); }
   } async function regenerateWithSeed(result: ImageGenerationResult): Promise<any> { prompt = result.prompt; if (result.metadata?.seed !== undefined && result.metadata.seed !== -1) { seed = result.metadata.seed; } else { seed = -1; }
     selectedStyle = (result.parameters?.style as: any) || 'realistic'; width = result.metadata?.size?.width ?? width; height = result.metadata?.size?.height ?? height; await generateImage(); }
   async function copyPrompt(text: string): Promise<any> { try { await navigator.clipboard.writeText(text); // optional: small feedback can be added } catch (err) { console.error('Failed to copy prompt', err); }
-  } // Legal/evidence specific prompts const legalPromptTemplates = [ {, name: 'Crime Scene Recreation', prompt:
+  } // Legal/evidence specific prompts const legalPromptTemplates = [ { name: 'Crime Scene Recreation', prompt:
         'detailed crime scene recreation, professional forensic photography style, accurate lighting, evidence markers'
     }, {
       name: 'Suspect Identification', prompt: 'police sketch style, facial composite, professional law enforcement illustration'
@@ -73,7 +73,7 @@
   .generate-btn { padding: 1rem 2rem; font-size: 1.1rem; min-width: 200px; }
   .progress-info { width: 100%; max-width: 400px; text-align: center; }
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem; }
-  @keyframes spin { to {, transform: rotate(360deg); }
+  @keyframes spin { to { transform: rotate(360deg); }
   } .current-generation { margin: 1rem 0; }
   .image-result { display: flex; flex-direction: column; gap: 1rem; }
   .generated-image { max-width: 100%;, height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
@@ -81,9 +81,9 @@
   .image-metadata { font-size: 0.875rem; padding: 0.5rem; }
   .history-section { margin-top: 2rem; }
   .history-header { display: flex; justify-content: space-betweennn; align-items: center; margin-bottom: 1rem; }
-  .history-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
   .history-item { cursor: pointer; transition: transform 0.2s ease; }
-  .history-item:hover {, transform: translateY(-2px); }
+  .history-item:hover { transform: translateY(-2px); }
   .history-thumbnail { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; }
   .history-info { margin-top: 0.5rem; }
   .history-prompt { font-size: 0.75rem; font-weight: bold; margin: 0; }
@@ -94,7 +94,7 @@
   .modal-image { max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; }
   .modal-info { margin-bottom: 1rem; }
   .modal-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
-  .error-message {, color: #d32f2f; text-align: center; }
+  .error-message { color: #d32f2f; text-align: center; }
   @media (max-width: 768px) { .selection-row, .parameter-row { flex-direction: column; }
     .history-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .modal-content { margin: 0.5rem; max-width: calc(100vw - 1rem); }

@@ -129,8 +129,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
    , transform: translateY(100%);
   }
   /* Open state: reset transform */
-  .drawer.is-open {
-   , transform: translate(0, 0);
+  .drawer.is-open { transform: translate(0, 0);
   }
   /* Size-specific dimensions and responsiveness */
   /* For left/right drawers (width) */
@@ -197,7 +196,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     cursor: pointer;
     border-radius: 4px;
   }
-  .drawer-close:hover {
-   , background: #f5f5f5;
+  .drawer-close:hover { background: #f5f5f5;
   }
 </style>

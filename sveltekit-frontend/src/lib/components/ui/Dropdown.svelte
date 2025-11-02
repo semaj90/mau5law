@@ -68,7 +68,7 @@
         if (e.key === 'Escape') close();
       }}
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
-      transitionfly={{, y: -6, duration: 140 }}
+      transitionfly={{ y: -6, duration: 140 }}
     >
       <!-- default slot used for, menu, items -->
       <slot></slot>
@@ -83,8 +83,7 @@
     display: inline-flex;
     align-items: center;
   }
-  .dropdown-menu {
-   , background: var(--dropdown-bg, #fff);
+  .dropdown-menu { background: var(--dropdown-bg, #fff);
     border-radius: 0.5rem;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
     padding: 0.35rem;

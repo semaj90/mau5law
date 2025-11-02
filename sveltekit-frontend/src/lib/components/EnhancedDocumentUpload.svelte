@@ -8,7 +8,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
   async function uploadDocument(): Promise<any> { if (!selectedFile) { errorMessage = 'Please select a file to upload'; return; }
     uploading = true; errorMessage = ''; uploadResult = null; try { const formData = new FormData(); formData.append('file', selectedFile); if (caseId) formData.append('caseId', caseId); if (documentType) formData.append('documentType', documentType); if (title) formData.append('title', title); const response = await fetch('/api/documents/upload-enhanced', { method: 'POST', body: formData }); const result = await response.json(); const typedResult = result as UploadResponse; if (typedResult.success) { uploadResult = typedResult; // Reset form selectedFile = null; if (fileInput) fileInput.value = ''; caseId = ''; documentType = ''; title = ''; } else { errorMessage = typedResult.error || 'Upload failed'; }
     } catch (error: any) { errorMessage = (error as Error)?.message || String(error) || 'Network error during upload'; } finally { uploading = false; }
-  } function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  } function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
 </script> <div class="enhanced-upload-container"> <div class="upload-header"> <h2>📄 Enhanced Document Upload</h2> <p class="subtitle">Upload legal documents with AI-powered processing and semantic indexing</p> </div> <!-- Upload, Configuration, Info --> {#if uploadConfig} <div class="config-info"> <h3>🎯 AI Capabilities</h3> <div class="capabilities-grid"> {#each Array.isArray(uploadConfig.enhancedFeatures) ? uploadConfig.enhancedFeatures: [] as feature} <div class="capability-item"> <span class="checkmark">✅</span> <span>{ feature }</span> </div> {/each} </div> <div class="supported-formats"> <h4>📁 Supported Formats</h4> <div class="formats-list"> {#each Array.isArray(uploadConfig.supportedFormats) ? uploadConfig.supportedFormats: [] as format} <span class="format-badge"> {format.extension.toUpperCase()} </span> {/each} </div> <p class="format-note">Max file size: {uploadConfig.maxFileSize}</p> </div> {/if} <!-- Upload, Form --> <div class="upload-form"> <div class="file-input-section"> <label for="file-input" class="file-input-label"> <span class="file-icon">📎</span> <span class="file-text"> {selectedFile ? selectedFile.name: 'Choose legal document to upload'} </span> </label> <input bind:this={ fileInput } id="file-input"
         type="file"
         accept=".pdf,.doc,.docx,.txt,.md,.html,.htm,.rtf"
@@ -42,13 +42,13 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
   .file-text { color: #ccc; font-size: 0.9rem; }
   .file-info { margin-top: 1rem; padding: 1rem; background: #1a1a1a; border-radius: 6px; }
   .file-details { display: flex; flex-direction: column; gap: 0.5rem; }
-  .file-name {, color: #00ff41; font-weight: bold; }
+  .file-name { color: #00ff41; font-weight: bold; }
   .file-size, .file-type { color: #888; font-size: 0.8rem; }
   .metadata-form { margin-top: 1.5rem; }
   .form-row { margin-bottom: 1rem; }
   .form-row label { display: block; margin-bottom: 0.5rem;, color: #ccc; font-size: 0.9rem; }
   .form-input, .form-select { width: 100%; padding: 0.75rem; background: #222; border: 1px solid #444; border-radius: 4px;, color: #fff; font-family: inherit; }
-  .form-input:focus, .form-select:focus {, outline: none; border-color: #00ff41; }
+  .form-input:focus, .form-select:focus { outline: none; border-color: #00ff41; }
   .upload-actions { margin-top: 1.5rem; text-align: center; }
   .error-message, .success-result { padding: 1rem; border-radius: 8px; margin-top: 1rem; }
   .error-message { background: #2a1a1a; border: 1px solid #ff4444; color: #ff6666; }

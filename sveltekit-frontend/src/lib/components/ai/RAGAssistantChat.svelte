@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount, tick } from 'svelte'; import { fly, fade, scale } from 'svelte/transition'; import { cubicOut } from 'svelte/easing'; import { writable } from 'svelte/store'; // Props using Svelte, 5 runes let { onCaseCreated = () => {} }: { onCaseCreated?: (caseId: string) => void; } = $props(); const userId: string = 'demo-user'; // External reference only // Chat state using $state rune let messages = $state<Message[]>([]); let currentMessage = $state<string>(''); let isTyping = $state<boolean>(false); let isProcessing = $state<boolean>(false); let chatContainer = $state<HTMLDivElement | null>(null); let messageInput = $state<HTMLTextAreaElement | null>(null); // Workflow state using $state let workflowActive = $state<boolean>(false); let currentStep = $state<number>(0); let workflowData = $state({ what: '', who: '', when: '', where: '', why: '', how: '', priority: 'medium', category: 'criminal', urgency: 'normal'
-  }); // RAG ingestion state using $state let isIngesting = $state<boolean>(false); let ingestionProgress = $state<number>(0); let ragContext = $state<any[]>([]); const workflowSteps = [ {, key: 'what', question: 'What happened? Please describe the incident or situation in detail.', icon: '🔍', placeholder: 'Describe what occurred, the nature of the incident, key events...'
+  }); // RAG ingestion state using $state let isIngesting = $state<boolean>(false); let ingestionProgress = $state<number>(0); let ragContext = $state<any[]>([]); const workflowSteps = [ { key: 'what', question: 'What happened? Please describe the incident or situation in detail.', icon: '🔍', placeholder: 'Describe what occurred, the nature of the incident, key events...'
     }, {
       key: 'who', question: 'Who was involved? Identify all parties, witnesses, and key individuals.', icon: '👥', placeholder: 'List suspects, victims, witnesses, law enforcement, experts...'
     }, {
@@ -34,14 +34,14 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       'Generating embeddings with Gemma legal model...',
       'Searching similar cases and precedents...',
       'Analyzing legal patterns and correlations...',
-      'Integrating with existing case knowledge...', ]; for (let i = 0; i < steps.length; i++) { await new, Promise(resolve => setTimeout(resolve, 800)); ingestionProgress = Math.round(((i + 1) / steps.length) * 100); if (i === steps.length - 1) { // Simulate finding relevant context ragContext = [ {, type: 'precedent', title: 'Similar case State v. Johnson (2023)', relevance: 0.89, summary: 'Similar MO and evidence patterns'
+      'Integrating with existing case knowledge...', ]; for (let i = 0; i < steps.length; i++) { await new, Promise(resolve => setTimeout(resolve, 800)); ingestionProgress = Math.round(((i + 1) / steps.length) * 100); if (i === steps.length - 1) { // Simulate finding relevant context ragContext = [ { type: 'precedent', title: 'Similar case State v. Johnson (2023)', relevance: 0.89, summary: 'Similar MO and evidence patterns'
           }, {
             type: 'statute', title: 'Federal Criminal Code § 1341', relevance: 0.76, summary: 'Relevant fraud statutes and penalties'
           }, ...ragContext, ]; }
     } isIngesting = false; addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system'); }'
   // Start prosecution workflow async function startWorkflow(): Promise<any> { workflowActive = true; currentStep = 0; await typeMessage(aiResponses.workflow_start.join(' ')); await new Promise(r => setTimeout(r, 500)); await typeMessage(workflowSteps[currentStep].question); }
   // Process workflow step async function processWorkflowStep(answer: string): Promise<any> { if (!answer || !answer.trim()) return; // Add user message addMessage(answer.trim(), 'user'); // Store answer workflowData[workflowSteps[currentStep].key] = answer.trim(); // Perform RAG ingestion await performRAGIngestion(answer.trim()); // AI acknowledgment await typeMessage(aiResponses.step_complete[Math.floor(Math.random() * aiResponses.step_complete.length)]); currentStep++; if (currentStep < workflowSteps.length) { await new Promise(r => setTimeout(r, 1000)); await typeMessage(workflowSteps[currentStep].question); } else { await completeWorkflow(); }
-  } // Complete workflow and create case async function completeWorkflow(): Promise<any> { await typeMessage(aiResponses.case_complete.join(' ')); isProcessing = true; // Create case via API try { const caseData = { title: `case ${String(workflowData.what || '').slice(0, 50)}...`, description `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`, category: workflowData.category, priority: workflowData.priority, status: 'open', metadata: {, workflow_data: workflowData, rag_context: ragContext, ai_processed: true }
+  } // Complete workflow and create case async function completeWorkflow(): Promise<any> { await typeMessage(aiResponses.case_complete.join(' ')); isProcessing = true; // Create case via API try { const caseData = { title: `case ${String(workflowData.what || '').slice(0, 50)}...`, description `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`, category: workflowData.category, priority: workflowData.priority, status: 'open', metadata: { workflow_data: workflowData, rag_context: ragContext, ai_processed: true }
       }; const response = await fetch('/api/v1/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(caseData) }); if (response.ok) { const result = await response.json(); await typeMessage( `🎉 Case successfully created! Case ID: ${result?.data?.id}\n\n📊 AI Analysis Complete:\n• ${ragContext.length} relevant precedents found\n•, Priority: ${workflowData.priority}\n•, Category: ${workflowData.category}\n\nReady to assist with evidence collection and legal strategy!` ); try { onCaseCreated(result.data.id); } catch (err) { // swallow callback errors }
       } else { const text = await response.text().catch(() => ''); throw new Error('Failed to create case, ' + (text || response.status)); }
     } catch (error) { await typeMessage('❌ Failed to create case. Please try again or contact support.'); console.error('Case creation error', error); } finally { isProcessing = false; workflowActive = false; currentStep = 0; }
@@ -74,12 +74,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .chat-header { display: flex; align-items: center;, gap: 12px; border-bottom: 1px dashed rgba(16, 24, 40, 0.04); padding-bottom: 8px; }
   .assistant-avatar { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 10px;, background: linear-gradient(135deg, #f6f9ff, #eef7ff); position: relative; flex-shrink: 0, transition: transform 200ms ease; }
   .assistant-avatar.pulsing { animation: pulse 1.6s infinite; }
-  @keyframes pulse { 0% {, transform: scale(1); }
+  @keyframes pulse { 0% { transform: scale(1); }
     50% { transform: scale(1.02); }
     100% { transform: scale(1); }
   } .avatar-icon { font-size: 22px; }
   .status-dot { position: absolute; right: -2px; bottom: -2px; width: 12px; height: 12px; border-radius: 50%; background: #cbd5e1;, border: 2px solid #fff; box-shadow: 0 1px 3px rgba(2, 6, 23, 0.08); transition: background 150ms ease; }
-  .status-dot.active {, background: #34d399; /* green */ box-shadow: 0 6px 18px rgba(52, 211, 153, 0.12); }
+  .status-dot.active { background: #34d399; /* green */ box-shadow: 0 6px 18px rgba(52, 211, 153, 0.12); }
   .assistant-info h3 { margin: 0; font-size: 16px; letter-spacing: -0.2px; }
   .assistant-info .status { margin: 0; font-size: 12px; color: #6b7280; }
   /* RAG progress */ .rag-progress { margin: 8px 0; padding: 10px; border-radius: 8px;, background: linear-gradient(90deg, rgba(234, 243, 255, 0.8), rgba(248, 250, 252, 0.6)); border: 1px solid rgba(99, 102, 241, 0.06); }
@@ -104,9 +104,9 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .typing-dots span { display: inline-block; width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; opacity: 0.8; animation: blink 1s infinite; }
   .typing-dots, span:nth-child(2) { animation-delay: 0.12s; }
   .typing-dots, span:nth-child(3) { animation-delay: 0.24s; }
-  @keyframes blink { 0% {, transform: translateY(0); opacity: 0.35; }
-    50% {, transform: translateY(-6px); opacity: 1; }
-    100% {, transform: translateY(0); opacity: 0.35; }
+  @keyframes blink { 0% { transform: translateY(0); opacity: 0.35; }
+    50% { transform: translateY(-6px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0.35; }
   } /* Workflow interface */ .workflow-interface { border-top: 1px dashed rgba(16, 24, 40, 0.04); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
   .workflow-header { display: flex; align-items: center; gap: 10px; }
   .workflow-icon { font-size: 20px; }
@@ -118,7 +118,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .workflow-hint { font-size: 12px;, color: #94a3b8; }
   /* Chat input area */ .chat-input-container { border-top: 1px dashed rgba(16, 24, 40, 0.04); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .input-wrapper { display: flex; gap: 8px; align-items: flex-end; }
-  .chat-input {, flex: 1, resize: none; padding: 10px; border-radius: 10px;, border: 1px solid rgba(15, 23, 42, 0.06); font-size: 14px; min-height: 44px; }
+  .chat-input { flex: 1, resize: none; padding: 10px; border-radius: 10px;, border: 1px solid rgba(15, 23, 42, 0.06); font-size: 14px; min-height: 44px; }
   .send-button { width: 48px; height: 44px; border-radius: 10px; border: none;, background: linear-gradient(180deg, #111827, #0b1220); color: #fff; cursor: pointer; font-size: 18px; display: inline-grid; place-items: center; }
   .send-buttondisabled { opacity: 0.5; cursor: not-allowed; }
   .quick-actions { display: flex; gap: 8px; }

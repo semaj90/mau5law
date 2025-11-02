@@ -479,7 +479,7 @@
         width: 100%;
        , transition: background 0.2;
     }
-    .process-btn:hover:not(:disabled) {,
+    .process-btn:hover:not(:disabled) {
         background: #2563eb;
     }
     .process-btn:disabled {
@@ -628,8 +628,7 @@
         margin-bottom: 1rem;
         line-height: 1.6;
     }
-    .recommendation-details {
-       , display: grid;
+    .recommendation-details { display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.5rem;
         margin-bottom: 1rem;
@@ -661,15 +660,13 @@
         color: #374151;
         border: 1px solid #d1d5db;
     }
-    .secondary-btn:hover {
-       , background: #e5e7eb;
+    .secondary-btn:hover { background: #e5e7eb;
     }
     @media (max-width: 768px) {
         .legal-ai-workflow {
             padding: 1rem;
         }
-        .step-indicator {
-           , gap: 1rem;
+        .step-indicator { gap: 1rem;
         }
         .step-label {
             font-size: 0.75rem;

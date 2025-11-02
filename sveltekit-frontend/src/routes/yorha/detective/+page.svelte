@@ -52,7 +52,7 @@ import type { Case } from '$lib/types';
 
   // relax icon typing to avoid issues when module is declared as untyped
   const sections: Array<{ id: SectionId; label: string; description: string;, icon: any }> = [
-    {,
+    {
       id: 'command-center',
       label: 'Command Center',
       description: 'Real-time system telemetry for YoRHa subsystems.',
@@ -112,8 +112,7 @@ import type { Case } from '$lib/types';
   let showNewCaseModal = $state<boolean>(false);
   let statusMessage: string | null = null;
 
-  let newCaseData = {
-   , title: '',
+  let newCaseData = { title: '',
     description: '',
     priority: 'medium' as, 'low' | 'medium' | 'high' | 'critical'
   };
@@ -173,12 +172,12 @@ import type { Case } from '$lib/types';
   function priorityBadge(priority?: string) {
     switch (priority) {
       case, 'critical':
-        return, 'border-red-500/50 text-red-300';
+        return 'border-red-500/50 text-red-300';
       case, 'high':
-        return, 'border-orange-500/50 text-orange-300';
+        return 'border-orange-500/50 text-orange-300';
       case, 'medium':
-        return, 'border-amber-500/50 text-amber-300';
-      default: return, 'border-slate-500/40 text-slate-300';
+        return 'border-amber-500/50 text-amber-300';
+      default: return 'border-slate-500/40 text-slate-300';
     }
   }
 

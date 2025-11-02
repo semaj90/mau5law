@@ -43,15 +43,14 @@
   let searchTerm = '';
 
   // sample data fallback
-  let contractData: ContractAnalysis = contract ?? {
-   , id: 'contract-001',
+  let contractData: ContractAnalysis = contract ?? { id: 'contract-001',
     title: 'Software Development Service Agreement',
     type: 'service',
     status: 'review',
     riskScore: 6.5,
     lastModified: '2025-09-21T14:30:00Z',
     clauses: [
-      {,
+      {
         id: 'clause-1',
         type: 'termination',
         content: 'Either party may terminate this agreement with, 30 days written notice...',
@@ -97,10 +96,10 @@
 
   // static styling map
   const riskStyles: Record<string { color: string; border: string; background: string }> = {
-    low: {, color: '#10b981', border: '2px solid #10b981', background: 'rgba(16,185,129,0.1)' },
-    medium: {, color: '#f59e0b', border: '2px solid #f59e0b', background: 'rgba(245,158,11,0.1)' },
-    high: {, color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239,68,68,0.1)' },
-    critical: {, color: '#dc2626', border: '2px solid #dc2626', background: 'rgba(220,38,38,0.2)' }
+    low: { color: '#10b981', border: '2px solid #10b981', background: 'rgba(16,185,129,0.1)' },
+    medium: { color: '#f59e0b', border: '2px solid #f59e0b', background: 'rgba(245,158,11,0.1)' },
+    high: { color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239,68,68,0.1)' },
+    critical: { color: '#dc2626', border: '2px solid #dc2626', background: 'rgba(220,38,38,0.2)' }
   };
 
   function getRiskBadgeStyle(risk: keyof typeof riskStyles) {
@@ -250,7 +249,7 @@
                     selectClause(clause.id);
                   }
                 }}
-                in:scale={{, duration: 180 }}
+                in:scale={{ duration: 180 }}
                 style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
               >
                 <div class="clause-header">
@@ -281,7 +280,7 @@
                   </div>
 
                   {#if clause.recommendations && selectedClause === clause.id}
-                    <div class="recommendations" in:fly={{, y: 20, duration: 300 }}>
+                    <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
                       <h4>🔍 AI, Recommendations:</h4>
                       <ul>
                         {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}
@@ -338,8 +337,7 @@
     margin-top: 0.5rem;
     font-size: 0.875rem;
   }
-  .contract-type {
-   , background: var(--enhanced-bits-primary);
+  .contract-type { background: var(--enhanced-bits-primary);
     color: #000;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -350,14 +348,14 @@
     border-radius: 4px;
     font-weight: bold;
   }
-  .status-draft {, background: rgba(156,163,175,0.2); color: #9ca3af; }
-  .status-review {, background: rgba(245,158,11,0.2); color: #f59e0b; }
-  .status-approved {, background: rgba(16,185,129,0.2); color: #10b981; }
-  .status-executed {, background: rgba(59,130,246,0.2); color: #3b82f6; }
+  .status-draft { background: rgba(156,163,175,0.2); color: #9ca3af; }
+  .status-review { background: rgba(245,158,11,0.2); color: #f59e0b; }
+  .status-approved { background: rgba(16,185,129,0.2); color: #10b981; }
+  .status-executed { background: rgba(59,130,246,0.2); color: #3b82f6; }
   .risk-score { font-weight: bold; }
   .contract-actions { display: flex; gap: 0.5rem; align-items: center; }
   .export-dropdown { position: relative; }
-  .export-btn {, background: var(--enhanced-bits-secondary); color: #000; }
+  .export-btn { background: var(--enhanced-bits-secondary); color: #000; }
   .export-menu {
     position: absolute;
     top: 100%;
@@ -383,7 +381,7 @@
     cursor: pointer;
     text-align: left;
   }
-  .export-menu button:hover {, background: var(--enhanced-bits-muted); }
+  .export-menu button:hover { background: var(--enhanced-bits-muted); }
 
   .search-section {
     display: flex;
@@ -403,7 +401,7 @@
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 8px;
   }
-  .risk-overview h3 {, margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground); }
+  .risk-overview h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground); }
   .risk-bars { display: grid; gap: 0.75rem; }
   .risk-bar { display: flex; align-items: center; gap: 1rem; }
   .risk-label { min-width: 80px; font-size: 0.75rem; font-weight: bold; }
@@ -411,10 +409,9 @@
   .risk-fill { height: 100%; transition: width: 300ms ease; border-radius: 4px; }
   .risk-count { min-width: 30px; text-align: center; font-weight: bold; }
 
-  .clauses-section h3 {, margin: 0, 0 1.5rem 0; color: var(--enhanced-bits-foreground); }
+  .clauses-section h3 { margin: 0, 0 1.5rem 0; color: var(--enhanced-bits-foreground); }
   .clauses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
-  .clause-card {
-   , background: rgba(255,255,255,0.03);
+  .clause-card { background: rgba(255,255,255,0.03);
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 8px;
     padding: 1.5rem;
@@ -422,11 +419,10 @@
     transition: all 300ms ease;
   }
   /* keyboard focus visible for accessibility */
-  .clause-card:focus {
-   , outline: 3px solid rgba(124,58,237,0.28);
+  .clause-card:focus { outline: 3px solid rgba(124,58,237,0.28);
     outline-offset: 2px;
   }
-  .clause-card:hover {, transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .clause-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
   .clause-card.selected { transform: translateY(-4px); box-shadow: 0 12px 48px rgba(0,0,0,0.4); }
   .clause-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .clause-type { display: flex; align-items: center; gap: 0.5rem; }
@@ -439,7 +435,7 @@
     font-weight: bold;
     text-transform: uppercase;
   }
-  .clause-text {, color: var(--enhanced-bits-muted-foreground); line-height: 1.6; margin-bottom: 1rem; }
+  .clause-text { color: var(--enhanced-bits-muted-foreground); line-height: 1.6; margin-bottom: 1rem; }
   .clause-metrics { margin-bottom: 1rem; }
   .confidence-display { display: flex; align-items: center; gap: 1rem; }
   .confidence-label { font-size: 0.875rem;, color: var(--enhanced-bits-muted-foreground); }
@@ -454,9 +450,9 @@
     padding: 1rem;
     margin-top: 1rem;
   }
-  .recommendations h4 {, margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-ai); font-size: 0.875rem; }
+  .recommendations h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-ai); font-size: 0.875rem; }
   .recommendations ul { margin: 0; padding-left: 1.5rem; }
-  .recommendations li {, color: var(--enhanced-bits-foreground); font-size: 0.875rem; line-height: 1.5; margin-bottom: 0.25rem; }
+  .recommendations li { color: var(--enhanced-bits-foreground); font-size: 0.875rem; line-height: 1.5; margin-bottom: 0.25rem; }
 
   .clause-actions { display: flex;, gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-bits-border); }
 

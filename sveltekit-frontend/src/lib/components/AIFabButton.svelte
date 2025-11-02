@@ -85,12 +85,10 @@
 		overflow: hidden;
 		position: relative;
 	}
-	.ai-fab-button:hover {
-	, transform: translateY(-2px) scale(1.05);
+	.ai-fab-button:hover { transform: translateY(-2px) scale(1.05);
 		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 	}
-	.ai-fab-button:active {
-	, transform: translateY(-1px) scale(1.02);
+	.ai-fab-button:active { transform: translateY(-1px) scale(1.02);
 	}
 	.ai-fab-button.generating {
 		animation: pulse 2s infinite;
@@ -120,8 +118,7 @@
 		animation: spin 1s linear infinite;
 	}
 	@keyframes spin {
-		0% {
-		, transform: rotate(0deg);
+		0% { transform: rotate(0deg);
 		}
 		100% {
 			transform: rotate(360deg);

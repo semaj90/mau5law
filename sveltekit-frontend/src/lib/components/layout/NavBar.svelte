@@ -217,8 +217,7 @@ import type { User } from '$lib/types';
     border-radius: 4px;
     transition: background 0.2s;
   }
-  .sidebar-toggle:hover {
-   , background: rgba(255, 255, 255, 0.1);
+  .sidebar-toggle:hover { background: rgba(255, 255, 255, 0.1);
   }
   .hamburger {
     display: flex;
@@ -259,8 +258,7 @@ import type { User } from '$lib/types';
     border-radius: 6px;
     transition: all 0.2s;
   }
-  .logo-btn:hover {
-   , background: var(--console-primary, #00aa00);
+  .logo-btn:hover { background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .logo-icon {
@@ -282,8 +280,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     font-weight: 500;
   }
-  .nav-link:hover {
-   , background: rgba(255, 255, 255, 0.1);
+  .nav-link:hover { background: rgba(255, 255, 255, 0.1);
     color: var(--console-primary, #00aa00);
   }
   .nav-link.active {
@@ -323,15 +320,13 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     font-size: 0.9rem;
   }
-  .theme-btn:hover {
-   , background: rgba(255, 255, 255, 0.2);
+  .theme-btn:hover { background: rgba(255, 255, 255, 0.2);
   }
   .dropdown-arrow {
     font-size: 0.8rem;
     transition: transform 0.2s;
   }
-  .dropdown-arrow.open {
-   , transform: rotate(180deg);
+  .dropdown-arrow.open { transform: rotate(180deg);
   }
   .theme-dropdown {
     position: absolute;
@@ -358,8 +353,7 @@ import type { User } from '$lib/types';
    , transition: background 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .theme-option:hover {
-   , background: rgba(255, 255, 255, 0.1);
+  .theme-option:hover { background: rgba(255, 255, 255, 0.1);
   }
   .theme-option.active {
     background: var(--console-primary, #00aa00);
@@ -407,7 +401,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     list-style: none;
   }
-  .profile-trigger:hover {, background: rgba(255, 255, 255, 0.2); }
+  .profile-trigger:hover { background: rgba(255, 255, 255, 0.2); }
   .user-avatar {
     width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
    , background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem;
@@ -418,7 +412,7 @@ import type { User } from '$lib/types';
    , background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000;
   }
-  .profile-header {, padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
+  .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
   .profile-row { display: flex; align-items: center; justify-content: space-betweennn; }
   .profile-name { font-weight: 600; }
   .profile-role { font-size: 0.75rem; opacity: 0.7; }
@@ -427,7 +421,7 @@ import type { User } from '$lib/types';
     display: block; width: 100%; text-align: left; background: none;, color: var(--console-fg, white);
     border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer;
   }
-  .profile-item:hover {, background: rgba(255, 255, 255, 0.08); }
+  .profile-item:hover { background: rgba(255, 255, 255, 0.08); }
   .profile-logout { color: #ffb4b4; }
   .profile-separator { height: 1px;, background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
   .user-btn {
@@ -458,8 +452,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     font-size: 0.9rem;
   }
-  .logout-btn:hover {
-   , background: var(--console-error, #cc4444);
+  .logout-btn:hover { background: var(--console-error, #cc4444);
   }
   .auth-buttons {
     display: flex;
@@ -476,12 +469,10 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     font-weight: 500;
   }
-  .signup-btn {
-   , background: var(--console-primary, #00aa00);
+  .signup-btn { background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-  .login-btn:hover {
-   , background: var(--console-primary, #00aa00);
+  .login-btn:hover { background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .signup-btn:hover {
@@ -496,8 +487,7 @@ import type { User } from '$lib/types';
     .theme-name {
       display: none;
     }
-    .user-name {
-     , display: none;
+    .user-name { display: none;
     }
   }
 </style>

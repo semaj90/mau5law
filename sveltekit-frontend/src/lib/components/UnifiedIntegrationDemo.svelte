@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
   const activeOperations = writable<any[]>([]);
   const results = writable<any[]>([]);
   // fixed typo: latestMetric
-  const metrics = writable<any>({, metrics: [], count: 0, latestMetric: null });
+  const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
 
   let isLoading: boolean = false;
   let selectedOperation: string = 'processDocument';
@@ -49,16 +49,15 @@ TERMS AND CONDITIONS:
 Both parties acknowledge they have read and agree to these terms.`,`
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
-    matmul: JSON.stringify({
-     , a: [1, 2, 3, 4, 5, 6],
+    matmul: JSON.stringify({ a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
       n: 3,
       k: 3
     }),
     attention: JSON.stringify({
-      key: Array.from({, length: 64 }, () => Math.random()),
-      value: Array.from({, length: 64 }, () => Math.random()),
+      key: Array.from({ length: 64 }, () => Math.random()),
+      value: Array.from({ length: 64 }, () => Math.random()),
       seq_len: 8,
       dim: 8
     })
@@ -111,12 +110,10 @@ Both parties acknowledge they have read and agree to these terms.`,`
         case, 'processDocument':
           requestData = {
             operation: 'processDocument',
-            data: {
-             , document: testInput,
+            data: { document: testInput,
               analysisType: 'comprehensive'
             },
-            options: {
-             , priority: 'HIGH',
+            options: { priority: 'HIGH',
               maxTokens: 1024
             }
           };
@@ -124,11 +121,9 @@ Both parties acknowledge they have read and agree to these terms.`,`
         case, 'performInference':
           requestData = {
             operation: 'performInference',
-            data: {
-             , input: JSON.parse(testInput)
+            data: { input: JSON.parse(testInput)
             },
-            options: {
-             , priority: 'HIGH',
+            options: { priority: 'HIGH',
               modelType: 'transformer'
             }
           };
@@ -137,14 +132,14 @@ Both parties acknowledge they have read and agree to these terms.`,`
           const canvasData = JSON.parse(testInput);
           requestData = {
             operation: 'processCanvas',
-            data: {, canvasState: canvasData },
-            options: {, priority: 'NORMAL', targetBitDepth: 24 }
+            data: { canvasState: canvasData },
+            options: { priority: 'NORMAL', targetBitDepth: 24 }
           };
           break;
         }
         case, 'matmul': {
           const matrixData = JSON.parse(testInput);
-          requestData = { operation: 'matmul', data: matrixData, options: {, priority: 'HIGH' } };
+          requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
           break;
         }
         case, 'attention': {
@@ -196,24 +191,24 @@ Both parties acknowledge they have read and agree to these terms.`,`
   function getHealthColor(status: string) {
     switch (status) {
       case, 'healthy':
-        return, 'text-green-600';
+        return 'text-green-600';
       case, 'degraded':
-        return, 'text-yellow-600';
+        return 'text-yellow-600';
       case, 'critical':
-        return, 'text-red-600';
-      default: return, 'text-gray-600';
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 
   function getServiceColor(status: string) {
     switch (status) {
       case, 'online':
-        return, 'text-green-600';
+        return 'text-green-600';
       case, 'degraded':
-        return, 'text-yellow-600';
+        return 'text-yellow-600';
       case, 'offline':
-        return, 'text-red-600';
-      default: return, 'text-gray-600';
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 

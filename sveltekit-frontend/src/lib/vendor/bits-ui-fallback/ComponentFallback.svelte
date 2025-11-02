@@ -70,7 +70,7 @@
     border-radius: 0.375rem;
     transition all 0.2s ease;
   }
-  :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {,
+  :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {
     opacity: 0.8;
   }
 </style>

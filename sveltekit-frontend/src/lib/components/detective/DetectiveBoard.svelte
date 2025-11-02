@@ -46,10 +46,10 @@ import type { Case } from '$lib/types';
 	let canvasEvidence = $state<any[]>([]);
 	let activeUsers = $state<any[]>([]);
 	let systemStatus = $state({
-		rabbitMQ: {, connected: false, health: 'unknown' },
-		postgreSQL: {, connected: false, vectorCount: 0 },
-		gpu: {, available: false, utilization: 0, model: 'RTX, 3060 Ti' },
-		processingStats: {, totalFiles: 0, processed: 0, queued: 0 }
+		rabbitMQ: { connected: false, health: 'unknown' },
+		postgreSQL: { connected: false, vectorCount: 0 },
+		gpu: { available: false, utilization: 0, model: 'RTX, 3060 Ti' },
+		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
 	});
 	let findModal = $state({ show: false, query: '', results: [], as: any[], loading: false, error: '', suggestions: [], as: any[] });
 	// add miniModal state (was referenced but not declared)
@@ -164,7 +164,7 @@ import type { Case } from '$lib/types';
 		// console.log('dnd consider', e);
 	}
 
-	function handleDndFinalize(e: CustomEvent<{, items: any[] }>, columnId: string): void {
+	function handleDndFinalize(e: CustomEvent<{ items: any[] }>, columnId: string): void {
 		const { items } = e.detail ?? {};
 		if (Array.isArray(items)) {
 			columns = columns.map((col) => (col.id === columnId ? { ...col, items } : col));
@@ -252,8 +252,7 @@ import type { Case } from '$lib/types';
 			await fetch('/api/user-activity', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-				, userId: null,
+				body: JSON.stringify({ userId: null,
 					evidenceId: item.id,
 					action: 'save',
 					target
@@ -296,8 +295,7 @@ import type { Case } from '$lib/types';
 				const resp = await fetch('/api/vector-search', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-					, query: findModal.query || item?.title || ''
+					body: JSON.stringify({ query: findModal.query || item?.title || ''
 					})
 				});
 				if (resp.ok) {
@@ -492,9 +490,9 @@ import type { Case } from '$lib/types';
 
 								<div
 									class="space-y-3 min-h-[200px]"
-									use:dndzone={{, items: column.items, flipDurationMs: 200, dropTargetStyle: {, background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))', borderRadius: '8px' } }}
+									use:dndzone={{ items: column.items, flipDurationMs: 200, dropTargetStyle: { background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))', borderRadius: '8px' } }}
 									onconsider={(e: CustomEvent) => handleDndConsider(e, column.id)}
-									onfinalize={(e: CustomEvent<{, items: any[] }>) => handleDndFinalize(e, column.id)}
+									onfinalize={(e: CustomEvent<{ items: any[] }>) => handleDndFinalize(e, column.id)}
 								>
 									{#each column.items as item (item.id)}
 										<!-- Lightweight context menu: toggle, per-item, dropdown -->
@@ -652,8 +650,8 @@ import type { Case } from '$lib/types';
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
-					onevidenceSelect={(e: CustomEvent<{, evidenceId: string }>) => handleEvidenceSelect(e.detail.evidenceId)}
-					onevidenceHighlight={(e: CustomEvent<{, evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
+					onevidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect(e.detail.evidenceId)}
+					onevidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
 					onactionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger(e.detail)}
 				/>
 			{/if}
@@ -719,7 +717,7 @@ import type { Case } from '$lib/types';
 			linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
 		background-size: 50px 50px;
 	}	linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-	:global(.dark) .bg-grid-pattern {, 255, 255, 0.1) 1px, transparent 1px);
+	:global(.dark) .bg-grid-pattern { 255, 255, 0.1) 1px, transparent 1px);
 		background-image:
 			linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);

@@ -9,5 +9,5 @@
   .display p { margin: 0.5rem 0; }
   .controls { display: flex; gap: 1rem; }
   button { padding: 0.5rem 1rem; border: 1px solid #007bff; background: #007bff; color: white; border-radius: 4px; cursor: pointer; transition: background 0.2; }
-  button:hover {, background: #0056b3; }
+  button:hover { background: #0056b3; }
 </style>

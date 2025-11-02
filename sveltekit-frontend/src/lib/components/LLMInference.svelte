@@ -109,8 +109,7 @@
     padding: 1rem;
     font-size: 1rem;
   }
-  .error {
-   , color: #b30000;
+  .error { color: #b30000;
     margin-top: 1rem;
     font-weight: 600;
   }

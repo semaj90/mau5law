@@ -13,13 +13,13 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   } function handleKeydown(event: KeyboardEvent) { if (event.key === "Enter") { if (event.shiftKey) return; // newline event.preventDefault(); sendMessage(); } else if (event.key === "Escape") { closeChat(); }
   } function handleQuickAction(actionText: string) { currentMessage = actionText; sendMessage(); }
 
-  async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isGenerating) return; const userMessage: Message = {, id: crypto.randomUUID(), role: "user", content: currentMessage.trim(), timestamp: new Date().toISOString() }; messages.update((m) => [...m, userMessage]); const messageContent = currentMessage.trim(); currentMessage = ""; isGenerating = true; const typingMessage: Message = {, id: "typing-" + Date.now(), role: "assistant", content: "", timestamp: new Date().toISOString(), isTyping: true }; messages.update((m) => [...m, typingMessage]); try { const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({, message: messageContent, conversationId, userId, caseId, mode: selectedMode, useContext: true, maxTokens: 1000 }) }); const result = await res.json(); // remove typing indicator messages.update((m) => m.filter((x) => !x.isTyping)); if (result?.success && result?.message) { const aiMsg: Message = { ...result.message, contextUsed: result.contextUsed, suggestions: result.suggestions, actions: result.actions }; messages.update((m) => [...m, aiMsg]); if (result.suggestions?.length && typeof onsuggestionsreceived === "function") { onsuggestionsreceived(result.suggestions); }
+  async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isGenerating) return; const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: currentMessage.trim(), timestamp: new Date().toISOString() }; messages.update((m) => [...m, userMessage]); const messageContent = currentMessage.trim(); currentMessage = ""; isGenerating = true; const typingMessage: Message = { id: "typing-" + Date.now(), role: "assistant", content: "", timestamp: new Date().toISOString(), isTyping: true }; messages.update((m) => [...m, typingMessage]); try { const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: messageContent, conversationId, userId, caseId, mode: selectedMode, useContext: true, maxTokens: 1000 }) }); const result = await res.json(); // remove typing indicator messages.update((m) => m.filter((x) => !x.isTyping)); if (result?.success && result?.message) { const aiMsg: Message = { ...result.message, contextUsed: result.contextUsed, suggestions: result.suggestions, actions: result.actions }; messages.update((m) => [...m, aiMsg]); if (result.suggestions?.length && typeof onsuggestionsreceived === "function") { onsuggestionsreceived(result.suggestions); }
         if (result.actions?.length && typeof onactionsreceived === "function") { onactionsreceived(result.actions); }
 
         if (aiMsg.content) { storeMessageEmbedding(aiMsg.content, "assistant"); }
       } else { throw new Error(result?.error || "Failed to get AI response"); }
-    } catch (err) { console.error("Failed to send message:", err); componentError = err instanceof Error ? err: new Error("Send message failed"); messages.update((m) => m.filter((x) => !x.isTyping)); const errorMessage: Message = {, id: crypto.randomUUID(), role: "assistant", content: "Sorry, I encountered an error while processing your request. Please try again.", timestamp: new Date().toISOString(), isError: true }; messages.update((m) => [...m, errorMessage]); } finally { isGenerating = false; scrollToBottom(); focusInput(); }
-  } async function storeMessageEmbedding(content: string, role: "user" | "assistant"): Promise<any> { try { await fetch("/api/embed", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({, text: content, type: "chat_message", metadata: { userId, caseId, conversationId, role, mode: selectedMode }
+    } catch (err) { console.error("Failed to send message:", err); componentError = err instanceof Error ? err: new Error("Send message failed"); messages.update((m) => m.filter((x) => !x.isTyping)); const errorMessage: Message = { id: crypto.randomUUID(), role: "assistant", content: "Sorry, I encountered an error while processing your request. Please try again.", timestamp: new Date().toISOString(), isError: true }; messages.update((m) => [...m, errorMessage]); } finally { isGenerating = false; scrollToBottom(); focusInput(); }
+  } async function storeMessageEmbedding(content: string, role: "user" | "assistant"): Promise<any> { try { await fetch("/api/embed", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: content, type: "chat_message", metadata: { userId, caseId, conversationId, role, mode: selectedMode }
         }) }); } catch (err) { console.warn("Failed to store message embedding:", err); }
   } function closeChat() { open = false; if (onclose) onclose(); }
 
@@ -61,14 +61,14 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
             class:sending={ isGenerating } disabled={!currentMessage.trim() || isGenerating} onclick={() => sendMessage()} title="Send message"
             aria-label="Send message"
           > {#if isGenerating} <div class="spinner"></div> {:else} <!-- Send -> arrow emoji --> <span aria-hidden="true">➤</span> {/if} </button> </div> </div> </div> {/if} <style> .error-boundary { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 1.5rem; margin: 1rem; color: #dc2626; }
-  .error-boundary h2 {, margin: 0, 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; }
-  .error-boundary p {, margin: 0, 0 0.5rem 0; }
+  .error-boundary h2 { margin: 0, 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; }
+  .error-boundary p { margin: 0, 0 0.5rem 0; }
   .error-message { font-family: monospace; font-size: 0.875rem;, background: rgba(0, 0, 0, 0.05); padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; }
   .error-boundary button { background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
 
   .chat-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0;, background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
 
-  .chat-container {, background: white; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+  .chat-container { background: white; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
 
   .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb;, background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; align-items: center; justify-content: space-between; }
 
@@ -82,8 +82,8 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .mode-section { position: relative; }
 
-  .mode-button {, background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem 0.75rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
-  .mode-button:hover {, background: rgba(255, 255, 255, 0.2); }
+  .mode-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem 0.75rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
+  .mode-button:hover { background: rgba(255, 255, 255, 0.2); }
 
   .mode-dropdown { position: absolute; top: 100%; right: 0; margin-top: 0.5rem;, background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; z-index: 10; min-width: 200px; }
 
@@ -97,8 +97,8 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .header-actions { display: flex; gap: 0.5rem; }
 
-  .header-action {, background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-  .header-action:hover {, background: rgba(255, 255, 255, 0.2); }
+  .header-action { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .header-action:hover { background: rgba(255, 255, 255, 0.2); }
 
   .messages-container { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
 
@@ -127,18 +127,18 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   .typing-dots, span:nth-child(2) { animation-delay: 0.2s; }
   .typing-dots, span:nth-child(3) { animation-delay: 0.4s; }
 
-  .typing-text {, color: #6b7280; font-style: italic; font-size: 0.875rem; }
+  .typing-text { color: #6b7280; font-style: italic; font-size: 0.875rem; }
 
   .suggestions { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
   .message.assistant .suggestions { border-top-color: #e5e7eb; }
 
-  .suggestions h4 {, margin: 0, 0 0.5rem 0; font-size: 0.875rem; font-weight: 600; opacity: 0.9; }
+  .suggestions h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; font-weight: 600; opacity: 0.9; }
 
   .suggestions ul { margin: 0; padding-left: 1rem; font-size: 0.875rem; }
 
   .actions { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
-  .action-button {, background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: inherit; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+  .action-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: inherit; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
 
   .message.assistant .action-button { background: #e5e7eb; border-color: #d1d5db; color: #374151; }
 
@@ -148,7 +148,7 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .quick-actions { padding: 2rem; text-align: center; }
 
-  .action-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
 
   .quick-action { background: #f8fafc; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; color: #374151; }
   .quick-action:hover { background: #f1f5f9; border-color: #cbd5e1;, transform: translateY(-1px); }
@@ -158,7 +158,7 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   .input-container { display: flex; gap: 0.75rem; align-items: flex-end; }
 
   .message-input { flex: 1; border: 1px solid #d1d5db; border-radius: 8px; padding: 0.75rem; font-family: inherit; font-size: 0.875rem; line-height: 1.5; resize: none; min-height: 44px; max-height: 120px; background: white; transition: border-color 0.2s; }
-  .message-input:focus {, outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
+  .message-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
 
   .send-button { background: #3b82f6; border: none; color: white; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-width: 44px; height: 44px; }
   .send-button:hover { background: #2563eb; }

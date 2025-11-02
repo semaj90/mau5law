@@ -12,7 +12,7 @@ import type { Document } from '$lib/types';
   }
 
   // avoid unused: 'data' warning by renaming to `_data`
-  let {, data: _data, children }: Props = $props();
+  let { data: _data, children }: Props = $props();
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
@@ -355,19 +355,16 @@ import type { Document } from '$lib/types';
     width: 12px;
   }
 
-  .ai-content::-webkit-scrollbar-track {
-   , background: var(--surface-tertiary, #1a1a1a);
+  .ai-content::-webkit-scrollbar-track { background: var(--surface-tertiary, #1a1a1a);
     border: 1px solid #00ccff;
   }
 
-  .ai-content::-webkit-scrollbar-thumb {
-   , background: linear-gradient(180deg, #00ccff, #0099cc);
+  .ai-content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #00ccff, #0099cc);
     border-radius: 6px;
     box-shadow: 0, 0 8px rgba(0, 204, 255, 0.5);
   }
 
-  .ai-content::-webkit-scrollbar-thumb:hover {
-   , background: linear-gradient(180deg, #00ffcc, #00ccaa);
+  .ai-content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #00ffcc, #00ccaa);
     box-shadow: 0, 0 12px rgba(0, 255, 204, 0.7);
   }
 </style>

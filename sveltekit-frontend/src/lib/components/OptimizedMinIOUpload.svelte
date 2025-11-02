@@ -6,8 +6,7 @@
 	let file: File | null = null;
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
 	// fixed: proper TypeScript type + valid: object literal
-	let gpu: { webgpu: boolean; webgl2: boolean; cssHardwareAcceleration: boolean } = {
-	, webgpu: false,
+	let gpu: { webgpu: boolean; webgl2: boolean; cssHardwareAcceleration: boolean } = { webgpu: false,
 		webgl2: false,
 		cssHardwareAcceleration: false
 	};

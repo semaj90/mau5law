@@ -17,7 +17,7 @@
   .stat-value { font-size: 12px; font-weight: bold; color: #00ff41; margin-top: 2px; }
   .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f5f5f5; color: #666; }
   .loading-spinner { width: 40px; height: 40px; border: 4px solid #e5e5e5; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
-  @keyframes spin { 0% {, transform: rotate(0deg); }
+  @keyframes spin { 0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   } .local-save-notice { margin-top: 8px; padding: 8px 12px; background: #fff7cc; border: 1px solid #ffe58f;, color: #8a6d00; border-radius: 6px; font-size: 13px; }
 </style>

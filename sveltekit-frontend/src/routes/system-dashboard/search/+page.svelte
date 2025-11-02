@@ -105,13 +105,11 @@ import type { Document } from '$lib/types';
       const requestBody = {
         query: query.trim(),
         mode: searchMode,
-        filters: {
-         , document_types: Array.from(selectedTypes),
+        filters: { document_types: Array.from(selectedTypes),
           similarity_threshold: similarityThreshold,
           limit: 20
         },
-        options: {
-         , include_highlights: true,
+        options: { include_highlights: true,
           include_metadata: true,
           boost_recent: true
         }
@@ -163,16 +161,16 @@ import type { Document } from '$lib/types';
   }
 
   function getSimilarityColor(score: number): string {
-    if (score >= 0.9) return, 'text-green-600 bg-green-100';
-    if (score >= 0.7) return, 'text-blue-600 bg-blue-100';
-    if (score >= 0.5) return, 'text-yellow-600 bg-yellow-100';
-    return, 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.7) return 'text-blue-600 bg-blue-100';
+    if (score >= 0.5) return 'text-yellow-600 bg-yellow-100';
+    return 'text-gray-600 bg-gray-100';
   }
   function getSimilarityLabel(score: number): string {
-    if (score >= 0.9) return, 'Excellent Match';
-    if (score >= 0.7) return, 'Good Match';
-    if (score >= 0.5) return, 'Moderate Match';
-    return, 'Weak Match';
+    if (score >= 0.9) return 'Excellent Match';
+    if (score >= 0.7) return 'Good Match';
+    if (score >= 0.5) return 'Moderate Match';
+    return 'Weak Match';
   }
   function formatSearchTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;

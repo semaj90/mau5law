@@ -3,7 +3,7 @@ import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from '$app/stores'; import  Button  from "$lib/components/ui/bits/Button.svelte"; import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes'; interface User { id: string; name?: string; email?: string; role?: string; }
   interface Props { open?: boolean; user?: User; theme?: ConsolePaletteName; }
-  let { open = $bindable(false), user, theme = 'legal' }: Props = $props(); import { cn } from '$lib/utils'; import { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings } from 'lucide-svelte'; import { onMount } from 'svelte'; let mounted = $state<boolean>(false); $effect(() => { mounted = true; }); let currentPath = $derived($page.url.pathname); let isAdmin = $derived(user?.role === 'admin'); type NavigationItem = { name: string; href: string; icon: any;, current: boolean; badge?: string; }; let navigation = $derived([ {, name: '🎮 Command Center', href: '/dashboard', icon: Home, current: currentPath === '/' || currentPath === '/dashboard', badge: 'HQ'
+  let { open = $bindable(false), user, theme = 'legal' }: Props = $props(); import { cn } from '$lib/utils'; import { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings } from 'lucide-svelte'; import { onMount } from 'svelte'; let mounted = $state<boolean>(false); $effect(() => { mounted = true; }); let currentPath = $derived($page.url.pathname); let isAdmin = $derived(user?.role === 'admin'); type NavigationItem = { name: string; href: string; icon: any;, current: boolean; badge?: string; }; let navigation = $derived([ { name: '🎮 Command Center', href: '/dashboard', icon: Home, current: currentPath === '/' || currentPath === '/dashboard', badge: 'HQ'
     }, {
       name: '⚖️ Case Management', href: '/cases', icon: Briefcase, current: currentPath.startsWith('/cases'), badge: 'ACTIVE'
     }, {
@@ -13,9 +13,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     }, {
       name: '📋 Document Analysis', href: '/documents', icon: FileBarChart, current: currentPath.startsWith('/documents') }, {
       name: '🔍 Legal Research', href: '/research', icon: Search, current: currentPath.startsWith('/research') }, {
-      name: '⏱️ Case Timeline', href: '/timeline', icon: Layers, current: currentPath.startsWith('/timeline') }, ]); let analytics = $derived([ {, name: '📊 Analytics Hub', href: '/analytics', icon: BarChart3, current: currentPath.startsWith('/analytics') }, {
-      name: '📋 Reports', href: '/reports', icon: FileBarChart, current: currentPath.startsWith('/reports') }, ]); let adminFeatures = $derived([ {, name: '🔧 Admin Console', href: '/admin', icon: Settings, current: currentPath.startsWith('/admin'), badge: 'ADMIN'
-    }, ]); let settings = $derived([ {, name: '⚙️ Settings', href: '/settings', icon: Settings, current: currentPath.startsWith('/settings') }, ]); function closeSidebar() { open = false; }
+      name: '⏱️ Case Timeline', href: '/timeline', icon: Layers, current: currentPath.startsWith('/timeline') }, ]); let analytics = $derived([ { name: '📊 Analytics Hub', href: '/analytics', icon: BarChart3, current: currentPath.startsWith('/analytics') }, {
+      name: '📋 Reports', href: '/reports', icon: FileBarChart, current: currentPath.startsWith('/reports') }, ]); let adminFeatures = $derived([ { name: '🔧 Admin Console', href: '/admin', icon: Settings, current: currentPath.startsWith('/admin'), badge: 'ADMIN'
+    }, ]); let settings = $derived([ { name: '⚙️ Settings', href: '/settings', icon: Settings, current: currentPath.startsWith('/settings') }, ]); function closeSidebar() { open = false; }
 </script> <!-- Mobile, backdrop --> {#if open} <button class="fixed inset-0 z-40 bg-black/50" onclick={ closeSidebar } aria-label="Close, sidebar"></button> {/if} <!-- Sidebar --> <aside class={cn(
     'fixed top-0 left-0 z-50 h-full w-64 transform bg-nier-surface border-r border-nier-gray transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static, lg:inset-0', open ? 'translate-x-0': '-translate-x-full'
   )} >
@@ -57,9 +57,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } .animate-nier-pulse { animation: nier-pulse 2s infinite; }
   /* Console-themed scrollbar */ nav::-webkit-scrollbar { width: 4px; }
   nav::-webkit-scrollbar-track { background: transparent; }
-  nav::-webkit-scrollbar-thumb {, background: var(--console-primary, #00aa00); border-radius: 2px; }
-  /* Gaming button styles */ .nes-btn {, background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00); }
-  .nes-btn:hover {, background: var(--console-bg, #0f0f23); color: var(--console-primary, #00aa00); }
+  nav::-webkit-scrollbar-thumb { background: var(--console-primary, #00aa00); border-radius: 2px; }
+  /* Gaming button styles */ .nes-btn { background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00); }
+  .nes-btn:hover { background: var(--console-bg, #0f0f23); color: var(--console-primary, #00aa00); }
   /* Console theme badges */ .console-badge { background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23); font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 1px; }
   /* Responsive adjustments for gaming theme */ @media (max-width: 768px) { .sidebar { width: 100%; max-width: 320px; }
   } @media (min-width: 1024px) { aside { position: relative; transform: none; transition: width: 0.3s ease; }

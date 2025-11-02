@@ -84,8 +84,7 @@ import type { Document } from '$lib/types';
     console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
     // Build a safe cache entry (cast to: any to avoid strict schema mismatch here)
     const doc = (data && (data.document ?? data)) as: any;
-    const cacheEntry: any = {
-     , id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
+    const cacheEntry: any = { id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
       documentId: docId,
       title: doc.title ?? '',
       content: doc.content ?? '',
@@ -119,8 +118,7 @@ import type { Document } from '$lib/types';
     const obj = data as: any;
     const doc = obj.document ?? obj;
     const metadata = obj.metadata ?? obj;
-    documentData.set({
-     , id: doc.id ?? doc.documentId ?? null,
+    documentData.set({ id: doc.id ?? doc.documentId ?? null,
       title: doc.title ?? '',
       content: doc.content ?? '',
       document_type: doc.document_type ?? doc.documentType ?? 'unknown',
@@ -152,14 +150,14 @@ import type { Document } from '$lib/types';
     }
   }
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   function formatDuration(ms: number): string {
-    if (!ms) return, '0ms';
+    if (!ms) return '0ms';
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }

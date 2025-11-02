@@ -16,9 +16,9 @@ Automatically handles server upload with localStorage fallback
   const { accept = '*/*' } = $props()
   const { maxSize = 10 } = $props() // MB
   const { forceLocalStorage = $state(false) } = $props()
-  const { onupload } = $props<{ onupload: ((event: {, results: UploadResponse[] }) }>()
-  const { onerror } = $props<{ onerror: ((event: {, error: string }) }>()
-  const { onprogress } = $props<{ onprogress: ((event: {, completed: number }>() total: number;, file: string }) => void) | undefined;
+  const { onupload } = $props<{ onupload: ((event: { results: UploadResponse[] }) }>()
+  const { onerror } = $props<{ onerror: ((event: { error: string }) }>()
+  const { onprogress } = $props<{ onprogress: ((event: { completed: number }>() total: number;, file: string }) => void) | undefined;
   // State (plain let)
   let isDragOver = $state<boolean>(false);
   let isUploading = $state<boolean>(false);
@@ -28,7 +28,7 @@ Automatically handles server upload with localStorage fallback
   let error: string | null = null;
   // Storage stats shape
   type StorageStats = { used: number; available: number; percentage: number };
-  let storageStats: StorageStats = {, used: 0, available: 0, percentage: 0 };
+  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
   let fileInput: HTMLInputElement | null = null;
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
   let _interval: ReturnType<typeof setInterval> | null = null;
@@ -324,7 +324,7 @@ Automatically handles server upload with localStorage fallback
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% {, transform: rotate(0deg); }
+    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .progress-text {
@@ -435,7 +435,6 @@ Automatically handles server upload with localStorage fallback
   .file-size {
     color: #6b7280;
   }
-  .error-text {
-   , color: #dc2626;
+  .error-text { color: #dc2626;
   }
 </style>

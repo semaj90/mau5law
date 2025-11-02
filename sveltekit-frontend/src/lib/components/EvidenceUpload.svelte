@@ -40,8 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     const auth = 'Basic, ' + btoa(`${username}:${password}`);
     const res = await fetch(url, {
       method: 'PUT',
-      headers: {
-       , Authorization: auth,
+      headers: { Authorization: auth,
         'Content-Type': file.type || 'application/octet-stream'
       },
       body: file
@@ -163,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
     if (fileInput) fileInput.value = '';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

@@ -81,12 +81,12 @@ import type { Case } from '$lib/types';
   function getHealthColor(status: string): string {
     switch (status) {
       case, 'healthy':
-        return, 'text-green-600';
+        return 'text-green-600';
       case, 'warning':
-        return, 'text-yellow-600';
+        return 'text-yellow-600';
       case, 'error':
-        return, 'text-red-600';
-      default: return, 'text-gray-600';
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
   function formatHour(hour: number): string {
@@ -234,12 +234,10 @@ import type { Case } from '$lib/types';
     font-weight: 500;
     transition: all 0.2s ease; /* added unit + easing */
   }
-  .btn-primary {
-   , background: var(--primary-color);
+  .btn-primary { background: var(--primary-color);
     color: white;
   }
-  .btn-secondary {
-   , background: var(--secondary-color);
+  .btn-secondary { background: var(--secondary-color);
     color: var(--text-color);
   }
   .health-grid {
@@ -265,8 +263,7 @@ import type { Case } from '$lib/types';
     font-weight: bold;
     text-transform: capitalize; /* fixed typo */
   }
-  .metrics-grid {
-   , display: grid;
+  .metrics-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
@@ -279,8 +276,7 @@ import type { Case } from '$lib/types';
     border: 1px solid var(--border-color);
     text-align: center;
   }
-  .metric-card h3 {
-   , margin: 0, 0 1rem 0;
+  .metric-card h3 { margin: 0, 0 1rem 0;
     font-size: 0.875rem;
    , color: var(--text-secondary);
     text-transform: uppercase;
@@ -315,8 +311,7 @@ import type { Case } from '$lib/types';
     border: 1px solid var(--border-color);
     margin-bottom: 2rem;
   }
-  .chart-section h2 {
-   , margin: 0, 0 1.5rem 0;
+  .chart-section h2 { margin: 0, 0 1.5rem 0;
     font-size: 1.25rem;
    , color: var(--text-color);
   }
@@ -392,8 +387,7 @@ import type { Case } from '$lib/types';
     max-height: 400px;
     overflow-y: auto;
   }
-  .log-entry {
-   , padding: 0.75rem;
+  .log-entry { padding: 0.75rem;
     border-left: 4px solid var(--border-color);
     margin-bottom: 0.5rem;
    , background: var(--background-light);
@@ -450,7 +444,6 @@ import type { Case } from '$lib/types';
   .text-red-600 {
     color: #dc2626;
   }
-  .text-gray-600 {
-   , color: #6b7280;
+  .text-gray-600 { color: #6b7280;
   }
 </style>

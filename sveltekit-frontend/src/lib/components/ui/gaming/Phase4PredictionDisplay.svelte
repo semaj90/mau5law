@@ -1,10 +1,10 @@
-<!-- Phase, 4 Gaming UI: Case Outcome Prediction, Display --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { fade, fly, scale } from 'svelte/transition'; import type { CaseOutcomePrediction } from '$lib/services/predictive-analytics-service'; let { caseId, consoleTheme = 'n64', onPredictionRequest = () => , autoLoad = true } = $props(); let prediction = $state<CaseOutcomePrediction | null>(null); let loading = $state<boolean>(false); let error = $state<string | null>(null); // Console theme configurations const themeConfig = { n64: {, bgColor: 'linear-gradient(135deg, #1E3A8A, #3730A3)', accentColor: '#F59E0B', textColor: '#FFFFFF', borderColor: '#60A5FA', fontFamily: '"Orbitron", monospace'
-    }, nes: {, bgColor: '#2D2D2D', accentColor: '#FC0F0F', textColor: '#FFFFFF', borderColor: '#D3D3D3', fontFamily: '"Courier New", monospace'
-    }, snes: {, bgColor: '#5A4FCF', accentColor: '#FF6B9D', textColor: '#FFFFFF', borderColor: '#E4E4FF', fontFamily: '"Press Start 2P", monospace'
+<!-- Phase, 4 Gaming UI: Case Outcome Prediction, Display --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { fade, fly, scale } from 'svelte/transition'; import type { CaseOutcomePrediction } from '$lib/services/predictive-analytics-service'; let { caseId, consoleTheme = 'n64', onPredictionRequest = () => , autoLoad = true } = $props(); let prediction = $state<CaseOutcomePrediction | null>(null); let loading = $state<boolean>(false); let error = $state<string | null>(null); // Console theme configurations const themeConfig = { n64: { bgColor: 'linear-gradient(135deg, #1E3A8A, #3730A3)', accentColor: '#F59E0B', textColor: '#FFFFFF', borderColor: '#60A5FA', fontFamily: '"Orbitron", monospace'
+    }, nes: { bgColor: '#2D2D2D', accentColor: '#FC0F0F', textColor: '#FFFFFF', borderColor: '#D3D3D3', fontFamily: '"Courier New", monospace'
+    }, snes: { bgColor: '#5A4FCF', accentColor: '#FF6B9D', textColor: '#FFFFFF', borderColor: '#E4E4FF', fontFamily: '"Press Start 2P", monospace'
     } }
   let currentTheme = $derived(themeConfig[consoleTheme as keyof typeof themeConfig] || themeConfig.n64); async function loadPrediction(): Promise<any> { if (!caseId) return; loading = true; error = null; try { const response = await fetch('/api/ai/phase4/prediction', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId, consoleTheme }) }); const data = await response.json(); if (data.success) { prediction = data.predictio; onPredictionRequest(data.prediction); } else { error = data.error || 'Failed to load prediction'; }
     } catch (err) { error = 'Network error occurred'; console.error('Prediction loading error:', err); } finally { loading = false; }'
-  } function getProbabilityColor(probability: number): string { if (probability >= 0.8) return, '#10B981'; // Green if (probability >= 0.6) return, '#F59E0B'; // Yellow if (probability >= 0.4) return, '#EF4444'; // Red return, '#6B7280'; // Gray }
+  } function getProbabilityColor(probability: number): string { if (probability >= 0.8) return '#10B981'; // Green if (probability >= 0.6) return '#F59E0B'; // Yellow if (probability >= 0.4) return '#EF4444'; // Red return '#6B7280'; // Gray }
   function getConfidenceBarWidth(level: string): number { const levels = { LOW: 25, MEDIUM: 50, HIGH: 75, CRITICAL: 100 } return levels[level as keyof typeof levels] || 0; }
   function getRiskIndicatorIcon(risk: string): string { const icons = { LOW: '🟢', MEDIUM: '🟡', HIGH: '🟠', CRITICAL: '🔴'
     } return icons[risk as keyof typeof icons] || '⚪'; }
@@ -24,7 +24,7 @@
   .header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid currentColor; padding-bottom: 1rem; }
   .title { margin: 0; font-size: 1.25rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem; }
   .refresh-btn { background: none; border: 2px solid currentColor; padding: 0.5rem; cursor: pointer; border-radius: 4px; font-size: 1.2rem;, transition: all 0.2; }
-  .refresh-btn:hover:not(:disabled) {, transform: scale(1.1); }
+  .refresh-btn:hover:not(:disabled) { transform: scale(1.1); }
   .refresh-btn:disabled { opacity: 0.5;, cursor: not-allowed; }
   .loading-container, .error-container, .empty-state { text-align: center; padding: 2rem; }
   .loading-spinner { width: 40px; height: 40px;, border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
@@ -43,8 +43,8 @@
   .confidence-label { font-weight: bold; text-transform: uppercase; }
   .confidence-label.low { color: #EF4444 } .confidence-label.medium { color: #F59E0B } .confidence-label.high { color: #10B981 } .confidence-label.critical { color: #8B5CF6 } .risk-assessment { display: flex; align-items: center;, gap: 0.5rem; font-weight: bold; }
   .factors-section, .similar-cases-section { margin: 2rem 0; border-top: 2px solid rgba(255,255,255,0.3); padding-top: 1.5rem; }
-  .section-title {, margin: 0, 0 1rem 0; font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; }
-  .factors-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .section-title { margin: 0, 0 1rem 0; font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; }
+  .factors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
   .factor-card, .case-card { border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 1rem;, background: rgba(0,0,0,0.2); }
   .factor-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 0.5rem; }
   .factor-type { font-weight: bold; font-size: 0.8rem; color: currentColor; }
@@ -57,19 +57,19 @@
   .case-header { display: flex; justify-content: space-betweenn; align-items: flex-start; margin-bottom: 0.5rem; }
   .case-title { margin: 0; font-size: 0.9rem; flex: 1 }
   .case-outcome { font-weight: bold; font-size: 0.8rem; padding: 0.25rem 0.5rem; border-radius: 4px; display: flex; align-items: center; gap: 0.25rem; }
-  .case-outcome.won {, background: rgba(16, 185, 129, 0.2); color: #10B981; }
-  .case-outcome.lost {, background: rgba(239, 68, 68, 0.2); color: #EF4444; }
-  .case-outcome.settled {, background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+  .case-outcome.won { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+  .case-outcome.lost { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+  .case-outcome.settled { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
   .case-stats { margin-bottom: 0.5rem; font-size: 0.8rem; opacity: 0.8; }
   .key-lessons { font-size: 0.8rem; }
-  .key-lessons ul {, margin: 0.5rem, 0 0 0; padding-left: 1rem; }
+  .key-lessons ul { margin: 0.5rem, 0 0 0; padding-left: 1rem; }
   .key-lessons li { margin-bottom: 0.25rem; }
   .gaming-elements { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 2px solid rgba(255,255,255,0.3); }
   .achievement-display { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;, background: rgba(0,0,0,0.3); border: 2px solid currentColor; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
   .empty-state { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
   .empty-icon { font-size: 3rem;, opacity: 0.5; }
   .analyze-btn, .retry-btn { margin-top: 1rem; }
-  @keyframes spin { to {, transform: rotate(360deg) } }
+  @keyframes spin { to { transform: rotate(360deg) } }
   @keyframes loading-slide { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }
   /* Responsive design */ @media (max-width: 768px) { .main-prediction { flex-direction: column; text-align: center; }
     .factors-grid { grid-template-columns: 1fr; }

@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
   let showFilters = $state<boolean>(false);
   // Mock persons data - replace with real API call
   let persons = $state([
-    {,
+    {
       id: '1',
       name: 'John Smith',
       alias: 'JS',

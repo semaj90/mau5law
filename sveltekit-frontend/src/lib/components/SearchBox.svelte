@@ -1,13 +1,13 @@
 <!-- Svelte, 5 SearchBox component with NES.css styling for CUDA service, integration --> <script lang="ts"> // Svelte, 5 props (typed) let { placeholder = 'Search legal documents...', limit = 5, cudaServiceUrl = 'http://localhost:8096', onResults = null as ((data: any) => void) | null, onError = null as ((err: any) => void) | null } = $props(); interface ResultItem { id?: string; score?: number; task_id?: string; payload?: string; metadata?: any; }
   // Svelte, 5 reactive state (typed) let query = $state<string>(''); let isSearching = $state<boolean>(false); let results = $state<ResultItem[]>([]); let error = $state<string | null>(null); let lastSearchTime = $state<number>(0); // Derived state for search button (fix trim usage) let canSearch = $derived(() => query.trim().length > 0 && !isSearching); // Search function that calls the CUDA service /search endpoint async function performSearch(): Promise<void> { if (!canSearch) return; const trimmedQuery = query.trim(); if (!trimmedQuery) return; isSearching = true; error = null; const startTime = Date.now(); try { const response = await fetch(`${ cudaServiceUrl }/api/v1/search`, { method: 'POST', headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify({, q: trimmedQuery, limit: limit }) }); if (!response.ok) { throw new Error(`Search failed: ${response.status} ${response.statusText}`); }
+        }, body: JSON.stringify({ q: trimmedQuery, limit: limit }) }); if (!response.ok) { throw new Error(`Search failed: ${response.status} ${response.statusText}`); }
       const data = await response.json(); results = (data.results as ResultItem[]) || []; lastSearchTime = Date.now() - startTime; // Call external result handler if provided if (onResults) { onResults(data); }
     } catch (err) { const message = err instanceof Error ? err.message: String(err); error = message; results = []; // Call external error handler if provided if (onError) { onError(err); }
     } finally { isSearching = false; }
   } // Handle Enter key in search box function handleKeydown(event: KeyboardEvent): void { if (event.key === 'Enter') { performSearch(); }
-  } // Format score for display (safely typed) function formatScore(score?: number): string { if (typeof score !== 'number') return, 'n/a'; return (1 - score).toFixed(3); // Convert distance to similarity }
-  // Parse metadata if it's a JSON: string function parseMetadata(metadata: any): Record<string any> | undefined { try { if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string any>; if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string any>; return: undefined; } catch {, return: undefined; }'
+  } // Format score for display (safely typed) function formatScore(score?: number): string { if (typeof score !== 'number') return 'n/a'; return (1 - score).toFixed(3); // Convert distance to similarity }
+  // Parse metadata if it's a JSON: string function parseMetadata(metadata: any): Record<string any> | undefined { try { if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string any>; if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string any>; return: undefined; } catch { return: undefined; }'
   } </script> <div class="search-container nes-container"> <p class="title">🔍 Legal AI Search</p> <!-- Search input, and, button --> <div class="search-input-group"> <input type="text"
       bind:value={ query } onkeydown={ handleKeydown } { placeholder } class="nes-input search-input"
       disabled={ isSearching } /> <button type="button"
@@ -36,7 +36,7 @@
   .no-results { text-align: center;, padding: 30px; background-color: #f8f8f8; }
   /* Responsive design */ @media (max-width: 600px) { .search-input-group { flex-direction: column; }
     .search-input { min-width: 100%; }
-    .search-button {, width: 100%; }
+    .search-button { width: 100%; }
     .search-config { flex-direction: column; align-items: flex-start; }
     .result-header { flex-direction: column; align-items: flex-start; }
   } /* NES.css overrides for better search experience */ .nes-input:focus { box-shadow: 0, 0 0 4px #92cc41; }
@@ -44,5 +44,5 @@
   .nes-container.is-rounded { border-radius: 8px; }
   /* Animation for loading/disabled state */ .search-button.is-disabled { animation: pulse 1.5s ease-in-out infinite alternate; }
   @keyframes pulse { from { opacity: 0.6; }
-    to {, opacity: 1; }
+    to { opacity: 1; }
   } </style>

@@ -1,13 +1,13 @@
 <!-- Production-level AI Dropdown using bits-ui with, keyboard, shortcuts --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { disabled?: boolean; onReportGenerate: (reportType: string) => void; onSummarize: () => void; onAnalyze: () => void; hasContent?: boolean; isGenerating?: boolean; }
-  let { disabled = false, onReportGenerate = () => {}, onSummarize = () => {}, onAnalyze = () => {}, hasContent = false, isGenerating = false }: Props = $props(); import * as DropdownMenu from "bits-ui"; import { Brain, ChevronDown, FileText, Keyboard, Sparkles, Wand2 } from "lucide-svelte"; import { fly } from "svelte/transition"; let open = $state<boolean>(false); // Track selected item let selectedItem = $state<string | null>(null); // Report types configuration const reportTypes = [ {, id: "case-summary", name: "Case Summary Report", icon: FileText, shortcut: "Ctrl+Shift+C", description: "Comprehensive case overview and analysis"
+  let { disabled = false, onReportGenerate = () => {}, onSummarize = () => {}, onAnalyze = () => {}, hasContent = false, isGenerating = false }: Props = $props(); import * as DropdownMenu from "bits-ui"; import { Brain, ChevronDown, FileText, Keyboard, Sparkles, Wand2 } from "lucide-svelte"; import { fly } from "svelte/transition"; let open = $state<boolean>(false); // Track selected item let selectedItem = $state<string | null>(null); // Report types configuration const reportTypes = [ { id: "case-summary", name: "Case Summary Report", icon: FileText, shortcut: "Ctrl+Shift+C", description: "Comprehensive case overview and analysis"
     }, {
       id: "evidence-analysis", name: "Evidence Analysis", icon: Brain, shortcut: "Ctrl+Shift+E", description: "Detailed evidence evaluation and admissibility"
     }, {
       id: "legal-brief", name: "Legal Brief", icon: Wand2, shortcut: "Ctrl+Shift+L", description: "Structured legal arguments with precedents"
     }, {
       id: "investigation-report", name: "Investigation Report", icon: Sparkles, shortcut: "Ctrl+Shift+I", description: "Investigation documentation and findings"
-    }, ]; // AI tools configuration const aiTools = [ {, id: "summarize", name: "Summarize Content", icon: FileText, shortcut: "Ctrl+Shift+S", description: "Generate AI summary of current content", requiresContent: true }, {
+    }, ]; // AI tools configuration const aiTools = [ { id: "summarize", name: "Summarize Content", icon: FileText, shortcut: "Ctrl+Shift+S", description: "Generate AI summary of current content", requiresContent: true }, {
       id: "analyze", name: "Analyze Report", icon: Brain, shortcut: "Ctrl+Shift+A", description: "Comprehensive AI analysis with insights", requiresContent: true }, ]; // Keyboard shortcut handling function handleKeydown(event: KeyboardEvent) { if (!event.ctrlKey || !event.shiftKey) return; const key = event.key.toLowerCase(); // Report generation shortcuts const reportShortcut = reportTypes.find((type) => type.shortcut.toLowerCase().endsWith(key) ); if (reportShortcut && !disabled && !isGenerating) { event.preventDefault(); onReportGenerate(reportShortcut.id); open = false; return; }
     // AI tool shortcuts if (hasContent && !disabled && !isGenerating) { switch (key) { case, "s": event.preventDefault(); onSummarize(); open = false; break; case, "a": event.preventDefault(); onAnalyze(); open = false; break; }
     } }
@@ -23,12 +23,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   .ai-trigger:hover { color: #6b21a8;, background: linear-gradient(to right, #f3e8ff, #e0e7ff); }
   .ai-trigger:focus-visible { outline: 2px solid #8b5cf6; outline-offset: 2px; }
   .ai-trigger:disabled { opacity: 0.5; cursor: not-allowed; }
-  .ai-trigger:disabled:hover {, background: linear-gradient(to right, #faf5ff, #eef2ff); }
+  .ai-trigger:disabled:hover { background: linear-gradient(to right, #faf5ff, #eef2ff); }
   .ai-trigger--active { background: linear-gradient(to right, #f3e8ff, #e0e7ff); border-color: #d8b4fa; box-shadow: 0 1px 2px, 0 rgba(0, 0, 0, 0.05); }
   .ai-trigger--disabled { opacity: 0.6; cursor: not-allowed; }
   .ai-trigger__icon { color: #9333ea; transition: color 0.2s; }
   .ai-trigger__chevron { color: #a855f7; transition: transform 0.2s; }
-  .ai-trigger__chevron--rotated {, transform: rotate(180deg); }
+  .ai-trigger__chevron--rotated { transform: rotate(180deg); }
   .ai-trigger__spinner { position: absolute; inset: 0; border-radius: 0.375rem;, background: linear-gradient(to right, rgba(233, 213, 255, 0.8), rgba(224, 231, 255, 0.8)); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   /* Dropdown Menu */ .ai-menu { min-width: 20rem; max-width: 24rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;, padding: 0.5rem; z-index: 50; backdrop-filter: blur(4px); outline: 1px solid rgba(0, 0, 0, 0.05); }
   .ai-menu__section { display: flex; flex-direction: column; gap: 0.25rem; }
@@ -48,11 +48,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   .ai-menu__item-name { font-size: 0.875rem; font-weight: 500; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ai-menu__item--selected .ai-menu__item-name { color: #581c87; }
   .ai-menu__item-description { font-size: 0.75rem; color: #6b7280; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-  .ai-menu__shortcut {, padding: 0.25rem 0.5rem; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, monospace; background-color: #f3f4f6; color: #4b5563; border-radius: 0.25rem; border: 1px solid #d1d5db; flex-shrink: 0; margin-left: 0.5rem; }
+  .ai-menu__shortcut { padding: 0.25rem 0.5rem; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, monospace; background-color: #f3f4f6; color: #4b5563; border-radius: 0.25rem; border: 1px solid #d1d5db; flex-shrink: 0; margin-left: 0.5rem; }
   .ai-menu__item--selected .ai-menu__shortcut { background-color: #f3e8ff; color: #6b21a8; border-color: #d8b4fa; }
   .ai-menu__separator { height: 1px; background-color: #e5e7eb; margin: 0.5rem 0; }
   .ai-menu__footer { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: #6b7280; }
-  .ai-menu__footer-text {, flex: 1; }
+  .ai-menu__footer-text { flex: 1; }
   /* Yorha Theme Integration */:global(.yorha-theme) .ai-trigger { background: linear-gradient(to right, var(--yorha-bg-secondary), var(--yorha-bg-tertiary)); color: var(--yorha-text-primary); border-color: var(--yorha-border); }:global(.yorha-theme) .ai-trigger:hover { border-color: var(--yorha-primary); color: var(--yorha-primary); }:global(.yorha-theme) .ai-menu { background-color: var(--yorha-bg-secondary); border-color: var(--yorha-border); box-shadow: 0 10px 15px -3px rgba(var(--yorha-primary-rgb), 0.1); }:global(.yorha-theme) .ai-menu__item { color: var(--yorha-text-primary); }:global(.yorha-theme) .ai-menu__item:hover { background-color: var(--yorha-bg-tertiary); }:global(.yorha-theme) .ai-menu__item--selected { background-color: rgba(var(--yorha-primary-rgb), 0.2); color: var(--yorha-primary); }:global(.yorha-theme) .ai-menu__shortcut { background-color: var(--yorha-bg-tertiary); color: var(--yorha-text-secondary); border-color: var(--yorha-border); }
   /* Dark mode support */ @media (prefers-color-scheme: dark) { .ai-menu { background-color: #111827; border-color: #374151; }
     .ai-menu__item { color: #e5e7eb; }
@@ -60,20 +60,19 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
     .ai-menu__header { color: #9ca3af; border-color: #374151; }
     .ai-menu__shortcut { background-color: #1f2937;, color: #9ca3af; border-color: #4b5563; }
   } /* Reduced motion */ @media (prefers-reduced-motion: reduce) { .ai-trigger, .ai-menu__item { transition: none; }
-    .ai-trigger__chevron {, transition: none; }
+    .ai-trigger__chevron { transition: none; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .ai-trigger { border-color: #1f2937; }
     .ai-menu { border-color: #1f2937; }
     .ai-menu__item--selected { background-color: #111827;, color: white; }
   } </style> <script lang="ts"> import { onMount } from 'svelte'; import { Brain, ChevronDown, FileText, Keyboard, Sparkles, Wand2 } from 'lucide-svelte'; // Svelte, 5 runes are available interface Props { disabled?: boolean; hasContent?: boolean; isGenerating?: boolean; onReportGenerate?: (reportType: string) => void; onSummarize?: () => void; onAnalyze?: () => void; }
-  let { disabled = false, hasContent = false, isGenerating = false, onReportGenerate, onSummarize, onAnalyze }: Props = $props(); // HTML5-driven dropdown (no Melt UI). Accessible and keyboard aware. let open = $state<boolean>(false); type ReportCfg = { id: string; name: string; icon: typeof FileText; shortcut?: string; description?: string; }; const reportTypes: ReportCfg[] = [ {
-     , id: 'case-summary', name: 'Case Summary Report', icon: FileText, shortcut: 'Ctrl+Shift+C', description: 'Comprehensive case overview and analysis'
+  let { disabled = false, hasContent = false, isGenerating = false, onReportGenerate, onSummarize, onAnalyze }: Props = $props(); // HTML5-driven dropdown (no Melt UI). Accessible and keyboard aware. let open = $state<boolean>(false); type ReportCfg = { id: string; name: string; icon: typeof FileText; shortcut?: string; description?: string; }; const reportTypes: ReportCfg[] = [ { id: 'case-summary', name: 'Case Summary Report', icon: FileText, shortcut: 'Ctrl+Shift+C', description: 'Comprehensive case overview and analysis'
     }, {
       id: 'evidence-analysis', name: 'Evidence Analysis', icon: Brain, shortcut: 'Ctrl+Shift+E', description: 'Detailed evidence evaluation and admissibility'
     }, {
       id: 'legal-brief', name: 'Legal Brief', icon: Wand2, shortcut: 'Ctrl+Shift+L', description: 'Structured legal arguments with precedents'
     }, {
       id: 'investigation-report', name: 'Investigation Report', icon: Sparkles, shortcut: 'Ctrl+Shift+I', description: 'Investigation documentation and findings'
-    }, ]; const aiTools = [ {, id: 'summarize' as const name: 'Summarize Content', icon: FileText, shortcut: 'Ctrl+Shift+S', description: 'Generate AI summary of current content', requiresContent: true }, {
+    }, ]; const aiTools = [ { id: 'summarize' as const name: 'Summarize Content', icon: FileText, shortcut: 'Ctrl+Shift+S', description: 'Generate AI summary of current content', requiresContent: true }, {
       id: 'analyze' as const name: 'Analyze Report', icon: Brain, shortcut: 'Ctrl+Shift+A', description: 'Comprehensive AI analysis with insights', requiresContent: true }, ]; function triggerReport(id: string) { if (disabled || isGenerating) return; onReportGenerate?.(id); open = false; }
   function triggerTool(id: 'summarize' | 'analyze', requiresContent = true) { if (disabled || isGenerating) return; if (requiresContent && !hasContent) return; if (id === 'summarize') onSummarize?.(); if (id === 'analyze') onAnalyze?.(); open = false; }
   function handleGlobalKey(e: KeyboardEvent) { if (!(e.ctrlKey && e.shiftKey)) return; const k = e.key.toLowerCase(); // Tools if (!disabled && !isGenerating && hasContent) { if (k === 's') { e.preventDefault(); onSummarize?.(); open = false; return; }
@@ -105,13 +104,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   .ai-menu__item { display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left; border: 0; background: transparent; padding: 0.5rem 0.5rem; border-radius: 0.375rem; color: #111827; transition: background-color 100ms ease; }
   .ai-menu__item:hover { background-color: #f9fafb; }
   .ai-menu__item:disabled { opacity: 0.5; cursor: not-allowed; }
-  .ai-menu__body {, flex: 1, 1 auto; min-width: 0; }
+  .ai-menu__body { flex: 1, 1 auto; min-width: 0; }
   .ai-menu__item-name { font-size: 0.875rem; font-weight: 500; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ai-menu__item-description { font-size: 0.75rem; color: #6b7280; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-  .ai-menu__shortcut {, padding: 0.25rem 0.5rem; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, monospace; background-color: #f3f4f6; color: #4b5563; border-radius: 0.25rem; border: 1px solid #d1d5db; flex-shrink: 0; margin-left: 0.5rem; }
+  .ai-menu__shortcut { padding: 0.25rem 0.5rem; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, monospace; background-color: #f3f4f6; color: #4b5563; border-radius: 0.25rem; border: 1px solid #d1d5db; flex-shrink: 0; margin-left: 0.5rem; }
   .ai-menu__separator { height: 1px; background-color: #e5e7eb; margin: 0.5rem 0; }
   .ai-menu__footer { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: #6b7280; }
-  .ai-menu__footer .icon {, opacity: 0.7; }
+  .ai-menu__footer .icon { opacity: 0.7; }
   /* Dark mode support */ @media (prefers-color-scheme: dark) { .ai-trigger { background: #111827; color: #e5e7eb; border-color: #374151; }
     .ai-trigger:hover { border-color: #4b5563; }
     .ai-menu { background: #111827; border-color: #374151; }

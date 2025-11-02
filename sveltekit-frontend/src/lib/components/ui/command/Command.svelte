@@ -1,16 +1,16 @@
-<!-- Legal AI Command Palette - Global, Search, Component --> <script lang="ts"> import BitsUI from 'bits-ui'; const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = BitsUI as: any; import { Search, FileText, Users, Gavel } from 'lucide-svelte'; import { cn } from '$lib/utils'; // Svelte, 5 props let { open = $bindable(false), onOpenChange, placeholder = 'Search...', className = '', ondispatch }: { open?: boolean; onOpenChange?: (open: boolean) => void; placeholder?: string; className?: string; ondispatch?: (item: any) => void; } = $props(); // Mock data for legal AI platform const mockCommands = [ {, group: 'Cases', icon: Gavel, items: [ {, id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] }, {
+<!-- Legal AI Command Palette - Global, Search, Component --> <script lang="ts"> import BitsUI from 'bits-ui'; const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = BitsUI as: any; import { Search, FileText, Users, Gavel } from 'lucide-svelte'; import { cn } from '$lib/utils'; // Svelte, 5 props let { open = $bindable(false), onOpenChange, placeholder = 'Search...', className = '', ondispatch }: { open?: boolean; onOpenChange?: (open: boolean) => void; placeholder?: string; className?: string; ondispatch?: (item: any) => void; } = $props(); // Mock data for legal AI platform const mockCommands = [ { group: 'Cases', icon: Gavel, items: [ { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] }, {
           id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] }, {
           id: 'case-3', title: 'People v. Williams', description: 'DUI case pending', keywords: ['dui', 'williams', 'traffic'] }, ]
     }, {
-      group: 'Evidence', icon: FileText, items: [ {, id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] }, {
+      group: 'Evidence', icon: FileText, items: [ { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] }, {
           id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] }, {
           id: 'evidence-3', title: 'Witness Statement - Martinez', description: 'Testimony transcript', keywords: ['witness', 'martinez', 'statement'] }, ]
     }, {
-      group: 'People', icon: Users, items: [ {, id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] }, {
+      group: 'People', icon: Users, items: [ { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] }, {
           id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] }, {
           id: 'person-3', title: 'Attorney Johnson', description: 'Prosecuting attorney', keywords: ['attorney', 'johnson', 'prosecutor'] }, ]
     }, {
-      group: 'Documents', icon: FileText, items: [ {, id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] }, {
+      group: 'Documents', icon: FileText, items: [ { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] }, {
           id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] }, {
           id: 'doc-3', title: 'Police Report', description: 'Initial incident report', keywords: ['police', 'report', 'incident'] }, ]
     }, ]; function handleSelect(item: any) { ondispatch?.(item); open = false; onOpenChange?.(open); }

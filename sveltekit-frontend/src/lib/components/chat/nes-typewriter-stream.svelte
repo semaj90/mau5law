@@ -44,19 +44,19 @@
   .nes-typewriter-text { display: inli; font-weight: normal; letter-spacing: 0.5px; }
   .nes-typewriter-text.typing { /* Add subtle glow while typing */ text-shadow: 0, 0 3px currentColor; }
   /* Emphasis effect for special characters */ .nes-typewriter-text:global(.nes-text-emphasis) { animation: emphasize 0.3s ease-out; }
-  @keyframes emphasize { 0% {, transform: scale(1); }
+  @keyframes emphasize { 0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
   } .nes-typewriter-cursor { display: inline-block; opacity: 0; margin-left: 1px; font-weight: bold; color: currentColor; }
   .nes-typewriter-cursor.visible { opacity: 1; }
-  .nes-typewriter-cursor.blinking {, animation: blink 1s infinite; }
+  .nes-typewriter-cursor.blinking { animation: blink 1s infinite; }
   @keyframes blink { 0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   } /* Pixel-perfect rendering for retro look */ .nes-classic .nes-typewriter-text, .nes-modern .nes-typewriter-text, .nes-legal .nes-typewriter-text { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge; }
   /* Responsive design */ @media (max-width: 768px) { .nes-typewriter-container { font-size: 14px;, padding: 6px; }
   } @media (max-width: 480px) { .nes-typewriter-container { font-size: 12px;, padding: 4px; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .nes-typewriter-container { border-width: 3px; }
-    .nes-legal {, color: #ffff00; text-shadow: 0, 0 2px #000000; }
+    .nes-legal { color: #ffff00; text-shadow: 0, 0 2px #000000; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .nes-typewriter-cursor { animation: none;, opacity: 1; }
     .nes-typewriter-text:global(.nes-text-emphasis) { animation: none; }
   } </style>

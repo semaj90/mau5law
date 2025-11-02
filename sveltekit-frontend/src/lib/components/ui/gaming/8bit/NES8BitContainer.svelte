@@ -26,7 +26,7 @@
 /* Success variant */ {}:global(.nes-8bit-container.is-success) { border-color: #92cc41; background-color: rgba(146, 204, 65, 0.1); color: #92cc41; --container-border: #92cc41; --container-text: #92cc41; }
 /* Warning variant */ {}:global(.nes-8bit-container.is-warning) { border-color: #f7d51d; background-color: rgba(247, 213, 29, 0.1); color: #f7d51d; --container-border: #f7d51d; --container-text: #f7d51d; }
 /* Error variant */ {}:global(.nes-8bit-container.is-error) { border-color: #f83800; background-color: rgba(248, 56, 0, 0.1); color: #f83800; --container-border: #f83800; --container-text: #f83800; }
-/* Container content wrapper */ {} .container-content {, position: relative; z-index: 0 }
+/* Container content wrapper */ {} .container-content { position: relative; z-index: 0 }
 /* Interactive container styles */ {}:global(.nes-8bit-container[role='button']) { cursor: pointer; -webkit-user-select: none; -moz-user-select: none; user-select: none;, transition: transform 50ms ease-out; }:global(.nes-8bit-container[role='button']:hover) { transform: scale(1.01); filter: brightness(1.05); }:global(.nes-8bit-container[role='button']:active) { transform: scale(0.99); }:global(.nes-8bit-container.disabled) { opacity: 0.6;, cursor: not-allowed; pointer-events: none; }
 /* Focus styles for accessibility */ {}:global(.nes-8bit-container[tabindex]:focus-visible) { outline: 2px solid #ffffff; outline-offset: 2px; }
 /* Scanlines effect */ {}:global($1) { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: repeating-linear-gradient( {} 0deg, {} transparent, {} transparent 2px, {} rgba(0, 0, 0, 0.1) 2px, {} rgba(0, 0, 0, 0.1) 4px {} ); pointer-events: none; z-index: 1 }

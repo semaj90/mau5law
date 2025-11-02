@@ -18,10 +18,10 @@
       } else { if (document.activeElement === lastFocusable) { event.preventDefault(); firstFocusable.focus(); }
       } }
   } const handleBackdropClick = (_event: MouseEvent) => { if (closeOnOutsideClick && event.target === backdropElement) { closeDialog(); }
-  } // Get material styles based on variant const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: {, base: '#1a202c', highlight: '#2d3748', shadow: '#0d1117', accent: '#4a90e2' }, secondary: {, base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#6c757d' }, success: {, base: '#1a365d', highlight: '#2d5016', shadow: '#0d1b2a', accent: '#28a745' }, warning: {, base: '#452f06', highlight: '#744210', shadow: '#2d1b05', accent: '#ffc107' }, error: {, base: '#451b1b', highlight: '#742a2a', shadow: '#2d0e0e', accent: '#dc3545' }, info: {, base: '#1a202c', highlight: '#2a4365', shadow: '#0d1117', accent: '#17a2b8' } }
-    const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary; const materialMap = { basic: {, background: colors.base, borderColor: colors.highlight, boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, 0 ${dialogDepth * 2}px ${ dialogDepth }px rgba(0,0,0,0.5) `
-      }, phong: {, background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`, borderColor: 'transparent', boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, inset, 0 3px, 0 rgba(255,255,255,0.2), inset, 0 -3px, 0 rgba(0,0,0,0.4), 0 ${dialogDepth * 2}px ${dialogDepth * 3}px rgba(0,0,0,0.6) `
-      }, pbr: {, background: ` linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%), radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0,0,0,0.2) 0%, transparent 50%) `, borderColor: 'transparent', boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, inset, 0 4px, 0 rgba(255,255,255,0.3), inset, 0 -4px, 0 rgba(0,0,0,0.5), 0 ${dialogDepth * 3}px ${dialogDepth * 4}px rgba(0,0,0,0.7), 0, 0 0 2px rgba(255,255,255,0.05) `
+  } // Get material styles based on variant const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: { base: '#1a202c', highlight: '#2d3748', shadow: '#0d1117', accent: '#4a90e2' }, secondary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#6c757d' }, success: { base: '#1a365d', highlight: '#2d5016', shadow: '#0d1b2a', accent: '#28a745' }, warning: { base: '#452f06', highlight: '#744210', shadow: '#2d1b05', accent: '#ffc107' }, error: { base: '#451b1b', highlight: '#742a2a', shadow: '#2d0e0e', accent: '#dc3545' }, info: { base: '#1a202c', highlight: '#2a4365', shadow: '#0d1117', accent: '#17a2b8' } }
+    const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary; const materialMap = { basic: { background: colors.base, borderColor: colors.highlight, boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, 0 ${dialogDepth * 2}px ${ dialogDepth }px rgba(0,0,0,0.5) `
+      }, phong: { background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`, borderColor: 'transparent', boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, inset, 0 3px, 0 rgba(255,255,255,0.2), inset, 0 -3px, 0 rgba(0,0,0,0.4), 0 ${dialogDepth * 2}px ${dialogDepth * 3}px rgba(0,0,0,0.6) `
+      }, pbr: { background: ` linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%), radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0,0,0,0.2) 0%, transparent 50%) `, borderColor: 'transparent', boxShadow: ` 0 ${ dialogDepth }px, 0 ${colors.shadow}, inset, 0 4px, 0 rgba(255,255,255,0.3), inset, 0 -4px, 0 rgba(0,0,0,0.5), 0 ${dialogDepth * 3}px ${dialogDepth * 4}px rgba(0,0,0,0.7), 0, 0 0 2px rgba(255,255,255,0.05) `
       } }
     return materialMap[material as keyof typeof materialMap] || materialMap.pbr; }
   // Generate texture filtering CSS classes const getTextureFilteringClasses = (): string => { const classes: string[] = []; if (effectiveRenderOptions.textureQuality === 'ultra') { classes.push('texture-ultra'); }
@@ -54,17 +54,17 @@
     75% { transform: rotate(-1deg) scale(1.02); opacity: calc(var(--atmosphere-intensity) * 1.1); }
   } /* Dialog styling */ .n64-dialog { font-family: 'Rajdhani', 'Arial', sans-serif; background: var(--material-bg); color: #ffffff;, border: 1px solid var(--material-border); border-radius: 8px; max-width: var(--dialog-max-width); max-height: var(--dialog-max-height); width: 100%; display: flex; flex-direction: column; overflow: hidden;, position: relative; /* 3D transformations */ transform-style: preserve-3d; /* Enhanced rendering */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; /* Advanced shadows and lighting */ box-shadow: var(--material-shadow); /* Remove default styles */ -webkit-appearance: none; -moz-appearance: none; appearance: none;, outline: none; /* Text styling */ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); }
   .n64-dialog.fullscreen { max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; border-radius: 0 }
-/* Entrance animations */ .n64-dialog.entrance-zoom {, animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+/* Entrance animations */ .n64-dialog.entrance-zoom { animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .n64-dialog.entrance-slide-up { animation: dialogSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
   .n64-dialog.entrance-slide-down { animation: dialogSlideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
   .n64-dialog.entrance-fade { animation: dialogFadeIn 0.4s ease-out; }
-  .n64-dialog.entrance-portal {, animation: dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+  .n64-dialog.entrance-portal { animation: dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
   @keyframes dialogZoomIn { 0% { transform: scale(0.8) rotateY(-15deg) rotateX(15deg); opacity: 0; }
-    100% {, transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; }
-  } @keyframes dialogSlideUp { 0% {, transform: translateY(50px) rotateX(10deg); opacity: 0; }
-    100% {, transform: translateY(0) rotateX(0deg); opacity: 1; }
-  } @keyframes dialogSlideDown { 0% {, transform: translateY(-50px) rotateX(-10deg); opacity: 0; }
-    100% {, transform: translateY(0) rotateX(0deg); opacity: 1; }
+    100% { transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; }
+  } @keyframes dialogSlideUp { 0% { transform: translateY(50px) rotateX(10deg); opacity: 0; }
+    100% { transform: translateY(0) rotateX(0deg); opacity: 1; }
+  } @keyframes dialogSlideDown { 0% { transform: translateY(-50px) rotateX(-10deg); opacity: 0; }
+    100% { transform: translateY(0) rotateX(0deg); opacity: 1; }
   } @keyframes dialogFadeIn { 0% { opacity: 0;, transform: scale(0.95); }
     100% { opacity: 1;, transform: scale(1); }
   } @keyframes dialogPortal { 0% { transform: scale(0.3) rotateY(90deg) rotateX(45deg); opacity: 0;, filter: blur(10px); }
@@ -74,15 +74,15 @@
   .dialog-title { font-size: 1.5em; font-weight: 700;, margin: 0; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); }
   .dialog-description { padding: 16px 28px; font-size: 0.9em;, opacity: 0.8; line-height: 1.5; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
   .dialog-close-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px; color: #ffffff; cursor: pointer;, transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1); display: flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; }
-  .dialog-close-buttonhover {, background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
+  .dialog-close-buttonhover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
   .dialog-close-buttonfocus{ outline: 2px solid rgba(74, 144, 226, 0.6); outline-offset: 2px; }
-  .dialog-content {, flex: 1, padding: 28px; overflow-y: auto; position: relative; z-index: 2 }
-  .dialog-footer {, padding: 16px 28px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); display: flex; gap: 12px; justify-content: flex-end; }
+  .dialog-content { flex: 1, padding: 28px; overflow-y: auto; position: relative; z-index: 2 }
+  .dialog-footer { padding: 16px 28px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); display: flex; gap: 12px; justify-content: flex-end; }
 /* Loading overlay */ .loading-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; z-index: 10 }
   .n64-spinner { width: 40px; height: 40px;, border: 4px solid transparent; border-top: 4px solid currentColor; border-right: 3px solid rgba(255, 255, 255, 0.6); border-bottom: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;, animation: n64DialogSpin 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; transform-style: preserve-3d; }
-  @keyframes n64DialogSpin { 0% {, transform: rotateY(0deg) rotateZ(0deg); border-width: 4px 3px 2px 4px; }
-    50% {, transform: rotateY(180deg) rotateZ(180deg); border-width: 2px 4px 4px 3px; }
-    100% {, transform: rotateY(360deg) rotateZ(360deg); border-width: 4px 3px 2px 4px; }
+  @keyframes n64DialogSpin { 0% { transform: rotateY(0deg) rotateZ(0deg); border-width: 4px 3px 2px 4px; }
+    50% { transform: rotateY(180deg) rotateZ(180deg); border-width: 2px 4px 4px 3px; }
+    100% { transform: rotateY(360deg) rotateZ(360deg); border-width: 4px 3px 2px 4px; }
   } .loading-text { font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 1.1em;, animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 /* Lighting overlay */ .lighting-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 60%, rgba(0, 0, 0, 0.3) 100% ); pointer-events: none; z-index: 1; border-radius: 8px; }
@@ -92,11 +92,11 @@
   .particle-overlay::before { top: 20%; left: 10%; animation-delay: 0 }
   .particle-overlay::after { top: 60%;, right: 15%; animation-delay: -4; }
   @keyframes floatParticles { 0%, 100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
-    33% {, transform: translateY(-20px) translateX(10px) scale(1.2); opacity: 1; }
-    66% {, transform: translateY(10px) translateX(-5px) scale(0.8); opacity: 0.4; }
+    33% { transform: translateY(-20px) translateX(10px) scale(1.2); opacity: 1; }
+    66% { transform: translateY(10px) translateX(-5px) scale(0.8); opacity: 0.4; }
   } /* Material type variations */ .n64-dialog.pbr { background-blend-mode: overlay, normal; }
 /* Mesh complexity variations */ .n64-dialog.mesh-ultra { border-radius: 12px; }
-  .n64-dialog.mesh-ultra .lighting-overlay {, background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%); }
+  .n64-dialog.mesh-ultra .lighting-overlay { background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%); }
   .n64-dialog.mesh-low { border-radius: 4px; transform-style: flat; }
 /* Enhanced texture filtering */ .n64-dialog.texture-ultra { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;, filter: contrast(1.03) brightness(1.02) saturate(1.08); }
   .n64-dialog.filtering-bilinear { filter: blur(0.25px) contrast(1.15); }
@@ -107,19 +107,19 @@
     .n64-dialog { max-width: 100vw; max-height: 90vh; border-radius: 12px 12px, 0 0; transform: none !important; }
     .dialog-header { padding: 20px 20px 12px; }
     .dialog-content { padding: 20px; }
-    .dialog-footer {, padding: 12px 20px 20px; }
+    .dialog-footer { padding: 12px 20px 20px; }
 .lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer { display: none; }
-    .n64-dialog::before {, display: none; }
+    .n64-dialog::before { display: none; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .n64-dialog { animation: none !important; }
     .n64-dialog-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
-    .atmosphere-layer {, animation: none; }
+    .atmosphere-layer { animation: none; }
 .particle-overlay::before, .particle-overlay::after { animation: none; }
     .n64-spinner { animation: none; border: 4px solid currentColor; border-right-color: transparent; }
-    .loading-text {, animation: none; }
+    .loading-text { animation: none; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .n64-dialog { border: 3px solid currentColor; text-shadow: none; }
-    .n64-dialog-backdrop {, background: rgba(0, 0, 0, 0.95); }
+    .n64-dialog-backdrop { background: rgba(0, 0, 0, 0.95); }
 .lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer { display: none; }
   } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-dialog { transform: none; box-shadow: 0 12px, 0 rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.3); }
     .n64-dialog-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
-.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer, .n64-dialog::before {, display: none; }
+.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer, .n64-dialog::before { display: none; }
   } </style>

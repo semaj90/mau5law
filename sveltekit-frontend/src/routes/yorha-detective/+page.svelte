@@ -53,7 +53,7 @@
       </div>
       <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8 mb-8">
         {#each bootMessages as message, index}
-          <div class="boot-message flex items-center gap-4 mb-3" transitionfade={{, delay: 200 }}>
+          <div class="boot-message flex items-center gap-4 mb-3" transitionfade={{ delay: 200 }}>
             <span class="message-prefix text-[#666666] font-bold">[{(index + 1).toString().padStart(2, '0')}]</span>
             <span class="message-text flex-1">{message}</span>
             <span class="message-status">✓</span>
@@ -119,8 +119,7 @@
     font-size: 0.875rem;
     padding: 0.5rem 0;
   }
-  .boot-message.current {
-   , background: rgba(0, 255, 65, 0.1);
+  .boot-message.current { background: rgba(0, 255, 65, 0.1);
     border-left: 3px solid #00ff41;
     padding-left: 1rem;
     margin-left: -1rem;
@@ -175,8 +174,7 @@
     40% {
       opacity: 1; /* Corrected syntax */
     }
-    60% {
-     , opacity: 1; /* Corrected syntax */
+    60% { opacity: 1; /* Corrected syntax */
     }
     80%,
     100% {
@@ -195,8 +193,7 @@
     .logo-main {
       font-size: 2rem;
     }
-    .boot-messages {
-     , padding: 1rem;
+    .boot-messages { padding: 1rem;
     }
     .boot-message {
       font-size: 0.75rem;

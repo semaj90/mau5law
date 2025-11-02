@@ -8,19 +8,18 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     if (statusFilter !== 'all') { filtered = filtered.filter(doc => doc.status === statusFilter); }
     if (typeFilter !== 'all') { filtered = filtered.filter(doc => doc.type === typeFilter); }
     filteredDocuments = filtered; }
-  // Mock data for development const mockDocuments: Document[] = [ {
-     , id: '1', title: 'Case File #2024-001', type: 'legal_brief', status: 'final', created: '2024-01-15', updated: '2024-01-18', size: 2548720, author: 'Attorney Smith', caseId: 'case-001', tags: ['criminal', 'priority', 'federal'], aiAnalysis: {, summary: 'Comprehensive legal brief for federal criminal case involving financial fraud.', keyPoints: [
+  // Mock data for development const mockDocuments: Document[] = [ { id: '1', title: 'Case File #2024-001', type: 'legal_brief', status: 'final', created: '2024-01-15', updated: '2024-01-18', size: 2548720, author: 'Attorney Smith', caseId: 'case-001', tags: ['criminal', 'priority', 'federal'], aiAnalysis: { summary: 'Comprehensive legal brief for federal criminal case involving financial fraud.', keyPoints: [
           'Multiple defendants across state lines',
           'Complex financial evidence trail',
           'RICO Act implications'
-        ], confidence: 0.92, legalConcepts: ['RICO', 'Financial Fraud', 'Jurisdiction']; }, processingStatus: {, ocr: 'completed', analysis: 'completed', embeddings: 'completed'
+        ], confidence: 0.92, legalConcepts: ['RICO', 'Financial Fraud', 'Jurisdiction']; }, processingStatus: { ocr: 'completed', analysis: 'completed', embeddings: 'completed'
       } }, {
-      id: '2', title: 'Evidence Analysis Report', type: 'report', status: 'processing', created: '2024-01-18', size: 1024000, author: 'Forensic Analyst', tags: ['evidence', 'digital-forensics'], processingStatus: {, ocr: 'completed', analysis: 'processing', embeddings: 'pending'
+      id: '2', title: 'Evidence Analysis Report', type: 'report', status: 'processing', created: '2024-01-18', size: 1024000, author: 'Forensic Analyst', tags: ['evidence', 'digital-forensics'], processingStatus: { ocr: 'completed', analysis: 'processing', embeddings: 'pending'
       } }, {
       id: '3', title: 'Contract Amendment Draft', type: 'contract', status: 'draft', created: '2024-01-20', size: 256000, author: 'Legal Counsel', caseId: 'case-002', tags: ['contract', 'amendment', 'corporate']; }
-  ]; function getStatusColor(status: string) { switch (status) { case, 'draft': return, 'bg-gray-100 text-gray-800 dark:bg-gray-900, dark:text-gray-300'; case, 'processing': return, 'bg-blue-100 text-blue-800 dark:bg-blue-900, dark:text-blue-300'; case, 'review': return, 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900, dark:text-yellow-300'; case, 'final': return, 'bg-green-100 text-green-800 dark:bg-green-900, dark:text-green-300'; case, 'archived': return, 'bg-gray-100 text-gray-600 dark: bg-gray-900 dark:text-gray-400';, default: return, 'bg-gray-100 text-gray-800 dark:bg-gray-900, dark:text-gray-300'; }
-  } function getTypeIcon(type: string) { switch (type) { case, 'legal_brief': return, '📋'; case, 'contract': return, '📝'; case, 'evidence': return, '🔍'; case, 'report': return, '📊'; case, 'template': return, '📄'; default: return, '📎'; }
-  } function formatFileSize(bytes: number): string { if (!bytes) return, '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`; }
+  ]; function getStatusColor(status: string) { switch (status) { case, 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-900, dark:text-gray-300'; case, 'processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900, dark:text-blue-300'; case, 'review': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900, dark:text-yellow-300'; case, 'final': return 'bg-green-100 text-green-800 dark:bg-green-900, dark:text-green-300'; case, 'archived': return 'bg-gray-100 text-gray-600 dark: bg-gray-900 dark:text-gray-400';, default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900, dark:text-gray-300'; }
+  } function getTypeIcon(type: string) { switch (type) { case, 'legal_brief': return '📋'; case, 'contract': return '📝'; case, 'evidence': return '🔍'; case, 'report': return '📊'; case, 'template': return '📄'; default: return '📎'; }
+  } function formatFileSize(bytes: number): string { if (!bytes) return '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`; }
   // File upload handlers function handleFileSelect(event: Event) { const input = event.target as HTMLInputElement | null; const file = input?.files?.[0] ?? null; if (file) { uploadFile = file; if (!uploadTitle) uploadTitle = file.name.replace(/\.[^/.]+$/, ''); }
   } function handleDragOver(event: DragEvent) { event.preventDefault(); dragOver = true; }
   function handleDragLeave(event: DragEvent) { event.preventDefault(); dragOver = false; }

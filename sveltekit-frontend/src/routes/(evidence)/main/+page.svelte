@@ -101,15 +101,13 @@ import type { Case } from '$lib/types';
     color: #888;
   }
 
-  .action-grid {
-   , display: grid;
+  .action-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 3rem;
   }
 
-  .action-card {
-   , background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  .action-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 1px solid #444;
     border-radius: 8px;
     padding: 2rem;
@@ -155,8 +153,7 @@ import type { Case } from '$lib/types';
     background: #ffed4a;
   }
 
-  .stat-value {
-   , color: #00ff41;
+  .stat-value { color: #00ff41;
     font-family: 'JetBrains Mono', monospace;
     font-weight: bold;
   }

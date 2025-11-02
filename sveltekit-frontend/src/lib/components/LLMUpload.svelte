@@ -64,8 +64,7 @@
     margin-top: 1.5rem;
     font-weight: 600;
   }
-  .error {
-   , color: #b30000;
+  .error { color: #b30000;
     margin-top: 1.5rem;
     font-weight: 600;
   }

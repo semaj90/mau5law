@@ -4,7 +4,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }: Props = $props(); // Component state let rating: number = $state(0); let feedback: string = $state(''); let isSubmitting: boolean = false; let isSubmitted: boolean = false; // Auto-generate IDs using $effect for side effects $effect(() => { if (!interactionId) { interactionId = `interaction_${Date.now()}_${Math.random.toString-substr(2, 9)}`; }
   }); $effect(() => { if (!sessionId) { sessionId = `session_${Date.now()}_${ userId }`; }
   }); function setRating(score: number) { rating = scor; }
-  async function submitFeedback(): Promise<any> { if (rating === 0) return; isSubmitting = true; try { const response = await fetch('/api/v1/feedback?action=rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, sessionId, interactionId, ratingType, score: rating;, feedback: feedback.trim() || undefined, context: { ...context, page: $page.url.pathname, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, viewport: {, width: window.innerWidth, height: window.innerHeight } }, metadata: {, platform: navigator.platform, language: navigator.language, featureUsed: ratingType, deviceType: window.innerWidth < 768 ? 'mobile': window.innerWidth < 1024 ? 'tablet': 'desktop'; }
+  async function submitFeedback(): Promise<any> { if (rating === 0) return; isSubmitting = true; try { const response = await fetch('/api/v1/feedback?action=rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, sessionId, interactionId, ratingType, score: rating;, feedback: feedback.trim() || undefined, context: { ...context, page: $page.url.pathname, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, viewport: { width: window.innerWidth, height: window.innerHeight } }, metadata: { platform: navigator.platform, language: navigator.language, featureUsed: ratingType, deviceType: window.innerWidth < 768 ? 'mobile': window.innerWidth < 1024 ? 'tablet': 'desktop'; }
         }) }); if (response.ok) { isSubmitted = true; ondispatch?.({ rating, feedback, interactionId }); // Auto-hide after, 2 seconds setTimeout(() => { show = false; isSubmitted = false; rating = 0; feedback = ''; }, 2000); } else { throw new Error('Failed to submit feedback'); }
     } catch (error) { console.error('❌ Failed to submit feedback:', error); ondispatch?.({ error }); } finally { isSubmitting = false; }
   } function close() { show = false; rating = 0; feedback = ''; isSubmitted = false; }
@@ -34,7 +34,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .close-buttonhover { color: #666; background-color: #f5f5f5; }
   .feedback-content { display: flex; flex-direction: column; gap: 20px; }
   .rating-section { text-align: center; }
-  .rating-label {, margin: 0, 0 12px 0; color: #555; font-size: 14px; }
+  .rating-label { margin: 0, 0 12px 0; color: #555; font-size: 14px; }
   .star-rating { display: flex; justify-content: center; gap: 4px; }
   .star { background: none; border: none; font-size: 32px; color: #ddd; cursor: pointer;, transition: color 0.2s, transform 0.1; padding: 4px; border-radius: 4px; }
   .star:hover { color: #ffc107;, transform: scale(1.1); }
@@ -42,14 +42,14 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .feedback-section { display: flex; flex-direction: column; gap: 8px; }
   .feedback-textarea-label { color: #555; font-size: 14px; font-weight: 500; }
   .feedback-textarea { border: 2px solid #e1e1e1; border-radius: 8px; padding: 12px; font-size: 14px; font-family: inherit; resize: vertical; transition: border-color 0.2; }
-  .feedback-textarea:focus {, outline: none; border-color: #4f46e5; box-shadow: 0, 0 0 3px rgba(79, 70, 229, 0.1); }
+  .feedback-textarea:focus { outline: none; border-color: #4f46e5; box-shadow: 0, 0 0 3px rgba(79, 70, 229, 0.1); }
   .feedback-actions { display: flex; justify-content: flex-end; }
   .submit-button { background: #4f46e5; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;, transition: background-color 0.2s, transform 0.1; }
-  .submit-buttonhover:not(:disabled) {, background: #4338ca;, transform: translateY(-1px); }
+  .submit-buttonhover:not(:disabled) { background: #4338ca;, transform: translateY(-1px); }
   .submit-buttondisabled { background: #9ca3af; cursor: not-allowed; transform: none; }
   .feedback-success { text-align: center; padding: 20px 0; }
   .success-icon { font-size: 48px; color: #10b981; margin-bottom: 12px; }
-  .success-title {, margin: 0, 0 8px 0; color: #333; font-size: 18px; font-weight: 600; }
+  .success-title { margin: 0, 0 8px 0; color: #333; font-size: 18px; font-weight: 600; }
   .success-message { margin: 0;, color: #666; font-size: 14px; }
   /* Mobile responsiveness */ @media (max-width: 480px) { .feedback-widget { padding: 20px; margin: 20px; max-width: none;, width: calc(100% - 40px); }
     .star { font-size: 28px; }

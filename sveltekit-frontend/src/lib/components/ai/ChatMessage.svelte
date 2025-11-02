@@ -45,12 +45,12 @@ import type { Message } from '$lib/types';
   }
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
-      case, 'encouraging': return, 'text-green-600';
-      case, 'supportive': return, 'text-blue-600';
-      case, 'enthusiastic': return, 'text-purple-600';
-      case, 'thoughtful': return, 'text-indigo-600';
-      case, 'professional': return, 'text-gray-600';
-      default: return, 'text-gray-500';
+      case, 'encouraging': return 'text-green-600';
+      case, 'supportive': return 'text-blue-600';
+      case, 'enthusiastic': return 'text-purple-600';
+      case, 'thoughtful': return 'text-indigo-600';
+      case, 'professional': return 'text-gray-600';
+      default: return 'text-gray-500';
     }
   }
   function getEmotionalToneIcon(tone: string) {

@@ -11,7 +11,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     } catch (err) { serviceHealth = { error: 'Connection failed' } }
   } async function performSearch(): Promise<any> { if (!query.trim()) return; isSearching = true; error = null; searchResult = null; try { const response = await fetch('/api/ai/vector-search', { method: 'POST', headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify({, query: query.trim(), model, threshold, limit, caseId: caseId.trim() || undefined; }) }); if (response.ok) { searchResult = await response.json(); } else { const errorData = await response.json(); error = errorData.error || 'Search failed'; }
+        }, body: JSON.stringify({ query: query.trim(), model, threshold, limit, caseId: caseId.trim() || undefined; }) }); if (response.ok) { searchResult = await response.json(); } else { const errorData = await response.json(); error = errorData.error || 'Search failed'; }
     } catch (err) { error = err instanceof Error ? err.message: 'Network error'
     } finally { isSearching = false; }
   } async function indexSampleDocument(): Promise<any> { try { const sampleDoc = { documentId: 'demo-doc-' + Date.now(), content: 'This is a sample legal document containing contract liability terms and clauses. It discusses legal obligations, breach of contract scenarios, and damages.', filename: 'sample-contract.pdf', caseId: 'demo-case-001', documentType: 'contract', generateSummary: true, extractKeywords: true }
@@ -36,7 +36,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         > 📄 Index Sample Document </button> </div> </div> </div> <!-- Search, Results --> {#if error} <div class="error-section"> <h2>❌ Error</h2> <p>{ error }</p> </div> {/if} {#if searchResult} <div class="results-section"> <h2>📋 Search Results</h2> <!-- AI, Response --> <div class="ai-response"> <h3>🤖 AI Analysis ({searchResult.model})</h3> <div class="response-content"> <p>{searchResult.response}</p> <div class="confidence"> Confidence: {(searchResult.confidence * 100).toFixed(1)}% </div> </div> </div> <!-- Search, Metadata --> <div class="search-metadata"> <h3>📊 Search Metadata</h3> <div class="metadata-grid"> <div>Total Results: {searchResult.searchMetadata.totalResults}</div> <div>Average, Relevance: {(searchResult.searchMetadata.averageRelevance * 100).toFixed(1)}%</div> <div>Threshold: {searchResult.searchMetadata.threshold}</div> <div>Case, ID: {searchResult.searchMetadata.caseId || 'All cases'}</div> </div> </div> <!-- Document, Results --> {#if searchResult.searchResults.length > 0} <div class="document-results"> <h3>📄 Relevant Documents</h3> {#each searchResult.searchResults as doc, i} <div class="document-nier-bits-card"> <div class="doc-header"> <h4>{doc.filename || `Document ${doc.id}`}</h4> <span class="relevance-score"> {(doc.relevanceScore * 100).toFixed(1)}% relevant </span> </div> {#if doc.summary} <p class="doc-summary">{doc.summary}</p> {/if} {#if doc.keywords && doc.keywords.length > 0} <div class="doc-keywords"> <strong>Keywords:</strong> {#each Array.isArray(doc.keywords) ? doc.keywords: [] as keyword} <span class="keyword-tag">{ keyword }</span> {/each} </div> {/if} </div> {/each} </div> {:else} <div class="no-documents"> <p>No documents found. Try adjusting your search query or indexing some documents first.</p> </div> {/if} </div> {/if} </div> <style> .vector-search-demo { max-width: 1200px; margin: 0 auto;, padding: 2rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   .header { text-align: center; margin-bottom: 2rem; }
   .header h1 { color: #1a1a1a; margin-bottom: 0.5rem; }
-  .header p {, color: #666; font-size: 1.1rem; }
+  .header p { color: #666; font-size: 1.1rem; }
   .health-status, .search-section, .results-section, .error-section { background: white; border: 1px solid #e0e0e0; border-radius: 8px;, padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   .status { padding: 0.75rem 1rem; border-radius: 4px; font-weight: 500; margin-bottom: 1rem; }
   .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -51,7 +51,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .form-actions { display: flex;, gap: 1rem; margin-top: 1rem; }
   .search-button, .index-button { padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 500; cursor: pointer; transition: all 0.2; }
   .search-button { background: #007bff;, color: white; }
-  .search-buttonhover:not(:disabled) {, background: #0056b3; }
+  .search-buttonhover:not(:disabled) { background: #0056b3; }
   .search-buttondisabled { background: #ccc; cursor: not-allowed; }
   .index-button { background: #28a745; color: white; }
   .index-buttonhover { background: #1e7e34; }
@@ -59,7 +59,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .response-content { margin-top: 0.5rem; }
   .confidence { margin-top: 0.5rem; font-weight: 500; color: #007bff; }
   .search-metadata { background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; padding: 1rem; margin-bottom: 1rem; }
-  .metadata-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+  .metadata-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
   .metadata-grid div { padding: 0.5rem; background: #f8f9fa; border-radius: 4px; font-size: 0.9rem; }
   .document-results { margin-top: 1rem; }
   .document-card { border: 1px solid #e0e0e0; border-radius: 4px; padding: 1rem; margin-bottom: 1rem; background: #fafafa; }

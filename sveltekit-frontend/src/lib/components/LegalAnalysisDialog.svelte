@@ -32,7 +32,7 @@ import type { Document } from '$lib/types';
     {
       filteredCases: () => [],
       aiInsights: {},
-      loading: {, analysis: false },
+      loading: { analysis: false },
       analyzeCase: async () => { /* stub */ },
       loadCases: async () => { /* stub */ }
     };
@@ -82,11 +82,11 @@ import type { Document } from '$lib/types';
   function getRiskBadgeVariant(level: string) {
     // Allowed variants in this codebase: 'default' | 'destructive' | 'outline' (avoid, 'secondary'/'ghost')
     switch (level) {
-      case, 'CRITICAL': return, 'destructive';
-      case, 'HIGH': return, 'default';
-      case, 'MEDIUM': return, 'outline';
-      case, 'LOW': return, 'default';
-      default: return, 'outline';
+      case, 'CRITICAL': return 'destructive';
+      case, 'HIGH': return 'default';
+      case, 'MEDIUM': return 'outline';
+      case, 'LOW': return 'default';
+      default: return 'outline';
     }
   }
 </script>
@@ -301,8 +301,7 @@ import type { Document } from '$lib/types';
   .legal-action-btn {
     transition: all 0.2s ease-in-out;
   }
-  .legal-action-btn:hover {
-   , transform: translateY(-1px);
+  .legal-action-btn:hover { transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
 </style>

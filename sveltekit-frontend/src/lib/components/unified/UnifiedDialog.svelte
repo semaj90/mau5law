@@ -265,7 +265,7 @@ import type { User } from '$lib/types';
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
-            transitionfade={{, duration: 200 }}
+            transitionfade={{ duration: 200 }}
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0, 0, 24, 24">
               <path d="M7 2L17 12L12 13L13, 18L7, 2Z"/>

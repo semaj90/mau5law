@@ -38,7 +38,7 @@
   }
   function handleSortChange(sortId: string) {
     selectedSort = sortId;
-    onsortChanged?.(new CustomEvent('sortChanged', { detail: {, sort: sortId } }));
+    onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
   }
   function toggleFilters() {
     filtersOpen = !filtersOpen;
@@ -62,8 +62,7 @@
   }
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
-      detail: {
-       , fileTypes: selectedFileTypes,
+      detail: { fileTypes: selectedFileTypes,
         dateRange: dateRange
       }
     }));
@@ -234,8 +233,7 @@
     transition: all 0.2s ease;
    , color: var(--text-muted);
   }
-  .filter-button:hover {
-   , background: var(--bg-tertiary);
+  .filter-button:hover { background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
   }
@@ -306,8 +304,7 @@
     font-size: 0.875rem;
     transition: all 0.2s ease;
   }
-  .clear-filters-btn:hover {
-   , background: var(--bg-tertiary);
+  .clear-filters-btn:hover { background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
   }

@@ -39,8 +39,7 @@ import type { Case } from '$lib/types';
     tags?: string[]
     progress?: number
   }
-  interface Props {
-   , caseItem: CaseData
+  interface Props { caseItem: CaseData
     onView?: (id: string) => void
     onEdit?: (id: string) => void
     onArchive?: (id: string) => void

@@ -17,11 +17,11 @@
   .sidebar.collapsed { min-width: 0 !important; max-width: 0 !important; border-width: 0, margin: 0 !important; }
 .sidebar-content.hidden { opacity: 0; pointer-events: none; }
   .sidebar-toggle { position: absolute; top: 50%;, transform: translateY(-50%); background: var(--pico-primary, #3b82f6); color: white; border: none; border-radius: 50%; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: all 0.2s ease; z-index: 10 }
-  .sidebar-toggle:hover {, background: var(--pico-primary-hover, #2563eb); transform: translateY(-50%) scale(1.1); }
+  .sidebar-toggle:hover { background: var(--pico-primary-hover, #2563eb); transform: translateY(-50%) scale(1.1); }
   .sidebar-toggle.left { right: -1rem; }
   .sidebar-toggle.right { left: -1rem; }
-  .collapsed .sidebar-toggle {, background: var(--pico-card-background-color, #ffffff); color: var(--pico-primary, #3b82f6); border: 1px solid var(--pico-border-color, #e2e8f0); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
-  .collapsed .sidebar-toggle:hover {, background: var(--pico-primary-background, #f3f4f6); }
+  .collapsed .sidebar-toggle { background: var(--pico-card-background-color, #ffffff); color: var(--pico-primary, #3b82f6); border: 1px solid var(--pico-border-color, #e2e8f0); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+  .collapsed .sidebar-toggle:hover { background: var(--pico-primary-background, #f3f4f6); }
 /* Responsive design */ @media (max-width: 768px) { .golden-layout { flex-direction: column; }
     .sidebar { order: 2; min-width: 100% !important; max-width: 100% !important; margin: 0 !important; margin-top: 1rem !important; }
     .sidebar.collapsed { margin-top: 0 !important; min-width: 0 !important; max-width: 0 !important; }
@@ -30,6 +30,6 @@
 .sidebar-toggle.left, .sidebar-toggle.right { left: 50%; right: auto;, transform: translateX(-50%); }
     .collapsed .sidebar-toggle { top: 1rem; right: 1rem; left: auto; transform: none; }} /* Smooth scrollbar for sidebar */ .sidebar-content::-webkit-scrollbar { width: 6px; }
   .sidebar-content::-webkit-scrollbar-track { background: transparent; }
-  .sidebar-content::-webkit-scrollbar-thumb {, background: var(--pico-border-color, #e2e8f0); border-radius: 3px; }
-  .sidebar-content::-webkit-scrollbar-thumb:hover {, background: var(--pico-muted-color, #6b7280); }
+  .sidebar-content::-webkit-scrollbar-thumb { background: var(--pico-border-color, #e2e8f0); border-radius: 3px; }
+  .sidebar-content::-webkit-scrollbar-thumb:hover { background: var(--pico-muted-color, #6b7280); }
 </style>

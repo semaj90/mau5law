@@ -210,8 +210,7 @@
     font-size: 12px;
     transition: background 0.2s ease;
   }
-  .retry-button:hover {
-   , background: rgba(255, 255, 255, 0.2);
+  .retry-button:hover { background: rgba(255, 255, 255, 0.2);
   }
   /* Content styles */
   .lazy-loader-content {
@@ -227,8 +226,7 @@
     }
   }
   @keyframes spin {
-    0% {
-     , transform: rotate(0deg);
+    0% { transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -274,8 +272,7 @@
     .loading-spinner {
       animation: none;
     }
-    .lazy-loader-placeholder {
-     , animation: none;
+    .lazy-loader-placeholder { animation: none;
     }
   }
 </style>

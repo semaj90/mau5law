@@ -9,7 +9,7 @@
         /> </svg> </div> <h3 class="text-lg font-bold text-nier-text-primary uppercase tracking-wide">No Data Available</h3> <p class="text-nier-text-secondary"> { emptyMessage } </p> </div> <!-- Content, State --> {:else} <slot /> {/if} <style> .animation-delay-150 { animation-delay: 150m; }
 /* Custom YoRHa pulse, animation: */ {} @keyframes yorha-pulse { 0%, {} 100% { opacity: 1; }
     50% { opacity: 0.3; }
-  } .animate-pulse {, animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  } .animate-pulse { animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 /* Staggered animation: for skeleton items */ {} .animate-pulse:nth-child(1) { animation-delay: 0ms; }
   .animate-pulse:nth-child(2) { animation-delay: 100ms; }
   .animate-pulse:nth-child(3) { animation-delay: 200ms; }

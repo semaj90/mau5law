@@ -1,6 +1,6 @@
 <!-- Intelligent Web Analysis Demo Complete AI-aware pipeline: DOM → OCR → Chunking → Embeddings → QLoRA → Caching Minimal CPU/GPU usage with SIMD optimization and user context, awareness --> <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { intelligentWebAnalyzer, type UserAnalytics, type QLoRATrainingData } from '$lib/ai/intelligent-web-analyzer.js'; import { browser } from '$app/environment'; // Svelte, 5 runes for reactive state management let isInitialized = $state<boolean>(false); let isAnalyzing = $state<boolean>(false); let analysisResults: QLoRATrainingData | null = null; let userAnalytics: UserAnalytics = $state({, userId: 'demo_user_' + Date.now(), sessionId: crypto.randomUUID(), typingPatterns: {, avgSpeed: 0, commonWords: [], specialization [] }, interactionPatterns: {, clickHeatmap: [], scrollBehavior: {, depth: 0, speed: 0 }, focusAreas: [] }, caseContext: {, activeCases: ['Demo Case v. Example'], currentTask: 'Document Analysis', relevantDocuments: [] } }); // Analysis metrics let analysisMetrics = $state({ totalElements: 0, chunksGenerated: 0, embeddingsGenerated: 0, cacheHits: 0, processingTime: 0, memoryUsage: 0, qloraDataSize: 0 }); // Real-time logs let logs: string[] = $state([]); // Performance monitoring let performanceMetrics = $state({ domExtraction, 0, ocrProcessing: 0, chunkGeneration, 0, embeddingGeneration, 0, tensorOptimization, 0, cacheOperations: 0, qloraPreparation, 0 }); // Live user tracking let liveInteractions = $state({ clickCount: 0, keystrokes: 0, scrollDistance: 0, focusChanges: 0, lastActivity: Date.now(); }); // Settings let settings = $state({ autoAnalysis: true, ocrEnabled: true cacheEnabled: true, qloraTraining: true, minChunkSize: 1000, maxChunkSize: 5000, analysisDepth: 'comprehensive', as: 'quick' | 'standard' | 'comprehensive'
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { intelligentWebAnalyzer, type UserAnalytics, type QLoRATrainingData } from '$lib/ai/intelligent-web-analyzer.js'; import { browser } from '$app/environment'; // Svelte, 5 runes for reactive state management let isInitialized = $state<boolean>(false); let isAnalyzing = $state<boolean>(false); let analysisResults: QLoRATrainingData | null = null; let userAnalytics: UserAnalytics = $state({ userId: 'demo_user_' + Date.now(), sessionId: crypto.randomUUID(), typingPatterns: { avgSpeed: 0, commonWords: [], specialization [] }, interactionPatterns: { clickHeatmap: [], scrollBehavior: { depth: 0, speed: 0 }, focusAreas: [] }, caseContext: { activeCases: ['Demo Case v. Example'], currentTask: 'Document Analysis', relevantDocuments: [] } }); // Analysis metrics let analysisMetrics = $state({ totalElements: 0, chunksGenerated: 0, embeddingsGenerated: 0, cacheHits: 0, processingTime: 0, memoryUsage: 0, qloraDataSize: 0 }); // Real-time logs let logs: string[] = $state([]); // Performance monitoring let performanceMetrics = $state({ domExtraction, 0, ocrProcessing: 0, chunkGeneration, 0, embeddingGeneration, 0, tensorOptimization, 0, cacheOperations: 0, qloraPreparation, 0 }); // Live user tracking let liveInteractions = $state({ clickCount: 0, keystrokes: 0, scrollDistance: 0, focusChanges: 0, lastActivity: Date.now(); }); // Settings let settings = $state({ autoAnalysis: true, ocrEnabled: true cacheEnabled: true, qloraTraining: true, minChunkSize: 1000, maxChunkSize: 5000, analysisDepth: 'comprehensive', as: 'quick' | 'standard' | 'comprehensive'
   }); let analysisState = $state({ currentStep: '', progress: 0, elementsProcessed: 0, chunksProcessed: 0 }); $effect(() => { (async () => { if (!browser) return; try { addLog('🚀 Initializing Intelligent Web Analyzer...'); // Initialize with user context await intelligentWebAnalyzer.initialize(); intelligentWebAnalyzer.updateUserContext(userAnalytics); isInitialized = true; addLog('✅ Intelligent Web Analyzer ready'); // Set up real-time user tracking setupRealTimeTracking(); // Auto-analysis if enabled if (settings.autoAnalysis) { setTimeout(() => analyzeCurrentPage(), 2000); }
     } catch (error: any) { addLog(`❌ Initialization failed: ${error.message}`); }
     })(); }); onDestroy(() => { if (browser && isInitialized) { intelligentWebAnalyzer.dispose(); }
@@ -22,7 +22,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   /** * Set up real-time user tracking */ function setupRealTimeTracking() { // Track clicks document.addEventListener('click', (e) => { liveInteractions.clickCount++; liveInteractions.lastActivity = Date.now(); // Update user analytics heatmap userAnalytics.interactionPatterns.clickHeatmap.push({ x: e.clientX, y: e.clientY, count: 1 }); // Limit heatmap size if (userAnalytics.interactionPatterns.clickHeatmap.length > 100) { userAnalytics.interactionPatterns.clickHeatmap = userAnalytics.interactionPatterns.clickHeatmap.slice(-100); }
     }); // Track keystrokes document.addEventListener('keydown', () => { liveInteractions.keystrokes++; liveInteractions.lastActivity = Date.now(); }); // Track scrolling document.addEventListener('scroll', () => { liveInteractions.scrollDistance += Math.abs(window.scrollY); liveInteractions.lastActivity = Date.now(); const scrollDepth = window.scrollY / (document.body.scrollHeight - window.innerHeight); userAnalytics.interactionPatterns.scrollBehavior.depth = Math.max( userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth ); }); // Track focus changes document.addEventListener('focusin', () => { liveInteractions.focusChanges++; liveInteractions.lastActivity = Date.now(); }); }
   /** * Clear all data and restart */ function clearAll() { analysisResults = null; logs = []; analysisMetrics = { totalElements: 0, chunksGenerated: 0, embeddingsGenerated: 0, cacheHits: 0, processingTime: 0, memoryUsage: 0, qloraDataSize: 0 }
-    liveInteractions = {, clickCount: 0, keystrokes: 0, scrollDistance: 0, focusChanges: 0, lastActivity: Date.now(); }
+    liveInteractions = { clickCount: 0, keystrokes: 0, scrollDistance: 0, focusChanges: 0, lastActivity: Date.now(); }
     addLog('🗑️ Cleared all analysis data'); }
   /** * Export QLoRA training data */ async function exportQLoRAData(): Promise<any> { if (!analysisResults) return; try { const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], { type: 'application/json'
       }); const url = URL.createObjectURL(dataBlob); const a = document.createElement('a'); a.href = url; a.download = `qlora-training-data-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url); addLog('📥 QLoRA training data exported'); } catch (error: any) { addLog(`❌ Export failed: ${error.message}`); }
@@ -32,7 +32,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       'Plaintiff seeks damages in the amount of $100,000',
       'Defendant denies all allegations in the complaint',
       'The court finds that the contract terms are enforceable'
-    ]; try { const startTime = performance.now(); // Simulate batch embedding generation const response = await fetch('/api/embeddings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, texts: testTexts;, model: 'nomic-text', source: 'batch_test'
+    ]; try { const startTime = performance.now(); // Simulate batch embedding generation const response = await fetch('/api/embeddings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texts: testTexts;, model: 'nomic-text', source: 'batch_test'
         }) }); if (response.ok) { const data = await response.json(); const processingTime = performance.now() - startTime; addLog(`✅ Batch processing: ${testTexts.length} texts in ${processingTime.toFixed(2)}ms`); addLog(`📦 Cache hits: ${data.summary.cache_hits}/${data.summary.total}`); }
     } catch (error: any) { addLog(`❌ Batch processing failed: ${error.message}`); }
   } // Utility functions function addLog(message: string) { logs = [`[${new Date().toLocaleTimeString()}] ${ message }`, ...logs.slice(0, 49)]; }
@@ -49,17 +49,17 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; }
   .initialized .status-dot { background: #10b981; }
   .analyzing .status-dot { background: #f59e0b; }
-  .demo-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; }
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; }
   .panel { background: white; border-radius: 1rem; padding: 1.5rem;, border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
   .panel h3 { margin-bottom: 1rem; color: #1f2937; }
   .controls { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
   .controls button { padding: 0.75rem 1rem; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2; }
   .controls buttondisabled { opacity: 0.6; cursor: not-allowed; }
   .controls button.primary { background: #3b82f6;, color: white; }
-  .controls button.primary:hover:not(:disabled) {, background: #2563eb; }
+  .controls button.primary:hover:not(:disabled) { background: #2563eb; }
   .controls button.export { background: #10b981;, color: white; }
-  .controls buttonnot(.primary):not(.export) {, background: #f3f4f6;, color: #374151; }
-  .controls buttonnot(.primary):not(.export):hover:not(:disabled) {, background: #e5e7eb; }
+  .controls buttonnot(.primary):not(.export) { background: #f3f4f6;, color: #374151; }
+  .controls buttonnot(.primary):not(.export):hover:not(:disabled) { background: #e5e7eb; }
   .settings { border-top: 1px solid #e5e7eb; padding-top: 1rem; }
   .settings h4 { margin-bottom: 0.75rem; color: #374151; font-size: 0.875rem; font-weight: 600; }
   .settings label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; color: #6b7280; cursor: pointer; }
@@ -67,7 +67,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
   .progress-fill { height: 100%; background: #3b82f6; transition: width: 0.3s ease; }
   .progress-text { font-size: 0.875rem; color: #6b7280; margin: 0; }
-  .metrics-grid {, display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; }
   .metric { display: flex; flex-direction: column; gap: 0.25rem; text-align: center; padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem; }
   .metric-label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; font-weight: 500; }
   .metric-value { font-size: 1.25rem; font-weight: 600; color: #1f2937; }
@@ -87,8 +87,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .chunk-weight { color: #7c3aed; font-weight: 500; }
   .chunk-content { font-size: 0.875rem; color: #374151; margin: 0; line-height: 1.4; }
   .logs-container { max-height: 300px; overflow-y: auto; background: #1f2937; border-radius: 0.5rem;, padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
-  .log-entry {, color: #f3f4f6; margin-bottom: 0.25rem; line-height: 1.3; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% {, opacity: 0.7; } }
+  .log-entry { color: #f3f4f6; margin-bottom: 0.25rem; line-height: 1.3; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
   @media (max-width: 1200px) { .demo-grid { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
   } @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; }
     .metrics-grid { grid-template-columns: 1fr; }

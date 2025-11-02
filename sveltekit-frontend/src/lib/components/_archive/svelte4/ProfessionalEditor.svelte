@@ -48,7 +48,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .format-btn { width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; font-weight: bold; }
   /* Editor */ .editor-container { flex: 1; overflow-y: auto; padding: 2rem; background: #f4f1ea; }
   .editor-content { min-height: 100%; outline: none; line-height: 1.8; font-size: 1.125rem;, color: #3a372f; font-family: 'Georgia', 'Times New Roman', serif; }
-  .editor-content:empty::before {, content: attr(placeholder); color: rgba(58, 55, 47, 0.5); font-style: italic; }
+  .editor-content:empty::before { content: attr(placeholder); color: rgba(58, 55, 47, 0.5); font-style: italic; }
   /* Professional typography */ .editor-content h1 { font-size: 2.25rem; font-weight: 700;, margin: 2rem, 0 1rem 0; color: #3a372f; }
   .editor-content h2 { font-size: 1.875rem; font-weight: 600;, margin: 1.5rem, 0 0.75rem 0; color: #75726a; }
   .editor-content h3 { font-size: 1.5rem; font-weight: 600;, margin: 1.25rem, 0 0.5rem 0; }
@@ -72,9 +72,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     .header-actions { justify-content: center; }
     .editor-toolbar { flex-wrap: wrap; justify-content: center; }
     .status-bar { flex-direction: column; gap: 0.5rem; align-items: center; }
-    .editor-container {, padding: 1rem; }
+    .editor-container { padding: 1rem; }
   } /* Focus indicators for accessibility */ .action-btn:focus, .format-btn:focus { outline: 2px solid #3a372f; outline-offset: 2px; }
-  /* Smooth animations */ .professional-editor * {, transition: opacity 0.3s ease, transform 0.3s ease; }
+  /* Smooth animations */ .professional-editor * { transition: opacity 0.3s ease, transform 0.3s ease; }
 </style>
 
 

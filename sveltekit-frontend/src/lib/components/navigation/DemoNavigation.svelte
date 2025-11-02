@@ -1,8 +1,7 @@
 <!-- Demo, Navigation, Component --> <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from '$app/state'; import { goto } from '$app/navigation'; interface NavItem { label: string; href: string; description: string; icon: string; external?: boolean; }
-  const navItems: NavItem[] = [ {
-     , label: 'AI Document Demo', href: '/demo/document-ai', description: 'Document upload with AI processing', icon: '🤖'
+  const navItems: NavItem[] = [ { label: 'AI Document Demo', href: '/demo/document-ai', description: 'Document upload with AI processing', icon: '🤖'
     }, {
       label: 'AI Service Test', href: 'http://localhost:8081/test', description: 'Go microservice test interface', icon: '🧪', external: true }, {
       label: 'Service Health', href: 'http://localhost:8081/api/health', description: 'System health API endpoint', icon: '💚', external: true }, {

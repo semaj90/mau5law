@@ -397,8 +397,7 @@ import type { Document } from '$lib/types';
     overflow: hidden;
   }
   /* Chat Panel */
-  .chat-panel {
-   , display: flex;
+  .chat-panel { display: flex;
     flex-direction: column;
     border-right: 1px solid var(--border, #e5e7eb);
   }
@@ -425,13 +424,11 @@ import type { Document } from '$lib/types';
     border-radius: 8px;
     line-height: 1.5;
   }
-  .user-message .message-content {
-   , background: var(--primary, #3b82f6);
+  .user-message .message-content { background: var(--primary, #3b82f6);
     color: white;
     margin-left: 2rem;
   }
-  .agent-message .message-content {
-   , background: var(--muted, #f9fafb);
+  .agent-message .message-content { background: var(--muted, #f9fafb);
     border: 1px solid var(--border, #e5e7eb);
   }
   .message-meta {
@@ -470,8 +467,7 @@ import type { Document } from '$lib/types';
     font-family: inherit;
     font-size: 0.875rem;
   }
-  textarea:focus {
-   , outline: none;
+  textarea:focus { outline: none;
     border-color: var(--primary, #3b82f6);
     box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.1);
   }

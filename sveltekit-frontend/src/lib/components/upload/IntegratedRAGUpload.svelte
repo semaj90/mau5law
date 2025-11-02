@@ -2,7 +2,7 @@
 import type { Document } from '$lib/types'; /** * Integrated RAG Upload Component * Upload → embeddinggemma → pgvector → Qdrant → MinIO → Search → Recommendations */ let { onSuccess, onError }: { onSuccess?: (result: any) => void; onError?: (error: string) => void; } = $props(); let fileInput = $state<HTMLInputElement | null>(null); let uploading = $state<boolean>(false); let progress = $state<number>(0); let result = $state<any>(null); let error = $state<string | null>(null); let searchQuery = $state<string>(''); let searchResults = $state<any[]>([]); let searching = $state<boolean>(false); async function handleFileSelect(e: Event): Promise<any> { const input = e.currentTarget as HTMLInputElement; if (!input.files?.length) return; const file = input.files[0]; await uploadFile(file); }
   async function uploadFile(file: File): Promise<any> { uploading = true; progress = 0; error = null; result = null; try { const formData = new FormData(); formData.append('file', file); // Simulate progress const progressInterval = setInterval(() => { progress = Math.min(progress + 10, 90); }, 200); const response = await fetch('/api/integrated/upload', { method: 'POST', body: formData }); clearInterval(progressInterval); progress = 100; if (!response.ok) { const errorData = await response.json(); throw new Error(error(Data as CustomEvent).details || errorData.error || 'Upload failed'); }
       result = await response.json(); onSuccess?.(result); console.log('✅ Upload successful:', result); } catch (err) { const errorMsg = err instanceof Error ? err.message: 'Upload failed'; error = errorMsg; onError?.(errorMsg); console.error('❌ Upload error:', err); } finally { uploading = false; }'
-  } async function searchDocuments(): Promise<any> { if (!searchQuery.trim()) return; searching = true; searchResults = []; try { const response = await fetch('/api/integrated/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, query: searchQuery, limit: 5 }) }); if (!response.ok) { throw new Error('Search failed'); }
+  } async function searchDocuments(): Promise<any> { if (!searchQuery.trim()) return; searching = true; searchResults = []; try { const response = await fetch('/api/integrated/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: searchQuery, limit: 5 }) }); if (!response.ok) { throw new Error('Search failed'); }
       const data = await response.json(); searchResults = data.results || []; console.log('🔍 Search results:', searchResults); } catch (err) { console.error('❌ Search error:', err); error = err instanceof Error ? err.message: 'Search failed'; } finally { searching = false; }
   } function handleDragOver(e: DragEvent) { e.preventDefault(); }
   function handleDrop(e: DragEvent) { e.preventDefault(); const files = e.dataTransfer?.files; if (files?.length) { uploadFile(files[0]); }
@@ -20,7 +20,7 @@ import type { Document } from '$lib/types'; /** * Integrated RAG Upload Componen
         bind:value={ searchQuery } placeholder="Search across uploaded documents..."
         onkeydown={e => e.key === 'Enter' && searchDocuments()} /> <button onclick={ searchDocuments } disabled={searching || !searchQuery.trim()}> {searching ? 'Searching...': 'Search'} </button> </div> {#if searchResults.length > 0} <div class="search-results"> <h5>Results ({searchResults.length}):</h5> {#each Array.isArray(searchResults) ? searchResults: [] as result} <div class="search-result-item"> <div class="result-header"> <span class="similarity-badge">{Math.round(result.similarity * 100)}%</span> {#if result.source} <span class="source">{result.source}</span> {/if} </div> <p class="result-content">{result.content}</p> </div> {/each} {/if} </div> </div> <style> .integrated-rag-upload { display: flex; flex-direction: column; gap: 2rem; max-width: 800px; margin: 0 auto;, padding: 2rem; }
   .upload-section, .search-section { background: #f8f9fa; border-radius: 8px; padding: 1.5rem; }
-  h3 {, margin: 0, 0 1rem 0; color: #333; }
+  h3 { margin: 0, 0 1rem 0; color: #333; }
   .drop-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s; background: white; }
   .drop-zone:hover { border-color: #007bff; background: #f0f7ff; }
   .drop-zone.uploading { cursor: not-allowed; opacity: 0.7; }
@@ -37,7 +37,7 @@ import type { Document } from '$lib/types'; /** * Integrated RAG Upload Componen
   .recommendation-item { display: flex; gap: 1rem; padding: 0.5rem; margin: 0.5rem 0; background: white; border-radius: 4px; }
   .similarity { font-weight: 600; color: #007bff; }
   .search-input-group { display: flex; gap: 0.5rem; }
-  .search-input-group input {, flex: 1, padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+  .search-input-group input { flex: 1, padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
   .search-input-group button { padding: 0.75rem 1.5rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
   .search-input-group buttondisabled { opacity: 0.5; cursor: not-allowed; }
   .search-results { margin-top: 1.5rem; }

@@ -11,7 +11,7 @@
     return cn(classes, className); }); // Handle click action function handleClick() { if (disabled) return; if (onclick) { onclick(); } else { // Navigate to AI assistant page goto('/aiassistant'); }
     isActive = true; }
   // Voice input toggle function toggleVoiceInput() { if (!voiceEnabled) return; isListening = !isListening; aiStatus = isListening ? 'listening': 'connected'; }
-  // Status indicator component function StatusIndicator() { const statusConfig = { idle: {, color: 'bg-gray-400', pulse: false }, processing: {, color: 'bg-yorha-primary', pulse: true }, listening: {, color: 'bg-red-500', pulse: true }, connected: {, color: 'bg-yorha-accent-gold', pulse: false } }; const config = statusConfig[aiStatus]; return {, class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse': ''}`, title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1) }; }
+  // Status indicator component function StatusIndicator() { const statusConfig = { idle: { color: 'bg-gray-400', pulse: false }, processing: { color: 'bg-yorha-primary', pulse: true }, listening: { color: 'bg-red-500', pulse: true }, connected: { color: 'bg-yorha-accent-gold', pulse: false } }; const config = statusConfig[aiStatus]; return { class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse': ''}`, title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1) }; }
 </script> <!-- Floating, Variant --> {#if variant === 'floating'} <button type="button"
     class={ buttonClasses } data-status={ aiStatus } onclick={ handleClick } { disabled } aria-label="Open assistant"
   > <div class="relative"> <Brain class="w-8" /> {#if showStatus} <div class="absolute -top-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}>{/if} {#if showBadge && unreadCount > 0} <Badge class="absolute -top-2 -right-2 bg-yorha-accent-gold text-yorha-bg-primary text-xs min-w-[1.25rem] h-5 flex items-center justify-center"
@@ -43,6 +43,6 @@
   .ai-assistant-btn:hover::before { left: 100%; }
   /* Pulse, animation: for processing state */ @keyframes ai-pulse { 0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
-  } .ai-assistant-btn[data-status='processing'] {, animation: ai-pulse 2s infinite; }
+  } .ai-assistant-btn[data-status='processing'] { animation: ai-pulse 2s infinite; }
   /* Glowing effect for floating button */ .ai-assistant-btn.fixed:hover { box-shadow: 0, 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3); }
 </style>

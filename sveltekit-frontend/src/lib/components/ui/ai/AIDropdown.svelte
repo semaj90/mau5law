@@ -168,7 +168,7 @@
 		padding: 0.4rem 0.6rem;
 		cursor: pointer;
 	}
-	.ai-dropdown-list li.highlighted {, background: var(--dropdown-highlight, #eef); }
+	.ai-dropdown-list li.highlighted { background: var(--dropdown-highlight, #eef); }
 	.ai-dropdown-list li.selected { font-weight: 600; }
 	.ai-dropdown-empty { color: #666; cursor: default;, padding: 0.4rem 0.6rem; }
 </style>

@@ -39,13 +39,13 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported let
   .message-user { align-self: flex-end; text-align: right; }
   .message-assistant { align-self: flex-start; }
   .message-content { position: relative;, background: rgba(15, 52, 96, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid #0f3460; max-width: 80%; }
-  .message-user .message-content {, background: rgba(100, 255, 218, 0.1); border-color: #64ffda; margin-left: auto; }
+  .message-user .message-content { background: rgba(100, 255, 218, 0.1); border-color: #64ffda; margin-left: auto; }
   .message-text { line-height: 1.5; word-wrap: break-word; }
   .typing-indicator { animation: blink 1s infinite; color: #64ffda; }
   .message-metadata { display: flex; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.7rem; }
   .source-badge { padding: 0.2rem 0.4rem; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
   .source-nes_memory { background: #ff6b6b } .source-gpu_cache { background: #4ecdc4 } .source-qlora { background: #45b7d1 } .instant-badge { color: #ffd93d; font-weight: bold; }
-  .similarity-badge {, background: rgba(100, 255, 218, 0.2); color: #64ffda; padding: 0.2rem 0.4rem; border-radius: 4px; }
+  .similarity-badge { background: rgba(100, 255, 218, 0.2); color: #64ffda; padding: 0.2rem 0.4rem; border-radius: 4px; }
   .feedback-buttons { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
   .feedback-btn { background: none; border: none; font-size: 1rem; cursor: pointer; opacity: 0.6; transition: opacity 0.2; }
   .feedback-btn:hover { opacity: 1; }
@@ -53,8 +53,8 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported let
   .message-timestamp { font-size: 0.6rem; opacity: 0.5; margin-top: 0.5rem; }
   .chat-input-area { padding: 1rem;, background: rgba(0, 0, 0, 0.3); border-top: 2px solid #0f3460; }
   .input-container { display: flex; gap: 0.5rem; align-items: center; }
-  .message-input {, flex: 1, padding: 0.75rem;, background: rgba(15, 52, 96, 0.6); border: 1px solid #0f3460; border-radius: 4px; color: #e0e6ed; font-family: inherit; }
-  .message-input:focus {, outline: none; border-color: #64ffda; box-shadow: 0, 0 0 2px rgba(100, 255, 218, 0.2); }
+  .message-input { flex: 1, padding: 0.75rem;, background: rgba(15, 52, 96, 0.6); border: 1px solid #0f3460; border-radius: 4px; color: #e0e6ed; font-family: inherit; }
+  .message-input:focus { outline: none; border-color: #64ffda; box-shadow: 0, 0 0 2px rgba(100, 255, 218, 0.2); }
   .send-button, .clear-button { min-width: 80px; }
   .loading-spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; }
   .processing-status { margin-top: 0.5rem; text-align: center; font-size: 0.8rem; opacity: 0.7; }
@@ -62,8 +62,8 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported let
   /* Animations */ @keyframes messageSlideIn { from { opacity: 0;, transform: translateY(20px); }
     to { opacity: 1;, transform: translateY(0); }
   } @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
-  @keyframes spin { to {, transform: rotate(360deg) } }
-  @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% {, opacity: 1; } }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
   /* Responsive design */ @media (max-width: 768px) { .message-content { max-width: 90%; }
     .system-status-bar { flex-direction: column;, gap: 0.5rem; }
   } </style>

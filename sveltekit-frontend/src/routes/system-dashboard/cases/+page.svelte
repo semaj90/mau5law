@@ -15,7 +15,7 @@ import type { Case } from '$lib/types';
     lastUpdate: string | number | Date;
   };
 
-  let { data }: {, data: PageData & { cases?: Case[] } } = $props();
+  let { data }: { data: PageData & { cases?: Case[] } } = $props();
 
   // replace server-provided data usage with local state that can be refreshed
   let cases: Case[] = data.cases ?? [];
@@ -47,7 +47,7 @@ import type { Case } from '$lib/types';
       const res = await fetch(`/api/cases/${caseId}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({, action: 'analyze' })
+        body: JSON.stringify({ action: 'analyze' })
       });
       if (!res.ok) throw new Error(`analysis failed: ${res.status}`);
       // optional: update local case progress/status after enqueue
@@ -63,7 +63,7 @@ import type { Case } from '$lib/types';
       const res = await fetch(`/api/cases/${caseId}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({, action: 'report' })
+        body: JSON.stringify({ action: 'report' })
       });
       if (!res.ok) throw new Error(`report failed: ${res.status}`);
       const updated = await res.json();
@@ -164,17 +164,14 @@ import type { Case } from '$lib/types';
     flex-direction: column;
     gap: 1.5rem;
   }
-  .header {
-   , background: linear-gradient(135deg, #4a90e2, #7ed321) !important;
+  .header { background: linear-gradient(135deg, #4a90e2, #7ed321) !important;
     text-align: center;
   }
-  .header .title {
-   , color: white !important;
+  .header .title { color: white !important;
     font-family: 'Press Start 2P', cursive !important;
     font-size: 1.25rem !important;
   }
-  .header .subtitle {
-   , color: rgba(255, 255, 255, 0.9) !important;
+  .header .subtitle { color: rgba(255, 255, 255, 0.9) !important;
     font-size: 0.75rem;
   }
   .controls {
@@ -182,8 +179,7 @@ import type { Case } from '$lib/types';
     gap: 1rem;
     align-items: center;
   }
-  .cases-grid {
-   , display: grid;
+  .cases-grid { display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem;
   }
@@ -204,8 +200,7 @@ import type { Case } from '$lib/types';
     align-items: flex-start;
     margin-bottom: 1rem;
   }
-  .case-header h3 {
-   , color: var(--nier-text-primary);
+  .case-header h3 { color: var(--nier-text-primary);
     font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin: 0;

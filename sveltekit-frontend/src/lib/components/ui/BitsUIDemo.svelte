@@ -23,7 +23,7 @@ import type { Case } from '$lib/types';
     { value: 'employment', label: 'Employment Law' }
   ];
   const sampleCases = [
-    {, id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
+    { id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
     { id: '2', name: 'Corporate Merger - TechCorp', type: 'Corporate Law', status: 'Pending' },
     { id: '3', name: 'Patent Dispute - Innovation Inc', type: 'Intellectual Property', status: 'Active' }
   ];

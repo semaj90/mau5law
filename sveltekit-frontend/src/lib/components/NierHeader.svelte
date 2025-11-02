@@ -11,7 +11,7 @@
   let searchQuery = $state<string>('');
   let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
-  function handleSearch(event: CustomEvent<{, query: string }>) {
+  function handleSearch(event: CustomEvent<{ query: string }>) {
     searchQuery = event.detail.query;
     console.log('Global search:', searchQuery);
   }
@@ -170,8 +170,7 @@
     border-radius: 6px;
     transition: background 0.2s ease;
   }
-  .brand-button:hover {
-   , background: var(--bg-tertiary);
+  .brand-button:hover { background: var(--bg-tertiary);
   }
   .brand-text {
     font-size: 1.1rem;
@@ -195,8 +194,7 @@
     border-radius: 6px;
     transition: all 0.2s ease;
   }
-  .nav-button:hover {
-   , color: var(--text-primary);
+  .nav-button:hover { color: var(--text-primary);
     background: var(--bg-tertiary);
   }
   .search-section {
@@ -224,8 +222,7 @@
     transition: background 0.2s ease;
    , color: var(--text-primary);
   }
-  .user-button:hover {
-   , background: var(--bg-tertiary);
+  .user-button:hover { background: var(--bg-tertiary);
   }
   .user-avatar {
     width: 32px;
@@ -278,8 +275,7 @@
    , color: var(--text-primary);
     text-align: left;
   }
-  .menu-item:hover {
-   , background: var(--bg-tertiary);
+  .menu-item:hover { background: var(--bg-tertiary);
   }
   .menu-separator {
     border: none;
@@ -295,8 +291,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .sign-in-button:hover {
-   , background: var(--harvard-crimson);
+  .sign-in-button:hover { background: var(--harvard-crimson);
     color: var(--text-inverse);
   }
   .menu-overlay {
@@ -323,8 +318,7 @@
     .nav-button span {
       display: none;
     }
-    .user-name {
-     , display: none;
+    .user-name { display: none;
     }
   }
   @media (max-width: 480px) {

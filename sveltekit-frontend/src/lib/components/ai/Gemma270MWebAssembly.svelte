@@ -81,13 +81,11 @@ import type { Message } from '$lib/types';
 					embedding: simulateEmbedding,
 					summarize: simulateSummarization,
 					extract: simulateExtraction,
-					memory: {
-					, allocate: simulateMemoryAllocate,
+					memory: { allocate: simulateMemoryAllocate,
 						free: simulateMemoryFree,
 						usage: simulateMemoryUsage
 					},
-					gpu: {
-					, initialize: simulateGPUInit,
+					gpu: { initialize: simulateGPUInit,
 						transfer: simulateGPUTransfer,
 						compute: simulateGPUCompute
 					}
@@ -223,7 +221,7 @@ import type { Message } from '$lib/types';
 		});
 		return {
 			entities: result?.entities ?? [
-				{, type: 'person', value: 'John Doe', confidence: 0.9 },
+				{ type: 'person', value: 'John Doe', confidence: 0.9 },
 				{ type: 'organization', value: 'ABC Corp', confidence: 0.85 }
 			],
 			relationships: result?.relationships ?? [],
@@ -233,7 +231,7 @@ import type { Message } from '$lib/types';
 	}
 	function calculateTokensPerSecond(text: string, inferenceTime: number): number {
 		const estimatedTokens = (text?.split(/\s+/).length ?? 0) * 1.3; // Rough token estimation
-		if (inferenceTime <= 0) return, 0;
+		if (inferenceTime <= 0) return 0;
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2));
 	}
 	// Simulated WASM module functions (typed params)
@@ -263,7 +261,7 @@ import type { Message } from '$lib/types';
 	async function simulateExtraction(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 120));
 		return {
-			entities: [{, type: 'person', value: 'Client Entity', confidence: 0.9 }],
+			entities: [{ type: 'person', value: 'Client Entity', confidence: 0.9 }],
 			relationships: []
 		};
 	}
@@ -487,14 +485,12 @@ import type { Message } from '$lib/types';
 	.metric {
 		transition: transform 0.2s ease;
 	}
-	.metric:hover {
-	, transform: translateY(-2px);
+	.metric:hover { transform: translateY(-2px);
 	}
 	.action-btn {
 		transition: all 0.2s ease;
 	}
-	.action-btn:hover {
-	, transform: translateY(-1px);
+	.action-btn:hover { transform: translateY(-1px);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 	.action-btn:disabled {
@@ -509,8 +505,7 @@ import type { Message } from '$lib/types';
 		animation: spin 1s linear infinite;
 	}
 	@keyframes spin {
-		from {
-		, transform: rotate(0deg);
+		from { transform: rotate(0deg);
 		}
 		to {
 			transform: rotate(360deg);

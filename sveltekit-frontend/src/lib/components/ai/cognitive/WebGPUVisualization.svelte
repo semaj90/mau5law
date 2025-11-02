@@ -31,7 +31,7 @@
       // Randomly change characters if (Math.random() > 0.95) { const chars = stream.characters.split(''); chars[Math.floor(Math.random() * chars.length)] = generateMatrixString(1); stream.characters = chars.join(''); }
     } }
   function render() { if (!isInitialized) return; if (gpu && context) { renderWebGPU(); } else { render2D(); }
-  } function renderWebGPU() { // WebGPU rendering (simplified for this example) const commandEncoder = gpu!.createCommandEncoder(); const textureView = context!.getCurrentTexture.createView(); const renderPassDescriptor: GPURenderPassDescriptor = {, colorAttachments: [ {, view: textureView, clearValue: {, r: 0.1, g: 0.1, b: 0.1, a: 1.0 }, loadOp: 'clear', storeOp: 'store'
+  } function renderWebGPU() { // WebGPU rendering (simplified for this example) const commandEncoder = gpu!.createCommandEncoder(); const textureView = context!.getCurrentTexture.createView(); const renderPassDescriptor: GPURenderPassDescriptor = { colorAttachments: [ { view: textureView, clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 }, loadOp: 'clear', storeOp: 'store'
         }, ]
     } const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor); // Add actual rendering commands here passEncoder.end(); gpu!.queue.submit([commandEncoder.finish()]); }
   function render2D() { const ctx = canvas.getContext('2d')!; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, width, height); switch (visualizationMode) { case, 'neural-network': renderNeuralNetwork2D(ctx); break; case, 'quantum-field': renderQuantumField2D(ctx); break; case, 'consciousness-map': renderConsciousnessMap2D(ctx); break; case, 'matrix-flow': renderMatrixFlow2D(ctx); break; }

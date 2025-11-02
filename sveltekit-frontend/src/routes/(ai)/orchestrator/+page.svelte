@@ -50,12 +50,12 @@ import type { Document } from '$lib/types';
 
   // Demo scenarios
   const demoScenarios = [
-    {,
+    {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
       prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
-        {, provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
+        { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
         { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' }
       ]
@@ -65,7 +65,7 @@ import type { Document } from '$lib/types';
       description: 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
-        {, provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
+        { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' }
       ]
@@ -75,7 +75,7 @@ import type { Document } from '$lib/types';
       description: 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
-        {, provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
+        { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' }
       ]

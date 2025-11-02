@@ -4,7 +4,7 @@
     } catch (error) { console.error('Failed to load system stats:', error); }
   } async function loadSystemHealth(): Promise<any> { try { const response = await fetch('/api/admin/system-health'); if (response.ok) { const data = await response.json(); systemHealth = data.services || systemHealth; }
     } catch (error) { console.error('Failed to load system health:', error); } finally { isLoading = false; }
-  } async function loadRecentActivity(): Promise<any> { try { const response = await fetch('/api/admin/recent-activity'); if (response.ok) { const data = await response.json(); recentActivity = data.activities || []; } else { // Mock recent activity recentActivity = [ {, id: 1, type: 'case_created', user: 'john.doe@law.com', description: 'Created new case Smith v. Johnson', timestamp: new Date(Date.now() - 300000).toISOString(), status: 'success'
+  } async function loadRecentActivity(): Promise<any> { try { const response = await fetch('/api/admin/recent-activity'); if (response.ok) { const data = await response.json(); recentActivity = data.activities || []; } else { // Mock recent activity recentActivity = [ { id: 1, type: 'case_created', user: 'john.doe@law.com', description: 'Created new case Smith v. Johnson', timestamp: new Date(Date.now() - 300000).toISOString(), status: 'success'
           }, {
             id: 2, type: 'ai_analysis', user: 'jane.smith@law.com', description: 'Completed AI analysis on contract dispute', timestamp: new Date(Date.now() - 900000).toISOString(), status: 'success'
           }, {

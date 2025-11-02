@@ -12,8 +12,7 @@ import type { User } from '$lib/types';
   let isSuccess = $state<boolean>(false);
   let errors: string[] = [];
   let recommendations: string[] = [];
-  let performanceStats: PerformanceStats = {
-   , webgpuAvailable: false,
+  let performanceStats: PerformanceStats = { webgpuAvailable: false,
     webglAvailable: false,
     userAgent: navigator.userAgent
   };
@@ -228,8 +227,7 @@ import type { User } from '$lib/types';
     color: #dc2626;
   }
 
-  .recommendation-list li {
-   , color: #059669;
+  .recommendation-list li { color: #059669;
   }
 </style>
 

@@ -50,8 +50,7 @@ import type { Document } from '$lib/types';
     if (!lodManager) return 3;
     const distance = Math.abs(scrollPosition - 500); // Distance from center
     // note: ensure comma after pageDistance
-    return lodManager.calculateDocumentLOD?.({
-     , pageDistance: distance,
+    return lodManager.calculateDocumentLOD?.({ pageDistance: distance,
       readingMode,
       documentImportance,
       userInteraction: userInteracting
@@ -210,7 +209,7 @@ import type { Document } from '$lib/types';
   }
   // Convert ArrayBuffer texture to displayable format
   function getTextureDisplayData(): string {
-    if (!currentTexture) return, '';
+    if (!currentTexture) return '';
     // For demo purposes, create a visual representation of CHR-ROM data
     const view = new Uint8Array(currentTexture);
     const pixels: number[] = [];
@@ -386,8 +385,7 @@ import type { Document } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
   }
-  .document-info h3 {
-   , margin: 0;
+  .document-info h3 { margin: 0;
     font-size: 1rem;
   }
   .mode-badge,
@@ -546,12 +544,10 @@ import type { Document } from '$lib/types';
     border-top: 1px solid #333;
     padding: 1rem;
   }
-  .debug-panel h4 {
-   , margin: 0, 0 1rem 0;
+  .debug-panel h4 { margin: 0, 0 1rem 0;
     color: #22c55e;
   }
-  .debug-stats {
-   , display: grid;
+  .debug-stats { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
@@ -561,8 +557,7 @@ import type { Document } from '$lib/types';
     border-radius: 4px;
     border: 1px solid #333;
   }
-  .stat-group h5 {
-   , margin: 0, 0 0.5rem 0;
+  .stat-group h5 { margin: 0, 0 0.5rem 0;
     color: #f59e0b;
     font-size: 0.875rem;
   }
@@ -596,8 +591,7 @@ import type { Document } from '$lib/types';
     background: #555;
     border: 1px solid #666;
   }
-  .texture-viewer::-webkit-scrollbar-thumb:hover {
-   , background: #666;
+  .texture-viewer::-webkit-scrollbar-thumb:hover { background: #666;
   }
   @media (max-width: 768px) {
     .controls-header {

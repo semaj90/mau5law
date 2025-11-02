@@ -3,7 +3,7 @@
     'What evidence do we have about financial transactions?',
     'Show me a timeline of events',
     'Analyze patterns in the evidence',
-    'Who are the persons of interest?', ]; async function sendQuery(): Promise<any> { if (!query.trim() || isLoading) return; const userQuery = query.trim(); query = ''; // Add user message chatHistory.push({ type: 'user', content: userQuery, timestamp: new Date() }); isLoading = true; try { let response: RAGDemoResponse; // Handle special case for summary if (userQuery.toLowerCase().includes('summary')) { const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1'); response = { response: summaryText, sources: [], confidence: 0.9, tokensUsed: 250, reasoning: ['Generated comprehensive case summary from available evidence'] }; } else { // Use RAG query for other questions const ragQuery: RAGDemoQuery = {, query: userQuery, caseId: currentCase?.id || '1', evidence: currentEvidence, maxTokens: 500, temperature: 0.7 }; response = await demoQueryLLM(ragQuery); }
+    'Who are the persons of interest?', ]; async function sendQuery(): Promise<any> { if (!query.trim() || isLoading) return; const userQuery = query.trim(); query = ''; // Add user message chatHistory.push({ type: 'user', content: userQuery, timestamp: new Date() }); isLoading = true; try { let response: RAGDemoResponse; // Handle special case for summary if (userQuery.toLowerCase().includes('summary')) { const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1'); response = { response: summaryText, sources: [], confidence: 0.9, tokensUsed: 250, reasoning: ['Generated comprehensive case summary from available evidence'] }; } else { // Use RAG query for other questions const ragQuery: RAGDemoQuery = { query: userQuery, caseId: currentCase?.id || '1', evidence: currentEvidence, maxTokens: 500, temperature: 0.7 }; response = await demoQueryLLM(ragQuery); }
       // Add AI response chatHistory.push({ type: 'ai', content: response.response, timestamp: new Date(), sources: response.sources, reasoning: response.reasoning }); } catch (error) { console.error('Chat error:', error); chatHistory.push({ type: 'ai', content: 'Sorry, I encountered an error processing your request. Please try again.', timestamp: new Date() }); } finally { isLoading = false; }
   } function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendQuery(); }
   } function useSampleQuery(sampleQuery: string) { query = sampleQuery; }
@@ -28,14 +28,14 @@
   .summary-title { color: #fff; font-size: 1.1em; margin: 0.5rem 0; border-bottom: 1px solid #495057; padding-bottom: 0.25rem; }
   .summary-section { color: #ccc; font-size: 1em;, margin: 0.75rem, 0 0.25rem 0; }
   .message-sources { margin-top: 1rem; padding: 0.75rem;, background: rgba(0, 255, 0, 0.1); border-radius: 4px; border-left: 3px solid #00ff00; }
-  .message-sources h6 {, margin: 0, 0 0.5rem 0; font-size: 0.9em; }
+  .message-sources h6 { margin: 0, 0 0.5rem 0; font-size: 0.9em; }
   .source-item { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; padding: 0.5rem;, background: rgba(255, 255, 255, 0.05); border-radius: 4px; }
   .source-item:last-child { margin-bottom: 0; }
   .source-relevance { font-size: 0.8em; color: #00ff00; font-weight: bold; }
   .source-excerpt { font-size: 0.85em; margin: 0; font-style: italic; }
   .reasoning-details { margin-top: 1rem; padding: 0.5rem;, background: rgba(255, 255, 0, 0.1); border-radius: 4px; }
   .reasoning-details summary { cursor: pointer; font-size: 0.9em; margin-bottom: 0.5rem; }
-  .reasoning-list {, margin: 0.5rem, 0 0 1rem; padding: 0; }
+  .reasoning-list { margin: 0.5rem, 0 0 1rem; padding: 0; }
   .reasoning-list li { margin-bottom: 0.25rem; font-size: 0.85em; }
   .loading-animation { display: flex; gap: 0.25rem; margin-bottom: 0.5rem; }
   .loading-animation span { animation: pulse 1.5s ease-in-out infinite; font-size: 1.2em; color: #00ff00; }
@@ -47,7 +47,7 @@
   } .empty-chat { text-align: center; padding: 3rem 2rem; opacity: 0.7; }
   .chat-input { display: flex; gap: 1rem; align-items: flex-end; }
   .chat-input .nes-field { flex: 1; }
-  .chat-input textarea {, resize: vertical; min-height: 60px; }
+  .chat-input textarea { resize: vertical; min-height: 60px; }
   /* Responsive adjustments */ @media (max-width: 768px) { .query-buttons { flex-direction: column; }
     .message-content { max-width: 95%; }
     .chat-input { flex-direction: column; align-items: stretch; }

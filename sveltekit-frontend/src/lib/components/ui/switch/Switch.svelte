@@ -35,7 +35,6 @@
     border-radius: 9999px;
     transition: transform 0.2;
   }
-  .track.onafter {
-   , transform: translateX(18px);
+  .track.onafter { transform: translateX(18px);
   }
 </style>

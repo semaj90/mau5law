@@ -134,16 +134,14 @@ await checkServiceHealth();
           processingProgress += Math.random() * 15;
         }
       }, 500);
-      const request: SummarizationRequest = {
-       , document_id: `doc_${Date.now()}`,
+      const request: SummarizationRequest = { document_id: `doc_${Date.now()}`,
         title: documentTitle,
         content: documentContent,
         document_type: documentType,
         summary_type: summaryType,
         max_length: maxLength,
         focus: focusAreas,
-        metadata: {
-         , generated_at: new Date().toISOString(),
+        metadata: { generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
           content_length: documentContent.length
         }
@@ -190,9 +188,9 @@ await checkServiceHealth();
   }
   // Get quality color based on score
   function getQualityColor(score: number): string {
-    if (score >= 0.8) return, 'text-green-600';
-    if (score >= 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (score >= 0.8) return 'text-green-600';
+    if (score >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {

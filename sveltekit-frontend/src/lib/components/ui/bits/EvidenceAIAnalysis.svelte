@@ -28,7 +28,7 @@
   let confidenceLevel = $derived(() => {
     if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
     if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' }
-    return {, color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
+    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
   });
   // Sort entities by confidence
   let sortedEntities = $derived(() =>

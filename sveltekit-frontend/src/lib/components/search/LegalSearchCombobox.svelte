@@ -132,8 +132,7 @@ import type { SearchResult } from '$lib/types';
           type: r.type ?? 'document',
           content: r.content ?? r.summary ?? '',
           score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0),
-          metadata: {
-           , date: r.createdAt ?? r.date,
+          metadata: { date: r.createdAt ?? r.date,
             jurisdiction: r.jurisdiction,
             status: r.status,
             confidentiality: r.confidentialityLevel,

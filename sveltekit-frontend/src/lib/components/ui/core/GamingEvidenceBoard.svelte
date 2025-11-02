@@ -1,8 +1,7 @@
 <!-- Gaming Evidence, Board, Recreation - Enhanced-Bits + WebGPU --> <script lang="ts"> import { Button } from '$lib/components/ui/button';
 import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import { fade, scale, fly } from 'svelte/transition'; import { browser } from '$app/environment'; import  Card, CardHeader, CardTitle, CardContent, Button  from "$lib/components/ui/enhanced-bits.svelte"; import  createEnhancedEvidenceCard  from "$lib/components/ui/enhanced-bits/builders.svelte"; interface EvidenceItem { id: string; title: string; type: 'video' | 'document' | 'witness' | 'analysis'; status: 'active' | 'pending' | 'complete'; x: number; y: number; connections: string[]; description?: string; icon?: string; }
   interface CaseInfo { title: string; status: 'active' | 'pending' | 'complete'; items: string[]; }
-  // Gaming-style evidence data let evidenceItems = $state<EvidenceItem[]>([ {
-     , id: 'security-camera', title: 'SECURITY CAMERA', type: 'video', status: 'active', x: 230, y: 350, connections: ['witness-statement'], description: 'CCTV footage from the main entrance', icon: '📹'
+  // Gaming-style evidence data let evidenceItems = $state<EvidenceItem[]>([ { id: 'security-camera', title: 'SECURITY CAMERA', type: 'video', status: 'active', x: 230, y: 350, connections: ['witness-statement'], description: 'CCTV footage from the main entrance', icon: '📹'
     }, {
       id: 'witness-statement', title: 'WITNESS STATEMENT', type: 'document', status: 'complete', x: 490, y: 410, connections: ['security-camera'], description: 'Detailed written statement from key witness', icon: '📄'
     } ]); let caseInfo = $state<CaseInfo>({ title: 'Corporate Espionage Investigation', status: 'active', items: [
@@ -14,9 +13,9 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
   }); function drawConnections() { if (!ctx) return; ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.strokeStyle = '#00ff41'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); evidenceItems.forEach(item => { item.connections.forEach(connId => { const connectedItem = evidenceItems.find(e => e.id === connId); if (connectedItem) { ctx!.beginPath(); ctx!.moveTo(item.x + 80, item.y + 40); ctx!.lineTo(connectedItem.x + 80, connectedItem.y + 40); ctx!.stroke(); }
       }); }); }
   function selectEvidence(evidenceId: string) { selectedEvidence = selectedEvidence === evidenceId ? null: evidenceId; }
-  function addEvidence() { const newEvidence: EvidenceItem = {, id: `evidence-${Date.now()}`, title: 'NEW EVIDENCE', type: 'document', status: 'pending', x: Math.random() * 600 + 200, y: Math.random() * 400 + 300, connections: [], description: 'Newly added evidence item', icon: '📋'
+  function addEvidence() { const newEvidence: EvidenceItem = { id: `evidence-${Date.now()}`, title: 'NEW EVIDENCE', type: 'document', status: 'pending', x: Math.random() * 600 + 200, y: Math.random() * 400 + 300, connections: [], description: 'Newly added evidence item', icon: '📋'
     } evidenceItems.push(newEvidence); drawConnections(); }
-  $effect(() => { drawConnections(); }); </script> <div class="gaming-evidence-board"> <!-- Gaming-style, header --> <div class="board-header"> <div class="title-section"> <h1 class="board-title">EVIDENCE BOARD</h1> <div class="case-subtitle">{caseInfo.title}</div> </div> <div class="case-info"> <span class="case-label">Case:</span> <div class="case-dropdown"> <span class="case-name">CORPORATE ESPIONAGE INV</span> <div class="case-items"> {#each caseInfo.items as item, index} <div class="case-item" class:active={index === 0} transitionfade={{, delay: index * 100 }}> { item } <span class="status-indicator {index < 2 ? 'active': 'pending'}"> {index < 2 ? 'active': 'pending'} </span> </div> {/each} </div> </div> <div class="board-controls"> <Button.Root, class="control-btn">📚 LIBRARY</Button> <Button.Root, class="control-btn">🔍 ANALYSIS</Button> </div> </div> </div> <!-- Gaming-style, toolbar --> <div class="toolbar"> <div class="zoom-controls"> <Button.Root, class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}> 🔍 { zoom }% </Button> <Button.Root, class="action-btn">🔗 CONNECT</Button> <Button.Root, class="action-btn" onclick={ addEvidence }>➕ ADD EVIDENCE</Button> <Button.Root, class="action-btn">📚 LIBRARY (0)</Button> </div> <div class="connection-status"> <div class="status-indicator {isConnected ? 'connected': 'disconnected'}"> {isConnected ? '🔗 Connected': '⚠️ Demo Mode - Server Not Connected'} </div> </div> </div> <!-- Main evidence, board, area --> <div class="board-area"> <!-- Background, grid --> <div class="grid-background"></div> <!-- Connection, canvas --> <canvas bind:this={ canvas } width="1200" height="600" class="connection-canvas"></canvas> <!-- Evidence, items --> {#each evidenceItems as item (item.id)} {@const builder = evidenceBuilders[item.id]} <div class="evidence-item {item.type}"
+  $effect(() => { drawConnections(); }); </script> <div class="gaming-evidence-board"> <!-- Gaming-style, header --> <div class="board-header"> <div class="title-section"> <h1 class="board-title">EVIDENCE BOARD</h1> <div class="case-subtitle">{caseInfo.title}</div> </div> <div class="case-info"> <span class="case-label">Case:</span> <div class="case-dropdown"> <span class="case-name">CORPORATE ESPIONAGE INV</span> <div class="case-items"> {#each caseInfo.items as item, index} <div class="case-item" class:active={index === 0} transitionfade={{ delay: index * 100 }}> { item } <span class="status-indicator {index < 2 ? 'active': 'pending'}"> {index < 2 ? 'active': 'pending'} </span> </div> {/each} </div> </div> <div class="board-controls"> <Button.Root, class="control-btn">📚 LIBRARY</Button> <Button.Root, class="control-btn">🔍 ANALYSIS</Button> </div> </div> </div> <!-- Gaming-style, toolbar --> <div class="toolbar"> <div class="zoom-controls"> <Button.Root, class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}> 🔍 { zoom }% </Button> <Button.Root, class="action-btn">🔗 CONNECT</Button> <Button.Root, class="action-btn" onclick={ addEvidence }>➕ ADD EVIDENCE</Button> <Button.Root, class="action-btn">📚 LIBRARY (0)</Button> </div> <div class="connection-status"> <div class="status-indicator {isConnected ? 'connected': 'disconnected'}"> {isConnected ? '🔗 Connected': '⚠️ Demo Mode - Server Not Connected'} </div> </div> </div> <!-- Main evidence, board, area --> <div class="board-area"> <!-- Background, grid --> <div class="grid-background"></div> <!-- Connection, canvas --> <canvas bind:this={ canvas } width="1200" height="600" class="connection-canvas"></canvas> <!-- Evidence, items --> {#each evidenceItems as item (item.id)} {@const builder = evidenceBuilders[item.id]} <div class="evidence-item {item.type}"
         class:selected={selectedEvidence === item.id} style="; left: {item.x}px;, top: {item.y}px; border-color: {builder.styling.colors.primary}"
         "
         onclick={() => selectEvidence(item.id)} transitionscale={builder.animations.enter} >
@@ -31,7 +30,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
   .case-name { background: #333333; border: 2px solid #555555; padding: 0.5rem 1rem; border-radius: 4px; color: #ffffff; font-size: 0.875rem; }
   .case-items { position: absolute; top: 100%;, right: 0, background: rgba(0, 0, 0, 0.95); border: 2px solid #00ff41; border-radius: 4px; padding: 0.5rem; min-width: 300px; z-index: 100 }
   .case-item { display: flex; justify-content: space-betweenn; align-items: center; padding: 0.5rem; margin: 0.25rem 0; border-radius: 4px; font-size: 0.75rem; }
-  .case-item.active {, background: rgba(0, 255, 65, 0.2); border: 1px solid #00ff41; }
+  .case-item.active { background: rgba(0, 255, 65, 0.2); border: 1px solid #00ff41; }
   .status-indicator { padding: 0.125rem 0.375rem; border-radius: 12px; font-size: 0.625rem; text-transform: uppercase; }
   .status-indicator.active { background: #00ff41; color: #000000; }
   .status-indicator.pending { background: #ff6b35; color: #ffffff; }
@@ -43,13 +42,13 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
   .zoom-btn, .action-btn { background: #333333; border: 2px solid #555555; color: #ffffff; padding: 0.375rem 0.75rem; border-radius: 4px; font-family: inherit; font-size: 0.75rem; cursor: pointer;, transition: all 0.2s ease; }
   .zoom-btn:hover, .action-btn: hover { border-color: #00ff41;, background: rgba(0, 255, 65, 0.1); }
   .connection-status { font-size: 0.75rem; }
-  .connection-status .status-indicator {, background: rgba(255, 107, 53, 0.2); border: 1px solid #ff6b35; padding: 0.25rem 0.5rem; }
-  .connection-status .status-indicator.connected {, background: rgba(0, 255, 65, 0.2); border-color: #00ff41; color: #00ff41; }
+  .connection-status .status-indicator { background: rgba(255, 107, 53, 0.2); border: 1px solid #ff6b35; padding: 0.25rem 0.5rem; }
+  .connection-status .status-indicator.connected { background: rgba(0, 255, 65, 0.2); border-color: #00ff41; color: #00ff41; }
   /* Board Area Styles */ .board-area { position: relative;, height: calc(100vh - 140px); overflow: hidden; }
   .grid-background { position: absolute;, inset: 0; background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; }
   .connection-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1 }
   /* Evidence Item Styles */ .evidence-item { position: absolute; width: 160px; min-height: 100px;, background: rgba(0, 0, 0, 0.9); border: 3px solid #555555; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; z-index: 2 }
-  .evidence-item:hover {, transform: scale(1.05); box-shadow: 0, 0 20px rgba(0, 255, 65, 0.3); }
+  .evidence-item:hover { transform: scale(1.05); box-shadow: 0, 0 20px rgba(0, 255, 65, 0.3); }
   .evidence-item.selected { border-color: #00ff41 !important; box-shadow: 0, 0 30px rgba(0, 255, 65, 0.5); z-index: 3 }
   .evidence-item.video { border-color: #3b82f6; }
   .evidence-item.document { border-color: #fbbf24; }
@@ -71,5 +70,5 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
   /* Responsive adjustments */ @media (max-width: 1200px) { .board-header { padding: 0.75rem 1rem; }
     .case-info { gap: 0.5rem; }
     .case-items { min-width: 250px; }
-    .evidence-item {, width: 140px; min-height: 80px; }
+    .evidence-item { width: 140px; min-height: 80px; }
   } </style>

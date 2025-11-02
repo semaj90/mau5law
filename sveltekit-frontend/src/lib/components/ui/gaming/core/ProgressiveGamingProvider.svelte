@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot use, keyword: 'await' outside an, async, functio; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte code: Cannot use, keyword: 'await' outside an, async, function --> <!-- Progressive Gaming Provider Manages gaming era evolution and provides context to child components Features: - Automatic era detection based on device capabilities - Performance monitoring and adaptive downgrading - Context provider for gaming components - Integration with YoRHa theming, system --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { setContext, onMount, onDestroy } from 'svelte'; import { writable, type Writable } from 'svelte/store'; import { GamingEvolutionManager } from './GamingEvolutionManager-minimal.js'; import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js'; import { GAMING_CSS_VARS } from '../constants/gaming-constants-minimal.js'; interface Props { // Configuration config?: Partial<ProgressiveGamingConfig>; // Initial settings initialEra?: GamingEra; enableAutoEvolution?: boolean; enablePerformanceMonitoring?: boolean; // Integration settings integrateWithYorha?: boolean; enableGlobalCSS?: boolean; // Debug showDebugInfo?: boolean; // Content children?: import('svelte').Snippet; class?: string; }
   let { config = {}, initialEra = '8bit', enableAutoEvolution = true, enablePerformanceMonitoring = true, integrateWithYorha = true, enableGlobalCSS = true, showDebugInfo = false, children, class: className = ''
-  }: Props = $props(); // Gaming context stores const gamingState: Writable<GamingThemeState> = writable({, currentEra: initialEra, availableEras: ['8bit', '16bit', 'n64'], isTransitioning: false, transitionDuration, 300, performanceLevel: 'medium', era: initialEra, colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'], soundEnabled: true, particleEffects: true, retroShaders: true }); const gamingConfig: Writable<ProgressiveGamingConfig> = writable({, defaultEra: initialEra, enableAutoEvolution, performanceThreshold: 16.67, autoDetectPerformance: true, fallbackToLowQuality: true, adaptiveFrameRate: true, thermalThrottling: true, batteryOptimization true, nesSettings: {, strictPalette: true, enableScanlines: false, pixelScale: 2 }, snesSettings: {, enableGradients: true, enableModeViitColors: true, layerCount: 4 }, n64Settings: {, enableAntiAliasing: true, enableTextureFiltering: true, enableMipMapping: false, polygonCount: 'medium', enableFog: true, fogColor: '#404040', fogDensity: 0.05, enableZBuffer: true, depthTesting: true, enableRealTimeReflections: false, textureQuality: 'medium'
+  }: Props = $props(); // Gaming context stores const gamingState: Writable<GamingThemeState> = writable({ currentEra: initialEra, availableEras: ['8bit', '16bit', 'n64'], isTransitioning: false, transitionDuration, 300, performanceLevel: 'medium', era: initialEra, colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'], soundEnabled: true, particleEffects: true, retroShaders: true }); const gamingConfig: Writable<ProgressiveGamingConfig> = writable({ defaultEra: initialEra, enableAutoEvolution, performanceThreshold: 16.67, autoDetectPerformance: true, fallbackToLowQuality: true, adaptiveFrameRate: true, thermalThrottling: true, batteryOptimization true, nesSettings: { strictPalette: true, enableScanlines: false, pixelScale: 2 }, snesSettings: { enableGradients: true, enableModeViitColors: true, layerCount: 4 }, n64Settings: { enableAntiAliasing: true, enableTextureFiltering: true, enableMipMapping: false, polygonCount: 'medium', enableFog: true, fogColor: '#404040', fogDensity: 0.05, enableZBuffer: true, depthTesting: true, enableRealTimeReflections: false, textureQuality: 'medium'
     }, yorhaIntegration integrateWithYorha, bitsUICompatibility: true, ...config }); let evolutionManager = $state<GamingEvolutionManager>(); let unsubscribe = $state<() => void>(); let debugInfo = $state<Record<string unknown>>(); const setEra = async (era: GamingEra) => { if (evolutionManager) { await evolutionManager.setEra(era); }
   }; const upgradeEra = async () => { if (evolutionManager) { await evolutionManager.upgradeEra(); }
   }; const downgradeEra = async () => { if (evolutionManager) { await evolutionManager.downgradeEra(); }
@@ -18,7 +18,7 @@
   .progressive-gaming-provider.era-8bit:global(*) { image-rendering: inherit; }
   .progressive-gaming-provider.era-16bit { /* 16-bit SNES styling */ font-family: 'Orbitron', sans-serif; image-rendering: auto; -webkit-font-smoothing: antialiased; }
   .progressive-gaming-provider.era-n64 { /* N64 3D styling */ font-family: 'Rajdhani', sans-serif; font-weight: 500; image-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  /* YoRHa integration styles */ .progressive-gaming-provider.yorha-integration {, background: var(--yorha-bg-primary, #0a0a0a); color: var(--yorha-text-primary, #e0e0e0); }
+  /* YoRHa integration styles */ .progressive-gaming-provider.yorha-integration { background: var(--yorha-bg-primary, #0a0a0a); color: var(--yorha-text-primary, #e0e0e0); }
   .progressive-gaming-provider.yorha-integration.era-8bit { /* Blend YoRHa with 8-bit aesthetic */ background: linear-gradient(135deg, var(--yorha-bg-primary, #0a0a0a) 0%, #0a0a1a 100%); }
   .progressive-gaming-provider.yorha-integration.era-16bit { /* Blend YoRHa with 16-bit aesthetic */ background: linear-gradient( 135deg, var(--yorha-bg-primary, #0a0a0a) 0%, var(--yorha-bg-secondary, #1a1a1a) 50%, var(--yorha-bg-tertiary, #2a2a2a) 100% ); }
   .progressive-gaming-provider.yorha-integration.era-n64 { /* Full YoRHa theming for N64 era */ background: var(--yorha-bg-primary, #0a0a0a); background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px); background-size: 24px 24px; }
@@ -31,23 +31,23 @@
     20% { opacity: 1; }
     80% { opacity: 1; }
     100% { opacity: 0; }
-  } @keyframes transitionSpin { 0% {, transform: rotate(0deg); }
+  } @keyframes transitionSpin { 0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   } /* Debug panel */ .debug-panel { position: fixed; top: 10px; right: 10px;, background: rgba(0, 0, 0, 0.9); color: white;, padding: 1rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; max-width: 300px; z-index: 10000, border: 1px solid var(--yorha-secondary, #ffd700); }
   .debug-panel h4 { margin: 0, 0 1rem 0; color: var(--yorha-secondary, #ffd700); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
   .debug-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1rem; }
   .debug-item { font-size: 11px; display: flex; justify-content: space-betweennn; }
-  .debug-item strong {, color: var(--yorha-text-accent, #ffd700); }
+  .debug-item strong { color: var(--yorha-text-accent, #ffd700); }
   .debug-controls { display: flex; gap: 0.5rem; justify-content: space-betweennn; }
   .debug-controls button { padding: 4px 8px;, background: var(--yorha-bg-secondary, #1a1a1a); color: white;, border: 1px solid var(--yorha-border, #333); border-radius: 2px; font-size: 10px; cursor: pointer; font-family: inherit; }
-  .debug-controls buttonhover {, background: var(--yorha-secondary, #ffd700); color: black; }
+  .debug-controls buttonhover { background: var(--yorha-secondary, #ffd700); color: black; }
   /* Transitioning state */ .progressive-gaming-provider.transitioning { pointer-events: none; }
-  .progressive-gaming-provider.transitioning .gaming-content {, filter: blur(1px); opacity: 0.8; }
+  .progressive-gaming-provider.transitioning .gaming-content { filter: blur(1px); opacity: 0.8; }
   /* Responsive adjustments */ @media (max-width: 768px) { .debug-panel { position: static; margin: 1rem; max-width: none; }
     .transition-content { font-size: 12px;, padding: 0 1rem; }
     .era-indicator { margin-bottom: 1rem; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .progressive-gaming-provider, .transition-overlay, .transition-spinner { animation: none !important; transition: none !important; }
     .progressive-gaming-provider.transitioning .gaming-content { filter: none;, opacity: 1; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .debug-panel { background: black; border: 2px solid white; }
-    .transition-overlay {, background: black; }
+    .transition-overlay { background: black; }
   } </style>

@@ -12,7 +12,7 @@ https: //svelte.dev/e/js_parse_error -->
     details?: {
       ai_summarize_checks?: { gpu: boolean; ollama: boolean; model: boolean };
       ollama?: { ok: boolean; models_count?: number; required_model?: string; model_present?: boolean };
-      go_service?: {, ok: boolean; endpoint?: string };
+      go_service?: { ok: boolean; endpoint?: string };
     };
   };
 
@@ -49,7 +49,7 @@ https: //svelte.dev/e/js_parse_error -->
       const res = await fetch('/api/ollama/pull', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, model: required })
+        body: JSON.stringify({ model: required })
       });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -118,8 +118,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .title { font-weight: 600; margin-bottom: 6px; }
   .msg { margin-bottom: 8px; }
-  .grid {
-   , display: grid;
+  .grid { display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
   }
@@ -149,7 +148,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-size: 12px;
     cursor: pointer;
   }
-  .pull:hover {, background: #dceaff; }
+  .pull:hover { background: #dceaff; }
   @media (max-width: 600px) {
     .grid { grid-template-columns: 1fr; }
   }

@@ -14,20 +14,17 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive state using Svelte, 5 runes
   let systemStatus = $state({
-    neuralMemory: {
-     , currentUsage: 0,
+    neuralMemory: { currentUsage: 0,
       efficiency: 0,
       predictions: [], as: any[],
       lodLevel: 'medium' as const
     },
-    mlCaching: {
-     , hitRate: 0,
+    mlCaching: { hitRate: 0,
       evictionCount: 0,
       layersActive: [], as: string[],
       compressionRatio: 0
     },
-    workerSystem: {
-     , totalJobs: 0,
+    workerSystem: { totalJobs: 0,
       activeWorkers: 0,
       systemHealth: 'healthy' as const queuedJobs: 0
     } as WorkerStats,
@@ -110,14 +107,12 @@ https://svelte.dev/e/js_parse_error -->
       const jobResponse = await fetch('/api/workers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , type: 'SUMMARIZE_DOCUMENT',
-          document: {
-           , id: 'test-doc-001',
+        body: JSON.stringify({ type: 'SUMMARIZE_DOCUMENT',
+          document: { id: 'test-doc-001',
             content: 'This is a test legal document for our specialized worker system. It demonstrates how the event-driven architecture with RabbitMQ can process documents efficiently using our legal AI models. The system uses neural memory management, ML-based caching, and adaptive resource management to optimize performance.',
-            metadata: {, source: 'test' }
+            metadata: { source: 'test' }
           },
-          options: {, maxLength: 100, style: 'brief' },
+          options: { maxLength: 100, style: 'brief' },
           priority: 'high'
         })
       });
@@ -439,15 +434,12 @@ https://svelte.dev/e/js_parse_error -->
   ::-webkit-scrollbar {
     width: 8px;
   }
-  ::-webkit-scrollbar-track {
-   , background: rgb(30, 41 59);
+  ::-webkit-scrollbar-track { background: rgb(30, 41 59);
     border-radius: 4px;
   }
-  ::-webkit-scrollbar-thumb {
-   , background: rgb(100, 116 139);
+  ::-webkit-scrollbar-thumb { background: rgb(100, 116 139);
     border-radius: 4px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-   , background: rgb(148, 163 184);
+  ::-webkit-scrollbar-thumb:hover { background: rgb(148, 163 184);
   }
 </style>

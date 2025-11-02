@@ -4,15 +4,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       isListening = false; }; recognition.onerror = () => { isListening = false; }; recognition.onend = () => { isListening = false; }; // teardown return () => { if (recognition) { try { recognition.onresult = null; recognition.onend = null; recognition.onerror = null; } catch {} recognition = null; }
     }; }); // Auto-scroll to bottom when new messages arrive (runs in browser only) $effect(() => { if (!browser) return; if (messagesContainer && messages.length > 0) { messagesContainer.scrollTop = messagesContainer.scrollHeight; }
   }); // Send message function async function sendMessage(): Promise<any> { if (!messageInput.trim() || isProcessing) return; const message = messageInput; messageInput = ''; try { const assistantMessage = await aiAssistant.sendMessage(message, { legalContext, includeHistory: true }); // Store embeddings for semantic search await pgVectorSearch.storeChatEmbedding(assistantMessage); // Store user message embedding too const userMessage = messages[messages.length - 2]; // Assistant message is last, user is second-to-last if (userMessage) { await pgVectorSearch.storeChatEmbedding(userMessage); }
-      // Dispatch event for parent components onresponse?.(); } catch (error) { console.error('Failed to send message:', error); // Add error message to chat aiAssistant.messages.push({ id: crypto.randomUUID(), role: 'assistant', content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`, timestamp: Date.now(), sessionId: aiAssistant.sessionId, metadata: {, error: true } }); }
+      // Dispatch event for parent components onresponse?.(); } catch (error) { console.error('Failed to send message:', error); // Add error message to chat aiAssistant.messages.push({ id: crypto.randomUUID(), role: 'assistant', content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`, timestamp: Date.now(), sessionId: aiAssistant.sessionId, metadata: { error: true } }); }
   } // Handle Enter key - use the event param function handleKeyDown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }
   } // Voice input toggle function toggleVoiceInput() { if (!recognition) return; if (isListening) { recognition.stop(); } else { isListening = true; recognition.start(); }
-  } // Search conversation history - fixed call syntax and assignment async function searchHistory(): Promise<any> { if (!messageInput.trim()) return; try { const results = await pgVectorSearch.searchChatHistory({ query: messageInput, // fixed missing comma limit: 10, threshold: 0.7, filters: {, legalDomain: legalContext } }); searchResults = results; // fixed variable name showSearchResults = true; } catch (error) { console.error('Search failed:', error); }
+  } // Search conversation history - fixed call syntax and assignment async function searchHistory(): Promise<any> { if (!messageInput.trim()) return; try { const results = await pgVectorSearch.searchChatHistory({ query: messageInput, // fixed missing comma limit: 10, threshold: 0.7, filters: { legalDomain: legalContext } }); searchResults = results; // fixed variable name showSearchResults = true; } catch (error) { console.error('Search failed:', error); }
   } // Insert search result function insertSearchResult(result: any) { messageInput = (result as { content?: any }).content || ''; showSearchResults = false; }
   // Backend selection function selectBackend(backend: Backend) { aiAssistant.currentBackend = backend; }
   // Export conversation function exportConversation(format: 'json' | 'markdown' | 'pdf' = 'markdown') { const exported = aiAssistant.exportConversation(format); const blob = new Blob([exported], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `legal-ai-conversation-${Date.now()}.${format === 'json' ? 'json': 'md'}`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
   // Clear conversation function clearConversation() { if (confirm('Are you sure you want to clear this conversation?')) { aiAssistant.clearHistory(); }
-  } // Get backend status color function getBackendStatusColor(backend: Backend): string { const latency = backendLatency[backend]; if (latency === 0) return, 'text-gray-500'; if (latency < 1000) return, 'text-green-500'; if (latency < 3000) return, 'text-yellow-500'; return, 'text-red-500'; }
+  } // Get backend status color function getBackendStatusColor(backend: Backend): string { const latency = backendLatency[backend]; if (latency === 0) return 'text-gray-500'; if (latency < 1000) return 'text-green-500'; if (latency < 3000) return 'text-yellow-500'; return 'text-red-500'; }
   // Format timestamp function formatTime(timestamp: number): string { return new Date(timestamp).toLocaleTimeString(); }
   // Show citation (fixed signature + assignment) function showCitation(citation: string) { selectedCitation = citation; showCitationDialog = true; }
   function insertCitation() { oncitation?.(); showCitationDialog = false; }
@@ -61,7 +61,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .settings-panel { padding: 1rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
   .setting-group { margin-bottom: 1rem; }
   .setting-group label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem; }
-  .backend-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
+  .backend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
   .backend-btn { display: flex; flex-direction: column; align-items: center; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 0.75rem; transition: all 0.2; }
   .backend-btn:hover { background: #f3f4f6; }
   .backend-btn.active { border-color: #3b82f6; background: #eff6ff; }
@@ -105,8 +105,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .voice-btn.listening { background: #fee2e2; border-color: #fca5a5;, animation: pulse 1s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
   .input-wrapper { display: flex; gap: 0.5rem; }
-  .input-wrapper textarea {, flex: 1, padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; resize: vertical; min-height: 2.5rem; font-family: inherit; font-size: 0.875rem; line-height: 1.5; }
-  .input-wrapper textarea:focus {, outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
+  .input-wrapper textarea { flex: 1, padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; resize: vertical; min-height: 2.5rem; font-family: inherit; font-size: 0.875rem; line-height: 1.5; }
+  .input-wrapper textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
   .submit-btn { padding: 0.75rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;, transition: all 0.2; }
   .submit-btn:hover:not(:disabled) { background: #2563eb; }
   .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -124,7 +124,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .modal-footer { display: flex; justify-content: flex-end; padding: 1rem; border-top: 1px solid #e5e7eb; }
   .btn-close { padding: 0.5rem 1rem; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-size: 0.875rem; transition: background-color 0.2; }
   .btn-close:hover { background: #e5e7eb; }
-  /* Color utilities */ .text-gray-500 { color: #6b7280; } .text-green-500 { color: #10b981; } .text-yellow-500 { color: #f59e0b; } .text-red-500 {, color: #ef4444; } /* Responsive adjustments */ @media (max-width: 768px) { .enhanced-ai-assistant { border-radius: 0 }
+  /* Color utilities */ .text-gray-500 { color: #6b7280; } .text-green-500 { color: #10b981; } .text-yellow-500 { color: #f59e0b; } .text-red-500 { color: #ef4444; } /* Responsive adjustments */ @media (max-width: 768px) { .enhanced-ai-assistant { border-radius: 0 }
     .backend-grid { grid-template-columns: repeat(2, 1fr); }
     .message { max-width: 95%; }
     .capabilities { grid-template-columns: 1fr; }

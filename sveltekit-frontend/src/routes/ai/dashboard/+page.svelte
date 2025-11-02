@@ -219,8 +219,7 @@ import type { Document } from '$lib/types';
 		margin: 0;
 	}
 
-	.subtitle {
-	, color: var(--muted, #6b7280);
+	.subtitle { color: var(--muted, #6b7280);
 		font-size: 0.95rem;
 		margin: 0;
 	}
@@ -281,8 +280,7 @@ import type { Document } from '$lib/types';
 		flex-wrap: wrap;
 	}
 
-	.muted {
-	, color: var(--muted, #6b7280);
+	.muted { color: var(--muted, #6b7280);
 		font-size: 0.95rem;
 	}
 
@@ -336,7 +334,6 @@ import type { Document } from '$lib/types';
 		background: #2f855a;
 	}
 
-	.toast.error {
-	, background: #c53030;
+	.toast.error { background: #c53030;
 	}
 </style>

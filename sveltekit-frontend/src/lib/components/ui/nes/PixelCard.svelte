@@ -6,7 +6,7 @@
   function handleClick() { if (interactive && onclick) { onclick(); }
   } function startPixelAnimation() { if (!animated) return; const animate = () => { pixelOffset = (pixelOffset + 0.5) % 8; glowIntensity = 0.5 + 0.5 * Math.sin(Date.now() * 0.005); if (isHovered) { animationFrame = requestAnimationFrame(animate); }
     }; animate(); }
-  // Rarity-based styling let rarityStyles = $derived(() => { switch (rarity) { case, 'common': return { color: '#8B8B8B', glow: '#CCCCCC' }; case, 'uncommon': return { color: '#1E90FF', glow: '#87CEEB' }; case, 'rare': return { color: '#9932CC', glow: '#DDA0DD' }; case, 'epic': return { color: '#FF6347', glow: '#FFA07A' }; case, 'legendary': return { color: '#FFD700', glow: '#FFFFE0' }; default: return {, color: '#8B8B8B', glow: '#CCCCCC' }; }
+  // Rarity-based styling let rarityStyles = $derived(() => { switch (rarity) { case, 'common': return { color: '#8B8B8B', glow: '#CCCCCC' }; case, 'uncommon': return { color: '#1E90FF', glow: '#87CEEB' }; case, 'rare': return { color: '#9932CC', glow: '#DDA0DD' }; case, 'epic': return { color: '#FF6347', glow: '#FFA07A' }; case, 'legendary': return { color: '#FFD700', glow: '#FFFFE0' }; default: return { color: '#8B8B8B', glow: '#CCCCCC' }; }
   }); let cardClasses = $derived(() => { const base = 'pixel-card'; const variantClass = `pixel-card--${ variant }`; const rarityClass = `pixel-card--${ rarity }`; const stateClasses = [ interactive && 'pixel-card--interactive', animated && 'pixel-card--animated', pixelPerfect && 'pixel-card--pixel-perfect', glowEffect && 'pixel-card--glow', isHovered && 'pixel-card--hovered', isPressed && 'pixel-card--pressed', ]
       .filter(Boolean) .join(' '); return `${ base } ${ variantClass } ${ rarityClass } ${ stateClasses } ${ className }`.trim(); }); </script> <div class={ cardClasses } { style } role={interactive ? 'button': 'article'} tabindex={interactive ? 0: -1} onmouseenter={ handleMouseEnter } onmouseleave={ handleMouseLeave } onmousedown={ handleMouseDown } onmouseup={ handleMouseUp } onclick={ handleClick } onkeydown={e => { if (interactive && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onclick?.(); }
   }} >
@@ -16,7 +16,7 @@
   .pixel-card--pixel-perfect { /* Enforce pixel boundaries */ {} transform-origin: top left; }
 /* Variant Styles */ {} .pixel-card--game-card { min-width: 200px; min-height: 280px;, background: linear-gradient(145deg, #0f0f23, #1a1a2e, #0f0f23); }
   .pixel-card--inventory-item { min-width: 120px; min-height: 120px; aspect-ratio: 1, padding: 8px; }
-  .pixel-card--stats-card {, background: #16213e; border-color: var(--console-tertiary, #4caf50); }
+  .pixel-card--stats-card { background: #16213e; border-color: var(--console-tertiary, #4caf50); }
   .pixel-card--achievement { background: radial-gradient(circle, #2a1810, #1a1a2e); border-color: #ffd700; }
 /* Rarity Styles */ {} .pixel-card--common { border-color: #8b8b8b; }
   .pixel-card--uncommon { border-color: #1e90ff;, background: linear-gradient(145deg, #0f1a2e, #1a1a2e, #0f1a2e); }
@@ -26,7 +26,7 @@
   @keyframes legendary-shimmer { 0% { box-shadow: {} 0, 0 5px #ffd700, {} inset, 0, 0, 0 1px rgba(255, 215, 0, 0.3); }
     100% { box-shadow: {} 0, 0 20px #ffd700, {} inset, 0, 0, 0 1px rgba(255, 215, 0, 0.6); }
   } /* Interactive States */ {} .pixel-card--interactive { cursor: pointer; }
-  .pixel-card--interactive:hover {, transform: translateY(-2px); box-shadow: {} inset, 0, 0, 0 1px rgba(255, 255, 255, 0.2), {} 6px 6px, 0 rgba(0, 0, 0, 0.6); }
+  .pixel-card--interactive:hover { transform: translateY(-2px); box-shadow: {} inset, 0, 0, 0 1px rgba(255, 255, 255, 0.2), {} 6px 6px, 0 rgba(0, 0, 0, 0.6); }
   .pixel-card--pressed { transform: translateY(1px) scale(0.98); box-shadow: {} inset, 0, 0, 0 1px rgba(255, 255, 255, 0.1), {} 2px 2px, 0 rgba(0, 0, 0, 0.5); }
 /* Header */ {} .pixel-card__header { display: flex; justify-content: space-betweenn; align-items: flex-start;, padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); }
   .pixel-card__title-section { display: flex; flex-direction: column; gap: 4px; flex: 1 }
@@ -53,17 +53,17 @@
   } /* Pixel Corners */ {} .pixel-card__pixel-corners { position: absolute; inset: 0; pointer-events: none; }
   .pixel-card__corner { position: absolute; width: 8px; height: 8px;, background: var(--console-tertiary, #4caf50); }
   .pixel-card__corner--tl { top: 0, left: 0; }
-  .pixel-card__corner--tr {, top: 0, right: 0; }
-  .pixel-card__corner--bl {, bottom: 0, left: 0; }
-  .pixel-card__corner--br {, bottom: 0, right: 0; }
+  .pixel-card__corner--tr { top: 0, right: 0; }
+  .pixel-card__corner--bl { bottom: 0, left: 0; }
+  .pixel-card__corner--br { bottom: 0, right: 0; }
 /* Console Theme Adaptations */ {} .theme-nes .pixel-card { --card-primary: #e52521; --card-secondary: #0084ff; --card-tertiary: #4caf50; }
   .theme-snes .pixel-card { --card-primary: #b266ff; --card-secondary: #00c8ff; --card-tertiary: #ffd700; }
   .theme-n64 .pixel-card { --card-primary: #00aa00; --card-secondary: #0055ff; --card-tertiary: #ff5555; }
-/* Accessibility */ {} .pixel-card:focus-visible {, outline: 2px solid var(--console-primary, #e52521); outline-offset: 2px; }
+/* Accessibility */ {} .pixel-card:focus-visible { outline: 2px solid var(--console-primary, #e52521); outline-offset: 2px; }
 /* Responsive Design */ {} @media (max-width: 480px) { .pixel-card--game-card { min-width: 150px; min-height: 200px; }
 .pixel-card__header, {} .pixel-card__content { padding: 8px; }
     .pixel-card__title { font-size: 0.9em; }
   } /* High Contrast Mode */ {} @media (prefers-contrast: high) { .pixel-card { border-width: 3px; }
-    .pixel-card__glow {, display: none; }
+    .pixel-card__glow { display: none; }
   } /* Reduced Motion */ {} @media (prefers-reduced-motion reduce) { .pixel-card, {} .pixel-card__glow, {} .legendary-shimmer { animation: none;, transition: none; }
   } </style>

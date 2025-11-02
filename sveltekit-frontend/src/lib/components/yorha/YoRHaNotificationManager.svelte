@@ -18,8 +18,7 @@
   // Subscribe to notification store
   let notifications = $state<Notification[]>([]);
   // Avoid TS union issues by creating a typed alias
-  const notificationStore = notificationStoreExport as: unknown as {
-   , subscribe: (run: (_value: Notification[]) => void) => () => void;
+  const notificationStore = notificationStoreExport as: unknown as { subscribe: (run: (_value: Notification[]) => void) => () => void;
     remove: (id: string) => void;
   }
   $effect(() => {

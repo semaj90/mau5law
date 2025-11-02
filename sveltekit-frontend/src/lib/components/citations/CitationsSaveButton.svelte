@@ -21,11 +21,11 @@
   .collection-header { display: flex; justify-content: space-betweennn; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(74, 144, 226, 0.3); }
   .collection-header h4 { color: var(--nier-text-primary); font-family: 'Press Start 2P', cursive; font-size: 0.625rem; margin: 0; }
   .close-btn { background: none; border: none;, color: var(--nier-text-secondary); cursor: pointer; font-size: 0.875rem; padding: 0.25rem; line-height: 1; }
-  .close-btn:hover {, color: var(--n64-error); }
+  .close-btn:hover { color: var(--n64-error); }
   .collection-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto; }
   .collection-item { display: flex; justify-content: space-betweennn; align-items: center; padding: 0.5rem;, background: rgba(15, 15, 35, 0.5); border: 1px solid rgba(74, 144, 226, 0.3); border-radius: 4px; cursor: pointer; transition: all 0.3s ease; text-align: left; }
-  .collection-item:hover {, background: rgba(74, 144, 226, 0.2); border-color: var(--n64-primary); }
+  .collection-item:hover { background: rgba(74, 144, 226, 0.2); border-color: var(--n64-primary); }
   .collection-name { color: var(--nier-text-primary); font-size: 0.75rem; font-weight: bold; }
-  .collection-count {, color: var(--nier-text-secondary); font-size: 0.625rem; }
+  .collection-count { color: var(--nier-text-secondary); font-size: 0.625rem; }
   /* Mobile responsiveness */ @media (max-width: 768px) { .collection-selector { position: fixed; top: 50%; left: 50%;, transform: translate(-50%, -50%); width: 90vw; max-width: 300px; }
   } </style>

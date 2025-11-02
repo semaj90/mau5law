@@ -25,8 +25,7 @@
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
   }
-  .evidence-canvas-layout.mounted {
-   , opacity: 1;
+  .evidence-canvas-layout.mounted { opacity: 1;
   }
   :global(body) {
     margin: 0;

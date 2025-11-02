@@ -8,6 +8,6 @@
   @keyframes pulse { 0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   } @keyframes loading-progress { 0% { width: 0%; }
-    100% {, width: 100%; }
+    100% { width: 100%; }
   } </style>
 

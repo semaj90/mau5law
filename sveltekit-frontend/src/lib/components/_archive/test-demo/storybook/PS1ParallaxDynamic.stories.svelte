@@ -1,9 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import '../yorha/ps1.css'; let container: HTMLElement | null; let gyroscope = {, x: 0, y: 0, z: 0 }; let pointer = {, x: 0, y: 0 }; let isGyroscopeAvailable = $state<boolean>(false); let isMobile = $state<boolean>(false); let parallaxLayers: Array<any> = []; let animationId: number | null = null; // Parallax configuration let parallaxConfig = {, mouseSensitivity: 0.02, gyroSensitivity: 0.5, maxOffset: 100, smoothing: 0.1, enableAutoRotate: true, autoRotateSpeed: 0.001 }; // Performance monitoring let perfStats = {, fps: 0, frameTime: 0, lastFrameTime: performance.now() }; onMount(() => { detectDeviceCapabilities(); initializeParallaxLayers(); requestGyroscopePermission(); startParallaxLoop(); // Event listeners window.addEventListener('mousemove', handleMouseMove); window.addEventListener('deviceorientation', handleGyroscope); window.addEventListener('resize', handleResize); }); onDestroy(() => { if (animationId) cancelAnimationFrame(animationId); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('deviceorientation', handleGyroscope); window.removeEventListener('resize', handleResize); }); function detectDeviceCapabilities() { isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // Check for gyroscope support if ((window as: any).DeviceOrientationEvent) { isGyroscopeAvailable = true; console.log(`📱 Device: ${isMobile ? 'Mobile': 'Desktop'}, Gyroscope: ${ isGyroscopeAvailable }`); async function requestGyroscopePermission(): Promise<any> { if (!isGyroscopeAvailable || !isMobile) return; try { if (typeof (DeviceOrientationEvent as: any).requestPermission === 'function') { const permission = await (DeviceOrientationEvent as: any).requestPermission(); if (permission === 'granted') { console.log('✅ Gyroscope permission granted'); } else { console.log('❌ Gyroscope permission denied'); isGyroscopeAvailable = false; }
+<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import '../yorha/ps1.css'; let container: HTMLElement | null; let gyroscope = { x: 0, y: 0, z: 0 }; let pointer = { x: 0, y: 0 }; let isGyroscopeAvailable = $state<boolean>(false); let isMobile = $state<boolean>(false); let parallaxLayers: Array<any> = []; let animationId: number | null = null; // Parallax configuration let parallaxConfig = { mouseSensitivity: 0.02, gyroSensitivity: 0.5, maxOffset: 100, smoothing: 0.1, enableAutoRotate: true, autoRotateSpeed: 0.001 }; // Performance monitoring let perfStats = { fps: 0, frameTime: 0, lastFrameTime: performance.now() }; onMount(() => { detectDeviceCapabilities(); initializeParallaxLayers(); requestGyroscopePermission(); startParallaxLoop(); // Event listeners window.addEventListener('mousemove', handleMouseMove); window.addEventListener('deviceorientation', handleGyroscope); window.addEventListener('resize', handleResize); }); onDestroy(() => { if (animationId) cancelAnimationFrame(animationId); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('deviceorientation', handleGyroscope); window.removeEventListener('resize', handleResize); }); function detectDeviceCapabilities() { isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // Check for gyroscope support if ((window as: any).DeviceOrientationEvent) { isGyroscopeAvailable = true; console.log(`📱 Device: ${isMobile ? 'Mobile': 'Desktop'}, Gyroscope: ${ isGyroscopeAvailable }`); async function requestGyroscopePermission(): Promise<any> { if (!isGyroscopeAvailable || !isMobile) return; try { if (typeof (DeviceOrientationEvent as: any).requestPermission === 'function') { const permission = await (DeviceOrientationEvent as: any).requestPermission(); if (permission === 'granted') { console.log('✅ Gyroscope permission granted'); } else { console.log('❌ Gyroscope permission denied'); isGyroscopeAvailable = false; }
       } } catch (error) { console.warn('Gyroscope permission request failed:', error); isGyroscopeAvailable = false; }
-  } function initializeParallaxLayers() { parallaxLayers = [ {, id: 'background', depth: 0.1, element: null, currentOffset: {, x: 0, y: 0 }, targetOffset: {, x: 0, y: 0 } }, {
-        id: 'midground-1', depth: 0.3, element: null, currentOffset: {, x: 0, y: 0 }, targetOffset: {, x: 0, y: 0 } }, {
-        id: 'midground-2', depth: 0.5, element: null, currentOffset: {, x: 0, y: 0 }, targetOffset: {, x: 0, y: 0 } }, {
-        id: 'foreground', depth: 0.8, element: null, currentOffset: {, x: 0, y: 0 }, targetOffset: {, x: 0, y: 0 } }, ]; // Find elements after DOM is ready setTimeout(() => { parallaxLayers.forEach(layer => { layer.element = document.querySelector(`[data-parallax-id="${layer.id}"]`); }); }, 100); }
+  } function initializeParallaxLayers() { parallaxLayers = [ { id: 'background', depth: 0.1, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
+        id: 'midground-1', depth: 0.3, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
+        id: 'midground-2', depth: 0.5, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
+        id: 'foreground', depth: 0.8, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, ]; // Find elements after DOM is ready setTimeout(() => { parallaxLayers.forEach(layer => { layer.element = document.querySelector(`[data-parallax-id="${layer.id}"]`); }); }, 100); }
 
   function handleMouseMove(event: MouseEvent) { if (isMobile && isGyroscopeAvailable) return; // Prefer gyroscope on mobile const centerX = window.innerWidth / 2; const centerY = window.innerHeight / 2; pointer.x = (event.clientX - centerX) * parallaxConfig.mouseSensitivity; pointer.y = (event.clientY - centerY) * parallaxConfig.mouseSensitivity; }
 
@@ -22,7 +22,7 @@
   function startParallaxLoop() { function animate() { updatePerformanceStats(); updateParallaxTargets(); updateParallaxElements(); animationId = requestAnimationFrame(animate); }
     animate(); }
 
-  // Control functions function resetParallax() { parallaxLayers.forEach(layer => { layer.currentOffset = { x: 0, y: 0 }; layer.targetOffset = {, x: 0, y: 0 }; }); pointer = { x: 0, y: 0 }; gyroscope = {, x: 0, y: 0, z: 0 }; }
+  // Control functions function resetParallax() { parallaxLayers.forEach(layer => { layer.currentOffset = { x: 0, y: 0 }; layer.targetOffset = { x: 0, y: 0 }; }); pointer = { x: 0, y: 0 }; gyroscope = { x: 0, y: 0, z: 0 }; }
 
   function toggleAutoRotate() { parallaxConfig.enableAutoRotate = !parallaxConfig.enableAutoRotate; }
 </script> <div class="ps1-parallax-container" bind:this={ container }> <div class="story-header"> <h1 class="ps1-text-glow">🎮 PS1 Dynamic Parallax</h1> <p class="ps1-subtitle">Multi-layer parallax with gyroscope and mouse control</p> </div> <div class="controls-panel"> <h3>🎛️ Parallax Controls</h3> <div class="control-row"> <label for="mouse-sensitivity">Mouse Sensitivity:</label><input id="mouse-sensitivity"
@@ -57,15 +57,15 @@
   .story-header { text-align: center; padding: 20px; margin-bottom: 20px; }
   .story-header h1 { font-size: 2.5em;, color: #00ff88; text-shadow: 0, 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 10px; }
   .ps1-subtitle { color: #888; font-size: 14px; }
-  .controls-panel {, background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin: 20px; max-width: 400px; position: relative; z-index: 100 }
+  .controls-panel { background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin: 20px; max-width: 400px; position: relative; z-index: 100 }
   .controls-panel h3 { color: #00ff88; margin-top: 0 }
   .control-row { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
   .control-row label { min-width: 120px; font-size: 12px; color: #ccc; }
-  .ps1-slider {, flex: 1, background: #222; border: 1px solid #444; height: 20px; }
+  .ps1-slider { flex: 1, background: #222; border: 1px solid #444; height: 20px; }
   .value { min-width: 50px; font-size: 11px; color: #ffff00; text-align: right; }
   .button-row { display: flex; gap: 10px; margin: 15px 0; }
   .ps1-button { background: #333; border: 2px solid #00ff88; color: #00ff88; padding: 8px 15px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: all 0.2; }
-  .ps1-button:hover {, background: rgba(0, 255, 136, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 136, 0.3); }
+  .ps1-button:hover { background: rgba(0, 255, 136, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 136, 0.3); }
   .status-panel { background: rgba(0, 20, 40, 0.8); border: 1px solid #0088ff; border-radius: 4px; padding: 15px; margin-top: 20px; }
   .status-panel h4 { color: #0088ff; margin-top: 0; margin-bottom: 10px; }
   .status-item { margin: 5px 0; font-size: 12px; color: #aaa; }
@@ -73,7 +73,7 @@
   .status-warn { color: #ffaa00; }
   .parallax-viewport { position: relative; height: 60vh; min-height: 400px; overflow: hidden; margin: 20px; border: 2px solid #333; border-radius: 8px; perspective: 1000px; transform-style: preserve-3d; }
   .parallax-layer { position: absolute;, top: 0, left: 0; width: 100%; height: 100%; transform-style: preserve-3d; }
-  .layer-background {, background: radial-gradient(circle at 30% 70%, #1a1a2e, #0f0f23); z-index: 1 }
+  .layer-background { background: radial-gradient(circle at 30% 70%, #1a1a2e, #0f0f23); z-index: 1 }
   .grid-pattern { position: absolute;, top: 0, left: 0; width: 100%;, height: 100%; background-image: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; }
   .bg-elements { position: relative; width: 100%; height: 100%; }
   .bg-element { position: absolute; width: 4px; height: 4px; background: #00ff88; animation: pulse 2s ease-in-out infinite; }
@@ -110,11 +110,11 @@
   .reference-cross::before { width: 20px; height: 1px; }
   .reference-cross::after { width: 1px; height: 20px; }
   .reference-circle { position: absolute; top: -10px; left: -10px; width: 40px; height: 40px;, border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; }
-  .info-panel {, background: rgba(0, 0, 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin: 20px; color: #ccc; }
+  .info-panel { background: rgba(0, 0, 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin: 20px; color: #ccc; }
   .info-panel h4 { color: #0088ff; margin-bottom: 15px; }
   .info-panel h5 { color: #00ff88;, margin: 15px, 0 8px 0; }
   .info-panel ul { margin: 10px 0; padding-left: 20px; }
-  .info-panel li {, margin: 5px 0; line-height: 1.4; }
+  .info-panel li { margin: 5px 0; line-height: 1.4; }
   /* Animations */ @keyframes pulse { 0%, 100% { opacity: 0.3;, transform: scale(1); }
     50% { opacity: 1;, transform: scale(1.2); }
   } @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -123,14 +123,14 @@
     100% { transform: rotateX(360deg) rotateY(360deg); }
   } @keyframes scan { 0% { transform: translateX(-10px); opacity: 0; }
     50% { opacity: 1; }
-    100% {, transform: translateX(70px); opacity: 0; }
+    100% { transform: translateX(70px); opacity: 0; }
   } @keyframes blink { 0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.3; }
   } /* PS1 Effects */ .ps1-scanlines::before { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none; }
   .ps1-text-glow { text-shadow: 0, 0 5px currentColor, 0, 0 10px currentColor, 0, 0 15px currentColor; }
   .ps1-border { box-shadow: inset, 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2); }
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge; }
-  .ps1-3d-scene {, filter: contrast(1.1) saturate(1.2); }
+  .ps1-3d-scene { filter: contrast(1.1) saturate(1.2); }
   /* Responsive */ @media (max-width: 768px) { .controls-panel { max-width: 100%; margin: 10px; }
     .parallax-viewport { height: 50vh; min-height: 300px;, margin: 10px; }
     .story-header h1 { font-size: 2em; }

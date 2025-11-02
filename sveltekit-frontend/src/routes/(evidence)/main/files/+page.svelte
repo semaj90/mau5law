@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected, token, https://svelte.dev/e/js_parse_error --> <script lang="ts">
 import type { Case } from '$lib/types'; interface Props { caseId: string; }
   let { caseId = '' }: Props = $props(); import { page } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import { notifications } from '$lib/stores/unified'; import { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video } from 'lucide-svelte'; import { onMount } from 'svelte'; // Props // State let evidenceFiles: any[] = []; let filteredFiles: any[] = []; let loading = $state<boolean>(false); let error: string | null = null; let uploadProgress = 0; let uploading = $state<boolean>(false); let selectedFiles = new Set<string>(); let showBulkActions = $state<boolean>(false); // Filters and view options let searchQuery = ''; let selectedCategory = ''; let viewMode = 'grid'; // 'grid' | 'list'
-  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ {, value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive', label: 'Archives', icon Archive }, ]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''; }
+  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive', label: 'Archives', icon Archive }, ]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''; }
   }); onMount(() => { if (caseId) { loadEvidenceFiles(); }
   }); async function loadEvidenceFiles(): Promise<any> { if (!caseId) { error = 'Case ID is required'; return; }
     loading = true; error = null; try { const params = new URLSearchParams({ caseId }); if (selectedCategory) params.append('category', selectedCategory); const response = await fetch(`/api/evidence/upload?${ params }`); const data = await response.json(); if (data.success) { evidenceFiles = data.files || []; filterAndSortFiles(); } else { error = data.error || 'Failed to load evidence files'; }
@@ -26,7 +26,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string; }
     selectedFiles = selectedFiles; showBulkActions = selectedFiles.size > 0; }
   function selectAllFiles() { if (selectedFiles.size === filteredFiles.length) { selectedFiles.clear(); } else { filteredFiles.forEach(f => selectedFiles.add(f.id)); }
     selectedFiles = selectedFiles; showBulkActions = selectedFiles.size > 0; }
-  // Utility functions function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  // Utility functions function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
   function getFileIcon(evidenceType: string) { switch (evidenceType) { case, 'image': return Image; case, 'video': return Video; case, 'audio': return Music; case, 'document': return FileText; case, 'archive': return Archive; default: return File; }
   } function getFileUrl(file: any): string { return file.fileUrl || `/uploads/${ caseId }/${file.fileName}`; }
   // Reactive statements $effect(() => { if (searchQuery || selectedCategory || sortBy || sortOrder) { filterAndSortFiles(); }
@@ -87,7 +87,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string; }
 
   .search-section { display: flex; gap: 1rem; align-items: flex-end; }
 
-  .search-field {, flex: 1, margin: 0; }
+  .search-field { flex: 1, margin: 0; }
 
   .filter-select, .sort-section { display: flex; gap: 0.75rem; }
 
@@ -105,7 +105,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string; }
 
   .select-all-btn { display: flex; align-items: center; gap: 0.5rem; }
 
-  /* Grid View */ .files-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  /* Grid View */ .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
 
   .file-card { background: #1a1d20 !important; border: 2px solid #3a3d40 !important;, transition: border-color 0.2s, transform 0.2s; }
 
@@ -175,7 +175,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string; }
 
   .error-message { font-size: 0.75rem; color: #e76e55; }
 
-  @keyframes spin { to {, transform: rotate(360deg); }
+  @keyframes spin { to { transform: rotate(360deg); }
   } .animate-spin { animation: spin 1s linear infinite; }
 
   /* Modal */ .modal-overlay { position fixed;, inset: 0, background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000, padding: 1rem; }
@@ -202,7 +202,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string; }
 
   /* Utilities */ .icon { width: 1rem; height: 1rem; }
 
-  .hidden-input {, display: none; }
+  .hidden-input { display: none; }
 
   /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important;, padding: 0.5rem 1rem !important; }:global(.nes-btn.is-small) { font-size: 0.6rem !important;, padding: 0.4rem 0.75rem !important; }:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important;, color: #d4af37 !important; }:global(.nes-field) { margin-bottom: 1rem; }:global(.nes-field > label) { margin-bottom: 0.5rem; font-size: 0.7rem; }:global(.nes-progress) { height: 1.5rem; }:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e; border-color: #d4af37; }:global(.nes-checkbox.is-dark >, input:checked +, span::before) { background-color: #d4af37; }
 </style>

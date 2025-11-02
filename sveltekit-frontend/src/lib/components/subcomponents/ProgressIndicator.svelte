@@ -23,28 +23,28 @@ https://svelte.dev/e/js_parse_error -->
         if (stepIndex < currentStep) {
             const validation = validationResults[stepIndex];
             if (validation) {
-                if (!validation.isValid) return, 'error';
-                if (validation.warnings.length > 0) return, 'warning';
+                if (!validation.isValid) return 'error';
+                if (validation.warnings.length > 0) return 'warning';
             }
-            return, 'completed';
+            return 'completed';
         } else if (stepIndex === currentStep) {
-            return, 'current';
+            return 'current';
         } else {
-            return, 'pending';
+            return 'pending';
         }
     }
     function getStepIcon(stepIndex: number): string {
         const status = getStepStatus(stepIndex);
         switch (status) {
             case, 'completed':
-                return, 'check';
+                return 'check';
             case, 'current':
-                return, 'current';
+                return 'current';
             case, 'error':
-                return, 'exclamation';
+                return 'exclamation';
             case, 'warning':
-                return, 'exclamation-triangle';
-            default: return, 'circle';
+                return 'exclamation-triangle';
+            default: return 'circle';
         }
     }
     let progressPercentage = $derived(Math.round((currentStep / (steps.length - 1)) * 100));
@@ -183,7 +183,6 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </div>
 <style>
-  .progress-indicator li {
-   , position: relative;
+  .progress-indicator li { position: relative;
   }
 </style>

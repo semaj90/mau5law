@@ -315,8 +315,7 @@
    , background: linear-gradient(90deg, transparent, #ffbf00, transparent);
     animation: scanline 3s linear infinite;
   }
-  .yorha-glitch-effect {
-   , animation: glitch 0.3s infinite;
+  .yorha-glitch-effect { animation: glitch 0.3s infinite;
   }
   @keyframes glitch {
     0%,
@@ -495,8 +494,7 @@
     /* @apply text-amber-400 font-mono text-sm mx-3; */
   }
   @keyframes spin {
-    to {
-     , transform: rotate(360deg);
+    to { transform: rotate(360deg);
     }
   }
   @keyframes pulse {
@@ -504,8 +502,7 @@
     100% {
       opacity: 1;
     }
-    50% {
-     , opacity: 0.5;
+    50% { opacity: 0.5;
     }
   }
 </style>

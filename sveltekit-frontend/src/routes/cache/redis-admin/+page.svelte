@@ -50,9 +50,9 @@
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
   function getMemoryColor(efficiency: number): string {
-    if (efficiency >= 80) return, 'text-green-600';
-    if (efficiency >= 60) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (efficiency >= 80) return 'text-green-600';
+    if (efficiency >= 60) return 'text-yellow-600';
+    return 'text-red-600';
   }
   // Auto-refresh functionality
   function toggleAutoRefresh() {
@@ -193,7 +193,7 @@
         class="flex items-center gap-2" px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
-        {@render tab.icon({, class: "w-4 h-4" })}
+        {@render tab.icon({ class: "w-4 h-4" })}
         {tab.label}
     {/each}
   </div>

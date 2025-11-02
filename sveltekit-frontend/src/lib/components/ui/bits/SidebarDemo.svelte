@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProvider.svelte"; import  ThemeToggle  from "./ThemeToggle.svelte"; import  Sidebar  from "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from "./DocumentCard.svelte"; // Changed to named import import  Button  from "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
   let { theme = 'default'
-  }: SidebarDemoProps = $props(); let currentPage = $state<string>('dashboard'); // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused // Sample navigation items const navigationItems = [ {, id: 'dashboard', label: 'Dashboard', icon: '📊', // Fixed syntax badge: '3'
+  }: SidebarDemoProps = $props(); let currentPage = $state<string>('dashboard'); // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused // Sample navigation items const navigationItems = [ { id: 'dashboard', label: 'Dashboard', icon: '📊', // Fixed syntax badge: '3'
     }, {
       id: 'documents', label: 'Documents', icon: '📄', // Fixed syntax badge: '12', [
         { id: 'contracts', label: 'Contracts', icon: '📋', badge: '5' }, // Fixed syntax { id: 'evidence', label: 'Evidence', icon: '🔍', badge: '7' }, // Fixed syntax { id: 'briefs', label: 'Legal Briefs', icon: '⚖️' } // Fixed syntax ]
@@ -15,7 +15,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
       id: 'ai-assistant', label: 'AI Assistant', icon: '🤖', // Fixed syntax badge: 'NEW'
     }, {
       id: 'settings', label: 'Settings', icon: '⚙️', // Fixed syntax }
-  ]; // Sample documents for demo const sampleDocuments = [ {, title: 'Smith vs. Johnson Contract Dispute', fileType: 'contract' as const fileSize: '2.4 MB', lastModified: '2024-01-15', tags: ['dispute', 'contract', 'commercial'], confidentialityLevel: 'confidential' as const }, {
+  ]; // Sample documents for demo const sampleDocuments = [ { title: 'Smith vs. Johnson Contract Dispute', fileType: 'contract' as const fileSize: '2.4 MB', lastModified: '2024-01-15', tags: ['dispute', 'contract', 'commercial'], confidentialityLevel: 'confidential' as const }, {
       title: 'Evidence Package - Email Discovery', fileType: 'evidence' as const fileSize: '1.2 MB', lastModified: '2024-01-14', tags: ['email', 'discovery', 'evidence'], confidentialityLevel: 'restricted' as const }, {
       title: 'Motion for Preliminary Injunction', fileType: 'brief' as const fileSize: '896 KB', lastModified: '2024-01-13', tags: ['motion', 'injunction', 'urgent'], confidentialityLevel: 'public' as const }, {
       title: 'Case Law Research - Precedents', fileType: 'citation' as const fileSize: '654 KB', lastModified: '2024-01-12', tags: ['research', 'precedent', 'analysis'], confidentialityLevel: 'internal' as const }
@@ -33,7 +33,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
       case, 'reports': return { title: '📈 Reports & Analytics', description: 'Generate insights from your legal data', // Fixed syntax }
       case, 'ai-assistant': return { title: '🤖 AI Legal Assistant', description: 'AI-powered legal research and analysis', // Fixed syntax }
       case, 'settings': return { title: '⚙️ System Settings', description: 'Configure your legal workspace', // Fixed syntax }
-      default: return {, title: '📄 Page Not Found', description: 'The requested page could not be found', // Fixed syntax }
+      default: return { title: '📄 Page Not Found', description: 'The requested page could not be found', // Fixed syntax }
     } }
   const pageContent = $derived(getPageContent(currentPage)); </script> <ThemeProvider defaultTheme="light" enableSystem={ true }> <div class={` min-h-screen transition-colors, bg-[var(--enhanced-bits-bg)] text-[var(--enhanced-bits-text)] `} >
     <!-- Sidebar --> <Sidebar { theme } items={ navigationItems } homeIcon="🏠"
@@ -75,5 +75,5 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
           } `} >`
           <h3 class={` text-lg font-semibold, mb-3 ${theme === 'gaming' ? 'text-green-400': ''} `} >
             🏠 Sidebar Demo Features </h3> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <strong class={theme === 'gaming' ? 'text-green-400': ''}> Hover Home Icon </strong> <span class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sidebar snaps open with smooth animation: </span> </div> <div> <strong class={theme === 'gaming' ? 'text-green-400': ''}> Auto-collapse: </strong> <span class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sidebar collapses when mouse leaves </span> </div> <div> <strong class={theme === 'gaming' ? 'text-green-400': ''}> Badge Indicators: </strong> <span class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Show notification counts and status </span> </div> <div> <strong class={theme === 'gaming' ? 'text-green-400': ''}> Nested Navigation </strong> <span class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sub-menus with hierarchical structure </span> </div> </div> </div> </main> </div> </div> </ThemeProvider> <style> /* Ensure content shifts smoothly when sidebar expands */ main { transition: margin-left: 0.3s ease-out; }
-  /* Smooth theme transitions */ * {, transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  /* Smooth theme transitions */ * { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
 </style>

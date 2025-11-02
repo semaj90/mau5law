@@ -182,15 +182,12 @@ import type { Message } from '$lib/types';
     overflow-y: auto;
     scrollbar-width: thin;
   }
-  .chat-input::placeholder {
-   , color: var(--text-placeholder, #94a3b8);
+  .chat-input::placeholder { color: var(--text-placeholder, #94a3b8);
   }
-  .chat-input:disabled {
-   , color: var(--text-disabled, #94a3b8);
+  .chat-input:disabled { color: var(--text-disabled, #94a3b8);
     cursor: not-allowed;
   }
-  .chat-input.near-limit {
-   , color: var(--text-warning, #d97706);
+  .chat-input.near-limit { color: var(--text-warning, #d97706);
   }
   .chat-input.at-limit {
     color: var(--text-error, #dc2626);
@@ -206,8 +203,7 @@ import type { Message } from '$lib/types';
    , color: var(--text-muted, #94a3b8);
     font-variant-numeric: tabular-num;
   }
-  .character-count.near-limit {
-   , color: var(--text-warning, #d97706);
+  .character-count.near-limit { color: var(--text-warning, #d97706);
   }
   .character-count.at-limit {
     color: var(--text-error, #dc2626);
@@ -265,12 +261,10 @@ import type { Message } from '$lib/types';
   .chat-input::-webkit-scrollbar-track {
     background: transparent;
   }
-  .chat-input::-webkit-scrollbar-thumb {
-   , background: var(--border-color, #e2e8f0);
+  .chat-input::-webkit-scrollbar-thumb { background: var(--border-color, #e2e8f0);
     border-radius: 2px;
   }
-  .chat-input::-webkit-scrollbar-thumb:hover {
-   , background: var(--text-muted, #94a3b8);
+  .chat-input::-webkit-scrollbar-thumb:hover { background: var(--text-muted, #94a3b8);
   }
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {

@@ -21,7 +21,7 @@
   .info { background: #3b82f6; }
   .warn { background: #f59e0b; }
   .error { background: #ef4444; }
-  .success {, background: #10b981; }
+  .success { background: #10b981; }
   .title { font-weight: 600; }
   .msg { font-size: 0.95rem; margin-top: 0.25rem; }
 </style>

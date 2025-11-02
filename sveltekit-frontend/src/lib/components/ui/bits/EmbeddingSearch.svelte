@@ -51,7 +51,7 @@ import type { SearchResult } from '$lib/types'; // Svelte, 5 runes are auto-impo
   .error-message { margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
   .inline-icon { width: 1rem; height: 1rem; display: inli; vertical-align: text-bottom; }
   .animate-spin { animation: spin 1s linear infinite; }
-  @keyframes spin { from {, transform: rotate(0deg); }
+  @keyframes spin { from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   } /* Mobile responsive */ @media (max-width: 768px) { .advanced-controls { grid-template-columns: 1fr; }
     .search-input-group { flex-direction: column; align-items: stretch; }

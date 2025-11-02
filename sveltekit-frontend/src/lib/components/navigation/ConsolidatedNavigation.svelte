@@ -98,8 +98,7 @@
   .consolidated-navigation.expanded {
     width: 320px;
   }
-  .nav-header {
-   , padding: 1rem;
+  .nav-header { padding: 1rem;
     border-bottom: 1px solid var(--border-primary, #333333);
   }
   .nav-toggle {
@@ -115,8 +114,7 @@
     border-radius: 4px;
     transition: background 0.2s;
   }
-  .nav-toggle:hover {
-   , background: var(--surface-secondary, #1a1a1a);
+  .nav-toggle:hover { background: var(--surface-secondary, #1a1a1a);
   }
   .nav-icon {
     font-size: 1.2rem;
@@ -155,8 +153,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .route-count {
-   , color: var(--text-tertiary, #666666);
+  .route-count { color: var(--text-tertiary, #666666);
     font-size: 0.8rem;
   }
   .group-routes {
@@ -174,8 +171,7 @@
     transition: all 0.2s;
     border-left: 3px solid transparent;
   }
-  .route-link:hover {
-   , background: var(--surface-secondary, #1a1a1a);
+  .route-link:hover { background: var(--surface-secondary, #1a1a1a);
     border-left-color: var(--accent-primary, #00ff00);
   }
   .route-link.active {
@@ -191,8 +187,7 @@
     font-size: 0.9rem;
     white-space: nowrap;
   }
-  .beta-badge {
-   , background: var(--warning, #ff6600);
+  .beta-badge { background: var(--warning, #ff6600);
     color: white;
     font-size: 0.6rem;
    , padding: 0.1rem 0.3rem;
@@ -215,8 +210,7 @@
   .route-group[data-theme='amber'] .group-header {
     color: #ffaa00;
   }
-  .route-group[data-theme='retro'] .group-header {
-   , color: #ff6600;
+  .route-group[data-theme='retro'] .group-header { color: #ff6600;
   }
   @media (max-width: 768px) {
     .consolidated-navigation {
@@ -229,8 +223,7 @@
     .consolidated-navigation.expanded {
       width: 100%;
     }
-    .nav-content {
-     , height: auto;
+    .nav-content { height: auto;
       max-height: 60vh;
     }
   }
