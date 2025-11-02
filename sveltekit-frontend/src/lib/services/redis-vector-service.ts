@@ -220,7 +220,7 @@ export class RedisVectorService {
     } catch (e) {
       // ignore
     } finally {
-      this.isConnected = $state(false);
+      this.isConnected = false;
       this.redis = null;
     }
   }

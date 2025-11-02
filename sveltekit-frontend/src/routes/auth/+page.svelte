@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       error = 'Network error. Please try again.';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Validate form

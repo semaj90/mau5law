@@ -125,7 +125,7 @@
       console.error('Error loading POIs:', error);
       (toast as any).error('Failed to load POIs');
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -153,7 +153,7 @@
       console.error('Error creating POI:', error);
       (toast as any).error('Failed to create POI');
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
 
@@ -184,7 +184,7 @@
       console.error('Error updating POI:', error);
       (toast as any).error('Failed to update POI');
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
 

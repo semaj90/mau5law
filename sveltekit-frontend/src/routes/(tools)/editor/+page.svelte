@@ -8,10 +8,10 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
-  import { NesCard } from '$lib/components/ui/nes-ui.svelte'';
+  import { NesCard } from '$lib/components/ui/nes-ui.svelte';
   // Editor state
   let editorValue = $state('');
   let documentTitle = $state('Untitled Document');

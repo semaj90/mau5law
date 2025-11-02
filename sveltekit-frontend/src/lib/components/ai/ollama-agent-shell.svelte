@@ -177,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
       messages[messages.length - 1].content = `❌ Error: ${error}`;
       messages[messages.length - 1].status = "error";
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       scrollToBottom();
     }
   }

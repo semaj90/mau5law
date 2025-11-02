@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   // Expose props correctly for Svelte
-  export let disabled: boolean = $state(false);
-  export let onClick: (event?: MouseEvent | unknown) => void = () => {};
+  const { disabled } = $props<{ disabled: boolean }>()
+  const { onClick } = $props<{ onClick: (event?: MouseEvent | unknown) }>()
   interface ContextMenuContext {
     close: () => void;
   }

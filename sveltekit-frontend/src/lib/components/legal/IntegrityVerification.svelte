@@ -33,12 +33,12 @@ Displays detailed integrity verification results with AI analysis
     flaggedAnomalies: string[];
   };
   // Exported props (clean, typed)
-  export let integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention' = 'pending';
-  export let verificationResults: VerificationResults | undefined = undefined;
-  export let aiAnalysis: AIAnalysis | undefined = undefined;
-  export let showDetails: boolean = $state(false);
-  export let originalHash: string = '';
-  export let currentHash: string | undefined = undefined;
+  const { integrityStatus } = $props<{ integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention' }>()
+  const { verificationResults } = $props<{ verificationResults: VerificationResults | undefined }>()
+  const { aiAnalysis } = $props<{ aiAnalysis: AIAnalysis | undefined }>()
+  const { showDetails } = $props<{ showDetails: boolean }>()
+  const { originalHash } = $props<{ originalHash: string }>()
+  const { currentHash } = $props<{ currentHash: string | undefined }>()
   // Helpers
   function getStatusIcon(status: string) {
     switch (status) {

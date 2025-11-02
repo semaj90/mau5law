@@ -12,10 +12,10 @@
   import Zap from 'lucide-svelte/icons/zap';
 
   // Exported props (use standard exports to avoid svelte-preprocess type errors)
-  export let onAISearch: ((res: any) => void) | null = null;
-  export let onAIChat: ((res: any) => void) | null = null;
-  export let onAISummarize: ((res: any) => void) | null = null;
-  export let disabled: boolean = $state(false);
+  const { onAISearch } = $props<{ onAISearch: ((res: any) }>()
+  const { onAIChat } = $props<{ onAIChat: ((res: any) }>()
+  const { onAISummarize } = $props<{ onAISummarize: ((res: any) }>()
+  const { disabled } = $props<{ disabled: boolean }>()
 
   // Local state
   let aiSearchQuery: string = '';
@@ -71,7 +71,7 @@
       errorMessage = err instanceof Error ? err.message : String(err);
       await performFallbackSearch();
     } finally {
-      isAISearching = $state(false);
+      isAISearching = false;
     }
   }
 
@@ -123,7 +123,7 @@
       console.error('AI chat error:', err);
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isAIChatting = $state(false);
+      isAIChatting = false;
     }
   }
 
@@ -153,7 +153,7 @@
       console.error('AI summarization error:', err);
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isSummarizing = $state(false);
+      isSummarizing = false;
     }
   }
 

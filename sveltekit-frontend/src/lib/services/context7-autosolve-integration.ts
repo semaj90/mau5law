@@ -136,7 +136,7 @@ export class Context7AutosolveIntegration {
       );
       return failedResult;
     } finally {
-      this.isRunning = $state(false);
+      this.isRunning = false;
     }
   }
   // Perform comprehensive health check

@@ -4,7 +4,7 @@
   import { spring } from 'svelte/motion';
   import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
   import { n64TextureLOD } from '$lib/webgpu/N64TextureLODSystem';
-  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
+  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
   interface EvidenceNode {

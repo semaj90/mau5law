@@ -10,8 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   import Input from '$lib/components/ui/Input.svelte';
 
   // Props
-  export let citations: CitationType[] = [];
-  export let ondispatch: ((c: CitationType, action?: string) => void) | undefined = undefined;
+  const { citations } = $props<{ citations: CitationType[] }>()
+  const { ondispatch } = $props<{ ondispatch: ((c: CitationType, action?: string) }>()
 
   // Use standard Svelte reactive variables instead of Svelte 5 runes
   let searchQuery = '';

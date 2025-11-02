@@ -23,7 +23,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
  * ```
  */
 // Core N64 Components (New implementations with advanced 3D effects)

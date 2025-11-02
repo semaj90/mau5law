@@ -411,7 +411,7 @@ export class NeuralMemoryManager extends EventEmitter {
     } catch (err: any) {
       console.error('❌ Neural training error:', err instanceof Error ? err : String(err));
     } finally {
-      this.isTraining = $state(false);
+      this.isTraining = false;
     }
   }
   /**

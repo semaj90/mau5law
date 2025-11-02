@@ -203,7 +203,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       };
       messages = [...messages, errorMessage];
     } finally {
-      isTyping = $state(false);
+      isTyping = false;
     }
   };
   // Quick action for self-prompt suggestions

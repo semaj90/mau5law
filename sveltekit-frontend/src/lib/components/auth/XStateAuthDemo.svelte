@@ -7,10 +7,10 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Label } from '$lib/components/ui/label/Label.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import { Alert } from '$lib/components/ui/alert/Alert.svelte';

@@ -10,14 +10,14 @@
     Card,
     Input,
     Badge
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
     getConfidenceClass,
     formatAnalysisDate
-  } from '$lib/components/ui/orchestrated.svelte'';
+  } from '$lib/components/ui/orchestrated.svelte';
   // Icons for CUDA streaming
   import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,

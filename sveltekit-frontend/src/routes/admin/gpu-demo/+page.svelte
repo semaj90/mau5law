@@ -3,13 +3,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     createGPUClusterManager,
     checkGPUCapabilities,
@@ -214,7 +214,7 @@
     if (!isInitialized || !gl || !shaderCache) return;
     try {
       // Stop any current rendering loop
-      isRendering = $state(false);
+      isRendering = false;
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }

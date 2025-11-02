@@ -2,7 +2,7 @@
   import { CaseLogic } from '$lib/core/logic/case-logic';
   import type { CaseFile } from '$lib/core/logic/case-logic';
   // Replace unsupported optional prop syntax with an explicit union + default
-  export let caseFile: CaseFile | undefined = undefined;
+  const { caseFile } = $props<{ caseFile: CaseFile | undefined }>()
   // Reactive derived values (recompute when caseFile changes)
   let displayStatus: string = 'Unknown';
   let riskScore = 0;

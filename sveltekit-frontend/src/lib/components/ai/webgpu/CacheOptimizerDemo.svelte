@@ -80,7 +80,7 @@ await loadSystemCapabilities();
     } catch (error) {
       errorMessage = `Demo failed: ${error.message}`;
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function formatDuration(ms) {

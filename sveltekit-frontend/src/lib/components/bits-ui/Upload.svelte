@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let uploadUrl: string = '/api/vector/store';
-  export let onDone: (res: any) => void = () => {};
+  const { uploadUrl } = $props<{ uploadUrl: string }>()
+  const { onDone } = $props<{ onDone: (res: any) }>()
   let file: File | null = null;
   let text = '';
   async function handleUpload() {

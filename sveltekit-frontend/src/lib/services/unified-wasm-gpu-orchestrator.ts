@@ -381,7 +381,7 @@ export class UnifiedWASMGPUOrchestrator {
     // Ollama / LLM wrapper status (best-effort HTTP health check)
     try {
       const endpoint = this.getOllamaEndpoint();
-      let healthy = $state(false);
+      let healthy = false;
       let responseTime = 0;
       try {
         const t0 = Date.now();

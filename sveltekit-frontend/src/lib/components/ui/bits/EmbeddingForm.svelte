@@ -131,7 +131,7 @@
       error = err.message || 'Network error occurred';
       onError?.(error);
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   // Load recent embeddings when component mounts

@@ -128,7 +128,7 @@
     } catch (error) {
       ondispatch?.(error instanceof Error ? error.message : 'Configuration failed');
     } finally {
-      processing = $state(false);
+      processing = false;
     }
   };
   // Simulate batch document processing with GPU acceleration

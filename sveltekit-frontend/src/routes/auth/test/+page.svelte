@@ -9,10 +9,10 @@
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
-  import * as Card from '$lib/components/ui/card.svelte'';
-  import * as Alert from '$lib/components/ui/alert.svelte'';
-  import * as Tabs from '$lib/components/ui/tabs.svelte'';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Alert from '$lib/components/ui/alert.svelte';
+  import * as Tabs from '$lib/components/ui/tabs.svelte';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
   import {
@@ -144,7 +144,7 @@ await runInitialTests();
         timestamp: new Date().toISOString();
       }
     } finally {
-      testRunning = $state(false);
+      testRunning = false;
     }
   }
   function getTestStatusIcon(testKey: string) {

@@ -3,14 +3,14 @@
   	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
-  	import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  	import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   	import { Input } from '$lib/components/ui/Input.svelte';
   	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   	// State management with Svelte 5
   	let query = $state('');
   	let isSearching = $state(false);
@@ -82,7 +82,7 @@
   				generationMethod: 'error',
   			}
   		} finally {
-  			isSearching = $state(false);
+  			isSearching = false;
   		}
   	}
   	function updateStats() {

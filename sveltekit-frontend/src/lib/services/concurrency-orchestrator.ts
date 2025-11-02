@@ -573,7 +573,7 @@ export class ConcurrencyOrchestrator {
      try {
        services.rabbitmq = await this.checkRabbitMQHealth();
      } catch {
-       services.rabbitmq = $state(false);
+       services.rabbitmq = false;
      }
 
      // dynamic check for ollama/gemma service (use safe guards)
@@ -591,7 +591,7 @@ export class ConcurrencyOrchestrator {
          services.ollama = $state(false);
        }
      } catch {
-       services.ollama = $state(false);
+       services.ollama = false;
      }
 
      const healthyServices = Object.values(services).filter(v => Boolean(v)).length;

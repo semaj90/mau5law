@@ -82,7 +82,7 @@
   async function handleRemoveFromSaved() {
     try {
       await removeSavedNote(noteId);
-      isSaved = $state(false);
+      isSaved = false;
     } catch (error) {
       console.error("Failed to remove note:", error);
     }

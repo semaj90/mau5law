@@ -7,7 +7,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import { notifications  } from '$lib/stores/unified";
   import {
     AlertTriangle,
@@ -174,7 +174,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         message: "Failed to complete accessibility audit",
       });
     } finally {
-      isAuditing = $state(false);
+      isAuditing = false;
     }
   }
   async function checkHeadingStructure() {

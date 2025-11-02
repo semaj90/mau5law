@@ -17,13 +17,13 @@
   import CheckCircle from 'lucide-svelte/icons/check-circle'; // Corrected import
 
   // Props
-  export let caseId = '';
-  export let enableDragDrop = true;
-  export let enableGPUProcessing = true;
-  export let enableCUDAAcceleration = true;
-  export let enableN64Style = true;
-  export let maxFileSize = 100 * 1024 * 1024;
-  export let acceptedTypes: string[] = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx'];
+  const { caseId = '' } = $props()
+  const { enableDragDrop = true } = $props()
+  const { enableGPUProcessing = true } = $props()
+  const { enableCUDAAcceleration = true } = $props()
+  const { enableN64Style = true } = $props()
+  const { maxFileSize = 100 * 1024 * 1024 } = $props()
+  const { acceptedTypes } = $props<{ acceptedTypes: string[] }>()
 
   // Local state
   let canvasEl: HTMLCanvasElement | null = null;
@@ -416,7 +416,7 @@
         uploadProgress = (i / uploadFiles.length) * 100;
         // CUDA preprocessing if enabled
         let preprocessedData: File = uploadFile.file; // Explicitly type as File
-        let cudaProcessed = $state(false);
+        let cudaProcessed = false;
         if (enableCUDAAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success && cudaResult.processedFile) { // Check for processedFile existence
@@ -478,7 +478,7 @@
       const errorMsg = error instanceof Error ? error.message : 'Upload failed';
       console.error('🎮 Upload error:', errorMsg);
     } finally {
-      uploading = $state(false);
+      uploading = false;
       uploadProgress = 0;
     }
   }

@@ -8,7 +8,7 @@
   import { writable } from 'svelte/store';
   import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import { CanvasBoard } from '$lib/components/yorha/CanvasBoard.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -69,7 +69,7 @@
     } catch (error) {
       console.error('❌ Canvas sync failed:', error);
     } finally {
-      syncInProgress = $state(false);
+      syncInProgress = false;
     }
   }
   // Mode switching

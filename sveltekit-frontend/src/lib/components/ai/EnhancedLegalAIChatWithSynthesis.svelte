@@ -25,20 +25,20 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import { Switch } from '$lib/components/ui/switch/Switch.svelte';
-  import * as Collapsible from '$lib/components/ui/collapsible.svelte'';
-  import * as Tooltip from '$lib/components/ui/tooltip.svelte'';
+  import * as Collapsible from '$lib/components/ui/collapsible.svelte';
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte';
   import { TypewriterResponse } from './TypewriterResponse.svelte';
   // Props
   interface Props {
@@ -268,7 +268,7 @@ if (browser) {
     } catch (error) {
       console.warn('Failed to save message to database:', error);
     } finally {
-      isSavingToDatabase = $state(false);
+      isSavingToDatabase = false;
     }
   }
   /**
@@ -585,7 +585,7 @@ if (browser) {
       }
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
       scrollToBottom();
     }
@@ -741,7 +741,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Analysis failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Legal research command using direct Ollama knowledge
@@ -793,7 +793,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Research failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Show related reports command using PostgreSQL vector search
@@ -823,7 +823,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Failed to load related reports: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Add system message

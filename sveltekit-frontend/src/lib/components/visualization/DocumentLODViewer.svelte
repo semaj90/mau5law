@@ -16,7 +16,7 @@
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
@@ -159,7 +159,7 @@ if (!browser || !enableWebGPU) return;
     } catch (error) {
       console.error('[DocumentLOD] Document loading failed:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function loadPagesInRange(startPage: number, endPage: number, lodLevel: number): Promise<void> {

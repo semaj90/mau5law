@@ -35,9 +35,9 @@ https: //svelte.dev/e/js_parse_error -->
     onSaveAnalysis = () => {},
   }: Props = $props();
   import { fade, fly } from 'svelte/transition';
-  import * as Dialog from '$lib/components/ui/dialog.svelte'';
-  import { Button } from '$lib/components/ui/button.svelte'';
-  import { Input } from '$lib/components/ui/input.svelte'';
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import { Button } from '$lib/components/ui/button.svelte';
+  import { Input } from '$lib/components/ui/input.svelte';
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles, Loader2 } from 'lucide-svelte';
   let isAnalyzing = $state(false);
@@ -66,7 +66,7 @@ https: //svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.error('Analysis failed:', err);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   async function updateTags() {

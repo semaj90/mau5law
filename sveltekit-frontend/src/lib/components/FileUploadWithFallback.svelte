@@ -9,16 +9,16 @@ Automatically handles server upload with localStorage fallback
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
   import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
   // Props (use Svelte exports)
-  export let caseId: string | undefined;
-  export let description: string | undefined;
-  export let tags: string[] = [];
-  export let multiple = $state(false);
-  export let accept = '*/*';
-  export let maxSize = 10; // MB
-  export let forceLocalStorage = $state(false);
-  export let onupload: ((event: { results: UploadResponse[] }) => void) | undefined;
-  export let onerror: ((event: { error: string }) => void) | undefined;
-  export let onprogress: ((event: { completed: number; total: number; file: string }) => void) | undefined;
+  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { description } = $props<{ description: string | undefined }>()
+  const { tags } = $props<{ tags: string[] }>()
+  const { multiple = $state(false) } = $props()
+  const { accept = '*/*' } = $props()
+  const { maxSize = 10 } = $props() // MB
+  const { forceLocalStorage = $state(false) } = $props()
+  const { onupload } = $props<{ onupload: ((event: { results: UploadResponse[] }) }>()
+  const { onerror } = $props<{ onerror: ((event: { error: string }) }>()
+  const { onprogress } = $props<{ onprogress: ((event: { completed: number }>() total: number; file: string }) => void) | undefined;
   // State (plain let)
   let isDragOver = $state(false);
   let isUploading = $state(false);
@@ -98,7 +98,7 @@ Automatically handles server upload with localStorage fallback
       error = (err && err.message) ? err.message : 'Upload failed';
       onerror?.({ error: error ?? 'Upload failed' });
     } finally {
-      isUploading = $state(false);
+      isUploading = false;
       uploadProgress = 0;
       currentFile = '';
     }

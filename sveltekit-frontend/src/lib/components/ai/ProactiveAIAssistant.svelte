@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			startTypewriter('❌ Failed to create case. Please try again.');
 		} finally {
-			isProcessing = $state(false);
+			isProcessing = false;
 		}
 	}
 	// Custom case creation
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			startTypewriter('❌ Failed to create case. Please check your input and try again.');
 		} finally {
-			isProcessing = $state(false);
+			isProcessing = false;
 		}
 	}
 	$effect(() => {

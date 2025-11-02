@@ -278,7 +278,7 @@ class RedisService {
     } catch (err) {
       console.warn('[RedisService] Error during disconnect:', err);
     } finally {
-      this.isConnected = $state(false);
+      this.isConnected = false;
       console.log('[RedisService] Redis clients disconnected.');
     }
   }

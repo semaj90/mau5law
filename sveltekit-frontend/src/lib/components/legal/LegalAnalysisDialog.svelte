@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Analysis failed';
       console.error('Legal analysis error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function resetDialog() {

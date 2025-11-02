@@ -7,14 +7,16 @@
   })();
   import { cn } from '$lib/utils';
   // Replace rune-style $props and $derived with standard Svelte props + rest props
-  export let href: string | undefined;
-  export let disabled = $state(false);
-  export let destructive = $state(false);
-  export let onclick: (() => void) | undefined;
-  export let onselect: (() => void) | undefined;
-  export let className = ''; // optional explicit class prop if consumers use it
+  const { href } = $props<{ href: string | undefined }>()
+  const { disabled = $state(false) } = $props()
+  const { destructive = $state(false) } = $props()
+  const { onclick } = $props<{ onclick: (() }>()
+  const { onselect } = $props<{ onselect: (() }>()
+  const { className = '' } = $props() // optional explicit class prop if consumers use it
   // compute classes reactively
-  $: itemClasses = cn(
+  $effect(() => {
+
+    itemClasses = cn(
     'legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
     'focus:outline-none focus:bg-slate-800/60 focus:text-amber-400',
     'data-[highlighted]:bg-slate-800/60 data-[highlighted]:text-amber-400',
@@ -24,6 +26,8 @@
     disabled && 'pointer-events-none opacity-50 cursor-not-allowed',
     className // preserve explicit className prop if provided
   );
+
+  })
   function handleClick(event?: MouseEvent) {
     if (disabled) {
       event?.preventDefault?.();

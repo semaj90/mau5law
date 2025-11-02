@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
 
   // Stores for reactive state
   const selectedTask = writable(null);

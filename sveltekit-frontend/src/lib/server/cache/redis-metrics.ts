@@ -52,7 +52,7 @@ export class RedisMetricsCache {
       this.client.on('error', (err) => {
         console.error('Redis connection error:', err);
         this.metrics.errors++;
-        this.isConnected = $state(false);
+        this.isConnected = false;
       });
       this.client.on('connect', () => {
         console.log('✅ Redis connected with metrics enabled');

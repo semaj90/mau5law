@@ -50,7 +50,7 @@ async function handleSubmit(e: Event) {
       submitResult = `❌ NETWORK ERROR: ${error instanceof Error ? error.message: 'Unknown error'}`;
       console.error('❌ Network Error:', error);
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
 }
 

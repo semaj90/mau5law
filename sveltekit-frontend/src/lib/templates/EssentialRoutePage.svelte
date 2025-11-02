@@ -8,9 +8,9 @@ Use this template for all essential routes
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-	import Button from '$lib/components/ui/enhanced-bits.svelte'';
-	import * as Card from '$lib/components/ui/card.svelte'';
-	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui.svelte'';
+	import Button from '$lib/components/ui/enhanced-bits.svelte';
+	import * as Card from '$lib/components/ui/card.svelte';
+	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui.svelte';
 	// Props
 	interface Props {
 		pageTitle: string;

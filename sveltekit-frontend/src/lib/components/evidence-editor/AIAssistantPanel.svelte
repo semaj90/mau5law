@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // keep only known-safe lucide icons, avoid problematic exports (Bot/Sparkles/Clock/Tags)
   import { Search, FileText, Users } from 'lucide-svelte';
   import Fuse from 'fuse.js';
@@ -103,7 +103,7 @@
       console.error('AI analysis error:', error);
       processingStatus = 'Analysis failed. Please try again.';
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       setTimeout(() => processingStatus = '', 3000);
     }
   }
@@ -132,7 +132,7 @@
       console.error('Insight generation error:', error);
       processingStatus = 'Failed to generate insights.';
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       setTimeout(() => processingStatus = '', 3000);
     }
   }

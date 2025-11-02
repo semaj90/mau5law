@@ -55,7 +55,7 @@
       onError?.(errorMsg);
       console.error('❌ Upload error:', err);
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   }
   async function searchDocuments() {
@@ -78,7 +78,7 @@
       console.error('❌ Search error:', err);
       error = err instanceof Error ? err.message : 'Search failed';
     } finally {
-      searching = $state(false);
+      searching = false;
     }
   }
   function handleDragOver(e: DragEvent) {

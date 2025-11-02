@@ -12,7 +12,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	CardContent,
 	Input,
 	Badge
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
 	import { Button } from '$lib/components/ui/Button.svelte';
 	import {
 		Search, BookOpen, ExternalLink, Download,
@@ -136,7 +136,7 @@ await loadCitations();
 		} catch (error) {
 			console.error('❌ Failed to load citations:', error);
 		} finally {
-			isLoading = $state(false);
+			isLoading = false;
 		}
 	}
 	function updateCategoryCounts() {

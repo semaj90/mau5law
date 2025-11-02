@@ -660,7 +660,7 @@ export class MasterServiceCoordinator {
         this.activeErrors.update(errors => errors.filter(e => e !== resolution));
       }, 30000);
     } finally {
-      this.errorRecoveryActive = $state(false);
+      this.errorRecoveryActive = false;
     }
   }
 

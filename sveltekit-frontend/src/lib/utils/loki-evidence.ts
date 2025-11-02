@@ -304,7 +304,7 @@ export class LokiEvidenceService {
         }
       }
     } finally {
-      this.syncInProgress = $state(false);
+      this.syncInProgress = false;
     }
   }
   private async syncOperation(operation: SyncOperation): Promise<void> {

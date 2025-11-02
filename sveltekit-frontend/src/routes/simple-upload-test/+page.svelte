@@ -44,7 +44,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
 </script>

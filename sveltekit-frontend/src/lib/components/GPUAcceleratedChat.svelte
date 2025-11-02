@@ -340,7 +340,7 @@
       console.error('Failed to send message via realtime transport or HTTP fallback:', error);
       showNotification('Failed to send message', 'error');
     } finally {
-      isTyping = $state(false);
+      isTyping = false;
     }
   }
   // Handle document upload

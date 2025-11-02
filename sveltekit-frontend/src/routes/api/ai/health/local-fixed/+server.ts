@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
       (async () => {
         try {
           // Safely read service outputs
-          let available = $state(false);
+          let available = false;
           let models: string[] = [];
           let gemmaModel: string | null = null;
 

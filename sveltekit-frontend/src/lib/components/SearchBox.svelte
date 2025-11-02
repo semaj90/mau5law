@@ -61,7 +61,7 @@
         onError(err);
       }
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Handle Enter key in search box

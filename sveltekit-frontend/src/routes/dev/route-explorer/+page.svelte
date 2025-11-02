@@ -98,7 +98,7 @@ if (!browser) return;
       console.error('Failed to load route data:', err);
       error = err instanceof Error ? err.message: 'Unknown error',
     } finally {
-      loading = $state(false);
+      loading = false;
     }
     })();
   });

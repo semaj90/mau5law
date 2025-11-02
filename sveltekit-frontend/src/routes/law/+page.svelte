@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
       error = 'Error loading laws';
       console.error('Error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   });
 

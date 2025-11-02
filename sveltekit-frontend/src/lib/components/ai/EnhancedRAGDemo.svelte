@@ -12,7 +12,7 @@
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
   import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
   import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
   // Modern Svelte 5 reactive state using runes
@@ -112,7 +112,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       isAnalyzingStore.set(false);
     }
   }
@@ -156,7 +156,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     } catch (error) {
       console.error('RAG query failed:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       isAnalyzingStore.set(false);
     }
   }

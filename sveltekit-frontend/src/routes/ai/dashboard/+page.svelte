@@ -52,7 +52,7 @@
 			};
 			pushToast('Health check failed', 'error');
 		} finally {
-			loading = $state(false);
+			loading = false;
 		}
 	}
 

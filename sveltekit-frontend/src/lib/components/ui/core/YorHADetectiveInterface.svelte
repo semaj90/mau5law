@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits.svelte';
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';

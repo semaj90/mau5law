@@ -216,7 +216,7 @@ export class MinIOUploadService {
             task => task.status === 'uploading' || task.status === 'processing'
           );
           if (activeTasks.length === 0) {
-            this.isProcessing = $state(false);
+            this.isProcessing = false;
             break;
           }
           continue;

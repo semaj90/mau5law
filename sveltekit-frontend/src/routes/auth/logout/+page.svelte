@@ -5,8 +5,8 @@ TODO: Implement logout functionality, clear session, redirect to login
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import Button from '$lib/components/ui/enhanced-bits.svelte'';
-	import * as Card from '$lib/components/ui/card.svelte'';
+	import Button from '$lib/components/ui/enhanced-bits.svelte';
+	import * as Card from '$lib/components/ui/card.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	let isLoggingOut = $state(false);

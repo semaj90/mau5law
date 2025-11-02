@@ -451,7 +451,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
   const decoder = new TextDecoder();
   let assistantMessage = "";
   try {
-    let doneFlag = $state(false);
+    let doneFlag = false;
     while (!doneFlag) {
       const { done, value } = await reader.read();
       doneFlag = !!done;

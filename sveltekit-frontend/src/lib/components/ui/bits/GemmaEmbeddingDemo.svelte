@@ -200,7 +200,7 @@
     } finally {
       // Only set false if we're not waiting for worker
       if (!embeddingWorker || error.includes('API unavailable')) {
-        isGenerating = $state(false);
+        isGenerating = false;
       }
     }
   }
@@ -237,7 +237,7 @@
     } catch (err: any) {
       error = err.message || 'Search error occurred';
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Load system stats

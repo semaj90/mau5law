@@ -129,7 +129,7 @@ if (!browser) return;
     } catch (error: any) {
       addLog(`❌ Analysis failed: ${error.message}`);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       analysisState.progress = 0;
     }
   }

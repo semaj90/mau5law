@@ -363,7 +363,7 @@ if (!browser) return;
       // Use demo data for development
       await loadDemo3DData();
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function generateEntityMeshLODs(): Promise<void> {

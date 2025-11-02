@@ -12,7 +12,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
   let results = $state<PipelineResult[]>([]);
@@ -46,7 +46,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Pipeline execution failed:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Auto-select optimal pipeline
@@ -66,7 +66,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Auto pipeline execution failed:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Batch processing demo
@@ -86,7 +86,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Batch processing failed:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Search across all pipelines

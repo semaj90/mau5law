@@ -60,7 +60,7 @@
       caseOptions = defaultCaseOptions;
       poiOptions = defaultPoiOptions;
     } finally {
-      optionsLoading = $state(false);
+      optionsLoading = false;
     }
   }
   onMount(() => {

@@ -1,8 +1,8 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
   import { Button } from '$lib/components/ui/bitsbutton.svelte';
-  import * as RawDialog from '$lib/components/ui/dialog.svelte'';
-  import * as RawSelect from '$lib/components/ui/Select.svelte'';
+  import * as RawDialog from '$lib/components/ui/dialog.svelte';
+  import * as RawSelect from '$lib/components/ui/Select.svelte';
   import { Badge } from '$lib/components/ui/Badge.svelte';
   import { Progress } from '$lib/components/ui/Progress.svelte';
   import { AlertTriangle, CheckCircle, File as FileIcon, FileImage, FileText, Loader2, Upload, X } from 'lucide-svelte';
@@ -38,14 +38,14 @@
     Title: getCtor((RawDialog as any).Title ?? (RawDialog as any).default?.Title),
   };
   // Public props
-  export let acceptedTypes: string = '.pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp';
-  export let maxFileSize: number = 50 * 1024 * 1024; // 50MB
-  export let maxFiles: number = 10;
-  export let caseId: string = '';
-  export let userId: string = '';
-  export let autoProcess: boolean = true;
-  export let showMetadataForm: boolean = true;
-  export let className = '';
+  const { acceptedTypes } = $props<{ acceptedTypes: string }>()
+  const { maxFileSize } = $props<{ maxFileSize: number }>() // 50MB
+  const { maxFiles } = $props<{ maxFiles: number }>()
+  const { caseId } = $props<{ caseId: string }>()
+  const { userId } = $props<{ userId: string }>()
+  const { autoProcess } = $props<{ autoProcess: boolean }>()
+  const { showMetadataForm } = $props<{ showMetadataForm: boolean }>()
+  const { className = '' } = $props()
   const dispatch = createEventDispatcher<{
     'file-processed': { fileId: string; result: ProcessingResult };
     'files-updated': { files: ProcessedFile[] };

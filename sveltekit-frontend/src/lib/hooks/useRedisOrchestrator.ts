@@ -37,7 +37,7 @@ export function useRedisAI() {
       error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function queueTask(
@@ -54,7 +54,7 @@ export function useRedisAI() {
       error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function getTaskResult(taskId: string) {
@@ -88,7 +88,7 @@ export function useRedisMonitoring() {
     } catch (err) {
       console.error('Failed to refresh Redis health:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function clearCache(confirm = false) {
@@ -283,7 +283,7 @@ export function useRedisForm() {
       submitError = err instanceof Error ? err.message : 'Submission failed';
       throw err;
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   return {

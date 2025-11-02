@@ -4,8 +4,8 @@
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte''; // Changed from default import to named import from directory
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte'; // Changed from default import to named import from directory
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import {
     Brain,
@@ -236,7 +236,7 @@
     } catch (error) {
       contextualError = error instanceof Error ? error.message : String(error);
     } finally {
-      contextualLoading = $state(false);
+      contextualLoading = false;
     }
   }
   function useSummaryForContextualPrompt() {

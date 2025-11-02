@@ -138,7 +138,7 @@ export class AuthService {
       authState.user = null;
       authState.isAuthenticated = $state(false);
     } finally {
-      authState.loading = $state(false);
+      authState.loading = false;
     }
   }
   // Login with email and password
@@ -192,7 +192,7 @@ export class AuthService {
       console.error('Login error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = $state(false);
+      authState.loading = false;
     }
   }
   // Register new user
@@ -243,7 +243,7 @@ export class AuthService {
       console.error('Registration error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = $state(false);
+      authState.loading = false;
     }
   }
   // Logout current user
@@ -283,7 +283,7 @@ export class AuthService {
       authState.user = null;
       authState.isAuthenticated = $state(false);
     } finally {
-      authState.loading = $state(false);
+      authState.loading = false;
     }
   }
   // Update user profile
@@ -321,7 +321,7 @@ export class AuthService {
       console.error('Profile update error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = $state(false);
+      authState.loading = false;
     }
   }
   // Check if user has specific permission

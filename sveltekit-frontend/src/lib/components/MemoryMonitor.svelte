@@ -91,7 +91,7 @@
         (memoryMonitoring as any).optimize ??
         (memoryMonitoring as any).triggerOptimize ??
         (memoryMonitoring as any).opt;
-      let success = $state(false);
+      let success = false;
       if (typeof fn === 'function') {
         const res = await fn.call(memoryMonitoring);
         // normalize boolean-like success
@@ -105,7 +105,7 @@
     } catch (error) {
       console.error('❌ Optimization failed:', error);
     } finally {
-      isOptimizing = $state(false);
+      isOptimizing = false;
     }
   }
   function getMemoryPressureColor(pressure: number): string {

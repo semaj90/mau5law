@@ -156,7 +156,7 @@
       console.error('Enhanced recommendation generation failed:', error);
       recommendationError = error instanceof Error ? error.message: 'Unknown error',
     } finally {
-      loadingEnhancedRecommendations = $state(false);
+      loadingEnhancedRecommendations = false;
     }
   }
   // Create default user profile if none provided
@@ -270,7 +270,7 @@
       }
       feedbackCooldown.delete(recommendationId);
     } finally {
-      processingFeedback = $state(false);
+      processingFeedback = false;
     }
   }
   function getFeedbackButtonClass(recId: string, feedbackType: 'positive' | 'negative', currentFeedback?: string) {

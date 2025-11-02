@@ -10,14 +10,14 @@ https://svelte.dev/e/js_parse_error -->
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import Label from '$lib/components/ui/label/Label.svelte';
-  import * as Card from '$lib/components/ui/card.svelte'';
-  import * as Dialog from '$lib/components/ui/dialog.svelte'';
-  import * as Select from '$lib/components/ui/select.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Select from '$lib/components/ui/select.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { toast } from 'svelte-sonner';
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       documents = mockDocuments;
       filterDocuments();
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function filterDocuments() {
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Upload error:', error);
       toast.error('Failed to upload document');
     } finally {
-      uploading = $state(false);
+      uploading = false;
       uploadProgress = 0;
     }
   }

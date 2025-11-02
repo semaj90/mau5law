@@ -510,7 +510,7 @@ class UnifiedClientLLMOrchestrator {
           throw new Error(`Unknown model type: ${model.type}`);
       }
     } finally {
-      model.isActive = $state(false);
+      model.isActive = false;
     }
   }
   /**
@@ -800,7 +800,7 @@ class UnifiedClientLLMOrchestrator {
       const from = this.models.get(fromModel);
       const to = this.models.get(toModel);
       if (!to) return;
-      if (from) from.isActive = $state(false);
+      if (from) from.isActive = false;
       // small pause - non-blocking and predictable
       await new Promise(res => setTimeout(res, 20));
       to.isActive = true;

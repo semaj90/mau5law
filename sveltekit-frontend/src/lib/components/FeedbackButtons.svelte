@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       lastResp = { ok: false, error: String(e) };
     } finally {
-      sending = $state(false);
+      sending = false;
     }
   }
 </script>

@@ -65,7 +65,7 @@ await loadCopilotContent();
     } catch (error) {
       errorMessage = `Failed to load copilot content: ${error.message}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -97,7 +97,7 @@ await loadCopilotContent();
       optimizationStatus = 'error';
       errorMessage = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -128,7 +128,7 @@ await loadCopilotContent();
     } catch (error) {
       errorMessage = `Search failed: ${error.message}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -202,7 +202,7 @@ await loadCopilotContent();
     } catch (error) {
       errorMessage = `Suggestion generation failed: ${error.message}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**

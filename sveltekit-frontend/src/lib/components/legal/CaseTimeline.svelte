@@ -23,18 +23,22 @@
   const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as any);
   import { cn } from '$lib/utils';
   // Use explicit Svelte props
-  export let caseId: string = '';
-  export let caseName: string = '';
-  export let events: TimelineEvent[] = [];
-  export let showFutureEvents: boolean = true;
-  export let compactMode: boolean = $state(false);
-  export let interactive: boolean = true;
-  export let onEventClick: ((e: TimelineEvent) => void) | undefined = undefined;
-  export let onAddEvent: (() => void) | undefined = undefined;
-  export let className: string = '';
+  const { caseId } = $props<{ caseId: string }>()
+  const { caseName } = $props<{ caseName: string }>()
+  const { events } = $props<{ events: TimelineEvent[] }>()
+  const { showFutureEvents } = $props<{ showFutureEvents: boolean }>()
+  const { compactMode } = $props<{ compactMode: boolean }>()
+  const { interactive } = $props<{ interactive: boolean }>()
+  const { onEventClick } = $props<{ onEventClick: ((e: TimelineEvent) }>()
+  const { onAddEvent } = $props<{ onAddEvent: (() }>()
+  const { className } = $props<{ className: string }>()
   // Sort events by date (reactive)
-  $: sortedEvents = (() => {
+  $effect(() => {
+
+    sortedEvents = (() => {
     const now = new Date();
+
+  })
     const filtered = showFutureEvents ? events : events.filter((ev) => ev.date <= now);
     return [...filtered].sort((a, b) => b.date.getTime() - a.date.getTime());
   })();

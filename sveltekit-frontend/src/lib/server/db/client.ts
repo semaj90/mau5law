@@ -114,7 +114,7 @@ export const closeConnection = closeConnections;
 // ===============================
 // Optional Initialization
 // ===============================
-let initialized = $state(false);
+let initialized = false;
 async function initializeDatabase(): Promise<void> {
   if (initialized) return;
   if (!isDev) {

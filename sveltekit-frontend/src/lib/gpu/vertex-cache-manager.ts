@@ -128,8 +128,8 @@ export class VertexCacheManager {
           const isProbablyBufferObject = buf !== null && typeof buf === 'object' && !isTypedArrayLike;
           if (isProbablyBufferObject) {
             // io-safety: wrap isBuffer/deleteBuffer because cross-context objects may throw
-            let ok = $state(false);
-            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } catch { ok = $state(false); }
+            let ok = false;
+            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } catch { ok = false; }
             if (ok) {
               try { gl.deleteBuffer(buf as WebGLBuffer); return; } catch { /* ignore */ }
             }

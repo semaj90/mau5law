@@ -4,9 +4,9 @@
   import { tick } from 'svelte';
   import { browser } from '$app/environment';
   import Button from '$lib/components/ui/Button.svelte'; // Corrected casing
-  import { ScrollArea } from '$lib/components/ui/scroll-area.svelte''; // Changed to named import
-  import { Separator } from '$lib/components/ui/separator.svelte'';
-  import { Input } from '$lib/components/ui/input.svelte'';
+  import { ScrollArea } from '$lib/components/ui/scroll-area.svelte'; // Changed to named import
+  import { Separator } from '$lib/components/ui/separator.svelte';
+  import { Input } from '$lib/components/ui/input.svelte';
   import { Bot, Send, Wifi, WifiOff, Loader2 } from 'lucide-svelte';
   import Root from '$lib/components/ui/sheet/Root.svelte';
   import Trigger from '$lib/components/ui/sheet/Trigger.svelte';

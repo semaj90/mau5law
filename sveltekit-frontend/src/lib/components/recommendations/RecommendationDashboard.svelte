@@ -9,7 +9,7 @@
   import { LastWorkedModal } from './LastWorkedModal.svelte';
   import { AIRecommendationAssistant } from './AIRecommendationAssistant.svelte';
   // Button replaced by native <button> where click handlers are needed
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   // Dashboard state (use standard reactive variables)
   let isOpen: boolean = $state(false);
@@ -149,7 +149,7 @@
         setTimeout(() => notice.remove(), 3000);
       }
     } finally {
-      stats.loading = $state(false);
+      stats.loading = false;
     }
   }
   function getActivityIcon(type: string) {

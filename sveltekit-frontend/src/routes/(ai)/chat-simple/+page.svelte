@@ -67,7 +67,7 @@
       };
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       // Scroll to bottom
       setTimeout(() => {
         if (chatContainer) {

@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/enhanced-bits.svelte'';
+  import Card from '$lib/components/ui/enhanced-bits.svelte';
 
   let pageLoaded = $state(false);
   let showWelcome = $state(true);

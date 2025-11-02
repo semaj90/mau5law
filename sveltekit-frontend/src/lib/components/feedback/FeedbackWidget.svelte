@@ -84,7 +84,7 @@
       console.error('❌ Failed to submit feedback:', error);
       ondispatch?.({ error });
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   function close() {

@@ -69,7 +69,7 @@ Tests the demo RAG functionality with a working interface
         timestamp: new Date(),
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleKeydown(event: KeyboardEvent) {

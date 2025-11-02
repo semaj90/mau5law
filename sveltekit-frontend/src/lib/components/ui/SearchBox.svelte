@@ -47,7 +47,7 @@
       console.error('Search error:', error);
       results = [];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   };
   const handleKeydown = (event: KeyboardEvent) => {

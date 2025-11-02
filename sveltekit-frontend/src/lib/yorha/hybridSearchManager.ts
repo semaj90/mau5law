@@ -65,7 +65,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
   } catch (e: any) {
     console.warn('[HybridSearch] refresh failed', e);
   } finally {
-    refreshing = $state(false);
+    refreshing = false;
   }
 }
 export async function reRankWithPgVector(

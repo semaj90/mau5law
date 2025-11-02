@@ -439,7 +439,7 @@ class EnhancedCachingService {
       await this.delete(testKey);
       serviceHealthy = result === 'test';
     } catch {
-      serviceHealthy = $state(false);
+      serviceHealthy = false;
     }
     const layerHealth = null; // Simple implementation
     return {

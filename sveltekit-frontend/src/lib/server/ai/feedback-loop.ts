@@ -1,8 +1,7 @@
-
 // lib/server/ai/feedback-loop.ts
 // Machine learning feedback loop for continuous improvement of AI synthesis
 import { logger } from './logger.js';
-}
+
 export interface FeedbackData {
   requestId: string;
   userId: string;
@@ -197,7 +196,7 @@ class FeedbackLoop {
   getStats(): any {
     const totalFeedback = this.feedbackQueue.length;
     const averageRating = this.calculateAverageRating();
-    const satisfactionByUser = Array.from(this.learningMetrics.userSatisfaction.entries();
+    const satisfactionByUser = Array.from(this.learningMetrics.userSatisfaction.entries());
     const topStrategies = this.getTopStrategies();
     return {
       totalFeedback,
@@ -210,9 +209,9 @@ class FeedbackLoop {
       metrics: {
         queryPatterns: this.learningMetrics.queryPatterns.size,
         sourcePreferences: this.learningMetrics.sourcePreferences.size,
-        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries(),
+        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries())
       }
-    }
+    };
   }
   // === PRIVATE HELPER METHODS ===
   private async loadModelWeights(): Promise<void> {
@@ -221,7 +220,7 @@ class FeedbackLoop {
       // TODO: Replace with proper Drizzle query when feedbackModel schema is available
       const weights = null; // Stub for now
       if (weights && weights.weights) {
-        this.modelWeights = new Map(Object.entries(weights.weights as any);
+        this.modelWeights = new Map(Object.entries(weights.weights as any));
         logger.info('[FeedbackLoop] Loaded model weights from database');
       } else {
         // Initialize with default weights
@@ -417,27 +416,27 @@ class FeedbackLoop {
     }
     const queryLower = query.toLowerCase();
     // Check for complexity indicators
-    if (queryLower.includes('precedent') || queryLower.includes('jurisdiction') ||;
+    if (queryLower.includes('precedent') || queryLower.includes('jurisdiction') ||
         queryLower.includes('constitutional')) {
       features.isComplexLegal = true;
     }
     // Check for research indicators
-    if (queryLower.includes('research') || queryLower.includes('analyze') ||;
+    if (queryLower.includes('research') || queryLower.includes('analyze') ||
         queryLower.includes('compare')) {
       features.isResearch = true;
     }
     // Check for procedural questions
-    if (queryLower.includes('how to') || queryLower.includes('process') ||;
+    if (queryLower.includes('how to') || queryLower.includes('process') ||
         queryLower.includes('file')) {
       features.isProcedural = true;
     }
     // Check for case references
-    if (queryLower.includes('case') || queryLower.includes('v.') ||;
+    if (queryLower.includes('case') || queryLower.includes('v.') ||
         queryLower.includes('versus')) {
       features.hasCase = true;
     }
     // Check for statute references
-    if (queryLower.includes('statute') || queryLower.includes('§') ||;
+    if (queryLower.includes('statute') || queryLower.includes('§') ||
         queryLower.includes('section')) {
       features.hasStatute = true;
     }
@@ -498,7 +497,7 @@ class FeedbackLoop {
       hourCounts[hour]++;
     }
     // Find top 3 hours
-    const indexed = hourCounts.map((count, hour) => ({ hour, count });
+    const indexed = hourCounts.map((count, hour) => ({ hour, count }));
     indexed.sort((a, b) => b.count - a.count);
     return indexed.slice(0, 3).map(item => (item as { hour?: any }).hour);
   }

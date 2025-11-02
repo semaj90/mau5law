@@ -84,7 +84,7 @@
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       currentAnalysisStep.set('');
     }
   }

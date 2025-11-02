@@ -23,9 +23,9 @@ https://svelte.dev/e/expected_token -->
     type InstantSearchResult,
     type SearchFilters,
   } from '$lib/services/instant-search-engine.js';
-  import { Input } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte';
   import { Button } from '$lib/components/ui/nes-button.svelte';
-  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Search,

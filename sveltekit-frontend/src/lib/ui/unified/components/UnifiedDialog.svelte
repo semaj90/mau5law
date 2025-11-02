@@ -25,53 +25,53 @@
 
   // --- Dialog Root Props ---
   type $$Props = DialogProps;
-  export let open: $$Props['open'] = undefined;
-  export let onOpenChange: $$Props['onOpenChange'] = undefined;
-  export let modal: $$Props['modal'] = true;
+  const { open } = $props<{ open: $$Props['open'] }>()
+  const { onOpenChange } = $props<{ onOpenChange: $$Props['onOpenChange'] }>()
+  const { modal } = $props<{ modal: $$Props['modal'] }>()
 
   // --- Dialog Trigger Props ---
   type $$TriggerProps = DialogTriggerProps;
-  export let triggerAsChild: $$TriggerProps['asChild'] = $state(false);
-  export let triggerClass: $$TriggerProps['class'] = undefined;
-  export let triggerProps: Omit<$$TriggerProps, 'asChild' | 'class'> = {};
+  const { triggerAsChild } = $props<{ triggerAsChild: $$TriggerProps['asChild'] }>()
+  const { triggerClass } = $props<{ triggerClass: $$TriggerProps['class'] }>()
+  const { triggerProps } = $props<{ triggerProps: Omit<$$TriggerProps, 'asChild' | 'class'> }>()
 
   // --- Dialog Overlay Props ---
   type $$OverlayProps = DialogOverlayProps;
-  export let overlayClass: $$OverlayProps['class'] = undefined;
-  export let overlayProps: Omit<$$OverlayProps, 'class'> = {};
+  const { overlayClass } = $props<{ overlayClass: $$OverlayProps['class'] }>()
+  const { overlayProps } = $props<{ overlayProps: Omit<$$OverlayProps, 'class'> }>()
 
   // --- Dialog Content Props ---
   type $$ContentProps = DialogContentProps;
-  export let contentClass: $$ContentProps['class'] = undefined;
-  export let onEscapeKeyDown: $$ContentProps['onEscapeKeyDown'] = undefined;
-  export let onPointerDownOutside: $$ContentProps['onPointerDownOutside'] = undefined;
-  export let contentProps: Omit<$$ContentProps, 'class' | 'onEscapeKeyDown' | 'onPointerDownOutside'> = {};
+  const { contentClass } = $props<{ contentClass: $$ContentProps['class'] }>()
+  const { onEscapeKeyDown } = $props<{ onEscapeKeyDown: $$ContentProps['onEscapeKeyDown'] }>()
+  const { onPointerDownOutside } = $props<{ onPointerDownOutside: $$ContentProps['onPointerDownOutside'] }>()
+  const { contentProps } = $props<{ contentProps: Omit<$$ContentProps, 'class' | 'onEscapeKeyDown' | 'onPointerDownOutside'> }>()
 
   // --- Dialog Header Props ---
   type $$HeaderProps = DialogHeaderProps;
-  export let headerClass: $$HeaderProps['class'] = undefined;
-  export let headerProps: Omit<$$HeaderProps, 'class'> = {};
+  const { headerClass } = $props<{ headerClass: $$HeaderProps['class'] }>()
+  const { headerProps } = $props<{ headerProps: Omit<$$HeaderProps, 'class'> }>()
 
   // --- Dialog Title Props ---
   type $$TitleProps = DialogTitleProps;
-  export let titleClass: $$TitleProps['class'] = undefined;
-  export let titleProps: Omit<$$TitleProps, 'class'> = {};
+  const { titleClass } = $props<{ titleClass: $$TitleProps['class'] }>()
+  const { titleProps } = $props<{ titleProps: Omit<$$TitleProps, 'class'> }>()
 
   // --- Dialog Description Props ---
   type $$DescriptionProps = DialogDescriptionProps;
-  export let descriptionClass: $$DescriptionProps['class'] = undefined;
-  export let descriptionProps: Omit<$$DescriptionProps, 'class'> = {};
+  const { descriptionClass } = $props<{ descriptionClass: $$DescriptionProps['class'] }>()
+  const { descriptionProps } = $props<{ descriptionProps: Omit<$$DescriptionProps, 'class'> }>()
 
   // --- Dialog Footer Props ---
   type $$FooterProps = DialogFooterProps;
-  export let footerClass: $$FooterProps['class'] = undefined;
-  export let footerProps: Omit<$$FooterProps, 'class'> = {};
+  const { footerClass } = $props<{ footerClass: $$FooterProps['class'] }>()
+  const { footerProps } = $props<{ footerProps: Omit<$$FooterProps, 'class'> }>()
 
   // --- Dialog Close Props ---
   type $$CloseProps = DialogCloseProps;
-  export let closeAsChild: $$CloseProps['asChild'] = $state(false);
-  export let closeClass: $$CloseProps['class'] = undefined;
-  export let closeProps: Omit<$$CloseProps, 'asChild' | 'class'> = {};
+  const { closeAsChild } = $props<{ closeAsChild: $$CloseProps['asChild'] }>()
+  const { closeClass } = $props<{ closeClass: $$CloseProps['class'] }>()
+  const { closeProps } = $props<{ closeProps: Omit<$$CloseProps, 'asChild' | 'class'> }>()
 
   // Default classes for styling (can be customized or moved to UnoCSS config)
   const defaultOverlayClass = 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0';

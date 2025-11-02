@@ -82,7 +82,7 @@
     } catch (error) {
       console.error('OCR processing failed:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   };
   // Generate smart suggestions for incomplete fields

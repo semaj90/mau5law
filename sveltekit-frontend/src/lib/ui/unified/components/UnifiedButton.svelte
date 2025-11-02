@@ -4,11 +4,11 @@
   import type { ButtonVariant, ButtonSize } from '$lib/ui/types/button';
 
   // Props
-  export let type: 'button' | 'submit' | 'reset' = 'button';
-  export let variant: ButtonVariant = 'default';
-  export let size: ButtonSize = 'default';
-  export let disabled: boolean = $state(false);
-  export let href: string | undefined = undefined; // For anchor-like behavior
+  const { type } = $props<{ type: 'button' | 'submit' | 'reset' }>()
+  const { variant } = $props<{ variant: ButtonVariant }>()
+  const { size } = $props<{ size: ButtonSize }>()
+  const { disabled } = $props<{ disabled: boolean }>()
+  const { href } = $props<{ href: string | undefined }>() // For anchor-like behavior
 
   // Event dispatcher for custom events
   const dispatch = createEventDispatcher();

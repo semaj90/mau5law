@@ -1,7 +1,7 @@
 <!-- Citation Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
   import {
     Card,
     CardHeader,
@@ -9,7 +9,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'constitutional' | 'secondary' | 'foreign';
@@ -207,7 +207,7 @@
     } catch (error) {
       console.error('Citation verification failed:', error);
     } finally {
-      isVerifying = $state(false);
+      isVerifying = false;
     }
   }
   async function searchCitations() {

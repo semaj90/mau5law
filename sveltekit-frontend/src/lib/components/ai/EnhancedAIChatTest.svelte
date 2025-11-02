@@ -4,7 +4,7 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import { Dialog } from 'bits-ui'; // Changed from MeltDialog to bits-ui
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Input } from '$lib/components/ui/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -12,7 +12,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { ScrollArea } from '$lib/components/ui/scrollarea/ScrollArea.svelte';
   import {
     Bot,
@@ -222,7 +222,7 @@
         },
       ];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Handle Enter key

@@ -709,7 +709,7 @@ class OllamaCudaService {
     try {
       this.metrics.clear();
       this.models.clear();
-      this.initialized = $state(false);
+      this.initialized = false;
       console.log('✅ Ollama CUDA service cleaned up');
     } catch (error: any) {
       console.error('Failed to cleanup Ollama service:', safeErrorToString(error));

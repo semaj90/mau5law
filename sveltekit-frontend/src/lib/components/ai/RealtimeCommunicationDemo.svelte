@@ -13,19 +13,19 @@ https://svelte.dev/e/js_parse_error -->
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Failed to initialize real-time communication', error);
     } finally {
-      isInitializing = $state(false);
+      isInitializing = false;
     }
   }
   /**

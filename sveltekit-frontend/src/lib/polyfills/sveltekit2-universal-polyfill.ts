@@ -491,7 +491,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       if (llvmWasmBridge) await llvmWasmBridge.dispose();
       if (lokiRedisCache) await lokiRedisCache.destroy();
       this.polyfillsApplied.clear();
-      this.isInitialized = $state(false);
+      this.isInitialized = false;
       this.serviceWorkerReady = $state(false);
       console.log('🧹 SvelteKit 2 Universal Polyfill disposed');
     } catch (error: any) {

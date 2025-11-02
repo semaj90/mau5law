@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // Props
   interface Props {
     enableGPU?: boolean;
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Unknown initialization error';
       console.error('❌ Initialization failed:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   async function runDemo() {
@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       demoResult = `❌ Demo failed: ${err instanceof Error ? err.message: 'Unknown error'}`;
     } finally {
-      demoProcessing = $state(false);
+      demoProcessing = false;
     }
   }
   function getStatusColor(status: boolean): string {

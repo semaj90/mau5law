@@ -155,7 +155,7 @@ export class EnhancedEmbeddingService {
 
     try {
       let embedding: Float32Array;
-      let cacheHit = $state(false);
+      let cacheHit = false;
 
       if (this.useProductionInfrastructure) {
         // Make an API call to the server-side embedding endpoint

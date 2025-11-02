@@ -7,8 +7,8 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte';
   // Props
   interface Props {
@@ -108,7 +108,7 @@
       error = err instanceof Error ? err.message : 'Failed to process message';
       console.error('❌ Message processing failed:', err);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function clearChat() {

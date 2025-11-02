@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 
 	// UI libraries
-	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte'';
+	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte';
 	import { Badge } from '$lib/components/ui/Badge.svelte';
 	import 'nes.css/css/nes.min.css';
 

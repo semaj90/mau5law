@@ -20,7 +20,7 @@
   } = $props();
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { cn } from '$lib/utils';
   let showTooltip = $state(false);
   let showConfig = $state(false);

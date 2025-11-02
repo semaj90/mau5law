@@ -109,7 +109,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           const inner = trimmed.slice(1, -1);
           const out: string[] = [];
           let cur = '';
-          let inQuotes = $state(false);
+          let inQuotes = false;
           for (let i = 0; i < inner.length; i++) {
             const ch = inner[i];
             if (ch === '"') {

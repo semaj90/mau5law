@@ -435,7 +435,7 @@ export function enhanceFormProgressively(
         }
       } finally {
         if (submitButton) {
-          submitButton.disabled = $state(false);
+          submitButton.disabled = false;
           submitButton.removeAttribute('aria-busy');
         }
       }

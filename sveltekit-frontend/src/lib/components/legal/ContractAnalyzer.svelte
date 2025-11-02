@@ -28,12 +28,12 @@
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
-  export let contract: ContractAnalysis | undefined;
-  export let onAnalyze: ((id: string) => Promise<any>) | undefined;
-  export let onExport: ((format: 'pdf' | 'docx' | 'json') => void) | undefined;
+  const { contract } = $props<{ contract: ContractAnalysis | undefined }>()
+  const { onAnalyze } = $props<{ onAnalyze: ((id: string) }>()
+  const { onExport } = $props<{ onExport: ((format: 'pdf' | 'docx' | 'json') }>()
 
   // local component state (no Svelte store misuse)
   let isAnalyzing = $state(false);
@@ -81,13 +81,17 @@
     undefined;
 
   // derived values via reactive declarations
-  $: filteredClauses = !searchTerm
+  $effect(() => {
+
+    filteredClauses = !searchTerm
     ? contractData.clauses
     : contractData.clauses.filter(
         (clause) =>
           clause.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
           clause.type.toLowerCase().includes(searchTerm.toLowerCase())
       );
+
+  })
 
   // static styling map
   const riskStyles: Record<string, { color: string; border: string; background: string }> = {
@@ -123,7 +127,7 @@
     } catch (err) {
       console.error('Contract analysis failed:', err);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
 

@@ -3,13 +3,13 @@
   import { Brain, Loader2, Quote, Search, Settings, Trash2, Mic, MicOff } from 'lucide-svelte';
   import * as Dialog from 'bits-ui/components/dialog'; // Import Bits UI Dialog components
   // Exported props (Svelte 5)
-  export let caseId: string | undefined = undefined;
-  export let evidenceIds: string[] = [];
-  export let placeholder: string = 'Ask AI about this case...';
-  export let maxHeight: string = '400px';
-  export let showReferences: boolean = true;
-  export let enableVoiceInput: boolean = $state(false);
-  export let ondispatch: ((citation: string) => void) | undefined;
+  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { evidenceIds } = $props<{ evidenceIds: string[] }>()
+  const { placeholder } = $props<{ placeholder: string }>()
+  const { maxHeight } = $props<{ maxHeight: string }>()
+  const { showReferences } = $props<{ showReferences: boolean }>()
+  const { enableVoiceInput } = $props<{ enableVoiceInput: boolean }>()
+  const { ondispatch } = $props<{ ondispatch: ((citation: string) }>()
   // State
   let query = $state('');
   let isLoading = $state(false);
@@ -106,7 +106,7 @@
         },
       ];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleReferenceClick(reference: any) {

@@ -107,7 +107,7 @@
       error = err instanceof Error ? err.message : 'Unknown error';
       console.error('Send message error:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**

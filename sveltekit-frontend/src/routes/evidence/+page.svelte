@@ -113,7 +113,7 @@
       uploadError = err.message || 'Unknown error';
       toast.error(`❌ Upload failed: ${uploadError}`);
     } finally {
-      isUploading = $state(false);
+      isUploading = false;
     }
   }
 
@@ -162,7 +162,7 @@
       compareError = e?.message || String(e);
       toast.error(`Comparison error: ${compareError}`);
     } finally {
-      comparing = $state(false);
+      comparing = false;
     }
   }
 </script>

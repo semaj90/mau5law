@@ -30,7 +30,7 @@
         console.warn('Failed to load bits-ui Dialog, using fallback:', err);
         DialogRoot = null;
       } finally {
-        isLoading = $state(false);
+        isLoading = false;
       }
     });
   } else {

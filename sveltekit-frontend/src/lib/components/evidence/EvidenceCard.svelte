@@ -12,12 +12,12 @@
   import { scale } from "svelte/transition";
   import type { Evidence } from '$lib/types/evidence';
   // Props
-  export let evidence: Evidence;
-  export let draggable = true;
-  export let compact = $state(false);
-  export let expandOnHover = $state(false);
-  export let showCompare = $state(false);
-  export let autoCompare = $state(false);
+  const { evidence } = $props<{ evidence: Evidence }>()
+  const { draggable = true } = $props()
+  const { compact = $state(false) } = $props()
+  const { expandOnHover = $state(false) } = $props()
+  const { showCompare = $state(false) } = $props()
+  const { autoCompare = $state(false) } = $props()
   // Svelte 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void;
@@ -76,7 +76,7 @@
     } catch (e: any) {
       compareError = e?.message ?? String(e);
     } finally {
-      comparing = $state(false);
+      comparing = false;
     }
   }
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   interface EnhancedModalProps {
     open?: boolean;
     title?: string;

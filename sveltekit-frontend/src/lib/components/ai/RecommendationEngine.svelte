@@ -6,8 +6,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
-  import * as Dialog from '$lib/components/ui/dialog.svelte'';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   // Recommendation state
   let recommendations = $state<Recommendation[]>([]);
   let selectedRecommendation = $state<Recommendation | null>(null);
@@ -175,7 +175,7 @@
     } catch (error) {
       console.error('Error generating recommendations:', error);
     } finally {
-      isGenerating = $state(false);
+      isGenerating = false;
     }
   }
   async function applyRecommendation(recommendationId: string) {

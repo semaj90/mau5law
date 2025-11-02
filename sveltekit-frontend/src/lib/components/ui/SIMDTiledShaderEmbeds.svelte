@@ -164,7 +164,7 @@ async function processTiledShaderEmbeds(): Promise<void> {
   } catch (error) {
     console.error('❌ SIMD Tiled Shader Embeds failed:', error);
   } finally {
-    isProcessing = $state(false);
+    isProcessing = false;
   }
 }
 /**

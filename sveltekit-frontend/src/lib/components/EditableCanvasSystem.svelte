@@ -17,7 +17,7 @@ https: //svelte.dev/e/js_parse_error -->
   }: Props = $props();
   import { onMount, onDestroy } from "svelte";
   import { writable, derived } from 'svelte/store';
-  import type { EditableNode, CanvasState } from '$lib/components/types.svelte'';
+  import type { EditableNode, CanvasState } from '$lib/components/types.svelte';
   import type { Evidence } from '$lib/types';
   // Component props with validation
   // Event dispatcher for parent communication

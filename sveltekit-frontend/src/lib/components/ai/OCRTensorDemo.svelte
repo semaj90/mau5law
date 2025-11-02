@@ -91,7 +91,7 @@ try {
     } catch (error: any) {
       addLog(`❌ Processing failed: ${error.message}`);
     } finally {
-      processing = $state(false);
+      processing = false;
     }
   }
   /**
@@ -133,7 +133,7 @@ try {
     } catch (error: any) {
       addLog(`❌ Batch processing failed: ${error.message}`);
     } finally {
-      processing = $state(false);
+      processing = false;
     }
   }
   /**

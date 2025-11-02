@@ -16,7 +16,7 @@ https://svelte.dev/e/expected_token -->
     } catch (e: any) {
       error = e?.message || String(e);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   $effect(run);

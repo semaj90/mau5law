@@ -136,7 +136,7 @@
       errorMessage = error;
       onError?.(error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Refresh data

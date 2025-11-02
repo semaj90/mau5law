@@ -11,7 +11,7 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   	import { Button } from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {

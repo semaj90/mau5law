@@ -166,13 +166,13 @@ async function safeRedisGetStats() {
   }
   // Fallback minimal shape - properly await isHealthy when it's async
   try {
-    let connected = $state(false);
+    let connected = false;
     if (typeof rs.isHealthy === 'function') {
       try {
         const maybe = rs.isHealthy();
         connected = Boolean(maybe instanceof Promise ? await maybe : maybe);
       } catch {
-        connected = $state(false);
+        connected = false;
       }
     } else {
       connected = $state(false);
@@ -578,7 +578,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       isRedisHealthy = Boolean(redisStats.connected);
     }
   } catch {
-    isRedisHealthy = $state(false);
+    isRedisHealthy = false;
   }
 
   const redisStats = await safeRedisGetStats();

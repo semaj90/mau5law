@@ -4,9 +4,9 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Textarea } from '$lib/components/ui/textarea.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Textarea } from '$lib/components/ui/textarea.svelte';
   import {
     Cpu,
     Brain,
@@ -123,7 +123,7 @@ Showcases the service worker-based AI orchestration system
     } catch (error) {
       console.error('Demo scenario failed:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
 
@@ -156,7 +156,7 @@ Showcases the service worker-based AI orchestration system
         demoResults = [{ task, error: (error as Error).message ?? String(error) }];
       }
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
 

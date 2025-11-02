@@ -1,7 +1,7 @@
 <script lang="ts">
   // YoRHa System Dashboard
   import { onDestroy, onMount } from 'svelte';
-  import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
+  import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
   // Import YoRHaDataViz Svelte component (default export)
   // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import
@@ -326,12 +326,12 @@
         networkHistory: generateHistoryData(systemMetrics.database.latency),
         timestamp: Date.now(),
       };
-      isLoading = $state(false);
+      isLoading = false;
       errorMessage = null; // Clear any previous errors on successful load
     } catch (error) {
       console.error('Failed to load system data:', error);
       errorMessage = 'Failed to load initial system data. Please check service status.';
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 

@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       // Fall back to auto-fill
       autoLoginDemo();
     } finally {
-      isAutoLoggingIn = $state(false);
+      isAutoLoggingIn = false;
     }
   }
 </script>

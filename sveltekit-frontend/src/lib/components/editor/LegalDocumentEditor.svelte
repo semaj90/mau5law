@@ -92,7 +92,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message : "AI request failed";
     } finally {
-      isProcessingAI = $state(false);
+      isProcessingAI = false;
     }
   }
   function insertCitation(citation: Citation) {
@@ -144,7 +144,7 @@
       saveError = err instanceof Error ? err.message : "Auto-save failed";
       console.error("Auto-save failed:", err);
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   // Function to manually save document
@@ -178,7 +178,7 @@
       saveError = err instanceof Error ? err.message : "Save failed";
       console.error("Save failed:", err);
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   // Function to get save status
@@ -255,7 +255,7 @@
         err instanceof Error ? err.message : "Failed to load document";
       console.error("Error loading document:", err);
     } finally {
-      loadingDocument = $state(false);
+      loadingDocument = false;
     }
   }
   // Custom animation: function for dialog

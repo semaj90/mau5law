@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/Badge.svelte';
   import { Input } from '$lib/components/ui/Input.svelte';
   type SearchResult = {
@@ -78,7 +78,7 @@
       results = [];
       metrics = null;
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Handle form submission

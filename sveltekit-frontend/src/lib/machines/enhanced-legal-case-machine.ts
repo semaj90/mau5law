@@ -3,7 +3,8 @@
  * This replacement is intentionally compact and syntactically correct to restore buildability.
  * It provides lightweight service stubs that can be expanded later with DB logic.
  */
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign } from 'xstate';
+import { fromPromise } from 'xstate/actors'; // Correct import for fromPromise in XState v5
 export type CaseForm = {
   caseNumber?: string;
   title: string;
@@ -83,10 +84,14 @@ export const enhancedLegalCaseMachine = createMachine(
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
-              currentCase: (_context, event: { output: { case LegalCase; evidence: Evidence[] } }) =>
-                event.output.case,
-              evidenceList: (_context, event: { output: { case LegalCase; evidence: Evidence[] } }) =>
-                event.output.evidence || [],
+              currentCase: (
+                _context,
+                event // Corrected type for event.output
+              ) => event.output.case,
+              evidenceList: (
+                _context,
+                event // Corrected type for event.output
+              ) => event.output.evidence || [],
             }),
           },
           onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to load case' }) },
@@ -103,7 +108,7 @@ export const enhancedLegalCaseMachine = createMachine(
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
-              currentCase: (_context, event: { output: LegalCase }) => event.output,
+              currentCase: (_context, event) => event.output, // event.output is LegalCase
             }),
           },
           onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to create case' }) },
@@ -117,7 +122,7 @@ export const enhancedLegalCaseMachine = createMachine(
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
-              evidenceList: (context, event: { output: Evidence }) => [...context.evidenceList, event.output],
+              evidenceList: (context, event) => [...context.evidenceList, event.output], // event.output is Evidence
             }),
           },
           onError: {
@@ -137,7 +142,8 @@ export const enhancedLegalCaseMachine = createMachine(
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
-              aiAnalysis: (_context, event: { output: AIAnalysisResult }) => ({
+              aiAnalysis: (_context, event) => ({
+                // event.output is AIAnalysisResult
                 status: 'completed' as const,
                 results: event.output,
               }),
@@ -162,7 +168,8 @@ export const enhancedLegalCaseMachine = createMachine(
     actors: {
       initializeSystem: fromPromise(async () => ({ status: 'ok' })),
       loadCase: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-        return { case { id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
+        // Corrected return object syntax
+        return { case: { id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
       }),
       createCase: fromPromise(async ({ input }: { input: { data: CaseForm } }) => {
         return { id: 'new_case', title: '', ...input.data };

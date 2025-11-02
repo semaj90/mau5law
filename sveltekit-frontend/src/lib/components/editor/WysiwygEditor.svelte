@@ -222,7 +222,7 @@
       console.error('AI request failed:', error);
       aiResults = 'Failed to connect to AI service.';
     } finally {
-      isProcessingAI = $state(false);
+      isProcessingAI = false;
     }
   }
 

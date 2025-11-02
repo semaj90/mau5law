@@ -113,7 +113,7 @@
     } catch (error) {
       console.error('❌ Benchmark failed:', error);
     } finally {
-      benchmarkRunning = $state(false);
+      benchmarkRunning = false;
     }
   }
   /**
@@ -145,7 +145,7 @@
     } catch (error) {
       console.error(`❌ Legal scenario failed: ${selectedScenario.name}`, error);
     } finally {
-      benchmarkRunning = $state(false);
+      benchmarkRunning = false;
     }
   }
   /**

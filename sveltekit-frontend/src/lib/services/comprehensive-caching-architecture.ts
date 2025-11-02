@@ -1369,7 +1369,7 @@ export class ComprehensiveCachingArchitecture {
       if (this.rabbitConnection) await this.rabbitConnection.close();
       if (this.neo4jSession) await this.neo4jSession.close();
       if (this.neo4jDriver) await this.neo4jDriver.close();
-      this.initialized = $state(false);
+      this.initialized = false;
       console.log('🔄 Legal caching architecture destroyed');
     } catch (error: any) {
       console.error('Error during cleanup:', error);

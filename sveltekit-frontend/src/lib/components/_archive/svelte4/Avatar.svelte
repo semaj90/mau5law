@@ -6,9 +6,9 @@ https://svelte.dev/e/props_duplicate -->
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
 
-  export let size: 'small' | 'medium' | 'large' = 'medium';
-  export let clickable: boolean = $state(false);
-  export let showUploadButton: boolean = $state(false);
+  const { size } = $props<{ size: 'small' | 'medium' | 'large' }>()
+  const { clickable } = $props<{ clickable: boolean }>()
+  const { showUploadButton } = $props<{ showUploadButton: boolean }>()
 
   let fileInput: HTMLInputElement | null = null;
   let dragOver = $state(false);

@@ -534,7 +534,7 @@ export class EvidenceSystemIntegration {
     const { limit = 10, threshold = 0.7, includeContext7 = true, useGPUCache = true } = options;
     try {
       const results: QueryResult['documents'] = [];
-      let cacheHit = $state(false);
+      let cacheHit = false;
       // 1. Check Redis cache first
       // Use portable helper to get a base64-safe cache key across environments
       const base64Key = this.toBase64(query);

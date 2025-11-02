@@ -4,15 +4,15 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { UnifiedCanvasIntegration } from '$lib/components/unified.svelte'';
-  import { NierRichTextEditor } from '$lib/components/editors.svelte'';
-  import { EnhancedAIAssistant } from '$lib/components/ai.svelte'';
-  import { CitationsManager } from '$lib/components/citations.svelte'';
+  import UnifiedCanvasIntegration from '$lib/components/unified.svelte';
+  import NierRichTextEditor from '$lib/components/editors.svelte';
+  import EnhancedAIAssistant from '$lib/components/ai.svelte';
+  import CitationsManager from '$lib/components/citations.svelte';
   // UI components are imported via barrel files for consistency and SSR compatibility.
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card.svelte'';
-  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
   import FileText from 'lucide-svelte/icons/file-text';
   import Search from 'lucide-svelte/icons/search';
   import Brain from 'lucide-svelte/icons/brain';
@@ -60,11 +60,9 @@
   let cases = $state<Case[]>([]);
   let evidence = $state<EvidenceItem[]>([]);
   let chatMessages = $state<ChatMessage[]>([]);
-  let currentChatMessage = $state('');
   let activeTab = $state('evidence');
   let investigationNotes = $state('');
   let citations = $state<string[]>([]);
-  let isAIProcessing = $state(false);
   let isSaving = $state(false);
   let systemStatus = $state({
     evidenceCanvas: true,
@@ -205,7 +203,7 @@
       const investigationData = {
         caseId: currentCase.id,
         notes: investigationNotes,
-        evidence: evidence.filter(e => e.caseId === currentCase.id),
+        evidence: evidence.filter(e => e.caseId === currentCase!.id), // Added non-null assertion
         citations,
         chatHistory: chatMessages,
         updatedAt: new Date().toISOString()
@@ -225,7 +223,7 @@
       console.error('Save error:', error);
       addChatMessage('system', 'Error saving investigation progress.');
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
 </script>
@@ -323,10 +321,9 @@
                   enableEvidenceCanvas={true}
                   splitView={false}
                   syncCanvases={true}
-                  initialMode="both"
-                  on:evidenceUploaded={handleEvidenceUploaded}
-                  on:analysisComplete={handleAnalysisComplete}
-                  on:detectiveInsights={handleDetectiveInsights}
+                  onevidenceuploaded={handleEvidenceUploaded}
+                  onanalysiscomplete={handleAnalysisComplete}
+                  ondetectiveinsights={handleDetectiveInsights}
                 />
               </CardContent>
             </Card>
@@ -339,7 +336,7 @@
               </CardHeader>
               <CardContent>
                  <div class="evidence-list">
-                   {#each evidence as item: EvidenceItem}
+                   {#each evidence as item}
                      <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2 bg-black/30">
                        <div class="evidence-header flex justify-between items-center mb-2">
                          <span class="evidence-title font-medium">{item.title}</span>
@@ -417,7 +414,6 @@
                evidenceId={evidence[0]?.id}
                maxHeight="500px"
                placeholder="Ask about evidence, legal precedents, case analysis..."
-               showReferences={true}
                onresponse={() => console.log('AI response received')}
                oncitation={() => console.log('Citation requested')}
              />

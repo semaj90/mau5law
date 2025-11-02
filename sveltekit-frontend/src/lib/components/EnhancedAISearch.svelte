@@ -115,7 +115,7 @@
       error = err instanceof Error ? err.message: "Search failed";
       console.error("Search error:", err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Handle Enter key

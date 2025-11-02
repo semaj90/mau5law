@@ -45,7 +45,7 @@
     } catch (error) {
       console.error('Failed to load system status:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function testGPUCacheIntegration() {

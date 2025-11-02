@@ -1,9 +1,9 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  // import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // Temporarily disabled due to SSR issues
-  // import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte''; // Temporarily disabled due to SSR issues
-  // import { Textarea } from '$lib/components/ui/textarea.svelte''; // Replaced with native HTML textarea
+  // import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Temporarily disabled due to SSR issues
+  // import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'; // Temporarily disabled due to SSR issues
+  // import { Textarea } from '$lib/components/ui/textarea.svelte'; // Replaced with native HTML textarea
   import { AIAnalysisService } from '$lib/services/ai-analysis';
   let files = $state<File[]>([]);
   let analysis = $state('');
@@ -34,7 +34,7 @@
     } catch (error) {
       analysis = 'Analysis failed: ' + (error as Error).message;
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
 </script>

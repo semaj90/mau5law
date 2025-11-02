@@ -202,7 +202,7 @@
       onAllUploadsComplete?.({ files: results });
       return result;
     } finally {
-      isUploading = $state(false);
+      isUploading = false;
     }
   }
   // Subscribe to upload progress for a specific upload

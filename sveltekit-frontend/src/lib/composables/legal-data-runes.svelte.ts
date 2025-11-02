@@ -89,7 +89,7 @@ export function useLegalCase(initialCaseId?: string) {
       error = err.message;
       currentCase = null;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function loadCases(): Promise<void> {
@@ -103,7 +103,7 @@ export function useLegalCase(initialCaseId?: string) {
     } catch (err: any) {
       error = err.message;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function updateCase(updates: Partial<LegalCase>): Promise<void> {
@@ -127,7 +127,7 @@ export function useLegalCase(initialCaseId?: string) {
     } catch (err: any) {
       error = err.message;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function clearCurrentCase(): void {
@@ -208,7 +208,7 @@ export function useEvidence(caseId?: string) {
     } catch (err: any) {
       error = err.message;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function uploadEvidence(file: File, metadata: { [key: string]: any } = {}): Promise<Evidence | null> {
@@ -331,7 +331,7 @@ export function usePersonsOfInterest() {
     } catch (err: any) {
       error = err.message;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function createPerson(
@@ -353,7 +353,7 @@ export function usePersonsOfInterest() {
       error = err.message;
       return null;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function updatePerson(personId: string, updates: Partial<PersonOfInterest>): Promise<boolean> {
@@ -379,7 +379,7 @@ export function usePersonsOfInterest() {
       error = err.message;
       return false;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function selectPerson(person: PersonOfInterest): void {

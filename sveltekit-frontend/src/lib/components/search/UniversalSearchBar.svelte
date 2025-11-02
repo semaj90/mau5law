@@ -154,7 +154,7 @@
         results = [];
       }
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   async function searchForLegalEntities(query: string): Promise<SearchResult[]> {

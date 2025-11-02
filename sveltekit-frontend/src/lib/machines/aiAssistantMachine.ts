@@ -277,7 +277,7 @@ class GPUProcessor {
 
       // Guard against missing WebGPU support
       if (!nav?.gpu) {
-        this.initialized = $state(false);
+        this.initialized = false;
         return false;
       }
 

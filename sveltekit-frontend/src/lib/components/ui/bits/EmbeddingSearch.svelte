@@ -120,7 +120,7 @@
     } catch (err: any) {
       error = err.message || 'Search error occurred';
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Handle result selection

@@ -8,15 +8,15 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, fly, scale } from "svelte/transition";
 
   // Props (use standard export let for Svelte compatibility)
-  export let conversationId: string = crypto.randomUUID();
-  export let userId: string;
-  export let caseId: string | null = null;
-  export let open: boolean = $state(false);
-  export let title: string = "Legal AI Assistant";
-  export let onsuggestionsreceived: ((suggestions: string[]) => void) | undefined;
-  export let onactionsreceived: ((actions: any[]) => void) | undefined;
-  export let onclose: (() => void) | undefined;
-  export let onaction: ((action: any) => void) | undefined;
+  const { conversationId } = $props<{ conversationId: string }>()
+  const { userId } = $props<{ userId: string }>()
+  const { caseId } = $props<{ caseId: string | null }>()
+  const { open } = $props<{ open: boolean }>()
+  const { title } = $props<{ title: string }>()
+  const { onsuggestionsreceived } = $props<{ onsuggestionsreceived: ((suggestions: string[]) }>()
+  const { onactionsreceived } = $props<{ onactionsreceived: ((actions: any[]) }>()
+  const { onclose } = $props<{ onclose: (() }>()
+  const { onaction } = $props<{ onaction: ((action: any) }>()
 
   // Message type
   interface Message {
@@ -187,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
       };
       messages.update((m) => [...m, errorMessage]);
     } finally {
-      isGenerating = $state(false);
+      isGenerating = false;
       scrollToBottom();
       focusInput();
     }

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/core.svelte'';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Button } from '$lib/components/ui/core.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { onMount } from 'svelte';
 
   interface VectorResult {
@@ -46,7 +46,7 @@
       console.error('Vector search failed:', error);
       results = [];
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

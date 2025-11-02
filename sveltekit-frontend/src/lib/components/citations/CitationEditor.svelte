@@ -167,7 +167,7 @@ try {
     } catch (error) {
       console.error('Save error:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Delete citation
@@ -190,7 +190,7 @@ try {
     } catch (error) {
       console.error('Delete error:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Add tag

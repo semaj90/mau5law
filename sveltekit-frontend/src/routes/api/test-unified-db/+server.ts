@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
     `);
     console.log('✅ Table Check:', tableCheck);
     // Test 4: Vector Extension Check
-    let vectorSupport = $state(false);
+    let vectorSupport = false;
     try {
       await db.execute(sql`SELECT '[1,2,3]'::vector`);
       vectorSupport = true;

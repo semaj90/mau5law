@@ -56,7 +56,7 @@
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Quick actions

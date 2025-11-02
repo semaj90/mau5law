@@ -5,9 +5,9 @@ Features: Case management, evidence upload, AI chat, vector search
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from '$lib/types/global';
-  import { Button } from '$lib/components/ui/button.svelte'';
-  import { Input } from '$lib/components/ui/input.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte';
+  import { Input } from '$lib/components/ui/input.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // dynamically loaded components to avoid static import / default export issues
   let EvidenceUploadComponent: typeof import('svelte').SvelteComponent | null = null;
   let OllamaChatInterface: typeof import('svelte').SvelteComponent | null = null;

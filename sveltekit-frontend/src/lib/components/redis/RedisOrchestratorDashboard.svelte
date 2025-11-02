@@ -48,11 +48,11 @@
     try {
       await clearCache(true);
       await refresh();
-      showClearConfirm = $state(false);
+      showClearConfirm = false;
     } catch (error) {
       console.error('Cache clear failed:', error);
     } finally {
-      clearingCache = $state(false);
+      clearingCache = false;
     }
   }
   const formatMemoryUsage = (memory: string | undefined): string => {

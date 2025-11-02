@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function filterAndSortFiles() {
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      uploading = $state(false);
+      uploading = false;
       uploadProgress = 0;
     }
   }
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      uploading = $state(false);
+      uploading = false;
       uploadProgress = 0;
     }
   }

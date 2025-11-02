@@ -308,7 +308,7 @@
     try {
       if (!navigator.gpu) {
         console.warn('WebGPU not supported');
-        webgpuContext.isSupported = $state(false);
+        webgpuContext.isSupported = false;
         return;
       }
       const adapter = await navigator.gpu.requestAdapter({

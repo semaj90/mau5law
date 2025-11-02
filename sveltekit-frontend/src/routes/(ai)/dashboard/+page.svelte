@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Button } from '$lib/components/ui/core.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Button } from '$lib/components/ui/core.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();

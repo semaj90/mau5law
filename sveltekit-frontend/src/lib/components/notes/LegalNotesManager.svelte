@@ -19,8 +19,8 @@
     type NoteFilters,
   } from '$lib/stores/enhanced-saved-notes';
   import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // Import components into intermediate names and cast to any to avoid TS errors
   import { Input_ } from '$lib/components/ui/input/Input.svelte';
   import { Textarea_ } from '$lib/components/ui/textarea/Textarea.svelte';

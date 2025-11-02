@@ -88,7 +88,7 @@
       error = err instanceof Error ? err.message : 'Failed to load dashboard data';
       toast.error('Failed to load dashboard', { description error });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   };
   // Load system health status

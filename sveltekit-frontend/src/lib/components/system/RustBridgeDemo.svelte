@@ -46,7 +46,7 @@
         console.error('Error initializing Rust bridge:', error);
         errorMessage = `Initialization error: ${error}`;
       } finally {
-        isLoading = $state(false);
+        isLoading = false;
       }
     })();
   });
@@ -71,7 +71,7 @@
       console.error('Error processing text:', error);
       errorMessage = `Text processing error: ${error}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function runBenchmark() {
@@ -83,7 +83,7 @@
       console.error('Error running benchmark:', error);
       errorMessage = `Benchmark error: ${error}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function formatMemory(bytes: number): string {

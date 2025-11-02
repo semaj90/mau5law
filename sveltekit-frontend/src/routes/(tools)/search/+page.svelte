@@ -4,9 +4,9 @@
   import { SearchFormSchema } from './+page.server';
   import type { PageData } from './$types';
 
-  export let data: PageData;
-  export let searchState: {
-    results: Array<{ id: string; title: string; content: string; similarity: number }>;
+  const { data } = $props<{ data: PageData }>()
+  const { searchState } = $props<{ searchState: {
+    results: Array<{ id: string }>() title: string; content: string; similarity: number }>;
     query: string;
     responseTime: number;
     timestamp: string;

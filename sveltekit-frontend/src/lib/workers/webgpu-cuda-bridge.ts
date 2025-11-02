@@ -140,7 +140,7 @@ class WebGPUCudaBridge {
         timestamp: new Date().toISOString(),
       });
     } finally {
-      this.isProcessing = $state(false);
+      this.isProcessing = false;
     }
   }
   // Rename parameter to: "task" (was _task) so usage below compiles

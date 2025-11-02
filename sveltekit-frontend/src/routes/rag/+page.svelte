@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
 
   // receive data from load()
-  export let data: any;
+  const { data } = $props<{ data: any }>()
 
   // client state (explicitly declared to avoid undefined accesses)
   let submitting = $state(false);

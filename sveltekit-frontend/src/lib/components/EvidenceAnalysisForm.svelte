@@ -9,16 +9,15 @@ https://svelte.dev/e/js_parse_error -->
   import type { OCRResult } from '$lib/services/ocr-processor';
 
   // explicit props (Svelte 5 safe, TypeScript-friendly)
-  export let ondispatch: ((payload: any) => void) | undefined;
-  export let formDataProp:
-    | {
-        extracted_entities: any[];
+  const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
+  const { formDataProp } = $props<{ formDataProp: | {
+        extracted_entities: any[] }>()
         key_facts: string[];
         legal_issues: string[];
         precedents: any[];
       }
     | undefined;
-  export let ocrResultsProp: OCRResult[] | undefined;
+  const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
 
   // local state derived from props with safe defaults
   let formData = formDataProp ?? {
@@ -82,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Analysis failed:', error);
       alert('Analysis failed. Please try again.');
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   async function extractEntitiesFromText(): Promise<any[]> {

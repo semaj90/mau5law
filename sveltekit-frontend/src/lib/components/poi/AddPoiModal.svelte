@@ -48,7 +48,7 @@
       message = error instanceof Error ? error.message : 'Failed to create POI';
       messageType = 'error';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function closeModal() {

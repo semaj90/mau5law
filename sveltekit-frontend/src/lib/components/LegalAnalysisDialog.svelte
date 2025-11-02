@@ -16,7 +16,7 @@
   // Replace named import that caused TS error with a safe namespace import,
   // and provide a minimal runtime fallback if the module shape differs.
   import * as unified from '$lib/stores/unified';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // Minimal local type for the parts we use (keeps TS happy)
   type MinimalLegalCaseStore = {
     filteredCases: () => Array<{ id: string; title: string; caseNumber?: string; status?: string }>;

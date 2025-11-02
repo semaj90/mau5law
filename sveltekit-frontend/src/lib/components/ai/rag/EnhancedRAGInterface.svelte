@@ -115,7 +115,7 @@ await loadDocuments();
     } catch (error) {
       console.error('❌ Failed to load documents:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Generate embeddings using nomic-embed-text

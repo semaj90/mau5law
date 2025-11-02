@@ -58,8 +58,8 @@ export class LegalBertONNXService extends EventEmitter {
     totalInferences: 0,
     averageLatency: 0,
     successRate: 1.0,
-    lastUsed: new Date()
-  }
+    lastUsed: new Date(),
+  };
   constructor() {
     super();
     this.modelConfig = this.getDefaultConfig();
@@ -73,14 +73,14 @@ export class LegalBertONNXService extends EventEmitter {
       providerOptions: [
         {
           name: 'CPUExecutionProvider',
-          deviceType: 'CPU'
+          deviceType: 'CPU',
         },
         // GPU provider as fallback if available
         {
           name: 'CUDAExecutionProvider',
           deviceType: 'GPU',
-          deviceId: 0
-        }
+          deviceId: 0,
+        },
       ],
       sessionOptions: {
         graphOptimizationLevel: 'all',
@@ -98,13 +98,13 @@ export class LegalBertONNXService extends EventEmitter {
         attentionMask: {
           name: 'attention_mask',
           type: 'int64',
-          shape: [-1, -1]
+          shape: [-1, -1],
         },
         tokenTypeIds: {
           name: 'token_type_ids',
           type: 'int64',
-          shape: [-1, -1]
-        }
+          shape: [-1, -1],
+        },
       },
       outputSpec: {
         lastHiddenState: {
@@ -116,9 +116,9 @@ export class LegalBertONNXService extends EventEmitter {
           name: 'pooler_output',
           type: 'float32',
           shape: [-1, 768], // [batch, hidden_size]
-        }
-      }
-    }
+        },
+      },
+    };
   }
   /**
    * Initialize ONNX session and tokenizer
@@ -128,13 +128,10 @@ export class LegalBertONNXService extends EventEmitter {
       // Dynamic import to avoid loading ONNX in environments where it's not available
       const ort = await this.loadONNXRuntime();
       // Create inference session
-      this.session = await ort.InferenceSession.create(
-        this.modelConfig.modelPath);
-        {
-          executionProviders: this.modelConfig.providerOptions.map(p => p.name),
-          ...this.modelConfig.sessionOptions
-        }
-      );
+      this.session = await ort.InferenceSession.create(this.modelConfig.modelPath, {
+        executionProviders: this.modelConfig.providerOptions.map(p => p.name),
+        ...this.modelConfig.sessionOptions,
+      });
       // Initialize tokenizer (mock implementation - replace with actual tokenizer)
       this.tokenizer = await this.initializeTokenizer();
       this.isInitialized = true;
@@ -175,8 +172,8 @@ export class LegalBertONNXService extends EventEmitter {
       encode: (text: string) => this.mockTokenize(text),
       decode: (tokens: number[]) => this.mockDetokenize(tokens),
       vocab_size: 30522, // Standard BERT vocab size
-      max_length: 512
-    }
+      max_length: 512,
+    };
   }
   /**
    * Mock tokenization (replace with actual BERT tokenizer)
@@ -187,7 +184,7 @@ export class LegalBertONNXService extends EventEmitter {
     const input_ids = [101, ...words.map(() => Math.floor(Math.random() * 30522)), 102]; // [CLS] + tokens + [SEP]
     const attention_mask = Array(input_ids.length).fill(1);
     const token_type_ids = Array(input_ids.length).fill(0);
-    return { input_ids, attention_mask, token_type_ids }
+    return { input_ids, attention_mask, token_type_ids };
   }
   /**
    * Mock detokenization
@@ -217,8 +214,8 @@ export class LegalBertONNXService extends EventEmitter {
       const result: LegalEntityExtractionResult = {
         entities,
         processingTime,
-        modelUsed: 'legal-bert-onnx'
-      }
+        modelUsed: 'legal-bert-onnx',
+      };
       this.emit('entity-extraction-complete', result);
       return result;
     } catch (error) {
@@ -239,7 +236,7 @@ export class LegalBertONNXService extends EventEmitter {
     }
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512); // Truncate to max length
+      const tokens = this.tokenizer.encode(text.substring(0, 512)); // Truncate to max length
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
       // Run inference
@@ -252,8 +249,8 @@ export class LegalBertONNXService extends EventEmitter {
         predictions,
         topPrediction: predictions[0],
         processingTime,
-        modelUsed: 'legal-bert-onnx'
-      }
+        modelUsed: 'legal-bert-onnx',
+      };
       this.emit('classification-complete', result);
       return result;
     } catch (error) {
@@ -274,7 +271,7 @@ export class LegalBertONNXService extends EventEmitter {
     }
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512);
+      const tokens = this.tokenizer.encode(text.substring(0, 512));
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
       // Run inference
@@ -287,8 +284,8 @@ export class LegalBertONNXService extends EventEmitter {
         embeddings,
         dimensions: embeddings.length,
         processingTime,
-        modelUsed: 'legal-bert-onnx'
-      }
+        modelUsed: 'legal-bert-onnx',
+      };
       this.emit('embedding-complete', result);
       return result;
     } catch (error) {
@@ -302,7 +299,7 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Prepare inputs for ONNX inference
    */
-  private async prepareONNXInputs(tokens: any): Promise<{ [key: string]: any }, {
+  private async prepareONNXInputs(tokens: any): Promise<{ [key: string]: any }> {
     // Use the ONNX runtime that was loaded during initialization
     const ort = await this.loadONNXRuntime();
     const batchSize = 1;
@@ -319,15 +316,28 @@ export class LegalBertONNXService extends EventEmitter {
       paddedTokenTypeIds.push(0);
     }
     return {
-      input_ids: new ort.Tensor('int64', new BigInt64Array(paddedInputIds.map(id => BigInt(id))), [batchSize, paddedLength]),
-      attention_mask: new ort.Tensor('int64', new BigInt64Array(paddedAttentionMask.map(mask => BigInt(mask))), [batchSize, paddedLength]),
-      token_type_ids: new ort.Tensor('int64', new BigInt64Array(paddedTokenTypeIds.map(type => BigInt(type))), [batchSize, paddedLength])
-    }
+      input_ids: new ort.Tensor('int64', new BigInt64Array(paddedInputIds.map(id => BigInt(id))), [
+        batchSize,
+        paddedLength,
+      ]),
+      attention_mask: new ort.Tensor('int64', new BigInt64Array(paddedAttentionMask.map(mask => BigInt(mask))), [
+        batchSize,
+        paddedLength,
+      ]),
+      token_type_ids: new ort.Tensor('int64', new BigInt64Array(paddedTokenTypeIds.map(type => BigInt(type))), [
+        batchSize,
+        paddedLength,
+      ]),
+    };
   }
   /**
    * Process NER outputs to extract entities
    */
-  private processNEROutputs(outputs: any, originalText: string, tokens: any): Array< {
+  private processNEROutputs(
+    outputs: any,
+    originalText: string,
+    tokens: any
+  ): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
     // This is a simplified implementation
     // In production, you would:
     // 1. Apply softmax to get probabilities
@@ -335,27 +345,28 @@ export class LegalBertONNXService extends EventEmitter {
     // 3. Map token positions back to original text
     const mockEntities = [
       { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
-      { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },>
-      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 }
+      { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },
+      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 },
     ];
-    return mockEntities.filter(item => item.includes(entity.text.toLowerCase());
+    // Simplified mock: return all mock entities for now, as 'entity' is not defined in this scope
+    return mockEntities;
   }
   /**
    * Process classification outputs
    */
-  private processClassificationOutputs(outputs,: any): Array< {
+  private processClassificationOutputs(outputs: any): Array<{ label: string; confidence: number }> {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
-      { label: 'court_decision', confidence: 0.12 },>
-      { label: 'legal_brief', confidence: 0.03 }
+      { label: 'court_decision', confidence: 0.12 },
+      { label: 'legal_brief', confidence: 0.03 },
     ];
     return legalDocTypes.sort((a, b) => b.confidence - a.confidence);
   }
   /**
    * Extract embeddings from model outputs
    */
-  private extractEmbeddings(outputs,: any): number[,] {
+  private extractEmbeddings(outputs: any): number[] {
     // Extract from pooler output or perform mean pooling
     // This is a mock implementation
     const embeddingSize = 768;
@@ -364,8 +375,8 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Update performance metrics
    */
-  private updateMetrics(latency,: number, succes,s: boolea,n): void {
-    this.performanceMetrics.totalInferences+,+;
+  private updateMetrics(latency: number, success: boolean): void {
+    ++this.performanceMetrics.totalInferences;
     this.performanceMetrics.averageLatency =
       (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalInferences - 1) + latency) /
       this.performanceMetrics.totalInferences;
@@ -373,7 +384,7 @@ export class LegalBertONNXService extends EventEmitter {
       this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1) + 1) /
         this.performanceMetrics.totalInferences;
-    }, else, {
+    } else {
       this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1)) /
         this.performanceMetrics.totalInferences;
@@ -383,25 +394,30 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(), {
-    return { ...this.performanceMetrics }
+  getPerformanceMetrics(): {
+    totalInferences: number;
+    averageLatency: number;
+    successRate: number;
+    lastUsed: Date;
+  } {
+    return { ...this.performanceMetrics };
   }
   /**
    * Check if service is ready
    */
-  isReady(),: boolean {
+  isReady(): boolean {
     return this.isInitialized && this.session !== null;
   }
   /**
    * Cleanup resources
    */
-  async dispose(),: Promise<void> {
+  async dispose(): Promise<void> {
     try {
-      if (this.sessio,n) {
+      if (this.session) {
         await this.session.release();
         this.session = null;
       }
-      this.isInitialized = $state(false);
+      this.isInitialized = false; // $state is for declaration, not assignment
       this.emit('disposed');
     } catch (error) {
       console.error('Error disposing Legal-BERT ONNX service:', error);

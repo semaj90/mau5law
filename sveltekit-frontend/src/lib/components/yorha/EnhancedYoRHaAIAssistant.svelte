@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
     searchQuery = '';
     isProcessing = true;
     try {
-  let responseContent = $state('');
+  let responseContent = '';
       await streamRag({
         query,
         model: 'gemma3-legal',

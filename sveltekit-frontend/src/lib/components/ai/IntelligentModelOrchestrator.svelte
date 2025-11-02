@@ -120,7 +120,7 @@
       console.error('Query processing failed:', error);
       results.set({ error: error.message });
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function acceptSuggestion(suggestion SelfPromptingSuggestion) {

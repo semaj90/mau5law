@@ -216,7 +216,7 @@ export class WebTransportService {
     const writer = stream.writable.getWriter();
 
     try {
-      let done = $state(false);
+      let done = false;
       while (!done) {
         const res = await reader.read();
         done = Boolean(res.done);
@@ -252,7 +252,7 @@ export class WebTransportService {
     const reader = stream.getReader();
 
     try {
-      let done = $state(false);
+      let done = false;
       while (!done) {
         const res = await reader.read();
         done = Boolean(res.done);

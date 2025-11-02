@@ -306,7 +306,7 @@
       console.error("AI request failed:", err);
       ondispatch?.(error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
   }}
   function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -384,7 +384,7 @@
         window.speechSynthesis.speak(utter);
       }
     } finally {
-      ttsLoading = $state(false);
+      ttsLoading = false;
     }
   }
   function handleReferenceClick(

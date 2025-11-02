@@ -1,7 +1,7 @@
 <script lang="ts">
   import { VectorCard } from './VectorCard.svelte';
-  export let searchUrl: string = '/api/vector/search';
-  export let onSelect: (item: any) => void = () => {};
+  const { searchUrl } = $props<{ searchUrl: string }>()
+  const { onSelect } = $props<{ onSelect: (item: any) }>()
   let query = '';
   let results: any[] = [];
   async function doSearch() {

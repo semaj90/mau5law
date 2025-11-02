@@ -55,7 +55,7 @@
         onDelete(document.id);
       }
     } finally {
-      deleting = $state(false);
+      deleting = false;
     }
   }
   function handleView(e: Event) {

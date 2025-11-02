@@ -24,13 +24,13 @@ https://svelte.dev/e/js_parse_error -->
   // Neural sprite rendering
   import { NeuralSpriteRenderer } from '$lib/components/three/NeuralSpriteRenderer.svelte';
   // YoRHa UI components
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Props
   // Dispatcher
   // XState machine

@@ -38,7 +38,7 @@
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

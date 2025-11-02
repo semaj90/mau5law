@@ -6,7 +6,7 @@
   import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
   import { EvidenceAnalysisVisualization } from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   let analyzer: AIEvidenceAnalyzer;
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);

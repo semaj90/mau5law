@@ -2,17 +2,17 @@
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
   // Reactive state from Context7 service

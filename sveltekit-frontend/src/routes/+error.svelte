@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment';
-  export let status: number = 500;
-  export let error: { message?: string } | undefined;
+  const { status } = $props<{ status: number }>()
+  const { error } = $props<{ error: { message?: string } | undefined }>()
 </script>
 
 <svelte:head>

@@ -74,7 +74,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     } catch (error) {
       console.error('Citation loading error:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Apply client-side sorting

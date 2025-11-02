@@ -13,7 +13,7 @@
     } catch (e) {
       error = (e as Error).messag;
     } finally {
-      busy = $state(false);
+      busy = false;
     }
   }
   $effect(() => {

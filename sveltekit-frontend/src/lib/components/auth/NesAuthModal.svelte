@@ -43,7 +43,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message : 'Submission failed';
     } finally {
-      submitting = $state(false);
+      submitting = false;
     }
   }
 </script>

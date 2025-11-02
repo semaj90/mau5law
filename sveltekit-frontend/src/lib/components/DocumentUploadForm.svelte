@@ -22,19 +22,19 @@
   }
 
   // Exposed props (use export-let so TS types are only used as types)
-  export let caseId: string | undefined;
-  export let allowedTypes: string[] = ['application/pdf', 'image/jpeg', 'image/png'];
-  export let maxFileSize: number = 10 * 1024 * 1024; // 10MB
-  export let maxFiles: number = 10;
-  export let onUploadComplete: ((payload: { caseId?: string; files: File[]; ocr_results: OCRResult[] }) => void) | undefined;
-  export let onUploadError: ((err: any) => void) | undefined;
-  export let onNext: ((event: { step: 'documents'; data: InternalFormData }) => void) | undefined;
-  export let onPrevious: ((event: { step: 'documents' }) => void) | undefined;
-  export let onSaveDraft: ((event: { step: 'documents'; data: InternalFormData }) => void) | undefined;
-  export let className = '';
-  export let id: string | undefined;
-  export let testId: string | undefined;
-  export let formData: InternalFormData = createDefaultFormData();
+  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { allowedTypes } = $props<{ allowedTypes: string[] }>()
+  const { maxFileSize } = $props<{ maxFileSize: number }>() // 10MB
+  const { maxFiles } = $props<{ maxFiles: number }>()
+  const { onUploadComplete } = $props<{ onUploadComplete: ((payload: { caseId?: string }>() files: File[]; ocr_results: OCRResult[] }) => void) | undefined;
+  const { onUploadError } = $props<{ onUploadError: ((err: any) }>()
+  const { onNext } = $props<{ onNext: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined;
+  const { onPrevious } = $props<{ onPrevious: ((event: { step: 'documents' }) }>()
+  const { onSaveDraft } = $props<{ onSaveDraft: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined;
+  const { className = '' } = $props()
+  const { id } = $props<{ id: string | undefined }>()
+  const { testId } = $props<{ testId: string | undefined }>()
+  const { formData } = $props<{ formData: InternalFormData }>()
 
   // Local state variables
   let dragActive = $state(false);

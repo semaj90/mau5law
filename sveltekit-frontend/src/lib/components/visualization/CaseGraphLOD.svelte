@@ -17,7 +17,7 @@
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     Network,
@@ -73,14 +73,14 @@
     onLODChange?: (level: number) => void;
   }
   // Props
-  export let caseId: string;
-  export let graphData: { nodes: GraphNode[]; edges: GraphEdge[] } | undefined = { nodes: [], edges: [] };
-  export let enableWebGPU = true;
-  export let maxNodes = 1000;
-  export let cameraDistance = 100;
-  export let onNodeClick: ((node: GraphNode) => void) | undefined;
-  export let onEdgeClick: ((edge: GraphEdge) => void) | undefined;
-  export let onLODChange: ((level: number) => void) | undefined;
+  const { caseId } = $props<{ caseId: string }>()
+  const { graphData } = $props<{ graphData: { nodes: GraphNode[] }>() edges: GraphEdge[] } | undefined = { nodes: [], edges: [] };
+  const { enableWebGPU = true } = $props()
+  const { maxNodes = 1000 } = $props()
+  const { cameraDistance = 100 } = $props()
+  const { onNodeClick } = $props<{ onNodeClick: ((node: GraphNode) }>()
+  const { onEdgeClick } = $props<{ onEdgeClick: ((edge: GraphEdge) }>()
+  const { onLODChange } = $props<{ onLODChange: ((level: number) }>()
   // State
   let canvasElement: HTMLCanvasElement | null = null;
   let gpuDevice: GPUDevice | null = null;
@@ -239,7 +239,7 @@
       console.error('[CaseGraphLOD] Failed to load graph data:', error);
       await loadDemoGraphData();
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function calculateNodeImportance(): void {

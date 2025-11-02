@@ -3,8 +3,8 @@
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   // replaced prop/runtime handling with standard Svelte exports and dispatcher
-  export let align: 'left' | 'right' = 'left';
-  export let closeOnSelect: boolean = true;
+  const { align } = $props<{ align: 'left' | 'right' }>()
+  const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()
   const dispatch = createEventDispatcher();
   let open: boolean = $state(false);
   let rootEl: HTMLElement | null = null;

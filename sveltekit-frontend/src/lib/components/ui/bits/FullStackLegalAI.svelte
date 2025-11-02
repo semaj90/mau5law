@@ -187,7 +187,7 @@ async function performFullStackSearch() {
 		// Try client-side fallback if available
 		await tryClientSideFallback();
 	} finally {
-		isSearching = $state(false);
+		isSearching = false;
 	}
 }
 // Client-side WebAssembly fallback

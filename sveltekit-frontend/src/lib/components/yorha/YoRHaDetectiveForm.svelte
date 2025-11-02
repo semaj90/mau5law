@@ -50,7 +50,7 @@
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   function updateFormData(fieldName: string, value: any) {

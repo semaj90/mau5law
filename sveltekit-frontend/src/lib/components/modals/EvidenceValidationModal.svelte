@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     aiEvent = null,
     onvalidated
   }: Props = $props();
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
   import {
     AlertTriangle,
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
         "Failed to submit validation. Please check your connection and try again."
       );
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   function closeModal() {

@@ -2,6 +2,8 @@
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
+import { dev } from '$app/environment';
+
 export interface VectorSearchRequest {
   query?: {
     embedding?: number[];
@@ -90,6 +92,7 @@ export interface ResponseMetadata {
   data_source: string;
   vector_dimensions: number;
   quality: SearchQuality;
+  client_time_ms?: number;
 }
 export interface SearchQuality {
   avg_similarity: number;
@@ -174,6 +177,7 @@ export class VectorSearchClient {
       const searchResponse = await this.deserializeResponse(new Uint8Array(responseBuffer));
       // Add client-side performance metrics
       const clientTime = performance.now() - startTime;
+      // @ts-ignore - This property is added client-side
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
       return searchResponse;
     } catch (error) {
@@ -210,7 +214,7 @@ export class VectorSearchClient {
    */
   async search(request: VectorSearchRequest): Promise<VectorSearchResponse> {
     // Use protobuf in production for better performance
-    if (process.env.NODE_ENV === 'production') {
+    if (!dev) {
       return this.searchProtobuf(request);
     } else {
       // Use JSON in development for easier debugging

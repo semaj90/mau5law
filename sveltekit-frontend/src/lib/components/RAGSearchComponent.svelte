@@ -139,7 +139,7 @@
       errorMessage = (error as Error).message;
       console.error('Search error:', error);
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   async function ingestDocument() {

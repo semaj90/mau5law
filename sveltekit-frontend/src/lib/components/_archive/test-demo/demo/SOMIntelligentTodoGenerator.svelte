@@ -69,7 +69,7 @@ try {
       console.error('Error processing npm output:', error);
       alert('Failed to process errors: ' + error.message);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function extractErrorsFromOutput(output: string): NPMError[] {

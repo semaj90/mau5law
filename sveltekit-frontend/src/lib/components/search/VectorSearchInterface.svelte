@@ -55,7 +55,7 @@ try {
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   function handleKeydown(_event: KeyboardEvent) {

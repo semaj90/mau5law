@@ -43,7 +43,7 @@
     } catch (error) {
       console.error('Failed to check services:', error);
     } finally {
-      isChecking = $state(false);
+      isChecking = false;
     }
   }
   function getServiceIcon(isHealthy: boolean) {

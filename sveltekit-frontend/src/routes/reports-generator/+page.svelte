@@ -5,16 +5,30 @@
 	import { page } from '$app/stores'; // correct store import for SvelteKit page
  	import ReportEditor from "$lib/components/ReportEditor.svelte";
  	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
+	import AIChatAssistant from "$lib/components/AIChatAssistant.svelte";
  	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
 	let currentReport: Report | null = $state(null);
 	let currentCanvasState: CanvasState | null = $state(null);
 	let evidence: Evidence[] = $state([]);
 	let citationPoints: CitationPoint[] = $state([]);
-	let activeTab: 'editor' | 'canvas' = $state('editor');
+	let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state('editor');
 	let isLoading = $state(false);
 	let error = $state('');
 	// Demo case ID - default, will be overridden from route params if present
 	let caseId = $state('demo-case-123');
+
+	// AI Chat context - built from current case data
+	let aiChatContext = $derived(() => {
+		const evidenceSummary = evidence.map(e => `- ${e.title} (${e.evidenceType})`).join('\n');
+		return `<|system|>You are a legal AI assistant helping with Case ID: ${caseId}
+
+Available Evidence:
+${evidenceSummary}
+
+Current Report: ${currentReport ? currentReport.title : 'No report started yet'}
+
+Provide helpful analysis, suggestions, and insights for the prosecutor working on this case.<|end|>`;
+	});
 
 	// Ensure caseId comes from the page store before loading demo data
 	$effect(() => {
@@ -60,7 +74,7 @@
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: null,
+  					canvasPosition: {},
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date(),
@@ -91,7 +105,7 @@
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: null,
+  					canvasPosition: {},
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date(),
@@ -122,7 +136,7 @@
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: null,
+  					canvasPosition: {},
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date(),
@@ -131,7 +145,7 @@
   		} catch (err) {
   			console.error('Failed to load demo data:', err);
   			error = 'Failed to load demo data';
-  			isLoading = $state(false);
+  			isLoading = false;
   }}
   	async function handleReportSave(report: Report) {
   		try {
@@ -162,6 +176,7 @@
   <title>Report Builder - Prosecutor's Case Management</title>
   <meta name="description" content="AI-powered report builder for legal case analysis" />
 </svelte:head>
+<div class="container">
   <!-- Header -->
   <header class="space-y-4">
     <div class="space-y-4">
@@ -195,6 +210,9 @@
       <button class="space-y-4" class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
+      <button class="space-y-4" class:active={activeTab === 'ai-chat'} onclick={() => (activeTab = 'ai-chat')}>
+        🤖 AI Assistant
+      </button>
     </div>
     <!-- Main Content -->
     <main class="space-y-4">
@@ -221,6 +239,23 @@
             {citationPoints}
             save={handleCanvasSave}
           />
+        </div>
+      {:else if activeTab === 'ai-chat'}
+        <!-- AI Chat Assistant Tab -->
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <h2>AI Legal Assistant</h2>
+            <p>Ask questions, get insights, and analyze your case with advanced AI</p>
+            <div class="ai-features-notice">
+              <strong>🚀 Powered by llama.cpp WebAssembly</strong>
+              <ul>
+                <li>✅ Browser WASM: Offline, private inference (~20-35 tok/s)</li>
+                <li>✅ Node Native: @llama-node/llama-cpp with CUDA (~80-120 tok/s)</li>
+                <li>✅ Remote gRPC/QUIC: TensorRT acceleration (~250-500 tok/s)</li>
+              </ul>
+            </div>
+          </div>
+          <AIChatAssistant {caseId} initialContext={aiChatContext} />
         </div>
       {/if}
     </main>
@@ -283,8 +318,28 @@
     padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-</style>
-    padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  .ai-features-notice {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border: 1px solid #667eea;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .ai-features-notice ul {
+    margin: 8px 0 0 20px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .ai-features-notice li {
+    color: #4b5563;
+  }
+
+  .space-y-4 button.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
   }
 </style>

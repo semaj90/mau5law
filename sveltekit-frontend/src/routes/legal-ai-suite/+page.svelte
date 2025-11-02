@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte'; // Added Badge import
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Document processing failed:', error);
       addLog(`❌ Processing failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function executeRAGQuery() {

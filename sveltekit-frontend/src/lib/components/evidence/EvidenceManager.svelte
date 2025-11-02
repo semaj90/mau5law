@@ -16,7 +16,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   interface EvidenceFile {
     id: number; // Assuming ID is number, adjust if UUID string
     title: string;
@@ -123,7 +123,7 @@
       error = `Failed to load evidence files: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.files = $state(false);
+      loading.files = false;
     }
   }
   async function loadEmbeddingStats() {
@@ -141,7 +141,7 @@
       error = `Failed to load embedding stats: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error('Failed to load embedding stats:', err);
     } finally {
-      loading.stats = $state(false);
+      loading.stats = false;
     }
   }
   async function handleFileUpload(files: FileList) {
@@ -203,7 +203,7 @@
       error = `Embedding backfill failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.backfill = $state(false);
+      loading.backfill = false;
     }
   }
   async function performSemanticSearch() {
@@ -229,7 +229,7 @@
       error = `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.search = $state(false);
+      loading.search = false;
     }
   }
   function getEvidenceType(mimeType: string): string {

@@ -68,7 +68,7 @@ async function connect(userId?: string): Promise<void> {
     // Connection event handlers
     wsClient.on('connected', () => {
       websocketStore.connected = true;
-      websocketStore.connecting = $state(false);
+      websocketStore.connecting = false;
       websocketStore.error = null;
       console.log('🔗 WebSocket connected to Legal AI Platform');
     });

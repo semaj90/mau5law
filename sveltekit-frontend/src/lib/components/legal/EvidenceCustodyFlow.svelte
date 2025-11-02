@@ -9,12 +9,12 @@ and AI-powered verification features.
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Props (clean, explicit exports)
-  export let evidenceId: string;
-  export let caseId: string;
-  export let userId: string;
-  export let originalHash: string;
-  export let onWorkflowComplete: ((result: any) => void) | undefined;
-  export let onWorkflowError: ((error: string) => void) | undefined;
+  const { evidenceId } = $props<{ evidenceId: string }>()
+  const { caseId } = $props<{ caseId: string }>()
+  const { userId } = $props<{ userId: string }>()
+  const { originalHash } = $props<{ originalHash: string }>()
+  const { onWorkflowComplete } = $props<{ onWorkflowComplete: ((result: any) }>()
+  const { onWorkflowError } = $props<{ onWorkflowError: ((error: string) }>()
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
@@ -23,11 +23,11 @@ and AI-powered verification features.
   import { CollaborationPanel } from './CollaborationPanel.svelte';
   import { WorkflowProgress } from './WorkflowProgress.svelte';
   // Use named imports for UI kit components
-  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte'';
+  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
-  import { toast } from '$lib/components/ui/toast.svelte'';
+  import { toast } from '$lib/components/ui/toast.svelte';
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());

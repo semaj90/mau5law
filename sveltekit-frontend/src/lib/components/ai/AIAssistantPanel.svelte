@@ -91,7 +91,7 @@
     } catch (error) {
       console.error('Failed to send message:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Quick action handlers using unified store
@@ -110,7 +110,7 @@
     } catch (error) {
       console.error('Failed to analyze evidence:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function suggestNextSteps() {
@@ -129,7 +129,7 @@
     } catch (error) {
       console.error('Failed to get suggestions:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleKeydown(_event: KeyboardEvent) {

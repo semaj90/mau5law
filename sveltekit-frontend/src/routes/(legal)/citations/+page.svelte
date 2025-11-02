@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/core.svelte'';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Button } from '$lib/components/ui/core.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -37,7 +37,7 @@
     } catch (error) {
       console.error('Failed to load citations:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

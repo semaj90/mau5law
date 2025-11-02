@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
           }
         } finally {
           // always stop submitting and update form UI
-          isSubmitting = $state(false);
+          isSubmitting = false;
           await update();
         }
       };

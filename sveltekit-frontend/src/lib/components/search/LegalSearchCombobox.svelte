@@ -148,7 +148,7 @@
       console.error('Search error:', error);
       searchResults = [];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }, 300);
 

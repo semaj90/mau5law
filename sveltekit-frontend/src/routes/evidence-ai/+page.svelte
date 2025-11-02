@@ -101,7 +101,7 @@
       ws.onopen = () => {
         console.log('✅ WebSocket connected to Python AI Server ->', url);
         wsConnected = true;
-        wsReconnecting = $state(false);
+        wsReconnecting = false;
         resetBackoff();
       };
 
@@ -374,7 +374,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
 

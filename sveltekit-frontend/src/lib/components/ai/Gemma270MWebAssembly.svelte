@@ -5,8 +5,8 @@
 -->
 <script lang="ts">
 	// Removed unused onMount import and switched Alert to a default import (compiler suggested)
-	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
-	import { Alert } from '$lib/components/ui/enhanced-bits.svelte''; // use default import as compiler suggested
+	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+	import { Alert } from '$lib/components/ui/enhanced-bits.svelte'; // use default import as compiler suggested
 	// Svelte 5 runes for reactive state
 	let wasmModule: any = $state(null);
 	let isLoaded = $state(false);
@@ -49,7 +49,7 @@
 	});
 	async function initializeWebAssembly(): Promise<void> {
 		try {
-			isLoaded = $state(false);
+			isLoaded = false;
 			const startTime = performance.now();
 			// Check for WebAssembly support
 			if (!(window as any).WebAssembly) {
@@ -162,7 +162,7 @@
 			console.error('Client-side processing error:', error);
 			return null;
 		} finally {
-			isProcessing = $state(false);
+			isProcessing = false;
 			processingProgress = 100;
 		}
 	}

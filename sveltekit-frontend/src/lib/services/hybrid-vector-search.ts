@@ -295,7 +295,7 @@ export class HybridVectorSearchService {
 
       // Get Qdrant stats
       let qdrantVectorCount = 0;
-      let qdrantAvailable = $state(false);
+      let qdrantAvailable = false;
 
       try {
         const qdrantHealth = await qdrantClient.healthCheck();

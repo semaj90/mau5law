@@ -7,7 +7,7 @@ AI Document Summarization - Generate summaries of legal documents
 	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule;
 
 	// UI components / icons
-	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte'';
+	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte';
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
 
 	// Fallback summary template
@@ -57,7 +57,7 @@ AI Document Summarization - Generate summaries of legal documents
 		} catch (err) {
 			console.error('Upload failed:', err);
 		} finally {
-			isUploading = $state(false);
+			isUploading = false;
 		}
 	}
 
@@ -87,7 +87,7 @@ AI Document Summarization - Generate summaries of legal documents
 			console.error('Summarization failed:', err);
 			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name);
 		} finally {
-			isSummarizing = $state(false);
+			isSummarizing = false;
 		}
 	}
 

@@ -9,7 +9,7 @@
     Input,
     Alert,
     AlertDescription
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
@@ -41,7 +41,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       error = `Integration check failed: ${err.message}`;
       console.error('❌ Integration check error:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function testWebAssemblyRuntime() {

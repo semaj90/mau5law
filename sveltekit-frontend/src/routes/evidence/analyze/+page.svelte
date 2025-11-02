@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Dialog,
     DialogContent,
@@ -14,11 +14,11 @@ https://svelte.dev/e/js_parse_error -->
     DialogFooter,
     DialogHeader,
     DialogTitle,
-  } from '$lib/components/ui/dialog.svelte'';
+  } from '$lib/components/ui/dialog.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte'';
+  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);

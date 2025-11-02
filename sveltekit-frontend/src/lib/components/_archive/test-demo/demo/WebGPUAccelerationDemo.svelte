@@ -3,13 +3,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
   let capabilities = $state<WebGPUCapabilities | null>(null);
   let isInitializing = $state(true);
@@ -41,7 +41,7 @@
     } catch (error) {
       console.error('WebGPU initialization failed:', error);
     } finally {
-      isInitializing = $state(false);
+      isInitializing = false;
     }
   }
   /**
@@ -153,7 +153,7 @@
       console.error('Similarity computation failed:', error);
       results = { type: 'similarity', error: error.message }
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   /**
@@ -187,7 +187,7 @@
       console.error('Clustering computation failed:', error);
       results = { type: 'clustering', error: error.message }
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   /**
@@ -208,7 +208,7 @@
       );
       const gpuTime = performance.now() - startTime;
       // CPU comparison for smaller matrices
-  let cpuTime = $state(0);
+  let cpuTime = 0;
   let speedup = $state(0);
       if (matrixSize <= 128) {
         const cpuStartTime = performance.now();
@@ -232,7 +232,7 @@
       console.error('Matrix multiplication failed:', error);
       results = { type: 'matrix', error: error.message }
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   /**

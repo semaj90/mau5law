@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Search failed';
       console.error('Precedent search error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function clearFilters() {

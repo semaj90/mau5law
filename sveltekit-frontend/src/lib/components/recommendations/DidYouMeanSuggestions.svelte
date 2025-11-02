@@ -143,7 +143,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       taskSuggestions = [];
       userProfile = null;
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function handleSelection(suggestion Suggestion) {

@@ -735,7 +735,7 @@
           const data = await res.json();
           minioHealthy = !!data?.ok;
         } else minioHealthy = $state(false);
-      } catch { minioHealthy = $state(false); }
+      } catch { minioHealthy = false; }
     })();
   });
   // Reactive persistence effect (lightweight)

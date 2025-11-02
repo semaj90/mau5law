@@ -44,7 +44,7 @@
     } catch (e) {
       error = e.messag;
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function getScoreColor(score: number): string {

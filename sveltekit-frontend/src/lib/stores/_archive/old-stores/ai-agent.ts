@@ -304,7 +304,7 @@ const createAIAgentStore = () => {
         streamingResponse: '',
       }));
       try {
-        let done = $state(false);
+        let done = false;
         while (!done) {
           const result = await reader.read();
           done = !!result.done;

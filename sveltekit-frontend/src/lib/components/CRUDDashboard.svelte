@@ -79,7 +79,7 @@
         details: String(error),
       });
     } finally {
-      refreshing = $state(false);
+      refreshing = false;
     }
   }
   // Fetch functions for each entity
@@ -101,7 +101,7 @@
     } catch (error) {
       console.error('Error fetching cases:', error);
     } finally {
-      loading.cases = $state(false);
+      loading.cases = false;
     }
   }
   async function fetchEvidence() {
@@ -122,7 +122,7 @@
     } catch (error) {
       console.error('Error fetching evidence:', error);
     } finally {
-      loading.evidence = $state(false);
+      loading.evidence = false;
     }
   }
   async function fetchReports() {
@@ -143,7 +143,7 @@
     } catch (error) {
       console.error('Error fetching reports:', error);
     } finally {
-      loading.reports = $state(false);
+      loading.reports = false;
     }
   }
   async function fetchCriminals() {
@@ -164,7 +164,7 @@
     } catch (error) {
       console.error('Error fetching criminals:', error);
     } finally {
-      loading.criminals = $state(false);
+      loading.criminals = false;
     }
   }
   async function fetchActivities() {
@@ -185,7 +185,7 @@
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
-      loading.activities = $state(false);
+      loading.activities = false;
     }
   }
   async function fetchUsers() {
@@ -206,7 +206,7 @@
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      loading.users = $state(false);
+      loading.users = false;
     }
   }
   // Calculate statistics

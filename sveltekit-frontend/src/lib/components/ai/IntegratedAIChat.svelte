@@ -106,14 +106,14 @@
         const redisResponse = await fetch('/api/stats/redis');
         connectionStatus.redis = redisResponse.ok;
       } catch {
-        connectionStatus.redis = $state(false);
+        connectionStatus.redis = false;
       }
       // Test CUDA (via health endpoint)
       try {
         const cudaResponse = await fetch('/api/health/cuda');
         connectionStatus.cuda = cudaResponse.ok;
       } catch {
-        connectionStatus.cuda = $state(false);
+        connectionStatus.cuda = false;
       }
       // Update system stats
       systemStats.lastUpdate = Date.now();
@@ -238,7 +238,7 @@
       };
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       attachedFiles = [];
     }
   }

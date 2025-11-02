@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Worker system test failed:', error);
       testJobResult = { error: 'Test failed: ' + (((error as any)?.message) ?? String(error)) };
     } finally {
-      isSubmittingJob = $state(false);
+      isSubmittingJob = false;
     }
   }
 

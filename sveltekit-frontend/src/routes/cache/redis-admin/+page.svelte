@@ -10,12 +10,12 @@
     Card,
     Input,
     Badge
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-  } from '$lib/components/ui/orchestrated.svelte'';
+  } from '$lib/components/ui/orchestrated.svelte';
   // Icons for Redis admin
   import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
@@ -83,7 +83,7 @@
       console.error('Failed to load key details:', error);
       keyDetails = null;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Format bytes to human readable

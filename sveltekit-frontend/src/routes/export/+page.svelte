@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
   import TooltipContent from '$lib/components/ui/TooltipContent.svelte';
   import TooltipTrigger from '$lib/components/ui/TooltipTrigger.svelte';
@@ -81,7 +81,7 @@
       console.error('Export failed:', error);
       exportError = error instanceof Error ? error.message : 'Export failed';
     } finally {
-      exportLoading = $state(false);
+      exportLoading = false;
     }
   }
   function toggleCaseSelection(caseId: string) {

@@ -476,7 +476,7 @@ export class CHRROMPrecomputationService {
     } catch (error) {
       console.warn(`Failed to generate pattern ${task.pattern}:`, error);
     } finally {
-      this.isProcessing = $state(false);
+      this.isProcessing = false;
       this.updateCacheStatus();
     }
   }

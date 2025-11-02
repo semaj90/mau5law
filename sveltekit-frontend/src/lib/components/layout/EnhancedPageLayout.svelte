@@ -5,7 +5,7 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   // use the canonical, case-stable module name
-  // import * as Card from '$lib/components/ui/CardComponent.svelte'';
+  // import * as Card from '$lib/components/ui/CardComponent.svelte';
   interface Props {
     title: string;
     description?: string;

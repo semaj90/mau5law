@@ -70,7 +70,7 @@
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err);
         } finally {
-            isProcessing = $state(false);
+            isProcessing = false;
         }
     }
     function reset() {

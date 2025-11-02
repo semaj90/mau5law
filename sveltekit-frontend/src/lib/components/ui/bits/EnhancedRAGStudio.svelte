@@ -29,7 +29,7 @@
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function handleUpload() {
@@ -41,7 +41,7 @@
     } catch (error) {
       console.error('Upload failed:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 </script>

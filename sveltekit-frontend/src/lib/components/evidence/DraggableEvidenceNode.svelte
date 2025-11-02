@@ -4,7 +4,7 @@
   import { draggable } from '$lib/actions/draggable';
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   import { showSuccess, showError  } from '$lib/stores/unified';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
@@ -142,7 +142,7 @@
       console.error('❌ Evidence analysis failed:', error);
       showError(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       analysisProgress = 0;
     }
   }

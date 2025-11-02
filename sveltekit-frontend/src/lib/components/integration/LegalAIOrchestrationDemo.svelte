@@ -12,8 +12,8 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
   let isProcessing = $state(false);
@@ -127,7 +127,7 @@
     } catch (error) {
       errorMessage = error instanceof Error ? error.message: 'Unknown error occurred',
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Format processing time

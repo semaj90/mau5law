@@ -10,7 +10,7 @@
   import { ReviewSubmitForm } from './ReviewSubmitForm.svelte';
   import { ProgressIndicator } from './ProgressIndicator.svelte';
   import { LoadingSpinner } from './LoadingSpinner.svelte';
-  export let caseId: string | null = null;
+  const { caseId } = $props<{ caseId: string | null }>()
   // renamed to avoid collision with browser FormData
   interface CaseFormData {
     caseInfo: {

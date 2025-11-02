@@ -1,0 +1,22 @@
+// Unified UI Component System
+// Primary export for all UI components - Svelte 5 Ready
+// Use this for consistent component imports across the application
+// Core Components (Primary Use)
+export * from './core';
+// Specialized Component Libraries
+export * as Bits from './bits';
+export * as NES from './nes';
+// Legacy compatibility exports (will be removed in future versions)
+export { default as LegacyButton } from './Button.svelte';
+// Direct imports for common components
+export { default as Button } from './button/Button.svelte';
+export { default as Input } from './input/Input.svelte';
+export { default as Card } from './Card.svelte';
+export { default as CardContent } from './CardContent.svelte';
+export { default as CardHeader } from './CardHeader.svelte';
+export { default as CardTitle } from './CardTitle.svelte';
+export { default as LoadingButton } from '../headless/LoadingButton.svelte';
+// Component usage guide:
+// import { Button, Card } from '$lib/components/ui.svelte'';           // Core components
+// import { NES } from '$lib/components/ui.svelte'';                    // NES gaming style
+// import { Bits } from '$lib/components/ui.svelte'';                   // bits-ui based

@@ -33,7 +33,7 @@
     } catch (e) {
       error = 'Network error occurred';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   async function verifyIntegrity(evidenceId: string) {
@@ -55,7 +55,7 @@
     } catch (e) {
       error = 'Network error occurred';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function copyToClipboard(text: string) {

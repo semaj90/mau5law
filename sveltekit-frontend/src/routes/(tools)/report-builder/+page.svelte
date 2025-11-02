@@ -194,7 +194,7 @@
       console.error('Failed to load demo data:', err);
       error = 'Failed to load demo data';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function handleReportSave(report: Report) {

@@ -210,7 +210,7 @@ $effect(() => {
       messages = [...messages, mockAiMessage];
       error = '';
     } finally {
-      isStreaming = $state(false);
+      isStreaming = false;
     }
   }
 
@@ -303,7 +303,7 @@ $effect(() => {
       error = 'Failed to analyze persons of interest';
       console.error('POI analysis error:', e);
     } finally {
-      timelineLoading = $state(false);
+      timelineLoading = false;
     }
   }
 
@@ -324,7 +324,7 @@ $effect(() => {
     } catch (e) {
       console.error('Failed to generate user activity timeline:', e);
     } finally {
-      activityLoading = $state(false);
+      activityLoading = false;
     }
   }
 

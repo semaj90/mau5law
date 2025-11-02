@@ -45,14 +45,14 @@
     notes?: string;
   }
   // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
-  export let profile: CriminalProfile | undefined = undefined;
-  export let viewMode: 'full' | 'summary' | 'identification' = 'full';
-  export let showSensitiveInfo = $state(false);
-  export let interactive = true;
-  export let onViewFullRecord: ((recordId: string) => void) | undefined;
-  export let onUpdateProfile: ((profile: CriminalProfile) => void) | undefined;
-  export let onViewMugshot: ((mugshotUrl: string) => void) | undefined;
-  export let className: string = '';
+  const { profile } = $props<{ profile: CriminalProfile | undefined }>()
+  const { viewMode } = $props<{ viewMode: 'full' | 'summary' | 'identification' }>()
+  const { showSensitiveInfo = $state(false) } = $props()
+  const { interactive = true } = $props()
+  const { onViewFullRecord } = $props<{ onViewFullRecord: ((recordId: string) }>()
+  const { onUpdateProfile } = $props<{ onUpdateProfile: ((profile: CriminalProfile) }>()
+  const { onViewMugshot } = $props<{ onViewMugshot: ((mugshotUrl: string) }>()
+  const { className } = $props<{ className: string }>()
   // Configs - consistent property names
   const riskConfig = {
     low: { label: 'Low Risk', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
@@ -89,23 +89,33 @@
   }
   // Replace $derived runes with reactive statements
   let age: number | undefined;
-  $: age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined;
+  $effect(() => {
+
+    age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined;
+
+  })
   let activeWarrants: any[] = [];
-  $: activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active');
+  $effect(() => {
+
+    activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active');
+
+  })
   let recentRecords: CriminalRecord[] = [];
-  $: recentRecords =
-    (profile?.criminalHistory ?? [])
+  $effect(() => {
+
+    recentRecords = (profile?.criminalHistory ?? [])
       .slice()
       .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime())
       .slice(0, 5);
+
+  })
   let firstMugshot: string | undefined;
-  $: firstMugshot =
-    profile?.identification?.mugshots && profile.identification.mugshots.length > 0
+  let firstMugshot = $derived(profile?.identification?.mugshots && profile.identification.mugshots.length > 0
       ? profile.identification.mugshots[0]
-      : undefined;
+      : undefined)
   // Replace icons with emoji/icon fallbacks to avoid lucide-svelte export issues
   let statusInfo: { label: string; className: string; icon?: string } = statusConfig.cleared;
-  $: statusInfo = statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared;
+  let statusInfo = $derived(statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared)
   function formatDate(date: string | Date): string {
     return toDate(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }

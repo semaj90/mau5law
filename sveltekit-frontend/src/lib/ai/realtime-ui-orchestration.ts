@@ -132,7 +132,7 @@ export class LegalCanvasManager {
       // Render canvas (only if dirty)
       if (this.canvas.isDirty) {
         this.canvas.renderAll();
-        this.canvas.isDirty = $state(false);
+        this.canvas.isDirty = false;
       }
       const renderTime = performance.now() - startTime;
       // Performance warning for slow frames

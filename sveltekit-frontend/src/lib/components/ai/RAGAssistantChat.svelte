@@ -244,7 +244,7 @@
       await typeMessage('❌ Failed to create case. Please try again or contact support.');
       console.error('Case creation error', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       workflowActive = $state(false);
       currentStep = 0;
     }

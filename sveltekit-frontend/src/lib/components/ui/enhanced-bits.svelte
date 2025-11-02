@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  export let onclick: ((...args: any[]) => any) | undefined;
-  export let disabled: boolean = $state(false);
-  export let variant: string | undefined;
-  export let size: string | undefined;
-  export let className: string | undefined;
+  const { onclick } = $props<{ onclick: ((...args: any[]) }>()
+  const { disabled } = $props<{ disabled: boolean }>()
+  const { variant } = $props<{ variant: string | undefined }>()
+  const { size } = $props<{ size: string | undefined }>()
+  const { className } = $props<{ className: string | undefined }>()
   const dispatch = createEventDispatcher();
   function handleClick(e: MouseEvent) {
     if (disabled) return;

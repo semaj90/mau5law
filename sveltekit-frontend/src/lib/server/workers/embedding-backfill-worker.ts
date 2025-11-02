@@ -86,7 +86,7 @@ export class EmbeddingBackfillWorker {
       console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
       return result;
     } finally {
-      this.isRunning = $state(false);
+      this.isRunning = false;
     }
   }
   /**

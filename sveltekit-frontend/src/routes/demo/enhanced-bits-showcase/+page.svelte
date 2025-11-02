@@ -16,7 +16,7 @@
     DraggableModal,
     EvidenceBoard,
     Toolbar,
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   let activeDemo = $state('overview');
   let searchQuery = $state('');
   let showYoRHaModal = $state(false);

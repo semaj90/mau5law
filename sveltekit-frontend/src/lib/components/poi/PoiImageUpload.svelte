@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Upload, Camera, X } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte';
   interface Props {
     poiId: string;
     poiName?: string;
@@ -67,7 +67,7 @@
       messageType = 'error';
       preview = currentImage || '';
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   }
   function triggerUpload() {

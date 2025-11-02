@@ -615,25 +615,25 @@ export async function healthCheckServices() {
 		await services.redis.get('health-check');
 		results.redis = true;
 	} catch {
-		results.redis = $state(false);
+		results.redis = false;
 	}
 	try {
 		await services.pgvector.query('SELECT 1');
 		results.postgres = true;
 	} catch {
-		results.postgres = $state(false);
+		results.postgres = false;
 	}
 	try {
 		await services.ollama.embed('test', { model: services.env.ollamaConfig.embeddingModel });
 		results.ollama = true;
 	} catch {
-		results.ollama = $state(false);
+		results.ollama = false;
 	}
 	try {
 		await services.neo4j.verifyConnectivity?.();
 		results.neo4j = true;
 	} catch {
-		results.neo4j = $state(false);
+		results.neo4j = false;
 	}
 	return {
 		healthy: Object.values(results).every((v) => v),

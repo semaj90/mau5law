@@ -2,10 +2,10 @@
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Label } from '$lib/components/ui/label/Label.svelte';
   import { Alert } from '$lib/components/ui/alert/Alert.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
@@ -165,7 +165,7 @@
       formState.error = 'Network error occurred. Please try again.';
       console.error('Auth error:', err);
     } finally {
-      formState.loading = $state(false);
+      formState.loading = false;
     }
   }
   // Helper functions
@@ -239,7 +239,7 @@
     } catch (error) {
       console.error('Guest login failed:', error);
     } finally {
-      formState.loading = $state(false);
+      formState.loading = false;
     }
   }
   // Effects for enhanced UX

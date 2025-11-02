@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   // Type definitions
   interface User {

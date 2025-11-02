@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e: any) {
       result = { error: e?.message || String(e) };
     } finally {
-      runBusy = $state(false);
+      runBusy = false;
     }
   }
   async function onImageSelected(e: Event) {
@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e: any) {
       alert(e?.message || String(e));
     } finally {
-      ocrBusy = $state(false);
+      ocrBusy = false;
     }
   }
 </script>

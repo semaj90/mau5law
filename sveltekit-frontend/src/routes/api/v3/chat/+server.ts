@@ -149,13 +149,13 @@ async function performHealthChecks(): Promise<HealthCheckResults> {
     });
     results.ollama = ollamaResponse.ok;
   } catch {
-    results.ollama = $state(false);
+    results.ollama = false;
   }
   try {
     await ensureDbInitialized();
     results.database = true;
   } catch {
-    results.database = $state(false);
+    results.database = false;
   }
   return results;
 }

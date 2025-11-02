@@ -248,7 +248,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
       clearTimeout(timeout);
       localAvailable = !!resp.ok;
     } catch {
-      localAvailable = $state(false);
+      localAvailable = false;
     }
   }
 

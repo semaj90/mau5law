@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         try {
           const config = getConfig();
           // Initialize validator if available; fall back to quick health-based report
-          let validatorInitialized = $state(false);
+          let validatorInitialized = false;
           try {
             const maybeCreate = (
               IntegrationValidator as unknown as { createValidator?: (config: any) => Promise<unknown> }
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             },
           });
         } finally {
-          validationInProgress = $state(false);
+          validationInProgress = false;
         }
       }
       case 'report': {
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         try {
           const config = getConfig();
           // Initialize validator if available; fall back to health-based report
-          let validatorInitialized = $state(false);
+          let validatorInitialized = false;
           try {
             const maybeCreate = (
               IntegrationValidator as unknown as { createValidator?: (config: any) => Promise<unknown> }
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             },
           });
         } finally {
-          validationInProgress = $state(false);
+          validationInProgress = false;
         }
       }
       case 'clear_cache': {
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     );
   } finally {
     // Ensure flag reset on POST path as well
-    validationInProgress = $state(false);
+    validationInProgress = false;
   }
 };
 async function runMemoryBenchmark(): Promise<{ score: number; details: { allocatedMB: number; rating: string } }> {

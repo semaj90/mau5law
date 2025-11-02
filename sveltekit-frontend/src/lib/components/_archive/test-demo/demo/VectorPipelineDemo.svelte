@@ -2,13 +2,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Using Svelte 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineStat;
   // Sample job data

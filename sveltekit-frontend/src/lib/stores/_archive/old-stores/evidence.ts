@@ -231,12 +231,12 @@ const createEvidenceStore = () => {
         this.connected = true;
         // Ensure we clean up on errors
         transport.closed.catch(() => {
-          this.connected = $state(false);
+          this.connected = false;
           this.writer?.releaseLock();
           this.writer = null;
         });
       } catch {
-        this.connected = $state(false);
+        this.connected = false;
         this.writer = null;
       }
     }

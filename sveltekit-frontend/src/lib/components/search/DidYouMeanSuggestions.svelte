@@ -123,7 +123,7 @@
       userProfile = null;
       open = $state(false);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function handleSelection(suggestion Suggestion) {

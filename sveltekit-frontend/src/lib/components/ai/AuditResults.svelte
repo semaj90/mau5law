@@ -25,7 +25,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     } catch (e: any) {
       error = (e instanceof Error ? e.message : String(e)) || 'Unknown error';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   $effect(fetchAuditResults);

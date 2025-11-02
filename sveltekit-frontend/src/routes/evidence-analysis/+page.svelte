@@ -4,7 +4,7 @@
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   let showWebGPUDemo = $state(false);
   let webGPUSupported = $state(false);
   // Sample analysis for WebGPU demo

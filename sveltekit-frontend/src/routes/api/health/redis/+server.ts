@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
 
   try {
     // Attempt to load Redis client with fallback
-    let isAvailable = $state(false);
+    let isAvailable = false;
 
     // Use a short-lived connection for health checks to avoid errors when the
     // global/shared client has been closed or is in a bad state.

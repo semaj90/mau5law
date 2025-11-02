@@ -137,7 +137,7 @@
     } catch (error) {
       console.error('Texture streaming failed:', error);
     } finally {
-      isStreaming = $state(false);
+      isStreaming = false;
       loadTime = performance.now() - startTime;
     }
   }

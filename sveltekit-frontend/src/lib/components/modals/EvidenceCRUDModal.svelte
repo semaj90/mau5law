@@ -5,7 +5,7 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte';
   import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
   interface Evidence {
     id?: string;
@@ -88,7 +88,7 @@
       showError('Failed to load evidence');
       handleClose();
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function resetForm() {
@@ -197,7 +197,7 @@
       console.error('❌ AI analysis failed:', error);
       showError('AI analysis failed');
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   // CRUD operations
@@ -270,7 +270,7 @@
       console.error('❌ Save failed:', error);
       showError('Failed to save evidence');
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   async function handleDelete() {
@@ -293,7 +293,7 @@
       console.error('❌ Delete failed:', error);
       showError('Failed to delete evidence');
     } finally {
-      isDeleting = $state(false);
+      isDeleting = false;
     }
   }
   function handleClose() {

@@ -142,7 +142,7 @@
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Handle tag management

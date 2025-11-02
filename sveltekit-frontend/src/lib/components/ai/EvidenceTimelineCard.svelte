@@ -7,9 +7,9 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   // Access props via Svelte runes $props()
   let _props = $props();

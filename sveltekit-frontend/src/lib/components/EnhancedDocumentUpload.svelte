@@ -73,7 +73,7 @@
     } catch (error: any) {
       errorMessage = (error as Error)?.message || String(error) || 'Network error during upload';
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   }
   function formatFileSize(bytes: number): string {

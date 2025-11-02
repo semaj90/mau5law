@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
       // Build connection map for mock data
       buildConnectionMap(detectiveInsights);
     } finally {
-      loadingAnalysis = $state(false);
+      loadingAnalysis = false;
     }
   }
   // Build connection map for network visualization
@@ -338,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      loadingAnalysis = $state(false);
+      loadingAnalysis = false;
     }
   }
   // Handle evidence selection

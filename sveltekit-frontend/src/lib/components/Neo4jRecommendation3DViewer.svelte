@@ -178,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
       error = `Failed to load recommendations: ${err.message || err}`;
       console.error(error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       setTimeout(() => {
         progressAnimation.target = 0;
       }, 1000);

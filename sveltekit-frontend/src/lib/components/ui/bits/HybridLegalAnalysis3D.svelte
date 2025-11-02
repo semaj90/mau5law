@@ -7,7 +7,7 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount, tick } from "svelte";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { notifications  } from '$lib/stores/unified";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import {
@@ -299,7 +299,7 @@ https://svelte.dev/e/expected_token -->
         message: error instanceof Error ? error.message: "Unknown error",
       });
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   function update3DVisualization(result: AnalysisResult, index: number) {

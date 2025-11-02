@@ -17,7 +17,7 @@
     CardDescription,
     Input,
     Select
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     createUploadAnalyticsActor,
     getContextualPromptsByTiming,

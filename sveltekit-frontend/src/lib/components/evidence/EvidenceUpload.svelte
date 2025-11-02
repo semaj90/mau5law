@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, Dialog, Input, Label, Select, Textarea, Progress } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, Dialog, Input, Label, Select, Textarea, Progress } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
   import { Upload, FileText, Image, Video, Music, File, X, CheckCircle, AlertCircle, Trash2, Eye } from 'lucide-svelte';

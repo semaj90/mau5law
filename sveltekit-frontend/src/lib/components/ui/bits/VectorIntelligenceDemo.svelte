@@ -201,7 +201,7 @@
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Clear results

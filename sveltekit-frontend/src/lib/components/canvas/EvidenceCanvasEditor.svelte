@@ -354,7 +354,7 @@
       console.error('Failed to load canvas state:', err);
       error = 'Failed to load canvas state';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -411,7 +411,7 @@
       send({ type: 'SAVE_ERROR', error: err });
       showToast('Failed to save canvas', 'error');
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -452,7 +452,7 @@
     } catch (err) {
       console.error('Auto-tagging failed:', err);
     } finally {
-      isAutoTagging = $state(false);
+      isAutoTagging = false;
     }
   }
 
@@ -1508,7 +1508,7 @@
       console.error('Failed to load canvas state:', err);
       error = 'Failed to load canvas state';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -1565,7 +1565,7 @@
       send({ type: 'SAVE_ERROR', error: err });
       showToast('Failed to save canvas', 'error');
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -1606,7 +1606,7 @@
     } catch (err) {
       console.error('Auto-tagging failed:', err);
     } finally {
-      isAutoTagging = $state(false);
+      isAutoTagging = false;
     }
   }
 

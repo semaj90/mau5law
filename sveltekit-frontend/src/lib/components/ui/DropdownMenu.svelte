@@ -16,8 +16,8 @@
     href?: string; // added optional href
   };
   // exported props + rest props
-  export let items: DropdownItem[] = [];
-  export let trigger: string | typeof SvelteComponent = 'Menu';
+  const { items } = $props<{ items: DropdownItem[] }>()
+  const { trigger } = $props<{ trigger: string | typeof SvelteComponent }>()
   // Svelte automatically provides `$$restProps` for forwarding all unhandled props to the root element.
   // No need to declare it manually; see usage below for prop forwarding.
 </script>

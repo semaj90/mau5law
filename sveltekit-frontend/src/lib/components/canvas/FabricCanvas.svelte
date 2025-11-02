@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Button component removed here to avoid Svelte 5 constructor/instance typing issues in this file.
-  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
   import {
     Upload,
     Move,
@@ -225,7 +225,7 @@
     } catch (error) {
       console.error('Failed to load canvas data:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -377,7 +377,7 @@
       console.error('Failed to upload evidence:', error);
       uploadProgress.delete(progressKey);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       setTimeout(() => uploadProgress.delete(progressKey), 2000);
     }
   }

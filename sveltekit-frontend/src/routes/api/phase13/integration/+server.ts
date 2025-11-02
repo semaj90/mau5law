@@ -44,7 +44,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       const dbResp = await fetch('http://localhost:5432/', { signal: timeoutSignal(timeout) });
       dbOk = dbResp.ok;
     } catch {
-      dbOk = $state(false);
+      dbOk = false;
     }
     // Optional Redis HTTP probe (usually Redis doesn't expose HTTP; keep conservative)
     let redisOk = $state(false);
@@ -52,7 +52,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       const redisResp = await fetch('http://localhost:6379/', { signal: timeoutSignal(timeout) });
       redisOk = redisResp.ok;
     } catch {
-      redisOk = $state(false);
+      redisOk = false;
     }
     return {
       services: {

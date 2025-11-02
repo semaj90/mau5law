@@ -11,7 +11,7 @@ Features:
 <script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import {
     Upload,
@@ -159,7 +159,7 @@ Features:
       console.error('Batch analysis failed:', error);
       alert(`Analysis failed: ${error.message}`);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
 

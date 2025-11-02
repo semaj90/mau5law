@@ -1,7 +1,7 @@
 <!-- Brief Editor - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
   import {
     Card,
     CardHeader,
@@ -9,7 +9,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   interface BriefSection {
     id: string;
     type: 'header' | 'introduction' | 'facts' | 'argument' | 'conclusion' | 'signature';
@@ -124,7 +124,7 @@
     } catch (error) {
       console.error('Save failed:', error);
     } finally {
-      isAutoSaving = $state(false);
+      isAutoSaving = false;
     }
   }
   async function checkCitations() {

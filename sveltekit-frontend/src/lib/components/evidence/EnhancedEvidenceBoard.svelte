@@ -617,7 +617,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       console.error('Advanced analysis error:', error);
       alert('Analysis error occurred. Please check your connection and try again.');
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   // Update search suggestions based on unified analysis

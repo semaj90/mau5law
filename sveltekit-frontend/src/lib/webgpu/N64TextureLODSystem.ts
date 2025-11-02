@@ -2,7 +2,7 @@
  * 🎮 N64-Style 4KB Texture LOD Swapping System
  * Implements aggressive texture streaming with 4KB pages like Nintendo 64
  */
-import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
+import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
 interface LODLevel {
   level: number;
   width: number;

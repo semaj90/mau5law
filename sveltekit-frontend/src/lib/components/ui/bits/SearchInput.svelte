@@ -101,7 +101,7 @@
       console.error('Search failed:', error);
       suggestions = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Handle input changes with debouncing

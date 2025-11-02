@@ -12,7 +12,7 @@ https://svelte.dev/e/component_invalid_directive -->
     copilotOrchestrator,
     } from '$lib/utils/mcp-helpers';
   import { phase13Integration, getSystemHealth } from '$lib/integrations/phase13-full-integration';
-  export let ondispatch: (result: any) => void = () => {};
+  const { ondispatch } = $props<{ ondispatch: (result: any) }>()
    // Svelte 5 reactive state
    let isOpen = $state(false);
    let searchQuery = $state('');
@@ -87,7 +87,7 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('AI search failed:', err);
       searchResults = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Get search suggestions as user types

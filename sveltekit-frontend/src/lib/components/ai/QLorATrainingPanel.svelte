@@ -7,14 +7,14 @@ https://svelte.dev/e/attribute_duplicate -->
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // Import QLorA training service
   import {
     qloraTrainingService,

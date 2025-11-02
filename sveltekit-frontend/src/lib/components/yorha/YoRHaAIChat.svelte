@@ -118,7 +118,7 @@ Offline Mode Available — Basic chat functionality only.`,
       };
       pushMessage(errorMessage);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       isTyping = $state(false);
       scrollToBottom();
     }

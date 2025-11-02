@@ -35,7 +35,7 @@
       error = (e as Error).message || 'Unknown error';
       messages = [...messages, { role: 'assistant', text: `Error: ${error}` }];
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // simple keyboard send (Enter)

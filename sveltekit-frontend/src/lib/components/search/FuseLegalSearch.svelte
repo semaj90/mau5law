@@ -1,6 +1,6 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
-  import { Input } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
   // Props using Svelte 5 syntax
   let {
@@ -86,7 +86,7 @@
       console.error('Fuse search error:', error);
       searchResults = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   function highlightMatches(item, matches) {

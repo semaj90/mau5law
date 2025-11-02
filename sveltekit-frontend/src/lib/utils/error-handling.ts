@@ -183,7 +183,7 @@ export async function withLoading<T>(operation: () => Promise<T>, loadingState: 
   try {
     return await operation();
   } finally {
-    loadingState.value = $state(false);
+    loadingState.value = false;
   }
 }
 // Retry mechanism

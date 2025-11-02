@@ -2,7 +2,7 @@
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
   // the module exports a default builder (adjusted per compile hint)
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
   import {
     Card,
     CardHeader,
@@ -10,7 +10,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   interface EvidenceItem {
     id: string;
     type: 'email' | 'transcript' | 'financial' | 'document' | 'audio' | 'video';
@@ -183,7 +183,7 @@
     } catch (error) {
       console.error('Evidence analysis failed:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   function exportSelected(format: 'pdf' | 'json' | 'csv') {
@@ -220,7 +220,7 @@
     if (files && onUpload) {
       try {
         await onUpload(files);
-        showUpload = $state(false);
+        showUpload = false;
       } catch (error) {
         console.error('Upload failed:', error);
       }

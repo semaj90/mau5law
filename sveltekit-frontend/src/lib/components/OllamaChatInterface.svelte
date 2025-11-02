@@ -157,7 +157,7 @@
         timestamp: new Date(),
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function handleNormalResponse(response: Response, messageId: string) {

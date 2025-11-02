@@ -5,13 +5,13 @@
   import { Button } from '$lib/components/ui/Button.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
@@ -99,7 +99,7 @@
       }
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleKeyPress(_event: KeyboardEvent) {

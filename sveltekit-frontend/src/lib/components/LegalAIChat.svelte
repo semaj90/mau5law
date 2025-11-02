@@ -1,16 +1,16 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
@@ -40,7 +40,7 @@
     } catch (error) {
       messages.push({ role: 'error', content: 'AI service error - check GPU setup' });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 </script>

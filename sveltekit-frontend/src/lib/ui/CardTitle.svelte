@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let as: keyof HTMLElementTagNameMap = 'h3';
-  export let className = '';
+  const { as } = $props<{ as: keyof HTMLElementTagNameMap }>()
+  const { className = '' } = $props()
   const Tag: any = as;
 </script>
 

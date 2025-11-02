@@ -4,7 +4,7 @@
   import { FileText, Upload, Save, Loader, CheckCircle, AlertCircle } from 'lucide-svelte';
 
   // Props
-  export let caseId: string = 'demo-case-001';
+  const { caseId } = $props<{ caseId: string }>()
 
   // Canvas and Fabric.js
   let canvasEl: HTMLCanvasElement | null = null;
