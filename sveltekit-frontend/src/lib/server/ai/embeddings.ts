@@ -2,10 +2,10 @@
 // Supports local Ollama models with Redis/memory caching for performance
 // Use process.env for server-side environment variables
 import { db } from '$lib/server/db/index.js';
-import { cases, evidence } from '$lib/server/db/schema-postgres';
+import { cases, evidence } from '$lib/server/db/schemsa-postgres';
 import { eq } from 'drizzle-orm';
-import { OLLAMA_CONFIG } from '../services/providers/ollama/config.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
+import { getOllamaEndpoint } from './endpoints.js';
+
 export interface EmbeddingOptions {
   model?: string;
   cache?: boolean;
@@ -52,7 +52,7 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
   }
 }
 export async function generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[] | null> {
-  const { model = 'embeddinggemma', cache = true, maxTokens = 8000 } = options;
+  const { model = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest', cache = true, maxTokens = 8000 } = options;
   if (!text || text.trim().length === 0) {
     return null;
   }
@@ -73,14 +73,17 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
       await cacheEmbedding(truncatedText, model, embedding);
     }
     return embedding;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Embedding generation failed:', error);
     return null;
   }
 }
 // Local Ollama embedding generation
-async function generateLocalEmbedding(text: string, model: string = 'embeddinggemma'): Promise<number[]> {
-  const ollamaUrl = OLLAMA_CONFIG.getBaseUrl?.() ?? ENV_CONFIG.OLLAMA_URL ?? 'http://localhost:11434';
+async function generateLocalEmbedding(
+  text: string,
+  model: string = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest'
+): Promise<number[]> {
+  const ollamaUrl = getOllamaEndpoint();
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
@@ -89,24 +92,25 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
       },
       body: JSON.stringify({
         model: model,
-        // Ollama uses: "input" or: "prompt" depending on setup; use: "input" as common field
-        input: text,
+        // Ollama uses: "prompt" for embeddings with recent versions
+        prompt: text,
       }),
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
     }
-    const data: any = await response.json();
+    const data: unknown = await response.json();
     // Type guard to check if a value is an array of numbers
-    const isNumberArray = (value: any): value is number[] =>
+    const isNumberArray = (value: unknown): value is number[] =>
       Array.isArray(value) && value.every(item => typeof item === 'number');
     // More robustly parse different possible response shapes from Ollama-like services
-    let rawEmbedding: any = null;
+    let rawEmbedding: unknown = null;
     if (data && typeof data === 'object') {
-      if ('embedding' in data && isNumberArray(data.embedding)) {
-        rawEmbedding = data.embedding;
-      } else if ('embeddings' in data && Array.isArray(data.embeddings)) {
-        rawEmbedding = data.embeddings[0] ?? data.embeddings;
+      if ('embedding' in data && isNumberArray((data as { embedding: unknown }).embedding)) {
+        rawEmbedding = (data as { embedding: number[] }).embedding;
+      } else if ('embeddings' in data && Array.isArray((data as { embeddings: unknown }).embeddings)) {
+        const embeddings = (data as { embeddings: unknown[] }).embeddings;
+        rawEmbedding = embeddings[0] ?? embeddings;
       } else if (
         Array.isArray(data) &&
         data.length > 0 &&
@@ -114,18 +118,18 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
         data[0] !== null &&
         'embedding' in data[0]
       ) {
-        rawEmbedding = data[0].embedding;
+        rawEmbedding = (data[0] as { embedding: unknown }).embedding;
       }
     }
     if (!isNumberArray(rawEmbedding)) {
       throw new Error('Unexpected or invalid embedding format from Ollama');
     }
     // Quantize EmbeddingGemma (768D) to 384D for schema compatibility
-    if (model === 'embeddinggemma' && rawEmbedding.length === 768) {
+    if (model.startsWith('embeddinggemma') && rawEmbedding.length === 768) {
       return quantizeEmbedding(rawEmbedding, 384);
     }
     return rawEmbedding;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Ollama embedding generation failed:', error);
     // Fallback to mock embedding for development
     return generateMockEmbedding(384); // Fallback to 384D for schema compatibility
@@ -185,12 +189,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     const case_ = caseData[0];
     const fullText = `${case_.title} ${case_.description || ''}`.trim();
     // Generate embeddings
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [titleEmbedding, descriptionEmbedding, fullTextEmbedding] = await generateBatchEmbeddings([
-      case_.title,
-      case_.description || '',
-      fullText,
-    ]);
+    await generateBatchEmbeddings([case_.title, case_.description || '', fullText]);
     // TODO: Re-enable when titleEmbedding field is added to schema
     // Update database
     // await db
@@ -203,7 +202,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     //   })
     //   .where(eq(cases.id, caseId));
     console.log(`Updated embeddings for case ${caseId}`);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Failed to update embeddings for case ${caseId}:`, error);
     throw error;
   }
@@ -229,8 +228,7 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
       .filter(Boolean)
       .join(' ');
     // Generate embeddings
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [titleEmbedding, descriptionEmbedding, summaryEmbedding, contentEmbedding] = await generateBatchEmbeddings([
+    await generateBatchEmbeddings([
       evidence_.title,
       evidence_.description || '',
       evidence_.summary || '',
@@ -249,7 +247,7 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
     //   })
     //   .where(eq(evidence.id, evidenceId));
     console.log(`Updated embeddings for evidence ${evidenceId}`);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Failed to update embeddings for evidence ${evidenceId}:`, error);
     throw error;
   }

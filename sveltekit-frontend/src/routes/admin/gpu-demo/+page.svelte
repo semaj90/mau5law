@@ -565,48 +565,48 @@
         </div>
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
-          <Button class="bits-btn text-sm"
+          <Button.Root class="bits-btn text-sm"
             onclick={() =>
 startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
-          </Button>
-          <Button class="bits-btn text-sm"
+          </Button.Root>
+          <Button.Root class="bits-btn text-sm"
             onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
-</Button>
-            <Button class="bits-btn text-sm"
+</Button.Root>
+            <Button.Root class="bits-btn text-sm"
               onclick={() =>
 startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
-</Button>
-          <Button class="bits-btn text-sm"
+</Button.Root>
+          <Button.Root class="bits-btn text-sm"
             onclick={() =>
 startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
             Text Flow
-</Button>
+</Button.Root>
         </div>
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
+            <Button.Root onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
 Stop Rendering
-</Button>
+</Button.Root>
           {/if}
-          <Button
+          <Button.Root
             onclick={executeGPUWorkload}
             disabled={!isInitialized}
             variant="ghost"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
 Execute GPU Workload
-</Button>
+</Button.Root>
         </div>
       </div>
     </div>

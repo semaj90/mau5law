@@ -46,3 +46,9 @@ Thumbs.db
 
 # Ignore conflicting test config
 js_tests/svelte.config.js
+
+# Large text files > 10MB
+agentic-error-resolution/errors/*.txt
+agentic-error-resolution/errors/*.log
+*.txt.large
+*-full.txt

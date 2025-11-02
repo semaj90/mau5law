@@ -5,15 +5,16 @@ import { createHash } from 'node:crypto';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { pgTable, text, vector, timestamp, json, uuid, integer, boolean } from 'drizzle-orm/pg-core';
 import type { PoolConfig } from 'pg';
-import { eq, sql } from 'drizzle-orm';
+import { sql, eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import { OllamaEmbeddings, ChatOllama } from '@langchain/ollama';
 import { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';
 import Redis from 'ioredis';
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
+import { AIAssistantInputSynthesizer } from './ai-assistant-input-synthesizer.js';
 import { legalBERT } from './legalbert-middleware.js';
 import { monitoringService } from './monitoring-service.js';
+import { getOllamaEndpoint } from './endpoints.js'; // Add this import
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -50,17 +51,19 @@ export const synthesisCache = pgTable('synthesis_cache', {
 async function initializeDynamicPorts(): Promise<Map<string, number>> {
   try {
     // Attempt best-effort dynamic import of the optional dynamic-ports module.
-    const mod: any = await import('../config/dynamic-ports.js').catch(() => null);
+    const mod: { portManager?: { initializeAllServices?: () => Promise<Map<string, number>> } } | null = await import(
+      '../config/dynamic-ports.js'
+    ).catch(() => null);
     if (mod && typeof mod.portManager?.initializeAllServices === 'function') {
       try {
         const allocatedPorts = await mod.portManager.initializeAllServices();
         logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries ? allocatedPorts.entries() : []));
         return allocatedPorts;
-      } catch (e) {
+      } catch (e: unknown) {
         logger.debug('[Orchestrator] portManager.initializeAllServices failed', e);
       }
     }
-  } catch (e) {
+  } catch (e: unknown) {
     logger.debug('[Orchestrator] dynamic-ports import failed or not present', e);
   }
   // Fallback: no dynamic ports available — return empty map and continue using env/fallbacks.
@@ -81,67 +84,70 @@ function getServicePortWithFallback(serviceName: string, fallbackPort: number): 
 // ===== SERVICE CONFIGURATION =====
 const services = {
   neo4j: {
-    uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
+    uri: process.env.NEO4J_URI || 'bolt://neo4j:7687', // Docker service name fallback
     user: process.env.NEO4J_USER || 'neo4j',
     password: process.env.NEO4J_PASSWORD || 'password',
   },
   goMicroservice: {
-    enhancedRAG: `http://localhost:${getServicePortWithFallback('enhanced-rag', 8094)}`,
-    gpuOrchestrator: `http://localhost:${getServicePortWithFallback('gpu-orchestrator', 8095)}`,
-    vectorConsumer: `http://localhost:${getServicePortWithFallback('vector-consumer', 8096)}`,
-    binaryVectorEngine: `http://localhost:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
-    quicServer: `quic://localhost:${getServicePortWithFallback('quic-gateway', 8443)}`,
+    // Prioritize explicit env var, then Docker service name + port, then localhost + port
+    enhancedRAG:
+      process.env.ENHANCED_RAG_URL || `http://enhanced-rag:${getServicePortWithFallback('enhanced-rag', 8094)}`,
+    gpuOrchestrator:
+      process.env.GPU_ORCHESTRATOR_URL ||
+      `http://gpu-orchestrator:${getServicePortWithFallback('gpu-orchestrator', 8095)}`,
+    vectorConsumer:
+      process.env.VECTOR_CONSUMER_URL ||
+      `http://vector-consumer:${getServicePortWithFallback('vector-consumer', 8096)}`,
+    binaryVectorEngine:
+      process.env.BINARY_VECTOR_ENGINE_URL ||
+      `http://binary-vector-engine:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
+    quicServer:
+      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}`,
   },
   ollama: {
-    baseUrl: `http://localhost:${getServicePortWithFallback('ollama', 11434)}`,
+    baseUrl: getOllamaEndpoint(), // Use the centralized helper
     models: {
       legal: 'gemma3-legal:latest',
       embedding: 'embeddinggemma:latest',
     },
   },
-  context7: process.env.CONTEXT7_URL || 'http://localhost:4000',
-  postgres: {
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || String(getServicePortWithFallback('postgresql', 5432)), 10),
-    database: process.env.POSTGRES_DB || 'legal_ai_db',
-    user: process.env.POSTGRES_USER || 'legal_admin',
-    password: process.env.POSTGRES_PASSWORD || '123456',
-  },
-  redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || String(getServicePortWithFallback('redis', 6379)), 10),
-    db: 0,
-    keyPrefix: 'legal-ai:',
-  },
+  context7: process.env.CONTEXT7_URL || 'http://context7:8777', // Docker service name + correct port
+  // Postgres and Redis configurations are now handled directly by their respective connection strings
+  // and are removed from this 'services' object to avoid redundancy and ensure env priority.
 };
 // ===== DATABASE CONNECTION =====
-const pgConnection = postgres({
-  host: services.postgres.host,
-  port: services.postgres.port,
-  database: services.postgres.database,
-  user: services.postgres.user,
-  password: services.postgres.password,
-  max: 20,
-  idle_timeout: 10_000,
-  connect_timeout: 10_000,
-} as any);
+// Use DATABASE_URL environment variable first, then fallback to individual components with Docker service name
+const pgConnection = process.env.DATABASE_URL
+  ? postgres(process.env.DATABASE_URL)
+  : postgres({
+      host: process.env.POSTGRES_HOST || 'postgres', // Docker service name
+      port: parseInt(process.env.POSTGRES_PORT || '5432', 10), // Default Docker port
+      database: process.env.POSTGRES_DB || 'legal_ai_db',
+      user: process.env.POSTGRES_USER || 'legal_admin',
+      password: process.env.POSTGRES_PASSWORD || '123456',
+      max: 20,
+      idle_timeout: 10_000,
+      connect_timeout: 10_000,
+    });
+
 export const db = drizzle(pgConnection as any, {
   schema: { legalDocuments, autoSolveResults, synthesisCache },
 });
 // ===== REDIS CONNECTION =====
 let redis: Redis | null = null;
 try {
-  redis = new Redis({
-    host: services.redis.host,
-    port: services.redis.port,
-    db: services.redis.db,
-    keyPrefix: services.redis.keyPrefix,
-    maxRetriesPerRequest: 1, // fail fast
-    connectTimeout: 5000,
-  });
-  // non-throwing observation handlers
-  redis.on('error', err => logger.warn('[Redis] error', err));
-  redis.on('connect', () => logger.info('[Redis] connected'));
+  redis = new Redis(
+    process.env.REDIS_URL || {
+      host: process.env.REDIS_HOST || 'redis', // Docker service name
+      port: parseInt(process.env.REDIS_PORT || '6379', 10), // Default Docker port
+      db: parseInt(process.env.REDIS_DB || '0', 10),
+      password: process.env.REDIS_PASSWORD || 'redis', // Default Docker password
+      keyPrefix: 'legal-ai:',
+      maxRetriesPerRequest: 1, // fail fast
+      connectTimeout: 5000,
+    }
+  );
+  // non-throwing observation handlers are removed due to type issues
 } catch (e) {
   logger.warn('Redis initialization failed, continuing without Redis:', e);
   redis = null;
@@ -178,9 +184,17 @@ function calculateJaccardSimilarity(textA: string, textB: string): number {
   if (union.size === 0) return 0;
   return intersection.size / union.size;
 }
-function applyMMR(documents: any[], lambda = 0.7, maxSelected = 10): any[] {
+
+type MMRDocument = Record<string, unknown> & {
+  crossEncoderScore?: number;
+  pageContent?: string;
+  content?: string;
+  text?: string;
+};
+
+function applyMMR(documents: MMRDocument[], lambda = 0.7, maxSelected = 10): MMRDocument[] {
   if (!documents || documents.length <= 1) return documents;
-  const selected: any[] = [documents[0]];
+  const selected: MMRDocument[] = [documents[0]];
   const remaining = documents.slice(1);
   while (remaining.length > 0 && selected.length < maxSelected) {
     let bestScore = -Infinity;
@@ -231,8 +245,8 @@ type EnhancedPromptInput = {
   query?: string;
   legalBertAnalysis?: LegalBertAnalysis | null;
   rankedResults?: RankedSource[] | null;
-  context7Docs?: any;
-  goLlamaResponse?: any;
+  context7Docs?: unknown;
+  goLlamaResponse?: unknown;
 };
 // ===== ORCHESTRATOR CLASS (simplified, robust pipeline) =====
 export class EnhancedAISynthesisOrchestrator {
@@ -240,7 +254,7 @@ export class EnhancedAISynthesisOrchestrator {
   private pgVectorStore: InstanceType<typeof PGVectorStore> | null = null;
   private ollama!: ChatOllama;
   private embeddings!: OllamaEmbeddings;
-  private initialized = $state(false);
+  private initialized = false; // Changed from $state(false)
   constructor() {
     // initialization deferred to be async-safe
   }
@@ -251,13 +265,13 @@ export class EnhancedAISynthesisOrchestrator {
       await initializeDynamicPorts();
       // initialize Ollama / embeddings
       this.ollama = new ChatOllama({
-        baseUrl: services.ollama.baseUrl,
+        baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.legal,
         temperature: 0.3,
         format: 'json',
       } as any);
       this.embeddings = new OllamaEmbeddings({
-        baseUrl: services.ollama.baseUrl,
+        baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.embedding,
       } as any);
       // Try to initialize vector stores (best-effort)
@@ -269,17 +283,17 @@ export class EnhancedAISynthesisOrchestrator {
           password: services.neo4j.password,
           indexName: 'legal_documents',
         });
-      } catch (e) {
+      } catch (e: unknown) {
         this.neo4jStore = null;
         logger.warn('[Orchestrator] Neo4j init failed:', e);
       }
       try {
         const pgConfig: PoolConfig = {
-          host: services.postgres.host,
-          port: services.postgres.port,
-          database: services.postgres.database,
-          user: services.postgres.user,
-          password: services.postgres.password,
+          host: process.env.POSTGRES_HOST || 'postgres',
+          port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+          database: process.env.POSTGRES_DB || 'legal_ai_db',
+          user: process.env.POSTGRES_USER || 'legal_admin',
+          password: process.env.POSTGRES_PASSWORD || '123456',
           max: 20,
         };
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
@@ -293,7 +307,7 @@ export class EnhancedAISynthesisOrchestrator {
           },
           distanceStrategy: 'cosine',
         });
-      } catch (e) {
+      } catch (e: unknown) {
         this.pgVectorStore = null;
         logger.warn('[Orchestrator] PGVector init failed:', e);
       }
@@ -304,36 +318,40 @@ export class EnhancedAISynthesisOrchestrator {
           ON legal_documents USING ivfflat (embedding vector_cosine_ops)
           WITH (lists = 100);
         `;
-      } catch (e) {
+      } catch (e: unknown) {
         logger.debug('[Orchestrator] ensure index failed', e);
       }
       this.initialized = true;
       logger.info('[Orchestrator] Initialized');
-    } catch (err) {
+    } catch (err: unknown) {
       logger.error('[Orchestrator] Initialization error:', err);
       throw err;
     }
   }
   // --- Small helper wrappers around external pieces ---
-  private async checkCache(query: string): Promise<{ hit: boolean; data?: any; source?: 'redis' | 'db' }> {
+  private async checkCache(query: string): Promise<{ hit: boolean; data?: unknown; source?: 'redis' | 'db' }> {
     const key = generateCacheKey(query);
     if (redis) {
       try {
         const r = await redis.get(key);
         if (r) {
           // parse safely
-          let parsed: any = null;
+          let parsed: unknown = null;
           try {
             parsed = JSON.parse(r);
-          } catch (e) {
+          } catch (e: unknown) {
             logger.debug('[Cache] Redis JSON parse failed, ignoring redis value', e);
             parsed = null;
           }
           // Best-effort: increment DB hit counter if row exists so DB reflects hits
           try {
-            const rows = await db.select().from(synthesisCache).where(eq(synthesisCache.queryHash, key)).limit(1);
-            if (rows && (rows as any[]).length > 0) {
-              const hitRow = (rows as any[])[0];
+            const rows = await db
+              .select({ id: synthesisCache.id })
+              .from(synthesisCache)
+              .where(eq(synthesisCache.queryHash, key))
+              .limit(1);
+            if (rows?.length > 0) {
+              const hitRow = rows[0];
               await db
                 .update(synthesisCache)
                 .set({
@@ -342,18 +360,22 @@ export class EnhancedAISynthesisOrchestrator {
                 })
                 .where(eq(synthesisCache.id, hitRow.id));
             }
-          } catch (e) {
+          } catch (e: unknown) {
             logger.debug('[Cache] best-effort DB hit increment failed', e);
           }
           return { hit: true, data: parsed, source: 'redis' };
         }
-      } catch (e) {
+      } catch (e: unknown) {
         logger.debug('[Cache] Redis read failed', e);
       }
     }
-    const rows = await db.select().from(synthesisCache).where(eq(synthesisCache.queryHash, key)).limit(1);
-    if (rows && (rows as any[]).length > 0) {
-      const hit = (rows as any[])[0];
+    const rows = await db
+      .select({ id: synthesisCache.id, result: synthesisCache.result })
+      .from(synthesisCache)
+      .where(eq(synthesisCache.queryHash, key))
+      .limit(1);
+    if (rows?.length > 0) {
+      const hit = rows[0];
       // Update hit / lastAccessed
       await db
         .update(synthesisCache)
@@ -364,8 +386,8 @@ export class EnhancedAISynthesisOrchestrator {
         .where(eq(synthesisCache.id, hit.id));
       if (redis) {
         try {
-          await redis.setex(key, 3600, JSON.stringify(hit.result));
-        } catch (e) {
+          await redis.set(key, JSON.stringify(hit.result), 'EX', 3600);
+        } catch (e: unknown) {
           logger.debug('[Cache] Redis setex failed', e);
         }
       }
@@ -376,7 +398,7 @@ export class EnhancedAISynthesisOrchestrator {
   private async analyzeWithLegalBERT(query: string) {
     try {
       return await legalBERT.analyzeLegalText(query);
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[LegalBERT] analysis failed, using fallback', e);
       return { entities: [], concepts: [], complexity: { legalComplexity: 0.5 } };
     }
@@ -384,7 +406,7 @@ export class EnhancedAISynthesisOrchestrator {
   private async generateNomicEmbeddings(query: string) {
     try {
       return await this.embeddings.embedQuery(query);
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[Embeddings] failed:', e);
       return null;
     }
@@ -393,7 +415,7 @@ export class EnhancedAISynthesisOrchestrator {
     if (!this.neo4jStore) return [];
     try {
       return await this.neo4jStore.similaritySearch(query, limit);
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[Neo4j] search failed:', e);
       return [];
     }
@@ -402,13 +424,16 @@ export class EnhancedAISynthesisOrchestrator {
     if (!this.pgVectorStore) return [];
     try {
       const res = await this.pgVectorStore.similaritySearch(query, limit);
-      return (res || []).map((d: any, i: number) => ({ ...d, score: 1.0 - i * 0.1 }));
-    } catch (e) {
+      return (res || []).map((d: unknown, i: number) => ({
+        ...(d as Record<string, unknown>),
+        score: 1.0 - i * 0.1,
+      }));
+    } catch (e: unknown) {
       logger.warn('[PGVector] search failed:', e);
       return [];
     }
   }
-  private async runEnhancedRAGPipeline(input: { query: string; embeddings?: any }) {
+  private async runEnhancedRAGPipeline(input: { query: string; embeddings?: number[] | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.goMicroservice.enhancedRAG}/api/search`, {
@@ -423,12 +448,12 @@ export class EnhancedAISynthesisOrchestrator {
       });
       if (!response.ok) throw new Error('enhancedRAG failed');
       return await response.json();
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[EnhancedRAG] pipeline failed', e);
       return { documents: [] };
     }
   }
-  private async runGoLlamaPipeline(input: { query: string; legalBertAnalysis?: any }) {
+  private async runGoLlamaPipeline(input: { query: string; legalBertAnalysis?: LegalBertAnalysis | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.goMicroservice.enhancedRAG}/api/generate`, {
@@ -447,35 +472,40 @@ export class EnhancedAISynthesisOrchestrator {
         const result = await response.json();
         return result.response ?? result;
       }
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[Go-Llama] unavailable', e);
     }
     return null;
   }
-  private async rankWithCrossEncoder(context: any) {
+  private async rankWithCrossEncoder(context: {
+    query: string;
+    neo4jResults: unknown[];
+    pgVectorResults: unknown[];
+    ragResults: { documents: unknown[] };
+  }) {
     const all = [
       ...(context.neo4jResults || []),
       ...(context.pgVectorResults || []),
       ...((context.ragResults && context.ragResults.documents) || []),
     ];
-    const ranked: any[] = [];
-    for (const r of all) {
+    const ranked: (RankedSource & { crossEncoderScore: number; legalRelevance: number })[] = [];
+    for (const r of all as RankedSource[]) {
       try {
         const text = r.pageContent || r.content || r.text || '';
         const sim = await legalBERT.calculateLegalSimilarity(context.query, text);
         ranked.push({
           ...r,
           crossEncoderScore: sim.similarity || 0,
-          legalRelevance: sim.legalRelevance || sim.confidence || 0.5,
+          legalRelevance: (sim as any).legalRelevance || sim.confidence || 0.5,
         });
       } catch {
-        ranked.push({ ...r, crossEncoderScore: 0.0, legalRelevance: 0.0 });
+        ranked.push({ ...(r as any), crossEncoderScore: 0.0, legalRelevance: 0.0 });
       }
     }
     const sorted = ranked.sort((a, b) => (b.crossEncoderScore || 0) - (a.crossEncoderScore || 0));
-    return applyMMR(sorted, 0.7);
+    return applyMMR(sorted as MMRDocument[], 0.7);
   }
-  private async enhanceWithContext7(context: any) {
+  private async enhanceWithContext7(context: { query: string; legalBertAnalysis: LegalBertAnalysis | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.context7}/api/query`, {
@@ -489,12 +519,12 @@ export class EnhancedAISynthesisOrchestrator {
         }),
       });
       if (response.ok) return await response.json();
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[Context7] enhancement failed', e);
     }
     return null;
   }
-  private async generateWithGemma3Legal(input: any) {
+  private async generateWithGemma3Legal(input: EnhancedPromptInput) {
     const prompt = buildEnhancedPrompt(input);
     // Try GPU orchestrator
     try {
@@ -515,13 +545,14 @@ export class EnhancedAISynthesisOrchestrator {
         const res = await gpuResp.json();
         return res.response ?? res;
       }
-    } catch (e) {
+    } catch (e: unknown) {
       logger.debug('[GPU Orchestrator] fallback to ollama', e);
     }
     // Fallback to Ollama
     try {
       const fetchImpl2 = await getFetch();
       const resp = await fetchImpl2(`${services.ollama.baseUrl}/api/generate`, {
+        // Use the centralized helper
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: services.ollama.models.legal, prompt, stream: false }),
@@ -530,13 +561,17 @@ export class EnhancedAISynthesisOrchestrator {
         const r = await resp.json();
         return r.response ?? r;
       }
-    } catch (e) {
+    } catch (e: unknown) {
       logger.warn('[Ollama] generation failed', e);
     }
     throw new Error('Generation failed');
   }
-  private async performFinalSynthesis(input: any) {
-    return aiAssistantSynthesizer.synthesizeInput({
+  private async performFinalSynthesis(input: {
+    query: string;
+    legalBertAnalysis: LegalBertAnalysis | null;
+    userId?: string;
+  }) {
+    return AIAssistantInputSynthesizer.synthesizeInput({
       query: input.query,
       context: {
         legalBertAnalysis: input.legalBertAnalysis,
@@ -553,48 +588,45 @@ export class EnhancedAISynthesisOrchestrator {
       },
     });
   }
-  private async cacheResult(query: string, finalSynthesis: any, perfStart: number) {
+  private async cacheResult(query: string, finalSynthesis: unknown, perfStart: number) {
     const key = generateCacheKey(query);
     const metadata = {
       processingTime: Date.now() - perfStart,
       servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
-      confidence: finalSynthesis?.metadata?.confidence ?? null,
+      confidence: (finalSynthesis as any)?.metadata?.confidence ?? null,
     };
     if (redis) {
       try {
-        await redis.setex(key, 3600, JSON.stringify(finalSynthesis));
-      } catch (e) {
+        await redis.set(key, JSON.stringify(finalSynthesis), 'EX', 3600);
+      } catch (e: unknown) {
         logger.debug('[Cache] Redis setex failed', e);
       }
     }
     try {
-      await db.insert(synthesisCache).values({
-        queryHash: key,
-        result: finalSynthesis,
-        metadata,
-        hitCount: 1,
-        lastAccessed: new Date(),
-      });
-    } catch (e: any) {
-      // If insert failed (likely unique constraint), attempt an update as a fallback (upsert-like)
-      logger.debug('[Cache] DB write failed, attempting update fallback', e?.message ?? e);
-      try {
-        await db
-          .update(synthesisCache)
-          .set({
+      await db
+        .insert(synthesisCache)
+        .values({
+          queryHash: key,
+          result: finalSynthesis,
+          metadata,
+          hitCount: 1,
+          lastAccessed: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: synthesisCache.queryHash,
+          set: {
             result: finalSynthesis,
             metadata,
             hitCount: sql`${synthesisCache.hitCount} + 1`,
             lastAccessed: new Date(),
-          })
-          .where(eq(synthesisCache.queryHash, key));
-      } catch (e2) {
-        logger.debug('[Cache] DB upsert fallback failed', e2);
-      }
+          },
+        });
+    } catch (e: unknown) {
+      logger.debug('[Cache] DB upsert failed', e);
     }
   }
   // ===== PUBLIC API =====
-  async process(query: string, options?: Record<string, any>): Promise<any> {
+  async process(query: string, options?: Record<string, unknown>): Promise<unknown> {
     await this.initialize();
     const perfStart = Date.now();
     logger.info(`[Orchestrator] Processing query: "${query}"`);
@@ -612,12 +644,16 @@ export class EnhancedAISynthesisOrchestrator {
       };
       // Best-effort monitoring emit
       try {
-        if (typeof monitoringService?.record === 'function') {
-          monitoringService.record('cache_hit', { query, source: cache.source, elapsedMs: Date.now() - perfStart });
-        } else if (typeof monitoringService?.increment === 'function') {
-          monitoringService.increment('cache_hits');
+        if (typeof (monitoringService as any)?.record === 'function') {
+          (monitoringService as any).record('cache_hit', {
+            query,
+            source: cache.source,
+            elapsedMs: Date.now() - perfStart,
+          });
+        } else if (typeof (monitoringService as any)?.increment === 'function') {
+          (monitoringService as any).increment('cache_hits');
         }
-      } catch (e) {
+      } catch (e: unknown) {
         logger.debug('[Monitoring] record/increment failed', e);
       }
       return enriched;
@@ -654,9 +690,7 @@ export class EnhancedAISynthesisOrchestrator {
     const finalSynthesis = await this.performFinalSynthesis({
       query,
       legalBertAnalysis,
-      generation,
-      rankedResults: ranked,
-      context7Docs,
+      userId: (options?.userId as string) || undefined,
     });
     // 9) Cache
     await this.cacheResult(query, finalSynthesis, perfStart);
@@ -665,17 +699,17 @@ export class EnhancedAISynthesisOrchestrator {
       await db.insert(autoSolveResults).values({
         query,
         solution: finalSynthesis,
-        confidence: finalSynthesis?.confidence_score ?? finalSynthesis?.metadata?.confidence ?? null,
+        confidence: (finalSynthesis as any)?.confidence_score ?? (finalSynthesis as any)?.metadata?.confidence ?? null,
         processingTime: Date.now() - perfStart,
         serviceUsed: 'enhanced-orchestrator',
         success: true,
       });
-    } catch (e) {
+    } catch (e: unknown) {
       logger.debug('[Orchestrator] autosolve_results insert failed', e);
     }
     return finalSynthesis;
   }
-  async health(): Promise<any> {
+  async health(): Promise<Record<string, unknown>> {
     await this.initialize().catch(() => {});
     return {
       status: this.initialized ? 'healthy' : 'initializing',
@@ -711,7 +745,7 @@ export class EnhancedAISynthesisOrchestrator {
   private async checkOllama(): Promise<boolean> {
     try {
       const fetchImpl = await getFetch();
-      const response = await fetchImpl(`${services.ollama.baseUrl}/api/tags`);
+      const response = await fetchImpl(`${services.ollama.baseUrl}/api/tags`); // Use the centralized helper
       return response.ok;
     } catch {
       return false;
@@ -730,8 +764,8 @@ export class EnhancedAISynthesisOrchestrator {
 // Helper prompt builder left mostly unchanged but cleaned
 function buildEnhancedPrompt(input: EnhancedPromptInput): string {
   // defensive generic helpers (avoid any)
-  const safeArray = <T>(v: any): T[] => (Array.isArray(v) ? (v as T[]) : []);
-  const safeJoin = <T>(arr: any, mapFn?: (x: T) => string) =>
+  const safeArray = <T>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
+  const safeJoin = <T>(arr: unknown, mapFn?: (x: T) => string) =>
     safeArray<T>(arr)
       .map(mapFn ?? ((x: T) => String(x)))
       .filter(Boolean)
@@ -783,6 +817,9 @@ INSTRUCTIONS:
 RESPONSE:`;
   return prompt;
 }
+// Export singleton instance
+export const orchestrator = new EnhancedAISynthesisOrchestrator();
+export default orchestrator;
 // Export singleton instance
 export const orchestrator = new EnhancedAISynthesisOrchestrator();
 export default orchestrator;
