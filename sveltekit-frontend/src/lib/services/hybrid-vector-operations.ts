@@ -27,18 +27,14 @@ export interface HybridSearchOptions {
   includeMetadata?: boolean;
 }
 
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   title?: string;
   similarity: number;
   source: 'pgvector' | 'qdrant' | 'hybrid';
   metadata?: Record<string, unknown>;
 }
 
-export interface QdrantPoint {
-  id: string;
-  vector: number[];
+export interface QdrantPoint { id: string;, vector: number[];
   payload: Record<string, unknown>;
   score?: number;
 }
@@ -118,12 +114,10 @@ export class QdrantClient {
    */
   async upsertPoints(collection: string, points: Omit<QdrantPoint, 'score'>[]): Promise<unknown> {
     const endpoint = `/collections/${encodeURIComponent(collection)}/points`;
-    const body = {
-      points: points.map(p => ({
-        id: p.id,
+    const body = { points: points.map(p => ({, id: p.id,
         vector: p.vector,
-        payload: p.payload,
-      })),
+        payload: p.payload
+      }))
     };
     return this.request('PUT', endpoint, body);
   }
@@ -154,7 +148,7 @@ export class HybridVectorService {
       }
     } catch (err) {
       // non-fatal initialization error
-      console.error('Failed to initialize Qdrant collections:', err);
+      console.error('Failed to initialize Qdrant collections: `, err);
     }
   }
 
@@ -422,7 +416,7 @@ export class HybridVectorService {
   }
 
   async getCollectionStats(): Promise<Record<string, unknown>> {
-    const stats: Record<string, unknown> = { pgvector: { count: 0 }, qdrant: { count: 0, vectorSize: 0 } };
+    const stats: Record<string, unknown> = { pgvector: {, count: 0 }, qdrant: { count: 0, vectorSize: 0 } };
     try {
       const dbClient = db as unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : (dbClient.query ? dbClient.query(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : Promise.resolve([])));

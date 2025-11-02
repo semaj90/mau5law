@@ -23,9 +23,7 @@ import { writable, derived } from 'svelte/store';
 export type SearchScope = 'cases' | 'evidence' | 'documents' | 'poi' | 'citations' | 'reports' | 'all';
 export type SearchMode = 'full-text' | 'vector' | 'hybrid';
 
-export interface SearchResult {
-  id: string;
-  type: SearchScope;
+export interface SearchResult { id: string;, type: SearchScope;
   title: string;
   description?: string;
   score: number;
@@ -34,9 +32,7 @@ export interface SearchResult {
 }
 
 export interface SearchFilters {
-  dateRange?: {
-    start: number;
-    end: number;
+  dateRange?: { start: number;, end: number;
   };
   caseIds?: string[];
   entityTypes?: string[];
@@ -46,9 +42,7 @@ export interface SearchFilters {
   status?: string;
 }
 
-export interface SavedSearch {
-  id: string;
-  name: string;
+export interface SavedSearch { id: string;, name: string;
   query: string;
   filters: SearchFilters;
   scope: SearchScope[];
@@ -197,8 +191,7 @@ function createSearchStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ embedding, threshold }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -375,11 +368,10 @@ function createSearchStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            results: state.results,
+           , results: state.results,
             format
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const blob = await response.blob();
@@ -402,8 +394,7 @@ function createSearchStore() {
       update(s => ({
         ...s,
         cachedResults: new Map(),
-        lastSearchQuery: ''
-      }));
+        lastSearchQuery: `` }));
     },
 
     // ========== PRIVATE HELPERS ==========

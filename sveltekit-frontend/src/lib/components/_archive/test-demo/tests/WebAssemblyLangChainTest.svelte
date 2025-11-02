@@ -309,7 +309,7 @@ import type { Document } from '$lib/types';
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
     {#each Array.isArray(testMethods) ? testMethods : [] as method}
       <div
-        class="border" rounded-lg p-4 {method.options.useAcceleration
+        class="border rounded-lg p-4" {method.options.useAcceleration
           ? 'border-green-300 bg-green-50'
           : 'border-gray-200'}"
       >
@@ -339,7 +339,7 @@ import type { Document } from '$lib/types';
         <button
           onclick={() => runTest(method)}
           disabled={aiAssistant.isLoading}
-          class="w-full" px-3 py-2 rounded text-sm transition-colors
+          class="w-full px-3 py-2" rounded text-sm transition-colors
             {method.options.useAcceleration
             ? 'bg-green-600 text-white hover:bg-green-700'
             : 'bg-blue-600 text-white hover:bg-blue-700'}
@@ -368,7 +368,7 @@ import type { Document } from '$lib/types';
       <h2 class="text-2xl font-semibold">Test Results</h2>
       {#each Array.isArray(testResults) ? testResults : [] as result}
         <div
-          class="border" rounded-lg p-4 {(
+          class="border rounded-lg p-4" {(
             result as {
               success?: any;
               method?: any;

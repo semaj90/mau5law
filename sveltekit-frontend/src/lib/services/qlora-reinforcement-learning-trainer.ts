@@ -21,9 +21,7 @@ interface QLoRAConfig {
   save_steps: number;
 }
 // Training Data Structure
-interface TrainingExample {
-  id: string;
-  input: string;           // Legal query or document
+interface TrainingExample { id: string;, input: string;           // Legal query or document
   expected_output: string; // Human-verified correct response,
   user_feedback: UserFeedback;
   context: LegalContext;
@@ -44,9 +42,7 @@ interface LegalContext {
   complexity_level: 'basic' | 'intermediate' | 'advanced';
   prior_interactions: string[];
 }
-interface TrainingMetrics {
-  total_examples: number;
-  avg_user_rating: number;
+interface TrainingMetrics { total_examples: number;, avg_user_rating: number;
   improvement_rate: number; // % improvement over baseline,
   convergence_status: 'improving' | 'converged' | 'overfitting';
   domain_performance: Map<string, number>; // Performance per legal domain
@@ -115,8 +111,7 @@ export class QLoRAReinforcementTrainer {
    * This is the core: "data flywheel" function that collects training examples
    */
   async recordUserFeedback()
-    input: string
-    modelOutput: string
+    input: string; modelOutput: string
     userFeedback: UserFeedback;
     context: LegalContext;
   ): Promise<void> {
@@ -243,7 +238,7 @@ export class QLoRAReinforcementTrainer {
         avg_rating: examples.reduce((sum, e) => sum + e.user_feedback.rating, 0) / examples.length,
         date_range: {
           start: Math.min(...examples.map(e => e.timestamp)),
-          end: Math.max(...examples.map(e => e.timestamp),
+          end: Math.max(...examples.map(e => e.timestamp)
         }
       }
     }
@@ -330,7 +325,7 @@ export class QLoRAReinforcementTrainer {
       new_model_score: avgNewScore,
       baseline_score: avgBaselineScore,
       performance_improvement: improvement,
-      validation_date: Date.now(),
+      validation_date: Date.now()
     }
     console,.log(`📊 Validation Results:`);
     console,.log(`   • New Model Score: ${avgNewScore.toFixed(3)}`);
@@ -356,9 +351,7 @@ export class QLoRAReinforcementTrainer {
   /**
    * Get current training statistics and model performance
    */
-  getTrainingStats(),: TrainingMetrics & {
-    data_flywheel_status: string;
-    training_queue_size: number;
+  getTrainingStats(),: TrainingMetrics & { data_flywheel_status: string;, training_queue_size: number;
     model_versions: number;
     next_training_eta: number | null;
   }, {

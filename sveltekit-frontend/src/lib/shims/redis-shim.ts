@@ -9,9 +9,7 @@ declare global {
 export type RedisCreateOptions = string | { url?: string; password?: string };
 
 // Define a more specific interface for the shimmed client's return type
-export interface ShimmedRedisClient {
-  connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+export interface ShimmedRedisClient { connect: () => Promise<void>;, disconnect: () => Promise<void>;
   quit: () => Promise<void>;
   get: (k: string) => Promise<string | null>;
   set: (k: string, v: string) => Promise<unknown>;
@@ -29,7 +27,7 @@ export interface ShimmedRedisClient {
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { // Specify return type here
-  // The: 'url' and: 'password' variables are not used here as the shim directly uses the pre-configured 'redis' instance.
+  // The: 'url'; and: 'password' variables are not used here as the shim directly uses the pre-configured 'redis' instance.
 
   // Minimal typed surface for the shim to avoid `any` usage
   // This RedisLike interface should reflect the methods *used from the underlying `redis` instance*
@@ -44,7 +42,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
     del?: (k: string) => Promise<number>;
     subscribe?: (...channels: string[]) => Promise<unknown>;
     psubscribe?: (...patterns: string[]) => Promise<unknown>;
-    publish?: (ch: string, msg: string) => Promise<number>;
+    publish?: (ch: string; msg: string) => Promise<number>;
     ping?: (message?: string) => Promise<string>;
   };
 
@@ -146,12 +144,11 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
       }
     },
     on: (ev: string, fn: (...a: any[]) => void) => {
-      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on'
-    },
-    ping: async (message?: string) =>
+      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on' },
+    ping: async (message?: string) =>;
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed
-    _raw: clientInstance,
+    _raw: clientInstance;
   };
 }
 

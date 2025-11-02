@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
       'GET /api/evidence-canvas': 'Get API information',
       'POST /api/evidence-canvas/analyze': 'Analyze canvas content with AI',
       'POST /api/evidence-canvas/save': 'Save canvas state',
-      'GET /api/evidence-canvas/{id}': 'Load saved canvas',
+      'GET /api/evidence-canvas/{id}': 'Load saved canvas'
     },
     features: [
       'Canvas content analysis',
@@ -17,6 +17,6 @@ export const GET: RequestHandler = async () => {
       'Text extraction from annotations',
       'AI-powered evidence summarization',
       'Layout analysis and optimization suggestions',
-    ],
+    ]
   });
 };

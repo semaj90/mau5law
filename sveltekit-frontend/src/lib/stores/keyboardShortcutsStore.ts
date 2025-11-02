@@ -1,9 +1,7 @@
 import { writable } from 'svelte/store';
 
 // Define the ShortcutItem interface for consistency
-export interface ShortcutItem {
-  key: string;
-  description: string;
+export interface ShortcutItem { key: string;, description: string;
   action: () => void;
   aiScore?: number;
   aiSummary?: string;

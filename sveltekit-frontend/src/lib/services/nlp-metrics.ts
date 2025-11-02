@@ -1,7 +1,7 @@
 // Prometheus-style metrics exposition for NLP embeddings.
 // Integrates with nlpMetrics from sentence-transformer service.
 import { nlpMetrics } from './sentence-transformer.js';
-// TODO: Fix import - // Orphaned content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics } from './redis-metrics.js'
+// TODO: Fix import - // Orphaned; content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics } from './redis-metrics.js'
 export function renderNlpMetrics(): string {
   const lines: string[] = [];
   // Basic counters and summaries (gauges) in Prometheus text format
@@ -16,7 +16,7 @@ export function renderNlpMetrics(): string {
   lines.push(`nlp_embedding_cache_misses ${nlpMetrics.cache_misses}`);
   // Latency: export simple quantiles from collected window
   const lat = [...nlpMetrics.embed_latency_ms].sort((a,b)=>a-b);
-  function pct(p:number){ if(lat.length===0) return 0; const idx = Math.min(lat.length-1, Math.floor(p*(lat.length-1); return lat[idx], }
+  function pct(p:number){ if(lat.length===0) return 0; const idx = Math.min(lat.length-1, Math.floor(p*(lat.length-1); return lat[idx] }
   lines.push('# HELP nlp_embedding_latency_ms Approximate latency quantiles (summary)');
   lines.push('# TYPE nlp_embedding_latency_ms summary');
   lines.push(`nlp_embedding_latency_ms{quantile="0.5"} ${pct(0.5).toFixed(2)}`);

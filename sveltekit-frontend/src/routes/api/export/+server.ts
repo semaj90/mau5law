@@ -8,9 +8,7 @@ import type { RequestHandler } from './$types';
 // --- Added types to avoid `any` usages ---
 type DBRow = Record<string, unknown>;
 
-type ExportedMetadata = {
-  exportedAt: string;
-  format: 'json' | 'csv' | 'xml';
+type ExportedMetadata = { exportedAt: string;, format: 'json' | 'csv' | 'xml';
   includeEvidence: boolean;
   includeCases: boolean;
   includeAnalytics: boolean;
@@ -23,8 +21,8 @@ type ExportResult = {
   analytics?: {
     totalCases?: Array<{ count: number }>;
     totalEvidence?: Array<{ count: number }>;
-    casesByStatus?: Array<{ status: string; count: number }>;
-    evidenceByType?: Array<{ type: string; count: number }>;
+    casesByStatus?: Array<{ status: string;, count: number }>;
+    evidenceByType?: Array<{ type: string;, count: number }>;
   };
 };
 
@@ -37,29 +35,27 @@ const ExportRequestSchema = z.object({
   dateRange: z
     .object({
       from z.string().optional(),
-      to: z.string().optional(),
+      to: z.string().optional()
     })
     .optional(),
-  caseIds: z.array(z.string()).optional(),
+  caseIds: z.array(z.string()).optional()
 });
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Check authentication
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      return json({ success: false, error: 'Authentication required' }, { status: 401 });
+      return json({ success: false, error: `Authentication required` }, { status: 401 });
     }
     const body = await request.json();
     const validatedData = ExportRequestSchema.parse(body);
     const { format, includeEvidence, includeCases, includeAnalytics, dateRange, caseIds } = validatedData;
-    let exportData: ExportResult = {
-      metadata: {
-        exportedAt: new Date().toISOString(),
+    let exportData: ExportResult = { metadata: {, exportedAt: new Date().toISOString(),
         format,
         includeEvidence,
         includeCases,
-        includeAnalytics,
-      },
+        includeAnalytics
+      }
     };
     // Export cases
     if (includeCases) {
@@ -101,23 +97,22 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     // Export analytics
     if (includeAnalytics) {
-      const analytics = {
-        totalCases: await db.select({ count: count() }).from(cases),
+      const analytics = { totalCases: await db.select({, count: count() }).from(cases),
         totalEvidence: await db.select({ count: count() }).from(evidence),
         casesByStatus: await db
           .select({
             status: cases.status,
-            count: count(),
+            count: count()
           })
           .from(cases)
           .groupBy(cases.status),
         evidenceByType: await db
           .select({
             type: evidence.evidenceType,
-            count: count(),
+            count: count()
           })
           .from(evidence)
-          .groupBy(evidence.evidenceType),
+          .groupBy(evidence.evidenceType)
       };
       exportData.analytics = analytics;
     }
@@ -146,8 +141,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       headers: {
         'Content-Type': contentType,
         'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Length': responseData.length.toString(),
-      },
+        'Content-Length': responseData.length.toString()
+      }
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -155,8 +150,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json(
       {
         success: false,
-        error: msg || 'Export failed',
-      },
+        error: msg || 'Export failed` },
       { status: 500 }
     );
   }
@@ -200,7 +194,7 @@ function convertToXML(data: ExportResult): string {
     format: 'json',
     includeEvidence: true,
     includeCases: true,
-    includeAnalytics: false,
+    includeAnalytics: false
   };
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<legal_data_export>\n';
   xml += `  <metadata>\n`;

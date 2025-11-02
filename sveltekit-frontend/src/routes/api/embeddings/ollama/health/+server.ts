@@ -31,12 +31,12 @@ export const GET: RequestHandler = async () => {
 
     return json({
       status: response.ok ? 'healthy' : 'unhealthy',
-      available: response.ok,
+      available: response.ok
     });
   } catch {
     return json({
       status: 'unhealthy',
-      available: false,
+      available: false
     });
   }
 };

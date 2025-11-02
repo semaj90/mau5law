@@ -12,9 +12,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import os from 'os';
 
-export interface DocumentProcessingJob {
-  documentId: string | number;
-  s3Key: string;
+export interface DocumentProcessingJob { documentId: string | number;, s3Key: string;
   s3Bucket: string;
   caseId?: string;
   userId?: string;
@@ -33,19 +31,13 @@ export interface ProcessingContext {
   embeddings?: EmbeddingResult[];
   summary?: string;
 }
-export interface DocumentChunk {
-  id: string;
-  content: string;
-  metadata: {
-    chunkIndex: number;
-    startPosition: number;
+export interface DocumentChunk { id: string;, content: string;
+  metadata: { chunkIndex: number;, startPosition: number;
     endPosition: number;
     wordCount: number;
   };
 }
-export interface EmbeddingResult {
-  chunkId: string;
-  embedding: number[];
+export interface EmbeddingResult { chunkId: string;, embedding: number[];
   model: string;
 }
 
@@ -179,7 +171,7 @@ class DocumentProcessingWorker {
       userId: document.user_id,
       processingType: 'full_analysis',
       priority: 5,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     await this.processJob(job);
   }
@@ -207,7 +199,7 @@ class DocumentProcessingWorker {
       console.log(`✅ Successfully processed document: ${job.documentId}`);
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Error processing document ${job.documentId}:`, message);
+      console.error(`❌ Error processing document ${job.documentId}: ', message);
       await this.updateProcessingStatus(job.documentId, 'failed', `Processing failed: ${message}`);
       this.failedCount++;
     } finally {
@@ -273,7 +265,7 @@ class DocumentProcessingWorker {
         context.extractedText = await this.extractPlainText(context.tempFilePath!);
         break;
       default:
-        throw new Error(`Unsupported file type: ${job.mimeType}`);
+        throw new Error(`Unsupported file; type: ${job.mimeType}`);
     }
     if (!context.extractedText || context.extractedText.length < 10) {
       throw new Error('Failed to extract meaningful text from document');
@@ -320,8 +312,8 @@ class DocumentProcessingWorker {
           chunkIndex: idx,
           startPosition,
           endPosition: startPosition + chunkContent.length,
-          wordCount: chunkContent.split(/\s+/).filter(item => item.length).length,
-        },
+          wordCount: chunkContent.split(/\s+/).filter(item => item.length).length
+        }
       };
     });
 
@@ -338,12 +330,11 @@ class DocumentProcessingWorker {
         const embeddingResponse = await this.getFetch()('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json` },
           body: JSON.stringify({
-            model: 'embeddinggemma:latest',
-            prompt: chunk.content,
-          }),
+           , model: 'embeddinggemma:latest',
+            prompt: chunk.content
+          })
         });
         if (!embeddingResponse.ok) {
           console.warn(`Failed to generate embedding for chunk ${chunk.id}`);
@@ -353,8 +344,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text',
-        });
+          model: 'nomic-embed-text` });
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
       }
@@ -380,7 +370,7 @@ class DocumentProcessingWorker {
         embedding: foundEmbedding ? foundEmbedding.embedding : null,
         embedding_model: foundEmbedding ? foundEmbedding.model || 'unknown' : null,
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
       try {
         await db.insert(schema.document_chunks).values(values);
@@ -398,24 +388,23 @@ class DocumentProcessingWorker {
       const resp = await this.getFetch()('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
           model: 'gemma3-legal',
-          prompt: `Please provide a comprehensive legal analysis and summary of the following document:\n\n${extractedText.slice(0, 4000)}`,
+          prompt: `Please provide a comprehensive legal analysis and summary of the following; document:\n\n${extractedText.slice(0, 4000)}`,
           stream: false,
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            max_tokens: 1000,
-          },
-        }),
+            max_tokens: 1000
+          }
+        })
       });
       if (!resp.ok) {
         throw new Error(`Failed to generate summary: ${resp.status} ${resp.statusText}`);
       }
       const summaryResult = await resp.json();
-      // defensive: prefer known property: 'response' else stringified fallback
+      // defensive: prefer known; property: 'response' else stringified fallback
       context.summary =
         (summaryResult && (summaryResult.response ?? summaryResult.text ?? summaryResult.summary)) ??
         String(summaryResult);
@@ -427,7 +416,7 @@ class DocumentProcessingWorker {
         model_used: 'gemma3-legal',
         confidence_score: 0.85, // Mock confidence
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       });
     } catch (err) {
       console.warn('Summary generation failed:', err);
@@ -442,7 +431,7 @@ class DocumentProcessingWorker {
         .set({
           status,
           status_message: message,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where(eq(schema.document_processing.document_id, documentId));
       // Also update main document status
@@ -450,7 +439,7 @@ class DocumentProcessingWorker {
         .update(schema.documents)
         .set({
           status: status === 'completed' ? 'processed' : status,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where(eq(schema.documents.id, documentId));
     } catch (err) {

@@ -17,17 +17,13 @@ declare module 'bits-ui' {
   export const Menu: ComponentCtor;
   export const ScrollAreaViewport: ComponentCtor;
   // Factory helpers (some bits-ui builds expose factories)
-  export function createDropdownMenu(): {
-    Trigger: ComponentCtor;
-    Root: ComponentCtor;
+  export function createDropdownMenu(): { Trigger: ComponentCtor;, Root: ComponentCtor;
     Content: ComponentCtor;
     Item: ComponentCtor;
   };
   export function createSelect(): any;
   export function createDialog(): any;
-  const _default: {
-    Dialog: ComponentCtor;
-    Button: ComponentCtor;
+  const _default: { Dialog: ComponentCtor;, Button: ComponentCtor;
     Badge: ComponentCtor;
     Card: ComponentCtor;
     Checkbox: ComponentCtor;

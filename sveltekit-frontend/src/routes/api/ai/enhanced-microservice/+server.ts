@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -20,15 +20,11 @@ import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-export interface GoMicroserviceConfig {
-  baseUrl: string;
-  timeout: number;
+export interface GoMicroserviceConfig { baseUrl: string;, timeout: number;
   retries: number;
   enableCache: boolean;
 }
-export interface ProcessDocumentRequest {
-  content: string;
-  document_type: string;
+export interface ProcessDocumentRequest { content: string;, document_type: string;
   practice_area?: string;
   jurisdiction: string;
   metadata?: Record<string, unknown>;
@@ -44,7 +40,7 @@ const config: GoMicroserviceConfig = {
   baseUrl: import.meta.env.GO_MICROSERVICE_URL || 'http://localhost:8080',
   timeout: parseInt(import.meta.env.GO_MICROSERVICE_TIMEOUT || '30000'),
   retries: 3,
-  enableCache: true,
+  enableCache: true
 };
 
 // --- ADDED: Top-level type and helper so class methods can use them before later handlers ---
@@ -195,10 +191,9 @@ class GoMicroserviceClient {
           method,
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
+            Accept: 'application/json` },
           body: body ? JSON.stringify(body) : undefined,
-          signal: controller.signal,
+          signal: controller.signal
         });
         clearTimeout(timeoutId);
         if (!response.ok) {
@@ -251,8 +246,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             baseUrl: config.baseUrl,
             timeout: config.timeout,
             retries: config.retries,
-            enableCache: config.enableCache,
-          },
+            enableCache: config.enableCache
+          }
         },
         { status: 200 }
       );
@@ -262,7 +257,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         message: 'Invalid action parameter',
-        availableActions: ['health'],
+        availableActions: ['health']
       },
       { status: 400 }
     );
@@ -275,7 +270,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         status: 'error',
         message: 'Microservice unavailable',
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -294,7 +289,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Missing required fields: content, document_type, jurisdiction',
+              message: 'Missing required; fields: content, document_type, jurisdiction'
             },
             { status: 400 }
           );
@@ -304,7 +299,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           document_type: body.document_type,
           practice_area: body.practice_area,
           jurisdiction: body.jurisdiction,
-          metadata: body.metadata || {},
+          metadata: body.metadata || {}
         };
         const result = await goClient.processDocument(processRequest);
 
@@ -314,7 +309,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           chunksCreated: Array.isArray(result.chunks) ? result.chunks.length : 0,
           entitiesFound: Array.isArray(result.legal_entities) ? result.legal_entities.length : 0,
           riskScore:
-            typeof result.risk_assessment?.overall_score === 'number' ? result.risk_assessment!.overall_score : 0,
+            typeof result.risk_assessment?.overall_score === 'number' ? result.risk_assessment!.overall_score : 0
         };
 
         return json(
@@ -322,7 +317,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             status: 'success',
             timestamp: new Date().toISOString(),
             result: result,
-            metadata,
+            metadata
           },
           { status: 200 }
         );
@@ -333,7 +328,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Query parameter is required',
+              message: 'Query parameter is required'
             },
             { status: 400 }
           );
@@ -343,7 +338,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           limit: body.limit || 10,
           filters: body.filters || {},
           use_rag: body.use_rag || false,
-          include_context: body.include_context || false,
+          include_context: body.include_context || false
         };
         const result = await goClient.searchDocuments(searchRequest);
 
@@ -351,7 +346,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           queryProcessingTime: typeof result.processing_time === 'number' ? result.processing_time : undefined,
           resultsFound: typeof result.total_found === 'number' ? result.total_found : undefined,
           ragEnabled: searchRequest.use_rag,
-          hasRAGContext: !!result.rag_context,
+          hasRAGContext: !!result.rag_context
         };
 
         return json(
@@ -359,7 +354,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             status: 'success',
             timestamp: new Date().toISOString(),
             result: result,
-            metadata,
+            metadata
           },
           { status: 200 }
         );
@@ -370,7 +365,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Query parameter is required for enhanced RAG',
+              message: 'Query parameter is required for enhanced RAG'
             },
             { status: 400 }
           );
@@ -381,7 +376,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           limit: body.limit || 20,
           filters: body.filters || {},
           use_rag: true,
-          include_context: true,
+          include_context: true
         };
         const [searchResult, healthStatus] = await Promise.all([
           goClient.searchDocuments(searchRequest),
@@ -404,10 +399,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                   llm_model: 'gemma3-legal:8b',
                   cuda_enabled: getCudaEnabledFromHealth(healthStatus),
                   vector_similarity: true,
-                  semantic_analysis: true,
-                },
-              },
-            },
+                  semantic_analysis: true
+                }
+              }
+            }
           },
           { status: 200 }
         );
@@ -418,8 +413,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Content parameter is required for legal analysis',
-            },
+              message: 'Content parameter is required for legal analysis` },
             { status: 400 }
           );
         }
@@ -433,8 +427,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             analysis_type: 'comprehensive',
             include_risk_assessment: true,
             include_entity_extraction: true,
-            ...(body.metadata || {}),
-          },
+            ...(body.metadata || {})
+          }
         };
 
         // perform document processing and a health check for GPU info
@@ -465,7 +459,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 query,
                 limit: 5,
                 use_rag: true,
-                include_context: true,
+                include_context: true
               })
               .catch(() => ({}) as MicroserviceResult)
           )
@@ -488,14 +482,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 entity_searches: entityQueries,
                 related_searches: relatedSearches,
                 total_related_documents: totalRelatedDocuments,
-                cross_references: extractCrossReferences(relatedSearches),
+                cross_references: extractCrossReferences(relatedSearches)
               },
               comprehensive_insights: {
                 risk_factors: processResult.risk_assessment?.risk_factors ?? [],
                 legal_entities: processResult.legal_entities ?? [],
                 key_themes: processResult.keywords ?? [],
-                recommendations: generateRecommendations(processResult, relatedSearches),
-              },
+                recommendations: generateRecommendations(processResult, relatedSearches)
+              }
             },
             metadata: {
               analysisType: 'comprehensive',
@@ -503,8 +497,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               relatedDocumentsFound: totalRelatedDocuments,
               confidenceScore: calculateConfidenceScore([processResult]),
               processingPipeline: 'gemma3-legal-enhanced',
-              cudaEnabled: getCudaEnabledFromHealth(healthStatus),
-            },
+              cudaEnabled: getCudaEnabledFromHealth(healthStatus)
+            }
           },
           { status: 200 }
         );
@@ -514,21 +508,21 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           {
             status: 'error',
             message: 'Invalid action parameter',
-            availableActions: ['process-document', 'search', 'enhanced-rag', 'legal-analysis'],
+            availableActions: ['process-document', 'search', 'enhanced-rag', 'legal-analysis']
           },
           { status: 400 }
         );
     }
   } catch (error: any) {
     const message = getErrorMessage(error);
-    console.error(`API action failed (${action}):`, message);
+    console.error(`API action failed (${action}): ', message);
     return json(
       {
         status: 'error',
         message: 'Microservice request failed',
         error: message,
         timestamp: new Date().toISOString(),
-        action: action ?? null,
+        action: action ?? null
       },
       { status: 500 }
     );

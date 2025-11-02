@@ -2,9 +2,7 @@ import { getOllamaEndpoint } from './get-ollama-endpoint';
 
 // Enhanced Ollama Gemma3-Legal Service for Native Windows Integration
 // Optimized for gemma3-legal:latest model with Windows-native setup
-export interface OllamaResponse {
-  model: string;
-  response: string;
+export interface OllamaResponse { model: string;, response: string;
   done: boolean;
   total_duration?: number;
   load_duration?: number;
@@ -14,21 +12,15 @@ export interface OllamaResponse {
   eval_duration?: number;
 }
 
-export interface OllamaStreamResponse {
-  model: string;
-  created_at: string;
+export interface OllamaStreamResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
 }
 
-export interface OllamaModelInfo {
-  name: string;
-  size: number;
+export interface OllamaModelInfo { name: string;, size: number;
   digest: string;
   modified_at: string;
-  details: {
-    format: string;
-    family: string;
+  details: { format: string;, family: string;
     families?: string[];
     parameter_size: string;
     quantization_level: string;
@@ -60,13 +52,12 @@ export class Gemma3LegalService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (!response.ok) {
         return {
           status: 'unhealthy',
-          message: `Ollama service not responding (HTTP ${response.status})`,
-        };
+          message: `Ollama service not responding (HTTP ${response.status})' };
       }
       const data = await response.json();
       const models = data.models?.map((m: any) => m.name) || [];
@@ -76,20 +67,19 @@ export class Gemma3LegalService {
       if (!hasGemma3Legal) {
         return {
           status: 'model-missing',
-          message: 'gemma3-legal model not found. Please run: ollama pull gemma3-legal:latest',
-          models,
+          message: 'gemma3-legal model not found. Please; run: ollama pull gemma3-legal:latest',
+          models
         };
       }
       return {
         status: 'healthy',
         message: 'Ollama service is healthy and gemma3-legal model is available',
-        models,
+        models
       };
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        message: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      };
+        message: 'Connection; failed: ${error instanceof Error ? error.message : `Unknown error` }' };
     }
   }
   /**
@@ -123,7 +113,7 @@ export class Gemma3LegalService {
         num_ctx: 8192, // Extended context for legal documents
         num_gpu: -1, // Use all available GPU layers (Windows NVIDIA support)
         num_thread: Math.min(16, navigator.hardwareConcurrency || 8), // Optimize for Windows threading
-      },
+      }
     };
     return this.makeRequest('/api/generate', payload);
   }
@@ -150,14 +140,14 @@ export class Gemma3LegalService {
         num_predict: options.max_tokens || 4096,
         num_ctx: 8192,
         num_gpu: -1,
-        num_thread: Math.min(16, navigator.hardwareConcurrency || 8),
-      },
+        num_thread: Math.min(16, navigator.hardwareConcurrency || 8)
+      }
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(this.timeout),
+      signal: AbortSignal.timeout(this.timeout)
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -195,13 +185,13 @@ export class Gemma3LegalService {
    * Pull gemma3-legal model if not available
    */
   async pullGemma3Legal(
-    onProgress?: (progress: { status: string; total?: number; completed?: number }) => void
+    onProgress?: (progress: {, status: string; total?: number; completed?: number }) => void
   ): Promise<void> {
     const payload = { name: this.model };
     const response = await fetch(`${this.baseUrl}/api/pull`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`Failed to pull model: HTTP ${response.status}`);
@@ -237,8 +227,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
       litigation: `Focus on litigation strategy, case law analysis, procedural requirements, and dispute resolution. Consider evidence, precedents, and court procedures.`,
       compliance: `Focus on regulatory compliance, policy analysis, risk assessment, and legal requirements. Consider industry standards and regulatory frameworks.`,
       research: `Focus on legal research methodology, case law analysis, statute interpretation, and comprehensive legal analysis. Provide detailed citations and reasoning.`,
-      general: `Provide general legal information across various areas of law while maintaining accuracy and appropriate scope.`,
-    };
+      general: `Provide general legal information across various areas of law while maintaining accuracy and appropriate scope.' };
     return `${basePrompt}\n\nContext Focus: ${contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general}`;
   }
   private async makeRequest(endpoint: string, payload?: any): Promise<any> {
@@ -249,7 +238,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
           method: payload ? 'POST' : 'GET',
           headers: payload ? { 'Content-Type': 'application/json' } : {},
           body: payload ? JSON.stringify(payload) : undefined,
-          signal: AbortSignal.timeout(this.timeout),
+          signal: AbortSignal.timeout(this.timeout)
         });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -257,7 +246,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
         return await response.json();
       } catch (error: any) {
         lastError = error as Error;
-        console.warn(`Ollama request attempt ${attempt} failed:`, error);
+        console.warn(`Ollama request attempt ${attempt} failed: ', error);
         if (attempt < this.retryAttempts) {
           // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
@@ -271,7 +260,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
 export const gemma3LegalService = new Gemma3LegalService({
   model: 'gemma3-legal:latest',
   timeout: 120000,
-  retryAttempts: 3,
+  retryAttempts: 3
 });
 // Utility function for quick health check
 export async function checkOllamaHealth(): Promise<boolean> {

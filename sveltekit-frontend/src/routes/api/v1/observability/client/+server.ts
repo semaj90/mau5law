@@ -17,10 +17,10 @@ const metricsStore = {
       lcp: 0,
       fid: 0,
       cls: 0,
-      fcp: 0,
+      fcp: 0
     },
-    lastUpdated: Date.now(),
-  },
+    lastUpdated: Date.now()
+  }
 };
 function updateAggregatedStats() {
   const allMetrics = metricsStore.clientMetrics.flatMap(payload => payload.metrics);
@@ -36,9 +36,9 @@ function updateAggregatedStats() {
       lcp: calculateWebVitalAverage(allMetrics, 'lcp'),
       fid: calculateWebVitalAverage(allMetrics, 'fid'),
       cls: calculateWebVitalAverage(allMetrics, 'cls'),
-      fcp: calculateWebVitalAverage(allMetrics, 'fcp'),
+      fcp: calculateWebVitalAverage(allMetrics, 'fcp')
     },
-    lastUpdated: Date.now(),
+    lastUpdated: Date.now()
   };
 }
 // Derive a typed alias for individual metric entries from the imported ClientMetricsPayload
@@ -53,14 +53,14 @@ function calculateWebVitalAverage(metrics: MetricEntry[], vital: keyof NonNullab
   return validValues.reduce((sum, v) => sum + v, 0) / validValues.length;
 }
 function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: string) {
-  console.log(`📊 [${requestId.slice(0, 8)}] Client Metrics Received:`, {
+  console.log(`📊 [${requestId.slice(0, 8)}] Client Metrics Received: ', {
     timestamp: new Date(payload.timestamp).toISOString(),
     metricsCount: payload.metrics.length,
     userAgent: payload.userAgent.slice(0, 50) + '...',
-    url: payload.url,
+    url: payload.url
   });
   payload.metrics.forEach((metric, index) => {
-    console.log(`  📈 [${requestId.slice(0, 8)}] Route ${index + 1}:`, {
+    console.log(`  📈 [${requestId.slice(0, 8)}] Route ${index + 1}: ', {
       route: metric.routeId || 'unknown',
       path: metric.pathname,
       loadTime: `${Math.round(metric.loadTime)}ms`,
@@ -71,10 +71,9 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
             lcp: metric.webVitals.lcp ? `${Math.round(metric.webVitals.lcp)}ms` : 'N/A',
             fid: metric.webVitals.fid ? `${Math.round(metric.webVitals.fid)}ms` : 'N/A',
             cls: metric.webVitals.cls != null ? Math.round(metric.webVitals.cls * 1000) / 1000 : 'N/A',
-            fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : 'N/A',
+            fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : 'N/A'
           }
-        : 'N/A',
-    });
+        : 'N/A` });
   });
 }
 export const POST: RequestHandler = async ({ request, getClientAddress: _getClientAddress, locals }) => {
@@ -85,9 +84,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
     // Validate payload
     if (!payload.metrics || !Array.isArray(payload.metrics)) {
       return json(
-        {
-          error: 'Invalid payload: metrics array required',
-          requestId,
+        { error: 'Invalid, payload: metrics array required',
+          requestId
         },
         { status: 400 }
       );
@@ -114,30 +112,28 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
         requestId,
         processed: payload.metrics.length,
         processingTime: Math.round(processingTime * 100) / 100,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       {
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}`,
-        },
+          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}` }
       }
     );
   } catch (error) {
     const processingTime = performance.now() - requestStart;
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed:`, error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed: ', error);
     return json(
       {
         error: 'Failed to process client metrics',
         requestId,
-        processingTime: Math.round(processingTime * 100) / 100,
+        processingTime: Math.round(processingTime * 100) / 100
       },
       {
         status: 500,
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}`,
-        },
+          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}` }
       }
     );
   }
@@ -154,7 +150,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           aggregatedStats: metricsStore.aggregatedStats,
           totalStoredMetrics: metricsStore.clientMetrics.length,
           healthScore: calculateHealthScore(),
-          requestId,
+          requestId
         });
       }
       case 'recent': {
@@ -165,11 +161,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           averageLoadTime: payload.metrics.length
             ? payload.metrics.reduce((sum, m) => sum + m.loadTime, 0) / payload.metrics.length
             : 0,
-          routes: payload.metrics.map(m => m.routeId || m.pathname),
+          routes: payload.metrics.map(m => m.routeId || m.pathname)
         }));
         return json({
           recentMetrics,
-          requestId,
+          requestId
         });
       }
       case 'health': {
@@ -178,20 +174,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           status: healthScore > 80 ? 'excellent' : healthScore > 60 ? 'good' : healthScore > 40 ? 'fair' : 'poor',
           score: healthScore,
           checks: {
-            averageLoadTime: metricsStore.aggregatedStats.averageLoadTime < 3000,
+           , averageLoadTime: metricsStore.aggregatedStats.averageLoadTime < 3000,
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime < 1000,
             lcpUnder2_5s: (metricsStore.aggregatedStats.webVitalsAverages.lcp || 0) < 2500,
             fidUnder100ms: (metricsStore.aggregatedStats.webVitalsAverages.fid || 0) < 100,
-            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1,
+            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1
           },
           aggregatedStats: metricsStore.aggregatedStats,
-          requestId,
+          requestId
         });
       }
       case 'performance': {
-        const performanceMetrics: PerformanceMetrics = {
-          overall: {
-            status:
+        const performanceMetrics: PerformanceMetrics = { overall: {, status:
               calculateHealthScore() > 80
                 ? 'excellent'
                 : calculateHealthScore() > 60
@@ -200,19 +194,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
                     ? 'fair'
                     : 'poor',
             score: calculateHealthScore(),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           frontend: {
             averageLoadTime: metricsStore.aggregatedStats.averageLoadTime,
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime,
             totalRequests: metricsStore.aggregatedStats.totalRequests,
-            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages,
+            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages
           },
           backend: {
             averageResponseTime: 0,
             requestsPerSecond: 0,
             errorRate: 0,
-            uptime: process.uptime() * 1000,
+            uptime: process.uptime() * 1000
           },
           cognitive: {
             routingEfficiency: 85,
@@ -220,12 +214,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             gpuUtilization: 45,
             consciousnessLevel: 12,
             quantumCoherence: 50,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         };
         return json({
           performance: performanceMetrics,
-          requestId,
+          requestId
         });
       }
       case 'clear': {
@@ -239,7 +233,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           return json({
             success: true,
             message: `Cleared ${clearedCount} metrics`,
-            requestId,
+            requestId
           });
         }
         return json({ error: 'Clear action not available in production', requestId }, { status: 403 });
@@ -249,18 +243,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           {
             error: 'Invalid action',
             availableActions: ['stats', 'recent', 'health', 'performance', 'clear'],
-            requestId,
+            requestId
           },
           { status: 400 }
         );
       }
     }
   } catch (error) {
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed:`, error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed: ', error);
     return json(
       {
         error: 'Internal server error',
-        requestId,
+        requestId
       },
       { status: 500 }
     );

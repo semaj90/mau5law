@@ -25,9 +25,7 @@ export const testRagDocuments = pgTable('test_rag_documents', {
   }>(),
   confidence: real('confidence'),
   legalAnalysis: jsonb('legal_analysis').$type<{
-    entities?: Array<{
-      type: string;
-      value: string;
+    entities?: Array<{ type: string;, value: string;
       offset: [number, number];
     }>;
     parties?: string[];
@@ -38,7 +36,7 @@ export const testRagDocuments = pgTable('test_rag_documents', {
     complexity?: number;
   }>(),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 /**
  * Test RAG Embeddings Table
@@ -56,7 +54,7 @@ export const testRagEmbeddings = pgTable('test_rag_embeddings', {
     modelUsed?: string;
     generatedAt?: string;
   }>(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 /**
  * Test RAG Search Sessions Table
@@ -67,9 +65,7 @@ export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
   query: text('query').notNull(),
   queryEmbedding: vector('query_embedding', { dimensions: 768 }),
   results: jsonb('results').$type<
-    Array<{
-      documentId: string;
-      filename: string;
+    Array<{ documentId: string;, filename: string;
       similarity: number;
       score: number;
       rank: number;
@@ -82,19 +78,19 @@ export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
     filters?: Record<string, unknown>;
     userId?: string;
   }>(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 /**
  * Relations
  */
 export const testRagDocumentsRelations = relations(testRagDocuments, ({ many }) => ({
-  embeddings: many(testRagEmbeddings),
+  embeddings: many(testRagEmbeddings)
 }));
 export const testRagEmbeddingsRelations = relations(testRagEmbeddings, ({ one }) => ({
   document: one(testRagDocuments, {
     fields: [testRagEmbeddings.documentId],
-    references: [testRagDocuments.id],
-  }),
+    references: [testRagDocuments.id]
+  })
 }));
 /**
  * Type exports for TypeScript inference

@@ -3,9 +3,7 @@
 /**
  * Represents the structure of a request to the Ollama embeddings API.
  */
-export interface EmbeddingRequest {
-  model: string;
-  prompt: string;
+export interface EmbeddingRequest { model: string;, prompt: string;
 }
 
 /**
@@ -18,9 +16,7 @@ export interface EmbeddingResponse {
 /**
  * Represents the structure of a request to the Ollama generate API.
  */
-export interface GenerateRequest {
-  model: string;
-  prompt: string;
+export interface GenerateRequest { model: string;, prompt: string;
   stream?: boolean;
 }
 
@@ -28,9 +24,7 @@ export interface GenerateRequest {
  * Represents the structure of a response from the Ollama generate API.
  * This can vary based on whether streaming is enabled.
  */
-export interface GenerateResponse {
-  model: string;
-  created_at: string;
+export interface GenerateResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
   // Add other fields if necessary for streaming or more detailed responses

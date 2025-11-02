@@ -25,25 +25,13 @@ import { instantSearchEngine } from '$lib/services/instant-search-engine.js'
 type DocType = 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent' | string
 type RiskLevel = 'low' | 'medium' | 'high' | 'critical'
 
-type LegalDocument = {
-  id: string
-  type: DocType
-  size: number
-  priority: number
-  riskLevel: RiskLevel
-  confidenceLevel: number
-  metadata: {
-    title: string
-    description: string
-    keywords: string[]
-    jurisdiction: string
+type LegalDocument = { id: string, type: DocType; size: number
+  priority: number; riskLevel: RiskLevel
+  confidenceLevel: number; metadata: { title: string; description: string; keywords: string[], jurisdiction: string
   }
-  cacheTimestamp: number
-  accessCount: number
-  lastAccessed: number
-  cacheLocation: 'loki' | string
-  compressed: boolean
-  syncStatus: 'synced' | string
+  cacheTimestamp: number; accessCount: number
+  lastAccessed: number; cacheLocation: 'loki' | string
+  compressed: boolean; syncStatus: 'synced' | string
 }
 
 type SearchResult = {
@@ -146,9 +134,7 @@ async function safeClearSearchCache(): Promise<void> {
 
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
-  const results: {
-    timestamp: string;
-    testType: string;
+  const results: { timestamp: string;, testType: string;
     results: Record<string, unknown>;
     errors: string[];
     performance: Record<string, number>;
@@ -158,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
     testType,
     results: {},
     errors: [],
-    performance: {},
+    performance: {}
   };
   try {
     // Test Redis Service
@@ -170,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const isHealthy = typeof redis.isHealthy === 'function' ? redis.isHealthy() : Boolean(redisClient);
         if (redisClient && isHealthy) {
           // Test basic operations
-          await redis.set('test:instant-search', { message: 'Redis working!' }, 60);
+          await redis.set('test:instant-search', { message: `Redis working!` }, 60);
           const retrieved = await redis.get('test:instant-search');
           await redis.del('test:instant-search');
           // Test Redis info
@@ -192,9 +178,9 @@ export const GET: RequestHandler = async ({ url }) => {
                       ? (serverInfo.redis_version as string)
                       : String(serverInfo?.redis_version ?? 'unknown'),
                   memory: String(memoryInfo?.used_memory_human ?? 'unknown'),
-                  clients: Number(clientsInfo?.connected_clients ?? 0),
+                  clients: Number(clientsInfo?.connected_clients ?? 0)
                 }
-              : null,
+              : null
           };
         } else {
           throw new Error('Redis not healthy or client unavailable');
@@ -226,15 +212,14 @@ export const GET: RequestHandler = async ({ url }) => {
             title: 'Test Legal Document',
             description: 'Integration test document for Loki-Redis cache',
             keywords: ['test', 'integration', 'legal'],
-            jurisdiction: 'Test',
+            jurisdiction: 'Test'
           },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           lastAccessed: Date.now(),
           cacheLocation: 'loki',
           compressed: false,
-          syncStatus: 'synced',
-        };
+          syncStatus: `synced` };
         await lokiCache.storeDocument(testDoc);
         const retrievedDoc = await lokiCache.getDocument(testDoc.id);
         // Test search functionality
@@ -251,13 +236,13 @@ export const GET: RequestHandler = async ({ url }) => {
           testDocument: {
             stored: true,
             retrieved: !!retrievedDoc,
-            matches: retrievedDoc?.id === testDoc.id,
+            matches: retrievedDoc?.id === testDoc.id
           },
           searchResults: {
             count: searchResults.length,
-            hasResults: searchResults.length > 0,
+            hasResults: searchResults.length > 0
           },
-          stats: getLokiStatsSafe(),
+          stats: getLokiStatsSafe()
         };
         results.performance.loki = Date.now() - lokiStartTime;
       } catch (err: any) {
@@ -274,9 +259,7 @@ export const GET: RequestHandler = async ({ url }) => {
         await searchEngine.initialize();
         // Test search with various queries
         const testQueries = ['contract agreement', 'evidence forensic', 'legal document', 'case precedent'];
-        const searchTests: Array<{
-          query: string;
-          resultCount: number;
+        const searchTests: Array<{ query: string;, resultCount: number;
           avgResponseTime: number;
           resultTypes: string[];
         }> = [];
@@ -293,7 +276,7 @@ export const GET: RequestHandler = async ({ url }) => {
             query,
             resultCount: searchResults.length,
             avgResponseTime,
-            resultTypes,
+            resultTypes
           });
         }
         // Get search engine statistics
@@ -308,8 +291,8 @@ export const GET: RequestHandler = async ({ url }) => {
             semanticSearch: true,
             caching: true,
             realTimeSearch: true,
-            legalPatterns: true,
-          },
+            legalPatterns: true
+          }
         };
         results.performance.instantSearch = Date.now() - searchStartTime;
       } catch (err: any) {
@@ -322,10 +305,8 @@ export const GET: RequestHandler = async ({ url }) => {
     if (testType === 'all' || testType === 'health') {
       const healthStartTime = Date.now();
       try {
-        const healthStatus = {
-          redis: {
-            connected: typeof redis.isHealthy === 'function' ? redis.isHealthy() : false,
-            stats: typeof redis.getStats === 'function' ? redis.getStats() : {},
+        const healthStatus = { redis: {, connected: typeof redis.isHealthy === 'function' ? redis.isHealthy() : false,
+            stats: typeof redis.getStats === 'function' ? redis.getStats() : {}
           },
           loki: {
             // prefer explicit isHealthy boolean when available
@@ -335,12 +316,12 @@ export const GET: RequestHandler = async ({ url }) => {
                   ? (lokiCache as LokiRedisCacheAPI).isHealthy
                   : !!lokiCache)
             ),
-            stats: getLokiStatsSafe(),
+            stats: getLokiStatsSafe()
           },
           instantSearch: {
             available: !!searchEngine,
-            stats: getSearchEngineStatsSafe(),
-          },
+            stats: getSearchEngineStatsSafe()
+          }
         };
         const allHealthy =
           healthStatus.redis.connected && healthStatus.loki.initialized && healthStatus.instantSearch.available;
@@ -350,8 +331,8 @@ export const GET: RequestHandler = async ({ url }) => {
           integration: {
             redisLoki: healthStatus.redis.connected && healthStatus.loki.initialized,
             lokiSearch: healthStatus.loki.initialized && healthStatus.instantSearch.available,
-            fullPipeline: allHealthy,
-          },
+            fullPipeline: allHealthy
+          }
         };
         results.performance.health = Date.now() - healthStartTime;
       } catch (err: any) {
@@ -370,7 +351,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testsRun: Object.keys(results.results).length,
       testsSucceeded: Math.max(0, Object.keys(results.results).length - results.errors.length),
       errorCount: results.errors.length,
-      totalTime: totalElapsedTime,
+      totalTime: totalElapsedTime
     };
     // For production, use centralized logging or remove debug logs.
     // Example: logEvent('instant-search-test-completed', results.summary);
@@ -388,7 +369,7 @@ export const GET: RequestHandler = async ({ url }) => {
           source: 'instant-search-test',
           level: 'error',
           message: msg,
-          context: 'Instant Search Integration Test',
+          context: 'Instant Search Integration Test'
         },
         3600
       );
@@ -400,7 +381,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         error: msg,
         results: {} as Record<string, unknown>,
-        errors: [msg],
+        errors: [msg]
       },
       { status: 500 }
     );
@@ -444,8 +425,7 @@ export const POST: RequestHandler = async ({ request }) => {
           source: 'instant-search-test',
           level: 'error',
           message: msg,
-          context: 'Instant Search Test POST',
-        },
+          context: `Instant Search Test POST` },
         3600
       );
     }
@@ -463,14 +443,14 @@ async function runPerformanceBenchmark(options?: { iterations?: number; queries?
     timings: {
       search: [] as number[],
       cache: [] as number[],
-      total: [] as number[],
+      total: [] as number[]
     },
     statistics: {
       avgSearchTime: 0,
       minSearchTime: 0,
       maxSearchTime: 0,
-      cacheHitRate: 0,
-    },
+      cacheHitRate: 0
+    }
   };
   let cacheHits = 0;
   for (let i = 0; i < iterations; i++) {
@@ -493,7 +473,7 @@ async function runPerformanceBenchmark(options?: { iterations?: number; queries?
   return results;
 }
 
-async function populateTestData(count: number): Promise<{ documentsCreated: number; documentIds: string[] }> {
+async function populateTestData(count: number): Promise<{ documentsCreated: number;, documentIds: string[] }> {
   const testDocuments: string[] = [];
   const types = ['contract', 'evidence', 'brief', 'citation'] as const;
   const riskLevels = ['low', 'medium', 'high', 'critical'] as const;
@@ -510,20 +490,19 @@ async function populateTestData(count: number): Promise<{ documentsCreated: numb
         title: `Test Document ${i + 1}`,
         description: `Test legal document for benchmarking and demo purposes. Document ${i + 1} of ${count}.`,
         keywords: ['test', 'benchmark', 'legal', 'document'],
-        jurisdiction: jurisdictions[i % jurisdictions.length],
+        jurisdiction: jurisdictions[i % jurisdictions.length]
       },
       cacheTimestamp: Date.now(),
       accessCount: Math.floor(Math.random() * 20),
       lastAccessed: Date.now(),
       cacheLocation: 'loki',
       compressed: false,
-      syncStatus: 'synced',
-    };
+      syncStatus: `synced` };
     await lokiCache.storeDocument(doc);
     testDocuments.push(doc.id);
   }
   return {
     documentsCreated: count,
-    documentIds: testDocuments,
+    documentIds: testDocuments
   };
 }

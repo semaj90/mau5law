@@ -57,7 +57,7 @@ import type { User } from '$lib/types';
           <div>
             <span class="font-medium text-gray-700">Fresh Session</span>
             <span
-              class="inline-block" px-2 py-1 {session.fresh
+              class="inline-block px-2 py-1" {session.fresh
                 ? 'bg-green-100 text-green-800'
                 : 'bg-gray-100 text-gray-800'} rounded text-sm ml-2"
             >

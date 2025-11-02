@@ -6,17 +6,13 @@ import type { RequestHandler } from './$types';
 
 // Types for Context7 analysis payload (avoids 'any')
 type CaseLawConnection = { case string; relevance: number };
-type SemanticMapping = { concept: string; confidence: number };
+type SemanticMapping = { concept: string;, confidence: number };
 
-interface Context7Analysis {
-  id: string;
-  type: string;
+interface Context7Analysis { id: string;, type: string;
   status: string;
-  analysis: {
-    legalEntities: string[];
-    keyTerms: string[];
+  analysis: { legalEntities: string[];, keyTerms: string[];
     caseLawConnections: CaseLawConnection[];
-    prosecutionRelevance: { score: number; reasoning: string };
+    prosecutionRelevance: { score: number;, reasoning: string };
     semanticMappings: SemanticMapping[];
     riskFactors: string[];
     recommendations: string[];
@@ -40,8 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { evidenceId, content, type } = await request.json();
     if (!evidenceId || !content) {
       return json(
-        {
-          error: 'Missing required fields: evidenceId and content',
+        { error: 'Missing required, fields: evidenceId and content'
         },
         { status: 400 }
       );
@@ -56,26 +51,26 @@ export const POST: RequestHandler = async ({ request }) => {
         keyTerms: ['indemnification', 'liability', 'termination'],
         caseLawConnections: [
           { case 'Smith v. Jones', relevance: 0.85 },
-          { case 'Doe v. Corporation', relevance: 0.72 },
+          { case 'Doe v. Corporation', relevance: 0.72 }
         ],
         prosecutionRelevance: {
           score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0
-          reasoning: 'High relevance due to contract violations and potential fraud indicators',
+          reasoning: 'High relevance due to contract violations and potential fraud indicators'
         },
         semanticMappings: [
           { concept: 'breach of contract', confidence: 0.9 },
-          { concept: 'damages', confidence: 0.8 },
+          { concept: 'damages', confidence: 0.8 }
         ],
         riskFactors: ['Incomplete documentation', 'Missing signatures', 'Ambiguous terms'],
         recommendations: [
           'Verify document authenticity',
           'Cross-reference with similar cases',
           'Request additional documentation',
-        ],
+        ]
       },
       confidence: 0.87,
       processingTime: Math.floor(Math.random() * 3000) + 500, // 500-3500ms
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     // Update evidence record with Context7 analysis
     if (evidenceId) {
@@ -83,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
         await db
           .update(evidence)
           .set({
-            aiAnalysis: context7Analysis,
+            aiAnalysis: context7Analysis
           })
           .where(eq(evidence.id, evidenceId));
       } catch (updateError) {
@@ -96,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Analysis failed',
-        status: 'error',
+        status: 'error'
       },
       { status: 500 }
     );

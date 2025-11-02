@@ -13,12 +13,8 @@ import { S3Client, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } fr
 import { Readable } from "stream";
 import { getServiceDiscovery, COMMON_SERVICES } from '$lib/server/helpers/service-discovery';
 // Define a type for the S3 client configuration specific to MinIO
-interface MinioS3ClientConfig {
-  endpoint: string;
-  region: string;
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
+interface MinioS3ClientConfig { endpoint: string;, region: string;
+  credentials: { accessKeyId: string;, secretAccessKey: string;
   };
   forcePathStyle: boolean;
 }
@@ -93,7 +89,7 @@ export async function streamToBuffer(stream: Readable): Promise<Buffer> {
 /**
  * Parse MinIO URL format: minio://bucket/key
  */
-export function parseMinioUrl(url: string): { bucket: string; key: string } {
+export function parseMinioUrl(url: string): { bucket: string;, key: string } {
   const match = url.match(/^minio:\/\/([^\/]+)\/(.+)$/);
   if (!match) {
     throw new Error(`Invalid MinIO URL: ${url}`);

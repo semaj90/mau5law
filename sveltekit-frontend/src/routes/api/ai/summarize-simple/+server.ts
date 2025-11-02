@@ -22,9 +22,7 @@ interface SummarizationRequest {
 	format?: 'summary' | 'bullets' | 'legal-brief';
 }
 
-interface OllamaGenerateResponse {
-	model: string;
-	created_at: string;
+interface OllamaGenerateResponse { model: string;, created_at: string;
 	response: string;
 	done: boolean;
 	context?: number[];
@@ -47,8 +45,7 @@ const FORMAT_TEMPLATES = {
 	bullets: (text: string, maxLength: number) =>
 		`Create a bullet-point summary (max ${maxLength} tokens) of this text. Extract:\n- Main issues or errors\n- Patterns and frequency\n- Severity levels\n- Recommended fixes\n\nText:\n${text}`,
 	'legal-brief': (text: string, maxLength: number) =>
-		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}`,
-};
+		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}' };
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -60,8 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			temperature = 0.7,
 			topP = 0.9,
 			detectedLanguages = [],
-			format = 'bullets',
-		} = body;
+			format = 'bullets` } = body;
 
 		// Validation
 		if (!text || text.trim().length === 0) {
@@ -82,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
     const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: finalPrompt,
@@ -90,8 +86,8 @@ export const POST: RequestHandler = async ({ request }) => {
         options: {
           temperature,
           top_p: topP,
-          num_predict: maxLength,
-        },
+          num_predict: maxLength
+        }
       }),
       signal: AbortSignal.timeout(60000), // 60s timeout
     });
@@ -125,18 +121,18 @@ export const POST: RequestHandler = async ({ request }) => {
 				tokens: {
 					input: inputTokens,
 					output: outputTokens,
-					total: totalTokens,
+					total: totalTokens
 				},
 				processingTime: {
-					total: processingTime,
+				, total: processingTime,
 					load: ollamaData.load_duration ? ollamaData.load_duration / 1_000_000 : 0,
 					prompt_eval: ollamaData.prompt_eval_duration
 						? ollamaData.prompt_eval_duration / 1_000_000
 						: 0,
-					eval: ollamaData.eval_duration ? ollamaData.eval_duration / 1_000_000 : 0,
+					eval: ollamaData.eval_duration ? ollamaData.eval_duration / 1_000_000 : 0
 				},
-				timestamp: new Date().toISOString(),
-			},
+				timestamp: new Date().toISOString()
+			}
 		});
 	} catch (err: unknown) {
 		console.error('Summarization error:', err);
@@ -153,8 +149,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				message: e.message || 'Summarization failed',
 				code: 'SUMMARIZATION_ERROR',
 				meta: {
-					timestamp: new Date().toISOString(),
-				},
+				, timestamp: new Date().toISOString()
+				}
 			},
 			{ status: 500 }
 		);
@@ -166,7 +162,7 @@ export const GET: RequestHandler = async () => {
 	try {
 		// Check Ollama availability
 		const healthResponse = await fetch(`${OLLAMA_BASE_URL}/api/tags`, {
-			signal: AbortSignal.timeout(5000),
+			signal: AbortSignal.timeout(5000)
 		});
 
 		if (!healthResponse.ok) {
@@ -174,26 +170,23 @@ export const GET: RequestHandler = async () => {
 		}
 
 		const tags = await healthResponse.json();
-		const hasGemma3Legal = tags.models?.some((m: { name: string }) =>
+		const hasGemma3Legal = tags.models?.some((m: {, name: string }) =>
 			m.name.includes('gemma3-legal')
 		);
 
 		return json({
 			success: true,
 			status: 'healthy',
-			models: {
-				summarization: {
-					model: DEFAULT_MODEL,
-					available: hasGemma3Legal,
-				},
+			models: {, summarization: {, model: DEFAULT_MODEL,
+					available: hasGemma3Legal
+				}
 			},
 			endpoint: OLLAMA_BASE_URL,
 			features: ['summarization', 'legal-brief', 'bullet-points'],
 			formats: Object.keys(FORMAT_TEMPLATES),
 			meta: {
 				timestamp: new Date().toISOString(),
-				version: '1.0.0',
-			},
+				version: `1.0.0` }
 		});
 	} catch (err: unknown) {
 		const e = ensureError(err);
@@ -204,8 +197,8 @@ export const GET: RequestHandler = async () => {
 				message: e.message,
 				endpoint: OLLAMA_BASE_URL,
 				meta: {
-					timestamp: new Date().toISOString(),
-				},
+				, timestamp: new Date().toISOString()
+				}
 			},
 			{ status: 503 }
 		);

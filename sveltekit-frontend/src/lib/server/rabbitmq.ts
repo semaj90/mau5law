@@ -41,27 +41,22 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
   try {
     const ch = await getChannel();
     // Ensure queue exists
-    await ch.assertQueue(queueName, {
-      durable: true;
-      arguments: {
+    await ch.assertQueue(queueName, { durable: true;, arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL: 'x-max-length': 10000, // Max 10k messages
       }
     });
     const message = JSON.stringify(payload);
-    const sent = ch.sendToQueue(queueName, Buffer.from(message), {
-      persistent: true;
-      timestamp: Date.now(),
-      messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    });
+    const sent = ch.sendToQueue(queueName, Buffer.from(message), { persistent: true;, timestamp: Date.now(),
+      messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}` });
     if (!sent) {
       throw new Error('Message queue is full');
     }
-    console.log(`📤 Published to queue ${queueName}:`, {
+    console.log(`📤 Published to queue ${queueName}: ', {
       messageId: payload.sessionId || 'unknown',
       queueName
     });
   } catch (error: any) {
-    console.error(`❌ Failed to publish to queue ${queueName}:`, error);
+    console.error(`❌ Failed to publish to queue ${queueName}: ', error);
     throw error;
   }
 }
@@ -71,9 +66,7 @@ export async function consumeFromQueue(
 ): Promise<void> {
   try {
     const ch = await getChannel();
-    await ch.assertQueue(queueName, {
-      durable: true;
-      arguments: {
+    await ch.assertQueue(queueName, { durable: true;, arguments: {
         'x-message-ttl': 3600000,
         'x-max-length': 10000
       }
@@ -89,12 +82,12 @@ export async function consumeFromQueue(
           () => ch.nack(msg, false, false)
         );
       } catch (error: any) {
-        console.error(`❌ Error processing message from ${queueName}:`, error);
+        console.error(`❌ Error processing message from ${queueName}: ', error);
         ch.nack(msg, false, false); // Don't requeue on parse errors
       }
     });
   } catch (error: any) {
-    console.error(`❌ Failed to consume from queue ${queueName}:`, error);
+    console.error(`❌ Failed to consume from queue ${queueName}: ', error);
     throw error;
   }
 }
@@ -110,9 +103,7 @@ export async function setupQueues(): Promise<void> {
       'evidence.rag.queue'
     ];
     for (const queueName of queues) {
-      await ch.assertQueue(queueName, {
-        durable: true;
-        arguments: {
+      await ch.assertQueue(queueName, { durable: true;, arguments: {
           'x-message-ttl': 3600000,
           'x-max-length': 10000
         }
@@ -121,9 +112,7 @@ export async function setupQueues(): Promise<void> {
     }
     // Setup dead letter exchange for failed messages
     await ch.assertExchange('evidence.dlx', 'direct', { durable: true });
-    await ch.assertQueue('evidence.failed', {
-      durable: true;
-      arguments: {
+    await ch.assertQueue('evidence.failed', { durable: true;, arguments: {
         'x-message-ttl': 86400000, // 24 hours
       }
     });
@@ -162,9 +151,7 @@ export async function healthCheck(): Promise<boolean> {
   }
 }
 // Queue constants
-export const QUEUES = {
-  evidence: {
-    process: 'evidence.process.queue',
+export const QUEUES = { evidence: {, process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
     response: 'evidence.response.queue'
   },
@@ -175,8 +162,7 @@ export const QUEUES = {
   },
   notification: {
     email: '(notification as { email?: any; webhook?: any }).email.queue',
-    webhook: '(notification as { email?: any; webhook?: any }).webhook.queue'
-  }
+    webhook: `(notification as { email?: any; webhook?: any }).webhook.queue` }
 }
 // Service wrapper for consistency with other services
 export const rabbitmqService = {

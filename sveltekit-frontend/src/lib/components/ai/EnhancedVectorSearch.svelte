@@ -5,12 +5,13 @@ https: //svelte.dev/e/attribute_duplicate -->
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import { Button } from '$lib/components/ui/bitsButton.svelte';
   import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
   import { Select } from '$lib/components/ui/MeltSelect.svelte';
   // TODO: Replace with bits-ui equivalents when available

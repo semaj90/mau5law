@@ -21,24 +21,20 @@ interface RedisWebGPUIntegration {
 
 // Augment external SOM cache type locally for optional helpers used by this orchestrator
 type MaybeSOMCache = (WebGPUSOMCache & {
-  precomputeEmbeddings?: (opts: { errorMessages: string[]; batchSize?: number }) => Promise<void>;
+  precomputeEmbeddings?: (opts: {, errorMessages: string[]; batchSize?: number }) => Promise<void>;
   syncWithRedis?: () => Promise<void>;
   dispose?: () => void;
 }) | null;
 
 type Maybe<T> = T | null | undefined;
 
-export interface CacheWarmingStrategy {
-  name: string;
-  priority: number;
+export interface CacheWarmingStrategy { name: string;, priority: number;
   frequency: number; // milliseconds
   enabled: boolean;
   payload: Record<string, unknown>;
 }
 
-export interface CacheOrchestrationConfig {
-  enableBackgroundWarming: boolean;
-  enableCrossSystemSync: boolean;
+export interface CacheOrchestrationConfig { enableBackgroundWarming: boolean;, enableCrossSystemSync: boolean;
   warmingInterval: number;
   syncInterval: number;
   maxConcurrentWarming: number;
@@ -72,8 +68,8 @@ export class CacheOrchestrator {
         payload: {
           type: 'legal_templates',
           categories: ['contract', 'nda', 'agreement', 'lease'],
-          precompute: true,
-        },
+          precompute: true
+        }
       },
       {
         name: 'common_vector_operations',
@@ -84,8 +80,8 @@ export class CacheOrchestrator {
           type: 'vector_similarity',
           dimensions: [768, 1024, 1536],
           algorithms: ['cosine', 'euclidean', 'dot_product'],
-          warmCount: 100,
-        },
+          warmCount: 100
+        }
       },
       {
         name: 'popular_search_queries',
@@ -101,8 +97,8 @@ export class CacheOrchestrator {
             'entity extraction',
             'document similarity',
           ],
-          precompute: true,
-        },
+          precompute: true
+        }
       },
       {
         name: 'som_error_patterns',
@@ -112,8 +108,8 @@ export class CacheOrchestrator {
         payload: {
           type: 'som_training',
           errorTypes: ['compile', 'runtime', 'dependency', 'syntax'],
-          batchSize: 50,
-        },
+          batchSize: 50
+        }
       },
       {
         name: 'simd_json_patterns',
@@ -123,10 +119,10 @@ export class CacheOrchestrator {
         payload: {
           type: 'simd_optimization',
           jsonSchemas: ['legal_document', 'api_response', 'user_query'],
-          preparse: true,
-        },
+          preparse: true
+        }
       },
-    ],
+    ]
   };
 
   private warmingTimers = new Map<string, ReturnType<typeof setInterval>>();
@@ -223,7 +219,7 @@ export class CacheOrchestrator {
         await this.warmSIMDOptimization(strategy.payload);
         break;
       default:
-        console.warn(`Unknown warming strategy type: ${strategy.payload?.type}`);
+        console.warn(`Unknown warming strategy; type: ${strategy.payload?.type}`);
     }
   }
 
@@ -246,7 +242,7 @@ export class CacheOrchestrator {
           riskFactors: this.generateRiskFactors(category),
           entities: this.generateCommonEntities(category),
           embeddings: Array.from({ length: 768 }, () => Math.random() - 0.5),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
         // Store in Redis cache
         await this.redisIntegration.cacheResult?.(templateKey, templateAnalysis, { ttl: 3600, priority: 10 });
@@ -279,7 +275,7 @@ export class CacheOrchestrator {
           // computeVectorSimilarityOptimized should accept (query, candidates, options)
           const similarities = await this.redisIntegration.computeVectorSimilarityOptimized?.(queryVector, candidates, {
             algorithm,
-            useCache: false,
+            useCache: false
           });
           await this.redisIntegration.cacheResult?.(
             cacheKey,
@@ -314,11 +310,11 @@ export class CacheOrchestrator {
             title: `Legal Document ${i + 1} - ${query}`,
             relevance: Math.random(),
             summary: `Summary for ${query} related document`,
-            metadata: { category: 'legal', confidence: Math.random() },
+            metadata: { category: 'legal', confidence: Math.random() }
           })),
           totalCount: 10,
           processingTime: Math.random() * 100,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
         // Store in cache
         await this.redisIntegration.cacheResult?.(searchKey, searchResults, { ttl: 1800, priority: 8 });
@@ -409,15 +405,14 @@ export class CacheOrchestrator {
       }
       // Guard for SSR when posting messages to service worker
       if (typeof navigator !== 'undefined' && this.serviceWorkerRegistration?.active) {
-        this.serviceWorkerRegistration.active.postMessage({ type: 'SYNC_CACHES' });
+        this.serviceWorkerRegistration.active.postMessage({ type: `SYNC_CACHES` });
       }
       const metrics = await this.getSystemMetrics();
       console.log('📊 Sync complete. System metrics:', {
         redisConnected: metrics.redis,
         somActive: metrics.som,
         serviceWorkerActive: metrics.serviceWorker,
-        cacheEfficiency: `${( (metrics.cacheEfficiency as number) * 100 ).toFixed(1)}%`,
-      });
+        cacheEfficiency: `${( (metrics.cacheEfficiency as number) * 100 ).toFixed(1)}%` });
     } catch (error) {
       console.error('Cross-system sync error:', error);
     }
@@ -434,14 +429,14 @@ export class CacheOrchestrator {
       cacheEfficiency: 0.85,
       warmingStrategies: this.config.strategies.length,
       activeTimers: this.warmingTimers.size,
-      lastSync: Date.now(),
+      lastSync: Date.now()
     };
     if (this.redisIntegration?.getMetrics) {
       try {
         const redisMetrics = await this.redisIntegration.getMetrics();
         metrics.cacheEfficiency = redisMetrics?.efficiency ?? metrics.cacheEfficiency;
       } catch (error) {
-        console.warn('Failed to get Redis metrics:', error);
+        console.warn('Failed to get Redis metrics: `, error);
       }
     }
     return metrics;
@@ -451,13 +446,13 @@ export class CacheOrchestrator {
    * Manual cache warming trigger
    */
   async manualWarmCache(strategyName?: string): Promise<void> {
-    console.log(`🔥 Manual cache warming triggered${strategyName ? ` for ${strategyName}` : ''}`);
+    console.log(`🔥 Manual cache warming triggered${strategyName ? ` for ${strategyName}` : `` }`);
     const strategies = strategyName
       ? this.config.strategies.filter(s => s.name === strategyName)
       : this.config.strategies.filter(s => s.enabled);
     const warmingPromises = strategies.map(strategy =>
       this.executeWarmingStrategy(strategy).catch(error =>
-        console.error(`Manual warming failed for ${strategy.name}:`, error)
+        console.error(`Manual warming failed for ${strategy.name}: ', error)
       )
     );
     await Promise.allSettled(warmingPromises);
@@ -494,7 +489,7 @@ export class CacheOrchestrator {
       contract: ['payment terms', 'termination clause', 'liability limitation'],
       nda: ['confidentiality period', 'permitted disclosures', 'return of materials'],
       agreement: ['scope of work', 'intellectual property', 'dispute resolution'],
-      lease: ['rent amount', 'security deposit', 'maintenance responsibilities'],
+      lease: ['rent amount', 'security deposit', 'maintenance responsibilities']
     };
     return clauses[category] || ['standard clause'];
   }
@@ -504,7 +499,7 @@ export class CacheOrchestrator {
       contract: ['payment default', 'scope creep', 'force majeure'],
       nda: ['information leak', 'indefinite terms', 'broad definitions'],
       agreement: ['unclear deliverables', 'IP ownership disputes', 'jurisdiction issues'],
-      lease: ['property damage', 'rent increases', 'early termination'],
+      lease: ['property damage', 'rent increases', 'early termination']
     };
     return risks[category] || ['general risk'];
   }
@@ -514,7 +509,7 @@ export class CacheOrchestrator {
       contract: ['contractor', 'client', 'deliverable', 'payment'],
       nda: ['disclosing party', 'receiving party', 'confidential information'],
       agreement: ['service provider', 'customer', 'intellectual property'],
-      lease: ['landlord', 'tenant', 'premises', 'rent'],
+      lease: ['landlord', 'tenant', 'premises', 'rent']
     };
     return entities[category] || ['entity'];
   }
@@ -524,27 +519,25 @@ export class CacheOrchestrator {
       compile: 'TypeScript compilation error in module resolution',
       runtime: 'Cannot read property of undefined at runtime',
       dependency: 'Module not found, dependency resolution failed',
-      syntax: 'Unexpected token in JSON parsing operation',
+      syntax: 'Unexpected token in JSON parsing operation'
     };
     return errors[type] || 'Generic error message';
   }
 
   private generateMockJSONForSchema(schema: string): any {
-    const schemas: Record<string, unknown> = {
-      legal_document: {
-        id: 'doc123',
+    const schemas: Record<string, unknown> = { legal_document: {, id: 'doc123',
         title: 'Legal Document',
         content: 'Document content...',
-        metadata: { category: 'contract', confidence: 0.95 },
+        metadata: { category: 'contract', confidence: 0.95 }
       },
       api_response: { success: true, data: { result: 'response data' }, timestamp: Date.now() },
       user_query: {
         query: 'legal analysis request',
-        filters: { category: 'contract' },
-        options: { includeMetadata: true },
-      },
+        filters: { category: 'contract` },
+        options: { includeMetadata: true }
+      }
     };
-    return schemas[schema] ?? { type: 'unknown' };
+    return schemas[schema] ?? { type: `unknown` };
   }
 
   private hashString(str: string): number {

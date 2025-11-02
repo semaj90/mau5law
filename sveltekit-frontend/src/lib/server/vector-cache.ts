@@ -5,14 +5,10 @@
  */
 import crypto from "crypto";
 }
-export interface VectorCacheEntry {
-  results: any[];
-  query: string;
+export interface VectorCacheEntry { results: any[];, query: string;
   embedding?: number[];
   similarity_scores?: number[];
-  metadata: {
-    searchTime: number;
-    totalResults: number;
+  metadata: { searchTime: number;, totalResults: number;
     model: string;
     distanceMetric: 'cosine' | 'euclidean' | 'inner_product';
     threshold?: number;
@@ -21,9 +17,7 @@ export interface VectorCacheEntry {
   lastAccess: number;
   ttlMs: number;
 }
-export interface EmbeddingCacheEntry {
-  embedding: number[];
-  text: string;
+export interface EmbeddingCacheEntry { embedding: number[];, text: string;
   model: string;
   dimensions: number;
   ts: number;
@@ -150,7 +144,7 @@ export async function setVectorCache(
     metadata,
     ts: now,
     lastAccess: now,
-    ttlMs: VECTOR_TTL_MS,
+    ttlMs: VECTOR_TTL_MS
   }
   // Store in memory
   vectorCache.set(key, entry);
@@ -207,7 +201,7 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
 export async function setEmbeddingCache(
   text: string,
   embedding: number[];
-  model: string = 'default';
+ , model: string = 'default';
 ): Promise<void> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
@@ -218,7 +212,7 @@ export async function setEmbeddingCache(
     dimensions: embedding.length,
     ts: now,
     lastAccess: now,
-    ttlMs: EMBEDDING_TTL_MS,
+    ttlMs: EMBEDDING_TTL_MS
   }
   // Store in memory
   embeddingCache.set(key, entry);
@@ -259,16 +253,14 @@ export async function clearVectorCache(): Promise<void> {
  * Get cache statistics
  */
 export function getVectorCacheStats() {
-  return {
-    memory: {
-      vectorEntries: vectorCache.size,
+  return { memory: {, vectorEntries: vectorCache.size,
       embeddingEntries: embeddingCache.size,
       maxItems: VECTOR_CACHE_MAX_ITEMS
     },
     config: {
       vectorTtlMs: VECTOR_TTL_MS,
       embeddingTtlMs: EMBEDDING_TTL_MS,
-      redisEnabled: !!getRedisClient(),
+      redisEnabled: !!getRedisClient()
     }
   }
 }

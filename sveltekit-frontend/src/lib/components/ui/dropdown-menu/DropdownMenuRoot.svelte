@@ -15,9 +15,9 @@
   $effect(() => {
     console.log('Dropdown menu props changed:', props);
   });
-  let trigger: any = $state(null);
-  let menu: any = $state(null);
-  let open: any = $state(false);
+  let trigger: any = null;
+  let menu: any = null;
+  let open: any = false;
   (async () => {
     const ns = await getBitsNamespace();
     const factory = ns.createDropdownMenu ?? ns.DropdownMenu?.create ?? ns.DropdownMenu ?? null;

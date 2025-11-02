@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported

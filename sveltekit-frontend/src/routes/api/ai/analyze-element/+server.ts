@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -43,14 +43,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
-        prompt: `Analyze this UI element for legal relevance:,
+        prompt: `Analyze this UI element for legal; relevance:,
 Element: ${elementType}
 Content: "${content}"
 Context: ${context}
 Provide a brief 1-sentence legal relevance assessment and classification.
-Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
-        stream: false,
-      }),
+Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
+        stream: false
+      })
     });
     if (!response.ok) {
       const text = await response.text().catch(() => '');
@@ -66,7 +66,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       analysis = {
         relevance: 'Content may have legal significance',
         legalContext: 'general',
-        actionable: false,
+        actionable: false
       };
     } else if (typeof result === 'string') {
       try {

@@ -162,7 +162,7 @@ export type { EnhancedEnv };
   // Get Ollama URL with validation
   getOllamaUrl: (): string => {
     return envHelper.get('OLLAMA_URL') || envHelper.get('PUBLIC_OLLAMA_URL') || `http://localhost:11434`;
-  },
+  }
 };
 // Export types
 export type { EnhancedEnv };

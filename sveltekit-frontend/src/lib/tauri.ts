@@ -34,14 +34,14 @@ export class TauriAPI {
       const response = await fetch('/api/cases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(caseData),
+        body: JSON.stringify(caseData)
       });
       return response.json();
     }
     await loadTauriAPI();
     return tauriInvoke?.('create_case', {
       title: caseData.title,
-      description: caseData.description,
+      description: caseData.description
     });
   }
   // Reports
@@ -60,7 +60,7 @@ export class TauriAPI {
       const response = await fetch('/api/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reportData),
+        body: JSON.stringify(reportData)
       });
       return response.json();
     }
@@ -68,7 +68,7 @@ export class TauriAPI {
     return tauriInvoke?.('create_report', {
       title: reportData.title,
       content: reportData.content,
-      summary: reportData.summary,
+      summary: reportData.summary
     });
   }
   // LLM operations
@@ -100,7 +100,7 @@ export class TauriAPI {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password })
     });
     return response.json();
   }
@@ -108,13 +108,13 @@ export class TauriAPI {
     const response = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(userData)
     });
     return response.json();
   }
   static async logout() {
     const response = await fetch('/api/auth/logout', {
-      method: 'POST',
+      method: 'POST'
     });
     return response.ok;
   }
@@ -137,7 +137,7 @@ export class TauriAPI {
     formData.append('avatar', file);
     const response = await fetch('/api/user/avatar/upload', {
       method: 'POST',
-      body: formData,
+      body: formData
     });
     return response.json();
   }

@@ -73,7 +73,7 @@ export interface QuantizationParams {
 export function toInt8(
   f32: Float32Array,
   method: 'symmetric' | 'asymmetric' = 'symmetric';
-): { data: Int8Array; params: QuantizationParams } {
+): { data: Int8Array;, params: QuantizationParams } {
   if (method === 'symmetric') {
     let maxAbs = 0;
     for (let i = 0; i < f32.length; i++) {
@@ -99,7 +99,7 @@ export function toInt8(
     for (let i = 0; i < f32.length; i++) {
       out[i] = Math.round(f32[i] / scale + zeroPoint) - 128;
     }
-    return { data: out, params: { scale, zeroPoint, method: 'asymmetric' } }
+    return { data: out, params: { scale, zeroPoint, method: `asymmetric` } }
   }
 }
 export function fromInt8(
@@ -124,16 +124,14 @@ export function fromInt8(
 //
 export type QuantizationMode = 'fp32' | 'fp16' | 'int8_symmetric' | 'int8_asymmetric';
 }
-export interface QuantizedData {
-  data: Float32Array | Uint16Array | Int8Array;
-  originalType: QuantizationMode;
+export interface QuantizedData { data: Float32Array | Uint16Array | Int8Array;, originalType: QuantizationMode;
   params?: QuantizationParams;
   byteLength: number;
   compressionRatio: number;
 }
 export function quantize(
   input: BufferLike | number[];
-  mode: QuantizationMode = 'fp32';
+ , mode: QuantizationMode = 'fp32';
 ): QuantizedData {
   const f32 = ensureF32(input);
   const originalByteLength = f32.byteLength;
@@ -172,7 +170,7 @@ export function quantize(
         compressionRatio: originalByteLength / int8Asym.byteLength
       }
     default:
-      throw new Error(`Unsupported quantization mode: ${mode}`);
+      throw new Error(`Unsupported quantization; mode: ${mode}`);
   }
 }
 export function dequantize(quantizedData: QuantizedData): Float32Array {
@@ -188,7 +186,7 @@ export function dequantize(quantizedData: QuantizedData): Float32Array {
       }
       return fromInt8(quantizedData.data as Int8Array, quantizedData.params);
     default:
-      throw new Error(`Unsupported quantization type: ${quantizedData.originalType}`);
+      throw new Error(`Unsupported quantization; type: ${quantizedData.originalType}`);
   }
 }
 //
@@ -201,7 +199,7 @@ export interface WebGPUQuantizationOptions {
 }
 export function quantizeForWebGPU(
   input: BufferLike | number[];
-  options: WebGPUQuantizationOptions = { mode: 'fp32' }
+  options: WebGPUQuantizationOptions = {, mode: `fp32` }
 ): QuantizedData & { alignedByteLength: number } {
   const quantized = quantize(input, options.mode);
   const alignment = options.alignment || 4;
@@ -227,7 +225,7 @@ export const LEGAL_AI_QUANTIZATION_PROFILES = {
 export type LegalAIProfile = keyof typeof LEGAL_AI_QUANTIZATION_PROFILES;
 export function quantizeForLegalAI(
   input: BufferLike | number[];
-  profile: LegalAIProfile = 'legal_standard';
+ , profile: LegalAIProfile = 'legal_standard';
 ): QuantizedData & { alignedByteLength: number } {
   const options = LEGAL_AI_QUANTIZATION_PROFILES[profile];
   return quantizeForWebGPU(input, { ...options, debugLabel: `legal-ai-${profile}` });
@@ -247,17 +245,15 @@ export function dequantizeBatch(quantizedBatch: QuantizedData[]): Float32Array[]
 //
 // 8. Performance monitoring
 //
-export interface QuantizationStats {
-  originalSize: number;
-  compressedSize: number;
+export interface QuantizationStats { originalSize: number;, compressedSize: number;
   compressionRatio: number;
   quantizationTime: number;
   mode: QuantizationMode;
 }
 export function quantizeWithStats(
   input: BufferLike | number[];
-  mode: QuantizationMode = 'fp32';
-): { data: QuantizedData; stats: QuantizationStats } {
+ , mode: QuantizationMode = 'fp32';
+): { data: QuantizedData;, stats: QuantizationStats } {
   const startTime = performance.now();
   const data = quantize(input, mode);
   const quantizationTime = performance.now() - startTime;

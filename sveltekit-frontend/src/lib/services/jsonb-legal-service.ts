@@ -27,14 +27,12 @@ import {
   type NewCase,
   type Evidence,
   type NewEvidence,
-  type EvidenceMetadata,
+  type EvidenceMetadata
 } from '$lib/server/db/jsonb-legal-schema.js';
 import { logger } from '$lib/logging/structured-logger.js';
 
 // Local type definitions
-interface VectorEmbedding {
-  id: string;
-  vector: number[];
+interface VectorEmbedding { id: string;, vector: number[];
   metadata?: { [key: string]: any };
 }
 
@@ -93,7 +91,7 @@ export class JsonbLegalService {
       const documentData: NewLegalDocument = {
         ...data,
         titleEmbedding: embeddings?.title ? JSON.stringify(embeddings.title.vector) : null,
-        contentEmbedding: embeddings?.content ? JSON.stringify(embeddings.content.vector) : null,
+        contentEmbedding: embeddings?.content ? JSON.stringify(embeddings.content.vector) : null
       } as NewLegalDocument;
 
       const inserted = await db.insert(legalDocumentsJsonb).values(documentData).returning();
@@ -109,7 +107,7 @@ export class JsonbLegalService {
           processingTime: duration,
           hasEmbeddings: !!embeddings,
           metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
-          success: true,
+          success: true
         })
         .catch(() => {});
 
@@ -125,7 +123,7 @@ export class JsonbLegalService {
           hasEmbeddings: !!embeddings,
           metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         })
         .catch(() => {});
       throw error;
@@ -142,12 +140,12 @@ export class JsonbLegalService {
     confidentialityLevels?: string[];
     minConfidence?: number;
     hasHumanVerification?: boolean;
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date;, end: Date };
     keyTerms?: string[];
-    parties?: { name: string; role?: string }[];
+    parties?: {, name: string; role?: string }[];
     limit?: number;
     offset?: number;
-  }): Promise<{ documents: any[]; totalCount: number }> {
+  }): Promise<{ documents: any[];, totalCount: number }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       let query: any = db.select().from(legalDocumentsJsonb as any);
@@ -221,7 +219,7 @@ export class JsonbLegalService {
           totalResults: totalCount ?? 0,
           processingTime: duration,
           indexesUsed: ['metadata_gin', 'practice_area', 'document_type'],
-          success: true,
+          success: true
         })
         .catch(() => {});
 
@@ -237,7 +235,7 @@ export class JsonbLegalService {
           totalResults: 0,
           processingTime: duration,
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         })
         .catch(() => {});
       throw error;
@@ -249,7 +247,7 @@ export class JsonbLegalService {
    */
   async analyzeLegalConcepts(
     documentIds: string[]
-  ): Promise<{ concepts: any[]; totalDocuments: number; conceptNetwork: Record<string, string[]> }> {
+  ): Promise<{ concepts: any[]; totalDocuments: number;, conceptNetwork: Record<string, string[]> }> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       // Use provided SQL builder helpers where available
@@ -257,12 +255,10 @@ export class JsonbLegalService {
       const conceptResults = (await sql_client.unsafe(op.strings[0], ...op.values)) as Array<Record<string, any>>;
 
       // Fallback: fetch per-document concept arrays if provided by the operations helper
-      let docRows: Array<{ documentId: string; concepts: string[] }> = [];
+      let docRows: Array<{ documentId: string;, concepts: string[] }> = [];
       if (typeof (LegalJsonbOperations as any).getDocumentConcepts === 'function') {
         const docsOp = (LegalJsonbOperations as any).getDocumentConcepts(documentIds);
-        docRows = (await sql_client.unsafe(docsOp.strings[0], ...docsOp.values)) as Array<{
-          documentId: string;
-          concepts: string[];
+        docRows = (await sql_client.unsafe(docsOp.strings[0], ...docsOp.values)) as Array<{ documentId: string;, concepts: string[];
         }>;
       } else {
         // Try a simple query: pull metadata->'semantics'->'legalConcepts' as text[]
@@ -272,7 +268,7 @@ export class JsonbLegalService {
           .where(inArray(legalDocumentsJsonb.id, documentIds));
         docRows = (rows || []).map((r: any) => ({
           documentId: r.id,
-          concepts: (r.metadata as any)?.semantics?.legalConcepts || [],
+          concepts: (r.metadata as any)?.semantics?.legalConcepts || []
         }));
       }
 
@@ -298,12 +294,12 @@ export class JsonbLegalService {
           type: 'ai_interaction',
           message: 'legal_concept_analysis',
           metadata: {
-            operation: 'legal_concept_analysis',
+           , operation: 'legal_concept_analysis',
             inputSize: documentIds.length,
             outputSize: (conceptResults || []).length,
             processingTime: duration,
-            success: true,
-          },
+            success: true
+          }
         })
         .catch(() => {});
       return { concepts: (conceptResults as any[]) || [], totalDocuments: documentIds.length, conceptNetwork };
@@ -314,11 +310,11 @@ export class JsonbLegalService {
           type: 'ai_interaction',
           message: 'legal_concept_analysis_failed',
           metadata: {
-            inputSize: documentIds.length,
+           , inputSize: documentIds.length,
             processingTime: duration,
             success: false,
-            error: err instanceof Error ? err.message : String(err),
-          },
+            error: err instanceof Error ? err.message : String(err)
+          }
         })
         .catch(() => {});
       return { concepts: [], totalDocuments: documentIds.length, conceptNetwork: {} };
@@ -341,7 +337,7 @@ export class JsonbLegalService {
           documentType: 'case',
           processingTime: duration,
           metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
-          success: true,
+          success: true
         })
         .catch(() => {});
       return caseRecord as Case;
@@ -354,7 +350,7 @@ export class JsonbLegalService {
           processingTime: duration,
           metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
           success: false,
-          error: err instanceof Error ? err.message : String(err),
+          error: err instanceof Error ? err.message : String(err)
         })
         .catch(() => {});
       throw err;
@@ -374,7 +370,7 @@ export class JsonbLegalService {
 
   async addCaseTimelineEvent(
     caseId: string,
-    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical' }
+    event: { date: string; event: string;, significance: 'low' | 'medium' | 'high' | 'critical` }
   ): Promise<Case> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -400,7 +396,7 @@ export class JsonbLegalService {
           documentType: 'case',
           processingTime: duration,
           metadataSize: JSON.stringify(event).length,
-          success: true,
+          success: true
         })
         .catch(() => {});
       return updatedCase as Case;
@@ -414,7 +410,7 @@ export class JsonbLegalService {
           processingTime: duration,
           metadataSize: JSON.stringify(event).length,
           success: false,
-          error: err instanceof Error ? err.message : String(err),
+          error: err instanceof Error ? err.message : String(err)
         })
         .catch(() => {});
       throw err;
@@ -432,7 +428,7 @@ export class JsonbLegalService {
     try {
       const evidenceData: NewEvidence = {
         ..._data,
-        embedding: embedding ? JSON.stringify(embedding.vector) : null,
+        embedding: embedding ? JSON.stringify(embedding.vector) : null
       } as NewEvidence;
 
       const inserted = await db.insert(evidenceJsonb).values(evidenceData).returning();
@@ -448,7 +444,7 @@ export class JsonbLegalService {
           processingTime: duration,
           hasEmbeddings: !!embedding,
           metadataSize: JSON.stringify((_data as any)?.metadata ?? {}).length,
-          success: true,
+          success: true
         })
         .catch(() => {});
 
@@ -464,7 +460,7 @@ export class JsonbLegalService {
           hasEmbeddings: !!embedding,
           metadataSize: JSON.stringify((_data as any)?.metadata ?? {}).length,
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         })
         .catch(() => {});
       throw error;
@@ -476,10 +472,8 @@ export class JsonbLegalService {
    */
   async addCustodyTransfer(
     evidenceId: string,
-    transfer: {
-      timestamp: string;
-      custodian: string;
-      action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'retrieved';
+    transfer: { timestamp: string;, custodian: string;
+     , action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'retrieved';
       location?: string;
       condition?: string;
     }
@@ -497,7 +491,7 @@ export class JsonbLegalService {
               COALESCE(metadata->'chainOfCustody', '[]'::jsonb) || ${transferJson}::jsonb
             )
           `,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(evidenceJsonb.id, evidenceId))
         .returning();
@@ -513,9 +507,9 @@ export class JsonbLegalService {
           resourceType: 'evidence',
           action: 'update_custody_chain',
           actor: transfer.custodian,
-          metadata: { action: transfer.action, location: transfer.location },
+          metadata: {, action: transfer.action, location: transfer.location },
           success: true,
-          processingTime: duration,
+          processingTime: duration
         })
         .catch(() => {});
 
@@ -530,10 +524,10 @@ export class JsonbLegalService {
           resourceType: 'evidence',
           action: 'update_custody_chain',
           actor: transfer.custodian,
-          metadata: { action: transfer.action },
+          metadata: {, action: transfer.action },
           success: false,
           error: error instanceof Error ? error.message : String(error),
-          processingTime: duration,
+          processingTime: duration
         })
         .catch(() => {});
       throw error;
@@ -545,7 +539,7 @@ export class JsonbLegalService {
    */
   async verifyEvidenceChain(
     evidenceId: string
-  ): Promise<{ isValid: boolean; evidence: Evidence | null; chainValidation: any }> {
+  ): Promise<{ isValid: boolean; evidence: Evidence | null;, chainValidation: any }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.verifyEvidenceChain(evidenceId);
@@ -566,7 +560,7 @@ export class JsonbLegalService {
           gaps.push({
             from chain[i - 1].custodian,
             to: chain[i].custodian,
-            durationHours: Math.round(durationMs / (60 * 60 * 1000)),
+            durationHours: Math.round(durationMs / (60 * 60 * 1000))
           });
         }
       }
@@ -576,7 +570,7 @@ export class JsonbLegalService {
         custodyCount: result.custody_count ?? chain.length,
         currentCustodian: result.current_custodian ?? (chain.length ? chain[chain.length - 1].custodian : null),
         gaps,
-        transfers: chain,
+        transfers: chain
       };
       const isValid = chainValidation.chronologicallyValid && gaps.length === 0;
       const duration =
@@ -591,10 +585,10 @@ export class JsonbLegalService {
           metadata: {
             isValid,
             custodyCount: chainValidation.custodyCount,
-            gapCount: gaps.length,
+            gapCount: gaps.length
           },
           success: true,
-          processingTime: duration,
+          processingTime: duration
         })
         .catch(() => {});
 
@@ -610,7 +604,7 @@ export class JsonbLegalService {
           action: 'verify_chain',
           success: false,
           error: error instanceof Error ? error.message : String(error),
-          processingTime: duration,
+          processingTime: duration
         })
         .catch(() => {});
       throw error;
@@ -623,7 +617,7 @@ export class JsonbLegalService {
   /**
    * Build citation network using JSONB recursive queries
    */
-  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[]; edges: any[] }> {
+  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[];, edges: any[] }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.findCitationNetwork(documentId, depth);
@@ -634,7 +628,7 @@ export class JsonbLegalService {
         title: row.title,
         documentType: row.document_type || 'unknown',
         depth: row.depth,
-        citationCount: Array.isArray(row.citations) ? row.citations.length : 0,
+        citationCount: Array.isArray(row.citations) ? row.citations.length : 0
       }));
 
       const edges: any[] = [];
@@ -651,7 +645,7 @@ export class JsonbLegalService {
                 from row.id,
                 to: targetNode.id,
                 type: citation.type || 'citation',
-                relevance: citation.relevance,
+                relevance: citation.relevance
               });
             }
           }
@@ -668,7 +662,7 @@ export class JsonbLegalService {
           processingTime: duration,
           model: 'jsonb_network',
           contextMetadata: { documentId, depth, edgeCount: edges.length },
-          success: true,
+          success: true
         })
         .catch(() => {});
 
@@ -685,7 +679,7 @@ export class JsonbLegalService {
           model: 'jsonb_network',
           contextMetadata: { documentId, depth },
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         })
         .catch(() => {});
       throw error;
@@ -698,12 +692,8 @@ export class JsonbLegalService {
   /**
    * Get JSONB performance metrics
    */
-  async getPerformanceMetrics(): Promise<{
-    indexUsage: any[];
-    storageEfficiency: any[];
-    queryPerformance: {
-      averageQueryTime: number;
-      slowQueries: number;
+  async getPerformanceMetrics(): Promise<{ indexUsage: any[];, storageEfficiency: any[];
+    queryPerformance: { averageQueryTime: number;, slowQueries: number;
       indexHitRatio: number;
     };
   }> {
@@ -715,12 +705,12 @@ export class JsonbLegalService {
       const queryPerformance = {
         averageQueryTime: 45.2,
         slowQueries: 3,
-        indexHitRatio: 0.95,
+        indexHitRatio: 0.95
       };
       return {
         indexUsage: (indexUsage as any[]) || [],
         storageEfficiency: (storageEfficiency as any[]) || [],
-        queryPerformance,
+        queryPerformance
       };
     } catch (error: any) {
       await logger
@@ -728,7 +718,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'jsonb_performance_metrics',
           severity: 'medium',
-          category: 'database',
+          category: 'database'
         })
         .catch(() => {});
       throw error;
@@ -738,9 +728,7 @@ export class JsonbLegalService {
   /**
    * Get legal analytics dashboard data
    */
-  async getLegalAnalytics(): Promise<{
-    documentAnalytics: any[];
-    caseAnalytics: any[];
+  async getLegalAnalytics(): Promise<{ documentAnalytics: any[];, caseAnalytics: any[];
     evidenceIntegrity: any[];
   }> {
     try {
@@ -752,7 +740,7 @@ export class JsonbLegalService {
       return {
         documentAnalytics: (documentAnalytics as any[]) || [],
         caseAnalytics: (caseAnalytics as any[]) || [],
-        evidenceIntegrity: (evidenceIntegrity as any[]) || [],
+        evidenceIntegrity: (evidenceIntegrity as any[]) || []
       };
     } catch (error: any) {
       await logger
@@ -760,8 +748,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'legal_analytics',
           severity: 'medium',
-          category: 'analytics',
-        })
+          category: 'analytics` })
         .catch(() => {});
       throw error;
     }
@@ -780,7 +767,7 @@ export class JsonbLegalService {
         .logSystemEvent?.({
           eventType: 'maintenance',
           operation: 'update_case_counters',
-          success: true,
+          success: true
         })
         .catch(() => {});
     } catch (error: any) {
@@ -789,7 +776,7 @@ export class JsonbLegalService {
           eventType: 'maintenance',
           operation: 'update_case_counters',
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         })
         .catch(() => {});
       throw error;

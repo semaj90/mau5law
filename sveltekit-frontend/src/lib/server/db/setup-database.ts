@@ -2,12 +2,9 @@
  * Database Setup Script for Unified Vector Systems
  * Ensures all required tables, indexes, and extensions are properly configured
  */
-import { db } from './drizzle.js';
+import { db } from './client.js'; // Corrected: Use central db client
 import { sql } from 'drizzle-orm';
-}
-export interface DatabaseSetupResult {
-  success: boolean;
-  steps: Array<any>;
+export interface DatabaseSetupResult { success: boolean;, steps: Array<any>;
   timestamp: string;
 }
 export async function setupDatabase(): Promise<DatabaseSetupResult> {
@@ -17,9 +14,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     // Step 1: Enable required extensions
     console.log('Step 1: Enabling PostgreSQL extensions...');
     try {
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "uuid-ossp"`);
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "pgcrypto"`);
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "vector"`);
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`); // Fixed: removed ':'
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`); // Fixed: removed ':'
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "vector"`); // Fixed: removed ':'
       steps.push({ step: 'Enable extensions', success: true });
     } catch (error: any) {
       steps.push({ step: 'Enable extensions', success: false, error: error.message });
@@ -29,10 +26,10 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS embedding_cache (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           text_hash TEXT UNIQUE NOT NULL,
           embedding vector(768) NOT NULL,
-          model TEXT NOT NULL DEFAULT: 'nomic-embed-text',
+          model TEXT NOT NULL DEFAULT 'nomic-embed-text', -- Fixed: removed ':'
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           access_count INTEGER DEFAULT 1
@@ -40,10 +37,10 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       `);
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS vector_metadata (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           document_id TEXT UNIQUE NOT NULL,
           collection_name TEXT NOT NULL,
-          metadata JSONB NOT NULL DEFAULT: '{}':: jsonb
+          metadata JSONB NOT NULL DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
           content_hash TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -58,12 +55,12 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS legal_documents (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           title TEXT NOT NULL,
           content TEXT NOT NULL,
           document_type TEXT CHECK (document_type IN ('CONTRACT', 'CASE_LAW', 'STATUTE', 'EVIDENCE', 'PRECEDENT', 'REGULATION')),
           embedding vector(768),
-          metadata JSONB DEFAULT: '{}':: jsonb
+          metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
           pagerank_score DECIMAL(10,6) DEFAULT 1.0,
           positive_votes INTEGER DEFAULT 0,
           negative_votes INTEGER DEFAULT 0,
@@ -74,7 +71,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       `);
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS document_relationships (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           from_document_id TEXT NOT NULL REFERENCES legal_documents(id) ON DELETE CASCADE,
           to_document_id TEXT NOT NULL REFERENCES legal_documents(id) ON DELETE CASCADE,
           relationship_type TEXT NOT NULL CHECK (relationship_type IN ('cites', 'references', 'contradicts', 'supports')),
@@ -92,28 +89,28 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS generated_glyphs (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           evidence_id TEXT NOT NULL,
           prompt TEXT NOT NULL,
           style TEXT NOT NULL,
           dimensions INTEGER[] NOT NULL,
           image_url TEXT,
           tensor_data BYTEA,
-          metadata JSONB DEFAULT: '{}':: jsonb
+          metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
           generation_time_ms INTEGER,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS som_clusters (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           cluster_id TEXT NOT NULL,
           node_position POINT NOT NULL,
           weights vector(768) NOT NULL,
           pattern_count INTEGER DEFAULT 0,
           activation_count INTEGER DEFAULT 0,
           last_activation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          associated_documents TEXT[] DEFAULT ARRAY[]:: TEXT[]
+          associated_documents TEXT[] DEFAULT ARRAY[]:: TEXT[],
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -127,7 +124,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS user_sessions (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           user_id TEXT NOT NULL,
           session_id TEXT NOT NULL,
           operation_type TEXT NOT NULL,
@@ -135,18 +132,18 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           results_count INTEGER DEFAULT 0,
           processing_time_ms INTEGER DEFAULT 0,
           confidence_score DECIMAL(5,3) DEFAULT 0,
-          components_used TEXT[] DEFAULT ARRAY[]:: TEXT[]
+          components_used TEXT[] DEFAULT ARRAY[]:: TEXT[],
           feedback_score INTEGER CHECK (feedback_score IN (-1, 0, 1)),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS recommendation_patterns (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           user_id TEXT NOT NULL,
           pattern_features vector(50) NOT NULL,
           som_node_id TEXT,
-          pattern_metadata JSONB DEFAULT: '{}':: jsonb
+          pattern_metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
           success_rating DECIMAL(3,2) DEFAULT 0.5,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -160,7 +157,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS system_performance (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
           component_name TEXT NOT NULL,
           operation_type TEXT NOT NULL,
           processing_time_ms INTEGER NOT NULL,
@@ -192,7 +189,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       // Text search indexes
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_content_gin
-        ON legal_documents USING gin (to_tsvector('english', content)
+        ON legal_documents USING gin (to_tsvector('english', content)); -- Fixed: added missing ')'
       `);
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_metadata_gin
@@ -258,14 +255,14 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       success: steps.every(step => step.success),
       steps,
       timestamp: new Date().toISOString()
-    }
+    };
   } catch (error: any) {
     console.error('❌ Database setup failed:', error);
     return {
       success: false,
       steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
       timestamp: new Date().toISOString()
-    }
+    };
   }
 }
 export async function checkDatabaseHealth(): Promise<any> {
@@ -287,12 +284,12 @@ export async function checkDatabaseHealth(): Promise<any> {
     // Check if indexes exist
     const indexesResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM pg_indexes
-      WHERE indexname LIKE: 'idx_%' AND tablename LIKE: '%legal_documents%' OR tablename LIKE: '%embedding_cache%'
+      WHERE indexname LIKE 'idx_%' AND tablename LIKE '%legal_documents%' OR tablename LIKE '%embedding_cache%' -- Fixed: removed ':'
     `);
     const indexesReady = Number(indexesResult.rows[0].count) > 0;
     // Check if sample data exists
     const sampleDataResult = await db.execute(sql`
-      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE: 'sample_%'
+      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE 'sample_%' -- Fixed: removed ':'
     `);
     const sampleDataPresent = Number(sampleDataResult.rows[0].count) > 0;
     return {
@@ -301,15 +298,15 @@ export async function checkDatabaseHealth(): Promise<any> {
       extensionsEnabled,
       indexesReady,
       sampleDataPresent
-    }
+    };
   } catch (error) {
     return {
       connected: false,
       tablesExist: false,
       extensionsEnabled: false,
       indexesReady: false,
-      sampleDataPresent: false,
-    }
+      sampleDataPresent: false
+    };
   }
 }
 export async function getDatabaseStats(): Promise<any> {

@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -30,16 +30,16 @@ import type { RequestHandler } from './$types.js';
 import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/ollama-suggestions-service.js';
 import {
   generateVectorContextualSuggestions,
-  type ContextualSuggestion,
+  type ContextualSuggestion
 } from '$lib/services/vector-suggestions-service.js';
 import {
   generateEnhancedRAGSuggestions,
-  type RAGSuggestionResponse,
+  type RAGSuggestionResponse
 } from '$lib/services/enhanced-rag-suggestions-service.js';
 import {
   aiSuggestionsClient,
   ReportTypeUtils,
-  type SuggestionResponse,
+  type SuggestionResponse
 } from '$lib/services/ai-suggestions-grpc-client.js';
 export interface EnhancedSuggestionRequest {
   content: string;
@@ -74,15 +74,11 @@ export interface EnhancedSuggestionRequest {
   confidenceThreshold?: number;
   temperature?: number;
 }
-export interface UnifiedSuggestion {
-  id: string;
-  content: string;
+export interface UnifiedSuggestion { id: string;, content: string;
   type: string;
   confidence: number;
   reasoning: string;
-  metadata: {
-    source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';
-    category: string;
+  metadata: { source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';, category: string;
     priority?: number;
     keywords?: string[];
     supportingContext?: string[];
@@ -107,7 +103,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       useProtobuf = false,
       maxSuggestions = 5,
       confidenceThreshold = 0.6,
-      temperature = 0.3,
+      temperature = 0.3
     } = data;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
@@ -124,7 +120,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       maxSuggestions,
       confidenceThreshold,
       temperature,
-      userId,
+      userId
     });
     // Store in database if userId provided
     const recommendationId = uuidv4();
@@ -135,7 +131,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
         content,
         suggestions,
         recommendationId,
-        reportType,
+        reportType
       });
     }
     return json({
@@ -145,25 +141,25 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       reportType,
       confidence: suggestions.length > 0 ? suggestions[0].confidence : 0,
       servicesUsed: {
-        vectorSearch: useVectorSearch,
+       , vectorSearch: useVectorSearch,
         ollamaAI: useOllamaAI,
         enhancedRAG: useEnhancedRAG,
-        protobufGRPC: useProtobuf,
+        protobufGRPC: useProtobuf
       },
       timestamp: new Date().toISOString(),
       metadata: {
         contentLength: content.length,
         suggestionsCount: suggestions.length,
         context: Object.keys(context).length > 0 ? context : undefined,
-        processingServices: suggestions.map(s => s.metadata.source).filter((v, i, a) => a.indexOf(v) === i),
-      },
+        processingServices: suggestions.map(s => s.metadata.source).filter((v, i, a) => a.indexOf(v) === i)
+      }
     });
   } catch (error: any) {
     console.error('Error generating AI suggestions:', error);
     return json(
       {
         error: 'Failed to generate suggestions',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -180,10 +176,8 @@ async function generateComprehensiveSuggestions({
   maxSuggestions = 5,
   confidenceThreshold = 0.6,
   temperature = 0.3,
-  userId,
-}: {
-  content: string;
-  reportType: string;
+  userId
+}: { content: string;, reportType: string;
   context: any;
   useVectorSearch: boolean;
   useOllamaAI: boolean;
@@ -191,7 +185,7 @@ async function generateComprehensiveSuggestions({
   useProtobuf: boolean;
   maxSuggestions: number;
   confidenceThreshold: number;
-  temperature: number;
+ , temperature: number;
   userId?: string;
 }): Promise<UnifiedSuggestion[]> {
   const allSuggestions: UnifiedSuggestion[] = [];
@@ -212,10 +206,10 @@ async function generateComprehensiveSuggestions({
             max_suggestions: maxSuggestions,
             confidence_threshold: confidenceThreshold,
             context: {
-              case_id: context.caseId,
+             , case_id: context.caseId,
               user_id: userId,
-              document_ids: context.evidenceIds,
-            },
+              document_ids: context.evidenceIds
+            }
           });
           grpcResponse.suggestions.forEach((suggestion, index) => {
             allSuggestions.push({
@@ -231,8 +225,8 @@ async function generateComprehensiveSuggestions({
                 keywords: suggestion.metadata?.source_documents || [],
                 supportingContext: suggestion.supporting_evidence || [],
                 citations: suggestion.case_citations || [],
-                processingTimeMs: Date.now() - grpcStartTime,
-              },
+                processingTimeMs: Date.now() - grpcStartTime
+              }
             });
           });
         } catch (error: any) {
@@ -247,14 +241,12 @@ async function generateComprehensiveSuggestions({
       (async () => {
         try {
           const ragStartTime = Date.now();
-          const ragResponse = await generateEnhancedRAGSuggestions(content, reportType, {
-            context: {
-              caseId: context.caseId,
+          const ragResponse = await generateEnhancedRAGSuggestions(content, reportType, { context: {, caseId: context.caseId,
               evidenceIds: context.evidenceIds,
-              userId,
+              userId
             },
             maxSuggestions,
-            confidenceThreshold,
+            confidenceThreshold
           });
           ragResponse.suggestions.forEach((suggestion, index) => {
             allSuggestions.push({
@@ -264,14 +256,14 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-                source: 'enhanced_rag',
+               , source: 'enhanced_rag',
                 category: suggestion.metadata.category,
                 priority: suggestion.metadata.priority,
                 keywords: suggestion.metadata.contextDocuments || [],
                 supportingContext: suggestion.supportingContext,
                 citations: suggestion.relevantCitations,
-                processingTimeMs: Date.now() - ragStartTime,
-              },
+                processingTimeMs: Date.now() - ragStartTime
+              }
             });
           });
         } catch (error: any) {
@@ -288,7 +280,7 @@ async function generateComprehensiveSuggestions({
           const ollamaStartTime = Date.now();
           const ollamaSuggestions = await generateOllamaSuggestions(content, reportType, context, {
             temperature,
-            maxSuggestions,
+            maxSuggestions
           });
           ollamaSuggestions.forEach((suggestion, index) => {
             allSuggestions.push({
@@ -298,12 +290,12 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-                source: 'ollama',
+               , source: 'ollama',
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 urgency: suggestion.metadata.urgency,
-                processingTimeMs: Date.now() - ollamaStartTime,
-              },
+                processingTimeMs: Date.now() - ollamaStartTime
+              }
             });
           });
         } catch (error: any) {
@@ -332,12 +324,12 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.reasoning,
               metadata: {
-                source: 'vector_search',
+               , source: 'vector_search',
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 supportingContext: suggestion.metadata.sourceDocumentId ? [suggestion.metadata.sourceDocumentId] : [],
-                processingTimeMs: Date.now() - vectorStartTime,
-              },
+                processingTimeMs: Date.now() - vectorStartTime
+              }
             });
           });
         } catch (error: any) {
@@ -359,11 +351,11 @@ async function generateComprehensiveSuggestions({
           confidence: suggestion.confidence,
           reasoning: suggestion.reasoning,
           metadata: {
-            source: 'rule_based',
+           , source: 'rule_based',
             category: suggestion.metadata.category,
             keywords: suggestion.metadata.keywords || [],
-            processingTimeMs: Date.now() - ruleStartTime,
-          },
+            processingTimeMs: Date.now() - ruleStartTime
+          }
         });
       });
     })()
@@ -388,7 +380,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'background_check',
         confidence: 0.8,
         reasoning: 'Document mentions suspect/defendant - criminal history relevant',
-        metadata: { keywords: ['suspect', 'defendant'], category: 'legal_strategy' },
+        metadata: {, keywords: ['suspect', 'defendant'], category: 'legal_strategy' }
       });
     }
     if (contentLower.includes('evidence')) {
@@ -398,7 +390,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'evidence_validation',
         confidence: 0.85,
         reasoning: 'Evidence mentioned - authentication crucial for admissibility',
-        metadata: { keywords: ['evidence'], category: 'procedural' },
+        metadata: {, keywords: ['evidence'], category: 'procedural' }
       });
     }
     if (contentLower.includes('witness')) {
@@ -408,7 +400,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'witness_analysis',
         confidence: 0.82,
         reasoning: 'Witness mentioned - credibility assessment important',
-        metadata: { keywords: ['witness'], category: 'testimony' },
+        metadata: {, keywords: ['witness'], category: 'testimony' }
       });
     }
     if (contentLower.includes('charge') || contentLower.includes('count')) {
@@ -418,7 +410,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
         type: 'charge_analysis',
         confidence: 0.87,
         reasoning: 'Charges mentioned - element analysis required',
-        metadata: { keywords: ['charge', 'count'], category: 'legal_elements' },
+        metadata: {, keywords: ['charge', 'count'], category: 'legal_elements' }
       });
     }
   } else if (reportType === 'case_brief') {
@@ -427,14 +419,14 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'legal_summary',
       confidence: 0.75,
       reasoning: 'Case brief format requires legal issue identification',
-      metadata: { category: 'structure' },
+      metadata: {, category: 'structure' }
     });
     suggestions.push({
       content: 'Analyze any potential constitutional issues or procedural defenses.',
       type: 'constitutional_analysis',
       confidence: 0.73,
       reasoning: 'Case brief should address constitutional considerations',
-      metadata: { category: 'legal_analysis' },
+      metadata: {, category: 'legal_analysis' }
     });
   } else if (reportType === 'evidence_summary') {
     suggestions.push({
@@ -442,14 +434,14 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'evidence_organization',
       confidence: 0.78,
       reasoning: 'Evidence summary requires logical organization',
-      metadata: { category: 'organization' },
+      metadata: {, category: 'organization' }
     });
     suggestions.push({
       content: 'Note any chain of custody issues that need to be addressed.',
       type: 'custody_chain',
       confidence: 0.8,
       reasoning: 'Chain of custody critical for evidence admissibility',
-      metadata: { category: 'procedural' },
+      metadata: {, category: 'procedural' }
     });
   }
   // Generic content-based suggestions
@@ -459,7 +451,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'content_expansion',
       confidence: 0.65,
       reasoning: 'Content appears brief - additional detail may strengthen argument',
-      metadata: { contentLength: content.length, category: 'content_quality' },
+      metadata: {, contentLength: content.length, category: 'content_quality' }
     });
   }
   if (!contentLower.includes('statute') && !contentLower.includes('law')) {
@@ -468,7 +460,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'legal_citations',
       confidence: 0.7,
       reasoning: 'No legal citations found - precedents would strengthen analysis',
-      metadata: { category: 'legal_support' },
+      metadata: {, category: 'legal_support' }
     });
   }
   if (!contentLower.includes('conclusion') && content.length > 500) {
@@ -477,7 +469,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       type: 'conclusion_needed',
       confidence: 0.68,
       reasoning: 'Lengthy content without conclusion - summary would improve clarity',
-      metadata: { contentLength: content.length, category: 'structure' },
+      metadata: {, contentLength: content.length, category: 'structure' }
     });
   }
   return suggestions;
@@ -488,7 +480,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
     const embedding = (await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     })) as number[];
     // Search for similar chat messages and their recommendations
     const similarMessages = await db
@@ -496,7 +488,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
         content: chatMessages.content,
         recommendations: chatRecommendations.content,
         confidence: chatRecommendations.confidence,
-        type: chatRecommendations.recommendationType,
+        type: chatRecommendations.recommendationType
       })
       .from(chatMessages)
       .leftJoin(chatRecommendations, eq(chatMessages.id, chatRecommendations.messageId))
@@ -513,7 +505,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
         type: msg.type || 'vector_based',
         confidence: msg.confidence!,
         reasoning: 'Based on similar previous conversations',
-        metadata: { source: 'vector_search', similarContent: msg.content },
+        metadata: {, source: 'vector_search', similarContent: msg.content }
       }));
   } catch (error: any) {
     console.warn('Vector similarity search failed:', error);
@@ -530,7 +522,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'case_context',
         confidence: 0.75,
         reasoning: 'Working within specific case context',
-        metadata: { caseId: context.caseId, category: 'context_aware' },
+        metadata: {, caseId: context.caseId, category: 'context_aware' }
       });
     }
     // If we have evidence context, suggest evidence-specific analysis
@@ -540,7 +532,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'evidence_context',
         confidence: 0.78,
         reasoning: 'Specific evidence items referenced',
-        metadata: { evidenceIds: context.evidenceIds, category: 'evidence_specific' },
+        metadata: {, evidenceIds: context.evidenceIds, category: 'evidence_specific' }
       });
     }
     // If we have previous messages, suggest consistency
@@ -550,7 +542,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'consistency_check',
         confidence: 0.72,
         reasoning: 'Building on previous conversation context',
-        metadata: { previousMessageCount: context.previousMessages.length, category: 'consistency' },
+        metadata: {, previousMessageCount: context.previousMessages.length, category: `consistency` }
       });
     }
   } catch (error: any) {
@@ -584,7 +576,7 @@ function rankSuggestionsByQuality(suggestions: UnifiedSuggestion[], confidenceTh
         'protobuf_grpc': 0.95,
         'ollama': 0.9,
         'vector_search': 0.8,
-        'rule_based': 0.6,
+        'rule_based': 0.6
       };
       const scoreA =
         a.confidence * 0.5 + (a.metadata.priority || 1) * 0.2 + (sourceWeights[a.metadata.source] || 0.5) * 0.3;
@@ -599,21 +591,19 @@ async function storeRecommendations({
   content,
   suggestions,
   recommendationId,
-  reportType,
-}: {
-  userId: string;
-  sessionId: string;
+  reportType
+}: { userId: string;, sessionId: string;
   content: string;
   suggestions: UnifiedSuggestion[];
   recommendationId: string;
-  reportType: string;
+ , reportType: string;
 }): Promise<any> {
   try {
     // Generate embedding for the content
     const embedding = (await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     })) as number[];
     // Store the message
     const messageResult = await db
@@ -629,8 +619,8 @@ async function storeRecommendations({
           suggestionRequestId: recommendationId,
           servicesUsed: suggestions.map(s => s.metadata.source),
           totalSuggestions: suggestions.length,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       })
       .returning({ id: chatMessages.id });
     const messageId = messageResult[0]?.id;
@@ -656,8 +646,8 @@ async function storeRecommendations({
             urgency: suggestion.metadata.urgency,
             processingTimeMs: suggestion.metadata.processingTimeMs,
             rank: i + 1,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
     }

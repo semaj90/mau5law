@@ -11,9 +11,7 @@ export type Party = {
   name: string;
   role?: string;
   contact?: string;
-  metadata?: {
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+  metadata?: { riskLevel: 'low' | 'medium' | 'high' | 'critical';, confidence: number;
     practiceArea: string[];
     jurisdiction: string;
     dateCreated: string;
@@ -23,14 +21,10 @@ export type Party = {
 };
 
 // Add missing LegalDocumentJSON so signatures compile
-export interface LegalDocumentJSON {
-  caseId: string;
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
+export interface LegalDocumentJSON { caseId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation';
   title: string;
   content: string;
-  metadata: {
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+  metadata: { riskLevel: 'low' | 'medium' | 'high' | 'critical';, confidence: number;
     practiceArea: string[];
     jurisdiction: string;
     dateCreated: string;
@@ -39,9 +33,7 @@ export interface LegalDocumentJSON {
   embeddings?: number[];
 }
 
-export type SIMDParsingMetrics = {
-  parseTime: number;
-  validationTime: number;
+export type SIMDParsingMetrics = { parseTime: number;, validationTime: number;
   compressionTime: number;
   compressionRatio: number;
   throughput: number; // documents per second
@@ -64,7 +56,7 @@ export class SIMDJSONAccelerator {
     validationTime: 0,
     compressionTime: 0,
     compressionRatio: 0,
-    throughput: 0,
+    throughput: 0
   };
   async initialize(): Promise<void> {
     try {
@@ -74,13 +66,11 @@ export class SIMDJSONAccelerator {
         maximum: 256, // 256 * 64KB = 16MB
       });
       // Set up imports for WebAssembly module
-      const imports = {
-        js: {
-          memory: this.memory,
+      const imports = { js: {, memory: this.memory,
           log: (_value: number) => {
             console.log(`🔍 WASM Log: ${_value}`);
-          },
-        },
+          }
+        }
       };
       // Compile and instantiate WebAssembly module
       const wasmCode = await this.loadWasmCode();
@@ -189,13 +179,13 @@ export class SIMDJSONAccelerator {
    * Compress embeddings using SIMD operations
    */ async compressDocumentEmbeddings(
     embeddings: number[]
-  ): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
+  ): Promise<{ compressed: Uint8Array;, compressionRatio: number }> {
     const startTime = performance.now();
     if (!this.compressEmbeddings || !this.memory) {
       console.warn('⚠️ SIMD compression not available');
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
     }
     try {
@@ -218,7 +208,7 @@ export class SIMDJSONAccelerator {
       console.error('❌ SIMD compression failed:', error);
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
     }
   }
@@ -256,7 +246,7 @@ export class SIMDJSONAccelerator {
       validationTime: 0,
       compressionTime: 0,
       compressionRatio: 0,
-      throughput: 0,
+      throughput: 0
     };
   }
   // Private helper methods
@@ -292,7 +282,7 @@ export class SIMDJSONAccelerator {
       }
       console.warn('⚠️ readParsedJSON: parsed object missing required fields, falling back to mock');
     } catch (err) {
-      console.warn('⚠️ readParsedJSON: failed to read structured data from WASM memory:', err);
+      console.warn('⚠️ readParsedJSON: failed to read structured data from WASM; memory:', err);
     }
 
     // Fallbacks: server (SSR) and client-friendly mocks
@@ -309,8 +299,8 @@ export class SIMDJSONAccelerator {
           practiceArea: [],
           jurisdiction: '',
           dateCreated: new Date().toISOString(),
-          parties: [],
-        },
+          parties: []
+        }
       };
     }
 
@@ -326,8 +316,8 @@ export class SIMDJSONAccelerator {
         practiceArea: ['general'],
         jurisdiction: 'unknown',
         dateCreated: new Date().toISOString(),
-        parties: [],
-      },
+        parties: []
+      }
     };
   }
   private readMetadataFromMemory(_offset: number): LegalDocumentJSON['metadata'] {
@@ -338,7 +328,7 @@ export class SIMDJSONAccelerator {
       practiceArea: ['corporate'],
       jurisdiction: 'federal',
       dateCreated: '2024-01-01',
-      parties: [],
+      parties: []
     };
   }
   private validateDocumentJS(jsonString: string): boolean {
@@ -360,7 +350,7 @@ export class SIMDJSONAccelerator {
         practiceArea: [],
         jurisdiction: '',
         dateCreated: '',
-        parties: [],
+        parties: []
       };
     }
   }
@@ -464,7 +454,7 @@ export async function validateLegalDocumentWithSIMD(jsonString: string): Promise
 
 export async function compressEmbeddingsWithSIMD(
   embeddings: number[]
-): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
+): Promise<{ compressed: Uint8Array;, compressionRatio: number }> {
   if (isWASMReady) return simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
   // Fallback: encode embeddings as float32 bytes
   const float32 = new Float32Array(embeddings);

@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
           updatedAt: new Date('2024-01-16'),
           caseId: 'case-001',
           wordCount: 1250,
-          content: 'Sample motion content...',
+          content: 'Sample motion content...'
         },
         {
           id: 'doc-2',
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
           updatedAt: new Date('2024-01-15'),
           caseId: 'case-002',
           wordCount: 3500,
-          content: 'Sample brief content...',
+          content: 'Sample brief content...'
         },
       ]);
     }
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Calculate word count for each document
     const documentsWithWordCount = documents.map(doc => ({
       ...doc,
-      wordCount: doc.content ? doc.content.split(/\s+/).length : 0,
+      wordCount: doc.content ? doc.content.split(/\s+/).length : 0
     }));
     return json(documentsWithWordCount);
   } catch (error: any) {
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const data: LegalDocument = await request.json();
     // Validate required fields
     if (!data.title || !data.content || !data.documentType) {
-      return json({ error: 'Missing required fields: title, content, documentType' }, { status: 400 });
+      return json({ error: 'Missing required, fields: title, content, documentType' }, { status: 400 });
     }
     // Handle case where schema is not available
     if (!legalDocuments) {
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ...data,
         createdAt: new Date(),
         updatedAt: new Date(),
-        wordCount: data.content.split(/\s+/).length,
+        wordCount: data.content.split(/\s+/).length
       });
     }
     // Calculate word count
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         wordCount,
         metadata: data.metadata || {},
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .returning();
     const newDocument = Array.isArray(result) ? result[0] : result;
@@ -158,13 +158,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         id: documentId,
         ...data,
         updatedAt: new Date(),
-        wordCount: data.content ? data.content.split(/\s+/).length : 0,
+        wordCount: data.content ? data.content.split(/\s+/).length : 0
       });
     }
     // Calculate word count if content is provided
     const updateData: any = {
       ...data,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     if (data.content) {
       updateData.wordCount = data.content.split(/\s+/).length;
@@ -205,6 +205,6 @@ export const DELETE: RequestHandler = async ({ params }) => {
     return json({ success: true });
   } catch (error: any) {
     console.error('Error deleting legal document:', error);
-    return json({ error: 'Failed to delete legal document' }, { status: 500 });
+    return json({ error: `Failed to delete legal document` }, { status: 500 });
   }
 };

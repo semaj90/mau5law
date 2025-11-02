@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 import { Pool } from 'pg';
 
 const pgPool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/deeds',
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/deeds'
 });
 
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
@@ -14,9 +14,7 @@ const QDRANT_COLLECTION = process.env.QDRANT_COLLECTION || 'documents';
 const VECTOR_DB = (process.env.VECTOR_DB || 'pgvector').toLowerCase();
 
 /* --------- Interfaces (clean, no stray braces) --------- */
-export interface DocumentProcessingConfig {
-  enableOCR: boolean;
-  enableLegalAnalysis: boolean;
+export interface DocumentProcessingConfig { enableOCR: boolean;, enableLegalAnalysis: boolean;
   enableEmbeddings: boolean;
   enableSummarization: boolean;
   enableMinIOStorage: boolean;
@@ -30,17 +28,13 @@ export interface DocumentProcessingConfig {
   outputFormat: 'json' | 'structured' | 'summary' | 'full';
 }
 
-export interface LegalEntity {
-  text: string;
-  type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
+export interface LegalEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
   confidence: number;
-  position: { start: number; end: number };
+  position: { start: number;, end: number };
   context?: string;
 }
 
-export interface LegalEntityResult {
-  entities: LegalEntity[];
-  concepts: string[];
+export interface LegalEntityResult { entities: LegalEntity[];, concepts: string[];
   documentType: string;
   jurisdiction: string;
   confidentialityLevel: string;
@@ -48,9 +42,7 @@ export interface LegalEntityResult {
   relevanceScore: number;
 }
 
-export interface TextChunk {
-  id: string;
-  content: string;
+export interface TextChunk { id: string;, content: string;
   startIndex: number;
   endIndex: number;
   pageNumber?: number;
@@ -61,49 +53,39 @@ export interface TextChunk {
 
 export interface DocumentStructure {
   title?: string;
-  headers: Array<{ level: number; text: string; position: number; pageNumber?: number }>;
-  sections: Array<{
-    id: string;
-    title: string;
+  headers: Array<{ level: number; text: string;, position: number; pageNumber?: number }>;
+  sections: Array<{ id: string;, title: string;
     content: string;
     subsections: Array<Record<string, unknown>>;
     type: string;
-    pageRange: { start: number; end: number };
+    pageRange: { start: number;, end: number };
   }>;
   footnotes: string[];
-  references: Array<{ text: string; type: string; citation?: string; url?: string; confidence: number }>;
+  references: Array<{ text: string; type: string; citation?: string; url?: string;, confidence: number }>;
   signatures: Array<Record<string, unknown>>;
   tables: Array<Record<string, unknown>>;
   images: Array<Record<string, unknown>>;
 }
 
-export interface RiskFactor {
-  type: string;
-  description: string;
+export interface RiskFactor { type: string;, description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   likelihood: 'unlikely' | 'possible' | 'likely' | 'certain';
   mitigation?: string;
 }
 
-export interface RiskAssessment {
-  overallRisk: 'low' | 'medium' | 'high' | 'critical';
-  riskFactors: RiskFactor[];
+export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: RiskFactor[];
   recommendations: string[];
   urgency: 'routine' | 'priority' | 'urgent' | 'critical';
 }
 
-export interface ComplianceFlag {
-  type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access';
-  description: string;
+export interface ComplianceFlag { type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access';, description: string;
   severity: 'info' | 'warning' | 'error' | 'critical';
   regulation?: string;
   action_required: boolean;
   deadline?: string;
 }
 
-export interface DocumentSection {
-  id: string;
-  title: string;
+export interface DocumentSection { id: string;, title: string;
   content: string;
   summary: string;
   keyPoints: string[];
@@ -111,24 +93,18 @@ export interface DocumentSection {
   pageNumbers: number[];
 }
 
-export interface TimelineEvent {
-  date: string;
-  event: string;
+export interface TimelineEvent { date: string;, event: string;
   type: 'deadline' | 'milestone' | 'obligation' | 'right' | 'notice';
   importance: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface ProcessingError {
-  stage: string;
-  error: string;
+export interface ProcessingError { stage: string;, error: string;
   severity: 'warning' | 'error' | 'critical';
   timestamp: string;
   recovery_attempted: boolean;
 }
 
-export interface PerformanceMetrics {
-  ocrTime: number;
-  analysisTime: number;
+export interface PerformanceMetrics { ocrTime: number;, analysisTime: number;
   embeddingTime: number;
   summarizationTime: number;
   storageTime: number;
@@ -146,9 +122,7 @@ export interface ComplianceMetadata {
   redactionRequired: boolean;
 }
 
-export interface ChainOfCustodyEntry {
-  id: string;
-  timestamp: string;
+export interface ChainOfCustodyEntry { id: string;, timestamp: string;
   action: 'created' | 'accessed' | 'modified' | 'transferred' | 'archived';
   user: string;
   location: string;
@@ -156,56 +130,42 @@ export interface ChainOfCustodyEntry {
   notes?: string;
 }
 
-export interface AccessLogEntry {
-  timestamp: string;
-  user: string;
+export interface AccessLogEntry { timestamp: string;, user: string;
   action: 'view' | 'download' | 'edit' | 'print' | 'share';
   ipAddress: string;
   userAgent: string;
   duration?: number;
 }
 
-export interface AccessControlInfo {
-  accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged';
-  authorizedUsers: string[];
+export interface AccessControlInfo { accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged';, authorizedUsers: string[];
   accessLog: AccessLogEntry[];
   encryptionKey?: string;
   expirationDate?: string;
 }
 
-export interface ProcessingResult {
-  success: boolean;
-  documentId: string;
+export interface ProcessingResult { success: boolean;, documentId: string;
   processingId: string;
-  ocr: {
-    extractedText: string;
-    confidence: number;
+  ocr: { extractedText: string;, confidence: number;
     processingMethod: 'tesseract' | 'azure_ocr' | 'google_vision' | 'hybrid' | 'enhanced' | 'none';
     pageCount: number;
     languageDetected: string;
     legal?: LegalEntityResult;
     quality: 'excellent' | 'good' | 'fair' | 'poor';
   };
-  embeddings: {
-    chunks: TextChunk[];
-    vectors: number[][];
+  embeddings: { chunks: TextChunk[];, vectors: number[][];
     indexedCount: number;
     embeddingModel: string;
     dimensions: number;
     searchReady: boolean;
   };
-  analysis: {
-    summary: string;
-    keywords: string[];
+  analysis: { summary: string;, keywords: string[];
     complexity: 'low' | 'medium' | 'high' | 'expert';
     legalDomains: string[];
     documentStructure: DocumentStructure;
     riskAssessment?: RiskAssessment;
     complianceFlags?: ComplianceFlag[];
   };
-  summarization: {
-    sections: DocumentSection[];
-    keyInsights: string[];
+  summarization: { sections: DocumentSection[];, keyInsights: string[];
     confidence: number;
     executiveSummary: string;
     actionItems?: string[];
@@ -218,9 +178,7 @@ export interface ProcessingResult {
     backupLocation?: string;
     encryptionStatus: boolean;
   };
-  metadata: {
-    processingTime: number;
-    stagesCompleted: string[];
+  metadata: { processingTime: number;, stagesCompleted: string[];
     errors: ProcessingError[];
     warnings: string[];
     performance: PerformanceMetrics;
@@ -300,7 +258,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
       error: message,
       severity,
       timestamp: new Date().toISOString(),
-      recovery_attempted: false,
+      recovery_attempted: false
     });
   }
 
@@ -324,7 +282,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
     // Move helper to function-body root to satisfy TS rules
     const performLegalAnalysis = async (
       text: string
-    ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> => {
+    ): Promise<{ summary: string; keywords: string[];, legalDomains: string[] }> => {
       if (!text) return { summary: '', keywords: [], legalDomains: [] };
       const svc = legalNLP as unknown as LegalNLPService;
       if (typeof svc?.analyzeLegalDocument === 'function') {
@@ -338,7 +296,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         return {
           summary: res?.summary ?? String(res ?? '').slice(0, 1000),
           keywords: (res?.keywords ?? []) as string[],
-          legalDomains: (res?.legalDomains ?? []) as string[],
+          legalDomains: (res?.legalDomains ?? []) as string[]
         };
       }
       const summary = String(text).slice(0, 1000);
@@ -365,7 +323,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         processingMethod: 'none',
         pageCount: 0,
         languageDetected: 'en',
-        quality: 'poor',
+        quality: 'poor'
       },
       embeddings: {
         chunks: [],
@@ -373,7 +331,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         indexedCount: 0,
         embeddingModel: '',
         dimensions: 0,
-        searchReady: false,
+        searchReady: false
       },
       analysis: {
         summary: '',
@@ -387,10 +345,10 @@ class UnifiedDocumentProcessor extends EventEmitter {
           references: [],
           signatures: [],
           tables: [],
-          images: [],
-        },
+          images: []
+        }
       },
-      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: '' },
+      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },
       storage: { documentHash: '', encryptionStatus: false },
       metadata: {
         processingTime: 0,
@@ -405,16 +363,16 @@ class UnifiedDocumentProcessor extends EventEmitter {
           storageTime: 0,
           totalTime: 0,
           memoryUsage: 0,
-          cpuUsage: 0,
+          cpuUsage: 0
         },
         compliance: {
           classificationLevel: 'internal',
           accessRestrictions: [],
           auditRequired: true,
           encryptionRequired: config.priority === 'critical',
-          redactionRequired: false,
-        },
-      },
+          redactionRequired: false
+        }
+      }
     };
 
     try {
@@ -431,8 +389,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           processingMethod: 'tesseract',
           pageCount: 1,
           languageDetected: 'en',
-          quality: 'good',
-        };
+          quality: `good` };
         baseResult.metadata.performance.ocrTime = Date.now() - t0;
         stagesCompleted.push('OCR');
       }
@@ -465,7 +422,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
             startIndex: i * (config.chunkSize || 500),
             endIndex: (i + 1) * (config.chunkSize || 500),
             confidence: 0.9,
-            metadata: { documentId, chunkIndex: i, ...(metadata || {}) },
+            metadata: { documentId, chunkIndex: i, ...(metadata || {}) }
           });
         }
         baseResult.embeddings = {
@@ -474,7 +431,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           indexedCount: vectors.length,
           embeddingModel: 'nomic-embed-text',
           dimensions: vectors[0]?.length || 384,
-          searchReady: vectors.length > 0,
+          searchReady: vectors.length > 0
         };
         baseResult.metadata.performance.embeddingTime = Date.now() - t2;
         stagesCompleted.push('Embeddings');
@@ -487,7 +444,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           sections: [],
           keyInsights: [],
           confidence: 0.8,
-          executiveSummary: baseResult.analysis.summary || baseResult.ocr.extractedText.substring(0, 200),
+          executiveSummary: baseResult.analysis.summary || baseResult.ocr.extractedText.substring(0, 200)
         };
         baseResult.metadata.performance.summarizationTime = Date.now() - t3;
         stagesCompleted.push('Summarization');
@@ -501,7 +458,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           encryptionStatus: false,
           minioUrl: undefined,
           databaseId: undefined,
-          backupLocation: undefined,
+          backupLocation: undefined
         };
         baseResult.metadata.performance.storageTime = Date.now() - t4;
         stagesCompleted.push('Storage');
@@ -516,7 +473,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         documentId,
         success: baseResult.success,
         stagesCompleted: stagesCompleted.length,
-        errors: errors.length,
+        errors: errors.length
       });
       return baseResult;
     } catch (err: any) {
@@ -544,9 +501,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
       includeMetadata?: boolean;
       filter?: Record<string, unknown>;
     } = {}
-  ): Promise<{
-    results: Array<{
-      content: string;
+  ): Promise<{ results: Array<{, content: string;
       similarity: number;
       metadata?: Record<string, unknown> | null;
       documentId?: string;
@@ -564,12 +519,12 @@ class UnifiedDocumentProcessor extends EventEmitter {
         similarity: typeof r.score === 'number' ? r.score : (r.similarity ?? 0),
         metadata: options.includeMetadata ? (r.payload ?? r.metadata ?? null) : undefined,
         documentId: (r.payload?.documentId as string) ?? r.documentId,
-        chunkId: (r.payload?.chunkId as string) ?? r.chunkId,
+        chunkId: (r.payload?.chunkId as string) ?? r.chunkId
       }));
       return {
         results,
         processingTime: Date.now() - startTime,
-        totalMatches: results.length,
+        totalMatches: results.length
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -590,12 +545,12 @@ class UnifiedDocumentProcessor extends EventEmitter {
           vector: queryEmbedding,
           limit,
           with_payload: true,
-          filter: options?.filter || undefined,
+          filter: options?.filter || undefined
         };
         const res = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(body)
         });
 
         // --- Safe JSON parsing and response-shape fallbacks ---
@@ -631,7 +586,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         return (resultArray || []).map((row: QdrantHit) => ({
           id: row.id ?? null,
           payload: (row.payload ?? null) as Record<string, unknown> | null,
-          score: typeof row.score === 'number' ? row.score : (row.value ?? 0),
+          score: typeof row.score === 'number' ? row.score : (row.value ?? 0)
         }));
       } else {
         // pgvector approach: use parameterized query and pass the embedding as text literal for casting
@@ -639,7 +594,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         const queryText = `
           SELECT document_id, chunk_id, content, embedding <=> $1::vector AS similarity, metadata
           FROM document_embeddings
-          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : ''}
+          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : `` }
           ORDER BY similarity ASC
           LIMIT $2
         `;
@@ -654,7 +609,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           chunkId: r.chunk_id,
           content: r.content,
           similarity: r.similarity,
-          metadata: r.metadata ?? null,
+          metadata: r.metadata ?? null
         }));
       }
     } catch (err) {
@@ -664,9 +619,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
   }
 
   /* Basic health check helper (keeps shape of original API) */
-  public async healthCheck(): Promise<{
-    overall: boolean;
-    services: Record<string, boolean>;
+  public async healthCheck(): Promise<{ overall: boolean;, services: Record<string, boolean>;
     details: Record<string, unknown>;
   }> {
     // Avoid reading private properties on external service; use runtime safe checks
@@ -679,13 +632,13 @@ class UnifiedDocumentProcessor extends EventEmitter {
         llm: true,
         storage: true,
         legal_nlp: ready,
-        embeddings: ready,
+        embeddings: ready
       },
       details: {
         timestamp: new Date().toISOString(),
         activeProcessors: this.activeProcessors.size,
-        queueLength: this.processingQueue.size,
-      },
+        queueLength: this.processingQueue.size
+      }
     };
   }
 
@@ -694,7 +647,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
       activeProcessors: this.activeProcessors.size,
       queueLength: this.processingQueue.size,
       maxConcurrent: this.maxConcurrentProcessing,
-      initialized: this.initialized,
+      initialized: this.initialized
     };
   }
 
@@ -713,9 +666,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
 export const unifiedDocumentProcessor = UnifiedDocumentProcessor.getInstance();
 
 /* Utility factories */
-export const documentProcessingUtils = {
-  createDefaultConfig: (priority: 'low' | 'medium' | 'high' | 'critical' = 'medium'): DocumentProcessingConfig => ({
-    enableOCR: true,
+export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' | 'medium' | 'high' | 'critical' = 'medium'): DocumentProcessingConfig => ({, enableOCR: true,
     enableLegalAnalysis: true,
     enableEmbeddings: true,
     enableSummarization: priority !== 'low',
@@ -726,10 +677,9 @@ export const documentProcessingUtils = {
     chunkSize: 500,
     confidence: 0.7,
     priority,
-    outputFormat: 'full',
+    outputFormat: 'full'
   }),
-  createLegalConfig: (
-    documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
+  createLegalConfig: (; documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
   ): DocumentProcessingConfig => ({
     enableOCR: true,
     enableLegalAnalysis: true,
@@ -743,9 +693,8 @@ export const documentProcessingUtils = {
     confidence: 0.8,
     priority: documentType === 'litigation' ? 'critical' : 'high',
     legalContext: documentType,
-    outputFormat: 'full',
-  }),
-  validateResult: (result: ProcessingResult): { valid: boolean; issues: string[] } => {
+    outputFormat: `full` }),
+  validateResult: (result: ProcessingResult): { valid: boolean;, issues: string[] } => {
     const issues: string[] = [];
     if (!result.documentId) issues.push('Missing document ID');
     if (result.success && result.metadata.stagesCompleted.length === 0)
@@ -764,7 +713,7 @@ export const documentProcessingUtils = {
     const timeBonus = Math.max(0, 100 - totalTime / 1000);
     const errorPenalty = errors * 10;
     return Math.max(0, Math.min(100, baseScore + timeBonus - errorPenalty));
-  },
+  }
 };
 
 /* Add search/result types to remove `any` usage */
@@ -795,9 +744,7 @@ interface QdrantResponse {
 }
 
 // <-- NEW: typed row shape returned by pg query
-interface PgRow {
-  document_id: string;
-  chunk_id: string;
+interface PgRow { document_id: string;, chunk_id: string;
   content: string;
   similarity: number;
   metadata?: Record<string, unknown> | null;
@@ -810,7 +757,7 @@ export interface SummarizeResult {
   legalDomains?: string[];
   confidence?: number;
   highlights?: string[]; // optional extracted highlights
-  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number } }>;
+  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number;, end: number } }>;
   raw?: Record<string, unknown>; // preserve additional provider-specific fields
 }
 
@@ -820,8 +767,8 @@ export interface LegalNLPService {
   splitText?: (text: string, chunkSize?: number, overlap?: number) => string[] | Promise<string[]>;
   embedText?: (text: string) => number[] | Promise<number[]>;
   embed?: (text: string) => number[] | Promise<number[]>;
-  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
-  analyze?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
+  analyze?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
   summarize?: (text: string) => Promise<SummarizeResult>; // <-- typed result
   isReady?: boolean;
   initialized?: boolean;
@@ -845,7 +792,7 @@ export const ultraJSONParser: UltraJSONParser = {
     } catch {
       return null;
     }
-  },
+  }
 };
 
 export interface WasmClusteringService {
@@ -861,7 +808,7 @@ export const wasmClusteringService: WasmClusteringService = {
   async loadModule(_url: string) {
     // noop stub: real implementation should load/instantiate WASM
     return;
-  },
+  }
 };
 
 export interface NesGPUBridge {
@@ -885,7 +832,7 @@ export const nesGPUBridge: NesGPUBridge = {
   },
   isAvailable() {
     return false; // stub - replace with runtime GPU detection
-  },
+  }
 };
 
 // Ollama embeddings helper (server-side safe wrapper)
@@ -900,8 +847,8 @@ export const ollamaClient: OllamaClient = {
     try {
       const res = await fetch(`${url}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest', text }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, model: process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest', text })
       });
       if (!res.ok) throw new Error(`Ollama embed failed ${res.status}`);
       const body = await res.json().catch(() => null);
@@ -922,7 +869,7 @@ export const ollamaClient: OllamaClient = {
     } catch {
       return false;
     }
-  },
+  }
 };
 
 // Redis cache helper with in-memory fallback (typed)
@@ -957,7 +904,7 @@ export const redisCacheService: RedisCacheService = {
 
   async ping() {
     return true; // in-memory always healthy; real Redis client should implement ping
-  },
+  }
 };
 
 import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
@@ -966,13 +913,13 @@ import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
 export interface QdrantIndexer {
   upsert(
     collection: string,
-    points: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<boolean>;
   search(
     collection: string,
     vector: number[],
     limit?: number
-  ): Promise<Array<{ id: string | number; score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string | number;, score: number; payload?: Record<string, unknown> }>>;
 }
 
 // Try to create a typed adapter when QDRANT is configured; fallback to the in-file HTTP helper
@@ -991,8 +938,8 @@ export const qdrantIndexer: QdrantIndexer = {
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points?wait=true`;
       const res = await fetch(url, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ points })
       });
       return res.ok;
     } catch (e) {
@@ -1009,8 +956,8 @@ export const qdrantIndexer: QdrantIndexer = {
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points/search`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vector, limit, with_payload: true }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ vector, limit, with_payload: true })
       });
       if (!res.ok) return [];
       const jb = await res.json().catch(() => null);
@@ -1024,13 +971,13 @@ export const qdrantIndexer: QdrantIndexer = {
       return valid.map((r: QdrantHit) => ({
         id: r.id,
         score: typeof r.score === 'number' ? r.score : (r.value ?? 0),
-        payload: r.payload ?? undefined,
+        payload: r.payload ?? undefined
       }));
     } catch (e) {
       console.warn('qdrant search failed', e);
       return [];
     }
-  },
+  }
 };
 
 // Postgres JSONB persistence helper (typed)
@@ -1061,7 +1008,7 @@ export const pgPersistence: PostgresPersistence = {
       console.warn('pgPersistence.getDocument failed', err);
       return null;
     }
-  },
+  }
 };
 
 // Ensure a single default export and remove trailing/malformed tokens

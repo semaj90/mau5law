@@ -18,9 +18,7 @@ import type {
 } from '$lib/types/ingest';
 
 // Define types for jobs and errors in the AI agent store
-interface AiAgentJob {
-  id: string;
-  type: string;
+interface AiAgentJob { id: string;, type: string;
   status: 'pending' | 'completed' | 'failed';
   input: DocumentIngestRequest | BatchIngestRequest | { documents: DocumentIngestRequest[] };
   output?: IngestApiResponse | BatchIngestApiResponse;
@@ -30,9 +28,7 @@ interface AiAgentJob {
   retryCount: number;
 }
 
-interface AiAgentError {
-  id: string;
-  type: string;
+interface AiAgentError { id: string;, type: string;
   message: string;
   timestamp: Date;
   context?: any;
@@ -41,13 +37,9 @@ interface AiAgentError {
 }
 
 // Assuming a structure for aiAgentStore state based on usage
-interface AiAgentStoreState {
-  isProcessing: boolean;
-  currentTask: string | null;
+interface AiAgentStoreState { isProcessing: boolean;, currentTask: string | null;
   activeSessionId: string | null;
-  vectorStore: {
-    documentCount: number;
-    lastIndexUpdate: Date | null;
+  vectorStore: { documentCount: number;, lastIndexUpdate: Date | null;
     isIndexed: boolean;
   };
   completedJobs: AiAgentJob[];
@@ -70,14 +62,10 @@ interface IngestApiResponse {
 interface BatchIngestApiResponse {
   success: boolean;
   error?: string;
-  batch_summary: {
-    processed: number;
-    failed: number;
+  batch_summary: { processed: number;, failed: number;
     success_rate: string;
   };
-  results: Array<{
-    document_id: string;
-    embedding_id: string;
+  results: Array<{ document_id: string;, embedding_id: string;
     process_time_ms: number;
   }>;
   performance?: any;
@@ -102,7 +90,7 @@ export class EnhancedIngestService {
     aiAgentStore.update((state: AiAgentStoreState) => ({
       ...state,
       isProcessing: true,
-      currentTask: 'document_ingest',
+      currentTask: 'document_ingest'
     }));
     try {
       // Generate embedding preview using your existing embedding service
@@ -127,8 +115,8 @@ export class EnhancedIngestService {
           // Integrate with your AI agent metadata patterns
           ai_agent_session: aiAgent.activeSessionId,
           embedding_preview: embeddingPreview,
-          processing_mode: 'enhanced_ai_integration',
-        },
+          processing_mode: 'enhanced_ai_integration'
+        }
       }) as IngestApiResponse; // Cast to IngestApiResponse
 
       if (!apiResponse.success) {
@@ -176,7 +164,7 @@ export class EnhancedIngestService {
           {
             id: `ingest_${Date.now()}`,
             type: 'processing',
-            message: `Document ingest failed: ${(error instanceof Error) ? error.message : String(error)}`,
+            message: `Document ingest; failed: ${(error instanceof Error) ? error.message : String(error)}`,
             timestamp: new Date(),
             context: { request },
             resolved: false,
@@ -204,7 +192,7 @@ export class EnhancedIngestService {
           id: batchId,
           type: 'batch_ingest',
           status: 'pending',
-          input: { documents: requests },
+          input: {, documents: requests },
           startTime: new Date(),
           retryCount: 0
         }
@@ -220,9 +208,9 @@ export class EnhancedIngestService {
             ...doc.metadata,
             batch_id: batchId,
             batch_index: index,
-            ai_agent_session: aiAgent.activeSessionId,
-          },
-        })),
+            ai_agent_session: aiAgent.activeSessionId
+          }
+        }))
       };
 
       // Re-added the response assignment
@@ -314,7 +302,7 @@ export class EnhancedIngestService {
             content: section.content,
             index: chunks.length,
             metadata: {
-              section_type: section.type,
+             , section_type: section.type,
               legal_context: section.context,
               preserves_legal_structure: true
             }
@@ -330,7 +318,7 @@ export class EnhancedIngestService {
                 section_type: section.type,
                 legal_context: section.context,
                 sub_chunk: true,
-                parent_section: section.title,
+                parent_section: section.title
               }
             };
           }));
@@ -381,10 +369,9 @@ export class EnhancedIngestService {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify(data),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
@@ -431,7 +418,7 @@ export class EnhancedIngestService {
               title: currentSection.title, // Use title from previous section or default
               content: precedingContent,
               type: currentSection.type,
-              context: currentSection.context,
+              context: currentSection.context
             });
           }
         }
@@ -467,8 +454,7 @@ export class EnhancedIngestService {
         title: 'Full Document',
         content: content.trim(),
         type: 'general',
-        context: 'legal_document'
-      });
+        context: `legal_document` });
     }
 
     return sections;
@@ -546,7 +532,7 @@ export class EnhancedIngestService {
             content: currentChunkContent,
             index: chunks.length,
             metadata: {
-              chunk_type: 'standard',
+             , chunk_type: 'standard',
               overlap_size: overlap,
               preserved_sentences: preserveSentences
             }
@@ -583,7 +569,7 @@ export class EnhancedIngestService {
         content: currentChunkContent,
         index: chunks.length,
         metadata: {
-          chunk_type: 'standard',
+         , chunk_type: 'standard',
           overlap_size: overlap,
           preserved_sentences: preserveSentences
         }

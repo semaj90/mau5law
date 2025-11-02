@@ -18,7 +18,7 @@ function getErrorInfo(err: any) {
     return {
       message: typeof obj.message === 'string' ? obj.message : JSON.stringify(obj),
       code: typeof obj.code === 'string' ? obj.code : undefined,
-      detail: typeof obj.detail === 'string' ? obj.detail : undefined,
+      detail: typeof obj.detail === 'string' ? obj.detail : undefined
     };
   }
   return { message: String(err), code: undefined, detail: undefined };
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
         last_name: users.last_name,
         role: users.role,
         is_active: users.is_active,
-        created_at: users.created_at,
+        created_at: users.created_at
       })
       .from(users)
       .limit(limit);
@@ -49,11 +49,11 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       message: 'PostgreSQL CRUD test successful',
       data: {
-        connection_test: connectionTest,
+       , connection_test: connectionTest,
         users: userList,
-        count: userList.length,
+        count: userList.length
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('[CRUD Test] Database error:', err);
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         message: 'Database connection failed',
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         role,
         hashed_password: 'test_password_hash', // In real app, use proper hashing
         is_active: true,
-        email_verified: false,
+        email_verified: false
       })
       .returning({
         id: users.id,
@@ -98,14 +98,14 @@ export const POST: RequestHandler = async ({ request }) => {
         first_name: users.first_name,
         last_name: users.last_name,
         role: users.role,
-        created_at: users.created_at,
+        created_at: users.created_at
       });
     return json(
       {
         success: true,
         message: 'User created successfully',
         data: newUser[0],
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           message: 'User with this email or username already exists',
           error: detail ?? message,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 409 }
       );
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         message: 'Failed to create user',
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

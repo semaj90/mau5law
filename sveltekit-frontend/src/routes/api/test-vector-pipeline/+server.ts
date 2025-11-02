@@ -101,8 +101,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.ollama = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Connection failed'
-      }
+        error: err instanceof Error ? err.message: `Connection failed` }
       throw new Error(`Ollama connection failed: ${err}`)
     }
   }
@@ -115,14 +114,13 @@ class VectorPipelineTest {
         email: 'test@vector-pipeline.com',
         name: 'Vector Pipeline Test User',
         role: 'prosecutor',
-        passwordHash: 'test-hash-not-real'
-      }).onConflictDoNothing().returning()
+        passwordHash: `test-hash-not-real` }).onConflictDoNothing().returning()
       // Create test cases
       const testCases = []
       for (const doc of testConfig.testDocuments) {
         const [testCase] = await db.insert(cases).values({
           title: doc.caseTitle,
-          description: `Test case for: ${doc.title}`,
+          description: `Test case; for: ${doc.title}`,
           status: 'active',
           priority: 'medium',
           createdBy: testUser.id
@@ -141,8 +139,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.testData = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Test data creation failed'
-      }
+        error: err instanceof Error ? err.message: `Test data creation failed` }
       throw err
     }
   }
@@ -158,7 +155,7 @@ class VectorPipelineTest {
         const [document] = await db.insert(documents).values({
           caseId: testCase.id,
           filename: `${doc.title}.txt`,
-          filePath: `/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,
+          filePath: '/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,
           extractedText: doc.content,
           createdBy: this.testResults.testUserId
         }).returning()
@@ -171,9 +168,9 @@ class VectorPipelineTest {
           content: doc.content,
           embedding,
           metadata: {
-            title: doc.title,
+           , title: doc.title,
             testDocument: true,
-            embeddingModel: testConfig.embeddingModel,
+            embeddingModel: testConfig.embeddingModel
           }
         })
         embeddedDocs.push({
@@ -193,8 +190,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.embedding = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Embedding failed'
-      }
+        error: err instanceof Error ? err.message: `Embedding failed` }
       throw err
     }
   }
@@ -249,8 +245,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.search = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Search failed'
-      }
+        error: err instanceof Error ? err.message: `Search failed` }
       throw err
     }
   }
@@ -272,8 +267,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.mcp = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'MCP integration failed'
-      }
+        error: err instanceof Error ? err.message: `MCP integration failed` }
       // Don't throw - MCP is optional
       console.warn('⚠️ MCP integration test failed (optional)')
     }
@@ -326,8 +320,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Test pipeline error:', err)
     return json({
       error: 'Pipeline test failed',
-      details: err instanceof Error ? err.message: 'Unknown error'
-    }, { status: 500 })
+      details: err instanceof Error ? err.message: `Unknown error` }, { status: 500 })
   }
 }
 export const GET: RequestHandler = async () => {
@@ -352,10 +345,10 @@ export const GET: RequestHandler = async () => {
       },
       database: {
         connected: true,
-        vectorsStored: vectorCount.count,
+        vectorsStored: vectorCount.count
       },
       testConfig: {
-        documentsToTest: testConfig.testDocuments.length,
+       , documentsToTest: testConfig.testDocuments.length,
         queriesToTest: testConfig.testQueries.length
       }
     })
@@ -364,7 +357,7 @@ export const GET: RequestHandler = async () => {
       status: 'not_ready',
       error: err instanceof Error ? err.message: 'Unknown error',
       suggestions: [
-        'Ensure Ollama is running on http://localhost:11434',
+        'Ensure Ollama is running on, http://localhost:11434',
         'Verify nomic-embed-text model is installed',
         'Check PostgreSQL connection and pgvector extension'
       ]

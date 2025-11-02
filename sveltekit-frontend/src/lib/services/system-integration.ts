@@ -6,31 +6,23 @@ import type { Document } from '$lib/types';
 import { globalGPUCache } from './rag-minio-gpu-som-cache.js';
 
 // Integration interfaces
-interface MinIOConfig {
-  endpoint: string;
-  port: number;
+interface MinIOConfig { endpoint: string;, port: number;
   useSSL: boolean;
   accessKey: string;
   secretKey: string;
-  buckets: {
-    evidence: string;
-    documents: string;
+  buckets: { evidence: string;, documents: string;
     media: string;
     cache: string;
   };
 }
-interface PostgreSQLConfig {
-  host: string;
-  port: number;
+interface PostgreSQLConfig { host: string;, port: number;
   database: string;
   username: string;
   password: string;
   enablePgVector: boolean;
   vectorDimension: number;
 }
-interface RedisConfig {
-  host: string;
-  port: number;
+interface RedisConfig { host: string;, port: number;
   password?: string;
   db: number;
   keyPrefix: string;
@@ -41,9 +33,7 @@ interface Context7Config {
   libraryIds: string[];
   maxTokens: number;
 }
-interface SystemMetrics {
-  minioHealth: boolean;
-  postgresHealth: boolean;
+interface SystemMetrics { minioHealth: boolean;, postgresHealth: boolean;
   redisHealth: boolean;
   context7Health: boolean;
   totalDocuments: number;
@@ -69,9 +59,7 @@ interface SearchDocument {
   [key: string]: any;
 }
 
-interface QueryResult {
-  documents: SearchDocument[];
-  totalFound: number;
+interface QueryResult { documents: SearchDocument[];, totalFound: number;
   queryTime: number;
   cacheHit: boolean;
 }
@@ -124,7 +112,7 @@ type GPUCacheInterface = {
   // optional variations we might encounter
   store?: (id: string, text: string, embedding: Float32Array) => Promise<void>;
   add?: (id: string, text: string, embedding: Float32Array) => Promise<void>;
-  put?: (id: string, text: string, embedding: Float32Array) => Promise<void>;
+  put?: (id: string, text: string; embedding: Float32Array) => Promise<void>;
   semanticSearch?: (embedding: Float32Array, limit?: number) => Promise<Array<{ id: string; content?: string }>>;
   search?: (embedding: Float32Array, opts?: { limit?: number }) => Promise<Array<{ id: string; content?: string }>>;
   optimizeCache?: () => Promise<void>;
@@ -145,9 +133,7 @@ interface PostgresClient {
 }
 
 // Typed MinIO client shape used in this module
-interface MinIOClient {
-  bucketExists: (bucket: string) => Promise<boolean>;
-  makeBucket: (bucket: string) => Promise<boolean>;
+interface MinIOClient { bucketExists: (bucket: string) => Promise<boolean>;, makeBucket: (bucket: string) => Promise<boolean>;
   // avoid `any` by using a generic record or unknown for other shapes
   putObject: (bucket: string, name: string, data: any) => Promise<{ etag?: string } | Record<string, unknown>>;
   // broaden possible return shapes from storage clients
@@ -159,9 +145,7 @@ interface MinIOClient {
 }
 
 // Typed Redis client shape used in this module
-interface RedisClient {
-  get: (key: string) => Promise<string | null>;
-  set: (key: string, value: string, ex?: number) => Promise<'OK' | string | null>;
+interface RedisClient { get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ex?: number) => Promise<'OK' | string | null>;
   del: (...keys: string[]) => Promise<number>;
   exists: (...keys: string[]) => Promise<number>;
   keys: (pattern: string) => Promise<string[]>;
@@ -180,7 +164,7 @@ export class EvidenceSystemIntegration {
   private redisClient: RedisClient; // <- typed instead of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
-  private isInitialized: boolean = $state(false);
+  private isInitialized: boolean = false;
 
   // Constructor signature fixed
   constructor(
@@ -202,7 +186,7 @@ export class EvidenceSystemIntegration {
       cacheHitRate: 0,
       avgQueryTime: 0,
       storageUsed: 0,
-      lastSync: new Date().toISOString(),
+      lastSync: new Date().toISOString()
     };
   }
 
@@ -226,7 +210,7 @@ export class EvidenceSystemIntegration {
       console.log('✅ System integration initialized successfully');
       return true;
     } catch (error) {
-      console.error('❌ System integration initialization failed:', error);
+      console.error('❌ System integration initialization failed: `, error);
       return false;
     }
   }
@@ -240,10 +224,10 @@ export class EvidenceSystemIntegration {
       this.minioClient = {
         bucketExists: async (_bucket: string) => true,
         makeBucket: async (_bucket: string) => true,
-        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: 'mock-etag' }),
+        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag` }),
         getObject: async (_bucket: string, _name: string) => new Blob(),
         removeObject: async (_bucket: string, _name: string) => true,
-        listObjects: async (_bucket: string, _prefix?: string) => [],
+        listObjects: async (_bucket: string, _prefix?: string) => []
       };
       // Create buckets if they don't exist
       for (const bucket of Object.values(this.minioConfig.buckets)) {
@@ -270,7 +254,7 @@ export class EvidenceSystemIntegration {
       this.postgresClient = {
         query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
         connect: async () => true,
-        end: async () => true,
+        end: async () => true
       };
       // Ensure pgvector extension is enabled
       await this.postgresClient.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
@@ -316,12 +300,11 @@ export class EvidenceSystemIntegration {
         del: async (..._keys: string[]) => 0,
         exists: async (..._keys: string[]) => 0,
         keys: async (_pattern: string) => [],
-        flushdb: async () => 'OK',
-      };
+        flushdb: async () => 'OK` };
       this.metrics.redisHealth = true;
       console.log(`✅ Redis connected on port ${this.redisConfig.port}`);
     } catch (error) {
-      console.error('❌ Redis initialization failed:', error);
+      console.error('❌ Redis initialization failed: `, error);
       throw error;
     }
   }
@@ -332,11 +315,10 @@ export class EvidenceSystemIntegration {
   private async initializeContext7(): Promise<void> {
     try {
       // Provide a typed mock implementation (no `any`)
-      this.context7Client = {
-        resolveLibraryId: async (name: string) => ({ id: `/org/${name}` }),
+      this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}` }),
         getLibraryDocs: async (_libraryId: string, options?: Record<string, unknown>) => ({
           content: 'Mock semantic search content...',
-          metadata: { tokens: (options?.tokens as number) || 1000 },
+          metadata: {, tokens: (options?.tokens as number) || 1000 }
         }),
         semanticSearch: async (_query: string, _options?: Record<string, unknown>) => ({
           results: [
@@ -345,10 +327,10 @@ export class EvidenceSystemIntegration {
               title: 'Mock Legal Document',
               content: 'Mock content for semantic search...',
               similarity: 0.95,
-              metadata: { source: 'context7' },
+              metadata: {, source: `context7` }
             },
-          ],
-        }),
+          ]
+        })
       };
       this.metrics.context7Health = true;
       console.log('✅ Context7 MCP client initialized');
@@ -447,7 +429,7 @@ export class EvidenceSystemIntegration {
     try {
       // 1. Generate unique file ID
       const fileId = this.generateId();
-      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file'}`;
+      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file` }`;
       // 2. Upload to MinIO
       await this.minioClient.putObject(this.minioConfig.buckets.evidence, filePath, file);
       // 3. Extract text content (simulate OCR/text extraction)
@@ -501,7 +483,7 @@ export class EvidenceSystemIntegration {
           title: (file as File & { name?: string }).name ?? 'file',
           content: textContent,
           filePath,
-          metadata,
+          metadata
         }),
         300 // 5 minutes TTL
       );
@@ -558,7 +540,7 @@ export class EvidenceSystemIntegration {
               content: entry.content ?? '',
               similarity: 0.9,
               metadata: {},
-              source: 'cache' as const,
+              source: 'cache' as const
             }))
           );
         }
@@ -584,7 +566,7 @@ export class EvidenceSystemIntegration {
               url: row.file_path,
               similarity: row.similarity ?? 0,
               metadata: row.metadata ?? {},
-              source: 'postgres' as const,
+              source: 'postgres' as const
             }))
           );
         }
@@ -592,7 +574,7 @@ export class EvidenceSystemIntegration {
         if (includeContext7 && results.length < limit && this.context7Client?.semanticSearch) {
           const ctx = await this.context7Client.semanticSearch(query, {
             limit: limit - results.length,
-            libraryIds: this.context7Config.libraryIds,
+            libraryIds: this.context7Config.libraryIds
           } as Record<string, unknown>);
           results.push(
             ...(ctx.results || []).map(doc => ({
@@ -601,7 +583,7 @@ export class EvidenceSystemIntegration {
               content: doc.content ?? '',
               similarity: doc.similarity ?? 0,
               metadata: doc.metadata ?? {},
-              source: 'context7' as const,
+              source: 'context7' as const
             }))
           );
         }
@@ -621,7 +603,7 @@ export class EvidenceSystemIntegration {
         documents: results.slice(0, limit),
         totalFound: results.length,
         queryTime,
-        cacheHit,
+        cacheHit
       };
     } catch (error) {
       console.error('❌ Semantic search failed:', error);
@@ -899,9 +881,7 @@ export class EvidenceSystemIntegration {
   /**
    * Get comprehensive system statistics
    */
-  getSystemStats(): SystemMetrics & {
-    gpuCacheStats: GPUCacheStats;
-    integrationStatus: 'healthy' | 'degraded' | 'critical';
+  getSystemStats(): SystemMetrics & { gpuCacheStats: GPUCacheStats;, integrationStatus: 'healthy' | 'degraded' | 'critical';
   } {
     const gpuStats = this.getGPUCacheStats();
     const healthyServicesCount = [
@@ -921,7 +901,7 @@ export class EvidenceSystemIntegration {
     return {
       ...this.metrics,
       gpuCacheStats: gpuStats,
-      integrationStatus,
+      integrationStatus
     };
   }
 
@@ -969,15 +949,11 @@ export class EvidenceSystemIntegration {
 }
 
 // Default configuration factory
-export function createDefaultSystemConfig(): {
-  minio: MinIOConfig;
-  postgres: PostgreSQLConfig;
+export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: PostgreSQLConfig;
   redis: RedisConfig;
   context7: Context7Config;
 } {
-  return {
-    minio: {
-      endpoint: 'localhost',
+  return { minio: {, endpoint: 'localhost',
       port: 4002,
       useSSL: false,
       accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access',
@@ -986,8 +962,8 @@ export function createDefaultSystemConfig(): {
         evidence: 'evidence-files',
         documents: 'legal-documents',
         media: 'media-files',
-        cache: 'cache-storage',
-      },
+        cache: 'cache-storage'
+      }
     },
     postgres: {
       host: 'localhost',
@@ -996,21 +972,20 @@ export function createDefaultSystemConfig(): {
       username: process.env.POSTGRES_USER || 'postgres',
       password: process.env.POSTGRES_PASSWORD || 'password',
       enablePgVector: true,
-      vectorDimension: 768,
+      vectorDimension: 768
     },
     redis: {
       host: 'localhost',
       port: 4005,
       password: process.env.REDIS_PASSWORD,
       db: 0,
-      keyPrefix: 'legal-ai',
-    },
+      keyPrefix: `legal-ai` },
     context7: {
       mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
       apiKey: process.env.CONTEXT7_API_KEY,
       libraryIds: ['/legal/statutes', '/legal/cases', '/legal/regulations'],
-      maxTokens: 5000,
-    },
+      maxTokens: 5000
+    }
   };
 }
 

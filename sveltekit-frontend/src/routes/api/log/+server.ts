@@ -5,7 +5,7 @@ const logQueue = {
   add: async (data: any) => {
     console.log('Queue operation (stub):', data);
     return Promise.resolve();
-  },
+  }
 };
 export async function POST({ request }): Promise<any> {
   try {

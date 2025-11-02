@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
   let initialized = $state<boolean>(false);
   let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
-  let webgpuClient: WebGPUGemmaClient | null = $state(null);
+  let webgpuClient: WebGPUGemmaClient | null = null;
   let capabilities = $state<string[]>([]);
   let processingModes = $state<string[]>([]);
   let systemInfo = $state<any>(null);
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
           console.log('✅ WebGPU client initialized');
         } catch (gpuError) {
           console.warn('⚠️ WebGPU initialization failed:', gpuError);
-          metrics.webgpuSupport = $state(false);
+          metrics.webgpuSupport = false;
         }
       }
       // 2. Initialize WebAssembly service
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
           }
         } catch (wasmError) {
           console.warn('⚠️ WebAssembly initialization failed:', wasmError);
-          metrics.webAssemblySupport = $state(false);
+          metrics.webAssemblySupport = false;
         }
       }
       // 3. Initialize AI adapter with fallbacks

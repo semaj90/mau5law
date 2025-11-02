@@ -1,9 +1,7 @@
 import type { Message } from '$lib/types';
 // In-memory message queue system with Redis/RabbitMQ compatibility
 import { EventEmitter } from 'events';
-interface QueueMessage {
-  id: string;
-  data: any;
+interface QueueMessage { id: string;, data: any;
   timestamp: number;
   attempts: number;
   maxAttempts: number;
@@ -17,7 +15,7 @@ class InMemoryQueue extends EventEmitter {
   private messages: Map<string, QueueMessage[]> = new Map();
   private processing: Set<string> = new Set();
   private deadLetter: Map<string, QueueMessage[]> = new Map();
-  private stats: Map<string, { processed: number; failed: number }> = new Map();
+  private stats: Map<string, { processed: number;, failed: number }> = new Map();
   constructor(private options: QueueOptions = {}) {
     super();
     this.options = {
@@ -217,9 +215,8 @@ export class WorkflowQueue extends InMemoryQueue {
     this.workflows.set(workflowId, {
       id: workflowId,
       state: initialState,
-      history: [{ state: initialState, timestamp: Date.now() }],
-      status: 'active'
-    });
+      history: [{, state: initialState, timestamp: Date.now() }],
+      status: 'active' });
     await this.rpush(
       'workflow_queue',
       JSON.stringify({

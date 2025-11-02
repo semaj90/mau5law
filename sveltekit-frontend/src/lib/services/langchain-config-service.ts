@@ -19,9 +19,7 @@ import type { BasePromptTemplate } from '@langchain/core/prompts'; // Corrected 
 import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
 
 // Define interfaces for specific chain inputs
-interface DocumentQAInput {
-  document: string;
-  question: string;
+interface DocumentQAInput { document: string;, question: string;
 }
 
 interface CaseSummaryInput {
@@ -35,9 +33,7 @@ interface ChainInvokeResult {
   [key: string]: any; // Allow for other properties
 }
 
-export interface LangChainConfig {
-  modelProvider: 'ollama' | 'openai' | 'anthropic' | 'local';
-  modelName: string;
+export interface LangChainConfig { modelProvider: 'ollama' | 'openai' | 'anthropic' | 'local';, modelName: string;
   temperature: number;
   maxTokens: number;
   streaming: boolean;
@@ -49,9 +45,7 @@ export interface LangChainConfig {
   chainConfigs?: ChainConfig[];
 }
 
-export interface ChainConfig {
-  name: string;
-  type: 'conversation' | 'rag' | 'analysis' | 'summary' | 'qa' | 'custom';
+export interface ChainConfig { name: string;, type: 'conversation' | 'rag' | 'analysis' | 'summary' | 'qa' | 'custom';
   prompt: string;
   inputVariables: string[];
   outputParsers?: string[];
@@ -67,31 +61,19 @@ export interface ConversationContext {
   metadata?: { [key: string]: any };
 }
 
-export interface ChainExecutionResult {
-  result: string;
-  metadata: {
-    executionTime: number;
-    tokensUsed: number;
+export interface ChainExecutionResult { result: string;, metadata: { executionTime: number;, tokensUsed: number;
     modelUsed: string;
     confidence?: number;
     sources?: Array<any>;
-    memory?: {
-      summary: string;
-      keyPoints: string[];
+    memory?: { summary: string;, keyPoints: string[];
     };
   };
 }
 
-export interface PerformanceMetrics {
-  models: ModelMetrics;
-  chains: string[];
-  memoryUsage: {
-    totalSessions: number;
-    activeChains: number;
+export interface PerformanceMetrics { models: ModelMetrics;, chains: string[];
+  memoryUsage: { totalSessions: number;, activeChains: number;
   };
-  health: {
-    status: string;
-    lastCheck: string;
+  health: { status: string;, lastCheck: string;
   };
 }
 
@@ -134,11 +116,10 @@ class LangChainConfigService {
         2. Potential risks or concerns
         3. Recommendations for action
         4. Relevant legal precedents or statutes (if applicable)`,
-        document_qa: `You are a legal document Q&A assistant. Answer questions about the provided document accurately and cite specific sections.
-        Document: {document}
+        document_qa: `You are a legal document Q&A assistant. Answer questions about the provided document accurately and cite specific sections.; Document: {document}
         Question: {question}
         Answer based solely on the document content and cite relevant sections.`,
-        case_summary: `Summarize the following legal case information in a structured format:
+        case_summary: `Summarize the following legal case information in a structured; format:
         Case Information: {case_info}
         Provide:
         1. Case Overview
@@ -146,16 +127,14 @@ class LangChainConfigService {
         3. Legal Issues
         4. Current Status
         5. Next Steps`,
-        evidence_analysis: `Analyze the following evidence for legal relevance and admissibility:
-        Evidence: {evidence}
+        evidence_analysis: `Analyze the following evidence for legal relevance and admissibility:; Evidence: {evidence}
         Context: {context}
         Evaluate:
         1. Legal relevance
         2. Admissibility considerations
         3. Strength of evidence
         4. Potential challenges
-        5. Recommendations for use`,
-      },
+        5. Recommendations for use' }
     };
   }
   /**
@@ -192,7 +171,7 @@ class LangChainConfigService {
       numGpu: 1,
       f16Kv: true,
       useMmap: true,
-      useMlock: true,
+      useMlock: true
     } as any);
     this.models.set('primary', ollamaModel);
     // Initialize specialized models for different tasks
@@ -201,7 +180,7 @@ class LangChainConfigService {
       model: 'gemma2:9b',
       temperature: 0.3, // More deterministic for legal analysis
       numCtx: 65536, // Large context for legal documents
-      numGpu: 1,
+      numGpu: 1
     } as any);
     this.models.set('legal', legalModel);
     // Initialize embedding model
@@ -210,8 +189,8 @@ class LangChainConfigService {
       model: 'nomic-embed-text:latest',
       requestOptions: {
         numGpu: 1,
-        mainGpu: 0,
-      },
+        mainGpu: 0
+      }
     });
     this.embeddings.set('primary', embeddingModel);
     console.log('✅ LangChain models initialized');
@@ -222,14 +201,13 @@ class LangChainConfigService {
       memoryKey: 'chat_history',
       returnMessages: true,
       inputKey: 'input',
-      outputKey: 'output',
-    });
+      outputKey: 'output` });
     this.memories.set('buffer', bufferMemory);
     // Summary memory for long conversations
     const summaryMemory = new ConversationSummaryMemory({
       llm: this.models.get('primary')!,
       memoryKey: 'chat_history',
-      returnMessages: true,
+      returnMessages: true
     });
     this.memories.set('summary', summaryMemory);
     console.log('✅ LangChain memories initialized');
@@ -247,14 +225,14 @@ class LangChainConfigService {
     const documentQAPrompt = ChatPromptTemplate.fromMessages([
       new SystemMessage(`You are a legal document analysis assistant. Answer questions about documents accurately,
       cite specific sections, and provide context. Only answer based on the provided document content.`),
-      new HumanMessage(`Document: {document}\n\nQuestion: {question}`),
+      new HumanMessage(`Document: {document}\n\nQuestion: {question}`)
     ]);
     this.prompts.set('document_qa', documentQAPrompt);
     // Case Summary Prompt
     const caseSummaryPrompt = PromptTemplate.fromTemplate(`
       Create a comprehensive case summary from the following information:
-      Case Information: {case_info}
-      Structure your response as:
+      Case; Information: {case_info}
+      Structure your response, as:
       ## Case Overview
       ## Key Facts
       ## Legal Issues
@@ -269,14 +247,14 @@ class LangChainConfigService {
     const legalAnalysisChain = new ConversationChain({
       llm: this.models.get('legal')!,
       prompt: this.prompts.get('legal_analysis')!,
-      memory: this.memories.get(this.config.memoryType)!,
+      memory: this.memories.get(this.config.memoryType)!
     });
     this.chains.set('legal_analysis', legalAnalysisChain);
     // Document Q&A Chain
     const documentQAChain = RunnableSequence.from([
       {
         document: (input: DocumentQAInput) => input.document,
-        question: (input: DocumentQAInput) => input.question,
+        question: (input: DocumentQAInput) => input.question
       },
       this.prompts.get('document_qa')!,
       this.models.get('primary')!,
@@ -286,7 +264,7 @@ class LangChainConfigService {
     // Case Summary Chain
     const caseSummaryChain = RunnableSequence.from([
       {
-        case_info: (input: CaseSummaryInput) => input.case_info,
+        case_info: (input: CaseSummaryInput) => input.case_info
       },
       this.prompts.get('case_summary')!,
       this.models.get('legal')!,
@@ -329,12 +307,12 @@ class LangChainConfigService {
           executionTime,
           tokensUsed,
           modelUsed,
-          confidence: this.calculateConfidence(result),
-        },
+          confidence: this.calculateConfidence(result)
+        }
       };
     } catch (error: any) {
       // Changed from any
-      console.error(`Failed to execute chain: '${chainName}':`, error);
+      console.error(`Failed to execute chain: '${chainName}': ', error);
       throw error;
     }
   }
@@ -348,7 +326,7 @@ class LangChainConfigService {
   ): Promise<ChainExecutionResult> {
     const input = {
       content: documentContent,
-      ...(question && { question }),
+      ...(question && { question })
     };
     const chainName = question ? 'document_qa' : 'legal_analysis';
     return await this.executeChain(chainName, input, context);
@@ -372,7 +350,7 @@ class LangChainConfigService {
   ): Promise<ChainExecutionResult> {
     const fullContext = {
       sessionId,
-      ...context,
+      ...context
     };
     return await this.executeChain('legal_analysis', { input: message }, fullContext);
   }
@@ -405,7 +383,7 @@ class LangChainConfigService {
         chain = new ConversationChain({
           llm: model,
           prompt,
-          memory,
+          memory
         });
       } else {
         chain = RunnableSequence.from([RunnablePassthrough.assign({}), prompt, model, new StringOutputParser()]);
@@ -414,7 +392,7 @@ class LangChainConfigService {
       console.log(`✅ Custom chain: '${config.name}' created`);
     } catch (error: any) {
       // Changed from any
-      console.error(`Failed to create custom chain: '${config.name}':`, error);
+      console.error(`Failed to create custom chain: '${config.name}': ', error);
       throw error;
     }
   }
@@ -429,12 +407,12 @@ class LangChainConfigService {
         chains: Array.from(this.chains.keys()),
         memoryUsage: {
           totalSessions: this.memories.size,
-          activeChains: this.chains.size,
+          activeChains: this.chains.size
         },
         health: {
           status: ollamaHealth.status,
-          lastCheck: new Date().toISOString(),
-        },
+          lastCheck: new Date().toISOString()
+        }
       };
     } catch (error: any) {
       // Changed from any
@@ -443,7 +421,7 @@ class LangChainConfigService {
         models: {} as ModelMetrics, // Corrected type
         chains: [],
         memoryUsage: { totalSessions: 0, activeChains: 0 },
-        health: { status: 'unhealthy', lastCheck: new Date().toISOString() },
+        health: { status: 'unhealthy', lastCheck: new Date().toISOString() }
       };
     }
   }
@@ -455,18 +433,18 @@ class LangChainConfigService {
       'legal-analysis': {
         temperature: 0.3,
         maxTokens: 8192,
-        memoryType: 'summary' as const,
+        memoryType: 'summary' as const
       },
       'document-qa': {
         temperature: 0.1,
         maxTokens: 4096,
-        memoryType: 'buffer' as const,
+        memoryType: 'buffer' as const
       },
       'conversation': {
         temperature: 0.7,
         maxTokens: 2048,
-        memoryType: 'buffer' as const,
-      },
+        memoryType: 'buffer' as const
+      }
     };
     const optimization = optimizations[useCase];
     if (optimization) {

@@ -59,11 +59,11 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       answer,
       references: highScoreRecommendations.map(r => ({
-        id: r.id,
-        score: r.finalScore ?? 0,
+       , id: r.id,
+        score: r.finalScore ?? 0
       })),
       confidence: highScoreRecommendations[0]?.finalScore ?? 0,
-      highScoreRecommendations,
+      highScoreRecommendations
     });
   } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);

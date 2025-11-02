@@ -11,7 +11,7 @@ import {
   Case as cases,
   User as users,
   UserSession as userSessions,
-  Embedding as embeddings,
+  Embedding as embeddings
 } from '$lib/server/database/schema';
 import { nanoid } from 'nanoid';
 import { eq } from 'drizzle-orm';
@@ -25,9 +25,7 @@ interface UploadResult {
     fileType?: string;
     hash?: string;
     textContent?: string;
-    chain_of_custody?: {
-      timestamp: string;
-      actor: string;
+    chain_of_custody?: { timestamp: string;, actor: string;
       action: string;
       details: string;
     }[];
@@ -79,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           privileged: result.aiInsights?.privileged || false,
           evidenceType: result.aiInsights?.evidenceType || 'unknown',
           citations: result.aiInsights?.citations || [],
-          riskFactors: result.aiInsights?.riskFactors || [],
+          riskFactors: result.aiInsights?.riskFactors || []
         },
         uploadedAt: new Date(),
         metadata: {
@@ -90,11 +88,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               timestamp: new Date().toISOString(),
               actor: session.userId,
               action: 'uploaded',
-              details: 'Document uploaded via legal AI system',
+              details: 'Document uploaded via legal AI system'
             },
           ],
-          analysisResults: result.aiInsights || {},
-        },
+          analysisResults: result.aiInsights || {}
+        }
       };
       dbOperations.push(db.insert(documents).values(documentData));
     }
@@ -110,7 +108,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .update(cases)
           .set({
             lastUpdated: new Date(),
-            documentCount: docsInCase.length,
+            documentCount: docsInCase.length
           })
           .where(eq(cases.id, caseId));
       } catch (error) {
@@ -134,8 +132,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               successRate,
               lastUploadDate: new Date().toISOString(),
               recentDocuments: documentIds.slice(-5), // Keep last 5 document IDs
-            },
-          },
+            }
+          }
         })
         .where(eq(userSessions.userId, session.userId));
     } catch (error) {
@@ -153,14 +151,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       documentsStored: documentIds.length,
       documentIds: documentIds,
       caseId: caseId,
-      message: `Successfully stored ${documentIds.length} documents`,
-    });
+      message: `Successfully stored ${documentIds.length} documents' });
   } catch (error) {
     console.error('Database storage error:', error);
     return json(
       {
         error: 'Failed to store documents',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -180,12 +177,11 @@ async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
-          model: 'mxbai-embed-large',
+         , model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000), // Limit content for embedding
-        }),
+        })
       });
       if (embeddingResponse.ok) {
         const embeddingResult = await embeddingResponse.json();
@@ -199,8 +195,8 @@ async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
             model: 'mxbai-embed-large',
             createdAt: new Date().toISOString(),
             documentType: docData.fileType,
-            caseId: docData.caseId,
-          },
+            caseId: docData.caseId
+          }
         });
       }
     }
@@ -216,7 +212,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       database: 'connected',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
@@ -224,7 +220,7 @@ export const GET: RequestHandler = async () => {
         status: 'unhealthy',
         database: 'disconnected',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

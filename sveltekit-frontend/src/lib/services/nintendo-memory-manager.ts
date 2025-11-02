@@ -24,16 +24,12 @@ enum Priority {
   LOW = 64,          // Old documents
   EXPIRED = 0        // Ready for eviction
 }
-interface MemoryItem {
-  key: string;
-  size: number;
+interface MemoryItem { key: string;, size: number;
   priority: Priority;
   lastAccessed: number;
   bankId: number;
 }
-interface MemoryBank {
-  id: number;
-  items: Map<string, MemoryItem>;
+interface MemoryBank { id: number;, items: Map<string, MemoryItem>;
   currentSize: number;
   maxSize: number;
   isActive: boolean;
@@ -69,9 +65,7 @@ export class NintendoMemoryManager {
   private initializeMemoryBanks(): void {
     // L1 CHR-ROM banks (GPU patterns)
     for (let i = 0; i < 4; i++) {>;
-      this.l1Banks.push({
-        id: i;
-        items: new Map(),
+      this.l1Banks.push({ id: i;, items: new Map(),
         currentSize: 0,
         maxSize: MEMORY_BANKS.L1_CHR_ROM / 4,
         isActive: i === 0
@@ -79,9 +73,7 @@ export class NintendoMemoryManager {
     }
     // L2 System RAM banks
     for (let i = 0; i < 8; i++) {>;
-      this.l2Banks.push({
-        id: i;
-        items: new Map(),
+      this.l2Banks.push({ id: i;, items: new Map(),
         currentSize: 0,
         maxSize: MEMORY_BANKS.L2_SYSTEM_RAM / 8,
         isActive: i < 2 // First 2 banks active>
@@ -92,8 +84,7 @@ export class NintendoMemoryManager {
    * Store data with Nintendo-style memory management
    */
   async store()
-    key: string
-    data: any;
+    key: string; data: any;
     priority: Priority = Priority.MEDIUM,
     ttl?: number;
   ): Promise<boolean>, {
@@ -157,7 +148,7 @@ export class NintendoMemoryManager {
       }
     } catch (error) {
       this.stats.redisErrors++;
-      console.error(`Redis retrieval error for key ${key}:`, error);
+      console.error(`Redis retrieval error for key ${key}: ', error);
     }
     return null;
   }
@@ -205,8 +196,7 @@ export class NintendoMemoryManager {
    * Store in L3 Redis with strict size tracking
    */
   private async storeInL3()
-    key: string
-    data: any;
+    key: string; data: any;
     priority: Priority
     ttl?: number;
   ): Promise<void> {
@@ -287,7 +277,7 @@ export class NintendoMemoryManager {
       .filter(item => item.priority) <= Priority.LOW),
       .sort((a, b) => a.timestamp - b.timestamp); // Oldest first
     const evictCount = Math.min(lowPriorityItems.length, 100); // Evict max 100 items
-    for (let i =, 0;, i < evictCo,un,t; i++) {>
+    for (let i =, 0; i < evictCo,un,t; i++) {>
       const item = lowPriorityItems[i];
       await this.redis.del((item as { key?: any; size?: any; priority?: any); timestamp?: any, )}).key);
       await this.redis.hdel('memory:items', (item as { key?: any; size?: any; priority?: any); timestamp?: any, )}).key);
@@ -348,7 +338,7 @@ export class NintendoMemoryManager {
       const metadata = await this.redis.hget('memory:items', key);
       if (metadata) {
         const item = JSON.parse(metadata);
-        (item as { key?: any; size?: any; priority?: any; timestamp?: any }).priority = Math.max((item as { key?: any; size?: any; priority?: any); timestamp?: any, }).priority, newPriori,ty); // Only increase priority
+        (item as { key?: any; size?: any; priority?: any; timestamp?: any }).priority = Math.max((item as { key?: any; size?: any; priority?: any); timestamp?: any }).priority, newPriori,ty); // Only increase priority
         (item as { key?: any; size?: any; priority?: any; timestamp?: any }).timestamp = Date.now();
         await thi,s.redis.hset('memory:items', key, JSON.stringify(ite,m);
       }

@@ -16,22 +16,16 @@ interface DocumentAnalysisResult {
   timestamp?: string;
 }
 
-interface OllamaSystemStatus {
-  ollama: {
-    available: boolean;
+interface OllamaSystemStatus { ollama: {, available: boolean;
     baseUrl: string;
     models: number;
     gemma3Model: string | null;
     healthy?: boolean;
   };
-  models: Array<{
-    name: string;
-    sizeMB: number;
+  models: Array<{ name: string;, sizeMB: number;
     family: string;
   }>;
-  capabilities: {
-    textGeneration: boolean;
-    embeddings: boolean;
+  capabilities: { textGeneration: boolean;, embeddings: boolean;
     legalAnalysis: boolean;
     streaming: boolean;
   };
@@ -49,7 +43,7 @@ function getErrorMessage(e: any): string {
   }
 }
 
-function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal; clear: () => void } {
+function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal;, clear: () => void } {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   return { signal: controller.signal, clear: () => clearTimeout(id) };
@@ -124,8 +118,8 @@ class OllamaService {
       try {
         const response = await fetch(`${this.baseUrl}/api/version`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          signal,
+          headers: { 'Content-Type': `application/json` },
+          signal
         });
         if (response.ok) {
           this.isAvailable = true;
@@ -151,7 +145,7 @@ class OllamaService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       });
       if (response.ok) {
         // parse as unknown and validate shape instead of using `any`
@@ -226,12 +220,12 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
 `;
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          name: modelName,
+         , name: modelName,
           modelfile,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (response.ok) {
         await this.loadAvailableModels();
@@ -273,13 +267,13 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
         top_p: options.topP ?? 0.9,
         top_k: options.topK ?? 40,
         repeat_penalty: options.repeatPenalty ?? 1.1,
-        num_predict: options.maxTokens ?? 512,
-      },
+        num_predict: options.maxTokens ?? 512
+      }
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(requestBody)
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -312,13 +306,13 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
         top_p: options.topP ?? 0.9,
         top_k: options.topK ?? 40,
         repeat_penalty: options.repeatPenalty ?? 1.1,
-        num_predict: options.maxTokens ?? 512,
-      },
+        num_predict: options.maxTokens ?? 512
+      }
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(requestBody)
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -345,7 +339,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
           // Ignore non-JSON partial lines but log at debug level for troubleshooting
           console.debug('OllamaService: ignored non-JSON partial line while streaming', {
             error: getErrorMessage(e),
-            line: trimmed.slice(0, 200),
+            line: trimmed.slice(0, 200)
           });
         }
       }
@@ -359,14 +353,14 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
         // Ignore leftover non-JSON buffer but log at debug level for troubleshooting
         console.debug('OllamaService: ignored leftover non-JSON buffer after stream ended', {
           error: getErrorMessage(e),
-          buffer: buffer.slice(0, 200),
+          buffer: buffer.slice(0, 200)
         });
       }
     }
   }
 
   async chat(
-    messages: Array<{ role: string; content: string }>,
+    messages: Array<{, role: string; content: string }>,
     options: {
       temperature?: number;
       maxTokens?: number;
@@ -385,7 +379,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       topP: options.topP,
       topK: options.topK,
       repeatPenalty: options.repeatPenalty,
-      stream: false,
+      stream: false
     });
   }
 
@@ -396,8 +390,8 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
     try {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, prompt: text }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ model, prompt: text })
       });
       if (!response.ok) {
         if (response.status === 404) {
@@ -454,7 +448,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       return {
         summary: 'Stub analysis - Ollama unavailable',
         keyPoints: ['Service not available'],
-        confidence: 0.1,
+        confidence: 0.1
       };
     }
     try {
@@ -475,45 +469,42 @@ ${snippet}
         system:
           'You are a legal AI assistant specializing in document analysis. Provide structured, accurate analysis.',
         temperature: 0.3,
-        maxTokens: 1024,
+        maxTokens: 1024
       });
       return {
         summary: analysis,
         embeddings,
         confidence: 0.85,
         model: this.gemma3Model,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     } catch (err: any) {
       return {
         summary: 'Analysis failed due to service error',
         keyPoints: [],
         confidence: 0.0,
-        error: getErrorMessage(err),
+        error: getErrorMessage(err)
       };
     }
   }
 
   async getSystemStatus(): Promise<OllamaSystemStatus> {
-    const status: OllamaSystemStatus = {
-      ollama: {
-        available: this.isAvailable,
+    const status: OllamaSystemStatus = { ollama: {, available: this.isAvailable,
         baseUrl: this.baseUrl,
         models: this.availableModels.length,
-        gemma3Model: this.gemma3Model,
+        gemma3Model: this.gemma3Model
       },
       models: this.availableModels.map(m => ({
         name: m.name,
         sizeMB: Math.round((m.size || 0) / (1024 * 1024)),
-        family: m.details?.family || 'unknown',
-      })),
+        family: m.details?.family || 'unknown` })),
       capabilities: {
         textGeneration: this.isAvailable && !!this.gemma3Model,
         embeddings: true,
         legalAnalysis: this.isAvailable && !!this.gemma3Model,
-        streaming: this.isAvailable && !!this.gemma3Model,
+        streaming: this.isAvailable && !!this.gemma3Model
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     if (this.isAvailable) {
       status.ollama.healthy = await this.healthCheck();
@@ -543,8 +534,8 @@ ${snippet}
       try {
         const response = await fetch(`${this.baseUrl}/api/version`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          signal,
+          headers: { 'Content-Type': `application/json` },
+          signal
         });
         return response.ok;
       } finally {
@@ -559,8 +550,8 @@ ${snippet}
     try {
       const response = await fetch(`${this.baseUrl}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: modelName }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, name: modelName })
       });
       return response.ok;
     } catch (err) {
@@ -573,8 +564,8 @@ ${snippet}
     try {
       const response = await fetch(`${this.baseUrl}/api/delete`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: modelName }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, name: modelName })
       });
       return response.ok;
     } catch (err) {

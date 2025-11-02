@@ -1,9 +1,7 @@
 import { flashAttentionProcessor } from './flashattention-gpu-error-processor.js';
 import { concurrentSearch } from './concurrent-indexeddb-search.js';
 }
-export interface WindowsService {
-  name: string;
-  displayName: string;
+export interface WindowsService { name: string;, displayName: string;
   executable: string;
   port: number;
   status: 'running' | 'stopped' | 'starting' | 'stopping' | 'error';
@@ -12,9 +10,7 @@ export interface WindowsService {
   healthEndpoint?: string;
 }
 }
-export interface ServiceHealth {
-  serviceName: string;
-  isHealthy: boolean;
+export interface ServiceHealth { serviceName: string;, isHealthy: boolean;
   responseTime: number;
   lastCheck: number;
   errorCount: number;
@@ -113,7 +109,7 @@ export class NativeWindowsServiceManager {
         }
       } catch (error: any) {
         service.status = 'error';
-        console.error(`❌ Error checking ${service.displayName}:`, error);
+        console.error(`❌ Error checking ${service.displayName}: ', error);
       }
     }
   }
@@ -168,7 +164,7 @@ export class NativeWindowsServiceManager {
       }
     } catch (error: any) {
       service.status = 'error';
-      console.error(`❌ Error starting ${service.displayName}:`, error);
+      console.error(`❌ Error starting ${service.displayName}: ', error);
       return false;
     }
   }
@@ -176,10 +172,7 @@ export class NativeWindowsServiceManager {
     if (typeof window === 'undefined') {
       const { spawn } = await import('child_process'););
       const [command, ...args] = service.executable.split(' ');
-      const process = spawn(command, args, {
-        detached: true;
-        stdio: 'ignore'
-      });
+      const process = spawn(command, args, { detached: true;, stdio: `ignore' });
       service.pid = process.pid;
       process.unref();
       await new Promise(resolve => setTimeout(resolve, 3000);
@@ -240,7 +233,7 @@ export class NativeWindowsServiceManager {
       return true;
     } catch (error: any) {
       service.status = 'error';
-      console.error(`❌ Error stopping ${service.displayName}:`, error);
+      console.error(`❌ Error stopping ${service.displayName}: ', error);
       return false;
     }
   }
@@ -295,7 +288,7 @@ export class NativeWindowsServiceManager {
         path: service.executable,
         type: 'config' as const,
         metadata: {
-          language: 'config',
+         , language: 'config',
           lastModified: Date.now(),
           size: service.executable.length
         }
@@ -311,7 +304,7 @@ export class NativeWindowsServiceManager {
     try {
       await flashAttentionProcessor.initialize();
       const result = await flashAttentionProcessor.processLiveErrors();
-      console.log('🎯 GPU Error Processing Results:');
+      console.log('🎯 GPU Error Processing Results: `);
       console.log(`   - Batch ID: ${(result as { batchId?: any; fixes?: any); performance?: any }).batchId}`);
       console.log(`   - Fixes, generated: ${(result as { batchId?: any; fixes?: an,y); performance?: any }).fixes.length}`);
       console.log(`   - Processing, time: ${(result as { batchId?: any; fixes?: an,y); performance?: any }).performance.processing_time_ms.toFixed(2)}ms`);
@@ -435,7 +428,7 @@ pause
       console.log('📊 Running FlashAttention2 benchmark...');
       const benchmarkResult = await flashAttentionProcessor.runFlashAttentionBenchmark();
       console.log('🎯 Comprehensive startup complete!');
-      console.log('📊 Final Status:');
+      console.log('📊 Final Status: `);
       console.log(`   - Services, deployed: ${deploymentResult.deployed.length}`);
       console.log(`   - Services, failed: ${deploymentResult.failed.length}`);
       console.log(`   - GPU, processing speed: ${benchmarkResult.processing_speed.toFixed(1)} tokens/sec`);
@@ -457,11 +450,9 @@ pause
         status: s.status,
         port: s.port
       })),
-      health: healthResults
-      concurrentSearch: {
+      health: healthResults; concurrentSearch: {
         documentsIndexed: errorStats.totalErrors,
-        lastQuery: 'typescript errors'
-      },
+        lastQuery: `typescript errors' },
       gpu: {
         available: flashAttentionStatus.gpu_available,
         utilization: 0,

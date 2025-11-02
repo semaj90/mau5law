@@ -18,9 +18,7 @@ interface WasmModule {
   compress_document_features(features: Uint8Array): Uint8Array;
   memory: WebAssembly.Memory;
 }
-interface ProcessingResult {
-  text: string;
-  documentType: string;
+interface ProcessingResult { text: string;, documentType: string;
   legalEntities: LegalEntity[];
   citations: LegalCitation[];
   sensitiveInfo: SensitiveInfo[];
@@ -29,32 +27,24 @@ interface ProcessingResult {
   readabilityScore: number;
   processingTime: number;
 }
-interface LegalEntity {
-  type: 'person' | 'organization' | 'location' | 'legal_concept';
-  text: string;
+interface LegalEntity { type: 'person' | 'organization' | 'location' | 'legal_concept';, text: string;
   confidence: number;
   startIndex: number;
   endIndex: number;
   context: string;
 }
-interface LegalCitation {
-  type: 'case' | 'statute' | 'regulation' | 'rule';
-  citation: string;
+interface LegalCitation { type: 'case' | 'statute' | 'regulation' | 'rule';, citation: string;
   jurisdiction: string;
   year?: number;
   relevance: number;
 }
-interface SensitiveInfo {
-  type: 'ssn' | 'credit_card' | 'phone' | 'email' | 'address' | 'account_number';
-  value: string;
+interface SensitiveInfo { type: 'ssn' | 'credit_card' | 'phone' | 'email' | 'address' | 'account_number';, value: string;
   masked: string;
   confidence: number;
-  location: { start: number; end: number }
+  location: { start: number;, end: number }
 }
 // Add a concrete type for the structure analysis
-interface DocumentStructure {
-  paragraphs: number;
-  sections: number;
+interface DocumentStructure { paragraphs: number;, sections: number;
   headers: number;
 }
 // WebAssembly Legal Processor Class
@@ -117,7 +107,7 @@ export class WasmLegalProcessor {
         sensitiveInfo,
         fingerprint,
         readabilityScore,
-        processingTime,
+        processingTime
       };
     } catch (error) {
       console.error('Document processing failed:', error);
@@ -143,7 +133,7 @@ export class WasmLegalProcessor {
       } else {
         const reason = r.reason;
         const reasonMsg = reason instanceof Error ? reason.message : String(reason);
-        console.error(`Failed to process ${files[index].name}:`, reasonMsg);
+        console.error(`Failed to process ${files[index].name}: ', reasonMsg);
         // Add error result
         results.push({
           text: '',
@@ -153,16 +143,14 @@ export class WasmLegalProcessor {
           sensitiveInfo: [],
           fingerprint: '',
           readabilityScore: 0,
-          processingTime: 0,
+          processingTime: 0
         });
       }
     });
     return results;
   }
   // Real-time text analysis as user types
-  async analyzeTextRealtime(text: string): Promise<{
-    entities: LegalEntity[];
-    citations: LegalCitation[];
+  async analyzeTextRealtime(text: string): Promise<{ entities: LegalEntity[];, citations: LegalCitation[];
     documentType: string;
     readability: number;
   }> {
@@ -172,7 +160,7 @@ export class WasmLegalProcessor {
         entities: [],
         citations: [],
         documentType: 'fragment',
-        readability: 0,
+        readability: 0
       };
     }
     const entitiesJson = this.wasmModule!.detect_legal_entities(text);
@@ -183,16 +171,14 @@ export class WasmLegalProcessor {
       entities: JSON.parse(entitiesJson) as LegalEntity[],
       citations: JSON.parse(citationsJson) as LegalCitation[],
       documentType,
-      readability,
+      readability
     };
   }
   // Generate document comparison report
   async compareDocuments(
     doc1: ProcessingResult,
     doc2: ProcessingResult
-  ): Promise<{
-    similarity: number;
-    commonEntities: LegalEntity[];
+  ): Promise<{ similarity: number;, commonEntities: LegalEntity[];
     commonCitations: LegalCitation[];
     uniqueToDoc1: string[];
     uniqueToDoc2: string[];
@@ -218,7 +204,7 @@ export class WasmLegalProcessor {
       commonCitations,
       uniqueToDoc1,
       uniqueToDoc2,
-      fingerprintMatch,
+      fingerprintMatch
     };
   }
   // Privacy-safe processing (mask sensitive info)
@@ -231,7 +217,7 @@ export class WasmLegalProcessor {
     });
     return {
       ...result,
-      text: maskedText,
+      text: maskedText
     };
   }
   // Helper methods
@@ -252,7 +238,7 @@ export class WasmLegalProcessor {
           complexity: this.calculateComplexity(text),
           legalTermDensity: this.calculateLegalTermDensity(text),
           structure: this.analyzeStructure(text),
-          classification: this.classifyDocument(text),
+          classification: this.classifyDocument(text)
         };
         return JSON.stringify(analysis);
       },
@@ -280,7 +266,7 @@ export class WasmLegalProcessor {
             confidence: 0.8,
             startIndex: match.index,
             endIndex: match.index + match[0].length,
-            context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20),
+            context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20)
           });
         }
         // Organizations
@@ -292,7 +278,7 @@ export class WasmLegalProcessor {
             confidence: 0.9,
             startIndex: match.index,
             endIndex: match.index + match[0].length,
-            context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20),
+            context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20)
           });
         }
         return JSON.stringify(entities);
@@ -328,7 +314,7 @@ export class WasmLegalProcessor {
         }
         return compressed;
       },
-      memory: new WebAssembly.Memory({ initial: 1 }),
+      memory: new WebAssembly.Memory({ initial: 1 })
     };
   }
   // ...existing code...

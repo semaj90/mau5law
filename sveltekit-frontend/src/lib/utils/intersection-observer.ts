@@ -8,9 +8,7 @@ export interface LazyLoadOptions {
   once?: boolean; // Only trigger once and then disconnect
   fallbackDelay?: number; // Fallback timeout for older browsers
 }
-export interface LazyLoadEntry {
-  element: Element;
-  isIntersecting: boolean;
+export interface LazyLoadEntry { element: Element;, isIntersecting: boolean;
   intersectionRatio: number;
   target: Element;
 }
@@ -27,7 +25,7 @@ class LazyLoadManager {
       threshold: 0.1,
       once: true,
       fallbackDelay: 2000,
-      ...options,
+      ...options
     };
     this.createObserver();
   }
@@ -42,7 +40,7 @@ class LazyLoadManager {
     this.observer = new IntersectionObserver(entries => this.handleIntersection(entries), {
       root: this.options.root as Element | Document | null,
       rootMargin: this.options.rootMargin,
-      threshold: this.options.threshold as number | number[],
+      threshold: this.options.threshold as number | number[]
     });
   }
   private supportsIntersectionObserver(): boolean {
@@ -56,7 +54,7 @@ class LazyLoadManager {
           element: entry.target as Element,
           isIntersecting: entry.isIntersecting,
           intersectionRatio: entry.intersectionRatio,
-          target: entry.target as Element,
+          target: entry.target as Element
         };
         try {
           callback(lazyEntry);
@@ -101,7 +99,7 @@ class LazyLoadManager {
             element,
             isIntersecting: true,
             intersectionRatio: 1,
-            target: element,
+            target: element
           });
         } catch (err) {
           // eslint-disable-next-line no-console
@@ -119,7 +117,7 @@ class LazyLoadManager {
             element,
             isIntersecting: true,
             intersectionRatio: 1,
-            target: element,
+            target: element
           });
         } catch {
           // ignore
@@ -169,20 +167,18 @@ export function getLazyLoader(options?: LazyLoadOptions): LazyLoadManager {
   return globalLazyLoader;
 }
 // Svelte action for easy component integration
-export function lazyLoad(element: Element, options: LazyLoadOptions & { onIntersect: LazyLoadCallback }) {
+export function lazyLoad(element: Element, options: LazyLoadOptions & {, onIntersect: LazyLoadCallback }) {
   const { onIntersect, ...loaderOptions } = options;
   const loader = getLazyLoader(loaderOptions);
   loader.observe(element, onIntersect);
   return {
     destroy() {
       loader.unobserve(element);
-    },
+    }
   };
 }
 // Svelte store for reactive lazy loading state
-export interface LazyComponentState {
-  isVisible: boolean;
-  hasBeenVisible: boolean;
+export interface LazyComponentState { isVisible: boolean;, hasBeenVisible: boolean;
   intersectionRatio: number;
 }
 export function createLazyStore(initialState: Partial<LazyComponentState> = {}) {
@@ -190,7 +186,7 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
     isVisible: false,
     hasBeenVisible: false,
     intersectionRatio: 0,
-    ...initialState,
+    ...initialState
   });
   return {
     subscribe,
@@ -199,16 +195,16 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
         ...state,
         isVisible,
         hasBeenVisible: state.hasBeenVisible || isVisible,
-        intersectionRatio,
+        intersectionRatio
       }));
     },
     reset: () => {
       set({
         isVisible: false,
         hasBeenVisible: false,
-        intersectionRatio: 0,
+        intersectionRatio: 0
       });
-    },
+    }
   };
 }
 // Utility functions for common lazy loading patterns
@@ -238,9 +234,7 @@ export function lazyLoadImage(img: HTMLImageElement, src: string, options: LazyL
   loader.observe(img, cb);
 }
 // Performance monitoring helpers
-export interface LazyLoadMetrics {
-  totalObserved: number;
-  totalLoaded: number;
+export interface LazyLoadMetrics { totalObserved: number;, totalLoaded: number;
   averageLoadTime: number;
   loadTimes: number[];
 }
@@ -249,7 +243,7 @@ class LazyLoadProfiler {
     totalObserved: 0,
     totalLoaded: 0,
     averageLoadTime: 0,
-    loadTimes: [],
+    loadTimes: []
   };
   private loadStartTimes = new Map<Element, number>();
   startObserving(element: Element): void {
@@ -276,7 +270,7 @@ class LazyLoadProfiler {
       totalObserved: 0,
       totalLoaded: 0,
       averageLoadTime: 0,
-      loadTimes: [],
+      loadTimes: []
     };
     this.loadStartTimes.clear();
   }
@@ -288,38 +282,38 @@ export const LAZY_LOAD_PRESETS = {
   EAGER: {
     rootMargin: '100px',
     threshold: 0,
-    once: true,
+    once: true
   },
   // Load when partially visible
   NORMAL: {
     rootMargin: '50px',
     threshold: 0.1,
-    once: true,
+    once: true
   },
   // Load only when mostly visible
   LAZY: {
     rootMargin: '0px',
     threshold: 0.5,
-    once: true,
+    once: true
   },
   // For heavy components that should load early
   HEAVY_COMPONENT: {
     rootMargin: '200px',
     threshold: 0,
     once: true,
-    fallbackDelay: 1000,
+    fallbackDelay: 1000
   },
   // For images and media
   MEDIA: {
     rootMargin: '50px',
     threshold: 0,
-    once: true,
+    once: true
   },
   // For continuous monitoring (animations, etc.)
   CONTINUOUS: {
     rootMargin: '0px',
     threshold: [0, 0.25, 0.5, 0.75, 1],
-    once: false,
-  },
+    once: false
+  }
 } as const;
 export type LazyLoadPreset = keyof typeof LAZY_LOAD_PRESETS;

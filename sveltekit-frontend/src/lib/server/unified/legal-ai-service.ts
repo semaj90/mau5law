@@ -13,7 +13,7 @@ import { eq } from 'drizzle-orm/expressions';
 import { sql } from 'drizzle-orm/sql';
 
 // --- Added types & guards ---
-type MinioUploadResult = { objectName: string; size: number; url: string };
+type MinioUploadResult = { objectName: string; size: number;, url: string };
 function isMinioUploadResult(x: any): x is MinioUploadResult {
   return !!x && typeof x === 'object' && 'objectName' in x && 'size' in x && 'url' in x;
 }
@@ -22,11 +22,9 @@ function isMinioUploadResult(x: any): x is MinioUploadResult {
 type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
 
 type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
-type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown'; source: string };
+type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown';, source: string };
 
-export interface DocumentUpload {
-  file: Buffer;
-  fileName: string;
+export interface DocumentUpload { file: Buffer;, fileName: string;
   contentType: string;
   caseId?: string;
   documentType: 'evidence' | 'legal_document' | 'contract' | 'brief';
@@ -44,8 +42,8 @@ export interface SearchOptions {
 }
 
 // Return/result shapes
-type UploadResult = { id: string; fileUrl: string; embeddingId: string; cached: true };
-type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean; sources: string[] };
+type UploadResult = { id: string; fileUrl: string; embeddingId: string;, cached: true };
+type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean;, sources: string[] };
 type FullDocument = {
   metadata: Record<string, unknown>;
   fileUrl: string;
@@ -53,7 +51,7 @@ type FullDocument = {
   similarDocuments: QdrantHit[];
   recommendations: Recommendation[];
 };
-type HealthStatus = { postgresql: boolean; redis: boolean; minio: boolean; qdrant: boolean; neo4j: boolean };
+type HealthStatus = { postgresql: boolean; redis: boolean; minio: boolean; qdrant: boolean;, neo4j: boolean };
 type Recommendation = { id: string; reason?: string };
 
 /**
@@ -89,11 +87,11 @@ export class UnifiedLegalAIService {
           ? await minioStorage.uploadEvidence(upload.file, upload.fileName, {
               contentType: upload.contentType,
               caseId: upload.caseId,
-              documentType: upload.documentType,
+              documentType: upload.documentType
             })
           : await minioStorage.uploadDocument(upload.file, upload.fileName, {
               contentType: upload.contentType,
-              documentType: upload.documentType,
+              documentType: upload.documentType
             });
 
       // guard MinIO shape
@@ -110,14 +108,14 @@ export class UnifiedLegalAIService {
           file_name: upload.fileName,
           document_type: upload.documentType,
           minio_object: minioObjectName,
-          ...upload.metadata,
+          ...upload.metadata
         });
       } else {
         await this.upsertToQdrant('cases', documentId, embedding, {
           file_name: upload.fileName,
           document_type: upload.documentType,
           minio_object: minioObjectName,
-          ...upload.metadata,
+          ...upload.metadata
         });
       }
 
@@ -136,7 +134,7 @@ export class UnifiedLegalAIService {
             minio_url: minioUrl,
             qdrant_id: documentId,
             created_at: new Date(),
-            updated_at: new Date(),
+            updated_at: new Date()
           })
           .returning();
       } else {
@@ -153,7 +151,7 @@ export class UnifiedLegalAIService {
             qdrant_id: documentId,
             document_type: upload.documentType,
             created_at: new Date(),
-            updated_at: new Date(),
+            updated_at: new Date()
           })
           .returning();
       }
@@ -168,7 +166,7 @@ export class UnifiedLegalAIService {
           textContent: textContent.substring(0, 500), // Cache first 500 chars
           minioUrl,
           embedding: Array.isArray(embedding) ? embedding.slice(0, 10) : embedding, // first 10 dims
-          metadata: upload.metadata,
+          metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
       ); // Cache for 24 hours
@@ -182,7 +180,7 @@ export class UnifiedLegalAIService {
         id: documentId,
         fileUrl: minioUrl,
         embeddingId: documentId, // Use documentId since qdrant upsert doesn't necessarily return an id
-        cached: true,
+        cached: true
       };
     } catch (error) {
       console.error('Document upload pipeline failed:', error);
@@ -219,7 +217,7 @@ export class UnifiedLegalAIService {
       const raw = await (qc['search'] as AsyncFn)(collection, {
         vector,
         limit: opts.limit ?? 10,
-        scoreThreshold: opts.scoreThreshold ?? 0.0,
+        scoreThreshold: opts.scoreThreshold ?? 0.0
       });
       // normalize
       if (Array.isArray(raw)) return raw as QdrantHit[];
@@ -237,7 +235,7 @@ export class UnifiedLegalAIService {
           collection_name: collection,
           vector,
           limit: opts.limit ?? 10,
-          with_payload: true,
+          with_payload: true
         });
         if (Array.isArray(raw)) return raw as QdrantHit[];
         const maybe = raw as unknown as { result?: any[]; data?: any[] };
@@ -308,7 +306,7 @@ export class UnifiedLegalAIService {
       if (options.type === 'evidence' || options.type === 'all') {
         const evidenceResults = (await this.qdrantSearch('evidence', options.query, {
           limit: options.limit || 10,
-          scoreThreshold: options.threshold || 0.7,
+          scoreThreshold: options.threshold || 0.7
         })) as QdrantHit[];
         // Enrich with PostgreSQL metadata
         for (const result of evidenceResults) {
@@ -322,7 +320,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'evidence',
-              source: 'qdrant+postgresql',
+              source: 'qdrant+postgresql'
             });
           }
         }
@@ -332,7 +330,7 @@ export class UnifiedLegalAIService {
       if (options.type === 'documents' || options.type === 'all') {
         const documentResults = (await this.qdrantSearch('cases', options.query, {
           limit: options.limit || 10,
-          scoreThreshold: options.threshold || 0.7,
+          scoreThreshold: options.threshold || 0.7
         })) as QdrantHit[];
         // Enrich with PostgreSQL metadata
         for (const result of documentResults) {
@@ -347,8 +345,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'document',
-              source: 'qdrant+postgresql',
-            });
+              source: 'qdrant+postgresql` });
           }
         }
         sources.push('qdrant', 'postgresql');
@@ -365,7 +362,7 @@ export class UnifiedLegalAIService {
         results: results.slice(0, options.limit || 20),
         recommendations,
         cached: false,
-        sources,
+        sources
       };
 
       // Cache results
@@ -417,7 +414,7 @@ export class UnifiedLegalAIService {
         fileUrl,
         textContent: record.ocr_content || record.content || '',
         similarDocuments: similarDocs,
-        recommendations,
+        recommendations
       };
 
       // Cache the result
@@ -460,7 +457,7 @@ export class UnifiedLegalAIService {
       redis: false,
       minio: false,
       qdrant: false,
-      neo4j: false,
+      neo4j: false
     };
 
     try {
@@ -514,7 +511,7 @@ export class UnifiedLegalAIService {
       if (typeof points['upsert'] === 'function') {
         await (points['upsert'] as AsyncFn)({
           collection_name: collection,
-          points: [{ id, vector, payload }],
+          points: [{ id, vector, payload }]
         });
         return;
       }

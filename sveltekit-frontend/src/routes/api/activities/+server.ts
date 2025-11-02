@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       filters.push(
         orExpr(
           sql`${caseActivities.title} ILIKE ${`%${search}%`}`,
-          sql`${caseActivities.description} ILIKE ${`%${search}%`}`
+          sql`${caseActivities.description} ILIKE ${`%${search}%` }`
         )
       );
     }
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const orderedQuery = finalQuery.orderBy(sortOrder === 'asc' ? orderColumn : desc(orderColumn));
     const activityResults = await orderedQuery.limit(limit).offset(offset);
     // Get total count for pagination
-    const baseCountQuery = db.select({ count: sql<number>`count(*)` }).from(caseActivities);
+    const baseCountQuery = db.select({ count: sql<number>`count(*)' }).from(caseActivities);
     let finalCountQuery = baseCountQuery;
     if (filters.length > 0) {
       finalCountQuery = baseCountQuery.where(...filters);
@@ -94,8 +94,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (error: any) {
     console.error('Error fetching activities:', error instanceof Error ? error : String(error));
@@ -129,12 +129,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relatedEvidence: data.relatedEvidence || [],
       relatedCriminals: data.relatedCriminals || [],
       metadata: data.metadata || {},
-      createdBy: getUserId(locals),
+      createdBy: getUserId(locals)
     };
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });
   } catch (error: any) {
     console.error('Error creating activity:', error instanceof Error ? error : String(error));
-    return json({ error: 'Failed to create activity' }, { status: 500 });
+    return json({ error: `Failed to create activity` }, { status: 500 });
   }
 };

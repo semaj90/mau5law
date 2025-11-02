@@ -44,7 +44,7 @@ export async function fetchSSRData<T>(
 
   // Build headers and request init while properly handling FormData
   const headers: Record<string, string> = {
-    'Accept': 'application/json',
+    'Accept': 'application/json'
   };
   const fetchInit: RequestInit = { method };
 
@@ -90,7 +90,7 @@ export function createSSRStore<T>(
     error = null;
     try {
       const response = await fetchSSRData<T>(endpoint, {
-        params: options?.params,
+        params: options?.params
       });
       if (response.success) {
         data = response.data;
@@ -129,7 +129,7 @@ export function createSSRStore<T>(
       if (refreshInterval) {
         clearInterval(refreshInterval);
       }
-    },
+    }
   };
 }
 /**
@@ -149,7 +149,7 @@ export async function submitForm<T>(
   try {
     const response = await fetchSSRData<T>(endpoint, {
       method,
-      body: formData,
+      body: formData
     });
     if (response.success && onSuccess) {
       onSuccess(response.data);
@@ -230,7 +230,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
     get searching() {
       return searching;
     },
-    search,
+    search
   };
 }
 /**
@@ -286,6 +286,6 @@ export function createOptimisticStore<T>(initialData: T) {
     update,
     set: (newData: T) => {
       data = newData;
-    },
+    }
   };
 }

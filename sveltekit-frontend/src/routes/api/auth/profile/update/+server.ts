@@ -23,10 +23,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -38,10 +38,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -56,10 +56,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'At least one field must be updated',
+           , message: 'At least one field must be updated',
             code: 'INVALID_INPUT',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async (event) => {
       .update(users)
       .set({
         firstName: data.firstName ?? undefined,
-        lastName: data.lastName ?? undefined,
+        lastName: data.lastName ?? undefined
       })
       .where(eq(users.id, user.id));
 
@@ -78,12 +78,12 @@ export const POST: RequestHandler = async (event) => {
       success: true,
       message: 'Profile updated successfully',
       user: {
-        id: user.id,
+       , id: user.id,
         email: user.email,
         firstName: data.firstName || user.firstName,
         lastName: data.lastName || user.lastName,
-        role: user.role,
-      },
+        role: user.role
+      }
     });
   } catch (error) {
     console.error('Error updating profile:', error);
@@ -91,10 +91,10 @@ export const POST: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to update profile',
+         , message: 'Failed to update profile',
           code: 'UPDATE_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

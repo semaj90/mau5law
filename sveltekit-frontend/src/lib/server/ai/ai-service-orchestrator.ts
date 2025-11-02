@@ -3,7 +3,7 @@
  * Unified entry point for all AI operations with TensorRT-LLM, Triton, pgvector, Qdrant integration
  *
  * Architecture:
- * - LLM Provider: TensorRT-LLM (Triton) → vLLM → Ollama (fallback)
+ * - LLM; Provider: TensorRT-LLM (Triton) → vLLM → Ollama (fallback)
  * - Embedding: embeddinggemma:latest via Ollama → vLLM (fallback)
  * - Vector Search: pgvector (primary) → Qdrant (fallback)
  * - Health Monitoring: Automatic provider switching on failure
@@ -42,9 +42,7 @@ export interface AIServiceOrchestratorConfig {
 /**
  * Provider Health Status
  */
-export interface ProviderHealth {
-  provider: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
+export interface ProviderHealth { provider: string;, status: 'healthy' | 'degraded' | 'unhealthy';
   lastCheck: Date;
   responseTime: number;
   errorCount: number;
@@ -53,9 +51,7 @@ export interface ProviderHealth {
 /**
  * Service Status
  */
-export interface ServiceStatus {
-  orchestrator: 'ready' | 'initializing' | 'degraded' | 'error';
-  llmProviders: ProviderHealth[];
+export interface ServiceStatus { orchestrator: 'ready' | 'initializing' | 'degraded' | 'error';, llmProviders: ProviderHealth[];
   embeddingProvider: ProviderHealth;
   vectorSearchProviders: ProviderHealth[];
   mcpContext7: ProviderHealth;
@@ -85,13 +81,9 @@ export interface OrchestratedLLMRequest {
 /**
  * LLM Response
  */
-export interface OrchestratedLLMResponse {
-  content: string;
-  model: string;
+export interface OrchestratedLLMResponse { content: string;, model: string;
   provider: string;
-  tokensUsed: {
-    prompt: number;
-    completion: number;
+  tokensUsed: { prompt: number;, completion: number;
     total: number;
   };
   functionResults?: Record<string, unknown>;
@@ -113,17 +105,13 @@ export interface OrchestratedRAGQuery {
 /**
  * RAG Response
  */
-export interface OrchestratedRAGResponse {
-  answer: string;
-  sources: VectorSearchResult[];
+export interface OrchestratedRAGResponse { answer: string;, sources: VectorSearchResult[];
   relevanceScore: number;
   model: string;
   provider: string;
   searchProvider: 'pgvector' | 'qdrant';
   processingTime: number;
-  citations?: Array<{
-    source: string;
-    relevance: number;
+  citations?: Array<{ source: string;, relevance: number;
     excerpt: string;
   }>;
 }
@@ -137,7 +125,7 @@ export class AIServiceOrchestrator {
   private database: PostgresJsDatabase<Record<string, unknown>>;
   private embeddingService: GemmaEmbeddingService;
   private vectorSearchService: PgVectorIndexingService;
-  private mcpContext7Initialized = $state(false);
+  private mcpContext7Initialized = false;
   private serviceStatus: ServiceStatus;
   private readonly CACHE_PREFIX = 'orchestrator:';
   private readonly HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
@@ -206,9 +194,7 @@ export class AIServiceOrchestrator {
   /**
    * Embed text with automatic caching and routing
    */
-  async embed(request: OrchestratedEmbeddingRequest): Promise<{
-    embedding: number[];
-    dimensions: number;
+  async embed(request: OrchestratedEmbeddingRequest): Promise<{ embedding: number[];, dimensions: number;
     cached: boolean;
     processingTime: number;
   }> {
@@ -217,9 +203,8 @@ export class AIServiceOrchestrator {
       const embeddingRequest: EmbeddingRequest = {
         text: request.text,
         documentId: request.documentId,
-        type: (request.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
-        cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}`
-      };
+        type: (request.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
+        cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}' };
       const response = await this.embeddingService.embed(embeddingRequest);
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount++;
@@ -244,9 +229,8 @@ export class AIServiceOrchestrator {
       const embeddingRequests: EmbeddingRequest[] = requests.map(req => ({
         text: req.text,
         documentId: req.documentId,
-        type: (req.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
-        cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}`
-      }));
+        type: (req.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
+        cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}' }));
       const response = await this.embeddingService.embedBatch(embeddingRequests);
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount += response.embeddings.length;
@@ -315,10 +299,9 @@ export class AIServiceOrchestrator {
       // For now, use a simple LLM call (MCP integration happens at route level)
       // TODO: Integrate with MCP Context7 multicore for function calling support
       const llmResponse = {
-        content: `Based on the search results, here's the analysis of your query: "${request.question}". Found ${sources.length} relevant documents.`,
+        content: 'Based on the search results, here's the analysis of your query: "${request.question}". Found ${sources.length} relevant documents.`,
         model: 'gemma3-legal',
-        provider: 'ollama'
-      };
+        provider: 'ollama' };
       // 4. Build response with citations
       const citations = request.includeCitations
         ? sources.slice(0, 3).map(s => ({
@@ -348,8 +331,7 @@ export class AIServiceOrchestrator {
         const embedding = await this.embed({
           text: doc.content,
           documentId: doc.documentId,
-          type: (doc.embeddingType || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause'
-        });
+          type: (doc.embeddingType || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause' });
         doc.embedding = embedding.embedding;
       }
       // 2. Store in pgvector
@@ -502,15 +484,14 @@ export class AIServiceOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        vector: queryEmbedding.embedding,
+       , vector: queryEmbedding.embedding,
         limit: topK,
         score_threshold: threshold
       })
     });
-    const data = (await response.json()) as { result: Array<{
-      id: string;
+    const data = (await response.json()) as { result: Array<{, id: string;
       score: number;
-      payload: { content: string; documentId: string; metadata?: Record<string, unknown> };
+      payload: { content: string;, documentId: string; metadata?: Record<string, unknown> };
     }> };
     return data.result.map((item) => ({
       id: item.id,

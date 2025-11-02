@@ -1,35 +1,27 @@
 // Advanced Memory Optimizer (clean, self-contained)
 // Focus: safe to import in browser and Node, implements LOD management, conservative pool adjustments,
 // and a simple k-means worker orchestration. This is intentionally minimal and type-safe.
-export interface LODLevel {
-  id: string;
-  detail: 'low' | 'medium' | 'high' | 'ultra';
+export interface LODLevel { id: string;, detail: 'low' | 'medium' | 'high' | 'ultra';
   maxMemoryMB: number;
   maxObjects: number;
   quality: number;
   compressionRatio: number;
 }
-export interface ClusterMetrics {
-  id: string;
-  centroid: number[];
+export interface ClusterMetrics { id: string;, centroid: number[];
   size: number;
   cohesion: number;
   separability: number;
   memoryUsage: number;
   processingTime: number;
 }
-export interface MemoryPool {
-  id: string;
-  type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
+export interface MemoryPool { id: string;, type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
   current: number;
   max: number;
   items: Map<string, any>;
   lastAccessed: number;
   priority: number;
 }
-export interface CacheLayer {
-  name: string;
-  type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
+export interface CacheLayer { name: string;, type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
   size: number;
   hitRate: number;
   avgResponseTime: number;
@@ -51,7 +43,7 @@ type WorkerLike = {
   off?(ev: 'message' | 'error' | string, cb: (payload: any | Error) => void): void;
   // Browser-style addEventListener/removeEventListener - message uses MessageEvent
   addEventListener?(ev: 'message' | 'error' | string, cb: (ev: MessageEvent) => void): void;
-  removeEventListener?(ev: 'message' | 'error' | string, cb: (ev: MessageEvent) => void): void;
+  removeEventListener?(ev: 'message' | 'error' | string; cb: (ev: MessageEvent) => void): void;
 };
 export class AdvancedMemoryOptimizer {
   private memoryPools = new Map<string, MemoryPool>();
@@ -74,13 +66,13 @@ export class AdvancedMemoryOptimizer {
       { id: 'low', detail: 'low', maxMemoryMB: 512, maxObjects: 1000, quality: 0.3, compressionRatio: 0.1 },
       { id: 'medium', detail: 'medium', maxMemoryMB: 1024, maxObjects: 5000, quality: 0.6, compressionRatio: 0.4 },
       { id: 'high', detail: 'high', maxMemoryMB: 2048, maxObjects: 10000, quality: 0.8, compressionRatio: 0.7 },
-      { id: 'ultra', detail: 'ultra', maxMemoryMB: 4096, maxObjects: 25000, quality: 1.0, compressionRatio: 1.0 },
+      { id: 'ultra', detail: 'ultra', maxMemoryMB: 4096, maxObjects: 25000, quality: 1.0, compressionRatio: 1.0 }
     ];
   }
   private initializeCacheLayers() {
     const layers: CacheLayer[] = [
       { name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
-      { name: 'redis', type: 'redis', size: 0, hitRate: 0, avgResponseTime: 10, ttl: 3600, priority: 2, enabled: true },
+      { name: 'redis', type: 'redis', size: 0, hitRate: 0, avgResponseTime: 10, ttl: 3600, priority: 2, enabled: true }
     ];
     layers.forEach(l => this.cacheLayers.set(l.name, l));
   }
@@ -93,7 +85,7 @@ export class AdvancedMemoryOptimizer {
         max: 512 * 1024 * 1024,
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 1,
+        priority: 1
       },
       {
         id: 'vectors',
@@ -102,7 +94,7 @@ export class AdvancedMemoryOptimizer {
         max: 256 * 1024 * 1024,
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 2,
+        priority: 2
       },
       {
         id: 'cache',
@@ -111,7 +103,7 @@ export class AdvancedMemoryOptimizer {
         max: 1024 * 1024 * 1024,
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 3,
+        priority: 3
       },
     ];
     pools.forEach(p => this.memoryPools.set(p.id, p));
@@ -256,7 +248,7 @@ export class AdvancedMemoryOptimizer {
         cohesion: 0,
         separability: 0,
         memoryUsage: group.length * 1024,
-        processingTime: Date.now() - start,
+        processingTime: Date.now() - start
       };
     });
     results.forEach(r => this.clusters.set(r.id, r));
@@ -281,15 +273,13 @@ export class AdvancedMemoryOptimizer {
   public async adjustObjectLimitsPublic(): Promise<void> {
     return this.adjustObjectLimits();
   }
-  public getStatus(): {
-    lod: LODLevel | null;
-    memoryPressure: number;
-    pools: { id: string; size: number; max: number }[];
+  public getStatus(): { lod: LODLevel | null;, memoryPressure: number;
+    pools: { id: string; size: number;, max: number }[];
   } {
     return {
       lod: this.currentLOD ?? null,
       memoryPressure: this.memoryPressure,
-      pools: Array.from(this.memoryPools.values()).map(p => ({ id: p.id, size: p.current, max: p.max })),
+      pools: Array.from(this.memoryPools.values()).map(p => ({ id: p.id, size: p.current, max: p.max }))
     };
   }
 }

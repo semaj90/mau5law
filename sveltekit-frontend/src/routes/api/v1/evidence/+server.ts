@@ -8,7 +8,7 @@ import { json, error, type RequestHandler } from '@sveltejs/kit';
 import {
   EvidenceCRUDService,
   CreateEvidenceSchema,
-  type CreateEvidenceData,
+  type CreateEvidenceData
 } from '$lib/server/services/user-scoped-crud';
 import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ const EvidenceQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: cuidSchema.optional(),
   evidenceType: z.string().optional(),
-  isPublic: z.coerce.boolean().optional(),
+  isPublic: z.coerce.boolean().optional()
 });
 /*
  * GET /api/v1/evidence
@@ -40,11 +40,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         })
       : await evidenceService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
     return json({
       success: true,
@@ -57,13 +57,13 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasNext:
           (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page <
           (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1,
+        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
       },
       meta: {
         userId: getUserId(locals),
         caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching evidence:', err);
@@ -112,8 +112,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId: getUserId(locals),
           caseId: validatedData.caseId,
           timestamp: new Date().toISOString(),
-          analysisQueued: true,
-        },
+          analysisQueued: true
+        }
       },
       { status: 201 }
     );

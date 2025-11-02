@@ -3,12 +3,8 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import type { Schemas } from '@qdrant/js-client-rest';
 import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from '$env/static/private';
 // Production Qdrant Service - Fixed vector dimensions and stub implementations
-export interface QdrantPoint {
-  id: string;
-  vector: number[];
-  payload: {
-    content: string;
-    type: 'evidence' | 'case' | 'chat' | 'precedent';
+export interface QdrantPoint { id: string;, vector: number[];
+  payload: { content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';
     caseId?: string;
     evidenceId?: string;
     tags: string[];
@@ -18,9 +14,7 @@ export interface QdrantPoint {
     aiSummaryScore?: number; // 0-100 case AI scoring
   };
 }
-export interface SearchResult {
-  id: string;
-  score: number;
+export interface SearchResult { id: string;, score: number;
   payload: QdrantPoint['payload'];
 }
 class QdrantService {
@@ -31,7 +25,7 @@ class QdrantService {
     this.client = new QdrantClient({
       host: QDRANT_HOST || 'localhost',
       port: parseInt(QDRANT_PORT || '6333'),
-      apiKey: QDRANT_API_KEY,
+      apiKey: QDRANT_API_KEY
     });
   }
   async initialize(): Promise<void> {
@@ -40,11 +34,9 @@ class QdrantService {
       const collectionsResponse = await this.client.getCollections();
       const collectionExists = collectionsResponse.collections.some(col => col.name === this.collectionName);
       if (!collectionExists) {
-        await this.client.createCollection(this.collectionName, {
-          vectors: {
-            size: 384, // Fixed: nomic-embed-text dimension;
-            distance: 'Cosine',
-          },
+        await this.client.createCollection(this.collectionName, { vectors: {, size: 384, // Fixed: nomic-embed-text dimension;
+           , distance: 'Cosine'
+          }
         });
       }
       this.isInitialized = true;
@@ -69,7 +61,7 @@ class QdrantService {
     content: string,
     metadata: {
       caseId?: string;
-      type: string;
+     , type: string;
       tags?: string[];
       [key: string]: any;
     }
@@ -90,11 +82,11 @@ class QdrantService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         aiSummaryScore: 75, // Mock score
-      },
+      }
     };
     await this.client.upsertPoints(this.collectionName, {
       wait: true,
-      points: [point],
+      points: [point]
     });
     return evidenceId;
   }
@@ -102,7 +94,7 @@ class QdrantService {
     await this.initialize();
     await this.client.upsertPoints(this.collectionName, {
       wait: true,
-      points,
+      points
     });
   }
   async searchSimilar(embedding: number[], limit: number): Promise<Schemas['ScoredPoint'][]> {
@@ -110,7 +102,7 @@ class QdrantService {
     const results = await this.client.search(this.collectionName, {
       vector: embedding,
       limit,
-      with_payload: true,
+      with_payload: true
     });
     return results;
   }
@@ -130,21 +122,20 @@ class QdrantService {
     try {
       // Mock embedding for now
       const queryEmbedding = new Array(384).fill(0).map(() => Math.random());
-      const filter: Schemas['Filter'] = {
-        must: [{ key: 'type', match: { value: 'evidence' } }],
+      const filter: Schemas['Filter'] = { must: [{, key: 'type', match: { value: 'evidence' } }]
       };
       const searchResult = await this.client.search(this.collectionName, {
         vector: queryEmbedding,
         limit,
         score_threshold: threshold,
         filter,
-        with_payload: true,
+        with_payload: true
       });
       return searchResult.map(
         (result): SearchResult => ({
           id: String(result.id),
           score: result.score || 0,
-          payload: result.payload as QdrantPoint['payload'],
+          payload: result.payload as QdrantPoint['payload']
         })
       );
     } catch (error: any) {
@@ -155,7 +146,7 @@ class QdrantService {
   async deletePoints(evidenceIds: string[]): Promise<void> {
     await this.initialize();
     await this.client.deletePoints(this.collectionName, {
-      points: evidenceIds,
+      points: evidenceIds
     });
   }
 }

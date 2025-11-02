@@ -44,18 +44,14 @@ export interface RedisCacheAdapter {
 }
 
 /* ===== Domain types ===== */
-export interface ChainOfCustodyEntry {
-  timestamp: string | Date;
-  handler: string;
+export interface ChainOfCustodyEntry { timestamp: string | Date;, handler: string;
   action: string;
   location: string;
   notes?: string;
   signature: string;
 }
 
-export interface EvidenceItem {
-  id: string;
-  caseId: string;
+export interface EvidenceItem { id: string;, caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'digital' | 'physical';
   title: string;
   description: string;
@@ -68,40 +64,30 @@ export interface EvidenceItem {
   updatedAt?: string | Date;
 }
 
-export interface Finding {
-  type: 'pattern' | 'anomaly' | 'match' | 'contradiction' | 'gap';
-  description: string;
+export interface Finding { type: 'pattern' | 'anomaly' | 'match' | 'contradiction' | 'gap';, description: string;
   confidence: number;
   relevance: number;
   supportingData?: any[];
 }
 
-export interface Correlation {
-  relatedEvidenceId: string;
-  correlationType: 'temporal' | 'spatial' | 'causal' | 'semantic' | 'entity';
+export interface Correlation { relatedEvidenceId: string;, correlationType: 'temporal' | 'spatial' | 'causal' | 'semantic' | 'entity';
   strength: number;
   description: string;
   sharedEntities: string[];
 }
 
-export interface Entity {
-  type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'object';
-  value: string;
+export interface Entity { type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'object';, value: string;
   confidence: number;
   mentions?: number;
   context?: string[];
 }
 
-export interface SentimentAnalysis {
-  overall: number;
-  emotions: { anger: number; fear: number; joy: number; sadness: number; surprise: number; trust: number };
+export interface SentimentAnalysis { overall: number;, emotions: { anger: number; fear: number; joy: number; sadness: number; surprise: number;, trust: number };
   subjectivity: number;
   formality: number;
 }
 
-export interface TimelineEvent {
-  timestamp: string | Date;
-  description: string;
+export interface TimelineEvent { timestamp: string | Date;, description: string;
   type: 'action' | 'communication' | 'transaction' | 'movement' | 'state_change';
   actors: string[];
   keyEntities: Entity[];
@@ -110,9 +96,7 @@ export interface TimelineEvent {
   [key: string]: any; // Add index signature to allow arbitrary properties
 }
 
-export interface EvidenceAnalysis {
-  id: string;
-  evidenceId: string;
+export interface EvidenceAnalysis { id: string;, evidenceId: string;
   timestamp: Date;
   aiModel: string;
   findings: Finding[];
@@ -186,7 +170,7 @@ export class AIEvidenceAnalyzer {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: this.analysisModel, prompt, temperature: 0.0 }),
+        body: JSON.stringify({, model: this.analysisModel, prompt, temperature: 0.0 })
       });
 
       if (!res.ok) {
@@ -198,7 +182,7 @@ export class AIEvidenceAnalyzer {
       // try JSON then fallback to text endpoint; tolerant to different response shapes.
       const json = await res.json().catch(() => null);
       if (json) {
-        // common shapes: { output: "..." } or { results: [{ content: "..." }] } or { text: "..." }
+        // common shapes: { output: "..." } or { results: [{, content: "..." }] } or { text: "..." }
         if (typeof json.output === 'string') return json.output;
         if (typeof json.text === 'string') return json.text;
         if (Array.isArray(json.results) && json.results[0]) {
@@ -231,7 +215,7 @@ export class AIEvidenceAnalyzer {
       // Optionally index to Qdrant
       await this.indexVectorToQdrant('legal_docs', evidence.id, primaryEmbedding, {
         title: evidence.title,
-        type: evidence.type,
+        type: evidence.type
       });
     }
 
@@ -375,7 +359,7 @@ export class AIEvidenceAnalyzer {
     const evidenceCaption = evidence?.title ?? evidence?.description ?? 'evidence (no title)';
     const corrSummary = (correlations || []).map(c => `${c.correlationType}:${c.description}`).join(' | ');
     const prompt = `Provide 3 concise, prioritized legal recommendations based on:
-- Evidence: ${evidenceCaption}
+-; Evidence: ${evidenceCaption}
 - Key findings: ${findings.map(f => f.description).join('; ')}
 - Correlations: ${corrSummary}
 - Overall Risk Score: ${riskScore.toFixed(2)} (Higher score indicates greater risk/urgency)
@@ -406,7 +390,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
       const resp = await fetch(`${this.ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, inputs: texts }),
+        body: JSON.stringify({ model, inputs: texts })
       });
       const data: any = await resp.json();
 
@@ -461,7 +445,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
       await fetch(`${qdrantBaseUrl}/collections/${encodeURIComponent(collection)}/points`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points: [{ id, vector: Array.from(vector), payload }] }),
+        body: JSON.stringify({ points: [{ id, vector: Array.from(vector), payload }] })
       });
     } catch (e: any) {
       console.debug('[ai-evidence] qdrant HTTP upsert failed:', e);
@@ -570,9 +554,9 @@ Return either a JSON array of strings or a plain newline-separated list.`;
   private async parseSentiment(raw: string): Promise<SentimentAnalysis> {
     const sentiment = await this.parseJsonSafe<SentimentAnalysis>(raw, {
       overall: 0,
-      emotions: { anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 },
+      emotions: {, anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 },
       subjectivity: 0,
-      formality: 0,
+      formality: 0
     });
     // Basic validation
     if (!isRecord(sentiment) || typeof sentiment.overall !== 'number') {
@@ -581,7 +565,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
         overall: 0,
         emotions: { anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 },
         subjectivity: 0,
-        formality: 0,
+        formality: 0
       };
     }
     return sentiment;
@@ -593,7 +577,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
       correlationType: 'semantic',
       strength: 0,
       description: 'No correlation found.',
-      sharedEntities: [],
+      sharedEntities: []
     });
     // Basic validation
     if (!isRecord(correlation) || typeof correlation.description !== 'string') {
@@ -603,7 +587,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
         correlationType: 'semantic',
         strength: 0,
         description: 'No correlation found.',
-        sharedEntities: [],
+        sharedEntities: []
       };
     }
     return correlation;

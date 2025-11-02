@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
     promises.push(
       new Promise<PrimeWorkerResult>((resolve, reject) => {
         const worker = new Worker(scriptPath, {
-          workerData: { start, end, mode },
+          workerData: { start, end, mode }
         });
         worker.on('message', (msg: PrimeWorkerResult) => resolve(msg));
         worker.on('error', err => reject(err));
@@ -63,14 +63,14 @@ export const GET: RequestHandler = async ({ url }) => {
         totalCount,
         primes,
         durationMs: Math.round(durationMs),
-        throughput: Math.round(totalCount / (durationMs / 1000)),
+        throughput: Math.round(totalCount / (durationMs / 1000))
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     return new Response(
       JSON.stringify({ error: 'Computation failed', message: error instanceof Error ? error.message : String(error) }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: { 'Content-Type': `application/json` } }
     );
   }
 }

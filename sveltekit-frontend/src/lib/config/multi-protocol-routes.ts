@@ -8,18 +8,14 @@ import http from "http";
  * Using existing compiled Go binaries for maximum performance
  */
 
-export interface ServiceConfig {
-  name: string;
-  port: number;
+export interface ServiceConfig { name: string;, port: number;
   protocols: ('http' | 'grpc' | 'quic' | 'ws')[];
   healthEndpoint: string;
   binary?: string;
   tier: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
 }
-export interface ProtocolRoute {
-  service: string;
-  endpoint: string;
+export interface ProtocolRoute { service: string;, endpoint: string;
   protocols: {
     http?: string;
     grpc?: string;
@@ -455,9 +451,7 @@ export const HEALTH_CHECK_CONFIG = {
   healthyThreshold: 2
 }
 // Protocol-specific configurations
-export const PROTOCOL_CONFIG = {
-  http: {
-    timeout: 30000,
+export const PROTOCOL_CONFIG = { http: {, timeout: 30000,
     retries: 3,
     headers: {
       'Content-Type': 'application/json',
@@ -468,13 +462,13 @@ export const PROTOCOL_CONFIG = {
     timeout: 15000,
     retries: 3,
     keepAlive: true,
-    keepAliveTimeout: 30000,
+    keepAliveTimeout: 30000
   },
   quic: {
     timeout: 5000,
     retries: 2,
     keepAlive: true,
-    maxStreams: 100,
+    maxStreams: 100
   },
   ws: {
     timeout: 0, // No timeout for WebSocket
@@ -489,7 +483,7 @@ export const SERVICE_DISCOVERY = {
   refreshInterval: 60000, // 1 minute
   healthCheckEnabled: true,
   autoFailover: true,
-  circuitBreakerEnabled: true,
+  circuitBreakerEnabled: true
 }
 export default {
   SERVICES_CONFIG,

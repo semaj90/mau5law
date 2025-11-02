@@ -2,29 +2,21 @@
 // Connects to go-microservice/simd_gpu_parser.go and simd_parser.go
 import { browser } from '$app/environment';
 // import { dev } from '$app/environment'
-interface SIMDParseResult {
-  parser: string;
-  size: number;
+interface SIMDParseResult { parser: string;, size: number;
   parse_time_ns: number;
   throughput_mbps?: number;
   type: string;
   structural_chars?: number;
 }
-interface SIMDBenchmarkResult {
-  batch_size: number;
-  total_time_ns: number;
+interface SIMDBenchmarkResult { batch_size: number;, total_time_ns: number;
   avg_time_ns: number;
   gpu_processed?: boolean;
   results: Array<Record<string, unknown>>;
 }
-interface SIMDHealthStatus {
-  status: string;
-  parser: string;
+interface SIMDHealthStatus { status: string;, parser: string;
   gpu_available?: boolean;
   models?: string[];
-  performance?: {
-    avg_parse_time_ms: number;
-    throughput_mbps: number;
+  performance?: { avg_parse_time_ms: number;, throughput_mbps: number;
     gpu_utilization?: number;
   };
 }
@@ -72,8 +64,7 @@ export class SIMDRedisClient {
         {
           method: 'GET',
           headers: {
-            Accept: 'application/json',
-          },
+           , Accept: `application/json` }
         },
         5000
       );
@@ -85,7 +76,7 @@ export class SIMDRedisClient {
     } catch (error) {
       // Try GPU parser as fallback
       try {
-        const gpuResponse = await this.fetchWithTimeout(`${this.gpuUrl}/health`, { method: 'GET' }, 5000);
+        const gpuResponse = await this.fetchWithTimeout(`${this.gpuUrl}/health`, { method: `GET` }, 5000);
         if (gpuResponse.ok) {
           const gpuHealth = (await gpuResponse.json()) as SIMDHealthStatus;
           return { ...gpuHealth, gpu_available: true };
@@ -121,9 +112,8 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: jsonString,
+          Accept: `application/json` },
+        body: jsonString
       },
       this.timeout
     );
@@ -133,8 +123,7 @@ export class SIMDRedisClient {
     const result = (await response.json()) as SIMDParseResult;
     return {
       ...result,
-      parser: 'simd_avx2_cuda',
-    };
+      parser: `simd_avx2_cuda` };
   }
   /**
    * Parse JSON using standard SIMD parser
@@ -146,9 +135,8 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: jsonString,
+          Accept: `application/json` },
+        body: jsonString
       },
       this.timeout
     );
@@ -158,8 +146,7 @@ export class SIMDRedisClient {
     const result = (await response.json()) as SIMDParseResult;
     return {
       ...result,
-      parser: 'simdjson-go',
-    };
+      parser: `simdjson-go` };
   }
   /**
    * Cache JSON in Redis with SIMD parsing
@@ -167,7 +154,7 @@ export class SIMDRedisClient {
   async cacheJSON(
     key: string,
     data: any
-  ): Promise<{ success: boolean; key: string; size: number; cached_at: string } & Record<string, unknown>> {
+  ): Promise<{ success: boolean; key: string; size: number;, cached_at: string } & Record<string, unknown>> {
     const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
     // For caching, we'll simulate Redis operations
     // In production, this would connect to actual Redis
@@ -177,13 +164,12 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
+          Accept: 'application/json'
         },
         body: JSON.stringify({
           key,
           data: jsonString,
-          operation: 'cache',
-        }),
+          operation: `cache` })
       },
       this.timeout
     );
@@ -196,7 +182,7 @@ export class SIMDRedisClient {
       key,
       size: jsonString.length,
       cached_at: new Date().toISOString(),
-      ...result,
+      ...result
     };
   }
   /**
@@ -225,12 +211,11 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+          Accept: `application/json` },
         body: JSON.stringify({
           documents,
-          iterations,
-        }),
+          iterations
+        })
       },
       this.timeout * 2
     ); // Longer timeout for benchmarks
@@ -240,7 +225,7 @@ export class SIMDRedisClient {
     const result = await response.json();
     return {
       ...result,
-      gpu_processed: true,
+      gpu_processed: true
     };
   }
   /**
@@ -253,12 +238,11 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+          Accept: `application/json` },
         body: JSON.stringify({
           documents,
-          iterations,
-        }),
+          iterations
+        })
       },
       this.timeout * 2
     );
@@ -268,7 +252,7 @@ export class SIMDRedisClient {
     const result = await response.json();
     return {
       ...result,
-      gpu_processed: false,
+      gpu_processed: false
     };
   }
   /**
@@ -276,7 +260,7 @@ export class SIMDRedisClient {
    */
   async getMetrics(): Promise<Record<string, unknown>> {
     try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/metrics`, { method: 'GET' }, 5000);
+      const response = await this.fetchWithTimeout(`${this.baseUrl}/metrics`, { method: `GET` }, 5000);
       if (!response.ok) {
         throw new Error(`Metrics unavailable: ${response.status}`);
       }
@@ -289,12 +273,12 @@ export class SIMDRedisClient {
         performance: {
           avg_parse_time_ms: 0,
           throughput_mbps: 0,
-          structural_chars_per_sec: 0,
+          structural_chars_per_sec: 0
         },
         system: {
           cpu_usage: 0,
-          memory_usage: 0,
-        },
+          memory_usage: 0
+        }
       };
     }
   }
@@ -309,13 +293,11 @@ export class SIMDRedisClient {
       batchSize?: number;
       priority?: 'low' | 'normal' | 'high';
     }
-  ): Promise<{
-    cache_id: string;
-    cached: boolean;
+  ): Promise<{ cache_id: string;, cached: boolean;
     gpu_processed: boolean;
     som_clustered: boolean;
     batch_processed: boolean;
-    performance: { parse_time_ms: number; cache_time_ms: number; total_time_ms: number };
+    performance: { parse_time_ms: number; cache_time_ms: number;, total_time_ms: number };
   }> {
     const startTime = Date.now();
     const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
@@ -332,7 +314,7 @@ export class SIMDRedisClient {
       cached: true,
       gpu_processed: options?.useGPUAcceleration ?? true,
       som_clustered: jsonString.length > 1000, // Cluster larger documents
-      batch_processed: options?.batchSize ? options.batchSize > 1 : false,
+      batch_processed: options?.batchSize ? options.batchSize > 1 : false
     };
     const cacheTime = Date.now() - cacheStart;
     const totalTime = Date.now() - startTime;
@@ -341,8 +323,8 @@ export class SIMDRedisClient {
       performance: {
         parse_time_ms: parseTime,
         cache_time_ms: cacheTime,
-        total_time_ms: totalTime,
-      },
+        total_time_ms: totalTime
+      }
     };
   }
 }

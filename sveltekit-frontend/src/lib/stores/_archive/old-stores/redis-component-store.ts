@@ -4,9 +4,7 @@
  */
 import { writable, type Writable } from 'svelte/store';
 import type { RedisClientType } from 'redis';
-interface ComponentState {
-  id: string;
-  data: any;
+interface ComponentState { id: string;, data: any;
   timestamp: number;
   ttl?: number;
 }
@@ -29,7 +27,7 @@ class RedisComponentStore {
       const { createClient } = await import('redis');
       this.redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis',
+        password: process.env.REDIS_PASSWORD || 'redis'
       });
       await this.redis.connect();
       console.log('✅ Redis connected for Enhanced-Bits component store');
@@ -117,7 +115,7 @@ class RedisComponentStore {
       id: key,
       data,
       timestamp: Date.now(),
-      ttl: mergedOptions.ttl,
+      ttl: mergedOptions.ttl
     };
     // Save to local cache
     this.localCache.set(key, state);
@@ -152,7 +150,7 @@ class RedisComponentStore {
           return state.data;
         }
       } catch (error) {
-        console.warn(`⚠️ Failed to load from Redis cache for key ${key}:`, error);
+        console.warn(`⚠️ Failed to load from Redis cache for key ${key}: ', error);
       }
     }
     return fallback;
@@ -194,7 +192,7 @@ class RedisComponentStore {
     return {
       localCacheSize: this.localCache.size,
       redisConnected: !!this.redis,
-      stores: this.stores.size,
+      stores: this.stores.size
     };
   }
 }

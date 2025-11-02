@@ -1,5 +1,8 @@
 <!-- Citation Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import { fade, scale, fly } from 'svelte/transition';
   import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
   import {
@@ -376,7 +379,7 @@
       <CardContent>
         <!-- Add Citation Form -->
         {#if showAddForm}
-          <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
+          <div class="add-form" transitionfly={{ y: -20, duration: 300 }}>
             <div class="form-header">
               <h3>Add New Citation</h3>
 -              <Button onclick={() => (showAddForm = false)} size="sm">✕</Button>
@@ -395,7 +398,7 @@
           {/if}
         <!-- Bulk Operations Panel -->
         {#if bulkOperations}
-          <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
+          <div class="bulk-panel" transitionfly={{ y: -20, duration: 300 }}>
             <div class="panel-header">
               <h3>Bulk Operations</h3>
 -              <Button onclick={() => (bulkOperations = false)} size="sm">✕</Button>
@@ -508,7 +511,7 @@
             <div
               class="citation-item"
               class:selected={selectedCitations.has(citation.id)}
-              transition:scale={citationBuilder.animations.enter}
+              transitionscale={citationBuilder.animations.enter}
             >
               <div class="citation-header">
                 <div class="citation-select">

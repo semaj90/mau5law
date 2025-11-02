@@ -6,9 +6,7 @@ import type { Document } from '$lib/types';
 // Removed unused import of `dev` which caused lint/parse confusion in some TS setups.
 // (import { dev } from '$app/environment';)
 
-export interface ServiceEndpoint {
-  name: string;
-  port: number;
+export interface ServiceEndpoint { name: string;, port: number;
   protocols: string[];
   category: string;
   health: string;
@@ -45,7 +43,7 @@ export type ClusterParams = Record<string, unknown>;
 
 export class CompleteServiceRouter {
   private services: Map<string, ServiceEndpoint> = new Map();
-  private healthCache: Map<string, { status: boolean; timestamp: number }> = new Map();
+  private healthCache: Map<string, { status: boolean;, timestamp: number }> = new Map();
   private readonly HEALTH_CACHE_TTL = 30_000; // 30 seconds
 
   constructor() {
@@ -61,7 +59,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'],
         category: 'core',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'upload-service',
@@ -69,7 +67,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'core',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simple-vector-service',
@@ -77,7 +75,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP', 'WebSocket'],
         category: 'core',
         health: '/api/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       { name: 'grpc-server', port: 50051, protocols: ['gRPC'], category: 'core', health: '/health', status: 'unknown' },
       { name: 'rag-kratos', port: 50052, protocols: ['gRPC'], category: 'core', health: '/health', status: 'unknown' },
@@ -88,7 +86,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'core',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'gpu-indexer-service',
@@ -96,7 +94,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'core',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
     ];
     // Performance Services (Priority 2)
@@ -107,7 +105,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'advanced-cuda-service',
@@ -115,7 +113,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'gpu-orchestrator-service',
@@ -123,7 +121,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'load-balancer',
@@ -131,7 +129,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'recommendation-service',
@@ -139,7 +137,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'context7-error-pipeline',
@@ -147,7 +145,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simd-health',
@@ -155,7 +153,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simd-parser',
@@ -163,7 +161,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'performance',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
     ];
     // Processing Services (Priority 3)
@@ -174,7 +172,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'processing',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'summarizer-service',
@@ -182,7 +180,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'processing',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'summarizer-http',
@@ -190,7 +188,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'processing',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simple-upload',
@@ -198,7 +196,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'processing',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simple-upload-fixed',
@@ -206,7 +204,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'processing',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
     ];
     // Protocol Services (Priority 4)
@@ -217,7 +215,7 @@ export class CompleteServiceRouter {
         protocols: ['QUIC'],
         category: 'protocol',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'quic-gateway',
@@ -225,7 +223,7 @@ export class CompleteServiceRouter {
         protocols: ['QUIC'],
         category: 'protocol',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'quic-vector-proxy',
@@ -233,7 +231,7 @@ export class CompleteServiceRouter {
         protocols: ['QUIC'],
         category: 'protocol',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'vector-service',
@@ -241,7 +239,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'protocol',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'vector-redis-service',
@@ -249,7 +247,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'protocol',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
     ];
     // Support Services (Priority 5)
@@ -260,7 +258,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'cuda-service',
@@ -268,7 +266,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'enhanced-api-endpoints',
@@ -276,7 +274,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'simple-api-endpoints',
@@ -284,7 +282,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown',
+        status: 'unknown'
       },
       {
         name: 'main-service',
@@ -292,8 +290,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown',
-      },
+        status: `unknown` },
     ];
 
     // Register all services
@@ -351,7 +348,7 @@ export class CompleteServiceRouter {
       const response = await fetch(url, {
         signal: controller.signal,
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
+        headers: { 'Accept': `application/json` }
       });
       clearTimeout(timeoutId);
 
@@ -360,7 +357,7 @@ export class CompleteServiceRouter {
       service.status = isHealthy ? 'running' : 'stopped';
       return isHealthy;
     } catch (error: any) {
-      console.warn(`Health check failed for ${serviceName}:`, error);
+      console.warn(`Health check failed for ${serviceName}: ', error);
       this.healthCache.set(serviceName, { status: false, timestamp: now });
       if (service) service.status = 'stopped';
       return false;
@@ -400,7 +397,7 @@ export class CompleteServiceRouter {
       success: false,
       error: `All services failed for ${serviceName}`,
       service: serviceName,
-      latency: Date.now() - startTime,
+      latency: Date.now() - startTime
     };
   }
 
@@ -432,14 +429,14 @@ export class CompleteServiceRouter {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-        headers: headers as HeadersInit,
+        headers: headers as HeadersInit
       });
 
       if (!response.ok) {
         return {
           success: false,
           error: `HTTP ${response.status}: ${response.statusText}`,
-          service: serviceName,
+          service: serviceName
         };
       }
 
@@ -457,13 +454,13 @@ export class CompleteServiceRouter {
         success: true,
         data,
         service: serviceName,
-        protocol: 'HTTP',
+        protocol: 'HTTP'
       };
     } catch (error: any) {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        service: serviceName,
+        service: serviceName
       };
     } finally {
       clearTimeout(timeoutId);
@@ -480,7 +477,7 @@ export class CompleteServiceRouter {
       '/api/rag/query',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       },
       ['cuda-ai-service', 'advanced-cuda-service'] // Fallback to CUDA services
     );
@@ -502,7 +499,7 @@ export class CompleteServiceRouter {
         method: 'POST',
         body: formData,
         // do not set Content-Type for FormData; fetch will set boundaries
-        headers: {},
+        headers: {}
       },
       ['gin-upload', 'simple-upload-fixed'] // Fallback upload services
     );
@@ -512,13 +509,13 @@ export class CompleteServiceRouter {
    * Vector similarity search with fallback
    */
   async vectorSearch(query: string, limit: number = 10): Promise<ServiceResponse<VectorSearchResult>> {
-    const payload = { query, limit, model: 'nomic-embed-text' };
+    const payload = { query, limit, model: `nomic-embed-text` };
     return this.routeRequest(
       'simple-vector-service',
       '/api/vector/search',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       },
       ['vector-service', 'vector-redis-service'] // Fallback vector services
     );
@@ -534,7 +531,7 @@ export class CompleteServiceRouter {
       '/api/gpu/process',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       },
       ['advanced-cuda-service', 'gpu-orchestrator-service'] // Multiple GPU fallbacks
     );
@@ -550,7 +547,7 @@ export class CompleteServiceRouter {
       '/api/summarize',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       },
       ['summarizer-http'] // Fallback summarizer
     );
@@ -563,7 +560,7 @@ export class CompleteServiceRouter {
     const payload = { operation, params: params || {}, timestamp: new Date().toISOString() };
     return this.routeRequest('cluster-http', '/api/cluster', {
       method: 'POST',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
   }
 
@@ -591,16 +588,14 @@ export class CompleteServiceRouter {
    */
   getServiceStats() {
     const services = this.getAllServices();
-    const stats: {
-      total: number;
-      byCategory: Record<string, number>;
-      byStatus: { running: number; stopped: number; unknown: number };
+    const stats: { total: number;, byCategory: Record<string, number>;
+      byStatus: { running: number; stopped: number;, unknown: number };
       byProtocol: Record<string, number>;
     } = {
       total: services.length,
       byCategory: {},
       byStatus: { running: 0, stopped: 0, unknown: 0 },
-      byProtocol: {},
+      byProtocol: {}
     };
 
     services.forEach(service => {

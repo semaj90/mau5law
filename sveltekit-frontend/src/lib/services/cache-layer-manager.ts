@@ -2,9 +2,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
 
-export interface CacheLayer {
-  name: string;
-  priority: number;
+export interface CacheLayer { name: string;, priority: number;
   avgResponseTime: number;
   hitRate: number;
   enabled: boolean;
@@ -21,35 +19,35 @@ export class CacheLayerManager {
         priority: 1,
         avgResponseTime: 1,
         hitRate: 0.9,
-        enabled: true,
+        enabled: true
       },
       {
         name: 'redis',
         priority: 2,
         avgResponseTime: 10,
         hitRate: 0.8,
-        enabled: true,
+        enabled: true
       },
       {
         name: 'qdrant',
         priority: 3,
         avgResponseTime: 25,
         hitRate: 0.7,
-        enabled: true,
+        enabled: true
       },
       {
         name: 'postgres',
         priority: 4,
         avgResponseTime: 50,
         hitRate: 0.6,
-        enabled: true,
+        enabled: true
       },
       {
         name: 'neo4j',
         priority: 5,
         avgResponseTime: 75,
         hitRate: 0.5,
-        enabled: true,
+        enabled: true
       },
     ];
     layerConfigs.forEach(layer => {
@@ -67,7 +65,7 @@ export class CacheLayerManager {
           return data;
         }
       } catch (error: any) {
-        console.warn(`Cache layer ${layer.name} failed:`, String(error));
+        console.warn(`Cache layer ${layer.name} failed: ', String(error));
       }
     }
     return null;
@@ -99,7 +97,7 @@ export class CacheLayerManager {
                   break;
                 }
               } catch (error: any) {
-                console.warn(`Batch cache layer ${layer.name} failed for key ${key}:`, String(error));
+                console.warn(`Batch cache layer ${layer.name} failed for key ${key}: ', String(error));
               }
             }
           })
@@ -162,7 +160,7 @@ export class CacheLayerManager {
               await this.set(key, data, _dataType, 3600);
             }
           } catch (error: any) {
-            console.warn(`Cache warming failed for key ${key}:`, String(error));
+            console.warn(`Cache warming failed for key ${key}: ', String(error));
           }
         });
         await Promise.allSettled(loadPromises);
@@ -298,12 +296,12 @@ export class CacheLayerManager {
     try {
       const res = await fetch(`http://localhost:6333/collections/cache/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           vector: [0], // placeholder vector
-          filter: { must: [{ key: 'cache_key', match: { value: key } }] },
-          limit: 1,
-        }),
+          filter: { must: [{, key: 'cache_key', match: {, value: key } }] },
+          limit: 1
+        })
       });
       const json = await res.json();
       return json?.result?.[0]?.payload?.data ?? null;
@@ -319,23 +317,22 @@ export class CacheLayerManager {
       await fetch(`http://localhost:6333/collections/cache`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: { size: 384, distance: 'Cosine' },
-        }),
+        body: JSON.stringify({, vectors: {, size: 384, distance: `Cosine` }
+        })
       });
       // store a point with payload
       await fetch(`http://localhost:6333/collections/cache/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           points: [
             {
-              id: Date.now().toString(),
+             , id: Date.now().toString(),
               vector: new Array(384).fill(0.0),
-              payload: { cache_key: key, data, timestamp: Date.now() },
+              payload: { cache_key: key, data, timestamp: Date.now() }
             },
-          ],
-        }),
+          ]
+        })
       });
     } catch (error: any) {
       console.warn('Qdrant set error:', String(error));

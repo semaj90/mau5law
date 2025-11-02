@@ -16,20 +16,15 @@ interface RedisClientLike {
   hSet?: (key: string, field: string, value: string) => Promise<number>;
   hset?: (key: string, field: string, value: string) => Promise<number>;
 }
-export interface TransitionObservation { from: string;
-  to: string;
+export interface TransitionObservation { from: string;, to: string;
   weight?: number;
   timestamp?: number;
   context?: Record<string, unknown> | null;
 }
-export interface TransitionPrediction {
-  state: string;
-  probability: number;
+export interface TransitionPrediction { state: string;, probability: number;
   support: number;
 }
-export interface HMMPredictorSnapshot {
-  states: string[];
-  transitions: Array<{ from: string; to: string; probability: number; count: number }>;
+export interface HMMPredictorSnapshot { states: string[];, transitions: Array<{ from: string; to: string; probability: number;, count: number }>;
 }
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
 export class HMMTransitionPredictor {

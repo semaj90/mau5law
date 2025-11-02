@@ -7,9 +7,7 @@ export { default as SelectGroup } from './SelectGroup.svelte';
 export { default as SelectLabel } from './SelectLabel.svelte';
 export { default as SelectSeparator } from './SelectSeparator.svelte';
 export { default as SelectValue } from './SelectValue.svelte';
-export interface SelectOption {
-  value: string;
-  label: string;
+export interface SelectOption { value: string;, label: string;
   description?: string;
   disabled?: boolean;
   category?: string;

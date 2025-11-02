@@ -1,9 +1,7 @@
 import type { User } from '$lib/types';
 // Accessibility service for legal AI application
 // Provides comprehensive a11y features for screen readers, keyboard navigation, and more
-export interface AccessibilityConfig {
-  enableScreenReaderAnnouncements: boolean;
-  enableKeyboardNavigation: boolean;
+export interface AccessibilityConfig { enableScreenReaderAnnouncements: boolean;, enableKeyboardNavigation: boolean;
   enableHighContrast: boolean;
   enableReducedMotion: boolean;
   fontSize: 'small' | 'normal' | 'large' | 'extra-large';
@@ -148,7 +146,7 @@ class AccessibilityService {
   private showAccessibilityHelp(): void {
     const helpContent = `
       Accessibility Help:
-      - Alt + S: Skip to main content
+      - Alt +; S: Skip to main content
       - F1: Show this help
       - Tab/Shift+Tab: Navigate through interactive elements
       - Escape: Close modals and dropdowns
@@ -183,8 +181,7 @@ class AccessibilityService {
       small: '0.875rem',
       normal: '1rem',
       large: '1.125rem',
-      'extra-large': '1.25rem'
-    }
+      'extra-large': `1.25rem` }
     document.documentElement.style.fontSize = sizeMap[size];
     this.announce(`Font size set to ${size}`);
   }
@@ -194,7 +191,7 @@ class AccessibilityService {
       'data-high-contrast',
       this.config.enableHighContrast.toString()
     );
-    this.announce(`High contrast ${this.config.enableHighContrast ? 'enabled' : 'disabled'}`);
+    this.announce(`High contrast ${this.config.enableHighContrast ? 'enabled' : `disabled` }`);
   }
   toggleReducedMotion(): void {
     this.config.enableReducedMotion = !this.config.enableReducedMotion;
@@ -202,7 +199,7 @@ class AccessibilityService {
       'data-reduced-motion',
       this.config.enableReducedMotion.toString()
     );
-    this.announce(`Reduced motion ${this.config.enableReducedMotion ? 'enabled' : 'disabled'}`);
+    this.announce(`Reduced motion ${this.config.enableReducedMotion ? 'enabled' : `disabled` }`);
   }
   // AI-specific announcements
   announceAIOperation(
@@ -212,10 +209,9 @@ class AccessibilityService {
   ): void {
     const messages = {
       started: `AI ${operation} started`,
-      progress: `AI ${operation} in progress${details ? `. ${details}` : ''}`,
-      completed: `AI ${operation} completed successfully${details ? `. ${details}` : ''}`,
-      error: `AI ${operation} encountered an error${details ? `. ${details}` : ''}`
-    }
+      progress: `AI ${operation} in progress${details ? `. ${details}` : `` }`,
+      completed: `AI ${operation} completed successfully${details ? `. ${details}` : `` }`,
+      error: `AI ${operation} encountered an error${details ? `. ${details}` : ''}` }
     this.announce(messages[status], status === 'error' ? 'assertive' : 'polite');
   }
   announceRouteChange(routeName: string): void {
@@ -312,7 +308,7 @@ export function makeKeyboardNavigable(element: HTMLElement, onActivate: () => vo
 }
 export function announceToScreenReader(
   message: string;
-  priority: 'polite' | 'assertive' = 'polite'
+ , priority: 'polite' | 'assertive' = 'polite'
 ): void {
   accessibilityService.announceToScreenReader(message, priority);
 }

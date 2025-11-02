@@ -4,15 +4,13 @@
  *
  * Provides utilities for retrieving documentation from Context7 MCP server
  * Supports all major framework dependencies for the Legal AI platform:
- * - Frontend: Svelte 5, SvelteKit 2, Bits UI, Melt UI, XState, UnoCSS
+ * -; Frontend: Svelte 5, SvelteKit 2, Bits UI, Melt UI, XState, UnoCSS
  * - Backend: TypeScript, Drizzle ORM
  * - Database: PostgreSQL with pgvector, Redis, Qdrant
  * - AI/Performance: WebGPU, WebAssembly
  */
 
-export interface CodeSnippet {
-  title: string;
-  code: string;
+export interface CodeSnippet { title: string;, code: string;
   description: string;
   language?: string;
 }
@@ -24,9 +22,7 @@ export interface LibraryDocsRequest {
   format?: 'markdown' | 'json' | 'typescript';
 }
 
-export interface LibraryDocsResponse {
-  content: string;
-  metadata: {
+export interface LibraryDocsResponse { content: string;, metadata: {
     library: string;
     version?: string;
     topic?: string;
@@ -53,12 +49,12 @@ export async function mcpContext72GetLibraryDocs(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      context7CompatibleLibraryID: libraryId,
+     , context7CompatibleLibraryID: libraryId,
       topic,
       tokens: options.tokens || 10000,
       format: options.format || 'markdown',
-      ...options,
-    }),
+      ...options
+    })
   });
 
   if (!response.ok) {
@@ -258,23 +254,23 @@ export async function getTechStackDocs(
     bitsui: getBitsUIv2Docs(undefined, fetchFn_),
     meltui: getMeltUIDocs(undefined, fetchFn_),
     xstate: getXStateDocs(undefined, fetchFn_),
-    unocss: getUnoCssDocs(undefined, fetchFn_),
+    unocss: getUnoCssDocs(undefined, fetchFn_)
   };
 
   const backendDocs = {
     drizzle: getDrizzleOrmDocs(undefined, fetchFn_),
-    typescript: getTypeScriptDocs(undefined, fetchFn_),
+    typescript: getTypeScriptDocs(undefined, fetchFn_)
   };
 
   const databaseDocs = {
     postgresql: getPostgreSQLDocs(undefined, fetchFn_),
     redis: getRedisDocs(undefined, fetchFn_),
-    qdrant: getQdrantDocs(undefined, fetchFn_),
+    qdrant: getQdrantDocs(undefined, fetchFn_)
   };
 
   const aiDocs = {
     webgpu: getWebGPUDocs(undefined, fetchFn_),
-    webassembly: getWebAssemblyDocs(undefined, fetchFn_),
+    webassembly: getWebAssemblyDocs(undefined, fetchFn_)
   };
 
   const allDocs = { ...frontendDocs, ...backendDocs, ...databaseDocs, ...aiDocs };
@@ -282,31 +278,31 @@ export async function getTechStackDocs(
   switch (component) {
     case 'frontend': {
       const results = await Promise.all(
-        Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const)
+        Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
     case 'backend': {
       const results = await Promise.all(
-        Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const)
+        Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
     case 'database': {
       const results = await Promise.all(
-        Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const)
+        Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
     case 'ai': {
       const results = await Promise.all(
-        Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const)
+        Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
     case 'full': {
       const results = await Promise.all(
-        Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const)
+        Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }

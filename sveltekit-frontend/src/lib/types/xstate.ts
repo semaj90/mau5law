@@ -4,29 +4,29 @@ import type { Document } from '$lib/types';
 // AI Assistant Events - Strongly Typed
 export type AIAssistantEvent =
   // Core messaging
-  | { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string; priority?: 'low' | 'normal' | 'high' | 'urgent' }
-  | { type: "SEND_BATCH_MESSAGES"; messages: BatchMessage[]; processingMode?: 'sequential' | 'parallel' }
+  | { type: "SEND_MESSAGE";, message: string; useContext7?: boolean; caseId?: string; priority?: 'low' | 'normal' | 'high' | 'urgent' }
+  | { type: "SEND_BATCH_MESSAGES";, messages: BatchMessage[]; processingMode?: 'sequential' | 'parallel' }
   // Enhanced document processing
-  | { type: "UPLOAD_DOCUMENT"; file: File; caseId?: string; metadata?: DocumentMetadata }
-  | { type: "PROCESS_DOCUMENT"; documentId: string; options?: ProcessingOptions }
-  | { type: "ANALYZE_IMAGE"; imageData: string | File; analysisType?: ImageAnalysisType }
-  | { type: "GENERATE_SUMMARY"; content: string; summaryType?: SummaryType; maxLength?: number }
+  | { type: "UPLOAD_DOCUMENT";, file: File; caseId?: string; metadata?: DocumentMetadata }
+  | { type: "PROCESS_DOCUMENT";, documentId: string; options?: ProcessingOptions }
+  | { type: "ANALYZE_IMAGE";, imageData: string | File; analysisType?: ImageAnalysisType }
+  | { type: "GENERATE_SUMMARY";, content: string; summaryType?: SummaryType; maxLength?: number }
   // Service management and protocol switching
-  | { type: "SET_PROTOCOL"; protocol: 'http' | 'grpc' | 'quic' | 'websocket' }
+  | { type: "SET_PROTOCOL";, protocol: 'http' | 'grpc' | 'quic' | 'websocket' }
   | { type: "CHECK_SERVICE_HEALTH"; force?: boolean }
   | { type: "OPTIMIZE_RESOURCES"; target?: 'memory' | 'cpu' | 'gpu' | 'network' | 'all' }
   | { type: "BENCHMARK_PERFORMANCE"; suiteId?: string }
   // Legal case context
-  | { type: "SET_CASE_CONTEXT"; caseId: string; options?: ContextOptions }
+  | { type: "SET_CASE_CONTEXT";, caseId: string; options?: ContextOptions }
   | { type: "LOAD_LEGAL_KNOWLEDGE_GRAPH"; caseId?: string; scope?: 'case' | 'jurisdiction' | 'global' }
-  | { type: "UPDATE_CASE_TIMELINE"; caseId: string; events: TimelineEvent[] }
+  | { type: "UPDATE_CASE_TIMELINE"; caseId: string;, events: TimelineEvent[] }
   // Conversation management
   | { type: "CLEAR_CONVERSATION" }
-  | { type: "EXPORT_CONVERSATION"; format: 'json' | 'pdf' | 'markdown' }
-  | { type: "IMPORT_CONVERSATION"; data: ConversationImport }
+  | { type: "EXPORT_CONVERSATION";, format: 'json' | 'pdf' | 'markdown' }
+  | { type: "IMPORT_CONVERSATION";, data: ConversationImport }
   // Model and configuration
-  | { type: "SET_MODEL"; model: string; config?: ModelConfig }
-  | { type: "UPDATE_SETTINGS"; settings: Partial<AISettings> }
+  | { type: "SET_MODEL";, model: string; config?: ModelConfig }
+  | { type: "UPDATE_SETTINGS";, settings: Partial<AISettings> }
   | { type: "RESET_TO_DEFAULTS" }
   // Error handling and recovery
   | { type: "RETRY_LAST_ACTION" }
@@ -99,9 +99,7 @@ export interface AIAssistantContext {
   isRecovering: boolean;
 }
 // Supporting Types
-export interface BatchMessage {
-  id: string;
-  message: string;
+export interface BatchMessage { id: string;, message: string;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   caseId?: string;
   useContext7?: boolean;
@@ -130,9 +128,7 @@ export interface ContextOptions {
   includePrecedents?: boolean;
   depth?: 'shallow' | 'medium' | 'deep';
 }
-export interface TimelineEvent {
-  id: string;
-  caseId: string;
+export interface TimelineEvent { id: string;, caseId: string;
   type: 'filing' | 'hearing' | 'evidence_added' | 'document_received' | 'communication';
   title: string;
   description?: string;
@@ -140,27 +136,19 @@ export interface TimelineEvent {
   participants?: string[];
   documents?: string[];
 }
-export interface ConversationEntry {
-  id: string;
-  type: 'user' | 'assistant' | 'system';
+export interface ConversationEntry { id: string;, type: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   metadata?: Record<string, unknown>;
   caseId?: string;
   documentId?: string;
 }
-export interface ConversationImport {
-  format: 'json' | 'csv' | 'text';
-  data: string;
+export interface ConversationImport { format: 'json' | 'csv' | 'text';, data: string;
   mergeStrategy: 'append' | 'replace' | 'merge';
 }
-export interface ModelDefinition {
-  name: string;
-  type: 'legal' | 'general' | 'code' | 'multimodal';
+export interface ModelDefinition { name: string;, type: 'legal' | 'general' | 'code' | 'multimodal';
   provider: 'ollama' | 'openai' | 'anthropic' | 'local';
-  parameters: {
-    maxTokens: number;
-    temperature: number;
+  parameters: { maxTokens: number;, temperature: number;
     topP?: number;
     topK?: number;
   }
@@ -176,15 +164,11 @@ export interface ModelConfig {
   repeatPenalty?: number;
   systemPrompt?: string;
 }
-export interface ModelPerformance {
-  averageLatency: number;
-  tokensPerSecond: number;
+export interface ModelPerformance { averageLatency: number;, tokensPerSecond: number;
   successRate: number;
   lastBenchmark: Date;
 }
-export interface AISettings {
-  defaultModel: string;
-  temperature: number;
+export interface AISettings { defaultModel: string;, temperature: number;
   maxTokens: number;
   enableContext7: boolean;
   enableRAG: boolean;
@@ -193,110 +177,80 @@ export interface AISettings {
   enableAnalytics: boolean;
   privacyMode: 'standard' | 'enhanced' | 'maximum';
 }
-export interface TimeRange {
-  start: Date;
-  end: Date;
+export interface TimeRange { start: Date;, end: Date;
   timezone?: string;
 }
 // Service Health Types
-export interface ServiceHealthStatus {
-  overall: 'healthy' | 'degraded' | 'unhealthy';
-  services: Record<string, ServiceStatus>;
+export interface ServiceHealthStatus { overall: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceStatus>;
   lastCheck: Date;
   nextCheck: Date;
 }
-export interface ServiceStatus {
-  name: string;
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+export interface ServiceStatus { name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   latency: number;
   uptime: number;
   lastResponse: Date;
   errorRate: number;
 }
-export interface LoadBalancerState {
-  activeServices: string[];
-  strategy: 'round_robin' | 'least_connections' | 'weighted' | 'performance';
+export interface LoadBalancerState { activeServices: string[];, strategy: 'round_robin' | 'least_connections' | 'weighted' | 'performance';
   weights: Record<string, number>;
   healthCheckInterval: number;
 }
-export interface CircuitBreakerState {
-  state: 'closed' | 'open' | 'half_open';
-  errorCount: number;
+export interface CircuitBreakerState { state: 'closed' | 'open' | 'half_open';, errorCount: number;
   threshold: number;
   timeout: number;
   lastError?: Date;
 }
 // Database Types
-export interface DatabaseMetrics {
-  connectionCount: number;
-  queryLatency: number;
+export interface DatabaseMetrics { connectionCount: number;, queryLatency: number;
   cacheHitRatio: number;
   vectorOperationsPerSecond: number;
   indexHealth: 'optimal' | 'degraded' | 'rebuilding';
 }
-export interface VectorIndexStatus {
-  totalVectors: number;
-  indexedVectors: number;
+export interface VectorIndexStatus { totalVectors: number;, indexedVectors: number;
   pendingIndexing: number;
   averageSimilaritySearchTime: number;
   indexSize: number;
 }
 // Context7 Types
-export interface Context7Analysis {
-  componentType: string;
-  recommendations: Context7Recommendation[];
+export interface Context7Analysis { componentType: string;, recommendations: Context7Recommendation[];
   codeQuality: number;
   performanceScore: number;
   lastAnalysis: Date;
 }
-export interface Context7Recommendation {
-  type: 'performance' | 'security' | 'maintainability' | 'best_practice';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+export interface Context7Recommendation { type: 'performance' | 'security' | 'maintainability' | 'best_practice';, priority: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   description: string;
   suggestion: string;
   effort: 'low' | 'medium' | 'high';
 }
-export interface Context7CacheEntry {
-  key: string;
-  data: any;
+export interface Context7CacheEntry { key: string;, data: any;
   timestamp: Date;
   expiresAt: Date;
   hitCount: number;
 }
 // Performance Types
-export interface PerformanceMetrics {
-  responseTime: number;
-  throughput: number;
+export interface PerformanceMetrics { responseTime: number;, throughput: number;
   memoryUsage: number;
   cpuUsage: number;
   gpuUsage?: number;
   networkLatency: number;
 }
-export interface UsageAnalytics {
-  totalQueries: number;
-  averageQueryLength: number;
+export interface UsageAnalytics { totalQueries: number;, averageQueryLength: number;
   topModels: Record<string, number>;
   peakHours: number[];
   errorRate: number;
 }
-export interface BenchmarkResults {
-  suiteId: string;
-  overallScore: number;
+export interface BenchmarkResults { suiteId: string;, overallScore: number;
   categories: Record<string, number>;
   comparison: Record<string, number>;
   timestamp: Date;
 }
-export interface GCMetrics {
-  collections: number;
-  totalPauseTime: number;
+export interface GCMetrics { collections: number;, totalPauseTime: number;
   averagePauseTime: number;
   memoryFreed: number;
 }
 // Error Types
-export interface ErrorEntry {
-  id: string;
-  type: 'network' | 'processing' | 'validation' | 'service' | 'system';
+export interface ErrorEntry { id: string;, type: 'network' | 'processing' | 'validation' | 'service' | 'system';
   severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   stack?: string;
@@ -304,67 +258,49 @@ export interface ErrorEntry {
   timestamp: Date;
   resolved: boolean;
 }
-export interface ErrorDetails {
-  code: string;
-  message: string;
+export interface ErrorDetails { code: string;, message: string;
   stack?: string;
   context?: Record<string, unknown>;
   recoverable: boolean;
   timestamp: Date;
 }
 // UI State Types
-export interface NotificationEntry {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+export interface NotificationEntry { id: string;, type: 'info' | 'success' | 'warning' | 'error';
   title: string;
   message: string;
   timestamp: Date;
   persistent: boolean;
   actions?: NotificationAction[];
 }
-export interface NotificationAction {
-  label: string;
-  action: () => void;
+export interface NotificationAction { label: string;, action: () => void;
   style?: 'primary' | 'secondary' | 'danger';
 }
-export interface ModalState {
-  id: string;
-  type: string;
+export interface ModalState { id: string;, type: string;
   title: string;
   content: any;
   size: 'sm' | 'md' | 'lg' | 'xl';
   closable: boolean;
   persistent: boolean;
 }
-export interface SidebarState {
-  collapsed: boolean;
-  activeTab: string;
+export interface SidebarState { collapsed: boolean;, activeTab: string;
   tabs: SidebarTab[];
 }
-export interface SidebarTab {
-  id: string;
-  label: string;
+export interface SidebarTab { id: string;, label: string;
   icon: string;
   component: string;
   visible: boolean;
 }
 // Security Types
-export interface SecurityContext {
-  userId: string;
-  sessionId: string;
+export interface SecurityContext { userId: string;, sessionId: string;
   permissions: string[];
   rateLimits: Record<string, number>;
   securityLevel: 'standard' | 'elevated' | 'maximum';
 }
-export interface RateLimitingState {
-  requests: number;
-  windowStart: Date;
+export interface RateLimitingState { requests: number;, windowStart: Date;
   limit: number;
   resetTime: Date;
 }
-export interface AuditEntry {
-  id: string;
-  userId: string;
+export interface AuditEntry { id: string;, userId: string;
   action: string;
   resource?: string;
   details: Record<string, unknown>;
@@ -373,41 +309,31 @@ export interface AuditEntry {
   userAgent?: string;
 }
 // Additional Supporting Types
-export interface Document {
-  id: string;
-  title: string;
+export interface Document { id: string;, title: string;
   type: string;
   size: number;
   url?: string;
   caseId?: string;
   uploadedAt: Date;
 }
-export interface ImageAnalysis {
-  id: string;
-  url: string;
+export interface ImageAnalysis { id: string;, url: string;
   analysis: Record<string, unknown>;
   confidence: number;
   timestamp: Date;
 }
-export interface ProcessingJob {
-  id: string;
-  type: string;
+export interface ProcessingJob { id: string;, type: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   startedAt?: Date;
   completedAt?: Date;
   error?: string;
 }
-export interface WebWorkerPool {
-  size: number;
-  activeWorkers: number;
+export interface WebWorkerPool { size: number;, activeWorkers: number;
   queuedJobs: number;
   completedJobs: number;
   failedJobs: number;
 }
-export interface CollaborationUser {
-  id: string;
-  name: string;
+export interface CollaborationUser { id: string;, name: string;
   avatar?: string;
   status: 'online' | 'away' | 'busy' | 'offline';
   role: string;

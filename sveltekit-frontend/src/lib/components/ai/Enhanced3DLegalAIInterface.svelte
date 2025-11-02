@@ -35,7 +35,7 @@
     progressAnimationSpeed = 1.0
   }: Props = $props();
   // --- Component State (Svelte 5 runes) ---
-  let canvasRef: HTMLCanvasElement | null = $state(null);
+  let canvasRef: HTMLCanvasElement | null = null;
   let gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;
   let vertexBuffer: WebGLBuffer | null = null;
   let shaderProgram: WebGLProgram | null = null;

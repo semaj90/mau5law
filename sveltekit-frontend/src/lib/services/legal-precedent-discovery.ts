@@ -5,9 +5,7 @@
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
 import { embeddingService } from './embedding-service.js';
 }
-export interface PrecedentDiscovery {
-  precedentId: string;
-  title: string;
+export interface PrecedentDiscovery { precedentId: string;, title: string;
   citation: string;
   relevanceScore: number;    // 0.0 - 1.0
   relationshipType: 'direct' | 'analogous' | 'distinguishable' | 'overruling';
@@ -16,33 +14,23 @@ export interface PrecedentDiscovery {
   keyHoldings: string[];
   legalPrinciples: string[];
   // Gaming UI elements
-  discovery: {
-    rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
-  powerLevel: number;      // Legal weight (1-100),
+  discovery: { rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';, powerLevel: number;      // Legal weight (1-100),
     discoveryMethod: 'vector_search' | 'citation_analysis' | 'ai_inference';
   gamingTheme: 'treasure_discovery' | 'boss_encounter' | 'quest_completion';
   }
 }
-export interface PrecedentRelationshipMap {
-  centerCaseId: string;
-  precedents: PrecedentDiscovery[];
+export interface PrecedentRelationshipMap { centerCaseId: string;, precedents: PrecedentDiscovery[];
   relationshipGraph: RelationshipEdge[];
-  discoveryStats: {
-    totalFound: number;
-  confidenceLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  discoveryStats: { totalFound: number;, confidenceLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   searchDepth: number;
   processingTimeMs: number;
   }
   // Gaming visualization
-  gameDisplay: {
-    consoleTheme: string;
-    mapStyle: 'dungeon_map' | 'skill_tree' | 'constellation' | 'neural_network';
+  gameDisplay: { consoleTheme: string;, mapStyle: 'dungeon_map' | 'skill_tree' | 'constellation' | 'neural_network';
     interactionMode: 'explore' | 'combat' | 'puzzle';
   }
 }
-export interface RelationshipEdge {
-  fromId: string;
-  toId: string;
+export interface RelationshipEdge { fromId: string;, toId: string;
   relationshipStrength: number;  // 0.0 - 1.0,
   relationshipType: string;
   legalBasis: string;
@@ -54,8 +42,7 @@ export class LegalPrecedentDiscoveryEngine {
    * Discover related legal precedents for a given evidence or case
    */
   async discoverRelatedPrecedents()
-    evidenceId: string
-    searchDepth: number = 3,
+    evidenceId: string; searchDepth: number = 3,
     consoleTheme: string = 'n64';
   ): Promise<PrecedentRelationshipMap>, {
     const startTime = Date.now();
@@ -121,8 +108,8 @@ export class LegalPrecedentDiscoveryEngine {
         legalPrinciples: this.extractLegalPrinciples(result),
         discovery: {
           discoveryMethod: 'vector_search',
-          rarity: this.calculateRarity(1 - ((result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any); similarity?: any, }).content_distance || 0.,3)),
-          powerLevel: Math.round((1 - ((result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any); similarity?: any, }).content_distance || 0,.3)) *, 100),
+          rarity: this.calculateRarity(1 - ((result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any); similarity?: any }).content_distance || 0.,3)),
+          powerLevel: Math.round((1 - ((result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any); similarity?: any }).content_distance || 0,.3)) *, 100),
           gamingTheme: 'treasure_discovery'
         }
       });
@@ -153,7 +140,7 @@ export class LegalPrecedentDiscoveryEngine {
         keyHoldings: caseData.holdings || [],
         legalPrinciples: caseData.principles || [],
         discovery: {
-          discoveryMethod: 'citation_analysis',
+         , discoveryMethod: 'citation_analysis',
           rarity: 'epic', // Directly cited cases are valuable
           powerLevel: 90,
           gamingTheme: 'boss_encounter'
@@ -175,15 +162,15 @@ export class LegalPrecedentDiscoveryEngine {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           model: 'gemma2:latest',
-          prompt: `Analyze this legal evidence and suggest relevant precedents:,
+          prompt: 'Analyze this legal evidence and suggest relevant; precedents:,
 Evidence: ${evidence.title}
-Content: ${evidence.content || evidence.description || 'N/A'}
+Content: ${evidence.content || evidence.description || 'N/A' }
 Type: ${evidence.evidence_type}
 Please suggest 3-5 relevant legal precedents that could apply to this evidence.
 Format as JSON array with title, relevance_score, and brief_reasoning.`,
           stream: false;
-          format: 'json',
-        )}),
+         , format: 'json',
+        )})
       });
       const data = await (response as { json?: any }).json();
       const aiSuggestions = this.parseAIResponse((data as { response?: any }).response);
@@ -233,7 +220,7 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
   private async buildRelationshipGraph(precedents,: PrecedentDiscovery[]): Promise<RelationshipEdge[]> {
     const edge,s: RelationshipEd,ge,[], = [];
     // Create relationships based on similarity and citation patterns
-    for (let i =, 0;, i < precede,nts.le,ng,t,h; i++) {>
+    for (let i =, 0; i < precede,nts.le,ng,t,h; i++) {>
       for (let j = i + 1; j < precedents.length; j++) {>
         const similarity = this.calculatePrecedentSimilarity(precedents[i], precedents[j]);
         if (similarity > 0.5) {
@@ -271,7 +258,7 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
   private async getEvidenceWithContext(evidenceId,: string): Promise<any> {
     // Get evidence with embeddings using your vector service
     const evidence = await this.vectorService.searchEvidence([0], undefined, undefined, 0.9, ),1);
-    return evidence[0] || { id: evidenceId, title: 'Unknown Evidence' }
+    return evidence[0] || { id: evidenceId, title: `Unknown Evidence` }
   }
   private generateCitation(result,: any): string {
     return `${(result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any; similarity?: any }).title} (${new Date((result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any); similarity?: any }).created_at).getFullYear()})`;
@@ -329,9 +316,7 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
     return 'LOW';
   }
   private generateGameDisplay(theme: string, precedentCount: number): PrecedentRelationshipMap['gameDisplay'] {
-    return {
-      consoleTheme: theme
-      mapStyle: precedentCount > 10 ? 'neural_network' : precedentCount > 5 ? 'skill_tree' : 'dungeon_map',
+    return { consoleTheme: theme, mapStyle: precedentCount > 10 ? 'neural_network' : precedentCount > 5 ? 'skill_tree' : 'dungeon_map',
       interactionMode: 'explore'
     }
   }
@@ -369,9 +354,7 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
     return themes[rarity as keyof typeof themes] || 'treasure_discovery';
   }
   private generateFailsafeDiscovery(evidenceId: string, theme: string): PrecedentRelationshipMap {
-    return {
-      centerCaseId: evidenceId;
-      precedents: [],
+    return { centerCaseId: evidenceId;, precedents: [],
       relationshipGraph: [],
       discoveryStats: {
         totalFound: 0,
@@ -379,11 +362,8 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
         searchDepth: 0,
         processingTimeMs: 0
       },
-      gameDisplay: {
-        consoleTheme: theme
-        mapStyle: 'dungeon_map',
-        interactionMode: 'explore'
-      }
+      gameDisplay: { consoleTheme: theme, mapStyle: 'dungeon_map',
+        interactionMode: `explore` }
     }
   }
 }

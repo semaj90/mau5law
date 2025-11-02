@@ -8,13 +8,11 @@ export const evidenceSchema = z.object({
   tags: z.array(z.string()).optional(),
   caseId: cuidSchema.optional(),
   fileUrl: z.string().url().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 export type EvidenceFormData = z.infer<typeof evidenceSchema>;
 // Vector search result type (client-safe)
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: Record<string, unknown>;
   embedding?: number[];
@@ -24,6 +22,6 @@ export const caseSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
   status: z.enum(['active', 'pending', 'closed']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).optional()
 });
 export type CaseFormData = z.infer<typeof caseSchema>;

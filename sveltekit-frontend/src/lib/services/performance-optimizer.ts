@@ -1,6 +1,4 @@
-interface PerformanceAnalytics {
-  totalQueries: number;
-  averageResponseTime: number;
+interface PerformanceAnalytics { totalQueries: number;, averageResponseTime: number;
   cacheHitRate: number;
   // Add other relevant metrics as needed
 }
@@ -18,7 +16,7 @@ export const performanceOptimizer = {
     return {
       totalQueries: 1000,
       averageResponseTime: 120,
-      cacheHitRate: 0.65,
+      cacheHitRate: 0.65
     };
-  },
+  }
 };

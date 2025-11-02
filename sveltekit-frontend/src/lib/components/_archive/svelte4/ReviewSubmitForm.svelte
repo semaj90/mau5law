@@ -186,7 +186,7 @@ import type { Case } from '$lib/types';
       </div>
       <div class="bg-gray-200 rounded-full h-4 mb-4">
         <div
-          class="h-4" rounded-full transition-all duration-1000 {formData.quality_score >= 80
+          class="h-4 rounded-full transition-all duration-1000" {formData.quality_score >= 80
             ? 'bg-green-500'
             : formData.quality_score >= 60
               ? 'bg-yellow-500'
@@ -222,7 +222,7 @@ import type { Case } from '$lib/types';
       </div>
       <!-- Completeness Check -->
       <div
-        class="mt-4" p-3 rounded-lg {formData.completeness_check
+        class="mt-4 p-3 rounded-lg" {formData.completeness_check
           ? 'bg-green-50 border border-green-200'
           : 'bg-red-50 border border-red-200'}"
       >

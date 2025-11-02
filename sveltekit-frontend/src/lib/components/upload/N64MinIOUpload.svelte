@@ -288,7 +288,7 @@ restoreSession();
       if (res.ok) {
         const data = await res.json();
         minioHealthy = !!data?.ok;
-      } else minioHealthy = $state(false);
+      } else minioHealthy = false;
     } catch { minioHealthy = false, }
     })();
   });

@@ -7,7 +7,7 @@ import { ensureError } from '$lib/utils/ensure-error';
  * Uses embeddinggemma:latest for language detection in legal documents
  *
  * Architecture:
- * - Primary: embeddinggemma:latest (621MB) via Ollama
+ * - Primary:; embeddinggemma:latest (621MB) via Ollama
  * - Future: TensorRT-LLM engine via Triton Inference Server
  * - Supports multi-language legal documents
  */
@@ -18,9 +18,7 @@ interface LanguageExtractionRequest {
 	maxSampleLength?: number;
 }
 
-interface OllamaGenerateResponse {
-	model: string;
-	created_at: string;
+interface OllamaGenerateResponse { model: string;, created_at: string;
 	response: string;
 	done: boolean;
 	total_duration?: number;
@@ -75,16 +73,16 @@ JSON array of detected languages:`;
     const startTime = Date.now();
     const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt,
         stream: false,
         options: {
-          temperature: 0.3, // Low temperature for factual extraction
+         , temperature: 0.3, // Low temperature for factual extraction
           top_p: 0.9,
           num_predict: 100, // Short response expected
-        },
+        }
       }),
       signal: AbortSignal.timeout(30000), // 30s timeout
     });
@@ -142,8 +140,8 @@ JSON array of detected languages:`;
 				originalLength: text.length,
 				processingTime,
 				tokens: ollamaData.eval_count || 0,
-				timestamp: new Date().toISOString(),
-			},
+				timestamp: new Date().toISOString()
+			}
 		});
 	} catch (err: any) {
 		console.error('Language extraction error:', err);
@@ -161,8 +159,8 @@ JSON array of detected languages:`;
 				code: 'LANGUAGE_EXTRACTION_ERROR',
 				languages: [], // Empty fallback
 				meta: {
-					timestamp: new Date().toISOString(),
-				},
+				, timestamp: new Date().toISOString()
+				}
 			},
 			{ status: 500 }
 		);
@@ -174,7 +172,7 @@ export const GET: RequestHandler = async () => {
 	try {
 		// Check Ollama availability
 		const healthResponse = await fetch(`${OLLAMA_BASE_URL}/api/tags`, {
-			signal: AbortSignal.timeout(5000),
+			signal: AbortSignal.timeout(5000)
 		});
 
 		if (!healthResponse.ok) {
@@ -192,15 +190,14 @@ export const GET: RequestHandler = async () => {
 			model: {
 				name: DEFAULT_MODEL,
 				available: hasEmbeddingGemma,
-				size: '621MB',
+				size: '621MB'
 			},
 			supportedLanguages: LEGAL_LANGUAGES,
 			endpoint: OLLAMA_BASE_URL,
 			features: ['multi-language-detection', 'legal-terminology-support'],
 			meta: {
-				timestamp: new Date().toISOString(),
-				version: '1.0.0',
-			},
+			, timestamp: new Date().toISOString(),
+				version: `1.0.0` }
 		});
 	} catch (err: any) {
 		const e = ensureError(err);
@@ -211,8 +208,8 @@ export const GET: RequestHandler = async () => {
 				message: e.message,
 				endpoint: OLLAMA_BASE_URL,
 				meta: {
-					timestamp: new Date().toISOString(),
-				},
+				, timestamp: new Date().toISOString()
+				}
 			},
 			{ status: 503 }
 		);

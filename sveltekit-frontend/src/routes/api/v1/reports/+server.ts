@@ -18,14 +18,14 @@ const CreateReportSchema = z.object({
   reportType: z.string().optional(),
   status: z.string().optional(),
   tags: z.array(z.unknown()).optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 type CreateReportData = z.infer<typeof CreateReportSchema>;
 
 class ReportsCRUDService {
   constructor(private userId: string) {}
 
-  async list(options: { page: number; limit: number }) {
+  async list(options: {, page: number; limit: number }) {
     const { page, limit } = options;
     const offset = (page - 1) * limit;
     const [tc] = await db.select({ c: count() }).from(reports);
@@ -35,7 +35,7 @@ class ReportsCRUDService {
     return { data, page, limit, total, totalPages };
   }
 
-  async listByCase(caseId: string, options: { page: number; limit: number }) {
+  async listByCase(caseId: string, options: {, page: number; limit: number }) {
     const { page, limit } = options;
     const offset = (page - 1) * limit;
     const [tc] = await db.select({ c: count() }).from(reports).where(eq(reports.caseId, caseId));
@@ -64,7 +64,7 @@ class ReportsCRUDService {
         tags: (data.tags ?? []) as unknown[], // explicit typed fallback
         metadata: (data.metadata ?? {}) as Record<string, unknown>,
         createdAt: now,
-        updatedAt: now,
+        updatedAt: now
       })
       .returning();
     return row?.id as string;
@@ -83,7 +83,7 @@ const ReportsQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: cuidSchema.optional(),
   status: z.enum(['draft', 'review', 'approved', 'published']).optional(),
-  reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional(),
+  reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional()
 });
 // Helper to format unknown errors into a string message
 function formatError(err: any): string {
@@ -115,11 +115,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const result = validatedQuery.caseId
       ? await reportsService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         })
       : await reportsService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
 
     return json({
@@ -131,13 +131,13 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         total: result.total,
         totalPages: result.totalPages,
         hasNext: result.page < result.totalPages,
-        hasPrev: result.page > 1,
+        hasPrev: result.page > 1
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching reports:', err);
@@ -178,8 +178,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           reportId,
           userId: getUserId(locals),
           caseId: validatedData.caseId,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 201 }
     );

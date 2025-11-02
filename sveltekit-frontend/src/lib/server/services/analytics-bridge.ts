@@ -18,14 +18,14 @@ const ANALYTICS_API = process.env.PUBLIC_ANALYTICS_API ?? "http://localhost:8001
 export async function recordAnalytics(ev: UserAnalyticsEvent): Promise<void> {
   const payload = {
     ...ev,
-    timestamp: ev.timestamp ?? new Date().toISOString(),
+    timestamp: ev.timestamp ?? new Date().toISOString()
   };
   await fetch(`${ANALYTICS_API}/analytics`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
 }
 export async function fetchIntent(userId: string): Promise<IntentPrediction | null> {

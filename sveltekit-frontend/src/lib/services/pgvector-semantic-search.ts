@@ -45,7 +45,7 @@ export class PgVectorSemanticSearch {
           text,
           model: this.embeddingModel,
           dimensions: this.dimensions,
-        )}),
+        )})
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Embedding generation failed: ${(response as { ok?: any; statusText?: any); json?: any }).statusText}`);
@@ -82,15 +82,13 @@ export class PgVectorSemanticSearch {
         role: message.role,
         embedding: sql`,${JSON.stringify(embedding)}: vector`,
         timestamp: new Date(message.timestamp),
-        metadata: message.metadata ? JSON.stringify(message.metadata) : null
-        legalDomain: message.metadata?.legalContext || null
+        metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
       }).onConflictDoUpdate({
         target: chatEmbeddings.messageId,
         set: {
-          content: message.content,
+         , content: message.content,
           embedding: sql`${JSON.stringify(embedding)}: vector`,
-          metadata: message.metadata ? JSON.stringify(message.metadata) : null
-          updatedAt: new Date()
+          metadata: message.metadata ? JSON.stringify(message.metadata) : null; updatedAt: new Date()
         }
       });
       console.log(`💾 Stored embedding for, message, ${messa,ge.id}`);
@@ -113,8 +111,7 @@ export class PgVectorSemanticSearch {
           role: message.role,
           embedding: sql`,${JSON.stringify(embedding)}: vector`,
           timestamp: new Date(message.timestamp),
-          metadata: message.metadata ? JSON.stringify(message.metadata) : null
-          legalDomain: message.metadata?.legalContext || null
+          metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
         }
       });
       const embeddingData = await Promise.all(embeddingPromises);
@@ -170,8 +167,7 @@ export class PgVectorSemanticSearch {
         similarity: parseFloat(row.similarity),
         timestamp: row.timestamp.getTime(),
         metadata: row.metadata ? JSON.parse(row.metadata) : undefined;
-        context: `,${row.role} message from session ${row.session_id}`
-      });
+        context: `,${row.role} message from session ${row.session_id}` });
     } catch (error) {
       console.error('Error in semantic search:', error);
       return [];
@@ -294,7 +290,7 @@ export class PgVectorSemanticSearch {
           finalClusters.push({
             clusterId,
             sessions: sessionList;
-            centroid: centroidResult.rows[0]?.centroid || [],
+           , centroid: centroidResult.rows[0]?.centroid || [],
             avgSimilarity: 0.8, // Simplified
             commonTopics: topicsResult.rows.map((r: any) => r.legal_domain)
           });

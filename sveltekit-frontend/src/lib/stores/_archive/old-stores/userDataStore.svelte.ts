@@ -8,9 +8,7 @@ import type { User } from '$lib/types';
 import { browser } from '$app/environment';
 import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
 // ===== TYPES =====
-export interface UserCase {
-  id: string;
-  title: string;
+export interface UserCase { id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -23,9 +21,7 @@ export interface UserCase {
   citationCount: number;
   reportCount: number;
 }
-export interface UserEvidence {
-  id: string;
-  caseId: string;
+export interface UserEvidence { id: string;, caseId: string;
   filename: string;
   fileType: string;
   fileSize: number;
@@ -37,9 +33,7 @@ export interface UserEvidence {
   metadata: { [key: string]: any };
   aiAnalysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
 }
-export interface UserCitation {
-  id: string;
-  userId: string;
+export interface UserCitation { id: string;, userId: string;
   caseId?: string;
   title: string;
   source: string;
@@ -52,9 +46,7 @@ export interface UserCitation {
   updatedAt: Date;
   isFavorite: boolean;
 }
-export interface UserReport {
-  id: string;
-  userId: string;
+export interface UserReport { id: string;, userId: string;
   caseId?: string;
   title: string;
   reportType: 'analysis' | 'summary' | 'timeline' | 'evidence_review' | 'legal_memo' | 'custom';
@@ -66,9 +58,7 @@ export interface UserReport {
   wordCount: number;
   tags: string[];
 }
-export interface AIAssistantMessage {
-  id: string;
-  userId: string;
+export interface AIAssistantMessage { id: string;, userId: string;
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -78,9 +68,7 @@ export interface AIAssistantMessage {
   tokens?: number;
   model?: string;
 }
-export interface AIConversation {
-  id: string;
-  userId: string;
+export interface AIConversation { id: string;, userId: string;
   title: string;
   contextType?: 'case' | 'evidence' | 'citation' | 'general';
   contextId?: string;
@@ -90,9 +78,7 @@ export interface AIConversation {
   isArchived: boolean;
   tags: string[];
 }
-export interface UserActivity {
-  id: string;
-  userId: string;
+export interface UserActivity { id: string;, userId: string;
   action: string;
   resourceType: 'case' | 'evidence' | 'citation' | 'report' | 'ai_chat' | 'system';
   resourceId?: string;
@@ -101,9 +87,7 @@ export interface UserActivity {
   ipAddress?: string;
   userAgent?: string;
 }
-export interface UserDataState {
-  cases: UserCase[];
-  evidence: UserEvidence[];
+export interface UserDataState { cases: UserCase[];, evidence: UserEvidence[];
   citations: UserCitation[];
   reports: UserReport[];
   aiConversations: AIConversation[];
@@ -124,7 +108,7 @@ const createUserDataStore = () => {
     recentActivity: [],
     isLoading: false,
     lastSyncAt: 0,
-    cachedAt: 0,
+    cachedAt: 0
   });
 
   // Track current user ID for caching
@@ -148,7 +132,7 @@ const createUserDataStore = () => {
           recentActivity: [],
           isLoading: false,
           lastSyncAt: 0,
-          cachedAt: 0,
+          cachedAt: 0
         };
         return;
       }
@@ -174,7 +158,7 @@ const createUserDataStore = () => {
           userDataState.lastSyncAt = Date.now();
         }
       } catch (error) {
-        console.error('Failed to sync cases:', error);
+        console.error('Failed to sync cases: `, error);
       }
     },
     syncEvidence: async (userId: string, caseId?: string) => {
@@ -302,7 +286,7 @@ const createUserDataStore = () => {
         recentActivity: [],
         isLoading: false,
         lastSyncAt: 0,
-        cachedAt: 0,
+        cachedAt: 0
       };
       if (browser) {
         try {
@@ -311,7 +295,7 @@ const createUserDataStore = () => {
           console.warn('Failed to clear user data cache:', e);
         }
       }
-    },
+    }
   };
   // Helper functions
   async function loadFromCache(userId: string): Promise<any> {
@@ -327,7 +311,7 @@ const createUserDataStore = () => {
             Object.assign(userDataState, {
               ...parsedCache.data,
               isLoading: false,
-              cachedAt: parsedCache.cachedAt,
+              cachedAt: parsedCache.cachedAt
             });
             return true;
           }
@@ -367,7 +351,7 @@ const createUserDataStore = () => {
       Object.assign(userDataState, {
         ...syncedData,
         isLoading: false,
-        lastSyncAt: Date.now(),
+        lastSyncAt: Date.now()
       });
       saveToCache();
     } catch (error) {
@@ -384,7 +368,7 @@ const createUserDataStore = () => {
           JSON.stringify({
             userId: currentUserId,
             data: userDataState,
-            cachedAt: Date.now(),
+            cachedAt: Date.now()
           })
         );
       }
@@ -428,5 +412,5 @@ export const getUserStats = () => ({
   totalCitations: userDataStore.state.citations.length,
   totalReports: userDataStore.state.reports.length,
   aiConversations: userDataStore.state.aiConversations.length,
-  lastSyncAt: userDataStore.state.lastSyncAt,
+  lastSyncAt: userDataStore.state.lastSyncAt
 });

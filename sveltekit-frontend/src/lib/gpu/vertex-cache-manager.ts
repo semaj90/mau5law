@@ -1,7 +1,5 @@
 import { globalGPUManager } from './global-gpu-manager.js';
-export interface VertexChunk {
-  id: string;
-  buffer: GPUBuffer | WebGLBuffer | Float32Array;
+export interface VertexChunk { id: string;, buffer: GPUBuffer | WebGLBuffer | Float32Array;
   size: number;
   lastUsed: number;
 }

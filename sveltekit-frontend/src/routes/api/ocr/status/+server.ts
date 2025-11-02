@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
     return new Response(JSON.stringify({ success: true, data: upstream }), { status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ success: false, message: 'OCR service unreachable', error: e.message }), {
-      status: 502,
+      status: 502
     });
   }
 };

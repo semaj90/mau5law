@@ -6,9 +6,7 @@
 import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus';
 import { validateVectorDimensions, adaptiveScalingDecision } from '$lib/gpu/types';
 
-export interface VectorMetadata {
-  id: string;
-  originalDimensions: number;
+export interface VectorMetadata { id: string;, originalDimensions: number;
   encodedDimensions: number;
   quantization: QuantizationLevel;
   compressionRatio: number;
@@ -18,19 +16,13 @@ export interface VectorMetadata {
   gpuAccelerated: boolean;
 }
 
-export interface EncodingBatch {
-  vectors: Float32Array[];
-  metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
+export interface EncodingBatch { vectors: Float32Array[];, metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
   totalSize: number;
 }
 
-export interface AdaptiveEncodingResult {
-  encoded: VectorMetadata[];
-  scalingApplied: boolean;
+export interface AdaptiveEncodingResult { encoded: VectorMetadata[];, scalingApplied: boolean;
   recommendedConfig: Partial<VectorEncodingConfig>; // Updated
-  metrics: {
-    totalTime: number;
-    avgCompressionRatio: number;
+  metrics: { totalTime: number;, avgCompressionRatio: number;
     gpuUtilization: number;
     memoryEfficiency: number;
   };
@@ -46,9 +38,7 @@ export interface AdaptiveEncodingResult {
 type VectorDimensions = number;
 type QuantizationLevel = 'int8' | 'int4' | 'binary';
 
-interface VectorEncodingConfig {
-  dimensions: VectorDimensions;
-  quantization: QuantizationLevel;
+interface VectorEncodingConfig { dimensions: VectorDimensions;, quantization: QuantizationLevel;
   compressionTarget: number;
   adaptiveDimensions: boolean;
   batchSize: number;
@@ -59,18 +49,14 @@ interface HybridGPUContext {
   // concrete implementations may expose more methods; keep optional/loose here
 }
 
-interface ShaderBundle {
-  name: string;
-  backend: string;
+interface ShaderBundle { name: string;, backend: string;
   compute: string;
   entryPoint: string;
 }
 
 type AdaptiveScalingMode = 'balanced' | 'performance' | 'memory';
 
-interface GPUPerformanceMetrics {
-  renderTime: number;
-  memoryUsage: number;
+interface GPUPerformanceMetrics { renderTime: number;, memoryUsage: number;
   gpuUtilization: number;
   temperature: number;
   powerConsumption: number;
@@ -95,7 +81,7 @@ export class VectorMetadataEncoder {
       quantization: (config.quantization as QuantizationLevel) ?? 'int8',
       compressionTarget: Math.min(Math.max(config.compressionTarget ?? 0.5, 0.1), 0.9),
       adaptiveDimensions: config.adaptiveDimensions ?? true,
-      batchSize: Math.max(config.batchSize ?? 32, 1),
+      batchSize: Math.max(config.batchSize ?? 32, 1)
     } as VectorEncodingConfig; // Cast initial assignment
     this.gpuContext = gpuContext;
     // try initializing GPU resources but don't throw if not available
@@ -135,7 +121,7 @@ export class VectorMetadataEncoder {
           encoding: encoded,
           timestamp: Date.now(),
           processingTime,
-          gpuAccelerated: !!this.gpuContext,
+          gpuAccelerated: !!this.gpuContext
         };
         return metadata;
       },
@@ -179,7 +165,7 @@ export class VectorMetadataEncoder {
           totalTime,
           avgCompressionRatio,
           gpuUtilization: await this.getGPUUtilization(),
-          memoryEfficiency: this.calculateMemoryEfficiency(batch.totalSize, encoded),
+          memoryEfficiency: this.calculateMemoryEfficiency(batch.totalSize, encoded)
         };
 
         this.updatePerformanceHistory({
@@ -190,14 +176,14 @@ export class VectorMetadataEncoder {
           powerConsumption: 75, // Placeholder
           contextSwitches: scalingApplied ? 1 : 0,
           frameRate: metrics.totalTime > 0 ? 1000 / metrics.totalTime : 0,
-          lastMeasurement: Date.now(),
+          lastMeasurement: Date.now()
         });
 
         return {
           encoded,
           scalingApplied,
           recommendedConfig: this.generateRecommendedConfig(metrics),
-          metrics,
+          metrics
         };
       },
       'VectorEncoder'
@@ -229,19 +215,15 @@ export class VectorMetadataEncoder {
         newConfig.compressionTarget !== undefined
           ? Math.min(Math.max(newConfig.compressionTarget, 0.1), 0.9)
           : this.config.compressionTarget,
-      batchSize: newConfig.batchSize ? Math.max(newConfig.batchSize, 1) : this.config.batchSize,
+      batchSize: newConfig.batchSize ? Math.max(newConfig.batchSize, 1) : this.config.batchSize
     } as VectorEncodingConfig; // Cast assignment
     if (newConfig.dimensions) {
       void this.initializeGPUResources();
     }
   }
 
-  getPerformanceMetrics(): {
-    currentConfig: VectorEncodingConfig; // Updated
-    recentPerformance: GPUPerformanceMetrics[];
-    memoryUsage: {
-      l1GpuUsage: number;
-      l2RamUsage: number;
+  getPerformanceMetrics(): { currentConfig: VectorEncodingConfig; // Updated, recentPerformance: GPUPerformanceMetrics[];
+    memoryUsage: { l1GpuUsage: number;, l2RamUsage: number;
       totalVectors: number;
     };
   } {
@@ -251,8 +233,8 @@ export class VectorMetadataEncoder {
       memoryUsage: {
         l1GpuUsage: this.estimateGPUMemoryUsage(),
         l2RamUsage: this.estimateRAMUsage(),
-        totalVectors: this.performanceHistory.length,
-      },
+        totalVectors: this.performanceHistory.length
+      }
     };
   }
 
@@ -264,7 +246,7 @@ export class VectorMetadataEncoder {
         type: 'context_switch',
         gpuUtilization: 0,
         memoryUsed: this.estimateGPUMemoryUsage(),
-        temperature: 50,
+        temperature: 50
       });
     } catch (err) {
       console.warn('[VectorEncoder] GPU initialization failed, falling back to CPU:', err);
@@ -303,8 +285,7 @@ export class VectorMetadataEncoder {
       name: 'VectorQuantization',
       backend: this.gpuContext.getBackendType(),
       compute: computeShader,
-      entryPoint: 'main',
-    };
+      entryPoint: 'main` };
   }
 
   private async preprocessVector(vector: Float32Array, targetDimensions: VectorDimensions): Promise<Float32Array> {
@@ -364,7 +345,7 @@ export class VectorMetadataEncoder {
         ...metadata[i],
         encoding: encoded,
         processingTime,
-        compressionRatio: encoded.byteLength / (vectors[i].length * 4),
+        compressionRatio: encoded.byteLength / (vectors[i].length * 4)
       } as VectorMetadata);
     }
     return results;
@@ -383,7 +364,7 @@ export class VectorMetadataEncoder {
         ...metadata[i],
         encoding: encoded,
         processingTime,
-        compressionRatio: encoded.byteLength / (vector.length * 4),
+        compressionRatio: encoded.byteLength / (vector.length * 4)
       } as VectorMetadata;
     });
   }
@@ -490,7 +471,7 @@ export class VectorMetadataEncoder {
       return {
         ...this.config,
         dimensions: decision.recommendedDimensions,
-        quantization: decision.recommendedQuantization,
+        quantization: decision.recommendedQuantization
       };
     }
     return this.config;
@@ -507,7 +488,7 @@ export class VectorMetadataEncoder {
         ...this.config,
         dimensions: 256 as VectorDimensions, // Updated and cast
         quantization: 'int4' as QuantizationLevel,
-        batchSize: Math.max(16, Math.floor(this.config.batchSize / 2)),
+        batchSize: Math.max(16, Math.floor(this.config.batchSize / 2))
       };
     }
     return this.config;
@@ -532,7 +513,7 @@ export class VectorMetadataEncoder {
         powerConsumption: sum.powerConsumption + m.powerConsumption,
         contextSwitches: sum.contextSwitches + m.contextSwitches,
         frameRate: sum.frameRate + m.frameRate,
-        lastMeasurement: Math.max(sum.lastMeasurement, m.lastMeasurement),
+        lastMeasurement: Math.max(sum.lastMeasurement, m.lastMeasurement)
       }),
       {
         renderTime: 0,
@@ -542,7 +523,7 @@ export class VectorMetadataEncoder {
         powerConsumption: 0,
         contextSwitches: 0,
         frameRate: 0,
-        lastMeasurement: 0,
+        lastMeasurement: 0
       }
     );
     const count = metrics.length;
@@ -554,7 +535,7 @@ export class VectorMetadataEncoder {
       powerConsumption: avg.powerConsumption / count,
       contextSwitches: avg.contextSwitches / count,
       frameRate: avg.frameRate / count,
-      lastMeasurement: avg.lastMeasurement,
+      lastMeasurement: avg.lastMeasurement
     };
   }
 
@@ -584,14 +565,11 @@ export class VectorMetadataEncoder {
   }
 
   // Define a type for the metrics object used in generateRecommendedConfig
-  private generateRecommendedConfig(metrics: {
-    avgCompressionRatio: number;
-    memoryEfficiency: number;
+  private generateRecommendedConfig(metrics: {, avgCompressionRatio: number;, memoryEfficiency: number;
   }): Partial<VectorEncodingConfig> {
     // Updated
     return {
       dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 : 512,
-      quantization: metrics.memoryEfficiency < 50 ? 'int4' : 'int8',
-    };
+      quantization: metrics.memoryEfficiency < 50 ? 'int4' : 'int8` };
   }
 }

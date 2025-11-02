@@ -1,8 +1,6 @@
 import type { Case } from '$lib/types';
 import { writable } from 'svelte/store';
-export interface Dialog<T = unknown> {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
+export interface Dialog<T = unknown> { id: string;, type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
   title?: string;
   message?: string;
   value?: string;
@@ -33,7 +31,7 @@ function createDialogStore() {
         ...(dialog as Dialog<unknown>),
         id,
         resolve: (r: any) => resolve(r as T),
-        reject,
+        reject
       };
       update(dialogs => [...dialogs, newDialog]);
     });
@@ -72,7 +70,7 @@ function createDialogStore() {
       type: 'info',
       title,
       message,
-      position: 'center',
+      position: 'center'
     });
   }
   function success(title: string, message?: string): Promise<void> {
@@ -80,7 +78,7 @@ function createDialogStore() {
       type: 'success',
       title,
       message,
-      position: 'center',
+      position: 'center'
     });
   }
   function warning(title: string, message?: string): Promise<void> {
@@ -88,7 +86,7 @@ function createDialogStore() {
       type: 'warning',
       title,
       message,
-      position: 'center',
+      position: 'center'
     });
   }
   function error(title: string, message?: string): Promise<void> {
@@ -97,7 +95,7 @@ function createDialogStore() {
       title,
       message,
       position: 'center',
-      persistent: true,
+      persistent: true
     });
   }
   function confirm(title: string, message?: string): Promise<boolean> {
@@ -105,7 +103,7 @@ function createDialogStore() {
       type: 'confirm',
       title,
       message,
-      position: 'center',
+      position: 'center'
     })
       .then(() => true)
       .catch(() => false);
@@ -116,7 +114,7 @@ function createDialogStore() {
       title,
       message,
       value: defaultValue || '',
-      position: 'center',
+      position: 'center'
     })
       .then(result => result?.value || null)
       .catch(() => null);
@@ -140,7 +138,7 @@ function createDialogStore() {
       title,
       message,
       position: 'center',
-      persistent: true,
+      persistent: true
     });
   }
   return {
@@ -159,7 +157,7 @@ function createDialogStore() {
     confirmCaseDelete,
     confirmEvidenceDelete,
     promptCaseName,
-    systemAlert,
+    systemAlert
   };
 }
 function createModalStore() {
@@ -174,7 +172,7 @@ function createModalStore() {
         ...(modal as Modal<unknown>),
         id,
         resolve: (r: any) => resolve(r as T),
-        reject,
+        reject
       };
       update(modals => [...modals, newModal]);
     });
@@ -218,7 +216,7 @@ function createModalStore() {
       props,
       size: options.size || 'md',
       type: options.type || 'default',
-      persistent: options.persistent || false,
+      persistent: options.persistent || false
     });
   }
   return {
@@ -227,7 +225,7 @@ function createModalStore() {
     remove,
     reject,
     clear,
-    open,
+    open
   };
 }
 export const dialogStore = createDialogStore();

@@ -11,18 +11,14 @@ type JsonObject = { [key: string]: JsonValue };
 type JsonValue = JsonPrimitive | JsonArray | JsonObject;
 
 // Minimal placeholder type aliases to avoid TS errors; expand with actual shapes later.
-export type TensorOperation = {
-  type: string;
-  input: Float32Array | number[];
+export type TensorOperation = { type: string;, input: Float32Array | number[];
   shape?: number[];
   metadata?: Record<string, JsonValue>;
 };
 export type StreamingResponse = { event?: string; data?: JsonValue; final?: boolean };
 
 // QUIC Connection State
-export interface QUICConnectionState {
-  isConnected: boolean;
-  isConnecting: boolean;
+export interface QUICConnectionState { isConnected: boolean;, isConnecting: boolean;
   lastConnected: Date | null;
   errorCount: number;
   reconnectAttempts: number;
@@ -31,9 +27,7 @@ export interface QUICConnectionState {
   serverUrl: string;
 }
 // Stream Management
-export interface QUICStream {
-  id: string;
-  type: 'tensor' | 'llm' | 'rag' | 'som';
+export interface QUICStream { id: string;, type: 'tensor' | 'llm' | 'rag' | 'som';
   status: 'opening' | 'active' | 'closing' | 'closed' | 'error';
   priority: number;
   startTime: number;
@@ -43,9 +37,7 @@ export interface QUICStream {
   errorMessage?: string;
 }
 // Performance metrics tracking
-export interface PerformanceMetrics {
-  latency: number;
-  throughput: number;
+export interface PerformanceMetrics { latency: number;, throughput: number;
   packetLoss: number;
   jitter: number;
   congestionWindow: number;
@@ -93,7 +85,7 @@ class QUICClient {
       reconnectAttempts: 0,
       streamCount: 0,
       maxStreams: 1000,
-      serverUrl,
+      serverUrl
     });
     this.performanceMetrics = writable<PerformanceMetrics>({
       latency: 0,
@@ -104,7 +96,7 @@ class QUICClient {
       rtt: 0,
       streamsActive: 0,
       streamsCompleted: 0,
-      bandwidth: 0,
+      bandwidth: 0
     });
     this.activeStreams = writable<QUICStream[]>([]);
   }
@@ -117,9 +109,8 @@ class QUICClient {
       const response = await this.fetch('/api/health', {
         method: 'GET',
         headers: {
-          Accept: 'application/json',
-          'Alt-Svc': 'h3=":8443"; ma=86400',
-        },
+         , Accept: 'application/json',
+          'Alt-Svc': `h3=":8443"; ma=86400` }
       });
       if (response.ok) {
         const health = await response.json();
@@ -129,7 +120,7 @@ class QUICClient {
           isConnecting: false,
           lastConnected: new Date(),
           errorCount: 0,
-          reconnectAttempts: 0,
+          reconnectAttempts: 0
         }));
         this.startMetricsCollection();
         console.log('✅ QUIC connection established:', health);
@@ -144,7 +135,7 @@ class QUICClient {
         ...state,
         isConnected: false,
         isConnecting: false,
-        errorCount: state.errorCount + 1,
+        errorCount: state.errorCount + 1
       }));
       // Auto-reconnect with exponential backoff
       this.scheduleReconnect();
@@ -175,8 +166,7 @@ class QUICClient {
         headers,
         cache: 'no-cache',
         mode: 'cors',
-        credentials: 'include',
-      });
+        credentials: `include` });
       const endTime = performance.now();
       this.updateLatencyMetrics(endTime - startTime);
       return response;
@@ -196,14 +186,13 @@ class QUICClient {
         headers: {
           'Content-Type': 'application/json',
           'X-Stream-ID': streamId,
-          Accept: 'text/plain',
-        },
+          Accept: `text/plain` },
         body: JSON.stringify({
-          operation: operation.type,
+         , operation: operation.type,
           input: Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
           shape: operation.shape,
-          metadata: operation.metadata,
-        }),
+          metadata: operation.metadata
+        })
       });
       if (!response.ok) {
         throw new Error(`Tensor operation failed: ${response.status}`);
@@ -227,14 +216,13 @@ class QUICClient {
         headers: {
           'Content-Type': 'application/json',
           'X-Stream-ID': streamId,
-          Accept: 'text/plain',
+          Accept: 'text/plain'
         },
         body: JSON.stringify({
-          content: documentContent,
+         , content: documentContent,
           document_type: 'legal',
           practice_area: 'general',
-          jurisdiction: 'US',
-        }),
+          jurisdiction: `US` })
       });
       if (!response.ok) {
         throw new Error(`LLM analysis failed: ${response.status}`);
@@ -257,8 +245,7 @@ class QUICClient {
         method: 'GET',
         headers: {
           'X-Stream-ID': streamId,
-          Accept: 'text/plain',
-        },
+          Accept: `text/plain` }
       });
       if (!response.ok) {
         throw new Error(`Vector search failed: ${response.status}`);
@@ -378,7 +365,7 @@ class QUICClient {
       }
     } catch (err: any) {
       const errObj = err instanceof Error ? err : new Error(String(err));
-      console.error(`Failed to process chunk:`, errObj);
+      console.error(`Failed to process chunk: ', errObj);
     }
   }
 
@@ -392,7 +379,7 @@ class QUICClient {
       priority,
       startTime: performance.now(),
       bytesReceived: 0,
-      bytesSent: 0,
+      bytesSent: 0
     };
     this.streams.set(streamId, s);
     // track totals by type for reporting
@@ -402,7 +389,7 @@ class QUICClient {
     // Update connection state
     this.connectionState.update(state => ({
       ...state,
-      streamCount: state.streamCount + 1,
+      streamCount: state.streamCount + 1
     }));
     console.log(`📊 Created ${type} stream: ${streamId}`);
     return streamId;
@@ -430,7 +417,7 @@ class QUICClient {
     this.performanceMetrics.update(metrics => ({
       ...metrics,
       streamsCompleted: metrics.streamsCompleted + (errorMessage ? 0 : 1),
-      streamsActive: Math.max(0, activeCount - 1),
+      streamsActive: Math.max(0, activeCount - 1)
     }));
     // Remove from active streams and internal registry
     this.activeStreams.update(streams => streams.filter(s => s.id !== streamId));
@@ -438,11 +425,11 @@ class QUICClient {
     // decrement connection state streamCount
     this.connectionState.update(state => ({
       ...state,
-      streamCount: Math.max(0, state.streamCount - 1),
+      streamCount: Math.max(0, state.streamCount - 1)
     }));
     const duration = (stream.endTime || performance.now()) - stream.startTime;
     console.log(
-      `📊 ${stream.type} stream ${streamId} closed after ${duration.toFixed(2)}ms${errorMessage ? ` (error: ${errorMessage})` : ''}`
+      `📊 ${stream.type} stream ${streamId} closed after ${duration.toFixed(2)}ms${errorMessage ? ` (error: ${errorMessage})` : `` }`
     );
   }
 
@@ -464,7 +451,7 @@ class QUICClient {
     this.performanceMetrics.update(metrics => ({
       ...metrics,
       throughput: this.calculateThroughput(),
-      streamsActive: active,
+      streamsActive: active
     }));
   }
 
@@ -517,7 +504,7 @@ class QUICClient {
       this.performanceMetrics.update(metrics => ({
         ...metrics,
         latency: smoothed,
-        rtt: smoothed,
+        rtt: smoothed
       }));
     } catch {
       // keep method safe — don't throw from metric updates
@@ -531,7 +518,7 @@ class QUICClient {
     }
     this.connectionState.update(state => ({
       ...state,
-      reconnectAttempts: state.reconnectAttempts + 1,
+      reconnectAttempts: state.reconnectAttempts + 1
     }));
     const currentState = get(this.connectionState);
     const delay = Math.min(this.retryDelay * Math.pow(2, currentState.reconnectAttempts), 30000); // Max 30s
@@ -580,7 +567,7 @@ class QUICClient {
       ...state,
       isConnected: false,
       isConnecting: false,
-      streamCount: 0,
+      streamCount: 0
     }));
     console.log('🔌 QUIC client disconnected');
   }
@@ -596,15 +583,13 @@ class QUICClient {
       active,
       completed: this.completedStreamCount,
       errors: this.erroredStreamCount,
-      byTypes: { ...this.typeCounts },
+      byTypes: { ...this.typeCounts }
     };
   }
 }
 
 // New exported type for stats
-export type StreamStats = {
-  total: number;
-  active: number;
+export type StreamStats = { total: number;, active: number;
   completed: number;
   errors: number;
   byTypes: Record<string, number>;

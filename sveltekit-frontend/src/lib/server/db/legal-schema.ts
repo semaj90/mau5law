@@ -18,7 +18,7 @@ export const legal_queries = pgTable('legal_queries', {
   similar_docs_count: integer('similar_docs_count').default(0),
   timestamp: timestamp('timestamp').defaultNow(),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 // Legal documents table with vector embeddings (matching existing structure)
 export const legal_documents = pgTable('legal_documents', {
@@ -31,7 +31,7 @@ export const legal_documents = pgTable('legal_documents', {
   embedding: sql`vector(512)`, // matching existing 512-dimensional
   embedding_gemma: sql`vector(512)`, // existing gemma embedding field
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 // Query embeddings table - for similarity search
 export const embeddings = pgTable('embeddings', {
@@ -40,7 +40,7 @@ export const embeddings = pgTable('embeddings', {
   document_id: integer('document_id').references(() => legal_documents.id),
   embedding: sql`vector(512)`, // matching existing 512-dimensional
   embedding_type: text('embedding_type').default('query'), // query, document, chunk
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // Legal cases table - for case law management
 export const legal_cases = pgTable('legal_cases', {
@@ -58,7 +58,7 @@ export const legal_cases = pgTable('legal_cases', {
   embedding: sql`vector(512)`,
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 // Legal entities table - parties, companies, individuals
 export const legal_entities = pgTable('legal_entities', {
@@ -70,7 +70,7 @@ export const legal_entities = pgTable('legal_entities', {
   aliases: text('aliases').array(),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 // Document-entity relationships
 export const document_entities = pgTable('document_entities', {
@@ -80,7 +80,7 @@ export const document_entities = pgTable('document_entities', {
   relationship_type: text('relationship_type'), // plaintiff, defendant, attorney, witness, etc.
   confidence_score: real('confidence_score'),
   extracted_by: text('extracted_by').default('ai'), // ai, manual, imported
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // Legal topics/tags for categorization
 export const legal_topics = pgTable('legal_topics', {
@@ -90,7 +90,7 @@ export const legal_topics = pgTable('legal_topics', {
   parent_topic_id: integer('parent_topic_id').references(() => legal_topics.id),
   topic_level: integer('topic_level').default(1), // 1=top level, 2=subcategory, etc.;
   embedding: sql`vector(512)`,
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // Document-topic relationships
 export const document_topics = pgTable('document_topics', {
@@ -99,7 +99,7 @@ export const document_topics = pgTable('document_topics', {
   topic_id: integer('topic_id').references(() => legal_topics.id),
   relevance_score: real('relevance_score').default(1.0),
   assigned_by: text('assigned_by').default('ai'), // ai, manual
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // AI model performance tracking
 export const model_performance = pgTable('model_performance', {
@@ -113,7 +113,7 @@ export const model_performance = pgTable('model_performance', {
   user_satisfaction: real('user_satisfaction'), // if we collect feedback
   date: timestamp('date').defaultNow(),
   metadata: jsonb('metadata'),
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // User feedback on AI responses
 export const query_feedback = pgTable('query_feedback', {
@@ -123,7 +123,7 @@ export const query_feedback = pgTable('query_feedback', {
   feedback_text: text('feedback_text'),
   is_helpful: boolean('is_helpful'),
   user_ip: text('user_ip'),
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 // System configuration for AI settings
 export const ai_config = pgTable('ai_config', {
@@ -135,7 +135,7 @@ export const ai_config = pgTable('ai_config', {
   is_active: boolean('is_active').default(true),
   updated_by: text('updated_by').default('system'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 // Export types for TypeScript
 export type LegalQuery = typeof legal_queries.$inferSelect;

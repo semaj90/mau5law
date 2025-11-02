@@ -7,5 +7,5 @@ export default {
   },
   async embedBatch(texts: string[]) {
     return Promise.all(texts.map((t) => this.embedText(t)));
-  },
+  }
 };

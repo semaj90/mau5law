@@ -2,17 +2,13 @@
 // Provides the small API surface used by the ranking route.
 export type Metadata = Record<string, unknown>;
 
-export type CanonicalResult = {
-  docId: string;
-  score: number;
+export type CanonicalResult = { docId: string;, score: number;
   flags?: number;
   summaryHash?: string;
   targetUrlId?: string | number;
   metadata?: Metadata;
 };
-export type RankingSet = {
-  results: CanonicalResult[];
-  query: string;
+export type RankingSet = { results: CanonicalResult[];, query: string;
   totalResults: number;
   timestamp: number;
   version?: number;
@@ -45,6 +41,6 @@ export const canonicalResultCache = {
   },
   async clear() {
     slotMap.clear();
-  },
+  }
 };
 export default canonicalResultCache;

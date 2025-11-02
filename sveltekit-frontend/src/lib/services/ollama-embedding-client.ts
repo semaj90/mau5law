@@ -23,9 +23,9 @@ export class OllamaEmbeddingService implements EmbeddingService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -51,10 +51,10 @@ export class OllamaEmbeddingService implements EmbeddingService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.completionModel,
+         , model: this.completionModel,
           prompt: prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if (!response.ok) {

@@ -21,9 +21,7 @@ type MinimalNatsSubscription<T = { data: Uint8Array; reply?: string }> = AsyncIt
   // Replace `any` with `unknown` to avoid the: "Unexpected any" diagnostics
   return?: (value?: any) => Promise<IteratorResult<T>>;
 };
-type MinimalNatsConnection = {
-  subscribe: (subject: string) => MinimalNatsSubscription;
-  publish: (subject: string, data?: Uint8Array | string) => void;
+type MinimalNatsConnection = { subscribe: (subject: string) => MinimalNatsSubscription;, publish: (subject: string, data?: Uint8Array | string) => void;
   // unsubscribe etc. are available on the subscription object returned by subscribe() iterables
 };
 // QUIC Configuration for ultra-low latency
@@ -41,12 +39,9 @@ const SEARCH_TOPICS = {
   SEARCH_RESPONSE: 'legal.search.response',
   SEARCH_SUGGESTIONS: 'legal.search.suggestions',
   SEARCH_ANALYTICS: 'legal.search.analytics',
-  SEARCH_CACHE_INVALIDATE: 'legal.search.cache.invalidate',
-} as const;
+  SEARCH_CACHE_INVALIDATE: `legal.search.cache.invalidate` } as const;
 // Search Request/Response Types
-export interface SearchRequest {
-  id: string;
-  query: string;
+export interface SearchRequest { id: string;, query: string;
   searchType: 'semantic' | 'text' | 'hybrid';
   filters?: {
     caseId?: string;
@@ -66,14 +61,10 @@ export interface SearchRequest {
   sessionId?: string;
   timestamp: number;
 }
-export interface SearchResponse {
-  id: string;
-  success: boolean;
+export interface SearchResponse { id: string;, success: boolean;
   results?: SearchResult[]; // changed from any[] to typed SearchResult[]
   error?: string;
-  analytics?: {
-    totalResults: number;
-    processingTime: number;
+  analytics?: { totalResults: number;, processingTime: number;
     cacheHit: boolean;
     searchType: string;
     hasEmbedding: boolean;
@@ -81,9 +72,7 @@ export interface SearchResponse {
   suggestions?: string[];
   timestamp: number;
 }
-export interface SearchSuggestion {
-  query: string;
-  score: number;
+export interface SearchSuggestion { query: string;, score: number;
   frequency: number;
   lastUsed: number;
 }
@@ -95,16 +84,12 @@ export type SearchResult = {
   metadata?: Record<string, unknown>;
 };
 // Add typed interfaces for health/metrics to avoid `any`
-export interface ServiceMetrics {
-  requestsProcessed: number;
-  avgResponseTime: number;
+export interface ServiceMetrics { requestsProcessed: number;, avgResponseTime: number;
   cacheHitRate: number;
   activeConnections: number;
   suggestionsGenerated: number;
 }
-export interface HealthStatus {
-  initialized: boolean;
-  quicEnabled: boolean;
+export interface HealthStatus { initialized: boolean;, quicEnabled: boolean;
   metrics: ServiceMetrics;
 }
 export class NatsQuicSearchService {
@@ -119,7 +104,7 @@ export class NatsQuicSearchService {
       if (typeof data === 'string') return JSON.parse(data);
       const str = new TextDecoder().decode(data);
       return JSON.parse(str);
-    },
+    }
   };
   private isInitialized = $state(false);
   private searchQueue: Map<string, (response: SearchResponse) => void> = new Map();
@@ -130,7 +115,7 @@ export class NatsQuicSearchService {
     avgResponseTime: 0,
     cacheHitRate: 0,
     activeConnections: 0,
-    suggestionsGenerated: 0,
+    suggestionsGenerated: 0
   };
   constructor() {
     this.initialize();
@@ -140,7 +125,7 @@ export class NatsQuicSearchService {
     return {
       initialized: this.isInitialized,
       quicEnabled: QUIC_CONFIG.enableQuic,
-      metrics: { ...this.metrics } as ServiceMetrics,
+      metrics: { ...this.metrics } as ServiceMetrics
     };
   }
   /** Public simplified search wrapper (non-stream) for integration tests */
@@ -153,7 +138,7 @@ export class NatsQuicSearchService {
       query,
       searchType: options.type || 'hybrid',
       options: { limit: options.limit, threshold: options.threshold },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     return this.performSearch(request, Date.now());
   }
@@ -230,8 +215,8 @@ export class NatsQuicSearchService {
               processingTime: Date.now() - startTime,
               cacheHit: true,
               searchType: cachedResponse.analytics?.searchType ?? request.searchType,
-              hasEmbedding: cachedResponse.analytics?.hasEmbedding ?? false,
-            },
+              hasEmbedding: cachedResponse.analytics?.hasEmbedding ?? false
+            }
           };
           this.updateCacheHitRate(true);
         } else {
@@ -262,7 +247,7 @@ export class NatsQuicSearchService {
             id: 'error',
             success: false,
             error: error instanceof Error ? error.message : 'Search processing failed',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           };
           this.nats.publish(msg.reply, this.codec.encode(errorResponse));
         }
@@ -306,9 +291,9 @@ export class NatsQuicSearchService {
           processingTime: Date.now() - startTime,
           cacheHit: false,
           searchType: request.searchType,
-          hasEmbedding: !!queryEmbedding,
+          hasEmbedding: !!queryEmbedding
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
     } catch (error) {
       console.error('❌ Search execution error:', error);
@@ -316,7 +301,7 @@ export class NatsQuicSearchService {
         id: request.id,
         success: false,
         error: error instanceof Error ? error.message : 'Search execution failed',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
     }
   }
@@ -327,12 +312,12 @@ export class NatsQuicSearchService {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: fastStringify({
-          model: model || 'embeddinggemma:latest',
-          prompt: query.slice(0, 2048),
+         , model: model || 'embeddinggemma:latest',
+          prompt: query.slice(0, 2048)
         }),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(15000)
       });
       if (!response.ok) {
         throw new Error(`Embedding API failed: ${response.status}`);
@@ -355,8 +340,7 @@ export class NatsQuicSearchService {
       options: {
         limit: request.options?.limit,
         threshold: request.options?.threshold,
-        model: request.options?.model || 'unknown',
-      },
+        model: request.options?.model || 'unknown` }
     };
     return createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
   }
@@ -419,7 +403,7 @@ export class NatsQuicSearchService {
           query,
           score: 1.0,
           frequency: 1,
-          lastUsed: Date.now(),
+          lastUsed: Date.now()
         });
       }
       // Sort by relevance (frequency + recency)
@@ -439,7 +423,7 @@ export class NatsQuicSearchService {
           this.codec.encode({
             prefix,
             suggestions: suggestions.map(s => s.query),
-            timestamp: Date.now(),
+            timestamp: Date.now()
           })
         );
       }
@@ -460,7 +444,7 @@ export class NatsQuicSearchService {
     const searchRequest: SearchRequest = {
       ...request,
       id: createHash('md5').update(`${Date.now()}-${Math.random()}`).digest('hex'),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     // Publish search request
     this.nats.publish(SEARCH_TOPICS.SEARCH_REQUEST, this.codec.encode(searchRequest));
@@ -513,7 +497,7 @@ export class NatsQuicSearchService {
       isInitialized: this.isInitialized,
       cacheSize: this.suggestionCache.size,
       activeSearches: this.searchQueue.size,
-      uptime: process.uptime(),
+      uptime: process.uptime()
     };
   }
   private async performVectorSearch(
@@ -541,7 +525,7 @@ export class NatsQuicSearchService {
       results.push({
         id,
         score,
-        metadata: { source: 'vector', rank: i, appliedFilters: filters || null },
+        metadata: {, source: 'vector', rank: i, appliedFilters: filters || null }
       });
     }
     return results;
@@ -563,7 +547,7 @@ export class NatsQuicSearchService {
         id,
         score,
         content: cleaned.slice(0, 1024),
-        metadata: { source: 'text', rank: i, appliedFilters: filters || null },
+        metadata: { source: 'text', rank: i, appliedFilters: filters || null }
       });
     }
     return results;
@@ -600,7 +584,7 @@ export class NatsQuicSearchService {
             SEARCH_TOPICS.SEARCH_ANALYTICS,
             this.codec.encode({
               metrics: this.getMetrics(),
-              timestamp: Date.now(),
+              timestamp: Date.now()
             })
           );
         } catch (err) {

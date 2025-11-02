@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
   // Use concrete component modules used elsewhere in the project
-  import { Input } from '$lib/components/ui/input.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';

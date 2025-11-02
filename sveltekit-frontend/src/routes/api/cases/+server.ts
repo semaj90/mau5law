@@ -13,7 +13,7 @@ type CasePriority = (typeof CASE_PRIORITY_VALUES)[number];
 type CaseStatus = (typeof CASE_STATUS_VALUES)[number];
 
 const CASE_STATUS_ALIASES: Record<string, CaseStatus> = {
-  active: 'open',
+  active: 'open'
 };
 
 function normalizeCaseStatus(value: any): CaseStatus | undefined {
@@ -40,7 +40,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
       const resolvedRedisUrl = metaEnv.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
       const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD;
-      console.log('DEBUG: Resolved Redis URL:', resolvedRedisUrl);
+      console.log('DEBUG: Resolved Redis; URL:', resolvedRedisUrl);
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
 
       // 'sharedRedis' may not have precise typings for createClient in our environment;
@@ -54,7 +54,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       // Safe to call createClient now that we've checked its existence
       const clientConfig: Record<string, unknown> = {
         url: resolvedRedisUrl,
-        socket: { connectTimeout: 5000 },
+        socket: { connectTimeout: 5000 }
       };
       // Only add password if it's explicitly set (avoid sending undefined)
       if (resolvedRedisPassword) {
@@ -97,7 +97,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
 // Worker trigger function
 async function triggerWorkerProcessing(
   caseId: string,
-  options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> }
+  options: { priority: string; caseType: string; userId: string;, trigger: string; metadata?: Record<string, unknown> }
 ): Promise<boolean> {
   const redis = await getRedisClient();
   if (!redis) return false; // silently skip if unavailable in dev
@@ -116,17 +116,17 @@ async function triggerWorkerProcessing(
       userId: options.userId,
       trigger: options.trigger,
       timestamp: new Date().toISOString(),
-      ...options.metadata,
+      ...options.metadata
     }),
     retry: '0',
-    timestamp: Date.now().toString(),
+    timestamp: Date.now().toString()
   };
   // Add to Redis stream for worker consumption
   const streamName = 'autotag:requests';
 
   // Define minimal interface describing the xAdd method we expect
   type RedisStreamClient = {
-    xAdd: (stream: string, id: string, message: Record<string, string>) => Promise<string>;
+    xAdd: (stream: string, id: string; message: Record<string, string>) => Promise<string>;
   };
 
   // Narrow the client safely (avoid 'any') and verify method exists at runtime
@@ -141,7 +141,7 @@ async function triggerWorkerProcessing(
     console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
     return true;
   } catch (e) {
-    console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}:`, e);
+    console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}: ', e);
     return false;
   }
 }
@@ -169,15 +169,13 @@ const createCaseSchema = z.object({
   caseType: z
     .enum(['civil', 'criminal', 'family', 'administrative', 'other'])
     .optional()
-    .describe('Defaults to: "civil" if not provided'),
+    .describe('Defaults to: "civil" if not provided')
 });
 
 // Define a type for the *output* of the schema after defaults are applied.
-// This ensures: 'priority' and: 'status' are non-optional for downstream use,
+// This ensures: 'priority'; and: 'status' are non-optional for downstream use,
 // as Zod's .default() guarantees their presence at runtime.
-type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & {
-  priority: CasePriority;
-  status: CaseStatus;
+type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & { priority: CasePriority;, status: CaseStatus;
 };
 
 const searchCasesSchema = z.object({
@@ -199,12 +197,12 @@ const searchCasesSchema = z.object({
   dateRange: z
     .object({
       start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
-      end: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
+      end: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date())
     })
     .optional(),
   page: z.number().min(1).default(1),
   limit: z.number().min(1).max(100).default(50),
-  useVectorSearch: z.boolean().default(true),
+  useVectorSearch: z.boolean().default(true)
 });
 // GET - List cases with advanced search and filtering
 export const GET: RequestHandler = async event => {
@@ -217,10 +215,10 @@ export const GET: RequestHandler = async event => {
       return {
         cases: [
           { id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
-          { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' },
+          { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' }
         ],
         pagination: { page: 1, limit: 50, total: 2 },
-        search: null,
+        search: null
       };
     }
     if (!user) {
@@ -236,13 +234,12 @@ export const GET: RequestHandler = async event => {
         url.searchParams.get('dateStart') && url.searchParams.get('dateEnd')
           ? {
               start: new Date(url.searchParams.get('dateStart')!),
-              end: new Date(url.searchParams.get('dateEnd')!),
+              end: new Date(url.searchParams.get('dateEnd')!)
             }
           : undefined,
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
-      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false',
-    };
+      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false` };
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams);
@@ -251,11 +248,11 @@ export const GET: RequestHandler = async event => {
 
       // Ensure dateRange matches the exact shape expected by CaseOperations.search:
       // the search API requires both start and end when dateRange is provided.
-      let dateRangeForSearch: { start: Date; end: Date } | undefined = undefined;
+      let dateRangeForSearch: { start: Date;, end: Date } | undefined = undefined;
       if (validatedParams.dateRange && validatedParams.dateRange.start && validatedParams.dateRange.end) {
         dateRangeForSearch = {
           start: validatedParams.dateRange.start,
-          end: validatedParams.dateRange.end,
+          end: validatedParams.dateRange.end
         };
       }
 
@@ -264,7 +261,7 @@ export const GET: RequestHandler = async event => {
         ...validatedParams,
         // override possibly-partial dateRange with normalized version (or undefined)
         dateRange: dateRangeForSearch,
-        offset,
+        offset
       });
 
       // Create pagination info
@@ -276,9 +273,9 @@ export const GET: RequestHandler = async event => {
           ? {
               term: validatedParams.query,
               resultsCount: caseResults.length,
-              vectorSearchUsed: validatedParams.useVectorSearch,
+              vectorSearchUsed: validatedParams.useVectorSearch
             }
-          : null,
+          : null
       };
     } catch (error: any) {
       // First, handle validation errors from Zod
@@ -341,7 +338,7 @@ export const POST: RequestHandler = async event => {
         location: validatedCaseData.location ?? null,
         jurisdiction: validatedCaseData.jurisdiction ?? null,
         // caseType removed here because CaseOperations.create does not accept it in its parameter type.
-        createdBy: user.id,
+        createdBy: user.id
       };
 
       // Create case using enhanced operations (pass the correctly typed payload)
@@ -358,7 +355,7 @@ export const POST: RequestHandler = async event => {
           userId: user.id,
           trigger: 'api-case-creation',
           metadata: {
-            caseNumber: newCase.caseNumber,
+           , caseNumber: newCase.caseNumber,
             title: validatedCaseData.title,
             status: validatedCaseData.status,
             location: validatedCaseData.location,
@@ -366,7 +363,7 @@ export const POST: RequestHandler = async event => {
             incidentDate: validatedCaseData.incidentDate?.toISOString() ?? null,
             description: validatedCaseData.description,
             // Removed duplicate incidentDate property
-          },
+          }
         });
         if (workerTriggered) {
           console.log(`🚀 Worker processing triggered for case ${newCase.id}`);
@@ -385,8 +382,8 @@ export const POST: RequestHandler = async event => {
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
           workerTriggered,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       };
     } catch (error: any) {
       if (error instanceof Error && error.message.includes('duplicate')) {
@@ -408,13 +405,13 @@ export const PUT: RequestHandler = async event => {
     }
     // Parse and validate update data
     // use const assertion to satisfy TS/zod typings for .omit
-    const updateSchema = createCaseSchema.partial().omit({ status: true } as const);
+    const updateSchema = createCaseSchema.partial().omit({ status: true } as const );
     const updates = await parseRequestBody(request, updateSchema);
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
       return {
         case updatedCase,
-        message: 'Case updated successfully',
+        message: 'Case updated successfully'
       };
     } catch (error: any) {
       if (error instanceof Error && error.message.includes('not found')) {
@@ -433,14 +430,14 @@ export const OPTIONS: RequestHandler = async () => {
   const headers = new Headers({
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   });
 
   // 204 No Content for preflight
   return new Response(null, { status: 204, headers });
 };
 
-// Note: Using: '*' for: 'Access-Control-Allow-Origin' is only safe in development.
+// Note: Using: '*'; for: 'Access-Control-Allow-Origin' is only safe in development.
 // Replace: 'https://your-frontend-domain.com' with your actual production domain.
 
 /*
@@ -471,13 +468,13 @@ export const drizzlePOST: RequestHandler = async ({ request }) => {
         status: payload.status ?? 'new',
         progress: payload.progress ?? 0,
         evidence_count: payload.evidenceCount ?? 0,
-        last_update: new Date(),
+        last_update: new Date()
       })
       .returning();
     return json(insert[0] ?? { success: true });
   } catch (err) {
     console.warn('Drizzle POST /api/cases failed', err);
-    return json({ error: 'failed to create case' }, { status: 500 });
+    return json({ error: `failed to create case` }, { status: 500 });
   }
 };
 

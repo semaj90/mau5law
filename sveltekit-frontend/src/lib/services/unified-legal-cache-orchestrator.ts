@@ -29,26 +29,18 @@ type $WasmClusteringService = WasmClusteringService; // Use imported type
 type $NesGPUBridge = NESGPUBridge; // Use imported type
 
 // Cache config and runtime types
-interface CacheConfig {
-  retrieval: {
-    ttl: number;
+interface CacheConfig { retrieval: {, ttl: number;
     maxResults: number;
     keyPrefix: string;
   };
-  embedding: {
-    ttl: number;
-    keyPrefix: string;
+  embedding: { ttl: number;, keyPrefix: string;
     dimensions: number;
   };
-  invalidation: {
-    strategies: string[];
-    interval: number;
+  invalidation: { strategies: string[];, interval: number;
   };
 }
 
-type CachedRetrieval = {
-  query: string;
-  queryHash: string;
+type CachedRetrieval = { query: string;, queryHash: string;
   chunkIds: string[];
   similarity: number[];
   metadata: Record<string, unknown>;
@@ -57,32 +49,23 @@ type CachedRetrieval = {
   hitCount: number;
 };
 
-type CachedEmbedding = {
-  textHash: string;
-  embedding: Float32Array;
+type CachedEmbedding = { textHash: string;, embedding: Float32Array;
   modelId: string;
   dimensions: number;
   timestamp: number;
   contentLength: number;
 };
 
-type CacheStats = {
-  retrieval: {
-    hits: number;
-    misses: number;
+type CacheStats = { retrieval: {; hits: number;, misses: number;
     hitRate: number;
     totalQueries: number;
   };
-  embedding: {
-    hits: number;
-    misses: number;
+  embedding: { hits: number;, misses: number;
     hitRate: number;
     totalRequests: number;
     costSavings: number;
   };
-  memory: {
-    l1Usage: number;
-    l2Usage: number;
+  memory: { l1Usage: number;, l2Usage: number;
     l3Usage: number;
     totalCachedItems: number;
   };
@@ -90,7 +73,7 @@ type CacheStats = {
 
 // Add a small local interface describing the memory manager methods we rely on
 type MemoryManagerInterface = {
-  store: (key: string, value: any, priority: Priority, ttlSeconds: number) => Promise<void>;
+  store: (key: string, value: any, priority: Priority; ttlSeconds: number) => Promise<void>;
   retrieve: (key: string) => Promise<unknown | null>;
   delete?: (key: string) => Promise<void>;
 };
@@ -104,9 +87,7 @@ type VectorSearchOptions = {
 };
 
 // Assuming LegalDocumentChunk looks something like this based on usage
-interface LegalDocumentChunk {
-  id: string;
-  content: string;
+interface LegalDocumentChunk { id: string;, content: string;
   similarity?: number;
 }
 
@@ -136,26 +117,23 @@ export class UnifiedLegalCacheOrchestrator {
   private jsonParser?: $UltraJSONParser;
   private wasmClusteringService?: $WasmClusteringService;
   private nesGpuBridge?: $NesGPUBridge;
-  private config: CacheConfig = {
-    retrieval: {
-      ttl: 3600,
+  private config: CacheConfig = { retrieval: {, ttl: 3600,
       maxResults: 50,
-      keyPrefix: 'legal:rag',
+      keyPrefix: 'legal:rag'
     },
     embedding: {
       ttl: 86400 * 7,
       keyPrefix: 'legal:embedding',
-      dimensions: 768,
+      dimensions: 768
     },
     invalidation: {
       strategies: ['ttl', 'lru', 'legal-context'],
-      interval: 300000,
-    },
+      interval: 300000
+    }
   };
-  private stats: CacheStats = {
-    retrieval: { hits: 0, misses: 0, hitRate: 0, totalQueries: 0 },
+  private stats: CacheStats = { retrieval: {, hits: 0, misses: 0, hitRate: 0, totalQueries: 0 },
     embedding: { hits: 0, misses: 0, hitRate: 0, totalRequests: 0, costSavings: 0 },
-    memory: { l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0 },
+    memory: { l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0 }
   };
 
   constructor(
@@ -222,7 +200,7 @@ export class UnifiedLegalCacheOrchestrator {
           metadata: (rec?.metadata as Record<string, unknown>) ?? {},
           modelId: (rec?.modelId as string) ?? modelId,
           timestamp: this.getNumberField(rec, 'timestamp', Date.now()),
-          hitCount: this.getNumberField(rec, 'hitCount', 0),
+          hitCount: this.getNumberField(rec, 'hitCount', 0)
         };
         this.retrievalL1.set(cacheKey, promoted);
         const duration = performance.now() - startTime;
@@ -251,7 +229,7 @@ export class UnifiedLegalCacheOrchestrator {
       metadata,
       modelId,
       timestamp: Date.now(),
-      hitCount: 0,
+      hitCount: 0
     };
 
     await this.storeCachedRetrieval(cacheKey, cachedRetrieval, priority);
@@ -304,7 +282,7 @@ export class UnifiedLegalCacheOrchestrator {
           modelId,
           dimensions: embedding.length,
           timestamp: Date.now(),
-          contentLength: text.length,
+          contentLength: text.length
         });
         const duration = performance.now() - startTime;
         console.log(
@@ -325,7 +303,7 @@ export class UnifiedLegalCacheOrchestrator {
       modelId,
       dimensions: embedding.length,
       timestamp: Date.now(),
-      contentLength: text.length,
+      contentLength: text.length
     };
 
     await this.storeCachedEmbedding(cacheKey, cachedEmbedding, priority);
@@ -411,11 +389,11 @@ export class UnifiedLegalCacheOrchestrator {
         const chunks = this.extractKeyTextChunks(document);
         await this.batchCacheEmbeddings(chunks, 'embeddinggemma:latest', {
           priority,
-          batchSize: 5,
+          batchSize: 5
         });
         console.log(`✅ Preloaded embeddings for document ${docId}`);
       } catch (error) {
-        console.error(`❌ Failed to preload embeddings for ${docId}:`, error);
+        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);
       }
     }
   }
@@ -533,13 +511,13 @@ export class UnifiedLegalCacheOrchestrator {
     for (let i = 0; i < Math.min(3, maxResults); i++) {
       chunks.push({
         id: `${baseHash}-${i}`,
-        content: `Placeholder content for: "${query}" (chunk ${i})`,
-        similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0,
+        content: `Placeholder content; for: "${query}" (chunk ${i})`,
+        similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0
       });
     }
     return {
       chunks,
-      metadata: { query, modelId, options, fetchedAt: new Date().toISOString() },
+      metadata: { query, modelId, options, fetchedAt: new Date().toISOString() }
     } as unknown as APIResponse;
   }
 
@@ -578,7 +556,7 @@ export class UnifiedLegalCacheOrchestrator {
     // For now return a minimal reconstructed result to avoid runtime failures.
     return {
       chunks: cached.chunkIds.map(id => ({ id, content: '', similarity: 0 })),
-      metadata: { ...cached.metadata, fromCache: true },
+      metadata: { ...cached.metadata, fromCache: true }
     } as unknown as APIResponse;
   }
 
@@ -600,7 +578,7 @@ export class UnifiedLegalCacheOrchestrator {
           id: row.id,
           title: row.title ?? '',
           content: row.content ?? '',
-          metadata: row.metadata ?? {},
+          metadata: row.metadata ?? {}
         } as unknown as LegalDocument;
       }
     } catch (err) {
@@ -637,9 +615,7 @@ export class UnifiedLegalCacheOrchestrator {
 }
 
 // Define an interface for the expected row structure from the legal_documents table
-interface LegalDocumentRow {
-  id: string;
-  title: string | null;
+interface LegalDocumentRow { id: string;, title: string | null;
   content: string | null;
   metadata: Record<string, unknown> | null;
 }

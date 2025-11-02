@@ -299,13 +299,13 @@ https://svelte.dev/e/expected_token -->
         featureFlags.ps1FX = true;
         featureFlags.subsampleAA = true;
         featureFlags.dynamicParallax = true;
-        featureFlags.anisotropicSim = $state(false);
+        featureFlags.anisotropicSim = false;
         break;
       case 'low':
         featureFlags.ps1FX = true;
-        featureFlags.subsampleAA = $state(false);
-        featureFlags.dynamicParallax = $state(false);
-        featureFlags.anisotropicSim = $state(false);
+        featureFlags.subsampleAA = false;
+        featureFlags.dynamicParallax = false;
+        featureFlags.anisotropicSim = false;
         break;
     }
     // Apply CSS classes based on flags

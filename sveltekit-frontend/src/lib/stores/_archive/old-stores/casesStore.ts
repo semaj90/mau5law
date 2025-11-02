@@ -2,12 +2,8 @@
 import type { Case } from "$lib/types";
 import { writable } from "svelte/store";
 }
-export interface CaseStoreData {
-  cases: any[];
-  stats: any[];
-  filters: {
-    search: string;
-    status: string;
+export interface CaseStoreData { cases: any[];, stats: any[];
+  filters: { search: string;, status: string;
     priority: string;
     sort?: string;
     order?: string;

@@ -19,7 +19,7 @@ import type { Case } from '$lib/types';
   } from "lucide-svelte";
   import { onMount } from "svelte";
   // Demo state
-  let selectedCaseId: string | undefined = $state(undefined);
+  let selectedCaseId: string | undefined = undefined;
   let searchQuery = $state<string>("");
   let selectedTypes: string[] = $state([]);
   let showAdvancedFilters = $state<boolean>(false);

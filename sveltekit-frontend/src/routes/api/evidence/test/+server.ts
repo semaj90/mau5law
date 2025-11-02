@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
   return json({
     success: true,
     message: 'Test endpoint working!',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };
 
@@ -21,16 +21,16 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Upload endpoint working!',
       receivedFile: file ? {
-        name: file.name,
+       , name: file.name,
         size: file.size,
-        type: file.type,
-      } : null,
+        type: file.type
+      } : null
     });
   } catch (err: any) {
     return json({
       success: false,
       error: err.message,
-      stack: err.stack,
+      stack: err.stack
     }, { status: 500 });
   }
 };

@@ -23,22 +23,18 @@ export const SearchFormSchema = z.object({
   filters: z
     .record(z.string(), z.unknown())
     .optional()
-    .default({}),
+    .default({})
 });
 
 export type SearchFormType = typeof SearchFormSchema;
 
-interface SearchResult {
-  id: string;
-  title: string;
+interface SearchResult { id: string;, title: string;
   content: string;
   similarity: number;
   metadata?: Record<string, unknown>;
 }
 
-interface SearchState {
-  results: SearchResult[];
-  query: string;
+interface SearchState { results: SearchResult[];, query: string;
   responseTime: number;
   timestamp: string;
 }
@@ -48,7 +44,7 @@ export const load: PageServerLoad = async () => {
   const form = await superValidate(zod(SearchFormSchema));
 
   return {
-    form,
+    form
   };
 };
 
@@ -67,11 +63,11 @@ export const actions: Actions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: form.data.query,
+         , query: form.data.query,
           topK: form.data.topK,
           threshold: form.data.threshold,
-          filters: form.data.filters,
-        }),
+          filters: form.data.filters
+        })
       });
 
       if (!response.ok) {
@@ -79,9 +75,7 @@ export const actions: Actions = {
         return { form };
       }
 
-      const searchResults = (await response.json()) as {
-        results: SearchResult[];
-        responseTime: number;
+      const searchResults = (await response.json()) as { results: SearchResult[];, responseTime: number;
         timestamp: string;
       };
 
@@ -92,8 +86,8 @@ export const actions: Actions = {
           results: searchResults.results,
           query: form.data.query,
           responseTime: searchResults.responseTime,
-          timestamp: searchResults.timestamp,
-        } as SearchState,
+          timestamp: searchResults.timestamp
+        } as SearchState
       };
     } catch (err) {
       form.errors._problem = [
@@ -101,5 +95,5 @@ export const actions: Actions = {
       ];
       return { form };
     }
-  },
+  }
 };

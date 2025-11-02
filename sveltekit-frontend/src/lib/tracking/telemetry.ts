@@ -11,7 +11,7 @@ export type TelemetryPayload = {
 const realtimeComm = {
   sendMessage: async (type: string, data: any, priority: string) => {
     console.log(`Telemetry: ${type}`, data);
-  },
+  }
 };
 let typingTimer: ReturnType<typeof setTimeout> | null = null;
 const TYPING_IDLE_MS = 800;
@@ -21,7 +21,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
     const payload: TelemetryPayload = {
       session_id: getSession(),
       user_id: getUser?.(),
-      ...data,
+      ...data
     };
     realtimeComm.sendMessage('user_activity', { telemetry: payload }, 'low').catch(() => {});
   };
@@ -59,7 +59,7 @@ export function trackUserHint(hint: string, getSession: () => string) {
   if (!browser) return;
   const payload: TelemetryPayload = {
     session_id: getSession(),
-    hints: [hint],
+    hints: [hint]
   };
   realtimeComm.sendMessage('user_hint', { telemetry: payload }, 'normal').catch(() => {});
 }

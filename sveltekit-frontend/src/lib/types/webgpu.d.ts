@@ -1,67 +1,45 @@
 // WebGPU Type Definitions for Legal AI Platform
 // Comprehensive interface definitions for GPU-accelerated processing
-export interface WebGPUDevice {
-  device: GPUDevice;
-  adapter: GPUAdapter;
+export interface WebGPUDevice { device: GPUDevice;, adapter: GPUAdapter;
   queue: GPUQueue;
   features: Set<string>;
   limits: GPUSupportedLimits;
 }
-export interface WebGPUBuffer {
-  buffer: GPUBuffer;
-  size: number;
+export interface WebGPUBuffer { buffer: GPUBuffer;, size: number;
   usage: GPUBufferUsageFlags;
   mappedAtCreation?: boolean;
 }
-export interface WebGPUShaderModule {
-  module: GPUShaderModule;
-  code: string;
+export interface WebGPUShaderModule { module: GPUShaderModule;, code: string;
   entryPoint: string;
 }
-export interface WebGPUComputePipeline {
-  pipeline: GPUComputePipeline;
-  bindGroupLayout: GPUBindGroupLayout;
+export interface WebGPUComputePipeline { pipeline: GPUComputePipeline;, bindGroupLayout: GPUBindGroupLayout;
   workgroupSize: [number, number, number];
 }
-export interface WebGPUMemoryInfo {
-  totalMemory: number;
-  usedMemory: number;
+export interface WebGPUMemoryInfo { totalMemory: number;, usedMemory: number;
   availableMemory: number;
   fragmentationLevel: number;
 }
-export interface WebGPUTensorOperation {
-  operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';
-  inputTensors: WebGPUTensor[];
+export interface WebGPUTensorOperation { operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';, inputTensors: WebGPUTensor[];
   outputTensor: WebGPUTensor;
   parameters?: Record<string, unknown>;
 }
-export interface WebGPUTensor {
-  data: Float32Array | Uint32Array | Int32Array;
-  shape: number[];
+export interface WebGPUTensor { data: Float32Array | Uint32Array | Int32Array;, shape: number[];
   strides: number[];
   dataType: 'f32' | 'i32' | 'u32';
   buffer: WebGPUBuffer;
 }
-export interface WebGPUKernel {
-  name: string;
-  source: string;
+export interface WebGPUKernel { name: string;, source: string;
   entryPoint: string;
   workgroupSize: [number, number, number];
   bindings: WebGPUBinding[];
 }
-export interface WebGPUBinding {
-  binding: number;
-  resource: GPUBindingResource;
+export interface WebGPUBinding { binding: number;, resource: GPUBindingResource;
   type: 'buffer' | 'texture' | 'sampler';
 }
-export interface WebGPUComputeContext {
-  device: WebGPUDevice;
-  commandEncoder: GPUCommandEncoder;
+export interface WebGPUComputeContext { device: WebGPUDevice;, commandEncoder: GPUCommandEncoder;
   computePass: GPUComputePassEncoder;
 }
-export interface WebGPUPerformanceMetrics {
-  computeTime: number;
-  memoryTransferTime: number;
+export interface WebGPUPerformanceMetrics { computeTime: number;, memoryTransferTime: number;
   totalExecutionTime: number;
   throughput: number;
   efficiency: number;
@@ -72,15 +50,11 @@ export interface WebGPULegalProcessor {
   calculateSimilarity(text1: string, text2: string): Promise<number>;
   generateEmbeddings(text: string): Promise<Float32Array>;
 }
-export interface WebGPUProcessingResult {
-  success: boolean;
-  processedText: string;
+export interface WebGPUProcessingResult { success: boolean;, processedText: string;
   metadata: Record<string, unknown>;
   performanceMetrics: WebGPUPerformanceMetrics;
 }
-export interface WebGPUEntityResult {
-  entity: string;
-  type: string;
+export interface WebGPUEntityResult { entity: string;, type: string;
   confidence: number;
   position: [number, number];
 }
@@ -90,16 +64,12 @@ export interface WebGPUVectorEngine {
   normalize(vector: Float32Array): Promise<Float32Array>;
   reduce(vectors: Float32Array[], operation: 'mean' | 'sum' | 'max'): Promise<Float32Array>;
 }
-export interface WebGPUConfiguration {
-  deviceType: 'high-performance' | 'low-power' | 'fallback';
-  memoryLimit: number;
+export interface WebGPUConfiguration { deviceType: 'high-performance' | 'low-power' | 'fallback';, memoryLimit: number;
   enableDebug: boolean;
   enableProfiling: boolean;
   shaderOptimization: 'none' | 'basic' | 'aggressive';
 }
-export interface WebGPUCapabilities {
-  supportsCompute: boolean;
-  supportsTimestampQuery: boolean;
+export interface WebGPUCapabilities { supportsCompute: boolean;, supportsTimestampQuery: boolean;
   maxComputeWorkgroupsPerDimension: number;
   maxComputeInvocationsPerWorkgroup: number;
   maxBufferSize: number;
@@ -112,44 +82,32 @@ export interface LegalDocumentProcessor {
   assessRisk(_document: string): Promise<RiskAssessment>;
   compareDocuments(doc1: string, doc2: string): Promise<DocumentComparison>;
 }
-export interface ContractAnalysis {
-  documentType: string;
-  keyTerms: string[];
+export interface ContractAnalysis { documentType: string;, keyTerms: string[];
   obligations: string[];
   risks: RiskFactor[];
   recommendations: string[];
   confidence: number;
 }
-export interface ClauseExtraction {
-  clauseType: string;
-  text: string;
+export interface ClauseExtraction { clauseType: string;, text: string;
   importance: 'low' | 'medium' | 'high' | 'critical';
   legalImplications: string[];
   suggestedActions: string[];
 }
-export interface RiskAssessment {
-  overallRisk: 'low' | 'medium' | 'high' | 'critical';
-  riskFactors: RiskFactor[];
+export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: RiskFactor[];
   mitigationStrategies: string[];
   legalReview: boolean;
 }
-export interface RiskFactor {
-  factor: string;
-  severity: number;
+export interface RiskFactor { factor: string;, severity: number;
   likelihood: number;
   impact: string;
   mitigation: string[];
 }
-export interface DocumentComparison {
-  similarity: number;
-  keyDifferences: string[];
+export interface DocumentComparison { similarity: number;, keyDifferences: string[];
   addedClauses: string[];
   removedClauses: string[];
   modifiedClauses: ModifiedClause[];
 }
-export interface ModifiedClause {
-  original: string;
-  modified: string;
+export interface ModifiedClause { original: string;, modified: string;
   changeType: 'minor' | 'major' | 'critical';
   legalImpact: string;
 }
@@ -168,9 +126,7 @@ export interface WebGPUResourcePool {
   releaseComputePipeline(pipeline: WebGPUComputePipeline): void;
 }
 // Error handling interfaces
-export interface WebGPUError extends Error {
-  code: string;
-  details: string;
+export interface WebGPUError extends Error { code: string;, details: string;
   recoverable: boolean;
   context: Record<string, unknown>;
 }
@@ -179,9 +135,7 @@ export interface WebGPUValidationError extends WebGPUError {
   line?: number;
   column?: number;
 }
-export interface WebGPUOutOfMemoryError extends WebGPUError {
-  requestedSize: number;
-  availableSize: number;
+export interface WebGPUOutOfMemoryError extends WebGPUError { requestedSize: number;, availableSize: number;
   totalSize: number;
 }
 // Event interfaces

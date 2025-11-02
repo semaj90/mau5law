@@ -7,20 +7,14 @@ import type { Document } from '$lib/types';
 import { enhancedCachingService } from './enhanced-caching-service.js';
 import type { RAGQuery, RAGResponse } from './enhanced-rag-semantic-analyzer.js';
 
-export interface CachedRAGResult {
-  response: RAGResponse;
-  cacheStats: {
-    embeddingCacheHit: boolean;
-    queryCacheHit: boolean;
+export interface CachedRAGResult { response: RAGResponse;, cacheStats: { embeddingCacheHit: boolean;, queryCacheHit: boolean;
     responseCacheHit: boolean;
     totalCacheTime: number;
     totalProcessingTime: number;
     gpuTimeSaved: number;
   };
 }
-export interface DocumentIngestionResult {
-  documentId: string;
-  chunksProcessed: number;
+export interface DocumentIngestionResult { documentId: string;, chunksProcessed: number;
   embeddingsGenerated: number;
   embeddingsCached: number;
   processingTime: number;
@@ -28,7 +22,7 @@ export interface DocumentIngestionResult {
 }
 
 // Add explicit types to avoid `any`
-type DocumentToIngest = { id: string; content: string; metadata?: Record<string, unknown> };
+type DocumentToIngest = { id: string;, content: string; metadata?: Record<string, unknown> };
 type VectorMatch = {
   id?: string;
   documentId?: string;
@@ -65,7 +59,7 @@ type EnhancedCachingServiceAdapter = {
     loader?: (q: string, ctx: string[]) => Promise<string>
   ) => Promise<{ cached?: boolean; processingTime?: number; response?: string }>;
   getCachedBatchEmbeddings?: (
-    requests: Array<{ text: string; id: string; metadata?: Record<string, unknown> }>
+    requests: Array<{, text: string; id: string; metadata?: Record<string, unknown> }>
   ) => Promise<EmbeddingResult[]>;
   getCacheMetrics?: () => unknown;
   warmupCache?: (queries: string[]) => Promise<void>;
@@ -74,35 +68,27 @@ type EnhancedCachingServiceAdapter = {
 // --- end adapter type ---
 
 // --- ADD: typed interfaces for external services + small server-side helpers ---
-type $UltraJSONParser = {
-  parse: (s: string) => unknown;
-  stringify: (v: any) => string;
+type $UltraJSONParser = { parse: (s: string) => unknown;, stringify: (v: any) => string;
 };
 
 // Removed unused types: $WasmClusteringService, $NESGPUBridge, $OllamaService
 // These were declared but never referenced; keeping only the adapters actually used below.
 
-type $RedisCacheAdapter = {
-  get: (key: string) => Promise<unknown | null>;
-  set: (key: string, value: any, ttlSeconds?: number) => Promise<boolean>;
+type $RedisCacheAdapter = { get: (key: string) => Promise<unknown | null>;, set: (key: string, value: any, ttlSeconds?: number) => Promise<boolean>;
   del?: (key: string) => Promise<boolean>;
 };
 
-type $QdrantAdapter = {
-  upsertCollection: (
-    collection: string,
-    vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
+type $QdrantAdapter = { upsertCollection: (, collection: string,
+    vectors: Array<{, id: string; values: number[]; payload?: Record<string, unknown> }>
   ) => Promise<boolean>;
-  search: (
-    collection: string,
+  search: (; collection: string,
     vector: number[],
     limit?: number,
     filter?: Record<string, unknown>
   ) => Promise<unknown[]>;
 };
 
-type $PostgresJSONStore = {
-  upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
+type $PostgresJSONStore = { upsertDocument: (doc: {, id: string; body: Record<string, unknown> }) => Promise<boolean>;
   queryByField: (field: string, value: any) => Promise<Record<string, unknown>[]>;
 };
 
@@ -154,8 +140,8 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     const endpoint = getOllamaEndpoint();
     const resp = await fetch(`${endpoint}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, prompt: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ model, prompt: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts })
     });
 
     if (!resp.ok) {
@@ -168,7 +154,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     const body = await resp.json().catch(() => ({}) as Record<string, unknown>);
 
     // Ollama may respond as { embedding: [...], model: '...' } for single,
-    // or { embeddings: [[...], [...]], model: '...' } for batch, or variations.
+    // or { embeddings: [[...], [...]], model: `...` } for batch, or variations.
     const singleEmbedding =
       Array.isArray((body as Record<string, unknown>)['embedding']) &&
       ((body as Record<string, unknown>)['embedding'] as unknown[]).every((n: any) => typeof n === 'number');
@@ -184,7 +170,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     } else if (batchEmbeddings) {
       return (((body as Record<string, unknown>)['embeddings'] as unknown[]) ?? []).map(e => ({
         embedding: Array.isArray(e) ? (e as unknown[]).map(Number) : undefined,
-        model,
+        model
       }));
     }
 
@@ -221,8 +207,8 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
     const endpoint = getOllamaEndpoint();
     const resp = await fetch(`${endpoint}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, prompt, stream: false }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ model, prompt, stream: false })
     });
     if (!resp.ok) {
       const txt = await resp.text().catch(() => '');
@@ -246,7 +232,7 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
       if (out0 && typeof out0['content'] === 'string') return out0['content'] as string;
     }
 
-    // last resort: if the body contains: "response" fields in nested objects, try to find one
+    // last resort: if the body; contains: "response" fields in nested objects, try to find one
     const nestedResponse = JSON.stringify(result).match(/"response"\s*:\s*"([^"]+)"/);
     if (nestedResponse && nestedResponse[1]) return nestedResponse[1];
 
@@ -273,13 +259,13 @@ const $redisAdapter: $RedisCacheAdapter = {
       const r = await fetch('/api/redis/set', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value, ttl: ttlSeconds ?? 3600 }),
+        body: JSON.stringify({ key, value, ttl: ttlSeconds ?? 3600 })
       });
       return r.ok;
     } catch {
       return false;
     }
-  },
+  }
 };
 
 const $qdrantAdapter: $QdrantAdapter = {
@@ -288,7 +274,7 @@ const $qdrantAdapter: $QdrantAdapter = {
       const r = await fetch('/api/qdrant/upsert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ collection, vectors }),
+        body: JSON.stringify({ collection, vectors })
       });
       return r.ok;
     } catch {
@@ -300,14 +286,14 @@ const $qdrantAdapter: $QdrantAdapter = {
       const r = await fetch('/api/qdrant/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ collection, vector, limit, filter }),
+        body: JSON.stringify({ collection, vector, limit, filter })
       });
       if (!r.ok) return [];
       return (await r.json().catch(() => [])) as unknown[];
     } catch {
       return [];
     }
-  },
+  }
 };
 
 const pgJsonStore: $PostgresJSONStore = {
@@ -316,7 +302,7 @@ const pgJsonStore: $PostgresJSONStore = {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(doc),
+        body: JSON.stringify(doc)
       });
       return r.ok;
     } catch {
@@ -327,15 +313,15 @@ const pgJsonStore: $PostgresJSONStore = {
     try {
       const r = await fetch('/api/postgres/json/query', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ field, value }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ field, value })
       });
       if (!r.ok) return [];
       return (await r.json().catch(() => [])) as Record<string, unknown>[];
     } catch {
       return [];
     }
-  },
+  }
 };
 // --- END helpers ---
 
@@ -368,7 +354,7 @@ class CachedRAGService {
       responseCacheHit: false,
       totalCacheTime: 0,
       totalProcessingTime: 0,
-      gpuTimeSaved: 0,
+      gpuTimeSaved: 0
     };
 
     try {
@@ -387,7 +373,7 @@ class CachedRAGService {
       cacheStats.queryCacheHit = !!queryResult?.cached;
       cacheStats.totalCacheTime += Number(queryResult?.processingTime || 0);
 
-      // Step 2: Get cached response using gemma3:legal-latest
+      // Step 2: Get cached response using; gemma3:legal-latest
       const rawResults: any[] = Array.isArray(queryResult?.results) ? queryResult.results : [];
       const contextTexts: string[] = rawResults
         .map(r => {
@@ -402,7 +388,7 @@ class CachedRAGService {
         async (q: string, ctx: string[]) => {
           return await this.generateLegalResponse(q, ctx);
         }
-      ) ?? { cached: false, processingTime: 0, response: '' });
+      ) ?? { cached: false, processingTime: 0, response: `` });
       cacheStats.responseCacheHit = !!responseResult?.cached;
       cacheStats.totalCacheTime += Number(responseResult?.processingTime || 0);
 
@@ -419,8 +405,7 @@ class CachedRAGService {
           const r = item as Record<string, unknown> | null;
           const docId = String(this.extractResultField(r, 'documentId', 'id') ?? 'unknown');
           return {
-            id: docId, // ensure: 'id' exists for expected merged result shapes
-            documentId: docId,
+            id: docId, // ensure: 'id' exists for expected merged result shapes; documentId: docId,
             title: String(this.extractResultField(r, 'title') ?? 'Legal Document'),
             relevanceScore: Number(this.extractResultField(r, 'score', 'relevanceScore') ?? 0),
             excerpt: String(this.extractResultField(r, 'excerpt', 'content') ?? ''),
@@ -432,13 +417,13 @@ class CachedRAGService {
               : [],
             metadata: (typeof this.extractResultField<Record<string, unknown>>(r, 'metadata') === 'object'
               ? this.extractResultField<Record<string, unknown>>(r, 'metadata')
-              : {}) as Record<string, unknown>,
+              : {}) as Record<string, unknown>
           };
         }),
         totalFound: Number(queryResult?.totalFound ?? rawResults.length),
         semanticExpansions: [],
         processingTime: cacheStats.totalProcessingTime,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
 
       // Add the response text (if present)
@@ -450,7 +435,7 @@ class CachedRAGService {
 
       return {
         response: ragResponse,
-        cacheStats,
+        cacheStats
       };
     } catch (error: any) {
       console.error('❌ Enhanced RAG query failed:', error);
@@ -478,7 +463,7 @@ class CachedRAGService {
       const batchRequest = chunks.map((chunk, index) => ({
         text: chunk,
         id: `${documentId}_chunk_${index}`,
-        metadata: { ...(metadata ?? {}), chunkIndex: index, documentId },
+        metadata: { ...(metadata ?? {}), chunkIndex: index, documentId }
       }));
       const caching = enhancedCachingService as unknown as EnhancedCachingServiceAdapter;
       const embeddingResults: EmbeddingResult[] = await (caching.getCachedBatchEmbeddings?.(batchRequest) ?? []);
@@ -486,7 +471,7 @@ class CachedRAGService {
       try {
         await pgJsonStore.upsertDocument({
           id: documentId,
-          body: { chunks: batchRequest.map(b => ({ id: b.id, text: b.text })) },
+          body: {, chunks: batchRequest.map(b => ({, id: b.id, text: b.text })) }
         });
       } catch {
         // non-fatal
@@ -506,8 +491,8 @@ class CachedRAGService {
           ...metadata,
           model: result?.model ?? 'unknown',
           dimensions: result?.dimensions ?? null,
-          cached: !!result?.cached,
-        },
+          cached: !!result?.cached
+        }
       }));
       const storedSuccessfully = await this.storeBatchInPgVector(vectorRecords);
 
@@ -520,7 +505,7 @@ class CachedRAGService {
         embeddingsGenerated,
         embeddingsCached,
         processingTime,
-        storedInPgVector: !!storedSuccessfully,
+        storedInPgVector: !!storedSuccessfully
       };
     } catch (error: any) {
       console.error('❌ Document ingestion failed:', error);
@@ -550,7 +535,7 @@ class CachedRAGService {
           embeddingsGenerated: 0,
           embeddingsCached: 0,
           processingTime: 0,
-          storedInPgVector: false,
+          storedInPgVector: false
         });
       }
     }
@@ -560,9 +545,9 @@ class CachedRAGService {
       successful: results.filter(r => r.storedInPgVector).length,
       totalChunks: results.reduce((sum, r) => sum + r.chunksProcessed, 0),
       totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0),
-      totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0),
+      totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0)
     };
-    console.log(`✅ Batch ingestion completed:`, summary);
+    console.log(`✅ Batch ingestion completed: ', summary);
     return results;
   }
 
@@ -576,13 +561,13 @@ class CachedRAGService {
     try {
       const response = await fetch(this.PGVECTOR_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          embedding: queryEmbedding,
+         , embedding: queryEmbedding,
           limit: 20,
           threshold: 0.7,
-          filters: filters || {},
-        }),
+          filters: filters || {}
+        })
       });
       if (!response.ok) {
         const body = await response.text().catch(() => '');
@@ -622,9 +607,7 @@ class CachedRAGService {
   private buildLegalPrompt(query: string, context: string[]): string {
     const contextText = context.slice(0, 5).join('\n\n');
     return `You are a legal AI assistant powered by Gemma 3 Legal. Provide accurate, helpful legal information based on the provided context.
-LEGAL DISCLAIMER: This response is for informational purposes only and does not constitute legal advice. Always consult with a qualified attorney for specific legal matters.
-
-CONTEXT:
+LEGAL DISCLAIMER: This response is for informational purposes only and does not constitute legal advice. Always consult with a qualified attorney for specific legal matters.; CONTEXT:
 ${contextText}
 
 QUESTION: ${query}
@@ -655,8 +638,8 @@ RESPONSE: Provide a comprehensive, accurate response based on the context above.
     try {
       const response = await fetch('/api/v1/embeddings/batch', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ records }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ records })
       });
       return !!response.ok;
     } catch (error: any) {

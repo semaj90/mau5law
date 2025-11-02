@@ -41,7 +41,7 @@ export class OptimizedQueries {
         e.*,
         1 - (e.embedding <=> ${embedding}) as similarity_score
       FROM evidence e
-      ${caseId ? sql`WHERE e.case_id = ${caseId}` : sql``}
+      ${caseId ? sql`WHERE e.case_id = ${caseId}` : sql`` }
       ORDER BY e.embedding <=> ${embedding}
       LIMIT ${limit}
     `);

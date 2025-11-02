@@ -4,6 +4,7 @@ https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
 
   // Removed unused imports: onDestroy, quintOut, Modal, Component
   import { onMount } from 'svelte';
@@ -99,8 +100,8 @@ https://svelte.dev/e/js_parse_error -->
   let comparisonResults: Record<string, any> = {};
   let cacheStats = { totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 };
   // Modal & form state (added to fix missing identifiers)
-  let showEvidenceModal: boolean = $state(false);
-  let showSettingsModal: boolean = $state(false);
+  let showEvidenceModal: boolean = false;
+  let showSettingsModal: boolean = false;
   let evidenceFormData: any = {}; // form model used by EvidenceForm
   let selectedEvidence: Evidence | null = null;
   let evidenceSearchResults: Evidence[] = []; // populated on mount from report attachedEvidence
@@ -385,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
                 </Button.Root>
               </div>
               <div class="evidence-search-placeholder">
-                <AdvancedSearch on:search={handleEvidenceSearch} />
+                <AdvancedSearch onsearch={handleEvidenceSearch} />
               </div>
             </section>
           </div>

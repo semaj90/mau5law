@@ -22,18 +22,14 @@ import { writable, derived } from 'svelte/store';
 export type ReportType = 'analysis' | 'summary' | 'timeline' | 'evidence_review' | 'legal_memo' | 'custom';
 export type ExportFormat = 'pdf' | 'docx' | 'html' | 'markdown' | 'json';
 
-export interface ReportSection {
-  id: string;
-  title: string;
+export interface ReportSection { id: string;, title: string;
   content: string;
   order: number;
   type: 'text' | 'table' | 'image' | 'code' | 'divider';
   metadata?: Record<string, unknown>;
 }
 
-export interface Report {
-  id: string;
-  title: string;
+export interface Report { id: string;, title: string;
   type: ReportType;
   caseId: string;
   sections: ReportSection[];
@@ -67,11 +63,11 @@ interface ReportStoreState {
   isDirty: boolean;
 
   // Available references
-  availableCitations: Array<{ id: string; text: string }>;
-  availableEvidence: Array<{ id: string; name: string }>;
+  availableCitations: Array<{ id: string;, text: string }>;
+  availableEvidence: Array<{ id: string;, name: string }>;
 
   // Collaboration
-  collaborators: Array<{ id: string; name: string }>;
+  collaborators: Array<{ id: string;, name: string }>;
   isCollaborating: boolean;
 
   // Metadata
@@ -121,8 +117,7 @@ function createReportStore() {
       update(s => ({ ...s, isLoading: true, error: null }));
       try {
         const response = await fetch(`/api/cases/${caseId}/reports`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -158,12 +153,11 @@ function createReportStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            title: reportTitle,
+           , title: reportTitle,
             type,
             caseId
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -295,10 +289,9 @@ function createReportStore() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sections: state.editorContent
+           , sections: state.editorContent
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -321,7 +314,7 @@ function createReportStore() {
     /**
      * Insert citation into report
      */
-    insertCitation(sectionId: string, citation: { id: string; text: string }) {
+    insertCitation(sectionId: string, citation: {, id: string; text: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
@@ -336,7 +329,7 @@ function createReportStore() {
     /**
      * Insert evidence reference into report
      */
-    insertEvidence(sectionId: string, evidence: { id: string; name: string }) {
+    insertEvidence(sectionId: string, evidence: {, id: string; name: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
@@ -359,8 +352,7 @@ function createReportStore() {
       try {
         const response = await fetch(`/api/reports/${reportId}/publish`, {
           method: 'POST',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -387,8 +379,7 @@ function createReportStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userIds }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -414,8 +405,7 @@ function createReportStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ format }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const blob = await response.blob();
@@ -440,8 +430,7 @@ function createReportStore() {
       try {
         const response = await fetch(`/api/reports/${reportId}`, {
           method: 'DELETE',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({

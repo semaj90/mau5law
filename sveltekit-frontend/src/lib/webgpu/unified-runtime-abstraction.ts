@@ -7,14 +7,10 @@
 const browser = typeof window !== 'undefined';
 // WebGPU type declarations for environments without full WebGPU support
 declare global {
-  interface GPUAdapter {
-    features: GPUSupportedFeatures;
-    limits: GPUSupportedLimits;
+  interface GPUAdapter { features: GPUSupportedFeatures;, limits: GPUSupportedLimits;
     requestDevice(): Promise<GPUDevice>;
   }
-  interface GPUDevice {
-    features: GPUSupportedFeatures;
-    limits: GPUSupportedLimits;
+  interface GPUDevice { features: GPUSupportedFeatures;, limits: GPUSupportedLimits;
   }
   interface GPUSupportedFeatures extends Set<string> {}
   interface GPUSupportedLimits extends Record<string, number> {}
@@ -29,9 +25,7 @@ declare global {
     }
   }
 }
-export interface RuntimeCapabilities {
-  webgpu: {
-    available: boolean;
+export interface RuntimeCapabilities { webgpu: {, available: boolean;
     adapter?: GPUAdapter;
     device?: GPUDevice;
     features: string[];
@@ -43,9 +37,7 @@ export interface RuntimeCapabilities {
     extensions: string[];
     maxTextureSize: number;
   }
-  wasmSIMD: {
-    available: boolean;
-    supportedInstructions: string[];
+  wasmSIMD: { available: boolean;, supportedInstructions: string[];
     threadCount: number;
   }
   tensorRT: {
@@ -53,17 +45,13 @@ export interface RuntimeCapabilities {
     endpoint?: string;
     models: string[];
   }
-  chrRomCache: {
-    available: boolean;
-    redisConnected: boolean;
+  chrRomCache: { available: boolean;, redisConnected: boolean;
     patterns: number;
     hitRate: number;
     avgResponseTime: number;
   }
 }
-export interface InferenceRequest {
-  model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';
-  prompt: string;
+export interface InferenceRequest { model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';, prompt: string;
   maxTokens?: number;
   temperature?: number;
   preferredRuntime?: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';
@@ -75,9 +63,7 @@ export interface InferenceRequest {
 export interface InferenceResponse {
   text: string;
   embedding?: Float32Array;
-  metadata: {
-    runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';
-    executionTime: number;
+  metadata: { runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';, executionTime: number;
     tokensGenerated: number;
     confidence: number;
     driverLayer?: string; // From Dawn
@@ -94,8 +80,7 @@ export class UnifiedRuntimeAbstraction {
   private wasmModule?: any;
   private tensorRTEndpoint = '/api/tensorrt';
   constructor() {
-    this.capabilities = {
-      webgpu: { available: false, features: [], limits: {} },
+    this.capabilities = { webgpu: {, available: false, features: [], limits: {} },
       webgl2: { available: false, extensions: [], maxTextureSize: 0 },
       wasmSIMD: { available: false, supportedInstructions: [], threadCount: 0 },
       tensorRT: { available: false, models: [] },
@@ -180,7 +165,7 @@ export class UnifiedRuntimeAbstraction {
         powerPreference: 'high-performance',
         antialias: false,
         depth: false;
-        stencil: false
+       , stencil: false
       });
       if (!gl) {
         console.log('[Runtime] WebGL2 not available');
@@ -231,9 +216,7 @@ export class UnifiedRuntimeAbstraction {
         supportedInstructions,
         threadCount: navigator.hardwareConcurrency || 4
       }
-      console.log('[Runtime] WASM SIMD initialized:', {
-        instructions: supportedInstructions;
-        threads: this.capabilities.wasmSIMD.threadCount
+      console.log('[Runtime] WASM SIMD initialized:', { instructions: supportedInstructions;, threads: this.capabilities.wasmSIMD.threadCount
       });
     } catch (error) {
       console.warn('[Runtime] WASM SIMD initialization failed:', error);
@@ -282,11 +265,10 @@ export class UnifiedRuntimeAbstraction {
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
         }
-        console.log('[Runtime] CHR-ROM cache available:', {
+        console.log('[Runtime] CHR-ROM cache available: `, {
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
-          avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms`
-        });
+          avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms` });
       }
     } catch (error) {
       console.warn('[Runtime] CHR-ROM cache not available:', error);
@@ -367,7 +349,7 @@ export class UnifiedRuntimeAbstraction {
           result = await this.executeTensorRT(request);
           break;
         default:
-          throw new Error(`Unsupported runtime: ${runtime}`);
+          throw new Error(`Unsupported; runtime: ${runtime}`);
       }
       result.metadata.executionTime = performance.now() - startTime;
       result.metadata.runtime = runtime;
@@ -377,7 +359,7 @@ export class UnifiedRuntimeAbstraction {
       }
       return result;
     } catch (error) {
-      console.error(`[Runtime] ${runtime} execution failed:`, error);
+      console.error(`[Runtime] ${runtime} execution failed: ', error);
       // Try fallback runtime
       return this.executeFallback(request, runtime);
     }
@@ -402,13 +384,13 @@ export class UnifiedRuntimeAbstraction {
     // Route to vector operations API for WebGL2 optimized path
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({,
         operation: 'inference',
         model: request.model,
         prompt: request.prompt,
         useWebGL2: true,
-        maxTokens: request.maxTokens,
+        maxTokens: request.maxTokens
       })
     });
     if (!response.ok) {
@@ -434,7 +416,7 @@ export class UnifiedRuntimeAbstraction {
     return this.executeTensorRT(request);
   }
   /**
-   * Execute using TensorRT (for gemma3-legal:latest and gemma3:9b)
+   * Execute using TensorRT (for gemma3-legal:latest and; gemma3:9b)
    */
   private async executeTensorRT(request: InferenceRequest): Promise<InferenceResponse> {
     const response = await fetch(`${this.tensorRTEndpoint}/generate`, {
@@ -446,8 +428,7 @@ export class UnifiedRuntimeAbstraction {
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
         use_tensor_cores: true,
-        optimize_for_legal: request.model === 'gemma3-legal:latest',
-      })
+        optimize_for_legal: request.model === 'gemma3-legal:latest` })
     });
     if (!response.ok) {
       throw new Error(`TensorRT execution failed: ${response.statusText}`);
@@ -460,8 +441,7 @@ export class UnifiedRuntimeAbstraction {
         executionTime: 0,
         tokensGenerated: data.tokens_generated || 0,
         confidence: data.confidence || 0.9,
-        deviceInfo: 'RTX-3060Ti-TensorRT'
-      }
+        deviceInfo: `RTX-3060Ti-TensorRT` }
     }
   }
   /**
@@ -484,7 +464,7 @@ export class UnifiedRuntimeAbstraction {
             return await this.executeTensorRT(request);
         }
       } catch (error) {
-        console.warn(`[Runtime] Fallback ${runtime} failed:`, error);
+        console.warn(`[Runtime] Fallback ${runtime} failed: ', error);
         continue;
       }
     }
@@ -530,7 +510,7 @@ export class UnifiedRuntimeAbstraction {
         body: JSON.stringify({,
           action: 'get',
           key: cacheKey,
-          pattern_type: 'ai_response',
+          pattern_type: 'ai_response'
         }),
         signal: AbortSignal.timeout(100) // Fast cache check
       });
@@ -563,14 +543,14 @@ export class UnifiedRuntimeAbstraction {
       const cacheKey = request.cacheKey || this.generateCacheKey(request);
       await fetch('/api/cache', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           action: 'set',
           key: cacheKey,
           data: {
-            text: result.text,
+           , text: result.text,
             embedding: result.embedding ? Array.from(result.embedding) : undefined,
-            metadata: result.metadata,
+            metadata: result.metadata
           },
           pattern_type: 'ai_response',
           model: request.model,
@@ -589,7 +569,7 @@ export class UnifiedRuntimeAbstraction {
    */
   private generateCacheKey(request: InferenceRequest): string {
     const promptHash = this.simpleHash(request.prompt);
-    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default'}`;
+    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;
   }
   /**
    * Simple hash function for cache keys

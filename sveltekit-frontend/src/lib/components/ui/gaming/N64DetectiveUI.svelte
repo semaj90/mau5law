@@ -14,7 +14,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // Svelte 5 runes for reactive state
   let isInitialized = $state<boolean>(false);
   let isAnalyzing = $state<boolean>(false);
-  let currentEvidence: EvidenceItem | null = $state(null);
+  let currentEvidence: EvidenceItem | null = null;
   let evidenceHistory: EvidenceItem[] = $state([]);
   let conflicts: ConflictAnalysis[] = $state([]);
   let searchQuery = $state<string>('');

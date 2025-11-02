@@ -4,9 +4,7 @@ declare module 'cbor' {
 	export function decode(data: Uint8Array | ArrayBuffer | Buffer): any;
 
 	// Some builds import default
-	const _default: {
-		encode: typeof encode;
-		decode: typeof decode;
+	const _default: { encode: typeof encode;, decode: typeof decode;
 	};
 	export default _default;
 }

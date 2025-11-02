@@ -6,14 +6,11 @@ import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './com
 import { getContext7MulticoreService } from './context7-multicore.js';
 import { flashAttention2Service, type LegalContextAnalysis } from '$lib/services/flashattention2-rtx3060.js';
 // Define MulticoreSystemStatus locally as it's not exported from its module
-interface MulticoreSystemStatus {
-  workers: Array<{ id: string; status: string; tasks: number }>; // Minimal definition based on usage
+interface MulticoreSystemStatus { workers: Array<{ id: string; status: string;, tasks: number }>; // Minimal definition based on usage
   // Add other properties if known from context7-multicore.js
 }
 // Local ProcessingTask shape (matches usage in this module)
-interface ProcessingTask {
-  id: string;
-  status: 'pending' | 'running' | 'completed' | 'failed' | string;
+interface ProcessingTask { id: string;, status: 'pending' | 'running' | 'completed' | 'failed' | string;
   result?: {
     recommendations?: string[];
     [key: string]: any;
@@ -38,7 +35,7 @@ interface IFlashAttention2Service {
   processLegalText(
     text: string,
     context: string[],
-    analysisType: 'semantic' | 'legal' | 'precedent' | 'error_analysis'
+    analysisType: 'semantic' | 'legal' | 'precedent' | 'error_analysis';
   ): Promise<ExpectedFlashAttentionResult>;
   // status shape varies by runtime implementation; use unknown for now
   getStatus(): any;
@@ -62,14 +59,10 @@ export interface FlashAttentionMulticoreResponse {
   legalAnalysis: LegalContextAnalysis;
   multicoreRecommendations: string[];
   agentOrchestrationResult?: any;
-  systemMetrics: {
-    totalProcessingTime: number;
-    gpuUtilization: number;
+  systemMetrics: { totalProcessingTime: number;, gpuUtilization: number;
     memoryEfficiency: number;
     errorReduction?: number;
-    confidence: {
-      attention: number;
-      multicore: number;
+    confidence: { attention: number;, multicore: number;
       overall: number;
     };
   };
@@ -87,15 +80,11 @@ export interface MulticoreErrorAnalysisResult {
 /**
  * Represents a single error prioritized by attention scores and multicore analysis.
  */
-export interface PrioritizedError {
-  error: string;
-  attention_score: number;
+export interface PrioritizedError { error: string;, attention_score: number;
   fix_complexity: 'low' | 'medium' | 'high';
   suggested_fix: string;
 }
-export interface ErrorAnalysisWithAttention {
-  errorPatterns: MulticoreErrorAnalysisResult;
-  attentionWeights: Float32Array;
+export interface ErrorAnalysisWithAttention { errorPatterns: MulticoreErrorAnalysisResult;, attentionWeights: Float32Array;
   relevantCodeSections: string[];
   fixProbability: number;
   prioritizedErrors: Array<PrioritizedError>;
@@ -113,7 +102,7 @@ export class FlashAttentionMulticoreBridge {
       enableGPU: true,
       enableLegalBert: true,
       enableGoLlama: true,
-      maxConcurrentTasks: 30,
+      maxConcurrentTasks: 30
     });
   }
   async initialize(): Promise<void> {
@@ -173,7 +162,7 @@ export class FlashAttentionMulticoreBridge {
         multicoreRecommendations,
         agentOrchestrationResult,
         systemMetrics,
-        performanceOptimizations,
+        performanceOptimizations
       };
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
@@ -202,7 +191,7 @@ export class FlashAttentionMulticoreBridge {
       context: 'TypeScript/Svelte error analysis with attention weights',
       errorType: 'compilation_errors',
       codeSnippet: errorText.substring(0, 1000),
-      priority: 'critical',
+      priority: 'critical'
     });
     const multicoreResult = await this.multicoreService.waitForTask(errorAnalysisTask.id, 30000);
     // Extract relevant code sections using attention weights
@@ -218,12 +207,10 @@ export class FlashAttentionMulticoreBridge {
       attentionWeights: attentionResult.attentionWeights,
       relevantCodeSections,
       fixProbability: attentionResult.confidence * 0.9,
-      prioritizedErrors,
+      prioritizedErrors
     };
   }
-  private async processWithFlashAttention(request: FlashAttentionMulticoreRequest): Promise<{
-    result: {
-      embeddings: any;
+  private async processWithFlashAttention(request: FlashAttentionMulticoreRequest): Promise<{ result: {, embeddings: any;
       attentionWeights: Float32Array;
       contextualEmbeddings: Float32Array;
       processingTime: number;
@@ -239,17 +226,15 @@ export class FlashAttentionMulticoreBridge {
       request.context || [],
       analysisType
     );
-    return {
-      result: {
-        embeddings: result.embeddings,
+    return { result: {, embeddings: result.embeddings,
         attentionWeights: result.attentionWeights,
         contextualEmbeddings: result.contextualEmbeddings || new Float32Array([]),
         processingTime: result.processingTime,
         memoryUsage: result.memoryUsage,
         confidence: result.confidence,
-        sequenceLength: result.sequenceLength || 0,
+        sequenceLength: result.sequenceLength || 0
       },
-      legalAnalysis: result.legalAnalysis,
+      legalAnalysis: result.legalAnalysis
     };
   }
   private async runMulticoreAnalysis(request: FlashAttentionMulticoreRequest): Promise<ProcessingTask[]> {
@@ -276,36 +261,34 @@ export class FlashAttentionMulticoreBridge {
         context: 'Error analysis with FlashAttention2 integration',
         errorType: 'compilation_errors',
         codeSnippet: JSON.stringify(request.options.errorData).substring(0, 1000),
-        priority: request.options?.priority || 'high',
-      });
+        priority: request.options?.priority || 'high` });
       tasks.push(errorTask);
     }
     return tasks;
   }
   private async runAgentOrchestration(
     request: FlashAttentionMulticoreRequest,
-    attentionResult: { result: { attentionWeights: Float32Array }; legalAnalysis: LegalContextAnalysis },
+    attentionResult: { result: {, attentionWeights: Float32Array }; legalAnalysis: LegalContextAnalysis },
     multicoreTasks: ProcessingTask[]
   ): Promise<unknown> {
-    const orchestrationRequest: ComprehensiveAgentRequest = {
-      prompt: `Analyze the following with FlashAttention2 context: ${request.text.substring(0, 500)}...`,
+    const orchestrationRequest: ComprehensiveAgentRequest = { prompt: `Analyze the following with FlashAttention2, context: ${request.text.substring(0, 500)}...`,
       context: {
         attentionWeights: Array.from(attentionResult.result.attentionWeights),
         legalAnalysis: attentionResult.legalAnalysis,
-        multicoreTaskCount: multicoreTasks.length,
+        multicoreTaskCount: multicoreTasks.length
       },
       options: {
         agents: ['claude', 'crewai'],
         priority: request.options?.priority || 'medium',
         analysisType: request.options?.analysisType === 'error_analysis' ? 'document_processing' : 'legal_research',
         useMulticoreAnalysis: true,
-        includeContext7: true,
-      },
+        includeContext7: true
+      }
     };
     return await comprehensiveOrchestrator.executeComprehensiveAnalysis(orchestrationRequest);
   }
   private async generateCombinedRecommendations(
-    attentionResult: { result: { processingTime: number }; legalAnalysis: LegalContextAnalysis },
+    attentionResult: { result: {, processingTime: number }; legalAnalysis: LegalContextAnalysis },
     multicoreTasks: ProcessingTask[],
     agentResult: any
   ): Promise<string[]> {
@@ -342,7 +325,7 @@ export class FlashAttentionMulticoreBridge {
   }
   private calculateSystemMetrics(
     totalProcessingTime: number,
-    attentionResult: { result: { memoryUsage: number; confidence: number } },
+    attentionResult: { result: {, memoryUsage: number; confidence: number } },
     multicoreTasks: ProcessingTask[]
   ): FlashAttentionMulticoreResponse['systemMetrics'] {
     const flashAttentionService = flashAttention2Service as unknown as IFlashAttention2Service; // Apply type assertion
@@ -370,8 +353,8 @@ export class FlashAttentionMulticoreBridge {
       confidence: {
         attention: attentionResult.result.confidence,
         multicore: completedTasks / Math.max(1, totalTasks),
-        overall: (attentionResult.result.confidence + completedTasks / Math.max(1, totalTasks)) / 2,
-      },
+        overall: (attentionResult.result.confidence + completedTasks / Math.max(1, totalTasks)) / 2
+      }
     };
   }
   private generatePerformanceOptimizations(
@@ -432,7 +415,7 @@ export class FlashAttentionMulticoreBridge {
         error: errorStr.substring(0, 200),
         attention_score: attentionScore,
         fix_complexity: fixComplexity,
-        suggested_fix: suggestedFix,
+        suggested_fix: suggestedFix
       });
     });
     // Sort by attention score (highest first)
@@ -453,7 +436,7 @@ export class FlashAttentionMulticoreBridge {
         'Agent orchestration integration',
         'Performance optimization',
         'Attention-based code analysis',
-      ],
+      ]
     };
   }
 }
@@ -469,12 +452,12 @@ export async function processWithEnhancedAI(
     text,
     context,
     options: {
-      enableGPU: true,
+     , enableGPU: true,
       useAgentOrchestration: true,
       analysisType: 'legal',
       priority: 'medium',
-      ...options,
-    },
+      ...options
+    }
   });
 }
 // Helper function for error analysis with GPU acceleration

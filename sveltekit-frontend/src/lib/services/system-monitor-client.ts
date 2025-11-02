@@ -22,7 +22,7 @@ export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs
 			await fetch(url, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(batch.length === 1 ? batch[0] : batch),
+				body: JSON.stringify(batch.length === 1 ? batch[0] : batch)
 			});
 		} catch (err) {
 			// on failure, requeue at front

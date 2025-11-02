@@ -29,7 +29,7 @@ class ContextAwareAIMemoryService {
 	}
 
 	private getDatabaseUrl() {
-		// follow docker/service name: postgres container name expected in compose: 'postgres'
+		// follow docker/service name: postgres container name expected in; compose: 'postgres'
 		return this.getEnvOrFallback('DATABASE_URL', 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db');
 	}
 
@@ -256,8 +256,7 @@ class ContextAwareAIMemoryService {
 							toId: d.documentId,
 							relationshipType: 'temporal_correlation',
 							strength: 0.6,
-							contextualNote: 'Processed around same time'
-						} as Types.ContextRelationship);
+							contextualNote: 'Processed around same time' } as Types.ContextRelationship);
 					}
 				}
 			}

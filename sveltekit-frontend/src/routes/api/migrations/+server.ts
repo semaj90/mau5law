@@ -17,14 +17,14 @@ export const GET: RequestHandler = async ({ url }) => {
         const status = await migrator.getStatus();
         return json({
           success: true,
-          data: status,
+          data: status
         });
       }
       case 'validate': {
         const validation = await migrator.validateIntegrity();
         return json({
           success: true,
-          data: validation,
+          data: validation
         });
       }
       case 'list': {
@@ -34,23 +34,23 @@ export const GET: RequestHandler = async ({ url }) => {
           version: migration.version,
           name: migration.name,
           applied: appliedMigrations.includes(migration.version),
-          hasRollback: !!migration.down,
+          hasRollback: !!migration.down
         }));
 
         return json({
           success: true,
           data: {
-            migrations: migrationList,
+           , migrations: migrationList,
             total: allMigrations.length,
             applied: appliedMigrations.length,
-            pending: allMigrations.length - appliedMigrations.length,
-          },
+            pending: allMigrations.length - appliedMigrations.length
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: 'Invalid action. Use: status, validate, or list',
+            error: 'Invalid action.; Use: status, validate, or list'
           },
           { status: 400 }
         );
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -80,11 +80,11 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             results,
             summary: {
-              applied: successful.length,
+             , applied: successful.length,
               failed: failed.length,
-              totalTime: results.reduce((sum, r) => sum + r.executionTime, 0),
-            },
-          },
+              totalTime: results.reduce((sum, r) => sum + r.executionTime, 0)
+            }
+          }
         });
       }
       case 'rollback': {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Rollback requires force=true parameter for safety',
+              error: 'Rollback requires force=true parameter for safety'
             },
             { status: 400 }
           );
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await migrator.rollback();
         return json({
           success: result.success,
-          data: result,
+          data: result
         });
       }
       case 'create': {
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Migration name is required',
+              error: 'Migration name is required'
             },
             { status: 400 }
           );
@@ -119,8 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           data: {
             filename,
-            message: `Migration ${filename} created successfully`,
-          },
+            message: `Migration ${filename} created successfully' }
         });
       }
       case 'initialize': {
@@ -128,14 +127,14 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-            message: 'Migration system initialized successfully',
-          },
+           , message: 'Migration system initialized successfully'
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: 'Invalid action. Use: migrate, rollback, create, or initialize',
+            error: 'Invalid action.; Use: migrate, rollback, create, or initialize'
           },
           { status: 400 }
         );
@@ -145,8 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

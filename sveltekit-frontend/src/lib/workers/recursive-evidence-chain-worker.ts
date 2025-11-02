@@ -4,23 +4,17 @@
  * Integrates with existing legal AI platform evidence processing
  */
 // Evidence Chain Interfaces
-interface EvidenceChainNode {
-  evidenceId: string;
-  depth: number;
+interface EvidenceChainNode { evidenceId: string;, depth: number;
   chainOfCustody: ChainEntry[];
    EvidenceChainNode[];
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   confidence: number;
-  metadata: {
-    processingTime: number;
-    recursionPath: string[];
+  metadata: { processingTime: number;, recursionPath: string[];
     analysisTimestamp: string;
   };
 }
-interface ChainEntry {
-  officer_id: string;
-  officer_name: string;
+interface ChainEntry { officer_id: string;, officer_name: string;
   timestamp: string;
   action: string;
   location: string;
@@ -28,17 +22,13 @@ interface ChainEntry {
   notes?: string;
   equipment_used?: string;
 }
-interface EvidenceRelationship {
-  relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';
-  strength: number;
+interface EvidenceRelationship { relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';, strength: number;
   description: string;
   legalSignificance: 'critical' | 'high' | 'medium' | 'low';
   supportingEvidence: string[];
   confidence: number;
 }
-interface RelatedEvidence {
-  evidenceId: string;
-  relationshipType: string;
+interface RelatedEvidence { evidenceId: string;, relationshipType: string;
   strength: number;
   metadata: Record<string, unknown>; // changed from `any` to safer type
 }
@@ -98,8 +88,8 @@ export class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
-        },
+          analysisTimestamp: new Date().toISOString()
+        }
       };
     }
 
@@ -140,8 +130,8 @@ export class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
-        },
+          analysisTimestamp: new Date().toISOString()
+        }
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -157,8 +147,8 @@ export class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
-        },
+          analysisTimestamp: new Date().toISOString()
+        }
       };
     }
   }
@@ -200,10 +190,10 @@ export class RecursiveEvidenceChainProcessor {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          evidenceIds: [evidenceId],
+         , evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
-          includeWeakCorrelations: true,
-        }),
+          includeWeakCorrelations: true
+        })
       });
       if (!response.ok) {
         return [];
@@ -232,7 +222,7 @@ export class RecursiveEvidenceChainProcessor {
               evidenceId: partnerId,
               relationshipType: corrType,
               strength,
-              metadata: otherMetadata,
+              metadata: otherMetadata
             };
           })
           .filter((r): r is RelatedEvidence => r !== null) || []
@@ -254,7 +244,7 @@ export class RecursiveEvidenceChainProcessor {
         const relationship = await this.determineRelationshipType(evidenceId, related);
         relationships.push(relationship);
       } catch (error) {
-        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}:`, error);
+        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}: ', error);
       }
     }
     return relationships;
@@ -291,7 +281,7 @@ export class RecursiveEvidenceChainProcessor {
       description: this.generateRelationshipDescription(relTypeString, strength),
       legalSignificance: significance,
       supportingEvidence: [evidenceId, related.evidenceId],
-      confidence: this.calculateRelationshipConfidence(strength, relTypeString),
+      confidence: this.calculateRelationshipConfidence(strength, relTypeString)
     };
   }
 

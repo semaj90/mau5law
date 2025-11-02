@@ -11,7 +11,7 @@ import {
   reports,
   personsOfInterest,
   ragMessages,
-  ragSessions,
+  ragSessions
 } from '$lib/server/db/schema-postgres';
 import { sql, or, like } from 'drizzle-orm';
 import { z } from 'zod';
@@ -31,7 +31,7 @@ const entityMap = {
   reports,
   personsOfInterest,
   ragMessages,
-  ragSessions,
+  ragSessions
 } as const;
 
 // Helper to avoid `as any` when accessing table columns.
@@ -61,7 +61,7 @@ const CrudBodySchema = z.object({
   data: z.any().optional(),
   filters: z.record(z.any()).optional(),
   pagination: z.object({ page: z.number().optional(), limit: z.number().optional() }).optional(),
-  search: z.object({ query: z.string().optional(), similarity_threshold: z.number().optional() }).optional(),
+  search: z.object({ query: z.string().optional(), similarity_threshold: z.number().optional() }).optional()
 });
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!entity) return error(400, ensureError({ message: 'entity parameter required' }));
     const table = getTable(entity);
     if (action === 'read') {
-      if (!id) return error(400, ensureError({ message: 'id required for read' }));
+      if (!id) return error(400, ensureError({ message: `id required for read` }));
       // Use safer record accessor instead of `as any`
       const tableRecord = asRecord(table);
       const idCol = tableRecord['id'];
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // use a typed unknown accessor inside a SQL template to avoid `any` usage
         .where(sql`${idCol} = ${id}`)
         .limit(1);
-      if (!rows?.length) return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
+      if (!rows?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));
       return json({ success: true, data: rows[0] });
     }
     // list
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
     const rows = await db.select().from(table).limit(limit).offset(offset);
-    return json({ success: true, data: rows, metadata: { total: rows.length, page, limit } });
+    return json({ success: true, data: rows, metadata: {, total: rows.length, page, limit } });
   } catch (err: any) {
     console.error('CRUD GET error:', err);
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
@@ -110,30 +110,30 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         .insert(table)
         .values({ ...data, createdAt: new Date(), updatedAt: new Date() })
         .returning();
-      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } });
+      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
     }
 
     if (action === 'update') {
-      if (!id) return error(400, ensureError({ message: 'id required for update' }));
+      if (!id) return error(400, ensureError({ message: `id required for update` }));
       const result = await db
         .update(table)
         .set({ ...data, updatedAt: new Date() })
         // avoid `(table as any).id` by using an unknown-typed accessor in SQL template
         .where(sql`${(table as unknown as Record<string, unknown>)['id']} = ${id}`)
         .returning();
-      if (!result?.length) return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
-      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } });
+      if (!result?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));
+      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
     }
 
     if (action === 'delete') {
-      if (!id) return error(400, ensureError({ message: 'id required for delete' }));
+      if (!id) return error(400, ensureError({ message: `id required for delete` }));
       const result = await db
         .delete(table)
         // avoid `(table as any).id` by using an unknown-typed accessor in SQL template
         .where(sql`${(table as unknown as Record<string, unknown>)['id']} = ${id}`)
         .returning();
       if (!result?.length) return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
-      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } });
+      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
     }
 
     if (action === 'vector_search') {
@@ -144,8 +144,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           const baseUrl = process.env.MCP_URL || `${DOCKER_HOST}:3002`;
           const orchestratorRes = await fetch(`${baseUrl}/api/vector/search`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: search?.query, entity }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, query: search?.query, entity })
           });
           const bodyRes = await orchestratorRes.json();
           return json({ success: true, data: bodyRes });
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             .where(or(...(clauses as any[])))
             .limit(50)
         : [];
-      return json({ success: true, data: rows, metadata: { total: rows.length } });
+      return json({ success: true, data: rows, metadata: {, total: rows.length } });
     }
 
     // Default: list
@@ -198,8 +198,8 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     request: new Request(request.url, {
       method: 'POST',
       headers: request.headers,
-      body: JSON.stringify({ ...body, action: 'update', id }),
-    }),
+      body: JSON.stringify({ ...body, action: 'update', id })
+    })
   } as Parameters<RequestHandler>[0]);
 };
 
@@ -210,8 +210,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
   return POST({
     request: new Request(url.toString(), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', entity, id }),
-    }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ action: 'delete', entity, id })
+    })
   } as Parameters<RequestHandler>[0]);
 };

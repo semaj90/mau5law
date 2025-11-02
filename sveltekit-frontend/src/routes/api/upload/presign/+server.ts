@@ -2,19 +2,13 @@
 import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types.js';
 // Types for upload handling
-export interface PresignRequest {
-  filename: string;
-  fileSize: number;
+export interface PresignRequest { filename: string;, fileSize: number;
   caseId: string;
   contentType: string;
   chunkCount?: number;
 }
-export interface PresignResponse {
-  uploadId: string;
-  presignedUrls: string[];
-  metadata: {
-    filename: string;
-    caseId: string;
+export interface PresignResponse { uploadId: string;, presignedUrls: string[];
+  metadata: { filename: string;, caseId: string;
     uploadId: string;
     expiresAt: Date;
   };
@@ -39,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { filename, fileSize, caseId, contentType, chunkCount = 1 }: PresignRequest = await request.json();
     // Validate input
     if (!filename || !caseId || fileSize <= 0) {
-      return json({ error: 'Invalid upload parameters' }, { status: 400 });
+      return json({ error: `Invalid upload parameters` }, { status: 400 });
     }
     // Generate unique upload ID
     const uploadId = randomUUID();
@@ -73,8 +67,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         filename,
         caseId,
         uploadId,
-        expiresAt: metadata.expiresAt,
-      },
+        expiresAt: metadata.expiresAt
+      }
     };
     return json(response);
   } catch (error: any) {
@@ -91,7 +85,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     //   Bucket: 'legal-documents',
     //   Key: uploadId
     //   UploadId: uploadId
-    //   MultipartUpload: { Parts: etags }
+    //   MultipartUpload: {, Parts: etags }
     // }).promise()
     // Update database status
     // await db.update(uploads)
@@ -111,8 +105,7 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
     const jobData = {
       uploadId,
       timestamp: new Date().toISOString(),
-      priority: 'normal',
-    };
+      priority: `normal` };
     // TODO: Send to Redis/BullMQ
     // await jobQueue.add('process-document', jobData)
     console.log(`🚀 Triggered processing for upload ${uploadId}`);

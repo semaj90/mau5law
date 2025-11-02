@@ -20,7 +20,7 @@ import type { Case } from '$lib/types';
   import * as goMicroserviceClient from '$lib/services/go-microservice-client';
   // use dynamic public env to avoid missing static exports in some environments
   import { env } from '$env/dynamic/public';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import * as Tooltip from '$lib/components/ui/tooltip.svelte';
   // Svelte 5 state management
   let messages = $state<any[]>([]);
@@ -435,7 +435,7 @@ import type { Case } from '$lib/types';
   function stopVoiceRecording() {
     if (voiceRecording.mediaRecorder && voiceRecording.isRecording) {
       voiceRecording.mediaRecorder.stop();
-      voiceRecording.isRecording = $state(false);
+      voiceRecording.isRecording = false;
     }
   }
   async function processVoiceInput(audioBlob: Blob): Promise<any> {

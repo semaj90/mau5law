@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       return json(
         {
-          error: 'Invalid file type. Only PDF, JPEG, PNG, and TXT files are allowed.',
+          error: 'Invalid file type. Only PDF, JPEG, PNG, and TXT files are allowed.'
         },
         { status: 400 }
       );
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (file.size > MAX_FILE_SIZE) {
       return json(
         {
-          error: 'File size too large. Maximum size is 50MB.',
+          error: 'File size too large. Maximum size is 50MB.'
         },
         { status: 400 }
       );
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       user_id: userId || null,
       status: 'uploading',
       created_at: new Date(),
-      updated_at: new Date(),
+      updated_at: new Date()
     });
     // Forward to Go upload service
     const uploadFormData = new FormData();
@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body: uploadFormData,
         headers: {
           'X-Request-ID': documentId,
-          'X-User-ID': userId || 'anonymous',
-        },
+          'X-User-ID': userId || 'anonymous` }
       });
       if (!uploadResponse.ok) {
         throw new Error(`Upload service error: ${uploadResponse.statusText}`);
@@ -74,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           s3_key: uploadResult.s3Key,
           s3_bucket: uploadResult.s3Bucket,
           status: 'uploaded',
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where({ id: documentId });
       // Create processing record
@@ -84,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: 'queued',
         processing_type: 'full_analysis',
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       });
       // Publish to RabbitMQ queue for background processing (Step 3)
       const processingJob = createDocumentProcessingJob(
@@ -98,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
           caseId,
           userId,
           processingType: 'full_analysis',
-          priority: 5,
+          priority: 5
         }
       );
       const jobPublished = await rabbitMQService.publishDocumentProcessingJob(processingJob);
@@ -113,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'File uploaded successfully and queued for processing',
           s3Key: uploadResult.s3Key,
           processingStatus: 'queued',
-          jobQueueStatus: jobPublished ? 'published' : 'failed',
+          jobQueueStatus: jobPublished ? 'published' : 'failed'
         },
         { status: 202 }
       );
@@ -126,14 +125,14 @@ export const POST: RequestHandler = async ({ request }) => {
         .set({
           status: 'upload_failed',
           error_message: errorMessage,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where({ id: documentId });
       return json(
         {
           error: 'Upload failed',
           details: errorMessage,
-          documentId,
+          documentId
         },
         { status: 500 }
       );
@@ -143,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -175,13 +174,13 @@ export const GET: RequestHandler = async ({ url }) => {
         .limit(100);
       return json({ documents: userDocuments });
     }
-    return json({ error: 'Missing required parameters' }, { status: 400 });
+    return json({ error: `Missing required parameters` }, { status: 400 });
   } catch (error: any) {
     console.error('Document retrieval error:', error);
     return json(
       {
         error: 'Failed to retrieve documents',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

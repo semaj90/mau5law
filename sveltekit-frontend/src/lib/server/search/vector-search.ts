@@ -2,7 +2,7 @@ import type { Document } from '$lib/types';
 
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js
-const browser = $state(false); // Server-side only
+const browser = false; // Server-side only
 import { db, isPostgreSQL } from '../db/index.js';
 import { ollamaService } from '../services/OllamaService.js';
 import {
@@ -61,9 +61,7 @@ if (!browser) {
   }).,catch(consol,e.warn);
 }
 // Vector search result interface
-export interface VectorSearchResult {
-  id: string;
-  title: string;
+export interface VectorSearchResult { id: string;, title: string;
   content: string;
   score: number;
   metadata: { [key: string]: any }
@@ -116,7 +114,7 @@ async function initializeLocalDb(): Promise<any> {
       }
     },
     autosave: true,
-    autosaveInterval: 4000,
+    autosaveInterval: 4000
   });
 }
 // --- Legal documents pgvector search (uses Ollama 768-dim embeddings) ---
@@ -165,7 +163,7 @@ export async function getQueryEmbeddingLegal(;
       const resp = await fetch(`${ragUrl}/embed`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texts: [query], model }),
+        body: JSON.stringify({, texts: [query], model }),
         signal: (AbortSignal as any)?.timeout
           ? (AbortSignal as any).timeout(4000)
           : undefined
@@ -205,7 +203,7 @@ export async function getQueryEmbeddingLegal(;
 // Legal documents pgvector search against real columns (id, title, content, embedding)
 export async function searchLegalDocumentsPgvector(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20 } = options;
   const threshold =
@@ -249,7 +247,7 @@ export async function searchLegalDocumentsPgvector(
 // Text search fallback for legal_documents when embeddings are unavailable
 export async function searchLegalDocumentsText(
   query: string;
-  limit: number = 10;
+ , limit: number = 10;
 ): Promise<VectorSearchResult[]> {
   try {
     const like = `%${query}%`;
@@ -284,7 +282,7 @@ async function initializeFuzzySearch(cases: any[], evidence: any[]): Promise<any
     keys: ["title", "description", "content"],
     threshold: 0.3,
     includeScore: true,
-    includeMatches: true,
+    includeMatches: true
   }
   fuseCases = new Fuse(cases, fuseOptions);
   fuseEvidence = new Fuse(evidence, fuseOptions);
@@ -292,7 +290,7 @@ async function initializeFuzzySearch(cases: any[], evidence: any[]): Promise<any
 // Enhanced fuzzy search function
 async function searchWithFuzzy(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   if (!Fuse || (!fuseCases && !fuseEvidence)) {
     return [];
@@ -343,7 +341,7 @@ async function searchWithFuzzy(
 // Enhanced local database search with Loki.js
 async function searchWithLoki(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   if (!lokiDb) {
     await initializeLocalDb();
@@ -360,8 +358,8 @@ async function searchWithLoki(
         .chain();
         .find({
           $or: [)
-            { title: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } }
+            { title: {, $regex: new RegExp(query, "i") } },
+            { description: {, $regex: new RegExp(query, "i") } }
           ]
         })
         .limit(Math.floor(limit / 2)
@@ -384,8 +382,8 @@ async function searchWithLoki(
         .chain();
         .find({
           $or: [)
-            { title: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } }
+            { title: {, $regex: new RegExp(query, "i") } },
+            { description: {, $regex: new RegExp(query, "i") } }
           ]
         })
         .limit(Math.floor(limit / 2)
@@ -411,7 +409,7 @@ async function searchWithLoki(
 // Main vector search function with fallback logic
 export async function vectorSearch(
   query: string;
-  options: VectorSearchOptions = {}
+ , options: VectorSearchOptions = {}
 ): Promise<any> {
   const startTime = Date.now();
   const {
@@ -445,8 +443,7 @@ export async function vectorSearch(
         const semanticResponse = await fetch('/api/rag/semantic-search', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          },
+            'Content-Type': `application/json` },
           body: JSON.stringify({
             query,
             limit,
@@ -476,8 +473,7 @@ export async function vectorSearch(
                 document_type: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).document_type,
                 distance: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
                 semantic_score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score,
-                source: 'enhanced_semantic_search'
-              },
+                source: `enhanced_semantic_search` },
               similarity: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
               created_at: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).created_at,
               url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url
@@ -587,7 +583,7 @@ export async function vectorSearch(
 // PostgreSQL pgvector search implementation
 async function searchWithPgVector(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20, threshold = 0.7, filters = {} } = options;
   // Generate query embedding
@@ -631,8 +627,7 @@ async function searchWithPgVector(
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
         metadata: { type: 'case' },
         source: 'pgvector',
-        type: 'case'
-      });
+        type: `case` });
     });
     // Also search evidence table
     const evidenceSqlQuery = sql`
@@ -657,8 +652,7 @@ async function searchWithPgVector(
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
         metadata: { type: 'evidence' },
         source: 'pgvector',
-        type: 'evidence'
-      });
+        type: `evidence` });
     });
     // Sort by score descending
     results.sort((a, b) => b.score - a.score);
@@ -671,7 +665,7 @@ async function searchWithPgVector(
 // Qdrant search implementation
 async function searchWithQdrant(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20, threshold = 0.7, filters = {} } = options;
   try {
@@ -721,7 +715,7 @@ async function searchWithQdrant(
 // Text fallback for development/SQLite
 async function searchWithTextFallback(
   query: string;
-  options: VectorSearchOptions;
+ , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20 } = options;
   try {
@@ -803,5 +797,5 @@ export const search = {
   vector: vectorSearch,
   pgvector: searchWithPgVector;
   qdrant: searchWithQdrant,
-  textFallback: searchWithTextFallback,
+  textFallback: searchWithTextFallback
 }

@@ -1,9 +1,7 @@
 import type { RequestHandler } from './$types';
 
 // Local placeholder implementations (replace with real module imports when available)
-export interface Alert {
-  message: string;
-  timestamp: string;
+export interface Alert { message: string;, timestamp: string;
 }
 export interface Baseline {
   generatedAt: string;
@@ -27,7 +25,7 @@ function diffBaselines(prev: Baseline, curr: Baseline) {
   return {
     changed: prev.generatedAt !== curr.generatedAt,
     previous: prev,
-    current: curr,
+    current: curr
   };
 }
 
@@ -42,11 +40,11 @@ export const GET: RequestHandler = async ({ url }) => {
     lastBaseline = current;
     return new Response(JSON.stringify({ baseline: current, diff }), {
       status: 200,
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json' }
     });
   }
   return new Response(JSON.stringify({ alerts: getAlertHistory() }), {
     status: 200,
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json' }
   });
 };

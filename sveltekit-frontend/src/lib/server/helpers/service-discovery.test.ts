@@ -88,9 +88,7 @@ describe('ServiceDiscovery', () => {
   });
   describe('Batch Discovery', () => {
     it('should discover multiple services in parallel', async () => {
-      const services = {
-        minio: {
-          envVar: 'MINIO_ENDPOINT',
+      const services = { minio: {, envVar: 'MINIO_ENDPOINT',
           fallback: 'http://localhost:9000',
           containerName: 'minio',
           port: 9000
@@ -207,9 +205,7 @@ describe('ServiceDiscovery Integration Tests', () => {
     expect(result.source).toBe('fallback');
   });
   it('should batch discover multiple services', async () => {
-    const services = {
-      service1: {
-        envVar: 'SVC1_URL',
+    const services = { service1: {, envVar: 'SVC1_URL',
         fallback: 'http://localhost:8001',
         containerName: 'service1',
         port: 8001
@@ -235,9 +231,7 @@ describe('ServiceDiscovery Integration Tests', () => {
   });
   it('should respect env var override in batch discovery', async () => {
     process.env.BATCH_TEST_SVC1 = 'http://override:9999';
-    const services = {
-      service1: {
-        envVar: 'BATCH_TEST_SVC1',
+    const services = { service1: {, envVar: 'BATCH_TEST_SVC1',
         fallback: 'http://localhost:8001',
         containerName: 'service1',
         port: 8001

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   // Svelte 5 runes are auto-imported
   import { cva, type VariantProps } from 'class-variance-authority'
   import { cn } from '$lib/utils'

@@ -1,34 +1,24 @@
 // Real-Time Matrix LOD System with AI-Aware Rendering
 // GPU-accelerated Level of Detail with cubic filter blending
 export interface LODCache {
-  [componentId: string]: {
-    low: {
-      vertices: Float32Array;
+  [componentId: string]: { low: {, vertices: Float32Array;
       cssClasses: string[];
       priority: number;
     };
-    mid: {
-      vertices: Float32Array;
-      cssClasses: string[];
+    mid: { vertices: Float32Array;, cssClasses: string[];
       priority: number;
     };
-    high: {
-      vertices: Float32Array;
-      cssClasses: string[];
+    high: { vertices: Float32Array;, cssClasses: string[];
       priority: number;
     };
   };
 }
-export interface ViewportFocus {
-  centerX: number;
-  centerY: number;
+export interface ViewportFocus { centerX: number;, centerY: number;
   radius: number;
   aiSuggestions: string[];
   confidenceScore: number;
 }
-export interface GPULoadMetrics {
-  frameRate: number;
-  gpuUtilization: number;
+export interface GPULoadMetrics { frameRate: number;, gpuUtilization: number;
   memoryUsage: number;
   renderTime: number;
   activeBuffers: number;
@@ -144,7 +134,7 @@ export class MatrixLODSystem {
       gpuUtilization: 0,
       memoryUsage: 0,
       renderTime: 0,
-      activeBuffers: 0,
+      activeBuffers: 0
     };
     this.startPerformanceMonitoring();
     // Initialize hybrid GPU acceleration
@@ -186,10 +176,10 @@ export class MatrixLODSystem {
         allowWebGL1: true,
         requireCompute: false,
         lodSystemIntegration: true,
-        nesMemoryOptimization: true,
+        nesMemoryOptimization: true
       });
 
-      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid'} acceleration`);
+      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid' } acceleration`);
     } catch (error) {
       console.warn('⚠️ Hybrid GPU initialization failed or factory not found, using WebGL2 fallback:', error);
       this.useHybridAcceleration = $state(false);
@@ -239,22 +229,20 @@ export class MatrixLODSystem {
     const midVertices = this.simplifyGeometry(baseVertices, 0.6);
     // High LOD: Full detail (100% vertices)
     const highVertices = baseVertices;
-    this.lodCache[componentId] = {
-      low: {
-        vertices: lowVertices,
+    this.lodCache[componentId] = { low: {, vertices: lowVertices,
         cssClasses: this.generateLowLODClasses(metadata),
-        priority: priority * 0.3,
+        priority: priority * 0.3
       },
       mid: {
         vertices: midVertices,
         cssClasses: this.generateMidLODClasses(metadata),
-        priority: priority * 0.7,
+        priority: priority * 0.7
       },
       high: {
         vertices: highVertices,
         cssClasses: this.generateHighLODClasses(metadata),
-        priority: priority,
-      },
+        priority: priority
+      }
     };
   }
   /**
@@ -404,7 +392,7 @@ export class MatrixLODSystem {
             this.viewportFocus.centerY,
             this.viewportFocus.radius,
           ]),
-          aiAwarenessEnabled: this.aiAwarenessEnabled ? 1.0 : 0.0,
+          aiAwarenessEnabled: this.aiAwarenessEnabled ? 1.0 : 0.0
         }
       );
 

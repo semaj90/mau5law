@@ -37,9 +37,7 @@ import { writable, get } from 'svelte/store';
  *  }
  *  function cancel() { abortCtrl?.abort(); }
  */
-interface JsonPatchOp {
-	op: 'add' | 'remove' | 'replace' | 'test';
-	path: string;
+interface JsonPatchOp { op: 'add' | 'remove' | 'replace' | 'test';, path: string;
 	value?: any;
 }
 export type PatchPayload = Record<string, unknown> | JsonPatchOp[];
@@ -126,7 +124,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
         default: break;
       }
     }
-    // generator completed without an explicit: 'done' event: treat as done
+    // generator completed without an explicit: 'done'; event: treat as done
     onDone?.();
     return { traceparent };
   } catch (e: any) {
@@ -148,13 +146,13 @@ export interface RagStreamGeneratorOptions extends RagStreamOptions {
   retryStatusCodes?: number[]; // default [502,503,504]
 }
 export type RagStreamYield =
-  | { type: 'token'; token: string }
+  | { type: 'token';, token: string }
   | { type: 'done' }
-  | { type: 'error'; error: Error; final: boolean; attempt: number }
-  | { type: 'reconnect'; attempt: number; nextDelayMs: number }
+  | { type: 'error'; error: Error; final: boolean;, attempt: number }
+  | { type: 'reconnect'; attempt: number;, nextDelayMs: number }
   | { type: 'meta'; traceparent?: string; streamId?: string }
-  | { type: 'patch'; patch: PatchPayload }
-  | { type: 'summary'; summary: string; source: 'server' | 'local' };
+  | { type: 'patch';, patch: PatchPayload }
+  | { type: 'summary'; summary: string;, source: 'server' | 'local' };
 function isRetryableStatus(status: number, retryStatusCodes: number[]) {
   return retryStatusCodes.includes(status);
 }
@@ -184,13 +182,13 @@ export async function* streamRagGenerator(
         intent: base.intent,
         model: base.model ?? 'default',
         ingestionId: base.ingestionId,
-        ...(base.extra || {}),
+        ...(base.extra || {})
       });
       const resp = await fetch(base.endpoint || '/rag/query/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body,
-        signal: outerAbort.signal,
+        signal: outerAbort.signal
       });
       if (!resp.ok || !resp.body) {
         if (attempt < maxRetries && isRetryableStatus(resp.status, retryStatusCodes)) {
@@ -202,9 +200,9 @@ export async function* streamRagGenerator(
         }
         yield {
           type: 'error',
-          error: new Error(`Stream request failed: ${resp.status}`),
+          error: new Error(`Stream request; failed: ${resp.status}`),
           final: true,
-          attempt,
+          attempt
         };
         return;
       }
@@ -260,7 +258,7 @@ export async function* streamRagGenerator(
       if (buffer.length) processSSELine(buffer, state, enqueue);
       finalizeEvent(state, enqueue);
       while (queue.length) yield queue.shift()!;
-      if (!doneEmitted) yield { type: 'done' };
+      if (!doneEmitted) yield { type: `done` };
       return;
     } catch (err: any) {
       if (outerAbort.signal.aborted) return;
@@ -276,14 +274,10 @@ export async function* streamRagGenerator(
     }
   }
 }
-export interface Metrics {
-  reconnects: number;
-  errors: number;
+export interface Metrics { reconnects: number;, errors: number;
   startedAt?: number | undefined;
 }
-export interface RagStreamStore {
-  tokens: Readable<string[]>;
-  status: Readable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>;
+export interface RagStreamStore { tokens: Readable<string[]>;, status: Readable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>;
   error: Readable<Error | null>;
   tokenCount: Readable<number>;
   metrics: Readable<Metrics>;
@@ -545,7 +539,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
           intent: initial?.intent,
           model: initial?.model,
           signal: abortCtrl?.signal,
-          endpoint: initial?.endpoint,
+          endpoint: initial?.endpoint
         });
       } catch {
         /* ignore */
@@ -607,7 +601,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     clear,
     resetMetrics,
     rebuildApplied,
-    undoLast,
+    undoLast
   };
 }
 /** Apply a minimal subset of JSON Patch operations */

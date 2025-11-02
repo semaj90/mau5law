@@ -606,7 +606,7 @@ import type { Document } from '$lib/types';
     tabindex="0"
     onkeydown={e => {
       // close modal on Escape
-      if (e.key === 'Escape') showScoreDetails = $state(false);
+      if (e.key === 'Escape') showScoreDetails = false;
     }}
   >
     <!-- Visually hidden close button for keyboard users (simple, no duplicated handlers) -->

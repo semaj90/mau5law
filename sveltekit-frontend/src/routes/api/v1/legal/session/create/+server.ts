@@ -27,16 +27,15 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'ACTIVE',
       query_count: 0,
       processing_time_total: 0,
-      context: validateAndEnhanceContext(context),
+      context: validateAndEnhanceContext(context)
     };
     // Store session
     activeSessions.set(session_id, session);
-    console.log(`[Legal AI] Session created: ${session_id} for user: ${user_id}`);
+    console.log(`[Legal AI] Session created: ${session_id} for, user: ${user_id}`);
     return json({
       success: true,
       session,
-      message: 'Legal AI session created successfully',
-    });
+      message: 'Legal AI session created successfully` });
   } catch (error: any) {
     // Normalize error details without using `any`
     console.error('[Legal AI] Session creation error:', error);
@@ -56,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to create legal AI session',
-        details,
+        details
       },
       { status: 500 }
     );
@@ -69,13 +68,13 @@ export const GET: RequestHandler = async () => {
     version: '1.0.0',
     active_sessions: activeSessions.size,
     supported_context_fields: {
-      jurisdiction: 'string',
+     , jurisdiction: 'string',
       practice_area: 'string[]',
       case_type: 'string',
       priority_level: 'number (1-10)',
       security_classification: 'SecurityLevel',
       related_cases: 'string[]',
-      key_entities: 'string[]',
+      key_entities: 'string[]'
     },
     session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
     security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
@@ -83,9 +82,8 @@ export const GET: RequestHandler = async () => {
       create_session: 'POST /api/v1/legal/session/create',
       get_session: 'GET /api/v1/legal/session/{session_id}',
       update_session: 'PUT /api/v1/legal/session/{session_id}',
-      terminate_session: 'DELETE /api/v1/legal/session/{session_id}',
-    },
-    timestamp: new Date().toISOString(),
+      terminate_session: 'DELETE /api/v1/legal/session/{session_id}` },
+    timestamp: new Date().toISOString()
   });
 };
 // Helper functions
@@ -110,7 +108,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
     priority_level: 5,
     security_classification: 'STANDARD' as SecurityLevel,
     related_cases: [],
-    key_entities: [],
+    key_entities: []
   };
   if (!isObject(context)) return defaultContext;
 
@@ -135,7 +133,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
     priority_level,
     security_classification,
     related_cases,
-    key_entities,
+    key_entities
   };
 }
 function isValidSecurityLevel(level: any): level is SecurityLevel {

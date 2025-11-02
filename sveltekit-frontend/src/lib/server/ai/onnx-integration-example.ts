@@ -20,15 +20,14 @@ export async function processLegalDocumentWithONNX(documentText: string): Promis
     // Step 3: Generate embeddings using available method
     const embeddings = await ollamaService.generateEmbeddings(documentText);
     console.log('🧮 Embeddings generated:', Array.isArray(embeddings) ? embeddings.length : 'unknown', 'dimensions');
-    // Step 4: Full analysis using Gemma:legal for comprehensive understanding
+    // Step 4: Full analysis using; Gemma:legal for comprehensive understanding
     const fullAnalysis = await ollamaService.generate(
       `Provide a comprehensive legal analysis of this document:
-Document Type: Legal Document
-Text: ${documentText}
-Analysis:`,
+Document Type: Legal Document; Text: ${documentText}
+Analysis: ',
       {
         model: 'gemma:legal',
-        options: { temperature: 0.3 },
+        options: {, temperature: 0.3 }
       }
     );
     return {
@@ -39,8 +38,8 @@ Analysis:`,
       performance: {
         entityExtractionTime: 100, // placeholder
         classificationTime: 100, // placeholder
-        totalProcessingTime: Date.now() - performance.now(),
-      },
+        totalProcessingTime: Date.now() - performance.now()
+      }
     };
   } catch (error: any) {
     // Cast error to any
@@ -84,7 +83,7 @@ export async function batchProcessLegalDocuments(documents: Array<any>): Promise
       results.push({
         documentId: doc.id,
         ...result,
-        success: true,
+        success: true
       });
     } catch (error: any) {
       // Cast error to any
@@ -92,7 +91,7 @@ export async function batchProcessLegalDocuments(documents: Array<any>): Promise
       results.push({
         documentId: doc.id,
         error: error.message,
-        success: false,
+        success: false
       });
     }
   }
@@ -107,8 +106,8 @@ export async function batchProcessLegalDocuments(documents: Array<any>): Promise
       successful: successCount, // Added comma
       failed: documents.length - successCount,
       totalTime,
-      averageTimePerDocument: Math.round(totalTime / documents.length),
-    },
+      averageTimePerDocument: Math.round(totalTime / documents.length)
+    }
   };
 }
 /**
@@ -116,9 +115,7 @@ export async function batchProcessLegalDocuments(documents: Array<any>): Promise
  */
 export async function performanceComparison(testText: string): Promise<any> {
   console.log('⚡ Running performance comparison: ONNX vs Ollama...');
-  const tests = {
-    onnx: {
-      entityExtraction: null as number | null, // Changed type
+  const tests = { onnx: {, entityExtraction: null as number | null, // Changed type
       classification: null as number | null, // Changed type
       embeddings: null as number | null, // Changed type
     },
@@ -126,7 +123,7 @@ export async function performanceComparison(testText: string): Promise<any> {
       entityExtraction: null as number | null, // Changed type
       classification: null as number | null, // Changed type
       embeddings: null as number | null, // Changed type
-    },
+    }
   };
   try {
     // Test ONNX Legal-BERT
@@ -155,12 +152,12 @@ export async function performanceComparison(testText: string): Promise<any> {
       },
       ollama: {
         total: ollamaTotal,
-        responseLength: ollamaResponse.response?.length || 0,
+        responseLength: ollamaResponse.response?.length || 0
       },
       speedup: {
         entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),
-        overall: ollamaTotal / onnxTotal,
-      },
+        overall: ollamaTotal / onnxTotal
+      }
     };
     console.log('📊 Performance Comparison Results:');
     console.log('ONNX Total Time:', onnxTotal, 'ms');

@@ -12,14 +12,13 @@ import { arrayToPgVector } from './vector-operations.ts'; // Import for pgvector
 import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';
 import type {
-  User,
   NewUser,
   UserProfile,
   NewUserProfile,
   NewUserSession,
   UserActivity,
   NewUserActivity,
-  FullUserProfile,
+  FullUserProfile
 } from './schema/user-management';
 import {
   users,
@@ -29,27 +28,21 @@ import {
   insertUserSchema,
   updateUserSchema,
   insertProfileSchema,
-  updateProfileSchema,
+  updateProfileSchema
 } from './schema/user-management';
 
 // ============================================================================
 // MISSING TYPES
 // ============================================================================
-interface ActivityStats {
-  totalActions: number;
-  uniqueActions: number;
+interface ActivityStats { totalActions: number;, uniqueActions: number;
   successRate: number;
-  topActions: { action: string; count: number }[];
+  topActions: { action: string;, count: number }[];
 }
 
-interface StatsRow {
-  totalActions: number | null;
-  successRate: number | null;
+interface StatsRow { totalActions: number | null;, successRate: number | null;
 }
 
-interface TopActionRow {
-  action: string;
-  count: number | null;
+interface TopActionRow { action: string;, count: number | null;
 }
 
 interface UniqueActionsRow {
@@ -68,16 +61,14 @@ export class UserAuthService {
   /**
    * Register a new user with complete profile setup
    */
-  static async registerUser(userData: {
-    email: string;
-    password: string;
+  static async registerUser(userData: {, email: string;, password: string;
     firstName?: string;
     lastName?: string;
     role?: string;
     jurisdiction?: string;
     practiceAreas?: string[];
     profileData?: Partial<NewUserProfile>;
-  }): Promise<{ user: User | null; profile?: UserProfile | undefined; success: boolean; error?: string }> {
+  }): Promise<{ user: User | null; profile?: UserProfile | undefined;, success: boolean; error?: string }> {
     try {
       // Validate input
       const validatedUser = insertUserSchema.parse({
@@ -87,7 +78,7 @@ export class UserAuthService {
         role: userData.role || 'user',
         jurisdiction: userData.jurisdiction ?? null,
         practiceAreas: userData.practiceAreas ?? null,
-        passwordHash: await bcrypt.hash(userData.password, 12),
+        passwordHash: await bcrypt.hash(userData.password, 12)
       });
       // Check if user already exists
       const existingUser = await db.select().from(users).where(eq(users.email, validatedUser.email)).limit(1);
@@ -98,16 +89,18 @@ export class UserAuthService {
       const result = await db.transaction(async tx => {
         // Insert user
         const insertedUsers = await tx.insert(users).values(validatedUser).returning();
-        const newUser = insertedUsers[0] as unknown as User;
+        const newUser = insertedUsers[0]; // Drizzle infers User type
+        if (!newUser) throw new Error('Failed to create user');
+
         // Create profile if profile data provided
         let profile: UserProfile | undefined;
         if (userData.profileData) {
           const profileData = insertProfileSchema.parse({
             userId: newUser.id,
-            ...userData.profileData,
+            ...userData.profileData
           });
           const insertedProfiles = await tx.insert(userProfiles).values(profileData).returning();
-          profile = insertedProfiles[0] as unknown as UserProfile;
+          profile = insertedProfiles[0]; // Drizzle infers UserProfile type
         }
         // Log registration activity
         await tx.insert(userActivityLog).values({
@@ -118,10 +111,10 @@ export class UserAuthService {
           context: {
             registrationMethod: 'email',
             role: newUser.role,
-            jurisdiction: newUser.jurisdiction,
+            jurisdiction: newUser.jurisdiction
           },
           success: true,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
         return { user: newUser, profile };
       });
@@ -131,7 +124,7 @@ export class UserAuthService {
       return {
         user: null,
         success: false,
-        error: error instanceof Error ? error.message : 'Registration failed',
+        error: error instanceof Error ? error.message : 'Registration failed'
       };
     }
   }
@@ -153,7 +146,7 @@ export class UserAuthService {
     try {
       // Find user with profile
       const userWithProfile = await db
-        .select()
+        .select({ user: users, profile: userProfiles }) // Select specific tables for better type inference
         .from(users)
         .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
         .where(and(eq(users.email, email.toLowerCase()), eq(users.isActive, true), isNull(users.deletedAt)))
@@ -161,9 +154,7 @@ export class UserAuthService {
       if (userWithProfile.length === 0) {
         return { success: false, error: 'Invalid credentials' };
       }
-      const userDataRow = userWithProfile[0] as unknown as { users: User; user_profiles?: UserProfile };
-      const user = userDataRow.users;
-      const profile = userDataRow.user_profiles;
+      const { user, profile } = userWithProfile[0]; // Destructure directly
       // Verify password
       const passwordValid = await bcrypt.compare(password, user.passwordHash);
       if (!passwordValid) {
@@ -172,11 +163,11 @@ export class UserAuthService {
           userId: user.id,
           action: 'login_failed',
           resource: 'auth',
-          context: { reason: 'invalid_password' },
+          context: {, reason: 'invalid_password' },
           success: false,
           ipAddress: ipAddress ?? null,
           userAgent: userAgent ?? null,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
         return { success: false, error: 'Invalid credentials' };
       }
@@ -194,10 +185,12 @@ export class UserAuthService {
           sessionContext: null,
           isActive: true,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
-      const session = insertedSessions[0] as unknown as NewUserSession;
+      const session = insertedSessions[0]; // Drizzle infers NewUserSession type
+      if (!session) throw new Error('Failed to create session');
+
       // Update last login time
       await db.update(users).set({ lastLoginAt: new Date(), updatedAt: new Date() }).where(eq(users.id, user.id));
       // Log successful login
@@ -209,19 +202,19 @@ export class UserAuthService {
         success: true,
         ipAddress: ipAddress ?? null,
         userAgent: userAgent ?? null,
-        timestamp: new Date(),
+        timestamp: new Date()
       });
       return {
         user,
         profile: profile || undefined,
         session: session as Record<string, unknown>,
-        success: true,
+        success: true
       };
     } catch (error: any) {
       console.error('Authentication error:', error instanceof Error ? error.message : String(error));
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Authentication failed',
+        error: error instanceof Error ? error.message : 'Authentication failed'
       };
     }
   }
@@ -233,7 +226,7 @@ export class UserAuthService {
   ): Promise<{ valid: boolean; user?: User; profile?: UserProfile; session?: Record<string, unknown> }> {
     try {
       const sessionData = await db
-        .select()
+        .select({ user: users, profile: userProfiles, session: userSessions }) // Select specific tables
         .from(userSessions)
         .innerJoin(users, eq(userSessions.userId, users.id))
         .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
@@ -248,16 +241,12 @@ export class UserAuthService {
       if (sessionData.length === 0) {
         return { valid: false };
       }
-      const data = sessionData[0] as unknown as {
-        users: User;
-        user_profiles?: UserProfile;
-        user_sessions?: Record<string, unknown>;
-      };
+      const { user, profile, session } = sessionData[0]; // Destructure directly
       return {
-        user: data.users,
-        profile: data.user_profiles || undefined,
-        session: data.user_sessions,
-        valid: true,
+        user,
+        profile: profile || undefined,
+        session: session as Record<string, unknown>, // Keep cast for session as it's a generic Record<string, unknown>
+        valid: true
       };
     } catch (error: any) {
       console.error('Session validation error:', error instanceof Error ? error.message : String(error));
@@ -276,7 +265,7 @@ export class UserAuthService {
       return { success: true };
     } catch (error: any) {
       console.error('Logout error:', error instanceof Error ? error.message : String(error));
-      return { success: false, error: error instanceof Error ? error.message : 'Logout failed' };
+      return { success: false, error: error instanceof Error ? error.message : `Logout failed` };
     }
   }
 }
@@ -291,15 +280,13 @@ export class UserProfileService {
     try {
       // Get user with profile
       const userData = await db
-        .select()
+        .select({ user: users, profile: userProfiles }) // Select specific tables
         .from(users)
         .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
         .where(and(eq(users.id, userId), eq(users.isActive, true), isNull(users.deletedAt)))
         .limit(1);
       if (userData.length === 0) return null;
-      const row = userData[0] as unknown as { users: User; user_profiles?: UserProfile };
-      const user = row.users;
-      const profile = row.user_profiles;
+      const { user, profile } = userData[0]; // Destructure directly
       // Get active sessions
       const sessions = await db
         .select()
@@ -319,7 +306,7 @@ export class UserProfileService {
         ...user,
         profile: profile || undefined,
         sessions,
-        recentActivity,
+        recentActivity
       } as FullUserProfile;
     } catch (error: any) {
       console.error('Get full profile error:', error);
@@ -336,7 +323,7 @@ export class UserProfileService {
     try {
       const result = await db.transaction(async tx => {
         let updatedUser: User | undefined;
-        let updatedProfile: UserProfile | undefined;
+        let, updatedProfile: UserProfile | undefined;
         // Destructure typed updates to avoid any casts
         const {
           barNumber,
@@ -349,7 +336,7 @@ export class UserProfileService {
           education,
           preferences,
           avatarUrl,
-          bio,
+          bio
         } = updates as Partial<NewUser & NewUserProfile>;
         // Update user table fields
         const userFields = {
@@ -359,17 +346,18 @@ export class UserProfileService {
           practiceAreas: updates.practiceAreas,
           barNumber,
           firmName,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
         // Filter out undefined values
         const userUpdates = Object.fromEntries(Object.entries(userFields).filter(([_, value]) => value !== undefined));
         if (Object.keys(userUpdates).length > 0) {
           const validatedUpdates = updateUserSchema.parse(userUpdates);
-          [updatedUser] = await (tx
+          const [userResult] = await tx // Correctly destructure array from returning()
             .update(users)
             .set(validatedUpdates)
             .where(eq(users.id, userId))
-            .returning() as Promise<User[]>);
+            .returning();
+          updatedUser = userResult;
         }
         // Update profile table fields
         const profileFields = {
@@ -382,7 +370,7 @@ export class UserProfileService {
           preferences,
           avatarUrl,
           bio,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
         const profileUpdates = Object.fromEntries(
           Object.entries(profileFields).filter(([_, value]) => value !== undefined)
@@ -393,19 +381,19 @@ export class UserProfileService {
           const existingProfile = await tx.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
           if (existingProfile.length > 0) {
             // Update existing profile
-            const updatedProfiles = await tx
+            const [profileResult] = await tx // Correctly destructure array from returning()
               .update(userProfiles)
               .set(validatedProfileUpdates)
               .where(eq(userProfiles.userId, userId))
               .returning();
-            updatedProfile = updatedProfiles[0] as unknown as UserProfile;
+            updatedProfile = profileResult;
           } else {
             // Create new profile
-            const insertedProfiles = await tx
+            const [profileResult] = await tx // Correctly destructure array from returning()
               .insert(userProfiles)
               .values({ userId, ...validatedProfileUpdates })
               .returning();
-            updatedProfile = insertedProfiles[0] as unknown as UserProfile;
+            updatedProfile = profileResult;
           }
         }
         // Log update activity
@@ -415,10 +403,10 @@ export class UserProfileService {
           resource: 'user_profile',
           resourceId: userId.toString(),
           context: {
-            updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)],
+            updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)]
           },
           success: true,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
         return { user: updatedUser, profile: updatedProfile };
       });
@@ -427,7 +415,7 @@ export class UserProfileService {
       console.error('Update profile error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Profile update failed',
+        error: error instanceof Error ? error.message : 'Profile update failed'
       };
     }
   }
@@ -443,7 +431,7 @@ export class UserProfileService {
           .set({
             isActive: false,
             deletedAt: new Date(),
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(users.id, userId));
         // Invalidate all sessions
@@ -459,7 +447,7 @@ export class UserProfileService {
           resourceId: userId.toString(),
           context: { deletionType: 'soft_delete' },
           success: true,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       });
       return { success: true };
@@ -467,8 +455,7 @@ export class UserProfileService {
       console.error('Delete user error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'User deletion failed',
-      };
+        error: error instanceof Error ? error.message : `User deletion failed` };
     }
   }
   /**
@@ -482,14 +469,13 @@ export class UserProfileService {
         .where(eq(users.id, userId))
         .limit(1);
       if (currentUser.length === 0) return [];
-      const embedding = (currentUser[0] as unknown as { embedding?: number[] }).embedding;
+      const embedding = currentUser[0]?.embedding; // Safely access embedding
       if (!Array.isArray(embedding) || embedding.length === 0) return [];
       const embeddingPgVector = arrayToPgVector(embedding); // Convert to pgvector string
       const similarRows = await db
         .select({
-          user: users,
-          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})`,
-        })
+          user: users, // Select the full user object
+          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})` })
         .from(users)
         .where(
           and(
@@ -501,7 +487,7 @@ export class UserProfileService {
         )
         .orderBy(sql`${users.profileEmbedding} <=> ${embeddingPgVector} ASC`) // Order by distance ascending for similarity descending
         .limit(limit);
-      return similarRows.map(r => (r as unknown as { user: User }).user);
+      return similarRows.map(r => r.user); // Access user directly
     } catch (error: any) {
       console.error('Find similar users error:', error instanceof Error ? error.message : String(error));
       return [];
@@ -519,7 +505,7 @@ export class UserActivityService {
     try {
       await db.insert(userActivityLog).values({
         ...activity,
-        timestamp: new Date(),
+        timestamp: new Date()
       });
     } catch (error: any) {
       console.error('Log activity error:', error instanceof Error ? error.message : String(error));
@@ -538,7 +524,7 @@ export class UserActivityService {
         .limit(limit)
         .offset(offset);
     } catch (error: any) {
-      console.error('Get user activity error:', error instanceof Error ? error.message : String(error));
+      console.error('Get user activity error: ', error instanceof Error ? error.message : String(error));
       return [];
     }
   }
@@ -552,7 +538,7 @@ export class UserActivityService {
       const stats = (await db
         .select({
           totalActions: count(),
-          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`,
+          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`
         })
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))) as StatsRow[];
@@ -560,7 +546,7 @@ export class UserActivityService {
       const topActionsRaw = (await db
         .select({
           action: userActivityLog.action,
-          count: count(),
+          count: count()
         })
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))
@@ -570,8 +556,7 @@ export class UserActivityService {
 
       const uniqueActionsResult = (await db
         .select({
-          uniqueActions: sql<number>`COUNT(DISTINCT action)`,
-        })
+          uniqueActions: sql<number>`COUNT(DISTINCT action)` })
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))) as UniqueActionsRow[];
 
@@ -581,14 +566,14 @@ export class UserActivityService {
 
       const topActions = topActionsRaw.map(r => ({
         action: String(r.action),
-        count: Number(r.count ?? 0),
+        count: Number(r.count ?? 0)
       }));
 
       return {
         totalActions,
         uniqueActions,
         successRate,
-        topActions,
+        topActions
       };
     } catch (error: any) {
       console.error('Get activity stats error:', error instanceof Error ? error.message : String(error));
@@ -596,7 +581,7 @@ export class UserActivityService {
         totalActions: 0,
         uniqueActions: 0,
         successRate: 0,
-        topActions: [],
+        topActions: []
       };
     }
   }
@@ -607,5 +592,5 @@ export class UserActivityService {
 export default {
   UserAuthService,
   UserProfileService,
-  UserActivityService,
+  UserActivityService
 };

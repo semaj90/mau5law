@@ -3,9 +3,7 @@ import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-interface NarrativeSection {
-  id: string;
-  title: string;
+interface NarrativeSection { id: string;, title: string;
   content: string;
   sectionType: 'OPENING' | 'FACTS' | 'EVIDENCE' | 'ARGUMENT' | 'CONCLUSION' | 'TIMELINE' | 'WITNESS' | 'EXPERT';
   order: number;
@@ -17,9 +15,7 @@ interface NarrativeSection {
   tags: string[];
   legalReferences: string[];
   evidenceReferences: string[];
-  metadata: {
-    tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE';
-    audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL';
+  metadata: { tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE';, audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL';
     complexity: 'SIMPLE' | 'MODERATE' | 'COMPLEX' | 'EXPERT';
     style: 'NARRATIVE' | 'ANALYTICAL' | 'CHRONOLOGICAL' | 'THEMATIC';
   };
@@ -27,9 +23,7 @@ interface NarrativeSection {
   revisionHistory: Array<any>;
 }
 
-interface CaseNarrative {
-  id: string;
-  caseId: string;
+interface CaseNarrative { id: string;, caseId: string;
   title: string;
   narrativeType:
     | 'OPENING_STATEMENT'
@@ -49,9 +43,7 @@ interface CaseNarrative {
   reviewers: string[];
   template?: string;
   aiAssistanceLevel: 'NONE' | 'SUGGESTIONS' | 'COLLABORATIVE' | 'FULLY_GENERATED';
-  qualityMetrics: {
-    clarity: number;
-    persuasiveness: number;
+  qualityMetrics: { clarity: number;, persuasiveness: number;
     factualAccuracy: number;
     legalSoundness: number;
     coherence: number;
@@ -72,14 +64,10 @@ interface NarrativeRequest {
   focusAreas?: string[];
 }
 
-interface AIWritingAssistance {
-  suggestions: Array<any>;
-  alternativePhrasings: Array<any>;
+interface AIWritingAssistance { suggestions: Array<any>;, alternativePhrasings: Array<any>;
   factChecking: Array<any>;
   legalReferences: Array<any>;
-  strengthWeaknessAnalysis: {
-    strengths: string[];
-    weaknesses: string[];
+  strengthWeaknessAnalysis: { strengths: string[];, weaknesses: string[];
     recommendations: string[];
   };
 }
@@ -103,7 +91,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({
         success: true,
         narrative,
-        aiAssistance,
+        aiAssistance
       });
     } else {
       // Get all narratives for case
@@ -111,7 +99,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({
         success: true,
         narratives,
-        totalCount: narratives.length,
+        totalCount: narratives.length
       });
     }
   } catch (error) {
@@ -138,7 +126,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       success: true,
       narrative,
       aiAssistance,
-      message: 'Case narrative generated successfully',
+      message: 'Case narrative generated successfully'
     });
   } catch (error) {
     console.error('Narrative generation error:', error);
@@ -165,7 +153,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       success: true,
       narrative: updatedNarrative,
       aiAssistance,
-      message: 'Narrative updated successfully',
+      message: 'Narrative updated successfully'
     });
   } catch (error) {
     console.error('Narrative update error:', error);
@@ -215,7 +203,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
         tone: request.tone || 'FORMAL',
         audience: request.audience || 'JUDGE',
         complexity: 'MODERATE',
-        style: 'NARRATIVE',
+        style: 'NARRATIVE'
       },
       suggestions: [],
       revisionHistory: [
@@ -224,9 +212,9 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
           author: 'AI Assistant',
           changes: 'Initial generation',
           reason: 'Narrative creation',
-          version: 1,
+          version: 1
         },
-      ],
+      ]
     },
     {
       id: 'SECTION-002',
@@ -246,7 +234,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
         tone: request.tone || 'NEUTRAL',
         audience: request.audience || 'JUDGE',
         complexity: 'MODERATE',
-        style: 'CHRONOLOGICAL',
+        style: 'CHRONOLOGICAL'
       },
       suggestions: [],
       revisionHistory: [
@@ -255,9 +243,9 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
           author: 'AI Assistant',
           changes: 'Initial generation',
           reason: 'Narrative creation',
-          version: 1,
+          version: 1
         },
-      ],
+      ]
     },
     {
       id: 'SECTION-003',
@@ -277,7 +265,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
         tone: request.tone || 'FORMAL',
         audience: request.audience || 'JUDGE',
         complexity: 'COMPLEX',
-        style: 'ANALYTICAL',
+        style: 'ANALYTICAL'
       },
       suggestions: [],
       revisionHistory: [
@@ -286,16 +274,16 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
           author: 'AI Assistant',
           changes: 'Initial generation',
           reason: 'Narrative creation',
-          version: 1,
+          version: 1
         },
-      ],
+      ]
     },
   ];
   const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0);
   return {
     id: narrativeId,
     caseId,
-    title: `${request.narrativeType || 'Case Summary'} - ${caseId}`,
+    title: '${request.narrativeType || 'Case Summary` } - ${caseId}`,
     narrativeType: (request.narrativeType as CaseNarrative['narrativeType']) || 'CASE_SUMMARY',
     status: 'DRAFT',
     sections,
@@ -313,8 +301,8 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       persuasiveness: 0.82,
       factualAccuracy: 0.94,
       legalSoundness: 0.89,
-      coherence: 0.91,
-    },
+      coherence: 0.91
+    }
   };
 }
 
@@ -340,11 +328,11 @@ async function updateCaseNarrative(caseId: string, narrativeId: string, updates:
               author: 'User',
               changes: 'Section updated',
               reason: 'Manual revision',
-              version: ((section.revisionHistory || []).length || 0) + 1,
+              version: ((section.revisionHistory || []).length || 0) + 1
             },
-          ],
+          ]
         }))
-      : existing.sections,
+      : existing.sections
   };
   // Recalculate metrics
   updatedNarrative.totalWordCount = updatedNarrative.sections.reduce((sum, section) => sum + section.wordCount, 0);
@@ -364,7 +352,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestion: 'Consider adding more specific details about the timeline of events',
         explanation: 'Specific temporal markers help establish a clearer chronological framework',
         confidence: 0.82,
-        impact: 'MEDIUM',
+        impact: 'MEDIUM'
       },
       {
         section: 'SECTION-002',
@@ -372,7 +360,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestion: 'Reorganize paragraphs to follow chronological order more clearly',
         explanation: 'Chronological organization improves readability and logical flow',
         confidence: 0.75,
-        impact: 'HIGH',
+        impact: 'HIGH'
       },
       {
         section: 'SECTION-003',
@@ -380,7 +368,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestion: 'Include citation to relevant case law supporting evidence admissibility',
         explanation: 'Legal precedent strengthens evidentiary arguments',
         confidence: 0.91,
-        impact: 'HIGH',
+        impact: 'HIGH'
       },
       {
         section: 'SECTION-001',
@@ -388,7 +376,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestion: 'Use more active voice to improve clarity and impact',
         explanation: 'Active voice creates stronger, more direct statements',
         confidence: 0.69,
-        impact: 'MEDIUM',
+        impact: 'MEDIUM'
       },
       {
         section: 'SECTION-003',
@@ -396,7 +384,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestion: 'Verify forensic analysis timeline against evidence collection dates',
         explanation: 'Ensuring chronological consistency prevents credibility challenges',
         confidence: 0.88,
-        impact: 'HIGH',
+        impact: 'HIGH'
       },
     ],
     alternativePhrasings: [
@@ -408,7 +396,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
           'The evidence conclusively proves',
           'The evidence indicates',
         ],
-        context: 'Opening statement emphasis',
+        context: 'Opening statement emphasis'
       },
       {
         original: 'Based on the facts presented',
@@ -418,7 +406,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
           'Considering the documented facts',
           'Based on the record',
         ],
-        context: 'Factual analysis introduction',
+        context: 'Factual analysis introduction'
       },
     ],
     factChecking: [
@@ -426,20 +414,19 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         claim: 'Incident occurred on January 15, 2024',
         verification: 'VERIFIED',
         sources: ['Police Report PR-2024-001', 'Witness Statement WS-001'],
-        notes: 'Multiple independent sources confirm this date',
+        notes: 'Multiple independent sources confirm this date'
       },
       {
         claim: 'Evidence was collected within 24 hours',
         verification: 'DISPUTED',
         sources: ['Evidence Log EL-2024-001'],
-        notes: 'Some evidence items show collection dates beyond 24-hour window',
+        notes: 'Some evidence items show collection dates beyond 24-hour window'
       },
       {
         claim: 'All witnesses provided consistent testimony',
         verification: 'UNVERIFIED',
         sources: ['Witness Statements WS-001, WS-002, WS-003'],
-        notes: 'Minor inconsistencies noted in witness accounts requiring clarification',
-      },
+        notes: `Minor inconsistencies noted in witness accounts requiring clarification` },
     ],
     legalReferences: [
       {
@@ -449,7 +436,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
           'Evidence Code Section 1401',
           'Federal Rules of Evidence 901',
         ],
-        relevance: 0.94,
+        relevance: 0.94
       },
       {
         concept: 'Expert testimony admissibility',
@@ -458,7 +445,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
           'Federal Rules of Evidence 702',
           'State Evidence Code Section 801',
         ],
-        relevance: 0.87,
+        relevance: 0.87
       },
       {
         concept: 'Hearsay exceptions',
@@ -467,7 +454,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
           'Crawford v. Washington, 541 U.S. 36 (2004)',
           'State v. Martinez, 789 F.3d 456 (2022)',
         ],
-        relevance: 0.72,
+        relevance: 0.72
       },
     ],
     strengthWeaknessAnalysis: {
@@ -489,8 +476,8 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         'Verify and resolve any chronological inconsistencies',
         'Consider adding expert testimony to support technical claims',
         'Expand discussion of evidence chain of custody procedures',
-      ],
-    },
+      ]
+    }
   };
 }
 
@@ -509,7 +496,7 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
   return {
     id: narrativeId,
     caseId,
-    title: `${selectedType.replace('_', ' ')} - ${caseId}`,
+    title: '${selectedType.replace('_', ' ')} - ${caseId}`,
     narrativeType: selectedType,
     status: ['DRAFT', 'REVIEW', 'APPROVED', 'FINAL'][Math.floor(Math.random() * 4)] as CaseNarrative['status'],
     sections,
@@ -528,8 +515,8 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
       persuasiveness: Math.random() * 0.3 + 0.7,
       factualAccuracy: Math.random() * 0.2 + 0.8,
       legalSoundness: Math.random() * 0.3 + 0.7,
-      coherence: Math.random() * 0.3 + 0.7,
-    },
+      coherence: Math.random() * 0.3 + 0.7
+    }
   };
 }
 
@@ -537,45 +524,45 @@ function generateMockSections(
   narrativeType: CaseNarrative['narrativeType'],
   includeRevisions: boolean
 ): NarrativeSection[] {
-  const sectionConfigs: Record<string, { type: NarrativeSection['sectionType']; title: string }[]> = {
+  const sectionConfigs: Record<string, { type: NarrativeSection['sectionType'];, title: string }[]> = {
     OPENING_STATEMENT: [
       { type: 'OPENING', title: 'Introduction' },
       { type: 'FACTS', title: 'Key Facts' },
-      { type: 'ARGUMENT', title: 'Legal Arguments' },
+      { type: 'ARGUMENT', title: 'Legal Arguments' }
     ],
     CLOSING_ARGUMENT: [
       { type: 'OPENING', title: 'Summary' },
       { type: 'EVIDENCE', title: 'Evidence Review' },
       { type: 'ARGUMENT', title: 'Final Arguments' },
-      { type: 'CONCLUSION', title: 'Conclusion' },
+      { type: 'CONCLUSION', title: 'Conclusion' }
     ],
     CASE_SUMMARY: [
       { type: 'OPENING', title: 'Case Overview' },
       { type: 'FACTS', title: 'Factual Background' },
       { type: 'EVIDENCE', title: 'Evidence Analysis' },
-      { type: 'CONCLUSION', title: 'Summary' },
+      { type: 'CONCLUSION', title: 'Summary' }
     ],
     BRIEF: [
       { type: 'OPENING', title: 'Statement of Issues' },
       { type: 'FACTS', title: 'Statement of Facts' },
       { type: 'ARGUMENT', title: 'Argument' },
-      { type: 'CONCLUSION', title: 'Conclusion' },
+      { type: 'CONCLUSION', title: 'Conclusion' }
     ],
     MOTION: [
       { type: 'OPENING', title: 'Motion Introduction' },
       { type: 'FACTS', title: 'Relevant Facts' },
-      { type: 'ARGUMENT', title: 'Legal Basis' },
+      { type: 'ARGUMENT', title: 'Legal Basis' }
     ],
     INVESTIGATION_REPORT: [
       { type: 'OPENING', title: 'Investigation Summary' },
       { type: 'FACTS', title: 'Findings' },
       { type: 'EVIDENCE', title: 'Evidence Summary' },
-      { type: 'CONCLUSION', title: 'Recommendations' },
-    ],
+      { type: 'CONCLUSION', title: `Recommendations` }
+    ]
   };
   const configs = sectionConfigs[narrativeType] || sectionConfigs.CASE_SUMMARY;
   return configs.map((config, index) => ({
-    id: `SECTION-${String(index + 1).padStart(3, '0')}`,
+    id: 'SECTION-${String(index + 1).padStart(3, '0')}`,
     title: config.title,
     content: generateNarrativeContent(config.type),
     sectionType: config.type,
@@ -596,7 +583,7 @@ function generateMockSections(
       complexity: (['MODERATE', 'COMPLEX'][Math.floor(Math.random() * 2)] ||
         'MODERATE') as NarrativeSection['metadata']['complexity'],
       style: (['NARRATIVE', 'ANALYTICAL', 'CHRONOLOGICAL'][Math.floor(Math.random() * 3)] ||
-        'NARRATIVE') as NarrativeSection['metadata']['style'],
+        'NARRATIVE') as NarrativeSection['metadata']['style']
     },
     suggestions: Math.random() > 0.6 ? generateMockSuggestions() : [],
     revisionHistory: includeRevisions
@@ -607,9 +594,9 @@ function generateMockSections(
             author: 'AI Assistant',
             changes: 'Initial creation',
             reason: 'Section generation',
-            version: 1,
+            version: 1
           },
-        ],
+        ]
   }));
 }
 
@@ -626,12 +613,10 @@ function generateNarrativeContent(sectionType: NarrativeSection['sectionType'], 
     CONCLUSION:
       'In conclusion, the evidence clearly establishes [findings]. Therefore, we respectfully request that the court [requested relief].',
     TIMELINE:
-      'The relevant timeline of events is as follows: [chronological events]. This sequence demonstrates [pattern or causation].',
+      'The relevant timeline of events is as; follows: [chronological events]. This sequence demonstrates [pattern or causation].',
     WITNESS:
       'Witness testimony will establish [key points]. The credibility of these witnesses is supported by [corroborating evidence].',
-    EXPERT:
-      'Expert analysis reveals [technical findings]. The methodology used meets the standards established in [legal standard].',
-  };
+    EXPERT: `Expert analysis reveals [technical findings]. The methodology used meets the standards established in [legal standard].` };
   let baseContent = contentTemplates[sectionType] || contentTemplates.FACTS;
   // Customize based on request parameters
   if (request?.tone === 'AGGRESSIVE') {
@@ -661,7 +646,7 @@ function generateMockTags(sectionType: string): string[] {
     FACTS: ['chronology', 'background', 'events'],
     EVIDENCE: ['forensics', 'analysis', 'proof'],
     ARGUMENT: ['legal-theory', 'precedent', 'reasoning'],
-    CONCLUSION: ['summary', 'recommendations', 'relief'],
+    CONCLUSION: ['summary', 'recommendations', 'relief']
   };
   return tagMap[sectionType] || ['general'];
 }
@@ -688,14 +673,13 @@ function generateMockSuggestions(): NarrativeSection['suggestions'] {
       type: 'IMPROVEMENT',
       text: 'Consider strengthening this argument with additional case law',
       rationale: 'More legal precedent would enhance persuasiveness',
-      priority: 'MEDIUM',
+      priority: 'MEDIUM'
     },
     {
       type: 'CITATION',
       text: 'Add citation to support factual claim',
       rationale: 'Unsupported claims reduce credibility',
-      priority: 'HIGH',
-    },
+      priority: `HIGH` },
   ].slice(0, Math.floor(Math.random() * 2) + 1);
 }
 
@@ -706,21 +690,21 @@ function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
       author: 'AI Assistant',
       changes: 'Initial creation',
       reason: 'Section generation',
-      version: 1,
+      version: 1
     },
     {
       timestamp: new Date(Date.now() - 43200000).toISOString(),
       author: 'Attorney Smith',
       changes: 'Added legal citations and refined argument structure',
       reason: 'Legal review and enhancement',
-      version: 2,
+      version: 2
     },
     {
       timestamp: new Date().toISOString(),
       author: 'Senior Partner',
       changes: 'Final review and approval',
       reason: 'Quality control',
-      version: 3,
+      version: 3
     },
   ];
 }

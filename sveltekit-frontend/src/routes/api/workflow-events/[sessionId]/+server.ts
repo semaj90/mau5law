@@ -84,9 +84,9 @@ export const GET = async (event: RequestEvent) => {
       controller.enqueue(
         encoder.encode(
           `data: ${JSON.stringify({
-            type: 'SSE_CONNECTED',
+           , type: 'SSE_CONNECTED',
             sessionId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`
         )
       );
@@ -99,10 +99,10 @@ export const GET = async (event: RequestEvent) => {
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'SSE_ERROR',
+             , type: 'SSE_ERROR',
               error: 'Redis subscribe failed',
               details: stringifyError(subErr),
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })}\n\n`
           )
         );
@@ -134,10 +134,10 @@ export const GET = async (event: RequestEvent) => {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                type: 'SSE_ERROR',
+               , type: 'SSE_ERROR',
                 error: 'Redis connection error',
                 details: stringifyError(err),
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               })}\n\n`
             )
           );
@@ -202,12 +202,12 @@ export const GET = async (event: RequestEvent) => {
       }
 
       if (typeof redis.unsubscribe === 'function') {
-        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe error:', stringifyError(e)));
+        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));
       }
       if (typeof redis.quit === 'function') {
-        redis.quit().catch((e: any) => console.warn('[SSE] quit error:', stringifyError(e)));
+        redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));
       }
-    },
+    }
   });
 
   // Return SSE response
@@ -217,6 +217,6 @@ export const GET = async (event: RequestEvent) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
-    },
+    }
   });
 };

@@ -6,16 +6,14 @@ import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
 import { dev } from '$app/environment';
 
 // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly
-// We only need the: 'request' and: 'url' properties in this module.
+// We only need the: 'request'; and: 'url' properties in this module.
 type LightRequestEvent = {
 	readonly request: Request;
 	readonly url: URL;
 };
 
 // Performance monitoring
-interface BodyParseMetrics {
-  endpoint: string;
-  contentLength: number;
+interface BodyParseMetrics { endpoint: string;, contentLength: number;
   parseTime: number;
   simdUsed: boolean;
   timestamp: number;
@@ -42,7 +40,7 @@ class SIMDBodyParser {
     if (dev) {
       console.log('🚀 SIMD Body Parser initialized:', {
         simdEnabled: this.simdEnabled,
-        hotEndpoints: this.hotEndpoints.size,
+        hotEndpoints: this.hotEndpoints.size
       });
     }
   }
@@ -75,7 +73,7 @@ class SIMDBodyParser {
         contentLength: body.length,
         parseTime,
         simdUsed: shouldUseSIMD,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       return parsed;
     } catch (error) {
@@ -89,7 +87,7 @@ class SIMDBodyParser {
           contentLength: body?.length ?? 0,
           parseTime,
           simdUsed: false,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         return fallbackResult;
       } catch (fallbackError) {
@@ -125,7 +123,7 @@ class SIMDBodyParser {
         contentLength: body.length,
         parseTime,
         simdUsed: shouldUseSIMD,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       return results;
     } catch (error) {
@@ -186,7 +184,7 @@ class SIMDBodyParser {
           if (char === '{') {
             braceCount++;
             currentDoc += char;
-          } else if (char === '}') {
+          } else if (char === ' }') {
             braceCount--;
             currentDoc += char;
             if (braceCount === 0 && currentDoc.trim()) {
@@ -246,7 +244,7 @@ class SIMDBodyParser {
         document: body,
         entities,
         citations,
-        parseTime,
+        parseTime
       };
     } catch (error) {
       console.error('Legal document parsing failed:', error);
@@ -256,8 +254,8 @@ class SIMDBodyParser {
   /**
    * Extract legal entities with optimized regex
    */
-  private extractLegalEntities(content: string): Array<{ type: string; text: string; confidence: number }> {
-    const entities: Array<{ type: string; text: string; confidence: number }> = [];
+  private extractLegalEntities(content: string): Array<{ type: string; text: string;, confidence: number }> {
+    const entities: Array<{ type: string; text: string;, confidence: number }> = [];
     const patterns = [
       { pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
       { pattern: /\b\d+\s+C\.F\.R\.\s*§?\s*\d+/g, type: 'regulation', confidence: 0.9 },
@@ -266,7 +264,7 @@ class SIMDBodyParser {
       {
         pattern: /\b(?:Supreme Court|District Court|Circuit Court|Court of Appeals)\b/gi,
         type: 'court',
-        confidence: 0.8,
+        confidence: 0.8
       },
     ];
     for (const p of patterns) {
@@ -277,7 +275,7 @@ class SIMDBodyParser {
         entities.push({
           type,
           text: match[0],
-          confidence,
+          confidence
         });
       }
     }
@@ -286,15 +284,15 @@ class SIMDBodyParser {
   /**
    * Extract legal citations with court identification
    */
-  private extractCitations(content: string): Array<{ citation: string; court: string }> {
-    const citations: Array<{ citation: string; court: string }> = [];
+  private extractCitations(content: string): Array<{ citation: string;, court: string }> {
+    const citations: Array<{ citation: string;, court: string }> = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     let match: RegExpExecArray | null;
     while ((match = citationPattern.exec(content)) !== null) {
       const court = this.identifyCourt(match[2]);
       citations.push({
         citation: match[0],
-        court,
+        court
       });
     }
     return citations;
@@ -353,9 +351,7 @@ class SIMDBodyParser {
   /**
    * Get performance statistics
    */
-  getPerformanceStats(): {
-    totalRequests: number;
-    simdRequests: number;
+  getPerformanceStats(): { totalRequests: number;, simdRequests: number;
     averageParseTime: number;
     simdSpeedup: number;
     hotEndpointUsage: Record<string, number>;
@@ -379,7 +375,7 @@ class SIMDBodyParser {
       simdRequests: simdMetrics.length,
       averageParseTime: total > 0 ? this.metrics.reduce((sum, m) => sum + m.parseTime, 0) / total : 0,
       simdSpeedup: speedup,
-      hotEndpointUsage: endpointUsage,
+      hotEndpointUsage: endpointUsage
     };
   }
   /**
@@ -388,7 +384,7 @@ class SIMDBodyParser {
   toggleSIMD(enabled: boolean): void {
     this.simdEnabled = enabled;
     if (dev) {
-      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled'}`);
+      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled' }`);
     }
   }
   /**
@@ -401,7 +397,7 @@ class SIMDBodyParser {
       this.hotEndpoints.delete(endpoint);
     }
     if (dev) {
-      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from'} hot list`);
+      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from' } hot list`);
     }
   }
 }

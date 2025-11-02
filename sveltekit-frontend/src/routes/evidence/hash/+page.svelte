@@ -4,7 +4,7 @@ import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   let hashInput = $state<string>('81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd');
-  let searchResult: any = $state(null);
+  let searchResult: any = null;
   let loading = $state<boolean>(false);
   let error = $state<string>('');
   $effect(() => {

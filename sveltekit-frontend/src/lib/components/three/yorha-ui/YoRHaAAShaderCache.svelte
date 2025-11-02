@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   let hasError = $state<boolean>(false);
   let errorMessage = $state<string>('');
   // Shader cache state
-  let shaderCache: CompiledShaderCache | null = $state(null);
+  let shaderCache: CompiledShaderCache | null = null;
   let compilationTime = $state<number>(0);
   let lastCompileTime = $state<number>(0);
   let cacheHitRate = $state<number>(0);

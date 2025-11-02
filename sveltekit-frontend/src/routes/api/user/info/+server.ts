@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'Email parameter is required',
+          error: 'Email parameter is required'
         },
         { status: 400 }
       );
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'User not found',
+          error: 'User not found'
         },
         { status: 404 }
       );
@@ -45,16 +45,16 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       user: {
-        data: safeUserData,
-        profile: userProfile,
-      },
+       , data: safeUserData,
+        profile: userProfile
+      }
     });
   } catch (error: any) {
     console.error('❌ Error fetching user info:', error);
     return json(
       {
         success: false,
-        error: 'Internal server error',
+        error: 'Internal server error'
       },
       { status: 500 }
     );

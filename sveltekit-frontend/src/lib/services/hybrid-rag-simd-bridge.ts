@@ -27,17 +27,12 @@ import type {
 
 export interface HybridPipelineConfig {
   // SIMD Configuration
-  simd: {
-    chunkSize: number;        // 128 (RTX 3060 optimized)
-    gpuBatchSize: number;     // 32 (CUDA batch size)
-    tensorDimensions: number; // 384 (embeddinggemma:latest)
-    enableCompression: boolean;
+  simd: { chunkSize: number;        // 128 (RTX 3060 optimized), gpuBatchSize: number;     // 32 (CUDA batch size)
+    tensorDimensions: number; // 384 (embeddinggemma:latest); enableCompression: boolean;
   };
 
   // RAG Configuration
-  rag: {
-    embeddingModel: 'embeddinggemma:latest';
-    synthesisModel: 'gemma3:legal-latest';
+  rag: { embeddingModel: 'embeddinggemma:latest';, synthesisModel: 'gemma3:legal-latest';
     enableFunctionCalling: boolean;
     cacheResults: boolean;
   };
@@ -46,26 +41,18 @@ export interface HybridPipelineConfig {
   ranking: SynthesisRankingConfig;
 
   // MCP Integration
-  mcp: {
-    enableMulticore: boolean;
-    workerCount: number;
+  mcp: { enableMulticore: boolean;, workerCount: number;
     distributeLoad: boolean;
   };
 }
 
-export interface HybridPipelineResult {
-  simdResults: PipelineExecutionResult;
-  ragResults: RAGPipelineResult;
+export interface HybridPipelineResult { simdResults: PipelineExecutionResult;, ragResults: RAGPipelineResult;
   finalDocuments: RankedDocument[];
-  performance: {
-    simdTime: number;
-    ragTime: number;
+  performance: { simdTime: number;, ragTime: number;
     totalTime: number;
     throughput: number; // docs per second
   };
-  metadata: {
-    cacheHits: number;
-    gpuAccelerated: boolean;
+  metadata: { cacheHits: number;, gpuAccelerated: boolean;
     workersUsed: number;
   };
 }
@@ -75,9 +62,7 @@ export interface HybridPipelineResult {
 // ============================================================================
 
 export class HybridRAGSIMDBridge {
-  private defaultConfig: HybridPipelineConfig = {
-    simd: {
-      chunkSize: 128,
+  private defaultConfig: HybridPipelineConfig = { simd: {, chunkSize: 128,
       gpuBatchSize: 32,
       tensorDimensions: 384,
       enableCompression: true
@@ -88,9 +73,7 @@ export class HybridRAGSIMDBridge {
       enableFunctionCalling: true,
       cacheResults: true
     },
-    ranking: {
-      weights: {
-        relevance: 0.5,
+    ranking: { weights: {, relevance: 0.5,
         keywords: 0.3,
         synthesis: 0.2
       },
@@ -180,7 +163,7 @@ export class HybridRAGSIMDBridge {
     const totalTime = performance.now() - startTime;
     const throughput = (ragDocuments.length / totalTime) * 1000; // docs per second
 
-    console.log('\n📊 Hybrid Pipeline Summary:');
+    console.log('\n📊 Hybrid Pipeline Summary: `);
     console.log(`   - SIMD Time: ${simdTime.toFixed(2)}ms`);
     console.log(`   - RAG Time: ${ragTime.toFixed(2)}ms`);
     console.log(`   - Total Time: ${totalTime.toFixed(2)}ms`);
@@ -299,20 +282,16 @@ export class HybridRAGSIMDBridge {
   /**
    * Get current pipeline status and statistics
    */
-  async getStatus(): Promise<{
-    simd: { available: boolean; tensorDimensions: number };
-    rag: { available: boolean; embeddingModel: string };
-    mcp: { available: boolean; workers: number };
+  async getStatus(): Promise<{ simd: { available: boolean;, tensorDimensions: number };
+    rag: { available: boolean;, embeddingModel: string };
+    mcp: { available: boolean;, workers: number };
   }> {
-    return {
-      simd: {
-        available: true,
+    return { simd: {, available: true,
         tensorDimensions: this.config.simd?.tensorDimensions || 384
       },
       rag: {
         available: true,
-        embeddingModel: this.config.rag?.embeddingModel || 'embeddinggemma:latest'
-      },
+        embeddingModel: this.config.rag?.embeddingModel || 'embeddinggemma:latest' },
       mcp: {
         available: this.config.mcp?.enableMulticore || false,
         workers: this.config.mcp?.workerCount || 4
@@ -405,7 +384,7 @@ export const hybridBridge = new HybridRAGSIMDBridge();
  *     weights: { relevance: 0.7, keywords: 0.2, synthesis: 0.1 }
  *   },
  *   mcp: {
- *     enableMulticore: true,
+ *    , enableMulticore: true,
  *     workerCount: 8
  *   }
  * });

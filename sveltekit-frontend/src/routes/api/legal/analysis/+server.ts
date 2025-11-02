@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Force legal model preference
     const result = await ollamaService.generate(prompt, {
       model: model || 'gemma:legal',
-      options: { temperature, num_predict: maxTokens },
+      options: { temperature, num_predict: maxTokens }
     });
     const latencyMs = Date.now() - t0;
     // Lightweight pseudo-issue extraction (placeholder until full pipeline reattached)
@@ -29,13 +29,13 @@ export const POST: RequestHandler = async ({ request }) => {
         entities: [],
         domain: domain || 'general',
         documentType: documentType || 'generic',
-        latencyMs,
+        latencyMs
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (err: any) {
     return new Response(JSON.stringify({ error: 'LegalAnalysisFailed', message: err?.message || String(err) }), {
-      status: 500,
+      status: 500
     });
   }
 };

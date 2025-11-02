@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Failed to create test user',
-        results: testResults,
+        results: testResults
       });
     }
     const userId = testUser.data?.userId as string;
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Failed to create chat session',
-        results: testResults,
+        results: testResults
       });
     }
     const sessionId = testSession.data?.sessionId as string;
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Failed to store message',
-        results: testResults,
+        results: testResults
       });
     }
     const messageId = testMessageResult.data?.messageId as string;
@@ -91,10 +91,10 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTests,
         passed: successCount,
         failed: totalTests - successCount,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       results: testResults,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json(
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Database persistence test failed',
         details: err instanceof Error ? err.message : String(err),
         results: testResults,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -111,16 +111,14 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // New helper test result type
-type TestResult<T = unknown> = {
-  test: string;
-  success: boolean;
+type TestResult<T = unknown> = { test: string;, success: boolean;
   message: string;
   data?: T;
   error?: string;
   responseTime?: number;
 };
 
-async function testCreateUser(): Promise<TestResult<{ userId: string; email: string }>> {
+async function testCreateUser(): Promise<TestResult<{ userId: string;, email: string }>> {
   const startTime = Date.now();
   try {
     const localId = uuidv4();
@@ -133,8 +131,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string; email: str
       .insert(users)
       .values({
         email: testEmail,
-        role: 'user',
-      })
+        role: 'user` })
       .returning({ id: users.id });
 
     // If DB returned an id use it, otherwise fall back to the locally generated UUID.
@@ -145,7 +142,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string; email: str
       success: true,
       message: 'Test user created successfully',
       data: { userId: insertedId, email: testEmail },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -153,7 +150,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string; email: str
       success: false,
       message: 'Failed to create test user',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -168,16 +165,16 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
       title: 'Test Session',
       context: { testSession: true },
       metadata: {
-        createdForTesting: true,
-        timestamp: new Date().toISOString(),
-      },
+       , createdForTesting: true,
+        timestamp: new Date().toISOString()
+      }
     });
     return {
       test: 'Create Chat Session',
       success: true,
       message: 'Chat session created successfully',
       data: { sessionId },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -185,20 +182,20 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
       success: false,
       message: 'Failed to create chat session',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
 
 async function testEmbeddingGeneration(
   content: string
-): Promise<TestResult<{ embedding: number[]; dimensions: number; sampleValues: number[] }>> {
+): Promise<TestResult<{ embedding: number[]; dimensions: number;, sampleValues: number[] }>> {
   const startTime = Date.now();
   try {
     const embedding = (await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     })) as number[];
     if (!Array.isArray(embedding) || embedding.length === 0) {
       throw new Error('Invalid embedding generated');
@@ -210,9 +207,9 @@ async function testEmbeddingGeneration(
       data: {
         embedding,
         dimensions: embedding.length,
-        sampleValues: embedding.slice(0, 5),
+        sampleValues: embedding.slice(0, 5)
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -220,7 +217,7 @@ async function testEmbeddingGeneration(
       success: false,
       message: 'Failed to generate embedding',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -229,7 +226,7 @@ async function testStoreMessage(
   sessionId: string,
   content: string,
   embedding?: number[]
-): Promise<TestResult<{ messageId: string; hasEmbedding: boolean; embeddingDimensions: number }>> {
+): Promise<TestResult<{ messageId: string; hasEmbedding: boolean;, embeddingDimensions: number }>> {
   const startTime = Date.now();
   try {
     const messageId = uuidv4();
@@ -241,9 +238,9 @@ async function testStoreMessage(
         content,
         embedding,
         metadata: {
-          testMessage: true,
-          embeddingDimensions: embedding.length,
-        },
+         , testMessage: true,
+          embeddingDimensions: embedding.length
+        }
       });
       if (!success) {
         throw new Error('Failed to insert message with embedding');
@@ -255,9 +252,9 @@ async function testStoreMessage(
         role: 'user',
         content,
         metadata: {
-          testMessage: true,
-          embeddingStatus: 'not_available',
-        },
+         , testMessage: true,
+          embeddingStatus: 'not_available'
+        }
       });
     }
     return {
@@ -267,9 +264,9 @@ async function testStoreMessage(
       data: {
         messageId,
         hasEmbedding: !!embedding,
-        embeddingDimensions: embedding?.length || 0,
+        embeddingDimensions: embedding?.length || 0
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -277,7 +274,7 @@ async function testStoreMessage(
       success: false,
       message: 'Failed to store message',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -285,7 +282,7 @@ async function testStoreMessage(
 async function testStoreRecommendations(
   userId: string,
   messageId: string
-): Promise<TestResult<{ recommendationsCount: number; recommendationIds: string[] }>> {
+): Promise<TestResult<{ recommendationsCount: number;, recommendationIds: string[] }>> {
   const startTime = Date.now();
   try {
     const recommendations = [
@@ -297,8 +294,8 @@ async function testStoreRecommendations(
         metadata: {
           category: 'evidence_handling',
           source: 'test',
-          reasoning: 'Test recommendation for database persistence',
-        },
+          reasoning: 'Test recommendation for database persistence'
+        }
       },
       {
         id: uuidv4(),
@@ -308,8 +305,7 @@ async function testStoreRecommendations(
         metadata: {
           category: 'compliance',
           source: 'test',
-          reasoning: 'Test procedural recommendation',
-        },
+          reasoning: 'Test procedural recommendation` }
       },
     ];
     for (const rec of recommendations) {
@@ -320,7 +316,7 @@ async function testStoreRecommendations(
         recommendationType: rec.type,
         content: rec.content,
         confidence: rec.confidence,
-        metadata: rec.metadata,
+        metadata: rec.metadata
       });
     }
     return {
@@ -329,9 +325,9 @@ async function testStoreRecommendations(
       message: `Stored ${recommendations.length} test recommendations`,
       data: {
         recommendationsCount: recommendations.length,
-        recommendationIds: recommendations.map(r => r.id),
+        recommendationIds: recommendations.map(r => r.id)
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -339,14 +335,14 @@ async function testStoreRecommendations(
       success: false,
       message: 'Failed to store recommendations',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
 
 async function testVectorSimilaritySearch(
   embedding?: number[]
-): Promise<TestResult<{ resultsCount: number; topSimilarity: number }>> {
+): Promise<TestResult<{ resultsCount: number;, topSimilarity: number }>> {
   const startTime = Date.now();
   try {
     if (!embedding || embedding.length === 0) {
@@ -354,14 +350,14 @@ async function testVectorSimilaritySearch(
         test: 'Vector Similarity Search',
         success: false,
         message: 'No embedding available for similarity search',
-        responseTime: Date.now() - startTime,
+        responseTime: Date.now() - startTime
       };
     }
     const similarResults = (await searchSimilarMessages(embedding, {
       limit: 5,
       threshold: 0.1,
-      includeMetadata: true,
-    })) as Array<{ id: string; similarity: number; content?: string }>;
+      includeMetadata: true
+    })) as Array<{ id: string;, similarity: number; content?: string }>;
 
     return {
       test: 'Vector Similarity Search',
@@ -369,9 +365,9 @@ async function testVectorSimilaritySearch(
       message: `Found ${similarResults.length} similar messages`,
       data: {
         resultsCount: similarResults.length,
-        topSimilarity: similarResults.length > 0 ? similarResults[0].similarity : 0,
+        topSimilarity: similarResults.length > 0 ? similarResults[0].similarity : 0
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -379,15 +375,13 @@ async function testVectorSimilaritySearch(
       success: false,
       message: 'Vector similarity search failed',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
 
 // Add a concrete type for the DB rows returned by the select above
-type DBRecommendationRow = {
-  id: string;
-  content: string | null;
+type DBRecommendationRow = { id: string;, content: string | null;
   type: string | null;
   confidence: number | null;
   metadata: any;
@@ -395,11 +389,7 @@ type DBRecommendationRow = {
 };
 
 // Add named type to avoid nested-generic '>>' parsing issues
-type RetrieveRecommendationsResult = {
-  recommendationsCount: number;
-  recommendations: Array<{
-    id: string;
-    type: string;
+type RetrieveRecommendationsResult = { recommendationsCount: number;, recommendations: Array<{ id: string;, type: string;
     confidence: number;
     hasFeedback: boolean;
     contentPreview: string;
@@ -417,7 +407,7 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
         type: chatRecommendations.recommendationType,
         confidence: chatRecommendations.confidence,
         metadata: chatRecommendations.metadata,
-        feedback: chatRecommendations.feedback,
+        feedback: chatRecommendations.feedback
       })
       .from(chatRecommendations)
       .where(eq(chatRecommendations.userId, userId))
@@ -444,11 +434,11 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
             type,
             confidence,
             contentPreview,
-            hasFeedback,
+            hasFeedback
           };
-        }),
+        })
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -456,15 +446,13 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
       success: false,
       message: 'Failed to retrieve recommendations',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
 
 // Named payload type to avoid nested-generic '>>' parsing issues in some TS toolchains
-type UpdateRecommendationFeedbackResult = {
-  updatedRecommendationId: string;
-  feedback: string;
+type UpdateRecommendationFeedbackResult = { updatedRecommendationId: string;, feedback: string;
 };
 
 // Replace the original signature that used a nested inline type
@@ -489,9 +477,9 @@ async function testUpdateRecommendationFeedback(
       .set({
         feedback: 'helpful',
         metadata: {
-          feedbackUpdated: true,
-          feedbackTimestamp: new Date().toISOString(),
-        },
+         , feedbackUpdated: true,
+          feedbackTimestamp: new Date().toISOString()
+        }
       })
       .where(eq(chatRecommendations.id, recommendationId))
       .returning({ id: chatRecommendations.id })) as Array<{ id: string }>;
@@ -502,9 +490,8 @@ async function testUpdateRecommendationFeedback(
       message: 'Recommendation feedback updated successfully',
       data: {
         updatedRecommendationId: recommendationId,
-        feedback: 'helpful',
-      },
-      responseTime: Date.now() - startTime,
+        feedback: 'helpful` },
+      responseTime: Date.now() - startTime
     };
   } catch (err: any) {
     return {
@@ -512,7 +499,7 @@ async function testUpdateRecommendationFeedback(
       success: false,
       message: 'Failed to update recommendation feedback',
       error: err instanceof Error ? err.message : String(err),
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -538,7 +525,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       message: 'Database persistence test endpoint is operational',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json(
@@ -546,7 +533,7 @@ export const GET: RequestHandler = async () => {
         status: 'unhealthy',
         message: 'Database connection failed',
         error: err instanceof Error ? err.message : String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

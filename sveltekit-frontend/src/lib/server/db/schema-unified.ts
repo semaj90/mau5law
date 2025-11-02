@@ -15,7 +15,7 @@ import {
   boolean,
   jsonb,
   real,
-  index,
+  index
 } from 'drizzle-orm/pg-core';
 // Custom pgvector support (production-ready)
 import { customType } from 'drizzle-orm/pg-core';
@@ -31,7 +31,7 @@ const vector = customType({
   },
   toDriver(_value: number[]): string {
     return `[${_value.join(',')}]`;
-  },
+  }
 });
 import { relations } from 'drizzle-orm/relations';
 // Export types for TypeScript
@@ -72,7 +72,7 @@ export const users = pgTable(
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
-    deletedAt: timestamp('deleted_at', { withTimezone: true, mode: 'date' }),
+    deletedAt: timestamp('deleted_at', { withTimezone: true, mode: 'date' })
   },
   table => ({
     // Indexes for performance
@@ -84,7 +84,7 @@ export const users = pgTable(
     profileEmbeddingIdx: index('users_profile_embedding_hnsw_idx').using(
       'hnsw',
       table.profileEmbedding.op('vector_cosine_ops')
-    ),
+    )
   })
 );
 // === LUCIA v3 AUTHENTICATION ===
@@ -95,17 +95,17 @@ export const sessions = pgTable('sessions', {
     .references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
-    mode: 'date',
+    mode: 'date'
   }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   sessionContext: jsonb('session_context').default({}),
   createdAt: timestamp('created_at', {
     withTimezone: true,
-    mode: 'date',
+    mode: 'date'
   })
     .defaultNow()
-    .notNull(),
+    .notNull()
 });
 export const emailVerificationCodes = pgTable('email_verification_codes', {
   id: serial('id').primaryKey(),
@@ -114,7 +114,7 @@ export const emailVerificationCodes = pgTable('email_verification_codes', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   email: varchar('email', { length: 255 }).notNull(),
-  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
+  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
 });
 // === CORE LEGAL TABLES ===
 export const cases = pgTable('cases', {
@@ -129,7 +129,7 @@ export const cases = pgTable('cases', {
   caseType: varchar('case_type', { length: 100 }),
   metadata: jsonb('metadata').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === EVIDENCE TABLE WITH COMPLETE SCHEMA ===
 export const evidence = pgTable(
@@ -173,7 +173,7 @@ export const evidence = pgTable(
     boardPosition: jsonb('board_position').default({}),
     // Timestamps
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     // Indexes for performance
@@ -189,7 +189,7 @@ export const evidence = pgTable(
     contentEmbeddingIdx: index('evidence_content_embedding_idx').using(
       'hnsw',
       table.contentEmbedding.op('vector_cosine_ops')
-    ),
+    )
   })
 );
 // === DOCUMENT METADATA TABLE (for Enhanced RAG Go service) ===
@@ -211,14 +211,14 @@ export const documentMetadata = pgTable(
     ingestSource: varchar('ingest_source', { length: 100 }).default('manual'), // manual, api, batch;
     metadata: jsonb('metadata').default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     caseIdIdx: index('doc_metadata_case_id_idx').on(table.caseId),
     filenameIdx: index('doc_metadata_filename_idx').on(table.originalFilename),
     statusIdx: index('doc_metadata_status_idx').on(table.processingStatus),
     typeIdx: index('doc_metadata_type_idx').on(table.documentType),
-    priorityIdx: index('doc_metadata_priority_idx').on(table.priority),
+    priorityIdx: index('doc_metadata_priority_idx').on(table.priority)
   })
 );
 // === VECTOR TABLES FOR ENHANCED SEARCH ===
@@ -239,7 +239,7 @@ export const documentEmbeddings = pgTable(
     embeddingModel: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
     similarity: real('similarity'), // Cached similarity scores;
     metadata: jsonb('metadata').default({}).notNull(),
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     documentIdIdx: index('doc_embeddings_document_id_idx').on(table.documentId),
@@ -247,7 +247,7 @@ export const documentEmbeddings = pgTable(
     chunkIdxIdx: index('doc_embeddings_chunk_idx_idx').on(table.chunkIndex),
     modelIdx: index('doc_embeddings_model_idx').on(table.embeddingModel),
     similarityIdx: index('doc_embeddings_similarity_idx').on(table.similarity),
-    embeddingIdx: index('doc_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
+    embeddingIdx: index('doc_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops'))
   })
 );
 export const caseEmbeddings = pgTable(
@@ -258,11 +258,11 @@ export const caseEmbeddings = pgTable(
     content: text('content').notNull(),
     embedding: vector('embedding', { dimensions: 384 }).notNull(),
     metadata: jsonb('metadata').default({}).notNull(),
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     caseIdIdx: index('case_embeddings_case_id_idx').on(table.caseId),
-    embeddingIdx: index('case_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
+    embeddingIdx: index('case_embeddings_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops'))
   })
 );
 // === CASE ACTIVITIES ===
@@ -275,12 +275,12 @@ export const caseActivities = pgTable(
     activityType: varchar('activity_type', { length: 50 }).notNull(),
     description: text('description').notNull(),
     metadata: jsonb('metadata').default({}).notNull(),
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     caseIdIdx: index('case_activities_case_id_idx').on(table.caseId),
     userIdIdx: index('case_activities_user_id_idx').on(table.userId),
-    createdAtIdx: index('case_activities_created_at_idx').on(table.createdAt),
+    createdAtIdx: index('case_activities_created_at_idx').on(table.createdAt)
   })
 );
 // === CHAT RECOMMENDATION TABLES ===
@@ -293,10 +293,10 @@ export const chatSessions = pgTable(
     context: jsonb('context').default({}),
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
-    userIdIdx: index('chat_sessions_user_id_idx').on(table.userId),
+    userIdIdx: index('chat_sessions_user_id_idx').on(table.userId)
   })
 );
 export const chatMessages = pgTable(
@@ -308,12 +308,12 @@ export const chatMessages = pgTable(
     content: text('content').notNull(),
     embedding: vector('embedding', { dimensions: 384 }),
     metadata: jsonb('metadata').default({}),
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     sessionIdIdx: index('chat_messages_session_id_idx').on(table.sessionId),
     roleIdx: index('chat_messages_role_idx').on(table.role),
-    embeddingIdx: index('chat_messages_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
+    embeddingIdx: index('chat_messages_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops'))
   })
 );
 export const chatRecommendations = pgTable(
@@ -327,12 +327,12 @@ export const chatRecommendations = pgTable(
     confidence: real('confidence').default(0.5),
     metadata: jsonb('metadata').default({}),
     feedback: varchar('feedback', { length: 20 }), // helpful, not_helpful, irrelevant
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { mode: `date` }).defaultNow().notNull()
   },
   table => ({
     userIdIdx: index('chat_recommendations_user_id_idx').on(table.userId),
     messageIdIdx: index('chat_recommendations_message_id_idx').on(table.messageId),
-    confidenceIdx: index('chat_recommendations_confidence_idx').on(table.confidence),
+    confidenceIdx: index('chat_recommendations_confidence_idx').on(table.confidence)
   })
 );
 // === RELATIONS ===
@@ -342,51 +342,51 @@ export const usersRelations = relations(users, ({ many }) => ({
   evidence: many(evidence),
   caseActivities: many(caseActivities),
   chatSessions: many(chatSessions),
-  chatRecommendations: many(chatRecommendations),
+  chatRecommendations: many(chatRecommendations)
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, {
     fields: [cases.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   evidence: many(evidence),
   activities: many(caseActivities),
-  embeddings: many(caseEmbeddings),
+  embeddings: many(caseEmbeddings)
 }));
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [evidence.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  documentEmbeddings: many(documentEmbeddings),
+  documentEmbeddings: many(documentEmbeddings)
 }));
 export const chatSessionsRelations = relations(chatSessions, ({ one, many }) => ({
   user: one(users, {
     fields: [chatSessions.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  messages: many(chatMessages),
+  messages: many(chatMessages)
 }));
 export const chatMessagesRelations = relations(chatMessages, ({ one, many }) => ({
   session: one(chatSessions, {
     fields: [chatMessages.sessionId],
-    references: [chatSessions.id],
+    references: [chatSessions.id]
   }),
-  recommendations: many(chatRecommendations),
+  recommendations: many(chatRecommendations)
 }));
 export const chatRecommendationsRelations = relations(chatRecommendations, ({ one }) => ({
   user: one(users, {
     fields: [chatRecommendations.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   message: one(chatMessages, {
     fields: [chatRecommendations.messageId],
-    references: [chatMessages.id],
-  }),
+    references: [chatMessages.id]
+  })
 }));
 // Export all tables
 export const schema = {
@@ -408,6 +408,6 @@ export const schema = {
   evidenceRelations,
   chatSessionsRelations,
   chatMessagesRelations,
-  chatRecommendationsRelations,
+  chatRecommendationsRelations
 };
 export default schema;

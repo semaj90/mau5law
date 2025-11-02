@@ -3,21 +3,15 @@
  * Minimal implementation to provide types and a lightweight client for logging.
  */
 }
-export interface TelemetryEvent {
-  timestamp: number;
-  sessionId: string;
+export interface TelemetryEvent { timestamp: number;, sessionId: string;
   eventType: string;
   data: { [key: string]: any }
 }
 }
-export interface UploadStartEvent {
-  batchId: string;
-  files: number;
+export interface UploadStartEvent { batchId: string;, files: number;
 }
 }
-export interface BatchSummaryEvent {
-  batchId: string;
-  success: number;
+export interface BatchSummaryEvent { batchId: string;, success: number;
   failed: number;
   durationMs?: number;
 }
@@ -57,7 +51,7 @@ export class UploadTelemetryService {
       await fetch("/api/v1/telemetry/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId: this.sessionId, events: toSend, )})
+        body: JSON.stringify({, sessionId: this.sessionId, events: toSend, )})
       });
     } catch (e) {
       // Re-queue on failure

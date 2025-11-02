@@ -14,8 +14,8 @@
   let loading = $state<boolean>(false);
   let error = $state<string>('');
   let success = $state<string>('');
-  let emailInput: any = $state(null);
-  let passwordInput: any = $state(null);
+  let emailInput: any = null;
+  let passwordInput: any = null;
   let isValid = $derived(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const hasValidEmail = emailRegex.test(formData.email);

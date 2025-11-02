@@ -11,7 +11,7 @@ const CONFIG = {
   baseURL: '/api/v1',
   timeout: 30000,
   retries: 3,
-  retryDelay: 1000,
+  retryDelay: 1000
 };
 
 // Types
@@ -35,32 +35,24 @@ export interface ServiceInfo {
   details?: any;
 }
 
-export interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  services: Record<string, ServiceInfo>;
+export interface HealthStatus { status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceInfo>;
   uptime: number;
   timestamp: string;
 }
 
-export interface SearchResult {
-  id: number;
-  title: string;
+export interface SearchResult { id: number;, title: string;
   score: number;
   type: string;
   content?: string;
 }
 
-export interface RAGResponse {
-  query: string;
-  response: string;
+export interface RAGResponse { query: string;, response: string;
   sources: string[];
   confidence: number;
   cacheId?: string;
 }
 
-export interface UploadResult {
-  fileId: string;
-  fileName: string;
+export interface UploadResult { fileId: string;, fileName: string;
   size: number;
   url: string;
   status: string;
@@ -118,7 +110,7 @@ class FrontendServiceClient {
     try {
       const headers = {
         'Accept': 'application/json',
-        ...((options.headers as Record<string, string>) || {}),
+        ...((options.headers as Record<string, string>) || {})
       };
 
       // If body is plain object and no content-type set, set JSON content-type
@@ -129,7 +121,7 @@ class FrontendServiceClient {
       const response = await fetch(url, {
         ...options,
         headers,
-        signal: controller.signal,
+        signal: controller.signal
       });
 
       const text = await response.text();
@@ -174,7 +166,7 @@ class FrontendServiceClient {
       options.method = 'POST';
       // body is treated as JSON object
       options.body = JSON.stringify((body as JsonObject) ?? {});
-      options.headers = { 'Content-Type': 'application/json' };
+      options.headers = { 'Content-Type': `application/json` };
     }
     return this.request<T>(endpoint, options);
   }
@@ -285,7 +277,7 @@ class FrontendServiceClient {
       requestQueue: getStore(requestQueue),
       isConnected: getStore(isConnected),
       lastError: getStore(lastError),
-      serviceHealth: getStore(serviceHealth),
+      serviceHealth: getStore(serviceHealth)
     };
   }
 
@@ -328,7 +320,7 @@ export function createSearchStore(initialQuery: string = '') {
     results,
     isLoading,
     error,
-    search,
+    search
   };
 }
 
@@ -360,14 +352,12 @@ export function createRAGStore() {
     response,
     isLoading,
     error,
-    ask,
+    ask
   };
 }
 
 export function createUploadStore() {
-  type UploadEntry = {
-    file: File;
-    progress: number;
+  type UploadEntry = { file: File;, progress: number;
     status: 'pending' | 'uploading' | 'completed' | 'failed';
     result?: UploadResult;
     error?: string;
@@ -378,7 +368,7 @@ export function createUploadStore() {
   const upload = async (file: File, caseId?: string): Promise<UploadResult> => {
     const uploadId = `${Date.now()}_${file.name}`;
     uploads.update(map => {
-      map.set(uploadId, { file, progress: 0, status: 'uploading' });
+      map.set(uploadId, { file, progress: 0, status: `uploading` });
       return map;
     });
 
@@ -422,6 +412,6 @@ export function createUploadStore() {
   return {
     uploads,
     upload,
-    remove,
+    remove
   };
 }

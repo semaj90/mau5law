@@ -7,9 +7,7 @@ import type { Document } from '$lib/types';
 import { writable, get } from "svelte/store";
 import { browser } from "$app/environment";
 
-export interface CacheItem<T = any> {
-  data: T;
-  timestamp: number;
+export interface CacheItem<T = any> { data: T;, timestamp: number;
   ttl: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
   access_count: number;
@@ -23,9 +21,7 @@ export interface CacheItem<T = any> {
   checksum?: string;
 }
 
-export interface CacheStats {
-  hits: number;
-  misses: number;
+export interface CacheStats { hits: number;, misses: number;
   evictions: number;
   total_size: number;
   items_count: number;
@@ -35,9 +31,7 @@ export interface CacheStats {
   cache_efficiency: number;
 }
 
-export interface CachePerformanceMetrics {
-  hitRate: number;
-  averageItemSize: number;
+export interface CachePerformanceMetrics { hitRate: number;, averageItemSize: number;
   memoryEfficiency: number;
   totalItems: number;
   legalItemsRatio: number;
@@ -47,9 +41,7 @@ export interface CachePerformanceMetrics {
   evictionRate: number;
 }
 
-export interface SecurityConfig {
-  enableEncryption: boolean;
-  encryptPrivileged: boolean;
+export interface SecurityConfig { enableEncryption: boolean;, encryptPrivileged: boolean;
   maxPrivilegedCacheTime: number;
   auditLogging: boolean;
   accessControlValidation: boolean;
@@ -91,7 +83,7 @@ class AdvancedCacheManager {
     encryptPrivileged: true,
     maxPrivilegedCacheTime: 30 * 60 * 1000,
     auditLogging: true,
-    accessControlValidation: true,
+    accessControlValidation: true
   };
 
   constructor(config?: Partial<SecurityConfig>) {
@@ -338,7 +330,7 @@ class AdvancedCacheManager {
         });
         return data;
       } catch (error) {
-        console.error(`Failed to lazy load ${key}:`, error);
+        console.error(`Failed to lazy load ${key}: ', error);
         return null;
       } finally {
         this.pendingLoads.delete(key);
@@ -401,8 +393,8 @@ class AdvancedCacheManager {
     confidentiality_level?: string;
     tags?: string[];
     content_search?: string;
-  }): Promise<Array<{ key: string; item: CacheItem }>> {
-    const results: Array<{ key: string; item: CacheItem }> = [];
+  }): Promise<Array<{ key: string;, item: CacheItem }>> {
+    const results: Array<{ key: string;, item: CacheItem }> = [];
 
     for (const [key, item] of this.cache.entries()) {
       if (!item.legal_sensitive) continue;
@@ -475,8 +467,8 @@ class AdvancedCacheManager {
   async exportLegalData(options?: {
     include_privileged?: boolean;
     document_types?: string[];
-    date_range?: { start: number; end: number };
-  }): Promise<{ items: Array<any>; audit_log: Array<any> }> {
+    date_range?: { start: number;, end: number };
+  }): Promise<{ items: Array<any>;, audit_log: Array<any> }> {
     const {
       include_privileged = false,
       document_types = [],
@@ -513,7 +505,7 @@ class AdvancedCacheManager {
         confidentiality_level: item.confidentiality_level
       };
 
-      const exportItem: { key: string; metadata: Partial<CacheItem>; data?: any } = {
+      const exportItem: { key: string;, metadata: Partial<CacheItem>; data?: any } = {
         key,
         metadata
       };
@@ -566,7 +558,7 @@ class AdvancedCacheManager {
   }
 
   private async evictLeastValuable(): Promise<void> {
-    let leastValuable: { key: string; score: number } | null = null;
+    let leastValuable: { key: string;, score: number } | null = null;
     for (const [key, item] of this.cache.entries()) {
       if (item.confidentiality_level === 'privileged') continue;
       if (item.priority === 'critical' && this.cache.size > this.maxItems * 0.9) continue;
@@ -584,7 +576,7 @@ class AdvancedCacheManager {
   }
 
   private async evictOldestPrivileged(): Promise<void> {
-    let oldest: { key: string; timestamp: number } | null = null;
+    let oldest: { key: string;, timestamp: number } | null = null;
     for (const [key, item] of this.cache.entries()) {
       if (item.confidentiality_level === 'privileged') {
         if (!oldest || item.timestamp < oldest.timestamp) {
@@ -941,9 +933,7 @@ export const legalCacheUtils = {
   cacheLegalDocument: async <T,>(
     key: string,
     document: T,
-    options: {
-      document_type: 'evidence' | 'contract' | 'case_file';
-      confidentiality_level: 'public' | 'confidential' | 'privileged';
+    options: {, document_type: 'evidence' | 'contract' | 'case_file';, confidentiality_level: 'public' | 'confidential' | 'privileged';
       tags?: string[];
     }
   ) => {
@@ -968,7 +958,7 @@ export const legalCacheUtils = {
   exportForCompliance: (options?: {
     include_privileged?: boolean;
     document_types?: string[];
-    date_range?: { start: number; end: number };
+    date_range?: { start: number;, end: number };
   }) => {
     return advancedCache.exportLegalData(options);
   },

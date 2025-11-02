@@ -81,7 +81,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       processingMethod,
       ocrMetadata,
       processedAt,
-      captchaToken,
+      captchaToken
     } = body;
 
     // --- Modified anonymous handling: support client-side fallback & consent flow ---
@@ -99,9 +99,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             message: 'Saved locally — sign in to continue upload',
             hint: 'You can retry upload after signing in or solving CAPTCHA.',
             anonId,
-            processingTime: Math.round(processingTime),
+            processingTime: Math.round(processingTime)
           },
-          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': 'save-local' } }
+          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local` } }
         );
       }
 
@@ -147,7 +147,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const evidenceRecord = existingEvidence[0];
 
     // Authorization behavior:
-    // - If authenticated: warn if updating evidence not owned by them
+    // - If; authenticated: warn if updating evidence not owned by them
     // - If anonymous: create/assign anon id and prevent overwriting evidence uploaded by another user
     if (!isAnonymous) {
       if (evidenceRecord.uploadedBy && evidenceRecord.uploadedBy !== userId) {
@@ -170,9 +170,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     }
 
     // Define update shape
-    type OCRUpdateData = Partial<{
-      updatedAt: Date;
-      ocrText: string;
+    type OCRUpdateData = Partial<{ updatedAt: Date;, ocrText: string;
       ocrConfidence: number;
       ocrRegions: Array<Record<string, unknown>> | null;
       ocrEmbedding: string | null;
@@ -187,7 +185,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     // Build update data
     const updateData: OCRUpdateData = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     if (ocrText) updateData.ocrText = String(ocrText);
     if (ocrConfidence !== undefined) updateData.ocrConfidence = Number(ocrConfidence);
@@ -213,9 +211,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         const expiry = Date.now() + 60 * 60 * 1000; // 1 hour
 
         // typed metadata shape for anonymous uploads (avoids `any`)
-        type OCRMetadata = {
-          anon: true;
-          anonId: string;
+        type OCRMetadata = { anon: true;, anonId: string;
           anonExpiry: number;
           ingestQueued: boolean;
           claimable?: boolean;
@@ -272,8 +268,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             id,
             metadata: {
               ...jobMetadata,
-              anon: jobMetadata.anon ?? Boolean(isAnonymousFlag),
-            },
+              anon: jobMetadata.anon ?? Boolean(isAnonymousFlag)
+            }
           };
           await pool.enqueue(job);
           console.log(`Enqueued ingestion via sharedWorkerPool for evidence ${id}`);
@@ -315,14 +311,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Prepare headers; set anon cookie when we created one
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'X-Processing-Time': `${Math.round(processingTime)}ms`,
-    };
+      'X-Processing-Time': `${Math.round(processingTime)}ms` };
     if (setAnonCookie && anonId) {
       // short TTL cookie (3600s). Only set Secure if request appears to be HTTPS (x-forwarded-proto)
       const isHttps = (request.headers.get('x-forwarded-proto') || '').toLowerCase() === 'https';
       headers['Set-Cookie'] = `anon_id=${encodeURIComponent(anonId)}; Path=/; HttpOnly; Max-Age=3600; SameSite=Lax${
-        isHttps ? '; Secure' : ''
-      }`;
+        isHttps ? '; Secure' : `` }`;
     }
 
     // when returning response, include claim info if present
@@ -336,22 +330,21 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
               claimToken,
               claimUrl,
               expiresInHours: 24,
-              message: 'Temporary upload — claim this evidence after signing in.',
-            }
+              message: `Temporary upload — claim this evidence after signing in.` }
           : undefined,
         ocrProcessing: {
-          method: processingMethod,
+         , method: processingMethod,
           confidence: updateData.ocrConfidence ?? null,
           textLength: updateData.ocrText ? (updateData.ocrText as string).length : 0,
           regionsDetected: Array.isArray(updateData.ocrRegions) ? updateData.ocrRegions.length : 0,
           hasEmbedding: !!updateData.ocrEmbedding,
-          anonymous: isAnonymous,
+          anonymous: isAnonymous
         },
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 200,
-        headers,
+        headers
       }
     );
   } catch (err: any) {
@@ -368,7 +361,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const errorResponse = {
       error: statusCode !== 500 ? extractedMessage : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? extractedMessage : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -376,8 +369,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': `true` }
     });
   }
 };

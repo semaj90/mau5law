@@ -24,7 +24,7 @@ export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
             frameDelta: Math.round(stats.frameTime),
             gpuActive: stats.gpuMemoryUsage > 0,
             fallbackMode: stats.gpuMemoryUsage === 0,
-            note: 'webgpu-telemetry',
+            note: 'webgpu-telemetry'
           });
         }
         // if client was created, we don't stop it here; consumer can manage lifecycle

@@ -3,116 +3,72 @@ import { productionLogger } from '$lib/server/production-logger'
 import os from "os"
 import type { RequestHandler } from './$types.js'
 
-export interface LegalAiPlatformMetrics {
-  services: {
-    healthy: number;
+export interface LegalAiPlatformMetrics { services: {, healthy: number;
     total: number;
-    responseTime: {
-      avg: number;
-      p95: number;
+    responseTime: { avg: number;, p95: number;
       p99: number;
     };
   };
-  gpu: {
-    utilization: number;
-    memory: {
-      total: number;
-      used: number;
+  gpu: { utilization: number;, memory: { total: number;, used: number;
       free: number;
     };
     temperature: number;
     performance: string;
   };
-  database: {
-    connections: {
-      active: number;
+  database: { connections: {, active: number;
       idle: number;
       max: number;
     };
-    queryPerformance: {
-      avg: number;
-      p95: number;
+    queryPerformance: { avg: number;, p95: number;
       slowQueries: number;
     };
   };
-  caching: {
-    hitRate: number;
-    memoryUsage: number;
-    operations: {
-      gets: number;
-      sets: number;
+  caching: { hitRate: number;, memoryUsage: number;
+    operations: { gets: number;, sets: number;
       deletes: number;
     };
   };
-  ai: {
-    modelsLoaded: number;
-    inferenceSpeed: number; // tokens per second,
+  ai: { modelsLoaded: number;, inferenceSpeed: number; // tokens per second,
     queueDepth: number;
     averageLatency: number;
   };
 }
 
-export interface BenchmarkMetrics {
-  vectorSearch: {
-    latency: number;
+export interface BenchmarkMetrics { vectorSearch: {, latency: number;
     throughput: number;
     accuracy: number;
   };
-  documentProcessing: {
-    avgTime: number;
-    throughput: number;
+  documentProcessing: { avgTime: number;, throughput: number;
     successRate: number;
   };
-  aiAnalysis: {
-    responseTime: number;
-    tokensPerSecond: number;
+  aiAnalysis: { responseTime: number;, tokensPerSecond: number;
     accuracy: number;
   };
 }
 
-export interface PerformanceMetrics {
-  timestamp: string;
-  system: {
-    uptime: number;
-    loadAverage: number[];
-    cpuUsage: {
-      user: number;
-      system: number;
+export interface PerformanceMetrics { timestamp: string;, system: { uptime: number;, loadAverage: number[];
+    cpuUsage: { user: number;, system: number;
       idle: number;
     };
-    memory: {
-      total: number;
-      free: number;
+    memory: { total: number;, free: number;
       used: number;
       percentage: number;
     };
-    disk: {
-      usage: string;
-      available: string;
+    disk: { usage: string;, available: string;
     };
   };
-  application: {
-    nodeUptime: number;
-    memoryUsage: {
-      heapUsed: number;
-      heapTotal: number;
+  application: { nodeUptime: number;, memoryUsage: { heapUsed: number;, heapTotal: number;
       external: number;
       rss: number;
     };
-    eventLoop: {
-      delay: number;
-      utilization: number;
+    eventLoop: { delay: number;, utilization: number;
     };
-    gc: {
-      collections: number;
-      duration: number;
+    gc: { collections: number;, duration: number;
     };
   };
   legal_ai_platform: LegalAiPlatformMetrics;
   benchmarks: BenchmarkMetrics;
-  alerts: {
-    active: number;
-    warnings: string[];
+  alerts: { active: number;, warnings: string[];
     critical: string[];
   };
   processingTime: number;
@@ -157,18 +113,18 @@ export const GET: RequestHandler = async ({ url }) => {
         cpuUsage: {
           user: Math.round(cpuUsage.user / 1000),
           system: Math.round(cpuUsage.system / 1000),
-          idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000),
+          idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000)
         },
         memory: {
           total: Math.round(totalMemory / 1024 / 1024 / 1024),
           free: Math.round(freeMemory / 1024 / 1024 / 1024),
           used: Math.round(usedMemory / 1024 / 1024 / 1024),
-          percentage: Math.round(memoryPercentage),
+          percentage: Math.round(memoryPercentage)
         },
         disk: {
           usage: '45%',
-          available: '500GB',
-        },
+          available: '500GB'
+        }
       },
       application: {
         nodeUptime: Math.floor(nodeUptime),
@@ -176,21 +132,21 @@ export const GET: RequestHandler = async ({ url }) => {
           heapUsed: Math.round(processMemory.heapUsed / 1024 / 1024),
           heapTotal: Math.round(processMemory.heapTotal / 1024 / 1024),
           external: Math.round(processMemory.external / 1024 / 1024),
-          rss: Math.round(processMemory.rss / 1024 / 1024),
+          rss: Math.round(processMemory.rss / 1024 / 1024)
         },
         eventLoop: {
           delay: Math.round(eventLoopDelay),
-          utilization: Math.round(eventLoopUtilization),
+          utilization: Math.round(eventLoopUtilization)
         },
         gc: {
           collections: Math.floor(Math.random() * 100) + 50,
-          duration: Math.round(Math.random() * 10 + 2),
-        },
+          duration: Math.round(Math.random() * 10 + 2)
+        }
       },
       legal_ai_platform: platformMetrics,
       benchmarks,
       alerts,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
     // Log performance data
     productionLogger.info('📊 Performance metrics collected', {
@@ -198,7 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
       appMemory: `${metrics.application.memoryUsage.heapUsed}MB`,
       eventLoopDelay: `${metrics.application.eventLoop.delay}ms`,
       serviceHealth: `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
-      processingTime: metrics.processingTime,
+      processingTime: metrics.processingTime
     });
     return json(metrics, {
       headers: {
@@ -207,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Service-Health': `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
         'X-Processing-Time': `${metrics.processingTime}ms`,
         'Cache-Control': 'public, max-age=30', // 30-second cache
-      },
+      }
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : 'Unknown error';
@@ -217,7 +173,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         error: 'Performance metrics collection failed',
         details: message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -227,37 +183,32 @@ export const GET: RequestHandler = async ({ url }) => {
 async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatformMetrics> {
   // Simulate service health checks and metrics
   // TODO: Use `detailed` flag to include more granular metrics when available.
-  return {
-    services: {
-      healthy: 14, // Out of 16 core services
+  return { services: {, healthy: 14, // Out of 16 core services
       total: 16,
       responseTime: {
         avg: 45, // ms
         p95: 120,
-        p99: 250,
-      },
+        p99: 250
+      }
     },
     gpu: {
       utilization: 67, // %
       memory: {
         total: 8192, // MB
         used: 2800,
-        free: 5392,
+        free: 5392
       },
       temperature: 72, // Celsius
-      performance: 'optimal',
-    },
-    database: {
-      connections: {
-        active: 8,
+      performance: 'optimal` },
+    database: { connections: {, active: 8,
         idle: 12,
-        max: 100,
+        max: 100
       },
       queryPerformance: {
         avg: 15, // ms
         p95: 45,
-        slowQueries: 2,
-      },
+        slowQueries: 2
+      }
     },
     caching: {
       hitRate: 89.5, // %
@@ -265,31 +216,28 @@ async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatfor
       operations: {
         gets: 1250,
         sets: 340,
-        deletes: 28,
-      },
+        deletes: 28
+      }
     },
     ai: {
       modelsLoaded: 3,
       inferenceSpeed: 156, // tokens per second
       queueDepth: 2,
       averageLatency: 2800, // ms
-    },
+    }
   };
 }
 // Run performance benchmarks
 async function runPerformanceBenchmarks(detailed: boolean): Promise<BenchmarkMetrics> {
   if (!detailed) {
-    return {
-      vectorSearch: { latency: 0, throughput: 0, accuracy: 0 },
+    return { vectorSearch: {, latency: 0, throughput: 0, accuracy: 0 },
       documentProcessing: { avgTime: 0, throughput: 0, successRate: 0 },
-      aiAnalysis: { responseTime: 0, tokensPerSecond: 0, accuracy: 0 },
+      aiAnalysis: { responseTime: 0, tokensPerSecond: 0, accuracy: 0 }
     };
   }
   // Simulate various performance tests
   await new Promise(resolve => setTimeout(resolve, 50)); // Simulate work
-  return {
-    vectorSearch: {
-      latency: 42, // ms
+  return { vectorSearch: {, latency: 42, // ms
       throughput: 850, // queries per second
       accuracy: 94.7, // %
     },
@@ -302,7 +250,7 @@ async function runPerformanceBenchmarks(detailed: boolean): Promise<BenchmarkMet
       responseTime: 3200, // ms
       tokensPerSecond: 156,
       accuracy: 91.8, // %
-    },
+    }
   };
 }
 // Generate system alerts based on metrics
@@ -352,7 +300,7 @@ function generateSystemAlerts(
   return {
     active: warnings.length + critical.length,
     warnings,
-    critical,
+    critical
   };
 }
 // Calculate overall performance score

@@ -34,8 +34,7 @@ export type User = {
 export const DEV_STUB_USER: User = {
   id: '1',
   email: 'dev@local',
-  name: 'Developer',
-};
+  name: 'Developer` };
 // --- end added types ---
 // Define a small local type for SvelteKit locals.
 // SvelteKit does not export a concrete `Locals` type here, so use an extendable record.

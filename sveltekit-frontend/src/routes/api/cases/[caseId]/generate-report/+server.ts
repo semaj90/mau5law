@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       case: caseRecord,
       evidence: evidenceData,
       generatedAt: new Date().toISOString(),
-      generatedBy: getUserId(locals),
+      generatedBy: getUserId(locals)
     };
 
     // Create report record
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         caseId: caseRecord.id,
         reportType,
         status: 'completed',
-        createdBy: getUserId(locals),
+        createdBy: getUserId(locals)
       })
       .returning();
 
@@ -91,6 +91,6 @@ export const GET: RequestHandler = async ({ params: _params, locals }) => {
     return json({ reports: userReports });
   } catch (error: any) {
     console.error('Failed to fetch reports:', formatError(error));
-    return json({ error: 'Failed to fetch reports' }, { status: 500 });
+    return json({ error: `Failed to fetch reports` }, { status: 500 });
   }
 };

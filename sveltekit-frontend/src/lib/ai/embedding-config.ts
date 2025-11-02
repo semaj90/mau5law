@@ -2,9 +2,7 @@
  * Embedding Configuration for Legal AI
  * Defines embedding models with Gemma embeddings and nomic-embed-text fallback
  */
-export interface EmbeddingModelConfig {
-  id: string;
-  name: string;
+export interface EmbeddingModelConfig { id: string;, name: string;
   provider: 'ollama' | 'openai' | 'huggingface' | 'local';
   dimensions: number;
   maxTokens: number;
@@ -26,7 +24,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     latency: 100,
     accuracy: 0.9,
     specialized: true,
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding'],
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
   'embeddinggemma:latest': {
     id: 'embeddinggemma:latest',
@@ -37,7 +35,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     latency: 95,
     accuracy: 0.91,
     specialized: true,
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding'],
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
   // Fallback: nomic-embed-text (reliable backup, also 384-dim)
   'nomic-embed-text': {
@@ -49,7 +47,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     latency: 120,
     accuracy: 0.85,
     specialized: false,
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text'],
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text']
   },
   // Specialized legal embedding: 'legal-bert-embeddings': {
     id: 'legal-bert-embeddings',
@@ -60,13 +58,13 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     latency: 50,
     accuracy: 0.9,
     specialized: true,
-    capabilities: ['legal-text', 'case-law', 'legal-entity-extraction'],
-  },
+    capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
+  }
 };
 export const EMBEDDING_FALLBACK_CHAINS = {
   'legal-general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text', 'legal-bert-embeddings'],
   'legal-fast': ['embeddinggemma', 'legal-bert-embeddings', 'nomic-embed-text'],
-  'general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'],
+  'general': ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text']
 };
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',

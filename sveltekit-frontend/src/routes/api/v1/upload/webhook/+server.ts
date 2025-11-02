@@ -16,7 +16,7 @@ type RedisTyped = {
   setex(key: string, seconds: number, value: string): Promise<unknown>;
   lpush(key: string, value: string): Promise<number>;
   lrange(key: string, start: number, stop: number): Promise<string[]>;
-  publish(channel: string, message: string): Promise<number>;
+  publish(channel: string; message: string): Promise<number>;
 };
 
 const redis = redisService as unknown as RedisTyped;
@@ -54,9 +54,7 @@ type JobLike = {
 };
 
 // Use Record<string, unknown> instead of any
-export interface WebhookEvent {
-  eventName: string;
-  bucket: string;
+export interface WebhookEvent { eventName: string;, bucket: string;
   objectName: string;
   objectSize: number;
   contentType: string;
@@ -64,9 +62,7 @@ export interface WebhookEvent {
   caseId?: string;
   metadata?: Record<string, unknown>;
 }
-export interface IngestionJob {
-  id: string;
-  uploadId: string;
+export interface IngestionJob { id: string;, uploadId: string;
   bucket: string;
   objectName: string;
   fileName: string;
@@ -102,8 +98,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       return json(
         {
           success: false,
-          error: 'Invalid webhook payload',
-        },
+          error: 'Invalid webhook payload` },
         { status: 400 }
       );
     }
@@ -112,8 +107,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (webhookEvent.eventName !== 's3:ObjectCreated:Put' && webhookEvent.eventName !== 's3:ObjectCreated:Post') {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event',
-      });
+        message: 'Event ignored - not an object creation event` });
     }
     // Extract upload metadata from object name or Redis
     let uploadMetadata = null;
@@ -149,8 +143,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         contentLength: webhookEvent.objectSize || 0,
         bucket: webhookEvent.bucket,
         objectName: webhookEvent.objectName,
-        status: 'processing',
-      };
+        status: 'processing` };
     }
     // Create ingestion job
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -169,8 +162,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       metadata: {
         ...(uploadMetadata.metadata || {}),
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName,
-      },
+        webhookEvent: webhookEvent.eventName
+      }
     };
     // Store job in Redis for tracking
     const jobKey = `ingestion:${jobId}`;
@@ -194,30 +187,28 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           .values({
             caseId: uploadMetadata.caseId,
             title: uploadMetadata.fileName,
-            description: `Uploaded file: ${uploadMetadata.fileName}`,
+            description: `Uploaded; file: ${uploadMetadata.fileName}`,
             evidenceType: uploadMetadata.evidenceType || 'document',
             fileUrl: `${webhookEvent.bucket}/${webhookEvent.objectName}`,
             fileName: uploadMetadata.fileName,
             fileSize: uploadMetadata.contentLength,
             mimeType: uploadMetadata.contentType,
-            hash: null, // TODO: Calculate file hash
-            uploadedBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth
-            tags: [],
+            hash: null, // TODO: Calculate file hash; uploadedBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth; tags: [],
             chainOfCustody: [],
             labAnalysis: {},
             aiAnalysis: {
-              bucket: webhookEvent.bucket,
+             , bucket: webhookEvent.bucket,
               objectName: webhookEvent.objectName,
               ingestionJobId: jobId,
-              uploadId: uploadId,
+              uploadId: uploadId
             },
-            aiTags: [],
+            aiTags: []
           })
           .returning();
         // Update job with evidence ID
         ingestionJob.metadata = {
           ...ingestionJob.metadata,
-          evidenceId: evidenceEntry.id,
+          evidenceId: evidenceEntry.id
         };
         await redis.setex(jobKey, 86400, JSON.stringify(ingestionJob));
         console.log(`📋 Evidence entry created: ${evidenceEntry.id}`);
@@ -235,7 +226,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         objectName: webhookEvent.objectName,
         fileName: uploadMetadata.fileName,
         caseId: uploadMetadata.caseId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
     await redis.publish(
@@ -245,7 +236,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         fileName: uploadMetadata.fileName,
         contentType: uploadMetadata.contentType,
         caseId: uploadMetadata.caseId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
     const response = {
@@ -256,13 +247,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 'queued',
         fileName: uploadMetadata.fileName,
         bucket: webhookEvent.bucket,
-        objectName: webhookEvent.objectName,
+        objectName: webhookEvent.objectName
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName,
-      },
+        webhookEvent: webhookEvent.eventName
+      }
     };
     console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`);
     return json(response);
@@ -272,7 +263,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(
       {
         success: false,
-        error: err.message,
+        error: err.message
       },
       { status: 500 }
     );
@@ -326,12 +317,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       data: {
         jobs: jobs.slice(0, limit),
         count: jobs.length,
-        filters: { status, caseId, limit },
+        filters: { status, caseId, limit }
       },
       metadata: {
         timestamp: Date.now(),
-        clientAddress: getClientAddress(),
-      },
+        clientAddress: getClientAddress()
+      }
     };
     console.log(`✅ Retrieved ${jobs.length} ingestion jobs`);
     return json(response);
@@ -341,7 +332,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     return json(
       {
         success: false,
-        error: err.message,
+        error: err.message
       },
       { status: 500 }
     );

@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid request: errors array required',
+          error: 'Invalid; request: errors array required'
         },
         { status: 400 }
       );
@@ -26,9 +26,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+        'Content-Type': 'application/json` },
+      body: JSON.stringify(body)
     });
     if (!response.ok) {
       throw new Error(`Go service responded with ${response.status}: ${response.statusText}`);
@@ -43,12 +42,12 @@ export const POST: RequestHandler = async ({ request }) => {
         api_version: '2.0.0',
         go_service_url: apiUrl,
         sveltekit_integration: true,
-        performance_tier: getPerformanceTier(body.errors.length),
-      },
+        performance_tier: getPerformanceTier(body.errors.length)
+      }
     };
-    const stats = result as Partial<{ fixes_applied: number; remaining_errors: number }>;
+    const stats = result as Partial<{ fixes_applied: number;, remaining_errors: number }>;
     console.log(
-      `✅ TypeScript Optimizer: ${stats.fixes_applied ?? 'unknown'} fixes applied, ${stats.remaining_errors ?? 'unknown'} remaining`
+      `✅ TypeScript Optimizer: ${stats.fixes_applied ?? 'unknown'} fixes applied, ${stats.remaining_errors ?? 'unknown` } remaining`
     );
     return json(enhancedResult);
   } catch (error: any) {
@@ -59,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Internal server error during TypeScript optimization',
         details,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -82,7 +81,7 @@ export const GET: RequestHandler = async () => {
       go_service: {
         available: healthResponse.ok,
         health: healthData,
-        url: ENHANCED_API_BASE_URL,
+        url: ENHANCED_API_BASE_URL
       },
       performance: performanceData,
       capabilities: {
@@ -92,14 +91,13 @@ export const GET: RequestHandler = async () => {
         batch_processing: true,
         optimization_layers: ['template_matching', 'gpu_kernels', 'caching'],
         max_concurrent_fixes: 50,
-        supported_strategies: ['optimized', 'gpu_first', 'llama_thinking', 'template_only', 'hybrid'],
+        supported_strategies: ['optimized', 'gpu_first', 'llama_thinking', 'template_only', 'hybrid']
       },
       endpoints: {
         auto_solve: '/api/v1/typescript-optimizer',
         batch_fix: '/api/v1/typescript-optimizer/batch',
         gpu_accelerated: '/api/v1/typescript-optimizer/gpu',
-        benchmark: '/api/v1/typescript-optimizer/benchmark',
-      },
+        benchmark: '/api/v1/typescript-optimizer/benchmark` }
     });
   } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
@@ -109,7 +107,7 @@ export const GET: RequestHandler = async () => {
         status: 'degraded',
         error: 'Unable to connect to Go service',
         details,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

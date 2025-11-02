@@ -165,7 +165,7 @@ import type { Case } from '$lib/types';
             draggable={true}
             role="button"
             tabindex={0}
-            on:dragstart={e => handleDragStart(e, citation)}
+            ondragstart={e => handleDragStart(e, citation)}
             onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();

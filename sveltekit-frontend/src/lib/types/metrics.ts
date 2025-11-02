@@ -2,17 +2,13 @@
  * Shared metric types for client and server-side observability
  */
 }
-export interface CognitiveMetrics {
-  routingEfficiency: number;
-  cacheHitRatio: number;
+export interface CognitiveMetrics { routingEfficiency: number;, cacheHitRatio: number;
   gpuUtilization: number;
   consciousnessLevel: number;
   quantumCoherence: number;
   timestamp: string;
 }
-export interface RouteMetrics {
-  routeId: string;
-  pathname: string;
+export interface RouteMetrics { routeId: string;, pathname: string;
   loadTime: number;
   renderTime: number;
   hydrationTime?: number;
@@ -26,9 +22,7 @@ export interface RouteMetrics {
   timestamp: number;
   requestId?: string;
 }
-export interface TimingMetrics {
-  pageLoad: number;
-  domContentLoaded: number;
+export interface TimingMetrics { pageLoad: number;, domContentLoaded: number;
   firstContentfulPaint?: number;
   largestContentfulPaint?: number;
   firstInputDelay?: number;
@@ -40,55 +34,35 @@ export interface TimingMetrics {
   url: string;
   userAgent: string;
 }
-export interface ClientMetricsPayload {
-  metrics: RouteMetrics[];
-  timestamp: number;
+export interface ClientMetricsPayload { metrics: RouteMetrics[];, timestamp: number;
   userAgent: string;
   url: string;
 }
-export interface PerformanceMetrics {
-  overall: {
-    status: 'excellent' | 'good' | 'fair' | 'poor';
+export interface PerformanceMetrics { overall: {, status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
     timestamp: string;
   }
-  frontend: {
-    averageLoadTime: number;
-    averageRenderTime: number;
+  frontend: { averageLoadTime: number;, averageRenderTime: number;
     totalRequests: number;
-    webVitalsAverages: {
-      lcp: number;
-      fid: number;
+    webVitalsAverages: { lcp: number;, fid: number;
       cls: number;
       fcp: number;
     }
   }
-  backend: {
-    averageResponseTime: number;
-    requestsPerSecond: number;
+  backend: { averageResponseTime: number;, requestsPerSecond: number;
     errorRate: number;
     uptime: number;
   }
   cognitive: CognitiveMetrics;
 }
-export interface SystemMetrics {
-  health: PerformanceMetrics;
-  resources: {
-    memory: {
-      heapUsed: number;
+export interface SystemMetrics { health: PerformanceMetrics;, resources: { memory: {, heapUsed: number;
       heapTotal: number;
       external: number;
       rss: number;
     }
-    cpu: {
-      usage: number;
-      loadAverage: number[];
+    cpu: { usage: number;, loadAverage: number[];
     }
-    gpu?: {
-      utilization: number;
-      memory: {
-        used: number;
-        total: number;
+    gpu?: { utilization: number;, memory: { used: number;, total: number;
       }
       temperature: number;
     }
@@ -99,15 +73,11 @@ export interface SystemMetrics {
     microservices: Record<string, { status: string; responseTime?: number }>;
   }
 }
-export interface MetricsAggregation {
-  timeWindow: string;
-  totalRequests: number;
+export interface MetricsAggregation { timeWindow: string;, totalRequests: number;
   averageLoadTime: number;
   averageRenderTime: number;
   errorRate: number;
-  webVitalsAverages: {
-    lcp: number;
-    fid: number;
+  webVitalsAverages: { lcp: number;, fid: number;
     cls: number;
     fcp: number;
   }

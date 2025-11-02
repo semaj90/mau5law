@@ -25,9 +25,7 @@ type GPUCache = {
   storeVector?: (id: string, vector: Float32Array, metadata?: Record<string, unknown>) => Promise<void>;
 };
 
-type TermEntry = {
-  definition: string;
-  frequency: number;
+type TermEntry = { definition: string;, frequency: number;
   confidence: number;
   lastUsed: Date;
   contextEmbedding: Float32Array;
@@ -41,9 +39,7 @@ type SerializedTerm = {
   contextEmbedding?: number[] | null;
 };
 
-type SerializedInteraction = {
-  id: string;
-  timestamp: string;
+type SerializedInteraction = { id: string;, timestamp: string;
   userMessage: string;
   aiResponse: string;
   feedback: number;
@@ -81,13 +77,9 @@ type EmbeddingResponse = {
 };
 // --- end added types ---
 
-export interface UserDictionary {
-  userId: string;
-  legalTerms: Map<
+export interface UserDictionary { userId: string;, legalTerms: Map<
     string,
-    {
-      definition: string;
-      frequency: number;
+    { definition: string;, frequency: number;
       confidence: number;
       lastUsed: Date;
       contextEmbedding: Float32Array;
@@ -98,9 +90,7 @@ export interface UserDictionary {
   qloraCheckpoint: string; // Path to user's fine-tuned model,
   interactionHistory: ChatInteraction[];
 }
-export interface ChatInteraction {
-  id: string;
-  timestamp: Date;
+export interface ChatInteraction { id: string;, timestamp: Date;
   userMessage: string;
   aiResponse: string;
   feedback: number; // -1 to 1 (user satisfaction),
@@ -109,23 +99,17 @@ export interface ChatInteraction {
   processingTime: number;
   gpuCacheHit: boolean;
 }
-export interface SSRChatContext {
-  userId: string;
-  sessionId: string;
+export interface SSRChatContext { userId: string;, sessionId: string;
   userDictionary: UserDictionary;
   nesMemoryState: any; // Pre-loaded NES memory state
   gpuCacheState: any; // Pre-warmed GPU cache,
   preloadedResponses: Map<string, string>; // Common patterns
-  currentCase?: {
-    caseId: string;
-    documents: string[];
+  currentCase?: { caseId: string;, documents: string[];
     activeContext: Float32Array;
   };
 }
 // Add a small typed shape for pattern entries to avoid `any`
-type PatternItem = {
-  id: string | number;
-  pattern: string;
+type PatternItem = { id: string | number;, pattern: string;
   response: string;
 };
 /**
@@ -155,11 +139,11 @@ export class SSRQLorAGPUChatAssistant {
     const commonPatterns: Array<Pick<PatternItem, 'pattern' | 'response'>> = [
       {
         pattern: 'contract review',
-        response: 'I can help analyze contract terms, identify risks, and suggest modifications.',
+        response: 'I can help analyze contract terms, identify risks, and suggest modifications.'
       },
       { pattern: 'legal research', response: 'Let me search relevant case law and statutes for your jurisdiction.' },
       { pattern: 'document analysis', response: "I'll extract key information and identify potential issues." },
-      { pattern: 'case preparation', response: 'I can help organize evidence and build legal arguments.' },
+      { pattern: 'case preparation', response: `I can help organize evidence and build legal arguments.` }
     ];
     for (const [index, item] of commonPatterns.entries()) {
       const patternBuffer = new TextEncoder().encode(JSON.stringify(item));
@@ -177,8 +161,8 @@ export class SSRQLorAGPUChatAssistant {
           compressed: true,
           metadata: {
             // pass the Float32Array directly
-            vectorEmbedding: embeddedPattern,
-          },
+           , vectorEmbedding: embeddedPattern
+          }
         },
         patternBuffer.buffer,
         { preferredBank: 'CHR_ROM', compress: true }
@@ -192,7 +176,7 @@ export class SSRQLorAGPUChatAssistant {
     userId: string,
     sessionId: string,
     initialMessage?: string
-  ): Promise<{ ssrContext: SSRChatContext; prerenderedHTML: string; preloadedData: Record<string, unknown> }> {
+  ): Promise<{ ssrContext: SSRChatContext; prerenderedHTML: string;, preloadedData: Record<string, unknown> }> {
     console.log(`📱 Rendering SSR chat context for user ${userId}`);
     // Load or create user dictionary
     const userDictionary = await this.getUserDictionary(userId);
@@ -207,7 +191,7 @@ export class SSRQLorAGPUChatAssistant {
       // call via any to avoid TS errors if concrete implementation differs
       gpuCacheState: (this.gpuCache as any)?.getStats?.() ?? null,
       preloadedResponses: await this.generatePreloadedResponses(userDictionary),
-      currentCase: await this.getCurrentCaseContext(userId),
+      currentCase: await this.getCurrentCaseContext(userId)
     };
     // Cache context for real-time updates
     this.ssrContextCache.set(sessionId, ssrContext);
@@ -218,7 +202,7 @@ export class SSRQLorAGPUChatAssistant {
       userTerms: Array.from(userDictionary.legalTerms.entries()).slice(0, 50), // Most frequent
       commonPatterns: Array.from(ssrContext.preloadedResponses.entries()),
       gpuCacheReady: true,
-      nesMemoryReady: true,
+      nesMemoryReady: true
     };
     return { ssrContext, prerenderedHTML, preloadedData };
   }
@@ -244,10 +228,9 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({
-                  type: 'instant',
+                 , type: 'instant',
                   content: instantResponse,
-                  source: 'nes_memory',
-                })}\n\n`
+                  source: `nes_memory` })}\n\n`
               )
             );
           }
@@ -265,11 +248,10 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({
-                  type: 'cached',
+                 , type: 'cached',
                   content: cacheHit[0]?.metadata?.response ?? null,
                   similarity: cacheHit[0]?.similarity ?? 0,
-                  source: 'gpu_cache',
-                })}\n\n`
+                  source: `gpu_cache` })}\n\n`
               )
             );
           }
@@ -285,12 +267,11 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({
-                  type: 'chunk',
+                 , type: 'chunk',
                   content: chunk,
                   index,
                   total: chunks.length,
-                  source: 'qlora',
-                })}\n\n`
+                  source: `qlora` })}\n\n`
               )
             );
             // Small delay for streaming effect
@@ -302,21 +283,20 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({
-                  type: 'glyph',
+                 , type: 'glyph',
                   content: glyphData,
-                  source: 'neural_sprite',
-                })}\n\n`
+                  source: `neural_sprite` })}\n\n`
               )
             );
           }
           // 8. Store interaction for learning
           await this.storeInteraction(ssrContext, userMessage, qloraResponse);
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ type: 'complete' })}\n\n`));
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({, type: `complete` })}\n\n`));
           controller.close();
         } catch (error) {
           controller.error(error);
         }
-      },
+      }
     });
     return stream;
   }
@@ -344,7 +324,7 @@ export class SSRQLorAGPUChatAssistant {
                 frequency: typeof data?.frequency === 'number' ? data!.frequency! : 1,
                 confidence: typeof data?.confidence === 'number' ? data!.confidence! : 0.7,
                 lastUsed: data?.lastUsed ? new Date(data.lastUsed) : new Date(),
-                contextEmbedding: ctx,
+                contextEmbedding: ctx
               });
             }
           }
@@ -353,7 +333,7 @@ export class SSRQLorAGPUChatAssistant {
             Array.isArray(base.interactionHistory) && base.interactionHistory.length > 0
               ? (base.interactionHistory.map(i => ({
                   ...i,
-                  timestamp: i.timestamp ? new Date(i.timestamp) : new Date(),
+                  timestamp: i.timestamp ? new Date(i.timestamp) : new Date()
                 })) as ChatInteraction[])
               : [];
           return {
@@ -362,7 +342,7 @@ export class SSRQLorAGPUChatAssistant {
             preferredStyle: base.preferredStyle ?? 'adaptive',
             domainExpertise: Array.isArray(base.domainExpertise) ? base.domainExpertise : [],
             qloraCheckpoint: base.qloraCheckpoint ?? `models/qlora_${userId}.safetensors`,
-            interactionHistory: interactions,
+            interactionHistory: interactions
           } as UserDictionary;
         } catch {
           return {
@@ -371,7 +351,7 @@ export class SSRQLorAGPUChatAssistant {
             preferredStyle: 'adaptive',
             domainExpertise: [],
             qloraCheckpoint: `models/qlora_${userId}.safetensors`,
-            interactionHistory: [],
+            interactionHistory: []
           };
         }
       })();
@@ -385,7 +365,7 @@ export class SSRQLorAGPUChatAssistant {
       preferredStyle: 'adaptive',
       domainExpertise: [],
       qloraCheckpoint: `models/qlora_${userId}.safetensors`,
-      interactionHistory: [],
+      interactionHistory: []
     };
     this.userDictionaries.set(userId, newDictionary);
     return newDictionary;
@@ -404,7 +384,7 @@ export class SSRQLorAGPUChatAssistant {
         await gpuCache.storeVector(`prewarmed_${interaction.id}`, embedding, {
           response: interaction.aiResponse,
           feedback: interaction.feedback,
-          timestamp: interaction.timestamp.toISOString(),
+          timestamp: interaction.timestamp.toISOString()
         });
       }
     }
@@ -514,7 +494,7 @@ export class SSRQLorAGPUChatAssistant {
           frequency: 1,
           confidence: 0.7,
           lastUsed: new Date(),
-          contextEmbedding: embedding,
+          contextEmbedding: embedding
         });
       }
     }
@@ -527,12 +507,10 @@ export class SSRQLorAGPUChatAssistant {
   private async generateGlyph(
     messageEmbedding: Float32Array,
     response: string
-  ): Promise<{
-    id: string;
-    vertices: number[];
+  ): Promise<{ id: string;, vertices: number[];
     colors: number[];
     animation: string;
-    metadata: { complexity: number; confidence: number };
+    metadata: { complexity: number;, confidence: number };
   }> {
     // Create neural sprite for 3D visualization
     const glyphData = {
@@ -542,8 +520,8 @@ export class SSRQLorAGPUChatAssistant {
       animation: 'legal_pulse',
       metadata: {
         complexity: response.length / 100,
-        confidence: 0.8,
-      },
+        confidence: 0.8
+      }
     };
     return glyphData;
   }
@@ -554,8 +532,8 @@ export class SSRQLorAGPUChatAssistant {
     // Use your existing embedding service (nomic-embed-text)
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ text })
     });
     const result = (await response.json()) as EmbeddingResponse | null;
     const embArr = Array.isArray(result?.embedding) ? result!.embedding! : [];
@@ -627,12 +605,12 @@ export class SSRQLorAGPUChatAssistant {
         frequency: (value as TermEntry).frequency ?? null,
         confidence: (value as TermEntry).confidence ?? null,
         lastUsed: (value as TermEntry).lastUsed ? (value as TermEntry).lastUsed.toISOString() : null,
-        contextEmbedding: Array.from(((value as TermEntry).contextEmbedding ?? new Float32Array()) as number[]),
+        contextEmbedding: Array.from(((value as TermEntry).contextEmbedding ?? new Float32Array()) as number[])
       };
     }
     const interactionsSerializable = dictionary.interactionHistory.map(i => ({
       ...i,
-      timestamp: i.timestamp instanceof Date ? i.timestamp.toISOString() : String(i.timestamp),
+      timestamp: i.timestamp instanceof Date ? i.timestamp.toISOString() : String(i.timestamp)
     }));
     const serializable: SerializedUserDictionary = {
       userId: dictionary.userId,
@@ -640,7 +618,7 @@ export class SSRQLorAGPUChatAssistant {
       preferredStyle: dictionary.preferredStyle,
       domainExpertise: Array.isArray(dictionary.domainExpertise) ? dictionary.domainExpertise : [],
       qloraCheckpoint: dictionary.qloraCheckpoint,
-      interactionHistory: interactionsSerializable,
+      interactionHistory: interactionsSerializable
     };
     await lokiRedisCache.set(`user_dict:${dictionary.userId}`, JSON.stringify(serializable));
   }
@@ -658,7 +636,7 @@ export class SSRQLorAGPUChatAssistant {
           <div class="user-context">${context.userDictionary.domainExpertise.join(', ')}</div>
         </div>
         <div class="chat-messages" id="chat-messages">
-          ${initialMessage ? `<div class="user-message">${initialMessage}</div>` : ''}
+          ${initialMessage ? `<div class="user-message">${initialMessage}</div>` : `` }
         </div>
         <div class="chat-input-container">
           <input type="text" id="chat-input" placeholder="Ask me about legal matters..." />

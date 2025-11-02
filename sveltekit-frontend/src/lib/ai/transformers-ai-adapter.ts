@@ -13,9 +13,7 @@ if (browser) {
   env.backends.onnx.wasm.webgpu.powerPreference = 'high-performance';
 }
 
-export interface TransformersAIConfig {
-  modelName: string;
-  quantized: boolean;
+export interface TransformersAIConfig { modelName: string;, quantized: boolean;
   maxTokens: number;
   temperature: number;
   contextSize: number;
@@ -25,11 +23,7 @@ export interface TransformersAIConfig {
   modelPath?: string; // Optional, if not using default Xenova CDN
 }
 
-export interface TransformersAIResponse {
-  content: string;
-  metadata: {
-    tokensGenerated: number;
-    processingTime: number;
+export interface TransformersAIResponse { content: string;, metadata: { tokensGenerated: number;, processingTime: number;
     confidence: number;
     method: 'transformers.js' | 'webgpu';
     modelUsed: string;
@@ -55,7 +49,7 @@ export class TransformersAIAdapter {
       enableGPU: true,
       enableSIMD: true,
       enableMultiCore: true,
-      ...config,
+      ...config
     };
   }
 
@@ -168,8 +162,8 @@ export class TransformersAIAdapter {
           method: this.gpuAvailable && this.config.enableGPU ? 'webgpu' : 'transformers.js',
           modelUsed: this.config.modelName,
           fromCache: false,
-          gpuAccelerated: this.gpuAvailable && this.config.enableGPU,
-        },
+          gpuAccelerated: this.gpuAvailable && this.config.enableGPU
+        }
       };
       return response;
     } catch (error: any) {
@@ -181,9 +175,7 @@ export class TransformersAIAdapter {
   /**
    * Get health status of the adapter.
    */
-  getHealthStatus(): {
-    initialized: boolean;
-    modelLoaded: boolean;
+  getHealthStatus(): { initialized: boolean;, modelLoaded: boolean;
     gpuAvailable: boolean;
     gpuEnabled: boolean;
     modelName: string;
@@ -193,7 +185,7 @@ export class TransformersAIAdapter {
       modelLoaded: this.modelLoaded,
       gpuAvailable: this.gpuAvailable,
       gpuEnabled: this.config.enableGPU,
-      modelName: this.config.modelName,
+      modelName: this.config.modelName
     };
   }
 

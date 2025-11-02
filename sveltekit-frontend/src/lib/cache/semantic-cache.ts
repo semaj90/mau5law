@@ -18,12 +18,10 @@ interface RedisCacheClient {
 const SEMANTIC_CACHE_CONFIG = {
   similarityThreshold: 0.8, // Cosine similarity threshold for cache hits
   ttl: 3600, // 1 hour TTL for semantic cache entries
-  keyPrefix: 'semantic_cache:',
+  keyPrefix: 'semantic_cache:'
 };
 
-export interface SemanticCacheEntry {
-  query: string;
-  embedding: number[];
+export interface SemanticCacheEntry { query: string;, embedding: number[];
   response: string;
   metadata?: Record<string, unknown>;
 }
@@ -114,7 +112,7 @@ export class SemanticCache {
 		const MAX_KEYS_TO_CHECK = 200;
 		if (knownKeys.length > MAX_KEYS_TO_CHECK) knownKeys = knownKeys.slice(0, MAX_KEYS_TO_CHECK);
 
-		let bestMatch: { key: string; similarity: number; entry?: SemanticCacheEntry } | null = null;
+		let bestMatch: { key: string;, similarity: number; entry?: SemanticCacheEntry } | null = null;
 
 		for (const key of knownKeys) {
 			// Skip exact key if already handled
@@ -179,8 +177,8 @@ export class SemanticCache {
 			metadata: {
 				..._metadata,
 				timestamp: Date.now(),
-				ttl: SEMANTIC_CACHE_CONFIG.ttl,
-			},
+				ttl: SEMANTIC_CACHE_CONFIG.ttl
+			}
 		};
 		// many cache wrappers accept an object directly; otherwise stringify
 		try {

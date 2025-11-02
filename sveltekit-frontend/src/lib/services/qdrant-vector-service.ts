@@ -6,20 +6,14 @@ import type { SearchResult } from '$lib/types';
 
 import { GPU_RAG_CONFIG } from '$lib/config/gpu-rag-config';
 
-export interface QdrantCollectionConfig {
-  name: string;
-  vectorSize: number;
+export interface QdrantCollectionConfig { name: string;, vectorSize: number;
   distance: 'Cosine' | 'Euclid' | 'Dot';
   quantizationType: 'scalar' | 'product' | 'none';
   onDisk?: boolean;
 }
 
-export interface VectorPoint {
-  id: string | number;
-  vector: number[];
-  payload: {
-    documentId: string;
-    content: string;
+export interface VectorPoint { id: string | number;, vector: number[];
+  payload: { documentId: string;, content: string;
     filename?: string;
     tags?: string[];
     metadata?: Record<string, any>;
@@ -29,9 +23,7 @@ export interface VectorPoint {
   };
 }
 
-export interface SearchResult {
-  id: string | number;
-  score: number;
+export interface SearchResult { id: string | number;, score: number;
   payload: VectorPoint['payload'];
 }
 
@@ -55,48 +47,42 @@ class QdrantVectorService {
       vectorSize: config?.vectorSize || this.vectorDimensions,
       distance: config?.distance || 'Cosine',
       quantizationType: config?.quantizationType || 'scalar',
-      onDisk: config?.onDisk ?? false,
+      onDisk: config?.onDisk ?? false
     };
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: {
-            size: collectionConfig.vectorSize,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, vectors: {, size: collectionConfig.vectorSize,
             distance: collectionConfig.distance,
             // Scalar quantization configuration (4x-8x compression)
             quantization_config:
               collectionConfig.quantizationType === 'scalar'
-                ? {
-                    scalar: {
-                      type: 'int8', // 768 floats (3KB) -> 768 bytes
+                ? { scalar: {, type: 'int8', // 768 floats (3KB) -> 768 bytes
                       quantile: 0.99,
-                      always_ram: true,
-                    },
+                      always_ram: true
+                    }
                   }
                 : collectionConfig.quantizationType === 'product'
-                  ? {
-                      product: {
-                        compression: 'x16', // 16x compression
-                        always_ram: false,
-                      },
+                  ? { product: {, compression: 'x16', // 16x compression
+                        always_ram: false
+                      }
                     }
-                  : undefined,
+                  : undefined
           },
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000,
-            indexing_threshold: 10000,
+            indexing_threshold: 10000
           },
           hnsw_config: {
             m: 16,
             ef_construct: 100,
             full_scan_threshold: 10000,
-            on_disk: collectionConfig.onDisk,
-          },
-        }),
+            on_disk: collectionConfig.onDisk
+          }
+        })
       });
 
       if (!response.ok) {
@@ -121,20 +107,18 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          points: points.map(point => ({
-            id: point.id,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, points: points.map(point => ({, id: point.id,
             vector: point.vector,
             payload: {
               ...point.payload,
               // Auto-tag based on content
               tags: point.payload.tags || this.extractTags(point.payload.content),
               // Add timestamp if not present
-              timestamp: point.payload.timestamp || new Date().toISOString(),
-            },
-          })),
-        }),
+              timestamp: point.payload.timestamp || new Date().toISOString()
+            }
+          }))
+        })
       });
 
       if (!response.ok) {
@@ -161,7 +145,7 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           vector: queryVector,
           limit,
@@ -169,14 +153,14 @@ class QdrantVectorService {
           with_vector: false,
           filter: filter
             ? {
-                must: Object.entries(filter).map(([key, value]) => ({
+               , must: Object.entries(filter).map(([key, value]) => ({
                   key: `payload.${key}`,
-                  match: { value },
-                })),
+                  match: { value }
+                }))
               }
             : undefined,
-          score_threshold: 0.7,
-        }),
+          score_threshold: 0.7
+        })
       });
 
       if (!response.ok) {
@@ -188,7 +172,7 @@ class QdrantVectorService {
       return data.result.map((item: any) => ({
         id: item.id,
         score: item.score,
-        payload: item.payload,
+        payload: item.payload
       }));
     } catch (error) {
       console.error('Qdrant vector search failed:', error);
@@ -217,8 +201,7 @@ class QdrantVectorService {
     try {
       const collectionToDelete = name || this.collectionName;
       const response = await fetch(`${this.baseUrl}/collections/${collectionToDelete}`, {
-        method: 'DELETE',
-      });
+        method: `DELETE` });
       return response.ok;
     } catch (error) {
       console.error('Failed to delete collection:', error);
@@ -239,7 +222,7 @@ class QdrantVectorService {
       brief: /\b(brief|memorandum|motion)\b/i,
       citation: /\b(cite|citation|reference)\b/i,
       statute: /\b(statute|code|law|act)\b/i,
-      case /\b(case|proceeding|litigation)\b/i,
+      case /\b(case|proceeding|litigation)\b/i
     };
 
     for (const [type, pattern] of Object.entries(documentTypes)) {
@@ -251,7 +234,7 @@ class QdrantVectorService {
       party: /\b(plaintiff|defendant|respondent|appellant)\b/i,
       court: /\b(court|tribunal|judge|magistrate)\b/i,
       attorney: /\b(attorney|counsel|lawyer|solicitor)\b/i,
-      jurisdiction: /\b(federal|state|district|appellate|supreme)\b/i,
+      jurisdiction: /\b(federal|state|district|appellate|supreme)\b/i
     };
 
     for (const [entity, pattern] of Object.entries(entities)) {

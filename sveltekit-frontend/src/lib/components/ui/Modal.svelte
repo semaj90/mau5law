@@ -53,7 +53,7 @@
     onclick={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
-    transition:fade={{ duration: 200 }}
+    transitionfade={{ duration: 200 }}
   >
     <div
       class={['modal-content', sizeClasses].filter(Boolean).join(' ')}

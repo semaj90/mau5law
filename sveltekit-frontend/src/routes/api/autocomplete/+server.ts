@@ -9,22 +9,20 @@ import { poolShim } from '$lib/server/db-shim';
 import { createRedisInstance } from '$lib/server/redis';
 import { z } from 'zod';
 // Configuration
-const CONFIG = {
-  redis: {
-    url: process.env.REDIS_URL || 'redis://localhost:6379',
+const CONFIG = { redis: {, url: process.env.REDIS_URL || 'redis://localhost:6379'
   },
   database: {
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'password',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    database: process.env.DB_NAME || 'prosecutor_db',
+    database: process.env.DB_NAME || 'prosecutor_db'
   },
   autocomplete: {
     maxSuggestions: 10,
     minQueryLength: 2,
-    cacheTimeSeconds: 300,
-  },
+    cacheTimeSeconds: 300
+  }
 };
 // Validation schemas
 const AutocompleteRequestSchema = z.object({
@@ -32,7 +30,7 @@ const AutocompleteRequestSchema = z.object({
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   maxResults: z.number().min(1).max(20).optional(),
-  includeScores: z.boolean().optional(),
+  includeScores: z.boolean().optional()
 });
 
 // Define a type for suggestions to improve type safety
@@ -93,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       context = 'legal_phrase',
       jurisdiction,
       maxResults = CONFIG.autocomplete.maxSuggestions,
-      includeScores = false,
+      includeScores = false
     } = validatedRequest;
     // Check minimum query length
     if (query.length < CONFIG.autocomplete.minQueryLength) {
@@ -102,8 +100,8 @@ export const POST: RequestHandler = async ({ request }) => {
         meta: {
           query,
           total: 0,
-          processingTime: Date.now() - startTime,
-        },
+          processingTime: Date.now() - startTime
+        }
       });
     }
     console.log(`🔍 Autocomplete query: "${query}" (context: ${context})`);
@@ -123,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ({
               ...s,
               source: 'cache' as const,
-              boost: 1.2,
+              boost: 1.2
             }) as Suggestion
         )
       );
@@ -136,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ({
               ...s,
               source: 'database' as const,
-              boost: 1.0,
+              boost: 1.0
             }) as Suggestion
         )
       );
@@ -149,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ({
               ...s,
               source: 'semantic' as const,
-              boost: 0.8,
+              boost: 0.8
             }) as Suggestion
         )
       );
@@ -166,15 +164,15 @@ export const POST: RequestHandler = async ({ request }) => {
           ? s
           : {
               suggestion: s.suggestion,
-              context_type: s.context_type,
+              context_type: s.context_type
             }
       ),
       meta: {
         query,
         total: topSuggestions.length,
         sources: [...new Set(allSuggestions.map((s: Suggestion) => s.source))],
-        processingTime: Date.now() - startTime,
-      },
+        processingTime: Date.now() - startTime
+      }
     };
     return json(response);
   } catch (err: any) {
@@ -184,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           message: 'Invalid request format',
-          errors: (err as z.ZodError).errors,
+          errors: (err as z.ZodError).errors
         },
         { status: 400 }
       );
@@ -192,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Autocomplete service temporarily unavailable',
-        details: f.message,
+        details: f.message
       },
       { status: 500 }
     );
@@ -211,7 +209,7 @@ async function getCachedSuggestions(query: string): Promise<Suggestion[]> {
       }
     } catch (error: any) {
       const f = formatError(error);
-      console.warn(`Cache lookup failed for prefix: "${prefix}":`, f.message, f.details ?? '');
+      console.warn(`Cache lookup failed for prefix: "${prefix}": ', f.message, f.details ?? '');
     }
   }
   return suggestions;
@@ -248,7 +246,7 @@ async function getDatabaseSuggestions(
                 spr.frequency,
                 spr.correlation_strength as prosecution_correlation
             FROM semantic_phrases_ranking spr
-            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE: '%' || spr.phrase || '%'
+            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text; LIKE: '%' || spr.phrase || '%'
             WHERE spr.phrase ILIKE $1 AND ldp.jurisdiction = $4
             ORDER BY
                 spr.avg_prosecution_score DESC,
@@ -335,7 +333,7 @@ function rankSuggestions(suggestions: Suggestion[], query: string): Suggestion[]
       }
       return {
         ...s,
-        finalScore,
+        finalScore
       };
     })
     .sort((a, b) => b.finalScore - a.finalScore);
@@ -371,13 +369,12 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
         redis: 'connected',
-        database: 'connected',
-      },
+        database: 'connected` },
       stats: {
-        semantic_phrases: parseInt(phraseCount.rows[0].count),
-        legal_documents: parseInt(documentCount.rows[0].count),
+       , semantic_phrases: parseInt(phraseCount.rows[0].count),
+        legal_documents: parseInt(documentCount.rows[0].count)
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     const f = formatError(err);

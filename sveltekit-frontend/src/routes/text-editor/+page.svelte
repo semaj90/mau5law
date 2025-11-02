@@ -29,7 +29,7 @@ import type { Document } from '$lib/types';
   let editorValue: string = '';
   let documentTitle: string = 'Untitled Document';
   let lastSaved: Date | null = null;
-  let isModified: boolean = $state(false);
+  let isModified: boolean = false;
 
   // initialize a documentStats object and update reactively when editorValue changes
   let documentStats = {

@@ -5,21 +5,18 @@ const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:1
 const sql: ReturnType<typeof postgres> = postgres(connectionString, {
   max: 5,
   idle_timeout: 10,
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development'
 });
 
 export type QueryResultRow = Record<string, unknown>;
 export type QueryResult = { rows: QueryResultRow[] };
 
 // Minimal client/pool interfaces to reduce widespread `any` usage when migrating from node-postgres
-export interface ClientLike {
-  query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
+export interface ClientLike { query: (textOrConfig: string | {, text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   release?: () => void;
 }
 
-export interface PoolLike {
-  connect: () => Promise<ClientLike>;
-  query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
+export interface PoolLike { connect: () => Promise<ClientLike>;, query: (textOrConfig: string | {, text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   end?: () => Promise<void>;
 }
 
@@ -31,7 +28,7 @@ const sqlClient = sql as ReturnType<typeof postgres> & SqlWithClose;
 
 // Shared query normalization logic to DRY up code
 async function runQuery(
-  textOrConfig: string | { text: string; values?: any[] },
+  textOrConfig: string | {, text: string; values?: any[] },
   params?: any[]
 ): Promise<QueryResult> {
   const text = typeof textOrConfig === 'string' ? textOrConfig : textOrConfig.text;
@@ -76,7 +73,7 @@ export const poolShim: PoolLike = {
       query: runQuery,
       release: () => {
         // postgres-js manages connections internally; nothing to release
-      },
+      }
     } as ClientLike;
   },
   query: runQuery,
@@ -87,7 +84,7 @@ export const poolShim: PoolLike = {
     } else if (typeof sqlClient.close === 'function') {
       await sqlClient.close!();
     }
-  },
+  }
 };
 
 export default sql;

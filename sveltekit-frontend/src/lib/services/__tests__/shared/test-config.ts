@@ -15,9 +15,7 @@ export const TEST_CONFIG = {
     testMode: true
   },
   // Authentication settings
-  auth: {
-    testUser: {
-      email: 'test@legalai.com',
+  auth: { testUser: {, email: 'test@legalai.com',
       password: 'testPassword123',
       username: 'testuser',
       role: 'attorney'
@@ -48,7 +46,7 @@ export const TEST_CONFIG = {
     // Mock external services
     mockExternalApis: true
     // Rate limiting for tests
-    rateLimitBypass: true,
+    rateLimitBypass: true
   },
   // Integration test settings
   integration: {
@@ -124,7 +122,7 @@ export const TEST_CONFIG = {
     screenshots: {
       onFailure: true,
       onSuccess: false,
-      directory: 'test-results/screenshots',
+      directory: 'test-results/screenshots'
     }
   },
   // Logging and debugging

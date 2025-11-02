@@ -260,7 +260,7 @@ import type { Case } from '$lib/types';
         <CardContent>
           <div class="flex items-center gap-2">
             <span
-              class="w-3" h-3 rounded-full {localAIStatus === 'available'
+              class="w-3 h-3 rounded-full" {localAIStatus === 'available'
                 ? 'bg-green-500'
                 : localAIStatus === 'unavailable'
                   ? 'bg-red-500'
@@ -278,7 +278,7 @@ import type { Case } from '$lib/types';
         <CardContent>
           <div class="flex items-center gap-2">
             <span
-              class="w-3" h-3 rounded-full {cudaServiceStatus === 'available'
+              class="w-3 h-3 rounded-full" {cudaServiceStatus === 'available'
                 ? 'bg-green-500'
                 : cudaServiceStatus === 'unavailable'
                   ? 'bg-red-500'
@@ -467,7 +467,7 @@ import type { Case } from '$lib/types';
               </div>
               <div class="text-right">
                 <span
-                  class="px-2" py-1 rounded text-xs {result.acceleration === 'browser-local'
+                  class="px-2 py-1 rounded text-xs" {result.acceleration === 'browser-local'
                     ? 'bg-green-100 text-green-800'
                     : result.acceleration === 'cuda-tensorrt'
                       ? 'bg-purple-100 text-purple-800'

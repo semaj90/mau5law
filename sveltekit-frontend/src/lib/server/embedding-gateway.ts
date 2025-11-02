@@ -5,16 +5,14 @@ export interface EmbedGatewayOptions {
   model?: string;
   tags?: string[];
 }
-export interface EmbedGatewayResult {
-  embedding: number[];
-  backend: BackendId;
+export interface EmbedGatewayResult { embedding: number[];, backend: BackendId;
   model: string;
 }
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
   fetchFn: typeof fetch,
   text: string;
-  opts: EmbedGatewayOptions = {}
+ , opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {
   const model =
     opts?.model || "unknown" // @ts-ignore - Model property access ||

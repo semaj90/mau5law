@@ -9,9 +9,7 @@ type SetString = Set<string>;
 type MapStringTo<T> = Map<string, T>;
 
 /* Minimal types used by this module (replace/import concrete types from your codebase if available) */
-export interface MissingImportAnalysis {
-  missingFunctions: SetString;
-  missingClasses: SetString;
+export interface MissingImportAnalysis { missingFunctions: SetString;, missingClasses: SetString;
   missingMethods: SetString;
   missingTypes: SetString;
   missingModules: SetString;
@@ -25,23 +23,17 @@ export interface BarrelStoreGeneration {
   typeDefinitions: MapStringTo<string>;
   imports: MapStringTo<string[]>;
 }
-export interface WebFetchResolution {
-  implementations: MapStringTo<unknown>;
-  documentation: MapStringTo<string>;
+export interface WebFetchResolution { implementations: MapStringTo<unknown>;, documentation: MapStringTo<string>;
   examples: MapStringTo<unknown>;
   fallbacks: MapStringTo<unknown>;
 }
 
 /* New small types to avoid `any` */
-export interface FetchImplementation {
-  name: string;
-  implementation: string;
+export interface FetchImplementation { name: string;, implementation: string;
   types?: string;
   usage?: string;
 }
-export interface Context7Docs {
-  library: string;
-  topics: string;
+export interface Context7Docs { library: string;, topics: string;
   documentation: string;
   examples: any[];
   bestPractices: any[];
@@ -86,7 +78,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
       const resp = await fetch(`${base}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, input: texts }),
+        body: JSON.stringify({ model, input: texts })
       });
       if (resp.ok) {
         const json: any = await resp.json();
@@ -168,14 +160,14 @@ export class QdrantIndexer {
   constructor(private baseUrl = (process?.env?.QDRANT_URL as string) || 'http://localhost:6333') {}
   async upsert(
     collection: string,
-    vectors: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ) {
     try {
       if (typeof fetch !== 'undefined') {
         await fetch(`${this.baseUrl}/collections/${collection}/points?wait=true`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ points: vectors }),
+          body: JSON.stringify({, points: vectors })
         });
       }
       return { success: true, count: vectors.length };
@@ -190,7 +182,7 @@ export class QdrantIndexer {
         const resp = await fetch(`${this.baseUrl}/collections/${collection}/points/search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ vector, limit: topK }),
+          body: JSON.stringify({ vector, limit: topK })
         });
         if (resp.ok) return await resp.json();
       }
@@ -232,7 +224,7 @@ export class AutomatedBarrelStoreGenerator {
       missingTypes: new Set(),
       missingModules: new Set(),
       errorsByFile: new Map(),
-      errorsByCategory: new Map(),
+      errorsByCategory: new Map()
     };
     const errorLines = (errorOutput || '').split('\n').filter(line => line.includes('error TS'));
     for (const errorLine of errorLines) await this.parseErrorLine(errorLine, analysis);
@@ -245,14 +237,14 @@ export class AutomatedBarrelStoreGenerator {
       packages: new Map(),
       implementations: new Map(),
       typeDefinitions: new Map(),
-      imports: new Map(),
+      imports: new Map()
     };
     // mockResolution must conform to WebFetchResolution (use Maps)
     const mockResolution: WebFetchResolution = {
       implementations: new Map(),
       documentation: new Map(),
       examples: new Map(),
-      fallbacks: new Map(),
+      fallbacks: new Map()
     };
     generation.implementations.set('sveltekit', await this.generateSvelteKitStore(analysis, mockResolution, null));
     generation.implementations.set('database', await this.generateDatabaseStore(analysis, mockResolution, null));
@@ -267,7 +259,7 @@ export class AutomatedBarrelStoreGenerator {
       implementations: new Map(),
       documentation: new Map(),
       examples: new Map(),
-      fallbacks: new Map(),
+      fallbacks: new Map()
     };
     for (const item of missingItems) {
       if (this.resolutionCache.has(item)) {
@@ -281,7 +273,7 @@ export class AutomatedBarrelStoreGenerator {
       } catch (error: any) {
         const fallback = this.createFallbackImplementation(item);
         resolution.fallbacks.set(item, fallback);
-        console.warn(`fetchMissingImplementations fallback for ${item}:`, String(error));
+        console.warn(`fetchMissingImplementations fallback for ${item}: ', String(error));
       }
     }
     return resolution;
@@ -292,7 +284,7 @@ export class AutomatedBarrelStoreGenerator {
       svelteComplete: null,
       drizzleOrmDocs: null,
       xStateDocs: null,
-      bestPractices: new Map(),
+      bestPractices: new Map()
     };
     try {
       integration.svelteComplete = await this.fetchContext7Docs('svelte', 'runes|components|snippets');
@@ -419,16 +411,14 @@ export class AutomatedBarrelStoreGenerator {
       name: item,
       implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return null; };`,
       types: `export type ${item} = any;`,
-      usage: `// Usage: import { ${item} } from './barrel-store';`,
-    };
+      usage: '//; Usage: import { ${item} } from './barrel-store';' };
   }
 
   private createFallbackImplementation(item: string): FetchImplementation {
     return {
       name: item,
-      implementation: `export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return null; };`,
-      types: `export type ${item} = (...args: any[]) => any;`,
-    };
+      implementation: 'export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return null; };`,
+      types: `export type ${item} = (...args: any[]) => any;' };
   }
 
   private async fetchContext7Docs(library: string, topics: string): Promise<Context7Docs> {
@@ -437,7 +427,7 @@ export class AutomatedBarrelStoreGenerator {
       topics,
       documentation: `// Context7 docs placeholder for ${library}`,
       examples: [],
-      bestPractices: [],
+      bestPractices: []
     };
   }
 
@@ -460,8 +450,7 @@ export class AutomatedBarrelStoreGenerator {
     return `/**
  * AUTO-GENERATED SVELTEKIT BARREL STORE
  */
-export const svelte5Runes = {
-  state: <T>(initial: T) => ({ current: initial }),
+export const svelte5Runes = { state: <T>(initial: T) => ({, current: initial }),
   derived: <T>(computation: () => T) => ({ current: computation() }),
   effect: (fn: () => void | (() => void)) => fn()
 };
@@ -470,12 +459,10 @@ export const environmentVariables = {
   ${envs.map(e => `${e}: process?.env?.${e} || ''`).join(',\n  ')}
 };
 
-export const svelteKitUtils = {
-  page: { url: new URL('http://localhost:5173'), params: {}, route: { id: null } },
+export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), params: {}, route: { id: null } },
   navigating: null,
   browser: typeof window !== 'undefined',
-  dev: process?.env?.NODE_ENV === 'development'
-};
+  dev: process?.env?.NODE_ENV === 'development' };
 `;
   }
 
@@ -528,8 +515,7 @@ export const postgres = (options?: Record<string, unknown>) => ({
     return `/**
  * AUTO-GENERATED STATE MANAGEMENT BARREL STORE
  */
-export const xStateUtils = {
-  createMachine: (config: any) => ({ id: config?.id || 'machine', states: config?.states || {}, context: config?.context || {}, initial: config?.initial }),
+export const xStateUtils = { createMachine: (config: any) => ({, id: config?.id || 'machine', states: config?.states || {}, context: config?.context || {}, initial: config?.initial }),
   createActor: (machine: any) => ({ start: () => {}, stop: () => {}, send: (_evt: any) => {} }),
   assign: (assigner: any) => ({ type: 'assign', assigner }),
   spawn: (entity: any) => ({ type: 'spawn', entity })
@@ -541,9 +527,7 @@ export const xStateUtils = {
     return `/**
  * AUTO-GENERATED API INTEGRATION BARREL STORE
  */
-export const apiClients = {
-  createClient: (baseURL: string) => ({
-    get: async (_path: string) => ({ data: null, status: 200 }),
+export const apiClients = { createClient: (baseURL: string) => ({, get: async (_path: string) => ({ data: null, status: 200 }),
     post: async (_path: string, _data: any) => ({ data: null, status: 200 })
   }),
   Redis: class MockRedis {

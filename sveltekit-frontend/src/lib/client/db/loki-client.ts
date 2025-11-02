@@ -1,16 +1,14 @@
 // Lightweight LokiJS client-side cache for editor drafts.
 // Uses IndexedDB when available; falls back to memory if not.
 import Loki from 'lokijs';
-// NOTE: If you installed: "loki-indexed-adapter":
+// NOTE: If you; installed: "loki-indexed-adapter":
 //   npm i lokijs loki-indexed-adapter
 // …then uncomment the next two lines and use `adapter` below.
 // // @ts-ignore - package has no bundled types
 // import LokiIndexedAdapter from 'loki-indexed-adapter'
 // const adapter = new LokiIndexedAdapter('deeds_local_cache')
 // Interface for documents stored in the editorCache collection
-export interface EditorCacheDocument {
-  reportId: string;
-  caseId: string;
+export interface EditorCacheDocument { reportId: string;, caseId: string;
   content: any;
   html: string;
   wordCount?: number;
@@ -18,9 +16,7 @@ export interface EditorCacheDocument {
   updatedAt: string;
   synced: boolean;
   $loki?: number; // LokiJS internal ID
-  meta?: {
-    revision: number;
-    created: number;
+  meta?: { revision: number;, created: number;
     updated: number;
     version: number;
   };
@@ -30,7 +26,7 @@ const db = new Loki('deeds_offline_db', {
   autoload: true,
   autoloadCallback: init,
   autosave: true,
-  autosaveInterval: 4000,
+  autosaveInterval: 4000
 })
 function init() {
   if (!db.getCollection('editorCache')) {
@@ -40,11 +36,8 @@ function init() {
 function coll() {
   return db.getCollection<EditorCacheDocument>('editorCache') || db.addCollection<EditorCacheDocument>('editorCache')
 }
-export function saveDraft(entry: {
-  reportId: string
-  caseId: string
-  content: any
-  html: string
+export function saveDraft(entry: { reportId: string, caseId: string; content: any
+ , html: string
   wordCount?: number
   characterCount?: number
 }) {

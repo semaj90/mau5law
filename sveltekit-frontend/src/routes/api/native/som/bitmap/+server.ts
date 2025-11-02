@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     height: typeof body.height === 'number' ? body.height : undefined,
     palette,
     includeSvg,
-    cellPadding: typeof body.cellPadding === 'number' ? body.cellPadding : undefined,
+    cellPadding: typeof body.cellPadding === 'number' ? body.cellPadding : undefined
   });
 
   return json({
@@ -31,6 +31,6 @@ export const POST: RequestHandler = async ({ request }) => {
     checksum: bitmap.checksum,
     metadata: bitmap.metadata,
     heatmap: Array.from(bitmap.heatmap),
-    svg: includeSvg ? bitmap.svg ?? bitmapToDataUrl(bitmap) : undefined,
+    svg: includeSvg ? bitmap.svg ?? bitmapToDataUrl(bitmap) : undefined
   });
 };

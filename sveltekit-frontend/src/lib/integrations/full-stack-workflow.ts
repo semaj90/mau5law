@@ -24,8 +24,7 @@ function getMulticoreService(): any {
  */
 import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
 import {
-  flashAttentionMulticoreBridge, // removed unused `type FlashAttentionMulticoreRequest`
-} from '../services/flash-attention-multicore.js';
+  flashAttentionMulticoreBridge, // removed unused `type FlashAttentionMulticoreRequest` } from '../services/flash-attention-multicore.js';
 export interface FullStackWorkflowRequest {
   mode: 'error_analysis' | 'legal_processing' | 'system_diagnostic' | 'performance_test';
   data?: any; // avoid `any` here; cast locally where properties are needed
@@ -36,9 +35,7 @@ export interface FullStackWorkflowRequest {
     maxProcessingTime?: number;
   };
 }
-export interface FullStackWorkflowResult {
-  mode: string;
-  success: boolean;
+export interface FullStackWorkflowResult { mode: string;, success: boolean;
   results: {
     agentOrchestration?: any;
     gpuProcessing?: any;
@@ -46,9 +43,7 @@ export interface FullStackWorkflowResult {
     systemMetrics?: any;
     error?: string;
   };
-  performance: {
-    totalTime: number;
-    gpuUtilization: number;
+  performance: { totalTime: number;, gpuUtilization: number;
     agentsUsed: number;
     multicoreWorkers: number;
   };
@@ -62,9 +57,7 @@ type ErrorAnalysisData = {
   sampleErrors?: string[];
   [key: string]: any;
 };
-type TypedResult = {
-  type: string;
-  result: any;
+type TypedResult = { type: string;, result: any;
 };
 // New types for legal processing and generic processing payloads
 type LegalProcessingData = {
@@ -72,9 +65,7 @@ type LegalProcessingData = {
   context?: string[];
   [key: string]: any;
 };
-type ProcessingPayload = {
-  type: string;
-  result: any;
+type ProcessingPayload = { type: string;, result: any;
 };
 function normalizeErrorData(input: any): ErrorAnalysisData {
   if (typeof input === 'object' && input !== null) {
@@ -84,7 +75,7 @@ function normalizeErrorData(input: any): ErrorAnalysisData {
       totalErrors,
       categories: (obj.categories as Record<string, number>) ?? {},
       sampleErrors: (obj.sampleErrors as string[]) ?? [],
-      ...obj,
+      ...obj
     };
   }
   return { totalErrors: 0, categories: {}, sampleErrors: [] };
@@ -95,7 +86,7 @@ function asLegalProcessingData(input: any): LegalProcessingData {
     return {
       text: typeof obj.text === 'string' ? obj.text : undefined,
       context: Array.isArray(obj.context) ? obj.context.filter((c): c is string => typeof c === 'string') : undefined,
-      ...obj,
+      ...obj
     };
   }
   return {};
@@ -138,7 +129,7 @@ export class FullStackLegalAIWorkflow {
   private systemStatus = {
     orchestrator: false,
     flashattention: false,
-    multicore: false,
+    multicore: false
   };
   // cached number of multicore workers (keeps synchronous callers happy)
   private _multicoreWorkers = 0;
@@ -257,7 +248,7 @@ export class FullStackLegalAIWorkflow {
           result = await this.executePerformanceTest(request);
           break;
         default:
-          throw new Error(`Unknown workflow mode: ${request.mode}`);
+          throw new Error(`Unknown workflow; mode: ${request.mode}`);
       }
       // Ensure performance.totalTime is populated
       const totalTime = now() - startTime;
@@ -268,7 +259,7 @@ export class FullStackLegalAIWorkflow {
       return result;
     } catch (error: any) {
       const msg = getErrorMessage(error);
-      console.error(`❌ Workflow: '${request.mode}' failed:`, msg);
+      console.error(`❌ Workflow: '${request.mode}', failed: ', msg);
       return this.createErrorResult(request.mode, error, now() - startTime);
     }
   }
@@ -289,14 +280,14 @@ export class FullStackLegalAIWorkflow {
             svelte5_migration: 800,
             ui_component_mismatch: 600,
             css_unused_selectors: 400,
-            binding_issues: 162,
+            binding_issues: 162
           },
           sampleErrors: [
             'TS2322: Type mismatch in component props',
             'Svelte: Object literal may only specify known properties',
             'CSS: Unused selector warning',
-            'Binding: Cannot use bind: with non-bindable property',
-          ],
+            'Binding: Cannot use; bind: with non-bindable property'
+          ]
         } as ErrorAnalysisData)
     );
     const analysisPromises: Promise<TypedResult>[] = [];
@@ -310,8 +301,8 @@ export class FullStackLegalAIWorkflow {
           analysisType: 'document_processing',
           useMulticoreAnalysis: true,
           errorAnalysis: true,
-          autoFix: false,
-        },
+          autoFix: false
+        }
       };
       analysisPromises.push(
         comprehensiveOrchestrator
@@ -320,7 +311,7 @@ export class FullStackLegalAIWorkflow {
       );
     }
     if (this.systemStatus.flashattention && request.options?.useGPU !== false) {
-      const codeContext = [' }'];
+      const codeContext = [` }'];
       analysisPromises.push(
         flashAttentionMulticoreBridge
           .analyzeErrorsWithAttention(errorData, codeContext)
@@ -362,16 +353,16 @@ export class FullStackLegalAIWorkflow {
         agentOrchestration: results.orchestration,
         gpuProcessing: results.gpu,
         multicoreAnalysis: results.multicore,
-        systemMetrics: this.getSystemMetrics(),
+        systemMetrics: this.getSystemMetrics()
       },
       performance: {
         totalTime,
         gpuUtilization,
         agentsUsed,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations,
-      nextSteps,
+      nextSteps
     };
   }
   private async executeLegalProcessing(
@@ -389,21 +380,20 @@ export class FullStackLegalAIWorkflow {
     const processingPromises: Promise<ProcessingPayload>[] = [];
     // 1. Agent-based legal analysis
     if (this.systemStatus.orchestrator) {
-      const legalRequest: ComprehensiveAgentRequest = {
-        prompt: `Provide comprehensive legal analysis: ${legalText}`,
+      const legalRequest: ComprehensiveAgentRequest = { prompt: `Provide comprehensive legal, analysis: ${legalText}`,
         context: { legalContext: context },
         options: {
           agents: ['claude', 'crewai'],
           analysisType: 'legal_research',
           priority: request.options?.priority || 'medium',
           useMulticoreAnalysis: true,
-          includeContext7: true,
-        },
+          includeContext7: true
+        }
       };
       processingPromises.push(
         comprehensiveOrchestrator.executeComprehensiveAnalysis(legalRequest).then(res => ({
           type: 'legal_orchestration',
-          result: res as unknown,
+          result: res as unknown
         }))
       );
     }
@@ -416,13 +406,12 @@ export class FullStackLegalAIWorkflow {
           analysisType: 'legal',
           enableGPU: request.options?.useGPU !== false,
           useAgentOrchestration: true,
-          priority: request.options?.priority || 'medium',
-        },
+          priority: request.options?.priority || 'medium` }
       } as const;
       processingPromises.push(
         flashAttentionMulticoreBridge.processWithEnhancedAnalysis(flashRequest).then(res => ({
           type: 'legal_gpu',
-          result: res as unknown,
+          result: res as unknown
         }))
       );
     }
@@ -448,10 +437,10 @@ export class FullStackLegalAIWorkflow {
         // Replace redundant Boolean(...) with a concise null/undefined check
         gpuUtilization: results['legal_gpu'] != null ? 0.8 : 0,
         agentsUsed: (results.legal_orchestration as Record<string, unknown>)?.systemStatus?.['agentsExecuted'] || 0,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations: this.generateLegalProcessingRecommendations(results),
-      nextSteps: ['Review legal analysis results', 'Apply findings to case strategy'],
+      nextSteps: ['Review legal analysis results', 'Apply findings to case strategy']
     };
   }
   private async executeSystemDiagnostic(_request: FullStackWorkflowRequest): Promise<FullStackWorkflowResult> {
@@ -463,7 +452,7 @@ export class FullStackLegalAIWorkflow {
       // multicore: this.systemStatus.multicore ? context7MulticoreService.getSystemStatus() : null,
       // prefer live status if available, otherwise null
       multicore: this.systemStatus.multicore ? this.getMulticoreStatusIfAvailable() : null,
-      systemHealth: this.getSystemHealth(),
+      systemHealth: this.getSystemHealth()
     };
     const totalTime = now() - startTime;
     // Safely compute counts from unknown diagnostics with type guards
@@ -479,37 +468,35 @@ export class FullStackLegalAIWorkflow {
       mode: 'system_diagnostic',
       success: true,
       results: {
-        systemMetrics: diagnostics,
+        systemMetrics: diagnostics
       },
       performance: {
         totalTime,
         gpuUtilization: gpuEnabled ? 0.3 : 0,
         agentsUsed,
-        multicoreWorkers,
+        multicoreWorkers
       },
       recommendations: this.generateDiagnosticRecommendations(diagnostics),
-      nextSteps: ['Review system health', 'Apply recommended optimizations'],
+      nextSteps: ['Review system health', 'Apply recommended optimizations']
     };
   }
   private async executePerformanceTest(_request: FullStackWorkflowRequest): Promise<FullStackWorkflowResult> {
     console.log('🚀 Running performance test...');
     const startTime = now();
     // Use a typed promise shape instead of any
-    const testPromises: Promise<{ type: string; result: any }>[] = [];
+    const testPromises: Promise<{ type: string;, result: any }>[] = [];
     if (this.systemStatus.orchestrator) {
       testPromises.push(this.testAgentPerformance().then(result => ({ type: 'agent_performance', result })));
     }
     if (this.systemStatus.flashattention) {
       testPromises.push(this.testGPUPerformance().then(result => ({ type: 'gpu_performance', result })));
     }
-    const testResults = (await Promise.allSettled(testPromises)) as PromiseSettledResult<{
-      type: string;
-      result: any;
+    const testResults = (await Promise.allSettled(testPromises)) as PromiseSettledResult<{ type: string;, result: any;
     }>[];
     const results: Record<string, unknown> = {};
     testResults.forEach(r => {
       if (r.status === 'fulfilled') {
-        const payload = (r as PromiseFulfilledResult<{ type: string; result: any }>).value;
+        const payload = (r as PromiseFulfilledResult<{ type: string;, result: any }>).value;
         const { type, result } = payload;
         results[type] = result;
       }
@@ -525,10 +512,10 @@ export class FullStackLegalAIWorkflow {
           ((results['gpu_performance'] as Record<string, unknown>)?.['utilization'] as number | undefined) || 0,
         agentsUsed:
           ((results['agent_performance'] as Record<string, unknown>)?.['agentCount'] as number | undefined) || 0,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations: this.generatePerformanceRecommendations(results),
-      nextSteps: ['Review performance metrics', 'Apply optimizations'],
+      nextSteps: ['Review performance metrics', 'Apply optimizations']
     };
   }
   // Helper methods for generating recommendations
@@ -629,7 +616,7 @@ export class FullStackLegalAIWorkflow {
       const req: ComprehensiveAgentRequest = {
         prompt: 'Performance test query',
         context: {},
-        options: { agents: ['claude'], priority: 'low' },
+        options: { agents: ['claude'], priority: 'low' }
       };
       const result = await comprehensiveOrchestrator.executeComprehensiveAnalysis(req);
       const processingTime = now() - startTime;
@@ -638,13 +625,13 @@ export class FullStackLegalAIWorkflow {
         processingTime,
         agentCount: Array.isArray(req.options?.agents) ? req.options.agents.length : 1,
         averageResponseTime: processingTime,
-        result,
+        result
       };
     } catch (error: any) {
       return {
         success: false,
         error: getErrorMessage(error),
-        processingTime: now() - startTime,
+        processingTime: now() - startTime
       };
     }
   }
@@ -654,7 +641,7 @@ export class FullStackLegalAIWorkflow {
       const flashReq = {
         text: 'GPU performance test text',
         context: [],
-        options: { enableGPU: true, priority: 'low' },
+        options: { enableGPU: true, priority: 'low' }
       };
       const result = await flashAttentionMulticoreBridge.processWithEnhancedAnalysis(flashReq);
       const processingTime = now() - startTime;
@@ -663,14 +650,14 @@ export class FullStackLegalAIWorkflow {
         success: true,
         processingTime,
         utilization: typeof utilization === 'number' ? utilization : 0,
-        result,
+        result
       };
     } catch (error: any) {
       return {
         success: false,
         error: getErrorMessage(error),
         processingTime: now() - startTime,
-        utilization: 0,
+        utilization: 0
       };
     }
   }
@@ -679,16 +666,16 @@ export class FullStackLegalAIWorkflow {
       mode,
       success: false,
       results: {
-        error: getErrorMessage(error),
+        error: getErrorMessage(error)
       },
       performance: {
         totalTime,
         gpuUtilization: 0,
         agentsUsed: 0,
-        multicoreWorkers: 0,
+        multicoreWorkers: 0
       },
       recommendations: ['Check system status and retry'],
-      nextSteps: ['Review error logs', 'Initialize failed services'],
+      nextSteps: ['Review error logs', 'Initialize failed services']
     };
   }
   private getSystemStatus() {
@@ -698,7 +685,7 @@ export class FullStackLegalAIWorkflow {
       flashattention: this.systemStatus.flashattention,
       multicore: this.systemStatus.multicore,
       // return cached worker count (avoids calling non-existent exports synchronously)
-      multicoreWorkers: this.systemStatus.multicore ? this._multicoreWorkers : 0,
+      multicoreWorkers: this.systemStatus.multicore ? this._multicoreWorkers : 0
     };
   }
   private getSystemHealth(): 'excellent' | 'good' | 'degraded' | 'critical' {
@@ -717,7 +704,7 @@ export class FullStackLegalAIWorkflow {
         this.systemStatus.orchestrator ? 'Agent Orchestration' : null,
         this.systemStatus.flashattention ? 'GPU Acceleration' : null,
         this.systemStatus.multicore ? 'Multicore Processing' : null,
-      ].filter(Boolean) as string[],
+      ].filter(Boolean) as string[]
     };
   }
 } // end class FullStackLegalAIWorkflow
@@ -731,26 +718,26 @@ export async function runErrorAnalysis(errorData?: any): Promise<FullStackWorkfl
   return await fullStackWorkflow.executeWorkflow({
     mode: 'error_analysis',
     data: errorData,
-    options: { useGPU: true, enableAgents: true, priority: 'high' },
+    options: {, useGPU: true, enableAgents: true, priority: 'high' }
   });
 }
 export async function runLegalProcessing(text: string, context?: string[]): Promise<FullStackWorkflowResult> {
   return await fullStackWorkflow.executeWorkflow({
     mode: 'legal_processing',
     data: { text, context },
-    options: { useGPU: true, enableAgents: true, priority: 'medium' },
+    options: {, useGPU: true, enableAgents: true, priority: 'medium' }
   });
 }
 export async function runSystemDiagnostic(): Promise<FullStackWorkflowResult> {
   return await fullStackWorkflow.executeWorkflow({
     mode: 'system_diagnostic',
-    options: { priority: 'low' },
+    options: {, priority: 'low' }
   });
 }
 export async function runPerformanceTest(): Promise<FullStackWorkflowResult> {
   return await fullStackWorkflow.executeWorkflow({
     mode: 'performance_test',
-    options: { useGPU: true, enableAgents: true, priority: 'low' },
+    options: {, useGPU: true, enableAgents: true, priority: `low` }
   });
 }
 export default fullStackWorkflow;

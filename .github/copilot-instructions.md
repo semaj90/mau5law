@@ -531,7 +531,7 @@ export const xstateIntegration = {
     3. **Component from array/object**:
        ```svelte
        {#each components as comp}
-         <svelte:component this={comp.component} {...comp.props} />
+         <comp.component {...comp.props} />
        {/each}
        ```
 

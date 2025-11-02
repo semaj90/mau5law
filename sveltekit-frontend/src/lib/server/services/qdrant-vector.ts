@@ -8,12 +8,12 @@ const COLLECTION = env.QDRANT_COLLECTION || 'legal-documents';
 export const QdrantVectorService: IQdrantVectorService = {
   async upsertVector(id, vector, metadata) {
     await client.upsert(COLLECTION, {
-      points: [{ id, vector, payload: metadata }],
+      points: [{ id, vector, payload: metadata }]
     });
   },
   async searchVector(query, topK) {
     const res = await client.search(COLLECTION, { vector: query, limit: topK });
     // add explicit type for the mapped point to avoid implicit: 'any'
-    return (res || []).map((p: { id: string | number; score?: number }) => ({ id: String(p.id), score: p.score ?? 0 }));
-  },
+    return (res || []).map((p: {, id: string | number; score?: number }) => ({ id: String(p.id), score: p.score ?? 0 }));
+  }
 };

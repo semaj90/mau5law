@@ -6,9 +6,7 @@ import { json } from '@sveltejs/kit/server'; // Import json helper
  * Smart detection and analysis pipeline
  */
 
-export interface EvidenceItem {
-  id: string;
-  case_id: string;
+export interface EvidenceItem { id: string;, case_id: string;
   evidence_number: string;
   title: string;
   description?: string;
@@ -20,9 +18,7 @@ export interface EvidenceItem {
   created_at: string;
   updated_at: string;
 }
-export interface ProcessingJob {
-  id: string;
-  evidence_id: string;
+export interface ProcessingJob { id: string;, evidence_id: string;
   job_type: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   progress: number;
@@ -46,17 +42,17 @@ const mockEvidenceData: EvidenceItem[] = [
         detection_type: 'legal_entity',
         detected_value: 'liability',
         confidence_score: 0.95,
-        context: 'liability clauses',
+        context: 'liability clauses'
       },
       {
         detection_type: 'legal_entity',
         detected_value: 'indemnification',
         confidence_score: 0.88,
-        context: 'indemnification provisions',
+        context: 'indemnification provisions'
       },
     ],
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   },
 ];
 const mockProcessingJobs: ProcessingJob[] = [
@@ -69,9 +65,9 @@ const mockProcessingJobs: ProcessingJob[] = [
     result: {
       entities_found: 5,
       confidence_avg: 0.91,
-      processing_time_ms: 1250,
+      processing_time_ms: 1250
     },
-    created_at: new Date().toISOString(),
+    created_at: new Date().toISOString()
   },
 ];
 export const GET: RequestHandler = async ({ url }) => {
@@ -98,20 +94,20 @@ export const GET: RequestHandler = async ({ url }) => {
         total: filteredEvidence.length,
         limit,
         offset,
-        has_more: offset + limit < filteredEvidence.length,
+        has_more: offset + limit < filteredEvidence.length
       },
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         api_version: '1.0.0',
-        environment: 'production',
-      },
+        environment: 'production'
+      }
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -127,8 +123,8 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: `Missing required field: ${field}`,
-            timestamp: new Date().toISOString(),
+            error: `Missing required; field: ${field}`,
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -145,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'pending',
       extracted_text: data.extracted_text,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
     // Simulate database insert
     mockEvidenceData.push(newEvidence);
@@ -156,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
       job_type: 'smart_detection',
       status: 'queued',
       progress: 0,
-      created_at: new Date().toISOString(),
+      created_at: new Date().toISOString()
     };
     mockProcessingJobs.push(processingJob);
     // Simulate smart detection processing
@@ -172,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingJob.result = {
             entities_found: Math.floor(Math.random() * 10) + 1,
             confidence_avg: Math.random() * 0.3 + 0.7,
-            processing_time_ms: Math.floor(Math.random() * 2000) + 500,
+            processing_time_ms: Math.floor(Math.random() * 2000) + 500
           };
           // Update evidence status
           newEvidence.status = 'processed';
@@ -183,8 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
               detection_type: 'legal_entity',
               detected_value: 'contract',
               confidence_score: 0.92,
-              context: 'contract terms and conditions',
-            },
+              context: 'contract terms and conditions` },
           ];
         }, 1000);
       }, 500);
@@ -193,11 +188,11 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: true,
         data: {
-          evidence: newEvidence,
-          processing_job: processingJob,
+         , evidence: newEvidence,
+          processing_job: processingJob
         },
         message: 'Evidence item created and queued for processing',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -206,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -221,7 +216,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         {
           success: false,
           error: 'Evidence ID required',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 400 }
       );
@@ -233,7 +228,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         {
           success: false,
           error: 'Evidence not found',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 404 }
       );
@@ -242,20 +237,20 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     mockEvidenceData[evidenceIndex] = {
       ...mockEvidenceData[evidenceIndex],
       ...data,
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
     return json({
       success: true,
       data: mockEvidenceData[evidenceIndex],
       message: 'Evidence updated successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

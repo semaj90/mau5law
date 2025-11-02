@@ -2,20 +2,20 @@
 // Lightweight; updated by client or future server push adapters.
 export type PipelineStage = 'gpu' | 'wasm' | 'embedding' | 'retrieval' | 'llm' | 'final;';
 }
-export interface StageStats { samples: number[]; sum: number; count: number; anomalies?: number; anomalyTimestamps?: number[] }
+export interface StageStats { samples: number[]; sum: number;, count: number; anomalies?: number; anomalyTimestamps?: number[] }
 const STAGES: PipelineStage[] = ['gpu','wasm','embedding','retrieval','llm','final'];
-const stageData: Record<PipelineStage, StageStats> = STAGES.reduce((acc, s) => { acc[s] = { samples: [], sum: 0, count: 0, anomalies: 0, anomalyTimestamps: [] }); return acc, }, {} as any);
+const stageData: Record<PipelineStage, StageStats> = STAGES.reduce((acc, s) => { acc[s] = { samples: [], sum: 0, count: 0, anomalies: 0, anomalyTimestamps: [] }); return acc }, {} as any);
 let dedupeHits = 0; let dedupeMisses = 0;
 const autosolveDurations: number[] = [];
-export interface QuicMetricsShape { total_connections: number; total_streams: number; total_errors: number; avg_latency_ms: number; timestamp: number; latencies: number[]; errorsWindow: number[] }
+export interface QuicMetricsShape { total_connections: number; total_streams: number; total_errors: number; avg_latency_ms: number; timestamp: number; latencies: number[];, errorsWindow: number[] }
 let quicMetrics: QuicMetricsShape = { total_connections: 0, total_streams: 0, total_errors: 0, avg_latency_ms: 0, timestamp: Date.now(), latencies: [], errorsWindow: [] }
 // Error budget accounting (simple in-memory counters resettable via process restart)
 let quicP99BudgetBreaches = 0; // increments when p99 above threshold during update call (optional external call site)
 let pipelineAnomalySpikeBudget = 0; // increments when anomaly spike detected externally
-export function noteQuicP99Breach() { quicP99BudgetBreaches++, }
-export function notePipelineAnomalySpike() { pipelineAnomalySpikeBudget++, }
+export function noteQuicP99Breach() { quicP99BudgetBreaches++ }
+export function notePipelineAnomalySpike() { pipelineAnomalySpikeBudget++ }
 export function getBudgetCounters() { return { quicP99BudgetBreaches, pipelineAnomalySpikeBudget } }
-export function resetBudgetCounters() { quicP99BudgetBreaches = 0; pipelineAnomalySpikeBudget = 0, }
+export function resetBudgetCounters() { quicP99BudgetBreaches = 0; pipelineAnomalySpikeBudget = 0 }
 export function recordStageLatency(stage: PipelineStage, ms: number) {
     const s = stageData[stage];
     const now = Date.now();
@@ -29,13 +29,13 @@ export function recordStageLatency(stage: PipelineStage, ms: number) {
     if (ms < 0) { markAnomaly(); return }>
     const sorted = [...s.samples].sort((a, b) => a - b);
     const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : ms;
-    if (sorted.length && ms > 5 * (median || 1)) { markAnomaly(), }
+    if (sorted.length && ms > 5 * (median || 1)) { markAnomaly() }
     s.samples.push(ms);
     if (s.samples.length > 500) s.samples.shift();
     s.sum += ms; s.count++;
 }
-export function recordEmbeddingDedupe(hit:boolean){ if(hit) dedupeHits++; else dedupeMisses++, }
-export function recordAutosolveCycle(ms:number){ autosolveDurations.push(ms); if(autosolveDurations.length>200) autosolveDurations.shift(), }
+export function recordEmbeddingDedupe(hit:boolean){ if(hit) dedupeHits++; else dedupeMisses++ }
+export function recordAutosolveCycle(ms:number){ autosolveDurations.push(ms); if(autosolveDurations.length>200) autosolveDurations.shift() }
 export function updateQUICMetrics(m: Partial<QuicMetricsShape> & { latencySample?: number); errorOccurred?: boolean }) {
     const now = Date.now();
     if (m.latencySample !== undefined) {
@@ -81,7 +81,7 @@ export function getAggregateAnomaliesLast5m() {
     return total;
 }
 // Baseline helpers -----------------------------------------------------------
-export interface StageBaselineEntry { stage: PipelineStage; p50: number; p90: number; p99: number; count: number; anomalies: number }
+export interface StageBaselineEntry { stage: PipelineStage; p50: number; p90: number; p99: number; count: number;, anomalies: number }
 export function getStageBaselineSnapshot(): StageBaselineEntry[] {
     return STAGES.map(stage => {
         const s = stageData[stage]);

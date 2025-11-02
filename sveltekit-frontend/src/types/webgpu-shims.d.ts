@@ -7,9 +7,7 @@ declare module '$lib/machines/system-monitor' {
 }
 
 declare module '$lib/services/latency-logger' {
-  export type LatencyEntry = {
-    ts: number;
-    latency: number;
+  export type LatencyEntry = { ts: number;, latency: number;
     frameDelta?: number;
     gpuActive: boolean;
     fallbackMode: boolean;

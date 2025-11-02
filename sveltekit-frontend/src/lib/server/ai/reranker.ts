@@ -1,18 +1,12 @@
 import { cognitiveCache } from '$lib/server/cache';
 
-export interface Candidate {
-  id: string;
-  text: string;
+export interface Candidate { id: string;, text: string;
 }
 
-export interface RerankInput {
-  query: string;
-  candidates: Candidate[];
+export interface RerankInput { query: string;, candidates: Candidate[];
 }
 
-export interface RerankOutput {
-  id: string;
-  text: string;
+export interface RerankOutput { id: string;, text: string;
   score: number;
   vector?: number[];
 }

@@ -22,7 +22,7 @@ export const mockServices: LegalAIServiceMap = {
     sessionId: 'session-789',
     userId: 'attorney-123',
     caseData: {
-      caseId: 'case-456',
+     , caseId: 'case-456',
       title: 'People v. Defendant',
       status: 'active',
       priority: 'medium'
@@ -39,7 +39,7 @@ export const mockServices: LegalAIServiceMap = {
   updateCaseData: vi.fn().mockResolvedValue({,
     success: true,
     caseData: {
-      caseId: 'case-456',
+     , caseId: 'case-456',
       status: 'in_progress',
       priority: 'high',
       lastModified: Date.now()
@@ -56,7 +56,7 @@ export const mockServices: LegalAIServiceMap = {
     sessionId: 'session-789',
     evidenceItems: [],
     connections: [],
-    fabricState: { objects: [], version: 1 },
+    fabricState: {, objects: [], version: 1 },
     collaborators: []
   }),
   addEvidenceToCanvas,: vi.fn().mockResolvedValue({,
@@ -68,7 +68,7 @@ export const mockServices: LegalAIServiceMap = {
   moveEvidenceItem: vi.fn().mockResolvedValue({,
     success: true,
     itemId: 'evidence-1',
-    newPosition: { x: 200, y: 250 }
+    newPosition: {, x: 200, y: 250 }
   }),
   createEvidenceConnection,: vi.fn().mockResolvedValue({,
     success: true,
@@ -78,7 +78,7 @@ export const mockServices: LegalAIServiceMap = {
   }),
   syncCanvasState: vi.fn().mockResolvedValue({,
     success: true,
-    fabricState: { objects: [], version: 2, timestamp: Date.now() },
+    fabricState: {, objects: [], version: 2, timestamp: Date.now() }
   }),
   saveEvidenceCanvas,: vi.fn().mockResolvedValue({,
     success: true,
@@ -89,7 +89,7 @@ export const mockServices: LegalAIServiceMap = {
   processLegalDocument,: vi.fn().mockResolvedValue({,
     text: 'Sample legal document content containing case references and legal entities.',
     entities: [
-      { type: 'PERSON', text: 'John Doe', confidence: 0.95 },
+      {, type: 'PERSON', text: 'John Doe', confidence: 0.95 },
       { type: 'CASE_NUMBER', text: 'Case #12345', confidence: 0.98 }),
       { type: 'JURISDICTION', text,: 'State of California', confidenc,e: 0.92 }
     ],
@@ -110,7 +110,7 @@ export const mockServices: LegalAIServiceMap = {
       similarity: 0.92,
       title: 'People v. Smith - Similar Criminal Defense Case',
       jurisdiction: 'California',
-      year: 2023,
+      year: 2023
     });
     {
       caseId: 'case-2',
@@ -142,10 +142,10 @@ export const mockServices: LegalAIServiceMap = {
   detectPatterns: vi.fn().mockResolvedValue({,
     patterns: [
       {
-        type: 'TEMPORAL_INCONSISTENCY',
+       , type: 'TEMPORAL_INCONSISTENCY',
         confidence: 0.84,
         description: 'Timeline discrepancy between witness statements',
-        affectedEvidence: ['evidence-123', 'witness-456'],
+        affectedEvidence: ['evidence-123', 'witness-456']
       });
       {
         type: 'CREDIBILITY_ISSUE',
@@ -182,7 +182,7 @@ export const mockServices: LegalAIServiceMap = {
   grpcCaseManagement,: vi.fn().mockResolvedValue({,
     status: 'SUCCESS',
     data: {
-      caseId: 'grpc-case-123',
+     , caseId: 'grpc-case-123',
       processingTime: 45, // Expected improved performance;
       protocol: 'gRPC'
     }
@@ -201,7 +201,7 @@ export const mockServices: LegalAIServiceMap = {
   }),
   grpcVectorSearch,: vi.fn().mockResolvedValue({,
     results: [,
-      { id: 'grpc-result-1', similarity: 0.94, metadata: { source: 'gRPC' } }),
+      { id: 'grpc-result-1', similarity: 0.94, metadata: {, source: 'gRPC' } }),
       { id: 'grpc-result-2', similarity,: 0.88, metadat,a: { source: 'gRPC' } }
     ],
     responseTime: 35, // Target sub-100ms performance;

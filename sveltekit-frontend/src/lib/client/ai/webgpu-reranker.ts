@@ -7,7 +7,7 @@ self.onmessage = (event) => {
   const suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
   self.postMessage({ data: suggestions, error: 'worker-module-unavailable' });
 };
-`;
+';
 export async function webgpuRerank(query: string, suggestions: RerankSuggestion[], options?: RerankOptions): Promise<RerankSuggestion[]> {
   return new Promise<RerankSuggestion[]>((resolve) => {
     let worker: Worker | null = null;
@@ -20,7 +20,7 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         const blobUrl = URL.createObjectURL(
           new Blob([FALLBACK_WORKER_SOURCE], { type: 'application/javascript' })
         );
-        worker = new Worker(blobUrl, { type: 'classic' });
+        worker = new Worker(blobUrl, { type: `classic` });
       }
       worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
         const { data, error } = event.data ?? {};

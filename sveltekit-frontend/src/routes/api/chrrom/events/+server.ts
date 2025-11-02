@@ -3,9 +3,7 @@ import { json } from '@sveltejs/kit';
 import { predictor, mapActionToCHRContext } from '$lib/server/chrrom/predictor';
 import { generateCHRPatterns } from '$lib/server/chrrom/patterns';
 import { broadcastPatterns } from '$lib/server/chrrom/bus';
-interface EventBody {
-  userId: string;
-  action: string;
+interface EventBody { userId: string;, action: string;
   topK?: number;
 }
 export const POST: RequestHandler = async ({ request }) => {

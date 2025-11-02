@@ -19,7 +19,7 @@ export class GamingEvolutionManager {
       colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'],
       soundEnabled: true,
       particleEffects: true,
-      retroShaders: true,
+      retroShaders: true
     };
   }
   static getInstance(config: ProgressiveGamingConfig): GamingEvolutionManager {
@@ -33,14 +33,14 @@ export class GamingEvolutionManager {
       ...this.currentState,
       currentEra: era,
       era: era,
-      isTransitioning: true,
+      isTransitioning: true
     };
     this.notifySubscribers();
     // Simulate transition delay
     await new Promise(resolve => setTimeout(resolve, 100));
     this.currentState = {
       ...this.currentState,
-      isTransitioning: false,
+      isTransitioning: false
     };
     this.notifySubscribers();
   }
@@ -65,7 +65,7 @@ export class GamingEvolutionManager {
       memory: 8,
       gpu: 'integrated',
       webgl: true,
-      webgpu: false,
+      webgpu: false
     };
   }
   getConfig(): ProgressiveGamingConfig {

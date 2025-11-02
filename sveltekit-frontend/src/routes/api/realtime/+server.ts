@@ -1,14 +1,10 @@
 import type { RequestHandler } from './$types.js';
 
 // Define types for SSE messages
-interface WelcomeMessage {
-  type: 'welcome';
-  ts: number;
+interface WelcomeMessage { type: 'welcome';, ts: number;
 }
 
-interface KeepaliveMessage {
-  type: 'keepalive';
-  ts: number;
+interface KeepaliveMessage { type: 'keepalive';, ts: number;
 }
 
 type SSEMessage = WelcomeMessage | KeepaliveMessage;
@@ -21,7 +17,7 @@ export const GET: RequestHandler = async () => {
   clients.add(writer);
   // Send welcome and keepalive
   const send = (
-    obj: SSEMessage // Changed: 'any' to: 'SSEMessage'
+    obj: SSEMessage // Changed: 'any'; to: 'SSEMessage'
   ) => writer.write(`data: ${JSON.stringify(obj)}\n\n`);
   send({ type: 'welcome', ts: Date.now() });
   const keep = setInterval(() => send({ type: 'keepalive', ts: Date.now() }), 30000);
@@ -36,8 +32,7 @@ export const GET: RequestHandler = async () => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-    },
+      Connection: 'keep-alive` }
   });
 };
 export const POST: RequestHandler = async ({ request }) => {
@@ -51,9 +46,9 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (e: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     return new Response(JSON.stringify({ ok: false, error: String(e) }), {
-      status: 400,
+      status: 400
     });
   }
 };

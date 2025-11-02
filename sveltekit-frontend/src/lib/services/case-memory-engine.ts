@@ -7,32 +7,22 @@ import { cacheManager } from './cache-layer-manager.js';
 
 // Case-Based Temporal Memory System for Local LLM Learning
 // Stores user interaction patterns, case progression, and builds contextual memory
-export interface CaseMemoryContext {
-  case_id: string;
-  user_id: string;
-  temporal_context: {
-    session_start: number;
-    last_interaction: number;
+export interface CaseMemoryContext { case_id: string;, user_id: string;
+  temporal_context: { session_start: number;, last_interaction: number;
     total_session_time: number;
     interaction_frequency: number;
   };
-  learning_metrics: {
-    user_expertise_level: 'novice' | 'intermediate' | 'expert';
-    case_complexity: number;
+  learning_metrics: { user_expertise_level: 'novice' | 'intermediate' | 'expert';, case_complexity: number;
     interaction_patterns: string[];
     preferred_response_style: string;
   };
-  memory_degrees: {
-    immediate: Interaction[]; // Last 5 interactions
-    short_term: Interaction[]; // Last hour
+  memory_degrees: { immediate: Interaction[]; // Last 5 interactions, short_term: Interaction[]; // Last hour
     medium_term: Interaction[]; // Last day
     long_term: Interaction[]; // Last week+
   };
 }
 
-export interface SelfPromptRecommendation {
-  id: string;
-  type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
+export interface SelfPromptRecommendation { id: string;, type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
   confidence: number;
   reasoning: string;
   prompt_template: string;
@@ -43,9 +33,7 @@ export interface SelfPromptRecommendation {
 
 type InteractionType = 'chat' | 'search' | 'document_view' | 'analysis' | 'edit';
 
-export interface Interaction {
-  id: string;
-  case_id: string;
+export interface Interaction { id: string;, case_id: string;
   user_id: string;
   type: InteractionType;
   content: string;
@@ -59,9 +47,7 @@ export interface Interaction {
 type UserExpertise = 'novice' | 'intermediate' | 'expert';
 type SessionId = string;
 
-interface UserPatternAnalysis {
-  expertise_level: UserExpertise;
-  patterns: string[];
+interface UserPatternAnalysis { expertise_level: UserExpertise;, patterns: string[];
   response_style: string;
 }
 
@@ -75,9 +61,7 @@ interface ResearchGap {
   urgency?: 'immediate' | 'soon' | 'background';
 }
 
-interface DocumentSummary {
-  id: string;
-  title: string;
+interface DocumentSummary { id: string;, title: string;
   potential_relevance?: number;
 }
 
@@ -102,7 +86,7 @@ class LLMSelfLearningModel {
         case_id: context.case_id,
         user_id: context.user_id,
         interactions: interactions.length,
-        outcomesCount: outcomes.length,
+        outcomesCount: outcomes.length
       });
       return;
     } catch {
@@ -155,24 +139,22 @@ export class CaseMemoryEngine {
         session_start: this.findSessionStart(interactions, now),
         last_interaction: interactions[0]?.timestamp ?? now,
         total_session_time: this.calculateSessionTime(interactions, now),
-        interaction_frequency: this.calculateFrequency(interactions),
+        interaction_frequency: this.calculateFrequency(interactions)
       },
       learning_metrics: {
         user_expertise_level: patterns.expertise_level,
         case_complexity: await this.assessCaseComplexity(case_id),
         interaction_patterns: patterns.patterns,
-        preferred_response_style: patterns.response_style,
+        preferred_response_style: patterns.response_style
       },
-      memory_degrees: memoryDegrees,
+      memory_degrees: memoryDegrees
     };
   }
 
   // Store new interaction and update memory context
-  async recordInteraction(params: {
-    case_id: string;
-    user_id: string;
+  async recordInteraction(params: { case_id: string;, user_id: string;
     interaction_type: InteractionType;
-    content: string;
+   , content: string;
     response?: string;
     metadata?: Record<string, unknown>;
   }) {
@@ -187,7 +169,7 @@ export class CaseMemoryEngine {
       response,
       metadata: { ...(metadata ?? {}), timestamp: now },
       embedding: await this.generateInteractionEmbedding(content, response),
-      timestamp: now,
+      timestamp: now
     };
 
     try {
@@ -240,7 +222,7 @@ export class CaseMemoryEngine {
             case_id,
             user_id,
             recommendations,
-            trigger_interaction: interaction.id,
+            trigger_interaction: interaction.id
           });
         } else {
           console.debug('rabbitmq.publishRecommendations not available');
@@ -253,7 +235,7 @@ export class CaseMemoryEngine {
     return {
       interaction_stored: true,
       recommendations_generated: recommendations.length,
-      memory_updated: true,
+      memory_updated: true
     };
   }
 
@@ -293,14 +275,13 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.8,
         reasoning: 'User performed multiple searches; deeper analysis may be useful',
-        prompt_template: `Based on your recent searches about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
+        prompt_template: `Based on your recent searches; about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
         context_variables: {
           search_query: interaction.content,
-          search_count: interactionTypes.filter(t => t === 'search').length,
+          search_count: interactionTypes.filter(t => t === 'search').length
         },
         estimated_value: 0.7,
-        timing_suggestion: 'immediate',
-      });
+        timing_suggestion: 'immediate` });
     }
 
     // Pattern: User viewed documents -> suggest synthesis
@@ -312,11 +293,10 @@ export class CaseMemoryEngine {
           type: 'next_action',
           confidence: 0.75,
           reasoning: 'User reviewed multiple documents; synthesis recommended',
-          prompt_template: `I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,
+          prompt_template: 'I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,
           context_variables: { document_count: viewedDocs.length, case_id: context.case_id },
           estimated_value: 0.8,
-          timing_suggestion: 'immediate',
-        });
+          timing_suggestion: 'immediate` });
       }
     }
 
@@ -327,14 +307,13 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.6,
         reasoning: 'Extended session detected; a summary may help',
-        prompt_template: `You've been working on this case for over 2 hours. Would you like a summary of what we've covered and suggested next steps?`,
+        prompt_template: 'You've been working on this case for over 2 hours. Would you like a summary of what we've covered and suggested next steps?`,
         context_variables: {
           session_duration: context.temporal_context.total_session_time,
-          interaction_count: recentInteractions.length,
+          interaction_count: recentInteractions.length
         },
         estimated_value: 0.6,
-        timing_suggestion: 'soon',
-      });
+        timing_suggestion: 'soon` });
     }
 
     return recommendations;
@@ -350,7 +329,7 @@ export class CaseMemoryEngine {
         queryEmbedding: caseEmbedding,
         collection: 'cases',
         limit: 5,
-        scoreThreshold: 0.7,
+        scoreThreshold: 0.7
       });
 
       const results = (similarCases?.results ?? []).slice(0, 1);
@@ -362,15 +341,14 @@ export class CaseMemoryEngine {
           type: 'related_case',
           confidence: score,
           reasoning: `Found similar case with ${(score * 100).toFixed(1)}% similarity`,
-          prompt_template: `I found a case similar to yours: "${topCase.payload?.title ?? 'Unknown'}". Would you like an analysis of applicable approaches?`,
+          prompt_template: 'I found a case similar to; yours: "${topCase.payload?.title ?? 'Unknown` }". Would you like an analysis of applicable approaches?`,
           context_variables: {
             related_case_id: topCase.id,
             similarity_score: score,
-            key_points: topCase.payload?.key_similarities ?? [],
+            key_points: topCase.payload?.key_similarities ?? []
           },
           estimated_value: score,
-          timing_suggestion: 'background',
-        });
+          timing_suggestion: 'background` });
       }
     } catch (err) {
       console.warn('findRelatedCaseRecommendations error:', String(err));
@@ -388,15 +366,14 @@ export class CaseMemoryEngine {
         type: 'research_suggestion',
         confidence: gap.confidence ?? 0.5,
         reasoning: gap.reasoning ?? 'Potential gap identified',
-        prompt_template: `I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,
+        prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,
         context_variables: {
           research_area: gap.area,
           importance_level: gap.importance,
-          suggested_sources: gap.sources ?? [],
+          suggested_sources: gap.sources ?? []
         },
         estimated_value: gap.potential_impact ?? 0.5,
-        timing_suggestion: gap.urgency ?? 'background',
-      });
+        timing_suggestion: gap.urgency ?? 'background` });
     }
     return recommendations;
   }
@@ -412,14 +389,14 @@ export class CaseMemoryEngine {
         type: 'document_analysis',
         confidence: 0.7,
         reasoning: 'Unanalyzed documents may contain important evidence',
-        prompt_template: `I see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,
+        prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,
         context_variables: {
           document_id: topDoc.id,
           document_title: topDoc.title,
-          potential_relevance: topDoc.potential_relevance,
+          potential_relevance: topDoc.potential_relevance
         },
         estimated_value: 0.6,
-        timing_suggestion: 'background',
+        timing_suggestion: 'background'
       });
     }
     return recommendations;
@@ -463,8 +440,7 @@ export class CaseMemoryEngine {
     return {
       expertise_level: expertise,
       patterns,
-      response_style: 'detailed_with_examples',
-    };
+      response_style: 'detailed_with_examples` };
   }
 
   private buildMemoryDegrees(interactions: Interaction[], now: number) {
@@ -475,7 +451,7 @@ export class CaseMemoryEngine {
       immediate: interactions.slice(0, 5),
       short_term: interactions.filter(i => now - (i.timestamp ?? now) < oneHour),
       medium_term: interactions.filter(i => now - (i.timestamp ?? now) < oneDay),
-      long_term: interactions.filter(i => now - (i.timestamp ?? now) < oneWeek),
+      long_term: interactions.filter(i => now - (i.timestamp ?? now) < oneWeek)
     };
   }
 

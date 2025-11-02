@@ -21,15 +21,11 @@ interface RedisLike {
   quit(): Promise<void>;
 }
 import { logger } from '$lib/utils/logger';
-export interface VectorSearchResult {
-  id: string;
-  score: number;
+export interface VectorSearchResult { id: string;, score: number;
   payload: any;
   vector?: number[];
 }
-export interface DocumentVector {
-  id: string;
-  vector: number[];
+export interface DocumentVector { id: string;, vector: number[];
   payload: any;
   metadata?: any;
 }
@@ -47,7 +43,7 @@ export class RedisVectorService {
       port: parseInt((env.REDIS_PORT as string) || '4005', 10),
       password: env.REDIS_PASSWORD,
       db: parseInt((env.REDIS_DB as string) || '0', 10),
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 3
     };
     const options: RedisOptions = url ? { ...baseOptions, url } : baseOptions;
 
@@ -85,7 +81,7 @@ export class RedisVectorService {
         id,
         vector,
         payload,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       await this.redis.hset(`vector:${id}`, 'data', JSON.stringify(vectorData));
       // Also store in a set for quick lookup
@@ -104,12 +100,12 @@ export class RedisVectorService {
     try {
       const data = await this.redis.hget(`vector:${id}`, 'data');
       if (!data) return null;
-      const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: any; metadata?: any };
+      const vectorData = JSON.parse(data) as { id: string; vector: number[];, payload: any; metadata?: any };
       return {
         id: vectorData.id,
         vector: vectorData.vector,
         payload: vectorData.payload,
-        metadata: vectorData.metadata,
+        metadata: vectorData.metadata
       };
     } catch (error: any) {
       logger.error('Failed to get vector', { id, error });
@@ -152,7 +148,7 @@ export class RedisVectorService {
             id,
             score: similarity,
             payload: vectorData.payload,
-            vector: vectorData.vector,
+            vector: vectorData.vector
           });
         }
       }

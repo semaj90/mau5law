@@ -13,7 +13,7 @@ export const performanceMetrics = writable({
 	throughput: 0,
 	errorRate: 0,
 	connectionPool: {
-		active: 0,
+	, active: 0,
 		idle: 0,
 		total: 0
 	}
@@ -23,7 +23,7 @@ export const connectionStatus = writable({
   connected: false,
   protocol: 'unknown',
   quicEnabled: false,
-  lastPing: 0,
+  lastPing: 0
 });
 // Real-time response stream
 export const responseStream = writable<LegalAIResponse | null>(null);
@@ -39,9 +39,7 @@ export interface LegalAIRequest {
   legalDomain?: string;
 }
 
-export interface LegalAIResponse {
-  text: string;
-  tokens: number;
+export interface LegalAIResponse { text: string;, tokens: number;
   latencyMs: number;
   throughputTps: number;
   sessionId?: string;
@@ -50,9 +48,7 @@ export interface LegalAIResponse {
   isComplete?: boolean;
 }
 
-export interface StreamingChunk {
-  delta: string;
-  tokenIndex: number;
+export interface StreamingChunk { delta: string;, tokenIndex: number;
   totalTokens: number;
   latencyMs: number;
   isComplete: boolean;
@@ -65,7 +61,7 @@ class TensorRTQuicClient {
     requests: 0,
     totalLatency: 0,
     errors: 0,
-    startTime: Date.now(),
+    startTime: Date.now()
   };
   constructor(baseUrl = 'http://localhost:8080') {
     this.baseUrl = baseUrl;
@@ -84,8 +80,7 @@ class TensorRTQuicClient {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Connection': 'keep-alive',
-        },
+          'Connection': `keep-alive` }
       });
       const isHttp3 = response.headers.get('alt-svc')?.includes('h3');
       connectionStatus.update(status => ({
@@ -93,14 +88,14 @@ class TensorRTQuicClient {
         connected: true,
         protocol: isHttp3 ? 'HTTP/3' : 'HTTP/2',
         quicEnabled: isHttp3 || false,
-        lastPing: Date.now(),
+        lastPing: Date.now()
       }));
-      console.log(`🚀 TensorRT client connected via ${isHttp3 ? 'HTTP/3 (QUIC)' : 'HTTP/2'}`);
+      console.log(`🚀 TensorRT client connected via ${isHttp3 ? 'HTTP/3 (QUIC)' : `HTTP/2` }`);
     } catch (error) {
       console.error('Failed to initialize connection pool:', error);
       connectionStatus.update(status => ({
         ...status,
-        connected: false,
+        connected: false
       }));
     }
   }
@@ -118,7 +113,7 @@ class TensorRTQuicClient {
           'X-Legal-Domain': request.legalDomain || 'general',
           'X-Session-ID': request.sessionId || this.generateSessionId(),
           'X-Request-ID': crypto.randomUUID(),
-          'Connection': 'keep-alive',
+          'Connection': 'keep-alive'
         },
         body: JSON.stringify({
           prompt: request.prompt,
@@ -127,13 +122,12 @@ class TensorRTQuicClient {
           top_k: request.topK || 40,
           top_p: request.topP || 0.9,
           stream: request.stream || false,
-          session_id: request.sessionId,
+          session_id: request.sessionId
         }),
         // Performance optimizations
         keepalive: true,
         cache: 'no-store',
-        priority: 'high',
-      });
+        priority: `high` });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -164,12 +158,11 @@ class TensorRTQuicClient {
           'Accept': 'text/plain',
           'X-Stream': 'true',
           'X-Legal-Domain': request.legalDomain || 'general',
-          'Cache-Control': 'no-cache',
-        },
+          'Cache-Control': `no-cache` },
         body: JSON.stringify({
           ...request,
-          stream: true,
-        }),
+          stream: true
+        })
       });
       if (!response.ok) {
         throw new Error(`Stream failed: ${response.status}`);
@@ -197,7 +190,7 @@ class TensorRTQuicClient {
                 tokenIndex,
                 totalTokens: tokenIndex,
                 latencyMs: performance.now() - startTime,
-                isComplete: true,
+                isComplete: true
               };
               return;
             }
@@ -211,7 +204,7 @@ class TensorRTQuicClient {
                   tokenIndex,
                   totalTokens: tokenIndex,
                   latencyMs: performance.now() - startTime,
-                  isComplete: false,
+                  isComplete: false
                 };
                 // Update real-time stream store
                 responseStream.update(current => ({
@@ -220,7 +213,7 @@ class TensorRTQuicClient {
                   latencyMs: performance.now() - startTime,
                   throughputTps: tokenIndex / ((performance.now() - startTime) / 1000),
                   isStreaming: true,
-                  isComplete: false,
+                  isComplete: false
                 }));
               }
             } catch (parseError) {
@@ -247,19 +240,17 @@ class TensorRTQuicClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Batch-Size': requests.length.toString(),
+          'X-Batch-Size': requests.length.toString()
         },
-        body: JSON.stringify({
-          requests: requests.map(req => ({
-            prompt: req.prompt,
+        body: JSON.stringify({ requests: requests.map(req => ({, prompt: req.prompt,
             max_tokens: req.maxTokens || 512,
             temperature: req.temperature || 0.1,
             top_k: req.topK || 40,
             top_p: req.topP || 0.9,
-            session_id: req.sessionId || this.generateSessionId(),
+            session_id: req.sessionId || this.generateSessionId()
           })),
-          max_concurrent: Math.min(requests.length, 4),
-        }),
+          max_concurrent: Math.min(requests.length, 4)
+        })
       });
       if (!response.ok) {
         throw new Error(`Batch processing failed: ${response.status}`);
@@ -282,8 +273,7 @@ class TensorRTQuicClient {
       const response = await this.optimizedFetch('/v1/metrics', {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-        },
+          'Accept': `application/json` }
       });
       if (!response.ok) {
         throw new Error(`Failed to fetch metrics: ${response.status}`);
@@ -305,12 +295,11 @@ class TensorRTQuicClient {
       headers: {
         'Connection': 'keep-alive',
         'Keep-Alive': 'timeout=5, max=1000',
-        ...options.headers,
+        ...options.headers
       },
       // Performance hints
       cache: options.cache || 'no-store',
-      priority: 'high',
-    };
+      priority: `high` };
     return fetch(url, optimizedOptions);
   }
   /**
@@ -336,8 +325,8 @@ class TensorRTQuicClient {
       connectionPool: {
         active: this.connectionPool.size,
         idle: 0,
-        total: this.connectionPool.size,
-      },
+        total: this.connectionPool.size
+      }
     }));
   }
   /**
@@ -349,18 +338,17 @@ class TensorRTQuicClient {
         const start = performance.now();
         const response = await fetch(`${this.baseUrl}/health`, {
           method: 'GET',
-          cache: 'no-store',
-        });
+          cache: `no-store` });
         const ping = performance.now() - start;
         connectionStatus.update(status => ({
           ...status,
           connected: response.ok,
-          lastPing: ping,
+          lastPing: ping
         }));
       } catch (error) {
         connectionStatus.update(status => ({
           ...status,
-          connected: false,
+          connected: false
         }));
       }
     }, 10000); // Every 10 seconds
@@ -372,9 +360,7 @@ class TensorRTQuicClient {
     return `legal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 }
-interface Connection {
-  id: string;
-  created: number;
+interface Connection { id: string;, created: number;
   lastUsed: number;
   requests: number;
 }
@@ -406,7 +392,7 @@ export function createLegalCompletion() {
     loading,
     error,
     response,
-    process,
+    process
   };
 }
 export function createLegalStream() {

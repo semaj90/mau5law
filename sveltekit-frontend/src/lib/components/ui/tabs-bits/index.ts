@@ -11,5 +11,5 @@ export {
   Root as TabsBits,
   List as TabsBitsList,
   Trigger as TabsBitsTrigger,
-  Content as TabsBitsContent,
+  Content as TabsBitsContent
 };

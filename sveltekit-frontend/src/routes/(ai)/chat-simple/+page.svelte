@@ -112,7 +112,7 @@
       <div class="flex items-center gap-2">
         <span class="text-sm text-gray-600">Status:</span>
         <span
-          class="px-2" py-1 rounded-full text-xs font-medium {connectionStatus === 'connected'
+          class="px-2 py-1 rounded-full" text-xs font-medium {connectionStatus === 'connected'
             ? 'bg-green-100 text-green-800'
             : connectionStatus === 'connecting'
               ? 'bg-yellow-100 text-yellow-800'

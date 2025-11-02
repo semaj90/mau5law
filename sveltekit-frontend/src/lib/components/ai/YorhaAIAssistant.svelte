@@ -7,7 +7,7 @@ import type { User } from '$lib/types';
   import Button from '$lib/components/ui/Button.svelte'; // Corrected casing
   import { ScrollArea } from '$lib/components/ui/scroll-area.svelte'; // Changed to named import
   import { Separator } from '$lib/components/ui/separator.svelte';
-  import { Input } from '$lib/components/ui/input.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   import { Bot, Send, Wifi, WifiOff, Loader2 } from 'lucide-svelte';
   import Root from '$lib/components/ui/sheet/Root.svelte';
   import Trigger from '$lib/components/ui/sheet/Trigger.svelte';
@@ -194,7 +194,7 @@ import type { User } from '$lib/types';
       const streamingIndex = chatSession.messages.findIndex(m => m.streaming);
       if (streamingIndex !== -1) {
         // End the streaming message
-        chatSession.messages[streamingIndex].streaming = $state(false);
+        chatSession.messages[streamingIndex].streaming = false;
       }
 
       // Regular message from assistant

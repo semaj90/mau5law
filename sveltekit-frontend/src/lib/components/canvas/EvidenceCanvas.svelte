@@ -36,8 +36,8 @@ import type { Document } from '$lib/types';
   }: Props = $props();
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
-  let hoveredFile: CaseFile | null = $state(null);
-  let selectedFile: CaseFile | null = $state(null);
+  let hoveredFile: CaseFile | null = null;
+  let selectedFile: CaseFile | null = null;
   let mousePos = $state({ x: 0, y: 0 });
   let animationFrame = 0;
   // Theme configurations

@@ -30,9 +30,7 @@ export interface SyncConfig {
   wasmCacheSize?: number;
 }
 
-export interface SyncStats {
-  totalEvidenceItems: number;
-  totalDocumentEmbeddings: number;
+export interface SyncStats { totalEvidenceItems: number;, totalDocumentEmbeddings: number;
   syncedToQdrant: number;
   skippedNoEmbedding: number;
   errors: number;
@@ -47,9 +45,7 @@ export interface SyncStats {
 }
 
 // New interfaces for better type safety
-export interface WASMVectorSearchResult {
-  id: string;
-  content: string;
+export interface WASMVectorSearchResult { id: string;, content: string;
   score: number;
   metadata: {
     type?: string;
@@ -65,9 +61,7 @@ export interface WASMVectorSearchResult {
   };
 }
 
-export interface ServiceHealth {
-  postgresql: boolean;
-  qdrant: boolean;
+export interface ServiceHealth { postgresql: boolean;, qdrant: boolean;
   collection: boolean;
   status: 'unhealthy' | 'healthy' | 'degraded';
 }
@@ -78,9 +72,7 @@ type DocumentEmbeddingItem = typeof documentEmbeddings.$inferSelect;
 type DocumentMetadataItem = typeof documentMetadata.$inferSelect;
 
 // Combined type for document data with embedding and metadata
-interface DocumentData {
-  embedding: DocumentEmbeddingItem;
-  metadata: DocumentMetadataItem | null; // metadata can be null if leftJoin doesn't find a match
+interface DocumentData { embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be null if leftJoin doesn't find a match
 }
 
 // Type for Qdrant filter payload
@@ -95,7 +87,7 @@ export class PostgreSQLQdrantSyncService {
   // WebAssembly-specific cache for optimized retrieval
   private wasmRetrievalCache: Map<
     string,
-    { embedding: number[]; metadata: WASMVectorSearchResult[]; timestamp: number }
+    { embedding: number[]; metadata: WASMVectorSearchResult[];, timestamp: number }
   > = new Map(); // Changed metadata type
   constructor(config: SyncConfig = {}) {
     this.config = {
@@ -107,10 +99,10 @@ export class PostgreSQLQdrantSyncService {
       // WebAssembly-specific defaults
       wasmEmbeddingModel: config.wasmEmbeddingModel || 'nomic-embed-text',
       wasmOptimizedRetrieval: config.wasmOptimizedRetrieval ?? true,
-      wasmCacheSize: config.wasmCacheSize || 1000,
+      wasmCacheSize: config.wasmCacheSize || 1000
     };
     this.qdrant = new QdrantClient({
-      url: this.config.qdrantUrl,
+      url: this.config.qdrantUrl
     });
     this.stats = this.resetStats();
   }
@@ -126,7 +118,7 @@ export class PostgreSQLQdrantSyncService {
       wasmOptimizedItems: 0,
       wasmCacheHits: 0,
       wasmCacheMisses: 0,
-      averageRetrievalTime: 0,
+      averageRetrievalTime: 0
     };
   }
   private log(message: string) {
@@ -142,19 +134,16 @@ export class PostgreSQLQdrantSyncService {
       const collectionsResponse = await this.qdrant.getCollections(); // Changed from collections.get()
       const exists = collectionsResponse.collections.some((c: CollectionInfo) => c.name === this.config.collectionName);
       if (!exists) {
-        await this.qdrant.createCollection(this.config.collectionName, {
-          vectors: {
-            size: 768, // nomic-embed-text dimensions (corrected)
-            distance: 'Cosine',
-          },
+        await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
+            distance: 'Cosine` },
           optimizers_config: {
             default_segment_number: 2,
-            memmap_threshold: 20000,
+            memmap_threshold: 20000
           },
           hnsw_config: {
             m: 16,
-            ef_construct: 100,
-          },
+            ef_construct: 100
+          }
         });
         this.log(`Created Qdrant collection: ${this.config.collectionName}`);
       } else {
@@ -285,19 +274,16 @@ export class PostgreSQLQdrantSyncService {
         await this.qdrant.deleteCollection(this.config.collectionName);
         this.log(`Deleted existing Qdrant collection: ${this.config.collectionName}`);
       }
-      await this.qdrant.createCollection(this.config.collectionName, {
-        vectors: {
-          size: 768, // nomic-embed-text dimensions (corrected)
-          distance: 'Cosine',
-        },
+      await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
+          distance: 'Cosine` },
         optimizers_config: {
           default_segment_number: 2,
-          memmap_threshold: 20000,
+          memmap_threshold: 20000
         },
         hnsw_config: {
           m: 16,
-          ef_construct: 100,
-        },
+          ef_construct: 100
+        }
       });
       this.log(`Cleared and recreated Qdrant collection: ${this.config.collectionName}`);
     } catch (error: any) {
@@ -328,7 +314,7 @@ export class PostgreSQLQdrantSyncService {
           confidentialityLevel: evidence.confidentialityLevel,
           titleEmbedding: evidence.titleEmbedding,
           contentEmbedding: evidence.contentEmbedding,
-          createdAt: evidence.createdAt,
+          createdAt: evidence.createdAt
         })
         .from(evidence)
         .where(and(isNotNull(evidence.titleEmbedding), isNotNull(evidence.contentEmbedding)))
@@ -358,7 +344,7 @@ export class PostgreSQLQdrantSyncService {
       const documents: DocumentData[] = await db // Added type
         .select({
           embedding: documentEmbeddings,
-          metadata: documentMetadata,
+          metadata: documentMetadata
         })
         .from(documentEmbeddings)
         .leftJoin(documentMetadata, eq(documentEmbeddings.documentId, documentMetadata.id))
@@ -396,7 +382,7 @@ export class PostgreSQLQdrantSyncService {
         titleEmbedding: evidence.titleEmbedding,
         contentEmbedding: evidence.contentEmbedding,
         createdAt: evidence.createdAt,
-        updatedAt: evidence.updatedAt,
+        updatedAt: evidence.updatedAt
       })
       .from(evidence)
       .where(
@@ -419,7 +405,7 @@ export class PostgreSQLQdrantSyncService {
     const documents: DocumentData[] = await db // Added type
       .select({
         embedding: documentEmbeddings,
-        metadata: documentMetadata,
+        metadata: documentMetadata
       })
       .from(documentEmbeddings)
       .leftJoin(documentMetadata, eq(documentEmbeddings.documentId, documentMetadata.id))
@@ -447,7 +433,7 @@ export class PostgreSQLQdrantSyncService {
         confidentialityLevel: evidence.confidentialityLevel,
         titleEmbedding: evidence.titleEmbedding,
         contentEmbedding: evidence.contentEmbedding,
-        createdAt: evidence.createdAt,
+        createdAt: evidence.createdAt
       })
       .from(evidence)
       .where(eq(evidence.id, evidenceId))
@@ -462,7 +448,7 @@ export class PostgreSQLQdrantSyncService {
     const [result] = await db
       .select({
         embedding: documentEmbeddings,
-        metadata: documentMetadata,
+        metadata: documentMetadata
       })
       .from(documentEmbeddings)
       .leftJoin(documentMetadata, eq(documentEmbeddings.documentId, documentMetadata.id))
@@ -497,15 +483,15 @@ export class PostgreSQLQdrantSyncService {
               tags: evidenceItem.aiTags || [],
               content: content,
               metadata: {
-                evidenceType: evidenceItem.evidenceType,
+               , evidenceType: evidenceItem.evidenceType,
                 mimeType: evidenceItem.mimeType,
                 confidentialityLevel: evidenceItem.confidentialityLevel,
                 source: 'postgresql_sync',
-                syncedAt: new Date().toISOString(),
-              },
-            },
+                syncedAt: new Date().toISOString()
+              }
+            }
           },
-        ],
+        ]
       });
       this.stats.syncedToQdrant++;
       return true;
@@ -544,16 +530,16 @@ export class PostgreSQLQdrantSyncService {
               title: metadata?.originalFilename || `Document ${embedding.documentId}`,
               content: embedding.content,
               metadata: {
-                documentType: metadata?.documentType,
+               , documentType: metadata?.documentType,
                 processingStatus: metadata?.processingStatus,
                 embeddingModel: embedding.embeddingModel,
                 chunkIndex: embedding.chunkIndex,
                 source: 'postgresql_sync',
-                syncedAt: new Date().toISOString(),
-              },
-            },
+                syncedAt: new Date().toISOString()
+              }
+            }
           },
-        ],
+        ]
       });
       this.stats.syncedToQdrant++;
       return true;
@@ -630,7 +616,7 @@ export class PostgreSQLQdrantSyncService {
     queryEmbedding,
     limit = 5,
     scoreThreshold = 0.7,
-    filters,
+    filters
   }: {
     queryEmbedding: number[];
     limit?: number;
@@ -660,7 +646,7 @@ export class PostgreSQLQdrantSyncService {
         score_threshold: scoreThreshold,
         with_payload: true,
         with_vector: false, // Don't return vectors to save bandwidth
-        ...(filters && { filter: this.buildQdrantFilter(filters) }),
+        ...(filters && { filter: this.buildQdrantFilter(filters) })
       });
       // Process and optimize results for WASM inference
       const results: WASMVectorSearchResult[] = searchResponse // Added type
@@ -680,15 +666,15 @@ export class PostgreSQLQdrantSyncService {
             caseId: hit.payload?.caseId,
             retrievedAt: new Date().toISOString(),
             retrievalMethod: 'wasm_optimized',
-            embeddingModel: this.config.wasmEmbeddingModel,
-          },
+            embeddingModel: this.config.wasmEmbeddingModel
+          }
         }));
       // Cache results if enabled
       if (this.config.wasmOptimizedRetrieval) {
         this.wasmRetrievalCache.set(cacheKey, {
           embedding: queryEmbedding,
           metadata: results,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         // Cleanup old cache entries
         this.cleanupWASMCache();
@@ -713,9 +699,8 @@ export class PostgreSQLQdrantSyncService {
    */
   async batchSearchForWASMInference({
     queries,
-    scoreThreshold = 0.7,
-  }: {
-    queries: Array<{ id: string; embedding: number[]; limit?: number; filters?: QdrantFilterPayload }>; // Changed type
+    scoreThreshold = 0.7
+  }: { queries: Array<{, id: string; embedding: number[]; limit?: number; filters?: QdrantFilterPayload }>; // Changed type
     scoreThreshold?: number;
   }): Promise<Record<string, WASMVectorSearchResult[]>> {
     // Changed return type
@@ -729,7 +714,7 @@ export class PostgreSQLQdrantSyncService {
           queryEmbedding: query.embedding,
           limit: query.limit || 5,
           scoreThreshold,
-          filters: query.filters,
+          filters: query.filters
         });
         return { id: query.id, results: queryResults };
       });
@@ -758,15 +743,11 @@ export class PostgreSQLQdrantSyncService {
     queryEmbedding,
     retrievedDocuments,
     inferenceResult,
-    metadata,
-  }: {
-    queryEmbedding: number[];
-    retrievedDocuments: string[];
+    metadata
+  }: { queryEmbedding: number[];, retrievedDocuments: string[];
     inferenceResult: string;
-    metadata: {
-      inferenceId: string;
-      model: string;
-      processingTime: number;
+    metadata: { inferenceId: string;, model: string;
+     , processingTime: number;
       ragContext?: any; // Changed to unknown
     };
   }): Promise<void> {
@@ -785,16 +766,16 @@ export class PostgreSQLQdrantSyncService {
               content: inferenceResult,
               retrievedDocuments,
               metadata: {
-                model: metadata?.model || 'unknown',
+               , model: metadata?.model || 'unknown',
                 processingTime: metadata.processingTime,
                 ragContext: metadata.ragContext,
                 createdAt: new Date().toISOString(),
                 source: 'wasm_inference',
-                embeddingModel: this.config.wasmEmbeddingModel,
-              },
-            },
+                embeddingModel: this.config.wasmEmbeddingModel
+              }
+            }
           },
-        ],
+        ]
       });
       this.log(`📝 Stored WASM inference result: ${metadata.inferenceId}`);
     } catch (error: any) {
@@ -837,10 +818,8 @@ export class PostgreSQLQdrantSyncService {
   private generateCacheKey({
     embedding,
     limit,
-    filters,
-  }: {
-    embedding: number[];
-    limit: number;
+    filters
+  }: { embedding: number[];, limit: number;
     filters?: QdrantFilterPayload; // Changed type
   }): string {
     // Create a hash from embedding (use first few dimensions for speed)
@@ -856,20 +835,20 @@ export class PostgreSQLQdrantSyncService {
     const qdrantFilter: Filter = {
       // Changed type to Filter
       // Qdrant filter structure can be complex, keeping `any` for now or define a more specific type if needed.
-      must: [],
+      must: []
     };
     Object.entries(filters).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         qdrantFilter.must!.push({
           // Added ! for must
           key: `payload.${key}`,
-          match: { any: value },
+          match: {, any: value }
         });
       } else {
         qdrantFilter.must!.push({
           // Added ! for must
           key: `payload.${key}`,
-          match: { value },
+          match: { value }
         });
       }
     });

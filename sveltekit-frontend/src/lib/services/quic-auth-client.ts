@@ -1,8 +1,6 @@
 // QUIC Authentication Client for Lucia v3 integration
 import type { RequestEvent } from '@sveltejs/kit';
-interface AuthRequest {
-  email: string;
-  password: string;
+interface AuthRequest { email: string;, password: string;
   ipAddress?: string;
   userAgent?: string;
 }
@@ -16,9 +14,7 @@ interface AuthResponse {
   refreshToken?: string;
   error?: string;
 }
-interface UserProfile {
-  userId: string;
-  email: string;
+interface UserProfile { userId: string;, email: string;
   firstName: string;
   lastName: string;
   organization?: string;
@@ -28,16 +24,12 @@ interface UserProfile {
   preferences?: UserPreferences;
   permissions?: UserPermissions;
 }
-interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  language: string;
+interface UserPreferences { theme: 'light' | 'dark' | 'auto';, language: string;
   emailNotifications: boolean;
   pushNotifications: boolean;
   timezone: string;
 }
-interface UserPermissions {
-  allowedActions: string[];
-  allowedResources: string[];
+interface UserPermissions { allowedActions: string[];, allowedResources: string[];
   featureFlags: Record<string, boolean>;
   apiRateLimit: number;
   storageQuotaMb: number;
@@ -76,14 +68,14 @@ export class QuicAuthClient {
         firstName,
         lastName,
         organization,
-        role,
+        role
       });
       return await response.json();
     } catch (error) {
       console.error('Registration error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Registration failed',
+        error: error instanceof Error ? error.message : 'Registration failed'
       };
     }
   }
@@ -97,14 +89,14 @@ export class QuicAuthClient {
         password: request.password,
         ipAddress: request.ipAddress,
         userAgent: request.userAgent,
-        sessionDurationDays: 30,
+        sessionDurationDays: 30
       });
       return await response.json();
     } catch (error) {
       console.error('Login error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Login failed',
+        error: error instanceof Error ? error.message : 'Login failed'
       };
     }
   }
@@ -116,14 +108,14 @@ export class QuicAuthClient {
       const response = await this.makeRequest('/auth/validate', {
         sessionId,
         ipAddress,
-        userAgent,
+        userAgent
       });
       return await response.json();
     } catch (error) {
       console.error('Session validation error:', error);
       return {
         valid: false,
-        error: error instanceof Error ? error.message : 'Session validation failed',
+        error: error instanceof Error ? error.message : 'Session validation failed'
       };
     }
   }
@@ -134,14 +126,14 @@ export class QuicAuthClient {
     try {
       const response = await this.makeRequest('/auth/refresh', {
         sessionId,
-        extendDays,
+        extendDays
       });
       return await response.json();
     } catch (error) {
       console.error('Session refresh error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Session refresh failed',
+        error: error instanceof Error ? error.message : 'Session refresh failed'
       };
     }
   }
@@ -152,14 +144,14 @@ export class QuicAuthClient {
     try {
       const response = await this.makeRequest('/auth/logout', {
         sessionId,
-        invalidateAllSessions: invalidateAll,
+        invalidateAllSessions: invalidateAll
       });
       return await response.json();
     } catch (error) {
       console.error('Logout error:', error);
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Logout failed',
+        message: error instanceof Error ? error.message : 'Logout failed'
       };
     }
   }
@@ -170,14 +162,14 @@ export class QuicAuthClient {
     try {
       const response = await this.makeRequest('/auth/profile', {
         userId,
-        sessionId,
+        sessionId
       });
       return await response.json();
     } catch (error) {
       console.error('Get profile error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get profile',
+        error: error instanceof Error ? error.message : 'Failed to get profile'
       };
     }
   }
@@ -189,14 +181,14 @@ export class QuicAuthClient {
       const response = await this.makeRequest('/auth/profile/update', {
         userId,
         sessionId,
-        profile,
+        profile
       });
       return await response.json();
     } catch (error) {
       console.error('Update profile error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update profile',
+        error: error instanceof Error ? error.message : 'Failed to update profile'
       };
     }
   }
@@ -207,14 +199,14 @@ export class QuicAuthClient {
     try {
       const response = await this.makeRequest('/auth/token/validate', {
         token,
-        scope,
+        scope
       });
       return await response.json();
     } catch (error) {
       console.error('Token validation error:', error);
       return {
         valid: false,
-        error: error instanceof Error ? error.message : 'Token validation failed',
+        error: error instanceof Error ? error.message : 'Token validation failed'
       };
     }
   }
@@ -227,15 +219,15 @@ export class QuicAuthClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Accept': 'application/json'
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     };
     // Add HTTP/3 hint if supported
     if (this.useHttp3) {
       options.headers = {
         ...options.headers,
-        'Alt-Svc': 'h3=":4433"; ma=86400',
+        'Alt-Svc': 'h3=":4433"; ma=86400'
       };
     }
     return fetch(url, options);
@@ -255,7 +247,7 @@ export function setSessionCookie(event: RequestEvent, sessionId: string, expires
     secure: isProduction,
     sameSite: 'lax' as const,
     expires: expiresAt,
-    maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000),
+    maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000)
   };
   // Set both cookie names for compatibility
   event.cookies.set('session_id', sessionId, cookieOptions);
@@ -269,13 +261,13 @@ export function clearSessionCookies(event: RequestEvent): void {
     httpOnly: true,
     secure: isProduction,
     sameSite: 'lax' as const,
-    maxAge: 0,
+    maxAge: 0
   };
   event.cookies.set('session_id', '', clearOptions);
   event.cookies.set('session', '', clearOptions);
   // Also try delete method
   event.cookies.delete('session_id', { path: '/' });
-  event.cookies.delete('session', { path: '/' });
+  event.cookies.delete('session', { path: `/` });
 }
 // Export singleton instance
 export const quicAuthClient = new QuicAuthClient();

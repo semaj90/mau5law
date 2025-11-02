@@ -22,60 +22,44 @@ export interface VectorResult {
   gpuAccelerated: boolean;
 }
 
-export interface ProtocolConfig {
-  quic: {
-    enabled: boolean;
+export interface ProtocolConfig { quic: {, enabled: boolean;
     url: string;
     timeout: number;
     priority: number;
   };
-  grpc: {
-    enabled: boolean;
-    url: string;
+  grpc: { enabled: boolean;, url: string;
     timeout: number;
     priority: number;
   };
-  http: {
-    enabled: boolean;
-    url: string;
+  http: { enabled: boolean;, url: string;
     timeout: number;
     priority: number;
   };
 }
 
 // New interfaces for better type safety
-export interface VectorSearchRequestSchema {
-  query: string;
-  embedding: string; // 'repeated float' in protobuf, but here it's a string representation
+export interface VectorSearchRequestSchema { query: string;, embedding: string; // 'repeated float' in protobuf, but here it's a string representation
   limit: string; // 'int32'
   threshold: string; // 'float'
   metadata_filters: string; // 'map<string, string>'
   use_gpu: string; // 'bool'
 }
 
-export interface VectorSearchResultSchema {
-  id: string;
-  score: string; // 'float'
+export interface VectorSearchResultSchema { id: string;, score: string; // 'float'
   metadata: string; // 'map<string, string>'
   content: string;
 }
 
-export interface VectorSearchResponseSchema {
-  results: string; // 'repeated VectorSearchResult'
-  total_found: string; // 'int32'
+export interface VectorSearchResponseSchema { results: string; // 'repeated VectorSearchResult', total_found: string; // 'int32'
   processing_time_ms: string; // 'int32'
   gpu_utilized: string; // 'bool'
 }
 
-export interface ProtobufSchema {
-  VectorSearchRequest: VectorSearchRequestSchema;
-  VectorSearchResponse: VectorSearchResponseSchema;
+export interface ProtobufSchema { VectorSearchRequest: VectorSearchRequestSchema;, VectorSearchResponse: VectorSearchResponseSchema;
   VectorSearchResult: VectorSearchResultSchema;
 }
 
-export interface PerformanceStats {
-  count: number;
-  avg: number;
+export interface PerformanceStats { count: number;, avg: number;
   min: number;
   max: number;
   p50: number;
@@ -90,9 +74,7 @@ export interface HealthStatus {
   error?: string;
 }
 
-export interface LlamaCppParseResult {
-  parsed: string;
-  entities: any[];
+export interface LlamaCppParseResult { parsed: string;, entities: any[];
   summary: string;
   confidence: number;
   gpuUtilization: number;
@@ -108,9 +90,7 @@ export class GRPCQuicVectorProxy {
   private performanceMetrics = new Map<string, number[]>();
 
   constructor(config: Partial<ProtocolConfig> = {}) {
-    this.config = {
-      quic: {
-        enabled: true,
+    this.config = { quic: {, enabled: true,
         url: 'http://localhost:8095', // QUIC proxy service
         timeout: 5000,
         priority: 1, // Highest priority
@@ -119,7 +99,7 @@ export class GRPCQuicVectorProxy {
         enabled: true,
         url: 'http://localhost:8094', // Enhanced RAG gRPC
         timeout: 15000,
-        priority: 2,
+        priority: 2
       },
       http: {
         enabled: true,
@@ -127,7 +107,7 @@ export class GRPCQuicVectorProxy {
         timeout: 30000,
         priority: 3, // Lowest priority
       },
-      ...config,
+      ...config
     };
   }
 
@@ -163,20 +143,20 @@ export class GRPCQuicVectorProxy {
         limit: 'int32',
         threshold: 'float',
         metadata_filters: 'map<string, string>',
-        use_gpu: 'bool',
+        use_gpu: 'bool'
       },
       VectorSearchResponse: {
         results: 'repeated VectorSearchResult',
         total_found: 'int32',
         processing_time_ms: 'int32',
-        gpu_utilized: 'bool',
+        gpu_utilized: 'bool'
       },
       VectorSearchResult: {
         id: 'string',
         score: 'float',
         metadata: 'map<string, string>',
-        content: 'string',
-      },
+        content: 'string'
+      }
     };
     console.log('📋 Protobuf schema loaded for vector operations');
     return schema;
@@ -192,7 +172,7 @@ export class GRPCQuicVectorProxy {
       try {
         const startTime = performance.now();
         const response = await fetch(`${this.config[protocol].url}/health`, {
-          signal: AbortSignal.timeout(this.config[protocol].timeout),
+          signal: AbortSignal.timeout(this.config[protocol].timeout)
         });
         const latency = performance.now() - startTime;
         if (response.ok) {
@@ -218,7 +198,7 @@ export class GRPCQuicVectorProxy {
     const startTime = performance.now();
     console.log(`🔄 Executing vector operation: ${operation.operation}`);
     // Try protocols in priority order
-    const protocols = (['quic', 'grpc', 'http'] as const)
+    const protocols = (['quic', 'grpc', 'http'] as const )
       .filter(p => this.config[p].enabled)
       .sort((a, b) => this.config[a].priority - this.config[b].priority);
 
@@ -231,11 +211,11 @@ export class GRPCQuicVectorProxy {
         return {
           ...result,
           latency,
-          protocol,
+          protocol
         };
       } catch (error: any) {
         // Changed from any
-        console.warn(`⚠️ ${protocol.toUpperCase()} failed, trying next protocol:`, (error as Error).message);
+        console.warn(`⚠️ ${protocol.toUpperCase()} failed, trying next protocol: ', (error as Error).message);
         continue;
       }
     }
@@ -246,7 +226,7 @@ export class GRPCQuicVectorProxy {
       error: 'All protocols failed',
       latency,
       protocol: 'http',
-      gpuAccelerated: false,
+      gpuAccelerated: false
     };
   }
 
@@ -266,7 +246,7 @@ export class GRPCQuicVectorProxy {
       case 'http':
         return this.executeHttpOperation(operation, config);
       default:
-        throw new Error(`Unsupported protocol: ${protocol}`);
+        throw new Error(`Unsupported; protocol: ${protocol}`);
     }
   }
 
@@ -283,15 +263,14 @@ export class GRPCQuicVectorProxy {
       headers: {
         'Content-Type': 'application/json',
         'X-Protocol': 'QUIC',
-        'X-GPU-Acceleration': 'true',
-      },
+        'X-GPU-Acceleration': `true` },
       body: JSON.stringify({
-        operation: operation.operation,
+       , operation: operation.operation,
         data: operation,
         protocol_version: 'QUIC/1.0',
         gpu_layers: 35, // RTX 3060 Ti
       }),
-      signal: AbortSignal.timeout(config.timeout),
+      signal: AbortSignal.timeout(config.timeout)
     });
 
     if (!response.ok) {
@@ -302,7 +281,7 @@ export class GRPCQuicVectorProxy {
     return {
       success: result.success !== false,
       data: result.data || result,
-      gpuAccelerated: result.gpu_accelerated || true,
+      gpuAccelerated: result.gpu_accelerated || true
     };
   }
 
@@ -319,19 +298,18 @@ export class GRPCQuicVectorProxy {
       headers: {
         'Content-Type': 'application/x-protobuf',
         'X-Protocol': 'gRPC',
-        'X-GPU-Enabled': 'true',
-      },
+        'X-GPU-Enabled': `true` },
       body: JSON.stringify({
         operation: operation.operation,
         request: operation,
         protobuf_schema: 'VectorSearchRequest',
         gpu_config: {
-          device: 'RTX3060Ti',
+         , device: 'RTX3060Ti',
           memory_limit: '6GB',
-          batch_size: 8,
-        },
+          batch_size: 8
+        }
       }),
-      signal: AbortSignal.timeout(config.timeout),
+      signal: AbortSignal.timeout(config.timeout)
     });
 
     if (!response.ok) {
@@ -342,7 +320,7 @@ export class GRPCQuicVectorProxy {
     return {
       success: result.success !== false,
       data: result.data || result,
-      gpuAccelerated: result.gpu_utilized || false,
+      gpuAccelerated: result.gpu_utilized || false
     };
   }
 
@@ -357,10 +335,9 @@ export class GRPCQuicVectorProxy {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Protocol': 'HTTP',
-      },
+        'X-Protocol': `HTTP` },
       body: JSON.stringify(operation),
-      signal: AbortSignal.timeout(config.timeout),
+      signal: AbortSignal.timeout(config.timeout)
     });
 
     if (!response.ok) {
@@ -396,8 +373,8 @@ export class GRPCQuicVectorProxy {
       limit: options.limit || 10,
       metadata: {
         use_gpu: options.useGPU !== false,
-        preferred_protocol: options.preferredProtocol || 'quic',
-      },
+        preferred_protocol: options.preferredProtocol || 'quic'
+      }
     };
     return this.executeVectorOperation(operation);
   }
@@ -417,8 +394,7 @@ export class GRPCQuicVectorProxy {
       metadata: {
         ...metadata,
         stored_at: new Date().toISOString(),
-        model: 'nomic-embed-text',
-      },
+        model: `nomic-embed-text` }
     };
     return this.executeVectorOperation(operation);
   }
@@ -433,8 +409,8 @@ export class GRPCQuicVectorProxy {
       metadata: {
         operations,
         batch_size: operations.length,
-        use_gpu: true,
-      },
+        use_gpu: true
+      }
     };
 
     const result = await this.executeVectorOperation(batchOperation);
@@ -456,7 +432,7 @@ export class GRPCQuicVectorProxy {
           error: (error as Error).message,
           latency: 0,
           protocol: 'http',
-          gpuAccelerated: false,
+          gpuAccelerated: false
         });
       }
     }
@@ -494,7 +470,7 @@ export class GRPCQuicVectorProxy {
         max: sorted[sorted.length - 1],
         p50: sorted[Math.floor(sorted.length * 0.5)],
         p95: sorted[Math.floor(sorted.length * 0.95)],
-        p99: sorted[Math.floor(sorted.length * 0.99)],
+        p99: sorted[Math.floor(sorted.length * 0.99)]
       };
     }
     return stats;
@@ -529,25 +505,25 @@ export class GRPCQuicVectorProxy {
     const protocols = ['quic', 'grpc', 'http'] as const;
     for (const protocol of protocols) {
       if (!this.config[protocol].enabled) {
-        health[protocol] = { status: 'disabled' };
+        health[protocol] = { status: `disabled` };
         continue;
       }
       try {
         const startTime = performance.now();
         const response = await fetch(`${this.config[protocol].url}/health`, {
-          signal: AbortSignal.timeout(5000),
+          signal: AbortSignal.timeout(5000)
         });
         const latency = performance.now() - startTime;
         health[protocol] = {
           status: response.ok ? 'healthy' : 'error',
           latency,
-          httpStatus: response.status,
+          httpStatus: response.status
         };
       } catch (error: any) {
         // Changed from any
         health[protocol] = {
           status: 'unreachable',
-          error: (error as Error).message,
+          error: (error as Error).message
         };
       }
     }
@@ -576,7 +552,7 @@ export class GRPCQuicVectorProxy {
       metadata: {
         use_gpu: options.useGPU !== false,
         preferred_protocol: options.forceProtocol, // Changed to preferred_protocol for consistency
-      },
+      }
     };
     return this.executeVectorOperation(operation);
   }
@@ -593,8 +569,8 @@ export class GRPCQuicVectorProxy {
       metadata: {
         ...metadata,
         model: 'nomic-embed-text',
-        created_at: new Date().toISOString(),
-      },
+        created_at: new Date().toISOString()
+      }
     };
     return this.executeVectorOperation(operation);
   }
@@ -618,18 +594,17 @@ export class GRPCQuicVectorProxy {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-GPU-Acceleration': 'true',
+          'X-GPU-Acceleration': 'true'
         },
         body: JSON.stringify({
           content,
           model: options?.model || 'gemma3-legal',
           gpu_config: {
-            ngl: options.gpuLayers || 35,
+           , ngl: options.gpuLayers || 35,
             ctx_size: options.contextSize || 4096,
-            temperature: options.temperature || 0.1,
+            temperature: options.temperature || 0.1
           },
-          parsing_type: 'legal_document',
-        }),
+          parsing_type: `legal_document` })
       });
 
       if (!response.ok) {
@@ -643,7 +618,7 @@ export class GRPCQuicVectorProxy {
         entities: result.extracted_entities || [],
         summary: result.summary || '',
         confidence: result.confidence || 0.8,
-        gpuUtilization: result.gpu_utilization || 0,
+        gpuUtilization: result.gpu_utilization || 0
       };
     } catch (error: any) {
       // Changed from any
@@ -656,51 +631,47 @@ export class GRPCQuicVectorProxy {
    * Get service status and configuration
    */
   getStatus() {
-    return {
-      protocols: {
-        quic: {
+    return { protocols: {, quic: {
           enabled: this.config.quic.enabled,
           url: this.config.quic.url,
-          priority: this.config.quic.priority,
+          priority: this.config.quic.priority
         },
         grpc: {
           enabled: this.config.grpc.enabled,
           url: this.config.grpc.url,
-          priority: this.config.grpc.priority,
+          priority: this.config.grpc.priority
         },
         http: {
           enabled: this.config.http.enabled,
           url: this.config.http.url,
-          priority: this.config.http.priority,
-        },
+          priority: this.config.http.priority
+        }
       },
       optimalProtocol: this.getOptimalProtocol(),
       performanceMetrics: this.getPerformanceStats(),
-      protobufSchema: !!this.protobufSchema,
+      protobufSchema: !!this.protobufSchema
     };
   }
 }
 
 // Global proxy instance
-export const vectorProxy = new GRPCQuicVectorProxy({
-  quic: {
-    enabled: true,
+export const vectorProxy = new GRPCQuicVectorProxy({ quic: {, enabled: true,
     url: 'http://localhost:8095',
     timeout: 5000,
-    priority: 1,
+    priority: 1
   },
   grpc: {
     enabled: true,
     url: 'http://localhost:8094',
     timeout: 15000,
-    priority: 2,
+    priority: 2
   },
   http: {
-    enabled: true,
+   , enabled: true,
     url: 'http://localhost:8093',
     timeout: 30000,
-    priority: 3,
-  },
+    priority: 3
+  }
 });
 
 // Auto-initialize
@@ -718,7 +689,7 @@ export class LegalVectorOperations {
       query: caseDescription,
       limit: 15,
       threshold: 0.75,
-      useGPU: true,
+      useGPU: true
     });
   }
 
@@ -735,19 +706,16 @@ export class LegalVectorOperations {
       ...metadata,
       type: 'legal_evidence',
       content_preview: content.slice(0, 200),
-      indexed_by: 'legal-ai-system',
-    });
+      indexed_by: `legal-ai-system` });
   }
 
   /**
    * Batch process case documents
    */
   static async batchProcessCaseDocuments(
-    documents: Array<{
-      id: string;
-      content: string;
+    documents: Array<{ id: string;, content: string;
       embedding: number[];
-      metadata: Record<string, unknown>; // Changed from any
+     , metadata: Record<string, unknown>; // Changed from any
     }>
   ): Promise<VectorResult[]> {
     const operations: VectorOperation[] = documents.map(doc => ({
@@ -757,8 +725,8 @@ export class LegalVectorOperations {
       metadata: {
         ...doc.metadata,
         content_hash: this.hashContent(doc.content),
-        processing_batch: new Date().toISOString(),
-      },
+        processing_batch: new Date().toISOString()
+      }
     }));
     return vectorProxy.batchVectorOperations(operations);
   }

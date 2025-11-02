@@ -55,5 +55,5 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 export const GET: RequestHandler = async () => {
-  return json({ ok: true, note: 'POST { texts: string[] } to receive deterministic embeddings (webgpu-local)' });
+  return json({ ok: true, note: 'POST {, texts: string[] } to receive deterministic embeddings (webgpu-local)' });
 };

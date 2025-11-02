@@ -2,9 +2,7 @@
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
 import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
 
-export type PerformanceStats = {
-  fps: number;
-  frameTime: number;
+export type PerformanceStats = { fps: number;, frameTime: number;
   gpuMemoryUsage: number; // best-effort estimate
   nodeCount: number;
   edgeCount: number;
@@ -34,7 +32,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
     frameTime: 0,
     gpuMemoryUsage: 0,
     nodeCount: 0,
-    edgeCount: 0,
+    edgeCount: 0
   };
 
   async initialize(): Promise<void> {
@@ -102,7 +100,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
         frameDelta: Math.round(this.stats.frameTime),
         gpuActive: !!this.device,
         fallbackMode: !this.device,
-        note: 'webgpu-frame',
+        note: 'webgpu-frame'
       };
       void captureLatency(entry);
     } catch (e) {

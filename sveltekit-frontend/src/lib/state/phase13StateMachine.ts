@@ -51,23 +51,17 @@ export interface Phase13Context {
   streamingChunks: ArrayBuffer[];
   pageRankScores: Map<string, number>;
   // Real-time feedback system
-  feedbackLoop: {
-    positiveVotes: number;
-    negativeVotes: number;
+  feedbackLoop: { positiveVotes: number;, negativeVotes: number;
     confidence: number;
     lastUpdate: number;
   };
   // Stateless API coordination
-  apiCoordination: {
-    redisNodes: string[];
-    natsChannels: string[];
+  apiCoordination: { redisNodes: string[];, natsChannels: string[];
     activeConnections: number;
     queueDepth: number;
   };
   // Context7 MCP integration
-  mcpContext: {
-    semanticSearchResults: MCPNode[];
-    memoryGraphNodes: MCPNode[];
+  mcpContext: { semanticSearchResults: MCPNode[];, memoryGraphNodes: MCPNode[];
     agentRecommendations: AIRecommendation[];
     bestPractices: string[];
   };
@@ -77,86 +71,74 @@ export interface Phase13Context {
   predictedStates: string[];
   cacheHitRate: number;
   // GPU processing status
-  gpuStatus: {
-    utilization: number;
-    memoryUsed: number;
+  gpuStatus: { utilization: number;, memoryUsed: number;
     temperature?: number;
     shaderPrograms?: number;
   };
   // Compiler Feedback Loop system
-  compilerFeedback: {
-    isActive: boolean;
-    currentEvents: { type: string; payload?: any }[];
+  compilerFeedback: { isActive: boolean;, currentEvents: { type: string; payload?: any }[];
     activePatches: Patch[];
     clusters: Cluster[];
     attentionWeights?: Float32Array;
     focusAreas: FocusArea[];
-    performance: {
-      totalEvents: number;
-      successfulPatches: number;
+    performance: { totalEvents: number;, successfulPatches: number;
       averageProcessingTime: number;
       clusterCount: number;
     };
   };
   // Multi-core processing
-  workerThreads: {
-    active: number;
-    completed: number;
+  workerThreads: { active: number;, completed: number;
     failed: number;
     queue: string[];
   };
   // Performance metrics
-  performance: {
-    frameRate: number;
-    latency: number;
+  performance: { frameRate: number;, latency: number;
     throughput: number;
     errorRate: number;
   };
   // AI recommendations with confidence
-  aiState: {
-    currentModel: string;
-    confidence: number;
+  aiState: { currentModel: string;, confidence: number;
     suggestions: string[];
-    nextActions: { action: string; confidence: number }[];
+    nextActions: { action: string;, confidence: number }[];
   };
 }
 
 // --- new small domain types to replace `any` usages ---
 type MCPNode = { id: string; title?: string; content?: string; [k: string]: any };
-type GPUStatus = { utilization: number; memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
+type GPUStatus = { utilization: number;, memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
 type WorkerResult = { status: 'ok' | 'error'; output?: any; error?: string; [k: string]: any };
-type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number; errorRate: number }>;
+type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number;, errorRate: number }>;
 type AIRecommendation = { id?: string; text: string; score?: number; [k: string]: any };
 type EnhancedRAGContext = Phase13Context | Record<string, unknown>;
-type CompilerLog = { file: string; line: number; message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
+type CompilerLog = { file: string; line: number;, message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
 type Patch = { id?: string; diff?: string; author?: string; [k: string]: any };
-type FocusArea = { file: string; lines: [number, number]; confidence: number; [k: string]: any };
-type Cluster = { id: string; nodes: string[]; score?: number; [k: string]: any };
+type FocusArea = { file: string;, lines: [number, number]; confidence: number; [k: string]: any };
+type Cluster = { id: string;, nodes: string[]; score?: number; [k: string]: any };
 
 // --- replace event union members that used `any` with explicit types ---
 export type Phase13Event =
-  | { type: 'INITIALIZE_WEBGL'; canvas: HTMLCanvasElement }
-  | { type: 'STREAM_VERTEX_DATA'; vertices: Float32Array }
-  | { type: 'CHUNK_RECEIVED'; chunk: ArrayBuffer }
-  | { type: 'PAGERANK_UPDATE'; nodeId: string; delta: number }
+  | { type: 'INITIALIZE_WEBGL';, canvas: HTMLCanvasElement }
+  | { type: 'STREAM_VERTEX_DATA';, vertices: Float32Array }
+  | { type: 'CHUNK_RECEIVED';, chunk: ArrayBuffer }
+  | { type: 'PAGERANK_UPDATE'; nodeId: string;, delta: number }
   | { type: 'FEEDBACK_POSITIVE' }
   | { type: 'FEEDBACK_NEGATIVE' }
   | { type: 'API_COORDINATION_START' }
   | { type: 'API_COORDINATION_STOP' }
-  | { type: 'MCP_SEMANTIC_SEARCH'; query: string }
-  | { type: 'MCP_MEMORY_UPDATE'; nodes: MCPNode[] }
-  | { type: 'SPRITE_STATE_CHANGE'; stateName: string }
-  | { type: 'GPU_MONITOR_UPDATE'; status: GPUStatus }
-  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string; result: WorkerResult }
-  | { type: 'PERFORMANCE_METRIC_UPDATE'; metrics: PerformanceMetricsUpdate }
-  | { type: 'AI_RECOMMENDATION'; recommendations: AIRecommendation[] }
-  | { type: 'ENHANCED_RAG_QUERY'; query: string; context: EnhancedRAGContext }
+  | { type: 'MCP_SEMANTIC_SEARCH';, query: string }
+  | { type: 'MCP_MEMORY_UPDATE';, nodes: MCPNode[] }
+  | { type: 'SPRITE_STATE_CHANGE';, stateName: string }
+  | { type: 'GPU_MONITOR_UPDATE';, status: GPUStatus }
+  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string;, result: WorkerResult }
+  | { type: 'PERFORMANCE_METRIC_UPDATE';, metrics: PerformanceMetricsUpdate }
+  | { type: 'AI_RECOMMENDATION';, recommendations: AIRecommendation[] }
+  | { type: 'ENHANCED_RAG_QUERY'; query: string;, context: EnhancedRAGContext }
   // Compiler Feedback Loop Events
-  | { type: 'COMPILER_ERROR_DETECTED'; logs: CompilerLog[]; vectors?: Float32Array }
-  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array; logId: string }
-  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string; pattern: string }
-  | { type: 'PATCH_GENERATED'; patch: Patch; confidence: number }
-  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array; focusAreas: FocusArea[] }
+  | { type: 'COMPILER_ERROR_DETECTED';, logs: CompilerLog[]; vectors?: Float32Array }
+  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array;, logId: string }
+  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string;, pattern: string }
+  | { type: 'PATCH_GENERATED'; patch: Patch;, confidence: number }
+  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array;, focusAreas: FocusArea[] }
   | { type: 'COMPILER_FEEDBACK_START' }
   | { type: 'COMPILER_FEEDBACK_STOP' }
   | { type: 'RESET_SYSTEM' }
@@ -166,7 +148,7 @@ const webglVertexStreamingService = (context: Phase13Context) => {
   return (sendBack: (e: any) => void, onReceive: (listener: (e: { type?: string } | Phase13Event) => void) => void) => {
     const ctx = context;
     if (!ctx.webglContext) {
-      sendBack({ type: 'ERROR', error: 'WebGL context not initialized' });
+      sendBack({ type: 'ERROR', error: `WebGL context not initialized` });
       return () => {};
     }
     const gl = ctx.webglContext;
@@ -186,7 +168,7 @@ const webglVertexStreamingService = (context: Phase13Context) => {
           sendBack({
             type: 'VERTEX_CHUNK_PROCESSED',
             chunkSize: vertices.length,
-            frameCount,
+            frameCount
           });
         }
       }
@@ -196,7 +178,7 @@ const webglVertexStreamingService = (context: Phase13Context) => {
           frameRate: 60,
           memoryUsed: heapUsed,
           bufferCount: ctx.vertexBuffers.length,
-          streamingActive,
+          streamingActive
         };
         sendBack({ type: 'PERFORMANCE_UPDATE', performance: performanceData });
       }
@@ -220,7 +202,7 @@ const webglVertexStreamingService = (context: Phase13Context) => {
 };
 // --- add a minimal typed stub for copilotOrchestrator to avoid undefined reference ---
 async function copilotOrchestrator(opts: {
-  query: string;
+ , query: string;
   useSemanticSearch?: boolean;
   useMemory?: boolean;
   useMultiAgent?: boolean;
@@ -231,7 +213,7 @@ async function copilotOrchestrator(opts: {
   return {
     semantic: [],
     agentResults: [],
-    _meta: { query: opts.query },
+    _meta: { query: opts.query }
   };
 }
 
@@ -246,9 +228,7 @@ type EnhancedRAGItem = {
   [k: string]: any;
 };
 
-type EnhancedRAGResult = {
-  query: string;
-  results: EnhancedRAGItem[];
+type EnhancedRAGResult = { query: string;, results: EnhancedRAGItem[];
   pageRankApplied?: boolean;
   orchestrationData?: {
     agentResults?: EnhancedRAGItem[] | unknown[];
@@ -267,13 +247,12 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
 
   const { query, pageRankScores } = input;
   try {
-    const orchestrationResult = await copilotOrchestrator({
-      query: `Enhanced RAG query: ${query}`,
+    const orchestrationResult = await copilotOrchestrator({ query: `Enhanced RAG, query: ${query}`,
       useSemanticSearch: true,
       useMemory: true,
       useMultiAgent: true,
       synthesizeOutputs: true,
-      context: input.context,
+      context: input.context
     });
 
     const semanticResults = (orchestrationResult.semantic || []) as EnhancedRAGItem[];
@@ -285,7 +264,7 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
       return {
         ...res,
         pageRankScore: pr,
-        enhancedRelevance,
+        enhancedRelevance
       } as EnhancedRAGItem;
     });
 
@@ -296,7 +275,7 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
       results: enhancedResults,
       pageRankApplied: true,
       orchestrationData: orchestrationResult,
-      processingTime: Date.now(),
+      processingTime: Date.now()
     } as EnhancedRAGResult;
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -306,13 +285,13 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
 
 // --- replace apiCoordinationService fromCallback with service factory compatible with createMachine ---
 const apiCoordinationService = (_arg?: any) => { // explicitly typed param to avoid implicit any
-  return (sendBack: (e: Phase13Event | { type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | { type: string; [k: string]: any }) => void) => void) => {
+  return (sendBack: (e: Phase13Event | {, type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | {, type: string; [k: string]: any }) => void) => void) => {
     let coordinationActive = $state<boolean>(false);
     let redisConnections: string[] = [];
     let natsChannels: string[] = [];
     let heartbeat: ReturnType<typeof setInterval> | null = null;
 
-    const listener = (evt: Phase13Event | { type: string; [k: string]: any }) => {
+    const listener = (evt: Phase13Event | {, type: string; [k: string]: any }) => {
       switch (evt.type) {
         case 'API_COORDINATION_START': {
           coordinationActive = true;
@@ -321,7 +300,7 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
           sendBack({
             type: 'API_COORDINATION_START',
             connections: redisConnections.length,
-            channels: natsChannels.length,
+            channels: natsChannels.length
           });
           heartbeat = setInterval(() => {
             if (!coordinationActive && heartbeat) {
@@ -333,7 +312,7 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
               type: 'COORDINATION_HEARTBEAT',
               timestamp: Date.now(),
               activeConnections: redisConnections.length,
-              queueDepth: Math.floor(Math.random() * 100),
+              queueDepth: Math.floor(Math.random() * 100)
             });
           }, 1000);
           break;
@@ -367,7 +346,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
     id: 'phase13Enhanced',
     initial: 'initializing',
     context: {
-      evidenceFiles: [],
+     , evidenceFiles: [],
       caseTitle: '',
       caseDescription: '',
       webglContext: undefined,
@@ -378,19 +357,19 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         positiveVotes: 0,
         negativeVotes: 0,
         confidence: 0.5,
-        lastUpdate: Date.now(),
+        lastUpdate: Date.now()
       },
       apiCoordination: {
         redisNodes: [],
         natsChannels: [],
         activeConnections: 0,
-        queueDepth: 0,
+        queueDepth: 0
       },
       mcpContext: {
         semanticSearchResults: [],
         memoryGraphNodes: [],
         agentRecommendations: [],
-        bestPractices: [],
+        bestPractices: []
       },
       currentSprite: 'idle',
       predictedStates: [],
@@ -399,25 +378,25 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         utilization: 0,
         memoryUsed: 0,
         temperature: 65,
-        shaderPrograms: 0,
+        shaderPrograms: 0
       },
       workerThreads: {
         active: 0,
         completed: 0,
         failed: 0,
-        queue: [],
+        queue: []
       },
       performance: {
         frameRate: 60,
         latency: 0,
         throughput: 0,
-        errorRate: 0,
+        errorRate: 0
       },
       aiState: {
         currentModel: 'gemma3-legal',
         confidence: 0.8,
         suggestions: [],
-        nextActions: [],
+        nextActions: []
       },
       compilerFeedback: {
         isActive: false,
@@ -430,117 +409,96 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
           totalEvents: 0,
           successfulPatches: 0,
           averageProcessingTime: 0,
-          clusterCount: 0,
-        },
-      },
+          clusterCount: 0
+        }
+      }
     },
-    states: {
-      initializing: {
-        meta: {
+    states: { initializing: {, meta: {
           description: 'Initializing Phase 13 enhanced systems',
-          phase: 'Phase 13 Initialization',
+          phase: 'Phase 13 Initialization'
         },
-        on: {
-          INITIALIZE_WEBGL: {
-            target: 'webglReady',
-            actions: ['initializeWebGL'],
-          },
-        },
+        on: { INITIALIZE_WEBGL: {, target: 'webglReady',
+            actions: ['initializeWebGL']
+          }
+        }
       },
-      webglReady: {
-        meta: {
-          description: 'WebGL initialized, ready for vertex streaming',
-          phase: 'Phase 13 WebGL Ready',
+      webglReady: { meta: {, description: 'WebGL initialized, ready for vertex streaming',
+          phase: 'Phase 13 WebGL Ready'
         },
         invoke: {
           id: 'webglStreaming',
           src: 'webglVertexStreamingService',
-          input: ({ context }: { context: Phase13Context }) => ({ context }),
+          input: ({ context }: { context: Phase13Context }) => ({ context })
         },
-        on: {
-          STREAM_VERTEX_DATA: {
-            actions: ['streamVertexData'],
+        on: { STREAM_VERTEX_DATA: {, actions: ['streamVertexData']
           },
           API_COORDINATION_START: {
-            target: 'coordinating',
+            target: 'coordinating'
           },
           ENHANCED_RAG_QUERY: {
-            target: 'enhancedRAG',
+            target: 'enhancedRAG'
           },
           PAGERANK_UPDATE: {
-            actions: ['updatePageRank'],
+            actions: ['updatePageRank']
           },
           FEEDBACK_POSITIVE: {
-            actions: ['applyFeedback'],
+            actions: ['applyFeedback']
           },
           FEEDBACK_NEGATIVE: {
-            actions: ['applyFeedback'],
+            actions: ['applyFeedback']
           },
           MCP_SEMANTIC_SEARCH: {
-            actions: ['updateMCPContext'],
+            actions: ['updateMCPContext']
           },
           PERFORMANCE_METRIC_UPDATE: {
-            actions: ['updatePerformanceMetrics'],
-          },
-        },
+            actions: ['updatePerformanceMetrics']
+          }
+        }
       },
-      coordinating: {
-        meta: {
-          description: 'Stateless API coordination active',
-          phase: 'Phase 13 API Coordination',
+      coordinating: { meta: {, description: 'Stateless API coordination active',
+          phase: 'Phase 13 API Coordination'
         },
         invoke: {
           id: 'apiCoordination',
-          src: 'apiCoordinationService',
-        },
+          src: `apiCoordinationService` },
         // typed entry to avoid implicit any for `self`
-        entry: (
-          _ctx: Phase13Context,
+        entry: (; _ctx: Phase13Context,
           _evt: Phase13Event | undefined,
           meta?: { self?: { send: (e: Phase13Event) => void } }
         ) => {
-          meta?.self?.send({ type: 'API_COORDINATION_START' });
+          meta?.self?.send({ type: `API_COORDINATION_START` });
         },
-        on: {
-          API_COORDINATION_START: {
-            actions: assign({
+        on: { API_COORDINATION_START: {, actions: assign({
               // don't destructure unused `event` to avoid unused-arg error
               apiCoordination: (_ctx: Phase13Context) => ({
                 redisNodes: [`redis://localhost:6379`],
                 natsChannels: [`legal.events`, `ai.recommendations`],
                 activeConnections: 0,
-                queueDepth: 0,
-              }),
-            }),
+                queueDepth: 0
+              })
+            })
           },
-          COORDINATION_HEARTBEAT: {
-            actions: assign({
-              apiCoordination: ({
+          COORDINATION_HEARTBEAT: { actions: assign({, apiCoordination: ({
                 context,
-                event,
-              }: {
-                context: Phase13Context;
-                event: { activeConnections?: number; queueDepth?: number };
+                event
+              }: { context: Phase13Context;, event: { activeConnections?: number; queueDepth?: number };
               }) => ({
                 ...context.apiCoordination,
                 activeConnections: event.activeConnections || 0,
-                queueDepth: event.queueDepth || 0,
-              }),
-            }),
+                queueDepth: event.queueDepth || 0
+              })
+            })
           },
           API_COORDINATION_STOP: {
-            target: 'webglReady',
+            target: 'webglReady'
           },
           ENHANCED_RAG_QUERY: {
-            target: 'enhancedRAG',
-          },
-        },
+            target: 'enhancedRAG'
+          }
+        }
       },
-      enhancedRAG: {
-        meta: {
-          description: 'Processing enhanced RAG query with PageRank',
-          phase: 'Phase 13 Enhanced RAG',
-        },
+      enhancedRAG: { meta: {, description: 'Processing enhanced RAG query with PageRank',
+          phase: `Phase 13 Enhanced RAG` },
         invoke: {
           id: 'enhancedRAG',
           src: 'enhancedRAGService',
@@ -550,53 +508,49 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               return {
                 query: event.query,
                 context: event.context,
-                pageRankScores: context.pageRankScores,
+                pageRankScores: context.pageRankScores
               };
             }
             return {
               query: '',
               context,
-              pageRankScores: context.pageRankScores,
+              pageRankScores: context.pageRankScores
             };
           },
           onDone: {
             target: 'coordinating',
             actions: assign({
-              mcpContext: ({ context, event }: { context: Phase13Context; event: { output?: EnhancedRAGResult } }) => ({
+              mcpContext: ({ context, event }: { context: Phase13Context;, event: { output?: EnhancedRAGResult } }) => ({
                 ...context.mcpContext,
                 semanticSearchResults: event.output?.results || [],
-                agentRecommendations: event.output?.orchestrationData?.agentResults || [],
+                agentRecommendations: event.output?.orchestrationData?.agentResults || []
               }),
-              aiState: ({ context, event }: { context: Phase13Context; event: { output?: EnhancedRAGResult } }) => ({
+              aiState: ({ context, event }: { context: Phase13Context;, event: { output?: EnhancedRAGResult } }) => ({
                 ...context.aiState,
                 confidence: Math.min(context.aiState.confidence + 0.1, 1.0),
                 suggestions: (event.output?.results || []).slice(0, 3).map((r: EnhancedRAGItem | unknown) => {
                   const item = r as EnhancedRAGItem;
                   return item.text ?? item.content ?? String(item);
-                }),
-              }),
-            }),
+                })
+              })
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
-              aiState: ({ context }: { context: Phase13Context }) => ({
+              aiState: ({ context }: {, context: Phase13Context }) => ({
                 ...context.aiState,
                 confidence: Math.max(context.aiState.confidence - 0.2, 0.0),
-                suggestions: ['Enhanced RAG query failed - using fallback'],
-              }),
-            }),
-          },
-        },
+                suggestions: ['Enhanced RAG query failed - using fallback']
+              })
+            })
+          }
+        }
       },
-      error: {
-        meta: {
-          description: 'Error state with recovery options',
-          phase: 'Phase 13 Error Recovery',
+      error: { meta: {, description: 'Error state with recovery options',
+          phase: 'Phase 13 Error Recovery'
         },
-        on: {
-          RESET_SYSTEM: {
-            target: 'initializing',
+        on: { RESET_SYSTEM: {, target: 'initializing',
             actions: assign({
               // Reset critical state
               webglContext: undefined,
@@ -606,40 +560,35 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
                 redisNodes: [],
                 natsChannels: [],
                 activeConnections: 0,
-                queueDepth: 0,
+                queueDepth: 0
               },
               performance: {
-                frameRate: 60,
+               , frameRate: 60,
                 latency: 0,
                 throughput: 0,
-                errorRate: 0,
-              },
-            }),
+                errorRate: 0
+              }
+            })
           },
           EMERGENCY_SHUTDOWN: {
-            target: 'shutdown',
-          },
-        },
+            target: 'shutdown'
+          }
+        }
       },
-      shutdown: {
-        meta: {
-          description: 'Emergency shutdown - all systems stopped',
-          phase: 'Phase 13 Emergency Shutdown',
+      shutdown: { meta: {, description: 'Emergency shutdown - all systems stopped',
+          phase: 'Phase 13 Emergency Shutdown'
         },
-        type: 'final',
-      },
-    },
+        type: `final` }
+    }
   },
-  {
-    actions: {
-      initializeWebGL: assign({
-        webglContext: ({ event }: { event: Phase13Event }) => {
+  { actions: {, initializeWebGL: assign({
+        webglContext: ({ event }: {, event: Phase13Event }) => {
           if (event.type === 'INITIALIZE_WEBGL') {
             const gl = event.canvas.getContext('webgl2', {
               powerPreference: 'high-performance',
               preserveDrawingBuffer: true,
               antialias: false,
-              alpha: false,
+              alpha: false
             }) as WebGL2RenderingContext;
             if (gl) {
               gl.enable(gl.DEPTH_TEST);
@@ -654,11 +603,11 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
           utilization: 0,
           memoryUsed: 0,
           temperature: 65,
-          shaderPrograms: 0,
-        }),
+          shaderPrograms: 0
+        })
       }),
       streamVertexData: assign({
-        vertexBuffers: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
+        vertexBuffers: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
           if (event.type === 'STREAM_VERTEX_DATA') {
             return [...context.vertexBuffers, event.vertices];
           }
@@ -666,11 +615,11 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         },
         performance: ({ context }: { context: Phase13Context }) => ({
           ...context.performance,
-          frameRate: Math.min(context.performance.frameRate + 1, 60),
-        }),
+          frameRate: Math.min(context.performance.frameRate + 1, 60)
+        })
       }),
       updatePageRank: assign({
-        pageRankScores: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
+        pageRankScores: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
           if (event.type === 'PAGERANK_UPDATE') {
             const newScores = new Map(context.pageRankScores);
             const currentScore = newScores.get(event.nodeId) || 0;
@@ -678,73 +627,71 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             return newScores;
           }
           return context.pageRankScores;
-        },
+        }
       }),
       applyFeedback: assign({
-        feedbackLoop: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
+        feedbackLoop: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
           const current = context.feedbackLoop;
           if (event.type === 'FEEDBACK_POSITIVE') {
             return {
               ...current,
               positiveVotes: current.positiveVotes + 1,
               confidence: Math.min(current.confidence + 0.1, 1.0),
-              lastUpdate: Date.now(),
+              lastUpdate: Date.now()
             };
           } else if (event.type === 'FEEDBACK_NEGATIVE') {
             return {
               ...current,
               negativeVotes: current.negativeVotes + 1,
               confidence: Math.max(current.confidence - 0.1, 0.0),
-              lastUpdate: Date.now(),
+              lastUpdate: Date.now()
             };
           }
           return current;
-        },
+        }
       }),
       updateMCPContext: assign({
-        mcpContext: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
+        mcpContext: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
           if (event.type === 'MCP_SEMANTIC_SEARCH') {
             return {
               ...context.mcpContext,
-              semanticSearchResults: [],
+              semanticSearchResults: []
             };
           } else if (event.type === 'MCP_MEMORY_UPDATE') {
             return {
               ...context.mcpContext,
-              memoryGraphNodes: event.nodes,
+              memoryGraphNodes: event.nodes
             };
           }
           return context.mcpContext;
-        },
+        }
       }),
       updatePerformanceMetrics: assign({
-        performance: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
+        performance: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
           if (event.type === 'PERFORMANCE_METRIC_UPDATE') {
             return {
               ...context.performance,
-              ...(event.metrics as PerformanceMetricsUpdate),
+              ...(event.metrics as PerformanceMetricsUpdate)
             };
           }
           return context.performance;
-        },
-      }),
+        }
+      })
     },
     services: {
       webglVertexStreamingService,
       // explicitly type the service wrapper parameters to avoid implicit any
       enhancedRAGService: (ctx: Phase13Context, evt?: Phase13Event) => enhancedRAGService(ctx, evt),
-      apiCoordinationService,
-    },
+      apiCoordinationService
+    }
   }
 );
 // Svelte stores for reactive integration
-export const phase13Stores: {
-	currentState: Writable<string>;
-	webglStatus: Writable<{ initialized: boolean; streaming: boolean; frameRate?: number }>;
+export const phase13Stores: { currentState: Writable<string>;, webglStatus: Writable<{ initialized: boolean;, streaming: boolean; frameRate?: number }>;
 	pageRankScores: Writable<Map<string, number>>;
-	feedbackMetrics: Writable<{ positive: number; negative: number; confidence: number }>;
-	apiCoordination: Writable<{ active: boolean; connections: number }>;
-	performanceMetrics: Writable<{ frameRate: number; latency: number; throughput: number }>;
+	feedbackMetrics: Writable<{ positive: number; negative: number;, confidence: number }>;
+	apiCoordination: Writable<{ active: boolean;, connections: number }>;
+	performanceMetrics: Writable<{ frameRate: number; latency: number;, throughput: number }>;
 	aiRecommendations: Writable<string[]>;
 } = {
 	currentState: writable('initializing'),
@@ -753,7 +700,7 @@ export const phase13Stores: {
 	feedbackMetrics: writable({ positive: 0, negative: 0, confidence: 0.5 }),
 	apiCoordination: writable({ active: false, connections: 0 }),
 	performanceMetrics: writable({ frameRate: 60, latency: 0, throughput: 0 }),
-	aiRecommendations: writable<string[]>([]),
+	aiRecommendations: writable<string[]>([])
 };
 // Derived stores for computed values
 export const phase13Derived = {
@@ -770,7 +717,7 @@ export const phase13Derived = {
 				overall: webglScore + apiScore + perfScore + latencyScore,
 				webgl: webglScore,
 				api: apiScore,
-				performance: perfScore + latencyScore,
+				performance: perfScore + latencyScore
 			};
 		}
 	),
@@ -778,21 +725,21 @@ export const phase13Derived = {
 		totalFeedback: $feedback.positive + $feedback.negative,
 		confidence: $feedback.confidence,
 		pageRankNodes: $pageRank.size,
-		averagePageRank: Array.from($pageRank.values()).reduce((a, b) => a + b, 0) / ($pageRank.size || 1),
-	})),
+		averagePageRank: Array.from($pageRank.values()).reduce((a, b) => a + b, 0) / ($pageRank.size || 1)
+	}))
 };
 // Helper functions for Phase 13 integration
 type SimpleStore<T> = Readable<T>;
 
 export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 	// lightweight readable stores with initial safe values
-	const webglStatus: SimpleStore<{ initialized: boolean; streaming: boolean; frameRate?: number }> = readable(
+	const webglStatus: SimpleStore<{ initialized: boolean;, streaming: boolean; frameRate?: number }> = readable(
 		{ initialized: !!canvas, streaming: false, frameRate: 0 },
 		() => {}
 	);
 
 	// include `connections` so the shapes match the real stores
-	const apiCoordination: SimpleStore<{ active: boolean; connections: number }> = readable(
+	const apiCoordination: SimpleStore<{ active: boolean;, connections: number }> = readable(
 		{ active: false, connections: 0 },
 		() => {}
 	);
@@ -805,7 +752,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 		stores: {
 			webglStatus,
 			apiCoordination,
-			performanceMetrics,
+			performanceMetrics
 		},
 		startVertexStreaming(vertices: Float32Array) {
 			// Very small no-op stub: in a real impl this would hook WebGL
@@ -819,7 +766,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 		},
 		destroy() {
 			// cleanup if needed
-		},
+		}
 	};
 }
 export default phase13StateMachine;

@@ -64,9 +64,7 @@ class MSAARenderTarget {
   }
 }
 // FXAA Post-processing Shader
-const FXAAShader = {
-  uniforms: {
-    tDiffuse: { value: null },
+const FXAAShader = { uniforms: {, tDiffuse: { value: null },
     resolution: { value: new THREE.Vector2() },
     qualityPreset: { value: 12 }, // 10-39 range
     edgeThreshold: { value: 0.166 },
@@ -141,9 +139,7 @@ const FXAAShader = {
   `
 }
 // Enhanced Temporal Anti-Aliasing (TAA) Shader
-export const TAAShader = {
-  uniforms: {
-    tDiffuse: { value: null },
+export const TAAShader = { uniforms: {, tDiffuse: { value: null },
     tPrevious: { value: null },
     projectionMatrix: { value: new THREE.Matrix4() },
     inverseProjectionMatrix: { value: new THREE.Matrix4() },
@@ -235,9 +231,7 @@ export const TAAShader = {
   `
 }
 // Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader
-export const SMAAShader = {
-  uniforms: {
-    tDiffuse: { value: null },
+export const SMAAShader = { uniforms: {, tDiffuse: { value: null },
     tArea: { value: null },
     tSearch: { value: null },
     resolution: { value: new THREE.Vector2() },
@@ -333,12 +327,9 @@ export const SMAAShader = {
       }
       gl_FragColor = weights;
     }
-  `
-}
+  ` }
 // Enhanced Anti-Aliasing Shader for geometry
-const EnhancedAAShader = {
-  uniforms: {
-    baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
+const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
     edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
     edgeWidth: { value: 0.02 },
     aaStrength: { value: 1.0 },
@@ -450,8 +441,7 @@ const EnhancedAAShader = {
       color = pow(color, vec3(1.0 / 2.2));
       gl_FragColor = vec4(color, 1.0);
     }
-  `
-}
+  ` }
 // TAA (Temporal Anti-Aliasing) Manager
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];
@@ -752,9 +742,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     super.dispose();
   }
   // Debug and performance monitoring
-  public getAAPerformanceStats(): {
-    type: string;
-    quality: string;
+  public getAAPerformanceStats(): { type: string;, quality: string;
     samples: number;
     estimatedFPS: number;
     memoryUsage: number;
@@ -815,27 +803,25 @@ export const AntiAliasingUtils = {
     };
   },
   createAAPreset(preset: 'performance' | 'balanced' | 'quality'): AntiAliasingConfig {
-    const presets = {
-      performance: {
-        type: 'fxaa' as const,
+    const presets = { performance: {, type: 'fxaa' as const,
         quality: 'medium' as const,
         samples: 2,
         adaptiveQuality: true,
-        performanceTarget: 60,
+        performanceTarget: 60
       },
       balanced: {
         type: 'auto' as const,
         quality: 'high' as const,
         samples: 4,
         adaptiveQuality: true,
-        performanceTarget: 60,
+        performanceTarget: 60
       },
       quality: {
         type: 'taa' as const,
         quality: 'ultra' as const,
         samples: 8,
         adaptiveQuality: false,
-        performanceTarget: 30,
+        performanceTarget: 30
       }
     }
     return {

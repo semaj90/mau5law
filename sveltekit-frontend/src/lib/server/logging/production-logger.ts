@@ -5,9 +5,7 @@
 import { writeFile, appendFile, mkdir, readFile } from 'fs/promises';
 import * as path from "path";
 }
-export interface LogEntry {
-  id: string;
-  timestamp: Date;
+export interface LogEntry { id: string;, timestamp: Date;
   level: 'info' | 'warn' | 'error' | 'debug';
   service: string;
   message: string;
@@ -16,9 +14,7 @@ export interface LogEntry {
   userId?: string;
   caseId?: string;
   documentId?: string;
-  performanceMetrics?: {
-    duration: number;
-    memoryUsage: number;
+  performanceMetrics?: { duration: number;, memoryUsage: number;
     cpuUsage?: number;
   }
 }
@@ -105,7 +101,7 @@ export class ProductionLogger {
         errorDetails: entry.error ? {,
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name,
+          name: entry.error.name
         } : null;
         data: entry.data ? JSON.stringify(entry.data) : null,
         userId: entry.userId,
@@ -131,7 +127,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'database',
-      message: `Database operation: ${operation}`,
+      message: `Database; operation: ${operation}`,
       data,
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {,
@@ -144,7 +140,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'ocr',
-      message: `OCR processing: ${fileName}`,
+      message: `OCR; processing: ${fileName}`,
       data: result,
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {,
@@ -157,7 +153,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'vector',
-      message: `Vector operation: ${operation}`,
+      message: `Vector; operation: ${operation}`,
       data: { query, results: results && Array.isArray(results) ? { count: results.length, sample: results[0] } : null },
       error
     });
@@ -166,9 +162,9 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'ai',
-      message: `AI operation: ${model}`,
+      message: `AI; operation: ${model}`,
       data: {
-        prompt: typeof prompt === 'string' ? prompt.substring(0, 100) + '...' : 'No prompt',
+       , prompt: typeof prompt === 'string' ? prompt.substring(0, 100) + '...' : 'No prompt',
         responseLength: typeof response === 'string' ? response.length: Array.isArray(response) ? response.length : 0,
         tokenUsage: (performanceMetrics as any)?.tokens || 0
       },
@@ -183,7 +179,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'upload',
-      message: `File upload: ${fileName}`,
+      message: `File; upload: ${fileName}`,
       data: { fileSize, caseId, result },
       error,
       caseId,
@@ -194,7 +190,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'debug',
       service: 'xstate',
-      message: `State transition: ${machine} -> ${state}`,
+      message: `State; transition: ${machine} -> ${state}`,
       data: { machine, state, event, context },
       error
     });
@@ -242,8 +238,7 @@ export class ProductionLogger {
         totalErrors: recentErrors.length,
         errorsByService,
         recentErrors: recentErrors.slice(-10), // Last 10 errors
-        timeRange: `${hours} hours`
-      }
+        timeRange: `${hours} hours` }
     } catch (error: any) {
       console.error('[LOGGER] Failed to generate error summary:', error);
       return { totalErrors: 0, errorsByService: { [key,: strin,g]: any }, recentErrors: [] }

@@ -11,9 +11,7 @@ let isRedisConnected = $state<boolean>(false);
 let webgpuInitialized = $state<boolean>(false);
 let somCacheReady = $state<boolean>(false);
 // Cache warming state
-interface CacheWarmingTask {
-  id: string;
-  type: 'legal_document' | 'vector_similarity' | 'search_results' | 'som_embeddings';
+interface CacheWarmingTask { id: string;, type: 'legal_document' | 'vector_similarity' | 'search_results' | 'som_embeddings';
   priority: number;
   payload: any;
   retries: number;
@@ -71,7 +69,7 @@ self.addEventListener('fetch', evt => {
  * Handle background sync for cache warming and data sync
  */
 self.addEventListener('sync', (event: any) => {
-  console.log('Service Worker: Background sync triggered:', event.tag);
+  console.log('Service Worker: Background sync; triggered:', event.tag);
   switch (event.tag) {
     case 'cache-warming':
       event.waitUntil(processCacheWarmingQueue());
@@ -121,8 +119,8 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(somResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'som-webgpu',
-          },
+            'X-Cache-Source': 'som-webgpu'
+          }
         });
       }
     } catch (error) {
@@ -137,8 +135,8 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(redisResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'redis-distributed',
-          },
+            'X-Cache-Source': 'redis-distributed'
+          }
         });
       }
     } catch (error) {
@@ -175,8 +173,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
       statusText: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
-        'X-SIMD-Optimized': 'true',
-      },
+        'X-SIMD-Optimized': `true` }
     });
   } catch (error) {
     console.warn('SIMD JSON optimization failed, using original response:', error);
@@ -201,7 +198,7 @@ async function cacheResponse(cacheKey: string, response: Response, request: Requ
       cachePromises.push(
         redisWebGPUIntegration.cacheResult(cacheKey, responseData, {
           ttl: cacheStrategy.ttl,
-          priority: cacheStrategy.priority,
+          priority: cacheStrategy.priority
         })
       );
     }
@@ -217,9 +214,7 @@ async function cacheResponse(cacheKey: string, response: Response, request: Requ
 /**
  * Determine caching strategy based on request
  */
-function determineCacheStrategy(request: Request): {
-  useRedis: boolean;
-  useSOM: boolean;
+function determineCacheStrategy(request: Request): { useRedis: boolean;, useSOM: boolean;
   ttl: number;
   priority: number;
 } {
@@ -230,7 +225,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: true,
       ttl: 24 * 60 * 60, // 24 hours
-      priority: 10,
+      priority: 10
     };
   }
   // Vector operations - medium value, medium TTL
@@ -239,7 +234,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: false,
       ttl: 60 * 60, // 1 hour
-      priority: 5,
+      priority: 5
     };
   }
   // Search results - high frequency, short TTL
@@ -248,7 +243,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: true,
       ttl: 15 * 60, // 15 minutes
-      priority: 8,
+      priority: 8
     };
   }
   // Chat/conversation - session-bound
@@ -257,7 +252,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: false,
       useSOM: false,
       ttl: 5 * 60, // 5 minutes
-      priority: 3,
+      priority: 3
     };
   }
   // Default strategy
@@ -265,7 +260,7 @@ function determineCacheStrategy(request: Request): {
     useRedis: true,
     useSOM: false,
     ttl: 30 * 60, // 30 minutes
-    priority: 5,
+    priority: 5
   };
 }
 /**
@@ -303,7 +298,7 @@ async function syncDistributedCaches(): Promise<void> {
             await safeSomStore(key, redisData);
           }
         } catch (error) {
-          console.warn(`Failed to sync key ${key}:`, error);
+          console.warn(`Failed to sync key ${key}: ', error);
         }
       }
       console.log('Distributed cache sync complete');
@@ -347,21 +342,21 @@ function queueCommonCacheWarming(): void {
       type: 'legal_document',
       priority: 10,
       payload: { type: 'template_analysis' },
-      retries: 0,
+      retries: 0
     },
     {
       id: 'common-vectors',
       type: 'vector_similarity',
       priority: 8,
       payload: { precompute: 'common_embeddings' },
-      retries: 0,
+      retries: 0
     },
     {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
-      payload: { warm: 'popular_queries' },
-      retries: 0,
+      payload: { warm: `popular_queries` },
+      retries: 0
     },
   ];
   warmingQueue.push(...commonTasks);
@@ -499,7 +494,7 @@ self.addEventListener('message', (event: MessageEvent) => {
         webgpu: webgpuInitialized,
         som: somCacheReady,
         warmingQueue: warmingQueue.length,
-        activeWarming: activeWarmingTasks.size,
+        activeWarming: activeWarmingTasks.size
       });
       break;
   }

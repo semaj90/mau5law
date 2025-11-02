@@ -17,15 +17,11 @@ import { BrowserGemma } from './browser-gemma';
 import { BrowserEmbeddings } from './browser-embeddings';
 import type { Document } from '@langchain/core/documents';
 import { PromptTemplate } from '@langchain/core/prompts';
-export interface RAGDocument {
-  id: string;
-  content: string;
+export interface RAGDocument { id: string;, content: string;
   metadata?: Record<string, any>;
   embedding?: number[];
 }
-export interface RAGQueryResult {
-  answer: string;
-  sources: RAGDocument[];
+export interface RAGQueryResult { answer: string;, sources: RAGDocument[];
   confidence: number;
   tokensGenerated: number;
   duration: number;
@@ -70,7 +66,7 @@ export class BrowserRAGChain {
   /**
    * Add documents to the RAG knowledge base
    */
-  async addDocuments(docs: Array<{ id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
+  async addDocuments(docs: Array<{, id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -128,8 +124,7 @@ export class BrowserRAGChain {
     const answer = await this.llm.generate(prompt, {
       maxTokens,
       temperature,
-      systemPrompt: 'You are a helpful legal AI assistant. Answer questions based ONLY on the provided context. If the context does not contain relevant information, say so honestly.'
-    });
+      systemPrompt: `You are a helpful legal AI assistant. Answer questions based ONLY on the provided context. If the context does not contain relevant information, say so honestly.` });
     const endTime = performance.now();
     return {
       answer,
@@ -145,7 +140,7 @@ export class BrowserRAGChain {
   async *queryStream(
     question: string,
     options: RAGOptions = {}
-  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
+  ): AsyncGenerator<{ text: string;, done: boolean; sources?: RAGDocument[] }, void, unknown> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -200,8 +195,7 @@ export class BrowserRAGChain {
     return `Context Information:
 ${context}
 Question: ${question}
-Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.
-Answer:`;
+Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.; Answer: ';
   }
   /**
    * Calculate confidence score based on document similarities
@@ -239,7 +233,7 @@ Answer:`;
   /**
    * Get current knowledge base stats
    */
-  getStats(): { documentCount: number; avgDocLength: number } {
+  getStats(): { documentCount: number;, avgDocLength: number } {
     if (this.documents.length === 0) {
       return { documentCount: 0, avgDocLength: 0 };
     }
@@ -288,7 +282,7 @@ export const browserRAG = new BrowserRAGChain();
  *       {
  *         id: 'doc2',
  *         content: 'Employment agreements must include...',
- *         metadata: { type: 'employment', date: '2024-01-15' }
+ *         metadata: {, type: 'employment', date: `2024-01-15` }
  *       }
  *     ]);
  *

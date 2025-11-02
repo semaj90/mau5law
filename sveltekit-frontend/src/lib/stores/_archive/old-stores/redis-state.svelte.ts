@@ -3,9 +3,7 @@ import type { Message } from '$lib/types';
  * Redis State Management with Svelte 5 Runes
  * Provides reactive state management for Redis connections and pub/sub
  */
-interface RedisConnectionState {
-  isConnected: boolean;
-  connectionAttempts: number;
+interface RedisConnectionState { isConnected: boolean;, connectionAttempts: number;
   lastError: string | null;
   lastConnected: number | null;
   clientCount: number;
@@ -14,9 +12,7 @@ interface RedisConnectionState {
   cacheHits: number;
   cacheMisses: number;
 }
-interface RedisMessage {
-  channel: string;
-  data: any; // changed from any -> unknown
+interface RedisMessage { channel: string;, data: any; // changed from any -> unknown
   timestamp: number;
   userId?: string;
 }
@@ -31,7 +27,7 @@ class RedisStateStore {
     activeChannels: new Set(),
     messageCount: 0,
     cacheHits: 0,
-    cacheMisses: 0,
+    cacheMisses: 0
   });
   // Recent messages buffer
   private recentMessages = $state<RedisMessage[]>([]);
@@ -66,7 +62,7 @@ class RedisStateStore {
   channelsSummary = $derived(() => {
     return Array.from(this.state.activeChannels).map(channel => ({
       name: channel,
-      messageCount: this.recentMessages.filter(item => item.channel === channel).length,
+      messageCount: this.recentMessages.filter(item => item.channel === channel).length
     }));
   });
   // Recent activity summary
@@ -77,7 +73,7 @@ class RedisStateStore {
     return {
       lastMinute: lastMinute.length,
       lastHour: lastHour.length,
-      total: this.recentMessages.length,
+      total: this.recentMessages.length
     };
   });
   constructor() {
@@ -155,7 +151,7 @@ class RedisStateStore {
       channel,
       data,
       timestamp: Date.now(),
-      userId,
+      userId
     };
     this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last 100
     this.state.messageCount++;
@@ -212,7 +208,7 @@ export function useRedisState() {
     isConnected: () => redisStateStore.isConnected,
     lastError: () => redisStateStore.lastError,
     activeChannels: () => redisStateStore.activeChannels,
-    messageCount: () => redisStateStore.messageCount,
+    messageCount: () => redisStateStore.messageCount
   };
 }
 // Integration helper for existing Redis service
@@ -247,6 +243,6 @@ export function createRedisStateIntegration(_redisService?: any) {
     },
     onCacheMiss: () => {
       redisStateStore.recordCacheMiss();
-    },
+    }
   };
 }

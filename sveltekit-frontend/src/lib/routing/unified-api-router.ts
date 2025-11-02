@@ -12,9 +12,7 @@ import { dev } from '$app/environment';
 ;
 // ===== TYPES AND INTERFACES =====
 }
-export interface RouteConfig {
-  path: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS';
+export interface RouteConfig { path: string;, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS';
   handler: RouteHandler;
   middleware?: Middleware[];
   auth?: boolean;
@@ -37,9 +35,7 @@ export interface RouteContext {
 }
 export type Middleware = (_event: RequestEvent, context: RouteContext, next: () => Promise<Response>) => Promise<Response>;
 }
-export interface RateLimitConfig {
-  windowMs: number;
-  maxRequests: number;
+export interface RateLimitConfig { windowMs: number;, maxRequests: number;
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
 }
@@ -48,15 +44,11 @@ export interface CacheConfig {
   key?: (_event: RequestEvent) => string;
   vary?: string[];
 }
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   role: string;
   permissions: string[];
 }
-export interface Session {
-  id: string;
-  userId: string;
+export interface Session { id: string;, userId: string;
   expiresAt: Date;
   data: { [key: string]: any }
 }
@@ -67,9 +59,7 @@ export interface APIResponse<T = any> {
   message?: string;
   meta?: ResponseMetadata;
 }
-export interface ResponseMetadata {
-  requestId: string;
-  timestamp: string;
+export interface ResponseMetadata { requestId: string;, timestamp: string;
   processingTime: number;
   encoding: EncodingFormat;
   version: string;
@@ -165,7 +155,7 @@ export class UnifiedAPIRouter {
   private async executeMiddleware(
     middleware: Middleware[],
     event: RequestEvent;
-    context: RouteContext,
+   , context: RouteContext,
     finalHandler: () => Promise<Response>;
   ): Promise<Response> {
     let index = 0;
@@ -290,8 +280,7 @@ export class UnifiedAPIRouter {
         timestamp: new Date().toISOString(),
         processingTime: context.startTime ? Date.now() - context.startTime: 0,
         encoding: context.encoding || 'json',
-        version: '2.0.0'
-      }
+        version: `2.0.0` }
     }
     return new Response(JSON.stringify(response), {
       status,
@@ -355,8 +344,7 @@ export class UnifiedAPIRouter {
           status: 'healthy',
           timestamp: new Date().toISOString(),
           services: await this.services.getHealthStatus(),
-          version: '2.0.0'
-        }
+          version: `2.0.0` }
         return json({ success: true, data: health });
       }
     });
@@ -391,13 +379,9 @@ export class UnifiedAPIRouter {
 }
 // ===== SUPPORTING CLASSES =====
 }
-export interface RateLimitTracker {
-  requests: number[];
-  windowMs: number;
+export interface RateLimitTracker { requests: number[];, windowMs: number;
 }
-export interface CachedResponse {
-  body: ArrayBuffer;
-  status: number;
+export interface CachedResponse { body: ArrayBuffer;, status: number;
   headers: Record<string, string>;
   expiresAt: number;
 }
@@ -424,9 +408,7 @@ class ServiceRegistry {
     this.services.set(name, info);
   }
 }
-export interface ServiceInfo {
-  name: string;
-  url: string;
+export interface ServiceInfo { name: string;, url: string;
   protocol: 'http' | 'https' | 'grpc' | 'quic' | 'websocket';
   version: string;
   health?: string;
@@ -442,7 +424,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
   enableCaching: true,
   enableRateLimit: true,
   enableLogging: dev,
-  defaultEncoding: 'json',
+  defaultEncoding: 'json'
 });
 // ===== UTILITY FUNCTIONS =====
 /**
@@ -450,7 +432,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
  */
 export function createAPIResponse<T>(
   data: T;
-  success: boolean = true,
+ , success: boolean = true,
   message?: string
   meta?: Partial<ResponseMetadata>;
 ): APIResponse<T> {
@@ -501,7 +483,7 @@ export function createValidationMiddleware<T>(schema: any): Middleware {
     } catch (error: any) {
       return new Response(
         JSON.stringify(createAPIResponse('Invalid request body', false)),
-        { status: 400, headers: { 'content-type': 'application/json' } }
+        { status: 400, headers: { 'content-type': `application/json` } }
       );
     }
   }

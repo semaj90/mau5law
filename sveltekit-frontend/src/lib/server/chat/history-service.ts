@@ -31,16 +31,14 @@ export class ChatHistoryService {
       context: {} as { [key: string]: any },
       metadata: {
         model,
-        messageCount: 0,
-      },
+        messageCount: 0
+      }
     };
     await db.insert(chatSessions).values(session);
     return id;
   }
-  static async addMessage(params: {
-    sessionId: string;
-    role: 'user' | 'assistant' | 'system';
-    content: string;
+  static async addMessage(params: { sessionId: string;, role: 'user' | 'assistant' | 'system';
+   , content: string;
     model?: string;
     metadata?: any;
   }) {
@@ -53,8 +51,8 @@ export class ChatHistoryService {
       embedding: null,
       metadata: {
         model: params?.model || 'unknown',
-        ...(params.metadata || {}),
-      },
+        ...(params.metadata || {})
+      }
     };
     await db.insert(chatMessages).values(msg);
     // Update session metadata with incremented message count
@@ -66,9 +64,9 @@ export class ChatHistoryService {
         .set({
           metadata: {
             ...(currentSession[0].metadata as object),
-            messageCount: currentCount + 1,
+            messageCount: currentCount + 1
           },
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(chatSessions.id, params.sessionId));
     }

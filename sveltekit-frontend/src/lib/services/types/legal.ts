@@ -1,7 +1,5 @@
 // Basic LegalDocument type placeholder to satisfy imports
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content?: string;
   score?: number;
   summary?: string;

@@ -4,40 +4,30 @@ import type { User } from '$lib/types';
 // ============================================================================
 // VS Code Extension Integration Types & Interfaces
 // ============================================================================
-export interface VSCodeMCPContext {
-  workspaceRoot: string;
-  activeFiles: string[];
+export interface VSCodeMCPContext { workspaceRoot: string;, activeFiles: string[];
   currentFile?: string;
   errors: DiagnosticError[];
   userIntent: 'debugging' | 'feature-development' | 'optimization' | 'documentation';
   recentPrompts: string[];
   projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';
 }
-export interface DiagnosticError {
-  file: string;
-  line: number;
+export interface DiagnosticError { file: string;, line: number;
   message: string;
   severity: 'error' | 'warning' | 'info';
   source?: 'typescript' | 'eslint' | 'svelte' | 'other';
 }
-export interface AutoMCPSuggestion {
-  tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';
-  confidence: number;
+export interface AutoMCPSuggestion { tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';, confidence: number;
   reasoning: string;
   args: { [key: string]: any };
   priority: 'high' | 'medium' | 'low';
   expectedOutput: string;
 }
-export interface MCPContextAnalysis {
-  detectedStack: string[];
-  currentErrors: DiagnosticError[];
+export interface MCPContextAnalysis { detectedStack: string[];, currentErrors: DiagnosticError[];
   suggestedActions: AutoMCPSuggestion[];
   contextConfidence: number;
 }
 // Extension-specific MCP tool suggestions
-export interface ContextTriggers {
-  onFileOpen: string[]; // Detect stack from open files
-  onNpmErrors: string[]; // Parse `npm run check` output
+export interface ContextTriggers { onFileOpen: string[]; // Detect stack from open files, onNpmErrors: string[]; // Parse `npm run check` output
   onPromptAnalysis: string[]; // Analyze user comments/prompts
   onWorkspaceChange: string; // Detect project type
 }
@@ -73,9 +63,9 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'get-library-docs',
         confidence: 0.9,
         reasoning: 'XState error detected - suggesting library documentation',
-        args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
+        args: {, context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
         priority: 'high',
-        expectedOutput: 'XState v5 migration guide and best practices',
+        expectedOutput: 'XState v5 migration guide and best practices'
       });
     }
     if (error.message.includes('Drizzle') || error.message.includes('drizzle')) {
@@ -83,9 +73,9 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'analyze-stack',
         confidence: 0.85,
         reasoning: 'Drizzle ORM error detected - analyzing database stack',
-        args: { component: 'drizzle', context: 'legal-ai' },
+        args: {, component: 'drizzle', context: 'legal-ai' },
         priority: 'high',
-        expectedOutput: 'Drizzle ORM setup analysis and recommendations',
+        expectedOutput: 'Drizzle ORM setup analysis and recommendations'
       });
     }
     if (error.message.includes('SvelteKit') || error.message.includes('svelte')) {
@@ -93,9 +83,9 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'generate-best-practices',
         confidence: 0.8,
         reasoning: 'SvelteKit error detected - suggesting best practices',
-        args: { area: 'performance' },
+        args: {, area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines',
+        expectedOutput: 'SvelteKit performance optimization guidelines'
       });
     }
     if (error.message.includes('env') || error.message.includes('environment')) {
@@ -103,10 +93,9 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'suggest-integration',
         confidence: 0.75,
         reasoning: 'Environment configuration error detected',
-        args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },
+        args: {, feature: 'environment-setup', requirements: 'sveltekit server-side' },
         priority: 'medium',
-        expectedOutput: 'Environment variable setup recommendations',
-      });
+        expectedOutput: `Environment variable setup recommendations` });
     }
   });
   return suggestions;
@@ -135,10 +124,9 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
       tool: 'analyze-stack',
       confidence: 0.7,
       reasoning: `${tech} files detected in workspace`,
-      args: { component: tech, context: 'legal-ai' },
+      args: {, component: tech, context: `legal-ai` },
       priority: 'medium',
-      expectedOutput: `${tech} analysis and optimization recommendations`,
-    });
+      expectedOutput: `${tech} analysis and optimization recommendations' });
   });
   return suggestions;
 }
@@ -152,9 +140,9 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'generate-best-practices',
         confidence: 0.9,
         reasoning: 'User explicitly mentioned best practices or optimization',
-        args: { area: detectArea(lowerPrompt) },
+        args: {, area: detectArea(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Customized best practices for current context',
+        expectedOutput: 'Customized best practices for current context'
       });
     }
     if (lowerPrompt.includes('integrate') || lowerPrompt.includes('add')) {
@@ -162,9 +150,9 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'suggest-integration',
         confidence: 0.85,
         reasoning: 'User asking for integration guidance',
-        args: { feature: extractFeature(lowerPrompt) },
+        args: {, feature: extractFeature(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Integration patterns and implementation guide',
+        expectedOutput: 'Integration patterns and implementation guide'
       });
     }
     if (lowerPrompt.includes('docs') || lowerPrompt.includes('documentation')) {
@@ -172,9 +160,9 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'get-library-docs',
         confidence: 0.8,
         reasoning: 'User requesting documentation',
-        args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
+        args: {, context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
         priority: 'medium',
-        expectedOutput: 'Relevant library documentation and examples',
+        expectedOutput: 'Relevant library documentation and examples'
       });
     }
   });
@@ -235,9 +223,9 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        tool: 'resolve-library-id',
-        arguments: { libraryName },
-      }),
+       , tool: 'resolve-library-id',
+        arguments: { libraryName }
+      })
     });
     const data = await response.json();
     // Parse the selected library ID from the response text
@@ -260,9 +248,9 @@ export async function getLibraryDocs(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        tool: 'get-library-docs',
-        arguments: { context7CompatibleLibraryID, topic, tokens },
-      }),
+       , tool: 'get-library-docs',
+        arguments: { context7CompatibleLibraryID, topic, tokens }
+      })
     });
     const data = await response.json();
     return data?.content?.[0]?.text || 'No documentation found.';
@@ -276,8 +264,8 @@ export async function semanticSearch(query: string): Promise<any[]> {
   try {
     const response = await fetch('http://localhost:3000/api/semantic-search', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ query })
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -299,18 +287,18 @@ export async function callContext7Tool(
   try {
     const response = await fetch('http://localhost:3000/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        tool: toolName,
+       , tool: toolName,
         arguments: {
           ...args,
           // Inject Copilot architecture context if requested
           ...(options.includeCopilotContext && {
             copilotArchitecture: true,
-            legalAIContext: true,
-          }),
-        },
-      }),
+            legalAIContext: true
+          })
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Context7 tool call failed: ${response.status}`);
@@ -318,7 +306,7 @@ export async function callContext7Tool(
     const data = await response.json();
     return data;
   } catch (err: any) {
-    console.error(`Context7 tool ${toolName} error:`, err);
+    console.error(`Context7 tool ${toolName} error: ', err);
     throw err;
   }
 }
@@ -334,7 +322,7 @@ export async function getLibraryDocsWithContext(
       context7CompatibleLibraryID,
       topic,
       tokens,
-      includeCopilotPatterns,
+      includeCopilotPatterns
     });
     return response?.content?.[0]?.text || 'No documentation found.';
   } catch (err: any) {
@@ -348,7 +336,7 @@ export async function createMemoryRelation(entityId: string, relation: string, t
     await callContext7Tool('create-memory-relation', {
       entityId,
       relation,
-      targetId,
+      targetId
     });
   } catch (err: any) {
     console.error('createMemoryRelation error:', err);

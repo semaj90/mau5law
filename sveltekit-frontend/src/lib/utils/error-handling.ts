@@ -60,7 +60,7 @@ export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?:
     return {
       data: fallback,
       error: errorMessage,
-      success: false,
+      success: false
     };
   }
 }
@@ -69,7 +69,7 @@ export function createErrorBoundary() {
   let errorMessage = $state<string>('');
   let hasError = $state<boolean>(false);
   function captureError(error: Error, context?: string) {
-    console.error(`Error${context ? ` in ${context}` : ''}:`, error);
+    console.error(`Error${context ? ` in ${context}` : '' }: ', error);
     errorMessage = error.message;
     hasError = true;
   }
@@ -105,7 +105,7 @@ export function createErrorBoundary() {
     },
     captureError,
     clearError,
-    withErrorBoundary,
+    withErrorBoundary
   };
 }
 // Validation helpers

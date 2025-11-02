@@ -5,7 +5,7 @@
  * Supports hybrid search (vector + keyword matching)
  *
  * Docker Environment Variables:
- * - DATABASE_URL: PostgreSQL connection string with pgvector
+ * -; DATABASE_URL: PostgreSQL connection string with pgvector
  * - REDIS_URL: Redis connection for caching
  * - REDIS_PASSWORD: Redis authentication
  * - VECTOR_BACKEND: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss' (default: pgvector)
@@ -35,9 +35,7 @@ export interface VectorSearchRequest {
   include_metadata?: boolean;
 }
 
-export interface VectorSearchResult {
-  id: string;
-  score: number;
+export interface VectorSearchResult { id: string;, score: number;
   content: string;
   metadata?: Record<string, any>;
   document_id?: string;
@@ -45,15 +43,11 @@ export interface VectorSearchResult {
   created_at?: string;
 }
 
-export interface VectorSearchResponse {
-  success: boolean;
-  results: VectorSearchResult[];
+export interface VectorSearchResponse { success: boolean;, results: VectorSearchResult[];
   total_results: number;
   execution_time_ms: number;
   backend: string;
-  metadata?: {
-    cached: boolean;
-    cache_hit: boolean;
+  metadata?: { cached: boolean;, cache_hit: boolean;
     filter_applied: boolean;
   };
 }
@@ -63,9 +57,7 @@ export interface EmbeddingRequest {
   model?: string;
 }
 
-export interface EmbeddingResponse {
-  embedding: number[];
-  model: string;
+export interface EmbeddingResponse { embedding: number[];, model: string;
   dimension: number;
 }
 
@@ -75,7 +67,7 @@ export interface EmbeddingResponse {
 
 const getConfig = () => ({
   // Vector backend selection
-  vectorBackend: (process.env.VECTOR_BACKEND || 'pgvector') as: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss',
+  vectorBackend: (process.env.VECTOR_BACKEND || 'pgvector'); as: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss',
 
   // Database
   databaseUrl: process.env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai_db',
@@ -88,20 +80,20 @@ const getConfig = () => ({
   pinecone: {
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
-    indexName: process.env.PINECONE_INDEX_NAME || 'legal-ai-documents',
+    indexName: process.env.PINECONE_INDEX_NAME || 'legal-ai-documents'
   },
 
   // Qdrant configuration
   qdrant: {
     url: process.env.QDRANT_URL || 'http://localhost:6333',
     apiKey: process.env.QDRANT_API_KEY,
-    collection: process.env.QDRANT_COLLECTION || 'legal-documents',
+    collection: process.env.QDRANT_COLLECTION || 'legal-documents'
   },
 
   // Embedding model configuration
-  embeddingModel: (process.env.EMBEDDING_MODEL || 'gemma') as: 'gemma' | 'openai' | 'nomic',
+  embeddingModel: (process.env.EMBEDDING_MODEL || 'gemma'); as: 'gemma' | 'openai' | 'nomic',
   embeddingDimension: parseInt(process.env.EMBEDDING_DIMENSION || '768', 10),
-  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
+  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434'
 });
 
 // ============================================================================
@@ -118,7 +110,7 @@ function getRedisClient(): Redis {
       password: config.redisPassword,
       retryStrategy: (times) => Math.min(times * 50, 2000),
       maxRetriesPerRequest: 3,
-      enableReadyCheck: false,
+      enableReadyCheck: false
     });
 
     redisClient.on('error', (err) => {
@@ -155,9 +147,9 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: embeddingModel,
-        prompt: text,
-      }),
+       , model: embeddingModel,
+        prompt: text
+      })
     });
 
     if (!response.ok) {
@@ -226,7 +218,7 @@ async function searchPgVector(
       id: row.id,
       score: row.similarity_score,
       content: row.content,
-      metadata: row.metadata,
+      metadata: row.metadata
     }));
   } catch (error) {
     console.error('[Vector Service] pgVector search failed:', error);
@@ -283,7 +275,7 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
       total_results: results.length,
       execution_time_ms: executionTime,
       backend: config.vectorBackend,
-      metadata,
+      metadata
     };
 
     // Cache the response
@@ -309,7 +301,7 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
       total_results: 0,
       execution_time_ms: executionTime,
       backend: config.vectorBackend,
-      metadata: { cached: false, cache_hit: false, filter_applied: !!request.metadata_filter },
+      metadata: { cached: false, cache_hit: false, filter_applied: !!request.metadata_filter }
     };
   }
 }
@@ -327,7 +319,7 @@ export async function getEmbedding(request: EmbeddingRequest): Promise<Embedding
     return {
       embedding,
       model: request.model || config.embeddingModel,
-      dimension: config.embeddingDimension,
+      dimension: config.embeddingDimension
     };
   } catch (error) {
     console.error('[Vector Service] Embedding failed:', error);
@@ -339,9 +331,7 @@ export async function getEmbedding(request: EmbeddingRequest): Promise<Embedding
 // HEALTH CHECK
 // ============================================================================
 
-export async function healthCheck(): Promise<{
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  vectorBackend: string;
+export async function healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, vectorBackend: string;
   embeddingModel: string;
   redisConnected: boolean;
   databaseConnected: boolean;
@@ -387,7 +377,7 @@ export async function healthCheck(): Promise<{
     embeddingModel: config.embeddingModel,
     redisConnected,
     databaseConnected,
-    ollamaConnected,
+    ollamaConnected
   };
 }
 

@@ -10,15 +10,14 @@ import type { SOMConfig } from '$lib/ai/som-neural-network';
 // --- Replace brittle WorkerGlobalScope typing/detection with robust check ---
 /*
   Previous:
-  declare const WorkerGlobalScope: any;
+  declare const; WorkerGlobalScope: any;
   if (typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && typeof (self as any)?.postMessage === 'function') { ... }
 */
 type MaybeWorker = {
   postMessage?: (msg: any) => void;
   // use DOM listener types instead of `any`
   addEventListener?: (
-    type: string,
-    listener: EventListenerOrEventListenerObject,
+    type: string; listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
   ) => void;
 };
@@ -50,9 +49,8 @@ type UploadOptions = {
 };
 
 // Add this top-level type (types cannot be declared with `private` inside a class)
-type PendingTask = {
-  resolve: (value: any) => void;
-  reject: (error: Error) => void;
+type PendingTask = { resolve: (value: any) => void;
+, reject: (error: Error) => void;
   onProgress?: (progress: number, stage?: string, data?: any) => void;
 };
 
@@ -70,10 +68,9 @@ type FileMetadata = {
   [key: string]: any;
 };
 
-// Local UploadResult type to avoid: "Cannot use namespace: 'UploadResult' as a type" errors
-type UploadResult = {
-  success: boolean;
-  fileId: string;
+// Local UploadResult type to avoid: "Cannot use; namespace: 'UploadResult' as a type" errors
+type UploadResult = { success: boolean;
+, fileId: string;
   fileName: string;
   bucket: string;
   size: number;
@@ -82,9 +79,8 @@ type UploadResult = {
   [key: string]: any;
 };
 
-export interface IngestionTask {
-  id: string;
-  files: File[] | Buffer[];
+export interface IngestionTask { id: string;
+, files: File[] | Buffer[];
   metadata: {
     caseId?: number;
     uploadedBy?: number;
@@ -92,46 +88,39 @@ export interface IngestionTask {
     tags?: string[];
     description?: string;
   };
-  options: {
-    generateEmbeddings: boolean;
-    enableSOMClustering: boolean;
+  options: { generateEmbeddings: boolean;
+, enableSOMClustering: boolean;
     enableRTXCompression: boolean;
     chunkSize: number;
     overlap: number;
     bucket?: string;
   };
 }
-export interface IngestionResult {
-  taskId: string;
-  success: boolean;
+export interface IngestionResult { taskId: string;
+, success: boolean;
   uploadResults: UploadResult[];
-  embeddings?: {
-    documentEmbeddings: number;
-    chunkEmbeddings: number;
+  embeddings?: { documentEmbeddings: number;
+, chunkEmbeddings: number;
     processingTime: number;
   };
-  somClustering?: {
-    clusters: number;
-    quality: number;
+  somClustering?: { clusters: number;
+, quality: number;
     processingTime: number;
   };
-  rtxCompression?: {
-    originalSize: number;
-    compressedSize: number;
+  rtxCompression?: { originalSize: number;
+, compressedSize: number;
     ratio: string;
     processingTime: number;
   };
   totalProcessingTime: number;
   error?: string;
 }
-export interface WorkerMessage {
-  type: 'ingestion' | 'embedding' | 'som_clustering' | 'rtx_compression' | 'health_check';
-  data: any;
+export interface WorkerMessage { type: 'ingestion' | 'embedding' | 'som_clustering' | 'rtx_compression' | 'health_check';
+, data: any;
   taskId: string;
 }
-export interface WorkerResponse {
-  taskId: string;
-  success: boolean;
+export interface WorkerResponse { taskId: string;
+, success: boolean;
   data?: any;
   progress?: number;
   error?: string;
@@ -140,7 +129,7 @@ export interface WorkerResponse {
 // Worker implementation
 if (isWorkerEnv) {
   class DocumentIngestionWorker {
-    private processing = $state(false);
+    private processing = false; // Changed from $state(false)
     private currentTask: string | null = null;
     private cache = new Map<string, unknown>(); // replaced `any` with `unknown`
     constructor() {
@@ -169,19 +158,19 @@ if (isWorkerEnv) {
             result = await this.performHealthCheck();
             break;
           default:
-            throw new Error(`Unknown task type: ${type}`);
+            throw new Error(`Unknown task; type: ${type}`);
         }
         this.postResponse({
           taskId,
           success: true,
-          data: result,
+          data: result
         });
       } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         this.postResponse({
           taskId,
           success: false,
-          error: errMsg,
+          error: errMsg
         });
       } finally {
         this.currentTask = null;
@@ -195,7 +184,7 @@ if (isWorkerEnv) {
         success: true,
         progress: 10,
         stage: 'Starting file uploads',
-        data: { filesCount: files.length },
+        data: {, filesCount: files.length }
       });
       // Step 1: Upload files to MinIO (simulated)
       const uploadResults: UploadResult[] = [];
@@ -206,7 +195,7 @@ if (isWorkerEnv) {
         const uploadResult = await this.simulateMinIOUpload(file, originalName, {
           bucket: options.bucket,
           caseId: metadata.caseId,
-          uploadedBy: metadata.uploadedBy,
+          uploadedBy: metadata.uploadedBy
         });
         uploadResults.push(uploadResult);
         this.postResponse({
@@ -214,14 +203,14 @@ if (isWorkerEnv) {
           success: true,
           progress: 20 + (i / files.length) * 30,
           stage: `Uploaded ${i + 1}/${files.length} files`,
-          data: { uploaded: i + 1, total: files.length },
+          data: { uploaded: i + 1, total: files.length }
         });
       }
       const result: IngestionResult = {
         taskId: id,
         success: true,
         uploadResults,
-        totalProcessingTime: 0,
+        totalProcessingTime: 0
       };
       // Step 2: Generate embeddings if requested
       if (options.generateEmbeddings) {
@@ -230,7 +219,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 50,
           stage: 'Generating embeddings',
-          data: { stage: 'embeddings' },
+          data: {, stage: 'embeddings' }
         });
         const embeddingResult = await this.generateEmbeddingsForFiles(uploadResults, options as EmbeddingOptions);
         result.embeddings = embeddingResult;
@@ -239,7 +228,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 70,
           stage: 'Embeddings generated',
-          data: embeddingResult,
+          data: embeddingResult
         });
       }
       // Step 3: SOM clustering if requested
@@ -249,7 +238,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 80,
           stage: 'Performing SOM clustering',
-          data: { stage: 'som_clustering' },
+          data: {, stage: 'som_clustering' }
         });
         const somResult = await this.performSOMClustering(uploadResults);
         result.somClustering = somResult;
@@ -261,7 +250,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 90,
           stage: 'Applying RTX compression',
-          data: { stage: 'rtx_compression' },
+          data: {, stage: `rtx_compression` }
         });
         const rtxResult = await this.applyRTXCompression(uploadResults);
         result.rtxCompression = rtxResult;
@@ -272,7 +261,7 @@ if (isWorkerEnv) {
         success: true,
         progress: 100,
         stage: 'Ingestion completed',
-        data: { stage: 'completed', processingTime: result.totalProcessingTime },
+        data: {, stage: 'completed', processingTime: result.totalProcessingTime }
       });
       return result;
     }
@@ -295,7 +284,7 @@ if (isWorkerEnv) {
       return {
         clusters,
         quality: 0.75 + Math.random() * 0.2, // Mock quality score
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
     private async applyRTXCompression(uploadResults: UploadResult[]) {
@@ -317,7 +306,7 @@ if (isWorkerEnv) {
         originalSize,
         compressedSize,
         ratio: `${Math.floor(originalSize / safeCompressed)}:1`,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
     private async processEmbeddingGeneration(data: { texts: string[]; options?: EmbeddingOptions } | unknown) {
@@ -329,10 +318,9 @@ if (isWorkerEnv) {
         typeof options.dimension === 'number' && Number.isFinite(options.dimension) && options.dimension > 0
           ? Math.max(1, Math.floor(options.dimension))
           : 384;
-      const embeddings: Array<{
-        text: string;
-        embedding: number[];
-        metadata: { tokenCount: number; processingTime: number };
+      const embeddings: Array<{ text: string;
+, embedding: number[];
+        metadata: { tokenCount: number;, processingTime: number };
       }> = [];
       for (const text of texts) {
         // Simulate embedding generation
@@ -342,8 +330,8 @@ if (isWorkerEnv) {
           embedding: new Array(dimension).fill(0).map(() => Math.random() - 0.5),
           metadata: {
             tokenCount: Math.ceil((text as string).length / 4),
-            processingTime: Math.random() * 100,
-          },
+            processingTime: Math.random() * 100
+          }
         });
       }
       return { embeddings, count: embeddings.length };
@@ -375,7 +363,7 @@ if (isWorkerEnv) {
         originalSize: totalOriginal,
         compressedSize: totalCompressed,
         ratio: `${Math.floor(totalOriginal / safeCompressed)}:1`,
-        quality: 0.98 + Math.random() * 0.02,
+        quality: 0.98 + Math.random() * 0.02
       };
     }
     private async performHealthCheck(): Promise<unknown> {
@@ -385,7 +373,7 @@ if (isWorkerEnv) {
         currentTask: this.currentTask,
         cacheSize: this.cache.size,
         memoryUsage: this.getMemoryUsage(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
     private generateMockContent(fileName: string): string {
@@ -406,7 +394,7 @@ if (isWorkerEnv) {
         return {
           used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
           total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
-          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024),
+          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024)
         };
       }
       return null;
@@ -445,7 +433,7 @@ export class IngestionWorkerManager {
     if (typeof Worker !== 'undefined') {
       try {
         // Create worker from this file
-        this.worker = new Worker(new URL(import.meta.url), { type: 'module' });
+        this.worker = new Worker(new URL(import.meta.url), { type: `module` });
         this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
         this.worker.addEventListener('error', this.handleWorkerError.bind(this));
         console.log('Ingestion worker manager initialized');
@@ -473,7 +461,7 @@ export class IngestionWorkerManager {
   private handleWorkerError(event: ErrorEvent): void {
     console.error('Ingestion worker error:', event.error ?? event.message ?? event);
     for (const [, task] of this.pendingTasks) {
-      task.reject(new Error(`Worker error: ${event.message || 'Unknown error'}`));
+      task.reject(new Error(`Worker error: ${event.message || 'Unknown error` }`));
     }
     this.pendingTasks.clear();
   }
@@ -525,7 +513,7 @@ export class IngestionWorkerManager {
       this.worker!.postMessage({
         type,
         data,
-        taskId,
+        taskId
       } as WorkerMessage);
     });
   }
@@ -550,9 +538,8 @@ export class IngestionWorkerManager {
 export const ingestionWorkerManager = new IngestionWorkerManager();
 
 // Add a local declaration for the non-standard Performance.memory shape
-type PerformanceMemory = {
-  jsHeapSizeLimit: number;
-  totalJSHeapSize: number;
+type PerformanceMemory = { jsHeapSizeLimit: number;
+, totalJSHeapSize: number;
   usedJSHeapSize: number;
 };
 
@@ -573,7 +560,7 @@ class MinioService {
       mimeType: guessMimeType(originalName),
       fileType: guessFileType(originalName),
       bucket,
-      uploadedAt: new Date(),
+      uploadedAt: new Date()
     };
 
     if (options?.uploadedBy !== undefined) metadata.uploadedBy = options.uploadedBy;
@@ -586,7 +573,7 @@ class MinioService {
       bucket,
       size: fileSize,
       url: `http://localhost:4002/${bucket}/${fileName}`,
-      metadata,
+      metadata
     };
   }
 }
@@ -608,9 +595,9 @@ class EmbeddingService {
         text,
         embedding,
         metadata: {
-          tokenCount: Math.ceil(text.length / 4),
-          processingTime: Math.random() * 20,
-        },
+         , tokenCount: Math.ceil(text.length / 4),
+          processingTime: Math.random() * 20
+        }
       });
     }
     return { embeddings, count: embeddings.length };
@@ -631,7 +618,7 @@ class EmbeddingService {
 
     for (const up of uploadResults) {
       if (!up.success) continue;
-      const mockContent = `${up.metadata?.originalName ?? up.fileName} ${up.fileName} ${up.metadata?.uploadedAt ?? ''}`;
+      const mockContent = `${up.metadata?.originalName ?? up.fileName} ${up.fileName} ${up.metadata?.uploadedAt ?? '` }`;
       const chunks = chunkTextStatic(mockContent, chunkSize, overlap);
       // Renamed loop variable to start with `$` to satisfy the: "allowed unused vars" pattern(/^\$/u)
       for (const $c of chunks) {
@@ -643,7 +630,7 @@ class EmbeddingService {
     return {
       documentEmbeddings,
       chunkEmbeddings,
-      processingTime: performance.now() - start,
+      processingTime: performance.now() - start
     };
   }
 }
@@ -675,7 +662,7 @@ export class SOMNeuralNetwork {
       clusters,
       quality: 0.8 + Math.random() * 0.15,
       convergence: true,
-      epochs,
+      epochs
     };
   }
 
@@ -694,8 +681,7 @@ function guessMimeType(fileName: string): string {
     doc: 'application/msword',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     txt: 'text/plain',
-    json: 'application/json',
-  };
+    json: `application/json` };
   return mimeTypes[ext] || 'application/octet-stream';
 }
 function guessFileType(fileName: string): string {
@@ -718,8 +704,8 @@ function chunkTextStatic(text: string, chunkSize: number, overlap: number): stri
   return chunks;
 }
 
-// --- Use the worker env check to initialize the worker class instance ---
-if (isWorkerEnv) {
+// exports for external modules (the client manager already uses worker endpoints; these allow testing)
+export type { FileMetadata, UploadOptions, EmbeddingOptions };
   class DocumentIngestionWorker {
     private processing = $state(false);
     private currentTask: string | null = null;
@@ -750,19 +736,19 @@ if (isWorkerEnv) {
             result = await this.performHealthCheck();
             break;
           default:
-            throw new Error(`Unknown task type: ${type}`);
+            throw new Error(`Unknown task; type: ${type}`);
         }
         this.postResponse({
           taskId,
           success: true,
-          data: result,
+          data: result
         });
       } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         this.postResponse({
           taskId,
           success: false,
-          error: errMsg,
+          error: errMsg
         });
       } finally {
         this.currentTask = null;
@@ -776,7 +762,7 @@ if (isWorkerEnv) {
         success: true,
         progress: 10,
         stage: 'Starting file uploads',
-        data: { filesCount: files.length },
+        data: {, filesCount: files.length }
       });
       // Step 1: Upload files to MinIO (simulated)
       const uploadResults: UploadResult[] = [];
@@ -787,7 +773,7 @@ if (isWorkerEnv) {
         const uploadResult = await this.simulateMinIOUpload(file, originalName, {
           bucket: options.bucket,
           caseId: metadata.caseId,
-          uploadedBy: metadata.uploadedBy,
+          uploadedBy: metadata.uploadedBy
         });
         uploadResults.push(uploadResult);
         this.postResponse({
@@ -795,14 +781,14 @@ if (isWorkerEnv) {
           success: true,
           progress: 20 + (i / files.length) * 30,
           stage: `Uploaded ${i + 1}/${files.length} files`,
-          data: { uploaded: i + 1, total: files.length },
+          data: { uploaded: i + 1, total: files.length }
         });
       }
       const result: IngestionResult = {
         taskId: id,
         success: true,
         uploadResults,
-        totalProcessingTime: 0,
+        totalProcessingTime: 0
       };
       // Step 2: Generate embeddings if requested
       if (options.generateEmbeddings) {
@@ -811,7 +797,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 50,
           stage: 'Generating embeddings',
-          data: { stage: 'embeddings' },
+          data: {, stage: 'embeddings' }
         });
         const embeddingResult = await this.generateEmbeddingsForFiles(uploadResults, options as EmbeddingOptions);
         result.embeddings = embeddingResult;
@@ -820,7 +806,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 70,
           stage: 'Embeddings generated',
-          data: embeddingResult,
+          data: embeddingResult
         });
       }
       // Step 3: SOM clustering if requested
@@ -830,7 +816,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 80,
           stage: 'Performing SOM clustering',
-          data: { stage: 'som_clustering' },
+          data: {, stage: 'som_clustering' }
         });
         const somResult = await this.performSOMClustering(uploadResults);
         result.somClustering = somResult;
@@ -842,7 +828,7 @@ if (isWorkerEnv) {
           success: true,
           progress: 90,
           stage: 'Applying RTX compression',
-          data: { stage: 'rtx_compression' },
+          data: {, stage: `rtx_compression` }
         });
         const rtxResult = await this.applyRTXCompression(uploadResults);
         result.rtxCompression = rtxResult;
@@ -853,7 +839,7 @@ if (isWorkerEnv) {
         success: true,
         progress: 100,
         stage: 'Ingestion completed',
-        data: { stage: 'completed', processingTime: result.totalProcessingTime },
+        data: {, stage: 'completed', processingTime: result.totalProcessingTime }
       });
       return result;
     }
@@ -876,7 +862,7 @@ if (isWorkerEnv) {
       return {
         clusters,
         quality: 0.75 + Math.random() * 0.2, // Mock quality score
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
     private async applyRTXCompression(uploadResults: UploadResult[]) {
@@ -898,10 +884,10 @@ if (isWorkerEnv) {
         originalSize,
         compressedSize,
         ratio: `${Math.floor(originalSize / safeCompressed)}:1`,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
-    private async processEmbeddingGeneration(data: { texts: string[]; options?: EmbeddingOptions } | unknown) {
+    private async processEmbeddingGeneration(data: {, texts: string[]; options?: EmbeddingOptions } | unknown) {
       const payload = (data as { texts?: string[]; options?: EmbeddingOptions }) || {};
       const texts = Array.isArray(payload.texts) ? payload.texts : [];
       const options = payload.options ?? {};
@@ -910,10 +896,9 @@ if (isWorkerEnv) {
         typeof options.dimension === 'number' && Number.isFinite(options.dimension) && options.dimension > 0
           ? Math.max(1, Math.floor(options.dimension))
           : 384;
-      const embeddings: Array<{
-        text: string;
-        embedding: number[];
-        metadata: { tokenCount: number; processingTime: number };
+      const embeddings: Array<{ text: string;
+, embedding: number[];
+        metadata: { tokenCount: number;, processingTime: number };
       }> = [];
       for (const text of texts) {
         // Simulate embedding generation
@@ -923,8 +908,8 @@ if (isWorkerEnv) {
           embedding: new Array(dimension).fill(0).map(() => Math.random() - 0.5),
           metadata: {
             tokenCount: Math.ceil((text as string).length / 4),
-            processingTime: Math.random() * 100,
-          },
+            processingTime: Math.random() * 100
+          }
         });
       }
       return { embeddings, count: embeddings.length };
@@ -956,7 +941,7 @@ if (isWorkerEnv) {
         originalSize: totalOriginal,
         compressedSize: totalCompressed,
         ratio: `${Math.floor(totalOriginal / safeCompressed)}:1`,
-        quality: 0.98 + Math.random() * 0.02,
+        quality: 0.98 + Math.random() * 0.02
       };
     }
     private async performHealthCheck(): Promise<unknown> {
@@ -966,7 +951,7 @@ if (isWorkerEnv) {
         currentTask: this.currentTask,
         cacheSize: this.cache.size,
         memoryUsage: this.getMemoryUsage(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
     private generateMockContent(fileName: string): string {
@@ -987,7 +972,7 @@ if (isWorkerEnv) {
         return {
           used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
           total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
-          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024),
+          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024)
         };
       }
       return null;

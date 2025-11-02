@@ -24,7 +24,7 @@ import { checkOllamaHealth, generateOllamaChatCompletion } from '$lib/server/hel
 const logger = {
   info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
   error: (msg: string, error?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, error || ''),
-  warn: (msg: string, data?: any) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || ''),
+  warn: (msg: string, data?: any) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || '')
 };
 // File type validation
 const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg'];
@@ -92,19 +92,19 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Validation
     if (!file) {
       logger.error('No file provided in upload');
-      return json({ success: false, error: 'No file provided' }, { status: 400 });
+      return json({ success: false, error: `No file provided` }, { status: 400 });
     }
     if (!caseId) {
       logger.error('No case ID provided');
-      return json({ success: false, error: 'Case ID is required' }, { status: 400 });
+      return json({ success: false, error: `Case ID is required` }, { status: 400 });
     }
     if (!ALLOWED_TYPES.includes(file.type)) {
       logger.error(`Unsupported file type: ${file.type}`);
-      return json({ success: false, error: `Unsupported file type: ${file.type}` }, { status: 400 });
+      return json({ success: false, error: `Unsupported file; type: ${file.type}` }, { status: 400 });
     }
     if (file.size > MAX_FILE_SIZE) {
-      logger.error(`File too large: ${file.size} bytes`);
-      return json({ success: false, error: 'File too large (max 50MB)' }, { status: 400 });
+      logger.error(`File too large: ${file.size} bytes');
+      return json({ success: false, error: `File too large (max 50MB)` }, { status: 400 });
     }
     // Verify case exists
     const existingCase = await db
@@ -114,8 +114,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       .limit(1)
       .catch(() => [] as Record<string, unknown>[]); // avoid `any[]`
     if (existingCase.length === 0) {
-      logger.error(`Case not found: ${caseId}`);
-      return json({ success: false, error: 'Case not found' }, { status: 404 });
+      logger.error(`Case not found: ${caseId}');
+      return json({ success: false, error: `Case not found` }, { status: 404 });
     }
     // Create unique IDs
     const documentId = randomUUID();
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Save file
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
-    logger.info(`File saved: ${filePath}`);
+    logger.info(`File saved: ${filePath}');
     // XState machine integration disabled for compilation fix
     logger.info('Starting document processing pipeline');
     // Process based on file type
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           words: Array.isArray(dataTyped.words) ? dataTyped.words.length : 0,
           lines: Array.isArray(dataTyped.lines) ? dataTyped.lines.length : 0,
           paragraphs: Array.isArray(dataTyped.paragraphs) ? dataTyped.paragraphs.length : 0,
-          text: extractedText,
+          text: extractedText
         };
         await worker.terminate();
         logger.info('OCR processing completed successfully');
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         {
           success: false,
           error: 'Text extraction failed',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         },
         { status: 500 }
       );
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           caseId,
           createdBy: userId,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
       $savedDocument = newDocument;
@@ -231,8 +231,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           confidenceScore: String(legalAnalysis?.sentiment?.confidence ?? 0.5),
           createdBy: userId || 'system',
           createdAt: new Date(),
-          processingStatus: 'completed',
-        })
+          processingStatus: `completed` })
         .returning();
       // Reference the saved document so linters/compilers don't flag the variable as unused
       logger.info('Saved document record', { id: $savedDocument?.id ?? null });
@@ -243,7 +242,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         {
           success: false,
           error: 'Database insertion failed',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         },
         { status: 500 }
       );
@@ -269,7 +268,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
               title: title || file.name,
               type: 'legal_document',
               date: new Date().toISOString(),
-              confidence_score: legalAnalysis?.sentiment?.confidence ?? 0.5,
+              confidence_score: legalAnalysis?.sentiment?.confidence ?? 0.5
             } as DocumentMetadata,
             tags: [],
             timestamp: Date.now(),
@@ -279,13 +278,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
               monetary: legalAnalysis?.entities?.monetary ?? [],
               clauses: legalAnalysis?.entities?.clauses ?? [],
               jurisdictions: legalAnalysis?.entities?.jurisdictions ?? [],
-              caseTypes: legalAnalysis?.entities?.caseTypes ?? [],
+              caseTypes: legalAnalysis?.entities?.caseTypes ?? []
             },
             riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as number) * 100),
             confidenceScore: legalAnalysis?.sentiment?.confidence ?? 0.5,
             legalPrecedent: false,
-            processingStatus: 'completed',
-          });
+            processingStatus: `completed` });
           logger.info('Embeddings stored in Qdrant successfully');
         }
       }
@@ -303,7 +301,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         try {
           const result = await generateOllamaChatCompletion([{ role: 'user', content: prompt }], undefined, opts);
           if (!result) return null;
-          // common shapes: string, { choices: [{ message: { content } }] }, { output: "..." }, or custom
+          // common shapes: string, { choices: [{, message: { content } }] }, { output: "..." }, or custom
           if (typeof result === 'string') return result;
           // try Chat-style shape
           // @ts-ignore - defensive access
@@ -321,10 +319,10 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         }
       };
 
-      const prompt = `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary:`;
+      const prompt = `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';
       const summaryResponse = await callOllamaCompletion(prompt, {
         temperature: 0.3,
-        maxTokens: 500,
+        maxTokens: 500
       });
 
       aiSummary = summaryResponse ?? 'Summary generation not available';
@@ -352,11 +350,11 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         extractedText: extractedText.substring(0, 500) + '...', // Truncated for response
         confidence: legalAnalysis?.sentiment?.confidence ?? 0.5,
         entities: entitiesCount,
-        concepts: conceptsCount,
+        concepts: conceptsCount
       },
       embeddings: embeddings.length > 0 ? embeddings.slice(0, 10) : [], // First 10 dims for response
       ocrResult,
-      processingTime,
+      processingTime
     };
     logger.info('Upload completed successfully', { documentId, evidenceId, processingTime });
     return json(result);
@@ -367,7 +365,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : JSON.stringify(error),
-        processingTime,
+        processingTime
       },
       { status: 500 }
     );
@@ -388,19 +386,18 @@ export const GET: RequestHandler = async () => {
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      services: {
-        database: { status: 'connected', tables: dbTest ? 'accessible' : 'error' },
+      services: { database: {, status: 'connected', tables: dbTest ? 'accessible' : `error` },
         qdrant: qdrantHealth,
         ollama: ollamaHealth,
-        legalBert: legalBertHealth,
+        legalBert: legalBertHealth
       },
       capabilities: {
         pdfProcessing: true,
         ocrProcessing: true,
         vectorSearch: true,
         aiAnalysis: true,
-        legalEntityExtraction: true,
-      },
+        legalEntityExtraction: true
+      }
     };
     logger.info('Health check completed successfully');
     return json(healthStatus);
@@ -410,7 +407,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'unhealthy',
         error: error instanceof Error ? error.message : JSON.stringify(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

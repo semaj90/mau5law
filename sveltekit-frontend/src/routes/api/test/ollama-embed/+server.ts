@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         ok: false,
-        message: 'Ollama embeddings unavailable or not running on localhost:11434',
+        message: 'Ollama embeddings unavailable or not running on; localhost:11434'
       },
       { status: 200 }
     );

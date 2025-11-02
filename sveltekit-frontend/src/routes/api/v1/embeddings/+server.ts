@@ -57,9 +57,9 @@ export const POST: RequestHandler = async ({ request }) => {
       [isBatch ? 'embeddings' : 'embedding']: isBatch ? embeddings : embeddings[0],
       usage: {
         promptTokens: totalTokens,
-        totalTokens: totalTokens,
+        totalTokens: totalTokens
       },
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     console.log(`✅ Generated ${embeddings.length} embedding(s) using ${model}`);
@@ -69,8 +69,8 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Model': model,
-      },
+        'X-Model': model
+      }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || 'Embedding generation failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -87,8 +87,8 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true'
+      }
     });
   }
 };
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
 
     try {
       const response = await fetch(getOllamaEndpoint('api/tags'), {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (response.ok) {
         const data = await response.json();
@@ -123,36 +123,34 @@ export const GET: RequestHandler = async () => {
       {
         service: 'multi-modal-embeddings',
         status: {
-          healthy: true,
+         , healthy: true,
           ollamaAvailable,
           availableModels,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         endpoints: {
           generate: 'POST /api/v1/embeddings',
-          status: 'GET /api/v1/embeddings',
-        },
+          status: `GET /api/v1/embeddings` },
         models: {
           primary: 'embeddinggemma:latest',
           fallback: 'nomic-embed-text:latest',
           dimensions: 384,
-          supportsBatch: true,
+          supportsBatch: true
         },
         features: {
           gemmaEmbeddings: availableModels.some(m => m.includes('embeddinggemma')),
           nomicEmbeddings: availableModels.some(m => m.includes('nomic-embed-text')),
           batchProcessing: true,
           ocrIntegration: true,
-          vectorSimilarity: true,
+          vectorSimilarity: true
         },
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        },
+          'X-Processing-Time': `${Math.round(processingTime)}ms` }
       }
     );
   } catch (error) {
@@ -163,15 +161,15 @@ export const GET: RequestHandler = async () => {
       {
         error: 'Failed to get service status',
         message: error instanceof Error ? error.message : 'Unknown error',
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-Error': 'true',
-        },
+          'X-Error': 'true'
+        }
       }
     );
   }
@@ -187,10 +185,10 @@ async function generateEmbedding(text: string, model: string, retries: number = 
     try {
       const response = await fetch(getOllamaEndpoint('api/embeddings'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: model,
-          prompt: text,
+          prompt: text
         }),
         signal: AbortSignal.timeout(30000), // 30 second timeout
       });
@@ -208,7 +206,7 @@ async function generateEmbedding(text: string, model: string, retries: number = 
 
       return data.embedding;
     } catch (fetchError: any) {
-      console.error(`🔴 Embedding attempt ${attempt}/${retries} failed:`, fetchError.message);
+      console.error(`🔴 Embedding attempt ${attempt}/${retries} failed: ', fetchError.message);
 
       if (attempt === retries) {
         // Final attempt failed - check for specific fallback strategies

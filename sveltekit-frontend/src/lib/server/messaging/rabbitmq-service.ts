@@ -10,7 +10,7 @@ interface RabbitMQServiceEvents {
   // Index signature to satisfy `Record<string, any[]>` constraint on CustomEventEmitter
   [event: string]: any[];
   connected: [];
-  messagePublished: [{ documentId: string; routingKey: string }];
+  messagePublished: [{ documentId: string;, routingKey: string }];
 }
 // A simple, type-safe event emitter implementation
 // This replaces Node.js's EventEmitter to avoid direct dependency on: 'events' module
@@ -51,17 +51,13 @@ export interface LegalDocumentMessage {
   retryCount: number;
   timestamp: number;
 }
-export interface ProcessingResult {
-  success: boolean;
-  documentId: string;
+export interface ProcessingResult { success: boolean;, documentId: string;
   result?: any;
   error?: string;
   processingTime: number;
 }
 export type MessageHandler = (message: any, originalMessage?: any) => Promise<unknown> | unknown;
-interface QueueStats {
-  queue: string;
-  messageCount: number;
+interface QueueStats { queue: string;, messageCount: number;
   consumerCount: number;
 }
 export type QueueStatsMap = Record<string, QueueStats | { error: string }>;
@@ -90,18 +86,16 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     dlxDocumentAnalysis: 'legal.dlx.document.analysis',
     processingResults: 'legal.processing.results',
     notifications: 'legal.notifications',
-    // NEW: Add embedding worker queues from rabbitmq-config.ts
-    documentEmbedding: 'legal_ai.document.embedding',
+    // NEW: Add embedding worker queues from rabbitmq-config.ts; documentEmbedding: 'legal_ai.document.embedding',
     caseEmbedding: 'legal_ai.case.embedding',
     embeddingBulk: 'legal_ai.embedding.bulk',
     documentIndexing: 'legal_ai.document.indexing',
-    documentAnalysisAI: 'legal_ai.document.analysis',
+    documentAnalysisAI: 'legal_ai.document.analysis'
   };
   private exchanges = {
     legal: 'legal.direct',
     legalTopic: 'legal.topic',
-    dlx: 'legal.dlx',
-  };
+    dlx: `legal.dlx` };
   constructor(url = 'amqp://localhost:5672') {
     super();
     this.url = url;
@@ -131,7 +125,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   private async setupExchanges(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
     // Allow configuring the: 'legal' exchange type via env to avoid PRECONDITION errors
-    // Default to: 'direct' to match existing brokers that may already have: 'legal.direct' declared.
+    // Default to: 'direct' to match existing brokers that may already; have: 'legal.direct' declared.
     // If you need topic semantics (wildcard routing keys) set LEGAL_EXCHANGE_TYPE=topic and recreate the exchange.
     const legalExchangeType = (process.env.LEGAL_EXCHANGE_TYPE as string) ?? 'direct';
     await this.channel.assertExchange(this.exchanges.legal, legalExchangeType, { durable: true });
@@ -151,7 +145,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       // Some brokers already declare DLX queues with a dead-letter-exchange
       // property; include it here to avoid PRECONDITION_FAILED when re-asserting.
       'x-dead-letter-exchange': this.exchanges.dlx,
-      // 24 hours in milliseconds — match existing deployments that use this TTL: 'x-message-ttl': 24 * 60 * 60 * 1000,
+      // 24 hours in milliseconds — match existing deployments that use this TTL: 'x-message-ttl': 24 * 60 * 60 * 1000
     };
     for (const [key, queueName] of Object.entries(this.queues)) {
       // Keys that are DLX entries in the map are named with: 'dlx' prefix in this implementation
@@ -187,11 +181,11 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       {
         queue: this.queues.documentAnalysisAI,
         routingKey: 'document.analysis.ai',
-        exchange: this.exchanges.legalTopic,
+        exchange: this.exchanges.legalTopic
       },
       // Results / notifications
       { queue: this.queues.processingResults, routingKey: 'processing.results', exchange: this.exchanges.legal },
-      { queue: this.queues.notifications, routingKey: 'notifications.#', exchange: this.exchanges.legalTopic },
+      { queue: this.queues.notifications, routingKey: 'notifications.#', exchange: this.exchanges.legalTopic }
     ];
     // Bind application queues to their exchanges
     for (const binding of bindings) {
@@ -215,7 +209,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       // channel.publish is synchronous (returns boolean) — do not await
       const published = this.channel.publish(this.exchanges.legal, routingKey, messageBuffer, {
         persistent: true,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       if (published) {
         logger.info(`[RabbitMQ] Published document ${_document.id}`);
@@ -259,18 +253,16 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     for (const [key, queueName] of Object.entries(this.queues)) {
       try {
         // amqplib does not export: 'Replies' in its types; cast to a local shape instead.
-        const queueInfo = (await this.channel.checkQueue(queueName)) as {
-          queue: string;
-          messageCount: number;
+        const queueInfo = (await this.channel.checkQueue(queueName)) as { queue: string;, messageCount: number;
           consumerCount: number;
         };
         stats[key] = {
           queue: queueName,
           messageCount: queueInfo.messageCount,
-          consumerCount: queueInfo.consumerCount,
+          consumerCount: queueInfo.consumerCount
         };
       } catch (error) {
-        stats[key] = { error: 'Queue not found' };
+        stats[key] = { error: `Queue not found` };
       }
     }
     return stats;

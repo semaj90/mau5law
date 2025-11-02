@@ -1,8 +1,6 @@
 import { globalGPUManager } from './global-gpu-manager.js';
 import { vertexCacheManager } from './vertex-cache-manager.js';
-export interface StreamedVertexPayload {
-  id: string;
-  tensor: Float32Array;
+export interface StreamedVertexPayload { id: string;, tensor: Float32Array;
   metadata: Record<string, unknown>;
 }
 export class WebGPUVertexStreamer {

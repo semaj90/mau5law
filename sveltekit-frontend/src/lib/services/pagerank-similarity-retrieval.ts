@@ -4,9 +4,7 @@
  * Integrates with GPU cache, vector databases, and Neo4j for high-performance retrieval
  */
 // === PageRank Configuration ===
-export interface PageRankConfig {
-  dampingFactor: number;
-  maxIterations: number;
+export interface PageRankConfig { dampingFactor: number;, maxIterations: number;
   convergenceThreshold: number;
   enableGPUAcceleration: boolean;
   useSparseCaching: boolean;
@@ -14,9 +12,7 @@ export interface PageRankConfig {
   parallelWorkers: number;
 }
 // === Graph Data Structures ===
-export interface GraphNode {
-  id: string;
-  type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
+export interface GraphNode { id: string;, type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
   metadata: {
     title?: string;
     content?: string;
@@ -29,23 +25,17 @@ export interface GraphNode {
   pageRankScore: number;
   inboundLinks: Set<string>;
   outboundLinks: Set<string>;
-  features: {
-    textLength: number;
-    citationCount: number;
+  features: { textLength: number;, citationCount: number;
     viewCount: number;
     recencyScore: number;
     authorityScore: number;
   };
 }
-export interface GraphEdge {
-  source: string;
-  target: string;
+export interface GraphEdge { source: string;, target: string;
   weight: number;
   type: 'citation' | 'similarity' | 'reference' | 'dependency' | 'semantic';
   confidence: number;
-  metadata: {
-    strength: number;
-    frequency: number;
+  metadata: { strength: number;, frequency: number;
     context: string[];
     timestamp: number;
   };
@@ -57,13 +47,11 @@ export interface SimilarityQuery {
   filters: {
     nodeTypes?: string[];
     categories?: string[];
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date;, end: Date };
     minPageRank?: number;
     tags?: string[];
   };
-  ranking: {
-    usePageRank: boolean;
-    useSemanticSimilarity: boolean;
+  ranking: { usePageRank: boolean;, useSemanticSimilarity: boolean;
     useRecencyBoost: boolean;
     useAuthorityBoost: boolean;
     combinationStrategy: 'weighted' | 'product' | 'harmonic' | 'adaptive';
@@ -71,11 +59,7 @@ export interface SimilarityQuery {
   limit: number;
   offset: number;
 }
-export interface SimilarityResult {
-  node: GraphNode;
-  scores: {
-    pageRank: number;
-    semanticSimilarity: number;
+export interface SimilarityResult { node: GraphNode;, scores: { pageRank: number;, semanticSimilarity: number;
     recencyScore: number;
     authorityScore: number;
     combinedScore: number;
@@ -105,7 +89,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     queriesProcessed: 0,
     cacheHitRatio: 0,
     averageQueryTime: 0,
-    gpuAccelerationUsed: 0,
+    gpuAccelerationUsed: 0
   };
   constructor(config: PageRankConfig) {
     super();
@@ -154,7 +138,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           return a;
         })(),
         citationCount: 45,
-        viewCount: 1250,
+        viewCount: 1250
       },
       {
         id: 'doc_legal_002',
@@ -167,7 +151,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           return a;
         })(),
         citationCount: 78,
-        viewCount: 2100,
+        viewCount: 2100
       },
       {
         id: 'doc_legal_003',
@@ -180,7 +164,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           return a;
         })(),
         citationCount: 62,
-        viewCount: 1800,
+        viewCount: 1800
       },
     ];
     for (const doc of sampleDocuments) {
@@ -188,12 +172,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         id: doc.id,
         type: 'document',
         metadata: {
-          title: doc.title,
+         , title: doc.title,
           content: doc.content,
           tags: doc.tags,
           timestamp: Date.now(),
           importance: 0.8,
-          category: 'legal',
+          category: 'legal'
         },
         embedding: doc.embedding,
         pageRankScore: 0,
@@ -204,8 +188,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           citationCount: doc.citationCount,
           viewCount: doc.viewCount,
           recencyScore: 0.9,
-          authorityScore: Math.min(1, doc.citationCount / 100),
-        },
+          authorityScore: Math.min(1, doc.citationCount / 100)
+        }
       });
     }
   }
@@ -217,19 +201,19 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       { source: 'doc_legal_002', target: 'doc_legal_003', type: 'reference', weight: 0.6 },
       { source: 'doc_legal_003', target: 'doc_legal_001', type: 'similarity', weight: 0.7 },
       { source: 'case_smith_v_jones', target: 'doc_legal_001', type: 'citation', weight: 0.9 },
-      { source: 'case_smith_v_jones', target: 'doc_legal_003', type: 'reference', weight: 0.5 },
+      { source: 'case_smith_v_jones', target: 'doc_legal_003', type: 'reference', weight: 0.5 }
     ];
     // Add case nodes
     this.addNode({
       id: 'case_smith_v_jones',
       type: 'case',
       metadata: {
-        title: 'Smith v. Jones',
+       , title: 'Smith v. Jones',
         content: 'Landmark contract dispute case...',
         tags: ['case', 'contract', 'dispute'],
         timestamp: Date.now() - 86400000, // 1 day ago
         importance: 1.0,
-        category: 'case_law',
+        category: 'case_law'
       },
       pageRankScore: 0,
       inboundLinks: new Set(),
@@ -239,8 +223,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         citationCount: 120,
         viewCount: 3500,
         recencyScore: 0.95,
-        authorityScore: 1.0,
-      },
+        authorityScore: 1.0
+      }
     });
     // Add relationships
     for (const rel of sampleRelationships) {
@@ -251,11 +235,11 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         type: rel.type as any,
         confidence: 0.8,
         metadata: {
-          strength: rel.weight,
+         , strength: rel.weight,
           frequency: 1,
           context: [rel.type],
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       });
     }
   }
@@ -265,18 +249,17 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     const concepts = [
       { id: 'concept_negligence', tags: ['negligence', 'tort', 'duty'], importance: 0.9 },
       { id: 'concept_contract_formation', tags: ['contract', 'offer', 'acceptance'], importance: 0.85 },
-      { id: 'concept_evidence_admissibility', tags: ['evidence', 'admissible', 'hearsay'], importance: 0.8 },
+      { id: 'concept_evidence_admissibility', tags: ['evidence', 'admissible', 'hearsay'], importance: 0.8 }
     ];
     for (const concept of concepts) {
       this.addNode({
         id: concept.id,
         type: 'concept',
         metadata: {
-          tags: concept.tags,
+         , tags: concept.tags,
           timestamp: Date.now(),
           importance: concept.importance,
-          category: 'concept',
-        } as any,
+          category: `concept` } as any,
         pageRankScore: 0,
         inboundLinks: new Set(),
         outboundLinks: new Set(),
@@ -285,8 +268,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           citationCount: 0,
           viewCount: 100,
           recencyScore: 0.7,
-          authorityScore: concept.importance,
-        },
+          authorityScore: concept.importance
+        }
       });
     }
   }
@@ -316,7 +299,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       // Update cached scores
       this.pageRankCache = {
         scores: new Map(scores),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       // Update node scores
       for (const [nodeId, score] of scores) {
@@ -360,14 +343,14 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       // Call CUDA service for PageRank computation
       const response = await fetch(`${this.cudaServiceUrl}/api/v2/gpu/pagerank`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          adjacencyMatrix: Array.from(adjacencyArray),
+         , adjacencyMatrix: Array.from(adjacencyArray),
           nodeCount: n,
           dampingFactor: this.config.dampingFactor,
           maxIterations: this.config.maxIterations,
-          convergenceThreshold: this.config.convergenceThreshold,
-        }),
+          convergenceThreshold: this.config.convergenceThreshold
+        })
       });
       if (response.ok) {
         const result = await response.json();
@@ -477,7 +460,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
             : 0,
           recencyScore: query.ranking.useRecencyBoost ? this.calculateRecencyScore(node.metadata.timestamp) : 0,
           authorityScore: query.ranking.useAuthorityBoost ? node.features.authorityScore : 0,
-          combinedScore: 0,
+          combinedScore: 0
         };
         // Calculate combined score
         scores.combinedScore = this.calculateCombinedScore(scores, query.ranking);
@@ -485,7 +468,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           node,
           scores,
           rank: 0, // Will be set after sorting
-          explanation: this.generateExplanation(scores, query.ranking),
+          explanation: this.generateExplanation(scores, query.ranking)
         };
         results.push(result);
       }
@@ -508,7 +491,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         query,
         results: paginatedResults,
         totalCandidates: candidates.length,
-        queryTime,
+        queryTime
       });
       return paginatedResults;
     } catch (error: any) {
@@ -602,7 +585,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       pageRank: ranking.usePageRank ? 0.3 : 0,
       semanticSimilarity: ranking.useSemanticSimilarity ? 0.4 : 0,
       recencyScore: ranking.useRecencyBoost ? 0.2 : 0,
-      authorityScore: ranking.useAuthorityBoost ? 0.1 : 0,
+      authorityScore: ranking.useAuthorityBoost ? 0.1 : 0
     };
     // Normalize weights
     const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
@@ -642,14 +625,13 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         return (
           this.calculateCombinedScore(scores, {
             ...ranking,
-            combinationStrategy: 'weighted',
+            combinationStrategy: 'weighted'
           }) * adaptiveWeight
         );
       }
       default: return this.calculateCombinedScore(scores, {
           ...ranking,
-          combinationStrategy: 'weighted',
-        });
+          combinationStrategy: `weighted` });
     }
   }
   private generateExplanation(scores: SimilarityResult['scores'], ranking: SimilarityQuery['ranking']): string[] {
@@ -703,7 +685,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       const response = await fetch(`${this.cudaServiceUrl}/api/v2/gpu/embedding`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, dimensions: 384 }),
+        body: JSON.stringify({ text, dimensions: 384 })
       });
       if (response.ok) {
         const result = await response.json();
@@ -726,13 +708,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       id,
       type: 'document',
       metadata: {
-        title: metadata.title,
+       , title: metadata.title,
         content,
         tags: metadata.tags || [],
         timestamp: Date.now(),
         importance: metadata.importance || 0.5,
-        category: metadata.category || 'document',
-      },
+        category: metadata.category || 'document` },
       embedding: nodeEmbedding,
       pageRankScore: 0,
       inboundLinks: new Set(),
@@ -742,8 +723,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         citationCount: metadata.citationCount || 0,
         viewCount: metadata.viewCount || 0,
         recencyScore: 1.0,
-        authorityScore: metadata.authorityScore || 0.5,
-      },
+        authorityScore: metadata.authorityScore || 0.5
+      }
     });
     // Invalidate PageRank cache
     this.pageRankCache = null;
@@ -762,11 +743,11 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       type,
       confidence: 0.8,
       metadata: {
-        strength: weight,
+       , strength: weight,
         frequency: 1,
         context: [type],
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     });
     // Invalidate PageRank cache
     this.pageRankCache = null;
@@ -802,8 +783,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       topNodes: this.getTopPageRankNodes(5).map(node => ({
         id: node.id,
         title: node.metadata.title,
-        pageRank: node.pageRankScore,
-      })),
+        pageRank: node.pageRankScore
+      }))
     };
   }
 }
@@ -815,7 +796,7 @@ export const createDefaultPageRankConfig = (): PageRankConfig => ({
   enableGPUAcceleration: true,
   useSparseCaching: true,
   batchSize: 1000,
-  parallelWorkers: 4,
+  parallelWorkers: 4
 });
 // === Export singleton ===
 export const pageRankSimilarityRetrieval = new PageRankSimilarityRetrieval(createDefaultPageRankConfig());

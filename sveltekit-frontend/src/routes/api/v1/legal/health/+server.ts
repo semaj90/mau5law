@@ -26,9 +26,7 @@ export const GET: RequestHandler = async () => {
       {
         status: health.overall,
         timestamp: new Date().toISOString(),
-        services: {
-          ollama: {
-            status: health.services.ollama.status,
+        services: { ollama: {, status: health.services.ollama.status,
             latencyMs: health.services.ollama.latencyMs
           },
           redis: {
@@ -55,8 +53,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'unavailable',
         timestamp: new Date().toISOString(),
-        error: err.message || 'Health check failed'
-      },
+        error: err.message || 'Health check failed' },
       { status: 503 }
     );
   }

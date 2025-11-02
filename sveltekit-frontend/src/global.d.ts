@@ -52,7 +52,7 @@ export {};
 // errors during migration to Svelte 5. It's meant as a temporary compatibility shim.
 
 declare module '*.svelte' {
-  // Permissive fallback: treat any imported .svelte as: 'any' to avoid
+  // Permissive fallback: treat any imported .svelte; as: 'any' to avoid
   // constructor-vs-instance type errors while migrating to Svelte 5.
   const component: any;
   export default component;

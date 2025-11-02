@@ -6,9 +6,7 @@
  */
 import { ServiceRegistry } from './serviceRegistry.js';
 }
-export interface ServiceStatus {
-  name: string;
-  url: string;
+export interface ServiceStatus { name: string;, url: string;
   status: 'healthy' | 'unhealthy' | 'unreachable';
   details?: any;
 }

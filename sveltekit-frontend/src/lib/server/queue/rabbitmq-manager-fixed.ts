@@ -41,7 +41,7 @@ export class RabbitMQManager extends EventEmitter {
     cache_invalidation: 'cache.invalidation',
     document_processing: 'document.processing',
     vector_updates: 'vector.updates',
-    analytics: 'analytics.events',
+    analytics: 'analytics.events'
   };
   private readonly queues = {
     cache_invalidate: 'cache.invalidate',
@@ -49,7 +49,7 @@ export class RabbitMQManager extends EventEmitter {
     evidence_process: 'evidence.process',
     vector_index: 'vector.index',
     chat_context: 'chat.context',
-    analytics_track: 'analytics.track',
+    analytics_track: 'analytics.track'
   };
   constructor(private url = ENV_CONFIG.RABBITMQ_URL ?? 'amqp://localhost:5672') {
     super();
@@ -125,7 +125,7 @@ export class RabbitMQManager extends EventEmitter {
     // Declare exchanges
     for (const [name, exchange] of Object.entries(this.exchanges)) {
       await this.channel.assertExchange(exchange, 'topic', {
-        durable: true,
+        durable: true
       });
       console.log(`✅ Exchange declared: ${exchange}`);
     }
@@ -134,8 +134,8 @@ export class RabbitMQManager extends EventEmitter {
       await this.channel.assertQueue(queue, {
         durable: true,
         arguments: {
-          'x-message-ttl': 300000, // 5 minutes TTL: 'x-max-retries': 3,
-        },
+          'x-message-ttl': 300000, // 5 minutes TTL: 'x-max-retries': 3
+        }
       });
       console.log(`✅ Queue declared: ${queue}`);
     }
@@ -149,36 +149,35 @@ export class RabbitMQManager extends EventEmitter {
       {
         queue: this.queues.cache_invalidate,
         exchange: this.exchanges.cache_invalidation,
-        routingKey: '*.invalidate',
+        routingKey: '*.invalidate'
       },
       // Document processing
       {
         queue: this.queues.document_embed,
         exchange: this.exchanges.document_processing,
-        routingKey: 'document.embed',
+        routingKey: 'document.embed'
       },
       {
         queue: this.queues.evidence_process,
         exchange: this.exchanges.document_processing,
-        routingKey: 'evidence.*',
+        routingKey: 'evidence.*'
       },
       // Vector operations
       {
         queue: this.queues.vector_index,
         exchange: this.exchanges.vector_updates,
-        routingKey: 'vector.index.*',
+        routingKey: 'vector.index.*'
       },
       {
         queue: this.queues.chat_context,
         exchange: this.exchanges.vector_updates,
-        routingKey: 'chat.context.*',
+        routingKey: 'chat.context.*'
       },
       // Analytics
       {
         queue: this.queues.analytics_track,
         exchange: this.exchanges.analytics,
-        routingKey: 'analytics.*',
-      },
+        routingKey: `analytics.*` },
     ];
     for (const binding of bindings) {
       await this.channel.bindQueue(binding.queue, binding.exchange, binding.routingKey);
@@ -193,7 +192,7 @@ export class RabbitMQManager extends EventEmitter {
       { queue: this.queues.evidence_process, handler: this.handleEvidenceProcessing.bind(this) },
       { queue: this.queues.vector_index, handler: this.handleVectorIndexing.bind(this) },
       { queue: this.queues.chat_context, handler: this.handleChatContext.bind(this) },
-      { queue: this.queues.analytics_track, handler: this.handleAnalytics.bind(this) },
+      { queue: this.queues.analytics_track, handler: this.handleAnalytics.bind(this) }
     ];
     for (const consumer of consumers) {
       await this.channel.consume(consumer.queue, consumer.handler, { noAck: false });
@@ -201,48 +200,39 @@ export class RabbitMQManager extends EventEmitter {
     console.log('👂 All RabbitMQ consumers started');
   }
   // Publishers for different event types
-  async publishCacheInvalidation(data: {
-    type: 'document' | 'evidence' | 'case' | 'chat';
-    id: string;
+  async publishCacheInvalidation(data: {, type: 'document' | 'evidence' | 'case' | 'chat';, id: string;
     keys?: string[];
   }): Promise<void> {
     if (!this.isReady()) return;
     const routingKey = `${data.type}.invalidate`;
     await this.publish(this.exchanges.cache_invalidation, routingKey, {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  async publishDocumentProcessing(data: {
-    document_id: string;
-    content: string;
-    document_type: string;
+  async publishDocumentProcessing(data: { document_id: string;, content: string;
+   , document_type: string;
     case_id?: string;
   }): Promise<void> {
     if (!this.isReady()) return;
     await this.publish(this.exchanges.document_processing, 'document.embed', {
       ...data,
       timestamp: Date.now(),
-      priority: 'normal',
-    });
+      priority: `normal` });
   }
-  async publishEvidenceProcessing(data: {
-    evidence_id: string;
-    content: string;
+  async publishEvidenceProcessing(data: { evidence_id: string;, content: string;
     case_id: string;
-    priority: 'low' | 'normal' | 'high';
+   , priority: 'low' | 'normal' | 'high';
   }): Promise<void> {
     if (!this.isReady()) return;
     const routingKey = `evidence.${data.priority}`;
     await this.publish(this.exchanges.document_processing, routingKey, {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  async publishVectorUpdate(data: {
-    type: 'index' | 'similarity' | 'cache';
-    collection: string;
-    id: string;
+  async publishVectorUpdate(data: { type: 'index' | 'similarity' | 'cache';, collection: string;
+   , id: string;
     embedding?: number[];
     metadata?: any;
   }): Promise<void> {
@@ -250,26 +240,22 @@ export class RabbitMQManager extends EventEmitter {
     const routingKey = `vector.${data.type}.${data.collection}`;
     await this.publish(this.exchanges.vector_updates, routingKey, {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  async publishChatContext(data: {
-    user_id: string;
-    session_id: string;
+  async publishChatContext(data: { user_id: string;, session_id: string;
     message: string;
     embedding: number[];
-    context_type: 'new' | 'update';
+   , context_type: 'new' | 'update';
   }): Promise<void> {
     if (!this.isReady()) return;
     const routingKey = `chat.context.${data.context_type}`;
     await this.publish(this.exchanges.vector_updates, routingKey, {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  async publishAnalyticsEvent(data: {
-    event_type: string;
-    event_data: any;
+  async publishAnalyticsEvent(data: {, event_type: string;, event_data: any;
     response_time_ms?: number;
     cache_hit?: boolean;
   }): Promise<void> {
@@ -277,7 +263,7 @@ export class RabbitMQManager extends EventEmitter {
     const routingKey = 'analytics.event';
     await this.publish(this.exchanges.analytics, routingKey, {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
   // Generic publish method with error handling
@@ -290,7 +276,7 @@ export class RabbitMQManager extends EventEmitter {
       const message = Buffer.from(JSON.stringify(data));
       const success = this.channel.publish(exchange, routingKey, message, {
         persistent: true,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       if (!success) {
         console.warn(`⚠️ RabbitMQ publish backpressure: ${exchange}:${routingKey}`);
@@ -298,7 +284,7 @@ export class RabbitMQManager extends EventEmitter {
         console.log(`📤 Published to ${exchange}:${routingKey}`);
       }
     } catch (error: any) {
-      console.error(`❌ Publish failed for ${exchange}:${routingKey}:`, this.formatError(error));
+      console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));
     }
   }
   // helper to format unknown errors
@@ -358,7 +344,7 @@ export class RabbitMQManager extends EventEmitter {
         fullText: content,
         caseId: case_id,
         isActive: true,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       // Index with RAG pipeline if available
       if (this.enhancedRAGPipeline?.indexDocument) {
@@ -377,17 +363,16 @@ export class RabbitMQManager extends EventEmitter {
           riskLevel: 'medium',
           confidenceLevel: 0.85,
           metadata: {
-            title: docData.title,
+           , title: docData.title,
             description: content.substring(0, 200),
             keywords: [],
-            jurisdiction: 'Unknown',
+            jurisdiction: 'Unknown'
           },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           cacheLocation: 'loki',
           compressed: false,
-          syncStatus: 'synced',
-        });
+          syncStatus: `synced` });
       }
       // Update instant search if available
       if (this.instantSearchEngine?.addDocument) {
@@ -399,15 +384,15 @@ export class RabbitMQManager extends EventEmitter {
           metadata: {
             case_id,
             document_type,
-            processed_at: new Date().toISOString(),
-          },
+            processed_at: new Date().toISOString()
+          }
         });
       }
       // Invalidate related caches
       await this.publishCacheInvalidation({
         type: 'document',
         id: document_id,
-        keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`],
+        keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`]
       });
       this.channel.ack(msg as any);
     } catch (error: any) {
@@ -424,7 +409,7 @@ export class RabbitMQManager extends EventEmitter {
         this.safeNack(msg);
         return;
       }
-      const { evidence_id, content, case_id, priority, evidence_type = 'document' } = data;
+      const { evidence_id, content, case_id, priority, evidence_type = 'document` } = data;
       console.log(`🔍 Processing evidence: ${evidence_id} (${priority})`);
       // Generate embedding using Gemma
       const embedding = await this.embeddings.embedQuery(content);
@@ -441,8 +426,8 @@ export class RabbitMQManager extends EventEmitter {
                 evidence_type,
                 case_id,
                 priority,
-                processed_at: new Date().toISOString(),
-              },
+                processed_at: new Date().toISOString()
+              }
             })
             .onConflictDoUpdate({
               target: [this.schema.evidenceVectors.evidenceId],
@@ -453,9 +438,9 @@ export class RabbitMQManager extends EventEmitter {
                   evidence_type,
                   case_id,
                   priority,
-                  processed_at: new Date().toISOString(),
-                },
-              },
+                  processed_at: new Date().toISOString()
+                }
+              }
             });
         } catch (dbError: any) {
           console.warn('⚠️ Database storage failed:', this.formatError(dbError));
@@ -471,17 +456,16 @@ export class RabbitMQManager extends EventEmitter {
           riskLevel: 'medium',
           confidenceLevel: 0.8,
           metadata: {
-            title: `Evidence ${evidence_id}`,
+           , title: `Evidence ${evidence_id}`,
             description: content.substring(0, 200),
             keywords: [],
-            jurisdiction: 'Unknown',
+            jurisdiction: 'Unknown'
           },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           cacheLocation: 'loki',
           compressed: false,
-          syncStatus: 'synced',
-        });
+          syncStatus: `synced` });
       }
       this.channel.ack(msg as any);
     } catch (error: any) {
@@ -511,7 +495,7 @@ export class RabbitMQManager extends EventEmitter {
                 {
                   embedding,
                   metadata: data.metadata || {},
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 },
                 7200 // 2 hours
               );
@@ -528,7 +512,7 @@ export class RabbitMQManager extends EventEmitter {
               {
                 embedding: data.embedding,
                 metadata: data.metadata || {},
-                timestamp: Date.now(),
+                timestamp: Date.now()
               },
               data.type === 'similarity' ? 3600 : 7200
             );
@@ -570,8 +554,8 @@ export class RabbitMQManager extends EventEmitter {
               user_id,
               session_id,
               context_type,
-              created_at: new Date().toISOString(),
-            },
+              created_at: new Date().toISOString()
+            }
           });
         } catch (dbError: any) {
           console.warn('⚠️ Chat storage failed:', this.formatError(dbError));
@@ -588,7 +572,7 @@ export class RabbitMQManager extends EventEmitter {
             content: message,
             role: context_type,
             timestamp: Date.now(),
-            embedding: messageEmbedding,
+            embedding: messageEmbedding
           },
         ];
         await this.redisService.set(contextKey, updatedContext, 3600); // 1 hour
@@ -635,10 +619,10 @@ export class RabbitMQManager extends EventEmitter {
               metadata: {
                 cache_hit,
                 event_data,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               },
               isSuccessful: event_data?.success !== false,
-              errorMessage: event_data?.error || null,
+              errorMessage: event_data?.error || null
             })
             .onConflictDoNothing();
         } catch (dbError: any) {
@@ -652,7 +636,7 @@ export class RabbitMQManager extends EventEmitter {
           count: 0,
           totalResponseTime: 0,
           cacheHits: 0,
-          errors: 0,
+          errors: 0
         };
         currentStats.count += 1;
         currentStats.totalResponseTime += response_time_ms || 0;
@@ -685,7 +669,7 @@ export class RabbitMQManager extends EventEmitter {
       try {
         await (this.redisService as any).del(key);
       } catch (error: any) {
-        console.warn(`Failed to delete key ${key}:`, this.formatError(error));
+        console.warn(`Failed to delete key ${key}: ', this.formatError(error));
       }
     }
   }
@@ -705,7 +689,7 @@ export class RabbitMQManager extends EventEmitter {
         }
         console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`);
       } catch (error: any) {
-        console.warn(`Pattern invalidation failed for ${pattern}:`, this.formatError(error));
+        console.warn(`Pattern invalidation failed for ${pattern}: ', this.formatError(error));
       }
     }
   }
@@ -768,7 +752,7 @@ export class RabbitMQManager extends EventEmitter {
   async healthCheck(): Promise<any> {
     try {
       if (!this.connection || !this.channel) {
-        return { status: 'disconnected' };
+        return { status: `disconnected` };
       }
       await this.channel.checkQueue(this.queues.cache_invalidate);
       return {
@@ -784,14 +768,14 @@ export class RabbitMQManager extends EventEmitter {
           enhancedRAGPipeline: !!this.enhancedRAGPipeline,
           instantSearchEngine: !!this.instantSearchEngine,
           database: !!this.db,
-          schema: !!this.schema,
-        },
+          schema: !!this.schema
+        }
       };
     } catch (error: any) {
       return {
         status: 'unhealthy',
         error: this.formatError(error),
-        reconnectAttempts: this.reconnectAttempts,
+        reconnectAttempts: this.reconnectAttempts
       };
     }
   }

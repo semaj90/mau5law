@@ -7,7 +7,7 @@
  * - Bitmap HMM-SOM (Statistical Model): Provides lightweight, extremely fast behavioral
  *   prediction based on user interaction sequences. It excels at predicting the *next*
  *   action without the overhead of a full LLM.
- * - Fusion Engine: Combines the: 'what' from Gemma with the: 'when' from the HMM-SOM
+ * - Fusion Engine: Combines the: 'what' from Gemma with; the: 'when' from the HMM-SOM
  *   for unprecedented, context-aware AI intelligence.
  * - Redis Caching & RedisAI: Used for ultra-fast retrieval of predictions and tensor
  *   data. RedisAI enables running inference directly in the database to minimize latency.
@@ -24,16 +24,11 @@ import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 import xstateIntegration from '$lib/services/xstate-integration.js';
-export interface SemanticSearchResult {
-  contentId: string;
-  content: string;
+export interface SemanticSearchResult { contentId: string;, content: string;
   similarity: number;
   legalDomain: string;
-  embeddingVector: number[];
-}
-interface SemanticContextRow {
-  id: string;
-  content_text: string;
+  embeddingVector: number[]; }
+interface SemanticContextRow { id: string;, content_text: string;
   legal_domain: string;
   document_type: string;
   complexity_score: number;
@@ -41,77 +36,56 @@ interface SemanticContextRow {
   gemma_embedding: number[] | string;
 }
 interface PredictedState {
-  state?: {
-    id: string | number;
-    userAction: string;
+  state?: { id: string | number;, userAction: string;
     confidence: number;
   };
   probability: number;
   timeEstimate: number;
 }
-interface PredictedAsset {
-  type: string;
-  priority: number;
+interface PredictedAsset { type: string;, priority: number;
   cacheKey: string;
 }
-interface SystemCapabilities {
-  architecture: string;
-  capabilities: Record<string, string>;
-  performance: {
-    totalPredictions: number;
-    avgSemanticTime: number;
+interface SystemCapabilities { architecture: string;, capabilities: Record<string, string>;
+  performance: { totalPredictions: number;, avgSemanticTime: number;
     avgBehavioralTime: number;
     avgFusionTime: number;
     overallAccuracy: number;
   };
-  revolutionaryAdvantages: string[];
-}
+  revolutionaryAdvantages: string[]; }
 // Enhanced prediction result combining semantic + behavioral intelligence
 export interface HybridPredictionResult {
   // Semantic Analysis (Gemma)
-  semanticSimilarity: Array<{
-    contentId: string;
-    content: string;
+  semanticSimilarity: Array<{ contentId: string;, content: string;
     similarity: number;
     legalDomain: string;
     embeddingVector: number[];
   }>;
   // Behavioral Prediction (HMM-SOM)
-  behavioralPrediction: {
-    nextStates: Array<{
-      stateId: string;
+  behavioralPrediction: { nextStates: Array<{, stateId: string;
       action: string;
       probability: number;
       timeEstimate: number;
       confidence: number;
     }>;
-    recommendedAssets: Array<{
-      type: string;
-      priority: number;
+    recommendedAssets: Array<{ type: string;, priority: number;
       cacheKey: string;
       preloadStrategy: 'immediate' | 'background' | 'ondemand';
     }>;
   };
   // Fusion Intelligence
-  fusedInsights: {
-    primaryRecommendation: string;
-    confidenceScore: number; // Combined confidence (0-100)
+  fusedInsights: { primaryRecommendation: string;, confidenceScore: number; // Combined confidence (0-100)
     cognitiveReasoning: string[]; // Human-readable reasoning
     predictiveAccuracy: number; // Historical accuracy for this pattern
     adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';
   };
   // Performance Metrics
-  performance: {
-    semanticQueryTime: number; // Gemma embedding search time
-    behavioralPredictionTime: number; // HMM-SOM prediction time
+  performance: { semanticQueryTime: number; // Gemma embedding search time, behavioralPredictionTime: number; // HMM-SOM prediction time
     fusionProcessingTime: number; // Fusion algorithm time
     totalResponseTime: number; // End-to-end time
     cacheHitRate: number; // Percentage of cache hits
   };
   // Visual Cache Patterns (CHR-ROM style)
-  chrRomPatterns: Array<{
-    cacheKey: string;
-    svgPattern: string;
+  chrRomPatterns: Array<{ cacheKey: string;, svgPattern: string;
     qualityTier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
     renderPriority: number;
   }>;
@@ -121,49 +95,33 @@ export interface LegalContext {
   sessionId: string;
   currentRoute: string;
   userAction: string;
-  documentContext?: {
-    type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence';
-    domain: string;
+  documentContext?: { type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence';, domain: string;
     complexity: number;
   };
   workflowStage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review';
-  systemMetrics: {
-    fps: number;
-    memoryUsage: number;
+  systemMetrics: { fps: number;, memoryUsage: number;
     gpuUtilization?: number;
   };
 }
-export interface RecommendedAsset {
-  type: string;
-  priority: number;
+export interface RecommendedAsset { type: string;, priority: number;
   cacheKey: string;
   preloadStrategy: 'immediate' | 'background' | 'ondemand';
 }
-export interface BehavioralNextState {
-  stateId: string;
-  action: string;
+export interface BehavioralNextState { stateId: string;, action: string;
   probability: number;
   timeEstimate: number;
   confidence: number;
 }
-export interface CHRROMPattern {
-  cacheKey: string;
-  svgPattern: string;
+export interface CHRROMPattern { cacheKey: string;, svgPattern: string;
   qualityTier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
   renderPriority: number;
 }
-export interface SystemMetrics {
-  fps: number;
-  memoryUsage: number;
+export interface SystemMetrics { fps: number;, memoryUsage: number;
   gpuUtilization?: number;
 }
-export interface WasmPredictionResult {
-  predictedState: number;
-  confidence: number;
+export interface WasmPredictionResult { predictedState: number;, confidence: number;
 }
-type WasmExports = {
-  getInputBufferOffset: () => number;
-  getOutputBufferOffset: () => number;
+type WasmExports = { getInputBufferOffset: () => number;, getOutputBufferOffset: () => number;
   runPrediction: () => void;
 } & WebAssembly.Exports;
 export class HybridGemmaBitmapEngine {
@@ -225,13 +183,13 @@ export class HybridGemmaBitmapEngine {
             : new WebAssembly.Memory({ initial: 256, maximum: 1024 });
         const importObject = {
           env: {
-            memory,
-          },
+            memory
+          }
         };
         const instance = await WebAssembly.instantiate(wasmModule, importObject);
         this.wasmEngine = {
           instance,
-          memory: memory.buffer instanceof SharedArrayBuffer ? memory.buffer : memory.buffer,
+          memory: memory.buffer instanceof SharedArrayBuffer ? memory.buffer : memory.buffer
         };
         console.log('🚀 WebAssembly engine loaded with SharedArrayBuffer support:', !!this.wasmEngine.memory);
       }
@@ -251,9 +209,9 @@ export class HybridGemmaBitmapEngine {
       this.performBehavioralPrediction(context),
       this.wasmEngine ? this.performClientSidePredictionWasm(context) : Promise.resolve(null),
     ]);
-    let inferenceResult: { action: number[] | null; confidence: number[] | null } | null = null;
+    let inferenceResult: { action: number[], | null; confidence: number[] | null } | null = null;
     try {
-      const embedding = semanticResults.matches?.[0]?.embeddingVector ?? [];
+      const embedding = semanticResults.matches?.[0]?.embeddingVector, ?? [];
       if (Array.isArray(embedding) && embedding.length > 0) {
         inferenceResult = await this.chooseInferenceProvider(embedding);
         if (inferenceResult && Array.isArray(inferenceResult.action)) {
@@ -272,13 +230,13 @@ export class HybridGemmaBitmapEngine {
       semanticTime: semanticResults.queryTime,
       behavioralTime: behavioralResults.predictionTime,
       fusionTime,
-      totalTime,
+      totalTime
     });
     const result: HybridPredictionResult = {
       semanticSimilarity: semanticResults.matches,
       behavioralPrediction: {
         nextStates: behavioralResults.nextStates,
-        recommendedAssets: behavioralResults.recommendedAssets,
+        recommendedAssets: behavioralResults.recommendedAssets
       },
       fusedInsights,
       performance: {
@@ -286,9 +244,9 @@ export class HybridGemmaBitmapEngine {
         behavioralPredictionTime: behavioralResults.predictionTime,
         fusionProcessingTime: fusionTime,
         totalResponseTime: totalTime,
-        cacheHitRate: await this.calculateCacheHitRate(),
+        cacheHitRate: await this.calculateCacheHitRate()
       },
-      chrRomPatterns,
+      chrRomPatterns
     };
     await this.cacheHybridResult(query, context, result);
     this.dispatchPredictionToXState(result);
@@ -300,10 +258,10 @@ export class HybridGemmaBitmapEngine {
   private async performSemanticSearch(
     query: string,
     context: LegalContext
-  ): Promise<{ matches: SemanticSearchResult[]; queryTime: number }> {
+  ): Promise<{ matches: SemanticSearchResult[];, queryTime: number }> {
     const startTime = Date.now();
     // Check cache first
-    const cacheKey = `semantic:${this.hashQuery(query)}:${context.documentContext?.domain || 'general'}`;
+    const cacheKey = `semantic:${this.hashQuery(query)}:${context.documentContext?.domain || 'general` }`;
     const cached = await this.redis.get(cacheKey);
     if (cached) {
       return { matches: JSON.parse(cached), queryTime: Date.now() - startTime };
@@ -331,7 +289,7 @@ export class HybridGemmaBitmapEngine {
         `[${queryEmbedding.join(',')}]`,
         context.documentContext?.domain || 'general',
       ]);
-      const matches: SemanticSearchResult[] = result.rows.map((row: SemanticContextRow) => ({
+      const matches: SemanticSearchResult[], = result.rows.map((row: SemanticContextRow) => ({
         contentId: row.id,
         content: row.content_text,
         // coerce similarity to number
@@ -347,10 +305,9 @@ export class HybridGemmaBitmapEngine {
                 } catch {
                   // try simple parsing of bracketed CSV-like string
                   const s = row.gemma_embedding.replace(/^\[|\]$/g, '').trim();
-                  return s ? s.split(',').map((v: string) => Number(v)) : [];
-                }
+                  return s ? s.split(',').map((v: string) => Number(v)) : []; }
               })()
-            : [],
+            : []
       }));
       // Cache for 5 minutes
       await this.redis.setex(cacheKey, 300, JSON.stringify(matches));
@@ -368,36 +325,35 @@ export class HybridGemmaBitmapEngine {
    */
   private async performBehavioralPrediction(
     context: LegalContext
-  ): Promise<{ nextStates: BehavioralNextState[]; recommendedAssets: RecommendedAsset[]; predictionTime: number }> {
+  ): Promise<{ nextStates: BehavioralNextState[]; recommendedAssets: RecommendedAsset[];, predictionTime: number }> {
     const startTime = Date.now();
     const prediction = await this.bitmapPredictor.predictNextStates();
-    const nextStates = (prediction.nextStates || []).map((state: PredictedState) => ({
+    const nextStates = (prediction.nextStates || []).map((state:, PredictedState) => ({
       stateId: String(state?.state?.id ?? 'unknown'),
       action: String(state?.state?.userAction ?? 'unknown'),
       probability: Number(state?.probability ?? 0),
       timeEstimate: Number(state?.timeEstimate ?? 0),
-      confidence: Number(state?.state?.confidence ?? 0),
+      confidence: Number(state?.state?.confidence ?? 0)
     })) as BehavioralNextState[];
-    const recommendedAssets = (prediction.recommendedAssets || []).map((asset: PredictedAsset) => ({
+    const recommendedAssets = (prediction.recommendedAssets || []).map((asset:, PredictedAsset) => ({
       type: String(asset?.type ?? 'unknown'),
       priority: Number(asset?.priority ?? 0),
       cacheKey: String(asset?.cacheKey ?? ''),
       preloadStrategy: this.determinePreloadStrategy(
         Number(asset?.priority ?? 0),
         context
-      ) as RecommendedAsset['preloadStrategy'],
-    })) as RecommendedAsset[];
-    return { nextStates, recommendedAssets, predictionTime: Date.now() - startTime };
+      ) as RecommendedAsset['preloadStrategy']
+    })) as RecommendedAsset[]; return { nextStates, recommendedAssets, predictionTime: Date.now() - startTime };
   }
   /**
    * Fusion intelligence: combine semantic + behavioral insights
    */
   private async fusionIntelligence(
-    semanticResults: { matches: SemanticSearchResult[] },
-    behavioralResults: { nextStates: BehavioralNextState[] },
+    semanticResults: {, matches: SemanticSearchResult[] },
+    behavioralResults: {, nextStates: BehavioralNextState[], },
     context: LegalContext
   ): Promise<HybridPredictionResult['fusedInsights']> {
-    const semanticConfidence = semanticResults.matches[0]?.similarity || 0;
+    const semanticConfidence = semanticResults.matches[0]?.similarity, || 0;
     const behavioralConfidence = this.bitmapPredictor.getPredictionAccuracy() / 100;
     const semanticWeight = this.calculateSemanticWeight(context);
     const behavioralWeight = this.calculateBehavioralWeight(context);
@@ -413,7 +369,7 @@ export class HybridGemmaBitmapEngine {
       confidenceScore: Math.round(combinedConfidence),
       cognitiveReasoning: reasoning,
       predictiveAccuracy: this.performanceMetrics.overallAccuracy * 100,
-      adaptiveStrategy,
+      adaptiveStrategy
     };
   }
   /**
@@ -449,13 +405,13 @@ export class HybridGemmaBitmapEngine {
         try {
           const response = await fetchFn('http://localhost:11434/api/embeddings', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model, prompt: text }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({ model, prompt: text })
           });
           if (response && response.ok) {
             const result = await response.json();
             const embedding =
-              result.embedding || result.data?.[0]?.embedding || result.embeddings?.[0] || result[0]?.embedding;
+              result.embedding || result.data?.[0]?.embedding || result.embeddings?.[0], || result[0]?.embedding;
             if (Array.isArray(embedding)) {
               // Cache tensor as a raw buffer for efficiency
               const tensor = new Float32Array(embedding);
@@ -464,7 +420,7 @@ export class HybridGemmaBitmapEngine {
             }
           }
         } catch (error) {
-          console.warn(`Failed to generate embedding with ${model}:`, error);
+          console.warn(`Failed to generate embedding with ${model}: ', error);
         }
       }
       throw new Error('All embedding models failed');
@@ -478,13 +434,12 @@ export class HybridGemmaBitmapEngine {
    * Runs model inference directly inside Redis using the RedisAI module.
    */
   private async performRedisAIInference(
-    embedding: number[]
-  ): Promise<{ action: number[] | null; confidence: number[] | null } | null> {
+    embedding: number[], ): Promise<{ action: number[] | null;, confidence: number[], | null } | null> {
     try {
       const tensorBlob = Buffer.from(new Float32Array(embedding).buffer);
       type SendCommandFn = (cmd: string, args: any[], cb: (err: any, res: any) => void) => void;
-      type CallFn = (...args: any[]) => Promise<unknown>;
-      type SendCommandObjFn = (cmdObj: { name: string; args: any[] }) => Promise<unknown>;
+      type CallFn = (...args: any[]), => Promise<unknown>;
+      type SendCommandObjFn = (cmdObj: {, name: string; args: any[] }) => Promise<unknown>;
       const sendRaw = async (cmd: string, args: Array<string | Buffer>): Promise<unknown> => {
         const client = this.redis as unknown;
         const maybeSendCommand = (client as { send_command?: SendCommandFn }).send_command;
@@ -523,7 +478,7 @@ export class HybridGemmaBitmapEngine {
           return new Float32Array((resp as Buffer).buffer, (resp as Buffer).byteOffset, (resp as Buffer).length / 4);
         }
         if (Array.isArray(resp)) {
-          const buf = (resp as unknown[]).find(part => Buffer.isBuffer(part)) as Buffer | undefined;
+          const buf = (resp as unknown[]).find(part, => Buffer.isBuffer(part)) as Buffer | undefined;
           if (buf) return new Float32Array(buf.buffer, buf.byteOffset, buf.length / 4);
         }
         return null;
@@ -556,8 +511,7 @@ export class HybridGemmaBitmapEngine {
   private async performTritonInference(
     tritonUrl: string,
     modelName: string,
-    embedding: number[]
-  ): Promise<{ action: number[] | null; confidence: number[] | null } | null> {
+    embedding: number[], ): Promise<{ action: number[] | null;, confidence: number[], | null } | null> {
     try {
       // runtime-safe fetch
       type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
@@ -576,26 +530,23 @@ export class HybridGemmaBitmapEngine {
             name: 'INPUT__0',
             shape: [1, embedding.length],
             datatype: 'FP32',
-            data: [embedding],
-          },
-        ],
+            data: [embedding], },
+        ]
       };
       const url = `${tritonUrl.replace(/\/$/, '')}/v2/models/${encodeURIComponent(modelName)}/infer`;
       const res = await fetchFn(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(body)
       });
       if (!res.ok) throw new Error(`Triton responded ${res.status}`);
       const json = await res.json();
       if (Array.isArray(json.outputs)) {
         const getData = (idx: number) => {
-          const out = json.outputs[idx];
-          if (!out) return null;
+          const out = json.outputs[idx]; if (!out) return null;
           if (Array.isArray(out.data)) {
             const first = out.data[0] ?? out.data;
-            if (Array.isArray(first)) return (first as number[]).map(Number);
-            return (out.data as number[]).map(Number);
+            if (Array.isArray(first)) return (first as number[]).map(Number); return (out.data as number[]).map(Number);
           }
           return null;
         };
@@ -614,8 +565,7 @@ export class HybridGemmaBitmapEngine {
    * Try RedisAI first; if unavailable and TRITON_URL is configured, call Triton HTTP inference.
    */
   private async chooseInferenceProvider(
-    embedding: number[]
-  ): Promise<{ action: number[] | null; confidence: number[] | null } | null> {
+    embedding: number[], ): Promise<{ action: number[] | null;, confidence: number[], | null } | null> {
     // Short-circuit when embedding is empty
     if (!Array.isArray(embedding) || embedding.length === 0) return null;
     // Try RedisAI
@@ -701,14 +651,14 @@ export class HybridGemmaBitmapEngine {
     assets: RecommendedAsset[],
     systemMetrics: Pick<SystemMetrics, 'fps' | 'memoryUsage'>
   ): CHRROMPattern[] {
-    return (assets || []).map(asset => {
+    return (assets || []).map(asset, => {
       const qualityTier = this.determineQualityTier(systemMetrics);
       const renderPriority = Math.min(100, Math.max(0, asset.priority) * 1.2);
       return {
         cacheKey: `chr_rom:${asset.type}:${Date.now()}`,
         svgPattern: this.generateSVGPattern(asset.type, asset.priority, qualityTier),
         qualityTier,
-        renderPriority,
+        renderPriority
       };
     });
   }
@@ -724,10 +674,10 @@ export class HybridGemmaBitmapEngine {
     const colors = {
       '8-BIT_NES': ['#ff6b6b', '#4ecdc4', '#45b7d1'],
       '16-BIT_SNES': ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4'],
-      '64-BIT_N64': ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4', '#a8e6cf', '#d4a5ff'],
+      '64-BIT_N64': ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4', '#a8e6cf', '#d4a5ff']
     };
-    const colorPalette = colors[qualityTier] || colors['8-BIT_NES'];
-    const color = colorPalette[Math.floor(priority) % colorPalette.length];
+    const colorPalette = colors[qualityTier], || colors['8-BIT_NES'];
+    const color = colorPalette[Math.floor(priority), % colorPalette.length];
     const letter = assetType && assetType.charAt(0) ? assetType.charAt(0).toUpperCase() : '?';
     return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
       <rect width="${size}" height="${size}" fill="${color}" opacity="0.9"/>
@@ -743,8 +693,7 @@ export class HybridGemmaBitmapEngine {
       console.warn('XState integration service not available.');
       return;
     }
-    const topBehavioralPrediction = prediction.behavioralPrediction.nextStates[0];
-    const overallConfidence = prediction.fusedInsights.confidenceScore;
+    const topBehavioralPrediction = prediction.behavioralPrediction.nextStates[0]; const overallConfidence = prediction.fusedInsights.confidenceScore;
     if (topBehavioralPrediction && overallConfidence > 75) {
       const event = {
         type: 'AI_PREDICTION_RECEIVED',
@@ -752,8 +701,8 @@ export class HybridGemmaBitmapEngine {
           predictedAction: topBehavioralPrediction.action,
           confidence: overallConfidence,
           reasoning: prediction.fusedInsights.cognitiveReasoning,
-          recommendedAssets: prediction.behavioralPrediction.recommendedAssets,
-        },
+          recommendedAssets: prediction.behavioralPrediction.recommendedAssets
+        }
       };
       xstateIntegration.sendEvent('agentShell', event);
       console.log(
@@ -784,7 +733,7 @@ export class HybridGemmaBitmapEngine {
       analysis: 0.7,
       research: 0.8,
       drafting: 0.5,
-      review: 0.6,
+      review: 0.6
     };
     return stageWeights[context.workflowStage] || 0.5;
   }
@@ -794,19 +743,19 @@ export class HybridGemmaBitmapEngine {
       analysis: 0.3,
       research: 0.2,
       drafting: 0.5,
-      review: 0.4,
+      review: 0.4
     };
-    return stageWeights[context.workflowStage] || 0.5;
+    return stageWeights[context.workflowStage], || 0.5;
   }
   private generateCognitiveReasoning(
-    semantic: { matches: SemanticSearchResult[] },
-    behavioral: { nextStates: BehavioralNextState[] },
+    semantic: {, matches: SemanticSearchResult[] },
+    behavioral: {, nextStates: BehavioralNextState[], },
     context: LegalContext
   ): string[] {
-    const reasoning: string[] = [];
+    const reasoning: string[], = [];
     if (semantic.matches && semantic.matches.length > 0) {
       reasoning.push(
-        `Found ${semantic.matches.length} semantically similar legal documents with ${(semantic.matches[0].similarity * 100).toFixed(1)}% relevance`
+        `Found ${semantic.matches.length} semantically similar legal documents with ${(semantic.matches[0].similarity, * 100).toFixed(1)}% relevance`
       );
     }
     if (behavioral.nextStates && behavioral.nextStates.length > 0) {
@@ -816,24 +765,24 @@ export class HybridGemmaBitmapEngine {
       );
     }
     reasoning.push(
-      `Legal workflow stage: "${context.workflowStage}" optimized for ${context.documentContext?.type || 'general'} documents`
+      `Legal workflow stage: "${context.workflowStage}" optimized for ${context.documentContext?.type || 'general` } documents`
     );
     return reasoning;
   }
   private determineAdaptiveStrategy(
     confidence: number,
-    metrics: { fps: number; memoryUsage: number }
+    metrics: {, fps: number; memoryUsage: number }
   ): 'aggressive' | 'conservative' | 'balanced' {
     if (confidence > 85 && metrics.fps > 55 && metrics.memoryUsage < 70) return 'aggressive';
     else if (confidence < 60 || metrics.fps < 45 || metrics.memoryUsage > 85) return 'conservative';
     return 'balanced';
   }
   private synthesizePrimaryRecommendation(
-    semantic: { matches: SemanticSearchResult[] },
-    behavioral: { nextStates: BehavioralNextState[] },
+    semantic: {, matches: SemanticSearchResult[], },
+    behavioral: {, nextStates: BehavioralNextState[] },
     context: LegalContext
   ): string {
-    const semanticAction = semantic.matches?.[0]?.legalDomain || 'document analysis';
+    const semanticAction = semantic.matches?.[0]?.legalDomain, || 'document analysis';
     const behavioralAction = behavioral.nextStates?.[0]?.action || 'continue workflow';
     return `Based on ${context.workflowStage} workflow: combine ${semanticAction} insights with predicted ${behavioralAction}`;
   }
@@ -842,9 +791,7 @@ export class HybridGemmaBitmapEngine {
     else if (priority > 50) return 'background';
     return 'ondemand';
   }
-  private determineQualityTier(metrics: {
-    fps: number;
-    memoryUsage: number;
+  private determineQualityTier(metrics: {, fps: number;, memoryUsage: number;
   }): '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64' {
     if (metrics.fps >= 58 && metrics.memoryUsage < 70) return '64-BIT_N64';
     else if (metrics.fps >= 50 && metrics.memoryUsage < 80) return '16-BIT_SNES';
@@ -869,11 +816,9 @@ export class HybridGemmaBitmapEngine {
     const cacheKey = `hybrid:${this.hashQuery(query)}:${context.sessionId}`;
     await this.redis.setex(cacheKey, 180, JSON.stringify(result));
   }
-  private updatePerformanceMetrics(metrics: {
-    semanticTime: number;
-    behavioralTime: number;
+  private updatePerformanceMetrics(metrics: {, semanticTime: number;, behavioralTime: number;
     fusionTime: number;
-    totalTime: number;
+   , totalTime: number;
   }): void {
     this.performanceMetrics.totalPredictions++;
     const alpha = 0.1;
@@ -907,16 +852,15 @@ export class HybridGemmaBitmapEngine {
           ? 'Enabled via WebAssembly & SharedArrayBuffer'
           : 'Disabled (Wasm module not loaded)',
         inMemoryInference: 'Conceptual support for RedisAI for ultra-low latency',
-        trainingBackend: 'Core models trained with CUDA/C++ on NVIDIA GPUs',
-      },
+        trainingBackend: `Core models trained with CUDA/C++ on NVIDIA GPUs` },
       performance: this.performanceMetrics,
       revolutionaryAdvantages: [
-        'Predicts user needs before explicit requests',
+        'Predicts, user needs before explicit requests',
         '99% memory compression vs traditional vector storage',
         'Continuous learning through reinforcement feedback',
         'Legal domain specialization with workflow optimization',
         'Real-time adaptive quality based on system performance',
-      ],
+      ]
     };
   }
   async trainWithFeedback(
@@ -928,7 +872,7 @@ export class HybridGemmaBitmapEngine {
       nextStates: prediction.behavioralPrediction.nextStates,
       recommendedAssets: prediction.behavioralPrediction.recommendedAssets,
       confidence: prediction.fusedInsights.confidenceScore,
-      reasoning: prediction.fusedInsights.cognitiveReasoning,
+      reasoning: prediction.fusedInsights.cognitiveReasoning
     });
     const accuracy = this.calculateOutcomeAccuracy(actualOutcome, prediction);
     this.performanceMetrics.overallAccuracy = 0.9 * this.performanceMetrics.overallAccuracy + 0.1 * accuracy;

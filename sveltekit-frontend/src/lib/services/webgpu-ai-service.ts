@@ -6,18 +6,14 @@
  */
 import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
 
-interface AIProcessingTask {
-  id: string;
-  type: 'legal-analysis' | 'evidence-review' | 'citation-verification' | 'pattern-detection' | 'document-processing';
+interface AIProcessingTask { id: string;, type: 'legal-analysis' | 'evidence-review' | 'citation-verification' | 'pattern-detection' | 'document-processing';
   data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   caseId?: string;
   detectiveMode?: boolean;
 }
 
-interface AIProcessingResult {
-  taskId: string;
-  success: boolean;
+interface AIProcessingResult { taskId: string;, success: boolean;
   result?: any;
   error?: string;
   processingTime: number;
@@ -25,14 +21,10 @@ interface AIProcessingResult {
   confidence?: number;
 }
 
-interface ServiceWorkerStatus {
-  isActive: boolean;
-  webgpuSupported: boolean;
+interface ServiceWorkerStatus { isActive: boolean;, webgpuSupported: boolean;
   isInitialized: boolean;
   queueLength: number;
-  deviceInfo?: {
-    vendor: string;
-    architecture: string;
+  deviceInfo?: { vendor: string;, architecture: string;
   };
 }
 
@@ -41,9 +33,7 @@ export class WebGPUAIService {
   private isInitialized = $state(false);
   private pendingTasks = new Map<
     string,
-    {
-      resolve: (result: AIProcessingResult) => void;
-      reject: (error: Error) => void;
+    { resolve: (result: AIProcessingResult) => void;, reject: (error: Error) => void;
       timestamp: number;
     }
   >();
@@ -102,7 +92,7 @@ export class WebGPUAIService {
         this.emit('status-update', { status: data?.status, requestId });
         break;
       default:
-        console.warn('⚠️ Unknown worker message type:', type);
+        console.warn('⚠️ Unknown worker message; type:', type);
     }
   }
 
@@ -118,7 +108,7 @@ export class WebGPUAIService {
         result,
         processingTime,
         source: (result && result.source) || 'unknown',
-        confidence: result?.confidence,
+        confidence: result?.confidence
       };
       pendingTask.resolve(aiResult);
       this.pendingTasks.delete(taskId);
@@ -138,8 +128,7 @@ export class WebGPUAIService {
         success: false,
         error: String(error || 'unknown error'),
         processingTime,
-        source: 'error',
-      };
+        source: 'error` };
       pendingTask.reject(new Error(String(error || 'worker error')));
       this.pendingTasks.delete(taskId);
       console.error(`❌ AI Task failed: ${taskId} - ${error}`);
@@ -163,11 +152,11 @@ export class WebGPUAIService {
       data: {
         content: documentContent,
         analysisType: options.analysisType || 'basic',
-        detectiveMode: options.detectiveMode || false,
+        detectiveMode: options.detectiveMode || false
       },
       priority: options.priority || 'medium',
       caseId,
-      detectiveMode: options.detectiveMode,
+      detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
   }
@@ -188,11 +177,11 @@ export class WebGPUAIService {
         evidence,
         caseContext,
         crossReference: options.crossReference || false,
-        detectiveMode: options.detectiveMode || false,
+        detectiveMode: options.detectiveMode || false
       },
       priority: options.priority || 'medium',
       caseId: (evidence as any)?.caseId,
-      detectiveMode: options.detectiveMode,
+      detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
   }
@@ -209,10 +198,9 @@ export class WebGPUAIService {
       type: 'citation-verification',
       data: {
         citations,
-        thoroughCheck: options.thoroughCheck || false,
+        thoroughCheck: options.thoroughCheck || false
       },
-      priority: options.priority || 'low',
-    };
+      priority: options.priority || 'low` };
     return this.processTask(task);
   }
 
@@ -235,11 +223,11 @@ export class WebGPUAIService {
       data: {
         ...data,
         analysisDepth: options.analysisDepth || 'surface',
-        detectiveMode: options.detectiveMode || false,
+        detectiveMode: options.detectiveMode || false
       },
       priority: options.priority || 'high',
       caseId,
-      detectiveMode: options.detectiveMode,
+      detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
   }
@@ -260,10 +248,10 @@ export class WebGPUAIService {
         document,
         extractText: options.extractText !== false,
         analyzeContent: options.analyzeContent !== false,
-        detectiveMode: options.detectiveMode || false,
+        detectiveMode: options.detectiveMode || false
       },
       priority: options.priority || 'medium',
-      detectiveMode: options.detectiveMode,
+      detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
   }
@@ -349,7 +337,7 @@ export class WebGPUAIService {
       this.pendingTasks.set(task.id, {
         resolve: wrappedResolve,
         reject: wrappedReject,
-        timestamp: createdAt,
+        timestamp: createdAt
       });
 
       try {
@@ -361,8 +349,8 @@ export class WebGPUAIService {
             type: this.mapTaskTypeToWorkerType(task.type),
             data: this.prepareTaskData(task),
             config: this.buildTaskConfig(task),
-            priority: task.priority,
-          },
+            priority: task.priority
+          }
         });
       } catch (postErr) {
         // ensure we clean pending task on post failure
@@ -424,7 +412,7 @@ export class WebGPUAIService {
       taskType: task.type,
       caseId: task.caseId,
       detectiveMode: task.detectiveMode,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     switch (task.type) {
@@ -432,34 +420,34 @@ export class WebGPUAIService {
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: `Analyze this legal document with ${task.data.analysisType || 'basic'} analysis level`,
-          temperature: 0.3,
+          prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic` } analysis level`,
+          temperature: 0.3
         };
       case 'evidence-review':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: 'Review this evidence for admissibility, chain of custody, and relevance',
-          temperature: 0.2,
+          temperature: 0.2
         };
       case 'citation-verification':
         return {
           ...baseConfig,
           model: 'nomic-embed-text',
-          text: JSON.stringify(task.data.citations || []),
+          text: JSON.stringify(task.data.citations || [])
         };
       case 'pattern-detection':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: `Detect patterns and anomalies using ${task.data.analysisDepth || 'surface'} analysis`,
-          temperature: 0.1,
+          prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface` } analysis`,
+          temperature: 0.1
         };
       case 'document-processing':
         return {
           ...baseConfig,
           extractText: task.data.extractText,
-          analyzeContent: task.data.analyzeContent,
+          analyzeContent: task.data.analyzeContent
         };
       default: return baseConfig;
     }
@@ -472,7 +460,7 @@ export class WebGPUAIService {
         isActive: false,
         webgpuSupported: false,
         isInitialized: false,
-        queueLength: 0,
+        queueLength: 0
       };
     }
 
@@ -486,7 +474,7 @@ export class WebGPUAIService {
             webgpuSupported: Boolean(data?.status?.webgpuSupported),
             isInitialized: Boolean(data?.status?.isInitialized),
             queueLength: Number(data?.status?.queueLength ?? 0),
-            deviceInfo: data?.status?.deviceInfo,
+            deviceInfo: data?.status?.deviceInfo
           });
         }
       };

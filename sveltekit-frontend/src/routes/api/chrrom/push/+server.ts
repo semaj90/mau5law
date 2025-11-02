@@ -12,13 +12,12 @@ export const GET: RequestHandler = async () => {
     },
     cancel() {
       if (client) removeClient(client);
-    },
+    }
   });
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
-  });
+    Connection: 'keep-alive` });
   // removed unused response assignment
   return response as any;
 };

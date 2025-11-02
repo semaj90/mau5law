@@ -184,7 +184,7 @@ ${topMissingClasses || '- None listed'}
 ${topMissingTypes || '- None listed'}
 
 ## 📂 FILES WITH MOST ERRORS
-${filesWithMostErrors || '- None listed'}
+${filesWithMostErrors || '- None listed` }
 
 ## 🔧 CATEGORIZED MISSING ITEMS
 ### Svelte 5 Runes
@@ -200,7 +200,7 @@ ${this.getCategoryItems(analysis, ['postgres', 'Redis', 'sql', 'Loki', 'Collecti
 ${this.getCategoryItems(analysis, ['createMachine', 'createActor', 'assign', 'spawn', 'interpret'])}
 
 ### Environment Variables
-${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type === type.toUpperCase()).map(env => `- \`${env}\``).join('\n') || '- None listed'}
+${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type === type.toUpperCase()).map(env => `- \`${env}\``).join('\n') || '- None listed` }
 
 ## 📋 RESOLUTION RECOMMENDATIONS
 1. High Priority: Focus on Svelte 5 runes and SvelteKit imports.
@@ -294,7 +294,7 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
  - Context7 Integration: ${options.useContext7 ? '✅ Enabled' : '❌ Disabled'}
  - Web Fetch Resolution: ${options.useWebFetch ? '✅ Enabled' : '❌ Disabled'}
  - File Generation: ${options.generateFiles ? '✅ Enabled' : '❌ Disabled'}
- - Best Practices: ${options.applyBestPractices ? '✅ Enabled' : '❌ Disabled'}
+ - Best Practices: ${options.applyBestPractices ? '✅ Enabled' : `❌ Disabled` }
 
  ## 📋 RECOMMENDATIONS
  1. Import the generated barrel stores in your main application.
@@ -313,8 +313,8 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
    async testComprehensiveSystem(): Promise<void> {
      console.log('🧪 Testing comprehensive missing imports system...');
 
-     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error TS2339: Property: 'QDRANT_URL' does not exist on type: '{}'.
-../rag/enhanced-rag-service.ts:716:20: error TS2339: Property: 'OLLAMA_URL' does not exist on type: '{}'`;
+     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error TS2339: Property: 'QDRANT_URL' does not exist on; type: '{}'.
+../rag/enhanced-rag-service.ts:716:20: error TS2339: Property: 'OLLAMA_URL' does not exist on; type: '{}'`;
 
      // Run a dry execution with generation disabled to validate analysis and guards
      try {

@@ -15,28 +15,20 @@ export interface QuicRecommendationRequest {
   useTensorCores?: boolean;
 }
 }
-export interface QuicRecommendationResponse {
-	success: boolean;
-  recommendations: LegalRecommendation[];
+export interface QuicRecommendationResponse { success: boolean;, recommendations: LegalRecommendation[];
   processingTime: number;
   protocol: 'QUIC' | 'HTTP/2' | 'HTTP/1.1';
   cacheHit: boolean;
-  tensorMetrics: {
-		tensorId: string;
-  gpuProcessingTime: number;
+  tensorMetrics: { tensorId: string;, gpuProcessingTime: number;
   tensorCoresUsed: boolean;
   streamUtilization: number;
 	}
-	metadata: {
-		timestamp: string;
-		totalResults: number;
+	metadata: { timestamp: string;, totalResults: number;
 		neo4jQueryTime: number;
 		simdOptimized: boolean;
 	}
 }
-export interface LegalRecommendation {
-	id: string;
-  title: string;
+export interface LegalRecommendation { id: string;, title: string;
   practiceArea: string;
   jurisdiction: string;
   relevanceScore: number;
@@ -48,33 +40,25 @@ export interface LegalRecommendation {
   graphPath: GraphPathNode[];
 }
 }
-export interface CitationInfo {
-	caseId: string;
-  citation: string;
+export interface CitationInfo { caseId: string;, citation: string;
   relevance: number;
   authority: 'binding' | 'persuasive' | 'informational';
 }
 }
-export interface RelatedCase {
-	caseId: string;
-  title: string;
+export interface RelatedCase { caseId: string;, title: string;
   relationshipType: 'precedent' | 'similar' | 'contrary' | 'cited_by' | 'distinguishable';
   weight: number;
   jurisdiction: string;
   year: number;
 }
 }
-export interface RiskMetrics {
-	litigationRisk: number;
-  precedentStrength: number;
+export interface RiskMetrics { litigationRisk: number;, precedentStrength: number;
   jurisdictionalWeight: number;
   timelineRelevance: number;
   outcomeConfidence: number;
 }
 }
-export interface GraphPathNode {
-	nodeId: string;
-  nodeType: 'case' | 'statute' | 'regulation' | 'precedent';
+export interface GraphPathNode { nodeId: string;, nodeType: 'case' | 'statute' | 'regulation' | 'precedent';
   title: string;
   relationship: string;
   weight: number;
@@ -100,8 +84,7 @@ export class QuicNeo4jRecommendationEngine {
 			console.log('📊 QUIC Stream Status:', {
 				activeStreams: status.active_streams,
 				maxConcurrent: status.max_concurrent,
-				utilization: `${status.utilization_percent}%`
-			});
+				utilization: `${status.utilization_percent}%' });
 			this.isConnected = true;
 			console.log('✅ QUIC Neo4j Engine connected successfully');
 		} catch (error) {
@@ -187,8 +170,7 @@ export class QuicNeo4jRecommendationEngine {
 				headers: {
 					'Content-Type': 'application/json',
 					'X-Protocol': 'QUIC',
-					'X-Priority': 'high'
-				},
+					'X-Priority': 'high' },
 				body: JSON.stringify(payload)
 			});
 			if (!response.ok) {
@@ -223,19 +205,17 @@ export class QuicNeo4jRecommendationEngine {
             const jurisdiction = result.jurisdiction || request.jurisdiction || 'federal';
             const relevanceScore = result.relevance_score || weight || (Math.random() * 0.3 + 0.7);
             const confidence = result.confidence || weight || (Math.random() * 0.2 + 0.8);
-            const summary = result.summary || (precedent ? `Summary for ${title} citing ${precedent}` : `Summary for ${title || 'legal matter'}`);
+            const summary = result.summary || (precedent ? `Summary for ${title} citing ${precedent}` : 'Summary for ${title || 'legal matter' }`);
 
             const citations: CitationInfo[] = result.citations?.map((cite: any) => ({
                 caseId: cite.case_id || cite.id,
                 citation: cite.citation || cite.title,
                 relevance: cite.relevance || 0.8,
-                authority: cite.authority || 'persuasive'
-            })) || (precedent ? [{ // If precedent exists from Go server, create a basic citation
+                authority: cite.authority || 'persuasive' })) || (precedent ? [{ // If precedent exists from Go server, create a basic citation
                 caseId: `go_cite_${index}`,
                 citation: precedent,
                 relevance: weight || 0.8,
-                authority: 'persuasive'
-            }] : []);
+                authority: 'persuasive' }] : []);
 
             const relatedCases: RelatedCase[] = result.related_cases?.map((relCase: any) => ({
                 caseId: relCase.case_id || relCase.id,
@@ -303,8 +283,7 @@ export class QuicNeo4jRecommendationEngine {
 						caseId: `cite_${i}_1`,
 						citation: `Legal Citation ${i + 1}`,
 						relevance: Math.random() * 0.2 + 0.8,
-						authority: 'binding'
-					}
+						authority: 'binding' }
 				],
 				relatedCases: [
 					{
@@ -414,7 +393,7 @@ export class QuicNeo4jRecommendationEngine {
 				successCount++;
 				console.log(`Test ${i + 1}: ${result.processingTime.toFixed(1)}ms (${result.protocol})`);
 			} catch (error) {
-				console.warn(`Test ${i + 1} failed:`, error);
+				console.warn(`Test ${i + 1} failed: ', error);
 				results.push(-1);
 			}
 		}
@@ -432,8 +411,7 @@ export class QuicNeo4jRecommendationEngine {
 			'Max Latency': `${benchmark.maxLatency.toFixed(1)}ms`,
 			'Success Rate': `${(benchmark.successRate * 100).toFixed(1)}%`,
 			'Protocol': benchmark.protocolUsed,
-			'Target': '5-15ms for QUIC'
-		});
+			'Target': '5-15ms for QUIC' });
 		return benchmark;
 	}
 	// Connection status

@@ -9,7 +9,7 @@ import { z } from 'zod';
 // Email verification request schema
 const VerifyEmailSchema = z.object({
   email: z.string().email('Invalid email address'),
-  code: z.string().min(6).max(8, 'Invalid verification code format'),
+  code: z.string().min(6).max(8, 'Invalid verification code format')
 });
 
 /**
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         userId: emailVerificationCodes.userId,
         email: emailVerificationCodes.email,
         code: emailVerificationCodes.code,
-        expiresAt: emailVerificationCodes.expiresAt,
+        expiresAt: emailVerificationCodes.expiresAt
       })
       .from(emailVerificationCodes)
       .where(
@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       .update(users)
       .set({
         emailVerified: true,
-        updatedAt: sql`now()`,
-      })
+        updatedAt: sql`now()` })
       .where(eq(users.id, verificationRecord.userId));
 
     // Delete used verification code
@@ -78,14 +77,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         message: 'Email verified successfully',
         userId: verificationRecord.userId,
         email: verificationRecord.email,
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        },
+          'X-Processing-Time': `${Math.round(processingTime)}ms` }
       }
     );
   } catch (err: any) {
@@ -95,7 +93,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || 'Email verification failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -103,8 +101,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true` }
     });
   }
 };
@@ -130,7 +127,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       .select({
         id: users.id,
         email: users.email,
-        emailVerified: users.emailVerified,
+        emailVerified: users.emailVerified
       })
       .from(users)
       .where(eq(users.email, validatedEmail))
@@ -156,7 +153,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       userId: user.id,
       email: validatedEmail,
       code: verificationCode,
-      expiresAt: expiresAt.toISOString(),
+      expiresAt: expiresAt.toISOString()
     });
 
     const processingTime = performance.now() - startTime;
@@ -173,14 +170,13 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         email: validatedEmail,
         // In development, return the code for testing. Remove in production!
         ...(process.env.NODE_ENV === 'development' && { verificationCode }),
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        },
+          'X-Processing-Time': `${Math.round(processingTime)}ms` }
       }
     );
   } catch (err: any) {
@@ -190,7 +186,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const errorResponse = {
       error: err.status ? err.body?.message || 'Failed to send verification code' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -198,8 +194,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true` }
     });
   }
 };

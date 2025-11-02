@@ -25,7 +25,7 @@ class PerformanceMonitor {
     if (!v.length) return 0;
     return v.reduce((a, b) => a + b, 0) / v.length;
   }
-  getComparison(): { json: number; grpc: number; improvement: number } {
+  getComparison(): { json: number; grpc: number;, improvement: number } {
     const json = this.getAverageMetric('json_processing');
     const grpc = this.getAverageMetric('grpc_processing');
     const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -37,10 +37,10 @@ const logger = {
   info: (msg: string, ...args: any[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
   error: (msg: string, ...args: any[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
   warn: (msg: string, ...args: any[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args)
 };
 
-// --- Added: narrow gRPC types moved ahead of the class to avoid: "cannot find name" errors
+// --- Added: narrow gRPC types moved ahead of the class to; avoid: "cannot find name" errors
 type GrpcResponse = {
   case_id?: string;
   score?: number;
@@ -69,14 +69,12 @@ type GrpcStreamUpdate = {
   processing_status?: any;
 };
 
-type GrpcWritableStream = {
-  write: (data: any) => void;
-  end: () => void;
-  on: (event: 'data' | 'error' | 'end', handler: (payload?: any) => void) => void;
+type GrpcWritableStream = { write: (data: any) => void;, end: () => void;
+  on: (event: 'data' | 'error' | 'end'; handler: (payload?: any) => void) => void;
 };
 
 type GrpcClientType = {
-  ScoreCase?: (req: any, cb: (err: any, res?: GrpcResponse) => void) => void;
+  ScoreCase?: (req: any; cb: (err: any, res?: GrpcResponse) => void) => void;
   StreamScoringUpdates?: () => GrpcWritableStream | undefined;
   StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -94,9 +92,7 @@ type OllamaServiceType = {
 };
 
 // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
-function mapScoringResultToInsert(result: CaseScoringResult): {
-  caseId: string;
-  score: string;
+function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;, score: string;
   confidence: string;
   criteria: string;
   recommendations: string;
@@ -149,7 +145,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     legal_precedent: 0.2,
     public_interest: 0.15,
     case_complexity: 0.1,
-    resource_requirements: 0.1,
+    resource_requirements: 0.1
   };
 
   constructor() {
@@ -168,7 +164,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         longs: String,
         enums: String,
         defaults: true,
-        oneofs: true,
+        oneofs: true
       });
       // Load package and narrow type safely without using `any`
       const loadedPkg = loadPackageDefinition(packageDefinition) as unknown;
@@ -199,7 +195,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB: 'grpc.max_send_message_length': 100 * 1024 * 1024,
           'grpc.keepalive_time_ms': 10000,
           'grpc.keepalive_timeout_ms': 5000,
-          'grpc.keepalive_permit_without_calls': 1,
+          'grpc.keepalive_permit_without_calls': 1
         }
       );
       logger.info('gRPC client initialized', { target });
@@ -242,11 +238,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
-          compression: 'GZIP',
-        },
+          compression: 'GZIP` },
         request_time: { seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
-        priority: this.getPriority(request),
+        priority: this.getPriority(request)
       };
 
       // Guard: ensure ScoreCase exists
@@ -271,8 +266,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
                 (response?.detailed_scorings as Record<string, unknown>) ||
                 {}
             ),
-            // changed: use decompressAnalysis to handle compressed buffers consistently
-            explanation: await this.decompressAnalysis(response?.ai_analysis),
+            // changed: use decompressAnalysis to handle compressed buffers consistently; explanation: await this.decompressAnalysis(response?.ai_analysis),
             recommendations: (response?.recommendations || []).map((r: { text?: string } | string) =>
               typeof r === 'string' ? r : r.text || String(r)
             ),
@@ -282,8 +276,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             performanceMetrics: {
               protocol: 'gRPC',
               responseTime: processingTime,
-              accuracy: response?.confidence ?? 0,
-            },
+              accuracy: response?.confidence ?? 0
+            }
           };
           await this.saveScoring(result);
           this.logPerformanceComparison();
@@ -326,8 +320,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       performanceMetrics: {
         protocol: 'JSON/HTTP',
         responseTime: processingTime,
-        accuracy: this.calculateConfidence(componentScores),
-      },
+        accuracy: this.calculateConfidence(componentScores)
+      }
     };
 
     await this.saveScoring(result);
@@ -357,7 +351,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_ids: caseIds,
         event_types: ['PARTIAL_UPDATE', 'CRITERIA_EVALUATED', 'SCORING_COMPLETE'],
         include_partial_updates: true,
-        update_interval: { seconds: 1 },
+        update_interval: {, seconds: 1 }
       });
     } catch (err) {
       logger.warn('Failed to write subscription to stream', err);
@@ -418,7 +412,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
-      // changed: allow async processing inside: 'data' handler
+      // changed: allow async processing; inside: 'data' handler
       call.on('data', async (payload: any) => {
         const response = payload as GrpcResponse;
         try {
@@ -447,8 +441,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             max_tokens: 1000,
             use_cached_embeddings: true,
             enable_streaming: false,
-            compression: 'GZIP',
-          },
+            compression: 'GZIP` }
         };
         call.write(req);
       }
@@ -474,7 +467,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       public_interest: c.public_interest ?? 0.5,
       case_complexity: c.case_complexity ?? 0.5,
       resource_requirements: c.resource_requirements ?? 0.5,
-      custom_criteria: c.custom_criteria || {},
+      custom_criteria: c.custom_criteria || {}
     };
   }
   /**
@@ -488,7 +481,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       legal_precedent: (pc['legal_precedent'] as number) ?? 0.5,
       public_interest: (pc['public_interest'] as number) ?? 0.5,
       case_complexity: (pc['case_complexity'] as number) ?? 0.5,
-      resource_requirements: (pc['resource_requirements'] as number) ?? 0.5,
+      resource_requirements: (pc['resource_requirements'] as number) ?? 0.5
     };
   }
   /**
@@ -550,7 +543,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       eventType: update.event_type,
       timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
       sequenceNumber: update.sequence_number,
-      data: update.partial_score ?? update.criteria_update ?? update.recommendation_update ?? update.processing_status,
+      data: update.partial_score ?? update.criteria_update ?? update.recommendation_update ?? update.processing_status
     };
   }
   /**
@@ -574,8 +567,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       performanceMetrics: {
         protocol: 'gRPC',
         responseTime: 0,
-        accuracy: response.confidence ?? 0,
-      },
+        accuracy: response.confidence ?? 0
+      }
     };
   }
   /**
@@ -598,8 +591,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       logger.info('Performance Comparison:', {
         jsonAvg: `${comparison.json.toFixed(2)}ms`,
         grpcAvg: `${comparison.grpc.toFixed(2)}ms`,
-        improvement: `${comparison.improvement.toFixed(1)}%`,
-      });
+        improvement: `${comparison.improvement.toFixed(1)}%` });
       // Emit performance metrics for monitoring
       this.emit('performance-metrics', comparison);
     }
@@ -638,7 +630,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
       temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
-      max_tokens: 1000,
+      max_tokens: 1000
     });
   }
   private async calculateComponentScores(request: CaseScoringRequest, aiAnalysis: string): Promise<ScoringCriteria> {
@@ -662,7 +654,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     try {
       const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
         temperature: 0.3,
-        max_tokens: 200,
+        max_tokens: 200
       });
       const aiScores = this.parseAIScores(aiScoresRaw);
       return {
@@ -671,7 +663,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         legal_precedent: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5,
         public_interest: provided.public_interest ?? aiScores.public_interest ?? 0.5,
         case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
-        resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
+        resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5
       };
     } catch (err: any) {
       logger.warn('Failed to get AI component scores, using defaults', err);
@@ -681,7 +673,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         legal_precedent: provided.legal_precedent ?? 0.5,
         public_interest: provided.public_interest ?? 0.5,
         case_complexity: provided.case_complexity ?? 0.5,
-        resource_requirements: provided.resource_requirements ?? 0.5,
+        resource_requirements: provided.resource_requirements ?? 0.5
       };
     }
   }
@@ -889,7 +881,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           payloadSummary: {
             caseId: dbPayload.caseId,
             score: dbPayload.score,
-            confidence: dbPayload.confidence,
+            confidence: dbPayload.confidence
           },
           error: String(lastError)
         };
@@ -918,7 +910,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         payloadSummary: {
           caseId: result.caseId,
           score: result.score,
-          confidence: result.confidence,
+          confidence: result.confidence
         },
         error: String(err)
       };

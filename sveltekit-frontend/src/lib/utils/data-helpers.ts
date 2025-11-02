@@ -8,7 +8,7 @@ import { browser } from '$app/environment';
 // Cache management for performance
 class DataCache<T = unknown> {
   // changed: avoid `any` by using a generic T (default unknown)
-  private cache = new Map<string, { data: T; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: T; timestamp: number;, ttl: number }>();
   private maxSize = 100;
   set(key: string, data: T, ttlMs: number = 5 * 60 * 1000): void {
     // Remove oldest entries if cache is full
@@ -19,7 +19,7 @@ class DataCache<T = unknown> {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl: ttlMs,
+      ttl: ttlMs
     });
   }
   get(key: string): T | null {
@@ -91,7 +91,7 @@ export class ApiClient {
   async request<T = unknown>(
     endpoint: string,
     options?: RequestInit & ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     const {
       useCache = false,
       cacheTtl = 5 * 60 * 1000,
@@ -101,7 +101,7 @@ export class ApiClient {
       ...fetchOptions
     } = options || {};
     const url = `${this.baseUrl}${endpoint}`;
-    const cacheKey = `${(fetchOptions.method as string) || 'GET'}:${url}:${this.serializeBody(fetchOptions.body)}`;
+    const cacheKey = `${(fetchOptions.method as string) || 'GET` }:${url}:${this.serializeBody(fetchOptions.body)}`;
 
     // Check cache first
     if (useCache && !signal) {
@@ -125,7 +125,7 @@ export class ApiClient {
         const response = await fetch(url, {
           ...fetchOptions,
           signal: finalSignal,
-          headers,
+          headers
         });
         clearTimeout(timeoutId);
         if (!response.ok) {
@@ -155,42 +155,41 @@ export class ApiClient {
     return {
       data: null as T,
       success: false,
-      error: (lastError as Error)?.message || 'Request failed',
-    };
+      error: (lastError as Error)?.message || 'Request failed` };
   }
 
   async get<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'GET', ...(options as RequestInit & ApiOptions) });
   }
   async post<T = unknown>(
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: typeof body === 'string' ? body : JSON.stringify(body),
-      ...(options as RequestInit & ApiOptions),
+      ...(options as RequestInit & ApiOptions)
     });
   }
   async put<T = unknown>(
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: typeof body === 'string' ? body : JSON.stringify(body),
-      ...(options as RequestInit & ApiOptions),
+      ...(options as RequestInit & ApiOptions)
     });
   }
   async delete<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'DELETE', ...(options as RequestInit & ApiOptions) });
   }
 }
@@ -206,9 +205,7 @@ export interface ValidationRule {
 export interface ValidationSchema {
   [key: string]: ValidationRule;
 }
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Record<string, string>;
+export interface ValidationResult { isValid: boolean;, errors: Record<string, string>;
 }
 export function validateData(data: Record<string, unknown>, schema: ValidationSchema): ValidationResult {
   const errors: Record<string, string> = {};
@@ -242,36 +239,30 @@ export function validateData(data: Record<string, unknown>, schema: ValidationSc
   }
   return {
     isValid: Object.keys(errors).length === 0,
-    errors,
+    errors
   };
 }
 // Common validation schemas
 export const validationSchemas = {
-  case {
-    title: { required: true, minLength: 3, maxLength: 200 },
+  case { title: {, required: true, minLength: 3, maxLength: 200 },
     description: { maxLength: 2000 },
     category: { required: true },
-    priority: { required: true },
+    priority: { required: true }
   },
-  evidence: {
-    title: { required: true, minLength: 3, maxLength: 200 },
+  evidence: { title: {, required: true, minLength: 3, maxLength: 200 },
     type: { required: true },
-    caseId: { required: true },
+    caseId: { required: true }
   },
-  report: {
-    title: { required: true, minLength: 3, maxLength: 200 },
+  report: { title: {, required: true, minLength: 3, maxLength: 200 },
     type: { required: true },
-    content: { required: true, minLength: 10 },
+    content: { required: true, minLength: 10 }
   },
-  user: {
-    email: {
-      required: true,
+  user: { email: {, required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format',
-    },
+      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format` },
     name: { minLength: 2, maxLength: 100 },
-    role: { required: true },
-  },
+    role: { required: true }
+  }
 };
 // Local storage helpers with error handling
 export const storage = {
@@ -301,7 +292,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.warn(`Failed to remove localStorage item: "${key}":`, error);
+      console.warn(`Failed to remove localStorage item: "${key}": ', error);
       return false;
     }
   },
@@ -314,7 +305,7 @@ export const storage = {
       console.warn('Failed to clear localStorage:', error);
       return false;
     }
-  },
+  }
 };
 // File handling utilities
 export function isValidFileType(file: File, allowedTypes: string[]): boolean {
@@ -339,8 +330,7 @@ export function formatFileType(mimeType: string): string {
     'audio/mp3': 'MP3 Audio',
     'audio/wav': 'WAV Audio',
     'text/plain': 'Text File',
-    'application/json': 'JSON File',
-  };
+    'application/json': 'JSON File` };
   return typeMap[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'Unknown';
 }
 // Data transformation helpers
@@ -404,9 +394,7 @@ export function parseQueryString(search: string): Record<string, string | string
   return params;
 }
 // Error handling utilities
-export interface AppError {
-  code: string;
-  message: string;
+export interface AppError { code: string;, message: string;
   details?: any;
   timestamp: Date;
 }
@@ -415,7 +403,7 @@ export function createError(code: string, message: string, details?: any): AppEr
     code,
     message,
     details,
-    timestamp: new Date(),
+    timestamp: new Date()
   };
 }
 export function handleApiError(error: any): AppError {
@@ -471,7 +459,7 @@ export class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 // Data synchronization helpers
 export class DataSync {
-  private syncQueue = new Map<string, { data: any; timestamp: number }>();
+  private syncQueue = new Map<string, { data: any;, timestamp: number }>();
   private syncing = $state(false);
   queue(key: string, data: any): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });

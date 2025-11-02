@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { query, documents, context, config } = await request.json();
 
     if (!query) {
-      return json({ error: 'Missing required field: query' }, { status: 400 });
+      return json({ error: 'Missing required, field: query' }, { status: 400 });
     }
 
     console.log(`📨 POST /api/agent/orchestrate`);
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         toolCalls: result.toolCalls,
         conversationHistory: result.conversationHistory,
         summary: {
-          toolsUsed: result.toolCalls.length,
+         , toolsUsed: result.toolCalls.length,
           successfulTools: result.toolCalls.filter(t => t.success).length,
           totalExecutionTime: result.toolCalls.reduce((sum, t) => sum + t.executionTime, 0)
         }
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       toolCalls: result.toolCalls,
       conversationHistory: result.conversationHistory,
       summary: {
-        toolsUsed: result.toolCalls.length,
+       , toolsUsed: result.toolCalls.length,
         successfulTools: result.toolCalls.filter(t => t.success).length,
         totalExecutionTime: result.toolCalls.reduce((sum, t) => sum + t.executionTime, 0)
       }

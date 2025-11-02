@@ -7,7 +7,7 @@ import { QdrantClient, type Filter } from '@qdrant/js-client-rest';
 // Attempt dynamic import of optional SOM implementation, fallback to a lightweight stub.
 // This prevents startup/import-time crashes if: './som-clustering.js' is not present.
 type LegalDocumentSOM = {
-  cluster(vector: number[]): Promise<{ x: number; y: number; confidence: number }>;
+  cluster(vector: number[]): Promise<{ x: number; y: number;, confidence: number }>;
 };
 
 class FallbackLegalDocumentSOM implements LegalDocumentSOM {
@@ -27,23 +27,17 @@ interface CollectionInfo {
   name: string;
 }
 
-interface QdrantPoint {
-  id: string | number;
-  vector: number[];
+interface QdrantPoint { id: string | number;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
-interface QdrantScoredPoint {
-  id: string | number;
-  version: number;
+interface QdrantScoredPoint { id: string | number;, version: number;
   score: number;
   payload?: Record<string, unknown>;
   vector?: number[];
 }
 
-interface QdrantSearchParams {
-  vector: number[];
-  limit: number;
+interface QdrantSearchParams { vector: number[];, limit: number;
   score_threshold?: number;
   with_payload?: boolean;
   with_vector?: boolean;
@@ -66,21 +60,15 @@ export interface QdrantConfig {
   memoryLimit?: number;
 }
 
-export interface VectorSearchResult {
-  id: string;
-  score: number;
+export interface VectorSearchResult { id: string;, score: number;
   payload: Record<string, unknown>;
-  document?: {
-    id: string;
-    title: string;
+  document?: { id: string;, title: string;
     content: string;
     type: 'evidence' | 'case' | 'legal_document';
   };
 }
 
-export interface SearchStats {
-  totalResults: number;
-  searchTimeMs: number;
+export interface SearchStats { totalResults: number;, searchTimeMs: number;
   cacheHit: boolean;
   somClusterUsed?: string;
   memoryUsage: number;
@@ -95,7 +83,7 @@ export class OptimizedQdrantService {
   private config: Required<QdrantConfig>;
   private somCluster?: LegalDocumentSOM; // LegalDocumentSOM - commenting out missing type
   private nesCache?: NESCacheOrchestrator;
-  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number; stats: SearchStats }>();
+  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number;, stats: SearchStats }>();
   private batchQueue: Array<QdrantPoint> = [];
   private memoryUsage = 0;
   private processingBatch = $state(false);
@@ -108,11 +96,11 @@ export class OptimizedQdrantService {
       enableBatching: config.enableBatching ?? true,
       enableSOMClustering: config.enableSOMClustering ?? true,
       enableNESCache: config.enableNESCache ?? true,
-      memoryLimit: config.memoryLimit || MAX_MEMORY_USAGE,
+      memoryLimit: config.memoryLimit || MAX_MEMORY_USAGE
     };
     this.client = new QdrantClient({
       url: this.config.url,
-      apiKey: this.config.apiKey || undefined,
+      apiKey: this.config.apiKey || undefined
     });
     // initializeEnhancedFeatures may attempt to dynamically load optional modules.
     this.initializeEnhancedFeatures();
@@ -157,34 +145,30 @@ export class OptimizedQdrantService {
       const collections = await this.getRawCollections();
       const exists = collections.collections?.some((c: CollectionInfo) => c.name === this.config.collectionName);
       if (!exists) {
-        await this.client.createCollection(this.config.collectionName, {
-          vectors: {
-            size: NOMIC_EMBED_DIMENSIONS, // Corrected to 768 for nomic-embed
-            distance: 'Cosine',
+        await this.client.createCollection(this.config.collectionName, { vectors: {, size: NOMIC_EMBED_DIMENSIONS, // Corrected to 768 for nomic-embed
+            distance: 'Cosine'
           },
           optimizers_config: {
             default_segment_number: 4,
             max_segment_size: 20000,
             memmap_threshold: 10000,
-            indexing_threshold: 20000,
+            indexing_threshold: 20000
           },
           hnsw_config: {
             m: 16,
             ef_construct: 200,
-            full_scan_threshold: 10000,
+            full_scan_threshold: 10000
           },
-          quantization_config: {
-            scalar: {
-              type: 'int8',
+          quantization_config: {, scalar: {, type: 'int8',
               quantile: 0.99,
-              always_ram: false,
-            },
-          },
+              always_ram: false
+            }
+          }
         });
         console.log(`✅ Created optimized Qdrant collection: ${this.config.collectionName}`);
       }
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Failed to ensure Qdrant collection:', error);
       throw error;
     }
@@ -196,12 +180,12 @@ export class OptimizedQdrantService {
     queryVector: number[],
     options: {
       limit?: number;
-      filter?: Filter; // Using: 'any' as a pragmatic workaround for Filter type import issues
+      filter?: Filter; //, Using: 'any' as a pragmatic workaround for Filter type import issues
       threshold?: number;
       useCache?: boolean;
       enableSOM?: boolean;
     } = {}
-  ): Promise<{ results: VectorSearchResult[]; stats: SearchStats }> {
+  ): Promise<{ results: VectorSearchResult[];, stats: SearchStats }> {
     const startTime = Date.now();
     const limit = options.limit || 10;
     const threshold = options.threshold || 0.7;
@@ -217,7 +201,7 @@ export class OptimizedQdrantService {
         const stats: SearchStats = {
           ...cached.stats,
           cacheHit: true,
-          searchTimeMs: Date.now() - startTime,
+          searchTimeMs: Date.now() - startTime
         };
         return { results: cached.results, stats };
       }
@@ -255,7 +239,7 @@ export class OptimizedQdrantService {
         searchTimeMs: Date.now() - startTime,
         cacheHit: false,
         somClusterUsed,
-        memoryUsage: this.calculateMemoryUsage(results),
+        memoryUsage: this.calculateMemoryUsage(results)
       };
       // Cache results if memory allows
       if (useCache && this.memoryUsage + stats.memoryUsage < this.config.memoryLimit) {
@@ -264,7 +248,7 @@ export class OptimizedQdrantService {
       }
       return { results, stats };
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Qdrant search error:', error);
       if (error instanceof Error) {
         // Type guard for accessing error.message
@@ -276,7 +260,7 @@ export class OptimizedQdrantService {
   /**
    * Batch upsert vectors with memory optimization
    */
-  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
+  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number;, errors: number }> {
     if (this.config.enableBatching) {
       // Add to batch queue
       this.batchQueue.push(...vectors);
@@ -299,7 +283,7 @@ export class OptimizedQdrantService {
       batchSize?: number;
       sinceTimestamp?: Date;
     } = {}
-  ): Promise<{ synced: number; errors: number; duration: number }> {
+  ): Promise<{ synced: number; errors: number;, duration: number }> {
     const startTime = Date.now();
     const batchSize = _options.batchSize || BATCH_SIZE;
     let synced = 0;
@@ -325,7 +309,7 @@ export class OptimizedQdrantService {
       console.log(`✅ PostgreSQL sync completed: ${synced} synced, ${errors} errors in ${duration}ms`);
       return { synced, errors, duration };
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ PostgreSQL sync failed:', error);
       throw error;
     }
@@ -333,7 +317,7 @@ export class OptimizedQdrantService {
   // Private helper methods
   private async searchInCluster(
     queryVector: number[],
-    clusterResult: { x: number; y: number; confidence: number },
+    clusterResult: { x: number; y: number;, confidence: number },
     limit: number,
     filter?: Filter // Using: 'any' as a pragmatic workaround for Filter type import issues
   ): Promise<QdrantScoredPoint[]> {
@@ -349,15 +333,15 @@ export class OptimizedQdrantService {
           ...(filter?.must || []),
           {
             key: 'som_cluster',
-            match: { value: `${clusterResult.x},${clusterResult.y}` },
+            match: { value: `${clusterResult.x},${clusterResult.y}` }
           },
-        ],
-      },
+        ]
+      }
     };
     try {
       return await this.client.search(this.config.collectionName, searchParams);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.warn('⚠️ Cluster search failed, falling back to standard search');
       return [];
     }
@@ -398,7 +382,7 @@ export class OptimizedQdrantService {
             id: evidenceDoc.id,
             title: evidenceDoc.title,
             content: evidenceDoc.description || '',
-            type: 'evidence' as const,
+            type: 'evidence' as const
           };
         }
       } else if (type === 'case') {
@@ -408,7 +392,7 @@ export class OptimizedQdrantService {
             id: caseDoc.id,
             title: caseDoc.title,
             content: caseDoc.description || '',
-            type: 'case' as const,
+            type: 'case' as const
           };
         }
       } else if (type === 'legal_document') {
@@ -418,7 +402,7 @@ export class OptimizedQdrantService {
             id: legalDoc.id,
             title: legalDoc.title,
             content: legalDoc.content,
-            type: 'legal_document' as const,
+            type: 'legal_document' as const
           };
         }
       }
@@ -426,13 +410,13 @@ export class OptimizedQdrantService {
         id: String(result.id),
         score: result.score || 0,
         payload,
-        document,
+        document
       });
     }
     return results;
   }
   private async streamEvidenceVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]' to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -447,7 +431,7 @@ export class OptimizedQdrantService {
     return this.createBatchStream(query, batchSize);
   }
   private async streamCaseVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]' to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -465,7 +449,7 @@ export class OptimizedQdrantService {
     batchSize: number,
     sinceTimestamp?: Date
   ): Promise<AsyncIterable<unknown[]>> {
-    // Changed: 'any[]' to: 'unknown[]'
+    // Changed: 'any[]'; to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -480,7 +464,7 @@ export class OptimizedQdrantService {
     return this.createBatchStream(query, batchSize);
   }
   private async *createBatchStream<T>(
-    query: { limit: (arg0: number) => { offset: (arg0: number) => Promise<T[]> } },
+    query: {, limit: (arg0: number) => {, offset: (arg0: number) => Promise<T[]> } },
     batchSize: number
   ): AsyncIterable<T[]> {
     let offset = 0;
@@ -494,9 +478,8 @@ export class OptimizedQdrantService {
     } while (batch.length === batchSize);
   }
   private async processVectorStream(
-    stream: AsyncIterable<unknown[]>, // Changed: 'any[]' to: 'unknown[]'
-    type: 'evidence' | 'case' | 'legal_document'
-  ): Promise<{ synced: number; errors: number }> {
+    stream: AsyncIterable<unknown[]>, // Changed: 'any[]' to: 'unknown[]'; type: 'evidence' | 'case' | 'legal_document'
+  ): Promise<{ synced: number;, errors: number }> {
     let synced = 0;
     let errors = 0;
     for await (const batch of stream) {
@@ -538,7 +521,7 @@ export class OptimizedQdrantService {
         vectors.push({
           id,
           vector: rawVector as number[],
-          payload,
+          payload
         });
       }
       if (vectors.length > 0) {
@@ -553,25 +536,25 @@ export class OptimizedQdrantService {
     }
     return { synced, errors };
   }
-  private async upsertBatch(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
+  private async upsertBatch(vectors: Array<QdrantPoint>): Promise<{ success: number;, errors: number }> {
     try {
       const points: QdrantPoint[] = vectors.map(v => ({
         id: v.id,
         vector: v.vector,
-        payload: v.payload,
+        payload: v.payload
       }));
       await this.client.upsert(this.config.collectionName, {
         wait: true,
-        points,
+        points
       });
       return { success: vectors.length, errors: 0 };
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Batch upsert error:', error);
       return { success: 0, errors: vectors.length };
     }
   }
-  private async processBatch(): Promise<{ success: number; errors: number }> {
+  private async processBatch(): Promise<{ success: number;, errors: number }> {
     if (this.processingBatch || this.batchQueue.length === 0) {
       return { success: 0, errors: 0 };
     }
@@ -592,7 +575,7 @@ export class OptimizedQdrantService {
       vector: queryVector.slice(0, 10), // Use first 10 dimensions for key
       limit: options.limit,
       threshold: options.threshold,
-      filter: options.filter,
+      filter: options.filter
     });
     // Simple hash function
     let hash = 0;
@@ -625,7 +608,7 @@ export class OptimizedQdrantService {
    * Health check method
    */
   async healthCheck(): Promise<unknown> {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     try {
       const collections = await this.getRawCollections();
       const collectionExists = collections.collections?.some(
@@ -636,15 +619,15 @@ export class OptimizedQdrantService {
         collections: collections.collections?.length || 0,
         memoryUsage: this.memoryUsage,
         cacheHits: this.searchCache.size,
-        lastSync: new Date().toISOString(),
+        lastSync: new Date().toISOString()
       };
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       return {
         status: 'unhealthy',
         collections: 0,
         memoryUsage: this.memoryUsage,
-        cacheHits: this.searchCache.size,
+        cacheHits: this.searchCache.size
       };
     }
   }
@@ -679,5 +662,5 @@ export const optimizedQdrantService = new OptimizedQdrantService({
   enableBatching: true,
   enableSOMClustering: true,
   enableNESCache: true,
-  memoryLimit: MAX_MEMORY_USAGE,
+  memoryLimit: MAX_MEMORY_USAGE
 });

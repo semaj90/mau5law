@@ -1,8 +1,6 @@
 import loki, { Collection } from 'lokijs';
 import type { SearchResult } from './nats-quic-search-service';
-type LokiDoc = {
-  id: string;
-  content: string;
+type LokiDoc = { id: string;, content: string;
   metadata?: Record<string, unknown>;
   embedding?: number[];
 };
@@ -17,7 +15,7 @@ class LokiSearchEngine {
       existing ||
       this.db.addCollection<LokiDoc>('documents', {
         indices: ['id'],
-        unique: ['id'],
+        unique: ['id']
       });
   }
   insertDocument(doc: LokiDoc) {
@@ -30,7 +28,7 @@ class LokiSearchEngine {
   }
   // Simple vector search using cosine similarity
   async vectorSearch(queryEmbedding: number[], limit: number, threshold: number): Promise<SearchResult[]> {
-    const docs = this.coll.find({ embedding: { $ne: null } });
+    const docs = this.coll.find({ embedding: {, $ne: null } });
     const results: SearchResult[] = [];
     for (const doc of docs) {
       if (!doc.embedding) continue;
@@ -42,8 +40,7 @@ class LokiSearchEngine {
   }
   async textSearch(query: string, limit: number): Promise<SearchResult[]> {
     const lowerQuery = query.toLowerCase();
-    const docs = this.coll.find({
-      content: { $contains: lowerQuery },
+    const docs = this.coll.find({ content: {, $contains: lowerQuery }
     });
     const results: SearchResult[] = docs.map(d => ({ id: d.id, content: d.content, metadata: d.metadata, score: 1 }));
     return results.slice(0, limit);

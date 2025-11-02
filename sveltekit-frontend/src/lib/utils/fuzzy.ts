@@ -15,7 +15,7 @@ items.insert([
 // 3. Configure Fuse.js
 const options = {
   includeScore: true,
-  keys: ['title', 'type'],
+  keys: ['title', 'type']
 };
 const fuse = new Fuse(items.data, options);
 
@@ -36,9 +36,9 @@ export async function enhancedFuzzySearch(query: string, useServerSearch: boolea
       const response = await fetch('/api/enhanced-search', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query })
       });
 
       if (response.ok) {

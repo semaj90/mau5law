@@ -16,9 +16,7 @@ declare global {
 
 type InvokeFn = (cmd: string, args?: Record<string, any>) => Promise<any>;
 
-export interface LocalModel {
-	id: string;
-	name: string;
+export interface LocalModel { id: string;, name: string;
 	type: 'embedding' | 'chat' | 'classification';
 	domain: 'general' | 'legal' | 'medical' | 'technical';
 	architecture: 'bert' | 'llama' | 'mistral' | 'legal-bert' | 'gemma' | 'gemma3';
@@ -41,9 +39,7 @@ export interface InferenceOptions {
 	repeatPenalty?: number;
 }
 
-export interface Gemma3Config {
-	modelPath: string;
-	quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
+export interface Gemma3Config { modelPath: string;, quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 	contextLength: number;
 	temperature: number;
 	topP: number;
@@ -148,7 +144,7 @@ class TauriLLMService {
 			if (model) model.isLoaded = !!res;
 			return !!res;
 		} catch (err) {
-			console.error(`Failed to load model ${modelId}:`, err);
+			console.error(`Failed to load model ${modelId}: ', err);
 			return false;
 		}
 	}
@@ -166,10 +162,9 @@ class TauriLLMService {
 				modelId: this.currentEmbeddingModel,
 				text: inputs,
 				options: {
-					batchSize: options.batchSize ?? 10,
+				, batchSize: options.batchSize ?? 10,
 					normalize: options.normalize !== false,
-					poolingStrategy: options.poolingStrategy ?? 'mean'
-				}
+					poolingStrategy: options.poolingStrategy ?? 'mean' }
 			});
 			// result expected as number[]
 			return Array.isArray(text) ? (result as number[][]) : (result as number[][])[0];
@@ -188,9 +183,7 @@ class TauriLLMService {
 				this.gemma3Config = optimal;
 				const invoke = await this.getInvoke();
 				if (invoke) {
-					await invoke('load_gemma3_model', {
-						config: {
-							modelPath: optimal.modelPath,
+					await invoke('load_gemma3_model', { config: {, modelPath: optimal.modelPath,
 							quantization: optimal.quantization,
 							contextLength: optimal.contextLength,
 							maxTokens: optimal.maxTokens ?? 2048
@@ -361,7 +354,7 @@ Guidelines:
 			if (model) model.isLoaded = false;
 			return !!res;
 		} catch (err) {
-			console.error(`Failed to unload model ${modelId}:`, err);
+			console.error(`Failed to unload model ${modelId}: ', err);
 			return false;
 		}
 	}
@@ -374,7 +367,7 @@ Guidelines:
 		return this.availableModels;
 	}
 
-	getCurrentModels(): { embedding: string | null; chat: string | null } {
+	getCurrentModels(): { embedding: string | null;, chat: string | null } {
 		return { embedding: this.currentEmbeddingModel, chat: this.currentChatModel };
 	}
 

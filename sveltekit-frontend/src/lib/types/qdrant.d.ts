@@ -14,9 +14,7 @@ export type Payload = Record<string, any>;
 /**
  * Represents a point structure for upserting into Qdrant.
  */
-export interface PointStruct {
-  id: string | number;
-  vector: Vector;
+export interface PointStruct { id: string | number;, vector: Vector;
   payload?: Payload;
 }
 
@@ -26,9 +24,7 @@ export interface PointStruct {
 export interface UpsertPoints {
   points: PointStruct[];
   wait?: boolean;
-  batch?: {
-    ids: (string | number)[];
-    vectors: Vector[];
+  batch?: { ids: (string | number)[];, vectors: Vector[];
     payloads?: Payload[];
   };
 }
@@ -36,9 +32,7 @@ export interface UpsertPoints {
 /**
  * Represents the response from a Qdrant upsert operation.
  */
-export interface UpsertResponse {
-  result: {
-    operation_id: number;
+export interface UpsertResponse { result: {, operation_id: number;
     status: 'completed' | 'acknowledged';
   };
   status: 'ok';
@@ -87,9 +81,7 @@ export interface SearchRequest {
 /**
  * Represents a single search result from Qdrant.
  */
-export interface SearchResult {
-  id: string | number;
-  version: number;
+export interface SearchResult { id: string | number;, version: number;
   score: number;
   payload?: Payload;
   vector?: Vector;
@@ -98,8 +90,6 @@ export interface SearchResult {
 /**
  * Represents the response from a Qdrant search operation.
  */
-export interface SearchResponse {
-  result: SearchResult[];
-  status: 'ok';
+export interface SearchResponse { result: SearchResult[];, status: 'ok';
   time: number;
 }

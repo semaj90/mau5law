@@ -35,7 +35,7 @@ import type { Document } from '$lib/types';
 </script>
 
 <button onclick={analyzeCaseWithAI} disabled={isAnalyzing}>
-  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case'}
+  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case' }
 </button>
 
 {#if caseAnalysis}
@@ -72,10 +72,10 @@ export const POST: RequestHandler = async ({ request }) => {
   return json({
     analysis: result.text,
     metadata: {
-      method: result.method,
+     , method: result.method,
       tokensPerSecond: result.tokensPerSecond,
-      processingTime: result.processingTime,
-    },
+      processingTime: result.processingTime
+    }
   });
 };
 */
@@ -111,11 +111,11 @@ export const POST: RequestHandler = async ({ request }) => {
     isLoadingSuggestions = true;
     try {
       const result = await generate(
-        `Continue this legal text naturally:\n\n${editorContent}\n\nSuggestions:`,
+        `Continue this legal text naturally:\n\n${editorContent}\n\nSuggestions: ',
         {
           mode: 'wasm', // Use WASM for instant suggestions
           maxTokens: 128,
-          temperature: 0.8,
+          temperature: 0.8
         }
       );
 
@@ -151,9 +151,7 @@ import { generate } from '$lib/ai/unified-llama';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-interface DocumentAnalysis {
-  filename: string;
-  summary: string;
+interface DocumentAnalysis { filename: string;, summary: string;
   keyTerms: string[];
   processingTime: number;
 }
@@ -179,7 +177,7 @@ async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnal
       {
         mode: 'remote', // Use remote for batch heavy processing
         model: 'gemma3-legal:latest',
-        maxTokens: 256,
+        maxTokens: 256
       }
     );
 
@@ -187,7 +185,7 @@ async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnal
       filename: file,
       summary: result.text.split('\n')[0],
       keyTerms: result.text.match(/\b[A-Z][a-z]+\b/g) || [],
-      processingTime: result.processingTime,
+      processingTime: result.processingTime
     });
   }
 
@@ -253,14 +251,13 @@ import { generate } from '$lib/ai/unified-llama';
 export async function expandSearchQuery(originalQuery: string): Promise<string[]> {
   const result = await generate(
     `Generate 3 alternative search queries for legal research:
+; Original: "${originalQuery}"
 
-Original: "${originalQuery}"
-
-Alternatives (one per line):`,
+Alternatives (one per line): ',
     {
       mode: 'wasm', // Fast expansion
       maxTokens: 128,
-      temperature: 0.7,
+      temperature: 0.7
     }
   );
 
@@ -285,9 +282,7 @@ Alternatives (one per line):`,
 /*
 import { generate } from '$lib/ai/unified-llama';
 
-interface TimelineEvent {
-  date: string;
-  description: string;
+interface TimelineEvent { date: string;, description: string;
   significance: string;
 }
 
@@ -306,7 +301,7 @@ Create a JSON array of timeline events.<|end|>
     mode: 'auto',
     model: 'gemma3-legal:latest',
     maxTokens: 1024,
-    temperature: 0.2,
+    temperature: 0.2
   });
 
   // Parse timeline (add proper error handling)
@@ -331,14 +326,12 @@ Create a JSON array of timeline events.<|end|>
 /*
 import { generate } from '$lib/ai/unified-llama';
 
-interface EvidenceCluster {
-  theme: string;
-  evidenceIds: string[];
+interface EvidenceCluster { theme: string;, evidenceIds: string[];
   description: string;
 }
 
 export async function clusterEvidence(
-  evidence: Array<{ id: string; description: string }>
+  evidence: Array<{, id: string; description: string }>
 ): Promise<EvidenceCluster[]> {
   const evidenceList = evidence
     .map((e, i) => `${i + 1}. [${e.id}] ${e.description}`)
@@ -357,7 +350,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
     mode: 'remote', // Complex analysis
     model: 'gemma3-legal:latest',
     maxTokens: 1024,
-    temperature: 0.5,
+    temperature: 0.5
   });
 
   // Parse clusters (simplified)
@@ -374,7 +367,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
     clusters.push({
       theme,
       evidenceIds,
-      description: lines.slice(1).join(' ').trim(),
+      description: lines.slice(1).join(' ').trim()
     });
   }
 

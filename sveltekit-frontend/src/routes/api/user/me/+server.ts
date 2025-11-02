@@ -8,12 +8,12 @@ export const GET: RequestHandler = async ({ locals }) => {
     if (!user) {
       return json({
         success: true,
-        user: null,
+        user: null
       });
     }
     return json({
       success: true,
-      user,
+      user
     });
   } catch (error) {
     console.error('User profile API error:', error);
@@ -29,14 +29,14 @@ export const GET: RequestHandler = async ({ locals }) => {
         preferences: {
           theme: 'legal-console',
           notifications: true,
-          practiceAreas: ['employment', 'corporate'],
+          practiceAreas: ['employment', 'corporate']
         },
         metadata: {
           lastLogin: new Date().toISOString(),
           caseCount: 15,
-          activeProjects: 3,
-        },
-      },
+          activeProjects: 3
+        }
+      }
     };
     return json(mockUser, { status: 500 });
   }

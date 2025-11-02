@@ -9,7 +9,7 @@ import {
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
   computeVectorSimilarityOptimized,
-  generateIntelligentTodosOptimized,
+  generateIntelligentTodosOptimized
 } from '$lib/integrations/redis-webgpu-simd-integration'; // Updated import path
 import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Corrected import path for JobType
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
@@ -17,34 +17,24 @@ import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
 // This declare global block is likely redundant and conflicting with lib.dom.d.ts
 // Removing it as these types are usually provided by the standard library.
 // Define specific types for benchmark results
-interface BenchmarkMetrics {
-  jsonParsing: number;
-  vectorSimilarity: number;
+interface BenchmarkMetrics { jsonParsing: number;, vectorSimilarity: number;
   cacheOperations: number;
   // Add other benchmark metrics as needed
 }
-interface BenchmarkImprovements {
-  jsonParsing: string;
-  vectorSimilarity: string;
+interface BenchmarkImprovements { jsonParsing: string;, vectorSimilarity: string;
   cacheOperations: string;
   // Add other benchmark improvements as needed
 }
-interface PerformanceBenchmarkResults {
-  benchmark_results: {
-    traditional: BenchmarkMetrics;
+interface PerformanceBenchmarkResults { benchmark_results: {, traditional: BenchmarkMetrics;
     optimized: BenchmarkMetrics;
     improvement: BenchmarkImprovements;
   };
-  summary: {
-    average_improvement: string;
-    memory_usage: string;
+  summary: { average_improvement: string;, memory_usage: string;
     server_resources: string;
     user_experience: string;
   };
 }
-interface ComprehensivePerformanceTestPhase {
-  name: string;
-  duration: number;
+interface ComprehensivePerformanceTestPhase { name: string;, duration: number;
   documentsProcessed?: number;
   averageTime?: number;
   cacheHits?: any[]; // Consider refining this type if possible
@@ -55,21 +45,15 @@ interface ComprehensivePerformanceTestPhase {
   processingPath?: string;
   cacheHit?: boolean;
 }
-interface ComprehensivePerformanceTestSystemMetrics {
-  redisHits: number;
-  webgpuComputations: number;
+interface ComprehensivePerformanceTestSystemMetrics { redisHits: number;, webgpuComputations: number;
   simdOperations: number;
   cacheEfficiency: number;
   memoryUsage:
-    | {
-        used: number;
-        total: number;
+    | { used: number;, total: number;
       }
     | 'not_available';
 }
-interface ComprehensivePerformanceTestResults {
-  workload: {
-    documentCount: number;
+interface ComprehensivePerformanceTestResults { workload: {, documentCount: number;
     vectorDimensions: number;
     candidateCount: number;
     iterations: number;
@@ -84,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (demo) {
       case 'status':
         // Show integrated system status
-        // NOTE: If: 'getSystemStatus' or: 'getMetrics' are not defined on RedisWebGPUSIMDIntegration,
+        // NOTE: If: 'getSystemStatus'; or: 'getMetrics' are not defined on RedisWebGPUSIMDIntegration,
         // their types need to be added to the definition in: '$lib/integrations/redis-webgpu-simd-integration.js'.
         const systemStatus = redisWebGPUIntegration.getSystemStatus();
         const metrics = redisWebGPUIntegration.getMetrics();
@@ -92,19 +76,17 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             title: '🚀 Supercharged Legal AI System Status',
-            systems: {
-              redis: { enabled: systemStatus.redis, description: 'Persistent computation cache' },
+            systems: { redis: {, enabled: systemStatus.redis, description: 'Persistent computation cache' },
               webgpu: { enabled: systemStatus.webgpu, description: 'GPU compute shaders' },
               simd: { enabled: systemStatus.simd, description: 'SIMD JSON parsing' },
-              som: { enabled: systemStatus.som, description: 'Self-Organizing Map intelligence' },
+              som: { enabled: systemStatus.som, description: 'Self-Organizing Map intelligence' }
             },
             performance: {
-              redisHits: metrics.redisHits,
+             , redisHits: metrics.redisHits,
               webgpuComputations: metrics.webgpuComputations,
               simdOperations: metrics.simdParsing,
               cacheEfficiency: `${(metrics.efficiency * 100).toFixed(1)}%`,
-              avgProcessingTime: `${metrics.totalProcessingTime.toFixed(2)}ms`,
-            },
+              avgProcessingTime: `${metrics.totalProcessingTime.toFixed(2)}ms' },
             capabilities: [
               '🔥 3x faster JSON parsing with SIMD',
               '⚡ 10-100x faster repeated operations (Redis cache)',
@@ -112,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
               '🧠 Intelligent error processing (SOM)',
               '🌍 Cross-user computation sharing',
               '📊 Real-time performance monitoring',
-            ],
-          },
+            ]
+          }
         });
       case 'benchmark':
         // Performance comparison demo
@@ -121,9 +103,9 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            title: '⚡ Performance Benchmark Results',
-            ...benchmarkResults,
-          },
+           , title: '⚡ Performance Benchmark Results',
+            ...benchmarkResults
+          }
         });
       case 'showcase':
         // Show what's possible with the integrated system
@@ -137,37 +119,37 @@ export const GET: RequestHandler = async ({ url }) => {
                 traditional: '30-60 seconds processing time',
                 optimized: '0.5-2 seconds with cache, 5-8 seconds first time',
                 improvement: '15-120x faster',
-                technologies: ['Redis cache', 'WebGPU compute', 'SIMD JSON'],
+                technologies: ['Redis cache', 'WebGPU compute', 'SIMD JSON']
               },
               {
                 scenario: 'Vector Similarity Search',
                 traditional: '2-5 seconds for 1000 documents',
                 optimized: '0.02-0.1 seconds with cache, 0.2 seconds with WebGPU',
                 improvement: '25-250x faster',
-                technologies: ['Redis vector cache', 'WebGPU similarity shader', 'WASM operations'],
+                technologies: ['Redis vector cache', 'WebGPU similarity shader', 'WASM operations']
               },
               {
                 scenario: 'Batch Document Processing',
                 traditional: 'Linear processing, 5 minutes for 100 docs',
                 optimized: 'Parallel + cached, 10 seconds for 100 docs',
                 improvement: '30x faster',
-                technologies: ['Smart caching', 'GPU parallelization', 'Cross-user optimization'],
+                technologies: ['Smart caching', 'GPU parallelization', 'Cross-user optimization']
               },
               {
                 scenario: 'Real-time Legal Search',
                 traditional: 'Database queries, 1-3 seconds response',
                 optimized: 'Memory + GPU cache, <50ms response',
                 improvement: '20-60x faster',
-                technologies: ['Multi-tier caching', 'Semantic similarity', 'WebGPU indexing'],
+                technologies: ['Multi-tier caching', 'Semantic similarity', 'WebGPU indexing']
               },
             ],
             business_impact: {
-              cost_savings: '70% reduction in compute costs',
+             , cost_savings: '70% reduction in compute costs',
               user_experience: 'Sub-second responses for all operations',
               scaling: '10x more concurrent users on same hardware',
-              competitive_advantage: 'Industry-leading performance',
-            },
-          },
+              competitive_advantage: 'Industry-leading performance'
+            }
+          }
         });
       default:
         // System overview
@@ -179,22 +161,22 @@ export const GET: RequestHandler = async ({ url }) => {
             endpoints: {
               status: '/api/supercharged/legal-ai?demo=status',
               benchmark: '/api/supercharged/legal-ai?demo=benchmark',
-              showcase: '/api/supercharged/legal-ai?demo=showcase',
+              showcase: '/api/supercharged/legal-ai?demo=showcase'
             },
             operations: {
-              legal_document: 'POST with legal document JSON for analysis',
+             , legal_document: 'POST with legal document JSON for analysis',
               vector_similarity: 'POST with query vector and candidates',
               intelligent_todos: 'POST with NPM error output for SOM analysis',
-              batch_operations: 'POST with array of mixed operations',
-            },
-          },
+              batch_operations: 'POST with array of mixed operations'
+            }
+          }
         });
     }
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error.message,
+        error: error.message
       },
       { status: 500 }
     );
@@ -212,13 +194,13 @@ export const POST: RequestHandler = async ({ request }) => {
         const docResult = await processLegalDocumentOptimized(typeof data === 'string' ? data : JSON.stringify(data), {
           useCache: options.useCache !== false,
           pipeline: (options.pipeline || ['document-analysis', 'entity-extraction', 'risk-assessment']) as JobType[], // Cast to JobType[]
-          priority: options.priority || 2,
+          priority: options.priority || 2
         });
         return json({
           success: true,
           operation: 'legal_document',
           result: docResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
       }
       case 'vector_similarity': {
@@ -227,7 +209,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'queryVector and candidateVectors must be arrays',
+              error: 'queryVector and candidateVectors must be arrays'
             },
             { status: 400 }
           );
@@ -235,13 +217,13 @@ export const POST: RequestHandler = async ({ request }) => {
         const simResult = await computeVectorSimilarityOptimized(queryVector, candidateVectors, {
           algorithm,
           useCache: options.useCache !== false,
-          threshold: options.threshold || 0.8,
+          threshold: options.threshold || 0.8
         });
         return json({
           success: true,
           operation: 'vector_similarity',
           result: simResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
       }
       case 'intelligent_todos': {
@@ -250,20 +232,20 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'npmOutput must be a string',
+              error: 'npmOutput must be a string'
             },
             { status: 400 }
           );
         }
         const todosResult = await generateIntelligentTodosOptimized(npmOutput, {
           useCache: options.useCache !== false,
-          webgpuRanking: options.webgpuRanking !== false,
+          webgpuRanking: options.webgpuRanking !== false
         });
         return json({
           success: true,
           operation: 'intelligent_todos',
           result: todosResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
       }
       case 'batch_operations': {
@@ -272,8 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'operations must be an array',
-            },
+              error: `operations must be an array` },
             { status: 400 }
           );
         }
@@ -282,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'batch_operations',
           result: batchResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
       }
       case 'performance_test': {
@@ -292,20 +273,20 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'performance_test',
           result: perfResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown operation: ${operation}`,
+            error: `Unknown; operation: ${operation}`,
             available_operations: [
               'legal_document',
               'vector_similarity',
               'intelligent_todos',
               'batch_operations',
               'performance_test',
-            ],
+            ]
           },
           { status: 400 }
         );
@@ -316,9 +297,9 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'An unknown error occurred',
-          timestamp: new Date().toISOString(),
-        },
+         , message: error instanceof Error ? error.message : 'An unknown error occurred',
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -328,38 +309,32 @@ export const POST: RequestHandler = async ({ request }) => {
  * Run performance benchmark comparing traditional vs optimized approaches
  */
 async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
-  const results: {
-    traditional: BenchmarkMetrics;
-    optimized: BenchmarkMetrics;
+  const results: { traditional: BenchmarkMetrics;, optimized: BenchmarkMetrics;
     improvement: BenchmarkImprovements;
-  } = {
-    traditional: {
-      jsonParsing: 0,
+  } = { traditional: {, jsonParsing: 0,
       vectorSimilarity: 0,
-      cacheOperations: 0,
+      cacheOperations: 0
     },
     optimized: {
       jsonParsing: 0,
       vectorSimilarity: 0,
-      cacheOperations: 0,
+      cacheOperations: 0
     },
     improvement: {
       jsonParsing: '',
       vectorSimilarity: '',
-      cacheOperations: '',
-    },
+      cacheOperations: `` }
   };
   // Test 1: JSON Parsing Speed
-  const largeJson = JSON.stringify({
-    documents: Array.from({ length: 100 }, (_, i) => ({
+  const largeJson = JSON.stringify({ documents: Array.from({, length: 100 }, (_, i) => ({
       id: `doc-${i}`,
-      content: 'Legal document content: '.repeat(1000),
+      content: 'Legal document; content: '.repeat(1000),
       metadata: {
         created: new Date().toISOString(),
         size: 'large',
-        embeddings: Array.from({ length: 768 }, () => Math.random()),
-      },
-    })),
+        embeddings: Array.from({ length: 768 }, () => Math.random())
+      }
+    }))
   });
   // Traditional JSON parsing
   const traditionalStart = performance.now();
@@ -396,7 +371,7 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
   results.optimized.vectorSimilarity = results.traditional.vectorSimilarity * 0.1; // 10x improvement
   // Test 3: Cache Performance
   const cacheKey = 'test_operation_' + Date.now();
-  const testData = { result: 'computed_value', complexity: 'high' };
+  const testData = { result: 'computed_value', complexity: `high` };
   // Traditional: Always recompute
   const recomputeStart = performance.now();
   for (let i = 0; i < 10; i++) {
@@ -421,8 +396,8 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
       average_improvement: '25-100x faster across operations',
       memory_usage: '60% reduction',
       server_resources: '70% less CPU usage',
-      user_experience: 'Sub-second responses',
-    },
+      user_experience: 'Sub-second responses'
+    }
   };
 }
 /**
@@ -440,8 +415,7 @@ async function runComprehensivePerformanceTest(
       webgpuComputations: 0,
       simdOperations: 0,
       cacheEfficiency: 0,
-      memoryUsage: 'not_available',
-    },
+      memoryUsage: `not_available` }
   };
   // Phase 1: Document Processing Test
   const legalDocs = Array.from({ length: documentCount }, (_, i) => ({
@@ -453,8 +427,8 @@ async function runComprehensivePerformanceTest(
       type: 'contract',
       jurisdiction: 'US',
       complexity: Math.random(),
-      parties: [`Party ${i}A`, `Party ${i}B`],
-    },
+      parties: [`Party ${i}A`, `Party ${i}B`]
+    }
   }));
   const docProcessingStart = performance.now();
   const docResults = [];
@@ -472,7 +446,7 @@ async function runComprehensivePerformanceTest(
     documentsProcessed: docResults.length,
     averageTime: (performance.now() - docProcessingStart) / docResults.length,
     cacheHits: docResults.filter(item => item.length),
-    processingPaths: docResults.map(r => r.processingPath),
+    processingPaths: docResults.map(r => r.processingPath)
   });
   // Phase 2: Vector Similarity Test
   const vectorStart = performance.now();
@@ -482,7 +456,7 @@ async function runComprehensivePerformanceTest(
   );
   const vectorResult = await computeVectorSimilarityOptimized(queryVec, candidates, {
     algorithm: 'cosine',
-    useCache: true,
+    useCache: true
   });
   results.phases.push({
     name: 'Vector Similarity Search',
@@ -491,7 +465,7 @@ async function runComprehensivePerformanceTest(
     candidatesProcessed: candidates.length,
     topSimilarity: Math.max(...(vectorResult.similarities || [])),
     processingPath: vectorResult.processingPath,
-    cacheHit: vectorResult.performance?.cacheHit,
+    cacheHit: vectorResult.performance?.cacheHit
   });
   // Phase 3: System Resource Usage
   const systemMetrics = redisWebGPUIntegration.getMetrics();
@@ -504,9 +478,8 @@ async function runComprehensivePerformanceTest(
       typeof performance.memory !== 'undefined'
         ? {
             used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024),
-            total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024),
+            total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024)
           }
-        : 'not_available',
-  };
+        : `not_available` };
   return results;
 }

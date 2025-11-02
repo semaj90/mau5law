@@ -20,16 +20,15 @@ import {
   getServiceDiscovery
 } from '$lib/server/helpers/service-discovery';
 
-export interface ServerServices {
-  minio: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  minioConsole: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  ollama: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  qdrant: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  redis: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  postgres: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  neo4j: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  rabbitmq: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback' };
+export interface ServerServices { minio: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  minioConsole: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  ollama: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  qdrant: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  redis: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  postgres: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  neo4j: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  rabbitmq: { url: string;, source: 'env' | 'discovery' | 'fallback' };
+  rabbitmqManagement: { url: string;, source: 'env' | 'discovery' | 'fallback` };
 }
 
 // Global services instance
@@ -70,9 +69,7 @@ export async function initializeServer(): Promise<ServerServices> {
       const discovered = await initializeCommonServices();
 
       // Transform to expected format
-      globalServices = {
-        minio: {
-          url: discovered.minio.url,
+      globalServices = { minio: {, url: discovered.minio.url,
           source: discovered.minio.source as any
         },
         minioConsole: {
@@ -180,7 +177,7 @@ export function getServiceUrls(): Record<string, string> {
  * Utility: Format service discovery results for logging
  */
 function formatServiceTable(
-  services: Record<string, { url: string; source: string }>
+  services: Record<string, { url: string;, source: string }>
 ): void {
   const data = Object.entries(services).map(([name, service]) => ({
     Service: name,
@@ -218,7 +215,7 @@ export async function verifyServices(): Promise<Map<string, boolean>> {
         const isReachable = await verifyServiceEndpoint(service.url, 5000);
         results.set(service.name, isReachable);
         console.log(
-          `[Server] ${isReachable ? '✅' : '⚠️'} ${service.name}: ${service.url}`
+          `[Server] ${isReachable ? '✅' : `⚠️` } ${service.name}: ${service.url}`
         );
       }
     } catch (e) {

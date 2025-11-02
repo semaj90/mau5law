@@ -1,8 +1,6 @@
 // Stub WebGPU SOM Enhanced Cache to unblock build
 // Provides minimal API: initialize(), processEnhanced()
-interface ProcessEnhancedOptions {
-  documents: any[];
-  operation: string;
+interface ProcessEnhancedOptions { documents: any[];, operation: string;
   userId?: string;
   batchSize?: number;
 }

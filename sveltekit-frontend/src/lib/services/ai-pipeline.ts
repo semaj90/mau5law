@@ -13,18 +13,14 @@ import type { Document } from "@langchain/core/documents";
 import { users, embeddingCache } from '$lib/database/schema';
 import { OllamaService } from './ollamaService.js';
 
-export interface LegalAnalysisResult {
-  summary: string;
-  risks: string[];
+export interface LegalAnalysisResult { summary: string;, risks: string[];
   entities: string[];
   keywords: string[];
   confidenceLevel: number;
   recommendations: string[];
 }
 
-export interface DocumentMetadata {
-  title: string;
-  documentType: string;
+export interface DocumentMetadata { title: string;, documentType: string;
   practiceArea?: string;
   jurisdiction?: string;
   caseId?: string;
@@ -32,9 +28,7 @@ export interface DocumentMetadata {
   fileSize?: number;
 }
 
-export interface IngestionResult {
-  documentId: string;
-  analysis: LegalAnalysisResult;
+export interface IngestionResult { documentId: string;, analysis: LegalAnalysisResult;
   embeddingId: any; // Type from storeDocument is unknown
   processingTime: number;
 }
@@ -50,9 +44,7 @@ export interface SemanticSearchOptions {
   useCache?: boolean;
 }
 
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   content: string;
   similarity: number;
   documentType: string;
@@ -61,31 +53,23 @@ export interface SearchResult {
   createdAt: Date;
   fileSize?: number;
   caseId?: string;
-  analysisResults?: {
-    confidenceLevel: number;
-    risks: string[];
+  analysisResults?: { confidenceLevel: number;, risks: string[];
     entities: string[];
     keywords: string[];
   }
 }
-export interface EmbeddingResult {
-  documentId: string;
-  embedding: number[];
+export interface EmbeddingResult { documentId: string;, embedding: number[];
   processingTime: number;
   metadata: Record<string, unknown>
 }
 
 // Interface for PostgreSQL query results for embedding stats
-interface EmbeddingStatsQueryResult {
-  total: string; // COUNT returns string
-  avg_time: string | null; // AVG returns string or null
+interface EmbeddingStatsQueryResult { total: string; // COUNT returns string, avg_time: string | null; // AVG returns string or null
   recent: string; // COUNT returns string
 }
 
 // Interface for PostgreSQL query results for document type counts
-interface DocumentTypeCountResult {
-  doc_type: string;
-  count: string;
+interface DocumentTypeCountResult { doc_type: string;, count: string;
 }
 
 export class EnhancedAIPipeline {
@@ -110,11 +94,11 @@ export class EnhancedAIPipeline {
       pool: this.pgPool,
       tableName: "legal_document_embeddings",
       columns: {
-        idColumnName: "id",
+       , idColumnName: "id",
         vectorColumnName: "embedding",
         contentColumnName: "content",
-        metadataColumnName: "metadata",
-      },
+        metadataColumnName: "metadata"
+      }
     });
   }
 
@@ -149,7 +133,7 @@ export class EnhancedAIPipeline {
     try {
       const doc: Document = {
         pageContent: content,
-        metadata: metadata,
+        metadata: metadata
       };
       const ids = await this.vectorStore.addDocuments([doc]);
       console.log(`Stored document with ID: ${ids[0]}`);
@@ -213,7 +197,7 @@ export class EnhancedAIPipeline {
         '  "keywords": ["Keyword 1", "Keyword 2"],',
         '  "confidenceLevel": 0.85,',
         '  "recommendations": ["Recommendation 1", "Recommendation 2"]',
-        '}',
+        ' }',
         'Focus on legal implications, potential risks, and actionable insights.'
       ].join('\n');
       const response: string = await this.llm.invoke(analysisPrompt); // llm.invoke returns string
@@ -225,7 +209,7 @@ export class EnhancedAIPipeline {
           entities: analysis.entities || [],
           keywords: analysis.keywords || [],
           confidenceLevel: analysis.confidenceLevel || 0.7,
-          recommendations: analysis.recommendations || []
+          recommendations: analysis.recommendations || [];
         }
       } catch (parseError: any) { // Use: 'unknown' for caught errors
         // Fallback if JSON parsing fails
@@ -235,7 +219,7 @@ export class EnhancedAIPipeline {
           entities: [],
           keywords: [],
           confidenceLevel: 0.5,
-          recommendations: ["Review document manually"]
+          recommendations: ["Review document manually"];
         }
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
@@ -260,13 +244,13 @@ export class EnhancedAIPipeline {
       // 2. Generate embeddings
       const embeddingResult = await this.generateEmbeddings(content, {
         ...metadata,
-        analysisResults: analysis,
+        analysisResults: analysis;
       });
       // 3. Store in vector database
       const embeddingId = await this.storeDocument(content, {
         ...metadata,
         analysisResults: analysis,
-        embeddingDimensions: embeddingResult.embedding.length,
+        embeddingDimensions: embeddingResult.embedding.length;
       });
       const processingTime = Date.now() - startTime;
       console.log(`Document ingested successfully in ${processingTime}ms`);
@@ -309,7 +293,7 @@ export class EnhancedAIPipeline {
         totalDocuments: parseInt(result.rows[0].total),
         averageEmbeddingTime: parseFloat(result.rows[0].avg_time || '0') || 0, // Handle null avg_time
         documentTypes,
-        recentActivity: parseInt(result.rows[0].recent)
+        recentActivity: parseInt(result.rows[0].recent);
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
       console.error("Failed to get embedding stats:", error);
@@ -317,7 +301,7 @@ export class EnhancedAIPipeline {
         totalDocuments: 0,
         averageEmbeddingTime: 0,
         documentTypes: {},
-        recentActivity: 0
+        recentActivity: 0;
       }
     }
   }
@@ -329,7 +313,7 @@ export class EnhancedAIPipeline {
       ollama: false,
       postgres: false,
       vectorStore: false,
-      embeddings: false
+      embeddings: false;
     }
     try {
       // Test Ollama

@@ -96,16 +96,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           modelUsed: 'tensorrt_gemma',
           gpuAccelerated: true,
           cudaVersion: cudaResult.cudaVersion,
-          tensorrtVersion: cudaResult.tensorrtVersion,
-        },
+          tensorrtVersion: cudaResult.tensorrtVersion
+        }
       },
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-GPU-Accelerated': 'true',
-        },
+          'X-GPU-Accelerated': 'true` }
       }
     );
   } catch (err: any) {
@@ -117,7 +116,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const errorResponse = {
       error: status ? (bodyMessage ?? message ?? 'CUDA OCR failed') : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? message : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -125,8 +124,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true` }
     });
   }
 };
@@ -134,9 +132,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 /**
  * Process image using CUDA service worker
  */
-async function processCudaOCR(imagePath: string): Promise<{
-  text: string;
-  confidence: number;
+async function processCudaOCR(imagePath: string): Promise<{ text: string;, confidence: number;
   regions?: Array<{
     bbox: [number, number, number, number];
     text: string;
@@ -154,15 +150,14 @@ async function processCudaOCR(imagePath: string): Promise<{
       const response = await fetch(`${cudaServiceUrl}/ocr`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
           imagePath: imagePath,
           options: {
-            model: 'gemma3:legal-latest',
+           , model: 'gemma3:legal-latest',
             tensorOptimization: true,
-            batchSize: 1,
-          },
+            batchSize: 1
+          }
         }),
         signal: AbortSignal.timeout(60000), // 60 second timeout for GPU processing
       });
@@ -174,7 +169,7 @@ async function processCudaOCR(imagePath: string): Promise<{
           confidence: result.confidence || 0,
           regions: result.regions || [],
           cudaVersion: result.metadata?.cudaVersion,
-          tensorrtVersion: result.metadata?.tensorrtVersion,
+          tensorrtVersion: result.metadata?.tensorrtVersion
         };
       }
     } catch (fetchError: any) {
@@ -192,8 +187,7 @@ async function processCudaOCR(imagePath: string): Promise<{
           env: {
             ...process.env,
             CUDA_VISIBLE_DEVICES: '0',
-            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt',
-          },
+            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt` }
         }
       );
 
@@ -207,7 +201,7 @@ async function processCudaOCR(imagePath: string): Promise<{
         confidence: result.confidence || 0,
         regions: result.regions || [],
         cudaVersion: result.cuda_version,
-        tensorrtVersion: result.tensorrt_version,
+        tensorrtVersion: result.tensorrt_version
       };
     } catch (execError: any) {
       console.error('CUDA executable failed:', execError);

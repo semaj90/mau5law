@@ -5,16 +5,12 @@ import type { Document } from '$lib/types';
  */
 import { writable, derived, type Writable } from 'svelte/store';
 }
-export interface CacheHitMetrics {
-  L1_GPU: number;
-  L2_Memory: number;
+export interface CacheHitMetrics { L1_GPU: number;, L2_Memory: number;
   L3_Redis: number;
   L4_Database: number;
   overall: number;
 }
-export interface LatencyMetrics {
-  embedding_generation: number;
-  similarity_search: number;
+export interface LatencyMetrics { embedding_generation: number;, similarity_search: number;
   result_retrieval: number;
   total_query_time: number;
   cache_lookup_time: number;
@@ -27,9 +23,7 @@ export interface ResourceMetrics {
   cpu_usage: number;           // Percentage,
   gpu_utilization: number;     // Percentage
 }
-export interface LegalProcessingMetrics {
-  documents_processed: number;
-  entities_extracted: number;
+export interface LegalProcessingMetrics { documents_processed: number;, entities_extracted: number;
   cases_analyzed: number;
   contracts_reviewed: number;
   average_relevance_score: number;
@@ -37,26 +31,20 @@ export interface LegalProcessingMetrics {
   webgpu_processing_time: number;
   legal_confidence_score: number;
 }
-export interface ThroughputMetrics {
-  queries_per_second: number;
-  embeddings_per_second: number;
+export interface ThroughputMetrics { queries_per_second: number;, embeddings_per_second: number;
   documents_per_minute: number;
   concurrent_sessions: number;
   peak_throughput: number;
   average_batch_size: number;
 }
-export interface PerformanceSnapshot {
-  timestamp: Date;
-  cache_hits: CacheHitMetrics;
+export interface PerformanceSnapshot { timestamp: Date;, cache_hits: CacheHitMetrics;
   latency: LatencyMetrics;
   resources: ResourceMetrics;
   legal_processing: LegalProcessingMetrics;
   throughput: ThroughputMetrics;
   system_health: 'optimal' | 'degraded' | 'critical';
 }
-export interface AlertThreshold {
-  metric: string;
-  threshold: number;
+export interface AlertThreshold { metric: string;, threshold: number;
   severity: 'info' | 'warning' | 'critical';
   message: string;
 }
@@ -306,7 +294,7 @@ export class LegalPerformanceMonitor {
     const total = recent.reduce((sum, metric) => sum + metric.latency.total_query_time, 0);
     return total / recent.length;
   }
-  getCacheEfficiency(): { hits: number; misses: number; efficiency: number } {
+  getCacheEfficiency(): { hits: number; misses: number;, efficiency: number } {
     const totalHits = Object.values(this.cacheHits).reduce((sum, hits) => sum + hits, 0);
     const totalMisses = Object.values(this.cacheMisses).reduce((sum, misses) => sum + misses, 0);
     const total = totalHits + totalMisses;

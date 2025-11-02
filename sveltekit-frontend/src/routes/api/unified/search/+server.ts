@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold = 0.7,
       caseId,
       useRecommendations = true,
-      cacheResults = true,
+      cacheResults = true
     } = body;
     if (!query || query.trim().length === 0) {
       return json({ error: 'Query is required' }, { status: 400 });
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold,
       caseId,
       useRecommendations,
-      cacheResults,
+      cacheResults
     });
     return json({
       success: true,
@@ -51,8 +51,8 @@ export const POST: RequestHandler = async ({ request }) => {
         limit,
         threshold,
         caseId: caseId || null,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     // Use the safe extractor to avoid `any`
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Search failed',
-        details: message,
+        details: message
       },
       { status: 500 }
     );

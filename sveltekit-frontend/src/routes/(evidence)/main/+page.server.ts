@@ -18,7 +18,7 @@ const evidenceSchema = z.object({
   fileSize: z.number().optional(),
   mimeType: z.string().optional(),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 export const load: PageServerLoad = async ({ url, locals }) => {
   const user = locals.user;
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     return {
       evidence: [],
       caseId: url.searchParams.get('caseId'),
-      user: null,
+      user: null
     };
   }
   try {
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     return {
       evidence: evidenceData,
       caseId,
-      user,
+      user
     };
   } catch (err: any) {
     console.error('Failed to load evidence:', err);

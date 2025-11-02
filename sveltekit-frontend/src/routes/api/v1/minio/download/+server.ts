@@ -12,11 +12,11 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!initialized) {
       return new Response(
         JSON.stringify({
-          error: 'MinIO service unavailable',
+          error: 'MinIO service unavailable'
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -26,11 +26,11 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!bucket || !fileName) {
       return new Response(
         JSON.stringify({
-          error: 'bucket and file parameters are required',
+          error: 'bucket and file parameters are required'
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -39,11 +39,11 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!fileData) {
       return new Response(
         JSON.stringify({
-          error: 'File not found',
+          error: 'File not found'
         }),
         {
           status: 404,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -127,18 +127,18 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return new Response(body, {
       status: 200,
-      headers,
+      headers
     });
   } catch (error) {
     console.error('File download error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to download file',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -152,11 +152,11 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!bucket || !fileName) {
       return new Response(
         JSON.stringify({
-          error: 'bucket and fileName are required',
+          error: 'bucket and fileName are required'
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -165,11 +165,11 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!initialized) {
       return new Response(
         JSON.stringify({
-          error: 'MinIO service unavailable',
+          error: 'MinIO service unavailable'
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -182,11 +182,11 @@ export const POST: RequestHandler = async ({ request }) => {
         expiresIn: expirySeconds,
         bucket,
         fileName,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
@@ -194,11 +194,11 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to generate download URL',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       }
     );
   }

@@ -7,9 +7,7 @@ import { $state, $derived } from 'svelte'; // Import Svelte 5 runes
  * Replaces both ai-assistant.ts and ai-assistant.svelte.ts with proper Svelte 5 implementation
  */
 // Core types
-export interface AIMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface AIMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
   evidenceIds?: string[];
@@ -29,24 +27,18 @@ export interface CaseAIContext {
   caseId: string;
   title?: string;
   messages: AIMessage[];
-  evidenceMap: Record<
+  evidenceMap: Record<;
     string,
-    {
-      id: string;
-      title: string;
+    { id: string;, title: string;
       annotations: string[];
       connections: string[];
       aiSummary?: string;
     }
   >;
-  currentSession: {
-    isActive: boolean;
-    lastActivity: number;
+  currentSession: { isActive: boolean;, lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{
-    id: string;
-    type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
+  insights: Array<{ id: string;, type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
     confidence: number;
     evidenceIds: string[];
@@ -55,9 +47,7 @@ export interface CaseAIContext {
 }
 export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
 
-export interface AssistantConfig {
-  temperature: number;
-  maxTokens: number;
+export interface AssistantConfig { temperature: number;, maxTokens: number;
   model: string;
   systemPrompt: string;
   autoSwitchBackend: boolean;
@@ -79,7 +69,7 @@ class AIAssistantGlobalStore {
     vllm: 0.8,
     ollama: 0.9,
     webasm: 0.7,
-    'go-micro': 0.6,
+    'go-micro': 0.6
   });
 
   // Configuration
@@ -90,30 +80,26 @@ class AIAssistantGlobalStore {
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
     persistHistory: true,
-    enableAcceleration: false,
+    enableAcceleration: false
   });
 
   // Performance metrics
-  metrics = $state<{
-    totalQueries: number;
-    averageResponseTime: number;
+  metrics = $state<{ totalQueries: number;, averageResponseTime: number;
     backendLatency: Record<Backend, number>;
   }>({
     totalQueries: 0,
     averageResponseTime: 0,
     backendLatency: {
-      vllm: 0,
+     , vllm: 0,
       ollama: 0,
       webasm: 0,
-      'go-micro': 0,
-    },
+      'go-micro': 0
+    }
   });
 
   // Global insights
   globalInsights = $state<
-    Array<{
-      id: string;
-      type: 'trend' | 'pattern' | 'recommendation';
+    Array<{ id: string;, type: 'trend' | 'pattern' | 'recommendation';
       description: string;
       affectedCases: string[];
       timestamp: number;
@@ -157,10 +143,10 @@ class AIAssistantGlobalStore {
           evidenceMap: {},
           currentSession: {
             isActive: false,
-            lastActivity: Date.now(),
+            lastActivity: Date.now()
           },
-          insights: [],
-        },
+          insights: []
+        }
       };
     }
   }
@@ -175,9 +161,9 @@ class AIAssistantGlobalStore {
           currentSession: {
             ...this.cases[caseId].currentSession,
             isActive: true,
-            lastActivity: Date.now(),
-          },
-        },
+            lastActivity: Date.now()
+          }
+        }
       };
     }
   }
@@ -186,7 +172,7 @@ class AIAssistantGlobalStore {
     const newMessage: AIMessage = {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     this.cases = {
       ...this.cases,
@@ -195,9 +181,9 @@ class AIAssistantGlobalStore {
         messages: [...this.cases[caseId].messages, newMessage],
         currentSession: {
           ...this.cases[caseId].currentSession,
-          lastActivity: Date.now(),
-        },
-      },
+          lastActivity: Date.now()
+        }
+      }
     };
     this.messageCache.set(newMessage.id, newMessage);
     if (this.config.persistHistory) {
@@ -226,8 +212,8 @@ class AIAssistantGlobalStore {
         content,
         evidenceIds,
         metadata: {
-          legalContext: options?.legalContext,
-        },
+         , legalContext: options?.legalContext
+        }
       });
       const backend = options?.backend || (await this.selectOptimalBackend(content, options?.legalContext));
       this.currentBackend = backend;
@@ -252,8 +238,8 @@ class AIAssistantGlobalStore {
           model: response.model || this.config.model,
           tokenCount: response.tokenCount,
           processingTime: typeof performance !== 'undefined' ? performance.now() - startTime : Date.now() - startTime,
-          confidence: response.confidence,
-        },
+          confidence: response.confidence
+        }
       };
       await this.addMessage(caseId, assistantMessage);
       this.updateMetrics(
@@ -270,10 +256,10 @@ class AIAssistantGlobalStore {
           try {
             return await this.sendMessage(caseId, content, evidenceIds, {
               ...options,
-              backend: fallbackBackend,
+              backend: fallbackBackend
             });
           } catch (fallbackError) {
-            console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
+            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);
           }
         }
       }
@@ -293,7 +279,7 @@ class AIAssistantGlobalStore {
       'vllm': this.calculateBackendScore('vllm', complexity, hasLegalContext, requiresSpeed),
       'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed),
       'webasm': this.calculateBackendScore('webasm', complexity, hasLegalContext, requiresSpeed),
-      'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed),
+      'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed)
     };
     const optimal = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as Backend;
     console.log(`🧠 Backend selection:`, scores, `Selected: ${optimal}`);
@@ -311,7 +297,7 @@ class AIAssistantGlobalStore {
       'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
       'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
-      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 },
+      'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 }
     };
     score += (complexityScores[backend][complexity] || 0) * 0.3;
     if (hasLegalContext) {
@@ -353,8 +339,7 @@ class AIAssistantGlobalStore {
       prompt: content,
       maxTokens: 512,
       temperature: 0.3,
-      systemPrompt: `You are a legal AI assistant. Context:\n${conversationContext}`,
-    });
+      systemPrompt: `You are a legal AI assistant.; Context:\n${conversationContext}` });
     return {
       text: result.text,
       model: 'gemma3-270m-local',
@@ -364,8 +349,8 @@ class AIAssistantGlobalStore {
         totalProcessingTime: result.processingTime,
         accelerationUsed: 'browser-local',
         device: result.device,
-        fromCache: result.fromCache,
-      },
+        fromCache: result.fromCache
+      }
     };
   }
   private async sendWithCUDAService(content: string, contextMessages: AIMessage[]) {
@@ -383,11 +368,10 @@ class AIAssistantGlobalStore {
       systemPrompt,
       priority: 'normal',
       legalContext: {
-        jurisdiction: 'general',
+       , jurisdiction: 'general',
         practiceArea: 'legal_assistance',
         documentType: 'conversation',
-        confidentiality: 'attorney-client',
-      },
+        confidentiality: `attorney-client` }
     });
     return {
       text: result.text,
@@ -400,8 +384,8 @@ class AIAssistantGlobalStore {
         accelerationUsed: 'cuda-tensorrt',
         gpuUtilization: result.gpuUtilization,
         precision: result.precision,
-        tensorrtVersion: result.metadata?.tensorrtVersion,
-      },
+        tensorrtVersion: result.metadata?.tensorrtVersion
+      }
     };
   }
   private async sendWithSIMDWebGPU(content: string, contextMessages: AIMessage[]) {
@@ -410,32 +394,32 @@ class AIAssistantGlobalStore {
       id: `case_${i}`,
       title: `Case Document ${i + 1}`,
       content: `Mock case content`,
-      embedding: Float32Array.from({ length: 768 }, () => Math.random()),
+      embedding: Float32Array.from({, length: 768 }, () => Math.random())
     }));
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
       content: `Mock evidence content`,
-      embedding: Float32Array.from({ length: 768 }, () => Math.random()),
+      embedding: Float32Array.from({, length: 768 }, () => Math.random())
     }));
     const acceleratedResult = await enhanceAIResponse(content, mockCaseDocuments, mockEvidenceDocuments, {
       maxResults: 10,
       similarityThreshold: 0.3,
       enableGPUAcceleration: true,
-      enableSIMDPreprocessing: true,
+      enableSIMDPreprocessing: true
     });
     return {
       text: acceleratedResult.enhancedResponse,
       model: 'simd-webgpu-accelerated',
       confidence: acceleratedResult.confidence ?? 0.9,
       tokenCount: acceleratedResult.enhancedResponse.length / 4,
-      accelerationMetrics: acceleratedResult.acceleratedResults?.processingMetrics ?? {},
+      accelerationMetrics: acceleratedResult.acceleratedResults?.processingMetrics ?? {}
     };
   }
 
   // === Context and History Management ===
   private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
-    const cacheKey = `${caseId}-${query}-${legalContext || ''}`;
+    const cacheKey = `${caseId}-${query}-${legalContext || '` }`;
     if (this.contextCache.has(cacheKey)) {
       return this.contextCache.get(cacheKey)!;
     }
@@ -467,8 +451,8 @@ class AIAssistantGlobalStore {
     const payload = this.formatBackendPayload(backend, messages);
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`Backend ${backend} responded with ${response.status}`);
@@ -481,15 +465,14 @@ class AIAssistantGlobalStore {
       'vllm': '/api/ai/chat',
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
-      'go-micro': '/api/ai/go-micro-chat',
+      'go-micro': '/api/ai/go-micro-chat'
     };
     return endpoints[backend];
   }
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
-    const basePayload = {
-      messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
+    const basePayload = { messages: messages.map(msg => ({, role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
-      model: this.config.model,
+      model: this.config.model
     };
     switch (backend) {
       case 'vllm':
@@ -497,7 +480,7 @@ class AIAssistantGlobalStore {
       case 'webasm':
         return { ...basePayload, useWASM: true, enableGPU: true };
       case 'go-micro':
-        return { ...basePayload, service: 'legal-analysis', priority: 'high' };
+        return { ...basePayload, service: 'legal-analysis', priority: `high` };
       default: return basePayload;
     }
   }
@@ -507,7 +490,7 @@ class AIAssistantGlobalStore {
       model: data.model || this.config.model,
       tokenCount: data.tokenCount || data.usage?.total_tokens,
       confidence: data.confidence,
-      backend,
+      backend
     };
   }
 
@@ -536,9 +519,9 @@ class AIAssistantGlobalStore {
       totalQueries: this.metrics.totalQueries + 1,
       backendLatency: {
         ...this.metrics.backendLatency,
-        [backend]: (this.metrics.backendLatency[backend] || 0) * 0.7 + processingTime * 0.3,
+        [backend]: (this.metrics.backendLatency[backend] || 0) * 0.7 + processingTime * 0.3
       },
-      averageResponseTime: this.metrics.averageResponseTime * 0.9 + processingTime * 0.1,
+      averageResponseTime: this.metrics.averageResponseTime * 0.9 + processingTime * 0.1
     };
   }
   private startHealthMonitoring() {
@@ -551,7 +534,7 @@ class AIAssistantGlobalStore {
           'vllm': healthData.backends?.vllm?.reachable ? 1.0 : 0.0,
           'ollama': healthData.backends?.ollama?.version ? 1.0 : 0.0,
           'webasm': healthData.backends?.webasm?.loaded ? 1.0 : 0.0,
-          'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0,
+          'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0
         };
         this.availableBackends = Object.entries(this.backendHealth)
           .filter(([_, score]) => score > 0.1)
@@ -570,7 +553,7 @@ class AIAssistantGlobalStore {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
         config: this.config,
-        metrics: this.metrics,
+        metrics: this.metrics
       };
       localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave));
     } catch (error) {
@@ -622,7 +605,7 @@ class AIAssistantGlobalStore {
       messages: caseData.messages,
       insights: caseData.insights,
       exportedAt: new Date().toISOString(),
-      totalMessages: caseData.messages.length,
+      totalMessages: caseData.messages.length
     };
     if (format === 'markdown') {
       return this.convertToMarkdown(conversation);

@@ -11,7 +11,7 @@ import {
   type RedisOrchestratorStats, // Import the new interface
   type LLMCacheStats,
   type AgentMemoryStats,
-  type TaskQueueStats,
+  type TaskQueueStats
 } from '$lib/services/redis-orchestrator'; // Import all necessary components and types
 import { createRedisInstance } from '$lib/server/redis.js'; // Assuming this exists for general Redis info
 
@@ -21,7 +21,7 @@ const redisClient = createRedisInstance({
   port: 6379,
   password: process.env.REDIS_PASSWORD || 'redis', // Use environment variable or default
   db: 0,
-  keyPrefix: 'legal-ai',
+  keyPrefix: 'legal-ai'
 });
 
 /**
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
       llm_cache: llmCacheStats,
       agent_memory: agentMemoryStats,
       task_queue: taskQueueStats,
-      redis_memory_info: redisMemoryInfo,
+      redis_memory_info: redisMemoryInfo
     };
 
     let detailedStats = {};
@@ -53,8 +53,8 @@ export const GET: RequestHandler = async ({ url }) => {
         performance_metrics: {
           cache_efficiency: llmCacheStats.hit_rate_estimate,
           memory_optimization: agentMemoryStats.memory_usage, // Using agent memory for overall memory optimization
-          async_task_throughput: taskQueueStats.total_tasks_processed,
-        },
+          async_task_throughput: taskQueueStats.total_tasks_processed
+        }
       };
     }
 
@@ -63,11 +63,11 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       redis_stats: comprehensiveStats, // Pass the comprehensive stats
       ...detailedStats,
-      recommendations: generatePerformanceRecommendations(comprehensiveStats),
+      recommendations: generatePerformanceRecommendations(comprehensiveStats)
     });
   } catch (err: any) {
     console.error('🎮 Redis orchestrator status check failed:', err);
-    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 /**
@@ -88,18 +88,17 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       result: cached
         ? {
-            response: cached.response,
+           , response: cached.response,
             source: 'cache',
             processing_time: 0,
-            cached: true,
+            cached: true
           }
         : null,
       orchestrated: false,
-      processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS',
-    });
+      processing_pipeline: cached ? 'L1_CACHE' : `CACHE_MISS` });
   } catch (err: any) {
     console.error('🎮 Redis orchestrator processing failed:', err);
-    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 /**
@@ -128,12 +127,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       message: message,
-      cleared_keys: clearedCount,
+      cleared_keys: clearedCount
     });
   } catch (err: any) {
-    // Changed: 'err' to: 'err: any' for type safety
+    // Changed: 'err'; to: 'err: any' for type safety
     console.error('🎮 Cache clear failed:', err);
-    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // handleTaskQuery removed for brevity and to resolve errors. Re-implement as needed.

@@ -3,7 +3,7 @@ import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   noteQuicP99Breach,
-  notePipelineAnomalySpike,
+  notePipelineAnomalySpike
 } from '$lib/services/pipeline-metrics';
 import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } from '$lib/services/alert-center';
 import type { RequestHandler } from './$types.js';
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     if (pruned.length >= HIT_LIMIT) {
       return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
         status: 429,
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': `application/json` }
       });
     }
     pruned.push(now);
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
       if (contentLength > MAX_BODY_SIZE) {
         return new Response(JSON.stringify({ ok: false, error: 'payload_too_large' }), {
           status: 413,
-          headers: { 'content-type': 'application/json' },
+          headers: { 'content-type': 'application/json' }
         });
       }
 
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     updateQUICMetrics({
       total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
       total_streams: typeof body.total_streams === 'number' ? body.total_streams : undefined,
-      total_errors: typeof body.total_errors === 'number' ? body.total_errors : undefined,
+      total_errors: typeof body.total_errors === 'number' ? body.total_errors : undefined
     });
 
     // Alert threshold evaluation
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     }
 
     // Route alerts (history + console) and maybe autosolve
-    const routed = await routeAlerts(alerts, { source: 'quic_push' });
+    const routed = await routeAlerts(alerts, { source: `quic_push` });
     if (alerts.length) {
       // typed fallback to global fetch without using `any`
       const globalFetch = (globalThis as unknown as { fetch?: typeof fetch }).fetch;
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
         p99: quic.p99,
         errors_1m: errors1mNumeric,
         anomalies5m,
-        sustainedP99: sustained,
+        sustainedP99: sustained
       }),
       { status: 200, headers: { 'content-type': 'application/json' } }
     );
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 400,
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': `application/json` }
     });
   }
 };

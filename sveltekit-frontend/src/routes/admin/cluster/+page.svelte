@@ -275,7 +275,7 @@
             class:bg-green-100={errorRateStatus === 'low'}
           >
             <AlertTriangle
-              class="h-5" w-5 {errorRateStatus === 'high'
+              class="h-5 w-5" {errorRateStatus === 'high'
                 ? 'text-red-600'
                 : errorRateStatus === 'medium'
                   ? 'text-yellow-600'

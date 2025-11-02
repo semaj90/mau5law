@@ -3,9 +3,7 @@
  * Comprehensive Error Handling System for Legal AI Application
  */
 }
-export interface AppError {
-  id: string;
-  type: "validation" | "network" | "auth" | "system" | "analysis" | "upload";
+export interface AppError { id: string;, type: "validation" | "network" | "auth" | "system" | "analysis" | "upload";
   message: string;
   details?: any;
   timestamp: Date;
@@ -14,13 +12,9 @@ export interface AppError {
   stack?: string;
   severity: "low" | "medium" | "high" | "critical";
 }
-export interface ErrorReport {
-  errors: AppError[];
-  summary: {
-    total: number;
-    byType: Record<string, number>;
+export interface ErrorReport { errors: AppError[];, summary: { total: number;, byType: Record<string, number>;
     bySeverity: Record<string, number>;
-    recentTrend: { time: string; count: number }[];
+    recentTrend: { time: string;, count: number }[];
   }
 }
 class ErrorHandler {
@@ -97,7 +91,7 @@ class ErrorHandler {
     });
     // Generate recent trend (last 24 hours, grouped by hour)
     const now = new Date();
-    const recentTrend: { time: string; count: number }[] = [];
+    const recentTrend: { time: string;, count: number }[] = [];
     for (let i = 23; i >= 0; i--) {
       const hourStart = new Date(now.getTime() - i * 60 * 60 * 1000);
       const hourEnd = new Date(hourStart.getTime() + 60 * 60 * 1000);
@@ -191,9 +185,7 @@ export async function withErrorHandling<T>(
     errorHandler.logError(
       errorType,
       errorMessage);
-      {
-        originalError: error instanceof Error ? error.message: error
-        stack: error instanceof Error ? error.stack : undefined
+      { originalError: error instanceof Error ? error.message: error, stack: error instanceof Error ? error.stack : undefined
       },
       "high",
     );
@@ -223,7 +215,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
  * Database error handling
  */
 export function handleDatabaseError(error: any, operation: string): string {
-  console.error(`Database error during ${operation}:`, {
+  console.error(`Database error during ${operation}: ', {
     message: error.message,
     stack: error.stack,
     timestamp: new Date().toISOString()

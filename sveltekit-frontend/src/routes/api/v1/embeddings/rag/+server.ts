@@ -6,9 +6,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
 
-interface RAGRequest {
-  query: string;
-  documents: string[];
+interface RAGRequest { query: string;, documents: string[];
   options?: {
     useGPU?: boolean;
     model?: string;
@@ -18,15 +16,11 @@ interface RAGRequest {
   };
 }
 
-type SimilarDoc = {
-  index: number;
-  score: number;
+type SimilarDoc = { index: number;, score: number;
   document: string;
 };
 
-type RAGContext = {
-  similarDocs: SimilarDoc[];
-  processingTime: number;
+type RAGContext = { similarDocs: SimilarDoc[];, processingTime: number;
   metadata: {
     model?: string;
     gpuUsed?: boolean;
@@ -41,11 +35,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate required fields
     if (!ragRequest || typeof ragRequest !== 'object' || !ragRequest.query) {
-      return json({ error: 'Missing required field: query' }, { status: 400 });
+      return json({ error: 'Missing required, field: query' }, { status: 400 });
     }
 
     if (!Array.isArray(ragRequest.documents)) {
-      return json({ error: 'Missing or invalid field: documents (must be array)' }, { status: 400 });
+      return json({ error: 'Missing or invalid, field: documents (must be array)' }, { status: 400 });
     }
 
     if (ragRequest.documents.length === 0) {
@@ -58,13 +52,13 @@ export const POST: RequestHandler = async ({ request }) => {
             embeddings: [],
             processingTime: 0,
             metadata: {
-              model: 'embeddinggemma:latest',
+             , model: 'embeddinggemma:latest',
               gpuUsed: false,
-              vectorDimensions: 384,
-            },
+              vectorDimensions: 384
+            }
           },
           message: 'No documents provided for context',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         },
         { status: 200 }
       );
@@ -95,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const docsEmbeddingsRaw = await Promise.all(
         ragRequest.documents.map(async doc => {
           const res: any = await gpuEmbeddingService
-            .generateEmbeddings({ text: doc as string, model: modelName })
+            .generateEmbeddings({, text: doc as string, model: modelName })
             .catch(() => ({}));
           return extractFirstEmbedding(res);
         })
@@ -142,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
           scored.push({
             index: i,
             score,
-            document: typeof ragRequest.documents[i] === 'string' ? ragRequest.documents[i] : '',
+            document: typeof ragRequest.documents[i] === 'string' ? ragRequest.documents[i] : ''
           });
         }
       }
@@ -158,8 +152,8 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           model: modelName,
           gpuUsed: !!useGPU,
-          vectorDimensions: qVec ? qVec.length : null,
-        },
+          vectorDimensions: qVec ? qVec.length : null
+        }
       } as RAGContext;
     })();
 
@@ -168,27 +162,27 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         query: ragRequest.query,
         context: {
-          similarDocs: Array.isArray(context.similarDocs)
+         , similarDocs: Array.isArray(context.similarDocs)
             ? context.similarDocs.map((doc: SimilarDoc) => ({
                 document:
                   typeof doc.document === 'string' && doc.document.length > 500
                     ? doc.document.substring(0, 500) + '...'
                     : doc.document,
                 score: typeof doc.score === 'number' ? Math.round(doc.score * 10000) / 10000 : null,
-                index: doc.index,
+                index: doc.index
               }))
             : [],
           processingTime: context.processingTime ?? 0,
-          metadata: context.metadata ?? {},
+          metadata: context.metadata ?? {}
         },
         options: {
           model: ragRequest.options?.model || 'gemma3-legal:latest',
           contextLimit: ragRequest.options?.contextLimit ?? 5,
           temperature: ragRequest.options?.temperature ?? 0.7,
           threshold: ragRequest.options?.threshold ?? 0.4,
-          useGPU: ragRequest.options?.useGPU !== false,
+          useGPU: ragRequest.options?.useGPU !== false
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 200 }
     );
@@ -198,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Failed to process RAG query',
         message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -217,36 +211,33 @@ export const GET: RequestHandler = async () => {
       'Configurable context limits and similarity thresholds',
       'Performance telemetry and monitoring',
     ],
-    parameters: {
-      query: {
-        type: 'string',
+    parameters: { query: {, type: 'string',
         required: true,
-        description: 'The user query or question',
+        description: 'The user query or question'
       },
       documents: {
         type: 'string[]',
         required: true,
-        description: 'Array of documents to use as context',
+        description: 'Array of documents to use as context'
       },
       options: {
         type: 'object',
         required: false,
-        properties: {
-          useGPU: { type: 'boolean', default: true, description: 'Enable GPU acceleration' },
+        properties: { useGPU: {, type: 'boolean', default: true, description: 'Enable GPU acceleration' },
           model: {
             type: 'string',
             default: 'gemma3-legal:latest',
-            description: 'RAG model to use',
+            description: 'RAG model to use'
           },
           contextLimit: { type: 'number', default: 5, description: 'Maximum documents in context' },
           temperature: {
             type: 'number',
             default: 0.7,
-            description: 'Response creativity (0.0-1.0)',
+            description: 'Response creativity (0.0-1.0)'
           },
-          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold' },
-        },
-      },
+          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold' }
+        }
+      }
     },
     response: {
       success: 'boolean',
@@ -256,27 +247,24 @@ export const GET: RequestHandler = async () => {
           {
             document: 'string',
             score: 'number',
-            index: 'number',
+            index: 'number'
           },
         ],
         processingTime: 'number',
         metadata: {
           model: 'string',
           gpuUsed: 'boolean',
-          vectorDimensions: 'number',
-        },
+          vectorDimensions: 'number'
+        }
       },
-      options: 'object',
-    },
+      options: `object` },
     integration: {
       embeddingModel: 'embeddinggemma:latest',
       ragService: 'http://localhost:8094/api/rag',
       gpuSupport: true,
-      telemetryEnabled: true,
+      telemetryEnabled: true
     },
-    examples: {
-      request: {
-        query: 'What are the key terms in this contract?',
+    examples: { request: {, query: 'What are the key terms in this contract?',
         documents: [
           'This agreement shall be binding upon all parties...',
           'Payment terms are net 30 days from invoice date...',
@@ -287,10 +275,10 @@ export const GET: RequestHandler = async () => {
           model: 'gemma3-legal:latest',
           contextLimit: 3,
           temperature: 0.7,
-          threshold: 0.4,
-        },
-      },
+          threshold: 0.4
+        }
+      }
     },
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 };

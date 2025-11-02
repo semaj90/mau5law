@@ -12,9 +12,7 @@ import { langExtractService } from '$lib/services/langextract-ollama-service.js'
 import type { DocumentType } from '$lib/services/langextract-ollama-service.js'; // added import for the expected DocumentType
 
 // Define specific types for extracted data
-interface LegalEntity {
-  text: string;
-  type: string;
+interface LegalEntity { text: string;, type: string;
   start?: number;
   end?: number;
   // Add other relevant properties if known, e.g., 'confidence', 'source'
@@ -27,23 +25,17 @@ interface ContractTerm {
   // Add other relevant properties if known
 }
 
-interface DocumentSummary {
-  id: string;
-  summary: string;
+interface DocumentSummary { id: string;, summary: string;
   keyTerms: string[];
   createdAt: string; // ISO string
 }
 
 // Types for API requests/responses
-interface ProcessDocumentRequest {
-  text: string;
-  documentType: DocumentType; // switched to service type to match langExtractService
+interface ProcessDocumentRequest { text: string;, documentType: DocumentType; // switched to service type to match langExtractService
   practiceArea?: string;
   sessionId?: string;
 }
-interface ProcessDocumentResponse {
-  id: string;
-  summary: string;
+interface ProcessDocumentResponse { id: string;, summary: string;
   keyTerms: string[];
   entities: LegalEntity[]; // Changed from any[]
   contractTerms: ContractTerm[]; // Changed from any[]
@@ -51,9 +43,7 @@ interface ProcessDocumentResponse {
   cacheHit: boolean;
   sessionId: string;
 }
-interface DocumentSessionResponse {
-  id: string;
-  documents: DocumentSummary[]; // Changed from Array<any>
+interface DocumentSessionResponse { id: string;, documents: DocumentSummary[]; // Changed from Array<any>
   totalProcessed: number;
 }
 
@@ -72,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           id: legalDocuments.id,
           summary: legalDocuments.summary,
           keyTerms: legalDocuments.keyTerms,
-          createdAt: legalDocuments.createdAt,
+          createdAt: legalDocuments.createdAt
         })
         .from(legalDocuments)
         .where(eq(legalDocuments.sessionId, sessionId))
@@ -82,9 +72,9 @@ export const GET: RequestHandler = async ({ url }) => {
         id: sessionId,
         documents: documents.map(doc => ({
           ...doc,
-          createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
+          createdAt: doc.createdAt?.toISOString() || new Date().toISOString()
         })),
-        totalProcessed: documents.length,
+        totalProcessed: documents.length
       };
       return json(response);
     } else {
@@ -93,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
         .select({
           sessionId: legalDocuments.sessionId,
           count: legalDocuments.id, // Will be aggregated
-          lastProcessed: legalDocuments.createdAt,
+          lastProcessed: legalDocuments.createdAt
         })
         .from(legalDocuments)
         .orderBy(desc(legalDocuments.createdAt)) // Added missing: ')'
@@ -114,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   // --- Move helpers here (function body root) ---
-  const normalizeSummaryResult = (val: any): { summary: string; keyTerms: string[] } => {
+  const normalizeSummaryResult = (val: any): { summary: string;, keyTerms: string[] } => {
     if (!val) return { summary: 'Processing completed', keyTerms: [] };
     if (typeof val === 'string') return { summary: val, keyTerms: [] };
     if (Array.isArray(val)) return { summary: JSON.stringify(val), keyTerms: [] };
@@ -169,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isAvailable = await langExtractService.isOllamaAvailable();
     if (!isAvailable) {
       return json(
-        { error: 'LangChain service not available' }, // Removed: ')'
+        { error: `LangChain service not available` }, // Removed: ')'
         { status: 503 }
       );
     }
@@ -177,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const [summaryResult, entitiesResult, contractTermsResult] = await Promise.allSettled([
       langExtractService.generateLegalSummary(text, documentType),
       // include required `extractionType` property to conform to LegalExtractionRequest
-      langExtractService.extractLegalEntities({ text, documentType, extractionType: 'entities' }),
+      langExtractService.extractLegalEntities({ text, documentType, extractionType: `entities` }),
       documentType === 'contract' ? langExtractService.extractContractTerms(text) : Promise.resolve(null),
     ]);
 
@@ -212,10 +202,10 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime,
           model: 'gemma3-legal',
           cacheHit: false,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .returning();
     // Update or create RAG session
@@ -227,14 +217,14 @@ export const POST: RequestHandler = async ({ request }) => {
         isActive: true,
         messageCount: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .onConflictDoUpdate({
         target: ragSessions.id,
         set: {
-          messageCount: ragSessions.messageCount + 1,
-          updatedAt: new Date(),
-        },
+         , messageCount: ragSessions.messageCount + 1,
+          updatedAt: new Date()
+        }
       });
     const response: ProcessDocumentResponse = {
       id: documentRecord.id,
@@ -244,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
       contractTerms,
       processingTime,
       cacheHit: false,
-      sessionId: finalSessionId,
+      sessionId: finalSessionId
     };
     return json(response);
   } catch (error) {
@@ -253,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Document processing failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       }, // Removed: ')'
       { status: 500 }
     );
@@ -276,7 +266,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       .update(legalDocuments)
       .set({
         ...updates,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(legalDocuments.id, documentId))
       .returning();
@@ -305,6 +295,6 @@ export const DELETE: RequestHandler = async ({ params }) => {
     return json({ success: true });
   } catch (error) {
     console.error('Failed to delete document:', error);
-    return json({ error: 'Failed to delete document' }, { status: 500 });
+    return json({ error: `Failed to delete document` }, { status: 500 });
   }
 };

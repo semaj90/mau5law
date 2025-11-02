@@ -26,8 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown operation: ${operation}`,
-          },
+            error: `Unknown; operation: ${operation}' },
           { status: 400 }
         );
     }
@@ -38,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
       result,
       processingTimeMs: processingTime, // Added comma
       timestamp: new Date().toISOString(),
-      note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.',
+      note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.'
     });
   } catch (error: any) {
     console.error('❌ WebGPU test error:', error);
@@ -46,16 +45,14 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Test failed',
-        operation: body?.operation || 'unknown',
+        operation: body?.operation || 'unknown'
       },
       { status: 500 }
     );
   }
 };
 
-interface TextGenerationResult {
-  text: string;
-  tokens: number;
+interface TextGenerationResult { text: string;, tokens: number;
   device: 'webgpu' | 'webgl' | 'wasm';
   processingTimeMs: number;
   model: string;
@@ -79,12 +76,10 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     device: deviceType, // Added comma
     processingTimeMs: processingTime, // Added comma
     model: 'gemma3-legal-latest',
-    confidence: 0.85 + Math.random() * 0.1,
+    confidence: 0.85 + Math.random() * 0.1
   };
 }
-interface EmbeddingGenerationResult {
-  embedding: number[];
-  dimensions: number; // Changed from 384 to 768 to match implementation
+interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from 384 to 768 to match implementation
   device: 'webgpu' | 'wasm';
   processingTimeMs: number;
   model: string;
@@ -104,7 +99,7 @@ async function simulateEmbeddingGeneration(_input: string): Promise<EmbeddingGen
     dimensions: 768, // This value should match the interface
     device: deviceType,
     processingTimeMs: processingTime,
-    model: 'gemma3-legal-embeddings',
+    model: 'gemma3-legal-embeddings'
   };
 }
 async function simulateCapabilityTest(): Promise<any> {
@@ -119,13 +114,12 @@ async function simulateCapabilityTest(): Promise<any> {
       vendor: 'Simulated GPU Vendor',
       architecture: 'rdna2',
       device: 'Radeon RX Series',
-      description: 'Simulated GPU for testing',
-    },
+      description: 'Simulated GPU for testing` },
     limits: {
       maxBufferSize: 1024 * 1024 * 1024, // 1GB
       maxComputeInvocationsPerWorkgroup: 256,
-      maxComputeWorkgroupSizeX: 256,
-    },
+      maxComputeWorkgroupSizeX: 256
+    }
   };
   // Determine device type based on capabilities
   if (capabilities.webgpuSupported) {
@@ -140,7 +134,7 @@ async function simulateCapabilityTest(): Promise<any> {
   return {
     capabilities,
     recommendedConfiguration: getRecommendedConfig(capabilities),
-    performanceEstimate: estimatePerformance(capabilities.deviceType),
+    performanceEstimate: estimatePerformance(capabilities.deviceType)
   };
 }
 function generateLegalResponse(input: string): string {
@@ -167,7 +161,7 @@ function getRecommendedConfig(capabilities: any) {
     batchSize: 1,
     maxTokens: 1000,
     useQuantization: false, // Added comma
-    enableParallelProcessing: false,
+    enableParallelProcessing: false
   };
   switch (capabilities.deviceType) {
     case 'webgpu':
@@ -191,37 +185,33 @@ function getRecommendedConfig(capabilities: any) {
 function estimatePerformance(deviceType: string) {
   const estimates: Record<
     string,
-    {
-      tokensPerSecond: number;
-      embeddingTimeMs: number;
+    { tokensPerSecond: number;, embeddingTimeMs: number;
       memoryUsageMB: number;
       powerEfficiency: string;
     }
-  > = {
-    webgpu: {
-      tokensPerSecond: 150,
+  > = { webgpu: {, tokensPerSecond: 150,
       embeddingTimeMs: 50,
       memoryUsageMB: 4096,
-      powerEfficiency: 'high',
+      powerEfficiency: 'high'
     },
     webgl: {
       tokensPerSecond: 80,
       embeddingTimeMs: 120,
       memoryUsageMB: 2048,
-      powerEfficiency: 'medium',
+      powerEfficiency: 'medium'
     },
     wasm: {
       tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
       embeddingTimeMs: 150, // Reduced embedding time for WASM with SIMD
       memoryUsageMB: 1024,
-      powerEfficiency: 'low',
+      powerEfficiency: 'low'
     },
     none: {
       tokensPerSecond: 0,
       embeddingTimeMs: 0,
       memoryUsageMB: 0,
-      powerEfficiency: 'none',
-    },
+      powerEfficiency: 'none'
+    }
   };
   return estimates[deviceType] || estimates.none;
 }
@@ -233,14 +223,13 @@ export const GET: RequestHandler = async () => {
       service: 'WebGPU Test Endpoint',
       availableOperations: ['generate_text', 'generate_embedding', 'capability_test'],
       note: 'This endpoint provides server-side simulation of WebGPU operations. Actual WebGPU testing must be performed in browser context. WASM operations can benefit from CPU SIMD acceleration.',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Service unavailable',
-      },
+        error: error instanceof Error ? error.message : 'Service unavailable` },
       { status: 500 }
     );
   }

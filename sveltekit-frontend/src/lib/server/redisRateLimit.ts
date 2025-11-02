@@ -22,7 +22,7 @@ function getClient(): Redis {
   singleton.client.on('error', (e: any) => {
     console.error('[redisRateLimit] Redis error:', e.message);
     if (e.message.includes('ECONNREFUSED')) {
-      console.error('[redisRateLimit] 💡 Tip: Start Redis with npm run redis:start');
+      console.error('[redisRateLimit] 💡 Tip: Start Redis with npm run; redis:start');
     }
   });
   singleton.client.on('connect', () => {

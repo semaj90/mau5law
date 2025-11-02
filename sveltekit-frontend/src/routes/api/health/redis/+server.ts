@@ -65,7 +65,7 @@ export const GET: RequestHandler = async () => {
         service: 'redis',
         port: 6379,
         host: 'localhost',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } else {
       return json(
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async () => {
           status: 'unavailable',
           service: 'redis',
           message: 'Redis not configured or unreachable',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 503 }
       );
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async () => {
         status: 'error',
         service: 'redis',
         error: errorMsg || 'Health check failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

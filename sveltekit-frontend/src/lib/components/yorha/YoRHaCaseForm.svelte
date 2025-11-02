@@ -55,7 +55,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     form: SuperForm<CaseCreationSchemaType, unknown>; // Use the inferred type here
   }
   // allow null initially; template guards with {#if formIntegration}
-  let formIntegration FormIntegrationType | null = $state(null);
+  let formIntegration FormIntegrationType | null = null;
   // Form integration state
   let currentStep = $state<number>(0);
   let totalSteps = $state<number>(3); // Basic Info, Legal Details, Review

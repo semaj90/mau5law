@@ -12,16 +12,12 @@ import { APIOrchestrator } from '$lib/services/api-orchestrator.js';
 import { embeddingService } from '$lib/server/embedding-service.js';
 import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
 import crypto from 'crypto';
-export interface IntegrationTestResult {
-  testName: string;
-  status: 'passed' | 'failed' | 'skipped';
+export interface IntegrationTestResult { testName: string;, status: 'passed' | 'failed' | 'skipped';
   duration: number;
   details?: any;
   error?: string;
 }
-export interface ComprehensiveTestReport {
-  success: boolean;
-  totalTests: number;
+export interface ComprehensiveTestReport { success: boolean;, totalTests: number;
   passed: number;
   failed: number;
   skipped: number;
@@ -50,7 +46,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       requestId,
       startTime,
       clientIP: getClientAddress(),
-      userAgent: request.headers.get('user-agent') || undefined,
+      userAgent: request.headers.get('user-agent') || undefined
     };
     console.log(`🧪 Starting integration test suite: ${testSuite}`);
     const report = await runComprehensiveTests(testSuite, context);
@@ -62,8 +58,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId,
         timestamp: new Date().toISOString(),
         platform: 'Windows Native',
-        deployment: 'No Docker',
-      },
+        deployment: 'No Docker'
+      }
     } satisfies APIResponse);
   } catch (err: any) {
     console.error('Integration Test Error:', err);
@@ -74,7 +70,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         error: dev ? String(err) : 'Internal server error',
         code: 'TEST_EXECUTION_ERROR',
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })
     );
   }
@@ -96,10 +92,10 @@ export const GET: RequestHandler = async ({ url }) => {
           service: 'Integration Test API',
           version: '2.0.0',
           endpoints: {
-            runTests: 'POST /api/v1/test',
+           , runTests: 'POST /api/v1/test',
             health: 'GET /api/v1/test?action=health',
             suites: 'GET /api/v1/test?action=suites',
-            history: 'GET /api/v1/test?action=history',
+            history: 'GET /api/v1/test?action=history'
           },
           testSuites: [
             'full - Complete system integration test',
@@ -114,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'Database Connection Testing',
             'Windows Native Process Validation',
           ],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
     }
   } catch (err: any) {
@@ -123,8 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Test service unavailable',
-        error: dev ? String(err) : 'Internal error',
-      })
+        error: dev ? String(err) : `Internal error` })
     );
   }
 };
@@ -143,7 +138,7 @@ async function runComprehensiveTests(testSuite: string, context: APIRequestConte
     results.push(testResult);
     // Log progress
     console.log(
-      `${testResult.status === 'passed' ? '✅' : testResult.status === 'failed' ? '❌' : '⏭️'} ${testResult.testName} - ${testResult.duration}ms`
+      `${testResult.status === 'passed' ? '✅' : testResult.status === 'failed' ? '❌' : `⏭️` } ${testResult.testName} - ${testResult.duration}ms`
     );
   }
   // Get system health
@@ -159,7 +154,7 @@ async function runComprehensiveTests(testSuite: string, context: APIRequestConte
     duration: Date.now() - startTime,
     results,
     systemHealth,
-    recommendations,
+    recommendations
   };
   console.log(`🏁 Test suite completed: ${report.passed}/${report.totalTests} passed`);
   return report;
@@ -265,7 +260,7 @@ async function runSingleTest(testName: string, _context: APIRequestContext): Pro
           testName,
           status: 'skipped',
           duration: Date.now() - testStartTime,
-          error: 'Test not implemented',
+          error: 'Test not implemented'
         };
     }
     const testResult = result as TestFunctionResult;
@@ -274,14 +269,14 @@ async function runSingleTest(testName: string, _context: APIRequestContext): Pro
       status: testResult.success ? 'passed' : 'failed',
       duration: Date.now() - testStartTime,
       details: testResult.details,
-      error: testResult.error,
+      error: testResult.error
     };
   } catch (error: any) {
     return {
       testName,
       status: 'failed',
       duration: Date.now() - testStartTime,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -298,8 +293,8 @@ async function testSystemHealth(): Promise<TestFunctionResult> {
     details: {
       healthyServices,
       totalServices,
-      healthScore,
-    },
+      healthScore
+    }
   };
 }
 async function testAPIOrchestrator(): Promise<TestFunctionResult> {
@@ -311,19 +306,19 @@ async function testAPIOrchestrator(): Promise<TestFunctionResult> {
       details: {
         totalServices: services.length,
         activeServices: services.length,
-        metricsAvailable: Object.keys(metrics).length > 0,
-      },
+        metricsAvailable: Object.keys(metrics).length > 0
+      }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
 async function testCoreServices(): Promise<TestFunctionResult> {
   const coreServices = ['enhancedRAG', 'uploadService', 'documentProcessor', 'grpcServer'];
-  const results: { service: string; healthy: boolean; status?: number; config: boolean; error?: string }[] = [];
+  const results: { service: string; healthy: boolean; status?: number;, config: boolean; error?: string }[] = [];
   for (const service of coreServices) {
     try {
       const config = APIOrchestrator.getServiceConfig(service);
@@ -332,13 +327,13 @@ async function testCoreServices(): Promise<TestFunctionResult> {
         service,
         healthy: health.ok,
         status: health.status,
-        config: !!config,
+        config: !!config
       });
     } catch (error: any) {
       results.push({
         service,
         healthy: false,
-        error: String(error),
+        error: String(error)
       });
     }
   }
@@ -348,8 +343,8 @@ async function testCoreServices(): Promise<TestFunctionResult> {
     details: {
       coreServices: results,
       healthyCount,
-      totalCount: coreServices.length,
-    },
+      totalCount: coreServices.length
+    }
   };
 }
 async function testRAGAPI(): Promise<TestFunctionResult> {
@@ -361,13 +356,13 @@ async function testRAGAPI(): Promise<TestFunctionResult> {
       details: {
         endpoint: '/api/v1/rag',
         status: response.status,
-        healthData: response.ok ? healthData : undefined,
-      },
+        healthData: response.ok ? healthData : undefined
+      }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -380,40 +375,40 @@ async function testUploadAPI(): Promise<TestFunctionResult> {
       details: {
         endpoint: '/api/v1/upload',
         status: response.status,
-        healthData: response.ok ? healthData : undefined,
-      },
+        healthData: response.ok ? healthData : undefined
+      }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
 async function testDatabaseConnections(): Promise<TestFunctionResult> {
   const databases = ['postgresql', 'redis', 'qdrant'];
-  const results: { database: string; configured: boolean; status?: string; error?: string }[] = [];
+  const results: { database: string;, configured: boolean; status?: string; error?: string }[] = [];
   for (const db of databases) {
     try {
       const config = APIOrchestrator.getServiceConfig(db);
       results.push({
         database: db,
         configured: !!config,
-        status: (config as { status: string })?.status || 'unknown',
+        status: (config as {, status: string })?.status || 'unknown'
       });
     } catch (error: any) {
       results.push({
         database: db,
         configured: false,
-        error: String(error),
+        error: String(error)
       });
     }
   }
   return {
     success: results.every(r => r.configured),
     details: {
-      databases: results,
-    },
+      databases: results
+    }
   };
 }
 async function testEmbeddingService(): Promise<TestFunctionResult> {
@@ -425,13 +420,13 @@ async function testEmbeddingService(): Promise<TestFunctionResult> {
       details: {
         healthy: isHealthy,
         availableModels: models,
-        modelCount: models.length,
-      },
+        modelCount: models.length
+      }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -439,49 +434,49 @@ async function testEmbeddingService(): Promise<TestFunctionResult> {
 async function testMultiProtocolRouting(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'] },
+    details: { protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'] }
   };
 }
 async function testErrorHandling(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { errorHandling: 'Validated' },
+    details: { errorHandling: 'Validated' }
   };
 }
 async function testPerformanceBenchmarks(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { benchmarks: 'Completed' },
+    details: { benchmarks: 'Completed' }
   };
 }
 async function testWindowsProcesses(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { platform: 'Windows Native', processes: 'Validated' },
+    details: { platform: 'Windows Native', processes: 'Validated' }
   };
 }
 async function testCacheFunctionality(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { caching: 'Functional' },
+    details: { caching: 'Functional' }
   };
 }
 async function testWebSocketConnections(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { websockets: 'Available' },
+    details: { websockets: 'Available' }
   };
 }
 async function testFileProcessingPipeline(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { pipeline: 'Ready' },
+    details: { pipeline: `Ready` }
   };
 }
 async function testAIModelAvailability(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { models: ['gemma3-legal', 'nomic-embed-text'] },
+    details: { models: ['gemma3-legal', 'nomic-embed-text'] }
   };
 }
 /*
@@ -516,23 +511,23 @@ async function handleTestSystemHealth(): Promise<Response> {
     service: 'Integration Test System',
     status: 'operational',
     systemHealth: health,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleTestSuites(): Promise<Response> {
   return json({
     availableSuites: [
-      { name: 'full', description: 'Complete system integration test', testCount: 15 },
+      {, name: 'full', description: 'Complete system integration test', testCount: 15 },
       { name: 'core', description: 'Core services only', testCount: 5 },
       { name: 'api', description: 'API endpoints and routing', testCount: 5 },
-      { name: 'services', description: 'Go microservices health', testCount: 4 },
+      { name: 'services', description: 'Go microservices health', testCount: 4 }
     ],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleTestHistory(): Promise<Response> {
   return json({
     message: 'Test history not implemented yet',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

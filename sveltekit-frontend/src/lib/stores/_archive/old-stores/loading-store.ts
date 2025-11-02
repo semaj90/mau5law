@@ -6,9 +6,7 @@ declare global {
   }
 }
 
-export interface LoadingOperation {
-  id: string;
-  title: string;
+export interface LoadingOperation { id: string;, title: string;
   description?: string;
   progress: number;
   status: 'loading' | 'success' | 'error' | 'warning';
@@ -23,12 +21,11 @@ interface LoadingState {
 function createLoadingStore() {
   const { subscribe, set, update } = writable<LoadingState>({
     operations: new Map(),
-    isAnyLoading: false,
+    isAnyLoading: false
   });
   return {
     subscribe,
-    startOperation: (
-      id: string,
+    startOperation: (; id: string,
       title: string,
       operation: LoadingOperation['operation'] = 'processing',
       description?: string,
@@ -43,7 +40,7 @@ function createLoadingStore() {
           status: 'loading',
           operation,
           startTime: Date.now(),
-          estimatedTime,
+          estimatedTime
         };
         state.operations.set(id, newOperation);
         state.isAnyLoading = state.operations.size > 0;
@@ -107,7 +104,7 @@ function createLoadingStore() {
     clearAll: () => {
       set({
         operations: new Map(),
-        isAnyLoading: false,
+        isAnyLoading: false
       });
       // Clean up global tracking
       if (typeof window !== 'undefined') {
@@ -121,7 +118,7 @@ function createLoadingStore() {
         return state;
       });
       return operation;
-    },
+    }
   };
 }
 export const loadingStore = createLoadingStore();
@@ -131,7 +128,7 @@ export const aiLoading = {
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
-    loadingStore.completeOperation(id, status),
+    loadingStore.completeOperation(id, status)
 };
 export const gpuLoading = {
   start: (id: string, title: string, description?: string) =>
@@ -139,7 +136,7 @@ export const gpuLoading = {
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
-    loadingStore.completeOperation(id, status),
+    loadingStore.completeOperation(id, status)
 };
 export const uploadLoading = {
   start: (id: string, title: string, description?: string) =>
@@ -147,7 +144,7 @@ export const uploadLoading = {
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
-    loadingStore.completeOperation(id, status),
+    loadingStore.completeOperation(id, status)
 };
 // Auto-cleanup for long-running operations
 export function withLoadingTimeout<T>(

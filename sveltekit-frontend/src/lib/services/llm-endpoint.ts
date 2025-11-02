@@ -9,7 +9,7 @@ export async function getHealthyLlmEndpoint(): Promise<string> {
   try {
     const ollamaHealth = await fetch(`${v1}/models`, {
       method: 'GET',
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(2000)
     });
     if (ollamaHealth.ok) return v1;
   } catch (error) {

@@ -11,9 +11,7 @@ import { createWorker } from "tesseract.js"; // only import factory; avoid impor
 
 // Concrete extended worker interface declaring the runtime methods we call.
 // Do not extend a potentially conflicting: 'Worker' DOM type — declare the useful API surface explicitly.
-interface TesseractExtendedWorker {
-  load: () => Promise<void>;
-  loadLanguage: (lang: string) => Promise<void>;
+interface TesseractExtendedWorker { load: () => Promise<void>;, loadLanguage: (lang: string) => Promise<void>;
   initialize: (lang: string) => Promise<void>;
   recognize: (image: string | Buffer) => Promise<{ data: { text?: string; confidence?: number } }>;
   // simplified type for parameters map
@@ -22,14 +20,10 @@ interface TesseractExtendedWorker {
   // other optional runtime methods may exist, but are not needed here
 }
 
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   pages: number;
   processingTime: number;
-  metadata: {
-    filename: string;
-    fileSize: number;
+  metadata: { filename: string;, fileSize: number;
     mimeType: string;
     pageCount?: number;
     language?: string;
@@ -37,9 +31,7 @@ export interface OCRResult {
     legalEntities?: string[];
     confidentialityLevel?: 'public' | 'confidential' | 'privileged';
   };
-  analysisResults?: {
-    legalKeywords: string[];
-    documentStructure: string[];
+  analysisResults?: { legalKeywords: string[];, documentStructure: string[];
     confidenceBySection: number[];
     extractedDates: string[];
     extractedNumbers: string[];
@@ -59,9 +51,7 @@ export interface ProcessingOptions {
   confidentialityDetection?: boolean;
 }
 
-export interface OCRWorkerConfig {
-  id: string;
-  worker: TesseractExtendedWorker; // use extended type with optional helpers
+export interface OCRWorkerConfig { id: string;, worker: TesseractExtendedWorker; // use extended type with optional helpers
   status: 'idle' | 'busy' | 'error';
   language: string;
   processedPages: number;
@@ -69,11 +59,9 @@ export interface OCRWorkerConfig {
 }
 
 // Define a new interface for OCR tasks to simplify the processingQueue type
-export interface OCRTask {
-  imagePath: string;
-  options: ProcessingOptions;
+export interface OCRTask { imagePath: string;, options: ProcessingOptions;
   pageIndex: number;
-  resolve: (value: { text: string; confidence: number }) => void;
+  resolve: (value: {, text: string; confidence: number }) => void;
   reject: (reason?: any) => void;
 }
 
@@ -138,7 +126,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           status: 'idle',
           language: 'eng',
           processedPages: 0,
-          errors: 0,
+          errors: 0
         };
         this.workers.push(cfg);
       }
@@ -207,7 +195,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         ...(result.metadata || {}),
         filename: filename,
         fileSize: stats.size,
-        mimeType: mimeType,
+        mimeType: mimeType
       };
       result.metadata = updatedMetadata;
 
@@ -219,7 +207,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         result.analysisResults = {
           ...(result.analysisResults || {}), // Start with existing analysisResults (which might have confidenceBySection)
           ...legalAnalysis, // Merge legal analysis results (keywords, structure, dates, numbers)
-          confidenceBySection: result.analysisResults?.confidenceBySection || [],
+          confidenceBySection: result.analysisResults?.confidenceBySection || []
         };
         result.metadata.documentType = await this.detectDocumentType(result.text || '');
         if (options.confidentialityDetection) {
@@ -288,15 +276,14 @@ export class EnhancedOCRProcessor extends EventEmitter {
           fileSize: 0,
           mimeType: 'application/pdf',
           pageCount: pageImages.length,
-          language: options.language || 'eng',
-        },
+          language: options.language || 'eng` },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
           confidenceBySection: confidenceBySection, // Explicitly assign the variable
           extractedDates: [],
-          extractedNumbers: [],
-        },
+          extractedNumbers: []
+        }
       };
       return ocrResult;
     } catch (error: any) {
@@ -327,15 +314,14 @@ export class EnhancedOCRProcessor extends EventEmitter {
           filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
-          language: options.language || 'eng',
-        },
+          language: options.language || 'eng` },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
           confidenceBySection: [result.confidence || 0],
           extractedDates: [],
-          extractedNumbers: [],
-        },
+          extractedNumbers: []
+        }
       };
     } catch (error: any) {
       throw new Error(`Enhanced image processing failed: ${String(error)}`);
@@ -346,7 +332,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string; confidence: number }> {
+  ): Promise<{ text: string;, confidence: number }> {
     if (!this.initialized) {
       return new Promise((resolve, reject) => {
         this.processingQueue.push({ imagePath, options, pageIndex, resolve, reject });
@@ -360,7 +346,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string; confidence: number }> {
+  ): Promise<{ text: string;, confidence: number }> {
     const workerCfg = this.getAvailableWorker();
     if (!workerCfg) {
       // This case should ideally be handled by the queue, but as a fallback
@@ -374,8 +360,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         await worker.setParameters({
           tessedit_pageseg_mode: (options.psm ?? 6) as number,
           tessedit_ocr_engine_mode: (options.oem ?? 3) as number,
-          preserve_interword_spaces: '1',
-        });
+          preserve_interword_spaces: '1` });
       }
       if (options.language && options.language !== workerCfg.language) {
         await worker.loadLanguage(options.language);
@@ -447,9 +432,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private async performLegalAnalysis(
     text: string
-  ): Promise<{
-    legalKeywords: string[];
-    documentStructure: string[];
+  ): Promise<{ legalKeywords: string[];, documentStructure: string[];
     extractedDates: string[];
     extractedNumbers: string[];
   }> {
@@ -487,9 +470,9 @@ export class EnhancedOCRProcessor extends EventEmitter {
   }
 
   private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
-    // Renamed: 'options' to: '_options'
+    // Renamed: 'options'; to: '_options'
     // This is a mock implementation. In a real scenario, you'd use a library
-    // like: 'pdf-poppler' or: 'imagemagick' to convert PDF pages to images.
+    // like: 'pdf-poppler'; or: 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
     const numPages = 3; // Simulate a 3-page PDF
     const imagePaths: string[] = [];
@@ -554,7 +537,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private extractNumbers(text: string): string[] {
     const numberRegex =
-      /(?:\b\d{3,}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}\b|\b[A-Z]{2,}\s\d{2,}\b)/gi;
+      /(?:\b\d{3}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}\b|\b[A-Z]{2}\s\d{2}\b)/gi;
     const matches = text.match(numberRegex);
     return matches ? Array.from(new Set(matches)) : [];
   }

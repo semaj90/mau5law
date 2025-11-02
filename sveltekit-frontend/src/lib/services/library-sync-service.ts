@@ -13,7 +13,7 @@ export const librarySyncService = {
     return {
       success: true,
       libraryId,
-      message: 'Library sync completed',
+      message: 'Library sync completed'
     };
   },
   async logAgentCall(data: any) {
@@ -30,5 +30,5 @@ export const librarySyncService = {
   },
   async syncAllLibraries() {
     return { success: true, synced: 0 };
-  },
+  }
 };

@@ -23,12 +23,8 @@ interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
   metadata?: ExpectedMinIOMetadata;
 }
 
-export interface VectorSearchResult {
-  id: string;
-  score: number;
-  metadata: {
-    title: string;
-  documentType: string;
+export interface VectorSearchResult { id: string;, score: number;
+  metadata: { title: string;, documentType: string;
   extractedText: string;
   legalEntities: string[];
   jurisdiction: string;
@@ -40,9 +36,7 @@ export interface VectorSearchResult {
   }
   embedding: Float32Array;
   filePath: string;
-  chunks: {
-    text: string;
-    startIndex: number;
+  chunks: { text: string;, startIndex: number;
     endIndex: number;
     relevanceScore: number;
   }[];
@@ -53,9 +47,7 @@ export interface SearchQuery {
     documentType?: string[];
   jurisdiction?: string[];
   riskLevel?: string[];
-  dateRange?: {
-      start: string;
-  end: string;
+  dateRange?: { start: string;, end: string;
     }
     minimumConfidence?: number;
   }
@@ -64,9 +56,7 @@ export interface SearchQuery {
   includeChunks?: boolean;
   rankingStrategy?: 'similarity' | 'legal_relevance' | 'citation_weighted' | 'risk_prioritized';
 }
-export interface IndexStats {
-  totalDocuments: number;
-  totalEmbeddings: number;
+export interface IndexStats { totalDocuments: number;, totalEmbeddings: number;
   indexSize: number;
   lastUpdated: string;
   averageConfidence: number;
@@ -128,15 +118,15 @@ class VectorSearchIndex {
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => {
         // Process embeddings
-        embeddingsRequest.result.forEach((item: { id: string; embedding: number[] }) => {
+        embeddingsRequest.result.forEach((item: {, id: string; embedding: number[] }) => {
           this.embeddings.set(item.id, new Float32Array(item.embedding));
         });
         // Process metadata
-        metadataRequest.result.forEach((item: { id: string; metadata: VectorSearchResult['metadata'] }) => {
+        metadataRequest.result.forEach((item: {, id: string; metadata: VectorSearchResult['metadata'] }) => {
           this.metadata.set(item.id, item.metadata);
         });
         // Process chunks
-        chunksRequest.result.forEach((item: { id: string; chunks: VectorSearchResult['chunks'] }) => {
+        chunksRequest.result.forEach((item: {, id: string; chunks: VectorSearchResult['chunks'] }) => {
           this.textChunks.set(item.id, item.chunks);
         });
         resolve();
@@ -148,7 +138,7 @@ class VectorSearchIndex {
     if (!this.isInitialized) {
       await this.initialize();
     }
-    const documentId = file.id; // Removed: '|| file.path' as: 'path' does not exist on MinIOFileWithExpectedProps
+    const documentId = file.id; // Removed: '|| file.path'; as: 'path' does not exist on MinIOFileWithExpectedProps
     // Extract legal metadata from document
     const metadata: VectorSearchResult['metadata'] = {
       title: file.metadata?.title || file.originalName || 'Untitled Document',
@@ -232,7 +222,7 @@ class VectorSearchIndex {
       const response = await fetch('/api/embeddings/gemma?action=generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text })
       });
       if (!response.ok) {
         throw new Error(`Embedding API error: ${response.status}`);

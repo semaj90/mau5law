@@ -6,32 +6,22 @@ import { mockServices, perf } from '../../services/__tests__/setup.js';
 const sessionMachine = createMachine({
   id: 'sessionMachine',
   initial: 'inactive',
-  context: {
-    sessionId: undefined
-    userId: undefined
-    activeCase: undefined
+  context: { sessionId: undefined, userId: undefined; activeCase: undefined
     collaborators: [],
-    lastActivity: undefined
-    performanceMetrics: undefined
+    lastActivity: undefined; performanceMetrics: undefined
     error: undefined
   },
-  states: {
-    inactive: {
-      on: {
+  states: { inactive: {, on: {
         START_SESSION: 'initializing'
       }
     },
-    initializing: {
-      invoke: {
-        src: fromPromise(async ({ input }) => {
+    initializing: {, invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const session = await mockServices.createLegalSession(input.userId, input.caseId);
           const duration = performance.now() - startTime;
           return {
             ...session,
-            performanceMetrics: {
-              responseTime: duration
-              protocol: 'HTTP',
+            performanceMetrics: { responseTime: duration, protocol: 'HTTP',
               operation: 'session_creation'
             }
           }
@@ -60,9 +50,7 @@ const sessionMachine = createMachine({
         }
       }
     },
-    active: {
-      on: {
-        ADD_COLLABORATOR: {
+    active: { on: {, ADD_COLLABORATOR: {
           target: 'updating',
           actions: assign({
             lastActivity: () => Date.now()
@@ -81,18 +69,14 @@ const sessionMachine = createMachine({
         1800000: 'terminating' // 30 minutes timeout
       }
     },
-    updating: {
-      invoke: {
-        src: fromPromise(async ({ input }) => {
+    updating: { invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           if (input.type === 'ADD_COLLABORATOR') {
             const result = await mockServices.addCollaborator(input.sessionId, input.collaborator);
             const duration = performance.now() - startTime;
             return {
               ...result,
-              performanceMetrics: {
-                responseTime: duration
-                protocol: 'HTTP',
+              performanceMetrics: { responseTime: duration, protocol: 'HTTP',
                 operation: 'add_collaborator'
               }
             }
@@ -101,9 +85,7 @@ const sessionMachine = createMachine({
             const duration = performance.now() - startTime;
             return {
               ...result,
-              performanceMetrics: {
-                responseTime: duration
-                protocol: 'HTTP',
+              performanceMetrics: { responseTime: duration, protocol: 'HTTP',
                 operation: 'update_case'
               }
             }
@@ -112,8 +94,7 @@ const sessionMachine = createMachine({
         input: ({ event, context }) => ({
           type: event.type,
           sessionId: context.sessionId,
-          collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined
-          caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
+          collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined; caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
         }),
         onDone: {
           target: 'active',
@@ -134,17 +115,11 @@ const sessionMachine = createMachine({
         }
       }
     },
-    terminating: {
-      invoke: {
-        src: fromPromise(async ({ input }) => {
+    terminating: { invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           await mockServices.endLegalSession(input.sessionId);
           const duration = performance.now() - startTime;
-          return {
-            success: true
-            performanceMetrics: {
-              responseTime: duration
-              protocol: 'HTTP',
+          return { success: true, performanceMetrics: { responseTime: duration, protocol: 'HTTP',
               operation: 'session_termination'
             }
           }
@@ -154,9 +129,7 @@ const sessionMachine = createMachine({
         onError: 'inactive'
       }
     },
-    error: {
-      on: {
-        RETRY: 'initializing',
+    error: { on: {, RETRY: 'initializing',
         RESET: 'inactive'
       }
     }
@@ -205,7 +178,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'ADD_COLLABORATOR',
         collaborator: {
-          userId: 'paralegal-789',
+         , userId: 'paralegal-789',
           role: 'paralegal',
           permissions: ['read', 'comment']
         }
@@ -233,15 +206,14 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         sessionActor.send({
           type: 'START_SESSION',
           userId: `attorney-${i}`,
-          caseId: `case-${i}`
-        });
+          caseId: 'case-${i}' });
         await new Promise(resolve => setTimeout(resolve, 100);
         sessionActor.send({
           type: 'UPDATE_CASE',
-          caseData: { status: 'in_progress', priority: 'high' }
+          caseData: {, status: 'in_progress', priority: 'high` }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
-        sessionActor.send({ type: 'END_SESSION' });
+        sessionActor.send({ type: `END_SESSION` });
         await new Promise(resolve => setTimeout(resolve, 100);
         const duration = performance.now() - startTime;
         measurements.push(duration);
@@ -324,8 +296,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
-      });
+        caseId: 'case-456` });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('SESSION_ACTIVE',
         expect.objectContaining({
@@ -337,8 +308,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       expect(documentProcessingHandler).toHaveBeenCalledWith('ENABLE_PROCESSING',
         expect.objectContaining({
           sessionId: 'session-789',
-          userId: 'attorney-123'
-        })
+          userId: `attorney-123` })
       );
       sessionActor.stop();
     });
@@ -349,7 +319,7 @@ describe('Phase 5-7 Session Performance Benchmarks', () => {
   it('should establish session coordination baseline for gRPC optimization', () => {
     const stats = perf.getStats('session-creation-lifecycle');
     if (stats) {
-      console.log('\n📊 Session Management Performance Stats:');
+      console.log('\n📊 Session Management Performance Stats: `);
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

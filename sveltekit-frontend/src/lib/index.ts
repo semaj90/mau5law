@@ -43,7 +43,7 @@ export {
   downloadFile,
   isBrowser,
   storage,
-  theme,
+  theme
 } from './utils.js';
 // Export type helpers for Svelte 5 compatibility
 export type { WithoutChild, WithoutChildren, WithoutChildrenOrChild, WithElementRef } from './utils.js';
@@ -53,20 +53,20 @@ export {
   type ComprehensiveSummaryRequest,
   type ComprehensiveSummaryResponse,
   type SummarizerConfig,
-  type SummarizerStats,
+  type SummarizerStats
 } from './services/comprehensive-ollama-summarizer.js';
 export {
   ollamaIntegrationLayer,
   type IntegratedChatRequest,
   type IntegratedChatResponse,
-  type OllamaServiceStatus,
+  type OllamaServiceStatus
 } from './services/ollama-integration-layer.js';
 export {
   LangChainOllamaService,
   langChainOllamaService,
   type LangChainConfig,
   type ProcessingResult,
-  type QueryResult,
+  type QueryResult
 } from './ai/langchain-ollama-service.js';
 // ===== SERVER SERVICES (Server-side only) =====
 // Note: These should only be imported on the server side
@@ -79,7 +79,7 @@ export const FRAMEWORK_INFO = {
   sveltekit: '2.x',
   svelte: '5.x',
   typescript: '5.x',
-  vite: '5.x',
+  vite: '5.x'
 };
 // ===== FEATURE FLAGS =====
 export const FEATURES = {
@@ -92,7 +92,7 @@ export const FEATURES = {
   MCP_INTEGRATION: true,
   WASM_SUPPORT: true,
   WEBGPU_SUPPORT: true,
-  CUDA_SUPPORT: true,
+  CUDA_SUPPORT: true
 } as const;
 // ===== DEVELOPMENT UTILITIES =====
 export const DEV_TOOLS = {
@@ -100,7 +100,7 @@ export const DEV_TOOLS = {
   ROUTE_COUNT: 82,
   API_ENDPOINT_COUNT: 145,
   STORE_COUNT: 8,
-  SERVICE_COUNT: 12,
+  SERVICE_COUNT: 12
 } as const;
 // ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====
 export {
@@ -111,7 +111,7 @@ export {
   webGPUExtendedMethods,
   lokiCollectionMethods,
   configurationProperties,
-  utilityFunctions,
+  utilityFunctions
 } from './stores/barrel-functions.js';
 // ===== DATABASE COMPATIBILITY LAYER =====
 export {
@@ -123,7 +123,7 @@ export {
   ensureConnection,
   enhanceResultWithTypes,
   entityEnhancers,
-  createTypeSafeQuery,
+  createTypeSafeQuery
 } from './database/drizzle-compatibility-fix.js';
 // Make barrel store globally available
 if (typeof globalThis !== 'undefined') {
@@ -139,14 +139,14 @@ export {
   searchServices,
   searchComponents,
   searchDocumentation,
-  searchDemos,
+  searchDemos
 } from './services/search-service.js';
 // Hybrid Vector Operations
 export {
   hybridVectorService,
   hybridSearch,
   syncVectorData,
-  getVectorSystemHealth,
+  getVectorSystemHealth
 } from './services/hybrid-vector-operations.js';
 // Search Types
 export type { SearchResult, SearchCategory, SearchOptions, SearchFilter, SearchState } from './types/search.types.js';
@@ -157,7 +157,7 @@ export default {
   FRAMEWORK_INFO,
   FEATURES,
   DEV_TOOLS,
-  barrelStore,
+  barrelStore
 };
 // ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
 export const typeScriptErrorResolution = {
@@ -181,5 +181,5 @@ export const typeScriptErrorResolution = {
   // Type assertion with fallback
   assertType: <T>(_value: any, fallback: T): T => {
     return value !== null && value !== undefined ? value : fallback;
-  },
+  }
 };

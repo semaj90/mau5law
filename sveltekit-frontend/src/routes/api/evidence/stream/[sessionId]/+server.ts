@@ -5,14 +5,12 @@ import {
 	deregisterSseConnection,
 	storeMessage,
 	broadcastMessage,
-	nowId,
+	nowId
 } from '$lib/server/evidence-stream';
 
 // --- Dev in-memory message store & SSE connection registry ---
 // Note: these are lightweight dev stubs. Replace with Redis/pubsub or DB-backed store in production.
-type StoredMessage = {
-  id: string;
-  sessionId: string;
+type StoredMessage = { id: string;, sessionId: string;
   type?: string;
   payload?: any; // Changed from any to unknown
   timestamp: string;
@@ -35,13 +33,13 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 				JSON.stringify({
 					sessionId,
 					messages,
-					timestamp: new Date().toISOString(),
+					timestamp: new Date().toISOString()
 				}),
 				{
 					headers: {
 						'Content-Type': 'application/json',
-						'Cache-Control': 'no-cache',
-					},
+						'Cache-Control': 'no-cache'
+					}
 				}
 			);
 		} catch (error: any) { // Changed from any to unknown
@@ -56,8 +54,8 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 			status: 426,
 			headers: {
 				'Upgrade': 'websocket',
-				'Connection': 'Upgrade',
-			},
+				'Connection': 'Upgrade'
+			}
 		});
 	} catch (error: any) { // Changed from any to unknown
 		console.error('❌ WebSocket upgrade error:', error);
@@ -93,7 +91,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 						sessionId,
 						type: 'connection-established',
 						payload: { timestamp: new Date().toISOString() },
-						timestamp: new Date().toISOString(),
+						timestamp: new Date().toISOString()
 					};
 					controller.enqueue(encoder.encode(`data: ${JSON.stringify(initMsg)}\n\n`));
 
@@ -136,22 +134,22 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					if (controllerRef) {
 						deregisterSseConnection(sessionId, controllerRef);
 					}
-				},
+				}
 			});
 
 			return new Response(stream, {
 				headers: {
 					'Content-Type': 'text/event-stream',
 					'Cache-Control': 'no-cache',
-					'Connection': 'keep-alive',
-				},
+					'Connection': 'keep-alive'
+				}
 			});
 		} else if (action === 'publish') {
 			const { type, payload } = body;
 			if (!type || !payload) {
 				return new Response(JSON.stringify({ error: 'Type and payload required for publish action', code: 400 }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json' }
 				});
 			}
 			const message: StoredMessage = {
@@ -159,18 +157,18 @@ export const POST: RequestHandler = async ({ request, params }) => {
 				sessionId,
 				type,
 				payload,
-				timestamp: new Date().toISOString(),
+				timestamp: new Date().toISOString()
 			};
 			await storeMessage(sessionId, message); // Added sessionId as first argument
 			await broadcastMessage(sessionId, message);
 			return new Response(JSON.stringify({ status: 'published', messageId: message.id }), {
 				status: 200,
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json' }
 			});
 		} else {
 			return new Response(
 				JSON.stringify({ error: 'Invalid action', code: 400 }),
-				{ status: 400, headers: { 'Content-Type': 'application/json' } }
+				{ status: 400, headers: { 'Content-Type': `application/json` } }
 			);
 		}
 	} catch (error: any) { // Changed from any to unknown

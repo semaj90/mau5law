@@ -4,7 +4,7 @@
 type TypingContext = unknown;
 
 export interface DetectiveWebSocketMessage {
-  type:
+  type:;
     | 'user_typing'
     | 'connection_map_update'
     | 'evidence_analysis'
@@ -18,9 +18,7 @@ export interface DetectiveWebSocketMessage {
   data?: any;
 }
 
-export interface CollaborativeUser {
-  id: string;
-  name: string;
+export interface CollaborativeUser { id: string;, name: string;
   typing: boolean;
   lastActivity: string;
   currentFocus?: 'evidence' | 'connections' | 'analysis';
@@ -93,7 +91,7 @@ export default class DetectiveWebSocketManager {
     return {
       connectedUsers: this.collaborativeUsers.size,
       typingUsers: users.filter(u => u.typing),
-      lastActivity: users.length ? Math.max(...users.map(u => new Date(u.lastActivity).getTime())) : 0,
+      lastActivity: users.length ? Math.max(...users.map(u => new Date(u.lastActivity).getTime())) : 0
     };
   }
 }

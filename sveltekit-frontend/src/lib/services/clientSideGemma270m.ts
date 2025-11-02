@@ -8,9 +8,7 @@ import { forceUserActivity } from '$lib/stores/userActivityStore';
 import { webLlamaService } from '../ai/webasm-llamacpp.js';
 import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from '../adapters/webasm-ai-adapter.js';
 import type { ConversationEntry } from '../stores/aiAssistant.svelte.js';
-interface Gemma270mConfig {
-  preferredMethod: 'server' | 'webassembly' | 'webgpu' | 'tensorrt' | 'auto';
-  maxTokens: number;
+interface Gemma270mConfig { preferredMethod: 'server' | 'webassembly' | 'webgpu' | 'tensorrt' | 'auto';, maxTokens: number;
   temperature: number;
   topP: number;
   topK: number;
@@ -20,15 +18,11 @@ interface Gemma270mConfig {
   enableGPUAcceleration: boolean;
   fallbackToServer: boolean;
 }
-interface InferenceRequest {
-  prompt: string;
-  requestId: string;
+interface InferenceRequest { prompt: string;, requestId: string;
   config: Partial<Gemma270mConfig>;
   timestamp: number;
 }
-interface InferenceResponse {
-  requestId: string;
-  text: string;
+interface InferenceResponse { requestId: string;, text: string;
   tokens: number;
   latencyMs: number;
   source: 'server' | 'webassembly' | 'webgpu' | 'tensorrt' | 'onnx';
@@ -36,9 +30,7 @@ interface InferenceResponse {
   confidence?: number;
   fromCache?: boolean;
 }
-interface ModelState {
-  isLoaded: boolean;
-  loadingProgress: number;
+interface ModelState { isLoaded: boolean;, loadingProgress: number;
   lastUsed: number;
   source: 'webassembly' | 'webgpu' | 'tensorrt' | 'none';
   memoryUsageMB: number;
@@ -47,7 +39,7 @@ interface ModelState {
 type WasmInferenceFn = (
   prompt: string,
   config: Gemma270mConfig
-) => Promise<{ text: string; tokens: number; latencyMs: number }>;
+) => Promise<{ text: string; tokens: number;, latencyMs: number }>;
 
 type WasmModuleSimulation = {
   inference?: WasmInferenceFn;
@@ -65,7 +57,7 @@ class ClientSideGemma270m {
     lastUsed: 0,
     source: 'none',
     memoryUsageMB: 0,
-    error: null,
+    error: null
   });
   private wasmModule: WasmModule | null = null;
   private webGPUDevice: GPUDevice | null = null;
@@ -77,7 +69,7 @@ class ClientSideGemma270m {
     vocabSize: 256000,
     hiddenSize: 2048,
     numLayers: 24,
-    estimatedSizeMB: 540,
+    estimatedSizeMB: 540
   };
   constructor(config: Partial<Gemma270mConfig> = {}) {
     this.config = {
@@ -91,7 +83,7 @@ class ClientSideGemma270m {
       enableCaching: true,
       enableGPUAcceleration: true,
       fallbackToServer: true,
-      ...config,
+      ...config
     };
     if (browser) {
       this.initializeWithExistingInfrastructure();
@@ -110,7 +102,7 @@ class ClientSideGemma270m {
           isLoaded: true,
           loadingProgress: 100,
           source: 'webassembly',
-          lastUsed: Date.now(),
+          lastUsed: Date.now()
         }));
       }
       if (this.config.enableTensorRT) {
@@ -124,13 +116,10 @@ class ClientSideGemma270m {
       console.error('❌ Failed to initialize with existing infrastructure:', error);
       this.modelState.update(state => ({
         ...state,
-        error: `Initialization failed: ${error?.message ?? String(error)}`,
-      }));
+        error: 'Initialization; failed: ${error?.message ?? String(error)}' }));
     }
   }
-  private async checkCapabilities(): Promise<{
-    webgpu: boolean;
-    webassembly: boolean;
+  private async checkCapabilities(): Promise<{ webgpu: boolean;, webassembly: boolean;
     sharedArrayBuffer: boolean;
     wasmThreads: boolean;
     wasmSIMD: boolean;
@@ -140,7 +129,7 @@ class ClientSideGemma270m {
       webassembly: typeof WebAssembly !== 'undefined',
       sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
       wasmThreads: await this.checkWasmThreads(),
-      wasmSIMD: await this.checkWasmSIMD(),
+      wasmSIMD: await this.checkWasmSIMD()
     };
   }
   private async checkWasmThreads(): Promise<boolean> {
@@ -169,20 +158,20 @@ class ClientSideGemma270m {
         throw new Error('WebGPU not supported');
       }
       // @ts-ignore
-      const adapter = await (navigator as any).gpu.requestAdapter({ powerPreference: 'high-performance' });
+      const adapter = await (navigator as any).gpu.requestAdapter({ powerPreference: 'high-performance` });
       if (!adapter) {
         throw new Error('No WebGPU adapter found');
       }
       const device = await adapter.requestDevice({
         requiredFeatures: [] as any,
         requiredLimits: {
-          maxStorageBufferBindingSize: 1024 * 1024 * 1024,
-          maxBufferSize: 1024 * 1024 * 1024,
-        },
+         , maxStorageBufferBindingSize: 1024 * 1024 * 1024,
+          maxBufferSize: 1024 * 1024 * 1024
+        }
       } as any);
       this.webGPUDevice = device;
       console.log('✅ WebGPU initialized for 270M model');
-      this.modelState.update(state => ({ ...state, source: 'webgpu' }));
+      this.modelState.update(state => ({ ...state, source: `webgpu` }));
       await this.loadModelWeightsWebGPU();
     } catch (error: any) {
       console.error('❌ WebGPU initialization failed:', error);
@@ -212,7 +201,7 @@ class ClientSideGemma270m {
       const shaderModule = this.webGPUDevice.createShaderModule({ code: computeShader });
       const computePipeline = this.webGPUDevice.createComputePipeline({
         layout: 'auto',
-        compute: { module: shaderModule, entryPoint: 'main' },
+        compute: {, module: shaderModule, entryPoint: `main` }
       } as any);
       console.log('✅ WebGPU model loaded for 270M parameters (simulated)');
       this.modelState.update(state => ({
@@ -220,14 +209,13 @@ class ClientSideGemma270m {
         isLoaded: true,
         loadingProgress: 100,
         memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB,
-        lastUsed: Date.now(),
+        lastUsed: Date.now()
       }));
     } catch (error: any) {
       console.error('❌ Failed to load model weights:', error);
       this.modelState.update(state => ({
         ...state,
-        error: `WebGPU loading failed: ${error?.message ?? String(error)}`,
-      }));
+        error: `WebGPU loading; failed: ${error?.message ?? String(error)}` }));
     }
   }
   private async initializeWebAssembly(): Promise<void> {
@@ -241,7 +229,7 @@ class ClientSideGemma270m {
         this.wasmModule = {
           inference: this.wasmInferenceSimulation.bind(this),
           memory: new WebAssembly.Memory({ initial: 100 }),
-          initialized: true,
+          initialized: true
         };
       } else {
         const wasmBytes = await resp.arrayBuffer();
@@ -255,11 +243,11 @@ class ClientSideGemma270m {
         loadingProgress: 100,
         source: 'webassembly',
         memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB * 0.5,
-        lastUsed: Date.now(),
+        lastUsed: Date.now()
       }));
     } catch (error: any) {
       console.error('❌ WebAssembly initialization failed:', error);
-      this.modelState.update(state => ({ ...state, error: `WASM loading failed: ${error?.message ?? String(error)}` }));
+      this.modelState.update(state => ({ ...state, error: 'WASM loading; failed: ${error?.message ?? String(error)}' }));
     }
   }
   private connectToTensorRT(): void {
@@ -272,9 +260,9 @@ class ClientSideGemma270m {
             type: 'REQUEST_MODEL_OPTIMIZATION',
             model_name: 'gemma3:270m',
             client_capabilities: {
-              webgpu: !!this.webGPUDevice,
-              webassembly: !!this.wasmModule,
-            },
+             , webgpu: !!this.webGPUDevice,
+              webassembly: !!this.wasmModule
+            }
           })
         );
       };
@@ -304,14 +292,14 @@ class ClientSideGemma270m {
         break;
       case 'IDLE_TIMEOUT':
         console.log('😴 GPU going idle, switching to client-side');
-        this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu' : 'webassembly' }));
+        this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu' : 'webassembly` }));
         break;
     }
   }
   private handleMemoryPressure(): void {
     if (get(this.modelState).source === 'tensorrt') {
       console.log('🔄 Switching to client-side due to memory pressure');
-      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu' : 'webassembly' }));
+      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : `webassembly` }));
     }
   }
   public async generateText(prompt: string, config?: Partial<Gemma270mConfig>): Promise<InferenceResponse> {
@@ -383,7 +371,7 @@ class ClientSideGemma270m {
                 tokens: data.tokens || Math.floor(prompt.length / 4),
                 latencyMs: data.latency_ms || 0,
                 source: 'tensorrt',
-                memoryUsageMB: data.memory_usage_mb,
+                memoryUsageMB: data.memory_usage_mb
               });
             }
           }
@@ -402,7 +390,7 @@ class ClientSideGemma270m {
           temperature: config.temperature,
           top_p: config.topP,
           top_k: config.topK,
-          repeat_penalty: config.repeatPenalty,
+          repeat_penalty: config.repeatPenalty
         })
       );
     });
@@ -425,7 +413,7 @@ class ClientSideGemma270m {
       tokens,
       latencyMs: processingTime,
       source: 'webgpu',
-      memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB,
+      memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB
     };
   }
   private async generateWithWebAssembly(
@@ -443,7 +431,7 @@ class ClientSideGemma270m {
       tokens: result.tokens,
       latencyMs: result.latencyMs,
       source: 'webassembly',
-      memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB * 0.5,
+      memoryUsageMB: this.MODEL_SPECS.estimatedSizeMB * 0.5
     };
   }
   private async generateWithServer(
@@ -453,19 +441,19 @@ class ClientSideGemma270m {
   ): Promise<InferenceResponse> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3:270m',
         prompt,
         stream: false,
         options: {
-          num_predict: config.maxTokens,
+         , num_predict: config.maxTokens,
           temperature: config.temperature,
           top_p: config.topP,
           top_k: config.topK,
-          repeat_penalty: config.repeatPenalty,
-        },
-      }),
+          repeat_penalty: config.repeatPenalty
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Server inference failed: ${response.status}`);
@@ -476,7 +464,7 @@ class ClientSideGemma270m {
       text: data.response,
       tokens: data.eval_count || 0,
       latencyMs: (data.total_duration ?? 0) / 1000000,
-      source: 'server',
+      source: 'server'
     };
   }
   private convertWebAsmResponse(webAsmResponse: WebAssemblyAIResponse, requestId: string): InferenceResponse {
@@ -488,7 +476,7 @@ class ClientSideGemma270m {
       source: (webAsmResponse.metadata.method as any) ?? 'webassembly',
       memoryUsageMB: undefined,
       confidence: webAsmResponse.metadata.confidence,
-      fromCache: webAsmResponse.metadata.fromCache,
+      fromCache: webAsmResponse.metadata.fromCache
     };
   }
   private async generateWithWebLlamaFallback(
@@ -500,7 +488,7 @@ class ClientSideGemma270m {
       const webLlamaResponse = await webLlamaService.generate(prompt, {
         maxTokens: config.maxTokens,
         temperature: config.temperature,
-        useCache: config.enableCaching,
+        useCache: config.enableCaching
       });
       return {
         requestId,
@@ -509,7 +497,7 @@ class ClientSideGemma270m {
         latencyMs: webLlamaResponse.processingTime,
         source: (webLlamaResponse.processingPath as any) ?? 'server',
         confidence: webLlamaResponse.confidence,
-        fromCache: webLlamaResponse.fromCache,
+        fromCache: webLlamaResponse.fromCache
       };
     } catch (error) {
       console.error('❌ WebLlama fallback failed:', error);
@@ -519,9 +507,7 @@ class ClientSideGemma270m {
   private async wasmInferenceSimulation(
     prompt: string,
     config: Gemma270mConfig
-  ): Promise<{
-    text: string;
-    tokens: number;
+  ): Promise<{ text: string;, tokens: number;
     latencyMs: number;
   }> {
     const tokens = Math.min(config.maxTokens, 256);
@@ -530,7 +516,7 @@ class ClientSideGemma270m {
     return {
       text: this.generateSimulatedResponse(prompt, tokens),
       tokens,
-      latencyMs: processingTime,
+      latencyMs: processingTime
     };
   }
   private generateSimulatedResponse(prompt: string, maxTokens: number): string {
@@ -556,7 +542,7 @@ class ClientSideGemma270m {
       executionSource: derived(this.modelState, $state => $state.source),
       memoryUsage: derived(this.modelState, $state => $state.memoryUsageMB),
       lastUsed: derived(this.modelState, $state => $state.lastUsed),
-      error: derived(this.modelState, $state => $state.error),
+      error: derived(this.modelState, $state => $state.error)
     };
   }
   public async preloadModel(): Promise<void> {
@@ -580,9 +566,7 @@ class ClientSideGemma270m {
     title: string,
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<{
-    summary: string;
-    keyTerms: string[];
+  ): Promise<{ summary: string;, keyTerms: string[];
     entities: Array<any>;
     risks: Array<any>;
     recommendations: string[];
@@ -595,8 +579,7 @@ class ClientSideGemma270m {
       this.modelState.update(state => ({ ...state, lastUsed: Date.now() }));
       return {
         ...result,
-        method: 'Gemma3:270m via WebAssembly Infrastructure',
-      };
+        method: 'Gemma3:270m via WebAssembly Infrastructure` };
     } catch (error) {
       console.error('❌ Legal document analysis failed:', error);
       throw error;
@@ -621,7 +604,7 @@ class ClientSideGemma270m {
             options.onComplete(convertedResponse);
           }
         },
-        onError: options.onError,
+        onError: options.onError
       });
       this.modelState.update(state => ({ ...state, lastUsed: Date.now() }));
     } catch (error) {
@@ -629,9 +612,7 @@ class ClientSideGemma270m {
       if (options.onError) options.onError(error as Error);
     }
   }
-  public getHealthStatus(): {
-    initialized: boolean;
-    modelLoaded: boolean;
+  public getHealthStatus(): { initialized: boolean;, modelLoaded: boolean;
     adapterStatus: any;
     webLlamaStatus: any;
     tensorRTConnected: boolean;
@@ -648,7 +629,7 @@ class ClientSideGemma270m {
       webLlamaStatus,
       tensorRTConnected: this.tensorRTConnection?.readyState === WebSocket.OPEN,
       currentSource: state.source,
-      modelSpecs: this.MODEL_SPECS,
+      modelSpecs: this.MODEL_SPECS
     };
   }
   public destroy(): void {

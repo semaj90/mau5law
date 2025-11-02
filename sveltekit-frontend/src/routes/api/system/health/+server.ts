@@ -8,36 +8,34 @@ export const GET: RequestHandler = async () => {
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      services: {
-        svelteKit: {
-          status: 'healthy',
+      services: { svelteKit: {, status: 'healthy',
           uptime: process.uptime(),
-          memory: process.memoryUsage(),
+          memory: process.memoryUsage()
         },
         database: {
           status: 'unknown',
-          message: 'PostgreSQL connection check not implemented',
+          message: 'PostgreSQL connection check not implemented'
         },
         redis: {
           status: 'unknown',
-          message: 'Redis connection check not implemented',
+          message: 'Redis connection check not implemented'
         },
         storage: {
           status: 'degraded',
-          message: 'MinIO service unavailable - running in degraded mode',
-        },
+          message: 'MinIO service unavailable - running in degraded mode'
+        }
       },
       metadata: {
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
-        pid: process.pid,
+        pid: process.pid
       },
       performance: {
         memoryUsage: process.memoryUsage(),
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? os.loadavg() : 'N/A (Windows)',
-      },
+        loadAverage: process.platform !== 'win32' ? os.loadavg() : 'N/A (Windows)'
+      }
     };
     // Basic service availability checks
     try {
@@ -47,7 +45,7 @@ export const GET: RequestHandler = async () => {
       healthStatus.services.redis.status = 'healthy';
       healthStatus.services.redis.message = 'Redis connection assumed healthy';
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('Health check error:', error);
       healthStatus.status = 'degraded';
     }
@@ -56,25 +54,25 @@ export const GET: RequestHandler = async () => {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        'X-Health-Check': 'true',
-      },
+        'X-Health-Check': 'true'
+      }
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('System health check failed:', error);
     return json(
       {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
         error: 'Health check failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       {
         status: 503,
         headers: {
           'Content-Type': 'application/json',
-          'X-Health-Check': 'failed',
-        },
+          'X-Health-Check': 'failed'
+        }
       }
     );
   }

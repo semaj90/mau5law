@@ -30,14 +30,14 @@ export const GET: RequestHandler = async ({ params }) => {
       success: true,
       jobId,
       status: currentStatus,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Job status error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -59,14 +59,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
         return json({
           success: true,
           message: 'Job cancellation requested',
-          jobId,
+          jobId
         });
       case 'retry':
         // TODO: Implement job retry
         return json({
           success: true,
           message: 'Job retry requested',
-          jobId,
+          jobId
         });
       default:
         return json({ error: 'Invalid action' }, { status: 400 });
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

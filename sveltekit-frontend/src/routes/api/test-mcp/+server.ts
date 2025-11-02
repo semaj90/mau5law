@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
       message: 'MCP helpers loaded successfully',
       testQuery,
       testPrompt,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         error: 'MCP helpers import failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

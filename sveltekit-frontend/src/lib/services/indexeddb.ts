@@ -10,16 +10,12 @@ export interface CachedDocument extends RAGObject {
   lastUpdated?: number;
 }
 
-export interface SearchResult {
-  query: string;
-  results: RAGObject[];
+export interface SearchResult { query: string;, results: RAGObject[];
   timestamp: number;
   executionTime: number;
 }
 
-export interface UserInteraction {
-  id: string;
-  type: "search" | "view" | "edit" | "ai_query";
+export interface UserInteraction { id: string;, type: "search" | "view" | "edit" | "ai_query";
   query?: string;
   documentId?: string;
   timestamp: number;
@@ -186,7 +182,7 @@ class IndexedDBService {
     const fullInteraction: UserInteraction = {
       ...interaction,
       id: `${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     const tx = this.db!.transaction(["userInteractions"], "readwrite");
     const store = tx.objectStore("userInteractions");
@@ -223,10 +219,8 @@ class IndexedDBService {
   }
 
   // Analytics: get user activity patterns
-  async getActivitySummary(): Promise<{
-    totalInteractions: number;
-    searchQueries: string[];
-    mostViewedDocuments: { id: string; views: number }[];
+  async getActivitySummary(): Promise<{ totalInteractions: number;, searchQueries: string[];
+    mostViewedDocuments: { id: string;, views: number }[];
     activityByHour: number[];
   }> {
     const interactions = await this.getUserInteractions(undefined, 1000);
@@ -251,7 +245,7 @@ class IndexedDBService {
       totalInteractions: interactions.length,
       searchQueries: [...new Set(searchQueries)],
       mostViewedDocuments,
-      activityByHour: hourlyActivity,
+      activityByHour: hourlyActivity
     };
   }
 

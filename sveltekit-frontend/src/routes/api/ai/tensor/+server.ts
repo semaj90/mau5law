@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -33,7 +33,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       text,
       model = envModel,
       tags = [],
-      type = 'ocr',
+      type = 'ocr'
     } = body as { text: string; model?: string; tags?: string[]; type?: string };
     if (!text || typeof text !== 'string') return json({ error: 'Missing text' }, { status: 400 });
     // Node-safe base64 (avoid btoa which is not defined in Node)
@@ -42,7 +42,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     const cached = await cache.get<number[]>(key);
     if (cached) {
       // Mirror both fields for compatibility
-      return json({ tensor: cached, embedding: cached, cached: true, model, tags, type, backend: 'cache' });
+      return json({ tensor: cached, embedding: cached, cached: true, model, tags, type, backend: `cache` });
     }
     const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
     const vllmUrl = (process.env.VLLM_ENDPOINT || process.env.PUBLIC_VLLM_ENDPOINT || '').replace(/\/$/, '');
@@ -58,8 +58,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       try {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ text, model, tags }),
+          headers: { 'content-type': `application/json` },
+          body: JSON.stringify({ text, model, tags })
         });
         if (resp.ok) {
           const data = (await resp.json()) as { embedding: number[] };
@@ -75,8 +75,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       try {
         const vResp = await fetch(`${vllmUrl}/embeddings`, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ model, input: text }),
+          headers: { 'content-type': `application/json` },
+          body: JSON.stringify({ model, input: text })
         });
         if (vResp.ok) {
           const vJson = await vResp.json();
@@ -98,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const oResp = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ model, prompt: text }),
+        body: JSON.stringify({ model, prompt: text })
       });
       if (oResp.ok) {
         const oJson = await oResp.json();
@@ -117,12 +117,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         operation: 'vectorize',
         documentId: key,
         data: [] as number[],
-        options: { timeout: 5000 },
+        options: { timeout: 5000 }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(goReq),
+        body: JSON.stringify(goReq)
       });
       if (goResp.ok) {
         const goJson = await goResp.json();
@@ -140,7 +140,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       { status: 502 }
     );
   } catch (e: any) {
-    return json({ error: e?.message || 'Tensor error' }, { status: 500 });
+    return json({ error: e?.message || 'Tensor error` }, { status: 500 });
   }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

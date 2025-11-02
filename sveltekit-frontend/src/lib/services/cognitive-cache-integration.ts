@@ -6,18 +6,12 @@
 import { writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 // Thread synchronization primitives
-interface ThreadSafeCache {
-  mutex: AsyncMutex;
-  data: Map<string, any>;
+interface ThreadSafeCache { mutex: AsyncMutex;, data: Map<string, any>;
   jsonbIndex: Map<string, JsonbDocument>;
   gpuAccelerated: boolean;
 }
-interface JsonbDocument {
-  id: string;
-  content: any; // Changed from any
-  metadata: {
-    lastModified: number;
-    accessCount: number;
+interface JsonbDocument { id: string;, content: any; // Changed from any
+  metadata: { lastModified: number;, accessCount: number;
     gpuProcessed: boolean;
     threadId?: string;
     [key: string]: any; // Allow additional metadata properties
@@ -53,11 +47,9 @@ const internalCache: ThreadSafeCache = {
   mutex: new AsyncMutex(),
   data: new Map(),
   jsonbIndex: new Map(),
-  gpuAccelerated: browser && 'gpu' in navigator,
+  gpuAccelerated: browser && 'gpu' in navigator
 };
-interface CacheStoreState {
-  totalEntries: number;
-  gpuAccelerated: boolean;
+interface CacheStoreState { totalEntries: number;, gpuAccelerated: boolean;
   threadSafe: boolean;
   lastOperation: string;
 }
@@ -67,7 +59,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
   totalEntries: 0,
   gpuAccelerated: internalCache.gpuAccelerated,
   threadSafe: true,
-  lastOperation: 'initialized',
+  lastOperation: 'initialized'
 });
 /**
  * Thread-safe JSONB document storage with GPU acceleration
@@ -116,8 +108,8 @@ export const cacheStore: Writable<CacheStoreState> = writable({
           accessCount: 0,
           gpuProcessed: false,
           threadId: this.getCurrentThreadId(),
-          ...metadata,
-        },
+          ...metadata
+        }
       };
       // Store in both caches for fast access
       internalCache.data.set(id, document);
@@ -130,8 +122,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: internalCache.data.size,
-        lastOperation: `store:${id}`,
-      }));
+        lastOperation: `store:${id}` }));
       return true;
     } catch (error) {
       console.error('Failed to store JSONB document:', error);
@@ -200,7 +191,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       const buffer = this.gpuContext.createBuffer({
         size: data.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
       // Copy data to GPU
       new Uint8Array(buffer.getMappedRange()).set(data);
@@ -296,17 +287,14 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: 0,
-        lastOperation: 'cleared',
-      }));
+        lastOperation: 'cleared` }));
     } finally {
       release();
     }
   }
   /**
    * Get cache statistics
-   */ getCacheStats(): {
-    totalEntries: number;
-    gpuProcessedCount: number;
+   */ getCacheStats(): { totalEntries: number;, gpuProcessedCount: number;
     averageAccessCount: number;
     threadSafe: boolean;
   } {
@@ -317,7 +305,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       totalEntries: docs.length,
       gpuProcessedCount,
       averageAccessCount: docs.length > 0 ? totalAccess / docs.length : 0,
-      threadSafe: true,
+      threadSafe: true
     };
   }
 }
@@ -325,19 +313,19 @@ export const cacheStore: Writable<CacheStoreState> = writable({
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Compatibility layer for existing API expectations
 export const cognitiveCacheManager = {
-  async get(request: { key: string; type: string }, context?: any): Promise<unknown | null> {
+  async get(request: {, key: string; type: string }, context?: any): Promise<unknown | null> {
     // Changed from any
     const doc = internalCache.jsonbIndex.get(request.key);
     if (doc) {
       return {
         data: doc.content,
-        confidence: doc.metadata.accessCount > 0 ? 0.9 : 0.5,
+        confidence: doc.metadata.accessCount > 0 ? 0.9 : 0.5
       };
     }
     return null;
   },
   async set(
-    request: { key: string; type: string; context?: any }, // Changed from any
+    request: {, key: string; type: string; context?: any }, // Changed from any
     data: any, // Changed from any
     options?: { distributeAcrossCaches?: boolean },
     cognitiveValue?: number
@@ -348,8 +336,8 @@ export const cognitiveCacheManager = {
       metadata: {
         lastModified: Date.now(),
         accessCount: 0,
-        gpuProcessed: false,
-      },
+        gpuProcessed: false
+      }
     };
     internalCache.jsonbIndex.set(request.key, jsonbDoc);
     return true;
@@ -358,16 +346,16 @@ export const cognitiveCacheManager = {
     return {
       totalEntries: internalCache.jsonbIndex.size,
       gpuAccelerated: internalCache.gpuAccelerated,
-      memoryUsage: 0,
+      memoryUsage: 0
     };
   },
   async getStatistics() {
     return {
       totalEntries: internalCache.jsonbIndex.size,
       gpuAccelerated: internalCache.gpuAccelerated,
-      memoryUsage: 0,
+      memoryUsage: 0
     };
-  },
+  }
 };
 // Export utility functions
 export async function storeJsonbDocument(
@@ -383,8 +371,8 @@ export async function storeJsonbDocument(
       lastModified: Date.now(),
       accessCount: 0,
       gpuProcessed: false,
-      ...metadata,
-    },
+      ...metadata
+    }
   };
   internalCache.jsonbIndex.set(id, jsonbDoc);
   return true;
@@ -401,13 +389,9 @@ export async function queryJsonb(
   return Array.from(internalCache.jsonbIndex.values());
 }
 // Legal AI specific utilities
-export interface LegalDocument {
-  caseId: string;
-  title: string;
+export interface LegalDocument { caseId: string;, title: string;
   content: string;
-  metadata: {
-    court: string;
-    date: string;
+  metadata: { court: string;, date: string;
     parties: Array<any>;
     classification: string[];
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -420,7 +404,7 @@ export interface LegalDocument {
   return await storeJsonbDocument(document.caseId, document, {
     documentType: 'legal',
     indexed: true,
-    searchable: true,
+    searchable: true
   });
 }
 /**

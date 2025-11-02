@@ -4,7 +4,7 @@ import type { Case } from '$lib/types';
 	import { browser } from '$app/environment';
 	import { derived, writable } from 'svelte/store';
 	import * as unified from '$lib/stores/unified';
-  import LoginButton from '$lib/components/auth/LoginButton.svelte'; // Changed to default import
+  import LoginButton from '$lib/components/auth/LoginButton.svelte';
   import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)
@@ -363,7 +363,7 @@ import type { Case } from '$lib/types';
           </div>
 
           <div
-            class="nes-container" is-dark worker-card-custom {workerDetails.embedding.healthy
+            class="nes-container is-dark worker-card-custom {workerDetails.embedding.healthy
               ? 'is-success'
               : 'is-error'}"
           >

@@ -4,9 +4,7 @@ import type { User } from '$lib/types';
  * Authentication-aware citation saving and importing system
  * Compatible with SvelteKit and gaming aesthetic UI
  */
-export interface Citation {
-  id: string;
-  title: string;
+export interface Citation { id: string;, title: string;
   citation: string;
   court: string;
   year: string;
@@ -21,15 +19,11 @@ export interface Citation {
   notes?: string;
   userId?: string;
 }
-export interface SavedCitation extends Citation {
-  savedAt: Date;
-  userId: string;
+export interface SavedCitation extends Citation { savedAt: Date;, userId: string;
   collection?: string;
   isPrivate: boolean;
 }
-export interface CitationCollection {
-  id: string;
-  name: string;
+export interface CitationCollection { id: string;, name: string;
   description?: string;
   citations: string[]; // Citation IDs,
   userId: string;
@@ -37,16 +31,12 @@ export interface CitationCollection {
   updatedAt: Date;
   isShared: boolean;
 }
-export interface AuthUser {
-  id: string;
-  email: string;
+export interface AuthUser { id: string;, email: string;
   name: string;
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
   isAuthenticated: boolean;
 }
-export interface CitationImportOptions {
-  format: 'bluebook' | 'apa' | 'mla' | 'custom';
-  includeKeyPoints: boolean;
+export interface CitationImportOptions { format: 'bluebook' | 'apa' | 'mla' | 'custom';, includeKeyPoints: boolean;
   includeSummary: boolean;
   includeNotes: boolean;
 }
@@ -90,7 +80,7 @@ export class CitationsManager {
         savedAt: new Date(),
         userId: this.currentUser!.id,
         collection,
-        isPrivate: true,
+        isPrivate: true
       };
       const savedCitations = this.getSavedCitations();
       const existingIndex = savedCitations.findIndex(c => c.id === citation.id);
@@ -120,7 +110,7 @@ export class CitationsManager {
         .filter((c: SavedCitation) => c.userId === this.currentUser!.id)
         .map((c: SavedCitation) => ({
           ...c,
-          savedAt: new Date(c.savedAt),
+          savedAt: new Date(c.savedAt)
         }));
     } catch (error) {
       console.error('Failed to load saved citations:', error);
@@ -157,7 +147,7 @@ export class CitationsManager {
       userId: this.currentUser!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isShared: false,
+      isShared: false
     };
     const collections = this.getCollections();
     collections.push(collection);
@@ -175,7 +165,7 @@ export class CitationsManager {
         .map((c: CitationCollection) => ({
           ...c,
           createdAt: new Date(c.createdAt),
-          updatedAt: new Date(c.updatedAt),
+          updatedAt: new Date(c.updatedAt)
         }));
     } catch (error) {
       console.error('Failed to load collections:', error);
@@ -403,6 +393,6 @@ export const useCitationsManager = () => {
     searchCitations: citationsManager.searchSavedCitations.bind(citationsManager),
     createCollection: citationsManager.createCollection.bind(citationsManager),
     getCollections: citationsManager.getCollections.bind(citationsManager),
-    exportCitations: citationsManager.exportCitations.bind(citationsManager),
+    exportCitations: citationsManager.exportCitations.bind(citationsManager)
   };
 }

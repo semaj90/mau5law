@@ -210,9 +210,7 @@ class NodeSIMDJSONService {
   /**
    * Get performance statistics
    */
-  getPerformanceStats(): {
-    averageParseTime: number;
-    averageStringifyTime: number;
+  getPerformanceStats(): { averageParseTime: number;, averageStringifyTime: number;
     totalOperations: number;
     optimizationLevel: string;
     speedupFactor: number;
@@ -294,8 +292,7 @@ class NodeSIMDJSONService {
       console.log(`🚀 JSON Benchmark (${iterations} iterations):`, {
         standard: `${standardTime.toFixed(2)}ms`,
         optimized: `${optimizedTime.toFixed(2)}ms`,
-        speedup: `${speedup.toFixed(2)}x faster`
-      });
+        speedup: `${speedup.toFixed(2)}x faster` });
     }
     return { standardTime, optimizedTime, speedup }
   }
@@ -303,13 +300,9 @@ class NodeSIMDJSONService {
 // Export singleton instance
 export const nodeSIMDJSON = new NodeSIMDJSONService();
 // Export types
-export interface LegalDocumentJSON {
-  id: string;
-  title: string;
+export interface LegalDocumentJSON { id: string;, title: string;
   content: string;
-  metadata: {
-    document_type: string;
-  jurisdiction: string;
+  metadata: { document_type: string;, jurisdiction: string;
   confidence: number;
     [key: string]: any;
   }

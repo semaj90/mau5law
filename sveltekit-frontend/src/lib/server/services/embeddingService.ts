@@ -62,7 +62,7 @@ function extractEmbedding(payload: any): number[] | null {
   // direct shape: { embedding: [...] }
   if (isEmbeddingObject(payload)) return payload.embedding;
 
-  // shape: { data: { embedding: [...] } } or { data: [ { embedding: [...] } ] }
+  // shape: { data: {, embedding: [...] } } or { data: [ {, embedding: [...] } ] }
   if (typeof payload === 'object' && payload !== null) {
     const obj = payload as Record<string, unknown>;
     if ('data' in obj) {

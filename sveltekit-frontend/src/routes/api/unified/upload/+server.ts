@@ -54,29 +54,27 @@ export const POST: RequestHandler = async ({ request }) => {
           embeddingId: result.embeddingId,
           cached: result.cached,
           size: file.size,
-          type: file.type,
+          type: file.type
         });
       } catch (fileError) {
-        console.error(`Error processing file ${file.name}:`, fileError)
+        console.error(`Error processing file ${file.name}: ', fileError)
         results.push({
           fileName: file.name,
-          error: fileError instanceof Error ? fileError.message: 'Unknown error'
-        })
+          error: fileError instanceof Error ? fileError.message: 'Unknown error' })
       }
     }
     return json({
       success: true,
       results,
       processed: results.filter(item => !item.error),
-      failed: results.filter(item => item.error),
+      failed: results.filter(item => item.error)
     });
   } catch (error) {
     console.error('Unified upload error:', error)
     return json(
       {
         error: 'Upload failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

@@ -11,9 +11,7 @@ import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 import type { LegalCitation } from './legal-citations';
 import type { LegalNote } from './enhanced-saved-notes';
 // Report Types and Interfaces
-export interface LegalReport {
-  id: string;
-  type: 'case_summary' | 'legal_brief' | 'motion' | 'discovery_response' | 'settlement_demand' |
+export interface LegalReport { id: string;, type: 'case_summary' | 'legal_brief' | 'motion' | 'discovery_response' | 'settlement_demand' |
         'legal_memo' | 'court_filing' | 'evidence_summary' | 'expert_report' | 'investigation_report' |
         'compliance_report' | 'risk_assessment' | 'due_diligence' | 'custom';
   // Core Information
@@ -78,9 +76,7 @@ export interface LegalReport {
   confidentiality: 'public' | 'confidential' | 'privileged' | 'work_product';
   accessLevel: 'open' | 'restricted' | 'confidential';
 }
-export interface ReportSection {
-  id: string;
-  title: string;
+export interface ReportSection { id: string;, title: string;
   order: number;
   type: 'text' | 'table' | 'list' | 'citations' | 'evidence' | 'chart' | 'signature_block';
   content: string;
@@ -106,18 +102,14 @@ export interface ReportComment {
   createdAt: Date;
   parentCommentId?: string; // For threaded comments
 }
-export interface GenerationEntry {
-  timestamp: Date;
-  version: number;
+export interface GenerationEntry { timestamp: Date;, version: number;
   model: string;
   prompt: string;
   generationType: 'full' | 'section' | 'revision';
   changes: string[];
   generatedBy: string;
 }
-export interface ReportTemplate {
-  id: string;
-  name: string;
+export interface ReportTemplate { id: string;, name: string;
   description: string;
   type: string;
   jurisdiction: string;
@@ -130,9 +122,7 @@ export interface ReportTemplate {
   createdBy: string;
   createdAt: Date;
 }
-export interface TemplateSectionDefinition {
-  id: string;
-  title: string;
+export interface TemplateSectionDefinition { id: string;, title: string;
   order: number;
   type: 'text' | 'table' | 'list' | 'citations' | 'evidence' | 'chart' | 'signature_block';
   required: boolean;
@@ -140,17 +130,13 @@ export interface TemplateSectionDefinition {
   aiPrompt?: string;
   variables?: string[]; // Variable names used in this section
 }
-export interface TemplateVariable {
-  name: string;
-  type: 'text' | 'number' | 'date' | 'boolean' | 'list' | 'object';
+export interface TemplateVariable { name: string;, type: 'text' | 'number' | 'date' | 'boolean' | 'list' | 'object';
   required: boolean;
   defaultValue?: any;
   description: string;
   validation?: string; // Regex pattern for validation
 }
-export interface ReportFilters {
-  search: string;
-  type: string;
+export interface ReportFilters { search: string;, type: string;
   status: string;
   assignedTo: string;
   caseId: string;
@@ -159,9 +145,7 @@ export interface ReportFilters {
   dateRange?: [Date, Date];
   tags: string[];
 }
-export interface ReportStats {
-  total: number;
-  byType: Record<string, number>;
+export interface ReportStats { total: number;, byType: Record<string, number>;
   byStatus: Record<string, number>;
   byPriority: Record<string, number>;
   aiGenerated: number;
@@ -301,12 +285,12 @@ class LegalReportsManager {
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
     compressionEnabled: true,
-    enableMetrics: true,
+    enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 6,
     enableSIMD: true,
-    redisCache: true,
+    redisCache: true
   });
   static getInstance(): LegalReportsManager {
     if (!LegalReportsManager.instance) {
@@ -358,7 +342,7 @@ class LegalReportsManager {
         pdf: true,
         docx: true,
         html: true,
-        markdown: true,
+        markdown: true
       },
       tags: [],
       priority: 'medium',
@@ -384,11 +368,10 @@ class LegalReportsManager {
         timestamp: new Date(),
         version: 1,
         model: report.aiModel!,
-        prompt: `Generated full report using template: ${template.name}`,
+        prompt: `Generated full report using; template: ${template.name}`,
         generationType: 'full',
         changes: ['Initial report generation'],
-        generatedBy: 'ai-generator'
-      });
+        generatedBy: `ai-generator` });
       report.processingStatus = 'completed';
       report.lastGenerated = new Date();
       // Save report
@@ -581,7 +564,7 @@ class LegalReportsManager {
     }
     const response = await fetch('/api/reports/export', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         reportId,
         format,
@@ -738,19 +721,19 @@ class LegalReportsManager {
             name: 'case_name',
             type: 'text',
             required: true,
-            description: 'Name or title of the case',
+            description: 'Name or title of the case'
           },
           {
             name: 'legal_issues',
             type: 'text',
             required: true,
-            description: 'Primary legal issues involved',
+            description: 'Primary legal issues involved'
           },
           {
             name: 'client_name',
             type: 'text',
             required: false,
-            description: 'Client name',
+            description: 'Client name'
           }
         ],
         aiPrompts: {},
@@ -779,7 +762,7 @@ class LegalReportsManager {
             order: 2,
             type: 'text',
             required: true,
-            aiPrompt: 'Draft a clear and concise question presented for the legal issue: {{legal_question}}',
+            aiPrompt: 'Draft a clear and concise question presented for the legal; issue: {{legal_question}}'
           },
           {
             id: 'brief-answer',
@@ -787,7 +770,7 @@ class LegalReportsManager {
             order: 3,
             type: 'text',
             required: true,
-            aiPrompt: 'Provide a brief answer to the question: {{legal_question}}. Include conclusion and key reasoning.',
+            aiPrompt: 'Provide a brief answer to the; question: {{legal_question}}. Include conclusion and key reasoning.'
           },
           {
             id: 'discussion',
@@ -803,7 +786,7 @@ class LegalReportsManager {
             order: 5,
             type: 'text',
             required: true,
-            aiPrompt: 'Write a conclusion that summarizes the analysis and restates the answer to {{legal_question}}',
+            aiPrompt: 'Write a conclusion that summarizes the analysis and restates the answer to {{legal_question}}'
           }
         ],
         variables: [
@@ -811,26 +794,25 @@ class LegalReportsManager {
             name: 'recipient',
             type: 'text',
             required: true,
-            description: 'Memo recipient',
+            description: 'Memo recipient'
           },
           {
             name: 'author',
             type: 'text',
             required: true,
-            description: 'Memo author',
+            description: 'Memo author'
           },
           {
             name: 'legal_question',
             type: 'text',
             required: true,
-            description: 'Legal question to analyze',
+            description: 'Legal question to analyze'
           },
           {
             name: 'subject',
             type: 'text',
             required: true;
-            description: 'Subject line for memo'
-          }
+            description: `Subject line for memo` }
         ],
         aiPrompts: {},
         isPublic: true,
@@ -856,7 +838,7 @@ class LegalReportsManager {
       localStorage.removeItem(`${this.dbPrefix}${reportId}`);
     }
     try {
-      await fetch(`/api/reports/${reportId}`, { method: 'DELETE' });
+      await fetch(`/api/reports/${reportId}`, { method: `DELETE` });
     } catch (error) {
       console.warn('Failed to remove report from server:', error);
     }
@@ -867,7 +849,7 @@ export const reportsManager = LegalReportsManager.getInstance();
 // Convenience functions
 export async function generateReport(
   template: ReportTemplate;
-  variables: { [key: string]: any },
+ , variables: { [key: string]: any },
   options?: any
 ): Promise<LegalReport> {
   return reportsManager.generateReport(template, variables, options);

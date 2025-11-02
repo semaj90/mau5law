@@ -24,7 +24,7 @@ export function initializeObservability() {
     metricsEndpoint: '/api/v1/observability/client',
     batchSize: 5, // Smaller batch for development visibility
     flushInterval: 15000, // 15 seconds for development
-    debugMode: window.location.hostname === 'localhost' || window.location.search.includes('debug-observability'),
+    debugMode: window.location.hostname === 'localhost' || window.location.search.includes('debug-observability')
   });
   // Track initial page load
   if (typeof document !== 'undefined' && document.readyState === 'loading') {
@@ -107,7 +107,7 @@ function setupPerformanceMonitoring() {
             console.warn(`⚡ Long task detected: ${Math.round(entry.duration)}ms`, {
               name: entry.name,
               startTime: entry.startTime,
-              duration: entry.duration,
+              duration: entry.duration
             });
           }
         }
@@ -132,8 +132,7 @@ function setupPerformanceMonitoring() {
             size:
               typeof r.transferSize === 'number' && r.transferSize > 0
                 ? `${Math.round(r.transferSize / 1024)}KB`
-                : 'unknown',
-          }))
+                : 'unknown` }))
         );
       }
     }, 2000);
@@ -203,7 +202,7 @@ export function getObservabilityStatus() {
     browser: true,
     currentRoute: currentRouteId,
     capabilities: observabilityClient.getCapabilities(),
-    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null,
+    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
   };
 }
 // Auto-initialize if in browser

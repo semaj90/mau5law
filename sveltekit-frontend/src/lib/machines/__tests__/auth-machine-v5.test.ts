@@ -14,15 +14,11 @@ const authMachine = createMachine({
     retryCount: 0,
     performanceMetrics: undefined
   },
-  states: {
-    idle: {
-      on: {
+  states: { idle: {, on: {
         LOGIN: 'authenticating'
       }
     },
-    authenticating: {
-      invoke: {
-        src: fromPromise(async ({ input }) => {
+    authenticating: {, invoke: {, src: fromPromise(async ({ input }) => {
           // Performance measurement for gRPC migration baseline
           const startTime = performance.now();
           const result = await mockServices.validateCredentials(input.credentials);
@@ -35,9 +31,8 @@ const authMachine = createMachine({
           actions: assign({
             user: ({ event }) => event.output,
             authToken: ({ event }) => event.output.token,
-            error: undefined
-            retryCount: 0,
-            performanceMetrics: ({ event }) => event.output.performanceMetrics,
+            error: undefined; retryCount: 0,
+            performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
         onError: {
@@ -54,18 +49,14 @@ const authMachine = createMachine({
         }
       }
     },
-    authenticated: {
-      on: {
-        LOGOUT: 'idle',
+    authenticated: { on: {, LOGOUT: 'idle',
         TOKEN_EXPIRED: 'refreshingToken'
       },
       after: {
         3600000: 'refreshingToken' // Auto-refresh after 1 hour
       }
     },
-    refreshingToken: {
-      invoke: {
-        src: fromPromise(async () => {
+    refreshingToken: { invoke: {, src: fromPromise(async () => {
           const startTime = performance.now();
           const result = await mockServices.refreshAuthToken();
           const duration = performance.now() - startTime;
@@ -88,15 +79,12 @@ const authMachine = createMachine({
                 ? String((err as Error).message)
                 : String(err || 'Unknown error');
             },
-            user: undefined
-            authToken: undefined
+            user: undefined; authToken: undefined
           })
         }
       }
     },
-    error: {
-      on: {
-        LOGIN: {
+    error: { on: {, LOGIN: {
           target: 'authenticating',
           guard: ({ context }) => context.retryCount < 3
         }
@@ -121,7 +109,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Send login event
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'password' }
+        credentials: {, email: 'test@example.com', password: 'password' }
       });
       // Wait for async completion
   await new Promise(resolve => setTimeout(resolve, 100));
@@ -150,13 +138,13 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         const startTime = performance.now();
         authActor.send({
           type: 'LOGIN',
-          credentials: { email: `test${i}@example.com`, password: 'password' }
+          credentials: {, email: `test${i}@example.com`, password: 'password` }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
         const duration = performance.now() - startTime;
         measurements.push(duration);
         // Reset for next iteration
-        authActor.send({ type: 'LOGOUT' });
+        authActor.send({ type: `LOGOUT` });
         await new Promise(resolve => setTimeout(resolve, 50);
       }
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
@@ -181,7 +169,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // First attempt - should fail
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'wrong' }
+        credentials: {, email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as any).value).toBe('error');
@@ -189,7 +177,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Second attempt - should fail
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'wrong' }
+        credentials: {, email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as any).value).toBe('error');
@@ -197,7 +185,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Third attempt - should succeed
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'correct' }
+        credentials: {, email: 'test@example.com', password: 'correct' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as any).value).toBe('authenticated');
@@ -212,7 +200,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Initial login
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'password' }
+        credentials: {, email: 'test@example.com', password: 'password' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as any).value).toBe('authenticated');
@@ -234,7 +222,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Login first
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'password' }
+        credentials: {, email: 'test@example.com', password: 'password' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate token refresh failure
@@ -270,7 +258,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       authActor.start();
       authActor.send({
         type: 'LOGIN',
-        credentials: { email: 'test@example.com', password: 'password' }
+        credentials: {, email: 'test@example.com', password: 'password` }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(sessionMachineHandler).toHaveBeenCalledWith('USER_AUTHENTICATED',
@@ -283,8 +271,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('ENABLE_COLLABORATION',
         expect.objectContaining({
           userId: 'test-123',
-          role: 'attorney'
-        })
+          role: `attorney` })
       );      authActor.stop();
     });
   });
@@ -294,7 +281,7 @@ describe('Phase 5-7 Performance Benchmarks', () => {
   it('should establish HTTP baseline for gRPC comparison', () => {
     const stats = perf.getStats('xstate-v5-login-success');
     if (stats) {
-      console.log('\n📊 Authentication Performance Stats (HTTP Baseline):');
+      console.log('\n📊 Authentication Performance Stats (HTTP Baseline): `);
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

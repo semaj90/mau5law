@@ -20,22 +20,22 @@ const DetectiveAnalysisSchema = z.object({
     .object({
       includeAI: z.boolean().default(true),
       confidenceThreshold: z.number().min(0).max(1).default(0.6),
-      maxResults: z.number().min(1).max(100).default(20),
+      maxResults: z.number().min(1).max(100).default(20)
     })
-    .optional(),
+    .optional()
 });
 // renamed to $... to mark intentionally unused (satisfies allowed-unused-vars rule)
 const $PatternDetectionSchema = z.object({
   caseId: cuidSchema,
   evidenceIds: z.array(cuidSchema).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial'])).optional(),
-  sensitivity: z.number().min(0).max(1).default(0.7),
+  sensitivity: z.number().min(0).max(1).default(0.7)
 });
 const $ConnectionMappingSchema = z.object({
   caseId: cuidSchema,
   entityTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
-  maxDepth: z.number().min(1).max(5).default(3),
+  maxDepth: z.number().min(1).max(5).default(3)
 });
 // Configuration for AI services (kept for future use; prefixed with $ to avoid unused var error)
 const $OLLAMA_BASE_URL = 'http://localhost:11434';
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Detective mode not enabled for this case',
-          code: 'DETECTIVE_MODE_DISABLED',
+          code: 'DETECTIVE_MODE_DISABLED'
         })
       );
     }
@@ -82,12 +82,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: {
         ...caseData.metadata,
         lastDetectiveAnalysis: {
-          timestamp: new Date().toISOString(),
+         , timestamp: new Date().toISOString(),
           type: analysisType,
           depth,
-          analyzedBy: getUserId(locals),
-        },
-      },
+          analyzedBy: getUserId(locals)
+        }
+      }
     });
     return json({
       success: true,
@@ -97,16 +97,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         depth,
         result: analysisResult,
         metadata: {
-          evidenceCount: evidence.length,
+         , evidenceCount: evidence.length,
           analysisTime: new Date().toISOString(),
-          confidence: analysisResult.overallConfidence,
-        },
+          confidence: analysisResult.overallConfidence
+        }
       },
       meta: {
         userId: getUserId(locals),
         timestamp: new Date().toISOString(),
-        action: 'detective_analysis_completed',
-      },
+        action: 'detective_analysis_completed'
+      }
     });
   } catch (err: any) {
     console.error('Error in detective analysis:', err);
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid analysis request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to perform detective analysis',
         code: 'ANALYSIS_FAILED',
-        details: message,
+        details: message
       })
     );
   }
@@ -154,21 +154,21 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Verify case exists and user has access
     const caseData = await casesService.getById(validatedCaseId);
     if (!caseData) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     // Generate insights based on case data and previous analyses
     const insights = await generateCaseInsights(caseData, getUserId(locals));
     return json({
       success: true,
       data: {
-        caseId: validatedCaseId,
+       , caseId: validatedCaseId,
         insights,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       },
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error getting detective insights:', err);
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to get insights',
         code: 'INSIGHTS_FAILED',
-        details: message,
+        details: message
       })
     );
   }
@@ -204,7 +204,7 @@ function getUserId(locals: ServiceLocals): string {
   // prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
   if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
   if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
-  // last resort: stringified user object or: 'unknown'
+  // last resort: stringified user object; or: 'unknown'
   try {
     if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
   } catch (err) {
@@ -232,7 +232,7 @@ async function performDetectiveAnalysis(
     anomalies: [],
     timeline: [],
     recommendations: [],
-    alerts: [],
+    alerts: []
   };
 
   try {
@@ -296,7 +296,7 @@ async function performDetectiveAnalysis(
     return {
       ...analysis,
       error: 'Analysis failed',
-      details: err instanceof Error ? err.message : String(err ?? 'Unknown error'),
+      details: err instanceof Error ? err.message : String(err ?? 'Unknown error')
     } as DetectiveAnalysis;
   }
 }
@@ -319,8 +319,7 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
       timestamp,
       type,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: `Evidence item: ${title ?? id ?? 'unknown'}`,
-    };
+      description: 'Evidence; item: ${title ?? id ?? 'unknown` }' };
   });
 
   const patterns: TimelinePattern[] = [
@@ -328,7 +327,7 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
       type: 'temporal_clustering',
       confidence: 0.82,
       description: 'Evidence clustered around specific time periods',
-      timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20'],
+      timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20']
     },
   ];
 
@@ -344,38 +343,28 @@ type Connection = {
   evidence: string[]; // short notes about why connected
 };
 
-type Finding = {
-  type: string;
-  confidence: number;
+type Finding = { type: string;, confidence: number;
   description: string;
   items: (string | undefined)[];
 };
 
-type ConnectionAnalysis = {
-  connections: Connection[];
-  findings: Finding[];
+type ConnectionAnalysis = { connections: Connection[];, findings: Finding[];
 };
 
-type Pattern = {
-  type: string;
-  confidence: number;
+type Pattern = { type: string;, confidence: number;
   description: string;
   occurrences?: number;
   significance?: 'low' | 'medium' | 'high' | string;
   coordinates?: string[];
 };
 
-type Anomaly = {
-  type: string;
-  confidence: number;
+type Anomaly = { type: string;, confidence: number;
   description: string;
   details?: string;
   severity?: 'low' | 'medium' | 'high' | string;
 };
 
-type PatternAnalysis = {
-  patterns: Pattern[];
-  anomalies: Anomaly[];
+type PatternAnalysis = { patterns: Pattern[];, anomalies: Anomaly[];
 };
 /*
  * Analyze connections between evidence items
@@ -389,15 +378,15 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
     const target = items[(index + 1) % Math.max(1, items.length)];
     const targetId = target?.id;
     return {
-      id: `${sourceId ?? 's'}->${targetId ?? 't'}`,
+      id: '${sourceId ?? 's'}->${targetId ?? 't` }`,
       sourceId,
       targetId,
       connectionType: 'related',
       strength: Number((Math.random() * 0.4 + 0.6).toFixed(3)),
       evidence: [
         item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type: any',
-        item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp: any',
-      ],
+        item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp: any'
+      ]
     } as Connection;
   });
 
@@ -406,7 +395,7 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
       type: 'strong_connection',
       confidence: 0.89,
       description: 'Multiple evidence items share common characteristics',
-      items: items.slice(0, 2).map(i => i?.id),
+      items: items.slice(0, 2).map(i => i?.id)
     },
   ];
 
@@ -424,16 +413,16 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
     {
       type: 'behavioral',
       confidence: 0.76,
-      description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : ''}`,
+      description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : `` }`,
       occurrences: Math.max(1, Math.floor(count / 2)),
-      significance: 'high',
+      significance: 'high'
     },
     {
       type: 'location',
       confidence: 0.84,
       description: 'Geographic clustering of evidence locations',
       coordinates: count > 1 ? ['40.7128,-74.0060', '40.7589,-73.9851'] : [],
-      significance: 'medium',
+      significance: 'medium'
     },
   ];
 
@@ -442,9 +431,8 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
       type: 'timing_anomaly',
       confidence: 0.91,
       description: 'Unusual timing pattern detected',
-      details: `Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none'}`,
-      severity: count > 5 ? 'high' : 'medium',
-    },
+      details: 'Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none` }`,
+      severity: count > 5 ? 'high' : `medium` },
   ];
 
   return { patterns, anomalies };
@@ -461,12 +449,8 @@ type CaseRecord = {
   [key: string]: any;
 };
 
-type CaseInsights = {
-  summary: string;
-  keyFindings: string[];
-  riskAssessment: {
-    level: 'low' | 'medium' | 'high';
-    factors: string[];
+type CaseInsights = { summary: string;, keyFindings: string[];
+  riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
     score: number;
   };
   nextSteps: string[];
@@ -488,7 +472,7 @@ async function generateCaseInsights(caseData: CaseRecord, _userId: string): Prom
     riskAssessment: {
       level: 'medium',
       factors: ['Evidence quality', 'Timeline consistency', 'Connection strength'],
-      score: 0.73,
+      score: 0.73
     },
     nextSteps: [
       'Investigate temporal clustering patterns more deeply',
@@ -496,7 +480,7 @@ async function generateCaseInsights(caseData: CaseRecord, _userId: string): Prom
       'Interview persons of interest identified in connection analysis',
     ],
     confidence: 0.78,
-    lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp ?? null,
+    lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp ?? null
   };
 }
 /*
@@ -546,22 +530,16 @@ type TimelineEvent = {
   description: string;
 };
 
-type TimelinePattern = {
-  type: string;
-  confidence: number;
+type TimelinePattern = { type: string;, confidence: number;
   description: string;
   timeRanges?: string[];
 };
 
-type TimelineAnalysis = {
-  events: TimelineEvent[];
-  patterns: TimelinePattern[];
+type TimelineAnalysis = { events: TimelineEvent[];, patterns: TimelinePattern[];
 };
 
 // --- NEW: strongly-typed detective analysis result to avoid `any` usage ---
-type DetectiveAnalysis = {
-  overallConfidence: number;
-  findings: any[];
+type DetectiveAnalysis = { overallConfidence: number;, findings: any[];
   patterns: any[];
   connections: any[];
   anomalies: any[];

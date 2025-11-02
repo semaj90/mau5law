@@ -8,16 +8,16 @@ export const mockDataGenerators = {
       id: `mock_doc_${Date.now()}_${i}`,
       title: `Mock Document ${i + 1}`,
       content: 'This is mock content.',
-      embedding: Array.from({ length: EMB_DIM }, () => Math.random()),
+      embedding: Array.from({ length: EMB_DIM }, () => Math.random())
     }));
-  },
+  }
 };
 
 export const databaseSync = {
   async syncMockLegalDocuments() {
     const docs = await mockDataGenerators.generateMockLegalDocuments(5);
     return { success: true, count: docs.length };
-  },
+  }
 };
 
 export default { mockDataGenerators, databaseSync };

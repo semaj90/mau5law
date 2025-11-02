@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -24,10 +24,7 @@ interface EmbedRequest {
   model?: 'openai' | 'nomic' | 'mock'
   dimensions?: number
 }
-interface EmbedResponse {
-  embedding: number[]
-  model: string
-  dimensions: number
+interface EmbedResponse { embedding: number[], model: string; dimensions: number
   tokens?: number
 }
 // OpenAI embedding function
@@ -39,13 +36,11 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
+      'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
+     , model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
       input: text,
-      encoding_format: 'float',
-    })
+      encoding_format: `float` })
   })
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     const error = await (response as { ok?: any; json?: any; statusText?: any }).json()
@@ -66,10 +61,9 @@ async function getNomicEmbedding(text: string): Promise<any> {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${NOMIC_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
+      'Content-Type': `application/json` },
     body: JSON.stringify({
-      model: 'nomic-embed-text-v1.5',
+     , model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
       dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance
@@ -95,7 +89,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     if (text.length > 50000) {
       return json(
-        { error: 'Text too long. Maximum 50,000 characters allowed.' },)
+        { error: `Text too long. Maximum 50,000 characters allowed.` },)
         { status: 400 }
       )
     }
@@ -129,12 +123,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           embedding,
           model: 'mock-embeddings',
           dimensions: targetDim,
-          tokens: text.split(' ').length,
+          tokens: text.split(' ').length
         }
         break
       }
       default: return json(
-          { error: `Unsupported model: ${model}. Use: 'openai', 'nomic', or: 'mock'` },)
+          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: 'mock`' },)
           { status: 400 }
         )
     }
@@ -161,7 +155,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
     return json(
-      { error: 'Failed to generate embedding' },)>
+      { error: `Failed to generate embedding` },)>
       { status: 500 }
     )
   }

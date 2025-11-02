@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ params }) => {
         status: 'draft',
         createdAt: new Date(),
         updatedAt: new Date(),
-        wordCount: 150,
+        wordCount: 150
       });
     }
     // Get document
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ params }) => {
       ...(document as Record<string, unknown>),
       wordCount: (document as Record<string, unknown>)?.content
         ? String((document as Record<string, unknown>).content).split(/\s+/).length
-        : 0,
+        : 0
     };
     return json(documentWithWordCount);
   } catch (error: any) {
@@ -76,13 +76,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         id: documentId,
         ...data,
         updatedAt: new Date(),
-        wordCount: data?.content ? String(data.content).split(/\s+/).length : 0,
+        wordCount: data?.content ? String(data.content).split(/\s+/).length : 0
       });
     }
     // Calculate word count if content is provided
     const updateData: Record<string, unknown> = {
       ...data,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     if ((data as Record<string, unknown>).content) {
       updateData['wordCount'] = String((data as Record<string, unknown>).content).split(/\s+/).length;

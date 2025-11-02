@@ -46,15 +46,15 @@ const determinismEvaluationService = {
       accuracy: 0.95,
       responseTime: 250,
       determinismScore: 0.87,
-      consistency: 0.92,
+      consistency: 0.92
     };
   },
   async getBenchmarkResults() {
     return {
       benchmarks: [
         { name: 'Legal Analysis', score: 0.94, timestamp: new Date() },
-        { name: 'Case Similarity', score: 0.89, timestamp: new Date() },
-      ],
+        { name: 'Case Similarity', score: 0.89, timestamp: new Date() }
+      ]
     };
   },
   getDeterministicConfig() {
@@ -62,8 +62,7 @@ const determinismEvaluationService = {
       temperature: 0.1,
       maxTokens: 2048,
       seed: 12345,
-      model: 'gemma3-legal:latest',
-    };
+      model: 'gemma3-legal:latest` };
   },
   // simple in-memory stores so the `feedback`, `testResult`, `data` params are used
   _feedbackStore: [] as FeedbackPayload[],
@@ -86,10 +85,10 @@ const determinismEvaluationService = {
       features: {
         queryComplexity,
         contextRelevance,
-        responseCoherence,
-      },
+        responseCoherence
+      }
     };
-  },
+  }
 };
 // GET /api/evaluation - Get metrics and benchmarks
 export const GET: RequestHandler = async ({ url }) => {
@@ -112,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: {
         return json(
-          { success: false, error: "Invalid action. Use: metrics, benchmarks, or config" },
+          { success: false, error: "Invalid action.; Use: metrics, benchmarks, or config" },
           { status: 400 }
         )
       }
@@ -141,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
           response: payload.response,
           rating: payload.rating,
           feedback: payload.feedback,
-          metadata: payload.metadata,
+          metadata: payload.metadata
         });
         return json({ success: true, feedbackId, message: 'User feedback recorded successfully' });
       }
@@ -154,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
           score: payload.score,
           duration: payload.duration,
           details: payload.details,
-          agentInvolved: payload.agentInvolved,
+          agentInvolved: payload.agentInvolved
         });
         return json({ success: true, testId, message: 'Test result recorded successfully' });
       }
@@ -165,13 +164,13 @@ export const POST: RequestHandler = async ({ request }) => {
           context: payload.context,
           agentChain: payload.agentChain,
           responseTime: payload.responseTime,
-          userRating: payload.userRating,
+          userRating: payload.userRating
         });
         return json({ success: true, features });
       }
       default: {
         return json(
-          { success: false, error: 'Invalid action. Use: feedback, test_result, or rl_features' },
+          { success: false, error: 'Invalid action.; Use: feedback, test_result, or rl_features' },
           { status: 400 }
         );
       }
@@ -180,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const message = error instanceof Error ? error.message : String(error)
     console.error('Evaluation record error:', message);
     return json(
-      { success: false, error: message || 'Failed to record evaluation data' },
+      { success: false, error: message || 'Failed to record evaluation data` },
       { status: 500 }
     );
   }

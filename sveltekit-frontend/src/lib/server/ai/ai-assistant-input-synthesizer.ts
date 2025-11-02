@@ -37,11 +37,10 @@ const metrics = {
   conceptCoverage: 0.8,
   informationCompleteness: 0.8,
   responseReadiness: 0.8,
-  getAllMetrics: () => ({}),
+  getAllMetrics: () => ({})
 };
 // Simple stubs for missing dependencies
-const legalBERT = {
-  analyze: (_text: string) => Promise.resolve({ confidence: 0.8, categories: [], summary: '' }),
+const legalBERT = { analyze: (_text: string) => Promise.resolve({, confidence: 0.8, categories: [], summary: '' }),
   analyzeLegalText: (_text: string) =>
     Promise.resolve({
       confidence: 0.8,
@@ -49,21 +48,21 @@ const legalBERT = {
       summary: {
         abstractive: 'Generated summary',
         extractive: 'Key extracted content',
-        keyPoints: ['Key point 1', 'Key point 2'],
+        keyPoints: ['Key point 1', 'Key point 2']
       },
       entities: [],
       concepts: [],
-      complexity: { legalComplexity: 0.5 },
+      complexity: {, legalComplexity: 0.5 },
       legalConcepts: [],
       jurisdiction: 'general',
-      practiceAreas: [],
+      practiceAreas: []
     }),
   healthCheck: () => Promise.resolve({ status: 'healthy', uptime: 100 }),
   calculateLegalSimilarity: (_text1: string, _text2: string) =>
     Promise.resolve({
       similarity: 0.8,
-      confidence: 0.8,
-    }),
+      confidence: 0.8
+    })
 };
 
 // Add RAG document typing to narrowly describe expected fields
@@ -85,7 +84,7 @@ const enhancedLegalSearch = {
   async search(_query: string, _options: EnhancedSearchOptions): Promise<EnhancedSearchResult[]> {
     // Placeholder/no-op implementation; real implementation should call the legal search service
     return [];
-  },
+  }
 };
 // Utility function for timeout handling
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -96,26 +95,20 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T
 }
 
 // Add typed shapes for analysis results
-type AnalysisEntity = {
-  text: string;
-  type: string;
+type AnalysisEntity = { text: string;, type: string;
   confidence?: number;
 };
 
 type AnalysisConcept = { concept: string } | string;
 
 // New application-level types
-type Document = {
-  id: string;
-  title: string;
+type Document = { id: string;, title: string;
   content: string;
   type?: string;
   metadata?: Record<string, unknown>;
 };
 
-type ConversationMessage = {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+type ConversationMessage = { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;
 };
 
@@ -148,14 +141,10 @@ type SourceItem = {
   metadata?: Record<string, unknown>;
 };
 
-export interface SynthesizerAnalysisResult {
-  confidence: number;
-  categories: string[];
-  summary:
+export interface SynthesizerAnalysisResult { confidence: number;, categories: string[];
+  summary:;
     | string
-    | {
-        abstractive: string;
-        extractive: string;
+    | { abstractive: string;, extractive: string;
         keyPoints: string[];
       };
   entities?: AnalysisEntity[];
@@ -175,9 +164,7 @@ export interface RetrievalOptions {
 /**
  * Internal retrieval result structure used before further processing/ranking.
  */
-interface RetrievalResult {
-  sources: SourceItem[];
-  summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
+interface RetrievalResult { sources: SourceItem[];, summary: { abstractive: string; extractive: string[];, keyPoints: string[] };
   totalSources: number;
   searchStrategies: string[];
 }
@@ -209,44 +196,32 @@ export interface SynthesizerInput {
   };
 }
 // Synthesized output structure
-export interface SynthesizedOutput {
-  processedQuery: {
-    original: string;
+export interface SynthesizedOutput { processedQuery: {, original: string;
     enhanced: string;
     intent: string;
     entities: AnalysisEntity[];
     legalConcepts: string[];
     complexity: number;
   };
-  retrievedContext: {
-    sources: SourceItem[];
-    summary: {
-      abstractive: string;
-      extractive: string[];
+  retrievedContext: { sources: SourceItem[];, summary: { abstractive: string;, extractive: string[];
       keyPoints: string[];
     };
     totalSources: number;
     searchStrategies: string[];
   };
-  enhancedPrompt: {
-    systemPrompt: string;
-    contextPrompt: string;
+  enhancedPrompt: { systemPrompt: string;, contextPrompt: string;
     queryPrompt: string;
     instructions: string[];
     constraints: string[];
   };
-  metadata: {
-    processingTime: number;
-    confidence: number;
+  metadata: { processingTime: number;, confidence: number;
     strategies: string[];
     qualityScore: number;
     recommendations: string[];
   };
 }
 // Quality assessment metrics
-export interface QualityMetrics {
-  contextRelevance: number;
-  sourceAuthority: number;
+export interface QualityMetrics { contextRelevance: number;, sourceAuthority: number;
   conceptCoverage: number;
   informationCompleteness: number;
   responseReadiness: number;
@@ -375,7 +350,7 @@ export class AIAssistantInputSynthesizer {
         maxSources: 10,
         similarityThreshold: 0.7,
         diversityLambda: 0.5,
-        ...input.options,
+        ...input.options
       };
       // Step 1: Query Analysis and Enhancement
       const processedQuery = await this.analyzeAndEnhanceQuery(input.query, input.context);
@@ -397,8 +372,8 @@ export class AIAssistantInputSynthesizer {
           confidence: qualityMetrics.responseReadiness,
           strategies: this.getUsedStrategies(options),
           qualityScore: this.calculateOverallQuality(qualityMetrics),
-          recommendations: this.generateRecommendations(qualityMetrics),
-        },
+          recommendations: this.generateRecommendations(qualityMetrics)
+        }
       };
       // Log metrics
       metrics.incrementCounter('synthesizer_requests');
@@ -434,12 +409,12 @@ export class AIAssistantInputSynthesizer {
         entities: (legalAnalysis.entities ?? []).map((e: AnalysisEntity) => ({
           text: e.text,
           type: e.type,
-          confidence: e.confidence,
+          confidence: e.confidence
         })),
         legalConcepts: (legalAnalysis.legalConcepts ?? []).map((c: AnalysisConcept) =>
           typeof c === 'string' ? c : c.concept
         ),
-        complexity: legalAnalysis.complexity?.legalComplexity ?? 0.5,
+        complexity: legalAnalysis.complexity?.legalComplexity ?? 0.5
       };
     } catch (error: any) {
       logger.warn('[Synthesizer] Query analysis failed, returning basic structure', this.formatError(error));
@@ -449,7 +424,7 @@ export class AIAssistantInputSynthesizer {
         intent: 'general_legal_query',
         entities: [],
         legalConcepts: [],
-        complexity: 0.5,
+        complexity: 0.5
       };
     }
   }
@@ -469,14 +444,14 @@ export class AIAssistantInputSynthesizer {
       maxSources: 10,
       similarityThreshold: 0.7,
       enableMMR: true,
-      enableCrossEncoder: true,
+      enableCrossEncoder: true
     };
     const effectiveOptions = { ...defaults, ...options };
     const retrievalResults: RetrievalResult = {
       sources: [],
       summary: { abstractive: '', extractive: [], keyPoints: [] },
       totalSources: 0,
-      searchStrategies: [],
+      searchStrategies: []
     };
     try {
       // Strategy 1: RAG Pipeline Search
@@ -486,7 +461,7 @@ export class AIAssistantInputSynthesizer {
             query: processedQuery.enhanced,
             caseId: context?.caseId,
             limit: effectiveOptions.maxSources,
-            threshold: effectiveOptions.similarityThreshold,
+            threshold: effectiveOptions.similarityThreshold
           })) as RAGDocument[] | undefined;
           const safeRagResults = ragResults ?? [];
           for (const doc of safeRagResults) {
@@ -500,7 +475,7 @@ export class AIAssistantInputSynthesizer {
               diversityScore: 0.5,
               rerankedScore: 0.5,
               type: String(metadata.documentType ?? doc.type ?? 'document'),
-              metadata: metadata as Record<string, unknown>,
+              metadata: metadata as Record<string, unknown>
             });
           }
           if (safeRagResults.length > 0) {
@@ -515,7 +490,7 @@ export class AIAssistantInputSynthesizer {
       try {
         const legalSearchResults = await enhancedLegalSearch.search(processedQuery.enhanced, {
           maxResults: effectiveOptions.maxSources,
-          useAI: true,
+          useAI: true
         });
         for (const result of legalSearchResults) {
           const searchResult = result ?? {};
@@ -534,8 +509,8 @@ export class AIAssistantInputSynthesizer {
                 jurisdiction: searchResult.jurisdiction ?? undefined,
                 category: searchResult.category ?? undefined,
                 searchType: searchResult.searchType ?? undefined,
-                confidence: Number(searchResult.confidence ?? 0),
-              },
+                confidence: Number(searchResult.confidence ?? 0)
+              }
             });
           }
         }
@@ -562,7 +537,7 @@ export class AIAssistantInputSynthesizer {
               diversityScore: 0.5,
               rerankedScore: 0.9,
               type: doc.type ?? 'document',
-              metadata: { source: 'context_documents', ...doc.metadata },
+              metadata: {, source: 'context_documents', ...doc.metadata }
             });
           }
         }
@@ -591,7 +566,7 @@ export class AIAssistantInputSynthesizer {
         id: s.id || `temp-${Math.random()}`,
         text: s.content,
         relevanceScore: s.relevanceScore,
-        metadata: s.metadata,
+        metadata: s.metadata
       }));
 
       // Use serverRerank for the full pipeline including parallel vector search, MMR, and cross-encoder
@@ -600,14 +575,14 @@ export class AIAssistantInputSynthesizer {
           const rerankedCandidates = await serverRerank({
             query: processedQuery.enhanced,
             candidates: candidates,
-            options: { diversityLambda: options.diversityLambda },
+            options: {, diversityLambda: options.diversityLambda }
           });
 
           sources = rerankedCandidates.map(c => ({
             ...sources.find(s => s.id === c.id)!,
             relevanceScore: c.relevanceScore,
             diversityScore: c.diversityScore,
-            rerankedScore: c.rerankedScore,
+            rerankedScore: c.rerankedScore
           }));
           logger.debug('[Synthesizer] Applied server-side reranking (including parallel search, MMR, cross-encoder)');
         } catch (error: any) {
@@ -624,7 +599,7 @@ export class AIAssistantInputSynthesizer {
         sources: sources.slice(0, options.maxSources ?? 10),
         summary,
         totalSources: sources.length,
-        searchStrategies: retrievedContext.searchStrategies,
+        searchStrategies: retrievedContext.searchStrategies
       };
     } catch (error: any) {
       logger.error('[Synthesizer] Content processing failed:', this.formatError(error));
@@ -632,7 +607,7 @@ export class AIAssistantInputSynthesizer {
         sources: retrievedContext.sources,
         summary: retrievedContext.summary,
         totalSources: retrievedContext.totalSources,
-        searchStrategies: retrievedContext.searchStrategies,
+        searchStrategies: retrievedContext.searchStrategies
       };
     }
   }
@@ -655,7 +630,7 @@ export class AIAssistantInputSynthesizer {
         contextPrompt,
         queryPrompt,
         instructions,
-        constraints,
+        constraints
       };
     } catch (error: any) {
       logger.error('[Synthesizer] Prompt construction failed:', this.formatError(error));
@@ -664,7 +639,7 @@ export class AIAssistantInputSynthesizer {
         contextPrompt: 'No context available.',
         queryPrompt: processedQuery.original,
         instructions: ['Provide a helpful response.'],
-        constraints: ['Be accurate and professional.'],
+        constraints: ['Be accurate and professional.']
       };
     }
   }
@@ -687,7 +662,7 @@ export class AIAssistantInputSynthesizer {
         sourceAuthority,
         conceptCoverage,
         informationCompleteness,
-        responseReadiness,
+        responseReadiness
       };
     } catch (error: any) {
       logger.error('[Synthesizer] Quality assessment failed:', this.formatError(error));
@@ -696,14 +671,14 @@ export class AIAssistantInputSynthesizer {
         sourceAuthority: 0.5,
         conceptCoverage: 0.5,
         informationCompleteness: 0.5,
-        responseReadiness: 0.5,
+        responseReadiness: 0.5
       };
     }
   }
 
   // === HELPER METHODS (Consolidated and Deduplicated) ===
   private async verifyComponents(): Promise<void> {
-    const checks: Array<{ name: string; check: () => Promise<unknown> }> = [
+    const checks: Array<{ name: string;, check: () => Promise<unknown> }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy' }) },
@@ -714,7 +689,7 @@ export class AIAssistantInputSynthesizer {
           qdrant
             .api('collections')
             .health()
-            .then(() => ({ status: 'healthy' })),
+            .then(() => ({ status: `healthy` }))
       },
     ];
     for (const { name, check } of checks) {
@@ -785,7 +760,7 @@ export class AIAssistantInputSynthesizer {
   private async generateComprehensiveSummary(
     sources: SourceItem[],
     processedQuery: SynthesizedOutput['processedQuery']
-  ): Promise<{ abstractive: string; extractive: string[]; keyPoints: string[] }> {
+  ): Promise<{ abstractive: string; extractive: string[];, keyPoints: string[] }> {
     if (sources.length === 0) {
       return { abstractive: 'No relevant information found.', extractive: [], keyPoints: [] };
     }
@@ -824,7 +799,7 @@ export class AIAssistantInputSynthesizer {
     return {
       abstractive: abstractive.length > 150 ? abstractive : extractiveSummary,
       extractive: topSentences,
-      keyPoints,
+      keyPoints
     };
   }
 
@@ -886,7 +861,7 @@ export class AIAssistantInputSynthesizer {
 
   private assessSourceAuthority(retrievedContext: SynthesizedOutput['retrievedContext']): number {
     if (!retrievedContext?.sources?.length) return 0.0;
-    // heuristic: if titles contain: "Report" or: "Opinion" or: "Statute" bump authority
+    // heuristic: if titles contain: "Report" or: "Opinion"; or: "Statute" bump authority
     const score =
       retrievedContext.sources.reduce((acc, s) => {
         const t = (s.title ?? '').toLowerCase();

@@ -6,7 +6,7 @@ import { goto } from '$app/navigation';
 import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
 
 // New: typed response and result shapes to avoid `any` casts
-type ResponseLike<T = unknown> = { ok: boolean; json: () => Promise<T> };
+type ResponseLike<T = unknown> = { ok: boolean;, json: () => Promise<T> };
 type AuthApiResult = { user?: User; error?: string };
 
 // Added: explicit operation result for auth flows
@@ -35,8 +35,7 @@ const orchestratorAdapter = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ body, opts }),
-        credentials: 'include',
-      });
+        credentials: `include` });
       return { ok: true };
     } catch {
       return { ok: false };
@@ -48,16 +47,14 @@ const orchestratorAdapter = {
       return anyOrch.processLegalDocument(content, opts);
     }
     return this.makeRequest('/api/processing/process-legal-document', { content, opts });
-  },
+  }
 };
 
 // Declare the Svelte 5 $state rune for TS in this module (minimal, non-invasive)
 // Use `unknown` as the default generic instead of `any` to avoid implicit any lint errors.
 declare const $state: <T = unknown>(initial: T) => T;
 
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name?: string;
   firstName?: string;
   lastName?: string;
@@ -68,9 +65,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface AuthState {
-  user: User | null;
-  loading: boolean;
+export interface AuthState { user: User | null;, loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
 }
@@ -80,13 +75,13 @@ const authState = browser
       user: null,
       loading: false,
       error: null,
-      isAuthenticated: false,
+      isAuthenticated: false
     })
   : {
       user: null,
       loading: false,
       error: null,
-      isAuthenticated: false,
+      isAuthenticated: false
     };
 // Derived state functions for common auth checks
 export function isAdmin(): boolean {
@@ -116,7 +111,7 @@ export class AuthService {
     authState.error = null;
     try {
       const response = await fetch('/api/auth/me', {
-        credentials: 'include',
+        credentials: 'include'
       });
       const res = response as ResponseLike<AuthApiResult>;
       if (res.ok) {
@@ -152,17 +147,16 @@ export class AuthService {
         email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        ipInfo: await this.getClientInfo(),
+        ipInfo: await this.getClientInfo()
       };
       await orchestratorAdapter.makeRequest('/api/security/pre-login-analysis', securityContext, {
-        securityLevel: 'authentication',
+        securityLevel: 'authentication'
       });
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include',
-      });
+        credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;
       const result = await res.json();
       if (res.ok) {
@@ -175,7 +169,7 @@ export class AuthService {
           userId: result.user!.id,
           includeRAG: false,
           includeGraph: true,
-          generateSummary: false,
+          generateSummary: false
         });
         return { success: true, sessionId };
       } else {
@@ -197,11 +191,9 @@ export class AuthService {
     }
   }
   // Register new user
-  async register(userData: {
-    email: string;
-    password: string;
+  async register(userData: { email: string;, password: string;
     firstName: string;
-    lastName: string;
+   , lastName: string;
   }): Promise<AuthOperationResult> {
     authState.loading = true;
     authState.error = null;
@@ -210,17 +202,16 @@ export class AuthService {
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
       await orchestratorAdapter.makeRequest('/api/analytics/registration-attempt', registrationContext, {
-        analyticsLevel: 'registration',
+        analyticsLevel: 'registration'
       });
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-        credentials: 'include',
-      });
+        credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;
       const result = await res.json();
       if (res.ok) {
@@ -231,7 +222,7 @@ export class AuthService {
           userId: result.user!.id,
           includeRAG: false,
           includeGraph: true,
-          generateSummary: true,
+          generateSummary: true
         });
         return { success: true };
       } else {
@@ -260,7 +251,7 @@ export class AuthService {
           {
             userId: authState.user.id,
             timestamp: new Date().toISOString(),
-            sessionDuration: this.calculateSessionDuration(),
+            sessionDuration: this.calculateSessionDuration()
           },
           { userId: authState.user.id, analyticsLevel: 'session' }
         );
@@ -270,7 +261,7 @@ export class AuthService {
       // Perform logout request (no unused variable)
       await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include'
       });
       // Clear state regardless of response
       authState.user = null;
@@ -296,7 +287,7 @@ export class AuthService {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
-        credentials: 'include',
+        credentials: 'include'
       });
       const res = response as ResponseLike<AuthApiResult>;
       const result = await res.json();
@@ -307,9 +298,9 @@ export class AuthService {
           {
             userId: authState.user.id,
             changes: Object.keys(updates),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
-          { userId: authState.user.id, analyticsLevel: 'profile' }
+          { userId: authState.user.id, analyticsLevel: `profile` }
         );
         return { success: true };
       } else {
@@ -334,7 +325,7 @@ export class AuthService {
       prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
       investigator: ['view_cases', 'add_evidence', 'view_evidence'],
       analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
-      viewer: ['view_cases', 'view_evidence'],
+      viewer: ['view_cases', 'view_evidence']
     };
     const userPermissions = rolePermissions[authState.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('all') || userPermissions.includes(permission);
@@ -355,7 +346,7 @@ export class AuthService {
         screen: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
-        platform: navigator.platform,
+        platform: navigator.platform
       };
     } catch {
       return {};

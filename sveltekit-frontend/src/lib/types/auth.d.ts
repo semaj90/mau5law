@@ -14,9 +14,7 @@ declare module 'lucia' {
     secure?: boolean;
     path?: string;
   }
-  export interface SessionCookie {
-    name: string;
-    value: string;
+  export interface SessionCookie { name: string;, value: string;
     attributes: CookieAttributes & { path: string };
   }
   // Use interface instead of class to avoid duplicate identifier if Lucia is declared elsewhere.

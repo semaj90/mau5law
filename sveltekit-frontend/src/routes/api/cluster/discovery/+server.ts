@@ -7,29 +7,21 @@ import { json } from '@sveltejs/kit';
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient';
 
-interface ServiceInstance {
-  id: string;
-  name: string;
+interface ServiceInstance { id: string;, name: string;
   host: string;
   port: number;
   protocols: string[];
   status: 'healthy' | 'unhealthy' | 'unknown' | 'starting' | 'stopping';
-  health: {
-    score: number; // 0-100
-    latency: number;
+  health: { score: number; // 0-100, latency: number;
     uptime: number;
     lastCheck: string;
     consecutiveFailures: number;
   };
-  metadata: {
-    version: string;
-    capabilities: string[];
+  metadata: { version: string;, capabilities: string[];
     region?: string;
     weight: number;
   };
-  failover: {
-    primary: boolean;
-    backups: string[];
+  failover: { primary: boolean;, backups: string[];
     autoFailover: boolean;
     failoverThreshold: number;
   };
@@ -39,15 +31,11 @@ interface DiscoveryRegistry {
   totalServices: number;
   healthyServices: number;
   lastUpdate: string;
-  discoveryConfig: {
-    checkInterval: number;
-    failoverTimeout: number;
+  discoveryConfig: { checkInterval: number;, failoverTimeout: number;
     healthThreshold: number;
   };
 }
-interface FailoverEvent {
-  id: string;
-  timestamp: string;
+interface FailoverEvent { id: string;, timestamp: string;
   serviceId: string;
   reason: string;
   from string;
@@ -93,7 +81,7 @@ const KNOWN_SERVICES = [
   { name: 'load-balancer', port: 8102, protocols: ['http', 'quic'], primary: true },
   { name: 'cluster-manager', port: 8103, protocols: ['http', 'grpc'], primary: true },
   { name: 't5-transformer', port: 8122, protocols: ['http'], primary: false },
-  { name: 'multi-core-ollama', port: 8125, protocols: ['http'], primary: false },
+  { name: 'multi-core-ollama', port: 8125, protocols: ['http'], primary: false }
 ];
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
@@ -105,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!service || !service.name || !service.port) {
           return json({
             status: 'error',
-            message: 'No discovery results',
+            message: 'No discovery results'
           });
         }
         const registered = await registerService(service);
@@ -113,7 +101,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'register',
           service: registered,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'deregister': {
@@ -123,7 +111,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: deregistered,
           action: 'deregister',
           serviceId,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'health-check': {
@@ -133,7 +121,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'health-check',
           health,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'failover': {
@@ -143,7 +131,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: failoverResult.success,
           action: 'failover',
           result: failoverResult,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'update-config': {
@@ -153,7 +141,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'update-config',
           config: updated,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'discover': {
@@ -164,14 +152,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
           action: 'discover',
           discovered: discovered.length,
           services: discovered,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-            availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover'],
+            error: `Unknown; action: ${action}`,
+            availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover']
           },
           { status: 400 }
         );
@@ -182,7 +170,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         success: false,
         error: formatError(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -201,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         instances,
         healthy: instances.filter(item => item.status === 'healthy'), // <- fixed
         total: instances.length,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
     // Get full registry
@@ -224,9 +212,8 @@ export const GET: RequestHandler = async ({ url }) => {
         register: '/api/cluster/discovery?action=register (POST)',
         health_check: '/api/cluster/discovery?action=health-check (POST)',
         failover: '/api/cluster/discovery?action=failover (POST)',
-        discover: '/api/cluster/discovery?action=discover (POST)',
-      },
-      timestamp: Date.now(),
+        discover: `/api/cluster/discovery?action=discover (POST)` },
+      timestamp: Date.now()
     };
     if (includeHistory) {
       response.failoverHistory = failoverHistory.slice(-20); // Last 20 events
@@ -237,16 +224,14 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: formatError(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
   }
 };
 // New typed shapes to avoid `any`
-type HealthCheckResult = {
-  serviceId: string;
-  status: ServiceInstance['status'];
+type HealthCheckResult = { serviceId: string;, status: ServiceInstance['status'];
   health?: Partial<ServiceInstance['health']>;
   error?: string;
   failoverTriggered?: boolean;
@@ -295,14 +280,14 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
     discoveryConfig: {
       checkInterval: 30000, // 30 seconds
       failoverTimeout: 5000, // 5 seconds
-      healthThreshold: 70,
-    },
+      healthThreshold: 70
+    }
   };
 }
 async function registerService(serviceData: RegisterServiceInput): Promise<ServiceInstance> {
   // <- typed input
   const service: ServiceInstance = {
-    id: `${serviceData.name}-${serviceData.host ?? 'localhost'}-${serviceData.port}`,
+    id: '${serviceData.name}-${serviceData.host ?? 'localhost` }-${serviceData.port}`,
     name: serviceData.name,
     host: serviceData.host || 'localhost',
     port: serviceData.port,
@@ -313,20 +298,20 @@ async function registerService(serviceData: RegisterServiceInput): Promise<Servi
       latency: 0,
       uptime: 0,
       lastCheck: new Date().toISOString(),
-      consecutiveFailures: 0,
+      consecutiveFailures: 0
     },
     metadata: {
       version: serviceData.version || '1.0.0',
       capabilities: serviceData.capabilities || [],
       region: serviceData.region,
-      weight: serviceData.weight ?? 100,
+      weight: serviceData.weight ?? 100
     },
     failover: {
       primary: serviceData.primary || false,
       backups: serviceData.backups || [],
       autoFailover: serviceData.autoFailover !== false,
-      failoverThreshold: serviceData.failoverThreshold || 3,
-    },
+      failoverThreshold: serviceData.failoverThreshold || 3
+    }
   };
   const existingInstances = serviceRegistry.get(service.name) || [];
   existingInstances.push(service);
@@ -363,7 +348,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
           serviceId,
           status: service.status,
           health: { ...service.health },
-          failoverTriggered: false,
+          failoverTriggered: false
         };
       }
     }
@@ -396,7 +381,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
       serviceId,
       status: service.status,
       health: { ...service.health },
-      failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover,
+      failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover
     };
   } catch (error: any) {
     service.health.consecutiveFailures++;
@@ -406,12 +391,11 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
       serviceId,
       status: 'unhealthy',
       error: formatError(error),
-      health: { ...service.health },
+      health: { ...service.health }
     };
   }
 }
-async function performFullHealthCheck(force: boolean = false): Promise<{
-  summary: { total: number; healthy: number; unhealthy: number; healthPercentage: number };
+async function performFullHealthCheck(force: boolean = false): Promise<{ summary: { total: number; healthy: number; unhealthy: number;, healthPercentage: number };
   results: HealthCheckResult[];
   timestamp: string;
 }> {
@@ -431,10 +415,10 @@ async function performFullHealthCheck(force: boolean = false): Promise<{
       total,
       healthy: healthyCount,
       unhealthy: total - healthyCount,
-      healthPercentage: total ? Math.round((healthyCount / total) * 100) : 0,
+      healthPercentage: total ? Math.round((healthyCount / total) * 100) : 0
     },
     results: results.slice(0, 10),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 async function executeFailover(serviceId: string, reason: string, targetInstance?: string): Promise<FailoverResult> {
@@ -456,7 +440,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       : backupInstances.sort((a, b) => b.health.score - a.health.score)[0];
 
     if (!target) {
-      return { success: false, error: 'Target instance not found or unhealthy' };
+      return { success: false, error: `Target instance not found or unhealthy` };
     }
 
     service.failover.primary = $state(false);
@@ -471,7 +455,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from service.id,
       to: target.id,
       duration: Date.now() - startTime,
-      success: true,
+      success: true
     };
     failoverHistory.push(failoverEvent);
     if (failoverHistory.length > 100) {
@@ -483,7 +467,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       to: target.id,
       reason,
       duration: failoverEvent.duration,
-      event: failoverEvent,
+      event: failoverEvent
     };
   } catch (error: any) {
     const failoverEvent: FailoverEvent = {
@@ -494,14 +478,14 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from service.id,
       to: 'none',
       duration: Date.now() - startTime,
-      success: false,
+      success: false
     };
     failoverHistory.push(failoverEvent);
     return {
       success: false,
       error: formatError(error),
       duration: failoverEvent.duration,
-      event: failoverEvent,
+      event: failoverEvent
     };
   }
 }
@@ -517,16 +501,14 @@ async function discoverServices(force: boolean = false): Promise<ServiceInstance
         protocols: knownService.protocols,
         primary: knownService.primary,
         capabilities: [`${knownService.name}-service`],
-        autoFailover: true,
+        autoFailover: true
       });
       discovered.push(service);
     }
   }
   return discovered;
 }
-async function updateDiscoveryConfig(config: Partial<DiscoveryConfig>): Promise<{
-  checkInterval: number;
-  failoverTimeout: number;
+async function updateDiscoveryConfig(config: Partial<DiscoveryConfig>): Promise<{ checkInterval: number;, failoverTimeout: number;
   healthThreshold: number;
   updated: string;
 }> {
@@ -535,7 +517,7 @@ async function updateDiscoveryConfig(config: Partial<DiscoveryConfig>): Promise<
     checkInterval: config.checkInterval ?? 30000,
     failoverTimeout: config.failoverTimeout ?? 5000,
     healthThreshold: config.healthThreshold ?? 70,
-    updated: new Date().toISOString(),
+    updated: new Date().toISOString()
   };
 }
 function findServiceById(serviceId: string): ServiceInstance | null {

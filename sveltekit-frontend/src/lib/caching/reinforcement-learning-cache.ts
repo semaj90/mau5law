@@ -4,25 +4,19 @@
  * Supports AI-driven 3D search engine and WebGPU acceleration
  */
 // 3D Component and Animation Prediction Types
-interface Component3DMetadata {
-  geometryComplexity: 'low' | 'medium' | 'high';
-  animationType: 'transform' | 'morph' | 'physics' | 'particle';
+interface Component3DMetadata { geometryComplexity: 'low' | 'medium' | 'high';, animationType: 'transform' | 'morph' | 'physics' | 'particle';
   renderPriority: number;
   predictedUsage: number; // 0-1 probability score
   precomputedFrames?: Float32Array;
   webgpuTextures?: string[];
 }
-interface AnimationPrediction {
-  componentId: string;
-  animationPath: string; // CSS transform path or WebGL keyframes
+interface AnimationPrediction { componentId: string;, animationPath: string; // CSS transform path or WebGL keyframes
   duration: number;
   easing: string;
   triggerProbability: number;
   preRenderedFrames: Component3DMetadata[];
 }
-interface AssetSearchPattern {
-  searchTerm: string;
-  assetType: '3d_model' | 'texture' | 'animation' | 'material';
+interface AssetSearchPattern { searchTerm: string;, assetType: '3d_model' | 'texture' | 'animation' | 'material';
   contextVector: number[]; // embedding for semantic search,
   usageFrequency: number;
   lastAccessed: number;
@@ -78,7 +72,7 @@ export class ReinforcementLearningCache {
       component3DPredictions: this.component3DCache.size,
       animationsPredicted: this.animationPredictions.size,
       assetSearchAccuracy: this.calculateSearchAccuracy(),
-      sequenceModelAccuracy: this.calculateSequencePredictionAccuracy(),
+      sequenceModelAccuracy: this.calculateSequencePredictionAccuracy()
     };
   }
   // ===============================
@@ -119,7 +113,7 @@ export class ReinforcementLearningCache {
       duration: this.predictAnimationDuration(animationType),
       easing: this.selectOptimalEasing(animationType),
       triggerProbability: this.calculateTriggerProbability(componentId),
-      preRenderedFrames: [],
+      preRenderedFrames: []
     };
     // Pre-compute key animation frames (autoencoder compression)
     const frames = await this.computeAnimationFrames(prediction);
@@ -199,7 +193,7 @@ export class ReinforcementLearningCache {
           geometryComplexity: this.predictComplexity(componentType),
           animationType: this.predictAnimationType(componentType),
           renderPriority: this.calculateRenderPriority(componentType),
-          predictedUsage: Math.min(baseUsage + transitionBoost, 1.0),
+          predictedUsage: Math.min(baseUsage + transitionBoost, 1.0)
         };
         predictions.push(prediction);
       }
@@ -214,7 +208,7 @@ export class ReinforcementLearningCache {
       'transform': 'translateX(0) rotateY(0) scale(1) -> translateX(100px) rotateY(180deg) scale(1.2)',
       'morph': 'path("M0,0 L100,0 L100,100 L0,100 Z") -> path("M0,50 L150,25 L120,120 L20,80 Z")',
       'physics': 'drop-bounce-settle',
-      'particle': 'emit-spread-fade',
+      'particle': 'emit-spread-fade'
     };
     return paths[animationType as keyof typeof paths] || 'linear-transform';
   }
@@ -223,7 +217,7 @@ export class ReinforcementLearningCache {
       'transform': 300,
       'morph': 600,
       'physics': 1200,
-      'particle': 2000,
+      'particle': 2000
     };
     return durations[animationType as keyof typeof durations] || 500;
   }
@@ -232,7 +226,7 @@ export class ReinforcementLearningCache {
       'transform': 'cubic-bezier(0.4, 0, 0.2, 1)',
       'morph': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       'physics': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-      'particle': 'linear',
+      'particle': 'linear'
     };
     return easings[animationType as keyof typeof easings] || 'ease-in-out';
   }
@@ -254,7 +248,7 @@ export class ReinforcementLearningCache {
         animationType: prediction.componentId.includes('particle') ? 'particle' : 'transform',
         renderPriority: Math.round((1 - progress) * 10),
         predictedUsage: prediction.triggerProbability,
-        precomputedFrames: new Float32Array([progress, Math.sin(progress * Math.PI * 2)]),
+        precomputedFrames: new Float32Array([progress, Math.sin(progress * Math.PI * 2)])
       });
     }
     return frames;
@@ -299,7 +293,7 @@ export class ReinforcementLearningCache {
         assetType: '3d_model',
         contextVector: queryVector,
         usageFrequency: 1,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       });
     }
     if (
@@ -313,7 +307,7 @@ export class ReinforcementLearningCache {
         assetType: '3d_model',
         contextVector: queryVector,
         usageFrequency: 1,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       });
     }
     return predictions;
@@ -330,7 +324,7 @@ export class ReinforcementLearningCache {
       'ui': 'low',
       'animation': 'medium',
       'particle': 'high',
-      'physics': 'high',
+      'physics': 'high'
     };
     return complexityMap[componentType] || 'medium';
   }
@@ -339,8 +333,7 @@ export class ReinforcementLearningCache {
       'ui': 'transform',
       'document': 'morph',
       'interaction': 'physics',
-      'effect': 'particle',
-    };
+      'effect': 'particle` };
     return typeMap[componentType] || 'transform';
   }
   private calculateRenderPriority(componentType: string): number {
@@ -348,7 +341,7 @@ export class ReinforcementLearningCache {
       'ui': 10,
       'content': 8,
       'animation': 6,
-      'effect': 4,
+      'effect': 4
     };
     return priorityMap[componentType] || 5;
   }

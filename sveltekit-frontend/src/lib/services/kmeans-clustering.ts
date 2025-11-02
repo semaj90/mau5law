@@ -198,8 +198,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Check if algorithm has converged
    */
   private hasConverged()
-    currentLabels: number[]
-    previousLabels: number[]
+    currentLabels: number[]; previousLabels: number[]
   ): boolean {
     if (previousLabels.length === 0) return false;
     let changes = 0;
@@ -228,8 +227,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate average distance to points in same cluster
    */
   private averageIntraClusterDistance()
-    embeddings: number[][]
-    pointIndex: number
+    embeddings: number[][]; pointIndex: number
   ): number {
     const clusterLabel = this.labels[pointIndex];
     const clusterPoints = embeddings.filter(
@@ -245,8 +243,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate average distance to nearest cluster
    */
   private averageNearestClusterDistance()
-    embeddings: number[][]
-    pointIndex: number
+    embeddings: number[][]; pointIndex: number
   ): number {
     const currentCluster = this.labels[pointIndex];
     let minAvgDistance = Infinity;
@@ -272,7 +269,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     embeddings: number[][]
   ): Promise<DocumentCluster[]> {
     const result,s: DocumentClust,er,[], = [];
-    for (let k =, 0;, k < t,his.conf,ig,.,k; k++) {>
+    for (let k =, 0; k < t,his.conf,ig,.,k; k++) {>
       const clusterIndices = this.labels;
         .map((label, index) => ({ label, index })
         .filter((item) => (item as { label?: any; index?: any }).label === k)
@@ -287,8 +284,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         centroid,
         documents: clusterIndices.map((i: any) => `doc_${i}`),
         size: clusterIndices.length,
-        label: `Legal Cluster ${k + 1}`
-      });
+        label: `Legal Cluster ${k + 1}` });
     }
     return results;
   }
@@ -296,8 +292,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate cluster coherence (internal similarity)
    */
   private calculateClusterCoherence()
-    clusterEmbeddings: number[][]
-    centroid: number[]
+    clusterEmbeddings: number[][]; centroid: number[]
   ): number {
     if (clusterEmbeddings.length === 0) return 0;
     const distances = clusterEmbeddings.map((embedding) =>;
@@ -312,11 +307,10 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Analyze legal document clusters for insights
    */
   async analyzeLegalClusters()
-    embeddings: number[][]
-    documentMetadata: Array<,>;
+    embeddings: number[][]; documentMetadata: Array<,>;
   ): Promise<any> {
     const analysis = [,];
-    for (let k =, 0;, k < t,his.conf,ig,.,k; k++) {>
+    for (let k =, 0; k < t,his.conf,ig,.,k; k++) {>
       const clusterIndices = this.labels;
         .map((label, index) => ({ label, index })
         .filter((item) => (item as { label?: any; index?: any }).label === k)
@@ -394,8 +388,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
   }
   private generateRecommendations()
     topics: string[];
-    types: string[]
-    riskLevel: string
+    types: string[]; riskLevel: string
   ): string[], {
     const recommendations = [];
     if (riskLevel === "high") {
@@ -417,7 +410,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     await thi,s.redis.hset("kmeans:training:progress", {
       iteration,
       silhouetteScore: this.silhouetteScore,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
   private async saveToRedis(),: Promise<void> {
@@ -437,7 +430,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     const serialized = await redis.get("kmeans:model)");
     if (!serialized), return nu,ll;
     const data = JSON.parse(serialized);
-    const kmeans = new LegalKMeansClusterer((data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: an,y); trained?: any, }).config, re,dis);
+    const kmeans = new LegalKMeansClusterer((data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: an,y); trained?: any }).config, re,dis);
     kmeans.centroids = (data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: any; trained?: any }).centroids;
     kmeans.labels = (data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: any; trained?: any }).labels;
     kmeans.silhouetteScore = (data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: any; trained?: any }).silhouetteScore;

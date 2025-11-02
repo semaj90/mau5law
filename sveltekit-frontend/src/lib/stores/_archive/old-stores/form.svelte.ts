@@ -1,8 +1,6 @@
 import { writable, derived, get } from 'svelte/store';
 
-export interface FormField<TValue = unknown> {
-  name: string;
-  value: TValue;
+export interface FormField<TValue = unknown> { name: string;, value: TValue;
   error?: string | null;
   touched: boolean;
   required?: boolean;
@@ -31,7 +29,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
     initialValues = {} as T,
     validators = {} as FormOptions<T>['validators'],
     requiredFields = [],
-    onSubmit,
+    onSubmit
   } = _options;
 
   const validateField = <K extends keyof T>(field: FormField<T[K]>): string | null => {
@@ -72,7 +70,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
       value: initialValues[name],
       touched: false,
       required: requiredFields.includes(name),
-      validator: validators[name],
+      validator: validators[name]
     };
   });
 
@@ -98,7 +96,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
     isSubmitting: false,
     isValid: initialIsValid, // Set initial validity
     isDirty: false,
-    submitCount: 0,
+    submitCount: 0
   };
 
   const { subscribe, set, update } = writable<FormState<T>>(initialState);
@@ -139,12 +137,12 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           value: '' as T[K], // Cast to T[K] for new fields
           touched: false,
           required: requiredFields.includes(name),
-          validator: validators[name],
+          validator: validators[name]
         };
         const updatedField: FormField<T[K]> = {
           ...field,
           value,
-          touched: true,
+          touched: true
         };
         // Validate field
         const error = validateField(updatedField);
@@ -152,7 +150,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
 
         const newFields = {
           ...state.fields,
-          [name]: updatedField,
+          [name]: updatedField
         };
 
         // Recalculate form validity and update field errors using the refactored validateForm
@@ -176,7 +174,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           values: newValues,
           errors: newErrors,
           isDirty: true,
-          isValid: isValid,
+          isValid: isValid
         };
       });
     },
@@ -188,9 +186,9 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           ...state.fields,
           [name]: {
             ...state.fields[name],
-            touched: true,
-          },
-        },
+            touched: true
+          }
+        }
       }));
     },
     // Validate all fields
@@ -213,7 +211,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           ...state,
           fields: updatedFields,
           errors: newErrors,
-          isValid: formIsValid,
+          isValid: formIsValid
         };
       });
       return isValid;
@@ -225,10 +223,10 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
         const newState = {
           ...state,
           isSubmitting: true,
-          submitCount: state.submitCount + 1,
+          submitCount: state.submitCount + 1
         };
         // Touch all fields
-        const touchedFields: Partial<{ [K in keyof T]: FormField<T[K]> }> = {};
+        const, touchedFields: Partial<{ [K in keyof T]: FormField<T[K]> }> = {};
         (Object.keys(newState.fields) as Array<keyof T>).forEach(name => {
           const field = newState.fields[name];
           if (field) {
@@ -253,7 +251,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           ...newState,
           fields: validatedFields,
           errors: newErrors,
-          isValid: formIsValid,
+          isValid: formIsValid
         };
       });
       if (canSubmit && onSubmit) {
@@ -280,12 +278,12 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
             value: initialValue,
             touched: false,
             required: isRequired,
-            validator: validators[name],
-          },
+            validator: validators[name]
+          }
         };
 
         // Re-validate the form after adding a field
-        const { updatedFields: validatedFields, isValid } = validateForm(newFields);
+        const {, updatedFields: validatedFields, isValid } = validateForm(newFields);
 
         // Re-calculate values and errors based on validatedFields
         const newValues: Partial<T> = {} as Partial<T>;
@@ -308,7 +306,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
           isDirty: true, // Adding a field makes the form dirty
         };
       });
-    },
+    }
   };
 }
 

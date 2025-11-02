@@ -42,9 +42,7 @@ interface RawTrendingData {
 }
 
 // Type definitions for processed suggestions
-interface FallbackSuggestion {
-  text: string;
-  category: string;
+interface FallbackSuggestion { text: string;, category: string;
   score: number;
   trending: boolean;
   description: string;
@@ -68,9 +66,7 @@ interface SuggestionItem {
   urgencyLevel?: 'low' | 'medium' | 'high' | 'critical';
 }
 
-interface TrendingSuggestion {
-  text: string;
-  category: string;
+interface TrendingSuggestion { text: string;, category: string;
   score: number;
   trending: boolean;
   description: string;
@@ -87,7 +83,7 @@ class SuggestionsService {
       if (response.ok) return response;
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       for (const port of fallbackPorts) {
         try {
           const fallbackUrl = url.replace(/:\d+/, `:${port}`);
@@ -109,7 +105,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/suggestions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           category,
@@ -118,11 +114,11 @@ class SuggestionsService {
           includeSemanticExpansions: true,
           includeTrendingTerms: true,
           legalContext: {
-            jurisdiction: 'federal',
+           , jurisdiction: 'federal',
             practiceAreas: 'all',
-            includeRecentChanges: true,
-          },
-        }),
+            includeRecentChanges: true
+          }
+        })
       },
       [8095, 8096]
     ).then(r => r.json());
@@ -133,7 +129,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/trending`,
       {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       },
       [8095, 8096]
     )
@@ -149,15 +145,15 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/completions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          partial: partialQuery,
+         , partial: partialQuery,
           category,
           limit,
           completionType: 'legal_smart',
           includeDefinitions: true,
-          includePracticeAreas: true,
-        }),
+          includePracticeAreas: true
+        })
       },
       [8095, 8096]
     ).then(r => r.json());
@@ -172,7 +168,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '8');
     const includeDefinitions = url.searchParams.get('definitions') === 'true';
     const includeTrending = url.searchParams.get('trending') !== 'false';
-    console.log(`🔍 Enhanced Legal AI Suggestions: "${userQuery}" | Category: ${category}`);
+    console.log(`🔍 Enhanced Legal AI Suggestions: "${userQuery}" |, Category: ${category}`);
     const startTime = Date.now();
 
     type ContextualResult = { suggestions: RawContextualSuggestion[] };
@@ -231,19 +227,19 @@ export const GET: RequestHandler = async ({ url }) => {
           enhancedRAG: true,
           semanticExpansions: true,
           trendingAnalysis: includeTrending,
-          smartCompletions: userQuery.length >= 2,
-        },
+          smartCompletions: userQuery.length >= 2
+        }
       },
       // Legal AI platform specific enhancements
       legalContext: {
         jurisdiction: 'federal',
         practiceAreas: extractPracticeAreas(userQuery || category),
         recommendedFilters: generateRecommendedFilters(suggestions, category),
-        relatedConcepts: extractRelatedConcepts(suggestions),
-      },
+        relatedConcepts: extractRelatedConcepts(suggestions)
+      }
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Enhanced Legal AI Suggestions error:', error);
     // Fallback to basic suggestions if enhanced search fails
     const fallbackSuggestions = await getFallbackSuggestions(
@@ -255,12 +251,11 @@ export const GET: RequestHandler = async ({ url }) => {
       suggestions: fallbackSuggestions,
       trending: [],
       metadata: {
-        category: url.searchParams.get('category') || 'general',
+       , category: url.searchParams.get('category') || 'general',
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
         fallbackMode: true,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : `Unknown error` }
     });
   }
 };
@@ -311,10 +306,10 @@ async function processEnhancedSuggestions(
         enhancedScore: calculateEnhancedRelevanceScore(query, suggestion.text || '', suggestion.score),
         relatedTerms: extractRelatedTerms(suggestion.text || '', category),
         jurisdiction: determineJurisdiction(suggestion.text || ''),
-        urgencyLevel: determineUrgencyLevel(suggestion.text || ''),
+        urgencyLevel: determineUrgencyLevel(suggestion.text || '')
       }));
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.warn('Error processing enhanced suggestions:', error);
     return [];
   }
@@ -333,10 +328,10 @@ async function processTrendingSuggestions(
       description: `Trending search in ${category} law`,
       searchCount: trending.searchCount || 0,
       trendingPeriod: trending.period || '7d',
-      growthRate: trending.growthRate || 0,
+      growthRate: trending.growthRate || 0
     }));
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.warn('Error processing trending suggestions:', error);
     return [];
   }
@@ -376,7 +371,7 @@ function extractPracticeAreas(input: string): string[] {
     'employment': ['employment', 'discrimination', 'harassment', 'wage', 'workplace'],
     'immigration': ['immigration', 'visa', 'asylum', 'deportation', 'citizenship'],
     'environmental': ['environmental', 'pollution', 'EPA', 'clean air', 'water rights'],
-    'tax': ['tax', 'IRS', 'deduction', 'audit', 'revenue'],
+    'tax': ['tax', 'IRS', 'deduction', 'audit', 'revenue']
   };
   const inputLower = input.toLowerCase();
   const matchedAreas: string[] = [];
@@ -431,7 +426,7 @@ function extractRelatedTerms(text: string, category: string): string[] {
     'evidence': ['admissible', 'chain of custody', 'forensic', 'witness', 'authentication'],
     'constitutional': ['due process', 'equal protection', 'fundamental rights', 'strict scrutiny'],
     'cases': ['precedent', 'holding', 'dicta', 'jurisdiction', 'appeal'],
-    'documents': ['filing', 'pleading', 'motion', 'brief', 'memorandum'],
+    'documents': ['filing', 'pleading', 'motion', 'brief', 'memorandum']
   };
   const terms = relatedTermsMap[category] || [];
   const textLower = text.toLowerCase();
@@ -516,7 +511,7 @@ async function getFallbackSuggestions(category: string, limit: number): Promise<
       'Criminal history records',
       'Suspect identification',
       'Witness statements',
-    ],
+    ]
   };
   const suggestions = fallbackSuggestionsByCategory[category] || fallbackSuggestionsByCategory.general;
   return suggestions.slice(0, limit).map((suggestion, index) => ({
@@ -526,6 +521,6 @@ async function getFallbackSuggestions(category: string, limit: number): Promise<
     trending: false, // Added missing comma here
     description: `Fallback suggestion for ${category}`,
     source: 'fallback',
-    confidence: 0.5,
+    confidence: 0.5
   }));
 }

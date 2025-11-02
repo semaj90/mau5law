@@ -77,9 +77,7 @@ function asObject(v: any): Record<string, unknown> | undefined {
   return v && typeof v === 'object' ? (v as Record<string, unknown>) : undefined;
 }
 
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: Record<string, unknown>;
   documentType?: string;
@@ -239,11 +237,10 @@ export async function searchSimilarMessages(
       content: asString(row.content),
       similarity: asNumber(row.similarity),
       metadata: includeMetadata ? asObject(row.metadata) : undefined,
-      documentType: 'chat_message',
-    }));
+      documentType: 'chat_message` }));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error('Vector search for messages failed:', msg);
+    console.error('Vector search for messages failed: `, msg);
     return [];
   }
 }
@@ -277,11 +274,10 @@ export async function searchSimilarEvidence(
             title: asString(row.title),
             evidenceType: asString(row.evidence_type),
             caseId: asString(row.case_id),
-            ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {}),
+            ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
           }
         : undefined,
-      documentType: 'evidence',
-    }));
+      documentType: 'evidence` }));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for evidence failed:', msg);
@@ -291,12 +287,10 @@ export async function searchSimilarEvidence(
 /**
  * Insert chat message with vector embedding
  */
-export async function insertChatMessageWithEmbedding(messageData: {
-  id: string;
-  sessionId: string;
+export async function insertChatMessageWithEmbedding(messageData: { id: string;, sessionId: string;
   role: string;
   content: string;
-  embedding: number[];
+ , embedding: number[];
   metadata?: Record<string, unknown>;
 }): Promise<boolean> {
   try {
@@ -371,7 +365,7 @@ export async function searchAcrossAllVectors(
     searchPromises.push(
       searchSimilarMessages(queryEmbedding, {
         limit: Math.ceil(limit / 2),
-        threshold,
+        threshold
       })
     );
   }
@@ -380,7 +374,7 @@ export async function searchAcrossAllVectors(
     searchPromises.push(
       searchSimilarEvidence(queryEmbedding, caseId, {
         limit: Math.ceil(limit / 2),
-        threshold,
+        threshold
       })
     );
   }
@@ -432,8 +426,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       return {
         available: false,
         functions: [],
-        error: 'pgvector extension not installed',
-      };
+        error: 'pgvector extension not installed` };
     }
 
     const functionsCheck = (await db.execute(
@@ -454,15 +447,14 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
     return {
       available: true,
       version: first.version || 'unknown',
-      functions: availableFunctions.filter(Boolean),
+      functions: availableFunctions.filter(Boolean)
     };
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return {
       available: false,
       functions: [],
-      error: errMsg || 'Unknown error',
-    };
+      error: errMsg || 'Unknown error` };
   }
 }
 // Initialize on import (only in non-production)

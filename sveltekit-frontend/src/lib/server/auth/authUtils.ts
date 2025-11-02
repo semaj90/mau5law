@@ -14,7 +14,7 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPassword(
   password: string;
-  hash: string
+ , hash: string
 ): Promise<boolean> {
   return await bcrypt.compare(password, hash);
 }
@@ -38,7 +38,7 @@ export function generateToken(userId: string, email: string): string {
  */
 export function verifyToken(
   token: string
-): { userId: string; email: string } | null {
+): { userId: string;, email: string } | null {
   try {
     const secret = import.meta.env.JWT_SECRET || JWT_SECRET_FALLBACK;
     const decoded = jwt.verify(token, secret) as any;

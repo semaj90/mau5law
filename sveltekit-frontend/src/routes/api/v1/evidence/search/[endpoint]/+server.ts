@@ -17,25 +17,21 @@ const SimilarSearchSchema = z.object({
   query: z.string().min(1),
   evidenceId: cuidSchema.optional(),
   limit: z.number().min(1).max(20).default(5),
-  threshold: z.number().min(0).max(1).default(0.7),
+  threshold: z.number().min(0).max(1).default(0.7)
 });
 const SuggestionSchema = z.object({
   query: z.string().min(1),
   context: z.string().optional(),
   type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal'),
-  limit: z.number().min(1).max(10).default(5),
+  limit: z.number().min(1).max(10).default(5)
 });
 // Types
-interface SearchSuggestion {
-  text: string;
-  type: 'case' | 'law' | 'evidence' | 'precedent';
+interface SearchSuggestion { text: string;, type: 'case' | 'law' | 'evidence' | 'precedent';
   confidence: number;
   source: string;
   reasoning?: string;
 }
-interface SimilarEvidence {
-  id: string;
-  filename: string;
+interface SimilarEvidence { id: string;, filename: string;
   similarity: number;
   summary: string;
   relevantLaws: string[];
@@ -54,11 +50,11 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: EMBEDDING_MODEL,
-        input: text,
-      }),
+       , model: EMBEDDING_MODEL,
+        input: text
+      })
     });
     if (!response.ok) {
       throw new Error(`Embedding generation failed: ${response.status}`);
@@ -67,7 +63,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
     // Common shapes:
     // { embedding: [...] }
-    // { data: [{ embedding: [...] }, ...] }
+    // { data: [{, embedding: [...] }, ...] }
     // { embeddings: [...] } or directly an array
     if (typeof raw === 'object' && raw !== null) {
       const r = raw as Record<string, unknown>;
@@ -104,17 +100,17 @@ async function queryOllama(prompt: string): Promise<string> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: LEGAL_MODEL,
         prompt,
         stream: false,
         options: {
-          temperature: 0.3,
+         , temperature: 0.3,
           top_p: 0.9,
-          num_predict: 512,
-        },
-      }),
+          num_predict: 512
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Ollama query failed: ${response.status}`);
@@ -242,7 +238,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           summary: 'Financial records showing suspicious transactions',
           relevantLaws: ['Money Laundering Prevention Act', '18 USC 1956'],
           type: 'document',
-          embedding: [0.12, 0.34, -0.08, 0.45],
+          embedding: [0.12, 0.34, -0.08, 0.45]
         },
         {
           id: 'evidence-002',
@@ -251,7 +247,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           summary: 'Witness testimony corroborating financial irregularities',
           relevantLaws: ['Federal Rules of Evidence 801'],
           type: 'document',
-          embedding: [0.05, 0.22, -0.01, 0.31],
+          embedding: [0.05, 0.22, -0.01, 0.31]
         },
         {
           id: 'evidence-003',
@@ -260,7 +256,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           summary: 'Bank emails discussing account activity',
           relevantLaws: ['Bank Secrecy Act', '31 USC 5311'],
           type: 'document',
-          embedding: [0.02, 0.18, -0.03, 0.25],
+          embedding: [0.02, 0.18, -0.03, 0.25]
         },
       ]
         .map(item => {
@@ -290,8 +286,8 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           total: mockSimilarEvidence.length,
           threshold,
           embedding: queryEmbedding, // Return for client-side caching
-          processedAt: new Date().toISOString(),
-        },
+          processedAt: new Date().toISOString()
+        }
       });
     } catch (error: any) {
       console.error('Similar evidence search failed:', error);
@@ -299,7 +295,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         return json(
           {
             message: 'Invalid search request',
-            details: error.errors,
+            details: error.errors
           },
           { status: 400 }
         );
@@ -307,7 +303,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       return json(
         {
           message: 'Similar evidence search failed',
-          details: getErrorMessage(error),
+          details: getErrorMessage(error)
         },
         { status: 500 }
       );
@@ -321,14 +317,14 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     try {
       // Check authentication
       if (!locals.session || !locals.user) {
-        return json({ message: 'Authentication required' }, { status: 401 });
+        return json({ message: `Authentication required` }, { status: 401 });
       }
       const body = await request.json();
       const { query, context, type, limit } = SuggestionSchema.parse(body);
       // Generate AI suggestions based on query type
       const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.
 Query: "${query}"
-${context ? `Context: ${context}` : ''}
+${context ? `Context: ${context}` : `` }
 Suggestion Type: ${type}
 Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
 [
@@ -359,21 +355,21 @@ Focus on legal terminology, case citations, statutory references, and evidence c
             type: 'precedent',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Adding legal precedent context',
+            reasoning: 'Adding legal precedent context'
           },
           {
             text: query + ' evidence analysis',
             type: 'evidence',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Evidence-focused search',
+            reasoning: 'Evidence-focused search'
           },
           {
             text: query + ' case law',
             type: 'case',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Case law research',
+            reasoning: 'Case law research'
           },
         ];
       }
@@ -384,8 +380,8 @@ Focus on legal terminology, case citations, statutory references, and evidence c
           suggestions: suggestions.slice(0, limit),
           type,
           generatedAt: new Date().toISOString(),
-          model: LEGAL_MODEL,
-        },
+          model: LEGAL_MODEL
+        }
       });
     } catch (error: any) {
       console.error('Suggestion generation failed:', error);
@@ -393,7 +389,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
         return json(
           {
             message: 'Invalid suggestion request',
-            details: error.errors,
+            details: error.errors
           },
           { status: 400 }
         );
@@ -401,12 +397,12 @@ Focus on legal terminology, case citations, statutory references, and evidence c
       return json(
         {
           message: 'Suggestion generation failed',
-          details: getErrorMessage(error),
+          details: getErrorMessage(error)
         },
         { status: 500 }
       );
     }
   }
   // Unknown or unsupported endpoint
-  return json({ message: 'Unknown search endpoint' }, { status: 404 });
+  return json({ message: `Unknown search endpoint` }, { status: 404 });
 };

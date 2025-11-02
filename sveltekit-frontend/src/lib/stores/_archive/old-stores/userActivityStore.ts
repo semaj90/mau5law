@@ -5,17 +5,13 @@ import type { User } from '$lib/types';
  */
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
-interface UserActivityMetrics {
-  lastActivity: number;
-  idleTimeMs: number;
+interface UserActivityMetrics { lastActivity: number;, idleTimeMs: number;
   interactionCount: number;
   activityScore: number;
   isActive: boolean;
   sessionStartTime: number;
 }
-interface ActivityEvent {
-  type: string;
-  timestamp: number;
+interface ActivityEvent { type: string;, timestamp: number;
   target?: string;
   data?: any;
 }
@@ -26,7 +22,7 @@ class UserActivityDetector {
     interactionCount: 0,
     activityScore: 0,
     isActive: true,
-    sessionStartTime: Date.now(),
+    sessionStartTime: Date.now()
   });
   private eventHistory: ActivityEvent[] = [];
   private idleThreshold = 30000; // 30 seconds
@@ -173,9 +169,7 @@ class UserActivityDetector {
   }
   private sendActivityToGPUBridge(eventType: string, data?: any): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
-      const message = {
-        type: eventType;
-        timestamp: Date.now(),
+      const message = { type: eventType;, timestamp: Date.now(),
         ...data
       }
       this.wsConnection.send(JSON.stringify(message);
@@ -226,8 +220,7 @@ class UserActivityDetector {
       ...metrics,
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected'
-    }
+      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected' }
   }
   public destroy(): void {
     // Clean up event listeners

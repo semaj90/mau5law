@@ -3,14 +3,10 @@
 // - After embedding, upsert to Qdrant and log to todo log/DB as needed
 // - Add error handling and logging for all embedding operations
 // - See qdrant-service.ts for vector DB integration
-export interface DocumentChunk {
-  id: string;
-  text: string;
+export interface DocumentChunk { id: string;, text: string;
   metadata?: { [key: string]: any };
 }
-export interface EmbeddingResult {
-  embedding: number[];
-  model: string;
+export interface EmbeddingResult { embedding: number[];, model: string;
   metadata?: {
     timestamp: string;
     [key: string]: any;
@@ -30,8 +26,8 @@ export class NomicEmbeddingsService {
         embedding,
         model: 'nomic-embed-text-v1',
         metadata: {
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       };
     } catch (error: any) {
       // Fallback to mock embedding if real API fails
@@ -40,8 +36,8 @@ export class NomicEmbeddingsService {
         embedding: new Array(768).fill(0).map(() => Math.random()),
         model: 'nomic-embed-text-v1',
         metadata: {
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       };
     }
   }
@@ -73,7 +69,7 @@ export class NomicEmbeddingsService {
           id: document.id,
           vector: embeddingResult.embedding,
           payload: {
-            documentId: document.metadata?.documentId || `doc_${Date.now()}`,
+           , documentId: document.metadata?.documentId || `doc_${Date.now()}`,
             filename: document.metadata?.filename || 'unknown',
             documentType: document.metadata?.documentType || 'text',
             uploadedBy: document.metadata?.uploadedBy || 'system',
@@ -87,9 +83,9 @@ export class NomicEmbeddingsService {
               mimeType: document.metadata?.mimeType || 'text/plain',
               pageCount: document.metadata?.pageCount,
               wordCount: document.metadata?.wordCount,
-              language: document.metadata?.language,
-            },
-          },
+              language: document.metadata?.language
+            }
+          }
         },
       ]);
     } catch (error: any) {

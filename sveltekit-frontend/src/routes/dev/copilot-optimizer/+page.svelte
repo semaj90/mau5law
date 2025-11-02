@@ -308,7 +308,7 @@ await loadCopilotContent();
         ] as tab}
           <button
             onclick={() => selectedTab = tab.id}
-            class="px-4" py-2 rounded-md text-sm font-medium transition-all
+            class="px-4 py-2 rounded-md" text-sm font-medium transition-all
               {selectedTab === tab.id
                 ? 'bg-purple-600 text-white'
                 : 'text-purple-300 hover:text-white hover:bg-purple-700/30';
@@ -329,7 +329,7 @@ await loadCopilotContent();
             <button
               onclick={loadCopilotContent}
               disabled={isLoading}
-              class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+              class="px-4 py-2 bg-purple-600" hover:bg-purple-700 disabled:opacity-50
                      text-white rounded-lg transition-colors"
             >
               {isLoading ? 'Loading...' : 'Reload'}
@@ -338,14 +338,14 @@ await loadCopilotContent();
           <textarea
             bind:value={copilotContent}
             placeholder="Paste your copilot.md content here..."
-            class="w-full" h-96 p-4 bg-black/30 border border-purple-500/30 rounded-lg
+            class="w-full h-96 p-4" bg-black/30 border border-purple-500/30 rounded-lg
                    text-purple-100 placeholder:text-purple-400 resize-none"
           ></textarea>
           <div class="flex gap-2">
             <button
               onclick={optimizeIndex}
               disabled={!copilotContent || isLoading}
-              class="flex-1" px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600;
+              class="flex-1 px-4 py-2" bg-gradient-to-r from-purple-600 to-blue-600;
                      hover:from-purple-700 hover:to-blue-700 disabled:opacity-50
                      text-white rounded-lg transition-all font-medium"
             >
@@ -456,14 +456,14 @@ await loadCopilotContent();
                   type="text";
                   bind:value={searchQuery}
                   placeholder="Enter search query (e.g., 'Svelte 5 props patterns')"
-                  class="flex-1" px-4 py-2 bg-black/30 border border-purple-500/30 rounded-lg
+                  class="flex-1 px-4 py-2" bg-black/30 border border-purple-500/30 rounded-lg
                          text-purple-100 placeholder:text-purple-400"
                   keydown={(e) => e.key === 'Enter' && performSearch()}
                 />
                 <button
                   onclick={performSearch}
                   disabled={!searchQuery.trim() || isLoading}
-                  class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+                  class="px-4 py-2 bg-purple-600" hover:bg-purple-700 disabled:opacity-50
                          text-white rounded-lg transition-colors"
                 >
                   Search
@@ -485,7 +485,7 @@ await loadCopilotContent();
               ] : [] as example}
                 <button
                   onclick={() => { searchQuery = example; performSearch(), }}
-                  class="p-2" text-left text-sm bg-black/20 hover:bg-purple-700/20
+                  class="p-2 text-left text-sm" bg-black/20 hover:bg-purple-700/20
                          text-purple-300 hover:text-purple-100 rounded border border-purple-500/20
                          transition-colors"
                 >
@@ -542,7 +542,7 @@ await loadCopilotContent();
           <button
             onclick={generateSuggestions}
             disabled={isLoading}
-            class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+            class="px-4 py-2 bg-purple-600" hover:bg-purple-700 disabled:opacity-50
                    text-white rounded-lg transition-colors"
           >
             {isLoading ? 'Generating...' : 'Generate Test Suggestions'}
@@ -712,7 +712,7 @@ await loadCopilotContent();
                 <input
                   type="checkbox"
                   bind:checked={optimizationConfig[option.key]}
-                  class="w-5" h-5 text-purple-600 bg-black/30 border-purple-500 rounded
+                  class="w-5 h-5 text-purple-600" bg-black/30 border-purple-500 rounded
                          focus:ring-purple-500 focus:ring-2"
                 />
               </label>

@@ -41,15 +41,15 @@ export interface CrewAIContext {
   qualityScore: number;
 }
 export type CrewAIEvents =
-  | { type: 'START_REVIEW'; task: DocumentReviewTask }
-  | { type: 'AGENT_COMPLETED'; agentId: string; response: AgentResponse }
-  | { type: 'AGENT_FAILED'; agentId: string; error: string }
-  | { type: 'USER_ACTIVITY'; activity: string }
+  | { type: 'START_REVIEW';, task: DocumentReviewTask }
+  | { type: 'AGENT_COMPLETED'; agentId: string;, response: AgentResponse }
+  | { type: 'AGENT_FAILED'; agentId: string;, error: string }
+  | { type: 'USER_ACTIVITY';, activity: string }
   | { type: 'USER_IDLE' }
   | { type: 'USER_AWAY' }
-  | { type: 'FOCUS_CHANGED'; schema: CrewAIContext['focusSchema'] }
-  | { type: 'ACCEPT_RECOMMENDATION'; recommendationId: string }
-  | { type: 'REJECT_RECOMMENDATION'; recommendationId: string }
+  | { type: 'FOCUS_CHANGED';, schema: CrewAIContext['focusSchema'] }
+  | { type: 'ACCEPT_RECOMMENDATION';, recommendationId: string }
+  | { type: 'REJECT_RECOMMENDATION';, recommendationId: string }
   | { type: 'AUTO_SAVE_TRIGGERED' }
   | { type: 'RETRY_FAILED_AGENTS' }
   | { type: 'CANCEL_REVIEW' }
@@ -57,30 +57,28 @@ export type CrewAIEvents =
 // ============================================================================
 // XSTATE MACHINE DEFINITION
 // ============================================================================
-export const crewAIOrchestrationMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as CrewAIContext,
+export const crewAIOrchestrationMachine = setup({ types: {, context: { [key,: strin,g]: any } as CrewAIContext,
     events: { [key,: strin,g]: any } as CrewAIEvents
   },
   actors: {
     // Start multi-agent review
-    startAgentReview: fromPromise(async ({ input }: { input: { task: DocumentReviewTask } }) => {
+    startAgentReview: fromPromise(async ({ input }: {, input: {, task: DocumentReviewTask } }) => {
       const taskId = await crewAIOrchestrator.startDocumentReview(input.task);
       return { taskId, task: input.task }
     }),
     // Auto-save document changes
-    autoSaveDocument: fromPromise(async ({ input }: { input: { documentId: string; content: string } }) => {
+    autoSaveDocument: fromPromise(async ({ input }: { input: {, documentId: string; content: string } }) => {
       await documentUpdateLoop.queueDocumentUpdate(input.documentId, input.content);
       return { saved: true, timestamp: new Date().toISOString() }
     }),
     // Generate self-prompting recommendations
-    generateSelfPrompt: fromPromise(async ({ input }: { input: { context: CrewAIContext } }) => {
+    generateSelfPrompt: fromPromise(async ({ input }: { input: {, context: CrewAIContext } }) => {
       // This would integrate with your self-prompting system
       const recommendations = await generateContextualRecommendations(input.context);
       return { recommendations }
     }),
     // Apply schema focus change
-    applySchemaFocus: fromPromise(async ({ input }: { input: { schema: string; context: CrewAIContext } }) => {
+    applySchemaFocus: fromPromise(async ({ input }: { input: {, schema: string; context: CrewAIContext } }) => {
       const focusConfig = await generateSchemaFocusConfig(input.schema, input.context);
       return { focusConfig }
     })
@@ -258,7 +256,7 @@ export const crewAIOrchestrationMachine = setup({
   id: 'crewAIOrchestration',
   initial: 'idle',
   context: {
-    currentTask: null,
+   , currentTask: null,
     taskQueue: [],
     completedTasks: [],
     activeAgents: [],
@@ -277,12 +275,8 @@ export const crewAIOrchestrationMachine = setup({
     processingTime: 0,
     qualityScore: 0
   },
-  states: {
-    idle: {
-      entry: 'initializeContext',
-      on: {
-        START_REVIEW: {
-          target: 'orchestrating',
+  states: { idle: {, entry: 'initializeContext',
+      on: { START_REVIEW: {, target: 'orchestrating',
           actions: 'setCurrentTask'
         },
         USER_ACTIVITY: {
@@ -301,9 +295,7 @@ export const crewAIOrchestrationMachine = setup({
     orchestrating: {
       initial: 'starting_agents',
       // Monitor user activity during orchestration
-      on: {
-        USER_ACTIVITY: {
-          actions: 'updateActivity'
+      on: { USER_ACTIVITY: {, actions: 'updateActivity'
         },
         USER_IDLE: {
           actions: 'setUserIdle'
@@ -322,9 +314,7 @@ export const crewAIOrchestrationMachine = setup({
           actions: 'resetForNewTask'
         }
       },
-      states: {
-        starting_agents: {
-          invoke: {
+      states: { starting_agents: {, invoke: {
             src: 'startAgentReview',
             input: ({ context }) => ({ task: context.currentTask! }),
             onDone: {
@@ -333,14 +323,11 @@ export const crewAIOrchestrationMachine = setup({
             onError: {
               target: 'failed',
               actions: assign({
-                lastError: ({ event }) => `Failed to start agents: ${event.error}`
-              })
+                lastError: ({ event }) => `Failed to start agents: ${event.error}' })
             }
           }
         },
-        agents_running: {
-          on: {
-            AGENT_COMPLETED: {
+        agents_running: { on: {, AGENT_COMPLETED: {
               actions: 'recordAgentCompletion',
               target: 'checking_completion'
             },
@@ -383,9 +370,7 @@ export const crewAIOrchestrationMachine = setup({
             }
           }
         },
-        synthesizing_results: {
-          invoke: {
-            src: 'generateSelfPrompt',
+        synthesizing_results: { invoke: {, src: 'generateSelfPrompt',
             input: ({ context }) => ({ context }),
             onDone: {
               target: 'applying_recommendations',
@@ -427,9 +412,7 @@ export const crewAIOrchestrationMachine = setup({
               actions: 'updateLastSaved'
             }
           },
-          on: {
-            QUEUE_NEXT_TASK: {
-              target: '#crewAIOrchestration.idle',
+          on: { QUEUE_NEXT_TASK: {, target: '#crewAIOrchestration.idle',
               actions: 'resetForNewTask'
             }
           },
@@ -441,9 +424,7 @@ export const crewAIOrchestrationMachine = setup({
             }
           }
         },
-        failed: {
-          on: {
-            RETRY_FAILED_AGENTS: {
+        failed: { on: {, RETRY_FAILED_AGENTS: {
               target: 'starting_agents',
               guard: 'shouldRetryAgents'
             },
@@ -457,8 +438,7 @@ export const crewAIOrchestrationMachine = setup({
             10000: {
               target: 'starting_agents',
               guard: 'shouldRetryAgents',
-              actions: 'incrementRetryCount'
-            }
+              actions: `incrementRetryCount` }
           }
         }
       }
@@ -492,26 +472,24 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
 }
 async function generateSchemaFocusConfig(schema: string, context: CrewAIContext): Promise<any> {
   // Generate UI focus configuration based on schema
-  const configs = {
-    document_edit: {
-      showInlineEdits: true,
+  const configs = { document_edit: {, showInlineEdits: true,
       highlightRecommendations: true,
-      autoComplete: true,
+      autoComplete: true
     },
     review_mode: {
       showAnalysis: true,
       highlightRisks: true,
-      compactView: false,
+      compactView: false
     },
     analysis_mode: {
       showMetrics: true,
       showAgentBreakdown: true,
-      detailedView: true,
+      detailedView: true
     },
     idle_mode: {
       showSummary: true,
       autoSavePrompt: true,
-      minimizeUI: true,
+      minimizeUI: true
     }
   }
   return configs[schema as keyof typeof configs] || configs.document_edit;

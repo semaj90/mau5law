@@ -14,16 +14,12 @@ interface SemanticSearchRequest {
     };
   };
 }
-interface EmbeddingResponse {
-  embedding: number[];
-  model: string;
+interface EmbeddingResponse { embedding: number[];, model: string;
   modelType: string;
   dimensions: number;
   processingTime: number;
 }
-interface VectorSearchResult {
-  id: string;
-  title: string;
+interface VectorSearchResult { id: string;, title: string;
   document_type: string;
   distance: number;
   metadata?: Record<string, unknown>;
@@ -31,31 +27,23 @@ interface VectorSearchResult {
 }
 
 // New: strictly typed enhanced result (avoid Record<string, any>)
-interface EmbeddingMetadata {
-  model: string;
-  dimensions: number;
+interface EmbeddingMetadata { model: string;, dimensions: number;
   query: string;
 }
 type RelevanceLevel = 'high' | 'medium' | 'low';
 
-interface EnhancedVectorSearchResult extends VectorSearchResult {
-  semantic_score: number;
-  relevance_level: RelevanceLevel;
+interface EnhancedVectorSearchResult extends VectorSearchResult { semantic_score: number;, relevance_level: RelevanceLevel;
   embedding_metadata: EmbeddingMetadata;
 }
 
-interface SemanticSearchResponse {
-  success: boolean;
-  query: string;
+interface SemanticSearchResponse { success: boolean;, query: string;
   // Use the strongly typed enhanced result array instead of any
   results: EnhancedVectorSearchResult[];
   embedding_time: number;
   search_time: number;
   total_time: number;
   total_results: number;
-  semantic_scores?: {
-    highest_relevance: number;
-    lowest_relevance: number;
+  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
     average_relevance: number;
   };
 }
@@ -67,7 +55,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json(
         {
           success: false,
-          error: 'Query is required',
+          error: 'Query is required'
         },
         { status: 400 }
       );
@@ -77,11 +65,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        text: body.query,
-      }),
+       , text: body.query
+      })
     });
     if (!embeddingResponse.ok) {
       throw new Error(`Embedding generation failed: ${embeddingResponse.status}`);
@@ -95,14 +83,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       options: {
         limit: body.limit || 10,
         threshold: body.threshold || 1.0, // Cosine distance threshold
-      },
+      }
     };
     const vectorResponse = await fetch('/api/pgvector/test?action=search', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(searchPayload),
+        'Content-Type': 'application/json` },
+      body: JSON.stringify(searchPayload)
     });
     if (!vectorResponse.ok) {
       throw new Error(`Vector search failed: ${vectorResponse.status}`);
@@ -154,7 +141,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         ? {
             highest_relevance: Math.min(...distances), // Lower distance = higher relevance
             lowest_relevance: Math.max(...distances),
-            average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length,
+            average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
           }
         : undefined;
     // Step 5: Enhanced result formatting
@@ -167,8 +154,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           embedding_metadata: {
             model: embeddingData?.model || 'unknown',
             dimensions: embeddingData.dimensions,
-            query: body.query,
-          },
+            query: body.query
+          }
         }) as EnhancedVectorSearchResult
     );
     const response: SemanticSearchResponse = {
@@ -179,7 +166,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       search_time: searchTime,
       total_time: totalTime,
       total_results: enhancedResults.length,
-      semantic_scores: semanticScores,
+      semantic_scores: semanticScores
     };
     return json(response);
   } catch (error) {
@@ -188,7 +175,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        total_time: Date.now() - startTime,
+        total_time: Date.now() - startTime
       },
       { status: 500 }
     );

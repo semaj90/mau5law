@@ -12,7 +12,7 @@ export interface AdvancedSearchFilters {
   sortOrder?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
-  dateRange?: { start: string; end: string };
+  dateRange?: { start: string;, end: string };
 }
 // Placeholder service (replace with real advancedSearch.search)
 async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
@@ -20,7 +20,7 @@ async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
     total: 0,
     queryTime: 0,
     items: [],
-    applied: filters,
+    applied: filters
   };
 }
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       limit: parseInt(sp.get('limit') || '20', 10),
       offset: parseInt(sp.get('offset') || '0', 10),
       dateRange:
-        sp.get('dateStart') && sp.get('dateEnd') ? { start: sp.get('dateStart')!, end: sp.get('dateEnd')! } : undefined,
+        sp.get('dateStart') && sp.get('dateEnd') ? { start: sp.get('dateStart')!, end: sp.get('dateEnd')! } : undefined
     };
     const results = await fakeSearch(filters);
     return json({ success: true, data: results, timestamp: new Date().toISOString() });
@@ -61,4 +61,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
   }
 };
-export const prerender = $state(false);
+export const prerender = false;

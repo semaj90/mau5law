@@ -16,21 +16,15 @@ import type {
 } from '$lib/types';
 // Define missing types locally
 type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
-interface Evidence {
-  id: string;
-  type: string;
+interface Evidence { id: string;, type: string;
   content: string;
   metadata?: { [key: string]: any }
 }
-interface User {
-  id: string;
-  email: string;
+interface User { id: string;, email: string;
   name: string;
   role?: string;
 }
-interface LegalCase {
-  id: string;
-  title: string;
+interface LegalCase { id: string;, title: string;
   status: string;
   description?: string;
 }
@@ -206,9 +200,7 @@ export function isRecord(_value: any): value is { [key: string]: any } {
   return isObject(value);
 }
 // --- Enhanced Discrimination Helpers ---
-export function discriminateWorkerMessage(message: WorkerMessage): {
-  isAITask: boolean;
-  isWorkerStatus: boolean;
+export function discriminateWorkerMessage(message: WorkerMessage): { isAITask: boolean;, isWorkerStatus: boolean;
   isAPIResponse<any>,: boolean;
   aiTask?: AITask;
   workerStatus?: WorkerStatus;
@@ -217,7 +209,7 @@ export function discriminateWorkerMessage(message: WorkerMessage): {
   const result = {
     isAITask: false,
     isWorkerStatus: false,
-    isAPIResponse: false,
+    isAPIResponse: false
   } as any;
   if (message.payload) {
     if (isAITask(message.payload)) {
@@ -251,7 +243,7 @@ export function safeGet<T>(obj: any, path: string, defaultValue: T): T {
 }
 export function hasProperty<K extends string>(
   obj: any;
-  prop: K;
+ , prop: K;
 ): obj is Record<K, unknown> {
   return typeof obj === 'object' && obj !== null && prop in obj;
 }

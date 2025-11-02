@@ -28,29 +28,21 @@ import type {
   ScoringCriteria
 } from '../types/scoring.js';
 // gRPC Service Configuration
-interface GRPCServiceConfig {
-  baseUrl: string;
-  port: number;
+interface GRPCServiceConfig { baseUrl: string;, port: number;
   useCompression: boolean;
   useBinaryProtocol: boolean;
   timeoutMs: number;
   retryAttempts: number;
 }
 // Performance Metrics
-interface OrchestrationMetrics {
-  totalOperations: number;
-  averageLatency: number;
+interface OrchestrationMetrics { totalOperations: number;, averageLatency: number;
   binaryProtocolSavings: number;
   compressionRatio: number;
   successRate: number;
   activeServices: string[];
 }
 // Orchestration Result
-interface OrchestrationResult<T> {
-  data: T;
-  metrics: {
-    operationTime: number;
-    protocol: 'grpc-binary' | 'json-http';
+interface OrchestrationResult<T> { data: T;, metrics: { operationTime: number;, protocol: 'grpc-binary' | 'json-http';
     compressionUsed: boolean;
     modelUsed: string;
     performanceGain?: number; // Percentage improvement over baseline
@@ -60,7 +52,7 @@ interface OrchestrationResult<T> {
 export class GRPCAIOrchestrator {
   private config: GRPCServiceConfig;
   private metrics: OrchestrationMetrics;
-  private serviceHealthCache: Map<string, { healthy: boolean; lastCheck: number }> = new Map();
+  private serviceHealthCache: Map<string, { healthy: boolean;, lastCheck: number }> = new Map();
   constructor(config?: Partial<GRPCServiceConfig>) {
     this.config = {
       baseUrl: 'localhost',
@@ -86,8 +78,7 @@ export class GRPCAIOrchestrator {
    * Combines semantic analysis, entity extraction, and case scoring
    */
   async orchestrateDocumentAnalysis()
-    document: LegalDocument
-    includeReasoning: boolean = true;
+    document: LegalDocument; includeReasoning: boolean = true;
   ): Promise<OrchestrationResult>, {
     const startTime = Date.now();
     const serviceChain: string[] = [];
@@ -139,15 +130,14 @@ export class GRPCAIOrchestrator {
    * Orchestrate batch document processing with streaming
    */
   async orchestrateBatchProcessing()
-    documents: LegalDocument[]
-    batchSize: number = 5;
+    documents: LegalDocument[]; batchSize: number = 5;
   ): Promise<OrchestrationResult,<SemanticAnalysis>[>>]>> {
-    console,.log(`📦 Orchestrating batch processing: ${documents.length} documents (batch size: ${batchSize})`);
+    console,.log(`📦 Orchestrating batch processing: ${documents.length} documents (batch, size: ${batchSize})`);
     const startTime = Date.now();
     const result,s: SemanticAnalys,is,[], = [];
     const serviceChain = ['batch-processing', 'streaming-analysis',];
     // Process in batches to optimize memory and throughput
-    for (let i =, 0;, i < docume,nts.le,ngt,h; i += bat,chSize) {>
+    for (let i =, 0; i < docume,nts.le,ngt,h; i += bat,chSize) {>
       const batch = documents.slice(i, i + batchSize);
       console.log(`🔄 Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(documents.length/batchSize)}`);
       try {
@@ -271,7 +261,7 @@ export class GRPCAIOrchestrator {
       console,.log(`✅ gRPC case scoring complete: ${(result as { score?: any }).score}/100 (${processingTime}ms)`);
       return resul,t;
     } catch (error) {
-      console.error(`❌ gRPC case scoring failed for ${document.id}:`, error);
+      console.error(`❌ gRPC case scoring failed for ${document.id}: ', error);
       throw error;
     }
   }
@@ -416,7 +406,7 @@ export class GRPCAIOrchestrator {
       });
       return healthy;
     } catch (error) {
-      console.warn(`Health check failed for ${serviceName}:`, error);
+      console.warn(`Health check failed for ${serviceName}: ', error);
       return false;
     }
   }

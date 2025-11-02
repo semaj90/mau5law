@@ -16,79 +16,60 @@ function getOllamaEndpoint(): string {
   return process.env.OLLAMA_URL || 'http://localhost:11434';
 }
 
-interface ONNXModelConfig {
-  modelPath: string;
-  providerOptions: {
+interface ONNXModelConfig { modelPath: string;, providerOptions: {
     name: string;
     deviceType?: 'CPU' | 'GPU';
     deviceId?: number;
   }[];
-  sessionOptions: {
-    graphOptimizationLevel: 'basic' | 'extended' | 'all';
-    enableMemPattern: boolean;
+  sessionOptions: { graphOptimizationLevel: 'basic' | 'extended' | 'all';, enableMemPattern: boolean;
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
     logSeverityLevel: number;
   }
-  inputSpec: {
-    inputIds: { name: string; type: string; shape: number[] }
-    attentionMask: { name: string; type: string; shape: number[] }
-    tokenTypeIds?: { name: string; type: string; shape: number[] }
+  inputSpec: { inputIds: { name: string; type: string;, shape: number[] }
+    attentionMask: { name: string; type: string;, shape: number[] }
+    tokenTypeIds?: { name: string; type: string;, shape: number[] }
   }
-  outputSpec: {
-    lastHiddenState: { name: string; type: string; shape: number[] }
-    poolerOutput?: { name: string; type: string; shape: number[] }
-    logits?: { name: string; type: string; shape: number[] }
+  outputSpec: { lastHiddenState: { name: string; type: string;, shape: number[] }
+    poolerOutput?: { name: string; type: string;, shape: number[] }
+    logits?: { name: string; type: string;, shape: number[] }
   }
 }
-interface LegalEntityExtractionResult {
-  entities: Array<{ text: string; label: string; confidence: number; start: number; end: number }>;
+interface LegalEntityExtractionResult { entities: Array<{ text: string; label: string; confidence: number; start: number;, end: number }>;
   processingTime: number;
   modelUsed: string;
 }
-interface LegalClassificationResult {
-  predictions: Array<{ label: string; confidence: number }>;
-  topPrediction: {
-    label: string;
-    confidence: number;
+interface LegalClassificationResult { predictions: Array<{ label: string;, confidence: number }>;
+  topPrediction: { label: string;, confidence: number;
   };
   processingTime: number;
   modelUsed: string;
 }
-interface LegalEmbeddingResult {
-  embeddings: number[];
-  dimensions: number;
+interface LegalEmbeddingResult { embeddings: number[];, dimensions: number;
   processingTime: number;
   modelUsed: string;
 }
 
 type OnnxOutput = Record<string, { data: ArrayLike<number> }>;
-type TritonOutput = { name: string; data: ArrayLike<number> }[];
+type TritonOutput = { name: string;, data: ArrayLike<number> }[];
 
-interface ModelInputs {
-  input_ids: { data: ArrayLike<number> };
+interface ModelInputs { input_ids: {, data: ArrayLike<number> };
   attention_mask: { data: ArrayLike<number> };
   token_type_ids?: { data: ArrayLike<number> };
 }
 
 // New interface for Gemma response
-interface GemmaResponse {
-  response: string;
-  model: string;
+interface GemmaResponse { response: string;, model: string;
   processingTime: number;
   cached: boolean;
 }
 
 // New interface for Intent Result
-interface IntentResult {
-  intent: string;
-  confidence: number;
+interface IntentResult { intent: string;, confidence: number;
 }
 
 // New interface for RAG context
-interface RAGContext {
-  query: string;
-  documents: Array<{ id: string; text: string; score: number }>;
+interface RAGContext { query: string;, documents: Array<{ id: string; text: string;, score: number }>;
   graphData?: Array<Record<string, unknown>>; // Placeholder for KAG
   processingTime: number;
   cached: boolean;
@@ -105,7 +86,7 @@ export class GalbertService extends EventEmitter {
     totalInferences: 0,
     averageLatency: 0,
     successRate: 1.0,
-    lastUsed: new Date(),
+    lastUsed: new Date()
   };
 
   constructor() {
@@ -124,13 +105,13 @@ export class GalbertService extends EventEmitter {
       providerOptions: [
         {
           name: 'CPUExecutionProvider',
-          deviceType: 'CPU',
+          deviceType: 'CPU'
         },
         // GPU provider as fallback if available
         {
           name: 'CUDAExecutionProvider',
           deviceType: 'GPU',
-          deviceId: 0,
+          deviceId: 0
         },
       ],
       sessionOptions: {
@@ -140,26 +121,22 @@ export class GalbertService extends EventEmitter {
         executionMode: 'parallel',
         logSeverityLevel: 2, // Warning level
       },
-      inputSpec: {
-        inputIds: {
-          name: 'input_ids',
+      inputSpec: { inputIds: {, name: 'input_ids',
           type: 'int64',
           shape: [-1, -1], // Dynamic batch and sequence length
         },
         attentionMask: {
           name: 'attention_mask',
           type: 'int64',
-          shape: [-1, -1],
+          shape: [-1, -1]
         },
         tokenTypeIds: {
           name: 'token_type_ids',
           type: 'int64',
-          shape: [-1, -1],
-        },
+          shape: [-1, -1]
+        }
       },
-      outputSpec: {
-        lastHiddenState: {
-          name: 'last_hidden_state',
+      outputSpec: { lastHiddenState: {, name: 'last_hidden_state',
           type: 'float32',
           shape: [-1, -1, 768], // [batch, sequence, hidden_size]
         },
@@ -167,8 +144,8 @@ export class GalbertService extends EventEmitter {
           name: 'pooler_output',
           type: 'float32',
           shape: [-1, 768], // [batch, hidden_size]
-        },
-      },
+        }
+      }
     };
   }
 
@@ -187,7 +164,7 @@ export class GalbertService extends EventEmitter {
         // Create inference session for ONNX
         this.session = await this.ort.InferenceSession.create(this.modelConfig.modelPath, {
           executionProviders: this.modelConfig.providerOptions.map(p => p.name),
-          ...this.modelConfig.sessionOptions,
+          ...this.modelConfig.sessionOptions
         });
         console.log('✅ Galbert ONNX component initialized successfully');
         console.log('📊 Available providers:', this.session.inputNames, this.session.outputNames);
@@ -244,7 +221,7 @@ export class GalbertService extends EventEmitter {
       encode: (text: string) => tok(text), // AutoTokenizer returns an object with input_ids, attention_mask, etc.
       decode: (ids: number[]) => tok.decode(ids),
       vocab_size: tok.vocab_size,
-      max_length: 512,
+      max_length: 512
     };
   }
 
@@ -290,7 +267,7 @@ export class GalbertService extends EventEmitter {
       const result: LegalEntityExtractionResult = {
         entities,
         processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx',
+        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx'
       };
       this.emit('entity-extraction-complete', result);
       return result;
@@ -321,7 +298,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)',
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)'
       };
     }
 
@@ -348,8 +325,7 @@ export class GalbertService extends EventEmitter {
         predictions,
         topPrediction: predictions[0],
         processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx',
-      };
+        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx` };
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 3600 }); // Cache for 1 hour
       this.emit('classification-complete', result);
@@ -381,7 +357,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)',
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)'
       };
     }
 
@@ -408,8 +384,7 @@ export class GalbertService extends EventEmitter {
         embeddings,
         dimensions: embeddings.length,
         processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx',
-      };
+        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx` };
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 7200 }); // Cache for 2 hours
       this.emit('embedding-complete', result);
@@ -506,16 +481,16 @@ Text: ${prompt}
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: model,
           prompt: fullPrompt,
           stream: true, // Enable streaming
           options: {
-            temperature: 0.7,
-            top_p: 0.9,
-          },
-        }),
+           , temperature: 0.7,
+            top_p: 0.9
+          }
+        })
       });
 
       if (!response.ok) {
@@ -582,10 +557,10 @@ Text: ${prompt}
       await redisClient.publish(channel, JSON.stringify(finalPayload));
       this.emit('redis-publish-complete', { channel, ...finalPayload });
     } catch (error) {
-      console.error(`Error streaming and publishing to Redis channel ${channel}:`, error);
+      console.error(`Error streaming and publishing to Redis channel ${channel}: ', error);
       const errorPayload = {
         error: 'Streaming failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       };
       await redisClient.publish(channel, JSON.stringify(errorPayload));
       this.emit('redis-publish-error', { channel, ...errorPayload });
@@ -606,16 +581,16 @@ Text: ${prompt}
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: model,
           prompt: prompt,
           stream: false,
           options: {
-            temperature: 0.7,
-            top_p: 0.9,
-          },
-        }),
+           , temperature: 0.7,
+            top_p: 0.9
+          }
+        })
       });
 
       if (!response.ok) {
@@ -627,7 +602,7 @@ Text: ${prompt}
         response: data.response,
         model: model,
         processingTime: Date.now() - startTime,
-        cached: false,
+        cached: false
       };
       return gemmaResult;
     } catch (error) {
@@ -644,7 +619,7 @@ Text: ${prompt}
   async retrieveContext(query: string, userId?: string): Promise<GemmaResponse> {
     // Changed return type
     const startTime = Date.now();
-    const cacheKey = `langcache:rag:${await this.hashText(query)}${userId ? `:${userId}` : ''}`;
+    const cacheKey = `langcache:rag:${await this.hashText(query)}${userId ? `:${userId}` : `` }`;
     const cachedContext = await redisClient.get(cacheKey);
     if (cachedContext) {
       console.log('✅ RAG context from cache');
@@ -664,7 +639,7 @@ Text: ${prompt}
       // This would involve a Neo4j client and specific graph queries.
 
       // E. RAG integration fix: Feed documents into contextual summarization with Gemma 3 Legal
-      const context = documents.map((d: { content: string }) => d.content).join('\n---\n');
+      const context = documents.map((d: {, content: string }) => d.content).join('\n---\n');
       const gemmaResponse = await this.generateGemmaResponse(query, context); // Use the main Gemma response method
 
       // Cache the final Gemma response
@@ -745,7 +720,7 @@ Text: ${prompt}
           this.modelConfig.inputSpec.tokenTypeIds!.name,
           [batchSize, paddedLength],
           'INT64'
-        ).setFromTensor(tokenTypeIdsTensor),
+        ).setFromTensor(tokenTypeIdsTensor)
       };
     } else if (this.ort) {
       return {
@@ -762,7 +737,7 @@ Text: ${prompt}
           'int64',
           new BigInt64Array(tokenTypeIdsArray.map(type => BigInt(type as number))),
           [batchSize, paddedLength]
-        ),
+        )
       };
     } else {
       throw new Error('Runtime not loaded. Call initialize() first.');
@@ -776,7 +751,7 @@ Text: ${prompt}
     _outputs: Record<string, unknown>,
     _originalText: string,
     _tokens: ModelInputs
-  ): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
+  ): Array<{ text: string; label: string; confidence: number; start: number;, end: number }> {
     // This is a simplified implementation
     // In production, you would:
     // 1. Apply softmax to get probabilities
@@ -785,7 +760,7 @@ Text: ${prompt}
     const mockEntities = [
       { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
       { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },
-      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 },
+      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 }
     ];
     // Simplified mock: return all mock entities for now, as 'entity' is not defined in this scope
     return mockEntities;
@@ -796,12 +771,12 @@ Text: ${prompt}
    */
   private processClassificationOutputs(
     _outputs: Record<string, unknown>
-  ): Array<{ label: string; confidence: number }> {
+  ): Array<{ label: string;, confidence: number }> {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
       { label: 'court_decision', confidence: 0.12 },
-      { label: 'legal_brief', confidence: 0.03 },
+      { label: 'legal_brief', confidence: 0.03 }
     ];
     return legalDocTypes.sort((a, b) => b.confidence - a.confidence);
   }
@@ -818,7 +793,7 @@ Text: ${prompt}
         throw new Error('Triton output format unexpected, cannot extract embeddings.');
       }
       const poolerOutput = outputs.find(
-        (o: { name: string }) => o.name === this.modelConfig.outputSpec.poolerOutput!.name
+        (o: {, name: string }) => o.name === this.modelConfig.outputSpec.poolerOutput!.name
       );
       if (poolerOutput && poolerOutput.data) {
         return Array.from(poolerOutput.data as number[]);
@@ -866,7 +841,7 @@ Text: ${prompt}
         totalInferences: this.performanceMetrics.totalInferences.toString(),
         avgLatency: this.performanceMetrics.averageLatency.toFixed(2),
         successRate: this.performanceMetrics.successRate.toFixed(3),
-        lastUsed: this.performanceMetrics.lastUsed.toISOString(),
+        lastUsed: this.performanceMetrics.lastUsed.toISOString()
       });
     } catch (error) {
       console.error('Error logging performance metrics to Redis:', error);
@@ -876,9 +851,7 @@ Text: ${prompt}
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(): {
-    totalInferences: number;
-    averageLatency: number;
+  getPerformanceMetrics(): { totalInferences: number;, averageLatency: number;
     successRate: number;
     lastUsed: Date;
   } {
@@ -925,7 +898,7 @@ export type {
   LegalEmbeddingResult,
   ONNXModelConfig,
   GemmaResponse,
-  IntentResult,
+  IntentResult
 }
 // Export class for testing and extension
 export default GalbertService;

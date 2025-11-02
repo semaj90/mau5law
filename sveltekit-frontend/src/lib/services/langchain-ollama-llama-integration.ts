@@ -14,30 +14,20 @@ import type { Document } from 'langchain/document';
 import { PromptTemplate } from '@langchain/core/prompts';
 import crypto from 'crypto';
 
-export interface LangChainConfig {
-  ollamaBaseUrl: string;
-  models: {
-    chat: 'gemma3-legal';
-    embedding: 'embeddinggemma' | 'nomic-embed-text';
+export interface LangChainConfig { ollamaBaseUrl: string;, models: { chat: 'gemma3-legal';, embedding: 'embeddinggemma' | 'nomic-embed-text';
   };
-  gpu: {
-    enabled: boolean;
-    device: 'RTX3060Ti';
+  gpu: { enabled: boolean;, device: 'RTX3060Ti';
     llamaCppConfig: {
       ngl: number; // GPU layers,
       contextSize: number;
       batchSize: number;
     };
   };
-  goMicroservice: {
-    enhancedRAGUrl: string;
-    uploadServiceUrl: string;
+  goMicroservice: { enhancedRAGUrl: string;, uploadServiceUrl: string;
     quicProxyUrl: string;
   };
 }
-export interface ProcessingResult {
-  text: string;
-  embedding: number[];
+export interface ProcessingResult { text: string;, embedding: number[];
   summary: string;
   entities: string[];
   confidence: number;
@@ -45,9 +35,7 @@ export interface ProcessingResult {
   gpuUtilization?: number;
 }
 
-interface GpuParsingResult {
-  confidence: number;
-  gpuUtilization: number;
+interface GpuParsingResult { confidence: number;, gpuUtilization: number;
   entities: string[];
 }
 
@@ -63,9 +51,7 @@ interface GoApiResponse {
   sourceDocuments?: Document[];
 }
 
-interface RagResult {
-  answer: string;
-  sources: Document[];
+interface RagResult { answer: string;, sources: Document[];
   confidence: number;
 }
 
@@ -85,7 +71,7 @@ export class LangChainOllamaIntegration {
       ollamaBaseUrl: 'http://localhost:11434',
       models: {
         chat: 'gemma3-legal',
-        embedding: 'nomic-embed-text',
+        embedding: 'nomic-embed-text'
       },
       gpu: {
         enabled: true,
@@ -93,21 +79,21 @@ export class LangChainOllamaIntegration {
         llamaCppConfig: {
           ngl: 35, // Use 35 GPU layers for RTX 3060 Ti
           contextSize: 4096,
-          batchSize: 8,
-        },
+          batchSize: 8
+        }
       },
       goMicroservice: {
         enhancedRAGUrl: 'http://localhost:8094',
         uploadServiceUrl: 'http://localhost:8093',
-        quicProxyUrl: 'http://localhost:8095',
+        quicProxyUrl: 'http://localhost:8095'
       },
-      ...config,
+      ...config
     };
     // Initialize text splitter for document processing
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
-      separators: ['\n\n', '\n', '.', '!', '?', ');', ',', ' ', ''],
+      separators: ['\n\n', '\n', '.', '!', '?', ');', ',', ' ', '']
     });
   }
   /**
@@ -131,8 +117,8 @@ export class LangChainOllamaIntegration {
         baseUrl: this.config.ollamaBaseUrl,
         model: this.config.models.embedding,
         requestOptions: {
-          numGpu: this.config.gpu.llamaCppConfig.ngl,
-        },
+         , numGpu: this.config.gpu.llamaCppConfig.ngl
+        }
       });
       // Initialize vector store
       this.vectorStore = new MemoryVectorStore(this.embeddingModel);
@@ -155,12 +141,12 @@ export class LangChainOllamaIntegration {
     const services = [
       { name: 'Enhanced RAG', url: this.config.goMicroservice.enhancedRAGUrl },
       { name: 'Upload Service', url: this.config.goMicroservice.uploadServiceUrl },
-      { name: 'QUIC Proxy', url: this.config.goMicroservice.quicProxyUrl },
+      { name: 'QUIC Proxy', url: this.config.goMicroservice.quicProxyUrl }
     ];
     for (const service of services) {
       try {
         const response = await fetch(`${service.url}/health`, {
-          signal: AbortSignal.timeout(3000),
+          signal: AbortSignal.timeout(3000)
         });
         if (response.ok) {
           console.log(`  ✅ ${service.name}: Connected`);
@@ -222,8 +208,8 @@ export class LangChainOllamaIntegration {
               title,
               chunkIndex: index,
               totalChunks: chunks.length,
-              documentId: crypto.randomUUID(),
-            },
+              documentId: crypto.randomUUID()
+            }
           }))
         );
         console.log(`📚 Stored ${chunks.length} chunks in vector database`);
@@ -236,7 +222,7 @@ export class LangChainOllamaIntegration {
         entities,
         confidence: gpuParsingResult?.confidence || 0.85,
         processingTime,
-        gpuUtilization: gpuParsingResult?.gpuUtilization,
+        gpuUtilization: gpuParsingResult?.gpuUtilization
       };
       console.log(`✅ Document processing complete (${processingTime.toFixed(2)}ms)`);
       return result;
@@ -255,13 +241,13 @@ export class LangChainOllamaIntegration {
     try {
       const response = await fetch(`${this.config.goMicroservice.enhancedRAGUrl}/api/gpu-parse`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           content,
           title,
           model: this.config.models.chat,
-          gpu_config: this.config.gpu.llamaCppConfig,
-        }),
+          gpu_config: this.config.gpu.llamaCppConfig
+        })
       });
       if (!response.ok) {
         throw new Error(`GPU parsing service error: ${response.status}`);
@@ -271,14 +257,14 @@ export class LangChainOllamaIntegration {
       return {
         confidence: result.confidence || 0.8,
         gpuUtilization: result.gpu_utilization || 0,
-        entities: result.entities || [],
+        entities: result.entities || []
       };
     } catch (error: any) {
       console.warn('⚠️ GPU parsing via Go microservice failed, using local fallback:', error);
       return {
         confidence: 0.7,
         gpuUtilization: 0,
-        entities: [],
+        entities: []
       };
     }
   }
@@ -294,8 +280,7 @@ export class LangChainOllamaIntegration {
       Focus on key legal concepts, obligations, rights, and potential issues.
       Document:
       {content}
-      Legal Summary:
-    `);
+      Legal, Summary: ');
     try {
       const chain = summaryPrompt.pipe(this.chatModel).pipe(new StringOutputParser());
       const result = await chain.invoke({ content: content.slice(0, 4000) }); // Limit for context
@@ -341,21 +326,19 @@ export class LangChainOllamaIntegration {
       const results = await this.vectorStore.similaritySearch(query, maxResults);
       // Convert to SearchResult format
       const searchResults: SearchResult[] = results.map((doc, index) => {
-        const result = {
-          item: {
-            id: doc.metadata.documentId || `doc-${index}`,
+        const result = { item: {, id: doc.metadata.documentId || `doc-${index}`,
             title: doc.metadata.title || 'Untitled',
             content: doc.pageContent,
             keywords: [],
-            metadata: doc.metadata,
+            metadata: doc.metadata
           },
           score: 1 - (doc.metadata.score || 0.8), // Convert similarity to score
           similarity: doc.metadata.score || 0.8,
-          refIndex: index,
+          refIndex: index
         };
         return {
           ...result,
-          toJSON: () => result,
+          toJSON: () => result
         };
       });
       console.log(`📊 Semantic search complete: ${searchResults.length} results`);
@@ -396,19 +379,19 @@ export class LangChainOllamaIntegration {
   private async callGoMicroserviceRAG(
     question: string,
     context: string[]
-  ): Promise<{ success: boolean; data: RagResult | null }> {
+  ): Promise<{ success: boolean;, data: RagResult | null }> {
     try {
       const response = await fetch(`${this.config.goMicroservice.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          query: question,
+         , query: question,
           context,
           model: this.config.models.chat,
           embedding_model: this.config.models.embedding,
           gpu_config: this.config.gpu.llamaCppConfig,
-          use_gpu: this.config.gpu.enabled,
-        }),
+          use_gpu: this.config.gpu.enabled
+        })
       });
       if (!response.ok) {
         throw new Error(`Enhanced RAG service error: ${response.status}`);
@@ -420,8 +403,8 @@ export class LangChainOllamaIntegration {
         data: {
           answer: result.response || result.answer || '',
           sources: result.sources || [],
-          confidence: result.confidence || 0.8,
-        },
+          confidence: result.confidence || 0.8
+        }
       };
     } catch (error: any) {
       console.warn('⚠️ Go microservice RAG failed:', error);
@@ -440,7 +423,7 @@ export class LangChainOllamaIntegration {
       if (context.length > 0) {
         const contextDocs = context.map((text, index) => ({
           pageContent: text,
-          metadata: { source: `context-${index}`, type: 'context' },
+          metadata: {, source: `context-${index}`, type: 'context' }
         }));
         await this.vectorStore.addDocuments(contextDocs);
       }
@@ -450,8 +433,7 @@ export class LangChainOllamaIntegration {
           this.chatModel as any, // Workaround for library type issue
           this.vectorStore.asRetriever({
             k: 5, // Retrieve top 5 relevant documents
-            searchType: 'similarity',
-          })
+            searchType: `similarity` })
         );
       }
       // Execute RAG query
@@ -494,7 +476,7 @@ export class LangChainOllamaIntegration {
    * Batch process multiple documents
    */
   async batchProcessDocuments(
-    documents: Array<{ content: string; title: string }>,
+    documents: Array<{, content: string; title: string }>,
     options: {
       useGPUAcceleration?: boolean;
       generateSummaries?: boolean;
@@ -515,7 +497,7 @@ export class LangChainOllamaIntegration {
           generateSummary: options.generateSummaries,
           extractEntities: options.extractEntities,
           useGPUParsing: options.useGPUAcceleration,
-          storeInVector: true,
+          storeInVector: true
         })
       );
       const batchResults = await Promise.all(batchPromises);
@@ -549,19 +531,18 @@ export class LangChainOllamaIntegration {
       - Highlight any potential legal issues or precedents
       - Use professional legal terminology
       - If uncertain, state limitations clearly
-      Answer:
-    `;
+      Answer: ';
     const prompt = PromptTemplate.fromTemplate(legalPrompt);
     this.qaChain = RetrievalQAChain.fromLLM(
       this.chatModel as any, // Workaround for library type issue
       this.vectorStore.asRetriever({
         k: 8, // Retrieve more documents for legal context
         searchType: 'similarity_score_threshold',
-        scoreThreshold: 0.6,
+        scoreThreshold: 0.6
       }),
       {
         prompt,
-        returnSourceDocuments: true,
+        returnSourceDocuments: true
       }
     );
     console.log('⚖️ Custom legal RAG chain configured');
@@ -574,22 +555,22 @@ export class LangChainOllamaIntegration {
       initialized: this.isInitialized,
       models: {
         chat: this.chatModel ? 'ready' : 'not_initialized',
-        embedding: this.embeddingModel ? 'ready' : 'not_initialized',
+        embedding: this.embeddingModel ? 'ready' : 'not_initialized'
       },
       vectorStore: {
         ready: !!this.vectorStore,
-        documentCount: this.vectorStore ? 'unknown' : 0,
+        documentCount: this.vectorStore ? 'unknown' : 0
       },
       gpu: {
         enabled: this.config.gpu.enabled,
         device: this.config.gpu.device,
-        layers: this.config.gpu.llamaCppConfig.ngl,
+        layers: this.config.gpu.llamaCppConfig.ngl
       },
       goServices: {
         enhancedRAG: this.config.goMicroservice.enhancedRAGUrl,
         uploadService: this.config.goMicroservice.uploadServiceUrl,
-        quicProxy: this.config.goMicroservice.quicProxyUrl,
-      },
+        quicProxy: this.config.goMicroservice.quicProxyUrl
+      }
     };
   }
   /**
@@ -609,7 +590,7 @@ export const langChainOllamaService = new LangChainOllamaIntegration({
   ollamaBaseUrl: 'http://localhost:11434',
   models: {
     chat: 'gemma3-legal',
-    embedding: 'nomic-embed-text',
+    embedding: 'nomic-embed-text'
   },
   gpu: {
     enabled: true,
@@ -617,14 +598,13 @@ export const langChainOllamaService = new LangChainOllamaIntegration({
     llamaCppConfig: {
       ngl: 35, // RTX 3060 Ti optimized
       contextSize: 4096,
-      batchSize: 8,
-    },
+      batchSize: 8
+    }
   },
   goMicroservice: {
-    enhancedRAGUrl: 'http://localhost:8094',
+   , enhancedRAGUrl: 'http://localhost:8094',
     uploadServiceUrl: 'http://localhost:8093',
-    quicProxyUrl: 'http://localhost:8095',
-  },
+    quicProxyUrl: `http://localhost:8095` }
 });
 // Auto-initialize on import (browser only)
 if (typeof window !== 'undefined') {

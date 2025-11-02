@@ -6,18 +6,14 @@ import type { MinIOCacheMetrics } from '$lib/stores/gpu-summary-store.svelte.ts'
 import { trackMinIOOperation } from '$lib/stores/gpu-summary-store.svelte.ts';
 import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte.ts';
 }
-export interface MinIOConfig {
-  endpoint: string;
-  accessKey: string;
+export interface MinIOConfig { endpoint: string;, accessKey: string;
   secretKey: string;
   region: string;
   useSSL: boolean;
   port?: number;
 }
 }
-export interface CacheConfig {
-  defaultBucket: string;
-  compressionEnabled: boolean;
+export interface CacheConfig { defaultBucket: string;, compressionEnabled: boolean;
   compressionLevel: number;
   maxObjectSize: number;
   ttl: number;
@@ -25,12 +21,8 @@ export interface CacheConfig {
   enableMetrics: boolean;
   batchSize: number;
 }
-export interface CacheObject {
-  key: string;
-  data: Uint8Array | string | ArrayBuffer;
-  metadata: {
-    contentType: string;
-    size: number;
+export interface CacheObject { key: string;, data: Uint8Array | string | ArrayBuffer;
+  metadata: { contentType: string;, size: number;
     compressed: boolean;
     compressionRatio?: number;
     timestamp: number;
@@ -39,9 +31,7 @@ export interface CacheObject {
     checksum?: string;
   }; // Added semicolon
 }
-export interface CacheStats {
-  totalOperations: number;
-  hits: number;
+export interface CacheStats { totalOperations: number;, hits: number;
   misses: number;
   hitRate: number;
   totalDataTransferred: number;
@@ -50,9 +40,7 @@ export interface CacheStats {
   errorRate: number;
   lastUpdate: number;
 }
-export interface CompressionResult {
-  compressed: Uint8Array;
-  originalSize: number;
+export interface CompressionResult { compressed: Uint8Array;, originalSize: number;
   compressedSize: number;
   ratio: number;
   algorithm: string;
@@ -128,8 +116,8 @@ export class GPUCompressionService {
     this.compressionPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: compressionModule,
-        entryPoint: 'main',
+       , module: compressionModule,
+        entryPoint: 'main'
       }
     });
   }
@@ -236,8 +224,7 @@ export class GPUCompressionService {
       originalSize: data.length, // Corrected
       compressedSize: result.length, // Corrected
       ratio: result.length / data.length, // Corrected
-      algorithm: 'cpu-rle'
-    };
+      algorithm: `cpu-rle` };
   }
   /**
    * Decompress data
@@ -466,9 +453,7 @@ export class MinIOGPUCacheService {
   getStats(): CacheStats & { // Corrected parameter
     cacheSize: number;
     memoryUsage: number;
-    compressionStats: {
-      totalSavings: number;
-      averageRatio: number;
+    compressionStats: { totalSavings: number;, averageRatio: number;
       compressedObjects: number;
     }; // Added semicolon
   } {

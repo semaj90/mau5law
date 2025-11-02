@@ -424,7 +424,7 @@ import type { Document } from '$lib/types';
                 {@const Icon = mode.icon}
                 <button
                   onclick={() => searchMode = mode.id}
-                  class="inline-flex" items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
+                  class="inline-flex items-center px-3" py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
                   <Icon class="h-3 w-3 mr-1" />
@@ -753,7 +753,7 @@ import type { Document } from '$lib/types';
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = $state(false); }}
+            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />

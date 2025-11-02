@@ -11,13 +11,11 @@ import { qloraTrainingService, userAnalytics as qloraAnalytics } from './qlora-t
 import { recommendationOrchestrator } from './recommendation-orchestrator.js';
 import { MoogleGraphSynthesizer } from '../ai/moogle-graph-synthesizer.js';
 
-export interface UserHistoryEntry {
-  id: string;
-  userId: string;
+export interface UserHistoryEntry { id: string;, userId: string;
   sessionId: string;
   timestamp: number;
   action: {
-    type:
+    type:;
       | 'document_open'
       | 'search'
       | 'ai_query'
@@ -31,17 +29,13 @@ export interface UserHistoryEntry {
     parameters: Record<string, unknown>;
     context: Record<string, unknown>;
   };
-  outcome: {
-    success: boolean;
-    duration: number;
+  outcome: { success: boolean;, duration: number;
     result?: any;
     error?: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
   };
-  environment: {
-    page: string;
-    viewport: { width: number; height: number };
+  environment: { page: string;, viewport: { width: number;, height: number };
     userAgent: string;
     timestamp: number;
   };
@@ -53,9 +47,7 @@ export interface UserHistoryEntry {
   };
 }
 
-export interface UserAnalyticsProfile {
-  userId: string;
-  createdAt: number;
+export interface UserAnalyticsProfile { userId: string;, createdAt: number;
   lastUpdated: number;
   patterns: {
     activeHours: Record<number, number>;
@@ -63,62 +55,46 @@ export interface UserAnalyticsProfile {
     commonWorkflows: Array<Record<string, unknown>>;
     documentPreferences: {
       types: Record<string, number>;
-      complexityRange: { min: number; max: number; preferred: number };
+      complexityRange: { min: number; max: number;, preferred: number };
       averageProcessingTime: Record<string, number>;
     };
-    searchPatterns: {
-      commonTerms: string[]; // tightened
-      queryComplexity: number;
+    searchPatterns: { commonTerms: string[]; // tightened, queryComplexity: number;
       refinementRate: number;
     };
   };
-  performance: {
-    overallProductivity: number;
-    taskCompletionRate: number;
+  performance: { overallProductivity: number;, taskCompletionRate: number;
     averageTaskDuration: number;
     accuracyRate: number;
     learningVelocity: number;
     expertiseLevel: 'novice' | 'intermediate' | 'advanced' | 'expert';
   };
-  reinforcement: {
-    rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[]
-    actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
+  reinforcement: { rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number;, averageReward: number }>;
     explorationTendency: number;
     adaptationRate: number;
-    convergenceMetrics: {
-      stability: number;
-      consistency: number;
+    convergenceMetrics: { stability: number;, consistency: number;
       improvement: number;
     };
   };
-  predictions: {
-    nextLikelyActions: NextLikelyAction[]; // tightened
-    optimalWorkflow: string[];
+  predictions: { nextLikelyActions: NextLikelyAction[]; // tightened, optimalWorkflow: string[];
     recommendedComplexity: number;
     estimatedTaskTimes: Record<string, number>;
     riskFactors: string[]; // tightened
   };
 }
 
-export interface ProductivityCache {
-  id: string;
-  userId: string;
+export interface ProductivityCache { id: string;, userId: string;
   context: {
     caseId?: string;
     documentTypes: string[];
     complexity: number;
     timeframe: string;
   };
-  cached: {
-    insights: any[];        // tightened from any[]
-    connections: any[];     // tightened from any[]
+  cached: { insights: any[];        // tightened from any[], connections: any[];     // tightened from any[]
     recommendations: any[]; // tightened from any[]
     analysis: any;          // tightened from any
     timestamp: number;
   };
-  performance: {
-    cacheHitRate: number;
-    averageResponseTime: number;
+  performance: { cacheHitRate: number;, averageResponseTime: number;
     concurrentProcesses: number;
   };
 }
@@ -126,43 +102,29 @@ export interface ProductivityCache {
 // New: explicit types to avoid `any`
 type ActionType = UserHistoryEntry['action']['type'];
 
-interface GraphNode {
-  id: string;
-  type: ActionType;
-  properties: {
-    target: string;
-    frequency: number;
+interface GraphNode { id: string;, type: ActionType;
+  properties: { target: string;, frequency: number;
     avgDuration: number;
     successRate: number;
     lastAccessed: number;
   };
-  metadata: {
-    complexity: number;
-    timestamp: number;
+  metadata: { complexity: number;, timestamp: number;
   };
   score?: number;
 }
 
-interface GraphEdge {
-  id: string;
-  source: string;
+interface GraphEdge { id: string;, source: string;
   target: string;
   type: 'sequence';
   weight: number;
-  properties: {
-    timeDelta: number;
-    success: boolean;
+  properties: { timeDelta: number;, success: boolean;
   };
 }
 
-interface GraphPath {
-  id: string;
-  nodes: GraphNode[];
+interface GraphPath { id: string;, nodes: GraphNode[];
   edges: GraphEdge[];
   totalScore: number;
-  metadata: {
-    pathType: string;
-    sessionId: string;
+  metadata: { pathType: string;, sessionId: string;
     userId: string;
   };
 }
@@ -204,18 +166,14 @@ interface PatternPayload {
 interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {}
 
 // New: typed reward entry (replaces Array<any> uses)
-interface RewardEntry {
-  timestamp: number;
-  reward: number;
+interface RewardEntry { timestamp: number;, reward: number;
   action: string;
   context?: string;
   state?: string; // added to carry encoded RL state
 }
 
 // New: recommendation types to avoid `any` casts
-interface Recommendation {
-  id: string;
-  type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
+interface Recommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
   title: string;
   description?: string;
   confidence?: number;
@@ -294,10 +252,10 @@ export class UserAnalyticsRLIntegration {
           type: 'init',
           workerId: i,
           config: {
-            enableReinforcement: true,
+           , enableReinforcement: true,
             cacheStrategy: 'aggressive',
-            concurrentProcessing: true,
-          },
+            concurrentProcessing: true
+          }
         });
         this.processingWorkers.push(worker);
       }
@@ -307,10 +265,10 @@ export class UserAnalyticsRLIntegration {
       this.cacheWorker.postMessage({
         type: 'init',
         config: {
-          maxCacheSize: 500,
+         , maxCacheSize: 500,
           ttl: 30 * 60 * 1000, // 30 minutes
           cleanupInterval: 5 * 60 * 1000, // 5 minutes
-        },
+        }
       });
     } catch (error) {
       console.error('Failed to initialize workers:', error);
@@ -338,28 +296,28 @@ export class UserAnalyticsRLIntegration {
         type: actionType,
         target,
         parameters,
-        context,
+        context
       },
       outcome: {
         success: false, // Will be updated when action completes
-        duration: 0,
+        duration: 0
       },
       environment: {
         // guard browser-only globals
         page: browser ? window.location.pathname : '/server',
         viewport: {
           width: browser ? window.innerWidth : 0,
-          height: browser ? window.innerHeight : 0,
+          height: browser ? window.innerHeight : 0
         },
         userAgent: browser ? navigator.userAgent : 'server',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       metadata: {
         caseId: (context as any).caseId, // preserve previous behavior for optional fields
         documentIds: (context as any).documentIds || [],
         tags: (context as any).tags || [],
-        complexity: (context as any).complexity || 0.5,
-      },
+        complexity: (context as any).complexity || 0.5
+      }
     };
 
     // Add to history
@@ -374,7 +332,7 @@ export class UserAnalyticsRLIntegration {
   async completeAction(
     actionId: string,
     outcome: {
-      success: boolean;
+     , success: boolean;
       result?: any; // tightened from any -> unknown
       error?: string;
       userFeedback?: 'positive' | 'negative' | 'neutral';
@@ -392,8 +350,8 @@ export class UserAnalyticsRLIntegration {
           outcome: {
             ...entry.outcome,
             ...outcome,
-            duration: endTime - entry.timestamp,
-          },
+            duration: endTime - entry.timestamp
+          }
         };
         completedAction = updated;
         return updated;
@@ -419,14 +377,14 @@ export class UserAnalyticsRLIntegration {
       availableWorker.postMessage({
         type: 'process_action',
         action: {
-          id: action.id,
+         , id: action.id,
           type: action.action.type,
           target: action.action.target,
           parameters: action.action.parameters,
           context: action.action.context,
           timestamp: action.timestamp,
-          userId: action.userId,
-        },
+          userId: action.userId
+        }
       });
     }
   }
@@ -455,7 +413,7 @@ export class UserAnalyticsRLIntegration {
         profile.reinforcement.actionPreferences[actionKey] = {
           weight: 0,
           successRate: 0,
-          averageReward: 0,
+          averageReward: 0
         };
       }
       const pref = profile.reinforcement.actionPreferences[actionKey];
@@ -475,8 +433,7 @@ export class UserAnalyticsRLIntegration {
     // Send to NES-RL agent in recommendation orchestrator (typed)
     const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
     if (recOrch.updateDetectiveContext) {
-      recOrch.updateDetectiveContext({
-        lastAnalysis: `RL update: ${actionKey} -> ${reward.toFixed(3)}`,
+      recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} -> ${reward.toFixed(3)}`,
         timeInMode: Date.now() - this.startTime,
         encodedState: state, // include state so it's actually used by the orchestrator
       } as Record<string, unknown>);
@@ -498,7 +455,7 @@ export class UserAnalyticsRLIntegration {
       'evidence_upload': 8000,
       'analysis_run': 20000,
       'connection_made': 3000,
-      'insight_generated': 12000,
+      'insight_generated': 12000
     };
     const optimalTime = optimalTimes[action.action.type] ?? 5000;
     const timeRatio = Math.min(optimalTime / Math.max(action.outcome.duration || 1000, 1000), 2);
@@ -532,11 +489,11 @@ export class UserAnalyticsRLIntegration {
         success: action.outcome.success,
         duration: action.outcome.duration,
         context: {
-          caseId: action.metadata.caseId,
+         , caseId: action.metadata.caseId,
           complexity: action.metadata.complexity,
-          page: action.environment.page,
-        },
-      },
+          page: action.environment.page
+        }
+      }
     });
   }
   /**
@@ -558,12 +515,12 @@ export class UserAnalyticsRLIntegration {
         {
           layout: 'legal-context',
           reinforcementLearning: {
-            enabled: true,
+           , enabled: true,
             showTrainingProgress: false,
             highlightOptimalPaths: true,
             showRewardHeatmap: true,
-            qValueVisualization: false,
-          },
+            qValueVisualization: false
+          }
         },
         profile,
         reinforcementData
@@ -586,8 +543,8 @@ export class UserAnalyticsRLIntegration {
           metadata: {
             basedOnAction: actionId,
             reinforcementScore: insight.reinforcementScore,
-            productivityImpact: insight.productivityImpact,
-          },
+            productivityImpact: insight.productivityImpact
+          }
         });
       }
     } catch (error) {
@@ -613,13 +570,13 @@ export class UserAnalyticsRLIntegration {
             frequency: 1,
             avgDuration: action.outcome.duration,
             successRate: action.outcome.success ? 1 : 0,
-            lastAccessed: action.timestamp,
+            lastAccessed: action.timestamp
           },
           metadata: {
-            complexity: action.metadata.complexity ?? 0.5,
-            timestamp: action.timestamp,
+           , complexity: action.metadata.complexity ?? 0.5,
+            timestamp: action.timestamp
           },
-          score: action.outcome.success ? 0.8 : 0.3,
+          score: action.outcome.success ? 0.8 : 0.3
         });
       } else {
         const node = nodeMap.get(nodeId)!;
@@ -641,8 +598,8 @@ export class UserAnalyticsRLIntegration {
         weight: 1 / Math.max(1, (actions[i + 1].timestamp - actions[i].timestamp) / 1000),
         properties: {
           timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
-          success: !!(actions[i].outcome.success && actions[i + 1].outcome.success),
-        },
+          success: !!(actions[i].outcome.success && actions[i + 1].outcome.success)
+        }
       });
     }
     // Create a single path from all nodes and edges
@@ -654,8 +611,8 @@ export class UserAnalyticsRLIntegration {
       metadata: {
         pathType: 'user_workflow',
         sessionId: this.sessionId,
-        userId: this.userId,
-      },
+        userId: this.userId
+      }
     });
     return paths;
   }
@@ -690,7 +647,7 @@ export class UserAnalyticsRLIntegration {
         priority: 'medium',
         reinforcementScore: topNode.pageRankScore ?? 0,
         productivityImpact: 0.7,
-        action: () => this.suggestWorkflowOptimization(topNode.id),
+        action: () => this.suggestWorkflowOptimization(topNode.id)
       });
     }
     // Identify workflow bottlenecks
@@ -706,7 +663,7 @@ export class UserAnalyticsRLIntegration {
         priority: 'high',
         reinforcementScore: -0.5,
         productivityImpact: 0.9,
-        action: () => this.provideOptimizationTips(slowNodes[0].id),
+        action: () => this.provideOptimizationTips(slowNodes[0].id)
       });
     }
     // Suggest next best actions
@@ -726,14 +683,14 @@ export class UserAnalyticsRLIntegration {
         priority: 'low',
         reinforcementScore: 0.3,
         productivityImpact: 0.5,
-        action: () => this.executeNextAction(nextAction.action),
+        action: () => this.executeNextAction(nextAction.action)
       });
     }
     return insights;
   }
 
   // Worker message handlers
-  private handleWorkerMessage(_workerId: number, data: { type: string; payload?: any }) {
+  private handleWorkerMessage(_workerId: number, data: {, type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
       case 'analytics_updated':
@@ -755,7 +712,7 @@ export class UserAnalyticsRLIntegration {
     }
   }
 
-  private handleCacheMessage(data: { type: string; payload?: any }) {
+  private handleCacheMessage(data: {, type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
       case 'cache_updated':
@@ -802,13 +759,13 @@ export class UserAnalyticsRLIntegration {
         documentPreferences: {
           types: {},
           complexityRange: { min: 0.2, max: 0.8, preferred: 0.5 },
-          averageProcessingTime: {},
+          averageProcessingTime: {}
         },
         searchPatterns: {
           commonTerms: [],
           queryComplexity: 0.5,
-          refinementRate: 0.2,
-        },
+          refinementRate: 0.2
+        }
       },
       performance: {
         overallProductivity: 0.5,
@@ -816,22 +773,21 @@ export class UserAnalyticsRLIntegration {
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
-        expertiseLevel: 'novice',
-      },
+        expertiseLevel: 'novice` },
       reinforcement: {
         rewardHistory: [],
         actionPreferences: {},
         explorationTendency: 0.3,
         adaptationRate: 0.1,
-        convergenceMetrics: { stability: 0.5, consistency: 0.5, improvement: 0.5 },
+        convergenceMetrics: { stability: 0.5, consistency: 0.5, improvement: 0.5 }
       },
       predictions: {
         nextLikelyActions: [],
         optimalWorkflow: [],
         recommendedComplexity: 0.5,
         estimatedTaskTimes: {},
-        riskFactors: [],
-      },
+        riskFactors: []
+      }
     };
   }
   private handlePatternIdentified(pattern: PatternPayload) {
@@ -840,11 +796,11 @@ export class UserAnalyticsRLIntegration {
       id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       type: 'ai',
       title: 'Usage Pattern Identified',
-      description: `New pattern detected: ${pattern.description ?? 'unspecified'}`,
+      description: 'New pattern; detected: ${pattern.description ?? 'unspecified` }`,
       confidence: pattern.confidence ?? 0.5,
       priority: 'low',
       source: 'user-analytics-rl',
-      createdAt: Date.now(),
+      createdAt: Date.now()
     });
   }
 
@@ -919,7 +875,7 @@ export class UserAnalyticsRLIntegration {
     console.log('Providing optimization tips for:', nodeId);
   }
   private executeNextAction(action: string) {
-    console.log('Executing suggested next action:', action);
+    console.log('Executing suggested next action: `, action);
   }
   // Getters for stores
   private getUserHistory(): UserHistoryEntry[] {
@@ -951,9 +907,7 @@ export class UserAnalyticsRLIntegration {
     this.userHistory.set([]);
     localStorage.removeItem(`user_analytics_${this.userId}`);
   }
-  public async exportData(): Promise<{
-    userId: string;
-    history: UserHistoryEntry[];
+  public async exportData(): Promise<{ userId: string;, history: UserHistoryEntry[];
     analytics: UserAnalyticsProfile | null;
     exportedAt: number;
   }> {
@@ -961,7 +915,7 @@ export class UserAnalyticsRLIntegration {
       userId: this.userId,
       history: this.getUserHistory(),
       analytics: this.getAnalyticsProfile(),
-      exportedAt: Date.now(),
+      exportedAt: Date.now()
     };
   }
   public isCurrentlyProcessing(): boolean {

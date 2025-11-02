@@ -42,19 +42,13 @@ const nativeServiceManager = nativeServiceManagerRaw as unknown as NativeService
 const flashAttentionProcessor = flashAttentionProcessorRaw as unknown as FlashAttentionProcessorType;
 const concurrentSearch = concurrentSearchRaw as unknown as ConcurrentSearchType;
 
-export interface ErrorProcessingPipeline {
-  stage: 'initializing' | 'scanning' | 'indexing' | 'processing' | 'applying' | 'completed' | 'error';
-  progress: number;
+export interface ErrorProcessingPipeline { stage: 'initializing' | 'scanning' | 'indexing' | 'processing' | 'applying' | 'completed' | 'error';, progress: number;
   currentTask: string;
-  errors: {
-    total: number;
-    processed: number;
+  errors: { total: number;, processed: number;
     fixed: number;
     failed: number;
   };
-  performance: {
-    start_time: number;
-    processing_time: number;
+  performance: { start_time: number;, processing_time: number;
     gpu_utilization: number;
     tokens_per_second: number;
   };
@@ -74,7 +68,7 @@ export class CompleteGPUErrorPipeline {
       progress: 0,
       currentTask: 'Ready to start',
       errors: { total: 0, processed: 0, fixed: 0, failed: 0 },
-      performance: { start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 },
+      performance: { start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 }
     };
   }
 
@@ -135,7 +129,7 @@ export class CompleteGPUErrorPipeline {
       const endpoint = '/api/check'; // keep relative for dev server proxy; change if needed
       const checkResponse = await fetch(endpoint, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       });
       if (checkResponse.ok) {
         const checkOutput = await checkResponse.text();
@@ -237,7 +231,7 @@ export class CompleteGPUErrorPipeline {
     this.pipeline.currentTask = 'Pipeline completed successfully';
     this.pipeline.performance.processing_time = Date.now() - this.pipeline.performance.start_time;
     console.log('🎉 Stage 6: Pipeline completed!');
-    console.log('📊 Final Results:');
+    console.log('📊 Final Results: `);
     console.log(`   - Total errors: ${this.pipeline.errors.total}`);
     console.log(`   - Successfully fixed: ${this.pipeline.errors.fixed}`);
     console.log(`   - Failed fixes: ${this.pipeline.errors.failed}`);
@@ -246,7 +240,7 @@ export class CompleteGPUErrorPipeline {
     console.log(`   - Tokens/second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}`);
   }
 
-  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string; line: number }> {
+  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string;, line: number }> {
     if (!output) return [];
     const errorLines = output
       .split('\n')
@@ -258,18 +252,18 @@ export class CompleteGPUErrorPipeline {
         code: tsCodeMatch ? `TS${tsCodeMatch[1]}` : `TS-${index}`,
         message: line.split(': ').slice(1).join(': ').trim(),
         file: fileMatch ? fileMatch[1].trim() : 'unknown',
-        line: fileMatch ? parseInt(fileMatch[2], 10) : 0,
+        line: fileMatch ? parseInt(fileMatch[2], 10) : 0
       };
     });
   }
 
-  private generateMockErrors(count: number): Array<{ code: string; message: string; file: string; line: number }> {
+  private generateMockErrors(count: number): Array<{ code: string; message: string; file: string;, line: number }> {
     const errorTypes = [
-      { code: 'TS2322', message: "Type 'string' is not assignable to type: 'number'", category: 'type' },
-      { code: 'TS2307', message: "Cannot find module: 'missing-module'", category: 'import' },
-      { code: 'TS7053', message: 'Element implicitly has an: "any" type', category: 'type' },
-      { code: 'TS2339', message: "Property 'prop' does not exist", category: 'binding' },
-      { code: 'TS1005', message: "';' expected", category: 'syntax' },
+      { code: 'TS2322', message: "Type 'string' is not assignable to; type: 'number'", category: 'type' },
+      { code: 'TS2307', message: "Cannot find; module: 'missing-module'", category: 'import' },
+      { code: 'TS7053', message: 'Element implicitly has; an: "any" type', category: 'type' },
+      { code: 'TS2339', message: "Property 'prop' does not exist", category: 'binding` },
+      { code: 'TS1005', message: "';' expected", category: `syntax` }
     ];
     const limit = Math.min(Math.max(0, Math.floor(count || 0)), 100);
     return Array.from({ length: limit }, (_, index) => {
@@ -278,7 +272,7 @@ export class CompleteGPUErrorPipeline {
         code: errorType.code,
         message: errorType.message,
         file: `src/lib/component-${index}.svelte`,
-        line: Math.floor(Math.random() * 100) + 1,
+        line: Math.floor(Math.random() * 100) + 1
       };
     });
   }
@@ -348,8 +342,8 @@ ${servicesList}
 - Concurrent Search: ${typeof concurrentSearch.searchErrors === 'function' ? '✅ Operational' : '❌'}
 - FlashAttention2: ${typeof flashAttentionProcessor.processLiveErrors === 'function' ? '✅ Operational' : '❌'}
 - Native Services: ${typeof nativeServiceManager.getSystemOverview === 'function' ? '✅ Deployed' : '❌'}
-- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : '❌'}
-**Status: ${this.pipeline.stage === 'completed' ? '🎉 COMPLETE' : '🔄 IN PROGRESS'}**
+- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : '❌` }
+**Status: ${this.pipeline.stage === 'completed' ? '🎉 COMPLETE' : `🔄 IN PROGRESS` }**
 `;
   }
 }

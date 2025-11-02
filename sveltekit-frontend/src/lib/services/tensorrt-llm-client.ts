@@ -14,20 +14,18 @@ export const performanceMetrics: Writable<PerformanceMetrics> = writable({
   errorRate: 0,
   throughput: 0,
   simdEnabled: true,
-  quicEnabled: false,
+  quicEnabled: false
 });
 
 // Connection status store
-export const connectionStatus: Writable<{
-  tensorrt: boolean;
-  simd: boolean;
+export const connectionStatus: Writable<{ tensorrt: boolean;, simd: boolean;
   quic: boolean;
   grpc: boolean;
 }> = writable({
   tensorrt: false,
   simd: false,
   quic: false,
-  grpc: false,
+  grpc: false
 });
 
 class TensorRTLLMClient {
@@ -42,7 +40,7 @@ class TensorRTLLMClient {
     errorRate: 0,
     throughput: 0,
     simdEnabled: true,
-    quicEnabled: false,
+    quicEnabled: false
   };
   // Connection pools for maximum performance
   private httpPool: Map<string, Response> = new Map();
@@ -63,14 +61,14 @@ class TensorRTLLMClient {
       tensorrt: false,
       simd: false,
       quic: false,
-      grpc: false,
+      grpc: false
     };
     try {
       // Test TensorRT-LLM endpoint
       const tensorrtResp = await fetch(`${this.baseURL}/tensorrt/health`, {
         method: 'GET',
         // use AbortSignal.timeout if available
-        signal: this.getAbortSignalTimeout(5000),
+        signal: this.getAbortSignalTimeout(5000)
       } as RequestInit);
       status.tensorrt = !!tensorrtResp && tensorrtResp.ok;
     } catch (e) {
@@ -79,7 +77,7 @@ class TensorRTLLMClient {
     try {
       const simdResp = await fetch(`${this.baseURL}/simd/health`, {
         method: 'GET',
-        signal: this.getAbortSignalTimeout(5000),
+        signal: this.getAbortSignalTimeout(5000)
       } as RequestInit);
       status.simd = !!simdResp && simdResp.ok;
     } catch (e) {
@@ -88,7 +86,7 @@ class TensorRTLLMClient {
     try {
       const quicResp = await fetch(`${this.quicURL}/health`, {
         method: 'GET',
-        signal: this.getAbortSignalTimeout(5000),
+        signal: this.getAbortSignalTimeout(5000)
       } as RequestInit);
       status.quic = !!quicResp && quicResp.ok;
       this.metrics.quicEnabled = !!quicResp && quicResp.ok;
@@ -98,7 +96,7 @@ class TensorRTLLMClient {
     try {
       const grpcResp = await fetch(`${this.grpcURL}/health`, {
         method: 'GET',
-        signal: this.getAbortSignalTimeout(5000),
+        signal: this.getAbortSignalTimeout(5000)
       } as RequestInit);
       status.grpc = !!grpcResp && grpcResp.ok;
     } catch (e) {
@@ -159,14 +157,13 @@ class TensorRTLLMClient {
         'X-Request-ID': requestId,
         'X-Priority': options.priority || 'normal',
         'X-SIMD-Preferred': 'true',
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'no-cache'
       },
       body: JSON.stringify(optimizedRequest),
       signal: controller.signal,
       keepalive: true,
       mode: 'cors',
-      credentials: 'same-origin',
-    };
+      credentials: `same-origin` };
 
     // perform fetch and route to the proper handler
     const fetchPromise = fetch(endpoint, fetchOptions)
@@ -224,7 +221,7 @@ class TensorRTLLMClient {
     requestId: string
   ): Promise<LegalAIResponse> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error'}`);
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);
     }
     // Use optimized JSON parsing
     const result: LegalAIResponse = await this.parseResponseOptimized(response);
@@ -239,8 +236,7 @@ class TensorRTLLMClient {
       clientLatency: latency,
       requestId,
       simdOptimized: response.headers.get('X-SIMD-Optimized') === 'true',
-      quicUsed: response.headers.get('X-QUIC-Enabled') === 'true',
-    };
+      quicUsed: response.headers.get('X-QUIC-Enabled') === 'true` };
 
     return result;
   }
@@ -254,7 +250,7 @@ class TensorRTLLMClient {
     requestId: string
   ): AsyncGenerator<StreamingResponse, void, unknown> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error'}`);
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);
     }
     const reader = response.body?.getReader();
     if (!reader) {
@@ -280,8 +276,8 @@ class TensorRTLLMClient {
               metadata: {
                 requestId,
                 timestamp: Date.now(),
-                latency: performance.now() - startTime,
-              },
+                latency: performance.now() - startTime
+              }
             };
           } catch (parseError) {
             console.warn('Failed to parse streaming chunk:', parseError);
@@ -297,8 +293,8 @@ class TensorRTLLMClient {
             metadata: {
               requestId,
               timestamp: Date.now(),
-              latency: performance.now() - startTime,
-            },
+              latency: performance.now() - startTime
+            }
           };
         } catch (e) {
           // ignore final parse errors
@@ -321,7 +317,7 @@ class TensorRTLLMClient {
       return await response.json();
     } catch (error) {
       const text = await response.text();
-      throw new Error(`JSON parsing failed: ${error}. Response: ${text.substring(0, 200)}`);
+      throw new Error(`JSON parsing failed: ${error}., Response: ${text.substring(0, 200)}`);
     }
   }
 
@@ -335,8 +331,8 @@ class TensorRTLLMClient {
         ...(request.metadata || {}),
         simdPreferred: true,
         clientOptimized: true,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
   }
 
@@ -388,7 +384,7 @@ class TensorRTLLMClient {
             tokens: 0,
             latency_ms: 0,
             throughput_tps: 0,
-            metadata: { error: String(res.reason) },
+            metadata: {, error: String(res.reason) }
           } as LegalAIResponse);
         }
       }
@@ -433,9 +429,7 @@ class TensorRTLLMClient {
   /**
    * Health check for all endpoints
    */
-  async healthCheck(): Promise<{
-    tensorrt: boolean;
-    simd: boolean;
+  async healthCheck(): Promise<{ tensorrt: boolean;, simd: boolean;
     quic: boolean;
     grpc: boolean;
   }> {
@@ -462,8 +456,7 @@ export async function createLegalCompletion(
     useQuic?: boolean;
   } = {}
 ): Promise<LegalAIResponse | AsyncGenerator<StreamingResponse, void, unknown>> {
-  const request: LegalAIRequest = {
-    prompt: `Legal analysis request: ${prompt}`,
+  const request: LegalAIRequest = { prompt: `Legal analysis, request: ${prompt}`,
     max_tokens: options.maxTokens || 512,
     temperature: options.temperature ?? 0.1,
     top_k: 40,
@@ -471,12 +464,12 @@ export async function createLegalCompletion(
     stream: !!options.stream,
     metadata: {
       source: 'sveltekit-frontend',
-      timestamp: Date.now(),
-    },
+      timestamp: Date.now()
+    }
   };
   return tensorrtClient.createCompletion(request, {
     stream: options.stream,
-    useQuic: options.useQuic,
+    useQuic: options.useQuic
   });
 }
 
@@ -496,7 +489,7 @@ export async function analyzeLegalDocument(
   const response = await createLegalCompletion(prompt, {
     maxTokens: 1024,
     temperature: 0.05,
-    useQuic: true,
+    useQuic: true
   });
   // createLegalCompletion can return a generator for streaming; ensure we have a single response
   if (Symbol.asyncIterator in Object(response)) {
@@ -527,7 +520,7 @@ export async function analyzeLegalDocument(
       tokens: 0,
       latency_ms: 0,
       throughput_tps: 0,
-      metadata: { error: 'No final streamed result' },
+      metadata: { error: `No final streamed result` }
     } as LegalAIResponse;
   }
   // Non-streaming path: ensure runtime shape or coerce

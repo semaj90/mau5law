@@ -2,6 +2,7 @@
 https: //svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   interface Evidence {
     id: string;
@@ -35,9 +36,9 @@ https: //svelte.dev/e/js_parse_error -->
     onSaveAnalysis = () => {},
   }: Props = $props();
   import { fade, fly } from 'svelte/transition';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Input } from '$lib/components/ui/input.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles, Loader2 } from 'lucide-svelte';
   let isAnalyzing = $state<boolean>(false);
@@ -252,7 +253,7 @@ https: //svelte.dev/e/js_parse_error -->
                     Admissibility
                   </div>
                   <span
-                    class="px-2" py-1 text-xs font-semibold rounded-full capitalize {getAdmissibilityColor(
+                    class="px-2 py-1 text-xs" font-semibold rounded-full capitalize {getAdmissibilityColor(
                       evidence.analysis.admissibility
                     )}"
                   >

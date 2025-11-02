@@ -199,9 +199,9 @@
     <div
       class="drop-zone"
       class:drag-active={dragActive}
-      on:drop={handleDrop}
-      on:dragover={handleDragOver}
-      on:dragleave={handleDragLeave}
+      ondrop={handleDrop}
+      ondragover={handleDragOver}
+      ondragleave={handleDragLeave}
       role="button"
       tabindex="0"
     >

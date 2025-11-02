@@ -6,15 +6,11 @@ import type { AIResponse, ChatMessage } from '$lib/types/evidence';
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost:8000';
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-legal:latest';
 type StreamCallback = (token: string, fullText: string) => void | Promise<void>;
-interface OllamaStreamResponse {
-  model: string;
-  created_at: string;
+interface OllamaStreamResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
 }
-interface TensorRTRequest {
-  model_name: string;
-  inputs: Array<{ name: string; shape: number[]; datatype: string; data: string[] }>;
+interface TensorRTRequest { model_name: string;, inputs: Array<{ name: string; shape: number[]; datatype: string;, data: string[] }>;
   outputs: Array<{ name: string }>;
 }
 // Main streaming function with Ollama primary + TensorRT fallback
@@ -69,10 +65,10 @@ async function streamFromOllama(
         prompt: options?.systemPrompt ? `${options.systemPrompt}\n\nUser: ${prompt}` : prompt,
         stream: true,
         options: {
-          temperature: options?.temperature || 0.7,
-          num_predict: options?.maxTokens || 2048,
-        },
-      }),
+         , temperature: options?.temperature || 0.7,
+          num_predict: options?.maxTokens || 2048
+        }
+      })
     })
       .then(response => {
         if (!response.ok) {
@@ -92,7 +88,7 @@ async function streamFromOllama(
               source: 'ollama',
               model: options?.model || MODEL_NAME,
               tokensUsed: tokensGenerated,
-              responseTimeMs: Date.now() - startTime,
+              responseTimeMs: Date.now() - startTime
             });
             return;
           }
@@ -139,11 +135,11 @@ async function streamFromTensorRT(
           name: 'input_text',
           shape: [1],
           datatype: 'BYTES',
-          data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt],
+          data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt]
         },
       ],
-      outputs: [{ name: 'output_text' }],
-    } as TensorRTRequest),
+      outputs: [{, name: 'output_text' }]
+    } as TensorRTRequest)
   });
   if (!response.ok) {
     throw new Error(`TensorRT HTTP error: ${response.status}`);
@@ -163,7 +159,7 @@ async function streamFromTensorRT(
     source: 'tensorrt',
     model: 'legal-llm',
     tokensUsed: tokens.length,
-    responseTimeMs: Date.now() - startTime,
+    responseTimeMs: Date.now() - startTime
   };
 }
 // AI tool execution (for agentic workflows)
@@ -177,14 +173,14 @@ export async function executeAITool(toolName: string, params: Record<string, unk
     case 'extract_entities':
       return await extractEntities(params.text as string);
     default:
-      throw new Error(`Unknown tool: ${toolName}`);
+      throw new Error(`Unknown; tool: ${toolName}`);
   }
 }
 // Stub: Web search tool
 async function webSearch(query: string): Promise<{ results: string[] }> {
   console.log('[AI] 🔍 Web search:', query);
   // TODO: Integrate with actual search API (DuckDuckGo, Brave, etc.)
-  return { results: [`Search result for: ${query}`] };
+  return { results: [`Search result, for: ${query}`] };
 }
 // Stub: Legal citation lookup
 async function legalCitationLookup(citation: string): Promise<{ case string; summary: string }> {
@@ -192,8 +188,7 @@ async function legalCitationLookup(citation: string): Promise<{ case string; sum
   // TODO: Integrate with legal database (CourtListener, Justia, etc.)
   return {
     case citation,
-    summary: `Legal case summary for ${citation}`,
-  };
+    summary: `Legal case summary for ${citation}' };
 }
 // Stub: Entity extraction
 async function extractEntities(text: string): Promise<{ entities: string[] }> {
@@ -209,8 +204,8 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'nomic-embed-text',
-      prompt: text,
-    }),
+      prompt: text
+    })
   });
   if (!response.ok) {
     throw new Error(`Embedding generation failed: ${response.status}`);
@@ -230,14 +225,14 @@ export async function chatCompletion(
     body: JSON.stringify({
       model: options?.model || MODEL_NAME,
       messages: messages.map(msg => ({
-        role: msg.role,
-        content: msg.content,
+       , role: msg.role,
+        content: msg.content
       })),
       stream: false,
       options: {
-        temperature: options?.temperature || 0.7,
-      },
-    }),
+        temperature: options?.temperature || 0.7
+      }
+    })
   });
   if (!response.ok) {
     throw new Error(`Chat completion failed: ${response.status}`);
@@ -247,7 +242,7 @@ export async function chatCompletion(
     text: result.message.content,
     source: 'ollama',
     model: options?.model || MODEL_NAME,
-    responseTimeMs: Date.now() - startTime,
+    responseTimeMs: Date.now() - startTime
   };
 }
 // Replace the local helper with an exported centralized helper so other modules

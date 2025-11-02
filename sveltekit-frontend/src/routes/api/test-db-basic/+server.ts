@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'success',
       message: 'Basic database test passed',
-      testResult: testQuery,
+      testResult: testQuery
     });
   } catch (error) {
     console.error('❌ Database test failed:', error);
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'error',
         error: String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

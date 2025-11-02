@@ -84,7 +84,7 @@ export class ComponentLoader {
       })
       .catch(error => {
         this.loadingPromises.delete(key);
-        console.error(`Failed to load component ${key}:`, error);
+        console.error(`Failed to load component ${key}: ', error);
         throw error;
       });
     this.loadingPromises.set(key, loadingPromise);
@@ -135,23 +135,23 @@ export const preloadStrategies = {
     const commonComponents = [
       { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
       { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas },
-      { key: 'legalAnalysis', loader: loadAIComponents.legalAnalysis },
+      { key: 'legalAnalysis', loader: loadAIComponents.legalAnalysis }
     ];
     // Preload after first user interaction
     return Promise.all(commonComponents.map(({ key, loader }) => componentLoader.preload(key, loader)));
   },
   // Preload based on route
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<{ key: string; loader: () => Promise<unknown> }>> = {
+    const routeComponentMap: Record<string, Array<{ key: string;, loader: () => Promise<unknown> }>> = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
-        { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas },
+        { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }
       ],
       '/upload': [{ key: 'uploads', loader: loadAIComponents.uploads }],
       '/ai-dashboard': [
         { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
-        { key: 'webgpu', loader: loadAIComponents.webgpu },
-      ],
+        { key: 'webgpu', loader: loadAIComponents.webgpu }
+      ]
     };
     const componentsToLoad = routeComponentMap[routeId] || [];
     return Promise.all(
@@ -160,7 +160,7 @@ export const preloadStrategies = {
         Promise.resolve(componentLoader.preload(key, loader))
       )
     );
-  },
+  }
 };
 // Bundle analysis helper
 export function getBundleStats() {
@@ -168,6 +168,6 @@ export function getBundleStats() {
     loadedComponents: componentLoader['loadedComponents'].size,
     loadingComponents: componentLoader['loadingPromises'].size,
     componentsInMemory: Array.from(componentLoader['loadedComponents'].keys()),
-    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys()),
+    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys())
   };
 }

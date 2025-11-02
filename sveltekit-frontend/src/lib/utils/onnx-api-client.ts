@@ -17,7 +17,7 @@ export class ONNXApiClient {
     this.defaultOptions = {
       timeout: 30000,
       retries: 2,
-      ...options,
+      ...options
     };
   }
 
@@ -27,7 +27,7 @@ export class ONNXApiClient {
   async extractEntities(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/extract-entities', {
       text,
-      options: { ...this.defaultOptions, ...options },
+      options: { ...this.defaultOptions, ...options }
     });
   }
 
@@ -37,7 +37,7 @@ export class ONNXApiClient {
   async classifyDocument(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/classify-document', {
       text,
-      options: { ...this.defaultOptions, ...options },
+      options: { ...this.defaultOptions, ...options }
     });
   }
 
@@ -47,7 +47,7 @@ export class ONNXApiClient {
   async generateEmbeddings(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/generate-embeddings', {
       text,
-      options: { ...this.defaultOptions, ...options },
+      options: { ...this.defaultOptions, ...options }
     });
   }
 
@@ -57,7 +57,7 @@ export class ONNXApiClient {
   async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
-      options: { ...this.defaultOptions, ...options },
+      options: { ...this.defaultOptions, ...options }
     });
   }
 
@@ -74,7 +74,7 @@ export class ONNXApiClient {
         case 'generate-embeddings':
           return this.generateEmbeddings(req.payload.text, options);
         default:
-          throw new Error(`Unknown request type: ${req.type}`);
+          throw new Error(`Unknown request; type: ${req.type}`);
       }
     });
     const startTime = Date.now();
@@ -86,10 +86,10 @@ export class ONNXApiClient {
         requestId: requests[i]?.id ?? i,
         success: r.status === 'fulfilled',
         result: r.status === 'fulfilled' ? (r as PromiseFulfilledResult<any>).value : null,
-        error: r.status === 'rejected' ? (r as PromiseRejectedResult).reason : null,
+        error: r.status === 'rejected' ? (r as PromiseRejectedResult).reason : null
       })),
       totalTime,
-      parallelExecution: true,
+      parallelExecution: true
     };
   }
 
@@ -103,10 +103,9 @@ export class ONNXApiClient {
       courtDecision:
         'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.',
       legalBrief:
-        'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...',
-    };
+        'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...` };
 
-    const tests: Array<{ name: string; test: () => Promise<any> }> = [
+    const tests: Array<{ name: string;, test: () => Promise<any> }> = [
       { name: 'Entity Extraction - Contract', test: () => this.extractEntities(testData.contractText) },
       { name: 'Entity Extraction - Court Decision', test: () => this.extractEntities(testData.courtDecision) },
       { name: 'Document Classification - Contract', test: () => this.classifyDocument(testData.contractText) },
@@ -118,8 +117,8 @@ export class ONNXApiClient {
           this.batchProcess([
             { id: 'task1', type: 'extract-entities', text: testData.contractText },
             { id: 'task2', type: 'classify-document', text: testData.courtDecision },
-            { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief },
-          ]),
+            { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief }
+          ])
       },
     ];
 
@@ -137,7 +136,7 @@ export class ONNXApiClient {
           name: test.name,
           success: true,
           result,
-          time: testTime,
+          time: testTime
         });
         successCount++;
         console.log(`✅ ${test.name} completed in ${testTime}ms`);
@@ -146,7 +145,7 @@ export class ONNXApiClient {
           name: test.name,
           success: false,
           error: error?.message ?? String(error),
-          time: 0,
+          time: 0
         });
         console.error(`❌ ${test.name} failed:`, error?.message ?? error);
       }
@@ -158,7 +157,7 @@ export class ONNXApiClient {
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
-      averageTime: totalTime / tests.length,
+      averageTime: totalTime / tests.length
     };
     console.log(
       `📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
@@ -166,7 +165,7 @@ export class ONNXApiClient {
     return {
       success: successCount === tests.length,
       results,
-      summary,
+      summary
     };
   }
 
@@ -178,7 +177,7 @@ export class ONNXApiClient {
     const benchmarks = {
       entityExtraction: [] as number[],
       classification: [] as number[],
-      embeddings: [] as number[],
+      embeddings: [] as number[]
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -208,7 +207,7 @@ export class ONNXApiClient {
         min: Math.min(...times),
         max: Math.max(...times),
         average: sum / times.length,
-        median,
+        median
       };
     };
 
@@ -217,7 +216,7 @@ export class ONNXApiClient {
       textLength: text.length,
       entityExtraction: calculateStats(benchmarks.entityExtraction),
       classification: calculateStats(benchmarks.classification),
-      embeddings: calculateStats(benchmarks.embeddings),
+      embeddings: calculateStats(benchmarks.embeddings)
     };
   }
 
@@ -236,10 +235,9 @@ export class ONNXApiClient {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify(body),
-        ...(signal ? { signal } : {}),
+        ...(signal ? { signal } : {})
       });
 
       if (!response.ok) {

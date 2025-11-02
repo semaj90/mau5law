@@ -14,9 +14,7 @@ export interface ComputeShaderConfig {
   bindingLayout: GPUBindGroupLayoutDescriptor;
 }
 
-export interface AIComputeJob {
-  id: string;
-  type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
+export interface AIComputeJob { id: string;, type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
   inputData: BufferLike;
   shape: number[];
   attentionWeights?: BufferLike;
@@ -26,16 +24,12 @@ export interface AIComputeJob {
 }
 
 // New interfaces for return types
-export interface DimensionalArrayProcessingResult {
-  result: Float32Array;
-  processingTime: number;
+export interface DimensionalArrayProcessingResult { result: Float32Array;, processingTime: number;
   gpuMemoryUsed: number;
   recommendations: string[];
 }
 
-export interface T5InferenceResult {
-  result: Float32Array;
-  processingTime: number;
+export interface T5InferenceResult { result: Float32Array;, processingTime: number;
   recommendations: string[];
 }
 
@@ -46,11 +40,11 @@ export interface CustomAILibrary {
   AttentionKernel: {
     splice(
       data: Float32Array,
-      kernelSize: number
-    ): { data: Float32Array; attentionScore: number; startIndex: number }[];
+      kernelSize: number;
+    ): { data: Float32Array; attentionScore: number;, startIndex: number }[];
   };
   ModularSwitch: {
-    switch(moduleName: string, config: any): { switched: boolean; module: string; config: any };
+    switch(moduleName: string, config: any): { switched: boolean; module: string;, config: any };
     getActive(): string;
   };
   T5Accelerator: {
@@ -58,16 +52,12 @@ export interface CustomAILibrary {
   };
 }
 
-export interface EnginePerformanceStats {
-  jobsProcessed: number;
-  cachedShaders: number;
+export interface EnginePerformanceStats { jobsProcessed: number;, cachedShaders: number;
   averageProcessingTime: number;
   gpuUtilization: number;
 }
 
-export interface EngineCapabilities {
-  webgpu: WebGPUCapabilities;
-  performance: EnginePerformanceStats;
+export interface EngineCapabilities { webgpu: WebGPUCapabilities;, performance: EnginePerformanceStats;
   recommendations: string[];
 }
 
@@ -140,7 +130,7 @@ export class WebGPUAIEngine {
     }
     try {
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) {
         throw new Error('No WebGPU adapter available');
@@ -148,10 +138,10 @@ export class WebGPUAIEngine {
       const device = await adapter.requestDevice({
         requiredFeatures: ['shader-f16'], // Changed from as any[]
         requiredLimits: {
-          maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
+         , maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
           maxComputeWorkgroupSizeX: 1024,
-          maxComputeWorkgroupSizeY: 1024,
-        },
+          maxComputeWorkgroupSizeY: 1024
+        }
       });
       // GPUSupportedFeatures is iterable but not typed as standard Iterable<string> in some TS lib versions – coerce manually
       const featureList: GPUFeatureName[] = []; // Changed type to GPUFeatureName[]
@@ -180,7 +170,7 @@ export class WebGPUAIEngine {
       console.error('WebGPU initialization failed:', error);
       this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } }));
+        window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: {, error: String(error) } }));
       }
     }
   }
@@ -194,7 +184,7 @@ export class WebGPUAIEngine {
         inputSize: u32,
         outputSize: u32,
         kernelSize: u32,
-        attentionHeads: u32,
+        attentionHeads: u32
       }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> attentionWeights: array<f32>;
@@ -229,7 +219,7 @@ export class WebGPUAIEngine {
         sequenceLength: u32,
         hiddenSize: u32,
         numHeads: u32,
-        headDim: u32,
+        headDim: u32
       }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> queryWeights: array<f32>;
@@ -279,22 +269,21 @@ export class WebGPUAIEngine {
     let pipeline = this.shaderCache.get(shaderKey);
     if (!pipeline) {
       const shaderModule = device.createShaderModule({
-        code: this.createKernelAttentionShader(),
+        code: this.createKernelAttentionShader()
       });
       const bindGroupLayout = device.createBindGroupLayout({
         entries: [
           { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
-        ],
+          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform' } }
+        ]
       });
-      pipeline = device.createComputePipeline({
-        layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+      pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
         compute: {
           module: shaderModule,
-          entryPoint: 'kernelAttention',
-        },
+          entryPoint: 'kernelAttention'
+        }
       });
       this.shaderCache.set(shaderKey, pipeline);
     }
@@ -304,20 +293,20 @@ export class WebGPUAIEngine {
 
     const inputBuffer = device.createBuffer({
       size: dataArray.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const attentionBuffer = device.createBuffer({
       size: weightsArray.byteLength, // Changed from attentionWeights.byteLength
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = device.createBuffer({
       size: dataArray.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsData = new Uint32Array([dataArray.length, dataArray.length, kernelSize, 8]); // Use dataArray.length
     const paramsBuffer = device.createBuffer({
       size: paramsData.byteLength,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Write data to buffers
     device.queue.writeBuffer(inputBuffer, 0, dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
@@ -330,8 +319,8 @@ export class WebGPUAIEngine {
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: attentionBuffer } },
         { binding: 2, resource: { buffer: outputBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Execute compute shader
     const commandEncoder = device.createCommandEncoder();
@@ -343,7 +332,7 @@ export class WebGPUAIEngine {
     // Read back results
     const readBuffer = device.createBuffer({
       size: dataArray.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, dataArray.byteLength);
     device.queue.submit([commandEncoder.finish()]);
@@ -366,7 +355,7 @@ export class WebGPUAIEngine {
         'Try different attention weight patterns',
         'Use batch processing for multiple arrays',
         'Enable caching for repeated computations',
-      ],
+      ]
     };
   }
 
@@ -387,36 +376,35 @@ export class WebGPUAIEngine {
     const device = this.capabilities.device;
     // Create T5 transformer pipeline
     const shaderModule = device.createShaderModule({
-      code: this.createT5TransformerShader(),
+      code: this.createT5TransformerShader()
     });
     const pipeline = device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 't5Attention',
-      },
+       , module: shaderModule,
+        entryPoint: `t5Attention` }
     });
     // Create buffers for T5 computation
     const tokensArray = toFloat32Array(tokens); // Convert tokens early
 
     const inputBuffer = device.createBuffer({
       size: tokensArray.byteLength, // Changed from tokens.byteLength
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // Simplified weight matrices (normally loaded from model)
     const weights = new Float32Array(hiddenSize).fill(0.1);
     const weightsBuffer = device.createBuffer({
       size: weights.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = device.createBuffer({
       size: tokensArray.byteLength, // Changed from tokens.byteLength
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const params = new Uint32Array([sequenceLength, hiddenSize, numHeads, hiddenSize / numHeads]);
     const paramsBuffer = device.createBuffer({
       size: params.byteLength,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Convert tokens to Float32Array and write data
     device.queue.writeBuffer(inputBuffer, 0, tokensArray.buffer, tokensArray.byteOffset, tokensArray.byteLength);
@@ -431,8 +419,8 @@ export class WebGPUAIEngine {
         { binding: 2, resource: { buffer: weightsBuffer } }, // Reuse for demo
         { binding: 3, resource: { buffer: weightsBuffer } }, // Reuse for demo
         { binding: 4, resource: { buffer: outputBuffer } },
-        { binding: 5, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 5, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Execute
     const commandEncoder = device.createCommandEncoder();
@@ -444,7 +432,7 @@ export class WebGPUAIEngine {
     // Read results
     const readBuffer = device.createBuffer({
       size: tokensArray.byteLength, // Changed from tokens.byteLength
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, tokensArray.byteLength); // Changed from tokens.byteLength
     device.queue.submit([commandEncoder.finish()]);
@@ -466,7 +454,7 @@ export class WebGPUAIEngine {
         'Implement proper weight loading',
         'Add layer normalization',
         'Enable mixed precision for speed',
-      ],
+      ]
     };
   }
 
@@ -477,9 +465,7 @@ export class WebGPUAIEngine {
     _userId: string, // Renamed to _userId
     context: string,
     computationHistory: AIComputeJob[]
-  ): {
-    pickUpWhereLeftOff: string;
-    didYouMean: string[];
+  ): { pickUpWhereLeftOff: string;, didYouMean: string[];
     othersSearched: string[];
     cuttingEdge: string[];
   } {
@@ -508,7 +494,7 @@ export class WebGPUAIEngine {
         'Real-time model switching',
         'Adaptive kernel sizing',
         'Self-optimizing attention weights',
-      ],
+      ]
     };
   }
   /**
@@ -516,11 +502,9 @@ export class WebGPUAIEngine {
    */
   createCustomLibrary(): CustomAILibrary {
     // Updated return type
-    return {
-      DimensionalProcessor: {
-        process: async (data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult> => {
+    return { DimensionalProcessor: {, process: async (data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult> => {
           return await this.processDimensionalArray(data, shape, new Float32Array(Math.min(8, data.length)).fill(0.8));
-        },
+        }
       },
       AttentionKernel: class {
         static splice(data: Float32Array, kernelSize: number) {
@@ -531,7 +515,7 @@ export class WebGPUAIEngine {
             slices.push({
               data: slice,
               attentionScore: slice.reduce((sum, val) => sum + val, 0) / slice.length,
-              startIndex: i,
+              startIndex: i
             });
           }
           return slices.sort((a, b) => b.attentionScore - a.attentionScore);
@@ -540,7 +524,7 @@ export class WebGPUAIEngine {
       ModularSwitch: class {
         private static activeModule: string = 'default';
         static switch(moduleName: string, config: any) {
-          // Changed config: any to config: any
+          // Changed config: any to; config: any
           console.log(`🔄 Switching to module: ${moduleName}`);
           this.activeModule = moduleName;
           // Hot-swappable module loading
@@ -559,8 +543,8 @@ export class WebGPUAIEngine {
             tokens[i] = text.charCodeAt(i) / 255.0;
           }
           return await this.processT5Inference(tokens, text.length);
-        },
-      },
+        }
+      }
     };
   }
 
@@ -569,8 +553,7 @@ export class WebGPUAIEngine {
    */
   getCapabilities(): EngineCapabilities {
     // Updated return type
-    return {
-      webgpu: this.capabilities || { isSupported: false, features: [], limits: {} as GPUSupportedLimits }, // Cast limits
+    return { webgpu: this.capabilities || {, isSupported: false, features: [], limits: {} as GPUSupportedLimits }, // Cast limits
       performance: {
         jobsProcessed: this.computeJobs.size,
         cachedShaders: this.shaderCache.size,
@@ -583,7 +566,7 @@ export class WebGPUAIEngine {
         'Implement shader caching for repeated operations',
         'Consider batching multiple computations',
         'Use memory pools to reduce allocation overhead',
-      ],
+      ]
     };
   }
 }

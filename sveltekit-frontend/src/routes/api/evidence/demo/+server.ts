@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No file provided',
+          error: 'No file provided'
         },
         { status: 400 }
       );
@@ -58,8 +58,8 @@ export const POST: RequestHandler = async ({ request }) => {
         contentType: file.type,
         evidenceType: file.type.startsWith('image/') ? 'image' : 'document',
         processingStatus: 'uploaded',
-        demoMode: true,
-      },
+        demoMode: true
+      }
     };
     console.log(`✅ Evidence upload complete: ${evidenceId}`);
     return json(response);
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Upload failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -93,8 +93,8 @@ export const GET: RequestHandler = async ({ url }) => {
         metadata: {
           pages: 15,
           signed: true,
-          uploadDate: new Date().toISOString(),
-        },
+          uploadDate: new Date().toISOString()
+        }
       },
       {
         id: 'sample-2',
@@ -105,23 +105,22 @@ export const GET: RequestHandler = async ({ url }) => {
         y: 150,
         metadata: {
           timestamp: '2024-09-08T10:30:00Z',
-          uploadDate: new Date().toISOString(),
-        },
+          uploadDate: new Date().toISOString()
+        }
       },
     ];
     return json({
       success: true,
       evidence: sampleEvidence,
       caseId,
-      count: sampleEvidence.length,
+      count: sampleEvidence.length
     });
   } catch (error: any) {
     console.error('❌ Failed to list evidence:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list evidence',
-      },
+        error: error instanceof Error ? error.message : 'Failed to list evidence` },
       { status: 500 }
     );
   }

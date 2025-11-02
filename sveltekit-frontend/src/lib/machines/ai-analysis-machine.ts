@@ -2,13 +2,11 @@
 // Manages AI-powered legal document analysis and recommendations
 import { createMachine, assign, fromPromise, type DoneActorEvent, type ErrorActorEvent } from 'xstate';
 // Define specific event types for clarity and type safety
-type UpdatePromptEvent = { type: 'UPDATE_PROMPT'; prompt: string };
-type UpdateOptionsEvent = { type: 'UPDATE_OPTIONS'; options: Partial<AIAnalysisContext['options']> };
-type StreamChunkEvent = { type: 'STREAM_CHUNK'; chunk: string };
+type UpdatePromptEvent = { type: 'UPDATE_PROMPT';, prompt: string };
+type UpdateOptionsEvent = { type: 'UPDATE_OPTIONS';, options: Partial<AIAnalysisContext['options']> };
+type StreamChunkEvent = { type: 'STREAM_CHUNK';, chunk: string };
 // Define the output type for the: 'performAIAnalysis' actor
-type PerformAIAnalysisOutput = {
-  analysisResults: AIAnalysisContext['analysisResults'];
-  processingTime: number;
+type PerformAIAnalysisOutput = { analysisResults: AIAnalysisContext['analysisResults'];, processingTime: number;
   tokensUsed: number;
   confidence: number;
 };
@@ -24,16 +22,12 @@ type PerformAIAnalysisError = ErrorActorEvent<Error, 'performAIAnalysis'>; // As
 // Define specific types for precedents and references to avoid: 'any'
 interface LegalPrecedent extends Record<string, unknown> {}
 interface LegalReference extends Record<string, unknown> {}
-export interface AIAnalysisContext {
-  prompt: string;
-  context: {
+export interface AIAnalysisContext { prompt: string;, context: {
     caseId?: string;
     documentIds: string[];
     analysisType: 'summary' | 'recommendation' | 'risk-assessment' | 'precedent-analysis';
   };
-  options: {
-    includeReferences: boolean;
-    maxTokens: number;
+  options: { includeReferences: boolean;, maxTokens: number;
     temperature: number;
     model?: string;
   };
@@ -74,12 +68,12 @@ export const aiAnalysisMachine = createMachine({
     prompt: '',
     context: {
       documentIds: [],
-      analysisType: 'summary',
+      analysisType: 'summary'
     },
     options: {
       includeReferences: true,
       maxTokens: 1000,
-      temperature: 0.7,
+      temperature: 0.7
     },
     analysisResults: { streamingText: '' }, // Initialize with streamingText
     processingTime: 0,
@@ -87,31 +81,23 @@ export const aiAnalysisMachine = createMachine({
     confidence: 0,
     isStreaming: false,
     validationErrors: {},
-    error: null,
+    error: null
   },
-  states: {
-    idle: {
-      on: {
-        UPDATE_PROMPT: {
-          actions: assign({
-            prompt: ({ event }) => (event as UpdatePromptEvent).prompt,
-            error: null,
-          }),
+  states: { idle: {, on: { UPDATE_PROMPT: {, actions: assign({
+           , prompt: ({ event }) => (event as UpdatePromptEvent).prompt,
+            error: null
+          })
         },
-        UPDATE_OPTIONS: {
-          actions: assign({
-            options: ({ context, event }) => ({
+        UPDATE_OPTIONS: { actions: assign({, options: ({ context, event }) => ({
               ...context.options,
-              ...(event as UpdateOptionsEvent).options,
-            }),
-          }),
+              ...(event as UpdateOptionsEvent).options
+            })
+          })
         },
-        START_ANALYSIS: 'validating',
-      },
+        START_ANALYSIS: 'validating'
+      }
     },
-    validating: {
-      invoke: {
-        id: 'validateAnalysisRequest',
+    validating: { invoke: {, id: 'validateAnalysisRequest',
         input: ({ context }) => context,
         src: fromPromise(async ({ input }) => {
           const errors: Record<string, string[]> = {};
@@ -140,8 +126,8 @@ export const aiAnalysisMachine = createMachine({
           target: 'analyzing',
           actions: assign({
             validationErrors: {}, // Clear validation errors on success
-            error: null,
-          }),
+            error: null
+          })
         },
         onError: {
           target: 'idle',
@@ -158,16 +144,14 @@ export const aiAnalysisMachine = createMachine({
               }
               return {}; // Default to empty if not a validation error
             },
-            error: 'Validation failed',
-          }),
-        },
-      },
+            error: 'Validation failed'
+          })
+        }
+      }
     },
-    analyzing: {
-      entry: assign({
-        isStreaming: true,
-        analysisResults: { streamingText: '' }, // Reset analysis results with required streamingText
-        processingTime: 0,
+    analyzing: { entry: assign({, isStreaming: true,
+        analysisResults: {, streamingText: '' }, // Reset analysis results with required streamingText
+        processingTime: 0
       }),
       invoke: {
         id: 'performAIAnalysis',
@@ -181,15 +165,14 @@ export const aiAnalysisMachine = createMachine({
             prompt: context.prompt,
             context: context.context,
             options: context.options,
-            streaming: true,
+            streaming: true
           };
           // Call AI analysis API
           const response = await fetch('/api/ai/analyze', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(analysisRequest),
+              'Content-Type': `application/json` },
+            body: JSON.stringify(analysisRequest)
           });
           if (!response.ok) {
             const errorData = await response.json();
@@ -198,7 +181,7 @@ export const aiAnalysisMachine = createMachine({
           // Handle streaming response
           const reader = response.body?.getReader();
           const decoder = new TextDecoder();
-          let analysisResults: AIAnalysisContext['analysisResults'] = { streamingText: '' }; // Explicitly type and initialize
+          let analysisResults: AIAnalysisContext['analysisResults'] = { streamingText: `` }; // Explicitly type and initialize
           let tokensUsed = 0;
           if (reader) {
             // This `for (;;)` loop is a common pattern for reading streams until done.
@@ -207,7 +190,7 @@ export const aiAnalysisMachine = createMachine({
               const { done, value } = await reader.read();
               if (done) break;
               const chunk = decoder.decode(value);
-              // simple split by newline to parse SSE-like `data:` lines
+              // simple split by newline to parse SSE-like `data: ' lines
               for (const line of chunk.split('\n')) {
                 if (!line) continue;
                 if (line.startsWith('data: ')) {
@@ -222,7 +205,7 @@ export const aiAnalysisMachine = createMachine({
                       tokensUsed = data.tokensUsed || 0;
                     }
                   } catch (e: any) {
-                    // Changed e: any to e: any
+                    // Changed e: any to; e: any
                     console.warn('Failed to parse SSE data:', e);
                   }
                 }
@@ -245,8 +228,8 @@ export const aiAnalysisMachine = createMachine({
             tokensUsed: ({ event }) => (event as PerformAIAnalysisDoneEvent).output.tokensUsed,
             confidence: ({ event }) => (event as PerformAIAnalysisDoneEvent).output.confidence,
             isStreaming: false,
-            error: null,
-          }),
+            error: null
+          })
         },
         onError: {
           target: 'error',
@@ -254,57 +237,50 @@ export const aiAnalysisMachine = createMachine({
             // Preserve existing streamingText, as error event doesn't typically carry chunks
             analysisResults: ({ context }) => ({
               ...context.analysisResults,
-              streamingText: context.analysisResults.streamingText,
+              streamingText: context.analysisResults.streamingText
             }),
             error: ({ event }) => {
               const errorEvent = event as PerformAIAnalysisError;
               return errorEvent.error?.message || 'Analysis failed due to an unexpected error.';
-            },
-          }),
-        },
+            }
+          })
+        }
       },
-      on: {
-        STREAM_CHUNK: {
-          actions: assign({
+      on: { STREAM_CHUNK: {, actions: assign({
             // Append streamed AI analysis text chunk to analysisResults.streamingText for real-time UI updates
             analysisResults: ({ context, event }) => ({
               ...context.analysisResults, // Spread existing results
-              streamingText: (context.analysisResults.streamingText || '') + (event as StreamChunkEvent).chunk,
-            }),
-          }),
-        },
-      },
+              streamingText: (context.analysisResults.streamingText || '') + (event as StreamChunkEvent).chunk
+            })
+          })
+        }
+      }
     },
     completed: {
       type: 'final',
       entry: assign({ isStreaming: false }),
-      on: {
-        RESET: {
-          target: 'idle',
+      on: { RESET: {, target: 'idle',
           actions: assign({
             prompt: '',
-            analysisResults: { streamingText: '' }, // Reset to include streamingText
+            analysisResults: {, streamingText: '' }, // Reset to include streamingText
             processingTime: 0,
             tokensUsed: 0,
             confidence: 0,
             error: null,
-            validationErrors: {},
-          }),
+            validationErrors: {}
+          })
         },
-        START_ANALYSIS: 'validating',
-      },
+        START_ANALYSIS: `validating` }
     },
-    error: {
-      on: {
-        RETRY: 'analyzing',
+    error: { on: {, RETRY: 'analyzing',
         RESET: {
           target: 'idle',
           actions: assign({
-            error: null,
-          }),
-        },
-      },
-    },
-  },
+            error: null
+          })
+        }
+      }
+    }
+  }
 });
 export default aiAnalysisMachine;

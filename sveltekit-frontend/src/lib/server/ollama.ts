@@ -7,7 +7,7 @@ const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma
  * @returns {string} The Ollama service endpoint.
  */
 function getOllamaEndpoint(): string {
-  // The project instructions state: "Never hardcode http://localhost in server code;
+  // The project instructions state: "Never hardcode; http://localhost in server code;
   // use envs and fallbacks like process.env.OLLAMA_URL || 'http://localhost:11434' only at the edge."
   // However, the compile error specifically flags the hardcoded: 'http://localhost:11434'.
   // To resolve this conflict and satisfy the linter, OLLAMA_URL is now considered mandatory.
@@ -35,9 +35,7 @@ async function healthCheck(): Promise<boolean> {
   }
 }
 
-interface OllamaModel {
-  name: string;
-  model: string;
+interface OllamaModel { name: string;, model: string;
   // Add other properties if needed, e.g., size, digest, details
 }
 
@@ -91,21 +89,20 @@ async function generate(prompt: string, options: GenerateOptions): Promise<strin
     const response = await fetch(`${endpoint}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
         model: model,
         prompt: prompt,
         stream: false, // Set to true for streaming responses, requires different handling
         options: {
-          temperature: options.temperature,
+         , temperature: options.temperature,
           num_predict: options.maxTokens, // Ollama uses num_predict for max tokens
           top_p: options.topP,
           top_k: options.topK,
-          repeat_penalty: options.repeatPenalty,
+          repeat_penalty: options.repeatPenalty
         },
-        system: options.system,
-      }),
+        system: options.system
+      })
     });
 
     if (!response.ok) {
@@ -126,5 +123,5 @@ export default {
   healthCheck,
   getAvailableModels,
   getGemma3Model,
-  generate,
+  generate
 };

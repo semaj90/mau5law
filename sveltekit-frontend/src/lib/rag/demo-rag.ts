@@ -5,39 +5,29 @@ import type { Document } from '$lib/types';
  * Simulates AI-powered case analysis with mock data
  */
 // Simple type definitions for demo
-interface Evidence {
-  id: string;
-  filename: string;
+interface Evidence { id: string;, filename: string;
   type: 'document' | 'communication' | 'data' | 'media';
   description: string;
   uploadedAt: Date;
   metadata?: { [key: string]: any }
 }
-interface Case {
-  id: string;
-  title: string;
+interface Case { id: string;, title: string;
   description: string;
   createdAt: Date;
   status: 'open' | 'closed' | 'archived';
 }
-interface Report {
-  id: string;
-  title: string;
+interface Report { id: string;, title: string;
   content: string;
   createdAt: Date;
   generatedBy: string;
 }
-export interface RAGDemoQuery {
-  query: string;
-  caseId: string;
+export interface RAGDemoQuery { query: string;, caseId: string;
   evidence?: Evidence[];
   reports?: Report[];
   maxTokens?: number;
   temperature?: number;
 }
-export interface RAGDemoResponse {
-  response: string;
-  sources: Array<any>;
+export interface RAGDemoResponse { response: string;, sources: Array<any>;
   confidence: number;
   tokensUsed: number;
   reasoning: string[];
@@ -143,8 +133,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
         id: report.id,
         type: 'report',
         relevance,
-        excerpt: report.content.substring(0, 150) + '...'
-      });
+        excerpt: report.content.substring(0, 150) + '...' });
       reasoning.push(`Referenced report: ${report.title} (${Math.round(relevance * 100)}% relevance)`);
     }
   });
@@ -273,7 +262,7 @@ The financial evidence forms a strong foundation for this case, with multiple da
 }
 function generatePatternResponse(caseData: any, sources: any[]): string {
   return `Pattern analysis of the available evidence shows:
-**Behavioral Patterns:**
+**Behavioral; Patterns:**
 • Systematic data collection across multiple evidence types
 • Coordinated timing between different activities
 • Sophisticated operational security measures
@@ -291,9 +280,8 @@ ${relevantSources.map(source => {
     return `**${evidence?.filename}**: ${source.excerpt}`;
   }).join('\n\n')}
 ${sources.length > 0
-    ? `This evidence provides ${sources.length > 2 ? 'strong' : 'moderate'} support for investigating this aspect of the case further.`
-    : 'While I couldn\'t find direct evidence matching your query, I recommend examining related case materials.'
-  }`;
+    ? `This evidence provides ${sources.length > 2 ? 'strong' : 'moderate' } support for investigating this aspect of the case further.`
+    : 'While I couldn\'t find direct evidence matching your query, I recommend examining related case materials.' }`;
 }
 /**
  * Demo case analysis functions

@@ -16,9 +16,7 @@ export interface CompletionRequest {
   context?: string[];
 }
 
-export interface CompletionResponse {
-  response: string;
-  model: string;
+export interface CompletionResponse { response: string;, model: string;
   created_at: string;
   done: boolean;
   context?: number[];
@@ -44,12 +42,12 @@ export class OllamaLegalAIService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: options.model || this.defaultModel,
+       , model: options.model || this.defaultModel,
         prompt: this.formatLegalPrompt(prompt),
         temperature: options.temperature || 0.7,
         stream: false,
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {
@@ -70,12 +68,12 @@ export class OllamaLegalAIService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: options.model || this.defaultModel,
+       , model: options.model || this.defaultModel,
         prompt: this.formatLegalPrompt(prompt),
         temperature: options.temperature || 0.7,
         stream: true,
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {

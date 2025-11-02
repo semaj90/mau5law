@@ -4,54 +4,39 @@ import { writable, derived } from 'svelte/store';
 // Add a concrete metadata type to avoid `any`
 export type EvidenceMetadata = Record<string, unknown>;
 
-export interface AIMessage {
-  id: string;
-  text: string;
+export interface AIMessage { id: string;, text: string;
   type: 'user' | 'assistant';
   timestamp: number;
   evidenceIds?: string[]; // Evidence items referenced in this message
   suggestions?: AISuggestion[];
   confidence?: number;
 }
-export interface AISuggestion {
-  type: 'connection' | 'analysis' | 'investigation' | 'search';
-  title: string;
+export interface AISuggestion { type: 'connection' | 'analysis' | 'investigation' | 'search';, title: string;
   description: string;
   evidenceIds: string[];
   confidence: number;
   action?: () => void;
 }
-export interface AIContext {
-  evidenceItems: Array<{
-    id: string;
+export interface AIContext { evidenceItems: Array<{, id: string;
     title: string;
     type: string;
     content: string;
-    metadata?: EvidenceMetadata; // was `any`
-  }>;
-  caseInfo: {
-    id: string;
-    title: string;
+    metadata?: EvidenceMetadata; // was `any' }>;
+  caseInfo: { id: string;, title: string;
     description?: string;
     status?: string;
   };
-  connections: Array<{
-    fromId: string;
-    toId: string;
+  connections: Array<{ fromId: string;, toId: string;
     type: string;
   }>;
 }
-export interface CaseAIContext {
-  caseId: string;
-  messages: AIMessage[];
+export interface CaseAIContext { caseId: string;, messages: AIMessage[];
   context: AIContext;
   insights: AIInsight[];
   isProcessing: boolean;
   error?: string;
 }
-export interface AIInsight {
-  id: string;
-  type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
+export interface AIInsight { id: string;, type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
   title: string;
   description: string;
   evidenceIds: string[];
@@ -83,14 +68,14 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
     context: {
       evidenceItems: [],
       caseInfo,
-      connections: [],
+      connections: []
     },
     insights: [],
-    isProcessing: false,
+    isProcessing: false
   };
   aiAssistantContexts.update(contexts => ({
     ...contexts,
-    [caseId]: context,
+    [caseId]: context
   }));
   currentAIContext.set(context);
   return context;
@@ -113,14 +98,14 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
       ...c,
       context: {
         ...c.context,
-        ...contextUpdates,
-      },
+        ...contextUpdates
+      }
     };
     // Update current context if it's active
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
-      [caseId]: updatedContext,
+      [caseId]: updatedContext
     };
   });
 }
@@ -132,7 +117,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     text: message,
     type: 'user',
     timestamp: Date.now(),
-    evidenceIds,
+    evidenceIds
   };
   addMessage(caseId, userMessage);
   try {
@@ -154,8 +139,8 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
         caseId,
         message: prompt,
         context,
-        evidenceIds,
-      }),
+        evidenceIds
+      })
     });
     if (!response.ok) {
       throw new Error('AI service request failed');
@@ -169,7 +154,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
       timestamp: Date.now(),
       evidenceIds: aiResponse.referencedEvidence || [],
       suggestions: aiResponse.suggestions || [],
-      confidence: aiResponse.confidence ?? 0.8,
+      confidence: aiResponse.confidence ?? 0.8
     };
     addMessage(caseId, assistantMessage);
     // Add any insights discovered
@@ -183,10 +168,10 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     console.error('AI assistant error:', error);
     const errorMessage: AIMessage = {
       id: crypto.randomUUID(),
-      text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      text: 'I'm sorry, I encountered an error: ${error instanceof Error ? error.message : `Unknown error` }`,
       type: 'assistant',
       timestamp: Date.now(),
-      confidence: 0,
+      confidence: 0
     };
     addMessage(caseId, errorMessage);
     return errorMessage;
@@ -200,13 +185,13 @@ export function addMessage(caseId: string, message: AIMessage) {
     if (!context) return contexts;
     const updatedContext = {
       ...context,
-      messages: [...context.messages, message],
+      messages: [...context.messages, message]
     };
     // Update current context if active
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
-      [caseId]: updatedContext,
+      [caseId]: updatedContext
     };
   });
 }
@@ -215,20 +200,20 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     ...insight,
     id: crypto.randomUUID(),
     timestamp: Date.now(),
-    acknowledged: false,
+    acknowledged: false
   };
   aiAssistantContexts.update(contexts => {
     const context = contexts[caseId];
     if (!context) return contexts;
     const updatedContext = {
       ...context,
-      insights: [...context.insights, newInsight],
+      insights: [...context.insights, newInsight]
     };
     // Update current context if active
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
-      [caseId]: updatedContext,
+      [caseId]: updatedContext
     };
   });
   return newInsight;
@@ -241,13 +226,13 @@ export function acknowledgeInsight(caseId: string, insightId: string) {
       ...context,
       insights: context.insights.map(insight =>
         insight.id === insightId ? { ...insight, acknowledged: true } : insight
-      ),
+      )
     };
     // Update current context if active
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
-      [caseId]: updatedContext,
+      [caseId]: updatedContext
     };
   });
 }
@@ -257,13 +242,13 @@ export function clearMessages(caseId: string) {
     if (!context) return contexts;
     const updatedContext = {
       ...context,
-      messages: [],
+      messages: []
     };
     // Update current context if active
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
-      [caseId]: updatedContext,
+      [caseId]: updatedContext
     };
   });
 }

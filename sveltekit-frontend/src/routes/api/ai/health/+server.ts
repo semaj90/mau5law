@@ -34,7 +34,7 @@ const ollamaService = {
       logger?.warn?.('Failed to list Ollama models', String(err));
       return [];
     }
-  },
+  }
 };
 
 export const GET: RequestHandler = withErrorHandling(async event => {
@@ -72,22 +72,20 @@ export const GET: RequestHandler = withErrorHandling(async event => {
   // System information
   const memoryUsage = process.memoryUsage();
   const memoryMB = Math.round(memoryUsage.rss / 1024 / 1024);
-  const checks = {
-    ollama: {
-      healthy: ollamaHealthy,
+  const checks = { ollama: {, healthy: ollamaHealthy,
       models: availableModels,
       responseTime: ollamaResponseTime,
-      url: ollamaUrl,
+      url: ollamaUrl
     },
     system: {
       memory: `${memoryMB}MB`,
       uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
-      nodeVersion: process.version,
+      nodeVersion: process.version
     },
     docker: {
       containers: 0, // TODO: Add actual Docker container count
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   const overallStatus = ollamaHealthy ? 'healthy' : 'degraded';
   const healthData = {
@@ -96,7 +94,6 @@ export const GET: RequestHandler = withErrorHandling(async event => {
     message:
       overallStatus === 'healthy'
         ? `All systems operational (${availableModels.length} models available)`
-        : 'Ollama service not available',
-  };
+        : 'Ollama service not available` };
   return apiSuccess(healthData, undefined, requestId);
 });

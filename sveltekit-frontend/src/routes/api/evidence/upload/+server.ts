@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (!title || !caseId) {
       return json(
-        { success: false, error: 'Missing required fields: title, caseId' },
+        { success: false, error: 'Missing required; fields: title, caseId' },
         { status: 400 }
       );
     }
@@ -69,8 +69,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId,
         evidenceType,
         uploadedBy: userId,
-        title,
-      },
+        title
+      }
     });
 
     if (!uploadResult.success) {
@@ -101,11 +101,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
       const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest', // Specialized legal AI model
+         , model: 'gemma3-legal:latest', // Specialized legal AI model
           prompt: textContent.slice(0, 8000), // Limit to 8K chars for performance
-        }),
+        })
       });
 
       if (embeddingResponse.ok) {
@@ -121,12 +121,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         try {
           const summaryResponse = await fetch(`${ollamaUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               model: 'gemma3-legal:latest',
-              prompt: `Summarize this legal document in 2-3 sentences:\n\n${textContent.slice(0, 4000)}`,
-              stream: false,
-            }),
+              prompt: `Summarize this legal document in 2-3; sentences:\n\n${textContent.slice(0, 4000)}`,
+              stream: false
+            })
           });
 
           if (summaryResponse.ok) {
@@ -167,14 +167,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         aiAnalysis: {},
         chainOfCustody: [
           {
-            action: 'uploaded',
+           , action: 'uploaded',
             timestamp: new Date().toISOString(),
             userId,
-            notes: 'Initial upload',
+            notes: 'Initial upload'
           },
         ],
         uploadedBy: userId,
-        collectedAt: new Date(),
+        collectedAt: new Date()
       })
       .returning();
 
@@ -187,13 +187,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             content: textContent,
             embeddings: embeddingVector,
             metadata: {
-              caseId: evidenceRecord.caseId,
+             , caseId: evidenceRecord.caseId,
               evidenceType: evidenceRecord.evidenceType,
               title: evidenceRecord.title,
               tags: tagsArray,
               uploadedBy: userId,
-              createdAt: evidenceRecord.uploadedAt,
-            },
+              createdAt: evidenceRecord.uploadedAt
+            }
           } as any,
           { url: process.env.QDRANT_URL || 'http://localhost:6333' }
         );
@@ -213,11 +213,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         id: evidenceRecord.id,
         content: textContent,
         metadata: {
-          type: 'evidence',
+         , type: 'evidence',
           caseId: evidenceRecord.caseId,
           title: evidenceRecord.title,
-          evidenceType: evidenceRecord.evidenceType,
-        },
+          evidenceType: evidenceRecord.evidenceType
+        }
       });
     } catch (ragError) {
       console.warn('[Evidence Upload] RAG indexing failed:', ragError);
@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        id: evidenceRecord.id,
+       , id: evidenceRecord.id,
         caseId: evidenceRecord.caseId,
         title: evidenceRecord.title,
         description: evidenceRecord.description,
@@ -240,9 +240,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         tags: evidenceRecord.tags,
         isAdmissible: evidenceRecord.isAdmissible,
         uploadedAt: evidenceRecord.uploadedAt,
-        hasEmbedding: embeddingVector.length > 0,
+        hasEmbedding: embeddingVector.length > 0
       },
-      message: 'Evidence uploaded and indexed successfully',
+      message: 'Evidence uploaded and indexed successfully'
     });
   } catch (err: any) {
     console.error('[Evidence Upload] Error:', err);
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: false,
         error: 'Failed to upload evidence',
         details: err.message,
-        stack: err.stack,
+        stack: err.stack
       },
       { status: 500 }
     );
@@ -271,11 +271,11 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     const evidenceRecord = await db.query.evidence.findFirst({
-      where: eq(evidence.id, evidenceId),
+      where: eq(evidence.id, evidenceId)
     });
 
     if (!evidenceRecord) {
-      return json({ error: 'Evidence not found' }, { status: 404 });
+      return json({ error: `Evidence not found` }, { status: 404 });
     }
 
     return json({ success: true, data: evidenceRecord });

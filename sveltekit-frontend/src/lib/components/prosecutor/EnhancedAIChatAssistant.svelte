@@ -38,10 +38,10 @@ import type { Document } from '$lib/types';
   // Chat state with explicit types
   let messages: ChatMessage[] = $state([] as ChatMessage[]);
   let currentMessage: string = $state('');
-  let isTyping: boolean = $state(false);
-  let hoveredElement: string | null = $state(null);
+  let isTyping: boolean = false;
+  let hoveredElement: string | null = null;
   // allow free-form properties from AI
-  let elementAnalysis: any = $state(null);
+  let elementAnalysis: any = null;
   // AI capabilities
   let ragSources: any[] = $state([]);
   let aiConfidence: number = $state(0);

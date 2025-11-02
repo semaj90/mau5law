@@ -2,79 +2,56 @@
  * Feedback System Types for Legal AI Platform
  */
 }
-export interface FeedbackSession {
-  id: string;
-  userId: string;
+export interface FeedbackSession { id: string;, userId: string;
   startTime: Date;
   endTime?: Date;
   interactions: UserInteraction[];
   context: SessionContext;
 }
-export interface UserInteraction {
-  id: string;
-  type: string;
+export interface UserInteraction { id: string;, type: string;
   timestamp: Date;
   context: any;
   feedbackCollected?: boolean;
   rating?: number;
 }
-export interface SessionContext {
-  page: string;
-  userAgent: string;
-  viewport: {
-    width: number;
-    height: number;
+export interface SessionContext { page: string;, userAgent: string;
+  viewport: { width: number;, height: number;
   }
   [key: string]: any;
 }
-export interface FeedbackTrigger {
-  interactionId: string;
-  type: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
+export interface FeedbackTrigger { interactionId: string;, type: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
   priority: 'low' | 'medium' | 'high';
   delay: number;
   context: any;
   triggered?: boolean;
 }
-export interface FeedbackAnalytics {
-  totalInteractions: number;
-  averageRating: number;
+export interface FeedbackAnalytics { totalInteractions: number;, averageRating: number;
   completionRate: number;
   topIssues: string[];
-  trends?: {
-    daily: { date: string; rating: number; count: number }[];
-    weekly: { week: string; rating: number; count: number }[];
+  trends?: { daily: { date: string; rating: number;, count: number }[];
+    weekly: { week: string; rating: number;, count: number }[];
   }
 }
-export interface UserFeedbackContext {
-  userId: string;
-  sessionId: string;
+export interface UserFeedbackContext { userId: string;, sessionId: string;
   deviceType: 'mobile' | 'tablet' | 'desktop';
   userType: 'attorney' | 'paralegal' | 'investigator' | 'admin';
   experienceLevel?: 'junior' | 'mid' | 'senior' | 'expert';
 }
-export interface FeedbackMetrics {
-  user_satisfaction: number;
-  feature_adoption: number;
+export interface FeedbackMetrics { user_satisfaction: number;, feature_adoption: number;
   error_rate: number;
   response_time: number;
   completion_rate: number;
 }
-export interface FeedbackRecommendation {
-  id: string;
-  type: 'feature' | 'improvement' | 'tutorial' | 'tip';
+export interface FeedbackRecommendation { id: string;, type: 'feature' | 'improvement' | 'tutorial' | 'tip';
   title: string;
   description: string;
   relevance: number;
   category: string;
-  action?: {
-    type: 'navigate' | 'highlight' | 'modal';
-    target: string;
+  action?: { type: 'navigate' | 'highlight' | 'modal';, target: string;
   }
 }
 // Database schema types
-export interface UserRating {
-  id: string;
-  userId: string;
+export interface UserRating { id: string;, userId: string;
   sessionId: string;
   interactionId: string;
   ratingType: string;
@@ -86,9 +63,7 @@ export interface UserRating {
   metadata: { [key: string]: any }
   timestamp: Date;
 }
-export interface UserInteractionPattern {
-  id: string;
-  userId: string;
+export interface UserInteractionPattern { id: string;, userId: string;
   patternType: string;
   frequency: number;
   avgRating: number;
@@ -98,9 +73,7 @@ export interface UserInteractionPattern {
   firstSeen: Date;
   lastSeen: Date;
 }
-export interface FeedbackInsight {
-  id: string;
-  insightType: string;
+export interface FeedbackInsight { id: string;, insightType: string;
   title: string;
   description: string;
   confidence: number;
@@ -111,48 +84,34 @@ export interface FeedbackInsight {
   createdAt: Date;
 }
 // Component Props
-export interface FeedbackWidgetProps {
-  interactionId: string;
-  sessionId: string;
+export interface FeedbackWidgetProps { interactionId: string;, sessionId: string;
   userId: string;
   context?: { [key: string]: any }
   show: boolean;
   ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
-  onSubmitted?: (data: { rating: number; feedback?: string; interactionId: string }) => void;
+  onSubmitted?: (data: {, rating: number; feedback?: string; interactionId: string }) => void;
   onError?: (error: any) => void;
   onClosed?: () => void;
 }
 // API Response Types
-export interface FeedbackAPIResponse {
-  success: boolean;
-  message: string;
+export interface FeedbackAPIResponse { success: boolean;, message: string;
   data?: any;
 }
-export interface FeedbackBatchResponse extends FeedbackAPIResponse {
-  data: {
-    processed: number;
+export interface FeedbackBatchResponse extends FeedbackAPIResponse { data: {, processed: number;
     failed: number;
     insights: FeedbackInsight[];
   }
 }
-export interface RecommendationsResponse extends FeedbackAPIResponse {
-  data: {
-    recommendations: FeedbackRecommendation[];
+export interface RecommendationsResponse extends FeedbackAPIResponse { data: {, recommendations: FeedbackRecommendation[];
     metrics: FeedbackMetrics;
     insights: string[];
   }
 }
-export interface AnalyticsResponse extends FeedbackAPIResponse {
-  data: {
-    overview: {
-      totalRatings: number;
-      averageRating: number;
+export interface AnalyticsResponse extends FeedbackAPIResponse { data: {, overview: { totalRatings: number;, averageRating: number;
       completionRate: number;
       trendDirection: 'up' | 'down' | 'stable';
     }
-    breakdown: {
-      ratingType: string;
-      count: number;
+    breakdown: { ratingType: string;, count: number;
       avgRating: number;
       improvement: number;
     }[];
@@ -161,15 +120,11 @@ export interface AnalyticsResponse extends FeedbackAPIResponse {
   }
 }
 // Events
-export interface FeedbackSubmittedEvent {
-  interactionId: string;
-  rating: number;
+export interface FeedbackSubmittedEvent { interactionId: string;, rating: number;
   feedback?: string;
   ratingType: string;
   timestamp: Date;
 }
-export interface FeedbackErrorEvent {
-  error: Error;
-  context: any;
+export interface FeedbackErrorEvent { error: Error;, context: any;
   timestamp: Date;
 }

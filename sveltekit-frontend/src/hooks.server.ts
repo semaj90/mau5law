@@ -24,8 +24,10 @@ async function initializeServices(): Promise<void> {
         console.log('⚠️ RabbitMQ not available - continuing without it.');
       }
     } catch (rabbitError) {
-      console.log('⚠️ RabbitMQ initialization failed - continuing without it:', 
-        rabbitError instanceof Error ? rabbitError.message : rabbitError);
+      console.log(
+        '⚠️ RabbitMQ initialization failed - continuing without it:',
+        rabbitError instanceof Error ? rabbitError.message : rabbitError
+      );
     }
   } catch (error) {
     console.error('❌ Failed to initialize one or more services:', error);
@@ -41,11 +43,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   // Get or create database connection
   const db = createRuntimeConnection();
   event.locals.db = db;
-  
+
   // Get Redis cache service
   const redisCache = await getRedisClient();
   event.locals.redis = redisCache;
-  
+
   // RabbitMQ is optional - may be null
   try {
     event.locals.rabbitmqChannel = await getRabbitMQChannel();

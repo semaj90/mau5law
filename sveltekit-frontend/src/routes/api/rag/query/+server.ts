@@ -30,7 +30,7 @@ export const POST: RequestHandler = async event => {
         {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },
         { status: 429 }
       );
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async event => {
       maxResults = 5,
       useReranking = true,
       includeMetadata = true,
-      contextWindow = 4000,
+      contextWindow = 4000
     } = requestData;
 
     // Input validation
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async event => {
       return json(
         {
           success: false,
-          error: 'Query is required and must be a non-empty string',
+          error: 'Query is required and must be a non-empty string'
         },
         { status: 400 }
       );
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async event => {
       return json(
         {
           success: false,
-          error: 'Query too long. Maximum 1000 characters allowed.',
+          error: 'Query too long. Maximum 1000 characters allowed.'
         },
         { status: 400 }
       );
@@ -90,8 +90,7 @@ export const POST: RequestHandler = async event => {
         return json(
           {
             success: false,
-            error: `Invalid document types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', ')}`,
-          },
+            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}' },
           { status: 400 }
         );
       }
@@ -122,7 +121,7 @@ export const POST: RequestHandler = async event => {
       documentsUsed: ragResponse.metadata.documentsUsed,
       confidence: ragResponse.confidence,
       cacheHit: ragResponse.metadata.cacheHit,
-      reranked: ragResponse.metadata.reranked,
+      reranked: ragResponse.metadata.reranked
     });
 
     // Local types to avoid `any`
@@ -155,7 +154,7 @@ export const POST: RequestHandler = async event => {
             content:
               typeof src.content === 'string'
                 ? src.content.substring(0, 500) + (src.content.length > 500 ? '...' : '')
-                : undefined,
+                : undefined
           };
         });
 
@@ -175,9 +174,9 @@ export const POST: RequestHandler = async event => {
           cacheHit: ragResponse.metadata.cacheHit,
           model: (ragResponse.metadata as { model?: string })?.model ?? 'unknown',
           reranked: ragResponse.metadata.reranked,
-          apiProcessingTime: Date.now() - startTime,
-        },
-      },
+          apiProcessingTime: Date.now() - startTime
+        }
+      }
     };
 
     // Add reasoning if available (safe access without `any`)
@@ -209,9 +208,9 @@ export const POST: RequestHandler = async event => {
         success: false,
         error: errorMessage,
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: statusCode }
     );
@@ -225,12 +224,12 @@ export const GET: RequestHandler = async () => {
       success: true,
       status: 'healthy',
       stats: {
-        documentsIndexed: stats.documentsIndexed,
+       , documentsIndexed: stats.documentsIndexed,
         chunksIndexed: stats.chunksIndexed,
         averageRetrievalTime: stats.averageRetrievalTime,
         recentQueriesCount: stats.recentQueriesCount,
-        lastUpdated: new Date().toISOString(),
-      },
+        lastUpdated: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -238,7 +237,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         status: 'unhealthy',
-        error: errMsg,
+        error: errMsg
       },
       { status: 503 }
     );

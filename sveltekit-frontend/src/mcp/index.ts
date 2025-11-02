@@ -5,9 +5,7 @@ export interface MCPToolResponse<T = any> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: {
-    timestamp: string;
-    tool: string;
+  metadata?: { timestamp: string;, tool: string;
     duration?: number;
   };
 }
@@ -32,17 +30,13 @@ export interface MCPTools {
     createEvidence: (evidenceData: any) => Promise<MCPToolResponse<any>>;
     updateEvidence: (evidenceId: string, updates: any) => Promise<MCPToolResponse<any>>;
     deleteEvidence: (evidenceId: string) => Promise<MCPToolResponse<any>>;
-    findSimilarEvidence: (params: {
-      embedding: number[];
-      caseId: string;
-      limit: number;
+    findSimilarEvidence: (params: { embedding: number[];, caseId: string;
+     , limit: number;
       threshold?: number;
     }) => Promise<MCPToolResponse<any>>;
     getEvidenceAnalytics: (caseId: string) => Promise<MCPToolResponse<any>>;
   };
-  users: {
-    getUserById: (userId: string) => Promise<MCPToolResponse<any>>;
-    updateUser: (userId: string, updates: any) => Promise<MCPToolResponse<any>>;
+  users: { getUserById: (userId: string) => Promise<MCPToolResponse<any>>;, updateUser: (userId: string, updates: any) => Promise<MCPToolResponse<any>>;
     getUserAnalytics: () => Promise<MCPToolResponse<any>>;
   };
   // Direct methods for other functionality
@@ -55,55 +49,49 @@ export interface MCPTools {
 }
 
 // Mock implementation for development
-export const mcpTools: MCPTools = {
-  cases: {
-    loadCases: async (_params: { userId?: string; limit?: number; offset?: number; query?: string }) => ({
+export const mcpTools: MCPTools = { cases: {, loadCases: async (_params: { userId?: string; limit?: number; offset?: number; query?: string }) => ({
       success: true,
-      data: [],
+      data: []
     }),
-    createCase: async (caseData: any) => ({ success: true, data: { id: 'new-case-123', ...caseData } }),
-    updateCase: async (caseId: string, updates: any) => ({ success: true, data: { id: caseId, ...updates } }),
-    deleteCase: async (caseId: string) => ({ success: true, data: { deleted: caseId } }),
+    createCase: async (caseData: any) => ({ success: true, data: {, id: 'new-case-123', ...caseData } }),
+    updateCase: async (caseId: string, updates: any) => ({ success: true, data: {, id: caseId, ...updates } }),
+    deleteCase: async (caseId: string) => ({ success: true, data: {, deleted: caseId } }),
     findSimilarCases: async (_embedding: number[], _limit: number) => ({ success: true, data: [] }),
-    getCaseAnalytics: async (_userId: string) => ({ success: true, data: { totalCases: 0, activeCases: 0 } }),
+    getCaseAnalytics: async (_userId: string) => ({ success: true, data: {, totalCases: 0, activeCases: 0 } })
   },
   evidence: {
     loadEvidence: async (_params: { caseId?: string; limit?: number; query?: string }) => ({
       success: true,
-      data: [],
+      data: []
     }),
-    createEvidence: async (evidenceData: any) => ({ success: true, data: { id: 'new-evidence-123', ...evidenceData } }),
+    createEvidence: async (evidenceData: any) => ({ success: true, data: {, id: 'new-evidence-123', ...evidenceData } }),
     updateEvidence: async (evidenceId: string, updates: any) => ({
       success: true,
-      data: { id: evidenceId, ...updates },
+      data: {, id: evidenceId, ...updates }
     }),
-    deleteEvidence: async (evidenceId: string) => ({ success: true, data: { deleted: evidenceId } }),
-    findSimilarEvidence: async (_params: {
-      embedding: number[];
-      caseId: string;
-      limit: number;
+    deleteEvidence: async (evidenceId: string) => ({ success: true, data: {, deleted: evidenceId } }),
+    findSimilarEvidence: async (_params: { embedding: number[];, caseId: string;
+     , limit: number;
       threshold?: number;
     }) => ({
       success: true,
-      data: [],
+      data: []
     }),
     getEvidenceAnalytics: async (_caseId: string) => ({
       success: true,
-      data: { totalEvidence: 0, processedEvidence: 0 },
-    }),
+      data: {, totalEvidence: 0, processedEvidence: 0 }
+    })
   },
-  users: {
-    getUserById: async (userId: string) => ({
-      success: true,
-      data: { id: userId, name: 'Demo User', role: 'attorney' },
+  users: { getUserById: async (userId: string) => ({, success: true,
+      data: {, id: userId, name: 'Demo User', role: 'attorney' }
     }),
-    updateUser: async (userId: string, updates: any) => ({ success: true, data: { id: userId, ...updates } }),
-    getUserAnalytics: async () => ({ success: true, data: { totalUsers: 1, activeUsers: 1 } }),
+    updateUser: async (userId: string, updates: any) => ({ success: true, data: {, id: userId, ...updates } }),
+    getUserAnalytics: async () => ({ success: true, data: {, totalUsers: 1, activeUsers: 1 } })
   },
   getAnalytics: async (_params: any) => ({ success: true, data: null }),
   analyzeLegalDocument: async (_document: any) => ({ success: true, data: null }),
   extractClauses: async (_documentId: string) => ({ success: true, data: null }),
   queryRAG: async (_query: string, _context?: any) => ({ success: true, data: null }),
   generateEmbedding: async (_text: string) => ({ success: true, data: [] }),
-  semanticSearch: async (_query: string, _filters?: any) => ({ success: true, data: [] }),
+  semanticSearch: async (_query: string, _filters?: any) => ({ success: true, data: [] })
 };

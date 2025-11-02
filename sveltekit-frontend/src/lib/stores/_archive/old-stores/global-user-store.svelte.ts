@@ -35,9 +35,7 @@ export interface GlobalUserState {
   lastSync: Date | null;
   pendingChanges: number;
 }
-export interface UserProfile {
-  id: string;
-  email: string;
+export interface UserProfile { id: string;, email: string;
   firstName?: string;
   lastName?: string;
   name?: string;
@@ -48,26 +46,18 @@ export interface UserProfile {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'yorha' | 'nes';
-  language: string;
+export interface UserPreferences { theme: 'light' | 'dark' | 'yorha' | 'nes';, language: string;
   timezone: string;
-  aiAssistant: {
-    model: string;
-    temperature: number;
+  aiAssistant: { model: string;, temperature: number;
     maxTokens: number;
     enableStreaming: boolean;
     autoComplete: boolean;
   }
-  notifications: {
-    email: boolean;
-    push: boolean;
+  notifications: { email: boolean;, push: boolean;
     desktop: boolean;
     legal: boolean;
   }
-  privacy: {
-    shareAnalytics: boolean;
-    storeSearchHistory: boolean;
+  privacy: { shareAnalytics: boolean;, storeSearchHistory: boolean;
     enableRecommendations: boolean;
   }
 }
@@ -83,23 +73,17 @@ export interface AIMessage {
   processingTime?: number;
   tokensUsed?: number;
 }
-export interface SessionMetrics {
-  startTime: Date;
-  duration: number;
+export interface SessionMetrics { startTime: Date;, duration: number;
   queriesCount: number;
   successRate: number;
   averageResponseTime: number;
   topTopics: string[];
 }
-export interface EmbeddingCache {
-  textHash: string;
-  embedding: number[];
+export interface EmbeddingCache { textHash: string;, embedding: number[];
   model: string;
   createdAt: Date;
 }
-export interface SearchQuery {
-  query: string;
-  results: number;
+export interface SearchQuery { query: string;, results: number;
   timestamp: Date;
   context?: string;
 }
@@ -113,18 +97,18 @@ const defaultPreferences: UserPreferences = {
     temperature: 0.7,
     maxTokens: 2048,
     enableStreaming: true,
-    autoComplete: true,
+    autoComplete: true
   },
   notifications: {
     email: true,
     push: false,
     desktop: true,
-    legal: true,
+    legal: true
   },
   privacy: {
     shareAnalytics: true,
     storeSearchHistory: true,
-    enableRecommendations: true,
+    enableRecommendations: true
   }
 }
 const defaultState: GlobalUserState = {
@@ -150,7 +134,7 @@ const defaultState: GlobalUserState = {
   searchHistory: [],
   syncStatus: 'idle',
   lastSync: null,
-  pendingChanges: 0,
+  pendingChanges: 0
 }
 // ===== SVELTE 5 RUNES STORE =====
 let globalUserState = $state<GlobalUserState>(defaultState);
@@ -170,14 +154,14 @@ const hasUnsynced = $derived(
 // ===== STORE ACTIONS =====
 export const globalUserStore = {
   // State getters
-  get state() { return globalUserState, },
-  get user() { return globalUserState.user, },
-  get profile() { return globalUserState.profile, },
-  get preferences() { return globalUserState.preferences, },
-  get isAuthenticated() { return globalUserState.isAuthenticated, },
-  get displayName() { return userDisplayName, },
-  get isOnline() { return isOnline, },
-  get hasUnsynced() { return hasUnsynced, },
+  get state() { return globalUserState },
+  get user() { return globalUserState.user },
+  get profile() { return globalUserState.profile },
+  get preferences() { return globalUserState.preferences },
+  get isAuthenticated() { return globalUserState.isAuthenticated },
+  get displayName() { return userDisplayName },
+  get isOnline() { return isOnline },
+  get hasUnsynced() { return hasUnsynced },
   // ===== AUTHENTICATION ACTIONS =====
   async setUser(user: User | null, session: Session | null) {
     globalUserState.user = user;
@@ -392,7 +376,7 @@ export const globalUserStore = {
       }
       const response = await fetch('/api/v1/sync/user-state', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           userId: globalUserState.user.id,
           data: syncData
@@ -469,7 +453,7 @@ if (browser) {
       // Use sendBeacon for reliable sync on page unload
       navigator.sendBeacon('/api/v1/sync/user-state-beacon', JSON.stringify({
         userId: globalUserStore.user?.id,
-        data: { lastActivity: new Date() }
+        data: {, lastActivity: new Date() }
       });
     }
   });

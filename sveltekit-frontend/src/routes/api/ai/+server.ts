@@ -4,9 +4,7 @@ import type { Document } from '$lib/types';
 import { json, type RequestHandler } from '@sveltejs/kit'
 import type { AIServiceResponse } from '$lib/ai/ai-service'
 import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the new utility function
-interface AIRequest {
-  caseId: string;
-  prompt: string;
+interface AIRequest { caseId: string;, prompt: string;
   context?: 'analysis' | 'connection' | 'annotation' | 'investigation' | 'general';
   model?: string;
   evidenceIds?: string[];
@@ -14,9 +12,7 @@ interface AIRequest {
   temperature?: number;
   stream?: boolean;
 }
-interface OllamaResponse {
-  model: string;
-  created_at: string;
+interface OllamaResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -46,20 +42,19 @@ class LegalAIService {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
           model: request.model || this.defaultModel,
           prompt: fullPrompt,
           stream: false,
           options: {
-            temperature: request.temperature || 0.7,
+           , temperature: request.temperature || 0.7,
             top_p: 0.9,
             top_k: 40,
             num_predict: request.maxTokens || 2048,
-            stop: ['Human:', 'User:', '---'],
-          },
-        }),
+            stop: ['Human:', 'User:', '---']
+          }
+        })
       });
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -78,12 +73,12 @@ class LegalAIService {
         metadata: {
           model: ollamaResult.model,
           tokensUsed: (ollamaResult.prompt_eval_count || 0) + (ollamaResult.eval_count || 0),
-          processingTime,
-        },
+          processingTime
+        }
       };
     } catch (error) {
       console.error('Legal AI Service Error:', error);
-      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
   private buildLegalSystemPrompt(context: string): string {
@@ -102,46 +97,42 @@ Guidelines:
 - Highlight potential risks or concerns
 - Maintain professional legal standards
 - Format responses clearly with headings and bullet points where appropriate`;
-    const contextPrompts = {
-      analysis: `\n\nCurrent Task: EVIDENCE ANALYSIS
+    const contextPrompts = { analysis: `\n\nCurrent, Task: EVIDENCE ANALYSIS
 Focus on examining the provided evidence for:
 - Legal relevance and admissibility
 - Key facts and implications
 - Potential weaknesses or strengths
 - Supporting or contradictory elements
 - Recommended preservation actions`,
-      connection: `\n\nCurrent Task: CONNECTION ANALYSIS
+      connection: `\n\nCurrent; Task: CONNECTION ANALYSIS
 Focus on identifying relationships between evidence:
 - Temporal connections and timelines
 - Causal relationships
 - Corroborating or contradictory evidence
 - Pattern identification
 - Chain of custody considerations`,
-      annotation: `\n\nCurrent Task: EVIDENCE ANNOTATION
+      annotation: `\n\nCurrent; Task: EVIDENCE ANNOTATION
 Focus on providing detailed documentation:
 - Significance of the evidence
 - Legal implications
 - Required follow-up actions
 - Preservation recommendations
 - Potential challenges or objections`,
-      investigation: `\n\nCurrent Task: INVESTIGATION PLANNING
+      investigation: `\n\nCurrent; Task: INVESTIGATION PLANNING
 Focus on strategic next steps:
 - Priority evidence to collect
 - Key witnesses to interview
 - Expert consultations needed
 - Potential legal challenges
 - Timeline and resource planning`,
-      general: `\n\nCurrent Task: GENERAL LEGAL ASSISTANCE
-Provide comprehensive legal guidance as appropriate for the query.`,
-    };
+      general: `\n\nCurrent; Task: GENERAL LEGAL ASSISTANCE
+Provide comprehensive legal guidance as appropriate for the query.' };
     return basePrompt + (contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general);
   }
   private analyzeLegalResponse(
     response: string,
     context?: string
-  ): {
-    evidenceConnections: string[];
-    suggestedActions: AIServiceResponse['suggestedActions'];
+  ): { evidenceConnections: string[];, suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
     reasoning: string;
   } {
@@ -164,7 +155,7 @@ Provide comprehensive legal guidance as appropriate for the query.`,
       { pattern: /should\s+(?:be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi, type: 'annotate' as const },
       { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi, type: 'connect' as const },
       { pattern: /search\s+(?:for|through)\s+(.*?)(?:\.|$)/gi, type: 'search' as const },
-      { pattern: /categorize\s+(?:as|under)\s+(.*?)(?:\.|$)/gi, type: 'categorize' as const },
+      { pattern: /categorize\s+(?:as|under)\s+(.*?)(?:\.|$)/gi, type: 'categorize' as const }
     ];
     actionPatterns.forEach(({ pattern, type }) => {
       let match;
@@ -174,7 +165,7 @@ Provide comprehensive legal guidance as appropriate for the query.`,
           suggestedActions.push({
             type,
             description: this.cleanActionDescription(description),
-            priority: this.determinePriority(description),
+            priority: this.determinePriority(description)
           });
         }
       }
@@ -187,7 +178,7 @@ Provide comprehensive legal guidance as appropriate for the query.`,
       evidenceConnections: [...new Set(evidenceConnections)], // Remove duplicates
       suggestedActions: suggestedActions.slice(0, 5), // Limit to top 5 actions
       confidence,
-      reasoning,
+      reasoning
     };
   }
   private cleanActionDescription(description: string): string {
@@ -225,7 +216,7 @@ Provide comprehensive legal guidance as appropriate for the query.`,
       analysis: ['analyze', 'assessment', 'evaluation', 'finding'],
       connection: ['relationship', 'connect', 'link', 'correlation'],
       annotation: ['note', 'significant', 'important', 'detail'],
-      investigation: ['next step', 'recommend', 'investigate', 'follow-up'],
+      investigation: ['next step', 'recommend', 'investigate', 'follow-up']
     };
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords];
@@ -273,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body: AIRequest = await request.json();
     // Validate required fields
     if (!body.caseId || !body.prompt) {
-      return json({ error: 'Missing required fields: caseId and prompt' }, { status: 400 });
+      return json({ error: 'Missing required, fields: caseId and prompt' }, { status: 400 });
     }
     // Generate AI response
     const response = await legalAI.generateResponse(body);
@@ -284,8 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error occurred',
-      },
+        message: error instanceof Error ? error.message : `Unknown error occurred` },
       { status: 500 }
     );
   }
@@ -304,14 +294,14 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       models: models.models || [],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
       {
         status: 'unhealthy',
         error: error instanceof Error ? error.message : 'Service check failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

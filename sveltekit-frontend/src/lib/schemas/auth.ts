@@ -8,7 +8,7 @@ export const loginSchema = z.object({
   password: z
     .string('Password is required')
     .min(6, 'Password must be at least 6 characters'),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean().default(false)
 });
 export type LoginSchema = typeof loginSchema;
 export const registerSchema = z
@@ -25,11 +25,11 @@ export const registerSchema = z
       .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string('Please confirm your password'),
     termsAccepted: z.boolean().refine(val => val === true, {
-      message: 'You must accept the terms and conditions',
-    }),
+      message: 'You must accept the terms and conditions'
+    })
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirmPassword']
   });
 export type RegisterSchema = typeof registerSchema;

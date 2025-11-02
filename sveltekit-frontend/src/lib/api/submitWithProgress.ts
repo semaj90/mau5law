@@ -18,7 +18,7 @@ export async function submitWithProgress(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
-    signal,
+    signal
   });
   const text = await res.text();
   return { status: res.status, responseText: text };

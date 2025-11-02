@@ -22,7 +22,7 @@ export interface ExtendedUser extends User {
 export function extendUser(user: User): ExtendedUser {
   return {
     ...user,
-    username: user.name || user.email || `${user.firstName} ${user.lastName}`.trim(),
+    username: user.name || user.email || `${user.firstName} ${user.lastName}`.trim()
   };
 }
 export type Evidence = InferSelectModel<typeof evidence>;
@@ -40,16 +40,14 @@ export function extendEvidence(evidence: Evidence): ExtendedEvidence {
     ...evidence,
     status: evidence.isAdmissible ? 'approved' : 'pending',
     type: evidence.evidenceType,
-    createdAt: evidence.collectedAt || evidence.uploadedAt,
+    createdAt: evidence.collectedAt || evidence.uploadedAt
   };
 }
 // Enhanced Report Builder types
 export type Report = InferSelectModel<typeof reports>;
 export type NewReport = InferInsertModel<typeof reports>;
 // CitationPoints table not found in current schema - using manual interface
-export interface CitationPoint {
-  id: string;
-  text: string;
+export interface CitationPoint { id: string;, text: string;
   source: string;
   page?: number;
   context: string;
@@ -62,9 +60,7 @@ export interface CitationPoint {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface NewCitationPoint {
-  text: string;
-  source: string;
+export interface NewCitationPoint { text: string;, source: string;
   page?: number;
   context: string;
   tags?: string[];
@@ -91,16 +87,12 @@ export interface CaseWithBooks extends Case {
   citationPoints?: CitationPoint[];
 }
 // Case Book interface - contains multiple reports and citations
-export interface Book {
-  id: string;
-  title: string;
+export interface Book { id: string;, title: string;
   description?: string;
   caseId: string;
   reports: Report[];
   citationPoints: CitationPoint[];
-  metadata: {
-    tags: string[];
-    category: string;
+  metadata: { tags: string[];, category: string;
     priority: 'low' | 'medium' | 'high' | 'critical';
     confidentialityLevel: 'public' | 'restricted' | 'confidential' | 'top-secret';
     jurisdiction: string;
@@ -115,47 +107,34 @@ export interface Book {
   updatedAt: Date;
 }
 // Report Editor types
-export interface ReportSection {
-  id: string;
-  title: string;
+export interface ReportSection { id: string;, title: string;
   content: string; // HTML content from contenteditable,
   order: number;
   type: 'text' | 'evidence' | 'citation' | 'canvas';
   metadata?: {
     citations: string[]; // CitationPoint IDs,
     evidenceRefs: string[]; // Evidence IDs
-    canvasStateId?: string; // CanvasState ID if type is: 'canvas'
-  };
+    canvasStateId?: string; // CanvasState ID if type is: 'canvas' };
 }
-export interface ReportWithSections extends Report {
-  sections: ReportSection[];
-  citationPoints: CitationPoint[];
+export interface ReportWithSections extends Report { sections: ReportSection[];, citationPoints: CitationPoint[];
   canvasState?: CanvasState;
 }
 // AI Integration types
-export interface AIAnalysis {
-  id: string;
-  reportId: string;
+export interface AIAnalysis { id: string;, reportId: string;
   analysisType: 'summary' | 'keyword_extraction' | 'sentiment' | 'citation_suggestion' | 'legal_precedent';
-  result: {
-    content: string;
-    confidence: number;
+  result: { content: string;, confidence: number;
     metadata: { [key: string]: any };
   };
   timestamp: Date;
 }
-export interface CitationSuggestion {
-  id: string;
-  text: string;
+export interface CitationSuggestion { id: string;, text: string;
   relevanceScore: number;
   source: CitationPoint;
   context: string;
   reasoning: string;
 }
 // Fabric.js Canvas types
-export interface CanvasObject {
-  id: string;
-  type: 'text' | 'image' | 'arrow' | 'shape' | 'highlight' | 'evidence-marker';
+export interface CanvasObject { id: string;, type: 'text' | 'image' | 'arrow' | 'shape' | 'highlight' | 'evidence-marker';
   properties: { [key: string]: any }; // Fabric.js object properties
   metadata?: {
     evidenceId?: string;
@@ -166,13 +145,9 @@ export interface CanvasObject {
 export interface CanvasStateData {
   objects: CanvasObject[];
   background?: string;
-  dimensions: {
-    width: number;
-    height: number;
+  dimensions: { width: number;, height: number;
   };
-  viewport: {
-    zoom: number;
-    panX: number;
+  viewport: { zoom: number;, panX: number;
     panY: number;
   };
   metadata: {
@@ -188,18 +163,14 @@ export interface SearchFilters {
   query?: string;
   caseId?: string;
   reportType?: string;
-  dateRange?: {
-    start: Date;
-    end: Date;
+  dateRange?: { start: Date;, end: Date;
   };
   tags?: string[];
   jurisdiction?: string;
   confidentialityLevel?: string[];
   status?: string[];
 }
-export interface SearchResult {
-  id: string;
-  type: 'report' | 'citation' | 'evidence' | 'case';
+export interface SearchResult { id: string;, type: 'report' | 'citation' | 'evidence' | 'case';
   title: string;
   excerpt: string;
   relevanceScore: number;
@@ -207,15 +178,11 @@ export interface SearchResult {
   highlights: string[];
 }
 // Export types
-export interface ExportOptions {
-  format: 'pdf' | 'docx' | 'html' | 'json';
-  includeCanvases: boolean;
+export interface ExportOptions { format: 'pdf' | 'docx' | 'html' | 'json';, includeCanvases: boolean;
   includeCitations: boolean;
   includeMetadata: boolean;
   watermark?: string;
-  headerFooter?: {
-    header: string;
-    footer: string;
+  headerFooter?: { header: string;, footer: string;
   };
 }
 export interface ExportResult {
@@ -229,9 +196,7 @@ export interface ExportResult {
   };
 }
 // Legacy support for Loki.js (offline/local storage)
-export interface LegacyCitationPoint {
-  id: string;
-  text: string;
+export interface LegacyCitationPoint { id: string;, text: string;
   source: string;
   page?: number;
   context: string;
@@ -249,17 +214,13 @@ export interface EditorState {
   activeReportId?: string;
   activeCanvasId?: string;
   selectedCitations: string[];
-  clipboardContent?: {
-    type: 'text' | 'citation' | 'canvas-object';
-    data: any;
+  clipboardContent?: { type: 'text' | 'citation' | 'canvas-object';, data: any;
   };
   autoSaveEnabled: boolean;
   lastSaved?: Date;
   isDirty: boolean;
 }
-export interface SidebarState {
-  activeTab: 'citations' | 'evidence' | 'ai-suggestions' | 'canvas-tools';
-  citationFilters: {
+export interface SidebarState { activeTab: 'citations' | 'evidence' | 'ai-suggestions' | 'canvas-tools';, citationFilters: {
     type?: string;
     tags?: string[];
     searchQuery?: string;
@@ -267,26 +228,16 @@ export interface SidebarState {
   collapsed: boolean;
 }
 // Real-time collaboration types (future feature)
-export interface CollaborationState {
-  activeUsers: {
-    userId: string;
+export interface CollaborationState { activeUsers: {, userId: string;
     userName: string;
-    cursor?: {
-      x: number;
-      y: number;
+    cursor?: { x: number;, y: number;
     };
-    selection?: {
-      reportId: string;
-      sectionId: string;
-      range: {
-        start: number;
-        end: number;
+    selection?: { reportId: string;, sectionId: string;
+      range: { start: number;, end: number;
       };
     };
   }[];
-  changes: {
-    id: string;
-    userId: string;
+  changes: { id: string;, userId: string;
     type: 'text' | 'canvas' | 'citation';
     timestamp: Date;
     data: any;
@@ -299,27 +250,21 @@ export interface AIResponse {
   contextUsed?: any[];
   suggestions?: string[];
   actions?: Array<any>;
-  metadata?: {
-    provider: 'local' | 'hybrid' | 'cloud';
-    model: string;
+  metadata?: { provider: 'local' | 'hybrid' | 'cloud';, model: string;
     confidence: number;
     executionTime: number;
     fromCache: boolean;
   };
 }
 // Gemma3 Configuration types
-export interface Gemma3Config {
-  temperature: number;
-  maxTokens: number;
+export interface Gemma3Config { temperature: number;, maxTokens: number;
   topP: number;
   topK: number;
   repeatPenalty: number;
   systemPrompt: string;
 }
 // Local Model types
-export interface LocalModel {
-  name: string;
-  path: string;
+export interface LocalModel { name: string;, path: string;
   format: string;
   size: string;
   available: boolean;

@@ -8,9 +8,7 @@ import { writeFile, readFile, unlink } from 'fs/promises';
 import { join } from 'path';
 import { nanoid } from 'nanoid';
 const execAsync = promisify(exec);
-interface CudaPreprocessOptions {
-  enableGpuOptimization: boolean;
-  useMsvcOptimizations: boolean;
+interface CudaPreprocessOptions { enableGpuOptimization: boolean;, useMsvcOptimizations: boolean;
   targetGpuArch: string;
   useClangOptimizations: boolean;
 }
@@ -47,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No file provided',
+          error: 'No file provided'
         },
         { status: 400 }
       );
@@ -59,14 +57,14 @@ export const POST: RequestHandler = async ({ request }) => {
       console.warn('CUDA worker not available, falling back to CPU processing');
       return json({
         success: false,
-        error: `CUDA worker unavailable: ${workerAvailable.error}`,
+        error: `CUDA worker; unavailable: ${workerAvailable.error}`,
         metadata: {
-          originalSize: file.size,
+         , originalSize: file.size,
           processingTime: Date.now() - startTime,
           cudaVersion: 'unavailable',
           clangVersion: 'unavailable',
-          optimizations: ['cpu-fallback'],
-        },
+          optimizations: ['cpu-fallback']
+        }
       });
     }
     // Process file based on type
@@ -79,12 +77,12 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: error instanceof Error ? error.message : 'CUDA processing failed',
         metadata: {
-          originalSize: 0,
+         , originalSize: 0,
           processingTime: Date.now() - startTime,
           cudaVersion: 'error',
           clangVersion: 'error',
-          optimizations: ['error'],
-        },
+          optimizations: ['error']
+        }
       },
       { status: 500 }
     );
@@ -94,18 +92,17 @@ async function checkCudaWorkerAvailability(workerPath: string): Promise<CudaWork
   try {
     // Test CUDA worker with version check
     const { stdout, stderr } = await execAsync(`"${workerPath}" --version`, {
-      timeout: 5000,
+      timeout: 5000
     });
     const version = (stdout || stderr || '').toString().trim();
     return {
       available: true,
-      version: version || undefined,
+      version: version || undefined
     };
   } catch (error: any) {
     return {
       available: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+      error: error instanceof Error ? error.message : 'Unknown error` };
   }
 }
 async function processFileWithCuda(
@@ -131,7 +128,7 @@ async function processFileWithCuda(
     // Execute CUDA processing with timeout
     const { stdout, stderr } = await execAsync(cudaCommand, {
       timeout: 30000, // 30 second timeout
-      cwd: join('..', 'cuda-worker'),
+      cwd: join('..', 'cuda-worker')
     });
     // Read processed file and metadata
     const processedBuffer = await readFile(outputPath);
@@ -143,7 +140,7 @@ async function processFileWithCuda(
       metadata = {
         error: 'Metadata not available',
         stdout: stdout.trim(),
-        stderr: stderr.trim(),
+        stderr: stderr.trim()
       };
     }
     const processingTime = Date.now() - startTime;
@@ -161,8 +158,8 @@ async function processFileWithCuda(
         clangVersion: metadata.clangVersion || 'unknown',
         optimizations: buildOptimizationsList(options),
         gpuMemoryUsed: metadata.gpuMemoryUsed,
-        throughputMBps,
-      },
+        throughputMBps
+      }
     };
   } catch (error) {
     // Cleanup on error
@@ -177,8 +174,8 @@ async function processFileWithCuda(
         cudaVersion: 'error',
         clangVersion: 'error',
         optimizations: ['error'],
-        throughputMBps: 0,
-      },
+        throughputMBps: 0
+      }
     };
   }
 }
@@ -194,7 +191,7 @@ function buildCudaCommand(
     `--input="${inputPath}"`,
     `--output="${outputPath}"`,
     `--metadata="${metadataPath}"`,
-    `--gpu-arch="${options.targetGpuArch || 'sm_86'}"`, // RTX 3060 Ti
+    `--gpu-arch="${options.targetGpuArch || 'sm_86` }"`, // RTX 3060 Ti
   ];
   if (options.enableGpuOptimization) {
     args.push('--enable-gpu-optimizations');
@@ -236,14 +233,13 @@ export const GET: RequestHandler = async () => {
       clangOptimizations: true,
       msvcCompatibility: true,
       supportedGpuArchs: ['sm_75', 'sm_86', 'sm_89'],
-      error: availability.error,
+      error: availability.error
     });
   } catch (error) {
     return json(
       {
         cudaWorkerAvailable: false,
-        error: error instanceof Error ? error.message : 'Health check failed',
-      },
+        error: error instanceof Error ? error.message : 'Health check failed` },
       { status: 500 }
     );
   }

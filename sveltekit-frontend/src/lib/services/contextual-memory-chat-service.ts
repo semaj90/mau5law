@@ -2,9 +2,7 @@ import type { User } from '$lib/types';
 import { browser } from '$app/environment';
 import { writable, type Writable } from 'svelte/store';
 
-export interface ChatMessage {
-  id: string;
-  session_id: string;
+export interface ChatMessage { id: string;, session_id: string;
   user_id: string;
   case_id?: string; // Added optional case ID for legal context
   role: 'user' | 'assistant' | 'system';
@@ -21,9 +19,7 @@ export interface ChatMessage {
   };
 }
 
-export interface ContextualPrompt {
-  currentQuery: string;
-  recentMessages: ChatMessage[];
+export interface ContextualPrompt { currentQuery: string;, recentMessages: ChatMessage[];
   semanticallySimilar: ChatMessage[];
   ragContext: string[];
   userPreferences: UserPreferences;
@@ -41,9 +37,7 @@ export interface UserPreferences {
 // Add the missing MemoryCacheEntry type used by the in-memory cache.
 // This prevents the TypeScript compiler from failing to parse the file
 // and resolves the cascade of errors that followed the missing type.
-interface MemoryCacheEntry {
-  key: string;
-  response: string;
+interface MemoryCacheEntry { key: string;, response: string;
   confidence: number;
   usage_count: number;
   last_used: Date;
@@ -66,7 +60,7 @@ class ContextualMemoryChatService {
   public contextualInsights: Writable<Record<string, unknown>> = writable({
     similarQueries: [],
     suggestedQueries: [],
-    userPatterns: [],
+    userPatterns: []
   });
 
   constructor() {
@@ -107,9 +101,7 @@ class ContextualMemoryChatService {
       useSemanticSimilarity?: boolean;
       forceRefresh?: boolean;
     } = {}
-  ): Promise<{
-    response: string;
-    cached: boolean;
+  ): Promise<{ response: string;, cached: boolean;
     contextUsed: ContextualPrompt;
     processingTimeMs: number;
     quantized?: boolean | null;
@@ -129,7 +121,7 @@ class ContextualMemoryChatService {
             cached: true,
             contextUsed,
             processingTimeMs: performance.now() - startTime,
-            quantized: cachedResponse.quantized ?? null,
+            quantized: cachedResponse.quantized ?? null
           };
         }
       }
@@ -144,7 +136,7 @@ class ContextualMemoryChatService {
       await this.cacheResponse(message, llmResponse.response, userId, {
         confidence: llmResponse.confidence ?? 0.8,
         quantized: llmResponse.quantized ?? null,
-        contextWeight: contextualPrompt.contextWeight,
+        contextWeight: contextualPrompt.contextWeight
       });
 
       // Step 5: Update user history
@@ -155,7 +147,7 @@ class ContextualMemoryChatService {
         role: 'user',
         content: message,
         created_at: new Date(),
-        content_embedding: await this.generateEmbedding(message),
+        content_embedding: await this.generateEmbedding(message)
       };
       const assistantMsg: ChatMessage = {
         id: crypto.randomUUID(),
@@ -169,8 +161,7 @@ class ContextualMemoryChatService {
           response_time_ms: performance.now() - startTime,
           cached: false,
           quantized: !!llmResponse.quantized,
-          model_used: llmResponse?.model || 'unknown',
-        },
+          model_used: llmResponse?.model || 'unknown` }
       };
       await this.updateChatHistory(userId, sessionId, [userMsg, assistantMsg]);
 
@@ -180,7 +171,7 @@ class ContextualMemoryChatService {
         cached: false,
         contextUsed: contextualPrompt,
         processingTimeMs: performance.now() - startTime,
-        quantized: llmResponse.quantized ?? null,
+        quantized: llmResponse.quantized ?? null
       };
     } catch (error) {
       this.isProcessing.set(false);
@@ -234,7 +225,7 @@ class ContextualMemoryChatService {
       ragContext,
       userPreferences,
       enhancedPrompt,
-      contextWeight,
+      contextWeight
     };
   }
 
@@ -297,19 +288,19 @@ class ContextualMemoryChatService {
         messages: [
           {
             role: 'user',
-            content: contextualPrompt.enhancedPrompt,
+            content: contextualPrompt.enhancedPrompt
           },
         ],
         userId,
         sessionId,
         model: 'gemma3-legal:latest',
         temperature: 0.7,
-        contextWeight: contextualPrompt.contextWeight,
+        contextWeight: contextualPrompt.contextWeight
       };
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         throw new Error(`LLM request failed: ${response.status}`);
@@ -319,11 +310,11 @@ class ContextualMemoryChatService {
         response: (data?.choices?.[0]?.message?.content as string) ?? 'No response generated',
         confidence: data?.confidence,
         quantized: data?.quantized ?? null,
-        model: data?.model ?? 'unknown',
+        model: data?.model ?? 'unknown'
       };
     } catch (error) {
       console.warn('sendToLLM failed, returning fallback:', error);
-      return { response: 'The assistant is temporarily unavailable. Please try again later.' };
+      return { response: `The assistant is temporarily unavailable. Please try again later.` };
     }
   }
 
@@ -351,7 +342,7 @@ class ContextualMemoryChatService {
     query: string,
     response: string,
     userId: string,
-    options: { confidence: number; quantized?: boolean | null; contextWeight: number }
+    options: {, confidence: number; quantized?: boolean | null; contextWeight: number }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(query, userId);
     const embedding = await this.generateEmbedding(query);
@@ -363,7 +354,7 @@ class ContextualMemoryChatService {
       last_used: new Date(),
       embedding,
       ttl: this.calculateCacheTTL(options.contextWeight, options.confidence),
-      quantized: options.quantized ?? null,
+      quantized: options.quantized ?? null
     };
     this.memoryCache.set(cacheKey, cacheEntry);
 
@@ -400,8 +391,8 @@ class ContextualMemoryChatService {
       const queryEmbedding = await this.generateEmbedding(query);
       const resp = await fetch('/api/chat/similar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embedding: queryEmbedding, userId, limit }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, embedding: queryEmbedding, userId, limit })
       });
       if (!resp.ok) return [];
       return (await resp.json()) as ChatMessage[];
@@ -421,7 +412,7 @@ class ContextualMemoryChatService {
       const resp = await fetch('/api/rag/context', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, userId, limit: 5 }),
+        body: JSON.stringify({ query, userId, limit: 5 })
       });
       if (!resp.ok) return [];
       const context = (await resp.json()) as string[];
@@ -438,8 +429,8 @@ class ContextualMemoryChatService {
     try {
       const resp = await fetch('/api/embeddings/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ text })
       });
       if (!resp.ok) return this.generateSimpleEmbedding(text);
       const data = await resp.json();
@@ -526,8 +517,8 @@ class ContextualMemoryChatService {
     try {
       await fetch('/api/chat/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ messages })
       });
     } catch (error) {
       console.warn('Failed to persist chat messages:', error);
@@ -560,7 +551,7 @@ class ContextualMemoryChatService {
     this.contextualInsights.update(current => ({
       ...(current as Record<string, unknown>),
       userPatterns: this.extractUserPatterns(userMessages),
-      suggestedQueries: this.generateSuggestedQueries(userMessages),
+      suggestedQueries: this.generateSuggestedQueries(userMessages)
     }));
   }
 
@@ -588,20 +579,18 @@ class ContextualMemoryChatService {
   // Performance / metrics helpers
   public async getPerformanceMetrics(): Promise<Record<string, unknown>> {
     const serviceWorkerMetrics = await this.getServiceWorkerMetrics();
-    return {
-      memoryCache: {
-        size: this.memoryCache.size,
+    return { memoryCache: {, size: this.memoryCache.size,
         hitRate: this.calculateCacheHitRate(),
-        averageTTL: this.calculateAverageTTL(),
+        averageTTL: this.calculateAverageTTL()
       },
       serviceWorker: serviceWorkerMetrics,
       userHistory: {
         sessionsStored: this.sessionCache.size,
-        totalMessages: Array.from(this.sessionCache.values()).reduce((sum, msgs) => sum + msgs.length, 0),
+        totalMessages: Array.from(this.sessionCache.values()).reduce((sum, msgs) => sum + msgs.length, 0)
       },
       ragContext: {
-        entriesCached: this.ragContextCache.size,
-      },
+        entriesCached: this.ragContextCache.size
+      }
     };
   }
 
@@ -613,7 +602,7 @@ class ContextualMemoryChatService {
         resolve(event.data ?? {});
       };
       try {
-        this.serviceWorker.postMessage({ type: 'GET_PERFORMANCE_METRICS' }, [channel.port2]);
+        this.serviceWorker.postMessage({ type: `GET_PERFORMANCE_METRICS` }, [channel.port2]);
       } catch {
         resolve({});
       }

@@ -18,9 +18,7 @@ type GetAnalysisRequest = {
   analysisId?: string;
 };
 
-type AnalysisResultRow = {
-  analysisId: string;
-  evidenceId: string;
+type AnalysisResultRow = { analysisId: string;, evidenceId: string;
   results: string | Record<string, unknown>;
   createdAt: Date;
   analysisTypes: string | string[];
@@ -48,9 +46,7 @@ type BatchAnalyzeRequest = {
   options?: Record<string, unknown>;
 };
 
-type RealTimeRequest = {
-  evidenceId: string;
-  caseId: string;
+type RealTimeRequest = { evidenceId: string;, caseId: string;
   analysisTypes?: string[] | string;
 };
 
@@ -59,16 +55,12 @@ type ProgressUpdate = {
   task?: string;
 };
 
-type BatchResultItem = {
-  evidenceId: string;
-  analysisId: string;
+type BatchResultItem = { evidenceId: string;, analysisId: string;
   results: any;
   success: boolean;
 };
 
-type BatchErrorItem = {
-  evidenceId: string;
-  error: string;
+type BatchErrorItem = { evidenceId: string;, error: string;
 };
 
 // New: typed analyzer output to avoid `any` casts when reading fields
@@ -101,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Analysis failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -115,11 +107,11 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 });
+    return json({ error: `Evidence not found` }, { status: 404 });
   }
   const evidenceData = evidenceRecord[0];
   // Start analysis with progress tracking
-  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
   // Broadcast analysis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -128,8 +120,8 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
         analysisId,
         evidenceId,
         analysisTypes: analysisTypes || ['all'],
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   }
   try {
@@ -145,11 +137,11 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
               evidenceId,
               progress: progress.percentage,
               currentTask: progress.task,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           });
         }
-      },
+      }
     });
     // Store analysis results in database
     await storeAnalysisResult(evidenceId, analysisResult, analysisId);
@@ -161,8 +153,8 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
           analysisId,
           evidenceId,
           results: analysisResult,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     }
     return json({
@@ -170,7 +162,7 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
       analysisId,
       results: analysisResult,
       evidenceId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     // Broadcast error
@@ -181,8 +173,8 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
           analysisId,
           evidenceId,
           error: error instanceof Error ? error.message : 'Analysis failed',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     }
     throw error;
@@ -191,9 +183,9 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
 async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
   const { evidenceIds, analysisTypes, caseId, options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 });
+    return json({ error: `Evidence IDs array required` }, { status: 400 });
   }
-  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
   const results: BatchResultItem[] = [];
   const errors: BatchErrorItem[] = [];
   // Broadcast batch start
@@ -205,8 +197,8 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         evidenceIds,
         total: evidenceIds.length,
         analysisTypes: analysisTypes || ['all'],
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   }
   for (let i = 0; i < evidenceIds.length; i++) {
@@ -215,7 +207,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
       // Get evidence from database
       const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
       if (evidenceRecord.length === 0) {
-        errors.push({ evidenceId, error: 'Evidence not found' });
+        errors.push({ evidenceId, error: `Evidence not found` });
         continue;
       }
       const evidenceData = evidenceRecord[0];
@@ -234,11 +226,11 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
                 overallProgress: (((i + 1) / evidenceIds.length) * 100).toFixed(1),
                 completedItems: i,
                 totalItems: evidenceIds.length,
-                timestamp: new Date().toISOString(),
-              },
+                timestamp: new Date().toISOString()
+              }
             });
           }
-        },
+        }
       });
       // Store analysis results
       const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
@@ -247,12 +239,12 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         evidenceId,
         analysisId,
         results: analysisResult,
-        success: true,
+        success: true
       });
     } catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message : 'Analysis failed',
+        error: error instanceof Error ? error.message : 'Analysis failed'
       });
     }
   }
@@ -267,8 +259,8 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         total: evidenceIds.length,
         results,
         errors,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   }
   return json({
@@ -277,12 +269,12 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
     results,
     errors,
     summary: {
-      total: evidenceIds.length,
+     , total: evidenceIds.length,
       successful: results.length,
       failed: errors.length,
-      successRate: ((results.length / evidenceIds.length) * 100).toFixed(1),
+      successRate: ((results.length / evidenceIds.length) * 100).toFixed(1)
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
@@ -314,17 +306,17 @@ async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
         evidenceId: result.evidenceId,
         results: parsedResults,
         createdAt: result.createdAt,
-        analysisTypes: parsedAnalysisTypes,
+        analysisTypes: parsedAnalysisTypes
       };
-    }),
+    })
   });
 }
 async function handleSynthesis(data: SynthesisRequest): Promise<any> {
   const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 });
+    return json({ error: `Evidence IDs array required` }, { status: 400 });
   }
-  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
   // Broadcast synthesis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -333,13 +325,13 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
         synthesisId,
         evidenceIds,
         synthesisType,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   }
   try {
     // Get all analysis results for the evidence (safe per-id retrieval)
-    const analysisRecords: Array<{ evidenceId: string; results: string | Record<string, unknown> }> = [];
+    const analysisRecords: Array<{ evidenceId: string;, results: string | Record<string, unknown> }> = [];
     for (const id of evidenceIds) {
       // cast DB query to a typed row array instead of `any`
       const recs = (await dbClient
@@ -351,14 +343,14 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
         for (const r of recs) {
           analysisRecords.push({
             evidenceId: r.evidenceId,
-            results: r.results,
+            results: r.results
           });
         }
       }
     }
     const analysisData = analysisRecords.map(record => ({
       evidenceId: record.evidenceId,
-      results: record.results,
+      results: record.results
     }));
     // Run synthesis
     const synthesisResult = await analyzer.synthesizeAnalyses(analysisData, synthesisType, {
@@ -371,11 +363,11 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
               synthesisId,
               progress: progress.percentage,
               currentTask: progress.task,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           });
         }
-      },
+      }
     });
     // Broadcast completion
     if (caseId) {
@@ -384,8 +376,8 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
         data: {
           synthesisId,
           results: synthesisResult,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     }
     return json({
@@ -393,7 +385,7 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
       synthesisId,
       results: synthesisResult,
       evidenceIds,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     // Broadcast error
@@ -403,8 +395,8 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
         data: {
           synthesisId,
           error: error instanceof Error ? error.message : 'Synthesis failed',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     }
     throw error;
@@ -432,10 +424,10 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
           evidenceId,
           progress: progress.percentage,
           task: progress.task,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
-    },
+    }
   });
   // Broadcast real-time results
   websocketBroadcast(caseId, {
@@ -443,15 +435,15 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
     data: {
       evidenceId,
       results: quickAnalysis,
-      timestamp: new Date().toISOString(),
-    },
+      timestamp: new Date().toISOString()
+    }
   });
   return json({
     success: true,
     evidenceId,
     results: quickAnalysis,
     realTime: true,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string): Promise<any> {
@@ -475,7 +467,7 @@ async function storeAnalysisResult(evidenceId: string, results: any, analysisId:
       confidence,
       processingTime,
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     });
   } catch (error) {
     console.error('Failed to store analysis result:', error);
@@ -500,13 +492,13 @@ export const GET: RequestHandler = async ({ url }) => {
             'websocket_integration',
           ],
           analysisTypes: ['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline', 'all'],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       case 'models':
         return json({
           availableModels: analyzer.getAvailableModels(),
           defaultModel: analyzer.getDefaultModel(),
-          modelCapabilities: analyzer.getModelCapabilities(),
+          modelCapabilities: analyzer.getModelCapabilities()
         });
       case 'health': {
         // scope lexical declaration to avoid: "Unexpected lexical declaration in case block"
@@ -520,8 +512,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Service error',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

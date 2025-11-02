@@ -2,7 +2,7 @@ import type { Document } from '$lib/types';
 /**
  * Dimensional Tensor Store - WebGPU Memory Management
  *
- * Advanced GPU memory architecture for the: "tricubic tensor" legal document model:
+ * Advanced GPU memory architecture for the: "tricubic tensor" legal document; model:
  * - Axis 1 (Documents): Legal document nodes and metadata
  * - Axis 2 (Chunks): Text chunks, embeddings, and semantic relationships
  * - Axis 3 (Representations): Multiple AI analyses, summaries, and insights
@@ -12,37 +12,25 @@ import type { Document } from '$lib/types';
 // ============================================================================
 // DIMENSIONAL TENSOR TYPES
 // ============================================================================
-export interface TensorDimensions {
-  documents: number; // Axis 1: Document count
-  chunks: number; // Axis 2: Chunks per document
-  representations: number; // Axis 3: AI analysis types
-  maxLOD: number; // Maximum LOD levels
+export interface TensorDimensions { documents: number; // Axis 1: Document count, chunks: number; // Axis 2: Chunks per document; representations: number; // Axis 3: AI analysis types; maxLOD: number; // Maximum LOD levels
 }
-export interface TensorSlice {
-  axis: 1 | 2 | 3;
-  index: number;
+export interface TensorSlice { axis: 1 | 2 | 3;, index: number;
   lodLevel: number;
   data: Float32Array;
   metadata: TensorSliceMetadata;
 }
-export interface TensorSliceMetadata {
-  timestamp: number;
-  hash: string;
+export interface TensorSliceMetadata { timestamp: number;, hash: string;
   size: number;
   compressed: boolean;
   accessCount: number;
   lastAccessed: number;
 }
-export interface LODLevel {
-  level: number;
-  scale: number; // 1.0 = full res, 0.5 = half res, etc.
+export interface LODLevel { level: number;, scale: number; // 1.0 = full res, 0.5 = half res, etc.
   targetSize: number; // Target texture size,
   compressionRatio: number;
   useGPUCompression: boolean;
 }
-export interface TensorMemoryLayout {
-  baseAddress: number;
-  stride: [number, number, number]; // Strides for each axis
+export interface TensorMemoryLayout { baseAddress: number;, stride: [number, number, number]; // Strides for each axis
   alignment: number;
   totalSize: number;
   fragmentCount: number;
@@ -73,9 +61,7 @@ export class DimensionalTensorStore {
   private cpuCache: Map<string, TensorSlice> = new Map();
   private textureMetadata: Map<
     string,
-    {
-      lastAccessed: number;
-      importance: number;
+    { lastAccessed: number;, importance: number;
       position: [number, number, number];
     }
   > = new Map();
@@ -93,7 +79,7 @@ export class DimensionalTensorStore {
       streamingDistance: 100.0,
       preloadRadius: 50.0,
       evictionStrategy: 'hybrid',
-      ...config,
+      ...config
     };
     this.lodLevels = this.generateLODLevels();
     this.lodManager = new LODManager(this.lodLevels, this.streamingConfig);
@@ -161,7 +147,7 @@ export class DimensionalTensorStore {
         GPUTextureUsage.TEXTURE_BINDING |
         GPUTextureUsage.COPY_DST |
         GPUTextureUsage.COPY_SRC,
-      mipLevelCount: Math.floor(Math.log2(Math.max(size.width, size.height))) + 1,
+      mipLevelCount: Math.floor(Math.log2(Math.max(size.width, size.height))) + 1
     });
     this.tensorTextures.set(textureKey, texture);
     this.allocatedMemory += this.estimateTextureMemory(texture);
@@ -173,9 +159,7 @@ export class DimensionalTensorStore {
    */ private calculateTextureSize(
     axis: 1 | 2 | 3,
     scale: number
-  ): {
-    width: number;
-    height: number;
+  ): { width: number;, height: number;
     depth: number;
   } {
     const { documents, chunks, representations } = this.dimensions;
@@ -184,22 +168,22 @@ export class DimensionalTensorStore {
         return {
           width: Math.ceil(Math.sqrt(documents) * scale),
           height: Math.ceil(Math.sqrt(documents) * scale),
-          depth: 1,
+          depth: 1
         };
       case 2: // Chunks axis
         return {
           width: Math.ceil(chunks * scale),
           height: Math.ceil(documents * scale),
-          depth: 1,
+          depth: 1
         };
       case 3: // Representations axis
         return {
           width: Math.ceil(representations * scale),
           height: Math.ceil(documents * scale),
-          depth: Math.ceil(chunks * scale),
+          depth: Math.ceil(chunks * scale)
         };
       default:
-        throw new Error(`Invalid axis: ${axis}`);
+        throw new Error(`Invalid; axis: ${axis}`);
     }
   }
   /**
@@ -252,7 +236,7 @@ export class DimensionalTensorStore {
     this.textureMetadata.set(textureKey, {
       lastAccessed: Date.now(),
       importance,
-      position,
+      position
     });
     console.log(`[Tensor Store] Streamed data to ${textureKey} at LOD ${lodLevel}`);
   }
@@ -310,12 +294,12 @@ export class DimensionalTensorStore {
       uploadView,
       {
         bytesPerRow,
-        rowsPerImage: copyHeight,
+        rowsPerImage: copyHeight
       },
       {
         width: copyWidth,
         height: copyHeight,
-        depthOrArrayLayers: 1,
+        depthOrArrayLayers: 1
       }
     );
   }
@@ -327,7 +311,7 @@ export class DimensionalTensorStore {
         key,
         texture,
         metadata: this.textureMetadata.get(key) || { lastAccessed: 0, importance: 0, position: [0, 0, 0] },
-        memorySize: this.estimateTextureMemory(texture),
+        memorySize: this.estimateTextureMemory(texture)
       }))
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
@@ -394,7 +378,7 @@ export class DimensionalTensorStore {
       'rgba32float': { bytesPerPixel: 16 },
       'rgba16float': { bytesPerPixel: 8 },
       'rgba8unorm': { bytesPerPixel: 4 },
-      'r32float': { bytesPerPixel: 4 },
+      'r32float': { bytesPerPixel: 4 }
     };
 
     const info = formatInfo[texture.format];
@@ -409,7 +393,7 @@ export class DimensionalTensorStore {
 
     const readbackBuffer = this.device.createBuffer({
       size: bufferSize,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     const commandEncoder = this.device.createCommandEncoder();
@@ -453,8 +437,8 @@ export class DimensionalTensorStore {
         size: data.byteLength,
         compressed: false, // Data is read back uncompressed
         accessCount: 1, // Initial cache entry
-        lastAccessed: Date.now(),
-      },
+        lastAccessed: Date.now()
+      }
     };
 
     this.cpuCache.set(textureKey, slice);
@@ -467,7 +451,7 @@ export class DimensionalTensorStore {
       'rgba32float': 16,
       'rgba16float': 8,
       'rgba8unorm': 4,
-      'r32float': 4,
+      'r32float': 4
     };
     const bytesPerPixel = formatSizes[texture.format] || 4;
     const totalPixels = texture.width * texture.height * (texture.depthOrArrayLayers || 1);
@@ -475,8 +459,8 @@ export class DimensionalTensorStore {
     return mipMemory;
   }
 
-  // Helper: defensively read texture dimensions (avoids using: 'any' casts)
-  private getTextureDimensions(texture: GPUTexture): { width: number; height: number } {
+  // Helper: defensively read texture dimensions (avoids; using: 'any' casts)
+  private getTextureDimensions(texture: GPUTexture): { width: number;, height: number } {
     const width =
       (texture as unknown as { width?: number }).width ?? Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));
     const height =
@@ -501,19 +485,17 @@ export class DimensionalTensorStore {
       layout,
       entries: [
         {
-          binding: 0,
-          resource: texture.createView(),
+         , binding: 0,
+          resource: texture.createView()
         },
-      ],
+      ]
     });
     this.bindGroupCache.set(cacheKey, bindGroup);
     return bindGroup;
   }
   /**
    * Get tensor statistics
-   */ getStatistics(): {
-    allocatedMemory: number;
-    textureCount: number;
+   */ getStatistics(): { allocatedMemory: number;, textureCount: number;
     cacheHitRatio: number;
     averageLOD: number;
     streamingQueueSize: number;
@@ -531,7 +513,7 @@ export class DimensionalTensorStore {
       textureCount: this.tensorTextures.size,
       cacheHitRatio: totalAccesses > 0 ? cacheHits / totalAccesses : 0,
       averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size : 0,
-      streamingQueueSize: this.streamingQueue.size,
+      streamingQueueSize: this.streamingQueue.size
     };
   }
   /**
@@ -611,14 +593,13 @@ class CompressionPipeline {
       }
     `;
     const shaderModule = this.device.createShaderModule({
-      code: compressShaderCode,
+      code: compressShaderCode
     });
     this.compressShader = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'compress',
-      },
+       , module: shaderModule,
+        entryPoint: 'compress` }
     });
   }
   /**
@@ -630,15 +611,15 @@ class CompressionPipeline {
     const compressionLevel = Math.pow(2, lodLevel + 4); // Quantization levels
     const inputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     // Ensure we pass an ArrayBufferView backed by a real ArrayBuffer.
@@ -662,8 +643,8 @@ class CompressionPipeline {
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
-        { binding: 2, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 2, resource: { buffer: paramsBuffer } }
+      ]
     });
     computePass.setBindGroup(0, bindGroup);
     computePass.dispatchWorkgroups(Math.ceil(data.length / 64));
@@ -673,7 +654,7 @@ class CompressionPipeline {
     // Read back result
     const readBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     const copyEncoder = this.device.createCommandEncoder();
     copyEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, data.byteLength);

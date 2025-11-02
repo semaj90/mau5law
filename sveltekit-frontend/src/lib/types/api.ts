@@ -42,45 +42,33 @@ export interface ApiResponse<T = unknown> {
   message?: string;
 }
 
-// Replaced duplicate type name: 'ApiResponse' with: 'BasicApiResult' to avoid redeclaration
+// Replaced duplicate type name: 'ApiResponse'; with: 'BasicApiResult' to avoid redeclaration
 export type BasicApiResult<T = unknown> = {
   data: T;
   status?: number;
   // ...other metadata if needed...
 };
 // Health Check Types
-export interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  timestamp: string;
+export interface HealthStatus { status: 'healthy' | 'degraded' | 'unhealthy';, timestamp: string;
   uptime: number;
   checks?: Record<string, boolean>;
 }
-export interface ServiceHealth {
-  service: string;
-  status: HealthStatus;
+export interface ServiceHealth { service: string;, status: HealthStatus;
   dependencies?: Record<string, HealthStatus>;
 }
-export interface SystemInfo {
-  version: string;
-  environment: string;
+export interface SystemInfo { version: string;, environment: string;
   services: ServiceHealth[];
   lastUpdated: string;
 }
 // AI Analysis Types
-export interface AIAnalysisRequest {
-  content: string;
-  analysisType: string;
+export interface AIAnalysisRequest { content: string;, analysisType: string;
   options?: Record<string, unknown>;
 }
-export interface AIAnalysisResponse {
-  analysis: string;
-  confidence: number;
+export interface AIAnalysisResponse { analysis: string;, confidence: number;
   metadata?: Record<string, unknown>;
 }
 // AI Chat API Types
-export interface ChatMessage {
-  id: string;
-  content: string;
+export interface ChatMessage { id: string;, content: string;
   role: 'user' | 'assistant' | 'system';
   timestamp: Date;
   sources?: VectorSearchResult[];
@@ -108,9 +96,7 @@ export interface AIResponse {
   fromCache?: boolean;
   metadata?: Record<string, unknown>;
 }
-export interface ConversationHistory {
-  id: string;
-  title: string;
+export interface ConversationHistory { id: string;, title: string;
   messages: ChatMessage[];
   timestamp: number;
   role?: 'user' | 'assistant' | 'system';
@@ -131,9 +117,7 @@ export interface ChatRequest {
     maxTokens?: number;
   };
 }
-export interface ChatResponse {
-  content: string;
-  role: 'assistant';
+export interface ChatResponse { content: string;, role: 'assistant';
   metadata?: {
     model?: string;
     temperature?: number;
@@ -145,9 +129,7 @@ export interface ChatResponse {
   };
 }
 // Evidence API Types
-export interface EvidenceUploadRequest {
-  caseId: string;
-  title: string;
+export interface EvidenceUploadRequest { caseId: string;, title: string;
   description?: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'other';
   url?: string;
@@ -160,9 +142,7 @@ export interface EvidenceUploadResponse {
   processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 // Evidence Types
-export interface Evidence {
-  id: string;
-  caseId: string | null;
+export interface Evidence { id: string;, caseId: string | null;
   criminalId: string | null;
   title: string;
   description: string | null;
@@ -194,9 +174,7 @@ export interface Evidence {
   type?: string;
 }
 // Simplified Evidence type for UI components
-export interface EvidenceItem {
-  id: string;
-  title: string;
+export interface EvidenceItem { id: string;, title: string;
   description: string | null;
   evidenceType: string;
   fileType: string | null;
@@ -215,29 +193,21 @@ export interface SearchRequest {
   type?: 'cases' | 'evidence' | 'statutes' | 'all';
   filters?: {
     caseId?: string;
-    dateRange?: {
-      start: Date;
-      end: Date;
+    dateRange?: { start: Date;, end: Date;
     };
     tags?: string[];
     status?: string[];
   };
-  pagination?: {
-    page: number;
-    limit: number;
+  pagination?: { page: number;, limit: number;
   };
 }
-export interface SearchResponse<T = unknown> {
-  results: T[];
-  total: number;
+export interface SearchResponse<T = unknown> { results: T[];, total: number;
   page: number;
   limit: number;
   hasMore: boolean;
 }
 // User API Types
-export interface UserProfile {
-  id: string;
-  email: string;
+export interface UserProfile { id: string;, email: string;
   name?: string;
   firstName?: string;
   lastName?: string;
@@ -262,9 +232,7 @@ export interface FileUploadRequest {
   type?: string;
   metadata?: Record<string, unknown>;
 }
-export interface FileUploadResponse {
-  id: string;
-  url: string;
+export interface FileUploadResponse { id: string;, url: string;
   filename: string;
   size: number;
   mimeType: string;
@@ -278,16 +246,12 @@ export interface VectorSearchRequest {
   threshold?: number;
   filters?: Record<string, unknown>;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata?: Record<string, unknown>;
   type: 'case' | 'evidence' | 'statute' | 'document';
 }
-export interface VectorSearchResponse {
-  results: VectorSearchResult[];
-  total: number;
+export interface VectorSearchResponse { results: VectorSearchResult[];, total: number;
   processingTime?: number;
 }
 // RAG (Retrieval Augmented Generation) Types
@@ -303,18 +267,14 @@ export interface EmbeddingRequest {
   text: string;
   model?: string;
 }
-export interface EmbeddingResponse {
-  embedding: number[];
-  model: string;
+export interface EmbeddingResponse { embedding: number[];, model: string;
   usage?: {
     promptTokens?: number;
     totalTokens?: number;
   };
 }
 // Citation Types
-export interface Citation {
-  id: string;
-  title: string;
+export interface Citation { id: string;, title: string;
   content: string;
   source: string;
   category: string;
@@ -344,9 +304,7 @@ export interface Citation {
   savedAt?: Date;
 }
 // Error Response Types
-export interface ApiError {
-  code: string;
-  message: string;
+export interface ApiError { code: string;, message: string;
   details?: Record<string, unknown>;
   timestamp: Date;
 }
@@ -356,9 +314,7 @@ export type ApiHandler<TRequest = unknown, TResponse = unknown> = (
 ) => Promise<ApiResponse<TResponse>>;
 export type ApiErrorHandler = (error: Error) => ApiResponse<never>;
 // Case Management Types
-export interface Case {
-  id: string;
-  caseNumber: string;
+export interface Case { id: string;, caseNumber: string;
   title: string;
   name?: string;
   description?: string;
@@ -445,60 +401,44 @@ export interface AnalysisMetrics {
   completenessScore?: number; // 0-100 scale
   accuracyIndicators?: string[];
 }
-export interface NamedEntity {
-  text: string;
-  type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
+export interface NamedEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
   confidence: number;
   startIndex?: number;
   endIndex?: number;
   metadata?: { [key: string]: any };
 }
-export interface Topic {
-  name: string;
-  relevance: number; // 0-1 scale
+export interface Topic { name: string;, relevance: number; // 0-1 scale
   keywords: string[];
   description?: string;
 }
-export interface SentimentAnalysis {
-  overall: 'positive' | 'negative' | 'neutral';
-  confidence: number; // 0-1 scale
+export interface SentimentAnalysis { overall: 'positive' | 'negative' | 'neutral';, confidence: number; // 0-1 scale
   emotions?: Record<string, number>;
 }
-export interface LegalPrecedent {
-  caseTitle: string;
-  citation: string;
+export interface LegalPrecedent { caseTitle: string;, citation: string;
   relevance: number; // 0-1 scale
   jurisdiction?: string;
   year?: number;
   keyConcepts: string[];
   applicability?: 'directly_applicable' | 'analogous' | 'distinguishable';
 }
-export interface StatuteReference {
-  title: string;
-  code: string;
+export interface StatuteReference { title: string;, code: string;
   section?: string;
   relevance: number; // 0-1 scale
   jurisdiction?: string;
   applicability?: 'directly_applicable' | 'related' | 'background';
 }
-export interface CaseConnection {
-  caseId: string;
-  connectionType: 'similar' | 'related' | 'precedent' | 'conflicting';
+export interface CaseConnection { caseId: string;, connectionType: 'similar' | 'related' | 'precedent' | 'conflicting';
   strength: number; // 0-1 scale
   description?: string;
   sharedElements: string[];
 }
-export interface StrengthAssessment {
-  overall: 'strong' | 'moderate' | 'weak';
-  evidenceQuality: number; // 0-100 scale
+export interface StrengthAssessment { overall: 'strong' | 'moderate' | 'weak';, evidenceQuality: number; // 0-100 scale
   legalFoundation: number; // 0-100 scale,
   prosecutabilityScore: number; // 0-100 scale
   challenges: string[];
   strengths: string[];
 }
-export interface TimelineAnalysis {
-  eventCount: number;
-  timespan: {
+export interface TimelineAnalysis { eventCount: number;, timespan: {
     start: string; // ISO date,
     end: string; // ISO date
   };
@@ -520,44 +460,32 @@ export interface TimelineGap {
   importance: 'critical' | 'important' | 'minor';
   investigationPriority: number; // 0-100 scale
 }
-export interface EvidenceGap {
-  type: 'witness' | 'document' | 'physical' | 'digital' | 'expert' | 'other';
-  description: string;
+export interface EvidenceGap { type: 'witness' | 'document' | 'physical' | 'digital' | 'expert' | 'other';, description: string;
   importance: 'critical' | 'important' | 'minor';
   suggestedActions: string[];
   deadline?: string; // ISO date
 }
-export interface ProsecutionStrategy {
-  approach: 'aggressive' | 'standard' | 'cautious';
-  mainArguments: string[];
+export interface ProsecutionStrategy { approach: 'aggressive' | 'standard' | 'cautious';, mainArguments: string[];
   supportingEvidence: string[];
   anticipatedDefenses: string[];
   recommendedActions: StrategicAction[];
   timeline: StrategicTimeline;
 }
-export interface StrategicAction {
-  action: string;
-  priority: 'high' | 'medium' | 'low';
+export interface StrategicAction { action: string;, priority: 'high' | 'medium' | 'low';
   deadline?: string; // ISO date
   assignedTo?: string;
   dependencies?: string[];
   estimatedEffort?: 'low' | 'medium' | 'high';
 }
-export interface StrategicTimeline {
-  phases: StrategicPhase[];
-  milestones: Milestone[];
+export interface StrategicTimeline { phases: StrategicPhase[];, milestones: Milestone[];
   criticalPath: string[];
 }
-export interface StrategicPhase {
-  name: string;
-  description: string;
+export interface StrategicPhase { name: string;, description: string;
   duration: number; // days
   dependencies?: string[];
   deliverables: string[];
 }
-export interface Milestone {
-  name: string;
-  date: string; // ISO date
+export interface Milestone { name: string;, date: string; // ISO date
   description: string;
   importance: 'critical' | 'important' | 'minor';
 }
@@ -592,9 +520,7 @@ export interface ProtocolEndpoint {
   status: 'active' | 'experimental' | 'deprecated' | 'maintenance';
 }
 // Database Service Configuration
-export interface DatabaseEndpoint {
-  host: string;
-  port: number;
+export interface DatabaseEndpoint { host: string;, port: number;
   database?: string;
   status: 'active' | 'error' | 'maintenance';
 }
@@ -675,9 +601,7 @@ export interface ClusterMetrics {
   spawned: Record<string, number>;
   deferredActive: number;
   deferredTotal: number;
-  lastAllocation?: {
-    type: string;
-    port: number;
+  lastAllocation?: { type: string;, port: number;
     timestamp: string;
   };
   events: any[];
@@ -686,22 +610,16 @@ export interface ClusterMetrics {
 } // <-- added missing closing brace
 
 // Performance Metrics Interface
-export interface PerformanceMetrics {
-  protocols: {
-    QUIC: string;
+export interface PerformanceMetrics { protocols: {, QUIC: string;
     gRPC: string;
     HTTP: string;
     WebSocket: string;
   };
-  resources: {
-    cpu: string;
-    memory: string;
+  resources: { cpu: string;, memory: string;
     gpu?: string;
     storage: string;
   };
-  performance: {
-    averageResponseTime: string;
-    uptime: string;
+  performance: { averageResponseTime: string;, uptime: string;
     throughput: string;
   };
   timestamp: string;
@@ -740,22 +658,16 @@ export interface EnhancedUploadRequest extends FileUploadRequest {
   // Optional tags for downstream processing/classification
   tags?: string[];
 }
-export interface EnhancedUploadResponse extends APIResponse {
-  documentId: string;
-  filename: string;
+export interface EnhancedUploadResponse extends APIResponse { documentId: string;, filename: string;
   size: number;
   contentType: string;
   uploadTime: string;
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
   extractedText?: string;
-  ocrResults?: {
-    text: string;
-    confidence: number;
+  ocrResults?: { text: string;, confidence: number;
     language: string;
   };
-  embeddings?: {
-    model: string;
-    dimensions: number;
+  embeddings?: { model: string;, dimensions: number;
     generated: boolean;
   };
   analysis?: EvidenceAIAnalysis;
@@ -770,15 +682,11 @@ export interface DimensionalCacheRequest {
   ttl?: number; // Time to live in seconds
   userId?: string;
 }
-export interface DimensionalCacheResponse extends APIResponse {
-  key: string;
-  hit: boolean;
+export interface DimensionalCacheResponse extends APIResponse { key: string;, hit: boolean;
   embeddings?: number[][];
   attention?: number[][];
   metadata?: Record<string, unknown>;
-  cacheStats?: {
-    hitRate: number;
-    size: number;
+  cacheStats?: { hitRate: number;, size: number;
     capacity: number;
     evictions: number;
   };
@@ -787,9 +695,7 @@ export interface DimensionalCacheResponse extends APIResponse {
 export interface XStateRequest {
   action: 'transition' | 'queue' | 'status' | 'health';
   state?: 'idle' | 'active' | 'computing' | 'offline' | 'error';
-  jobData?: {
-    id: string;
-    type: 'computation' | 'analysis' | 'processing' | 'rag' | 'upload';
+  jobData?: { id: string;, type: 'computation' | 'analysis' | 'processing' | 'rag' | 'upload';
     priority: 'low' | 'medium' | 'high' | 'critical';
     payload: Record<string, unknown>;
     userId?: string;
@@ -798,18 +704,14 @@ export interface XStateRequest {
 }
 export interface XStateResponse extends APIResponse {
   currentState: string;
-  queueStatus?: {
-    pending: number;
-    processing: number;
+  queueStatus?: { pending: number;, processing: number;
     completed: number;
     failed: number;
     total: number;
   };
   idleTime?: number;
   lastActivity?: string;
-  machineConfig?: {
-    states: string[];
-    transitions: Record<string, string[]>;
+  machineConfig?: { states: string[];, transitions: Record<string, string[]>;
   };
 }
 // Modular Hot-Swappable Experience System
@@ -842,62 +744,44 @@ export interface RecommendationResponse extends APIResponse {
   lastActivity?: string;
   corrected?: string;
   relatedSearches?: string[];
-  userPattern?: {
-    mostUsedFeatures: string[];
-    preferredSearchTerms: string[];
+  userPattern?: { mostUsedFeatures: string[];, preferredSearchTerms: string[];
     averageSessionTime: number;
   };
 }
 // System Health & Comprehensive Monitoring
-export interface SystemHealthResponse extends APIResponse {
-  overall: 'healthy' | 'degraded' | 'unhealthy';
-  healthScore: number;
+export interface SystemHealthResponse extends APIResponse { overall: 'healthy' | 'degraded' | 'unhealthy';, healthScore: number;
   services: Record<string, HealthCheckResult>;
-  summary: {
-    total: number;
-    healthy: number;
+  summary: { total: number;, healthy: number;
     unhealthy: number;
     experimental: number;
   };
   deployment: string;
-  infrastructure: {
-    platform: 'Windows Native';
-    docker: false;
+  infrastructure: { platform: 'Windows Native';, docker: false;
     gpu: string;
     memory: string;
     storage: string;
   };
 }
 // Service Discovery with Protocol Information
-export interface ServiceDiscoveryResponse extends APIResponse {
-  services: any[];
-  total: number;
+export interface ServiceDiscoveryResponse extends APIResponse { services: any[];, total: number;
   active: number;
   experimental: number;
-  protocolSupport: {
-    HTTP: number;
-    gRPC: number;
+  protocolSupport: { HTTP: number;, gRPC: number;
     QUIC: number;
     WebSocket: number;
   };
-  deployment: {
-    type: 'Windows Native';
-    docker: false;
+  deployment: { type: 'Windows Native';, docker: false;
     processes: number;
   };
 }
 // NATS Messaging Integration Types
-export interface NATSMessageRequest {
-  subject: string;
-  data: any;
+export interface NATSMessageRequest { subject: string;, data: any;
   headers?: Record<string, string>;
   timeout?: number;
   correlationId?: string;
   userId?: string;
 }
-export interface NATSMessageResponse extends APIResponse {
-  messageId: string;
-  subject: string;
+export interface NATSMessageResponse extends APIResponse { messageId: string;, subject: string;
   published: boolean;
   timestamp: string;
   correlationId?: string;
@@ -908,9 +792,7 @@ export interface NATSSubscriptionRequest {
   userId?: string;
   deliverPolicy?: 'all' | 'last' | 'new';
 }
-export interface NATSSubscriptionResponse extends APIResponse {
-  subscriptions: any[];
-  connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
+export interface NATSSubscriptionResponse extends APIResponse { subscriptions: any[];, connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
 }
 // Request Context for SvelteKit Integration
 export interface APIRequestContext {
@@ -979,9 +861,7 @@ export interface CommandSearchRequest {
   limit?: number;
   userId?: string;
 }
-export interface CommandSearchResponse {
-  results: {
-    cases: any[];
+export interface CommandSearchResponse { results: {, cases: any[];
     evidence: any[];
     documents: any[];
     people: any[];
@@ -989,9 +869,7 @@ export interface CommandSearchResponse {
   success?: boolean;
   meta?: Record<string, unknown>;
 }
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content?: string;
   type: string;
 }
@@ -1000,18 +878,14 @@ export type { User } from './user.js';
 
 // New file: src/lib/types/api.ts
 
-export interface ErrorResponse {
-  success: false;
-  error: {
+export interface ErrorResponse { success: false;, error: {
     message: string;
     details?: any; // Can be ZodError details, or a simple string
   };
   timestamp: string;
 }
 
-export interface HealthCheckResponse {
-  success: true;
-  status: 'healthy' | 'unhealthy';
+export interface HealthCheckResponse { success: true;, status: 'healthy' | 'unhealthy';
   pgvector: 'available' | 'unavailable';
   ollama: 'connected' | 'disconnected';
   timestamp: string;

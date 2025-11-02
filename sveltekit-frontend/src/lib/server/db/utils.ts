@@ -1,11 +1,15 @@
 // Centralized Drizzle ORM helpers and DB exports for the project
 // Tailored for Drizzle ORM v0.44.7 (modular imports)
-import { db, adminDb, testRuntimeConnection, closeConnections } from '../db/client.js';
+import db, { testRuntimeConnection, closeConnections } from '../db/client.js';
 // add Node createRequire import for TypeScript (server-side helper)
 import { createRequire } from 'module';
+
+// Assuming adminDb is the same as the primary db connection if not exported separately.
+const adminDb = db;
+
 /* Lightweight types for expressions/sql tag */
-type ExprFn = (...args: any[]) => unknown;
-type SqlTag = ((strings: TemplateStringsArray, ...values: any[]) => unknown) & {
+type ExprFn = (...args: unknown[]) => unknown;
+type SqlTag = ((strings: TemplateStringsArray, ...values: unknown[]) => unknown) & {
   raw?: (s: string) => unknown;
 };
 let eqExpr: ExprFn;
@@ -35,9 +39,11 @@ try {
   sqlTag = (sqlMod.sql ?? sqlMod.default ?? sqlMod) as SqlTag;
 } catch (e) {
   // Provide explicit runtime stubs that throw if used so failures are clear at call site.
-  const makeStub = (name: string): ExprFn => (..._args: any[]) => {
-    throw new Error(`drizzle-orm expression: '${name}' not available at runtime: ${String(e ?? 'unknown')}`);
-  };
+  const makeStub =
+    (name: string): ExprFn =>
+    (..._args: unknown[]) => {
+      throw new Error(`drizzle-orm expression: '${name}' not available at, runtime: ${String(e ?? 'unknown')}`);
+    };
   eqExpr = makeStub('eq');
   andExpr = makeStub('and');
   orExpr = makeStub('or');
@@ -47,7 +53,7 @@ try {
   notExpr = makeStub('not');
   ascExpr = makeStub('asc');
   descExpr = makeStub('desc');
-  const sqlStub = ((..._a: any[]) => {
+  const sqlStub = ((..._a: unknown[]) => {
     throw new Error(`drizzle-orm 'sql' tag not available at runtime: ${String(e ?? 'unknown')}`);
   }) as SqlTag;
   sqlStub.raw = (_s: string) => {
@@ -86,7 +92,7 @@ export async function waitForDb(retries = 8, delayMs = 500): Promise<boolean> {
     } catch {
       // ignore & retry
     }
-    await new Promise((r) => setTimeout(r, delayMs));
+    await new Promise(r => setTimeout(r, delayMs));
   }
   return false;
 }
@@ -116,19 +122,22 @@ export function genRandomUUID(): string {
   }
   // deterministic JS fallback UUIDv4 (not crypto-strong, but avoids throwing)
   // Generates RFC4122 v4-like string using Math.random as a last resort.
-  const rnd = () => Math.floor((1 + Math.random()) * 0x100).toString(16).slice(1);
+  const rnd = () =>
+    Math.floor((1 + Math.random()) * 0x100)
+      .toString(16)
+      .slice(1);
   const s4 = () => rnd() + rnd();
   return (
-    s4().substr(0, 8) +
+    s4().slice(0, 8) +
     '-' +
-    s4().substr(0, 4) +
+    s4().slice(0, 4) +
     '-4' +
-    s4().substr(0, 3) +
+    s4().slice(0, 3) +
     '-' +
-    ((8 + Math.floor(Math.random() * 4)).toString(16)) +
-    s4().substr(0, 3) +
+    (8 + Math.floor(Math.random() * 4)).toString(16) +
+    s4().slice(0, 3) +
     '-' +
-    s4().substr(0, 12)
+    s4().slice(0, 12)
   ).toLowerCase();
 }
 // Default convenience export
@@ -148,6 +157,6 @@ const _default = {
   waitForDb,
   testConnection: testRuntimeConnection,
   closeConnection: closeConnections,
-  genRandomUUID,
+  genRandomUUID
 };
 export default _default;

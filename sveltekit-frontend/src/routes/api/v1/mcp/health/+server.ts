@@ -16,14 +16,14 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
       services: {
         mcp: 'operational',
         database: healthResult.status,
-        drizzle: 'connected',
+        drizzle: 'connected'
       },
       details: {
         ...healthResult.details,
         clientAddress: getClientAddress(),
-        endpoint: '/api/v1/mcp/health',
+        endpoint: '/api/v1/mcp/health'
       },
-      message: 'MCP + PostgreSQL + Drizzle ORM integration is working!',
+      message: 'MCP + PostgreSQL + Drizzle ORM integration is working!'
     };
     console.log('✅ MCP Health Check Passed');
     return json(response);
@@ -38,8 +38,8 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
         services: {
           mcp: 'error',
           database: 'unknown',
-          drizzle: 'error',
-        },
+          drizzle: 'error'
+        }
       },
       { status: 500 }
     );

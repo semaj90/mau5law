@@ -74,10 +74,7 @@ import { writable, type Readable, get } from 'svelte/store';
 import xstateIntegration from '$lib/services/xstate-integration';
 
 // --- User Store Types and Store ---
-export interface UserStoreState {
-  isLoggedIn: boolean;
-  id: string | null; // Added: 'id' property to resolve compilation error
-  name: string | null;
+export interface UserStoreState { isLoggedIn: boolean;, id: string | null; // Added: 'id' property to resolve compilation error; name: string | null;
   email: string | null;
   // ... other user-related properties
 }
@@ -86,29 +83,22 @@ const initialUserState: UserStoreState = {
   isLoggedIn: false,
   id: null,
   name: null,
-  email: null,
+  email: null
 };
 
 const _user = writable<UserStoreState>(initialUserState);
 
 export const user: Readable<UserStoreState> = {
-  subscribe: _user.subscribe,
+  subscribe: _user.subscribe
 };
 
 // --- AI Assistant Store Types and Store ---
-export interface AIMessage {
-  id: string;
-  role: 'user' | 'assistant';
+export interface AIMessage { id: string;, role: 'user' | 'assistant';
   content: string;
   timestamp: number;
 }
 
-export interface AIAssistantStoreState {
-  isOpen: boolean;
-  currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error
-  isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error
-  error: string | null; // Added: 'error' to resolve compilation error
-  currentCaseId: string | null; // To store the caseId for context
+export interface AIAssistantStoreState { isOpen: boolean;, currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error; isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error; error: string | null; // Added: 'error' to resolve compilation error; currentCaseId: string | null; // To store the caseId for context
   // ... other AI assistant related properties
 }
 
@@ -117,13 +107,13 @@ const initialAIAssistantState: AIAssistantStoreState = {
   currentMessages: [],
   isProcessing: false,
   error: null,
-  currentCaseId: null,
+  currentCaseId: null
 };
 
 const _aiAssistant = writable<AIAssistantStoreState>(initialAIAssistantState);
 
 export const aiAssistant: Readable<AIAssistantStoreState> = {
-  subscribe: _aiAssistant.subscribe,
+  subscribe: _aiAssistant.subscribe
 };
 
 // --- XState Integration for AI Assistant ---
@@ -134,32 +124,26 @@ const AI_ASSISTANT_MACHINE_ID = 'aiAssistantMachine'; // As per copilot-instruct
 export type AIAssistantEvent =
   | { type: 'OPEN' }
   | { type: 'CLOSE' }
-  | { type: 'SEND_MESSAGE'; payload: { content: string; model?: AIModel; caseId?: string } }
-  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
-  | { type: 'SET_CASE'; payload: { caseId: string | null } }
+  | { type: 'SEND_MESSAGE';, payload: {, content: string; model?: AIModel; caseId?: string } }
+  | { type: 'RECEIVE_MESSAGE';, payload: AIMessage }
+  | { type: 'SET_CASE';, payload: {, caseId: string | null } }
   // Fallback to allow custom/extension events while still avoiding `any`
   | { type: string; [key: string]: any };
 
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {
-  console.log(`[unified.ts] Sending event to AI Assistant machine:`, event);
+  console.log(`[unified.ts] Sending event to AI Assistant machine: ', event);
   xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event);
 }
 
 // --- Websocket Store and Helpers ---
-type WebsocketState = {
-  connected: boolean;
-  connecting: boolean;
-  dashboardData: {
-    cases: any[];
-    evidence: any[];
+type WebsocketState = { connected: boolean;, connecting: boolean;
+  dashboardData: { cases: any[];, evidence: any[];
     stats: Record<string, any>;
   };
   processingJobs: any[];
   recentActivity: any[];
-  systemHealth: {
-    api: string;
-    database: string;
+  systemHealth: { api: string;, database: string;
     aiServices: string;
     jobQueue: string;
   };
@@ -173,7 +157,7 @@ const initialState: WebsocketState = {
   processingJobs: [],
   recentActivity: [],
   systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },
-  activeEditors: {},
+  activeEditors: {}
 };
 
 export const websocketStore = writable<WebsocketState>(initialState);

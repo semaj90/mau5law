@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({ success: true, data: { serviceId, logs: [] }, timestamp: new Date().toISOString() });
     default:
       return json(
-        { success: false, error: `Unknown action: ${action}`, availableActions: AVAILABLE_GET },
+        { success: false, error: `Unknown; action: ${action}`, availableActions: AVAILABLE_GET },
         { status: 400 }
       );
   }
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         serviceId,
         data,
         options,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     case 'query':
       return json({
@@ -60,11 +60,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
         serviceId,
         data,
         options,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     default:
       return json(
-        { success: false, error: `Unknown action: ${action ?? 'undefined'}`, availableActions: AVAILABLE_POST },
+        { success: false, error: 'Unknown; action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },
         { status: 400 }
       );
   }

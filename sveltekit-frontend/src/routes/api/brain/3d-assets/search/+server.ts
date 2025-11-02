@@ -9,9 +9,7 @@ import type { RequestHandler } from './$types.js';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 import { reinforcementLearningCache as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
 // 3D Asset Categories for Legal AI Platform
-interface Asset3DSearchRequest {
-  query: string;
-  context: {
+interface Asset3DSearchRequest { query: string;, context: {
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
     complexity?: 'low' | 'medium' | 'high';
     interactionType?: 'hover' | 'click' | 'scroll' | 'drag';
@@ -20,24 +18,18 @@ interface Asset3DSearchRequest {
   predictiveMode?: boolean;
   precomputeAnimations?: boolean;
 }
-interface Asset3DSearchResult {
-  assetId: string;
-  assetType: '3d_model' | 'texture' | 'animation' | 'material' | 'particle_system';
+interface Asset3DSearchResult { assetId: string;, assetType: '3d_model' | 'texture' | 'animation' | 'material' | 'particle_system';
   name: string;
   description: string;
   legalContext: string;
   complexity: 'low' | 'medium' | 'high';
   renderPriority: number;
   predictedUsage: number;
-  precomputedData?: {
-    webgpuTextures: string[];
-    animationFrames: Float32Array;
+  precomputedData?: { webgpuTextures: string[];, animationFrames: Float32Array;
     compressionRatio: number;
   };
   semanticTags: string[];
-  optimizationHints: {
-    enableWebGPU: boolean;
-    enableCHRROM: boolean;
+  optimizationHints: { enableWebGPU: boolean;, enableCHRROM: boolean;
     cacheStrategy: 'immediate' | 'lazy' | 'predictive';
   };
 }
@@ -48,14 +40,14 @@ const assetGraphTopology = {
     { id: 'rl-cache', type: 'prediction-cache' },
     { id: 'chr-rom', type: 'memory-bridge' },
     { id: 'webgpu', type: 'compute-shader' },
-    { id: 'legal-context', type: 'semantic-analyzer' },
+    { id: 'legal-context', type: 'semantic-analyzer' }
   ],
   links: [
     { source: '3d-asset-search', target: 'rl-cache', kind: 'predicts' },
     { source: 'rl-cache', target: 'chr-rom', kind: 'caches' },
     { source: 'chr-rom', target: 'webgpu', kind: 'renders' },
-    { source: 'legal-context', target: '3d-asset-search', kind: 'contextualizes' },
-  ],
+    { source: 'legal-context', target: '3d-asset-search', kind: 'contextualizes' }
+  ]
 };
 // Legal 3D Asset Database (would be replaced with actual asset management system)
 const legalAssetDatabase = [
@@ -69,7 +61,7 @@ const legalAssetDatabase = [
     renderPriority: 8,
     semanticTags: ['contract', 'document', 'stack', 'legal', 'interactive'],
     webglUrl: '/assets/3d/legal/contract_stack.glb',
-    textureUrls: ['/assets/3d/textures/paper.jpg', '/assets/3d/textures/legal_seal.png'],
+    textureUrls: ['/assets/3d/textures/paper.jpg', '/assets/3d/textures/legal_seal.png']
   },
   {
     assetId: 'evidence_container_3d',
@@ -82,7 +74,7 @@ const legalAssetDatabase = [
     renderPriority: 9,
     semanticTags: ['evidence', 'container', 'transparent', 'physics', 'organization'],
     webglUrl: '/assets/3d/legal/evidence_container.glb',
-    textureUrls: ['/assets/3d/textures/glass.jpg', '/assets/3d/textures/evidence_label.png'],
+    textureUrls: ['/assets/3d/textures/glass.jpg', '/assets/3d/textures/evidence_label.png']
   },
   {
     assetId: 'gavel_animation_3d',
@@ -94,7 +86,7 @@ const legalAssetDatabase = [
     renderPriority: 7,
     semanticTags: ['gavel', 'animation', 'decision', 'strike', 'particles'],
     animationUrl: '/assets/3d/animations/gavel_strike.json',
-    particleSystemUrl: '/assets/3d/particles/wood_chips.json',
+    particleSystemUrl: '/assets/3d/particles/wood_chips.json'
   },
   {
     assetId: 'justice_scale_3d',
@@ -106,7 +98,7 @@ const legalAssetDatabase = [
     renderPriority: 10,
     semanticTags: ['justice', 'scales', 'balance', 'gold', 'dynamic'],
     webglUrl: '/assets/3d/legal/justice_scales.glb',
-    materialUrl: '/assets/3d/materials/gold_metallic.json',
+    materialUrl: '/assets/3d/materials/gold_metallic.json'
   },
   {
     assetId: 'legal_text_particle_3d',
@@ -118,13 +110,13 @@ const legalAssetDatabase = [
     renderPriority: 5,
     semanticTags: ['text', 'particles', 'flow', 'words', 'transitions'],
     particleSystemUrl: '/assets/3d/particles/legal_text.json',
-    shaderUrl: '/assets/3d/shaders/text_particle.glsl',
+    shaderUrl: '/assets/3d/shaders/text_particle.glsl'
   },
 ];
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   const searchRequest: Asset3DSearchRequest = await request.json();
-  console.log(`🔍 3D Asset Search: "${searchRequest.query}" with context:`, searchRequest.context);
+  console.log(`🔍 3D Asset Search: "${searchRequest.query}" with, context:`, searchRequest.context);
   try {
     // STEP 1: Use Reinforcement Learning for Predictive Search
     let predictions: Asset3DSearchResult[] = [];
@@ -167,13 +159,13 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime,
         cacheHits: predictions.length,
         chrRomPatterns: chrRomPatterns.length,
-        totalAssets: rankedResults.length,
+        totalAssets: rankedResults.length
       },
       metadata: {
-        query: searchRequest.query,
+       , query: searchRequest.query,
         predictiveMode: searchRequest.predictiveMode,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
     console.error('❌ 3D Asset Search failed:', error);
@@ -181,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Asset search failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        results: [],
+        results: []
       },
       { status: 500 }
     );
@@ -220,8 +212,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
         optimizationHints: {
           enableWebGPU: asset.complexity === 'high',
           enableCHRROM: score > 5,
-          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy',
-        },
+          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy` }
       };
       results.push(result);
     }
@@ -237,14 +228,14 @@ async function rankAssetsByContext(
     'hover': { animation: 0.3, model: 0.7, texture: 0.2, particle_system: 0.4, material: 0.1 },
     'click': { animation: 0.8, model: 0.6, texture: 0.3, particle_system: 0.7, material: 0.2 },
     'scroll': { animation: 0.4, model: 0.3, texture: 0.1, particle_system: 0.6, material: 0.1 },
-    'drag': { animation: 0.6, model: 0.9, texture: 0.4, particle_system: 0.5, material: 0.3 },
+    'drag': { animation: 0.6, model: 0.9, texture: 0.4, particle_system: 0.5, material: 0.3 }
   };
   const weights = interactionWeights[context.interactionType || 'hover'];
   return assets
     .map(asset => ({
       ...asset,
       renderPriority: Math.round(asset.renderPriority * (weights[asset.assetType] || 0.5)),
-      predictedUsage: Math.min(asset.predictedUsage * (weights[asset.assetType] || 0.5) * 1.2, 1.0),
+      predictedUsage: Math.min(asset.predictedUsage * (weights[asset.assetType] || 0.5) * 1.2, 1.0)
     }))
     .sort((a, b) => b.renderPriority - a.renderPriority);
 }
@@ -283,7 +274,7 @@ async function prepareCHRROMPatterns(assets: Asset3DSearchResult[]): Promise<str
     await reinforcementLearningCache.set(patternId, {
       renderableHTML: `<div class="3d-asset-preview" data-asset="${asset.assetId}">${asset.name}</div>`,
       assetMetadata: asset,
-      compressionRatio: asset.precomputedData?.compressionRatio || 1.0,
+      compressionRatio: asset.precomputedData?.compressionRatio || 1.0
     });
     patterns.push(patternId);
     console.log(`📦 Created CHR-ROM pattern: ${patternId}`);

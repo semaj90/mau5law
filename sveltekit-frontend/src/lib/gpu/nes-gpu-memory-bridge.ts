@@ -1,8 +1,6 @@
 // replace import with a minimal local LegalDocument shape so this module compiles standalone
 // (keep this in sync with your canonical definition in nes-memory-architecture.ts)
-type LegalDocument = {
-	id: string;
-	type: string;
+type LegalDocument = { id: string;, type: string;
 	metadata?: Record<string, unknown>;
 };
 // Minimal typed shim for nesGPUBridge used by ultra-json-parser.
@@ -38,7 +36,7 @@ export const nesGPUBridge = {
       console.warn('nesGPUBridge.parseFlatBufferToDocument: parse failed', err);
       return getEmptyLegalDocument();
     }
-  },
+  }
 };
 // Safe JSON stringify that handles circular refs and BigInt
 function safeStringify(obj: any): string {
@@ -76,7 +74,7 @@ function createTextEncoder(): { encode(s: string): Uint8Array } {
         // Buffer is a Uint8Array subclass in Node, returning a copy to ensure Uint8Array type
         const b = Buf.from(s, 'utf8');
         return new Uint8Array(b);
-      },
+      }
     };
   }
   // Basic UTF-8 fallback using encodeURIComponent to handle multibyte chars
@@ -88,7 +86,7 @@ function createTextEncoder(): { encode(s: string): Uint8Array } {
         bytes.push(encoded.charCodeAt(i));
       }
       return new Uint8Array(bytes);
-    },
+    }
   };
 }
 function createTextDecoder(): { decode(buf: Uint8Array | ArrayBuffer): string } {
@@ -103,7 +101,7 @@ function createTextDecoder(): { decode(buf: Uint8Array | ArrayBuffer): string } 
         const data = input instanceof ArrayBuffer ? new Uint8Array(input) : input;
         const b = Buf.from(data);
         return b.toString('utf8');
-      },
+      }
     };
   }
   // Minimal UTF-8 fallback decoder
@@ -119,7 +117,7 @@ function createTextDecoder(): { decode(buf: Uint8Array | ArrayBuffer): string } 
         for (let i = 0; i < u8.length; i++) out += String.fromCharCode(u8[i]);
         return out;
       }
-    },
+    }
   };
 }
 // Helper: minimal runtime validator for LegalDocument

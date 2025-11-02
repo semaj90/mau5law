@@ -6,27 +6,19 @@ import { productionLogger } from '$lib/server/production-logger';
 import { db } from '$lib/server/db/index';
 import type { RequestHandler } from './$types.js';
 
-export interface WorkflowTest {
-  name: string;
-  description: string;
+export interface WorkflowTest { name: string;, description: string;
   status: 'passed' | 'failed' | 'skipped';
   duration?: number;
   error?: string;
   details?: any;
 }
-export interface WorkflowValidationResponse {
-  timestamp: string;
-  overall: {
-    status: 'healthy' | 'degraded' | 'failed';
-    score: number;
+export interface WorkflowValidationResponse { timestamp: string;, overall: { status: 'healthy' | 'degraded' | 'failed';, score: number;
     totalTests: number;
     passed: number;
     failed: number;
     skipped: number;
   };
-  workflows: {
-    userManagement: WorkflowTest[];
-    documentProcessing: WorkflowTest[];
+  workflows: { userManagement: WorkflowTest[];, documentProcessing: WorkflowTest[];
     aiFeatures: WorkflowTest[];
     vectorSearch: WorkflowTest[];
     integration: WorkflowTest[];
@@ -43,7 +35,7 @@ async function runTest(name: string, description: string, testFn: () => Promise<
       description,
       status: 'passed',
       duration: Date.now() - startTime,
-      details: result,
+      details: result
     };
   } catch (error: any) {
     return {
@@ -51,7 +43,7 @@ async function runTest(name: string, description: string, testFn: () => Promise<
       description,
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
@@ -61,8 +53,7 @@ function skipTest(name: string, description: string, reason: string): WorkflowTe
     name,
     description,
     status: 'skipped',
-    error: `Skipped: ${reason}`,
-  };
+    error: `Skipped: ${reason}` };
 }
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
@@ -80,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
           firstName: 'Test',
           lastName: 'User',
           role: 'prosecutor' as const,
-          isActive: true,
+          isActive: true
         };
         // Simulate user registration validation
         if (!testUser.email || !testUser.name) {
@@ -89,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return {
           message: 'User registration validation passed',
           requiredFields: ['email', 'name', 'firstName', 'lastName'],
-          roles: ['admin', 'prosecutor', 'investigator'],
+          roles: ['admin', 'prosecutor', 'investigator']
         };
       }),
       runTest('User Authentication Flow', 'Validate authentication system integration', async () => {
@@ -99,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Authentication endpoints configured',
           endpoints: authEndpoints,
           sessionProvider: 'lucia-auth',
-          security: ['bcrypt', 'csrf-protection', 'rate-limiting'],
+          security: ['bcrypt', 'csrf-protection', 'rate-limiting']
         };
       }),
       runTest('User Profile Management', 'Test user profile CRUD operations', async () => {
@@ -109,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'User profile schema validated',
           fields: ['id', 'email', 'name', 'firstName', 'lastName', 'avatarUrl', 'role', 'isActive'],
           operations: ['create', 'read', 'update', 'delete'],
-          validation: 'drizzle-orm with type safety',
+          validation: 'drizzle-orm with type safety';
         };
       }),
     ]);
@@ -123,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           endpoints: uploadEndpoints,
           storage: 'MinIO (port 9000)',
           processors: ['OCR', 'Text Extraction', 'Metadata Extraction'],
-          supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE'],
+          supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE']
         };
       }),
       runTest('Document Processing Pipeline', 'Validate document analysis and indexing', async () => {
@@ -137,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Document processing pipeline operational',
           services: processingServices,
           pipeline: ['Upload', 'Extract', 'Analyze', 'Embed', 'Index', 'Store'],
-          aiModels: ['gemma3-legal:latest', 'embeddinggemma:latest'],
+          aiModels: ['gemma3-legal:latest', 'embeddinggemma:latest']
         };
       }),
       runTest('Document Metadata Storage', 'Test legal document metadata schema', async () => {
@@ -146,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Legal document metadata schema ready',
           tables: ['legal_documents', 'document_analysis', 'vector_embeddings'],
           metadata: ['case_info', 'jurisdiction', 'document_type', 'parties', 'dates'],
-          indexing: ['full-text search', 'vector similarity', 'metadata filters'],
+          indexing: ['full-text search', 'vector similarity', 'metadata filters']
         };
       }),
     ]);
@@ -160,9 +151,9 @@ export const GET: RequestHandler = async ({ url }) => {
           models: {
             primary: 'gemma3-legal:latest (Ollama)',
             embedding: 'embeddinggemma:latest',
-            gpu: 'RTX 3060 Ti acceleration',
+            gpu: 'RTX 3060 Ti acceleration'
           },
-          features: ['Legal Analysis', 'Document Summarization', 'Case Research', 'Citation Generation'],
+          features: ['Legal Analysis', 'Document Summarization', 'Case Research', 'Citation Generation']
         };
       }),
       runTest('RAG System Integration', 'Validate Retrieval-Augmented Generation workflow', async () => {
@@ -170,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'RAG system fully integrated',
           components: ['Vector Search', 'Context Retrieval', 'LLM Generation', 'Response Synthesis'],
           databases: ['PostgreSQL + pgvector', 'Qdrant', 'Neo4j'],
-          performance: 'GPU-accelerated with CUDA workers',
+          performance: 'GPU-accelerated with CUDA workers'
         };
       }),
       runTest('Legal AI Analysis', 'Test specialized legal document analysis', async () => {
@@ -185,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Legal AI analysis capabilities active',
           features: legalFeatures,
           models: 'Domain-specific legal training',
-          accuracy: 'High confidence scoring with variance matrices',
+          accuracy: 'High confidence scoring with variance matrices'
         };
       }),
     ]);
@@ -196,12 +187,11 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Vector search system operational',
           databases: {
             primary: 'PostgreSQL + pgvector',
-            secondary: 'Qdrant',
+            secondary: 'Qdrant'
           },
-          dimensions: 384, // embeddinggemma:latest
-          embeddingModel: 'embeddinggemma:latest',
+          dimensions: 384, // embeddinggemma:latest; embeddingModel: 'embeddinggemma:latest',
           operations: ['embed', 'search', 'similarity', 'clustering'],
-          performance: '< 50ms search times',
+          performance: '< 50ms search times'
         };
       }),
       runTest('Semantic Search Capabilities', 'Validate semantic document search functionality', async () => {
@@ -215,7 +205,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Semantic search fully functional',
           endpoints: searchEndpoints,
           features: ['Cosine Similarity', 'Hybrid Search', 'Faceted Search', 'Relevance Ranking'],
-          indexing: 'Real-time with batch processing',
+          indexing: 'Real-time with batch processing'
         };
       }),
     ]);
@@ -246,7 +236,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 message: 'Complete workflow integration validated',
                 steps: workflow,
                 duration: '< 5 seconds end-to-end',
-                reliability: '99.9% uptime target',
+                reliability: '99.9% uptime target'
               };
             }
           ),
@@ -258,10 +248,9 @@ export const GET: RequestHandler = async ({ url }) => {
                 'AI Response Time': '< 3 seconds',
                 'Vector Search': '< 50ms',
                 'Database Queries': '< 100ms',
-                'GPU Processing': '150+ tokens/second',
+                'GPU Processing': '150+ tokens/second'
               },
-              architecture: 'Dual-GPU optimized',
-            };
+              architecture: 'Dual-GPU optimized` };
           }),
         ]);
     // Calculate overall results
@@ -288,16 +277,16 @@ export const GET: RequestHandler = async ({ url }) => {
         totalTests,
         passed,
         failed,
-        skipped,
+        skipped
       },
       workflows: {
         userManagement: userManagementTests,
         documentProcessing: documentProcessingTests,
         aiFeatures: aiFeatureTests,
         vectorSearch: vectorSearchTests,
-        integration: integrationTests,
+        integration: integrationTests
       },
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
     productionLogger.info(
       `✅ Workflow validation completed: ${overallStatus} (${score}%) - tests ${passed}/${totalTests} (failed: ${failed}, skipped: ${skipped}) in ${Date.now() - startTime}ms`
@@ -310,7 +299,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Test-Count': `${passed}/${totalTests}`,
         'X-Processing-Time': `${Date.now() - startTime}ms`,
         'Cache-Control': 'public, max-age=300', // 5-minute cache
-      },
+      }
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown workflow validation error';
@@ -323,11 +312,11 @@ export const GET: RequestHandler = async ({ url }) => {
         totalTests: 0,
         passed: 0,
         failed: 1,
-        skipped: 0,
+        skipped: 0
       },
       error: 'Workflow validation failed',
       details: msg,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
     return json(response, { status: 500 });
   }
@@ -343,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Workflow parameter required',
-          availableWorkflows: ['userManagement', 'documentProcessing', 'aiFeatures', 'vectorSearch', 'integration'],
+          availableWorkflows: ['userManagement', 'documentProcessing', 'aiFeatures', 'vectorSearch', 'integration']
         },
         { status: 400 }
       );
@@ -356,7 +345,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'User workflow simulation completed',
           data: result,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
       case 'test_document_processing': {
@@ -366,14 +355,14 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Document processing pipeline tested',
           data: result,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
       default: return json(
           {
             success: false,
             error: 'Invalid action',
-            availableActions: ['test_user_flow', 'test_document_processing'],
+            availableActions: ['test_user_flow', 'test_document_processing']
           },
           { status: 400 }
         );
@@ -384,57 +373,52 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Workflow test failed',
         details: error instanceof Error ? error.message : 'Unknown error',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
   }
 };
 // Simulate complete user workflow
-async function simulateUserWorkflow(): Promise<{
-  workflow: string;
-  steps: { step: string; status: 'completed' | 'failed' | 'pending'; duration: number }[];
+async function simulateUserWorkflow(): Promise<{ workflow: string;, steps: { step: string; status: 'completed' | 'failed' | 'pending';, duration: number }[];
   totalDuration: number;
   success: boolean;
 }> {
-  const steps: { step: string; status: 'completed' | 'failed' | 'pending'; duration: number }[] = [
+  const steps: { step: string; status: 'completed' | 'failed' | 'pending';, duration: number }[] = [
     { step: 'User Registration', status: 'completed', duration: 150 },
     { step: 'Email Verification', status: 'completed', duration: 50 },
     { step: 'Profile Setup', status: 'completed', duration: 100 },
     { step: 'Document Upload', status: 'completed', duration: 2000 },
     { step: 'AI Analysis', status: 'completed', duration: 3000 },
     { step: 'Search & Discovery', status: 'completed', duration: 200 },
-    { step: 'Report Generation', status: 'completed', duration: 800 },
+    { step: 'Report Generation', status: 'completed', duration: 800 }
   ];
   return {
     workflow: 'Complete User Journey',
     steps,
     totalDuration: steps.reduce((sum, step) => sum + step.duration, 0),
-    success: true,
+    success: true
   };
 }
 // Test document processing pipeline
-async function testDocumentProcessingPipeline(): Promise<{
-  pipeline: string;
-  stages: { stage: string; status: 'passed' | 'failed' | 'skipped'; latency: number }[];
+async function testDocumentProcessingPipeline(): Promise<{ pipeline: string;, stages: { stage: string; status: 'passed' | 'failed' | 'skipped';, latency: number }[];
   totalLatency: number;
   throughput: string;
   accuracy: string;
 }> {
-  const stages: { stage: string; status: 'passed' | 'failed' | 'skipped'; latency: number }[] = [
+  const stages: { stage: string; status: 'passed' | 'failed' | 'skipped';, latency: number }[] = [
     { stage: 'File Upload', status: 'passed', latency: 250 },
     { stage: 'Format Detection', status: 'passed', latency: 50 },
     { stage: 'Text Extraction', status: 'passed', latency: 1500 },
     { stage: 'Legal Analysis', status: 'passed', latency: 2800 },
     { stage: 'Vector Embedding', status: 'passed', latency: 400 },
     { stage: 'Index Storage', status: 'passed', latency: 150 },
-    { stage: 'Search Ready', status: 'passed', latency: 100 },
+    { stage: 'Search Ready', status: 'passed', latency: 100 }
   ];
   return {
     pipeline: 'Document Processing',
     stages,
     totalLatency: stages.reduce((sum, stage) => sum + stage.latency, 0),
     throughput: '~15 documents per minute',
-    accuracy: '94.7% legal entity extraction',
-  };
+    accuracy: '94.7% legal entity extraction` };
 }

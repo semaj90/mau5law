@@ -158,7 +158,7 @@ Clear Filters
               </div>
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">{person.name}</h3>
-                <span class="inline-block" px-2 py-1 text-xs rounded-full {
+                <span class="inline-block px-2 py-1" text-xs rounded-full {
                   person.status === 'Person of Interest' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
                   person.status === 'Witness' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   person.status === 'Suspect' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :

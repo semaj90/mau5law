@@ -4,6 +4,7 @@
   Features NieR theming and legal-specific optimizations
 -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
   // --- Fixes applied in this block: imports, props default, $state usage, helper functions, event handlers, network checks ---

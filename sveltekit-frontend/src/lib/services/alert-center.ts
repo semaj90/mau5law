@@ -52,9 +52,7 @@ declare global {
 /**
  * Runtime Alert Interface with Legal Compliance
  */
-export interface RuntimeAlert {
-  id: string;
-  type: AlertType;
+export interface RuntimeAlert { id: string;, type: AlertType;
   severity: AlertSeverity;
   category: AlertCategory;
   message: string;
@@ -143,9 +141,7 @@ export type AlertCategory =
 /**
  * Alert Configuration Settings
  */
-export interface AlertConfig {
-  ringBufferSize: number;
-  retentionDays: number;
+export interface AlertConfig { ringBufferSize: number;, retentionDays: number;
   escalationTimeouts: Record<AlertSeverity, number>;
   notificationChannels: NotificationChannel[];
   complianceSettings: ComplianceAlertSettings;
@@ -154,9 +150,7 @@ export interface AlertConfig {
 /**
  * Notification Channel Configuration
  */
-export interface NotificationChannel {
-  type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';
-  endpoint: string;
+export interface NotificationChannel { type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';, endpoint: string;
   credentials?: Record<string, string>;
   filters: AlertFilterConfig;
   enabled: boolean;
@@ -165,9 +159,7 @@ export interface NotificationChannel {
 /**
  * Alert Filter Configuration
  */
-export interface AlertFilterConfig {
-  severityLevels: AlertSeverity[];
-  categories: AlertCategory[];
+export interface AlertFilterConfig { severityLevels: AlertSeverity[];, categories: AlertCategory[];
   types: AlertType[];
   excludePatterns: string[];
   includePatterns: string[];
@@ -176,18 +168,14 @@ export interface AlertFilterConfig {
 /**
  * Time Window Configuration
  */
-export interface TimeWindowConfig {
-  startHour: number;
-  endHour: number;
+export interface TimeWindowConfig { startHour: number;, endHour: number;
   timezone: string;
   daysOfWeek: number[];
 }
 /**
  * Compliance Alert Settings
  */
-export interface ComplianceAlertSettings {
-  privilegeBreachThreshold: number;
-  chainOfCustodyTimeout: number;
+export interface ComplianceAlertSettings { privilegeBreachThreshold: number;, chainOfCustodyTimeout: number;
   retentionViolationGracePeriod: number;
   confidentialityLevelMapping: Record<string, AlertSeverity>;
   auditLogRequired: boolean;
@@ -196,9 +184,7 @@ export interface ComplianceAlertSettings {
 /**
  * Auto-Remediation Settings
  */
-export interface AutoRemediationSettings {
-  enabled: boolean;
-  maxAttempts: number;
+export interface AutoRemediationSettings { enabled: boolean;, maxAttempts: number;
   cooldownPeriod: number;
   allowedActions: string[];
   escalationOnFailure: boolean;
@@ -207,9 +193,7 @@ export interface AutoRemediationSettings {
 /**
  * Alert Statistics
  */
-export interface AlertStatistics {
-  totalAlerts: number;
-  alertsBySeverity: Record<AlertSeverity, number>;
+export interface AlertStatistics { totalAlerts: number;, alertsBySeverity: Record<AlertSeverity, number>;
   alertsByCategory: Record<AlertCategory, number>;
   alertsByType: Record<string, number>;
   averageResponseTime: number;
@@ -278,7 +262,7 @@ export class AlertCenter {
             includePatterns: []
           },
           enabled: true,
-          priority: 1,
+          priority: 1
         },
         {
           type: 'nats',
@@ -291,7 +275,7 @@ export class AlertCenter {
             includePatterns: []
           },
           enabled: true,
-          priority: 2,
+          priority: 2
         }
       ],
       complianceSettings: {
@@ -302,10 +286,9 @@ export class AlertCenter {
           'public': 'info',
           'confidential': 'warning',
           'privileged': 'critical',
-          'attorney_client': 'emergency'
-        },
+          'attorney_client': `emergency` },
         auditLogRequired: true,
-        regulatoryNotificationRequired: true,
+        regulatoryNotificationRequired: true
       },
       autoRemediation: {
         enabled: true,
@@ -313,7 +296,7 @@ export class AlertCenter {
         cooldownPeriod: this.AUTOSOLVE_COOLDOWN_MS,
         allowedActions: ['restart_service', 'clear_cache', 'rotate_logs'],
         escalationOnFailure: true,
-        requireApproval: false,
+        requireApproval: false
       }
     }
     return { ...defaultConfig, ...overrides }
@@ -333,7 +316,7 @@ export class AlertCenter {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn('Alert Center: Failed to load persistence state:', msg);
+      console.warn('Alert Center: Failed to load persistence; state:', msg);
     }
   }
   /**
@@ -451,7 +434,7 @@ export class AlertCenter {
         await this.sendNotificationToChannel(alert, channel);
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.error(`Failed to send notification via ${channel.type}:`, msg);
+        console.error(`Failed to send notification via ${channel.type}: ', msg);
       }
     }
   }
@@ -462,9 +445,7 @@ export class AlertCenter {
     switch (channel.type) {
       case 'nats':
         if (this.natsService) {
-          await this.natsService.publish(channel.endpoint, {
-            alert: {
-              id: alert.id,
+          await this.natsService.publish(channel.endpoint, { alert: {, id: alert.id,
               type: alert.type,
               severity: alert.severity,
               category: alert.category,
@@ -484,12 +465,12 @@ export class AlertCenter {
       case 'webhook':
         await fetch(channel.endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ alert, timestamp: Date.now() })
         });
         break;
       default:
-        console.warn(`Unsupported notification channel type: ${channel.type}`);
+        console.warn(`Unsupported notification channel; type: ${channel.type}`);
     }
   }
   /**
@@ -586,8 +567,7 @@ export class AlertCenter {
       'embedding_quality_degradation': 'ai_ml_operations',
       'rag_accuracy_decline': 'ai_ml_operations',
       'gpu_memory_overflow': 'ai_ml_operations',
-      'inference_timeout': 'ai_ml_operations'
-    };
+      'inference_timeout': 'ai_ml_operations' };
     return (categoryMap[type] ?? 'system_performance') as AlertCategory;
   }
   /**
@@ -617,8 +597,8 @@ export class AlertCenter {
    */
   private humanizeAlertMessage(type: AlertType, quicMetrics: QUICMetrics | undefined): string {
     const messages: Record<AlertType, string> = {
-      'p99_latency_exceeded': `QUIC p99 latency ${quicMetrics?.p99 ?? 'unknown'}ms exceeded threshold`,
-      'error_spike': `QUIC error spike detected (${quicMetrics?.error_rate_1m ?? 'unknown'} errors/min)`,
+      'p99_latency_exceeded': 'QUIC p99 latency ${quicMetrics?.p99 ?? 'unknown` }ms exceeded threshold`,
+      'error_spike': 'QUIC error spike detected (${quicMetrics?.error_rate_1m ?? 'unknown` } errors/min)`,
       'pipeline_anomaly_spike': `Pipeline anomaly spike (${getAggregateAnomaliesLast5m()} anomalies in 5 minutes)`,
       'service_unavailable': 'Critical service is unavailable',
       'memory_threshold_exceeded': 'System memory usage exceeded threshold',
@@ -645,8 +625,7 @@ export class AlertCenter {
       'embedding_quality_degradation': 'Vector embedding quality degradation',
       'rag_accuracy_decline': 'RAG system accuracy declining',
       'gpu_memory_overflow': 'GPU memory overflow detected',
-      'inference_timeout': 'AI inference timeout occurred'
-    };
+      'inference_timeout': `AI inference timeout occurred` };
     return messages[type] ?? `Alert: ${type}`;
   }
   /**
@@ -757,9 +736,9 @@ export class AlertCenter {
       const start = this.getNow();
       const response = await fetch('/api/context7-autosolve?action=trigger', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          triggeredBy: alert.id,
+         , triggeredBy: alert.id,
           alertType: alert.type,
           severity: alert.severity,
           context: alert.metadata
@@ -770,7 +749,7 @@ export class AlertCenter {
       console.log(`Auto-remediation triggered for alert ${alert.id}: ${response.status} (${duration.toFixed(2)}ms)`);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error(`Auto-remediation failed for alert ${alert.id}:`, msg);
+      console.error(`Auto-remediation failed for alert ${alert.id}: ', msg);
     } finally {
       this.autosolveInFlight = false;
     }
@@ -831,7 +810,7 @@ export class AlertCenter {
   /**
    * Get sustained P99 information
    */
-  public getSustainedP99Info(): { sustainedP99Breaches: number; threshold: number; lastP99OkTs: number } {
+  public getSustainedP99Info(): { sustainedP99Breaches: number; threshold: number;, lastP99OkTs: number } {
     return {
       sustainedP99Breaches: this.sustainedP99Breaches,
       threshold: this.SUSTAINED_P99_THRESHOLD,
@@ -860,15 +839,11 @@ export class AlertCenter {
   public diffBaselines(oldBaseline: BaselineFile, newBaseline: BaselineFile): any {
     // Derive a Stage type from the getStageBaselineSnapshot return type
     type BaselineStages = ReturnType<typeof getStageBaselineSnapshot>;
-    type StageSnapshot = BaselineStages extends Array<infer T> ? T & {
-      stage: string;
-      p50: number;
+    type StageSnapshot = BaselineStages extends Array<infer T> ? T & { stage: string;, p50: number;
       p90: number;
       p99: number;
       anomalies: number;
-    } : {
-      stage: string;
-      p50: number;
+    } : { stage: string;, p50: number;
       p90: number;
       p99: number;
       anomalies: number;
@@ -920,7 +895,7 @@ export class AlertCenter {
       fs.writeFileSync(this.STATE_FILE, JSON.stringify(state, null, 2));
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn('Alert Center: Failed to persist state:', msg);
+      console.warn('Alert Center: Failed to persist; state:', msg);
     }
   }
   /**
@@ -971,15 +946,11 @@ export class AlertCenter {
 }
 
 // ===== PERSISTENCE INTERFACES =====
-export interface BaselineFile {
-  created: string;
-  stages: ReturnType<typeof getStageBaselineSnapshot>;
+export interface BaselineFile { created: string;, stages: ReturnType<typeof getStageBaselineSnapshot>;
   quic: QUICMetrics;
 }
 
-export interface PersistedState {
-  sustainedP99Breaches: number;
-  lastP99Ok: number;
+export interface PersistedState { sustainedP99Breaches: number;, lastP99Ok: number;
   lastBaseline?: BaselineFile;
   budgets?: any;
   savedAt: string;

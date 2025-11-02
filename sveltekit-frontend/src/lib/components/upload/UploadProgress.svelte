@@ -21,10 +21,10 @@
     onerror?: (detail: { message: string }) => void;
     oncancel?: () => void;
   } = $props();
-  let file: File | null = $state(null);
+  let file: File | null = null;
   let percent = $state<number>(0);
   let uploading = $state<boolean>(false);
-  let controller: AbortController | null = $state(null);
+  let controller: AbortController | null = null;
   function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
     file = input.files && input.files[0] ? input.files[0] : null;

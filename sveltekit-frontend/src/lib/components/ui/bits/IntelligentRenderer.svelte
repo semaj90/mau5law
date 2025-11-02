@@ -13,9 +13,9 @@ import type { User } from '$lib/types';
     [key: string]: any;
   };
   // Import your existing components
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import { Button } from '$lib/components/ui/bitsButton.svelte';
   import { GlyphEngineRenderer } from './GlyphEngineRenderer.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   // Import hybrid theme as a global stylesheet to fix unused selector warnings
   // Use $lib alias so Vite/SvelteKit resolves the shared stylesheet reliably
   import '$lib/styles/hybrid-theme.css';
@@ -24,7 +24,7 @@ import type { User } from '$lib/types';
   if (!CardComponent)
     console.warn('Card component not found in $lib/components/ui/card. Check for a Root or default export.');
   const ButtonComponent: any = (Button && (Button as any).default) ?? Button;
-  if (!ButtonComponent) console.warn('Button component not found at $lib/components/ui/bitsbutton.svelte');
+  if (!ButtonComponent) console.warn('Button component not found at $lib/components/ui/bitsButton.svelte');
   // Shared type for data prop
   type IntelligentRendererData = {
     documents?: LegalDocument[];

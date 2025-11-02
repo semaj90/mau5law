@@ -380,7 +380,7 @@ import type { Document } from '$lib/types';
     onclick={() => fileInput?.click()}
     onkeydown={handleKeyDown}
   >
-    <input type="file" bind:this={fileInput} class="hidden" multiple onchange={handleFileInput} />
+    <input type="file" bind:this={fileInput} class="hidden multiple onchange"={handleFileInput} />
     <div class="text-center">
       <div class="text-6xl mb-4">
         {#if isDragging}

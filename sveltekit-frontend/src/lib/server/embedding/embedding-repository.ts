@@ -13,9 +13,7 @@ export interface IngestionJobRequest {
   chunkOverlap?: number;           // Override default overlap
   metadata?: { [key: string]: any }  // Arbitrary metadata for downstream query filters
 }
-export interface IngestionJobStatus {
-  jobId: string;
-  evidenceId: string;
+export interface IngestionJobStatus { jobId: string;, evidenceId: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   totalChunks?: number;
   processedChunks?: number;

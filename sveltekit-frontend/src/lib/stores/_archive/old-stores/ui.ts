@@ -4,9 +4,7 @@ import type { Writable } from 'svelte/store';
 import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
 }
-export interface ContextMenuState {
-  show: boolean;
-  x: number;
+export interface ContextMenuState { show: boolean;, x: number;
   y: number;
   item: any | null;
 }
@@ -33,9 +31,7 @@ export const contextMenuActions = {
 // Theme system
 export const theme = writable<"light" | "dark" | "auto">("auto");
 export const colorScheme = writable<"blue" | "green" | "purple" | "orange">("blue");
-export type NotificationData = {
-  type: "success" | "error" | "warning" | "info";
-  title: string;
+export type NotificationData = { type: "success" | "error" | "warning" | "info";, title: string;
   message: string;
   duration?: number;
 }
@@ -54,7 +50,7 @@ export const sidebar = writable({
 // Animation preferences
 export const motion = writable({
   reduceMotion: false,
-  duration: "normal" as: "fast" | "normal" | "slow",
+  duration: "normal"; as: "fast" | "normal" | "slow",
   spring: true
 });
 // Component state

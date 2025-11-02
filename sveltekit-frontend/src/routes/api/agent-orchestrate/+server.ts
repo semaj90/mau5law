@@ -55,27 +55,19 @@ export interface AgentOrchestrationRequest {
     priority?: 'low' | 'medium' | 'high' | 'urgent';
   };
 }
-export interface AgentResult {
-  agent: string;
-  output: string;
+export interface AgentResult { agent: string;, output: string;
   score: number;
   metadata?: Record<string, unknown>;
   error?: string;
   sources?: string[];
   [key: string]: any;
 }
-export interface AgentOrchestrationResponse {
-  success: boolean;
-  results: AgentResult[]; // was Array<any>
-  synthesis: {
-    bestResult: string;
-    consensusScore: number;
+export interface AgentOrchestrationResponse { success: boolean;, results: AgentResult[]; // was Array<any>
+  synthesis: { bestResult: string;, consensusScore: number;
     recommendations: string[];
     nextSteps: string[];
   };
-  orchestrationMetadata: {
-    totalProcessingTime: number;
-    agentsUsed: number;
+  orchestrationMetadata: { totalProcessingTime: number;, agentsUsed: number;
     context7Enhanced: boolean;
     autoFixApplied: boolean;
     timestamp: string;
@@ -94,7 +86,7 @@ function getErrorMessage(err: any): string {
 
 // Map raw Context7 response into Context7Analysis
 function mapContext7Analysis(raw: any): Context7Analysis {
-  // raw may be { summary: string; ok: boolean } or richer object
+  // raw may be { summary: string;, ok: boolean } or richer object
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
     return {
@@ -106,7 +98,7 @@ function mapContext7Analysis(raw: any): Context7Analysis {
           : undefined,
       codeExamples: Array.isArray(r.codeExamples) ? (r.codeExamples as AgentCodeExample[]) : undefined,
       bestPractices: Array.isArray(r.bestPractices) ? (r.bestPractices as string[]) : undefined,
-      timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString(),
+      timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString()
     };
   }
   return { documentation: typeof raw === 'string' ? raw : undefined, timestamp: new Date().toISOString() };
@@ -122,14 +114,14 @@ function mapAutoFixResults(raw: any, area?: string): AutoFixResults {
       area: area ?? (r.area as string) ?? undefined,
       changes: fixes,
       summary: (r.summary as string) ?? (r.message as string) ?? undefined,
-      timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString(),
+      timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString()
     };
   }
   return {
     applied: false,
     area,
     summary: typeof raw === 'string' ? raw : undefined,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -143,7 +135,7 @@ function normalizeAgentResult(raw: any, agentName: string): AgentResult {
       score: typeof r.score === 'number' ? r.score : 0,
       metadata: (r.metadata as Record<string, unknown>) ?? undefined,
       error: typeof r.error === 'string' ? r.error : undefined,
-      sources: Array.isArray(r.sources) ? (r.sources as string[]) : undefined,
+      sources: Array.isArray(r.sources) ? (r.sources as string[]) : undefined
     };
   }
   return { agent: agentName, output: '', score: 0 };
@@ -165,15 +157,15 @@ export const POST: RequestHandler = async ({ request }) => {
             bestResult: '',
             consensusScore: 0,
             recommendations: [],
-            nextSteps: [],
+            nextSteps: []
           },
           orchestrationMetadata: {
-            totalProcessingTime: Date.now() - startTime,
+           , totalProcessingTime: Date.now() - startTime,
             agentsUsed: 0,
             context7Enhanced: false,
             autoFixApplied: false,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         },
         { status: 400 }
       );
@@ -190,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (options.autoFix) {
       const autoFixResult = await context7Service.autoFixCodebase({
         area: options.autoFixArea, // options.autoFixArea is typed as string | undefined
-        dryRun: false,
+        dryRun: false
       });
       context.autoFixResults = mapAutoFixResults(autoFixResult, options.autoFixArea);
       autoFixApplied = true;
@@ -203,21 +195,21 @@ export const POST: RequestHandler = async ({ request }) => {
           prompt,
           context,
           options: {
-            includeContext7: options.includeContext7,
+           , includeContext7: options.includeContext7,
             autoFix: options.autoFix,
-            area: options.autoFixArea,
-          },
+            area: options.autoFixArea
+          }
         })
         .then((result: any) => ({
           ...normalizeAgentResult(result, 'claude'),
-          error: undefined,
+          error: undefined
         }))
         .catch((error: any) => ({
           agent: 'claude',
           output: '',
           score: 0,
-          metadata: { error: true },
-          error: getErrorMessage(error),
+          metadata: {, error: true },
+          error: getErrorMessage(error)
         }));
       agentPromises.push(claudePromise);
     }
@@ -227,23 +219,23 @@ export const POST: RequestHandler = async ({ request }) => {
           prompt,
           context,
           options: {
-            analysisType: 'legal_research',
+           , analysisType: 'legal_research',
             priority: options.priority || 'medium',
             caseId: options.caseId,
             includeContext7: options.includeContext7,
-            autoFix: options.autoFix,
-          },
+            autoFix: options.autoFix
+          }
         })
         .then((result: any) => ({
           ...normalizeAgentResult(result, 'autogen'),
-          error: undefined,
+          error: undefined
         }))
         .catch((error: any) => ({
           agent: 'autogen',
           output: '',
           score: 0,
-          metadata: { error: true },
-          error: getErrorMessage(error),
+          metadata: {, error: true },
+          error: getErrorMessage(error)
         }));
       agentPromises.push(autogenPromise);
     }
@@ -253,21 +245,21 @@ export const POST: RequestHandler = async ({ request }) => {
           prompt,
           context,
           options: {
-            crewType: 'legal_research',
+           , crewType: 'legal_research',
             includeContext7: options.includeContext7,
-            autoFix: options.autoFix,
-          },
+            autoFix: options.autoFix
+          }
         })
         .then((result: any) => ({
           ...normalizeAgentResult(result, 'crewai'),
-          error: undefined,
+          error: undefined
         }))
         .catch((error: any) => ({
           agent: 'crewai',
           output: '',
           score: 0,
-          metadata: { error: true },
-          error: getErrorMessage(error),
+          metadata: {, error: true },
+          error: getErrorMessage(error)
         }));
       agentPromises.push(crewaiPromise);
     }
@@ -277,24 +269,24 @@ export const POST: RequestHandler = async ({ request }) => {
           query: prompt,
           context,
           options: {
-            caseId: options.caseId,
+           , caseId: options.caseId,
             includeContext7: options.includeContext7,
             autoFix: options.autoFix,
             maxResults: 5,
-            confidenceThreshold: 0.7,
-          },
+            confidenceThreshold: 0.7
+          }
         })
         .then((result: any) => ({
           ...normalizeAgentResult(result, 'rag'),
-          error: undefined,
+          error: undefined
         }))
         .catch((error: any) => ({
           agent: 'rag',
           output: '',
           score: 0,
           sources: [],
-          metadata: { error: true },
-          error: getErrorMessage(error),
+          metadata: {, error: true },
+          error: getErrorMessage(error)
         }));
       agentPromises.push(ragPromise);
     }
@@ -318,8 +310,8 @@ export const POST: RequestHandler = async ({ request }) => {
               agent: agents[index] || 'unknown',
               output: '',
               score: 0,
-              metadata: { error: true },
-              error: getErrorMessage((result as PromiseRejectedResult).reason),
+              metadata: {, error: true },
+              error: getErrorMessage((result as PromiseRejectedResult).reason)
             });
           }
         });
@@ -330,8 +322,8 @@ export const POST: RequestHandler = async ({ request }) => {
           agent: 'orchestrator',
           output: '',
           score: 0,
-          metadata: { error: true },
-          error: 'Execution timeout - partial results may be available',
+          metadata: {, error: true },
+          error: 'Execution timeout - partial results may be available'
         });
       }
     } else {
@@ -345,8 +337,8 @@ export const POST: RequestHandler = async ({ request }) => {
             agent: 'unknown',
             output: '',
             score: 0,
-            metadata: { error: true },
-            error: getErrorMessage(err),
+            metadata: {, error: true },
+            error: getErrorMessage(err)
           });
         }
       }
@@ -363,8 +355,8 @@ export const POST: RequestHandler = async ({ request }) => {
         agentsUsed: results.length,
         context7Enhanced,
         autoFixApplied,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     return json(response);
   } catch (err: any) {
@@ -378,15 +370,15 @@ export const POST: RequestHandler = async ({ request }) => {
           bestResult: '',
           consensusScore: 0,
           recommendations: ['Check agent configurations', 'Verify service availability'],
-          nextSteps: ['Review error logs', 'Test individual agents'],
+          nextSteps: ['Review error logs', 'Test individual agents']
         },
         orchestrationMetadata: {
           totalProcessingTime: Date.now() - startTime,
           agentsUsed: 0,
           context7Enhanced: false,
           autoFixApplied: false,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -401,7 +393,7 @@ function synthesizeResults(results: AgentResult[], _originalPrompt: string) {
       bestResult: 'No valid results from agents',
       consensusScore: 0,
       recommendations: ['Check agent configurations', 'Review error logs'],
-      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration'],
+      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration']
     };
   }
   const bestResult = validResults.reduce((best, current) => (current.score > best.score ? current : best));
@@ -427,7 +419,7 @@ function synthesizeResults(results: AgentResult[], _originalPrompt: string) {
     bestResult: bestResult.output,
     consensusScore: avgScore,
     recommendations,
-    nextSteps,
+    nextSteps
   };
 }
 // Health check endpoints
@@ -437,6 +429,6 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString(),
     availableAgents: ['claude', 'autogen', 'crewai', 'rag'],
     context7Enabled: true,
-    autoFixEnabled: true,
+    autoFixEnabled: true
   });
 };

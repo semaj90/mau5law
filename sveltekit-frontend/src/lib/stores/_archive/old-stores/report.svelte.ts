@@ -1,16 +1,14 @@
 import crypto from 'crypto';
 import { writable, derived, type Writable } from 'svelte/store';
 // Evidence types
-export interface Evidence {
-  id: string;
-  type: 'document' | 'image' | 'video' | 'audio' | 'link';
+export interface Evidence { id: string;, type: 'document' | 'image' | 'video' | 'audio' | 'link';
   title: string;
   description?: string;
   url?: string;
   file?: File;
   metadata?: Record<string, unknown>;
   tags?: string[];
-  // New: optional external/system id for: "real evidence id"
+  // New: optional external/system id; for: "real evidence id"
   externalId?: string;
   // New: short auto-generated or user-written summary of this evidence
   summary?: string;
@@ -22,22 +20,16 @@ export interface Evidence {
   updatedAt: Date;
 }
 // Report structure
-export interface Report {
-  id: string;
-  title: string;
+export interface Report { id: string;, title: string;
   content: string; // TinyMCE HTML content,
   attachedEvidence: Evidence[];
-  metadata: {
-    createdAt: Date;
-    updatedAt: Date;
+  metadata: { createdAt: Date;, updatedAt: Date;
     version: number;
     status: 'draft' | 'review' | 'final';
     tags: string[];
     classification?: string;
   };
-  settings: {
-    autoSave: boolean;
-    theme: 'light' | 'dark';
+  settings: { autoSave: boolean;, theme: 'light' | 'dark';
     layout: 'single' | 'dual' | 'masonry';
   };
 }
@@ -52,13 +44,13 @@ const defaultReport: Report = {
     updatedAt: new Date(),
     version: 1,
     status: 'draft',
-    tags: [],
+    tags: []
   },
   settings: {
     autoSave: true,
     theme: 'light',
-    layout: 'single',
-  },
+    layout: 'single'
+  }
 };
 // Main report store
 export const report: Writable<Report> = writable(defaultReport);
@@ -69,7 +61,7 @@ export const editorState = writable({
   lastSaved: new Date(),
   wordCount: 0,
   selectedText: '',
-  cursorPosition: 0,
+  cursorPosition: 0
 });
 // UI state for report editing
 export const reportUI = writable({
@@ -78,7 +70,7 @@ export const reportUI = writable({
   evidencePanelOpen: true,
   evidencePanelHeight: 400,
   toolbarCollapsed: false,
-  fullscreen: false,
+  fullscreen: false
 });
 // Derived stores
 export const reportTitle = derived(report, $report => $report.title);
@@ -92,7 +84,7 @@ async function fetchEmbedding(text: string): Promise<number[]> {
     const res = await fetch('/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text })
     });
     if (!res.ok) throw new Error(`Embedding service error: ${res.status}`);
     const json = await res.json();
@@ -109,7 +101,7 @@ async function fetchSummary(text: string): Promise<string> {
     const res = await fetch('/api/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text })
     });
     if (!res.ok) throw new Error(`Summarize service error: ${res.status}`);
     const json = await res.json();
@@ -126,7 +118,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       title,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -134,7 +126,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       content,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({
       ...s,
@@ -143,7 +135,7 @@ export const reportActions = {
         .replace(/<[^>]*>/g, '')
         .trim()
         .split(/\s+/)
-        .filter(Boolean).length,
+        .filter(Boolean).length
     }));
   },
   addEvidence: (evidence: Partial<Evidence>) => {
@@ -163,12 +155,12 @@ export const reportActions = {
       embedding: evidence.embedding ?? [],
       embeddingVersion: evidence.embeddingVersion,
       createdAt: evidence.createdAt ?? new Date(),
-      updatedAt: evidence.updatedAt ?? new Date(),
+      updatedAt: evidence.updatedAt ?? new Date()
     };
     report.update(r => ({
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -176,7 +168,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       attachedEvidence: r.attachedEvidence.filter(e => e.id !== evidenceId),
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -184,7 +176,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       attachedEvidence: newOrder,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -192,7 +184,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       settings: { ...r.settings, ...settingsPatch },
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -201,7 +193,7 @@ export const reportActions = {
     editorState.update(s => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     }));
   },
   load: (reportData: Report) => {
@@ -209,7 +201,7 @@ export const reportActions = {
     editorState.update(s => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     }));
   },
   reset: () => {
@@ -217,7 +209,7 @@ export const reportActions = {
     editorState.update(s => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     }));
   },
   // Return the updated embedding or empty array
@@ -231,7 +223,7 @@ export const reportActions = {
           ...e,
           embedding,
           embeddingVersion: 'local-emb-v1', // adjust to actual model/version identifier
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
       });
       return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } };
@@ -261,14 +253,13 @@ export const reportActions = {
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
     return summary;
   },
-  // convenience: generate both summary and embedding (embedding uses summary if available)
-  enrichEvidence: async (evidenceId: string): Promise<{ summary: string; embedding: number[] }> => {
+  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string;, embedding: number[] }> => {
     // generate summary first
     const summary = await reportActions.generateSummaryForEvidence(evidenceId);
     // then embedding using summary (fallback to title/description inside helper)
     const embedding = await reportActions.generateEmbeddingForEvidence(evidenceId, summary);
     return { summary, embedding };
-  },
+  }
 };
 // Auto-save functionality
 export const setupAutoSave = (intervalMs: number = 30000) => {

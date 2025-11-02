@@ -8,7 +8,7 @@ import * as schema from './schema-jsonb.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration with fallbacks for legal_ai_db
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`
+  `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db` }`
 // Create postgres client with enhanced configuration for vector operations
 const client = postgres(DATABASE_URL, {
   // Connection pool settings
@@ -21,7 +21,7 @@ const client = postgres(DATABASE_URL, {
   types: {
     // Custom type parser for vector data
     vector: {
-      to: 1184,
+     , to: 1184,
       from [1184],
       // use the declared parameter name _value
       serialize: (_value: number[]) => `[${_value.join(',')}]`,
@@ -29,17 +29,16 @@ const client = postgres(DATABASE_URL, {
         const matches = _value.match(/^\[(.*)\]$/);
         if (!matches) return [];
         return matches[1] ? matches[1].split(',').map(Number) : [];
-      },
-    },
+      }
+    }
   },
   // SSL configuration for production
-  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false,
+  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false
 });
 // Create Drizzle database instance with schema
 export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
   schema,
-  logger: import.meta.env.NODE_ENV === 'development'
-});
+  logger: import.meta.env.NODE_ENV === 'development` });
 // Enhanced connection testing function
 export async function testConnection(): Promise<boolean> {
   try {
@@ -73,9 +72,7 @@ export async function testConnection(): Promise<boolean> {
 // add small typed aliases near the top of the file (below imports / client / db definitions)
 type DBRow = Record<string, unknown>;
 
-export interface DatabaseHealth {
-  connected: boolean;
-  pgvectorEnabled: boolean;
+export interface DatabaseHealth { connected: boolean;, pgvectorEnabled: boolean;
   tablesCount: number;
   version: string;
   uptime?: string | null;
@@ -108,7 +105,7 @@ export async function getDatabaseHealth(): Promise<DatabaseHealth> {
       pgvectorEnabled,
       tablesCount,
       version,
-      uptime: uptime?.toString(),
+      uptime: uptime?.toString()
     };
   } catch (error) {
     console.error('Database health check failed:', error);
@@ -116,8 +113,7 @@ export async function getDatabaseHealth(): Promise<DatabaseHealth> {
       connected: false,
       pgvectorEnabled: false,
       tablesCount: 0,
-      version: 'Unknown',
-    };
+      version: 'Unknown` };
   }
 }
 // Vector operations helper functions

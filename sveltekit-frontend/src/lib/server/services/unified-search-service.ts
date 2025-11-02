@@ -5,9 +5,7 @@ import { publishToQueue } from '$lib/server/rabbitmq';
 import { jobTracker } from '$lib/services/job-tracker';
 import { createHash } from 'crypto';
 // Type definitions for unified service
-export interface UnifiedDocument {
-  id: string;
-  title: string;
+export interface UnifiedDocument { id: string;, title: string;
   content: string;
   filePath?: string;
   mimeType?: string;
@@ -43,9 +41,7 @@ export interface UnifiedDocument {
 }
 
 // New typed Recommendation interface
-export interface Recommendation {
-  type: string;
-  documents: string[]; // list of related document IDs (or empty)
+export interface Recommendation { type: string;, documents: string[]; // list of related document IDs (or empty)
   confidence: number;
   reasoning?: string;
   // allow extra fields added in future while keeping a strong base type
@@ -53,7 +49,7 @@ export interface Recommendation {
 }
 
 // Ingest result type: explicit success / failure shapes instead of `any`
-export type IngestResult = { success: true; documentId: string; jobId: string } | { success: false; error: string };
+export type IngestResult = { success: true; documentId: string;, jobId: string } | { success: false;, error: string };
 
 export interface SearchQuery {
   text?: string;
@@ -62,7 +58,7 @@ export interface SearchQuery {
     category?: string[];
     tags?: string[];
     userId?: string;
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: string;, end: string };
     confidenceMin?: number;
   };
   options?: {
@@ -75,9 +71,7 @@ export interface SearchQuery {
   };
 }
 
-export interface SearchResult {
-  documents: UnifiedDocument[];
-  total: number;
+export interface SearchResult { documents: UnifiedDocument[];, total: number;
   facets?: {
     categories: Record<string, number>;
     tags: Record<string, number>;
@@ -220,7 +214,7 @@ class UnifiedSearchService {
             return acc;
           },
           {} as Record<string, unknown>
-        ),
+        )
       };
 
       // Build unified document explicitly to avoid accidental shape mismatches
@@ -235,13 +229,13 @@ class UnifiedSearchService {
         searchable: {
           fulltext: this.extractFulltext(document),
           keywords: this.extractKeywords(document),
-          semantic_hash: contentHash,
+          semantic_hash: contentHash
         },
         embeddings: document.embeddings,
         cached: {
           last_accessed: new Date().toISOString(),
-          access_count: 0,
-        },
+          access_count: 0
+        }
       };
       // Store in database (basic metadata first) using pgClient for simplicity
       await this.pg.unsafe(
@@ -264,8 +258,7 @@ class UnifiedSearchService {
         documentId,
         action: 'process_unified_document',
         document: unifiedDoc,
-        priority: document.metadata?.source === 'evidence' ? 'high' : 'normal',
-      };
+        priority: document.metadata?.source === 'evidence' ? 'high' : 'normal` };
       // Submit to ingestion pipeline
       await publishToQueue('evidence.unified.processing', processingJob);
       // Track in job system
@@ -273,18 +266,17 @@ class UnifiedSearchService {
         documentId,
         source: document.metadata?.source,
         category: document.metadata?.category,
-        contentSize: document.content ? document.content.length : 0,
+        contentSize: document.content ? document.content.length : 0
       });
       return {
         success: true,
         documentId,
-        jobId: `processing_${documentId}`,
-      };
+        jobId: `processing_${documentId}` };
     } catch (error) {
       console.error('❌ Error ingesting document:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       };
     }
   }
@@ -305,7 +297,7 @@ class UnifiedSearchService {
           return {
             ...(parsed as SearchResult),
             cached: true,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           };
         }
       }
@@ -342,7 +334,7 @@ class UnifiedSearchService {
         facets,
         recommendations,
         cached: false,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
       // Cache serialized result to avoid driver/object mismatches
       await cache.set(`search:${cacheKey}`, JSON.stringify(searchResult), 600); // 10 minutes
@@ -495,14 +487,12 @@ class UnifiedSearchService {
           type: 'related_cases',
           documents: [],
           confidence: primaryConfidence,
-          reasoning: `Based on ${uniqueEntities.length} unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".`,
-        },
+          reasoning: `Based on ${uniqueEntities.length} unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".` },
         {
           type: 'similar_precedents',
           documents: [],
           confidence: secondaryConfidence,
-          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).`,
-        },
+          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` },
       ];
     } catch (error) {
       console.warn('⚠️ getNeo4jRecommendations failed:', error);
@@ -570,7 +560,7 @@ class UnifiedSearchService {
     const canonical = {
       text: query.text || null,
       filters: query.filters || {},
-      options: query.options || {},
+      options: query.options || {}
     };
     const raw = JSON.stringify(canonical, Object.keys(canonical).sort());
     return createHash('md5').update(raw).digest('hex');
@@ -673,8 +663,7 @@ class UnifiedSearchService {
       filePath: (row.file_path as string) || undefined,
       mimeType: (row.mime_type as string) || undefined,
       fileSize: typeof row.file_size === 'number' ? row.file_size : undefined,
-      metadata: {
-        source: source as: 'upload' | 'manual' | 'api' | 'evidence',
+      metadata: { source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
         userId,
         tags,
         category,
@@ -683,21 +672,20 @@ class UnifiedSearchService {
         extractedEntities,
         keyTerms,
         neo4jNodeId,
-        shaderData,
+        shaderData
       },
       embeddings: undefined,
-      searchable: {
-        fulltext: this.extractFulltext({ title: (row.title as string) || '', content: (row.content as string) || '' }),
-        keywords: this.extractKeywords({ title: (row.title as string) || '', content: (row.content as string) || '' }),
-        semantic_hash: semanticHash,
+      searchable: { fulltext: this.extractFulltext({, title: (row.title as string) || '', content: (row.content as string) || '' }),
+        keywords: this.extractKeywords({ title: (row.title as string) || '', content: (row.content as string) || '` }),
+        semantic_hash: semanticHash
       },
       cached: {
         last_accessed: (row.updated_at as string) || new Date().toISOString(),
         access_count: 0,
         search_results: [],
         related_documents: [],
-        recommendations: [],
-      },
+        recommendations: []
+      }
     };
   }
 

@@ -5,57 +5,47 @@ import crypto from "crypto";
  */
 import { setup, assign, fromPromise } from "xstate";
 // Local chat types to satisfy references
-export interface ChatMessage {
-  id: string;
-  content: string;
+export interface ChatMessage { id: string;, content: string;
   role: "user" | "assistant" | "system";
   timestamp: Date;
   conversationId?: string;
 }
-export interface Conversation {
-  id: string;
-  title: string;
+export interface Conversation { id: string;, title: string;
   createdAt: Date;
 }
-export interface ChatSettings {
-  model: string;
-  temperature: number;
+export interface ChatSettings { model: string;, temperature: number;
   maxTokens: number;
   streaming: boolean;
   contextWindow: number;
   proactiveMode?: boolean;
   emotionalMode?: boolean;
 }
-export interface ChatContext {
-  messages: ChatMessage[];
-  conversations: Conversation[];
+export interface ChatContext { messages: ChatMessage[];, conversations: Conversation[];
   currentConversation: Conversation | null;
   error: Error | null;
   settings: ChatSettings;
   stream: ReadableStream<string> | null;
   modelStatus: "unknown" | "loading" | "ready" | "error";
-  contextInjection: {
-    enabled: boolean;
-    documents: string[];
+  contextInjection: { enabled: boolean;, documents: string[];
     vectorResults: any[];
   }
 }
 export type ChatEvent =
-  | { type: "SEND_MESSAGE"; message: string }
-  | { type: "RECEIVE_MESSAGE"; message: string; metadata?: any }
+  | { type: "SEND_MESSAGE";, message: string }
+  | { type: "RECEIVE_MESSAGE";, message: string; metadata?: any }
   | { type: "START_STREAMING" }
-  | { type: "STREAM_CHUNK"; chunk: string }
+  | { type: "STREAM_CHUNK";, chunk: string }
   | { type: "STREAM_COMPLETE" }
-  | { type: "STREAM_ERROR"; error: Error }
+  | { type: "STREAM_ERROR";, error: Error }
   | { type: "NEW_CONVERSATION"; title?: string }
-  | { type: "LOAD_CONVERSATION"; conversationId: string }
-  | { type: "DELETE_CONVERSATION"; conversationId: string }
-  | { type: "UPDATE_SETTINGS"; settings: Partial<ChatSettings> }
-  | { type: "INJECT_CONTEXT"; documents: string[] }
+  | { type: "LOAD_CONVERSATION";, conversationId: string }
+  | { type: "DELETE_CONVERSATION";, conversationId: string }
+  | { type: "UPDATE_SETTINGS";, settings: Partial<ChatSettings> }
+  | { type: "INJECT_CONTEXT";, documents: string[] }
   | { type: "CLEAR_CONTEXT" }
   | { type: "CHECK_MODEL_STATUS" }
   | { type: "MODEL_READY" }
-  | { type: "MODEL_ERROR"; error: Error }
+  | { type: "MODEL_ERROR";, error: Error }
   | { type: "CLEAR_ERROR" }
   | { type: "RESET_CHAT" }
 const initialContext: ChatContext = {
@@ -64,7 +54,7 @@ const initialContext: ChatContext = {
   currentConversation: null,
   error: null;
   stream: null,
-  modelStatus: "unknown",
+  modelStatus: "unknown"
   }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
@@ -72,16 +62,14 @@ const initialContext: ChatContext = {
     streaming: true,
     contextWindow: 8192,
     proactiveMode: true,
-    emotionalMode: false,
+    emotionalMode: false
   },
-  contextInjection: {
-    enabled: false;
-    documents: [],
+  contextInjection: { enabled: false;, documents: [],
     vectorResults: []
   }
 }
 // Services
-const sendMessageService = fromPromise(async ({ input }: { input: { context: ChatContext } }) => {
+const sendMessageService = fromPromise(async ({ input }: { input: {, context: ChatContext } }) => {
   const { context } = input;
   const response = await fetch("/api/ai/chat", {
     method: "POST",
@@ -92,7 +80,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
       settings: context.settings,
       contextInjection: context.contextInjection.enabled;
         ? {
-            documents: context.contextInjection.documents
+           , documents: context.contextInjection.documents
           }
         : undefined
     })
@@ -110,9 +98,7 @@ const checkModelService = fromPromise(async () => {
   }
   return await response.json();
 });
-export const chatMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as ChatContext,
+export const chatMachine = setup({ types: {, context: { [key,: strin,g]: any } as ChatContext,
     events: { [key,: strin,g]: any } as ChatEvent
   },
   actors: {
@@ -123,13 +109,9 @@ export const chatMachine = setup({
   id: "chat",
   initial: "idle",
   context: initialContext,
-  states: {
-      idle: {
-        on: {
+  states: { idle: {, on: {
           SEND_MESSAGE: "sendingMessage",
-          NEW_CONVERSATION: {
-            actions: assign({
-              currentConversation: ({ event }) => {
+          NEW_CONVERSATION: {, actions: assign({, currentConversation: ({ event }) => {
                 const title =
                   event.type === "NEW_CONVERSATION"
                     ? event.title || "New Conversation"
@@ -145,9 +127,7 @@ export const chatMachine = setup({
               messages: () => []
             })
           },
-          LOAD_CONVERSATION: {
-            actions: assign({
-              currentConversation: ({ context, event }) => {
+          LOAD_CONVERSATION: { actions: assign({, currentConversation: ({ context, event }) => {
                 if (event.type !== "LOAD_CONVERSATION")
                   return context.currentConversation;
                 return (
@@ -164,9 +144,7 @@ export const chatMachine = setup({
               }
             })
           },
-          DELETE_CONVERSATION: {
-            actions: assign({
-              conversations: ({ context, event }) => {
+          DELETE_CONVERSATION: { actions: assign({, conversations: ({ context, event }) => {
                 if (event.type !== "DELETE_CONVERSATION")
                   return context.conversations;
                 return context.conversations.filter(
@@ -182,17 +160,13 @@ export const chatMachine = setup({
               }
             })
           },
-          UPDATE_SETTINGS: {
-            actions: assign({
-              settings: ({ context, event }) => {
+          UPDATE_SETTINGS: { actions: assign({, settings: ({ context, event }) => {
                 if (event.type !== "UPDATE_SETTINGS") return context.settings;
                 return { ...context.settings, ...event.settings }
               }
             })
           },
-          INJECT_CONTEXT: {
-            actions: assign({
-              contextInjection: ({ context, event }) => {
+          INJECT_CONTEXT: { actions: assign({, contextInjection: ({ context, event }) => {
                 if (event.type !== "INJECT_CONTEXT") return context.contextInjection;
                 return {
                   ...context.contextInjection,
@@ -202,9 +176,7 @@ export const chatMachine = setup({
               }
             })
           },
-          CLEAR_CONTEXT: {
-            actions: assign({
-              contextInjection: ({ context }) => ({
+          CLEAR_CONTEXT: { actions: assign({, contextInjection: ({ context }) => ({
                 ...context.contextInjection,
                 enabled: false,
                 documents: [],
@@ -213,9 +185,7 @@ export const chatMachine = setup({
             })
           },
           CHECK_MODEL_STATUS: "checkingModel",
-          RESET_CHAT: {
-            actions: assign({
-              currentConversation: () => null,
+          RESET_CHAT: { actions: assign({, currentConversation: () => null,
               messages: () => [],
               error: () => null,
               stream: () => null
@@ -223,9 +193,7 @@ export const chatMachine = setup({
           }
         }
       },
-      sendingMessage: {
-        entry: assign({
-          messages: ({ context, event }) => {
+      sendingMessage: { entry: assign({, messages: ({ context, event }) => {
             if (event.type !== "SEND_MESSAGE") return context.messages;
             const message: ChatMessage = {
               id: crypto.randomUUID(),
@@ -287,13 +255,9 @@ export const chatMachine = setup({
           START_STREAMING: "streaming"
         }
       },
-      streaming: {
-        entry: assign({
-          stream: () => null, // Will be set by streaming service
+      streaming: { entry: assign({, stream: () => null, // Will be set by streaming service
         }),
-        on: {
-          STREAM_CHUNK: {
-            actions: assign({
+        on: { STREAM_CHUNK: {, actions: assign({
               messages: ({ context, event }) => {
                 if (event.type !== "STREAM_CHUNK") return context.messages;
                 const lastMessage = context.messages[context.messages.length - 1];
@@ -325,15 +289,12 @@ export const chatMachine = setup({
             target: "error",
             actions: assign({
               error: ({ event }) =>
-                event.type === "STREAM_ERROR" ? event.error: null
-              stream: () => null,
+                event.type === "STREAM_ERROR" ? event.error: null; stream: () => null
             })
           }
         }
       },
-      checkingModel: {
-        invoke: {
-          src: "checkModelService",
+      checkingModel: { invoke: {, src: "checkModelService",
           onDone: {
             target: "idle",
             actions: assign({
@@ -350,9 +311,7 @@ export const chatMachine = setup({
           }
         }
       },
-      error: {
-        on: {
-          CLEAR_ERROR: {
+      error: { on: {, CLEAR_ERROR: {
             target: "idle",
             actions: assign({
               error: () => null

@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         result,
         verificationMethod: method,
         verifiedBy: userId,
-        notes,
+        notes
       })
       .returning();
 
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         message: result
           ? 'Hash verification successful - file integrity confirmed'
           : 'Hash verification failed - file may have been modified',
-        verifiedAt: new Date().toISOString(),
+        verifiedAt: new Date().toISOString()
       },
       { status: 200 }
     );
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         verifiedAt: hashVerifications.verifiedAt,
         verifierName: users.name,
         evidenceTitle: evidence.title,
-        evidenceFileName: evidence.fileName,
+        evidenceFileName: evidence.fileName
       })
       .from(hashVerifications)
       .leftJoin(users, eq(hashVerifications.verifiedBy, users.id))

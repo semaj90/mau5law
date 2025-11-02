@@ -3,39 +3,27 @@
  * Handles multi-dimensional tensors with kernel attention splicing
  * Supports offline/online state transitions with RabbitMQ
  */
-export interface DimensionalArray {
-  data: Float32Array | Float64Array | Int32Array;
-  shape: number[];
+export interface DimensionalArray { data: Float32Array | Float64Array | Int32Array;, shape: number[];
   dtype: 'float32' | 'float64' | 'int32';
   kernelSplices: KernelAttentionSlice[];
-  metadata: {
-    created: number;
-    lastAccessed: number;
+  metadata: { created: number;, lastAccessed: number;
     computationHash: string;
     attentionWeights: Float32Array;
   };
 }
-export interface KernelAttentionSlice {
-  startIndex: number;
-  endIndex: number;
+export interface KernelAttentionSlice { startIndex: number;, endIndex: number;
   attentionScore: number;
   recommendationVector: Float32Array;
   contextEmbedding: Float32Array;
 }
-export interface CacheEntry {
-  id: string;
-  dimensionalArray: DimensionalArray;
+export interface CacheEntry { id: string;, dimensionalArray: DimensionalArray;
   ttl: number;
   priority: 'high' | 'medium' | 'low';
-  userContext: {
-    userId: string;
-    sessionId: string;
+  userContext: { userId: string;, sessionId: string;
     behaviorPattern: string;
   };
 }
-export interface RecommendationResult {
-  similar: DimensionalArray[];
-  suggestions: string[];
+export interface RecommendationResult { similar: DimensionalArray[];, suggestions: string[];
   didYouMean: string[];
   othersSearched: string[];
 }
@@ -68,8 +56,8 @@ export class DimensionalCacheEngine {
         created: Date.now(),
         lastAccessed: Date.now(),
         computationHash: this.generateHash(flatData, shape),
-        attentionWeights: attention,
-      },
+        attentionWeights: attention
+      }
     };
     return dimensionalArray;
   }
@@ -79,7 +67,7 @@ export class DimensionalCacheEngine {
   async cacheDimensionalArray(
     key: string,
     dimensionalArray: DimensionalArray,
-    userContext: { userId: string; sessionId: string; behaviorPattern: string }
+    userContext: { userId: string; sessionId: string;, behaviorPattern: string }
   ): Promise<void> {
     if (this.cache.size >= this.maxCacheSize) {
       this.evictEntry();
@@ -89,7 +77,7 @@ export class DimensionalCacheEngine {
       dimensionalArray,
       ttl: Date.now() + this.defaultTTL,
       priority: this.calculatePriority(dimensionalArray, userContext),
-      userContext,
+      userContext
     };
     this.cache.set(key, entry);
     // Store computation history for recommendations
@@ -120,7 +108,7 @@ export class DimensionalCacheEngine {
         endIndex,
         attentionScore,
         recommendationVector,
-        contextEmbedding,
+        contextEmbedding
       });
     }
     return slices.sort((a, b) => b.attentionScore - a.attentionScore);
@@ -191,7 +179,7 @@ export class DimensionalCacheEngine {
       similar: similar.slice(0, limit),
       suggestions: suggestions.slice(0, limit),
       didYouMean: didYouMean.slice(0, limit),
-      othersSearched: othersSearched.slice(0, limit),
+      othersSearched: othersSearched.slice(0, limit)
     };
   }
   /**
@@ -268,7 +256,7 @@ export class DimensionalCacheEngine {
    */
   private calculatePriority(
     dimensionalArray: DimensionalArray,
-    userContext: { behaviorPattern: string }
+    userContext: {, behaviorPattern: string }
   ): 'high' | 'medium' | 'low' {
     const avgAttentionScore =
       dimensionalArray.kernelSplices.reduce((sum, slice) => sum + slice.attentionScore, 0) /
@@ -315,9 +303,7 @@ export class DimensionalCacheEngine {
   /**
    * Get cache statistics
    */
-  getStats(): {
-    cacheSize: number;
-    hitRate: number;
+  getStats(): { cacheSize: number;, hitRate: number;
     avgAttentionScore: number;
     totalComputations: number;
   } {
@@ -335,7 +321,7 @@ export class DimensionalCacheEngine {
       totalComputations: Array.from(this.computationHistory.values()).reduce(
         (total, computations) => total + computations.length,
         0
-      ),
+      )
     };
   }
 }

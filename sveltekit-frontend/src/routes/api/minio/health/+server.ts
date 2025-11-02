@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
     // Check bucket existence and connectivity
     const bucketExists = await minioClient.bucketExists(bucketName);
@@ -48,23 +48,22 @@ export const GET: RequestHandler = async () => {
         name: bucketName,
         exists: bucketExists,
         region,
-        objectCount: objectCount > 0 ? `${objectCount}+` : '0',
-      },
+        objectCount: objectCount > 0 ? `${objectCount}+` : '0` },
       timestamp: new Date().toISOString(),
       connectivity: {
         read: true,
         write: true, // Will be tested on actual upload
-        bucketManagement: bucketExists,
+        bucketManagement: bucketExists
       },
       features: {
         upload: true,
         download: true,
         versioning: true,
         encryption: true,
-        lifecycle: true,
-      },
+        lifecycle: true
+      }
     };
-    console.log(`🏥 MinIO Health Check: ${healthStatus.status} - Bucket exists: ${bucketExists}`);
+    console.log(`🏥 MinIO Health Check: ${healthStatus.status} - Bucket, exists: ${bucketExists}`);
     return json(healthStatus);
   } catch (error) {
     console.error('MinIO health check failed:', error);
@@ -76,8 +75,8 @@ export const GET: RequestHandler = async () => {
         connectivity: {
           read: false,
           write: false,
-          bucketManagement: false,
-        },
+          bucketManagement: false
+        }
       },
       { status: 503 }
     );

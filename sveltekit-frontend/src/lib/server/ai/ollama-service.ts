@@ -7,7 +7,7 @@ import type {
   DocumentChunk,
   LegalDocument,
   AnalysisResult,
-  UserQuery,
+  UserQuery
 } from './types.js';
 import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
 /**
@@ -49,7 +49,7 @@ class EnhancedOllamaService extends EventEmitter {
     await this.ensureModels();
     return true;
   }
-  async listModels(): Promise<{ models: Array<{ name: string }> }> {
+  async listModels(): Promise<{ models: Array<{, name: string }> }> {
     await this.ensureModels();
     return { models: this.availableModels.map(name => ({ name })) };
   }
@@ -85,7 +85,7 @@ class EnhancedOllamaService extends EventEmitter {
       }
       let models: string[] = [];
       // Accept several shapes:
-      // 1) Array of strings: ["gemma:legal", "nomic-embed-text"]
+      // 1) Array of; strings: ["gemma:legal", "nomic-embed-text"]
       // 2) Array of objects: [{ name: "gemma:legal" }, ...]
       // 3) Object with models property: { models: [...] }
       if (Array.isArray(data)) {
@@ -205,8 +205,8 @@ class EnhancedOllamaService extends EventEmitter {
       // Simple deterministic stub response
       const resp: OllamaResponse = {
         model,
-        response: `Stub response: ${prompt.slice(0, 200)}`,
-        done: true,
+        response: `Stub; response: ${prompt.slice(0, 200)}`,
+        done: true
       } as OllamaResponse;
       if (OLLAMA_CONFIG.performance?.cacheEnabled) {
         this.cache.set(cacheKey, resp);
@@ -244,10 +244,9 @@ class EnhancedOllamaService extends EventEmitter {
         dateCreated: new Date(),
         dateModified: new Date(),
         // use optional author field as a minimal DOM marker (avoids unknown extra properties)
-        author: 'dom',
-      },
+        author: `dom` },
       // ensure chunks has the expected type
-      chunks: [] as DocumentChunk[],
+      chunks: [] as DocumentChunk[]
     } as LegalDocument;
   }
   // Accept either a DOM Document or a LegalDocument
@@ -259,11 +258,11 @@ class EnhancedOllamaService extends EventEmitter {
       {
         summary: 'Stub legal analysis summary',
         keyPoints: ['Key point 1', 'Key point 2'],
-        entities: { people: [], organizations: [], dates: [], locations: [], legalConcepts: [] },
+        entities: {, people: [], organizations: [], dates: [], locations: [], legalConcepts: [] },
         sentiment: 'neutral',
         riskFactors: [],
         recommendations: [],
-        citations: [],
+        citations: []
       },
       model
     );
@@ -294,13 +293,13 @@ class EnhancedOllamaService extends EventEmitter {
         organizations: [],
         dates: [],
         locations: [],
-        legalConcepts: [],
+        legalConcepts: []
       },
       sentiment: analysis.sentiment || 'neutral',
       riskFactors: analysis.riskFactors || [],
       recommendations: analysis.recommendations || [],
       citations: analysis.citations || [],
-      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() },
+      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() }
     } as AnalysisResult;
   }
   async getSystemStatus() {
@@ -323,8 +322,8 @@ class EnhancedOllamaService extends EventEmitter {
       fallbackChain: {
         legal: [legalFallbackModel],
         general: this.availableModels,
-        embedding: [embeddingFallback],
-      },
+        embedding: [embeddingFallback]
+      }
     };
   }
   async healthCheck() {
@@ -334,7 +333,7 @@ class EnhancedOllamaService extends EventEmitter {
         status: available ? 'healthy' : 'unhealthy',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        details: { models: this.availableModels.length, cache: this.cache.size },
+        details: { models: this.availableModels.length, cache: this.cache.size }
       };
     } catch (err: unknown) {
       // Safely extract a string message from unknown error
@@ -350,8 +349,7 @@ class EnhancedOllamaService extends EventEmitter {
         status: 'error',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        error: message || 'unknown',
-      };
+        error: message || 'unknown` };
     }
   }
   clearCache() {
@@ -414,7 +412,7 @@ class EnhancedOllamaService extends EventEmitter {
   // Simple smart selection stub (keeps API)
   async smartModelSelection(
     query: string
-  ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
+  ): Promise<{ selectedModel: string; confidence: number;, reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
     return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };
   }
@@ -426,7 +424,7 @@ class EnhancedOllamaService extends EventEmitter {
   }
   async getEnhancedSystemStatus() {
     const base = await this.getSystemStatus();
-    return { ...base, intelligentFeatures: 'stub' };
+    return { ...base, intelligentFeatures: `stub` };
   }
 }
 // Export singleton and default class

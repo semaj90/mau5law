@@ -15,9 +15,7 @@ declare module 'lokijs' {
     throttledSaves?: boolean;
     serializationMethod?: 'normal' | 'pretty' | 'destructured';
   }
-  interface Collection<T = any> {
-    name: string;
-    data: T[];
+  interface Collection<T = any> { name: string;, data: T[];
     idIndex: number[];
     binaryIndices: { [key: string]: any };
     objType: string;
@@ -82,9 +80,7 @@ declare module 'lokijs' {
     getDynamicView(name: string): DynamicView<T> | null;
     removeDynamicView(name: string): void;
   }
-  interface Resultset<T = any> {
-    collection: Collection<T>;
-    filteredrows: number[];
+  interface Resultset<T = any> { collection: Collection<T>;, filteredrows: number[];
     filterInitialized: boolean;
     // Filtering
     find(): Resultset<T>;
@@ -120,9 +116,7 @@ declare module 'lokijs' {
     // Paging
     page(pageSize: number): T[][];
   }
-  interface DynamicView<T = any> {
-    name: string;
-    collection: Collection<T>;
+  interface DynamicView<T = any> { name: string;, collection: Collection<T>;
     persistent: boolean;
     sortPriority: 'passive' | 'active';
     minRebuildInterval: number;
@@ -161,9 +155,7 @@ declare module 'lokijs' {
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
   }
-  class LokiPartitioningAdapter implements LokiPersistenceAdapter {
-    mode: string;
-    adapter: LokiPersistenceAdapter;
+  class LokiPartitioningAdapter implements LokiPersistenceAdapter { mode: string;, adapter: LokiPersistenceAdapter;
     constructor(adapter: LokiPersistenceAdapter, options?: any);
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
@@ -174,9 +166,7 @@ declare module 'lokijs' {
     loadDatabase(dbname: string, callback: (data: any) => void): void;
     saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
   }
-  export default class Loki {
-    filename: string;
-    collections: Collection<any>[];
+  export default class Loki { filename: string;, collections: Collection<any>[];
     databaseVersion: number;
     engineVersion: number;
     autosave: boolean;

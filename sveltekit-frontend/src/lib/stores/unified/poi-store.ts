@@ -22,9 +22,7 @@ import { writable, derived } from 'svelte/store';
 export type POIRole = 'defendant' | 'plaintiff' | 'witness' | 'suspect' | 'victim' | 'associate' | 'other';
 export type RelationshipType = 'family' | 'business' | 'friendship' | 'conflict' | 'unknown';
 
-export interface PersonOfInterest {
-  id: string;
-  name: string;
+export interface PersonOfInterest { id: string;, name: string;
   role: POIRole;
   caseId: string;
   aliases?: string[];
@@ -40,9 +38,7 @@ export interface PersonOfInterest {
   updatedAt: number;
 }
 
-export interface POIRelationship {
-  id: string;
-  poiId1: string;
+export interface POIRelationship { id: string;, poiId1: string;
   poiId2: string;
   type: RelationshipType;
   strength: number; // 0-1
@@ -50,9 +46,7 @@ export interface POIRelationship {
   evidence?: string[];
 }
 
-export interface TimelineEvent {
-  id: string;
-  poiId: string;
+export interface TimelineEvent { id: string;, poiId: string;
   date: number;
   title: string;
   description: string;
@@ -60,9 +54,7 @@ export interface TimelineEvent {
   location?: string;
 }
 
-export interface POICluster {
-  id: string;
-  pois: PersonOfInterest[];
+export interface POICluster { id: string;, pois: PersonOfInterest[];
   theme: string;
   confidence: number;
 }
@@ -177,8 +169,7 @@ function createPOIStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(poiData),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -209,8 +200,7 @@ function createPOIStore() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updates),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const updated = await response.json();
@@ -333,7 +323,7 @@ function createPOIStore() {
       update(s => ({ ...s, isLoading: true }));
 
       try {
-        const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } = {
+        const state: { pois: PersonOfInterest[];, relationships: POIRelationship[] } = {
           pois: [],
           relationships: []
         };
@@ -346,8 +336,7 @@ function createPOIStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(state),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -372,8 +361,7 @@ function createPOIStore() {
     async buildTimeline(poiId: string) {
       try {
         const response = await fetch(`/api/pois/${poiId}/timeline`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -402,8 +390,7 @@ function createPOIStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(event),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -434,8 +421,7 @@ function createPOIStore() {
       try {
         const response = await fetch(`/api/pois/${poiId}/risk`, {
           method: 'POST',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();

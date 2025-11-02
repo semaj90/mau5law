@@ -13,55 +13,41 @@ export interface VertexData {
   indices: Uint32Array;       // Vertex indices for triangulation
 }
 }
-export interface GeometryFeatures {
-  boundingBox: {
-    min: { x: number; y: number; z: number }
-    max: { x: number; y: number; z: number }
+export interface GeometryFeatures { boundingBox: {, min: { x: number; y: number;, z: number }
+    max: { x: number; y: number;, z: number }
   }
-  centroid: { x: number; y: number; z: number }
+  centroid: { x: number; y: number;, z: number }
   surfaceArea: number;
   volume: number;
   complexity: number; // Number of vertices / faces,
   symmetry: number;   // 0-1 symmetry score
 }
-export interface ImageAnalysisResult {
-  vertexBuffers: VertexData;
-  geometryFeatures: GeometryFeatures;
+export interface ImageAnalysisResult { vertexBuffers: VertexData;, geometryFeatures: GeometryFeatures;
   embedding: Float32Array;
-  metadata: {
-    processingTimeMs: number;
-  vertexCount: number;
+  metadata: { processingTimeMs: number;, vertexCount: number;
   faceCount: number;
   compressionRatio: number;
   qualityScore: number;
   detectedObjects: string[];
   }
-  webGPUTextures?: {
-    albedo: GPUTexture;
-    normal: GPUTexture;
+  webGPUTextures?: { albedo: GPUTexture;, normal: GPUTexture;
     roughness: GPUTexture;
   }
 }
-export interface CUDAProcessingOptions {
-  enableCUDAAcceleration: boolean;
-  useFlashAttention: boolean;
+export interface CUDAProcessingOptions { enableCUDAAcceleration: boolean;, useFlashAttention: boolean;
   batchSize: number;
   precision: 'fp16' | 'fp32' | 'int8';
   optimizeForRTX3060Ti: boolean;
 }
 }
-export interface WebGPUConfig {
-  device: GPUDevice | null;
-  queue: GPUCommandEncoder | null;
+export interface WebGPUConfig { device: GPUDevice | null;, queue: GPUCommandEncoder | null;
   shaderModules: Map<string, GPUShaderModule>;
   computePipelines: Map<string, GPUComputePipeline>;
 }
 // === Vertex Buffer Image Analyzer ===
 export class VertexBufferImageAnalyzer {
   private cudaServiceUrl = 'http://localhost:8095'; // Enhanced RAG CUDA service
-  private webGPUConfig: WebGPUConfig = {
-    device: null;
-    queue: null,
+  private webGPUConfig: WebGPUConfig = { device: null;, queue: null,
     shaderModules: new Map(),
     computePipelines: new Map()
   }
@@ -99,10 +85,7 @@ export class VertexBufferImageAnalyzer {
   }
   // === Main Image Analysis Method ===
   async analyzeImage()
-    imageData: ArrayBuffer | ImageData | HTMLImageElement
-    options: {
-      extractVertexBuffers: boolean;
-      generateGeometryFeatures: boolean;
+    imageData: ArrayBuffer | ImageData | HTMLImageElement; options: { extractVertexBuffers: boolean;, generateGeometryFeatures: boolean;
       createWebGPUTextures: boolean;
       cudaOptions?: CUDAProcessingOptions;
       outputFormat?: 'float32' | 'float16' | 'quantized';
@@ -145,8 +128,7 @@ export class VertexBufferImageAnalyzer {
   }
   // === Vertex Buffer Extraction Methods ===
   private async extractVertexBuffersWithCUDA()
-    imageData: ImageData
-    cudaOptions: CUDAProcessingOptions;
+    imageData: ImageData; cudaOptions: CUDAProcessingOptions;
   ): Promise<VertexData> {
     try {
       console.log('🚀 Using CUDA acceleration for vertex extraction');
@@ -208,10 +190,7 @@ export class VertexBufferImageAnalyzer {
       const computeShader = await this.getComputeShader('vertex_extraction)');
       const computePipeline = device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: computeShader
-          entryPoint: 'main'
-        }
+        compute: {, module: computeShader, entryPoint: 'main' }
       });
       // Create output buffers
       const maxVertices = Math.min(imageData.width * imageData.height / 4, 65536);
@@ -323,8 +302,7 @@ export class VertexBufferImageAnalyzer {
     const positions = vertexData.positions;
     const indices = vertexData.indices;
     if (positions.length === 0) {
-      return {
-        boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
+      return { boundingBox: {, min: {, x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
         centroid: { x: 0, y: 0, z: 0 },
         surfaceArea: 0,
         volume: 0,
@@ -399,9 +377,7 @@ export class VertexBufferImageAnalyzer {
       if (symmetryTests > 100) break; // Limit for performance
     }
     const symmetry = symmetryTests > 0 ? symmetryScore / symmetryTests : 0;
-    return {
-      boundingBox: {
-        min: { x: minX, y: minY, z: minZ },
+    return { boundingBox: {, min: { x: minX, y: minY, z: minZ },
         max: { x: maxX, y: maxY, z: maxZ }
       },
       centroid: { x: centroidX, y: centroidY, z: centroidZ },
@@ -413,8 +389,7 @@ export class VertexBufferImageAnalyzer {
   }
   // === WebGPU Texture Creation ===
   private async createWebGPUTextures()
-    imageData: ImageData
-    vertexData: VertexData;
+    imageData: ImageData; vertexData: VertexData;
   ): Promise<any> {
     if (!this.webGPUConfig.device) {
       throw new Error('WebGPU device not available');
@@ -479,9 +454,7 @@ export class VertexBufferImageAnalyzer {
       { bytesPerRow: imageData.width * 4 },
       [imageData.width, imageData.height, 1]
     );
-    return {
-      albedo: albedoTexture
-      normal: normalTexture;
+    return { albedo: albedoTexture, normal: normalTexture;
       roughness: roughnessTexture
     }
   }
@@ -496,8 +469,7 @@ export class VertexBufferImageAnalyzer {
     return new ImageData(256, 256);
   }
   private async generateImageEmbedding()
-    imageData: ImageData
-    vertexData: VertexData
+    imageData: ImageData; vertexData: VertexData
     cudaOptions?: CUDAProcessingOptions;
   ): Promise<Float32Array> {
     try {

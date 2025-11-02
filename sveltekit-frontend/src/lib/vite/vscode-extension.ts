@@ -7,13 +7,9 @@ export interface VSCodeCommand {
   command: string;
   args?: any[];
 }
-export interface VSCodeAction {
-  title: string;
-  command: VSCodeCommand;
+export interface VSCodeAction { title: string;, command: VSCodeCommand;
 }
-export interface VSCodeNotification {
-  message: string;
-  type: 'error' | 'warning' | 'info';
+export interface VSCodeNotification { message: string;, type: 'error' | 'warning' | 'info';
   actions?: VSCodeAction[];
 }
 
@@ -114,13 +110,13 @@ export class VSCodeIntegration {
         actions: [
           {
             title: 'View Errors',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] },
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
           {
             title: 'Clear Log',
-            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] },
+            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
           },
-        ],
+        ]
       });
     } else if (warningCount > 0) {
       this.sendNotification({
@@ -129,9 +125,9 @@ export class VSCodeIntegration {
         actions: [
           {
             title: 'View Warnings',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] },
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
-        ],
+        ]
       });
     }
   }
@@ -181,7 +177,7 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'error',
+          severity: 'error'
         },
         {
           regexp: '^WARN\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
@@ -189,9 +185,9 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'warning',
+          severity: 'warning'
         },
-      ],
+      ]
     };
   }
 
@@ -200,46 +196,41 @@ export class VSCodeIntegration {
     return {
       'files.associations': {
         'vite-errors.json': 'json',
-        'vite-diagnostics.json': 'json',
+        'vite-diagnostics.json': 'json'
       },
       'json.schemas': [
         {
           fileMatch: ['vite-errors.json'],
           schema: {
             type: 'object',
-            properties: {
-              metadata: {
-                type: 'object',
-                properties: {
-                  lastUpdated: { type: 'string' },
+            properties: { metadata: {, type: 'object',
+                properties: { lastUpdated: {, type: 'string' },
                   totalEntries: { type: 'number' },
                   viteVersion: { type: 'string' },
-                  projectRoot: { type: 'string' },
-                },
+                  projectRoot: { type: 'string' }
+                }
               },
               errors: {
                 type: 'array',
                 items: {
                   type: 'object',
-                  properties: {
-                    timestamp: { type: 'string' },
+                  properties: { timestamp: {, type: 'string' },
                     level: { type: 'string', enum: ['error', 'warn', 'info'] },
                     message: { type: 'string' },
                     file: { type: 'string' },
                     line: { type: 'number' },
                     column: { type: 'number' },
                     stack: { type: 'string' },
-                    suggestion: { type: 'string' },
-                  },
-                },
-              },
-            },
-          },
+                    suggestion: { type: 'string' }
+                  }
+                }
+              }
+            }
+          }
         },
       ],
       'problems.decorations.enabled': true,
-      'problems.sortOrder': 'severity',
-    };
+      'problems.sortOrder': `severity` };
   }
 }
 
@@ -272,7 +263,7 @@ export class ErrorNavigator {
 
   // Open file at specific location
   private openFile(file: string, line?: number, column?: number) {
-    const location = line ? `:${line}${column ? `:${column}` : ''}` : '';
+    const location = line ? `:${line}${column ? `:${column}` : `` }` : '';
     console.log(`📂 Opening file: ${file}${location}`);
   }
 
@@ -288,7 +279,7 @@ export class ErrorNavigator {
         const errorTime = e.timestamp ? new Date(e.timestamp) : null;
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
         return errorTime ? errorTime > oneHourAgo : false;
-      }).length,
+      }).length
     };
     return summary;
   }
@@ -298,8 +289,8 @@ export class ErrorNavigator {
 export class AutoFixSuggestions {
   static getSuggestions(
     error: any
-  ): Array<{ title: string; command: string; args?: any[] }> {
-    const suggestions: Array<{ title: string; command: string; args?: any[] }> = [];
+  ): Array<{ title: string;, command: string; args?: any[] }> {
+    const suggestions: Array<{ title: string;, command: string; args?: any[] }> = [];
 
     // Replace ad-hoc any casts with a small typed extractor
     const msg = AutoFixSuggestions.extractMessage(error);
@@ -309,12 +300,12 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Install missing dependencies',
         command: 'npm install',
-        args: [],
+        args: []
       });
       suggestions.push({
         title: 'Check import paths',
         command: 'editor.action.quickFix',
-        args: [],
+        args: []
       });
     }
 
@@ -322,12 +313,12 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Run TypeScript check',
         command: 'workbench.action.tasks.runTask',
-        args: ['npm: check'],
+        args: ['npm: check']
       });
       suggestions.push({
         title: 'Generate missing types',
         command: 'typescript.generateGettersAndSetters',
-        args: [],
+        args: []
       });
     }
 
@@ -335,12 +326,12 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check Svelte syntax',
         command: 'svelte.restartLanguageServer',
-        args: [],
+        args: []
       });
       suggestions.push({
         title: 'Update to Svelte 5 patterns',
         command: 'editor.action.codeAction',
-        args: [{ kind: 'refactor.rewrite' }],
+        args: [{, kind: `refactor.rewrite` }]
       });
     }
 
@@ -348,7 +339,7 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check UnoCSS configuration',
         command: 'editor.action.formatDocument',
-        args: [],
+        args: []
       });
     }
 

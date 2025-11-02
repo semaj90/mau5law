@@ -44,9 +44,7 @@ export type UnifiedDialogProps = {
   legalContext?: {
     caseId?: string;
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
-    aiAnalysis?: {
-      riskLevel: 'low' | 'medium' | 'high';
-      confidence: number;
+    aiAnalysis?: { riskLevel: 'low' | 'medium' | 'high';, confidence: number;
       suggestions: string[];
     };
   };

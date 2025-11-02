@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Create a combined list of all embedded items, associating them with their original index.
   // This allows filtering out items with invalid embeddings while preserving a link to the original data.
-  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem; originalCombinedIndex: number }[] = [];
+  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem;, originalCombinedIndex: number }[] = [];
 
   // Process embeddedDocs
   embeddedDocs.forEach((item, index) => {
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     let snippet = '';
     let itemId: string; // To hold the guaranteed string ID
-    let itemSource: string; // To hold the source string
+    let, itemSource: string; // To hold the source string
 
     // Determine snippet, ID, and source based on item type
     if ('text' in originalSearchableItem) {

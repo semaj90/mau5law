@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -30,7 +30,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const ollamaRes = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'gemma3-legal:latest', prompt }),
+      body: JSON.stringify({, model: 'gemma3-legal:latest', prompt })
     });
 
     if (!ollamaRes.ok) {

@@ -1,9 +1,7 @@
 import type { Case } from '$lib/types';
 // CrewAI Legal Team Integration
 // Orchestrated multi-agent workflows for legal case management
-export interface CrewMember {
-  id: string;
-  name: string;
+export interface CrewMember { id: string;, name: string;
   role: string;
   goal: string;
   backstory: string;
@@ -12,9 +10,7 @@ export interface CrewMember {
   memoryEnabled: boolean;
   verboseMode: boolean;
 }
-export interface Task {
-  id: string;
-  description: string;
+export interface Task { id: string;, description: string;
   expectedOutput: string;
   assignedAgent: string;
   dependencies: string[];
@@ -22,18 +18,14 @@ export interface Task {
   estimatedDuration: number;
   context?: { [key: string]: any };
 }
-export interface CrewConfig {
-  name: string;
-  members: CrewMember[];
+export interface CrewConfig { name: string;, members: CrewMember[];
   tasks: Task[];
   process: 'sequential' | 'hierarchical' | 'consensus';
   verbose: boolean;
   memorySystem: boolean;
   maxIterations: number;
 }
-export interface WorkflowResult {
-  crewId: string;
-  workflowName: string;
+export interface WorkflowResult { crewId: string;, workflowName: string;
   status: 'completed' | 'failed' | 'partial';
   results: Array<any>;
   finalDeliverable: string;
@@ -70,7 +62,7 @@ class CrewAILegalTeam {
           tools: ['evidence_analyzer', 'database_search', 'timeline_builder'],
           maxExecutionTime: 300000, // 5 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: 'evidence_analyst',
@@ -82,7 +74,7 @@ class CrewAILegalTeam {
           tools: ['forensics_tools', 'metadata_analyzer', 'authenticity_checker'],
           maxExecutionTime: 240000, // 4 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
         {
           id: 'legal_researcher',
@@ -94,19 +86,19 @@ class CrewAILegalTeam {
           tools: ['legal_database', 'citation_checker', 'precedent_analyzer'],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
       ],
       tasks: [
         {
-          id: 'initial_case_review',
+         , id: 'initial_case_review',
           description: 'Conduct comprehensive initial case review and evidence inventory',
           expectedOutput: 'Detailed case summary with evidence catalog and initial assessment',
           assignedAgent: 'lead_investigator',
           dependencies: [],
           priority: 'critical',
           estimatedDuration: 120000,
-          context: {},
+          context: {}
         },
         {
           id: 'evidence_analysis',
@@ -116,7 +108,7 @@ class CrewAILegalTeam {
           dependencies: ['initial_case_review'],
           priority: 'high',
           estimatedDuration: 180000,
-          context: {},
+          context: {}
         },
         {
           id: 'legal_research',
@@ -126,9 +118,9 @@ class CrewAILegalTeam {
           dependencies: ['initial_case_review'],
           priority: 'high',
           estimatedDuration: 150000,
-          context: {},
+          context: {}
         },
-      ],
+      ]
     });
     // Trial Preparation Crew
     this.crews.set('trial_preparation', {
@@ -148,7 +140,7 @@ class CrewAILegalTeam {
           tools: ['strategy_planner', 'jury_analyzer', 'presentation_builder'],
           maxExecutionTime: 360000, // 6 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: 'witness_coordinator',
@@ -160,7 +152,7 @@ class CrewAILegalTeam {
           tools: ['witness_prep', 'scheduling_system', 'testimony_analyzer'],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
         {
           id: 'exhibit_specialist',
@@ -172,19 +164,19 @@ class CrewAILegalTeam {
           tools: ['exhibit_organizer', 'tech_setup', 'presentation_tools'],
           maxExecutionTime: 120000, // 2 minutes
           memoryEnabled: false,
-          verboseMode: false,
+          verboseMode: false
         },
       ],
       tasks: [
         {
-          id: 'trial_strategy',
+         , id: 'trial_strategy',
           description: 'Develop comprehensive trial strategy based on case evidence and research',
           expectedOutput: 'Detailed trial strategy document with timeline and key arguments',
           assignedAgent: 'trial_attorney',
           dependencies: [],
           priority: 'critical',
           estimatedDuration: 240000,
-          context: {},
+          context: {}
         },
         {
           id: 'witness_preparation',
@@ -194,7 +186,7 @@ class CrewAILegalTeam {
           dependencies: ['trial_strategy'],
           priority: 'high',
           estimatedDuration: 120000,
-          context: {},
+          context: {}
         },
         {
           id: 'exhibit_organization',
@@ -204,9 +196,9 @@ class CrewAILegalTeam {
           dependencies: ['trial_strategy'],
           priority: 'medium',
           estimatedDuration: 90000,
-          context: {},
+          context: {}
         },
-      ],
+      ]
     });
     // Appeal Analysis Crew
     this.crews.set('appeal_analysis', {
@@ -226,7 +218,7 @@ class CrewAILegalTeam {
           tools: ['appeal_analyzer', 'constitutional_checker', 'precedent_mapper'],
           maxExecutionTime: 300000, // 5 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: 'procedural_reviewer',
@@ -238,19 +230,19 @@ class CrewAILegalTeam {
           tools: ['procedure_checker', 'deadline_tracker', 'compliance_auditor'],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
       ],
       tasks: [
         {
-          id: 'appeal_vulnerability_analysis',
+         , id: 'appeal_vulnerability_analysis',
           description: 'Analyze case for potential appeal vulnerabilities and issues',
           expectedOutput: 'Appeal vulnerability report with risk assessment and mitigation strategies',
           assignedAgent: 'appellate_attorney',
           dependencies: [],
           priority: 'high',
           estimatedDuration: 180000,
-          context: {},
+          context: {}
         },
         {
           id: 'procedural_compliance_review',
@@ -260,9 +252,9 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: 'high',
           estimatedDuration: 120000,
-          context: {},
+          context: {}
         },
-      ],
+      ]
     });
   }
   async executeWorkflow(
@@ -282,7 +274,7 @@ class CrewAILegalTeam {
         ...result,
         crewId: workflowId,
         workflowName: crewName,
-        totalTime: Date.now() - startTime,
+        totalTime: Date.now() - startTime
       }));
       this.activeWorkflows.set(workflowId, workflowPromise);
       const result = await workflowPromise;
@@ -290,7 +282,7 @@ class CrewAILegalTeam {
       return result;
     } catch (error: any) {
       this.activeWorkflows.delete(workflowId);
-      console.error(`Workflow ${workflowId} failed:`, error);
+      console.error(`Workflow ${workflowId} failed: ', error);
       throw error;
     }
   }
@@ -330,13 +322,13 @@ class CrewAILegalTeam {
         recommendations: [...new Set(recommendations)], // Remove duplicates
       };
     } catch (error: any) {
-      console.error(`Crew workflow failed:`, error);
+      console.error(`Crew workflow failed: ', error);
       return {
         status: 'failed',
         results,
-        finalDeliverable: `Workflow failed: ${error}`,
+        finalDeliverable: `Workflow; failed: ${error}`,
         insights,
-        recommendations,
+        recommendations
       };
     }
   }
@@ -358,9 +350,9 @@ class CrewAILegalTeam {
         ...context,
         previousResults: results.map(r => ({
           taskId: r.taskId,
-          output: r.output,
+          output: r.output
         })),
-        task: task,
+        task: task
       };
       const output = await this.executeAgentTask(agent, task, taskContext);
       const executionTime = Date.now() - startTime;
@@ -369,7 +361,7 @@ class CrewAILegalTeam {
         agentId: agent.id,
         output,
         executionTime,
-        confidence: this.calculateConfidence(output, executionTime, task.estimatedDuration),
+        confidence: this.calculateConfidence(output, executionTime, task.estimatedDuration)
       });
     }
   }
@@ -389,7 +381,7 @@ class CrewAILegalTeam {
       assignedAgent: manager.id,
       dependencies: [],
       priority: 'critical',
-      estimatedDuration: 60000,
+      estimatedDuration: 60000
     };
     const workPlan = await this.executeAgentTask(manager, planningTask, context);
     // Execute subordinate tasks in parallel
@@ -405,7 +397,7 @@ class CrewAILegalTeam {
         agentId: agent.id,
         output,
         executionTime: Date.now() - startTime,
-        confidence: this.calculateConfidence(output, Date.now() - startTime, task.estimatedDuration),
+        confidence: this.calculateConfidence(output, Date.now() - startTime, task.estimatedDuration)
       };
     });
     const subordinateResults = (await Promise.all(taskPromises)).filter(r => r !== null);
@@ -418,18 +410,18 @@ class CrewAILegalTeam {
       assignedAgent: manager.id,
       dependencies: subordinateTasks.map(t => t.id),
       priority: 'critical',
-      estimatedDuration: 90000,
+      estimatedDuration: 90000
     };
     const finalReview = await this.executeAgentTask(manager, reviewTask, {
       ...context,
-      subordinateResults: subordinateResults,
+      subordinateResults: subordinateResults
     });
     results.push({
       taskId: reviewTask.id,
       agentId: manager.id,
       output: finalReview,
       executionTime: Date.now() - Date.now(),
-      confidence: 0.9,
+      confidence: 0.9
     });
   }
   private async executeConsensusTasks(
@@ -458,7 +450,7 @@ class CrewAILegalTeam {
         agentId: 'consensus',
         output: consensusOutput,
         executionTime: 0,
-        confidence: agentOutputs.reduce((sum, out) => sum + out.confidence, 0) / agentOutputs.length,
+        confidence: agentOutputs.reduce((sum, out) => sum + out.confidence, 0) / agentOutputs.length
       });
     }
   }
@@ -473,13 +465,13 @@ class CrewAILegalTeam {
           prompt,
           stream: false,
           options: {
-            temperature: 0.3,
+           , temperature: 0.3,
             num_predict: 2048,
             num_ctx: 8192,
             gpu_layers: -1, // Use GPU acceleration
-            repeat_penalty: 1.1,
-          },
-        }),
+            repeat_penalty: 1.1
+          }
+        })
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`AI request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -501,15 +493,14 @@ CONTEXT:
 ${JSON.stringify(context, null, 2)}
 AVAILABLE TOOLS: ${agent.tools.join(', ')}
 Please complete this task according to your role and expertise. Provide detailed, actionable output that meets the expected deliverable. Be thorough but concise.
-Your response:`;
+Your response: ';
   }
   private async synthesizeResults(
     crew: CrewConfig,
     results: WorkflowResult['results'],
     context: { [key: string]: any }
   ): Promise<string> {
-    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:
-CREW: ${crew.name}
+    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:; CREW: ${crew.name}
 CONTEXT: ${JSON.stringify(context, null, 2)}
 TEAM OUTPUTS:
 ${results
@@ -537,12 +528,12 @@ Final synthesis:`;
           prompt: synthesisPrompt,
           stream: false,
           options: {
-            temperature: 0.2,
+           , temperature: 0.2,
             num_predict: 3072,
             num_ctx: 16384,
-            gpu_layers: -1,
-          },
-        }),
+            gpu_layers: -1
+          }
+        })
       });
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return (data as { response?: any }).response;
@@ -600,11 +591,11 @@ Consensus output:`;
           prompt: consensusPrompt,
           stream: false,
           options: {
-            temperature: 0.25,
+           , temperature: 0.25,
             num_predict: 2048,
-            gpu_layers: -1,
-          },
-        }),
+            gpu_layers: -1
+          }
+        })
       });
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return (data as { response?: any }).response;

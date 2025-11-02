@@ -10,11 +10,11 @@ export const GET: RequestHandler = async ({ request }) => {
         protocol: 'websocket',
         status: 'upgrade_required',
         message:
-          'This route accepts WebSocket upgrade requests. Connect using a WebSocket client to the same URL; upgrades are handled by the global WS server.',
+          'This route accepts WebSocket upgrade requests. Connect using a WebSocket client to the same URL; upgrades are handled by the global WS server.'
       }),
       {
         status: 426,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -26,14 +26,13 @@ export const GET: RequestHandler = async ({ request }) => {
       protocol: 'websocket',
       status: 'ready',
       description: 'Precedent WebSocket endpoint for streaming precedent metadata and search results.',
-      example: {
-        subscribe: { action: 'subscribe', channel: 'precedents:case-123' },
-        search: { action: 'search', query: 'contract breach', topK: 5 },
-      },
+      example: { subscribe: {, action: 'subscribe', channel: 'precedents:case-123' },
+        search: {, action: 'search', query: 'contract breach', topK: 5 }
+      }
     }),
     {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     }
   );
 };

@@ -100,37 +100,33 @@ export function formatFileSize(bytes: number): string {
   return `${size} ${units[i]}`;
 }
 // Priority formatting with colors and icons
-export function formatPriority(priority: string): {
-  label: string;
-  color: string;
+export function formatPriority(priority: string): { label: string;, color: string;
   bgColor: string;
   icon: string;
 } {
-  const priorityMap = {
-    low: {
-      label: 'Low',
+  const priorityMap = { low: {, label: 'Low',
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
-      icon: '●',
+      icon: '●'
     },
     medium: {
       label: 'Medium',
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-100',
-      icon: '◐',
+      icon: '◐'
     },
     high: {
       label: 'High',
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
-      icon: '◑',
+      icon: '◑'
     },
     critical: {
       label: 'Critical',
       color: 'text-red-600',
       bgColor: 'bg-red-100',
-      icon: '●',
-    },
+      icon: '●'
+    }
   };
   return priorityMap[priority as keyof typeof priorityMap] || priorityMap.low;
 }
@@ -138,36 +134,30 @@ export function formatPriority(priority: string): {
 export function formatStatus(
   status: string,
   type: 'case' | 'evidence' | 'report' | 'citation' = 'case'
-): {
-  label: string;
-  color: string;
+): { label: string;, color: string;
   bgColor: string;
   icon: string;
 } {
   const statusMaps = {
-    case {
-      open: { label: 'Open', color: 'text-green-600', bgColor: 'bg-green-100', icon: '○' },
+    case { open: {, label: 'Open', color: 'text-green-600', bgColor: 'bg-green-100', icon: '○' },
       in_progress: { label: 'In Progress', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '◐' },
       closed: { label: 'Closed', color: 'text-gray-600', bgColor: 'bg-gray-100', icon: '●' },
-      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '□' },
+      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '□' }
     },
-    evidence: {
-      pending: { label: 'Pending', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: '⏳' },
+    evidence: { pending: {, label: 'Pending', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: '⏳' },
       in_progress: { label: 'Processing', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '⚙️' },
       completed: { label: 'Analyzed', color: 'text-green-600', bgColor: 'bg-green-100', icon: '✓' },
-      failed: { label: 'Failed', color: 'text-red-600', bgColor: 'bg-red-100', icon: '✗' },
+      failed: { label: 'Failed', color: 'text-red-600', bgColor: 'bg-red-100', icon: '✗' }
     },
-    report: {
-      draft: { label: 'Draft', color: 'text-gray-500', bgColor: 'bg-gray-100', icon: '📝' },
+    report: { draft: {, label: 'Draft', color: 'text-gray-500', bgColor: 'bg-gray-100', icon: '📝' },
       review: { label: 'Review', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: '👁️' },
       approved: { label: 'Approved', color: 'text-green-600', bgColor: 'bg-green-100', icon: '✓' },
-      published: { label: 'Published', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '📢' },
+      published: { label: 'Published', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '📢' }
     },
-    citation: {
-      relevant: { label: 'Relevant', color: 'text-green-600', bgColor: 'bg-green-100', icon: '⭐' },
+    citation: { relevant: {, label: 'Relevant', color: 'text-green-600', bgColor: 'bg-green-100', icon: '⭐' },
       referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },
-      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' },
-    },
+      archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' }
+    }
   };
   const map = statusMaps[type];
   return (
@@ -175,14 +165,12 @@ export function formatStatus(
       label: status.replace('_', ' '),
       color: 'text-gray-500',
       bgColor: 'bg-gray-100',
-      icon: '○',
+      icon: '○'
     }
   );
 }
 // Entity type formatting
-export function formatEntityType(type: string): {
-  label: string;
-  icon: string;
+export function formatEntityType(type: string): { label: string;, icon: string;
   color: string;
 } {
   const typeMap = {
@@ -195,14 +183,13 @@ export function formatEntityType(type: string): {
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
     physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
-    digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' },
+    digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
   };
   return (
     typeMap[type as keyof typeof typeMap] || {
       label: type.charAt(0).toUpperCase() + type.slice(1),
       icon: '📄',
-      color: 'text-gray-600',
-    }
+      color: `text-gray-600` }
   );
 }
 // Search highlighting
@@ -215,12 +202,10 @@ export function highlightSearchTerm(text: string, searchTerm: string): string {
 export function calculateProgress(
   completed: number,
   total: number
-): {
-  percentage: number;
-  label: string;
+): { percentage: number;, label: string;
   color: string;
 } {
-  if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' };
+  if (total === 0) return { percentage: 0, label: '0%', color: `bg-gray-200` };
   const percentage = Math.round((completed / total) * 100);
   let color = 'bg-gray-200';
   if (percentage >= 100) color = 'bg-green-500';
@@ -231,79 +216,71 @@ export function calculateProgress(
   return {
     percentage,
     label: `${percentage}%`,
-    color,
+    color
   };
 }
 // User role formatting
-export function formatUserRole(role: string): {
-  label: string;
-  color: string;
+export function formatUserRole(role: string): { label: string;, color: string;
   bgColor: string;
   icon: string;
 } {
-  const roleMap = {
-    admin: {
-      label: 'Administrator',
+  const roleMap = { admin: {, label: 'Administrator',
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
-      icon: '👑',
+      icon: '👑'
     },
     prosecutor: {
       label: 'Prosecutor',
       color: 'text-red-600',
       bgColor: 'bg-red-100',
-      icon: '⚖️',
+      icon: '⚖️'
     },
     investigator: {
       label: 'Investigator',
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
-      icon: '🔍',
+      icon: '🔍'
     },
     analyst: {
       label: 'Analyst',
       color: 'text-green-600',
       bgColor: 'bg-green-100',
-      icon: '📊',
+      icon: '📊'
     },
     viewer: {
       label: 'Viewer',
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
-      icon: '👁️',
-    },
+      icon: '👁️'
+    }
   };
   return (
     roleMap[role as keyof typeof roleMap] || {
       label: role.charAt(0).toUpperCase() + role.slice(1),
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
-      icon: '👤',
+      icon: '👤'
     }
   );
 }
 // Activity type formatting
-export function formatActivityType(type: string): {
-  label: string;
-  icon: string;
+export function formatActivityType(type: string): { label: string;, icon: string;
   color: string;
 } {
-  const activityMap = {
-    case_created: { label: 'Case Created', icon: '➕', color: 'text-green-600' },
+  const activityMap = { case_created: {, label: 'Case Created', icon: '➕', color: 'text-green-600' },
     case_updated: { label: 'Case Updated', icon: '✏️', color: 'text-blue-600' },
     evidence_added: { label: 'Evidence Added', icon: '📄', color: 'text-green-600' },
     evidence_analyzed: { label: 'Evidence Analyzed', icon: '🔍', color: 'text-purple-600' },
     report_generated: { label: 'Report Generated', icon: '📊', color: 'text-blue-600' },
     citation_added: { label: 'Citation Added', icon: '⚖️', color: 'text-amber-600' },
     ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600' },
-    system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' },
+    system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' }
   };
   return (
     activityMap[type as keyof typeof activityMap] || {
       label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
       icon: '📝',
-      color: 'text-gray-600',
-    }
+      color: `text-gray-600` }
   );
 }
 // Content preview extraction
@@ -318,7 +295,7 @@ export function extractPreview(content: string, maxLength: number = 100): string
   return truncateText(preview, {
     maxLength,
     wordBoundary: true,
-    preserveWords: true,
+    preserveWords: true
   });
 }
 // Legal jurisdiction formatting
@@ -337,8 +314,7 @@ export function formatJurisdiction(jurisdiction: string): string {
     'oh': 'Ohio',
     'ga': 'Georgia',
     'nc': 'North Carolina',
-    'mi': 'Michigan',
-  };
+    'mi': `Michigan` };
   return jurisdictionMap[jurisdiction.toLowerCase()] || jurisdiction.charAt(0).toUpperCase() + jurisdiction.slice(1);
 }
 // Array chunking for pagination

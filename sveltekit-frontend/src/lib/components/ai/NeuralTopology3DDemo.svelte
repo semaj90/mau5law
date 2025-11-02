@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   } as NeuralTopologyStatus);
   let userActions: string[] = $state(['hover_contract', 'click_evidence', 'scroll_documents', 'drag_asset']);
   let currentActionIndex: number = $state(0);
-  let isRunningDemo: boolean = $state(false);
+  let isRunningDemo: boolean = false;
   let asset3DMetrics: Asset3DMetrics = $state({
     predictedComponents: 0,
     prerenderedAnimations: 0,

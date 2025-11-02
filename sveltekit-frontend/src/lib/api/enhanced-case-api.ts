@@ -24,9 +24,7 @@ export interface CaseCreationRequest {
     sessionId?: string;
   };
 }
-export interface CaseResponse {
-  id: string;
-  caseNumber: string;
+export interface CaseResponse { id: string;, caseNumber: string;
   title: string;
   description?: string;
   priority: string;
@@ -38,18 +36,12 @@ export interface CaseResponse {
   createdAt: string;
   updatedAt: string;
 }
-export interface WorkerTriggerResponse {
-  success: boolean;
-  data: {
-    streamId: string;
-    correlationId: string;
+export interface WorkerTriggerResponse { success: boolean;, data: { streamId: string;, correlationId: string;
     triggerType: string;
     action: string;
     caseId?: string;
   };
-  metadata: {
-    timestamp: string;
-    worker: string;
+  metadata: { timestamp: string;, worker: string;
     version: string;
   };
 }
@@ -63,12 +55,12 @@ export class EnhancedCaseAPI {
       const caseResponse = await restClient.post<CaseResponse>('/cases', {
         ...data,
         metadata: {
-          createdVia: 'yorha-command-center',
+         , createdVia: 'yorha-command-center',
           formVersion: '2.0',
           workflowStep: 'case-creation',
           timestamp: new Date().toISOString(),
-          ...data.metadata,
-        },
+          ...data.metadata
+        }
       });
       if (!caseResponse.success) {
         throw new Error(caseResponse.error || 'Failed to create case');
@@ -90,7 +82,7 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        data: undefined,
+        data: undefined
       };
     }
   }
@@ -108,7 +100,7 @@ export class EnhancedCaseAPI {
         caseId,
         action: 'process',
         metadata: {
-          priority: formData.priority,
+         , priority: formData.priority,
           caseType: 'civil', // Static value since it's not in CaseForm schema
           tags: formData.tags || [],
           trigger: 'yorha-case-form',
@@ -120,9 +112,9 @@ export class EnhancedCaseAPI {
             location: 'not_specified',
             jurisdiction: 'not_specified',
             clientName: 'not_specified',
-            assignedTo: formData.assignedTo,
-          },
-        },
+            assignedTo: formData.assignedTo
+          }
+        }
       });
       if (workerResponse.success) {
         console.log('✅ Worker processing triggered successfully:', workerResponse.data);
@@ -135,7 +127,7 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        data: undefined,
+        data: undefined
       };
     }
   }
@@ -174,11 +166,11 @@ export class EnhancedCaseAPI {
     return restClient.post<CaseResponse>(`/cases/${caseId}`, {
       ...updates,
       metadata: {
-        updatedVia: 'yorha-command-center',
+       , updatedVia: 'yorha-command-center',
         workflowStep: 'case-update',
         timestamp: new Date().toISOString(),
-        ...updates.metadata,
-      },
+        ...updates.metadata
+      }
     });
   }
   /**
@@ -191,15 +183,13 @@ export class EnhancedCaseAPI {
    * Get case analytics with clustering data
    */ async getCaseAnalytics(
     params: {
-      dateRange?: { start: string; end: string };
+      dateRange?: {, start: string; end: string };
       caseType?: string[];
       priority?: string[];
       includeClusterData?: boolean;
     } = {}
   ): Promise<
-    APIResponse<{
-      daily: Array<any>;
-      weekly: Array<any>;
+    APIResponse<{ daily: Array<any>;, weekly: Array<any>;
     }>
   > {
     const searchParams = new URLSearchParams();
@@ -226,16 +216,14 @@ export class EnhancedCaseAPI {
     k?: number;
     includeEmbeddings?: boolean;
   }): Promise<
-    APIResponse<{
-      clusters: Array<any>;
-      silhouetteScore: number;
+    APIResponse<{ clusters: Array<any>;, silhouetteScore: number;
       totalCases: number;
     }>
   > {
     return restClient.post('/cases/cluster', {
       ...params,
       algorithm: params.algorithm || 'kmeans',
-      k: params.k || 5,
+      k: params.k || 5
     });
   }
 }

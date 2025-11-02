@@ -33,7 +33,7 @@ export const ENHANCED_BITS_COMPONENTS = {
   Alert: () => import('./Alert.svelte'),
   FormGrid: () => import('./FormGrid.svelte'),
   AvatarDisplay: () => import('./AvatarDisplay.svelte'),
-  EditorCard: () => import('./EditorCard.svelte'),
+  EditorCard: () => import('./EditorCard.svelte')
 };
 // Dynamic component loader
 export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS): Promise<any> {
@@ -46,21 +46,18 @@ export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS)
   }
 }
 // Theme utilities
-export const ENHANCED_BITS_THEMES = {
-  legal: {
-    primary: '#1e40af',
+export const ENHANCED_BITS_THEMES = { legal: {, primary: '#1e40af',
     secondary: '#7c3aed',
     surface: '#ffffff',
     text: '#111827',
-    border: '#e5e7eb',
+    border: '#e5e7eb'
   },
   gaming: {
     primary: '#00ff41',
     secondary: '#ff0041',
     surface: '#2a2a2a',
     text: '#e0e0e0',
-    border: '#444444',
-  },
+    border: '#444444` }
 };
 export type EnhancedBitsTheme = keyof typeof ENHANCED_BITS_THEMES;
 // YoRHa Harvard Gaming Components

@@ -9,7 +9,7 @@ import { db, users, helpers } from '$lib/server/db';
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(6)
 });
 
 export const load: PageServerLoad = async () => {
@@ -45,18 +45,18 @@ export const actions: Actions = {
         return fail(400, {
           form: {
             ...form,
-            errors: { email: [errorMessage] },
-          },
+            errors: {, email: [errorMessage] }
+          }
         });
       }
       return fail(500, {
         form: {
           ...form,
-          errors: { email: ['An error occurred during login. Please try again.'] },
-        },
+          errors: {, email: ['An error occurred during login. Please try again.'] }
+        }
       });
     }
     // Redirect to dashboard or intended page
     throw redirect(302, '/dashboard');
-  },
+  }
 };

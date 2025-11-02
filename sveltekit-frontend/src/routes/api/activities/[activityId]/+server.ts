@@ -63,9 +63,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
 
-    type UpdateData = Partial<{
-      title: string | null;
-      description: string | null;
+    type UpdateData = Partial<{ title: string | null;, description: string | null;
       activityType: string | null;
       scheduledFor: Date | null;
       completedAt: Date | null;
@@ -79,7 +77,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     }>;
 
     const updateData: UpdateData = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Helpers
@@ -202,7 +200,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Handle specific patch operations
     if (data.operation === 'complete') {

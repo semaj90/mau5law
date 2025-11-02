@@ -9,25 +9,17 @@ import { langChainService } from '../ai/langchain-ollama-service.js';
 import { ollamaService } from '../services/ollama-service.js';
 import { multiLayerCache } from '../services/multiLayerCache.js';
 }
-export interface DocumentProcessingJob {
-  documentId: string;
-  content: string;
+export interface DocumentProcessingJob { documentId: string;, content: string;
   options: any;
   metadata: any;
 }
-export interface EmbeddingGenerationJob {
-  documentId: string;
-  chunks: any[];
+export interface EmbeddingGenerationJob { documentId: string;, chunks: any[];
 }
-export interface AIAnalysisJob {
-  documentId: string;
-  content: string;
+export interface AIAnalysisJob { documentId: string;, content: string;
   type: string;
 }
 // Types for the state machine
-export interface EvidenceProcessingContext {
-  evidenceId: string;
-  caseId: string;
+export interface EvidenceProcessingContext { evidenceId: string;, caseId: string;
   userId: string;
   filename: string;
   content: string;
@@ -36,9 +28,7 @@ export interface EvidenceProcessingContext {
   extractedText?: string;
   chunks?: Array<any>;
   embeddings?: number[][];
-  analysis?: {
-    summary: string;
-    entities: any[];
+  analysis?: { summary: string;, entities: any[];
     sentiment: string;
     classification: string;
     riskAssessment?: string;
@@ -61,9 +51,7 @@ export interface EvidenceProcessingContext {
   processingTimes: Record<string, number>;
 }
 export type EvidenceProcessingEvent =;
-  | {
-      type: "START_PROCESSING";
-      evidenceId: string;
+  | { type: "START_PROCESSING";, evidenceId: string;
       caseId: string;
       userId: string;
       filename: string;
@@ -73,13 +61,13 @@ export type EvidenceProcessingEvent =;
   | { type: "RETRY" }
   | { type: "CANCEL" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS"; progress: numbe,r; stage: string }
+  | { type: "UPDATE_PROGRESS";, progress: numbe,r; stage: string }
   | { type: "PROCESSING_COMPLETE" }
-  | { type: "PROCESSING_FAILED"; error: string }
+  | { type: "PROCESSING_FAILED";, error: string }
   | { type: "EMBEDDING_COMPLETE" }
-  | { type: "EMBEDDING_FAILED"; error: string }
+  | { type: "EMBEDDING_FAILED";, error: string }
   | { type: "ANALYSIS_COMPLETE" }
-  | { type: "ANALYSIS_FAILED"; error: string }
+  | { type: "ANALYSIS_FAILED";, error: string }
 // Service implementations
 const documentProcessingService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(
@@ -92,10 +80,10 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
       options: {
         extractText: true,
         generateEmbeddings: true,
-        performAnalysis: true,
+        performAnalysis: true
       },
       metadata: {
-        userId: input.userId,
+       , userId: input.userId,
         caseId: input.caseId,
         filename: input.filename,
         ...input.metadata
@@ -146,7 +134,7 @@ const embeddingGenerationService = fromPromise(async ({ input }: { input: Eviden
       type: "embedding",
       userId: input.userId,
       persistent: true;
-      ttl: 86400, // 24 hours
+     , ttl: 86400, // 24 hours
     });
     return result;
   }
@@ -166,10 +154,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
       const langchainResult = await langChainService.summarizeDocument(
         input.evidenceId,
         input.content);
-        {
-          extractEntities: true
-          riskAssessment: true
-          generateRecommendations: true
+        { extractEntities: true, riskAssessment: true; generateRecommendations: true
         }
       );
       riskAssessment = langchainResult.riskAssessment;
@@ -193,7 +178,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
       type: "document",
       userId: input.userId,
       persistent: true;
-      ttl: 43200, // 12 hours
+     , ttl: 43200, // 12 hours
     });
     return analysis;
   }
@@ -267,11 +252,7 @@ export const evidenceProcessingMachine = createMachine();
       stageStartTime,: 0,
       processingTimes,: { [ke,y: strin,g]: any }
     },
-    states: {
-      idle: {
-        on: {
-          START_PROCESSING: {
-            target: "initializing",
+    states: { idle: {, on: { START_PROCESSING: {, target: "initializing",
             actions,: assign({
               evidenceId: ({ event }) => event.evidenceId,
               caseId: ({ event }) => event.caseId,
@@ -289,9 +270,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         }
       },
-      initializing: {
-        always: {
-          target: "documentProcessing",
+      initializing: { always: {, target: "documentProcessing",
           actions,: assign({
             stage: "document-processing",
             stageStartTime: Date.now(),
@@ -299,10 +278,7 @@ export const evidenceProcessingMachine = createMachine();
           })
         }
       },
-      documentProcessing: {
-        invoke: {
-          src: documentProcessingService
-          input: ({ context }) => context,
+      documentProcessing: { invoke: {, src: documentProcessingService; input: ({ context }) => context,
           onDone,: {
             target: "embeddingGeneration",
             actions,: assign({
@@ -334,10 +310,7 @@ export const evidenceProcessingMachine = createMachine();
           CANCEL: "cancelled"
         }
       },
-      embeddingGeneration: {
-        invoke: {
-          src: embeddingGenerationService
-          input: ({ context }) => context,
+      embeddingGeneration: { invoke: {, src: embeddingGenerationService; input: ({ context }) => context,
           onDone,: {
             target: "aiAnalysis",
             actions,: assign({
@@ -369,10 +342,7 @@ export const evidenceProcessingMachine = createMachine();
           CANCEL: "cancelled"
         }
       },
-      aiAnalysis: {
-        invoke: {
-          src: aiAnalysisService
-          input: ({ context }) => context,
+      aiAnalysis: { invoke: {, src: aiAnalysisService; input: ({ context }) => context,
           onDone,: {
             target: "cachingResults",
             actions,: assign({
@@ -401,10 +371,7 @@ export const evidenceProcessingMachine = createMachine();
           CANCEL: "cancelled"
         }
       },
-      cachingResults: {
-        invoke: {
-          src: cacheResultsService
-          input: ({ context }) => context,
+      cachingResults: { invoke: {, src: cacheResultsService; input: ({ context }) => context,
           onDone,: {
             target: "completed",
             actions,: assign({
@@ -436,9 +403,7 @@ export const evidenceProcessingMachine = createMachine();
           console.log("Evidence processing completed successfully");
         }
       },
-      error: {
-        on: {
-          RETRY: [
+      error: { on: {, RETRY: [
             {
               target: "documentProcessing",
               guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -479,9 +444,7 @@ export const evidenceProcessingMachine = createMachine();
       canRetry: ({ context }) => context.retryCount < context.maxRetries
     },
     // Actions
-    actions: {
-      updateProgress: assign({
-        progress: ({ event }) => (event as any).progress,
+    actions: { updateProgress: assign({, progress: ({ event }) => (event as any).progress,
         stage: ({ event }) => (event as any).stage
       })
     }

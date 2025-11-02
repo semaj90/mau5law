@@ -10,9 +10,7 @@ export interface EnhancedUploadContext {
   totalChunks: number;
   progress: number;
   error?: string;
-  metadata?: {
-    filename: string;
-    fileSize: number;
+  metadata?: { filename: string;, fileSize: number;
     contentType: string;
     expiresAt: Date;
     documentType?: 'legal_brief' | 'evidence' | 'contract' | 'deposition' | 'other';
@@ -65,34 +63,32 @@ export interface EnhancedUploadContext {
 }
 // Enhanced Event types with OCR and AI processing
 type EnhancedUploadEvent =
-  | { type: 'UPLOAD_FILES'; files: File[]; caseId: string; documentType?: string }
-  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[]; metadata: any }
-  | { type: 'PRESIGN_FAILED'; error: string }
-  | { type: 'CHUNK_UPLOADED'; chunkIndex: number }
+  | { type: 'UPLOAD_FILES'; files: File[];, caseId: string; documentType?: string }
+  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[];, metadata: any }
+  | { type: 'PRESIGN_FAILED';, error: string }
+  | { type: 'CHUNK_UPLOADED';, chunkIndex: number }
   | { type: 'UPLOAD_COMPLETE' }
-  | { type: 'UPLOAD_FAILED'; error: string }
-  | { type: 'OCR_STARTED'; jobId: string }
-  | { type: 'OCR_PROGRESS'; progress: number }
-  | { type: 'OCR_COMPLETE'; result: any }
-  | { type: 'OCR_FAILED'; error: string }
-  | { type: 'PROCESSING_STARTED'; stage: string; jobId: string }
-  | { type: 'PROCESSING_PROGRESS'; stage: string; progress: number }
-  | { type: 'PROCESSING_COMPLETE'; stage: string; result: any }
-  | { type: 'PROCESSING_FAILED'; stage: string; error: string }
-  | { type: 'AI_ANALYSIS_COMPLETE'; analysis: string; confidence: number }
-  | { type: 'NEO4J_STORED'; nodeId: string }
-  | { type: 'RAG_INDEXED'; documentId: string }
-  | { type: 'RABBITMQ_QUEUED'; messageId: string }
-  | { type: 'INDEXING_COMPLETE'; result: any }
+  | { type: 'UPLOAD_FAILED';, error: string }
+  | { type: 'OCR_STARTED';, jobId: string }
+  | { type: 'OCR_PROGRESS';, progress: number }
+  | { type: 'OCR_COMPLETE';, result: any }
+  | { type: 'OCR_FAILED';, error: string }
+  | { type: 'PROCESSING_STARTED'; stage: string;, jobId: string }
+  | { type: 'PROCESSING_PROGRESS'; stage: string;, progress: number }
+  | { type: 'PROCESSING_COMPLETE'; stage: string;, result: any }
+  | { type: 'PROCESSING_FAILED'; stage: string;, error: string }
+  | { type: 'AI_ANALYSIS_COMPLETE'; analysis: string;, confidence: number }
+  | { type: 'NEO4J_STORED';, nodeId: string }
+  | { type: 'RAG_INDEXED';, documentId: string }
+  | { type: 'RABBITMQ_QUEUED';, messageId: string }
+  | { type: 'INDEXING_COMPLETE';, result: any }
   | { type: 'RETRY' }
   | { type: 'RESET' };
 // Enhanced Upload and processing state machine with comprehensive legal AI pipeline
 export const enhancedUploadMachine = createMachine(
   {
     id: 'enhanced-upload',
-    types: {} as {
-      context: EnhancedUploadContext;
-      events: EnhancedUploadEvent;
+    types: {} as { context: EnhancedUploadContext;, events: EnhancedUploadEvent;
     },
     initial: 'idle',
     context: {
@@ -106,17 +102,13 @@ export const enhancedUploadMachine = createMachine(
       results: {},
       rabbitMQ: {},
       aiAssistant: {
-        activeModel: 'gemma3:legal-latest',
+        activeModel: 'gemma3:legal-latest'
       },
-      database: {},
+      database: {}
     },
-    states: {
-      idle: {
-        on: {
-          UPLOAD_FILES: {
-            target: 'requesting_presign',
+    states: { idle: {, on: { UPLOAD_FILES: {, target: 'requesting_presign',
             actions: assign({
-              files: ({ event }) => event.files,
+             , files: ({ event }) => event.files,
               caseId: ({ event }) => event.caseId,
               progress: 0,
               error: undefined,
@@ -125,19 +117,17 @@ export const enhancedUploadMachine = createMachine(
                 fileSize: event.files[0]?.size || 0,
                 contentType: event.files[0]?.type || '',
                 expiresAt: new Date(Date.now() + 3600000),
-                documentType: (event.documentType as any) || 'other',
-              }),
-            }),
-          },
-        },
+                documentType: (event.documentType as any) || 'other'
+              })
+            })
+          }
+        }
       },
-      requesting_presign: {
-        invoke: {
-          id: 'requestPresign',
+      requesting_presign: { invoke: {, id: 'requestPresign',
           src: 'requestPresignedUrls',
           input: ({ context }) => ({
             files: context.files,
-            caseId: context.caseId,
+            caseId: context.caseId
           }),
           onDone: {
             target: 'uploading',
@@ -145,59 +135,53 @@ export const enhancedUploadMachine = createMachine(
               uploadId: ({ event }) => event.output.uploadId,
               presignedUrls: ({ event }) => event.output.presignedUrls,
               metadata: ({ event }) => event.output.metadata,
-              totalChunks: ({ event }) => event.output.presignedUrls.length,
-            }),
+              totalChunks: ({ event }) => event.output.presignedUrls.length
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
-            }),
-          },
-        },
+              error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
+            })
+          }
+        }
       },
-      uploading: {
-        invoke: {
-          id: 'uploadChunks',
+      uploading: { invoke: {, id: 'uploadChunks',
           src: 'uploadFileChunks',
           input: ({ context }) => ({
             files: context.files,
             presignedUrls: context.presignedUrls,
-            uploadId: context.uploadId,
+            uploadId: context.uploadId
           }),
           onDone: {
             target: 'processing',
             actions: assign({
-              progress: 100,
-            }),
+              progress: 100
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
-            }),
-          },
+              error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
+            })
+          }
         },
-        on: {
-          CHUNK_UPLOADED: {
-            actions: assign({
+        on: { CHUNK_UPLOADED: {, actions: assign({
               uploadedChunks: ({ context }) => context.uploadedChunks + 1,
-              progress: ({ context }) => Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100),
-            }),
-          },
-        },
+              progress: ({ context }) => Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100)
+            })
+          }
+        }
       },
       processing: {
         initial: 'rabbitmq_queue',
-        states: {
-          rabbitmq_queue: {
-            invoke: {
+        states: { rabbitmq_queue: {, invoke: {
               id: 'queueProcessing',
               src: 'queueInRabbitMQ',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 caseId: context.caseId,
-                metadata: context.metadata,
+                metadata: context.metadata
               }),
               onDone: {
                 target: 'ocr_extraction',
@@ -206,130 +190,115 @@ export const enhancedUploadMachine = createMachine(
                     ...context.rabbitMQ,
                     messageIds: event.output.messageIds,
                     queueName: event.output.queueName,
-                    processingStatus: 'queued',
-                  }),
-                }),
+                    processingStatus: 'queued'
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `RabbitMQ queue failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `RabbitMQ queue failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          ocr_extraction: {
-            invoke: {
-              id: 'ocrProcessing',
+          ocr_extraction: { invoke: {, id: 'ocrProcessing',
               src: 'performOCR',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 files: context.files,
-                metadata: context.metadata,
+                metadata: context.metadata
               }),
               onDone: {
                 target: 'text_extraction',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    ocr: event.output.jobId,
+                    ocr: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
                     ocrText: event.output.ocrText,
                     ocrConfidence: event.output.confidence,
-                    ocrBoundingBoxes: event.output.boundingBoxes,
-                  }),
-                }),
+                    ocrBoundingBoxes: event.output.boundingBoxes
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `OCR failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
+                  error: ({ event }) => `OCR failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
             },
-            on: {
-              OCR_PROGRESS: {
-                actions: assign({
-                  progress: ({ event }) => event.progress,
-                }),
-              },
-            },
+            on: { OCR_PROGRESS: {, actions: assign({
+                  progress: ({ event }) => event.progress
+                })
+              }
+            }
           },
-          text_extraction: {
-            invoke: {
-              id: 'documentExtraction',
+          text_extraction: { invoke: {, id: 'documentExtraction',
               src: 'startDocumentExtraction',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 caseId: context.caseId,
                 metadata: context.metadata,
-                ocrText: context.results.ocrText,
+                ocrText: context.results.ocrText
               }),
               onDone: {
                 target: 'gemma3_embedding',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    extraction: event.output.jobId,
+                    extraction: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
-                    extractedText: event.output.extractedText,
-                  }),
-                }),
+                    extractedText: event.output.extractedText
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }' })
+              }
+            }
           },
-          gemma3_embedding: {
-            invoke: {
-              id: 'gemma3EmbeddingGeneration',
+          gemma3_embedding: { invoke: {, id: 'gemma3EmbeddingGeneration',
               src: 'generateGemma3Embeddings',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 extractedText: context.results.extractedText,
                 ocrText: context.results.ocrText,
-                model: 'embeddinggemma:latest',
-              }),
+                model: `embeddinggemma:latest` }),
               onDone: {
                 target: 'ai_analysis',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    embedding: event.output.jobId,
+                    embedding: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
                     embeddings: event.output.embeddings,
-                    gemma3Embeddings: event.output.gemma3Embeddings,
-                  }),
-                }),
+                    gemma3Embeddings: event.output.gemma3Embeddings
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Gemma3 embedding failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `Gemma3 embedding failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          ai_analysis: {
-            invoke: {
-              id: 'aiAnalysis',
+          ai_analysis: { invoke: {, id: 'aiAnalysis',
               src: 'performAIAnalysis',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 extractedText: context.results.extractedText,
                 ocrText: context.results.ocrText,
                 embeddings: context.results.gemma3Embeddings,
-                model: context.aiAssistant.activeModel,
+                model: context.aiAssistant.activeModel
               }),
               onDone: {
                 target: 'neo4j_storage',
@@ -338,21 +307,18 @@ export const enhancedUploadMachine = createMachine(
                     ...context.aiAssistant,
                     analysis: event.output.analysis,
                     confidence: event.output.confidence,
-                    recommendations: event.output.recommendations,
-                  }),
-                }),
+                    recommendations: event.output.recommendations
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `AI analysis failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `AI analysis failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          neo4j_storage: {
-            invoke: {
-              id: 'neo4jStorage',
+          neo4j_storage: { invoke: {, id: 'neo4jStorage',
               src: 'storeInNeo4j',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
@@ -360,37 +326,34 @@ export const enhancedUploadMachine = createMachine(
                 extractedText: context.results.extractedText,
                 ocrText: context.results.ocrText,
                 aiAnalysis: context.aiAssistant.analysis,
-                metadata: context.metadata,
+                metadata: context.metadata
               }),
               onDone: {
                 target: 'postgresql_storage',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    neo4j: event.output.jobId,
+                    neo4j: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
                     neo4jNodes: event.output.nodeIds,
-                    neo4jRelationships: event.output.relationships,
+                    neo4jRelationships: event.output.relationships
                   }),
                   database: ({ context, event }) => ({
                     ...context.database,
-                    neo4jNodeId: event.output.mainNodeId,
-                  }),
-                }),
+                    neo4jNodeId: event.output.mainNodeId
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Neo4j storage failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `Neo4j storage failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          postgresql_storage: {
-            invoke: {
-              id: 'postgresqlStorage',
+          postgresql_storage: { invoke: {, id: 'postgresqlStorage',
               src: 'storeInPostgreSQL',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
@@ -399,60 +362,54 @@ export const enhancedUploadMachine = createMachine(
                 ocrText: context.results.ocrText,
                 embeddings: context.results.gemma3Embeddings,
                 metadata: context.metadata,
-                neo4jNodeId: context.database.neo4jNodeId,
+                neo4jNodeId: context.database.neo4jNodeId
               }),
               onDone: {
                 target: 'pgvector_indexing',
                 actions: assign({
                   database: ({ context, event }) => ({
                     ...context.database,
-                    postgresqlId: event.output.documentId,
-                  }),
-                }),
+                    postgresqlId: event.output.documentId
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
                   error: ({ event }) =>
-                    `PostgreSQL storage failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                    `PostgreSQL storage failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          pgvector_indexing: {
-            invoke: {
-              id: 'pgvectorIndexing',
+          pgvector_indexing: { invoke: {, id: 'pgvectorIndexing',
               src: 'indexInPgVector',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
                 embeddings: context.results.gemma3Embeddings,
                 postgresqlId: context.database.postgresqlId,
-                metadata: context.metadata,
+                metadata: context.metadata
               }),
               onDone: {
                 target: 'rag_integration',
                 actions: assign({
                   results: ({ context, event }) => ({
                     ...context.results,
-                    pgvectorId: event.output.vectorId,
+                    pgvectorId: event.output.vectorId
                   }),
                   database: ({ context, event }) => ({
                     ...context.database,
-                    pgvectorIndex: event.output.indexId,
-                  }),
-                }),
+                    pgvectorIndex: event.output.indexId
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `pgvector indexing failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `pgvector indexing failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          rag_integration: {
-            invoke: {
-              id: 'ragIntegration',
+          rag_integration: { invoke: {, id: 'ragIntegration',
               src: 'integrateWithRAG',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
@@ -460,81 +417,75 @@ export const enhancedUploadMachine = createMachine(
                 ocrText: context.results.ocrText,
                 embeddings: context.results.gemma3Embeddings,
                 pgvectorId: context.results.pgvectorId,
-                aiAnalysis: context.aiAssistant.analysis,
+                aiAnalysis: context.aiAssistant.analysis
               }),
               onDone: {
                 target: 'tensor_processing',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    rag: event.output.jobId,
+                    rag: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
                     ragSummary: event.output.summary,
-                    ragKeyPoints: event.output.keyPoints,
+                    ragKeyPoints: event.output.keyPoints
                   }),
                   database: ({ context, event }) => ({
                     ...context.database,
-                    ragDocumentId: event.output.documentId,
-                  }),
-                }),
+                    ragDocumentId: event.output.documentId
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `RAG integration failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `RAG integration failed: ${(event.error as any)?.message || 'Unknown error` }` })
+              }
+            }
           },
-          tensor_processing: {
-            invoke: {
-              id: 'tensorProcessing',
+          tensor_processing: { invoke: {, id: 'tensorProcessing',
               src: 'processTensorData',
               input: ({ context }) => ({
                 uploadId: context.uploadId,
-                embeddings: context.results.gemma3Embeddings,
+                embeddings: context.results.gemma3Embeddings
               }),
               onDone: {
                 target: 'complete',
                 actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
-                    tensor: event.output.jobId,
+                    tensor: event.output.jobId
                   }),
                   results: ({ context, event }) => ({
                     ...context.results,
                     tensorProcessing: event.output.result,
-                    indexingComplete: true,
-                  }),
-                }),
+                    indexingComplete: true
+                  })
+                })
               },
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error'}`,
-                }),
-              },
-            },
+                  error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error` }' })
+              }
+            }
           },
           complete: {
-            type: 'final',
-          },
+            type: 'final'
+          }
         },
         onDone: {
-          target: 'completed',
-        },
+          target: 'completed'
+        }
       },
       completed: {
         type: 'final',
         entry: () => {
           console.log('🎉 Enhanced upload and AI processing completed successfully!');
-        },
+        }
       },
-      error: {
-        on: {
-          RETRY: {
+      error: { on: {, RETRY: {
             target: 'idle',
             actions: assign({
               error: undefined,
@@ -543,9 +494,9 @@ export const enhancedUploadMachine = createMachine(
               jobIds: {},
               results: {},
               rabbitMQ: {},
-              aiAssistant: { activeModel: 'gemma3:legal-latest' },
-              database: {},
-            }),
+              aiAssistant: {, activeModel: 'gemma3:legal-latest' },
+              database: {}
+            })
           },
           RESET: {
             target: 'idle',
@@ -561,20 +512,20 @@ export const enhancedUploadMachine = createMachine(
               jobIds: {},
               results: {},
               rabbitMQ: {},
-              aiAssistant: { activeModel: 'gemma3:legal-latest' },
-              database: {},
-            }),
-          },
-        },
-      },
-    },
+              aiAssistant: {, activeModel: 'gemma3:legal-latest' },
+              database: {}
+            })
+          }
+        }
+      }
+    }
   },
   {
     actors: {
       // Enhanced actors with comprehensive legal AI pipeline
       // RabbitMQ queue integration
       queueInRabbitMQ: fromPromise(
-        async ({ input }: { input: { uploadId: string; caseId: string; metadata: any } }) => {
+        async ({ input }: { input: { uploadId: string; caseId: string;, metadata: any } }) => {
           const { uploadId, caseId, metadata } = input;
           const response = await fetch('/api/queue/rabbitmq', {
             method: 'POST',
@@ -584,9 +535,8 @@ export const enhancedUploadMachine = createMachine(
               caseId,
               metadata,
               queueName: 'legal-document-processing',
-              routingKey: `legal.document.${metadata?.documentType || 'general'}`,
-              priority: metadata?.documentType === 'evidence' ? 'high' : 'normal',
-            }),
+              routingKey: 'legal.document.${metadata?.documentType || 'general` }`,
+              priority: metadata?.documentType === 'evidence' ? 'high' : `normal` })
           });
           if (!response.ok) {
             throw new Error(`RabbitMQ queue failed: ${response.statusText}`);
@@ -595,7 +545,7 @@ export const enhancedUploadMachine = createMachine(
         }
       ),
       // OCR processing with Tesseract/paddleOCR
-      performOCR: fromPromise(async ({ input }: { input: { uploadId: string; files: File[]; metadata: any } }) => {
+      performOCR: fromPromise(async ({ input }: { input: { uploadId: string; files: File[];, metadata: any } }) => {
         const { uploadId, files, metadata } = input;
         const formData = new FormData();
         formData.append('file', files[0]);
@@ -605,7 +555,7 @@ export const enhancedUploadMachine = createMachine(
         formData.append('confidenceThreshold', '0.8');
         const response = await fetch('/api/processing/ocr', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
         if (!response.ok) {
           throw new Error(`OCR failed: ${response.statusText}`);
@@ -614,11 +564,11 @@ export const enhancedUploadMachine = createMachine(
       }),
       // Enhanced document extraction combining OCR + traditional methods
       startDocumentExtraction: fromPromise(
-        async ({ input }: { input: { uploadId: string; caseId: string; metadata: any; ocrText?: string } }) => {
+        async ({ input }: { input: { uploadId: string; caseId: string;, metadata: any; ocrText?: string } }) => {
           const { uploadId, caseId, metadata, ocrText } = input;
           const response = await fetch('/api/processing/extract', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               caseId,
@@ -626,8 +576,8 @@ export const enhancedUploadMachine = createMachine(
               contentType: metadata.contentType,
               ocrText, // Include OCR results for hybrid extraction
               extractionMethod: 'hybrid', // OCR + PDF text + image analysis
-              documentType: metadata.documentType,
-            }),
+              documentType: metadata.documentType
+            })
           });
           if (!response.ok) {
             throw new Error(`Extraction failed: ${response.statusText}`);
@@ -637,22 +587,21 @@ export const enhancedUploadMachine = createMachine(
       ),
       // Gemma3 embedding generation with legal optimization
       generateGemma3Embeddings: fromPromise(
-        async ({ input }: { input: { uploadId: string; extractedText: string; ocrText?: string; model: string } }) => {
+        async ({ input }: { input: { uploadId: string; extractedText: string; ocrText?: string;, model: string } }) => {
           const { uploadId, extractedText, ocrText, model } = input;
           // Combine extracted text and OCR text for comprehensive embedding
           const combinedText = [extractedText, ocrText].filter(Boolean).join('\n\n');
           const response = await fetch('/api/processing/embed', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               text: combinedText,
-              model: model, // embeddinggemma: latest
-              chunkSize: 512, // Optimal for legal documents;
+              model: model, // embeddinggemma: latest; chunkSize: 512, // Optimal for legal documents;
               overlap: 50,
               normalizeEmbeddings: true,
-              includeMetadata: true,
-            }),
+              includeMetadata: true
+            })
           });
           if (!response.ok) {
             throw new Error(`Gemma3 embedding failed: ${response.statusText}`);
@@ -663,20 +612,18 @@ export const enhancedUploadMachine = createMachine(
       // AI analysis with Gemma3 legal model
       performAIAnalysis: fromPromise(
         async ({
-          input,
-        }: {
-          input: {
-            uploadId: string;
+          input
+        }: { input: {, uploadId: string;
             extractedText: string;
             ocrText?: string;
             embeddings: number[][];
-            model: string;
+           , model: string;
           };
         }) => {
           const { uploadId, extractedText, ocrText, embeddings, model } = input;
           const response = await fetch('/api/ai/analyze', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               text: extractedText,
@@ -686,8 +633,8 @@ export const enhancedUploadMachine = createMachine(
               analysisType: 'comprehensive',
               includeRisks: true,
               includeCitations: true,
-              includeRecommendations: true,
-            }),
+              includeRecommendations: true
+            })
           });
           if (!response.ok) {
             throw new Error(`AI analysis failed: ${response.statusText}`);
@@ -698,35 +645,33 @@ export const enhancedUploadMachine = createMachine(
       // Neo4j graph storage for legal relationships
       storeInNeo4j: fromPromise(
         async ({
-          input,
-        }: {
-          input: {
-            uploadId: string;
+          input
+        }: { input: {, uploadId: string;
             caseId: string;
             extractedText: string;
             ocrText?: string;
             aiAnalysis: string;
-            metadata: any;
+           , metadata: any;
           };
         }) => {
           const { uploadId, caseId, extractedText, ocrText, aiAnalysis, metadata } = input;
           const response = await fetch('/api/graph/neo4j/store', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               caseId,
               documentData: {
-                text: extractedText,
+               , text: extractedText,
                 ocrText,
                 aiAnalysis,
-                metadata,
+                metadata
               },
               graphType: 'legal_document',
               extractEntities: true,
               createRelationships: true,
-              indexProperties: ['caseId', 'documentType', 'filename'],
-            }),
+              indexProperties: ['caseId', 'documentType', 'filename']
+            })
           });
           if (!response.ok) {
             throw new Error(`Neo4j storage failed: ${response.statusText}`);
@@ -737,22 +682,20 @@ export const enhancedUploadMachine = createMachine(
       // PostgreSQL storage with JSONB optimization
       storeInPostgreSQL: fromPromise(
         async ({
-          input,
-        }: {
-          input: {
-            uploadId: string;
+          input
+        }: { input: {, uploadId: string;
             caseId: string;
             extractedText: string;
             ocrText?: string;
             embeddings: number[][];
-            metadata: any;
+           , metadata: any;
             neo4jNodeId?: string;
           };
         }) => {
           const { uploadId, caseId, extractedText, ocrText, embeddings, metadata, neo4jNodeId } = input;
           const response = await fetch('/api/database/postgresql/store', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               caseId,
@@ -763,13 +706,13 @@ export const enhancedUploadMachine = createMachine(
                   ...metadata,
                   neo4jNodeId,
                   embeddingDimensions: embeddings?.[0]?.length || 0,
-                  processingTimestamp: new Date().toISOString(),
-                },
+                  processingTimestamp: new Date().toISOString()
+                }
               },
               tableName: 'legal_documents',
               useJSONB: true,
-              createIndexes: true,
-            }),
+              createIndexes: true
+            })
           });
           if (!response.ok) {
             throw new Error(`PostgreSQL storage failed: ${response.statusText}`);
@@ -780,19 +723,17 @@ export const enhancedUploadMachine = createMachine(
       // pgvector indexing for semantic search
       indexInPgVector: fromPromise(
         async ({
-          input,
-        }: {
-          input: {
-            uploadId: string;
+          input
+        }: { input: {, uploadId: string;
             embeddings: number[][];
             postgresqlId: string;
-            metadata: any;
+           , metadata: any;
           };
         }) => {
           const { uploadId, embeddings, postgresqlId, metadata } = input;
           const response = await fetch('/api/vector/pgvector/index', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               embeddings,
@@ -802,8 +743,8 @@ export const enhancedUploadMachine = createMachine(
               distanceMetric: 'cosine',
               dimensions: embeddings?.[0]?.length || 768,
               efConstruction: 200,
-              mLinks: 16,
-            }),
+              mLinks: 16
+            })
           });
           if (!response.ok) {
             throw new Error(`pgvector indexing failed: ${response.statusText}`);
@@ -814,39 +755,37 @@ export const enhancedUploadMachine = createMachine(
       // RAG integration for contextual retrieval
       integrateWithRAG: fromPromise(
         async ({
-          input,
-        }: {
-          input: {
-            uploadId: string;
+          input
+        }: { input: {, uploadId: string;
             extractedText: string;
             ocrText?: string;
             embeddings: number[][];
             pgvectorId: string;
-            aiAnalysis: string;
+           , aiAnalysis: string;
           };
         }) => {
           const { uploadId, extractedText, ocrText, embeddings, pgvectorId, aiAnalysis } = input;
           const response = await fetch('/api/rag/integrate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               document: {
                 text: extractedText,
                 ocrText,
-                aiAnalysis,
+                aiAnalysis
               },
               embeddings,
               pgvectorId,
               ragConfig: {
-                chunkSize: 512,
+               , chunkSize: 512,
                 overlap: 50,
                 retrievalK: 10,
                 rerankTop: 5,
                 includeMetadata: true,
-                generateSummary: true,
-              },
-            }),
+                generateSummary: true
+              }
+            })
           });
           if (!response.ok) {
             throw new Error(`RAG integration failed: ${response.statusText}`);
@@ -855,21 +794,21 @@ export const enhancedUploadMachine = createMachine(
         }
       ),
       // Reuse existing actors
-      requestPresignedUrls: fromPromise(async ({ input }: { input: { files: File[]; caseId: string } }) => {
+      requestPresignedUrls: fromPromise(async ({ input }: { input: {, files: File[]; caseId: string } }) => {
         const { files, caseId } = input;
         const file = files[0];
         const chunkSize = 10 * 1024 * 1024; // 10MB chunks
         const chunkCount = Math.ceil(file.size / chunkSize);
         const response = await fetch('/api/upload/presign', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            filename: file.name,
+           , filename: file.name,
             fileSize: file.size,
             caseId,
             contentType: file.type,
-            chunkCount,
-          }),
+            chunkCount
+          })
         });
         if (!response.ok) {
           throw new Error(`Presign failed: ${response.statusText}`);
@@ -877,7 +816,7 @@ export const enhancedUploadMachine = createMachine(
         return await response.json();
       }),
       uploadFileChunks: fromPromise(
-        async ({ input }: { input: { files: File[]; presignedUrls: string[]; uploadId: string } }) => {
+        async ({ input }: { input: { files: File[]; presignedUrls: string[];, uploadId: string } }) => {
           const { files, presignedUrls, uploadId } = input;
           const file = files[0];
           const chunkSize = 10 * 1024 * 1024;
@@ -888,9 +827,9 @@ export const enhancedUploadMachine = createMachine(
             const response = await fetch(url, {
               method: 'PUT',
               headers: {
-                'Content-Type': file.type,
+                'Content-Type': file.type
               },
-              body: chunk,
+              body: chunk
             });
             if (!response.ok) {
               throw new Error(`Chunk ${index} upload failed: ${response.statusText}`);
@@ -900,11 +839,11 @@ export const enhancedUploadMachine = createMachine(
           const etags = await Promise.all(uploadPromises);
           const completeResponse = await fetch('/api/upload/presign', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
-              etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 })),
-            }),
+              etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 }))
+            })
           });
           if (!completeResponse.ok) {
             throw new Error(`Complete upload failed: ${completeResponse.statusText}`);
@@ -912,7 +851,7 @@ export const enhancedUploadMachine = createMachine(
           return await completeResponse.json();
         }
       ),
-      processTensorData: fromPromise(async ({ input }: { input: { uploadId: string; embeddings: number[][] } }) => {
+      processTensorData: fromPromise(async ({ input }: { input: {, uploadId: string; embeddings: number[][] } }) => {
         const { uploadId, embeddings } = input;
         const tensorData = embeddings.flat();
         const batchSize = 1;
@@ -921,25 +860,24 @@ export const enhancedUploadMachine = createMachine(
         const width = height;
         const response = await fetch('https://localhost:4433/tensor/process', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             job_id: `tensor-${uploadId}`,
             upload_id: uploadId,
             tensor_tile: {
-              tile_id: `${uploadId}-main`,
+             , tile_id: `${uploadId}-main`,
               dimensions: [batchSize, depth, height, width],
               halo_size: 2,
-              data: tensorData,
+              data: tensorData
             },
-            operation: 'som_cluster',
-          }),
+            operation: `som_cluster` })
         });
         if (!response.ok) {
           throw new Error(`Tensor processing failed: ${response.statusText}`);
         }
         return await response.json();
-      }),
-    },
+      })
+    }
   }
 );
 // Types for Svelte components
@@ -956,7 +894,7 @@ function createEnhancedUploadStore() {
   return {
     subscribe,
     send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor),
+    getSnapshot: actor.getSnapshot.bind(actor)
   };
 }
 export const enhancedUploadStore = createEnhancedUploadStore();

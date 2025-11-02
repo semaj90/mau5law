@@ -4,7 +4,7 @@ export interface LogFields {
 }
 function base() {
   return {
-    ts: new Date().toISOString(),
+    ts: new Date().toISOString()
   };
 }
 export function logInfo(event: string, fields: LogFields = {}) {

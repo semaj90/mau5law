@@ -14,9 +14,7 @@ import { eq, sql } from 'drizzle-orm';
 // lightweight stub for external legalNLP module (keep import path same as original)
 import { legalNLP } from './sentence-transformer.js';
 
-export interface EmbeddingConfig {
-  model: string;
-  dimensions: number;
+export interface EmbeddingConfig { model: string;, dimensions: number;
   batchSize: number;
   maxConcurrency: number;
   chunkSize: number;
@@ -26,12 +24,8 @@ export interface EmbeddingConfig {
   normalization: boolean;
 }
 
-export interface DocumentChunk {
-  id: string;
-  content: string;
-  metadata: {
-    source: string;
-    chunkIndex: number;
+export interface DocumentChunk { id: string;, content: string;
+  metadata: { source: string;, chunkIndex: number;
     totalChunks: number;
     startIndex: number;
     endIndex: number;
@@ -39,29 +33,21 @@ export interface DocumentChunk {
   };
 }
 
-export interface EmbeddingResult {
-  id: string;
-  embedding: number[];
+export interface EmbeddingResult { id: string;, embedding: number[];
   content: string;
   metadata: { [key: string]: any };
   processingTime: number;
 }
 
-export interface SimilaritySearchResult {
-  document: DocumentChunk;
-  similarity: number;
+export interface SimilaritySearchResult { document: DocumentChunk;, similarity: number;
   embedding: number[];
   metadata: { [key: string]: any };
 }
 
-export interface BatchEmbeddingResult {
-  results: EmbeddingResult[];
-  totalProcessed: number;
+export interface BatchEmbeddingResult { results: EmbeddingResult[];, totalProcessed: number;
   averageTime: number;
   errors: Array<any>;
-  metrics: {
-    tokenCount: number;
-    embeddingDimensions: number;
+  metrics: { tokenCount: number;, embeddingDimensions: number;
     cacheHits: number;
     cacheMisses: number;
   };
@@ -73,7 +59,7 @@ class NomicEmbeddingService {
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: any;
   private config: EmbeddingConfig;
-  private cache: Map<string, { embedding: number[]; timestamp: number }> = new Map();
+  private cache: Map<string, { embedding: number[];, timestamp: number }> = new Map();
   private initialized = $state(false);
   private processing = $state(false);
   private cacheHits = 0;
@@ -100,7 +86,7 @@ class NomicEmbeddingService {
       chunkOverlap: 200,
       enableCaching: true,
       enableGpuAcceleration: true,
-      normalization: true,
+      normalization: true
     };
   }
 
@@ -120,16 +106,16 @@ class NomicEmbeddingService {
           requestOptions: {
             // allow ollama-specific GPU options if provided
             // this is best-effort; exact options depend on client lib
-            numGpu: this.config.enableGpuAcceleration ? 1 : 0,
-            mainGpu: 0,
-          } as any,
+           , numGpu: this.config.enableGpuAcceleration ? 1 : 0,
+            mainGpu: 0
+          } as any
         } as any);
 
         // text splitter init
         this.textSplitter = new RecursiveCharacterTextSplitter({
           chunkSize: this.config.chunkSize,
           chunkOverlap: this.config.chunkOverlap,
-          separators: ['\n\n', '\n', '. ', ' ', ''],
+          separators: ['\n\n', '\n', '. ', ' ', '']
         } as any);
 
         // in-memory vector store
@@ -141,7 +127,7 @@ class NomicEmbeddingService {
         return;
       } catch (err) {
         lastError = err;
-        console.warn(`Model init failed for ${modelName}, trying next:`, err);
+        console.warn(`Model init failed for ${modelName}, trying next: ', err);
       }
     }
     console.error('❌ Failed to initialize embedding service with all candidate models:', lastError);
@@ -162,7 +148,7 @@ class NomicEmbeddingService {
           embedding: cached.embedding,
           content: text,
           metadata,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
       }
 
@@ -180,7 +166,7 @@ class NomicEmbeddingService {
         embedding: normalizedEmbedding,
         content: text,
         metadata,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } catch (error) {
       console.error('Failed to generate embedding:', error);
@@ -207,7 +193,7 @@ class NomicEmbeddingService {
         const batch = texts.slice(i, i + this.config.batchSize);
         const batchMetadata = metadata?.slice(i, i + this.config.batchSize) || [];
 
-        const uncached: { text: string; idx: number; md: any }[] = [];
+        const uncached: { text: string; idx: number;, md: any }[] = [];
         // check cache
         batch.forEach((t, bi) => {
           const key = this.getCacheKey(t);
@@ -218,7 +204,7 @@ class NomicEmbeddingService {
               embedding: c.embedding,
               content: t,
               metadata: batchMetadata[bi] || {},
-              processingTime: 0,
+              processingTime: 0
             });
             cacheHits++;
           } else {
@@ -241,7 +227,7 @@ class NomicEmbeddingService {
                 embedding: normalized,
                 content: text,
                 metadata: uncached[idx].md,
-                processingTime: (Date.now() - startTime) / Math.max(1, docs.length),
+                processingTime: (Date.now() - startTime) / Math.max(1, docs.length)
               });
             });
           } catch (batchError) {
@@ -250,7 +236,7 @@ class NomicEmbeddingService {
               errors.push({
                 index: i + u.idx,
                 content: u.text.slice(0, 100),
-                error: batchError instanceof Error ? batchError.message : String(batchError),
+                error: batchError instanceof Error ? batchError.message : String(batchError)
               });
             });
           }
@@ -277,8 +263,8 @@ class NomicEmbeddingService {
           tokenCount: this.estimateTokenCount(texts),
           embeddingDimensions: this.config.dimensions,
           cacheHits,
-          cacheMisses,
-        },
+          cacheMisses
+        }
       };
     } catch (err) {
       this.processing = $state(false);
@@ -293,10 +279,10 @@ class NomicEmbeddingService {
       source: string;
       title?: string;
       entityType: string;
-      entityId: string;
+     , entityId: string;
       [key: string]: any;
     }
-  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[]; indexedCount: number; analysis?: any }> {
+  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[];, indexedCount: number; analysis?: any }> {
     try {
       if (!this.initialized) await this.initializeServices();
 
@@ -334,10 +320,10 @@ class NomicEmbeddingService {
             ? {
                 legalDomain: documentAnalysis.legalDomain,
                 complexity: documentAnalysis.complexity,
-                keywords: documentAnalysis.keywords,
+                keywords: documentAnalysis.keywords
               }
-            : {}),
-        },
+            : {})
+        }
       }));
 
       const chunkTexts = chunks.map(c => c.content);
@@ -385,7 +371,7 @@ class NomicEmbeddingService {
             content: evidence.description,
             embedding: evidence.titleEmbedding,
             title: evidence.title,
-            caseId: evidence.caseId,
+            caseId: evidence.caseId
           })
           .from(evidence)
           .where(sql`${evidence.titleEmbedding} IS NOT NULL`)
@@ -400,7 +386,7 @@ class NomicEmbeddingService {
             content: cases.description,
             embedding: cases.titleEmbedding,
             title: cases.title,
-            caseNumber: cases.caseNumber,
+            caseNumber: cases.caseNumber
           })
           .from(cases)
           .where(sql`${cases.titleEmbedding} IS NOT NULL`)
@@ -415,7 +401,7 @@ class NomicEmbeddingService {
             content: legalDocuments.content,
             embedding: legalDocuments.titleEmbedding,
             title: legalDocuments.title,
-            docType: legalDocuments.documentType,
+            docType: legalDocuments.documentType
           })
           .from(legalDocuments)
           .where(sql`${legalDocuments.titleEmbedding} IS NOT NULL`)
@@ -428,24 +414,22 @@ class NomicEmbeddingService {
         if (!r.embedding) continue;
         const similarity = this.cosineSimilarity(queryEmbedding.embedding, r.embedding as number[]);
         if (similarity >= threshold) {
-          similarities.push({
-            document: {
-              id: r.id,
+          similarities.push({ document: {, id: r.id,
               content: r.content,
               metadata: {
-                source: r.entityType || 'search_index',
+               , source: r.entityType || 'search_index',
                 chunkIndex: 0,
                 totalChunks: 1,
                 startIndex: 0,
                 endIndex: (r.content || '').length,
                 ...(r.title ? { title: r.title } : {}),
                 entityType: r.entityType,
-                entityId: r.entityId,
-              },
+                entityId: r.entityId
+              }
             } as DocumentChunk,
             similarity,
             embedding: r.embedding as number[],
-            metadata: r,
+            metadata: r
           });
         }
       }
@@ -471,7 +455,7 @@ class NomicEmbeddingService {
               .update(evidence)
               .set({
                 titleEmbedding: embedding.embedding,
-                updatedAt: new Date(),
+                updatedAt: new Date()
               })
               .where(eq(evidence.id, entityId));
           } else if (entityType === 'case') {
@@ -479,7 +463,7 @@ class NomicEmbeddingService {
               .update(cases)
               .set({
                 titleEmbedding: embedding.embedding,
-                updatedAt: new Date(),
+                updatedAt: new Date()
               })
               .where(eq(cases.id, entityId));
           } else if (entityType === 'legal_document') {
@@ -487,13 +471,13 @@ class NomicEmbeddingService {
               .update(legalDocuments)
               .set({
                 titleEmbedding: embedding.embedding,
-                updatedAt: new Date(),
+                updatedAt: new Date()
               })
               .where(eq(legalDocuments.id, entityId));
           }
           insertedCount++;
         } catch (updateError) {
-          console.warn(`Failed to update embedding for ${entityType}:${entityId}:`, updateError);
+          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);
         }
       }
       return insertedCount;
@@ -511,8 +495,8 @@ class NomicEmbeddingService {
       config: this.config,
       performance: {
         averageTime: 0,
-        totalProcessed: 0,
-      },
+        totalProcessed: 0
+      }
     };
   }
 

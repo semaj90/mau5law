@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
  * Production-ready database schema with pgvector support
  *
  * TODO: Ensure drizzle schema `case_memories` table exists (case_id, memory_json, updated_at)
- * TODO: Add relations: evidence.case_id → cases.id
+ * TODO: Add; relations: evidence.case_id → cases.id
  * TODO: Confirm embeddings vector column uses pgvector extension
  * TODO: Add indexes for vector similarity search performance
  * TODO: Implement JSONB for memory storage with proper indexing
@@ -48,7 +48,7 @@ const vector = customType({
     } catch {
       /* ignore */
     }
-    throw new Error('Invalid vector value: expected number[] or vector string like: "[1,2,...]"');
+    throw new Error('Invalid vector value: expected number[] or vector string; like: "[1,2,...]"');
   },
   fromDriver(value: any): any {
     if (value == null) return [];
@@ -74,7 +74,7 @@ const vector = customType({
       .map(p => Number(p))
       .filter(n => !Number.isNaN(n));
     return parts;
-  },
+  }
 });
 // Case memories table for context-aware AI memory
 export const caseMemories = pgTable('case_memories', {
@@ -82,19 +82,19 @@ export const caseMemories = pgTable('case_memories', {
   caseId: varchar('case_id', { length: 255 }).notNull(),
   memoryJson: jsonb('memory_json').notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 }, (table) => ({
   caseIdIdx: index('case_memories_case_id_idx').on(table.caseId),
-  updatedAtIdx: index('case_memories_updated_at_idx').on(table.updatedAt),
+  updatedAtIdx: index('case_memories_updated_at_idx').on(table.updatedAt)
 }));
 // Database connection
 const connectionString =
   import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5434}/${import.meta.env.DB_NAME || 'legal_ai_db'}`;
+  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5434}/${import.meta.env.DB_NAME || 'legal_ai_db` }`;
 const sql_client = postgres(connectionString, {
   max: 20,
   idle_timeout: 30,
-  connect_timeout: 60,
+  connect_timeout: 60
 });
 export const db = drizzle(sql_client);
 // Schema definitions
@@ -107,7 +107,7 @@ export const users = pgTable('users', {
   isActive: boolean('is_active').default(true),
   lastLoginAt: timestamp('last_login_at'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 export const cases = pgTable(
   'cases',
@@ -118,14 +118,13 @@ export const cases = pgTable(
     status: varchar('status', { length: 50 }).default('active'),
     priority: varchar('priority', { length: 50 }).default('medium'),
     userId: integer('user_id').references(() => users.id),
-    // Vector embeddings (512-dim embeddinggemma:latest)
-    titleEmbedding: vector('title_embedding', { dimensions: 512 }),
+    // Vector embeddings (512-dim embeddinggemma:latest); titleEmbedding: vector('title_embedding', { dimensions: 512 }),
     descriptionEmbedding: vector('description_embedding', { dimensions: 512 }),
     // Metadata
     metadata: jsonb('metadata'),
     tags: jsonb('tags'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   cases => ({
     // Vector similarity indexes
@@ -136,7 +135,7 @@ export const cases = pgTable(
     // Regular indexes
     userIdIdx: index('cases_user_id_idx').on(cases.userId),
     statusIdx: index('cases_status_idx').on(cases.status),
-    createdAtIdx: index('cases_created_at_idx').on(cases.createdAt),
+    createdAtIdx: index('cases_created_at_idx').on(cases.createdAt)
   })
 );
 export const documents = pgTable(
@@ -150,8 +149,7 @@ export const documents = pgTable(
     fileType: varchar('file_type', { length: 100 }),
     fileSize: integer('file_size'),
     mimeType: varchar('mime_type', { length: 255 }),
-    // Vector embeddings (512-dim embeddinggemma:latest)
-    contentEmbedding: vector('content_embedding', { dimensions: 512 }),
+    // Vector embeddings (512-dim embeddinggemma:latest); contentEmbedding: vector('content_embedding', { dimensions: 512 }),
     titleEmbedding: vector('title_embedding', { dimensions: 512 }),
     // Metadata and processing info;
     metadata: jsonb('metadata'),
@@ -159,13 +157,13 @@ export const documents = pgTable(
     extractedText: text('extracted_text'),
     ocrConfidence: integer('ocr_confidence'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   documents => ({
     contentEmbeddingIdx: index('documents_content_embedding_idx').on(sql`${documents.contentEmbedding} vector_l2_ops`),
     titleEmbeddingIdx: index('documents_title_embedding_idx').on(sql`${documents.titleEmbedding} vector_l2_ops`),
     caseIdIdx: index('documents_case_id_idx').on(documents.caseId),
-    processingStatusIdx: index('documents_processing_status_idx').on(documents.processingStatus),
+    processingStatusIdx: index('documents_processing_status_idx').on(documents.processingStatus)
   })
 );
 export const evidence = pgTable(
@@ -178,8 +176,7 @@ export const evidence = pgTable(
     description: text('description'),
     evidenceType: varchar('evidence_type', { length: 100 }),
     content: text('content'),
-    // Vector embeddings (512-dim embeddinggemma:latest)
-    titleEmbedding: vector('title_embedding', { dimensions: 512 }),
+    // Vector embeddings (512-dim embeddinggemma:latest); titleEmbedding: vector('title_embedding', { dimensions: 512 }),
     contentEmbedding: vector('content_embedding', { dimensions: 512 }),
     // Evidence-specific fields
     relevanceScore: integer('relevance_score'), // 0-100
@@ -187,14 +184,14 @@ export const evidence = pgTable(
     tags: jsonb('tags'),
     metadata: jsonb('metadata'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   evidence => ({
     titleEmbeddingIdx: index('evidence_title_embedding_idx').on(sql`${evidence.titleEmbedding} vector_l2_ops`),
     contentEmbeddingIdx: index('evidence_content_embedding_idx').on(sql`${evidence.contentEmbedding} vector_l2_ops`),
     caseIdIdx: index('evidence_case_id_idx').on(evidence.caseId),
     documentIdIdx: index('evidence_document_id_idx').on(evidence.documentId),
-    evidenceTypeIdx: index('evidence_type_idx').on(evidence.evidenceType),
+    evidenceTypeIdx: index('evidence_type_idx').on(evidence.evidenceType)
   })
 );
 export const vectorSearchLogs = pgTable(
@@ -209,51 +206,51 @@ export const vectorSearchLogs = pgTable(
     searchType: varchar('search_type', { length: 50 }), // 'cases', 'documents', 'evidence', 'mixed'
     similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100);
     metadata: jsonb('metadata'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   vectorSearchLogs => ({
     queryEmbeddingIdx: index('vector_search_logs_query_embedding_idx').on(
       sql`${vectorSearchLogs.queryEmbedding} vector_l2_ops`
     ),
     userIdIdx: index('vector_search_logs_user_id_idx').on(vectorSearchLogs.userId),
-    createdAtIdx: index('vector_search_logs_created_at_idx').on(vectorSearchLogs.createdAt),
+    createdAtIdx: index('vector_search_logs_created_at_idx').on(vectorSearchLogs.createdAt)
   })
 );
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
-  vectorSearchLogs: many(vectorSearchLogs),
+  vectorSearchLogs: many(vectorSearchLogs)
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, {
     fields: [cases.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   documents: many(documents),
-  evidence: many(evidence),
+  evidence: many(evidence)
 }));
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
-  evidence: many(evidence),
+  evidence: many(evidence)
 }));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   document: one(documents, {
     fields: [evidence.documentId],
-    references: [documents.id],
-  }),
+    references: [documents.id]
+  })
 }));
 export const vectorSearchLogsRelations = relations(vectorSearchLogs, ({ one }) => ({
   user: one(users, {
     fields: [vectorSearchLogs.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 // Vector search utility functions
 export class VectorSearchService {
@@ -270,18 +267,18 @@ export class VectorSearchService {
         priority,
         user_id,
         created_at,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]`} as title_distance,
-        description_embedding <-> ${`[${queryEmbedding.join(',')}]`} as description_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
+        description_embedding <-> ${`[${queryEmbedding.join(',')}]` } as description_distance,
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          description_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          description_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) as min_distance
       FROM cases
       WHERE
         (title_embedding IS NOT NULL OR description_embedding IS NOT NULL) AND
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          description_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          description_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) < ${threshold}
       ORDER BY min_distance ASC
       LIMIT ${limit}
@@ -302,18 +299,18 @@ export class VectorSearchService {
         file_size,
         processing_status,
         created_at,
-        content_embedding <-> ${`[${queryEmbedding.join(',')}]`} as content_distance,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]`} as title_distance,
+        content_embedding <-> ${`[${queryEmbedding.join(',')}]` } as content_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
         LEAST(
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          content_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) as min_distance
       FROM documents
       WHERE
         (content_embedding IS NOT NULL OR title_embedding IS NOT NULL) AND
         LEAST(
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          content_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) < ${threshold}
         ${caseFilter}
       ORDER BY min_distance ASC
@@ -343,18 +340,18 @@ export class VectorSearchService {
         relevance_score,
         confidence_level,
         created_at,
-        title_embedding <-> ${`[${queryEmbedding.join(',')}]`} as title_distance,
-        content_embedding <-> ${`[${queryEmbedding.join(',')}]`} as content_distance,
+        title_embedding <-> ${`[${queryEmbedding.join(',')}]` } as title_distance,
+        content_embedding <-> ${`[${queryEmbedding.join(',')}]` } as content_distance,
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          content_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) as min_distance
       FROM evidence
       WHERE
         (title_embedding IS NOT NULL OR content_embedding IS NOT NULL) AND
         LEAST(
-          title_embedding <-> ${`[${queryEmbedding.join(',')}]`},
-          content_embedding <-> ${`[${queryEmbedding.join(',')}]`}
+          title_embedding <-> ${`[${queryEmbedding.join(',')}]` },
+          content_embedding <-> ${`[${queryEmbedding.join(',')}]` }
         ) < ${threshold}
         ${caseFilter}
         ${typeFilter}
@@ -378,7 +375,7 @@ export class VectorSearchService {
       total:
         (caseResults as unknown[]).length +
         (documentResults as unknown[]).length +
-        (evidenceResults as unknown[]).length,
+        (evidenceResults as unknown[]).length
     };
   }
   /**
@@ -403,8 +400,7 @@ export class VectorSearchService {
       similarityThreshold: Math.round(similarityThreshold * 100),
       metadata: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
-      },
+        version: '1.0.0` }
     });
   }
 }
@@ -418,9 +414,7 @@ export type NewUser = typeof users.$inferInsert;
 export type NewCase = typeof cases.$inferInsert;
 export type NewDocument = typeof documents.$inferInsert;
 export type NewEvidence = typeof evidence.$inferInsert;
-export interface HealthStatus {
-  status: 'healthy' | 'unhealthy';
-  timestamp: string;
+export interface HealthStatus { status: 'healthy' | 'unhealthy';, timestamp: string;
   connection: 'active' | 'failed';
   result?: any;
   error?: string;
@@ -433,14 +427,13 @@ export async function healthCheck(): Promise<HealthStatus> {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       connection: 'active',
-      result: result[0],
+      result: result[0]
     };
   } catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+      error: error instanceof Error ? error.message : 'Unknown error` };
   }
 }

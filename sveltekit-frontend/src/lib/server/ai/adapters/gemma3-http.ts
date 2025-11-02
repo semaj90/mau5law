@@ -1,6 +1,6 @@
 import type { LLMOutput } from '$lib/types/sharedTypes';
 const DEFAULT_URLS = {
-  GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost:8000',
+  GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost:8000'
 };
 export interface Gemma3Options {
   temperature?: number;
@@ -29,7 +29,7 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
   const resp = await fetch(`${url}/v2/models/gemma3/infer`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!resp.ok) {
     throw new Error(`Gemma3 inference failed: ${resp.status} ${resp.statusText}`);
@@ -40,7 +40,7 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
   const out: LLMOutput = {
     text: String(text),
     reasoning: json?.reasoning ?? undefined,
-    embeddings: undefined,
+    embeddings: undefined
   };
   return out;
 }

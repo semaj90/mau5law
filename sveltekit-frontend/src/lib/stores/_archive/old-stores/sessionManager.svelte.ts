@@ -6,22 +6,16 @@ import { createActor } from 'xstate';
 import { sessionMachine, sessionServices, sessionActions } from '$lib/machines/sessionMachine.js';
 import { authService, type User } from './auth.svelte.js';
 // Session state interface
-export interface SessionState {
-  isActive: boolean;
-  user: User | null;
+export interface SessionState { isActive: boolean;, user: User | null;
   sessionId: string | null;
   expiresAt: Date | null;
   securityLevel: 'standard' | 'elevated' | 'secure';
   permissions: string[];
   lastActivity: Date | null;
-  health: {
-    isValid: boolean;
-    warningCount: number;
+  health: { isValid: boolean;, warningCount: number;
     lastCheck: Date | null;
   };
-  analytics: {
-    loginTime: Date | null;
-    activityCount: number;
+  analytics: { loginTime: Date | null;, activityCount: number;
     featuresUsed: string[];
   };
 }
@@ -37,13 +31,13 @@ const sessionState = $state<SessionState>({
   health: {
     isValid: false,
     warningCount: 0,
-    lastCheck: null,
+    lastCheck: null
   },
   analytics: {
-    loginTime: null,
+   , loginTime: null,
     activityCount: 0,
-    featuresUsed: [],
-  },
+    featuresUsed: []
+  }
 });
 // Create XState actor for session management
 const sessionActor = createActor(sessionMachine);
@@ -91,7 +85,7 @@ export class SessionManager {
       this.actor.send({
         type: 'AUTHENTICATE',
         user,
-        sessionId,
+        sessionId
       });
       // Start periodic health checks
       this.startHealthChecks();
@@ -167,7 +161,7 @@ export class SessionManager {
     this.actor.send({
       type: 'ACTIVITY',
       route,
-      action,
+      action
     });
     // Track feature usage
     if (featureUsed && !sessionState.analytics.featuresUsed.includes(featureUsed)) {
@@ -189,7 +183,7 @@ export class SessionManager {
       ...sessionState.analytics,
       sessionDuration: sessionState.analytics.loginTime ? Date.now() - sessionState.analytics.loginTime.getTime() : 0,
       isHealthy: sessionState.health.isValid,
-      warningCount: sessionState.health.warningCount,
+      warningCount: sessionState.health.warningCount
     };
   }
   // Check for existing session on initialization

@@ -12,9 +12,7 @@ type ProtocolType = 'quic' | 'grpc' | 'http' | 'websocket';
 type ProtocolPriority = 1 | 2 | 3 | 4;
 
 // Gateway Health interface
-interface GatewayHealth {
-  status: string;
-  protocols: Record<string, unknown>;
+interface GatewayHealth { status: string;, protocols: Record<string, unknown>;
 }
 
 // Gateway Services interface
@@ -26,17 +24,13 @@ interface GatewayServices {
 type GatewayMetrics = Record<string, unknown>;
 
 // Protocol Stats interface
-interface ProtocolStats {
-  total: number;
-  healthy: number;
+interface ProtocolStats { total: number;, healthy: number;
   avg_response_time: number;
   avg_success_rate: number;
 }
 
 // Protocol fallback request interface
-export interface ProtocolFallbackRequest {
-  service: string;
-  preferred_protocol: ProtocolType;
+export interface ProtocolFallbackRequest { service: string;, preferred_protocol: ProtocolType;
   method: string;
   path: string;
   headers?: Record<string, string>;
@@ -62,9 +56,7 @@ export interface ProtocolFallbackResponse {
   metadata?: Record<string, unknown>;
 }
 // Service endpoint information
-export interface ServiceEndpoint {
-  name: string;
-  protocol: ProtocolType;
+export interface ServiceEndpoint { name: string;, protocol: ProtocolType;
   priority: ProtocolPriority;
   address: string;
   port: number;
@@ -84,7 +76,7 @@ const GATEWAY_CONFIG = {
   baseUrl: import.meta.env.GATEWAY_BASE_URL || 'http://localhost:8230',
   timeout: parseInt(import.meta.env.GATEWAY_TIMEOUT || '30000', 10),
   retryAttempts: parseInt(import.meta.env.GATEWAY_RETRY_ATTEMPTS || '3', 10),
-  enableFallback: import.meta.env.GATEWAY_ENABLE_FALLBACK !== 'false',
+  enableFallback: import.meta.env.GATEWAY_ENABLE_FALLBACK !== 'false'
 };
 // Protocol priority mapping
 const PROTOCOL_PRIORITIES: Record<ProtocolType, ProtocolPriority> = {
@@ -114,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let filteredServices = services;
     if (serviceName && services) {
       filteredServices = {
-        [serviceName]: services[serviceName] || [],
+        [serviceName]: services[serviceName] || []
       };
     }
     // Filter by protocol if specified
@@ -123,19 +115,17 @@ export const GET: RequestHandler = async ({ url }) => {
         filteredServices[service] = (endpoints as ServiceEndpoint[]).filter(endpoint => endpoint.protocol === protocol);
       }
     }
-    return json({
-      gateway: {
-        status: health?.status || 'unknown',
+    return json({ gateway: {, status: health?.status || 'unknown',
         protocols: health?.protocols || {},
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       services: filteredServices || {},
       metrics: metrics || null,
       config: {
         fallback_enabled: GATEWAY_CONFIG.enableFallback,
         timeout: GATEWAY_CONFIG.timeout,
-        retry_attempts: GATEWAY_CONFIG.retryAttempts,
-      },
+        retry_attempts: GATEWAY_CONFIG.retryAttempts
+      }
     });
   } catch (err: any) {
     console.error('Multi-protocol gateway status check failed:', err);
@@ -143,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Failed to check gateway status',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
   }
@@ -170,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Multi-protocol request failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
   }
@@ -184,9 +174,9 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Update gateway configuration
     const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/config`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(config),
-      signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout),
+      signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout)
     });
     if (!response.ok) {
       throw new Error(`Gateway config update failed: ${response.status}`);
@@ -195,7 +185,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Gateway configuration updated',
-      config: result,
+      config: result
     });
   } catch (err: any) {
     console.error('Gateway configuration update failed:', err);
@@ -203,7 +193,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
   }
@@ -217,11 +207,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const service = pathParts[pathParts.length - 2];
     const endpoint = pathParts[pathParts.length - 1];
     if (!service || !endpoint) {
-      throw error(400, ensureError({ message: 'Service and endpoint are required' }));
+      throw error(400, ensureError({ message: `Service and endpoint are required` }));
     }
     const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/circuit-breaker/reset/${service}/${endpoint}`, {
       method: 'POST',
-      signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout),
+      signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout)
     });
     if (!response.ok) {
       throw new Error(`Circuit breaker reset failed: ${response.status}`);
@@ -232,7 +222,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       message: 'Circuit breaker reset',
       service,
       endpoint,
-      result,
+      result
     });
   } catch (err: any) {
     console.error('Circuit breaker reset failed:', err);
@@ -240,8 +230,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Circuit breaker reset failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
-      })
+        error: err instanceof Error ? err.message : `Unknown error` })
     );
   }
 };
@@ -275,7 +264,7 @@ function validateFallbackRequest(data: any): ProtocolFallbackRequest {
     metadata: (req.metadata as Record<string, unknown>) || {},
     timeout: (req.timeout as number) || GATEWAY_CONFIG.timeout,
     max_retries: (req.max_retries as number) || GATEWAY_CONFIG.retryAttempts,
-    enable_fallback: req.enable_fallback !== false,
+    enable_fallback: req.enable_fallback !== false
   };
 }
 /*
@@ -289,10 +278,9 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
       headers: {
         'Content-Type': 'application/json',
         'X-Request-ID': generateRequestId(),
-        'X-Source': 'sveltekit-frontend',
-      },
+        'X-Source': `sveltekit-frontend` },
       body: JSON.stringify(request),
-      signal: AbortSignal.timeout(request.timeout || GATEWAY_CONFIG.timeout),
+      signal: AbortSignal.timeout(request.timeout || GATEWAY_CONFIG.timeout)
     });
     const responseData = await response.json();
     const totalLatency = Date.now() - startTime;
@@ -300,7 +288,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
       return {
         ...responseData,
         total_latency: totalLatency,
-        protocol_latency: totalLatency,
+        protocol_latency: totalLatency
       };
     } else {
       return {
@@ -312,8 +300,8 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
         attempt_count: 1,
         total_latency: totalLatency,
         protocol_latency: totalLatency,
-        error: responseData?.error || `Gateway error: ${response.status}`,
-        metadata: { gateway_error: true },
+        error: responseData?.error || `Gateway; error: ${response.status}`,
+        metadata: { gateway_error: true }
       };
     }
   } catch (err: any) {
@@ -328,7 +316,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
       total_latency: totalLatency,
       protocol_latency: totalLatency,
       error: err instanceof Error ? err.message : 'Gateway communication failed',
-      metadata: { gateway_communication_error: true },
+      metadata: { gateway_communication_error: true }
     };
   }
 }
@@ -337,7 +325,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
  */
 async function fetchGatewayHealth(): Promise<GatewayHealth> {
   const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/health`, {
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(5000)
   });
   if (!response.ok) {
     throw new Error(`Gateway health check failed: ${response.status}`);
@@ -349,7 +337,7 @@ async function fetchGatewayHealth(): Promise<GatewayHealth> {
  */
 async function fetchGatewayServices(): Promise<Record<string, ServiceEndpoint[]>> {
   const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/services`, {
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(5000)
   });
   if (!response.ok) {
     throw new Error(`Gateway services fetch failed: ${response.status}`);
@@ -362,7 +350,7 @@ async function fetchGatewayServices(): Promise<Record<string, ServiceEndpoint[]>
  */
 async function fetchGatewayMetrics(): Promise<GatewayMetrics> {
   const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/metrics`, {
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(5000)
   });
   if (!response.ok) {
     throw new Error(`Gateway metrics fetch failed: ${response.status}`);
@@ -387,7 +375,7 @@ export function getOptimalProtocol(
     reliability?: 'standard' | 'high';
   } = {}
 ): ProtocolType {
-  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard' } = requirements;
+  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard` } = requirements;
   // Real-time requirements typically need WebSocket
   if (realtime) {
     return 'websocket';
@@ -475,7 +463,7 @@ export const ProtocolUtils = {
       quic: [],
       grpc: [],
       http: [],
-      websocket: [],
+      websocket: []
     };
     // Collect endpoints by protocol
     Object.values(services)
@@ -491,9 +479,9 @@ export const ProtocolUtils = {
         healthy: healthy.length,
         avg_response_time:
           healthy.length > 0 ? healthy.reduce((sum, e) => sum + e.response_time, 0) / healthy.length : 0,
-        avg_success_rate: healthy.length > 0 ? healthy.reduce((sum, e) => sum + e.success_rate, 0) / healthy.length : 0,
+        avg_success_rate: healthy.length > 0 ? healthy.reduce((sum, e) => sum + e.success_rate, 0) / healthy.length : 0
       };
     });
     return stats as Record<ProtocolType, ProtocolStats>;
-  },
+  }
 };

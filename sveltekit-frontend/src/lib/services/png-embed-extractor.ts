@@ -6,9 +6,7 @@ export function embedMetadataInPNGDataUrl(dataUrl: string, metadata: { [key: str
   const json = JSON.stringify(metadata);
   return `${dataUrl}${marker}${encodeURIComponent(json)}`;
 }
-export function extractMetadataFromPNGDataUrl(embedded: string): {
-  dataUrl: string;
-  png: string;
+export function extractMetadataFromPNGDataUrl(embedded: string): { dataUrl: string;, png: string;
   metadata: { [key: string]: any } | null;
 } {
   const marker = '--EMBED--';
@@ -45,31 +43,21 @@ export function extractMetadataFromPNGDataUrl(embedded: string): {
  */
 // Custom chunk type for legal AI metadata (registered PNG chunk type)
 const LEGAL_AI_CHUNK_TYPE = 'yaRI'; // "yorha AI" in PNG chunk format
-export interface LegalAIMetadata {
-  version: string;
-  created_at: string;
+export interface LegalAIMetadata { version: string;, created_at: string;
   evidence_id: string;
-  analysis_results: {
-    confidence: number;
-    classifications: string[];
+  analysis_results: { confidence: number;, classifications: string[];
     entities: Array<{ type: string; value?: string; name?: string; confidence?: number }>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
   };
-  neural_sprite_data?: {
-    compression_ratio: number;
-    tensor_urls: string[];
+  neural_sprite_data?: { compression_ratio: number;, tensor_urls: string[];
     predictive_frames: string[];
   };
-  simd_optimization_data?: {
-    enabled: boolean;
-    compression_ratio: number;
+  simd_optimization_data?: { enabled: boolean;, compression_ratio: number;
     tile_count: number;
     shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
     performance_tier: 'nes' | 'snes' | 'n64';
-    processing_stats: {
-      tiling_time_ms: number;
-      compression_time_ms: number;
+    processing_stats: { tiling_time_ms: number;, compression_time_ms: number;
       shader_generation_time_ms: number;
       total_optimization_time_ms: number;
     };
@@ -151,7 +139,7 @@ export class PNGEmbedExtractor {
                   type: e.type,
                   value: e.value ?? e.name,
                   name: e.name ?? e.value,
-                  confidence: e.confidence ?? 1,
+                  confidence: e.confidence ?? 1
                 }));
               }
               // semanticHash mirrors embeddings.semantic_hash
@@ -207,12 +195,12 @@ export class PNGEmbedExtractor {
               entities: ((meta as any).entities || []).map((e: any) => ({
                 type: e.type,
                 value: e.value ?? e.name,
-                confidence: e.confidence ?? 1,
+                confidence: e.confidence ?? 1
               })),
               risk_assessment: (meta as any).risk_assessment || (meta as any).riskAssessment || 'medium',
-              summary: (meta as any).summary || '',
+              summary: (meta as any).summary || ''
             },
-            processing_chain: (meta as any).processing_chain || (meta as any).processingChain || [],
+            processing_chain: (meta as any).processing_chain || (meta as any).processingChain || []
           } as any);
           checksumMatch = calculated === hash;
         }
@@ -220,13 +208,13 @@ export class PNGEmbedExtractor {
       }
       const metadata = await this.extractMetadata(input as ArrayBuffer);
       if (!metadata) {
-        return { valid: false, error: 'No metadata found' };
+        return { valid: false, error: `No metadata found` };
       }
       // Validate required fields
       const requiredFields = ['version', 'created_at', 'evidence_id', 'analysis_results'] as const;
       const missingFields = requiredFields.filter(field => !metadata[field as keyof LegalAIMetadata]);
       if (missingFields.length > 0) {
-        return { valid: false, error: `Missing fields: ${missingFields.join(', ')}` };
+        return { valid: false, error: 'Missing; fields: ${missingFields.join(', `)}` };
       }
       // Calculate and verify checksum if present
       let checksumMatch = true;
@@ -237,7 +225,7 @@ export class PNGEmbedExtractor {
       return {
         valid: true,
         version: metadata.version,
-        checksum_match: checksumMatch,
+        checksum_match: checksumMatch
       };
     } catch (error) {
       return { valid: false, error: (error as Error).message };
@@ -256,9 +244,7 @@ export class PNGEmbedExtractor {
       analysisResults?: LegalAIMetadata['analysis_results'];
       additionalData?: Partial<LegalAIMetadata>;
     }
-  ): Promise<{
-    buffer: ArrayBuffer;
-    metadata: { evidenceId: string; evidence_id: string };
+  ): Promise<{ buffer: ArrayBuffer;, metadata: { evidenceId: string;, evidence_id: string };
     integrityHash: string;
     isValid: boolean;
   }>;
@@ -275,9 +261,7 @@ export class PNGEmbedExtractor {
     arg4?: any
   ): Promise<
     | ArrayBuffer
-    | {
-        buffer: ArrayBuffer;
-        metadata: { evidenceId: string; evidence_id: string };
+    | { buffer: ArrayBuffer;, metadata: { evidenceId: string;, evidence_id: string };
         integrityHash: string;
         isValid: boolean;
       }
@@ -312,7 +296,7 @@ export class PNGEmbedExtractor {
           classifications: [],
           entities: [],
           risk_assessment: 'medium',
-          summary: '',
+          summary: ''
         };
       }
       additionalData = opts.additionalData;
@@ -327,15 +311,15 @@ export class PNGEmbedExtractor {
           step: 'artifact_creation',
           duration_ms: performance.now(),
           success: true,
-          metadata: { created_by: 'neural_sprite_glyph_system' },
+          metadata: { created_by: `neural_sprite_glyph_system` }
         },
       ],
-      ...additionalData,
+      ...additionalData
     } as any;
     // Calculate semantic hash for integrity
     metadata.embeddings = {
       text_embedding: [], // Would be populated by actual embedding service
-      semantic_hash: await this.calculateSemanticHash(metadata),
+      semantic_hash: await this.calculateSemanticHash(metadata)
     };
     const buffer = await this.embedMetadata(imageBuffer, metadata);
     if (calledWithOptions) {
@@ -346,7 +330,7 @@ export class PNGEmbedExtractor {
         buffer,
         metadata: { evidenceId: metadata.evidence_id, evidence_id: metadata.evidence_id },
         integrityHash,
-        isValid,
+        isValid
       };
     }
     return buffer;
@@ -362,7 +346,7 @@ export class PNGEmbedExtractor {
       confidence: metadata.analysis_results.confidence,
       risk_level: metadata.analysis_results.risk_assessment,
       created_at: metadata.created_at,
-      summary: metadata.analysis_results.summary,
+      summary: metadata.analysis_results.summary
     };
   }
   // --- Private Helper Methods ---

@@ -33,8 +33,8 @@ https: //svelte.dev/e/js_parse_error -->
   let mounted = $state<boolean>(false);
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   let ctx: CanvasRenderingContext2D | null = null;
-  let ws: WebSocket | null = $state(null);
-  let reconnectTimeout: ReturnType<typeof setTimeout> | undefined = $state(undefined);
+  let ws: WebSocket | null = null;
+  let reconnectTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
   // Lifecycle management
   $effect(() => {
     (async () => {

@@ -20,13 +20,13 @@ class RequestBatcher {
   }
 
   // Execute an array of async tasks (task generators) in parallel batches honoring maxConcurrency.
-  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number; total: number }> {
+  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number;, total: number }> {
     const total = tasks.length;
     let successful = 0;
 
     // run tasks in slices of batchSize, but each slice respects maxConcurrency
     const runSlice = async (slice: Array<() => Promise<R>>) => {
-      type Tracked = { p: Promise<void>; settled: boolean };
+      type Tracked = { p: Promise<void>;, settled: boolean };
       let runners: Tracked[] = [];
 
       for (const task of slice) {
@@ -75,29 +75,21 @@ class RequestBatcher {
   }
 }
 
-export interface CacheWarmerConfig {
-  warmupSchedule: {
-    commonQueries: string[];
+export interface CacheWarmerConfig { warmupSchedule: {, commonQueries: string[];
     documentTypes: string[];
     userPatterns: string[];
   };
-  priorities: {
-    legal: number;
-    evidence: number;
+  priorities: { legal: number;, evidence: number;
     reports: number;
     searches: number;
     [k: string]: number;
   };
-  performance: {
-    batchSize: number;
-    maxConcurrency: number;
+  performance: { batchSize: number;, maxConcurrency: number;
     gpuUtilizationTarget: number; // 0.0 to 1.0
   };
 }
 
-export interface CacheMetrics {
-  hitRate: number;
-  missRate: number;
+export interface CacheMetrics { hitRate: number;, missRate: number;
   evictionRate: number;
   averageLatency: number;
   gpuUtilization: number;
@@ -111,9 +103,7 @@ export interface CacheMetrics {
   misses: number;
 }
 
-export interface TTLStrategy {
-  documentType: string;
-  accessFrequency: number;
+export interface TTLStrategy { documentType: string;, accessFrequency: number;
   lastAccessed: Date;
   computedTTL: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
@@ -131,9 +121,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   constructor(config: Partial<CacheWarmerConfig> = {}) {
     super();
-    this.config = {
-      warmupSchedule: {
-        commonQueries: [
+    this.config = { warmupSchedule: {, commonQueries: [
           'legal precedent search',
           'evidence correlation',
           'case timeline analysis',
@@ -142,21 +130,21 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         ],
         documentTypes: ['evidence', 'legal_brief', 'case_file', 'report', 'citation'],
         userPatterns: ['recent_documents', 'frequent_searches', 'active_cases'],
-        ...(config.warmupSchedule || {}),
+        ...(config.warmupSchedule || {})
       },
       priorities: {
         legal: 0.9,
         evidence: 0.8,
         reports: 0.6,
         searches: 0.7,
-        ...(config.priorities || {}),
+        ...(config.priorities || {})
       },
       performance: {
         batchSize: 50,
         maxConcurrency: 10,
         gpuUtilizationTarget: 0.85,
-        ...(config.performance || {}),
-      },
+        ...(config.performance || {})
+      }
     };
 
     this.metrics = this.initializeMetrics();
@@ -183,7 +171,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       lastOptimized: new Date(),
       totalRequests: 0,
       hits: 0,
-      misses: 0,
+      misses: 0
     };
   }
 
@@ -210,7 +198,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   private async setupCacheEventListeners() {
     // create a dedicated subscriber client instead of using duplicate()
-    const subscriber = createClient({ url: this.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379' });
+    const subscriber = createClient({ url: this.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379` });
     await subscriber.connect();
 
     // subscribe to simple channels; handlers parse JSON safely
@@ -306,7 +294,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         accessFrequency: 1,
         lastAccessed: new Date(),
         computedTTL: baseTTL,
-        priority: this.inferPriority(type),
+        priority: this.inferPriority(type)
       });
       return baseTTL;
     }
@@ -330,7 +318,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       search: 1800,
       report: 7200,
       embedding: 86400,
-      default: 3600,
+      default: 3600
     };
     return baseTTLs[type] ?? baseTTLs.default;
   }
@@ -341,8 +329,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       evidence: 'high',
       search: 'medium',
       report: 'medium',
-      embedding: 'high',
-    };
+      embedding: 'high` };
     return priorityMap[type] ?? 'medium';
   }
 
@@ -351,7 +338,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       critical: 2.0,
       high: 1.5,
       medium: 1.0,
-      low: 0.7,
+      low: 0.7
     };
     return multipliers[priority];
   }
@@ -400,7 +387,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   /**
    * 4. REQUEST BATCHING WITH GPU OPTIMIZATION
    */
-  private handleGPUUtilization(data: { utilization: number; temperature?: number; timestamp?: number }) {
+  private handleGPUUtilization(data: {, utilization: number; temperature?: number; timestamp?: number }) {
     if (typeof data.utilization === 'number') {
       this.metrics.gpuUtilization = data.utilization;
       const target = this.config.performance.gpuUtilizationTarget;
@@ -492,12 +479,12 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   // replace simulated query executor with API call
   private async executeQueryForCache(
     query: string
-  ): Promise<{ query: string; results: any[]; timestamp: number; fromCache: boolean }> {
+  ): Promise<{ query: string; results: any[]; timestamp: number;, fromCache: boolean }> {
     try {
       const res = await fetch('/api/search/execute', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ query })
       });
       if (!res.ok) {
         const text = await res.text();
@@ -509,7 +496,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         query,
         results: payload?.results ?? [],
         timestamp: Date.now(),
-        fromCache: false,
+        fromCache: false
       };
     } catch (err: any) {
       console.warn('Query execution failed, returning fallback result', String(err));
@@ -518,7 +505,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         query,
         results: [],
         timestamp: Date.now(),
-        fromCache: false,
+        fromCache: false
       };
     }
   }
@@ -527,13 +514,13 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   private async getRecentDocumentsByType(
     docType: string,
     limit: number
-  ): Promise<Array<{ id: string; type: string; content?: string }>> {
+  ): Promise<Array<{ id: string;, type: string; content?: string }>> {
     const effectiveLimit = Math.max(0, Math.min(limit, 50));
     try {
       const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
       const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: `application/json` }
       });
       if (!res.ok) {
         const text = await res.text();
@@ -552,7 +539,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
           return {
             id,
             type: docType,
-            content,
+            content
           };
         });
       }
@@ -563,8 +550,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       return Array.from({ length: Math.min(effectiveLimit, 10) }, (_, i) => ({
         id: `${docType}_${i}`,
         type: docType,
-        content: `Sample ${docType} content ${i}`,
-      }));
+        content: `Sample ${docType} content ${i}` }));
     }
   }
 
@@ -573,8 +559,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     try {
       await fetch('/api/cache/preload/user-pattern', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pattern }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ pattern })
       });
       console.log(`👤 Requested preload for user pattern: ${pattern}`);
     } catch (err) {
@@ -587,8 +573,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     try {
       await fetch('/api/cache/proactive-load', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ query })
       });
       console.log(`🔍 Proactive load requested for: ${query}`);
     } catch (err) {
@@ -646,7 +632,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
       this.emit('ttls_optimized', { count: this.ttlStrategies.size });
     } catch (err: any) {
-      console.warn('optimizeTTLStrategies failed:', String(err));
+      console.warn('optimizeTTLStrategies failed: `, String(err));
     }
   }
 
@@ -788,7 +774,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
       this.emit('stale_cleanup', { removed: toRemove.length });
     } catch (err: any) {
-      console.warn('cleanupStaleEntries failed:', String(err));
+      console.warn('cleanupStaleEntries failed: `, String(err));
     }
   }
 }
@@ -801,7 +787,7 @@ type RedisClientLike = {
   setEx?: (key: string, ttl: number, value: string) => Promise<unknown>;
   setex?: (key: string, ttl: number, value: string) => Promise<unknown>;
   // changed: avoid `any[]` — use `unknown[]` to be type-safe while keeping variadic support
-  set?: (key: string, value: string, ...rest: any[]) => Promise<unknown>;
+  set?: (key: string; value: string, ...rest: any[]) => Promise<unknown>;
   del?: (key: string) => Promise<number | null>;
   // allow other optional members without using `any`
   [k: string]: any;

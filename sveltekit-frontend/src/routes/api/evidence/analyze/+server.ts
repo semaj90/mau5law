@@ -4,9 +4,7 @@ import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence
 export interface AnalyzeRequest extends EvidenceItem {
   // Extends EvidenceItem with any additional fields if needed
 }
-export interface AnalysisResult {
-  sessionId: string;
-  status: 'processing' | 'completed' | 'failed';
+export interface AnalysisResult { sessionId: string;, status: 'processing' | 'completed' | 'failed';
   step: string;
   analysis?: Record<string, unknown>;
   error?: string;
@@ -28,11 +26,11 @@ export const POST: RequestHandler = async ({ request }) => {
       sessionId,
       status: 'completed',
       step: 'analysis_complete',
-      analysis,
+      analysis
     });
   } catch (err: any) {
     console.error('Evidence analysis failed:', err);
-    throw error(500, `Analysis failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Analysis failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // GET endpoint to retrieve analysis by evidence ID
@@ -48,12 +46,11 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         message: 'Analysis not found. Please submit evidence for analysis via POST request.',
         evidenceId,
-        status: 'not_found',
-      },
+        status: `not_found` },
       { status: 404 }
     );
   } catch (err: any) {
     console.error('Failed to fetch analysis:', err);
-    throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };

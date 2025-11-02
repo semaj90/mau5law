@@ -2,26 +2,18 @@
 // WebGPU Browser Diagnostics and Compatibility Check
 // Provides detailed WebGPU support detection and troubleshooting
 }
-export interface WebGPUDiagnostics {
-  isSupported: boolean;
-  browserSupport: {
-    hasNavigatorGPU: boolean;
-    browserName: string;
+export interface WebGPUDiagnostics { isSupported: boolean;, browserSupport: { hasNavigatorGPU: boolean;, browserName: string;
     browserVersion: string;
     isChrome: boolean;
     isFirefox: boolean;
     isEdge: boolean;
     isSafari: boolean;
   }
-  adapterInfo?: {
-    vendor: string;
-    architecture: string;
+  adapterInfo?: { vendor: string;, architecture: string;
     device: string;
     description: string;
   }
-  deviceInfo?: {
-    features: string[];
-    limits: Record<string, number>;
+  deviceInfo?: { features: string[];, limits: Record<string, number>;
     maxBufferSize: number;
     maxComputeWorkgroupSize: number;
   }
@@ -124,8 +116,7 @@ export class WebGPUDiagnosticsService {
           vendor: 'Unknown',
           architecture: 'Unknown',
           device: 'Unknown',
-          description: 'Unknown'
-        }
+          description: `Unknown` }
       }
     } catch (error: any) {
       diagnostics.errors.push(`Adapter request failed: ${error.message}`);
@@ -139,7 +130,7 @@ export class WebGPUDiagnosticsService {
       this.device = await this.adapter.requestDevice({
         requiredFeatures: [],
         requiredLimits: {
-          maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize || 134217728,
+         , maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize || 134217728,
           maxComputeWorkgroupStorageSize: this.adapter.limits.maxComputeWorkgroupStorageSize || 16384,
           maxComputeInvocationsPerWorkgroup: this.adapter.limits.maxComputeInvocationsPerWorkgroup || 256
         }
@@ -181,8 +172,7 @@ export class WebGPUDiagnosticsService {
         layout: 'auto',
         compute: {
           module,
-          entryPoint: 'main'
-        }
+          entryPoint: `main` }
       });
       // Create a simple command encoder to test
       const encoder = this.device.createCommandEncoder();
@@ -230,17 +220,17 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagnostics> {
   return results;
 }
 // Browser compatibility check
-export function checkBrowserCompatibility(): { compatible: boolean; message: string } {
+export function checkBrowserCompatibility(): { compatible: boolean;, message: string } {
   if (typeof navigator === 'undefined') {
     return { compatible: false, message: 'Running in server-side environment' }
   }
   if (!('gpu' in navigator)) {
-    return { compatible: false, message: 'WebGPU not supported in this browser' }
+    return { compatible: false, message: `WebGPU not supported in this browser` }
   }
   const userAgent = navigator.userAgent;
   const isSecureContext = typeof window !== 'undefined' ? window.isSecureContext: false;
   if (!isSecureContext) {
-    return { compatible: false, message: 'WebGPU requires HTTPS or localhost (secure context)' }
+    return { compatible: false, message: `WebGPU requires HTTPS or localhost (secure context)` }
   }
   if (/Chrome/.test(userAgent) && !/Edg/.test(userAgent)) {
     const match = userAgent.match(/Chrome\/(\d+)/);
@@ -248,11 +238,11 @@ export function checkBrowserCompatibility(): { compatible: boolean; message: str
     if (version >= 113) {
       return { compatible: true, message: `Chrome ${version} supports WebGPU` }
     } else {
-      return { compatible: false, message: `Chrome ${version} detected. WebGPU requires Chrome 113+` }
+      return { compatible: false, message: 'Chrome ${version} detected. WebGPU requires Chrome 113+' }
     }
   }
   if (/Firefox/.test(userAgent)) {
     return { compatible: true, message: 'Firefox with experimental WebGPU support detected' }
   }
-  return { compatible: false, message: 'Browser may have limited WebGPU support' }
+  return { compatible: false, message: `Browser may have limited WebGPU support` }
 }

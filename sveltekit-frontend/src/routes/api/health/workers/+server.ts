@@ -8,9 +8,7 @@ import { createRedisConnection } from '$lib/server/redis';
 import type { RedisClientType } from 'redis';
 import amqp from 'amqplib';
 
-interface WorkerStatus {
-  name: string;
-  status: 'online' | 'offline' | 'degraded';
+interface WorkerStatus { name: string;, status: 'online' | 'offline' | 'degraded';
   healthy: boolean;
   lastHeartbeat?: string;
   queueDepth?: number;
@@ -63,14 +61,14 @@ async function safeQuit(client: ConnectableRedisClient | null, label: string): P
 
 async function fetchWorkerRedisState(
   label: string,
-  keys: { heartbeat: string; stats: string }
-): Promise<{ ok: true; heartbeat: string | null; stats: string | null } | { ok: false; reason: string }> {
+  keys: {, heartbeat: string; stats: string }
+): Promise<{ ok: true; heartbeat: string | null;, stats: string | null } | { ok: false;, reason: string }> {
   const client = createRedisConnection() as ConnectableRedisClient;
 
   const ready = await ensureRedisConnection(client, label);
   if (!ready) {
     await safeQuit(client, label);
-    return { ok: false, reason: 'Redis unavailable' };
+    return { ok: false, reason: `Redis unavailable` };
   }
 
   try {
@@ -131,8 +129,8 @@ export const GET: RequestHandler = async ({ url }) => {
         total: workers.length,
         online: workers.filter(w => w.status === 'online').length,
         offline: workers.filter(w => w.status === 'offline').length,
-        degraded: workers.filter(w => w.status === 'degraded').length,
-      },
+        degraded: workers.filter(w => w.status === 'degraded').length
+      }
     });
   } catch (error) {
     console.error('[Worker Health] Check failed:', error);
@@ -140,7 +138,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Worker health check failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -154,7 +152,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
   try {
     const redisState = await fetchWorkerRedisState('OCR Worker', {
       heartbeat: 'worker:ocr:heartbeat',
-      stats: 'worker:ocr:stats',
+      stats: 'worker:ocr:stats'
     });
 
     if (!redisState.ok) {
@@ -162,7 +160,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
         name: 'OCR Worker',
         status: 'offline',
         healthy: false,
-        details: redisState.reason || 'Redis unavailable for OCR worker check',
+        details: redisState.reason || 'Redis unavailable for OCR worker check'
       };
     }
 
@@ -173,8 +171,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
         name: 'OCR Worker',
         status: 'offline',
         healthy: false,
-        details: 'No heartbeat found in Redis',
-      };
+        details: `No heartbeat found in Redis` };
     }
 
     const lastHeartbeat = new Date(heartbeat);
@@ -193,8 +190,8 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       details: {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         gpuEnabled: parsedStats.gpuEnabled || false,
-        workerPoolSize: parsedStats.workerPoolSize || 4,
-      },
+        workerPoolSize: parsedStats.workerPoolSize || 4
+      }
     };
   } catch (error) {
     console.warn('[OCR Worker Health] Check failed:', getErrorMessage(error));
@@ -202,7 +199,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       name: 'OCR Worker',
       status: 'offline',
       healthy: false,
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message : String(error)
     };
   }
 }
@@ -236,8 +233,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
     // Check Redis for embedding worker heartbeat
     const redisState = await fetchWorkerRedisState('Embedding Worker', {
       heartbeat: 'worker:embedding:heartbeat',
-      stats: 'worker:embedding:stats',
-    });
+      stats: `worker:embedding:stats` });
 
     if (!redisState.ok) {
       return {
@@ -245,8 +241,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         status: 'offline',
         healthy: false,
         queueDepth: totalQueueDepth,
-        details: `Redis unavailable - ${redisState.reason}`,
-      };
+        details: `Redis unavailable - ${redisState.reason}' };
     }
 
     const { heartbeat, stats } = redisState;
@@ -257,8 +252,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         status: 'offline',
         healthy: false,
         queueDepth: totalQueueDepth,
-        details: 'No heartbeat found - worker may not be running',
-      };
+        details: `No heartbeat found - worker may not be running` };
     }
 
     const lastHeartbeat = new Date(heartbeat);
@@ -279,8 +273,8 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         ollamaModel: 'embeddinggemma:latest',
         queuedJobs: totalQueueDepth,
-        failedJobs: parsedStats.failedJobs || 0,
-      },
+        failedJobs: parsedStats.failedJobs || 0
+      }
     };
   } catch (error) {
     console.error('[Embedding Worker Health] Check failed:', error);
@@ -288,7 +282,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
       name: 'Embedding Worker',
       status: 'offline',
       healthy: false,
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message : String(error)
     };
   }
 }
@@ -308,7 +302,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
         name: 'Autotag Worker',
         status: 'offline',
         healthy: false,
-        details: 'Redis unavailable for autotag worker',
+        details: 'Redis unavailable for autotag worker'
       };
     }
 
@@ -321,8 +315,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
         name: 'Autotag Worker',
         status: 'offline',
         healthy: false,
-        details: 'Worker is optional - not critical',
-      };
+        details: `Worker is optional - not critical` };
     }
 
     const lastHeartbeat = new Date(heartbeat);
@@ -340,8 +333,8 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       uptime: parsedStats.uptime || 0,
       details: {
         timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
-        gemma3Legal: parsedStats.aiPowered || false,
-      },
+        gemma3Legal: parsedStats.aiPowered || false
+      }
     };
   } catch (error) {
     console.error('[Autotag Worker Health] Check failed:', error);
@@ -349,7 +342,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       name: 'Autotag Worker',
       status: 'offline',
       healthy: false,
-      details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error)),
+      details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error))
     };
   } finally {
     await safeQuit(autotagRedisClient ?? null, 'Autotag Worker');

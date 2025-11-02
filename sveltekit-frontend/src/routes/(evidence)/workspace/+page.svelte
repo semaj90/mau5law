@@ -9,11 +9,12 @@ Features:
 - Real-time AI analysis with GPU acceleration
 -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import {
     Upload,
@@ -72,7 +73,7 @@ import type { Document } from '$lib/types';
       const reader = new FileReader();
       reader.onload = e => {
         fileObj.content = e.target.result;
-        fileObj.analyzed = $state(false);
+        fileObj.analyzed = false;
       };
       reader.readAsText(fileObj.file);
     });
@@ -284,7 +285,7 @@ import type { Document } from '$lib/types';
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex space-x-8">
         <button
-          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'upload'
+          class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'upload'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'upload')}
@@ -293,7 +294,7 @@ import type { Document } from '$lib/types';
           Upload & Configure
         </button>
         <button
-          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'results'
+          class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'results'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'results')}
@@ -302,7 +303,7 @@ import type { Document } from '$lib/types';
           Analysis Results
         </button>
         <button
-          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'timeline'
+          class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'timeline'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'timeline')}
@@ -311,7 +312,7 @@ import type { Document } from '$lib/types';
           Timeline
         </button>
         <button
-          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'citations'
+          class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'citations'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'citations')}
@@ -320,7 +321,7 @@ import type { Document } from '$lib/types';
           Citations
         </button>
         <button
-          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'canvas'
+          class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'canvas'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'canvas')}
@@ -538,7 +539,7 @@ import type { Document } from '$lib/types';
               <div class="space-y-4">
                 {#each Array.isArray(batchAnalysisResults.individual_results) ? batchAnalysisResults.individual_results : [] as result}
                   <div
-                    class="border" rounded-lg p-4 {result.success
+                    class="border rounded-lg p-4" {result.success
                       ? 'border-green-200 bg-green-50'
                       : 'border-red-200 bg-red-50'}"
                   >

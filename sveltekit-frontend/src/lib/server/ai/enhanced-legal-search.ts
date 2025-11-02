@@ -6,10 +6,11 @@ import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
 import { Embeddings } from "@langchain/core/embeddings";
 import { OllamaEmbeddings } from "@langchain/ollama";
 
+// Define the Ollama URL based on environment variable with a localhost fallback
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+
 // Define legal document type
-type LegalDocumentType = {
-  id: string;
-  title: string;
+type LegalDocumentType = { id: string;, title: string;
   description: string;
   content: string;
   jurisdiction: string;
@@ -34,7 +35,7 @@ const initializeLegalDocuments = loadLegalDocuments();
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
     model: 'embeddinggemma:latest', // Changed from 'nomic-embed-text'
-    baseUrl: 'http://localhost:11434'
+    baseUrl: OLLAMA_URL // Use the environment-aware constant
   });
   try {
     const result = await embeddings.embedQuery(text);
@@ -63,14 +64,10 @@ export class GemmaEmbeddings extends Embeddings { // Renamed from NomicEmbedding
   }
 }
 // Enhanced Legal Search Configuration
-export interface LegalSearchConfig {
-  useVector: boolean;
-  useFallback: boolean;
+export interface LegalSearchConfig { useVector: boolean;, useFallback: boolean;
   maxResults: number;
   similarityThreshold: number;
-  boostFactors: {
-    title: number;
-    exact_match: number;
+  boostFactors: { title: number;, exact_match: number;
     jurisdiction: number;
     category: number;
     recency: number;
@@ -90,9 +87,7 @@ const defaultConfig: LegalSearchConfig = {
   }
 }
 // Enhanced Legal Search Result
-export interface LegalSearchResult {
-  id: string;
-  title: string;
+export interface LegalSearchResult { id: string;, title: string;
   content: string;
   description?: string;
   jurisdiction: string;
@@ -103,9 +98,7 @@ export interface LegalSearchResult {
   score: number;
   searchType: 'vector' | 'hybrid' | 'fallback';
   confidence: number;
-  relevanceFactors: {
-    semantic: number;
-    exact_match: number;
+  relevanceFactors: { semantic: number;, exact_match: number;
     jurisdiction_match: number;
     category_match: number;
   }
@@ -139,7 +132,7 @@ export class EnhancedLegalSearchService {
       const documents = legalDocuments.map((doc) => ({
         pageContent: `${doc.title}\n\n${doc.description}\n\n${doc.content}`,
         metadata: {
-          id: doc.id,
+         , id: doc.id,
           title: doc.title,
           jurisdiction: doc.jurisdiction,
           category: doc.category,
@@ -158,9 +151,7 @@ export class EnhancedLegalSearchService {
     try {
       // Only attempt if database is available
       if (process.env.DATABASE_URL) { // Changed from import.meta.env.DATABASE_URL
-        const pgConfig = {
-          postgresConnectionOptions: {
-            connectionString: process.env.DATABASE_URL // Changed from import.meta.env.DATABASE_URL
+        const pgConfig = { postgresConnectionOptions: {, connectionString: process.env.DATABASE_URL // Changed from import.meta.env.DATABASE_URL
           },
           tableName: 'search_index',
           columns: {
@@ -198,14 +189,13 @@ export class EnhancedLegalSearchService {
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
-            },
+              'Content-Type': `application/json` },
             body: JSON.stringify({
               query,
               limit: options.maxResults || this.config.maxResults,
               threshold: this.config.similarityThreshold,
               filters: {
-                category: options.category,
+               , category: options.category,
                 jurisdiction: options.jurisdiction
               }
             })
@@ -238,8 +228,7 @@ export class EnhancedLegalSearchService {
                     ...result.metadata,
                     semantic_score: result.semantic_score,
                     distance: result.distance,
-                    source: 'enhanced_semantic_search'
-                  }
+                    source: `enhanced_semantic_search` }
                 })
               );
               console.log(`✅ Enhanced semantic search returned ${enhancedResults.length} results`);

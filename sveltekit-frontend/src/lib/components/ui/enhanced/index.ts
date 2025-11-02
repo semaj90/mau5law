@@ -28,7 +28,7 @@ export const animationClasses = {
   slideUp: 'animate-slide-up',
   processing: 'animate-processing',
   pulseSlow: 'animate-pulse-slow',
-  bounceSubtle: 'animate-bounce-subtle',
+  bounceSubtle: 'animate-bounce-subtle'
 } as const;
 // NieR styling shortcuts
 export const nierClasses = {
@@ -39,7 +39,7 @@ export const nierClasses = {
   input: 'yorha-input',
   panel: 'yorha-panel',
   separator: 'yorha-separator',
-  scrollbar: 'yorha-scrollbar',
+  scrollbar: 'yorha-scrollbar'
 } as const;
 // Shadcn-compatible classes
 // Compatibility class mappings (previously shadcn-prefixed)
@@ -51,5 +51,4 @@ export const compatClasses = {
   input: 'bits-input',
   label: 'bits-label',
   dialog: 'bits-dialog-content',
-  select: 'bits-select-trigger',
-} as const;
+  select: 'bits-select-trigger` } as const;

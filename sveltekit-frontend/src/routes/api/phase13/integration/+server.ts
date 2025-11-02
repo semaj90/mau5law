@@ -14,16 +14,12 @@ function timeoutSignal(ms: number) {
 }
 
 // Add explicit types to avoid `any`
-type SystemHealthServices = {
-  ollama: boolean;
-  qdrant: boolean;
+type SystemHealthServices = { ollama: boolean;, qdrant: boolean;
   database: boolean;
   redis: boolean;
 };
 
-type SystemHealthResult = {
-  services: SystemHealthServices;
-  timestamp: string;
+type SystemHealthResult = { services: SystemHealthServices;, timestamp: string;
   phase: string;
   error?: string;
 };
@@ -34,7 +30,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
     // Run service checks in parallel and handle rejections explicitly
     const [ollamaRes, qdrantRes] = await Promise.allSettled([
       fetch('http://localhost:11434/api/version', { signal: timeoutSignal(timeout) }),
-      fetch('http://localhost:6333/collections', { signal: timeoutSignal(timeout) }),
+      fetch('http://localhost:6333/collections', { signal: timeoutSignal(timeout) })
     ]);
     const ollamaOk = ollamaRes.status === 'fulfilled' && (ollamaRes.value as Response).ok;
     const qdrantOk = qdrantRes.status === 'fulfilled' && (qdrantRes.value as Response).ok;
@@ -54,51 +50,43 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
     } catch {
       redisOk = false;
     }
-    return {
-      services: {
-        ollama: !!ollamaOk,
+    return { services: {, ollama: !!ollamaOk,
         qdrant: !!qdrantOk,
         database: dbOk,
-        redis: redisOk,
+        redis: redisOk
       },
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Simplified Health Check',
+      phase: 'Phase 13 - Simplified Health Check'
     };
   } catch (error: any) {
     console.error('Health check error:', error);
-    return {
-      services: {
-        ollama: false,
+    return { services: {, ollama: false,
         qdrant: false,
         database: false,
-        redis: false,
+        redis: false
       },
       error: 'Health check failed',
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Simplified Health Check',
+      phase: 'Phase 13 - Simplified Health Check'
     };
   }
 }
 
-const mockIntegration: {
-  getIntegrationStatus: () => SystemHealthResult;
-  initializeFullIntegration: () => Promise<SystemHealthResult>;
+const mockIntegration: { getIntegrationStatus: () => SystemHealthResult;, initializeFullIntegration: () => Promise<SystemHealthResult>;
 } = {
   getIntegrationStatus: () =>
-    ({
-      services: {
-        ollama: true,
+    ({ services: {, ollama: true,
         qdrant: true,
         database: true,
-        redis: true,
+        redis: true
       },
       integration: 'active' as unknown as string, // preserve original shape, typed as string
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Mock',
+      phase: 'Phase 13 - Mock'
     }) as unknown as SystemHealthResult,
   initializeFullIntegration: async () => {
     return await getSystemHealth();
-  },
+  }
 };
 /*
  * GET - System Health and Integration Status
@@ -116,10 +104,9 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'health-check',
           data: health,
           metadata: {
-            processingTime: Date.now() - startTime,
+           , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            phase: 'Phase 13 Full Integration',
-          },
+            phase: `Phase 13 Full Integration` }
         });
       }
       case 'status': {
@@ -129,9 +116,9 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'integration-status',
           data: status,
           metadata: {
-            processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+           , processingTime: Date.now() - startTime,
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'services': {
@@ -143,16 +130,16 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'service-detection',
           data: services,
           metadata: {
-            processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+           , processingTime: Date.now() - startTime,
+            timestamp: new Date().toISOString()
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-            availableActions: ['health', 'status', 'services'],
+            error: `Unknown; action: ${action}`,
+            availableActions: ['health', 'status', 'services']
           },
           { status: 400 }
         );
@@ -165,9 +152,9 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Integration API failed',
         message: error instanceof Error ? error.message : 'Unknown error',
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -191,10 +178,10 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'initialize',
           data: initResult,
           metadata: {
-            processingTime: Date.now() - startTime,
+           , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            message: 'Phase 13 integration initialized',
-          },
+            message: 'Phase 13 integration initialized'
+          }
         });
       }
       case 'apply-suggestion': {
@@ -202,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Suggestion is required for apply-suggestion action',
+              error: 'Suggestion is required for apply-suggestion action'
             },
             { status: 400 }
           );
@@ -214,9 +201,9 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'apply-suggestion',
           data: applyResult,
           metadata: {
-            processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+           , processingTime: Date.now() - startTime,
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'configure': {
@@ -224,8 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Configuration is required for configure action',
-            },
+              error: `Configuration is required for configure action` },
             { status: 400 }
           );
         }
@@ -236,10 +222,10 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'configure',
           data: configResult,
           metadata: {
-            processingTime: Date.now() - startTime,
+           , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            configuration: config,
-          },
+            configuration: config
+          }
         });
       }
       case 'test-services': {
@@ -251,19 +237,19 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'test-services',
           data: {
             ...testResult,
-            detailedStatus,
+            detailedStatus
           },
           metadata: {
-            processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+           , processingTime: Date.now() - startTime,
+            timestamp: new Date().toISOString()
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-            availableActions: ['initialize', 'apply-suggestion', 'configure', 'test-services'],
+            error: `Unknown; action: ${action}`,
+            availableActions: ['initialize', 'apply-suggestion', 'configure', 'test-services']
           },
           { status: 400 }
         );
@@ -276,9 +262,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Integration configuration failed',
         message: error instanceof Error ? error.message : 'Unknown error',
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -300,10 +286,10 @@ export const PUT: RequestHandler = async ({ request }) => {
       action: 'update-settings',
       data: updateResult,
       metadata: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        updatedSettings: { services, features, performance },
-      },
+        updatedSettings: { services, features, performance }
+      }
     });
   } catch (error: any) {
     console.error('Phase 13 Integration PUT error:', error);
@@ -313,9 +299,9 @@ export const PUT: RequestHandler = async ({ request }) => {
         error: 'Integration update failed',
         message: error instanceof Error ? error.message : 'Unknown error',
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -335,10 +321,9 @@ export const DELETE: RequestHandler = async () => {
       action: 'reset-integration',
       data: resetResult,
       metadata: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        message: 'Integration reset to default mock configuration',
-      },
+        message: `Integration reset to default mock configuration` }
     });
   } catch (error: any) {
     console.error('Phase 13 Integration DELETE error:', error);
@@ -348,9 +333,9 @@ export const DELETE: RequestHandler = async () => {
         error: 'Integration reset failed',
         message: error instanceof Error ? error.message : 'Unknown error',
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );

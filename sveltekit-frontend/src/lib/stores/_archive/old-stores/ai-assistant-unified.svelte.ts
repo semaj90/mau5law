@@ -3,9 +3,7 @@
  * Compatible with GlobalAIAssistantButton.svelte
  */
 
-export interface AIMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface AIMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
 }
@@ -63,9 +61,7 @@ class AIAssistantUnified {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: this.state.messages.map(m => ({
-            role: m.role,
+        body: JSON.stringify({, messages: this.state.messages.map(m => ({, role: m.role,
             content: m.content
           })),
           userId

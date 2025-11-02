@@ -1,14 +1,15 @@
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Standardized Button import for bits-ui
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
   let isConnecting = $state<boolean>(false);
-  let selectedItem: EvidenceCard | null = $state(null);
+  let selectedItem: EvidenceCard | null = null;
   let canvasItems = $state<EvidenceCard[]>([]);
   let connections = $state<Array<{ from string; to: string; type: string }>>([]);
   let caseData = $state({
@@ -140,7 +141,7 @@ import type { Case } from '$lib/types';
     selectedItem = null;
   }
   // Drag and drop functionality
-  let draggedItem: EvidenceCard | null = $state(null);
+  let draggedItem: EvidenceCard | null = null;
   let dragOffset = $state({ x: 0, y: 0 });
   function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
     draggedItem = item;
@@ -289,7 +290,7 @@ import type { Case } from '$lib/types';
             }}
           >
             <Card.Root
-              class="w-60" bg-white border-2 {selectedItem?.id === item.id
+              class="w-60 bg-white border-2" {selectedItem?.id === item.id
                 ? 'border-blue-500'
                 : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"
             >

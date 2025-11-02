@@ -1,5 +1,6 @@
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
@@ -148,7 +149,7 @@
         {#each Array.isArray(messages) ? messages : [] as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
-              class="max-w-[70%]" p-3 rounded-lg {message.role === 'user'
+              class="max-w-[70%] p-3 rounded-lg" {message.role === 'user'
                 ? 'bg-primary text-primary-foreground ml-auto'
                 : 'bg-muted text-muted-foreground'}"
             >

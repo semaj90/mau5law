@@ -68,7 +68,7 @@ export const envHelper = {
     // Always prefer docker service default when no explicit setting is present.
     // Avoid hardcoded localhost URLs in server code; allow explicit env override for local dev.
     return dockerDefault;
-  },
+  }
 };
 
 export function getOllamaEndpoint(): string {

@@ -5,33 +5,23 @@ import { join } from 'path';
 const RUNTIME_DIR = '.runtime';
 const STATE_FILE = join(RUNTIME_DIR, 'observability-state.json');
 }
-export interface ObservabilityState {
-  baselines: {
-    p99_latency_ms: number;
+export interface ObservabilityState { baselines: {, p99_latency_ms: number;
   error_rate_percent: number;
   connection_count: number;
   last_calculated: string;
   }
-  sustained_counters: {
-    p99_breaches: number;
-    error_spikes: number;
+  sustained_counters: { p99_breaches: number;, error_spikes: number;
     anomaly_spikes: number;
     last_reset: string;
   }
-  daily_budgets: {
-    max_p99_breaches: number;
-    max_error_spikes: number;
+  daily_budgets: { max_p99_breaches: number;, max_error_spikes: number;
     max_anomaly_spikes: number;
   }
-  metadata: {
-    created_at: string;
-    last_updated: string;
+  metadata: { created_at: string;, last_updated: string;
     version: string;
   }
 }
-const DEFAULT_STATE: ObservabilityState = {
-  baselines: {
-    p99_latency_ms: 100,
+const DEFAULT_STATE: ObservabilityState = { baselines: {, p99_latency_ms: 100,
     error_rate_percent: 1.0,
     connection_count: 10,
     last_calculated: new Date().toISOString()

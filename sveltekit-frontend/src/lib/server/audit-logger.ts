@@ -4,9 +4,7 @@ import type { AuthenticatedUser } from './auth-guard.js';
 import { db } from './db.js';
 import { storage_audits } from './schema.js';
 }
-export interface AuditEntry {
-  timestamp: string;
-  action: 'upload' | 'delete' | 'access' | 'update';
+export interface AuditEntry { timestamp: string;, action: 'upload' | 'delete' | 'access' | 'update';
   userId: string;
   userEmail: string;
   bucket: string;
@@ -33,7 +31,7 @@ export class StorageAuditLogger {
     bucket: string,
     key: string,
     request: Request;
-    success: boolean,
+   , success: boolean,
     error?: string
     metadata?: { [key: string]: any }
   ): Promise<void> {
@@ -88,9 +86,7 @@ export class StorageAuditLogger {
       // For now, we'll use a simple approach that can be extended
       if (typeof window === 'undefined' && global.database) {
         // Example database integration - adjust based on your ORM/database setup
-        await global.database.auditLog.create({
-          data: {
-            timestamp: new Date(entry.timestamp),
+        await global.database.auditLog.create({ data: {, timestamp: new Date(entry.timestamp),
             action: entry.action,
             userId: entry.userId,
             userEmail: entry.userEmail,
@@ -204,10 +200,8 @@ export class StorageAuditLogger {
       cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
       if (this.dbLogEnabled && global.database) {
         // Archive database logs
-        await global.database.auditLog.deleteMany({
-          where: {
-            timestamp: {
-              lt: cutoffDate
+        await global.database.auditLog.deleteMany({ where: {, timestamp: {
+             , lt: cutoffDate
             }
           }
         });

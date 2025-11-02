@@ -14,13 +14,9 @@ interface EmbeddingCacheConfig {
   batchSize?: number;
   useGPUAcceleration?: boolean;
 }
-interface CachedEmbedding {
-  id: string;
-  text: string;
+interface CachedEmbedding { id: string;, text: string;
   vector: Float32Array;
-  metadata: {
-    model: string;
-    timestamp: number;
+  metadata: { model: string;, timestamp: number;
     gpuProcessed: boolean;
     threadId: string;
   }
@@ -34,7 +30,7 @@ export class EmbeddingCacheMiddleware {
       pythonWorkerUrl: config.pythonWorkerUrl || 'http://localhost:8000',
       cacheTTL: config.cacheTTL || 86400, // 24 hours
       batchSize: config.batchSize || 128, // RTX 3060 Ti optimized
-      useGPUAcceleration: config.useGPUAcceleration ?? true,
+      useGPUAcceleration: config.useGPUAcceleration ?? true
     }
   }
   // Initialize centralized cache (no-op, already initialized)
@@ -72,7 +68,7 @@ export class EmbeddingCacheMiddleware {
           vector: new Float32Array(
             (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).vector
           ),
-          metadata: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).metadata,
+          metadata: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).metadata
         }
       }
     } catch (error) {
@@ -88,19 +84,18 @@ export class EmbeddingCacheMiddleware {
         headers: {
           'Content-Type': 'application/json',
           'X-GPU-Batch-Size': this.config.batchSize.toString(),
-          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        },
+          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` },
         body: JSON.stringify({
           texts,
           model: 'nomic-embed-text-v1',
           precision: 'fp16', // RTX 3060 Ti tensor core optimization
-          batch_size: this.config.batchSize,
-        }),
+          batch_size: this.config.batchSize
+        })
       });
       if (!response.ok) {
         throw new Error(`Python worker error: ${response.status} ${response.statusText}`);
       }
-      const { vectors, metadata } = (await response.json()) as { vectors: number[][]; metadata: any }
+      const { vectors, metadata } = (await response.json()) as { vectors: number[][];, metadata: any }
       console.log(`🚀 GPU embedding batch completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`);
       return vectors.map((v: number[]) => new Float32Array(v));
     } catch (error) {
@@ -118,8 +113,8 @@ export class EmbeddingCacheMiddleware {
         model: 'nomic-embed-text-v1',
         timestamp: Date.now(),
         gpuProcessed: true,
-        threadId: 'middleware_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-      },
+        threadId: 'middleware_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+      }
     }
     try {
       await optimizedCache.set('embed:' + cacheKey, vector, 3600);
@@ -138,7 +133,7 @@ export class EmbeddingCacheMiddleware {
         text: text,
         vector: Array.from(vector),
         metadata: embedding.metadata,
-        created_at: new Date().toISOString(),
+        created_at: new Date().toISOString()
       });
     } catch (error) {
       console.error('Postgres embedding storage failed:', error);
@@ -197,8 +192,7 @@ export class EmbeddingCacheMiddleware {
           model: 'nomic-embed-text-v1',
           precision: 'fp16',
           batchSize: 1,
-          priority: 'high',
-        });
+          priority: `high` });
         if (gpuResult.result?.embeddings) {
           return new Float32Array(
             (
@@ -224,14 +218,14 @@ export class EmbeddingCacheMiddleware {
   async getBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
     if (texts.length === 0) return [];
     const results: Float32Array[] = new Array(texts.length);
-    const missingTexts: { index: number; text: string; cacheKey: string }[] = [];
+    const missingTexts: { index: number; text: string;, cacheKey: string }[] = [];
     await this.initializeRedisCache();
     // Use WebGPU batch operations for cache checking
     try {
       const cacheOperations = texts.map((text, i) => ({
         type: 'get' as const,
         key: `embed:${this.generateCacheKey(text)}`,
-        options: { decompress: true },
+        options: { decompress: true }
       }));
       const cachedResults = await optimizedCache.batch(cacheOperations);
       // Process batch results
@@ -297,8 +291,8 @@ export class EmbeddingCacheMiddleware {
           ttl: 3600,
           compress: true,
           parallel: true;
-          priority: 'high' as const,
-        },
+         , priority: 'high' as const
+        }
       }));
       try {
         // Parallel WebGPU-optimized storage
@@ -325,9 +319,7 @@ export class EmbeddingCacheMiddleware {
     return results;
   }
   // Get cache statistics
-  async getCacheStats(): Promise<{
-    redisConnected: boolean;
-    postgresConnected: boolean;
+  async getCacheStats(): Promise<{ redisConnected: boolean;, postgresConnected: boolean;
     totalEmbeddings: number;
     gpuAcceleration: boolean;
   }> {
@@ -336,7 +328,7 @@ export class EmbeddingCacheMiddleware {
     try {
       const countResult = await (threadSafePostgres.queryJsonbDocuments?.(
         'embeddings',
-        { path: 'metadata.model', value: 'nomic-embed-text-v1', operator: '@>' },
+        { path: 'metadata.model', value: 'nomic-embed-text-v1', operator: `@>` },
         { limit: 1000 }
       ) || Promise.resolve([]));
       totalEmbeddings = countResult.length;
@@ -347,7 +339,7 @@ export class EmbeddingCacheMiddleware {
       redisConnected: true, // Using centralized cache service
       postgresConnected: !!postgresHealth,
       totalEmbeddings,
-      gpuAcceleration: this.config.useGPUAcceleration,
+      gpuAcceleration: this.config.useGPUAcceleration
     }
   }
   // Clear embeddings cache
@@ -392,14 +384,13 @@ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any
   return {
     embedding,
     metadata: {
-      cacheHit: false, // TODO: Track cache hits
-      processingTime: Date.now() - startTime,
+      cacheHit: false, // TODO: Track cache hits; processingTime: Date.now() - startTime,
       documentContext: {
         documentType: query.documentType,
         jurisdiction: query.jurisdiction,
-        practiceArea: query.practiceArea,
-      },
-    },
+        practiceArea: query.practiceArea
+      }
+    }
   }
 }
 // Batch legal document embeddings

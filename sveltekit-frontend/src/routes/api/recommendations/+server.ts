@@ -11,7 +11,7 @@ async function accessMemoryMCP(query: string, userContext: any): Promise<any> {
   // Simulate memory access - would integrate with actual MCP memory system
   return [
     { relatedId: 'memory-1', content: query, relevance: 0.8 },
-    { relatedId: 'memory-2', content: userContext?.lastQuery, relevance: 0.6 },
+    { relatedId: 'memory-2', content: userContext?.lastQuery, relevance: 0.6 }
   ].filter(m => m.content);
 }
 
@@ -28,7 +28,7 @@ async function safeAnalyzeUserPatterns(userId: string): Promise<any> {
     frequentCases: [],
     queryComplexity: 'medium',
     usageFrequency: 1,
-    timePatterns: { mostActiveHours: ['09:00-17:00'] },
+    timePatterns: { mostActiveHours: ['09:00-17:00'] }
   };
 }
 
@@ -41,8 +41,7 @@ async function safeGenerateRecommendations(userId: string, limit = 3): Promise<a
   // fallback synthetic recommendations
   return Array.from({ length: limit }).map((_, i) => ({
     id: `rec-${i + 1}`,
-    content: `Suggested action ${i + 1}`,
-  }));
+    content: `Suggested action ${i + 1}' }));
 }
 
 // Recommendation endpoint using enhanced reranker, Neo4j, and memory
@@ -77,8 +76,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json(
             {
               success: false,
-              error: 'userId is required',
-            },
+              error: `userId is required` },
             { status: 400 }
           );
         }
@@ -86,8 +84,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const patterns = await safeAnalyzeUserPatterns(userId);
         const suggestions = [
           `Continue reviewing ${patterns.preferredTopics[0]} cases from yesterday?`,
-          `Complete the analysis for ${patterns.frequentCases[0] || 'ongoing cases'}?`,
-          `Review the updated ${patterns.preferredTopics[1] || 'documents'}?`,
+          `Complete the analysis for ${patterns.frequentCases[0] || 'ongoing cases` }?`,
+          `Review the updated ${patterns.preferredTopics[1] || 'documents` }?`,
         ].filter(Boolean);
         return json({
           suggestions,
@@ -96,8 +94,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           userPattern: {
             complexity: patterns.queryComplexity,
             frequency: patterns.usageFrequency,
-            activeHours: patterns.timePatterns.mostActiveHours,
-          },
+            activeHours: patterns.timePatterns.mostActiveHours
+          }
         });
       }
       case 'trending': {
@@ -111,7 +109,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'privacy compliance regulations',
           ],
           period: '24h',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'feedback': {
@@ -120,8 +118,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json(
             {
               success: false,
-              error: 'userId, recommendationId, and rating are required',
-            },
+              error: `userId, recommendationId, and rating are required` },
             { status: 400 }
           );
         }
@@ -131,14 +128,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           message: 'Feedback recorded successfully',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -146,7 +142,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         success: false,
-        error: error?.message || 'Failed to generate recommendations',
+        error: error?.message || 'Failed to generate recommendations'
       },
       { status: 500 }
     );
@@ -169,8 +165,8 @@ export const GET: RequestHandler = async ({ url }) => {
           complexity: patterns.queryComplexity,
           frequency: patterns.usageFrequency,
           topTopics: patterns.preferredTopics.slice(0, 3),
-          activeHours: patterns.timePatterns.mostActiveHours,
-        },
+          activeHours: patterns.timePatterns.mostActiveHours
+        }
       });
     }
     // Service overview
@@ -178,11 +174,11 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'recommendation-engine',
       status: 'operational',
       endpoints: {
-        suggest: '/api/recommendations?action=suggest (POST)',
+       , suggest: '/api/recommendations?action=suggest (POST)',
         resume: '/api/recommendations?action=resume (POST)',
         trending: '/api/recommendations?action=trending (POST)',
         feedback: '/api/recommendations?action=feedback (POST)',
-        user_resume: '/api/recommendations?userId={id}&type=resume (GET)',
+        user_resume: '/api/recommendations?userId={id}&type=resume (GET)'
       },
       capabilities: [
         '"Pick up where you left off" prompts',
@@ -199,16 +195,16 @@ export const GET: RequestHandler = async ({ url }) => {
         userPatterns: true,
         contextAware: true,
         graphEnhanced: true,
-        machineLearning: true,
+        machineLearning: true
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -223,6 +219,6 @@ export const quickRecommend: RequestHandler = async ({ request }) => {
     return json(data, { status: 200 });
   } catch (error) {
     console.error('Error in /api/recommendations:', error);
-    return json({ error: 'Failed to get legal recommendations' }, { status: 500 });
+    return json({ error: `Failed to get legal recommendations` }, { status: 500 });
   }
 };

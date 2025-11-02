@@ -11,13 +11,9 @@
 // import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings, LegalEmbeddingQuery } from '$lib/server/embedding-cache-middleware.js';
 import { EmbeddingAdapter, cosineSimilarity, type EmbeddingResult } from '$lib/embedding/embedding-adapter.js';
 
-export interface EmbeddedDocument {
-  id: string;
-  content: string;
+export interface EmbeddedDocument { id: string;, content: string;
   embedding: Float32Array;
-  metadata: {
-    model: string;
-    timestamp: number;
+  metadata: { model: string;, timestamp: number;
     cacheHit: boolean;
     processingTime: number;
     dimensions: number;
@@ -27,9 +23,7 @@ export interface EmbeddedDocument {
   };
 }
 
-export interface SemanticSearchResult {
-  document: EmbeddedDocument;
-  similarity: number;
+export interface SemanticSearchResult { document: EmbeddedDocument;, similarity: number;
   score: number;
   index: number;
 }
@@ -44,15 +38,11 @@ export interface RAGQueryOptions {
   jurisdiction?: string;
 }
 
-export interface EnhancedRAGQueryResult {
-  query: string;
-  queryEmbedding: EmbeddedDocument;
+export interface EnhancedRAGQueryResult { query: string;, queryEmbedding: EmbeddedDocument;
   documentEmbeddings: EmbeddedDocument[];
   similarDocuments: SemanticSearchResult[];
   processingTime: number;
-  metadata: {
-    model: string;
-    threshold: number;
+  metadata: { model: string;, threshold: number;
     contextLimit: number;
     cacheHits: EmbeddedDocument[];
     totalDocuments: number;
@@ -70,27 +60,19 @@ interface QueueJobResponseBody {
   // Add other potential properties if the API returns them
 }
 
-interface QueuedJobResponse {
-  jobId: string;
-  queued: boolean;
+interface QueuedJobResponse { jobId: string;, queued: boolean;
   message: string;
 }
 
-interface ServiceInfrastructureStatus {
-  embeddingGemma: boolean;
-  gpuCache: boolean;
+interface ServiceInfrastructureStatus { embeddingGemma: boolean;, gpuCache: boolean;
   rabbitMQ: boolean;
 }
 
-interface ServiceHealthStats {
-  totalEmbeddings: number;
-  cacheHitRate: number;
+interface ServiceHealthStats { totalEmbeddings: number;, cacheHitRate: number;
   averageProcessingTime: number;
 }
 
-interface ServiceHealthResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  infrastructure: ServiceInfrastructureStatus;
+interface ServiceHealthResponse { status: 'healthy' | 'degraded' | 'unhealthy';, infrastructure: ServiceInfrastructureStatus;
   stats: ServiceHealthStats;
   capabilities: string[];
 }
@@ -172,7 +154,7 @@ export class EnhancedEmbeddingService {
         const response = await fetch(apiEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
@@ -257,14 +239,14 @@ export class EnhancedEmbeddingService {
         const response = await fetch(apiEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
           throw new Error(`Failed to get batch embeddings from server: ${response.status} ${response.statusText}`);
         }
 
-        const result: { embeddings: number[][]; cacheHits: boolean[] } = await response.json();
+        const result: { embeddings: number[][];, cacheHits: boolean[] } = await response.json();
         embeddings = result.embeddings.map(arr => new Float32Array(arr));
         // TODO: Use result.cacheHits to populate individual cacheHit metadata
       } else {
@@ -280,8 +262,7 @@ export class EnhancedEmbeddingService {
         metadata: {
           model,
           timestamp: Date.now(),
-          cacheHit: false, // TODO: Track individual cache hits from API response
-          processingTime: 0, // Batch processing time;
+          cacheHit: false, // TODO: Track individual cache hits from API response; processingTime: 0, // Batch processing time;
           dimensions: embeddings[index].length,
           practiceArea,
           jurisdiction
@@ -396,13 +377,13 @@ export class EnhancedEmbeddingService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          entity_type: entityType,
+         , entity_type: entityType,
           entity_id: entityId,
           text_content: textContent,
           embedding_type: embeddingType || 'content',
           priority: 5,
           correlationId: `enhanced_${Date.now()}_${Math.random().toString(36).slice(2, 11)}` // Replaced substr with slice
-        }),
+        })
       });
       if (!response.ok) { // Removed unnecessary: 'as any' cast
         throw new Error(`Failed to queue job: ${response.status} ${response.statusText}`); // Corrected error message interpolation
@@ -411,15 +392,14 @@ export class EnhancedEmbeddingService {
       return {
         jobId: result.meta?.correlationId || 'unknown',
         queued: result.published || false,
-        message: result.message || 'Job queued successfully'
+        message: result.message || 'Job queued successfully';
       };
     } catch (error) {
       console.error('Failed to queue embedding job:', error);
       return {
         jobId: 'failed',
         queued: false,
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
+        message: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
   /**
@@ -463,9 +443,7 @@ export class EnhancedEmbeddingService {
       status,
       infrastructure,
       stats: {
-        totalEmbeddings: 0, // TODO: Get from API response
-        cacheHitRate: 0,    // TODO: Get from API response
-        averageProcessingTime: 0 // TODO: Get from API response
+        totalEmbeddings: 0, // TODO: Get from API response; cacheHitRate: 0,    // TODO: Get from API response; averageProcessingTime: 0 // TODO: Get from API response
       },
       capabilities
     };

@@ -7,9 +7,7 @@ import pkg from 'pg';
 const { Client } = pkg;
 import { lucia } from './auth.js';
 // Simple user type for authentication
-export interface SimpleUser {
-  id: string;
-  email: string;
+export interface SimpleUser { id: string;, email: string;
   first_name?: string;
   last_name?: string;
   role: string;
@@ -25,7 +23,7 @@ export class SimpleAuthService {
       port: 5432,
       database: 'legal_ai_db',
       user: 'legal_admin',
-      password: '123456',
+      password: '123456'
     });
     await client.connect();
     return client;
@@ -64,7 +62,7 @@ export class SimpleAuthService {
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
-        is_active: user.is_active,
+        is_active: user.is_active
       };
     } finally {
       await client.end();

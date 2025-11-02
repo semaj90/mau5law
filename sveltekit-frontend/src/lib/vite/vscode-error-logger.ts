@@ -4,7 +4,7 @@ import type { ViteDevServer } from 'vite';
 /**
  * Simple VS Code Error Logger plugin for Vite
  * - Writes a JSON log to .vscode/vite-errors.json
- * - Listens for devServer ws: 'vite:error' and: 'vite:warning'
+ * - Listens for devServer ws: 'vite:error'; and: 'vite:warning'
  * - Records buildStart/buildEnd events
  */
 
@@ -47,9 +47,7 @@ interface ViteSocketPayload {
 
 type LogLevel = 'error' | 'warn' | 'info';
 
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
+interface LogEntry { timestamp: string;, level: LogLevel;
   message: string;
   stack?: string | null;
   file?: string;
@@ -62,9 +60,7 @@ interface LogEntry {
   [key: string]: any;
 }
 
-interface ErrorLog {
-  metadata: {
-    lastUpdated: string;
+interface ErrorLog { metadata: {, lastUpdated: string;
     version?: number;
   };
   errors: LogEntry[];
@@ -80,22 +76,20 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
     maxEntries: 500,
     includeWarnings: true,
     includeSourceMaps: true,
-    ...options,
+    ...options
   };
   let server: ViteDevServer | undefined = undefined;
-  let errorLog: ErrorLog = { metadata: { lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
+  let errorLog: ErrorLog = { metadata: {, lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
 
   function loadLog() {
     try {
       if (existsSync(config.logFile)) {
         const raw = readFileSync(config.logFile, 'utf8');
         const parsed = JSON.parse(raw) as Partial<ErrorLog> | null;
-        errorLog = {
-          metadata: {
-            lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
-            version: parsed?.metadata?.version || 1,
+        errorLog = { metadata: {, lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
+            version: parsed?.metadata?.version || 1
           },
-          errors: Array.isArray(parsed?.errors) ? (parsed!.errors as LogEntry[]) : [],
+          errors: Array.isArray(parsed?.errors) ? (parsed!.errors as LogEntry[]) : []
         };
       }
     } catch (_e: any) {
@@ -128,7 +122,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
         timestamp: new Date().toISOString(),
         level: 'error',
         message: 'Unknown error',
-        buildPhase: 'vite',
+        buildPhase: 'vite'
       };
     }
     if (typeof err === 'string') {
@@ -136,7 +130,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
         timestamp: new Date().toISOString(),
         level: 'error',
         message: err,
-        buildPhase: 'vite',
+        buildPhase: 'vite'
       };
     }
     const entry: LogEntry = {
@@ -149,7 +143,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
       column: err?.loc?.column,
       frame: err?.frame,
       plugin: err?.plugin,
-      buildPhase: 'vite',
+      buildPhase: 'vite'
     };
     return entry;
   }
@@ -179,7 +173,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
         timestamp: new Date().toISOString(),
         level: 'info',
         message: 'Build started',
-        buildPhase: 'build',
+        buildPhase: 'build'
       });
     },
     buildEnd(error: any) {
@@ -191,20 +185,20 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
           level: 'error',
           message: typeof errObj === 'string' ? errObj : errObj.message || String(errObj),
           stack: typeof errObj === 'string' ? undefined : errObj.stack,
-          buildPhase: 'build',
+          buildPhase: 'build'
         });
       } else {
         pushEntry({
           timestamp: new Date().toISOString(),
           level: 'info',
           message: 'Build completed',
-          buildPhase: 'build',
+          buildPhase: 'build'
         });
       }
-    },
+    }
   };
 }
-export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: number; enabled: boolean } = {
+export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: number;, enabled: boolean } = {
   enabled: true,
   logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
   maxEntries: 1000,
@@ -213,5 +207,5 @@ export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: 
   autoOpenProblems: false,
   notificationLevel: 'errors-only',
   integrateTasks: true,
-  generateDiagnostics: true,
+  generateDiagnostics: true
 };

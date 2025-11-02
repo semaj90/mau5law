@@ -15,13 +15,9 @@ export interface EmbeddingInput {
     priority?: 'high' | 'medium' | 'low';
   };
 }
-export interface EmbeddingOutput {
-  embedding: number[];
-  dimension: number;
+export interface EmbeddingOutput { embedding: number[];, dimension: number;
   model: string;
-  metadata: {
-    textLength: number;
-    processingTime: number;
+  metadata: { textLength: number;, processingTime: number;
     caseId?: string;
     evidenceId?: string;
     documentType?: string;
@@ -29,9 +25,7 @@ export interface EmbeddingOutput {
     timestamp: Date;
   };
 }
-export interface EmbeddingError {
-  message: string;
-  code: 'OLLAMA_UNAVAILABLE' | 'TIMEOUT' | 'INVALID_INPUT' | 'MODEL_ERROR';
+export interface EmbeddingError { message: string;, code: 'OLLAMA_UNAVAILABLE' | 'TIMEOUT' | 'INVALID_INPUT' | 'MODEL_ERROR';
   details?: any;
 }
 /**
@@ -44,7 +38,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
     if (!input.text || input.text.trim().length === 0) {
       throw {
         message: 'Text input cannot be empty',
-        code: 'INVALID_INPUT',
+        code: 'INVALID_INPUT'
       } as EmbeddingError;
     }
     // Enhanced context for legal documents
@@ -56,7 +50,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
     if (!embedding || embedding.length === 0) {
       throw {
         message: 'Failed to generate embedding - empty result',
-        code: 'MODEL_ERROR',
+        code: 'MODEL_ERROR'
       } as EmbeddingError;
     }
     const processingTime = Date.now() - startTime;
@@ -71,8 +65,8 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
         evidenceId: input.context?.evidenceId,
         documentType: input.context?.documentType,
         priority: input.context?.priority,
-        timestamp: new Date(),
-      },
+        timestamp: new Date()
+      }
     };
   } catch (error: any) {
     // Map different error types to structured errors
@@ -85,27 +79,25 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
         throw {
           message: 'Ollama service unavailable',
           code: 'OLLAMA_UNAVAILABLE',
-          details: error,
+          details: error
         } as EmbeddingError;
       }
       if (error.message?.includes('timeout')) {
         throw {
           message: 'Embedding generation timed out',
           code: 'TIMEOUT',
-          details: error,
+          details: error
         } as EmbeddingError;
       }
-      throw {
-        message: `Embedding generation failed: ${error.message || 'Unknown error'}`,
+      throw { message: 'Embedding generation, failed: ${error.message || 'Unknown error` }`,
         code: 'MODEL_ERROR',
-        details: error,
+        details: error
       } as EmbeddingError;
     }
     // Fallback for completely unknown error types
-    throw {
-      message: `Embedding generation failed: any error type`,
+    throw { message: `Embedding generation, failed: any error type`,
       code: 'MODEL_ERROR',
-      details: error,
+      details: error
     } as EmbeddingError;
   }
 });
@@ -133,16 +125,14 @@ export const batchEmbeddingActor = fromPromise(
       return results;
     } catch (error: any) {
       if (error instanceof Error) {
-        throw {
-          message: `Batch embedding failed: ${error.message || 'Unknown error'}`,
+        throw { message: 'Batch embedding, failed: ${error.message || 'Unknown error` }`,
           code: 'MODEL_ERROR',
-          details: error,
+          details: error
         } as EmbeddingError;
       }
-      throw {
-        message: `Batch embedding failed: any error type`,
+      throw { message: `Batch embedding, failed: any error type`,
         code: 'MODEL_ERROR',
-        details: error,
+        details: error
       } as EmbeddingError;
     }
   }
@@ -185,7 +175,7 @@ export async function generateLegalDocumentEmbedding(
       evidenceId,
       documentType,
       priority: 'high', // Legal documents are high priority
-    },
+    }
   });
 }
 // end of file

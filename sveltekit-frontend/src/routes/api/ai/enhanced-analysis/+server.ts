@@ -28,9 +28,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
 
-interface LegalDocument {
-  id: string;
-  content: string;
+interface LegalDocument { id: string;, content: string;
   type?: string;
 }
 
@@ -42,24 +40,16 @@ interface EnhancedAnalysisRequest {
   };
 }
 
-interface EnhancedAnalysisResponse {
-  success: boolean;
-  results: {
-    documentCount: number;
-    analysisType: string;
+interface EnhancedAnalysisResponse { success: boolean;, results: { documentCount: number;, analysisType: string;
     processingTime: number;
     performanceGain?: number;
     data: any;
   };
-  metrics: {
-    protocol: string;
-    totalEntities: number;
+  metrics: { protocol: string;, totalEntities: number;
     averageComplexity: number;
     serviceChain: string[];
   };
-  orchestration: {
-    healthy: boolean;
-    servicesUsed: string[];
+  orchestration: { healthy: boolean;, servicesUsed: string[];
     compressionRatio?: number;
   };
 }
@@ -174,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const data = Array.isArray(safeGetData(res)) ? (safeGetData(res) as unknown[]) : [];
         analysisResults = data.map((item, index) => ({
           documentId: documents[index]?.id ?? `doc_${index}`,
-          semantic: item,
+          semantic: item
         }));
         serviceChain = safeGetServiceChain(res);
         performanceGain = safeGetPerformanceGain(res);
@@ -190,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
             entities:
               typeof item === 'object' && item !== null
                 ? (asRecord(item).legalEntities ?? asRecord(item).entities ?? item)
-                : item,
+                : item
           }));
         } else {
           // Single-document response might be an object with entities or a raw value
@@ -214,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
             entities:
               typeof item === 'object' && item !== null
                 ? (asRecord(item).legalEntities ?? asRecord(item).entities ?? item)
-                : item,
+                : item
           }));
         } else {
           analysisResults = entData;
@@ -239,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisResults = settled.map((s, i) => ({
           documentId: documents[i]?.id ?? `doc_${i}`,
           reasoning: s.status === 'fulfilled' ? s.value : null,
-          error: s.status === 'rejected' ? String((s as PromiseRejectedResult).reason) : null,
+          error: s.status === 'rejected' ? String((s as PromiseRejectedResult).reason) : null
         }));
         serviceChain = ['legal-reasoning'];
       }
@@ -319,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const healthStatus =
       typeof orchestratorObj.healthCheck === 'function'
         ? await (
-            orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean; services: string[] }>
+            orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean;, services: string[] }>
           )()
         : { healthy: false, services: [] };
     const orchestratorMetrics =
@@ -334,13 +324,13 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisType,
         processingTime,
         performanceGain: performanceGain || undefined,
-        data: analysisResults,
+        data: analysisResults
       },
       metrics: {
         protocol: useGRPCOptimization ? 'grpc' : 'http',
         totalEntities,
         averageComplexity,
-        serviceChain,
+        serviceChain
       },
       orchestration: {
         healthy: Boolean((healthStatus as { healthy?: boolean })?.healthy),
@@ -348,8 +338,8 @@ export const POST: RequestHandler = async ({ request }) => {
         compressionRatio: (() => {
           const om = orchestratorMetrics as OrchestratorMetrics;
           return typeof om.compressionRatio === 'number' ? om.compressionRatio : undefined;
-        })(),
-      },
+        })()
+      }
     };
 
     console.log(
@@ -372,10 +362,10 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: {
-          message: String(err),
+         , message: String(err),
           processingTime,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -385,13 +375,9 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
   console.log('🏥 Enhanced AI Analysis health check');
   try {
-    interface OrchestratorHealth {
-      healthy: boolean;
-      services: string[];
+    interface OrchestratorHealth { healthy: boolean;, services: string[];
     }
-    interface OrchestratorMetrics {
-      totalOperations: number;
-      averageLatency: number;
+    interface OrchestratorMetrics { totalOperations: number;, averageLatency: number;
       binaryProtocolSavings: number;
       successRate: number;
       compressionRatio?: number;
@@ -420,17 +406,16 @@ export const GET: RequestHandler = async () => {
         legalReasoning: true,
         batchProcessing: true,
         grpcOptimization: true,
-        binaryProtocol: true,
+        binaryProtocol: true
       },
       metrics: {
-        totalOperations: metrics.totalOperations,
+       , totalOperations: metrics.totalOperations,
         averageLatency: Math.round(metrics.averageLatency),
         binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100,
-        successRate: Math.round(metrics.successRate * 100) / 100,
+        successRate: Math.round(metrics.successRate * 100) / 100
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2',
-    });
+      version: '2.0.0-phase2` });
   } catch (err) {
     console.error('❌ Health check failed:', err);
     return json(
@@ -438,7 +423,7 @@ export const GET: RequestHandler = async () => {
         healthy: false,
         error: String(err),
         capabilities: {},
-        metrics: {},
+        metrics: {}
       },
       { status: 503 }
     );

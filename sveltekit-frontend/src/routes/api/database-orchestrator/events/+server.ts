@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
           : { value: String(eventData) };
       events.push({
         ...(payload as Record<string, unknown>),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       } as EventData);
     };
 
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'condition:triggered',
       'health:check',
       'orchestrator:started',
-      'orchestrator:stopped',
+      'orchestrator:stopped'
     ];
 
     // Add temporary listeners
@@ -70,11 +70,11 @@ export const GET: RequestHandler = async ({ url }) => {
         count: filteredEvents.length,
         total_available: events.length,
         filters: {
-          type: eventType,
+         , type: eventType,
           since,
-          limit,
+          limit
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 200 }
     );
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Event type is required',
+          error: 'Event type is required'
         },
         { status: 400 }
       );
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: data || {},
       metadata: metadata || {},
       timestamp: new Date().toISOString(),
-      source: 'api',
+      source: 'api'
     };
 
     // Emit the custom event
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         message: 'Event triggered successfully',
         event: eventData,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

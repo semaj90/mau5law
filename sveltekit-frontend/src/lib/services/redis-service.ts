@@ -4,9 +4,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Redis pub/sub service for real-time updates
 import { createClient } from '$lib/shims/redis-shim';
 }
-export interface RedisConfig {
-  url: string;
-  retryDelayOnFailover: number;
+export interface RedisConfig { url: string;, retryDelayOnFailover: number;
   maxRetriesPerRequest: number;
 }
 class RedisService {
@@ -99,7 +97,7 @@ class RedisService {
     });
   }
   // Canvas Updates
-  public async publishCanvasNodeMoved(caseId: string, nodeId: string, position: { x: number, y: number }, userId?: string) {
+  public async publishCanvasNodeMoved(caseId: string, nodeId: string, position: {, x: number, y: number }, userId?: string) {
     await this.publish('canvas_update', {
       type: 'CANVAS_NODE_MOVED',
       caseId,
@@ -167,7 +165,7 @@ class RedisService {
       const message = JSON.stringify(data);
       await this.publisher.publish(channel, message);
     } catch (error: any) {
-      console.error(`Failed to publish to ${channel}:`, error);
+      console.error(`Failed to publish to ${channel}: ', error);
     }
   }
   // Cache operations

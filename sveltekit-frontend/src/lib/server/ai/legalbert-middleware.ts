@@ -7,64 +7,42 @@ import * as crypto from 'crypto';
 // LegalBERT middleware for specialized legal embeddings and analysis
 import { generateEmbedding } from './embeddings-simple.js';
 import { getOllamaUrl } from '$lib/server/services/docker-env';
-export interface LegalEmbeddingResult {
-  embedding: number[];
-  dimensions: number;
+export interface LegalEmbeddingResult { embedding: number[];, dimensions: number;
   model: string;
   processingTime: number;
   confidence: number;
-  metadata: {
-    textLength: number;
-    legalTerms: number;
+  metadata: { textLength: number;, legalTerms: number;
     complexity: number;
   };
 }
 // New concrete types for analysis results
-export type LegalEntity = {
-  text: string;
-  type: string;
+export type LegalEntity = { text: string;, type: string;
   confidence: number;
   startIndex?: number;
   endIndex?: number;
   context?: string;
 };
-export type LegalConcept = {
-  concept: string;
-  relevance: number;
+export type LegalConcept = { concept: string;, relevance: number;
   category: string;
 };
-export type KeyPhrase = {
-  phrase: string;
-  importance: number;
+export type KeyPhrase = { phrase: string;, importance: number;
   category: string;
 };
-export type SubCategory = {
-  category: string;
-  confidence: number;
+export type SubCategory = { category: string;, confidence: number;
 };
-export interface LegalBertAnalysisResult {
-  entities: LegalEntity[];
-  concepts: LegalConcept[];
-  sentiment: {
-    polarity: number;
-    confidence: number;
+export interface LegalBertAnalysisResult { entities: LegalEntity[];, concepts: LegalConcept[];
+  sentiment: { polarity: number;, confidence: number;
     classification: 'positive' | 'neutral' | 'negative';
   };
-  complexity: {
-    readabilityScore: number;
-    legalComplexity: number;
+  complexity: { readabilityScore: number;, legalComplexity: number;
     technicalTerms: number;
   };
   keyPhrases: KeyPhrase[];
-  summary: {
-    abstractive: string;
-    extractive: string[];
+  summary: { abstractive: string;, extractive: string[];
     keyPoints: string[];
   };
 }
-export interface LegalClassificationResult {
-  documentType: string;
-  confidence: number;
+export interface LegalClassificationResult { documentType: string;, confidence: number;
   subCategories: SubCategory[];
   jurisdiction: string;
   practiceArea: string;
@@ -72,22 +50,18 @@ export interface LegalClassificationResult {
   recommendations: string[];
 }
 // New types for model config and similarity result
-type ModelConfig = {
-  embedding: string;
-  analysis: string;
+type ModelConfig = { embedding: string;, analysis: string;
   baseUrl: string;
   apiKey?: string | undefined;
 };
-export type LegalSimilarityResult = {
-  similarity: number;
-  confidence: number;
-  factors: { semantic: number; structural: number; legal_concepts: number };
+export type LegalSimilarityResult = { similarity: number;, confidence: number;
+  factors: { semantic: number; structural: number;, legal_concepts: number };
 };
 // Metrics stub (replace with proper metrics service later)
 const metrics = {
   increment: (name: string, value: number = 1) => console.log(`[METRIC] ${name}: +${value}`),
   gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),
-  histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`),
+  histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`)
 };
 async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<T> {
   for (let i = 0; i < retries; i++) {
@@ -120,25 +94,22 @@ export function getOllamaEndpoint(): string {
   const proto = process.env.OLLAMA_PROTO || 'http';
   return `${proto}://${host}:${port}`;
 }
-const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> = {
-  local: {
-    embedding: 'embeddinggemma:latest',
+const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> = { local: {, embedding: 'embeddinggemma:latest',
     analysis: 'gemma3-legal:latest',
     // ensure the local model always uses the helper, not a hardcoded string
-    baseUrl: getOllamaEndpoint(),
+    baseUrl: getOllamaEndpoint()
   },
   huggingface: {
     embedding: 'nlpaueb/legal-bert-base-uncased',
     analysis: 'nlpaueb/legal-bert-small-uncased',
     apiKey: process.env.HUGGINGFACE_API_KEY,
-    baseUrl: 'https://api-inference.huggingface.co/models',
+    baseUrl: 'https://api-inference.huggingface.co/models'
   },
   openai: {
     embedding: 'text-embedding-3-small',
     analysis: 'gpt-4',
     apiKey: process.env.OPENAI_API_KEY,
-    baseUrl: 'https://api.openai.com/v1',
-  },
+    baseUrl: `https://api.openai.com/v1` }
 };
 export class LegalBERTMiddleware {
   private modelConfig: ModelConfig;
@@ -199,8 +170,8 @@ export class LegalBERTMiddleware {
         metadata: {
           textLength: text.length,
           legalTerms,
-          complexity,
-        },
+          complexity
+        }
       };
       // Cache result
       this.cache.set(`embedding_${textHash}`, result);
@@ -222,8 +193,8 @@ export class LegalBERTMiddleware {
         metadata: {
           textLength: text.length,
           legalTerms: 0,
-          complexity: 0.5,
-        },
+          complexity: 0.5
+        }
       };
     }
   }
@@ -251,7 +222,7 @@ export class LegalBERTMiddleware {
         sentiment,
         complexity,
         keyPhrases,
-        summary,
+        summary
       };
       // Cache result
       this.cache.set(`analysis_${textHash}`, result);
@@ -289,7 +260,7 @@ export class LegalBERTMiddleware {
       return {
         similarity,
         confidence: Math.min(emb1.confidence, emb2.confidence),
-        factors: { semantic, structural, legal_concepts },
+        factors: { semantic, structural, legal_concepts }
       };
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -297,14 +268,14 @@ export class LegalBERTMiddleware {
       return {
         similarity: 0.5,
         confidence: 0.3,
-        factors: { semantic: 0.5, structural: 0.5, legal_concepts: 0.5 },
+        factors: { semantic: 0.5, structural: 0.5, legal_concepts: 0.5 }
       };
     }
   }
   // === PRIVATE HELPER METHODS ===
   private async generateLocalEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
-      const embedding = await generateEmbedding(text, { model: 'local' });
+      const embedding = await generateEmbedding(text, { model: `local` });
       if (!embedding || embedding.length === 0) throw new Error('Local embedding generation failed');
       return embedding;
     });
@@ -315,9 +286,8 @@ export class LegalBERTMiddleware {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.modelConfig.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ inputs: text, options: { wait_for_model: true } }),
+          'Content-Type': `application/json` },
+        body: JSON.stringify({ inputs: text, options: {, wait_for_model: true } })
       });
       if (!response.ok) {
         throw new Error(`HuggingFace API error: ${response.statusText}`);
@@ -327,7 +297,7 @@ export class LegalBERTMiddleware {
       // - raw array of numbers
       // - { embeddings: number[] }
       // - { vector: number[] }
-      // - { data: [{ embedding: number[] }, ...] }
+      // - { data: [{, embedding: number[] }, ...] }
       if (Array.isArray(json) && json.every(n => typeof n === 'number')) {
         return json as number[];
       }
@@ -361,9 +331,8 @@ export class LegalBERTMiddleware {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.modelConfig.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ model: this.modelConfig.embedding, input: text }),
+          'Content-Type': `application/json` },
+        body: JSON.stringify({, model: this.modelConfig.embedding, input: text })
       });
       if (!response.ok) {
         throw new Error(`OpenAI API error: ${response.statusText}`);
@@ -401,7 +370,7 @@ export class LegalBERTMiddleware {
         confidence: 0.9,
         startIndex: match.index,
         endIndex: match.index + match[0].length,
-        context: this.getContext(text, match.index, 50),
+        context: this.getContext(text, match.index, 50)
       });
     }
     // Statutes: 42 U.S.C. § 1983
@@ -413,7 +382,7 @@ export class LegalBERTMiddleware {
         confidence: 0.95,
         startIndex: match.index,
         endIndex: match.index + match[0].length,
-        context: this.getContext(text, match.index, 50),
+        context: this.getContext(text, match.index, 50)
       });
     }
     // Monetary amounts: $1,000, $50,000.00
@@ -424,7 +393,7 @@ export class LegalBERTMiddleware {
         type: 'MONETARY_AMOUNT',
         confidence: 0.85,
         startIndex: match.index,
-        endIndex: match.index + match[0].length,
+        endIndex: match.index + match[0].length
       });
     }
     // Courts
@@ -435,7 +404,7 @@ export class LegalBERTMiddleware {
         type: 'COURT',
         confidence: 0.8,
         startIndex: match.index,
-        endIndex: match.index + match[0].length,
+        endIndex: match.index + match[0].length
       });
     }
     return entities;
@@ -449,7 +418,7 @@ export class LegalBERTMiddleware {
       constitutional: ['constitution', 'amendment', 'rights', 'due process', 'equal protection'],
       corporate: ['corporation', 'shareholder', 'director', 'fiduciary', 'merger'],
       property: ['property', 'real estate', 'ownership', 'title', 'deed'],
-      employment: ['employment', 'discrimination', 'wrongful termination', 'wages', 'benefits'],
+      employment: ['employment', 'discrimination', 'wrongful termination', 'wages', 'benefits']
     };
     const textLower = text.toLowerCase();
     for (const [category, terms] of Object.entries(legalConcepts)) {
@@ -463,8 +432,7 @@ export class LegalBERTMiddleware {
         concepts.push({
           concept: category,
           relevance: Math.min(relevance, 1.0),
-          category: 'legal_domain',
-        });
+          category: `legal_domain` });
       }
     }
     return concepts.sort((a, b) => b.relevance - a.relevance);
@@ -489,8 +457,7 @@ export class LegalBERTMiddleware {
     return {
       polarity,
       confidence: Math.min(totalScore / 10, 1.0),
-      classification: polarity > 0.1 ? 'positive' : polarity < -0.1 ? 'negative' : 'neutral',
-    };
+      classification: polarity > 0.1 ? 'positive' : polarity < -0.1 ? 'negative' : `neutral` };
   }
   private calculateTextComplexity(text: string): LegalBertAnalysisResult['complexity'] {
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
@@ -537,7 +504,7 @@ export class LegalBERTMiddleware {
         phrases.push({
           phrase: match[0],
           importance: 0.8 + index * 0.05,
-          category: 'legal_term',
+          category: 'legal_term'
         });
       }
     });
@@ -554,10 +521,9 @@ export class LegalBERTMiddleware {
       keyPoints.push('Document relates to contractual matters');
     if (text.toLowerCase().includes('damages') || text.toLowerCase().includes('liability'))
       keyPoints.push('Involves potential damages or liability');
-    return {
-      abstractive: `Legal document summary: ${extractive[0]?.substring(0, 200) || 'No summary available'}...`,
+    return { abstractive: 'Legal document, summary: ${extractive[0]?.substring(0, 200) || 'No summary available` }...`,
       extractive,
-      keyPoints,
+      keyPoints
     };
   }
   private async performDocumentClassification(text: string): Promise<LegalClassificationResult> {
@@ -583,12 +549,12 @@ export class LegalBERTMiddleware {
       confidence,
       subCategories: [
         { category: 'primary', confidence: confidence },
-        { category: 'secondary', confidence: confidence * 0.7 },
+        { category: 'secondary', confidence: confidence * 0.7 }
       ],
       jurisdiction: this.extractJurisdiction(text),
       practiceArea: this.extractPracticeArea(text),
       urgency: this.assessUrgency(text),
-      recommendations: ['Review for accuracy', 'Check citations', 'Verify jurisdiction'],
+      recommendations: ['Review for accuracy', 'Check citations', 'Verify jurisdiction']
     };
   }
   // === UTILITY METHODS ===
@@ -707,7 +673,7 @@ export class LegalBERTMiddleware {
       tort: ['negligence', 'liability', 'damages'],
       criminal: ['criminal', 'felony', 'misdemeanor'],
       corporate: ['corporation', 'merger', 'securities'],
-      employment: ['employment', 'discrimination', 'wrongful termination'],
+      employment: ['employment', 'discrimination', 'wrongful termination']
     };
     const textLower = text.toLowerCase();
     for (const [area, terms] of Object.entries(practiceAreas)) {
@@ -729,12 +695,12 @@ export class LegalBERTMiddleware {
       concepts: [{ concept: 'general', relevance: 0.5, category: 'unknown' }],
       sentiment: { polarity: 0, confidence: 0.3, classification: 'neutral' },
       complexity: { readabilityScore: 50, legalComplexity: 0.5, technicalTerms: 0 },
-      keyPhrases: [{ phrase: 'legal document', importance: 0.5, category: 'general' }],
+      keyPhrases: [{ phrase: 'legal document', importance: 0.5, category: `general` }],
       summary: {
         abstractive: 'Legal document analysis unavailable',
         extractive: [text.substring(0, 100) + '...'],
-        keyPoints: ['Document requires manual review'],
-      },
+        keyPoints: ['Document requires manual review']
+      }
     };
   }
   private generateFallbackClassification(_text: string): LegalClassificationResult {
@@ -745,17 +711,17 @@ export class LegalBERTMiddleware {
       jurisdiction: 'unknown',
       practiceArea: 'general',
       urgency: 'medium',
-      recommendations: ['Manual classification required', 'Review document type'],
+      recommendations: ['Manual classification required', 'Review document type']
     };
   }
   // === PUBLIC API METHODS ===
   /**
    * Get middleware statistics
-   */ getStatistics(): { requestCount: number; cacheSize: number; model: ModelConfig } {
+   */ getStatistics(): { requestCount: number; cacheSize: number;, model: ModelConfig } {
     return {
       requestCount: this.requestCount,
       cacheSize: this.cache.size,
-      model: this.modelConfig,
+      model: this.modelConfig
     };
   }
   /**
@@ -766,7 +732,7 @@ export class LegalBERTMiddleware {
   }
   /**
    * Health check
-   */ async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
+   */ async healthCheck(): Promise<{ status: string;, details: Record<string, unknown> }> {
     try {
       const testResult = await this.generateLegalEmbedding('health check');
       return {
@@ -775,14 +741,14 @@ export class LegalBERTMiddleware {
           model: this.modelConfig.embedding,
           embeddingDimensions: testResult.dimensions,
           confidence: testResult.confidence,
-          cacheSize: this.cache.size,
-        },
+          cacheSize: this.cache.size
+        }
       };
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       return {
         status: 'unhealthy',
-        details: { error: err.message, model: this.modelConfig?.embedding },
+        details: { error: err.message, model: this.modelConfig?.embedding }
       };
     }
   }

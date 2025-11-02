@@ -26,7 +26,7 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   retryDelayOnFailover: 100,
   enableReadyCheck: true,
   // Connection pooling for high concurrency
-  maxLoadingTimeout: 5000,
+  maxLoadingTimeout: 5000
 };
 // Development-specific optimizations
 export const REDIS_DEV_CONFIG: RedisOptions = {
@@ -39,7 +39,7 @@ export const REDIS_DEV_CONFIG: RedisOptions = {
       return null;
     }
     return Math.min(times * 500, 1500);
-  },
+  }
 };
 // Production-specific optimizations
 export const REDIS_PROD_CONFIG: RedisOptions = {
@@ -59,7 +59,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   },
   // Production connection pooling
   lazyConnect: false,
-  enableAutoPipelining: true,
+  enableAutoPipelining: true
 };
 // Database assignments for different services
 export const REDIS_DATABASES = {
@@ -83,8 +83,7 @@ export const SERVICE_CONFIGS = {
   MAIN_CACHE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.CACHE,
-    keyPrefix: 'legal_ai:',
-  },
+    keyPrefix: 'legal_ai:` },
   // Rate limiting service (redisRateLimit.ts)
   RATE_LIMIT: {
     ...REDIS_BASE_CONFIG,
@@ -97,7 +96,7 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.LOKI_CACHE,
     keyPrefix: 'loki:',
-    enableAutoPipelining: true,
+    enableAutoPipelining: true
   },
   // GPU cache orchestration
   GPU_ORCHESTRATOR: {
@@ -112,14 +111,14 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.WORKER_QUEUE,
     keyPrefix: 'worker:',
     enableReadyCheck: true,
-    maxLoadingTimeout: 10000,
+    maxLoadingTimeout: 10000
   },
   // Pub/Sub for real-time features
   PUBSUB: {
     ...REDIS_BASE_CONFIG,
     db: 0, // Pub/Sub uses db 0
     lazyConnect: false, // Immediate connection for pub/sub
-    enableOfflineQueue: false,
+    enableOfflineQueue: false
   },
   // TensorRT-LLM caching
   TENSORRT_LLM: {
@@ -127,7 +126,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.TENSORRT_CACHE,
     keyPrefix: 'tensorrt:',
     commandTimeout: 30000, // Longer timeout for model operations
-    maxLoadingTimeout: 60000,
+    maxLoadingTimeout: 60000
   },
   // Gemma embeddings caching
   GEMMA_EMBEDDINGS: {
@@ -135,7 +134,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.GEMMA_EMBEDDINGS,
     keyPrefix: 'gemma:',
     commandTimeout: 20000, // Optimized for embedding operations
-    enableAutoPipelining: true,
+    enableAutoPipelining: true
   },
   // PostgreSQL vector cache
   PGVECTOR_CACHE: {
@@ -143,8 +142,8 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.PGVECTOR_CACHE,
     keyPrefix: 'pgvector:',
     commandTimeout: 15000,
-    enableAutoPipelining: true,
-  },
+    enableAutoPipelining: true
+  }
 } as const;
 // Environment-specific configuration selection
 export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOptions {
@@ -152,7 +151,7 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
   if (service && SERVICE_CONFIGS[service]) {
     return {
       ...baseConfig,
-      ...SERVICE_CONFIGS[service],
+      ...SERVICE_CONFIGS[service]
     };
   }
   return baseConfig;
@@ -214,12 +213,11 @@ export const KEY_PATTERNS = {
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
-  SYSTEM_METRICS: (component: string) => `metrics:${component}`,
-} as const;
+  SYSTEM_METRICS: (component: string) => `metrics:${component}` } as const;
 // Lua scripts for atomic operations
 export const LUA_SCRIPTS = {
   // Rate limiting script (from redisRateLimit.ts)
-  RATE_LIMIT: `
+  RATE_LIMIT: '
     local key       = KEYS[1]
     local now       = tonumber(ARGV[1])
     local window    = tonumber(ARGV[2])
@@ -240,7 +238,7 @@ export const LUA_SCRIPTS = {
     return { allowed and 1 or 0, count, retryAfter }
   `,
   // Cache with TTL and LRU
-  CACHE_SET_WITH_LRU: `
+  CACHE_SET_WITH_LRU: '
     local key = KEYS[1]
     local value = ARGV[1]
     local ttl = tonumber(ARGV[2])
@@ -259,8 +257,7 @@ export const LUA_SCRIPTS = {
       end
     end
     return 'OK'
-  `,
-} as const;
+  ` } as const;
 // Connection pool configuration
 export const POOL_CONFIG = {
   // Development pool (smaller)
@@ -272,7 +269,7 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 30000,
     createRetryIntervalMillis: 200,
-    maxRetries: 3,
+    maxRetries: 3
   },
   // Production pool (larger)
   production: {
@@ -283,8 +280,8 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 60000,
     createRetryIntervalMillis: 500,
-    maxRetries: 5,
-  },
+    maxRetries: 5
+  }
 } as const;
 // Export the configuration based on environment
 export const REDIS_CONFIG = getRedisConfig();
@@ -304,7 +301,7 @@ export const MONITORING_CONFIG = {
     connectionCount: 0.9, // 90% max connections alert
     slowQueries: 100, // Alert if > 100 slow queries/min
     responseTime: 1000, // Alert if > 1000ms average response time
-  },
+  }
 };
 // Export everything for easy importing
 export default {
@@ -317,5 +314,5 @@ export default {
   MONITORING_CONFIG,
   getRedisConfig,
   createServiceConfig,
-  getRedisUrl,
+  getRedisUrl
 };

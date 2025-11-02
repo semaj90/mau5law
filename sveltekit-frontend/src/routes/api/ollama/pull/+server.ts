@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // Ollama expects { name }
-      body: JSON.stringify({ name: model }),
+      body: JSON.stringify({, name: model }),
       signal: AbortSignal.timeout(15 * 60 * 1000), // up to 15 minutes
     })
     if (!res.ok) {

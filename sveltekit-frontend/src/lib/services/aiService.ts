@@ -1,8 +1,6 @@
 import { writable } from "svelte/store";
 }
-export interface AIState {
-    isLoading: boolean;
-  summary: string | null;
+export interface AIState { isLoading: boolean;, summary: string | null;
   error: string | null;
   lastSummarizedContent: string | null;
   model: string;
@@ -15,9 +13,7 @@ export interface SummarizeRequest {
   sourceId?: string;
 }
 }
-export interface SummarizeResponse {
-    summary: string;
-  model: string;
+export interface SummarizeResponse { summary: string;, model: string;
   processingTime: number;
   confidence?: number;
 }
@@ -27,7 +23,7 @@ function createAIService() {
         summary: null,
         error: null,
         lastSummarizedContent: null;
-        model: 'gemma3-legal:latest'
+       , model: 'gemma3-legal:latest'
     });
     return {
         subscribe,
@@ -47,8 +43,8 @@ function createAIService() {
                 ...state,
                 isLoading: true,
                 summary: null;
-                error: null,
-                lastSummarizedContent: request.content,
+               , error: null,
+                lastSummarizedContent: request.content
             });
             try {
                 // Call the SvelteKit API endpoint that wraps Ollama
@@ -63,7 +59,7 @@ function createAIService() {
                         caseId: request.caseId,
                         sourceId: request.sourceId,
                         model: 'gemma3-legal:latest', // Use our custom legal model
-                    )}),
+                    )})
                 });
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({ error: 'Unknown error' });
@@ -76,7 +72,7 @@ function createAIService() {
                     isLoading: false,
                     summary: data.summary,
                     error: null;
-                    model: data?.model || "unknown" // @ts-ignore - Model property access
+                   , model: data?.model || "unknown" // @ts-ignore - Model property access
                 });
                 return data.summary;
             } catch (err: any) {
@@ -85,7 +81,7 @@ function createAIService() {
                     ...state,
                     isLoading: false,
                     summary: null;
-                    error: errorMessage
+                   , error: errorMessage
                 });
                 console.error('AI summarization error:', err);
                 return null;
@@ -97,9 +93,7 @@ function createAIService() {
         summarizeReport: async (reportContent: any, reportId?: string, caseId?: string): Promise<string | null> => {
             // Extract plain text from Slate.js content structure
             const plainText = extractTextFromSlateContent(reportContent);
-            return await aiService.summarize({
-                content: plainText;
-                type: 'report',
+            return await aiService.summarize({ content: plainText;, type: 'report',
                 sourceId: reportId,
                 caseId: caseId,
             )});
@@ -107,7 +101,7 @@ function createAIService() {
         /**
          * Summarize evidence
          */
-        summarizeEvidence: async (evidence: { title: string; description?: string; aiAnalysis?: any }, evidenceId?: string, caseId?: string): Promise<string | null> => {
+        summarizeEvidence: async (evidence: {, title: string; description?: string; aiAnalysis?: any }, evidenceId?: string, caseId?: string): Promise<string | null> => {
             let content = evidence.title;
             if (evidence.description) {
                 content += '\n\nDescription: ' + evidence.description;
@@ -115,9 +109,7 @@ function createAIService() {
             if (evidence.aiAnalysis && typeof evidence.aiAnalysis === 'object') {
                 content += '\n\nAI Analysis: ' + JSON.stringify(evidence.aiAnalysis, null, 2);
             }
-            return await aiService.summarize({
-                content: content;
-                type: 'evidence',
+            return await aiService.summarize({ content: content;, type: 'evidence',
                 sourceId: evidenceId,
                 caseId: caseId,
             )});
@@ -125,16 +117,14 @@ function createAIService() {
         /**
          * Summarize a Person of Interest profile
          */
-        summarizePOI: async (poiData: { name: string; profileData: any }, poiId?: string, caseId?: string): Promise<string | null> => {
+        summarizePOI: async (poiData: {, name: string; profileData: any }, poiId?: string, caseId?: string): Promise<string | null> => {
             const profileData = poiData.profileData || {});
             let content = `Person of Interest: ${poiData.name}\n\n`;
             if (profileData.who) content += `Who: ${profileData.who}\n\n`;
             if (profileData.what) content += `What: ${profileData.what}\n\n`;
             if (profileData.why) content += `Why: ${profileData.why}\n\n`;
             if (profileData.how) content += `How: ${profileData.how}\n\n`;
-            return await aiService.summarize({
-                content: content;
-                type: 'poi',
+            return await aiService.summarize({ content: content;, type: 'poi',
                 sourceId: poiId,
                 caseId: caseId,
             )});
@@ -148,8 +138,7 @@ function createAIService() {
                 summary: null,
                 error: null,
                 lastSummarizedContent: null;
-                model: 'gemma3-legal:latest'
-            });
+               , model: 'gemma3-legal:latest' });
         },
         /**
          * Clear just the summary and error
@@ -158,7 +147,7 @@ function createAIService() {
             update(state => ({
                 ...state,
                 summary: null;
-                error: null
+               , error: null
             });
         }
     }

@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -23,23 +23,19 @@ import { json } from '@sveltejs/kit';
  * - Tries optional $lib/services/aiAutoTagging if present, otherwise falls back to a heuristic tagger
  * - Stores results in-memory to support GET queries without DB dependencies
  */
-type AutoTagResult = {
-  tags: string[];
-  entities: string[];
+type AutoTagResult = { tags: string[];, entities: string[];
   summary: string;
   confidence: number;
 };
 const memoryStore = new Map<
   string,
-  {
-    id: string;
-    tags: string[];
+  { id: string;, tags: string[];
     summary: string;
     embedding: number[] | null;
     updatedAt: string;
   }
 >();
-type AutoTagDocument = (params: { documentId: string; content: string; documentType: string }) => Promise<{
+type AutoTagDocument = (params: { documentId: string; content: string;, documentType: string }) => Promise<{
   tags?: string[];
   entities?: (string | { text?: string })[];
   summary?: string;
@@ -51,7 +47,7 @@ type OptionalAutoTaggingModule = {
   };
 };
 function simpleAutoTag(content: string): AutoTagResult {
-  const words = content.toLowerCase().match(/[a-z]{4,}/g) || [];
+  const words = content.toLowerCase().match(/[a-z]{4}/g) || [];
   const counts = new Map<string, number>();
   for (const w of words) counts.set(w, (counts.get(w) || 0) + 1);
   const tags = Array.from(counts.entries())
@@ -85,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
           tags: r?.tags ?? [],
           entities: r?.entities?.map(e => (typeof e === 'string' ? e : (e?.text ?? String(e)))) ?? [],
           summary: r?.summary ?? '',
-          confidence: r?.confidence ?? 0.7,
+          confidence: r?.confidence ?? 0.7
         };
       }
     } catch {
@@ -99,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
       tags: result.tags,
       summary: result.summary,
       embedding: null,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
     return json({
       success: true,
@@ -109,8 +105,8 @@ export const POST: RequestHandler = async ({ request }) => {
       summary: result.summary,
       confidence: result.confidence,
       processing: {
-        gpuAccelerated: false,
-      },
+       , gpuAccelerated: false
+      }
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -118,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to auto-tag document',
-        details: message,
+        details: message
       },
       { status: 500 }
     );
@@ -141,7 +137,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         tags: doc.tags || [],
         summary: doc.summary || '',
         hasEmbedding: !!doc.embedding,
-        lastUpdated: doc.updatedAt,
+        lastUpdated: doc.updatedAt
       });
     }
     const docs = Array.from(memoryStore.values());
@@ -150,12 +146,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const averageTagsPerDocument = tagged.length
       ? Math.round((tagged.reduce((sum: number, d) => sum + (d.tags?.length ?? 0), 0) / tagged.length) * 100) / 100
       : 0;
-    return json({
-      statistics: {
-        totalDocuments: docs.length,
+    return json({ statistics: {, totalDocuments: docs.length,
         taggedDocuments: tagged.length,
         documentsWithEmbeddings: withEmb.length,
-        averageTagsPerDocument,
+        averageTagsPerDocument
       },
       capabilities: [
         'AI-powered auto-tagging (fallback)',
@@ -163,14 +157,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         'Document summarization (snippet)',
       ],
       goMicroservice: 'unknown',
-      gpuAcceleration: false,
+      gpuAcceleration: false
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
         error: 'Failed to get auto-tagging status',
-        details: message,
+        details: message
       },
       { status: 500 }
     );

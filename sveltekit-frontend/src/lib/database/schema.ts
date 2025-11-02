@@ -32,7 +32,7 @@ export const users = pgTable('users', {
   profilePicture: text('profile_picture'),
   preferences: json('preferences').default(sql`'{}'::json`),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Sessions table for Lucia v3 compatibility
 export const sessions = pgTable('sessions', {
@@ -40,10 +40,10 @@ export const sessions = pgTable('sessions', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true, mode: `date` }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 // User audit logs for security tracking
 export const userAuditLogs = pgTable('user_audit_logs', {
@@ -55,7 +55,7 @@ export const userAuditLogs = pgTable('user_audit_logs', {
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 // Cases table
 export const cases = pgTable('cases', {
@@ -70,7 +70,7 @@ export const cases = pgTable('cases', {
   createdBy: uuid('created_by').references(() => users.id),
   assignedTo: uuid('assigned_to').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Documents table with vector embeddings
 export const documents = pgTable('documents', {
@@ -91,7 +91,7 @@ export const documents = pgTable('documents', {
   source: varchar('source', { length: 100 }).default('upload'), // upload, scan, email, etc.
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Evidence table
 export const evidence = pgTable('evidence', {
@@ -111,7 +111,7 @@ export const evidence = pgTable('evidence', {
   aiAnalysis: json('ai_analysis'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // AI chat history and interactions
 export const aiInteractions = pgTable('ai_interactions', {
@@ -129,7 +129,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   confidence: integer('confidence'), // 0-100
   feedback: json('feedback'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 // Search index for semantic search
 export const searchIndex = pgTable('search_index', {
@@ -142,7 +142,7 @@ export const searchIndex = pgTable('search_index', {
   embedding: vector('embedding', { dimensions: 1536 }),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Relations for type safety - use drizzle `relations()` helpers so codegen isn't
 // required for basic type relationships. These exports keep $inferSelect typings
@@ -154,34 +154,34 @@ export const usersRelations = relations(users, ({ many }) => ({
   assignedCases: many(cases),
   createdDocuments: many(documents),
   createdEvidence: many(evidence),
-  aiInteractions: many(aiInteractions),
+  aiInteractions: many(aiInteractions)
 }));
 export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users),
+  user: one(users)
 }));
 export const userAuditLogsRelations = relations(userAuditLogs, ({ one }) => ({
-  user: one(users),
+  user: one(users)
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users),
   assignee: one(users),
   documents: many(documents),
   evidence: many(evidence),
-  aiInteractions: many(aiInteractions),
+  aiInteractions: many(aiInteractions)
 }));
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case one(cases),
   creator: one(users),
-  evidence: many(evidence),
+  evidence: many(evidence)
 }));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case one(cases),
   document: one(documents),
-  creator: one(users),
+  creator: one(users)
 }));
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users),
-  case one(cases),
+  case one(cases)
 }));
 // Runtime guard: flag unintended server-side auth imports of legacy schema
 // Use a safer typed cast to avoid `any` lint errors

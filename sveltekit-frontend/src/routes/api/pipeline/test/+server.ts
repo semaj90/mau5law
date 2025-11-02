@@ -18,7 +18,7 @@ type RedisCompat = any & {
 };
 
 const redis = createClient({
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
 }) as RedisCompat;
 let redisConnected = $state<boolean>(false);
 async function connectRedis(): Promise<void> {
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async () => {
     postgresql: false,
     redis: false,
     compute: false,
-    vectorSync: false,
+    vectorSync: false
   };
 
   // PostgreSQL
@@ -114,8 +114,8 @@ export const GET: RequestHandler = async () => {
         ownerType: 'evidence',
         ownerId: 'health-check-test',
         event: 'upsert',
-        data: { healthCheck: true },
-      }),
+        data: {, healthCheck: true }
+      })
     });
     health.compute = computeRes.ok;
   } catch (computeError) {
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         health,
         healthScore,
-        ready,
+        ready
       },
       { status: 500 }
     );
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async () => {
     success: true,
     health,
     healthScore,
-    ready,
+    ready
   });
 };
 
@@ -171,21 +171,21 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
         description: 'Employment contract with indemnification clause',
         evidenceType: 'document',
         fileType: 'pdf',
-        tags: [],
+        tags: []
       },
       {
         title: `Email Evidence ${testId}`,
         description: 'Email communication regarding contract terms',
         evidenceType: 'communication',
         fileType: 'email',
-        tags: [],
+        tags: []
       },
       {
         title: `Photo Evidence ${testId}`,
         description: 'Photograph of signed contract',
         evidenceType: 'visual',
         fileType: 'image',
-        tags: [],
+        tags: []
       },
     ])
     .returning();
@@ -202,7 +202,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
       await redisXAdd('autotag:requests', '*', {
         type: 'evidence',
         id: ev.id,
-        testId,
+        testId
       });
     } catch (redisErr) {
       console.warn('Failed to enqueue autotag request for evidence id', ev?.id, redisErr);
@@ -228,7 +228,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
     evidenceCreated: testEvidenceList.length,
     evidenceTagged: Array.isArray(updatedEvidence?.tags) ? (updatedEvidence?.tags as unknown[]).length > 0 : false,
     tags: updatedEvidence?.tags || [],
-    success: true,
+    success: true
   };
 }
 
@@ -239,20 +239,19 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
   const batchSize = (_testData?.batchSize as number) || 10;
 
   // Create batch of similar evidence
-  const batchData = {
-    items: Array.from({ length: batchSize }, (_, i) => ({
+  const batchData = { items: Array.from({, length: batchSize }, (_, i) => ({
       id: `batch_item_${i}_${testId}`,
       title: `Batch Evidence ${i}`,
       description: `Test description for clustering ${i}`,
-      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5),
-    })),
+      embedding: Array.from({, length: 768 }, () => Math.random() - 0.5)
+    }))
   };
 
   // Send batch to autotag worker for clustering
   const streamId = await redisXAdd('autotag:requests', '*', {
     type: 'evidence_batch',
     id: testId,
-    data: JSON.stringify(batchData),
+    data: JSON.stringify(batchData)
   });
   console.log('Submitted batch for k-means clustering:', streamId);
 
@@ -264,7 +263,7 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
     batchSize,
     streamId,
     clustered: true, // Would check actual clustering results
-    success: true,
+    success: true
   };
 }
 
@@ -277,12 +276,12 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        operation: 'generate_text',
+       , operation: 'generate_text',
         input: testText,
-        fallback: true,
-      }),
+        fallback: true
+      })
     });
-    let webgpuResult: { success: boolean; device: string } = { success: false, device: 'none' };
+    let webgpuResult: { success: boolean;, device: string } = { success: false, device: `none` };
     if (webgpuResponse.ok) {
       webgpuResult = await webgpuResponse.json();
     }
@@ -291,14 +290,14 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
       webgpuSupported: webgpuResult.device === 'webgpu',
       fallbackUsed: webgpuResult.device !== 'webgpu',
       deviceUsed: webgpuResult.device,
-      success: !!webgpuResult.success,
+      success: !!webgpuResult.success
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return {
       testInput: testText,
       error: message,
-      success: false,
+      success: false
     };
   }
 }
@@ -319,19 +318,19 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
             title: `Stress Test Evidence ${i} ${testId}`,
             description: `Stress test evidence entry ${i}`,
             evidenceType: 'document',
-            tags: ['stress-test', testId],
+            tags: ['stress-test', testId]
           })
           .returning();
 
         const response = await fetch('http://localhost:5173/api/compute', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             ownerType: 'evidence',
             ownerId: testEvidence.id,
             event: 'upsert',
-            data: { stressTest: true, index: i },
-          }),
+            data: {, stressTest: true, index: i }
+          })
         });
 
         const result = response.ok ? await response.json() : null;
@@ -339,14 +338,14 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
           index: i,
           evidenceId: testEvidence.id,
           jobId: result?.jobId,
-          success: !!result?.jobId,
+          success: !!result?.jobId
         };
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
         return {
           index: i,
           error: msg,
-          success: false,
+          success: false
         };
       }
     })()
@@ -379,7 +378,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
     totalTimeMs: totalTime,
     averageTimePerJobMs: averageTimePerJob,
     throughputJobsPerSecond: totalTime > 0 ? concurrentJobs / (totalTime / 1000) : 0,
-    success: successfulJobs > 0,
+    success: successfulJobs > 0
   };
 }
 
@@ -388,5 +387,5 @@ export const _pipelineTests = {
   testEvidenceProcessing,
   testBatchClustering,
   testWebGPUFallback,
-  testStressLoad,
+  testStressLoad
 };

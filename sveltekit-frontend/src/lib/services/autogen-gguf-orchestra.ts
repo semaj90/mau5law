@@ -16,9 +16,7 @@ export type AgentType =
   | 'RESEARCH_ASSISTANT'
   | 'COMPLIANCE_CHECKER';
 // Agent Configuration
-export interface AutoGenAgent {
-  id: string;
-  type: AgentType;
+export interface AutoGenAgent { id: string;, type: AgentType;
   name: string;
   role: string;
   systemPrompt: string;
@@ -29,9 +27,7 @@ export interface AutoGenAgent {
   useFlashAttention: boolean;
 }
 // Orchestra Task
-export interface OrchestraTask {
-  id: string;
-  type: 'LEGAL_ANALYSIS' | 'DOCUMENT_REVIEW' | 'RESEARCH' | 'COMPLIANCE_CHECK' | 'MULTI_AGENT_COLLABORATION';
+export interface OrchestraTask { id: string;, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_REVIEW' | 'RESEARCH' | 'COMPLIANCE_CHECK' | 'MULTI_AGENT_COLLABORATION';
   input: string;
   agents: string[]; // Agent IDs
   workflow: OrchestraWorkflowStep[]; // single definition
@@ -43,9 +39,7 @@ export interface OrchestraTask {
   context?: any; // optional task-level context used by steps
 }
 // Workflow Step
-export interface OrchestraWorkflowStep {
-  stepId: string;
-  agentId: string;
+export interface OrchestraWorkflowStep { stepId: string;, agentId: string;
   instruction: string;
   inputs: string[];
   outputs: string[];
@@ -54,9 +48,7 @@ export interface OrchestraWorkflowStep {
   parallel?: boolean;
 }
 // Orchestra Response
-export interface OrchestraResponse {
-  taskId: string;
-  success: boolean;
+export interface OrchestraResponse { taskId: string;, success: boolean;
   results: Record<string, unknown>;
   agentResults: AgentResult[];
   totalProcessingTime: number;
@@ -65,9 +57,7 @@ export interface OrchestraResponse {
   error?: string;
 }
 // Orchestra Metrics
-export interface OrchestraMetrics {
-  totalTasks: number;
-  completedTasks: number;
+export interface OrchestraMetrics { totalTasks: number;, completedTasks: number;
   failedTasks: number;
   activeAgents: number;
   averageProcessingTime: number;
@@ -86,9 +76,7 @@ type GGUFRuntime = {
   // other runtime members if needed
 };
 
-export interface OrchestraStatus {
-  initialized: boolean;
-  activeAgents: number;
+export interface OrchestraStatus { initialized: boolean;, activeAgents: number;
   totalAgents: number;
   activeTasks: number;
   ggufReady: boolean;
@@ -96,18 +84,14 @@ export interface OrchestraStatus {
   modelsLoaded: string[];
 }
 
-export interface AgentResult {
-  agentId: string;
-  agentType: AgentType;
+export interface AgentResult { agentId: string;, agentType: AgentType;
   result: string;
   processingTime: number;
   tokens: number;
   model: string;
 }
 
-export interface TaskQueueItem {
-  taskId: string;
-  type: string;
+export interface TaskQueueItem { taskId: string;, type: string;
   status: 'PROCESSING' | 'COMPLETED' | 'FAILED';
   timestamp: number;
   agents: string[];
@@ -134,7 +118,7 @@ export class AutoGenGGUFOrchestra {
     activeTasks: 0,
     ggufReady: false,
     flashAttentionEnabled: false,
-    modelsLoaded: [],
+    modelsLoaded: []
   });
   public metrics = writable<OrchestraMetrics>({
     totalTasks: 0,
@@ -145,7 +129,7 @@ export class AutoGenGGUFOrchestra {
     tokensPerSecond: 0,
     gpuUtilization: 0,
     agentUtilization: {},
-    modelUtilization: {},
+    modelUtilization: {}
   });
   public taskQueue = writable<TaskQueueItem[]>([]);
   constructor() {
@@ -165,7 +149,7 @@ export class AutoGenGGUFOrchestra {
         batchSize: 512,
         threads: 8,
         gpuLayers: 35, // RTX 3060 Ti optimized
-        flashAttention: true,
+        flashAttention: true
       }) as GGUFRuntime;
       // Wait for GGUF runtime to be ready
       await this.waitForGGUFReady();
@@ -182,7 +166,7 @@ export class AutoGenGGUFOrchestra {
         ggufReady: true,
         flashAttentionEnabled: true,
         totalAgents: this.agents.size,
-        modelsLoaded: ['gemma3-legal', 'nomic-embed-text'],
+        modelsLoaded: ['gemma3-legal', 'nomic-embed-text']
       }));
       console.log('✅ AutoGen GGUF Orchestra initialized successfully');
     } catch (error: any) {
@@ -236,7 +220,7 @@ export class AutoGenGGUFOrchestra {
         priority: 'HIGH',
         model: 'gemma3-legal',
         useGGUF: true,
-        useFlashAttention: true,
+        useFlashAttention: true
       },
       {
         id: 'legal_analyst',
@@ -249,7 +233,7 @@ export class AutoGenGGUFOrchestra {
         priority: 'HIGH',
         model: 'gemma3-legal',
         useGGUF: true,
-        useFlashAttention: true,
+        useFlashAttention: true
       },
       {
         id: 'document_reviewer',
@@ -262,7 +246,7 @@ export class AutoGenGGUFOrchestra {
         priority: 'HIGH',
         model: 'gemma3-legal',
         useGGUF: true,
-        useFlashAttention: true,
+        useFlashAttention: true
       },
       {
         id: 'research_assistant',
@@ -275,7 +259,7 @@ export class AutoGenGGUFOrchestra {
         priority: 'MEDIUM',
         model: 'gemma3-legal',
         useGGUF: true,
-        useFlashAttention: false,
+        useFlashAttention: false
       },
       {
         id: 'compliance_checker',
@@ -288,7 +272,7 @@ export class AutoGenGGUFOrchestra {
         priority: 'MEDIUM',
         model: 'gemma3-legal',
         useGGUF: true,
-        useFlashAttention: false,
+        useFlashAttention: false
       },
     ];
     defaultAgents.forEach(agent => {
@@ -306,7 +290,7 @@ export class AutoGenGGUFOrchestra {
     const fullTask: OrchestraTask = {
       ...taskInput,
       id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // use slice instead of deprecated substr
-      retryCount: 0,
+      retryCount: 0
     };
     this.activeTasks.set(fullTask.id, fullTask);
     this.totalTasks++;
@@ -318,7 +302,7 @@ export class AutoGenGGUFOrchestra {
         type: fullTask.type,
         status: 'PROCESSING',
         timestamp: Date.now(),
-        agents: fullTask.agents,
+        agents: fullTask.agents
       } as TaskQueueItem,
     ]);
     try {
@@ -336,7 +320,7 @@ export class AutoGenGGUFOrchestra {
         agentResults: results.agentResults,
         totalProcessingTime,
         tokensUsed: results.totalTokens,
-        gpuUtilization: results.gpuUtilization,
+        gpuUtilization: results.gpuUtilization
       };
       // Update task status
       this.taskQueue.update(queue =>
@@ -362,7 +346,7 @@ export class AutoGenGGUFOrchestra {
         totalProcessingTime: 0,
         tokensUsed: 0,
         gpuUtilization: 0,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       };
     }
   }
@@ -398,8 +382,7 @@ export class AutoGenGGUFOrchestra {
         repeatPenalty: 1.1,
         stopTokens: ['END_RESPONSE', '\n\n---'],
         // map our agent priority (uppercase) into the lowercase request-level field expected by runtimes
-        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown as: 'low' | 'medium' | 'high' | 'critical',
-      };
+        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown; as: 'low' | 'medium' | 'high' | 'critical` };
       // Execute with GGUF runtime (GPU accelerated) - safe call with fallback
       const stepStartTime = Date.now();
       let response: GGUFInferenceResponse | null = null;
@@ -431,8 +414,7 @@ export class AutoGenGGUFOrchestra {
         result: response!.text,
         processingTime: stepProcessingTime,
         tokens: response!.tokens?.length || 0,
-        model: agent?.model || 'unknown',
-      });
+        model: agent?.model || 'unknown` });
       totalTokens += response!.tokens?.length || 0;
       totalGpuUtilization += 75; // Estimated GPU utilization for RTX 3060 Ti
     }
@@ -440,7 +422,7 @@ export class AutoGenGGUFOrchestra {
       results,
       agentResults,
       totalTokens,
-      gpuUtilization: task.workflow.length ? totalGpuUtilization / task.workflow.length : 0,
+      gpuUtilization: task.workflow.length ? totalGpuUtilization / task.workflow.length : 0
     };
   }
   /**
@@ -462,9 +444,7 @@ export class AutoGenGGUFOrchestra {
    * Pre-built legal workflows
    */
   public static getLegalWorkflows() {
-    return {
-      documentAnalysis: {
-        type: 'DOCUMENT_REVIEW',
+    return { documentAnalysis: {, type: 'DOCUMENT_REVIEW',
         agents: ['user_proxy', 'document_reviewer', 'legal_analyst'],
         workflow: [
           {
@@ -473,7 +453,7 @@ export class AutoGenGGUFOrchestra {
             instruction: 'Review this document and identify key issues, missing clauses, and areas of concern',
             inputs: ['document_text'],
             outputs: ['review_results'],
-            timeout: 30000,
+            timeout: 30000
           },
           {
             stepId: 'legal_analysis',
@@ -482,12 +462,12 @@ export class AutoGenGGUFOrchestra {
               'Provide legal analysis based on the document review, including risk assessment and recommendations',
             inputs: ['review_results'],
             outputs: ['legal_analysis'],
-            timeout: 30000,
+            timeout: 30000
           },
         ],
         priority: 'HIGH',
         timeout: 120000,
-        maxRetries: 2,
+        maxRetries: 2
       },
       legalResearch: {
         type: 'RESEARCH',
@@ -499,7 +479,7 @@ export class AutoGenGGUFOrchestra {
             instruction: 'Conduct comprehensive legal research on the given topic',
             inputs: ['research_topic'],
             outputs: ['research_results'],
-            timeout: 45000,
+            timeout: 45000
           },
           {
             stepId: 'analysis_synthesis',
@@ -507,12 +487,12 @@ export class AutoGenGGUFOrchestra {
             instruction: 'Analyze the research results and provide actionable insights',
             inputs: ['research_results'],
             outputs: ['final_analysis'],
-            timeout: 30000,
+            timeout: 30000
           },
         ],
         priority: 'MEDIUM',
         timeout: 180000,
-        maxRetries: 1,
+        maxRetries: 1
       },
       complianceCheck: {
         type: 'COMPLIANCE_CHECK',
@@ -524,7 +504,7 @@ export class AutoGenGGUFOrchestra {
             instruction: 'Check this document/process for regulatory compliance',
             inputs: ['compliance_target'],
             outputs: ['compliance_results'],
-            timeout: 30000,
+            timeout: 30000
           },
           {
             stepId: 'risk_assessment',
@@ -532,13 +512,13 @@ export class AutoGenGGUFOrchestra {
             instruction: 'Assess compliance risks and provide remediation recommendations',
             inputs: ['compliance_results'],
             outputs: ['risk_assessment'],
-            timeout: 30000,
+            timeout: 30000
           },
         ],
         priority: 'HIGH',
         timeout: 120000,
-        maxRetries: 2,
-      },
+        maxRetries: 2
+      }
     };
   }
   /**
@@ -568,13 +548,13 @@ export class AutoGenGGUFOrchestra {
       agentUtilization: this.calculateAgentUtilization(),
       modelUtilization: {
         'gemma3-legal': 85,
-        'nomic-embed-text': 45,
-      },
+        'nomic-embed-text': 45
+      }
     });
     this.orchestraStatus.update(status => ({
       ...status,
       activeAgents: this.agents.size,
-      activeTasks: this.activeTasks.size,
+      activeTasks: this.activeTasks.size
     }));
   }
   /**
@@ -596,7 +576,7 @@ export class AutoGenGGUFOrchestra {
       agents: Array.from(this.agents.values()),
       activeTasks: this.activeTasks.size,
       ggufStatus: Boolean(this.ggufRuntime?.derived?.isReady), // safe presence check for readiness store
-      flashAttentionEnabled: true,
+      flashAttentionEnabled: true
     };
   }
   /**
@@ -619,7 +599,7 @@ export class AutoGenGGUFOrchestra {
       activeTasks: 0,
       ggufReady: false,
       flashAttentionEnabled: false,
-      modelsLoaded: [],
+      modelsLoaded: []
     });
   }
   // add: helper to build a minimal, typed fallback GGUF response
@@ -633,7 +613,7 @@ export class AutoGenGGUFOrchestra {
       processingTime: 0,
       model: 'fallback',
       // include any other likely fields to better match runtime type shape
-      meta: { fallback: true },
+      meta: { fallback: true }
     };
     return fallback as unknown as GGUFInferenceResponse;
   }
@@ -648,7 +628,7 @@ export function createAutoGenOrchestra() {
     stores: {
       orchestraStatus: orchestra.orchestraStatus,
       metrics: orchestra.metrics,
-      taskQueue: orchestra.taskQueue,
+      taskQueue: orchestra.taskQueue
     },
     // Derived stores
     derived: {
@@ -656,15 +636,14 @@ export function createAutoGenOrchestra() {
         overall: $status.initialized && $status.ggufReady ? 'HEALTHY' : 'DEGRADED',
         agentEfficiency: ($metrics.completedTasks / Math.max($metrics.totalTasks, 1)) * 100,
         throughput: $metrics.tokensPerSecond,
-        uptime: $status.initialized ? 'OPERATIONAL' : 'OFFLINE',
-      })),
+        uptime: $status.initialized ? 'OPERATIONAL' : 'OFFLINE` }))
     },
     // API methods
     executeTask: orchestra.executeTask.bind(orchestra),
     getSystemStatus: orchestra.getSystemStatus.bind(orchestra),
     shutdown: orchestra.shutdown.bind(orchestra),
     // Pre-built workflows
-    workflows: AutoGenGGUFOrchestra.getLegalWorkflows(),
+    workflows: AutoGenGGUFOrchestra.getLegalWorkflows()
   };
 }
 // Global orchestra instance

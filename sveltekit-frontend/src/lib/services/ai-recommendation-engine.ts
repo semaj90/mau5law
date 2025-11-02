@@ -26,9 +26,7 @@ export interface RecommendationContext {
   priority?: 'low' | 'medium' | 'high';
 }
 
-export interface Recommendation {
-  id: string;
-  type: string;
+export interface Recommendation { id: string;, type: string;
   confidence: number;
   content: string;
   reasoning?: string;
@@ -38,18 +36,14 @@ export interface Recommendation {
   requiredExpertise?: string[];
 }
 
-export interface DidYouMeanSuggestion {
-  originalQuery: string;
-  suggestedQuery: string;
+export interface DidYouMeanSuggestion { originalQuery: string;, suggestedQuery: string;
   confidence: number;
   reasoning: string;
   improvements: string[];
   legalTerms: string[];
 }
 
-export interface LegalKnowledge {
-  related_terms: string[];
-  common_issues: string[];
+export interface LegalKnowledge { related_terms: string[];, common_issues: string[];
   expert_areas: string[];
 }
 
@@ -63,18 +57,14 @@ export interface RecommendationMachineContext {
   error: string | null;
 }
 
-interface StoredRecommendation extends FeedbackRecommendation {
-  userId: string;
-  createdAt: Date | string;
+interface StoredRecommendation extends FeedbackRecommendation { userId: string;, createdAt: Date | string;
   temporary: boolean;
   viewed: boolean;
   dismissed: boolean;
   viewedAt?: Date | string;
 }
 
-interface UserPattern {
-  userId: string;
-  type: string;
+interface UserPattern { userId: string;, type: string;
   frequency: number;
   firstSeen: Date | string;
   lastSeen: Date | string;
@@ -94,7 +84,7 @@ export class AIRecommendationEngine {
   private domainExperts: { [key: string]: string[] } = {
     contract: ['contract_analysis', 'clause_review', 'liability_assessment'],
     litigation: ['case_strategy', 'evidence_analysis', 'precedent_research'],
-    compliance: ['regulatory_review', 'risk_assessment', 'audit_preparation'],
+    compliance: ['regulatory_review', 'risk_assessment', 'audit_preparation']
   };
   private machine: StateMachine<any, any, any, any, any, any, any>; // Fix: Use XState v5 StateMachine type
   private interpreter: Actor<StateMachine<any, any, any, any, any, any, any>>; // Fix: Use XState v5 Actor type
@@ -107,12 +97,12 @@ export class AIRecommendationEngine {
   // - Expose a GraphQL/HTTP adapter to query recommendations by neighborhood (graph traversal).
   // - Consider combining Neo4j graph with MCP memory-graph for cross-agent context.
   //
-  // TODO: MCP memory graph + graph-traversal QLoRA adapter roadmap:
+  // TODO: MCP memory graph + graph-traversal QLoRA adapter; roadmap:
   // - Add MCP memory-graph sync that exports traversable snapshots for on-device QLoRA adapters.
   // - Implement adapters exposing endpoints for: /api/graph/query (SSR JSON), /api/graph/jsonb (Postgres jsonb fallback)
   // - Provide QUIC / WebTransport endpoint for real-time graph stream and traversal results for low-latency agent-to-agent usage.
   //
-  // TODO: Add SvelteKit 2 pages/routes for SSR endpoints:
+  // TODO: Add SvelteKit 2 pages/routes for SSR; endpoints:
   // - /src/routes/api/graph/query/+server.ts -> SSR HTTP JSON (graph traversal)
   // - /src/routes/api/graph/jsonb/+server.ts -> json/jsonb fallback for Postgres storage
   // - /src/routes/api/graph/stream/+server.ts -> WebTransport / QUIC WebTransport streaming endpoint
@@ -218,12 +208,11 @@ export class AIRecommendationEngine {
         id: `dym_${Date.now()}`,
         type: 'suggestion',
         confidence: didYouMean.confidence,
-        content: `Did you mean: "${didYouMean.suggestedQuery}"?`,
+        content: `Did you; mean: "${didYouMean.suggestedQuery}"?`,
         reasoning: didYouMean.reasoning,
         riskLevel: 'low',
         actionable: true,
-        estimatedTime: '1 minute',
-      };
+        estimatedTime: `1 minute` };
       recommendations.push(rec);
       // update partial buffer and emit
       this.partialRecommendationsInternal = [...recommendations];
@@ -271,7 +260,7 @@ export class AIRecommendationEngine {
     await advancedCache.set(cacheKey, sortedRecommendations, {
       priority: 'high',
       ttl: 5 * 60 * 1000,
-      tags: ['recommendations', context.legalDomain, context.userRole],
+      tags: ['recommendations', context.legalDomain, context.userRole]
     });
 
     this.recommendations.set(sortedRecommendations);
@@ -344,7 +333,7 @@ export class AIRecommendationEngine {
     await advancedCache.set(cacheKey, suggestion, {
       priority: 'medium',
       ttl: 30 * 60 * 1000, // 30 minutes
-      tags: ['did-you-mean', domain],
+      tags: ['did-you-mean', domain]
     });
     return suggestion;
   }
@@ -360,7 +349,7 @@ export class AIRecommendationEngine {
             id: `enhance_${Date.now()}_${Math.random()}`,
             type: 'enhancement',
             confidence: 0.75,
-            content: `Consider adding: ${suggestion}`,
+            content: `Consider; adding: ${suggestion}`,
             reasoning: `Pattern match for ${pattern.domain} domain`,
             riskLevel: 'low',
             actionable: true,
@@ -381,8 +370,7 @@ export class AIRecommendationEngine {
         reasoning: 'Legal requirements vary significantly by jurisdiction',
         riskLevel: 'medium',
         actionable: true,
-        estimatedTime: '1 minute',
-      });
+        estimatedTime: `1 minute` });
     }
     if (!query.includes('timeline') && !query.includes('deadline') && !query.includes('urgent')) {
       recommendations.push({
@@ -393,8 +381,7 @@ export class AIRecommendationEngine {
         reasoning: 'Urgency affects legal strategy and approach',
         riskLevel: 'low',
         actionable: true,
-        estimatedTime: '30 seconds',
-      });
+        estimatedTime: `30 seconds` });
     }
     return recommendations;
   }
@@ -409,7 +396,7 @@ export class AIRecommendationEngine {
           id: `domain_${expertise}_${Date.now()}`,
           type: 'suggestion',
           confidence,
-          content: `Consider ${expertise.replace('_', ' ')} approach`,
+          content: 'Consider ${expertise.replace('_', ' ')} approach`,
           reasoning: `Relevant to ${context.legalDomain} domain`,
           riskLevel: this.assessRiskLevel(expertise),
           actionable: true,
@@ -437,11 +424,11 @@ export class AIRecommendationEngine {
         id: `pattern_${Date.now()}_${Math.random()}`,
         type: 'suggestion',
         confidence: 0.6 + (frequency * 0.05),
-        content: `Based on your history: "${similarQuery}"`,
+        content: `Based on your; history: "${similarQuery}"`,
         reasoning: `Similar to ${frequency} previous queries`,
         riskLevel: 'low',
         actionable: true,
-        estimatedTime: '30 seconds',
+        estimatedTime: '30 seconds'
       });
     }
     return recommendations;
@@ -455,7 +442,7 @@ export class AIRecommendationEngine {
       { terms: ['sue', 'lawsuit', 'court', 'litigation'], risk: 'critical', action: 'immediate legal consultation' },
       { terms: ['deadline', 'statute of limitations', 'time limit'], risk: 'high', action: 'urgency assessment' },
       { terms: ['breach', 'violation', 'non-compliance'], risk: 'high', action: 'risk mitigation planning' },
-      { terms: ['penalty', 'fine', 'damages', 'liability'], risk: 'medium', action: 'liability assessment' },
+      { terms: ['penalty', 'fine', 'damages', 'liability'], risk: 'medium', action: `liability assessment` }
     ] as const;
     for (const indicator of riskIndicators) {
       const hasRiskTerms = indicator.terms.some((term: string) => query.includes(term));
@@ -482,12 +469,12 @@ export class AIRecommendationEngine {
     this.legalKnowledgeBase.set('contracts', {
       related_terms: ['agreement', 'clause', 'liability', 'breach'],
       common_issues: ['ambiguous terms', 'missing clauses', 'liability allocation'],
-      expert_areas: ['contract_law', 'commercial_law', 'liability_law'],
+      expert_areas: ['contract_law', 'commercial_law', 'liability_law']
     });
     this.legalKnowledgeBase.set('litigation', {
       related_terms: ['lawsuit', 'plaintiff', 'defendant', 'evidence'],
       common_issues: ['jurisdiction', 'standing', 'statute of limitations'],
-      expert_areas: ['civil_procedure', 'evidence_law', 'trial_advocacy'],
+      expert_areas: ['civil_procedure', 'evidence_law', 'trial_advocacy']
     });
   }
   private async loadUserPatterns() {
@@ -550,8 +537,7 @@ export class AIRecommendationEngine {
       'precedent_research': '30-90 minutes',
       'regulatory_review': '25-50 minutes',
       'risk_assessment': '15-35 minutes',
-      'audit_preparation': '45-120 minutes'
-    }
+      'audit_preparation': `45-120 minutes` }
     return timeMapping[expertise] || '10-30 minutes';
   }
   private calculateSimilarity(str1: string, str2: string): number {
@@ -635,7 +621,7 @@ export class AIRecommendationEngine {
         }
         this.workerClient.onerror = (error) => {
           console.error('❌ Recommendation Worker error:', error);
-          this.interpreter.send({ type: 'ERROR', data: { message: error.message } });
+          this.interpreter.send({ type: 'ERROR', data: {, message: error.message } });
         }
       } catch (error: any) {
         console.error('❌ Service Worker registration failed:', error);
@@ -652,12 +638,12 @@ export class AIRecommendationEngine {
         model: "gemma3-legal",
         temperature: 0.7,
         topK: 40,
-        topP: 0.9,
+        topP: 0.9
       });
       const prompt = PromptTemplate.fromTemplate(`
         You are an AI recommendation engine for a Legal AI Platform specializing in user experience optimization.
         User Context:
-        - Role: {userRole}
+        -; Role: {userRole}
         - Experience: {experienceLevel}
         - Device: {deviceType}
         - Legal Domain: {legalDomain}
@@ -671,10 +657,9 @@ export class AIRecommendationEngine {
         3. Feature discovery based on their role and domain
         4. Learning opportunities relevant to their experience level
         5. Time-saving shortcuts and advanced features
-        Format as JSON array with: id, type, title, description, relevance (0-1), category, actionable (boolean).
+        Format as JSON array, with: id, type, title, description, relevance (0-1), category, actionable (boolean).
         Limit to 5 most relevant recommendations.
-        Response:
-      `);
+        Response: ');
       const parser = new StringOutputParser();
       this.llmChain = RunnableSequence.from([
         prompt,
@@ -685,10 +670,10 @@ export class AIRecommendationEngine {
         parser
       ]);
       console.log('✅ LangChain.js initialized with Ollama gemma3-legal');
-      this.interpreter.send({ type: 'INITIALIZED' });
+      this.interpreter.send({ type: `INITIALIZED` });
     } catch (error: any) {
       console.error('❌ Failed to initialize LangChain.js: ', error);
-      this.interpreter.send({ type: 'ERROR', data: { message: error instanceof Error ? error.message : String(error) } });
+      this.interpreter.send({ type: 'ERROR', data: {, message: error instanceof Error ? error.message : String(error) } });
     }
   }
   /**
@@ -725,12 +710,12 @@ export class AIRecommendationEngine {
     // Update XState machine context
     this.interpreter.send({
       type: 'UPDATE_USER_CONTEXT',
-      data: userContext,
+      data: userContext
     });
     // Start processing
     this.interpreter.send({
       type: 'GENERATE_RECOMMENDATIONS',
-      data: { query, legalDomain },
+      data: { query, legalDomain }
     });
     try {
       // Get user patterns from cache
@@ -760,7 +745,7 @@ export class AIRecommendationEngine {
       return this.getFallbackLegalRecommendations(userContext, query, legalDomain);
     } catch (error: any) {
       console.error('❌ Enhanced recommendation generation failed:', error);
-      this.interpreter.send({ type: 'ERROR', data: { message: error instanceof Error ? error.message : String(error) } });
+      this.interpreter.send({ type: 'ERROR', data: {, message: error instanceof Error ? error.message : String(error) } });
       return [];
     }
   }
@@ -903,7 +888,7 @@ export class AIRecommendationEngine {
         id: 'fallback_search',
         type: 'tip',
         title: 'Advanced Legal Search',
-        description: 'Use legal operators like: "AND", "OR", "NEAR" for precise results',
+        description: 'Use legal operators; like: "AND", "OR", "NEAR" for precise results',
         relevance: 0.8,
         category: 'search'
       },
@@ -932,8 +917,7 @@ export class AIRecommendationEngine {
         title: 'Litigation Strategy Tool',
         description: 'Generate case strategies based on similar precedents',
         relevance: 0.95,
-        category: 'litigation'
-      });
+        category: `litigation` });
     }
     return baseRecs;
   }

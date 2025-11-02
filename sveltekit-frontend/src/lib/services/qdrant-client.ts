@@ -45,16 +45,12 @@ export interface QdrantCondition {
   range?: { gt?: number; gte?: number; lt?: number; lte?: number };
 }
 
-export interface QdrantSearchResult {
-  id: string | number;
-  score: number;
+export interface QdrantSearchResult { id: string | number;, score: number;
   payload?: Record<string, any>;
   vector?: number[];
 }
 
-export interface QdrantPoint {
-  id: string | number;
-  vector: number[];
+export interface QdrantPoint { id: string | number;, vector: number[];
   payload?: Record<string, any>;
 }
 
@@ -62,17 +58,11 @@ export interface QdrantUpsertRequest {
   points: QdrantPoint[];
 }
 
-export interface QdrantCollectionInfo {
-  status: string;
-  vectors_count: number;
+export interface QdrantCollectionInfo { status: string;, vectors_count: number;
   indexed_vectors_count: number;
   points_count: number;
   segments_count: number;
-  config: {
-    params: {
-      vectors: {
-        size: number;
-        distance: string;
+  config: { params: {, vectors: { size: number;, distance: string;
       };
     };
   };
@@ -97,15 +87,15 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          vector: request.query_vector,
+         , vector: request.query_vector,
           limit: request.limit || 10,
           score_threshold: request.score_threshold || 0.7,
           filter: request.filter,
           with_payload: request.with_payload !== false,
-          with_vector: request.with_vector || false,
-        }),
+          with_vector: request.with_vector || false
+        })
       });
 
       if (!response.ok) {
@@ -117,7 +107,7 @@ export class QdrantHTTPClient {
         id: item.id,
         score: item.score,
         payload: item.payload,
-        vector: item.vector,
+        vector: item.vector
       }));
     } catch (error) {
       console.error('Qdrant HTTP search error:', error);
@@ -132,8 +122,8 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points: request.points }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, points: request.points })
       });
 
       if (!response.ok) {
@@ -165,21 +155,18 @@ export class QdrantHTTPClient {
       const createResponse = await fetch(`${this.baseUrl}/collections/${this.collectionName}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: {
-            size: VECTOR_DIMENSIONS,
-            distance: 'Cosine',
-          },
+        body: JSON.stringify({ vectors: {, size: VECTOR_DIMENSIONS,
+            distance: `Cosine` },
           optimizers_config: {
             default_segment_number: 4,
-            indexing_threshold: 10000,
+            indexing_threshold: 10000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 100,
-            full_scan_threshold: 10000,
-          },
-        }),
+            full_scan_threshold: 10000
+          }
+        })
       });
 
       if (!createResponse.ok) {
@@ -275,7 +262,7 @@ export class QdrantQUICClient {
       const requestData = new TextEncoder().encode(
         JSON.stringify({
           collection: this.collectionName,
-          ...request,
+          ...request
         })
       );
       await writer.write(requestData);

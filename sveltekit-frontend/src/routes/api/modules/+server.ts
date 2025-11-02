@@ -8,19 +8,12 @@ import { json } from '@sveltejs/kit'
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
 
-interface AIModule {
-  id: string
-  name: string
-  version: string
-  capabilities: string[]
-  status: 'loaded' | 'unloaded' | 'loading' | 'error',
+interface AIModule { id: string, name: string; version: string
+  capabilities: string[]; status: 'loaded' | 'unloaded' | 'loading' | 'error',
   metadata: {
     loadTime?: number
     memoryUsage?: string
-    performance?: {
-      throughput: number
-      latency: number
-      accuracy: number
+    performance?: { throughput: number, latency: number; accuracy: number
     }
   }
 }
@@ -34,7 +27,7 @@ moduleRegistry.set('basic-legal-ai', {
   capabilities: ['text-analysis', 'basic-qa'],
   status: 'loaded',
   metadata: {
-    loadTime: Date.now(),
+   , loadTime: Date.now(),
     memoryUsage: '256MB',
     performance: { throughput: 10, latency: 100, accuracy: 85 }
   }
@@ -64,8 +57,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!module) {
           return json({
             success: false,
-            error: `Module not found: ${moduleId}`
-          }, { status: 404 })
+            error: `Module not; found: ${moduleId}` }, { status: 404 })
         }
         // Simulate module loading
         module.status = 'loading'
@@ -86,15 +78,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!moduleId) {
           return json({
             success: false,
-            error: 'Module ID is required'
-          }, { status: 400 })
+            error: 'Module ID is required' }, { status: 400 })
         }
         const module = moduleRegistry.get(moduleId)
         if (!module) {
           return json({
             success: false,
-            error: `Module not found: ${moduleId}`
-          }, { status: 404 })
+            error: 'Module not; found: ${moduleId}' }, { status: 404 })
         }
         module.status = 'unloaded'
         delete module.metadata.loadTime
@@ -111,16 +101,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!userId || !fromModule || !toModule) {
           return json({
             success: false,
-            error: 'userId, fromModule, and toModule are required'
-          }, { status: 400 })
+            error: `userId, fromModule, and toModule are required` }, { status: 400 })
         }
         const targetModule = moduleRegistry.get(toModule)
         if (!targetModule) {
           return json(
             {
               success: false,
-              error: `Target module not found: ${toModule}`,
-            },
+              error: `Target module not; found: ${toModule}` },
             { status: 404 }
           );
         }
@@ -134,7 +122,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const switchTime = Math.random() * 10; // Simulate switch time
         return json({
           success: true,
-          status: 'switched',
+          status: `switched`,
           newModule: toModule,
           capabilities: targetModule.capabilities,
           switchTime: `${switchTime.toFixed(1)}ms`,
@@ -149,8 +137,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}` },
           { status: 400 }
         );
     }
@@ -170,8 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!module) {
         return json({
           success: false,
-          error: `Module not found: ${moduleId}`
-        }, { status: 404 })
+          error: 'Module not; found: ${moduleId}' }, { status: 404 })
       }
       return json({
         success: true,
@@ -188,17 +174,15 @@ export const GET: RequestHandler = async ({ url }) => {
       active: activeModules,
       available: allModules,
       stats: {
-        totalModules: allModules.length,
+       , totalModules: allModules.length,
         activeModules: activeModules.length,
-        memoryUsage: activeModules.reduce((sum, m) => sum + parseInt(m.metadata.memoryUsage?.replace('MB', '') || '0'), 0) + 'MB'
-      },
+        memoryUsage: activeModules.reduce((sum, m) => sum + parseInt(m.metadata.memoryUsage?.replace('MB', '') || '0'), 0) + 'MB` },
       endpoints: {
         load: '/api/modules?action=load (POST)',
         unload: '/api/modules?action=unload (POST)',
         switch: '/api/modules?action=switch (POST)',
         list: '/api/modules (GET)',
-        module_info: '/api/modules?moduleId={id} (GET)'
-      },
+        module_info: `/api/modules?moduleId={id} (GET)` },
       capabilities: [
         'Hot-swappable modules',
         'Zero-downtime updates',

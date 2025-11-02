@@ -24,17 +24,15 @@ export const GET: RequestHandler = async () => {
     const response = {
       timestamp: new Date().toISOString(),
       status: 'healthy',
-      services: {
-        redis: {
-          connected: redisConnected,
-          status: redisConnected ? 'connected' : 'disconnected',
+      services: { redis: {, connected: redisConnected,
+          status: redisConnected ? 'connected' : 'disconnected'
         },
         database: {
           pools: dbStats.totalPools,
           drizzleInstances: dbStats.totalDrizzleInstances,
           health: dbHealthCheck,
-          allHealthy: Object.values(dbHealthCheck).every(h => h),
-        },
+          allHealthy: Object.values(dbHealthCheck).every(h => h)
+        }
       },
       cache: {
         embeddings: {
@@ -47,15 +45,14 @@ export const GET: RequestHandler = async () => {
                 ? 'good'
                 : embeddingHitRate > 30
                   ? 'fair'
-                  : 'poor',
-        },
+                  : 'poor` },
         queries: {
           ...cacheStats.queries,
           hitRate: `${queryHitRate}%`,
           efficiency:
-            queryHitRate > 70 ? 'excellent' : queryHitRate > 50 ? 'good' : queryHitRate > 30 ? 'fair' : 'poor',
+            queryHitRate > 70 ? 'excellent' : queryHitRate > 50 ? 'good' : queryHitRate > 30 ? 'fair' : 'poor'
         },
-        sessions: cacheStats.sessions,
+        sessions: cacheStats.sessions
       },
       performance: {
         embedding_cache_efficiency: embeddingHitRate,
@@ -65,9 +62,9 @@ export const GET: RequestHandler = async () => {
           cacheStats.embeddings.misses +
           cacheStats.queries.hits +
           cacheStats.queries.misses,
-        cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size,
+        cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size
       },
-      recommendations: generateRecommendations(cacheStats, dbStats, redisConnected),
+      recommendations: generateRecommendations(cacheStats, dbStats, redisConnected)
     };
     return json(response);
   } catch (error) {
@@ -77,8 +74,7 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString(),
         status: 'error',
         error: 'Failed to retrieve cache statistics',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

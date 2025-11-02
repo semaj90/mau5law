@@ -9,9 +9,7 @@ import { euclideanDistance, feedForward, normalize, generateRandomWeights } from
 export type IntentCategory = 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
 export type Urgency = 'low' | 'medium' | 'high' | 'critical';
 export type UserBehaviorPattern = 'explorer' | 'focused' | 'repetitive' | 'learning';
-export interface UserIntent {
-  queryText: string;
-  intentCategory: IntentCategory;
+export interface UserIntent { queryText: string;, intentCategory: IntentCategory;
   confidence: number;
   urgency: Urgency;
   complexity: number;
@@ -20,9 +18,7 @@ export interface UserIntent {
   userBehaviorPattern: UserBehaviorPattern;
   timestamp?: number;
 }
-export interface ModelPerformanceProfile {
-  modelId: string;
-  architecture: string;
+export interface ModelPerformanceProfile { modelId: string;, architecture: string;
   avgResponseTime: number; // ms
   accuracyScore: number; // 0-1
   userSatisfactionScore: number; // 0-1
@@ -32,51 +28,37 @@ export interface ModelPerformanceProfile {
   usageFrequency: number;
   switchCost?: number; // ms
 }
-export interface CacheOptimizationStrategy {
-  strategy: 'aggressive' | 'balanced' | 'conservative';
-  evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'hybrid';
+export interface CacheOptimizationStrategy { strategy: 'aggressive' | 'balanced' | 'conservative';, evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'hybrid';
   maxMemoryUsageMB: number;
   preloadThreshold: number; // 0-1
   compressionLevel: number;
 }
-export interface CUDAMemoryState {
-  totalMemoryMB: number;
-  usedMemoryMB: number;
+export interface CUDAMemoryState { totalMemoryMB: number;, usedMemoryMB: number;
   availableMemoryMB: number;
   temperatureC: number;
   utilizationPercent: number;
   lastUpdated: number;
 }
-export interface SOMNeuron {
-  id: string;
-  weights: Float32Array;
+export interface SOMNeuron { id: string;, weights: Float32Array;
   activationCount: number;
   lastActivation: number;
   associatedModel?: string;
 }
-export interface CUDAMemoryBlock {
-  id: string;
-  size: number; // bytes
+export interface CUDAMemoryBlock { id: string;, size: number; // bytes
   lastAccessed: number;
   compressed?: boolean;
 }
-export interface AutoEncoderWeights {
-  encoder: {
-    w1: Float32Array; // input -> hidden
+export interface AutoEncoderWeights { encoder: {, w1: Float32Array; // input -> hidden
     b1: Float32Array; // hidden bias
     w2: Float32Array; // hidden -> latent
     b2: Float32Array; // latent bias
   };
-  decoder: {
-    w3: Float32Array; // latent -> hidden
-    b3: Float32Array; // hidden bias
+  decoder: { w3: Float32Array; // latent -> hidden, b3: Float32Array; // hidden bias
     w4: Float32Array; // hidden -> output
     b4: Float32Array; // output bias
   };
 }
-export interface OptimizerStats {
-  memoryUsageRatio: number;
-  modelCount: number;
+export interface OptimizerStats { memoryUsageRatio: number;, modelCount: number;
   intentHistory: number;
   somActivations: number;
   avgConfidence: number;
@@ -105,7 +87,7 @@ export class CudaCacheMemoryOptimizer {
       evictionPolicy: 'hybrid',
       maxMemoryUsageMB: 2048,
       preloadThreshold: 0.7,
-      compressionLevel: 2,
+      compressionLevel: 2
     };
     this.memoryState = {
       totalMemoryMB: this.maxGPUMemoryMB,
@@ -113,7 +95,7 @@ export class CudaCacheMemoryOptimizer {
       availableMemoryMB: this.maxGPUMemoryMB,
       temperatureC: 50,
       utilizationPercent: 0,
-      lastUpdated: Date.now(),
+      lastUpdated: Date.now()
     };
     this.initializeModelProfiles();
     this.initializeAutoEncoder();
@@ -136,7 +118,7 @@ export class CudaCacheMemoryOptimizer {
       domainSpecificity: isLegal ? 0.9 : 0.2,
       contextualSimilarity: this.calculateContextualSimilarity(query),
       userBehaviorPattern: this.identifyUserBehaviorPattern(),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     this.userIntentHistory.push(intent);
     if (this.userIntentHistory.length > 1000) {
@@ -171,7 +153,7 @@ export class CudaCacheMemoryOptimizer {
       domainSpecificity: this.getDomainSpecificityForNeuron(bmu.neuron),
       contextualSimilarity: this.calculateContextualSimilarity(query),
       userBehaviorPattern: this.identifyUserBehaviorPattern(),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     // Store the intent and maintain history
     this.userIntentHistory.push(intent);
@@ -201,7 +183,7 @@ export class CudaCacheMemoryOptimizer {
   /**
    * Finds the most similar neuron (BMU) on the SOM for a given vector.
    */
-  private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron; distance: number } {
+  private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron;, distance: number } {
     let bestNeuron: SOMNeuron = this.somNeurons[0][0];
     let minDistance = Infinity;
     for (const row of this.somNeurons) {
@@ -365,26 +347,24 @@ export class CudaCacheMemoryOptimizer {
         weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1),
         activationCount: 0,
         lastActivation: 0,
-        associatedModel: undefined,
+        associatedModel: undefined
       }))
     );
   }
   private initializeAutoEncoder(): void {
     // Initialize autoencoder weights with proper random initialization
     const scaleFactor = 0.1; // Xavier initialization scale
-    this.autoEncoderWeights = {
-      encoder: {
-        w1: generateRandomWeights(this.inputFeatureSize * this.hiddenSize, scaleFactor),
+    this.autoEncoderWeights = { encoder: {, w1: generateRandomWeights(this.inputFeatureSize * this.hiddenSize, scaleFactor),
         b1: new Float32Array(this.hiddenSize).fill(0),
         w2: generateRandomWeights(this.hiddenSize * this.latentSize, scaleFactor),
-        b2: new Float32Array(this.latentSize).fill(0),
+        b2: new Float32Array(this.latentSize).fill(0)
       },
       decoder: {
         w3: generateRandomWeights(this.latentSize * this.hiddenSize, scaleFactor),
         b3: new Float32Array(this.hiddenSize).fill(0),
         w4: generateRandomWeights(this.hiddenSize * this.inputFeatureSize, scaleFactor),
-        b4: new Float32Array(this.inputFeatureSize).fill(0),
-      },
+        b4: new Float32Array(this.inputFeatureSize).fill(0)
+      }
     };
   }
   private startMemoryMonitoring(): void {
@@ -411,7 +391,7 @@ export class CudaCacheMemoryOptimizer {
         specialtyDomains: ['chat', 'general'],
         lastUsed: Date.now(),
         usageFrequency: 50,
-        switchCost: 80,
+        switchCost: 80
       },
       {
         modelId: 'legal-bert',
@@ -423,7 +403,7 @@ export class CudaCacheMemoryOptimizer {
         specialtyDomains: ['legal', 'context'],
         lastUsed: Date.now() - 300000,
         usageFrequency: 25,
-        switchCost: 30,
+        switchCost: 30
       },
       {
         modelId: 'llama-rl',
@@ -435,7 +415,7 @@ export class CudaCacheMemoryOptimizer {
         specialtyDomains: ['legal', 'research', 'analysis'],
         lastUsed: Date.now() - 600000,
         usageFrequency: 15,
-        switchCost: 200,
+        switchCost: 200
       },
     ];
     for (const p of profiles) {
@@ -482,7 +462,7 @@ export class CudaCacheMemoryOptimizer {
       somActivations: activations,
       avgConfidence: avgConfidence,
       mostActiveNeuron: mostActive.id,
-      recentIntentCategories: recentIntents.map(intent => intent.intentCategory),
+      recentIntentCategories: recentIntents.map(intent => intent.intentCategory)
     };
   }
 }

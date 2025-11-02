@@ -10,7 +10,7 @@ import {
   semanticSearch,
   commonMCPQueries,
   generateMCPPrompt,
-  copilotOrchestrator,
+  copilotOrchestrator
 } from '$lib/utils/mcp-helpers';
 
 // Helper type for AI/API responses to reduce repetition
@@ -18,16 +18,12 @@ type AiApiResponse = {
   [key: string]: any;
 };
 
-export interface TestResult {
-  name: string;
-  status: 'pass' | 'fail' | 'warning';
+export interface TestResult { name: string;, status: 'pass' | 'fail' | 'warning';
   duration: number;
   details: string;
   error?: string;
 }
-export interface TestSuite {
-  name: string;
-  tests: TestResult[];
+export interface TestSuite { name: string;, tests: TestResult[];
   totalTests: number;
   passedTests: number;
   failedTests: number;
@@ -73,10 +69,10 @@ export const POST: RequestHandler = async ({ request }) => {
         totalWarnings,
         totalDuration,
         successRate: Math.round((totalPassed / totalTests) * 100),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       testSuites: results,
-      recommendations: generateRecommendations(results),
+      recommendations: generateRecommendations(results)
     });
   } catch (error: any) {
     console.error('Test suite execution failed:', error);
@@ -84,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        duration: Date.now() - startTime,
+        duration: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -131,7 +127,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
       useSemanticSearch: true,
       useMemory: true,
       synthesizeOutputs: true,
-      agents: ['claude'],
+      agents: ['claude']
     });
     if (verbose) console.log('Copilot Orchestrator result:', result);
     if (!result || typeof result !== 'object') {
@@ -176,7 +172,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: TestResult) => t.status === 'pass').length,
     failedTests: tests.filter((t: TestResult) => t.status === 'fail').length,
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 /*
@@ -193,20 +189,20 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Ollama Service Health', async () => {
     const response = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (!response.ok) {
       throw new Error(`Ollama service returned ${response.status}`);
     }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Ollama version data:', data);
-    return `Ollama service healthy, version: ${data.version || 'unknown'}`;
+    return `Ollama service healthy, version: ${data.version || 'unknown` }`;
   });
   // Test 2: Model Availability
   await runTest(tests, 'Model Availability Check', async () => {
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (!response.ok) {
       throw new Error(`Failed to get model list: ${response.status}`);
@@ -227,16 +223,16 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'AI Text Generation', async () => {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
-        prompt: 'Test prompt: What is 2+2?',
+        prompt: 'Test; prompt: What is 2+2?',
         stream: false,
         options: {
-          temperature: 0.1,
-          max_tokens: 50,
-        },
-      }),
+         , temperature: 0.1,
+          max_tokens: 50
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`AI generation failed: ${response.status}`);
@@ -260,16 +256,16 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     `;
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt,
         stream: false,
         options: {
-          temperature: 0.1,
-          max_tokens: 100,
-        },
-      }),
+         , temperature: 0.1,
+          max_tokens: 100
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Structured AI request failed: ${response.status}`);
@@ -297,7 +293,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: TestResult) => t.status === 'pass').length,
     failedTests: tests.filter((t: TestResult) => t.status === 'fail').length,
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 /*
@@ -329,13 +325,13 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Basic Find API Request', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        query: 'test legal document',
+       , query: 'test legal document',
         type: 'all',
         useAI: false,
-        mcpAnalysis: false,
-      }),
+        mcpAnalysis: false
+      })
     });
     if (!response.ok) {
       throw new Error(`Find API request failed: ${response.status}`);
@@ -354,15 +350,15 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'AI-Enhanced Search', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        query: 'contract liability evidence',
+       , query: 'contract liability evidence',
         type: 'all',
         useAI: true,
         mcpAnalysis: false,
         semanticSearch: false,
-        confidenceThreshold: 0.5,
-      }),
+        confidenceThreshold: 0.5
+      })
     });
     if (!response.ok) {
       throw new Error(`AI-enhanced search failed: ${response.status}`);
@@ -385,14 +381,14 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'MCP Analysis in Find API', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        query: 'legal precedent analysis',
+       , query: 'legal precedent analysis',
         type: 'all',
         useAI: true,
         mcpAnalysis: true,
-        semanticSearch: false,
-      }),
+        semanticSearch: false
+      })
     });
     if (!response.ok) {
       throw new Error(`MCP analysis request failed: ${response.status}`);
@@ -433,12 +429,12 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       .map(() =>
         fetch('/api/ai/find', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            query: 'rate limit test',
+           , query: 'rate limit test',
             type: 'all',
-            useAI: false,
-          }),
+            useAI: false
+          })
         })
       );
     const responses = await Promise.all(requests);
@@ -464,7 +460,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: TestResult) => t.status === 'pass').length,
     failedTests: tests.filter((t: TestResult) => t.status === 'fail').length,
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 /*
@@ -477,13 +473,11 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Memory Graph Read', async () => {
     const response = await fetch('/api/mcp/memory/read-graph', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filters: {
-          nodeTypes: ['ai-interaction', 'search'],
-          limit: 10,
-        },
-      }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({, filters: {, nodeTypes: ['ai-interaction', 'search'],
+          limit: 10
+        }
+      })
     });
     if (verbose) console.log('Memory Graph Read response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
@@ -506,10 +500,9 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
         target: 'test-search',
         relationType: 'performed-search',
         properties: {
-          timestamp: new Date().toISOString(),
-          query: 'test memory relation',
-        },
-      }),
+         , timestamp: new Date().toISOString(),
+          query: `test memory relation` }
+      })
     });
     if (verbose) console.log('Memory Relation Creation response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
@@ -529,7 +522,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: TestResult) => t.status === 'pass').length,
     failedTests: tests.filter((t: TestResult) => t.status === 'fail').length,
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 /*
@@ -544,8 +537,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        query: 'legal document contract analysis',
-      }),
+       , query: `legal document contract analysis` })
     });
     if (verbose) console.log('Semantic Search Service response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
@@ -566,7 +558,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     try {
       const response = await fetch('http://localhost:6333/collections', {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (verbose) console.log('Qdrant connection status:', response.status);
       if (!response.ok) {
@@ -589,7 +581,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: TestResult) => t.status === 'pass').length,
     failedTests: tests.filter((t: TestResult) => t.status === 'fail').length,
     warnings: tests.filter((t: TestResult) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 /*
@@ -614,7 +606,7 @@ async function runTest(tests: TestResult[], name: string, testFn: () => Promise<
       name,
       status,
       duration,
-      details,
+      details
     });
   } catch (error: any) {
     tests.push({
@@ -622,8 +614,7 @@ async function runTest(tests: TestResult[], name: string, testFn: () => Promise<
       status: 'fail',
       duration: Date.now() - startTime,
       details: 'Test failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
+      error: error instanceof Error ? error.message : `Unknown error` });
   }
 }
 /*
@@ -669,26 +660,25 @@ export const GET: RequestHandler = async () => {
     const checks = await Promise.allSettled([
       // AI Service
       fetch('http://localhost:11434/api/version', {
-        signal: AbortSignal.timeout(3000),
+        signal: AbortSignal.timeout(3000)
       }).then((r: Response) => ({ ai: r.ok })),
       // Find API
       fetch('/api/ai/find', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: 'health check', useAI: false }),
-      }).then((r: Response) => ({ findApi: r.ok })),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, query: 'health check', useAI: false })
+      }).then((r: Response) => ({ findApi: r.ok }))
     ]);
     const results = checks.map(check => (check.status === 'fulfilled' ? check.value : { error: true }));
-    const healthStatus = {
-      ai: results[0] && 'ai' in results[0] ? (results[0] as { ai: boolean }).ai : false,
-      findApi: results[1] && 'findApi' in results[1] ? (results[1] as { findApi: boolean }).findApi : false,
+    const healthStatus = { ai: results[0] && 'ai' in results[0] ? (results[0] as {, ai: boolean }).ai : false,
+      findApi: results[1] && 'findApi' in results[1] ? (results[1] as { findApi: boolean }).findApi : false
     };
     const allHealthy = Object.values(healthStatus).every(Boolean);
     return json({
       healthy: allHealthy,
       status: healthStatus,
       duration: Date.now() - startTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
@@ -696,7 +686,7 @@ export const GET: RequestHandler = async () => {
         healthy: false,
         error: 'Health check failed',
         duration: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

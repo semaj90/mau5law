@@ -11,39 +11,29 @@ import sharp from 'sharp';
  * POST /api/glyph/simd-embeds - Generate glyphs with SIMD tiling optimization for UI shaders
  */
 interface SIMDGlyphRequest extends GlyphRequest {
-  simd_config?: {
-    enable_tiling: boolean;
-    tile_size: number;
+  simd_config?: { enable_tiling: boolean;, tile_size: number;
     compression_target: number; // Target compression ratio (e.g., 50 for 50:1),
     shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
     adaptive_quality: boolean;
     performance_tier: 'nes' | 'snes' | 'n64'; // Quality target
   };
 }
-interface SIMDShaderData {
-  tiled_data: Float32Array;
-  shader_code: string;
+interface SIMDShaderData { tiled_data: Float32Array;, shader_code: string;
   compression_ratio: number;
   // typed tile map instead of Array<any>
   tile_map: Tile[];
-  performance_stats: {
-    tiling_time_ms: number;
-    compression_time_ms: number;
+  performance_stats: { tiling_time_ms: number;, compression_time_ms: number;
     shader_generation_time_ms: number;
     total_optimization_time_ms: number;
   };
 }
-interface SIMDEmbedResult {
-  glyph_url: string;
-  simd_shader_data: SIMDShaderData | null;
+interface SIMDEmbedResult { glyph_url: string;, simd_shader_data: SIMDShaderData | null;
   tensor_ids: string[];
   generation_time_ms: number;
   cache_hits: number;
   enhanced_artifact_url?: string;
 }
-interface GlyphResult {
-  glyph_url: string;
-  tensor_ids: string[];
+interface GlyphResult { glyph_url: string;, tensor_ids: string[];
   generation_time_ms: number;
   cache_hits: number;
   // avoid `any[]` for predictive frames; use unknown[] to be explicit
@@ -71,25 +61,24 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_target: body.simd_config?.compression_target || 50,
         shader_format: body.simd_config?.shader_format || 'webgpu',
         adaptive_quality: body.simd_config?.adaptive_quality ?? true,
-        performance_tier: body.simd_config?.performance_tier || 'n64',
-      },
+        performance_tier: body.simd_config?.performance_tier || 'n64'
+      }
     };
     // Validate required fields
     if (!simdGlyphRequest.evidence_id || !simdGlyphRequest.prompt) {
       return json(
         {
           success: false,
-          error: 'evidence_id and prompt are required',
-        },
+          error: `evidence_id and prompt are required` },
         { status: 400 }
       );
     }
-    console.log(`🔧 Generating SIMD-optimized glyph for evidence ${simdGlyphRequest.evidence_id}:`, {
+    console.log(`🔧 Generating SIMD-optimized glyph for evidence ${simdGlyphRequest.evidence_id}: ', {
       prompt: simdGlyphRequest.prompt,
       style: simdGlyphRequest.style,
       dimensions: simdGlyphRequest.dimensions,
       simd_tiling: simdGlyphRequest.simd_config?.enable_tiling,
-      target_tier: simdGlyphRequest.simd_config?.performance_tier,
+      target_tier: simdGlyphRequest.simd_config?.performance_tier
     });
     // Phase 1: Generate base glyph using existing diffusion service
     let glyphResult: GlyphResult;
@@ -109,8 +98,8 @@ export const POST: RequestHandler = async ({ request }) => {
         cache_hits: 0,
         neural_sprite_results: {
           compression_ratio: 2.0,
-          predictive_frames: [],
-        },
+          predictive_frames: []
+        }
       };
     }
     // Phase 2: Convert glyph to SIMD-optimized format if tiling enabled
@@ -135,14 +124,14 @@ export const POST: RequestHandler = async ({ request }) => {
                 type: 'glyph_visualization',
                 style: simdGlyphRequest.style,
                 dimensions: simdGlyphRequest.dimensions,
-                prompt: simdGlyphRequest.prompt,
-              },
+                prompt: simdGlyphRequest.prompt
+              }
             },
             {
               tileSize: simdGlyphRequest.simd_config.tile_size,
               compressionRatio: simdGlyphRequest.simd_config.compression_target,
               enableGPUAcceleration: true,
-              qualityTier: simdGlyphRequest.simd_config.performance_tier,
+              qualityTier: simdGlyphRequest.simd_config.performance_tier
             }
           )) as TilingResult;
         } catch (tilingError) {
@@ -157,15 +146,15 @@ export const POST: RequestHandler = async ({ request }) => {
             ),
             compressionStats: {
               achievedRatio: simdGlyphRequest.simd_config.compression_target,
-              processingTime: 25,
+              processingTime: 25
             },
             tileMap: Array.from({ length: Math.min(tileCount, 64) }, (_, i) => ({
               patternId: `pattern_${i}`,
               frequency: Math.random(),
-              compressedSize: Math.floor(imageData.length / tileCount),
+              compressedSize: Math.floor(imageData.length / tileCount)
             })),
             processingTime: 50,
-            tileSize: simdGlyphRequest.simd_config.tile_size,
+            tileSize: simdGlyphRequest.simd_config.tile_size
           };
         }
         // Generate shader code based on tiled data
@@ -183,14 +172,14 @@ export const POST: RequestHandler = async ({ request }) => {
             index,
             pattern_id: tile.patternId,
             frequency: tile.frequency,
-            compressed_size: tile.compressedSize,
+            compressed_size: tile.compressedSize
           })),
           performance_stats: {
             tiling_time_ms: tilingResult.processingTime,
             compression_time_ms: tilingResult.compressionStats.processingTime,
             shader_generation_time_ms: simdProcessingTime - tilingResult.processingTime,
-            total_optimization_time_ms: simdProcessingTime,
-          },
+            total_optimization_time_ms: simdProcessingTime
+          }
         };
         console.log(
           `🚀 SIMD optimization complete: ${imageData.length} -> ${tilingResult.compressedData.length} (${tilingResult.compressionStats.achievedRatio.toFixed(1)}:1 compression)`
@@ -225,26 +214,25 @@ export const POST: RequestHandler = async ({ request }) => {
               {
                 type: 'style',
                 value: simdGlyphRequest.style,
-                confidence: 1.0,
+                confidence: 1.0
               },
               {
                 type: 'optimization_level',
                 value: `${simdShaderData.compression_ratio.toFixed(1)}:1_compression`,
-                confidence: 1.0,
+                confidence: 1.0
               },
               {
                 type: 'performance_tier',
                 value: simdGlyphRequest.simd_config!.performance_tier,
-                confidence: 1.0,
+                confidence: 1.0
               },
             ],
             risk_assessment: 'low',
-            summary: `SIMD-optimized ${simdGlyphRequest.style} style legal evidence visualization with ${simdShaderData.compression_ratio.toFixed(1)}:1 compression: ${simdGlyphRequest.prompt}`,
-          },
+            summary: `SIMD-optimized ${simdGlyphRequest.style} style legal evidence visualization with ${simdShaderData.compression_ratio.toFixed(1)}:1 compression: ${simdGlyphRequest.prompt}` },
           neural_sprite_data: {
             compression_ratio: glyphResult.neural_sprite_results.compression_ratio || 0,
             tensor_urls: glyphResult.tensor_ids.map(id => `/api/tensors/${id}`),
-            predictive_frames: glyphResult.neural_sprite_results.predictive_frames || [],
+            predictive_frames: glyphResult.neural_sprite_results.predictive_frames || []
           },
           simd_optimization_data: {
             enabled: true,
@@ -252,20 +240,20 @@ export const POST: RequestHandler = async ({ request }) => {
             tile_count: simdShaderData.tile_map.length,
             shader_format: simdGlyphRequest.simd_config!.shader_format,
             performance_tier: simdGlyphRequest.simd_config!.performance_tier,
-            processing_stats: simdShaderData.performance_stats,
+            processing_stats: simdShaderData.performance_stats
           },
           processing_chain: [
             {
               step: 'prompt_embedding',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.1),
               success: true,
-              metadata: { prompt: simdGlyphRequest.prompt },
+              metadata: { prompt: simdGlyphRequest.prompt }
             },
             {
               step: 'style_conditioning',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.1),
               success: true,
-              metadata: { style: simdGlyphRequest.style },
+              metadata: { style: simdGlyphRequest.style }
             },
             {
               step: 'diffusion_generation',
@@ -273,8 +261,8 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 cache_hits: glyphResult.cache_hits,
-                tensor_count: glyphResult.tensor_ids.length,
-              },
+                tensor_count: glyphResult.tensor_ids.length
+              }
             },
             {
               step: 'simd_gpu_tiling',
@@ -283,8 +271,8 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: {
                 tile_size: simdGlyphRequest.simd_config!.tile_size,
                 tile_count: simdShaderData.tile_map.length,
-                compression_ratio: simdShaderData.compression_ratio,
-              },
+                compression_ratio: simdShaderData.compression_ratio
+              }
             },
             {
               step: 'shader_generation',
@@ -292,8 +280,8 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 format: simdGlyphRequest.simd_config!.shader_format,
-                performance_tier: simdGlyphRequest.simd_config!.performance_tier,
-              },
+                performance_tier: simdGlyphRequest.simd_config!.performance_tier
+              }
             },
             {
               step: 'neural_sprite_compression',
@@ -301,10 +289,10 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 compression_ratio: glyphResult.neural_sprite_results.compression_ratio,
-                predictive_frames_generated: glyphResult.neural_sprite_results.predictive_frames?.length || 0,
-              },
+                predictive_frames_generated: glyphResult.neural_sprite_results.predictive_frames?.length || 0
+              }
             },
-          ],
+          ]
         };
         // Create portable artifact with comprehensive metadata
         const enhancedPNGBuffer = await PNGEmbedExtractor.createPortableArtifact(
@@ -314,7 +302,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             neural_sprite_data: enhancedMetadata.neural_sprite_data,
             simd_optimization_data: enhancedMetadata.simd_optimization_data,
-            processing_chain: enhancedMetadata.processing_chain,
+            processing_chain: enhancedMetadata.processing_chain
           }
         );
         enhancedArtifactUrl = `data:image/png;base64,${Buffer.from(enhancedPNGBuffer).toString('base64')}`;
@@ -330,14 +318,14 @@ export const POST: RequestHandler = async ({ request }) => {
       tensor_ids: glyphResult.tensor_ids,
       generation_time_ms: totalTime,
       cache_hits: glyphResult.cache_hits,
-      enhanced_artifact_url: enhancedArtifactUrl,
+      enhanced_artifact_url: enhancedArtifactUrl
     };
     console.log(`✅ SIMD glyph generation complete in ${totalTime}ms`);
     return json({
       success: true,
       data: result,
       metadata: {
-        evidence_id: simdGlyphRequest.evidence_id,
+       , evidence_id: simdGlyphRequest.evidence_id,
         prompt: simdGlyphRequest.prompt,
         style: simdGlyphRequest.style,
         dimensions: simdGlyphRequest.dimensions,
@@ -345,16 +333,15 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_ratio: simdShaderData?.compression_ratio || 1.0,
         shader_format: simdGlyphRequest.simd_config?.shader_format,
         performance_tier: simdGlyphRequest.simd_config?.performance_tier,
-        generated_at: new Date().toISOString(),
-      },
+        generated_at: new Date().toISOString()
+      }
     });
   } catch (error) {
     console.error('SIMD glyph generation error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'SIMD glyph generation failed',
-      },
+        error: error instanceof Error ? error.message : `SIMD glyph generation failed` },
       { status: 500 }
     );
   }
@@ -371,7 +358,7 @@ async function convertImageToFloat32Array(
     const processedImage = await sharp(buffer)
       .resize(dimensions[0], dimensions[1], {
         fit: 'fill',
-        background: { r: 0, g: 0, b: 0, alpha: 1 },
+        background: {, r: 0, g: 0, b: 0, alpha: 1 }
       })
       .ensureAlpha() // Ensure alpha channel exists
       .raw() // Get raw pixel data
@@ -432,7 +419,7 @@ async function convertImageToFloat32Array(
   }
 }
 
-// Helper: reliably obtain ArrayBuffer from either data: URI or remote URL
+// Helper: reliably obtain ArrayBuffer from either; data: URI or remote URL
 async function fetchArrayBuffer(url: string): Promise<ArrayBuffer> {
   // Handle base64 data URIs directly to avoid relying on runtime fetch support for data: URLs
   if (typeof url === 'string' && url.startsWith('data:')) {
@@ -458,20 +445,14 @@ async function fetchArrayBuffer(url: string): Promise<ArrayBuffer> {
 }
 
 // Add a concrete Tile type and update TilingResult to use it
-type Tile = {
-  patternId: string;
-  frequency: number;
+type Tile = { patternId: string;, frequency: number;
   compressedSize: number;
   // other optional fields if present in implementations
   [k: string]: any;
 };
 
 // Type for tiling result to fix TypeScript errors
-interface TilingResult {
-  compressedData: Float32Array;
-  compressionStats: {
-    achievedRatio: number;
-    processingTime: number;
+interface TilingResult { compressedData: Float32Array;, compressionStats: { achievedRatio: number;, processingTime: number;
   };
   tileMap: Tile[]; // <- typed instead of Array<any>
   processingTime: number;
@@ -499,7 +480,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let tileIndex = (coords.y / ${tilingResult.tileSize}) * ${Math.ceil(512 / tilingResult.tileSize)} + (coords.x / ${tilingResult.tileSize});
   // CHR-ROM style pattern lookup with ${tier} quality scaling
   let patternValue = tileData[tileIndex];
-  let qualityMultiplier = ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : '1.0'};
+  let qualityMultiplier = ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : `1.0` };
   outputBuffer[global_id.y * 512u + global_id.x] = patternValue * qualityMultiplier;
 }`;
     case 'webgl':
@@ -508,7 +489,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 // ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1 compression
 precision mediump float
 uniform sampler2D u_tileData
-uniform float u_qualityTier; // ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : '1.0'}
+uniform float u_qualityTier; // ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : `1.0` }
 varying vec2 v_texCoord
 void main() {
   vec2 tileCoord = floor(v_texCoord * ${Math.ceil(512 / tilingResult.tileSize)}.0) / ${Math.ceil(512 / tilingResult.tileSize)}.0
@@ -525,7 +506,7 @@ void main() {
       (tile: Tile, i: number) => `
   ${((i / tileCount) * 100).toFixed(1)}% {
     filter: hue-rotate(${tile.frequency * 360}deg)
-            brightness(${tier === 'nes' ? '0.8' : tier === 'snes' ? '0.9' : '1.0'})
+            brightness(${tier === 'nes' ? '0.8' : tier === 'snes' ? '0.9' : `1.0` })
   }`
     )
     .join('')}
@@ -543,13 +524,13 @@ void main() {
           y="${Math.floor(i / Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
           width="${tilingResult.tileSize}"
           height="${tilingResult.tileSize}"
-          fill="hsl(${tile.frequency * 360}, 70%, ${tier === 'nes' ? '40' : tier === 'snes' ? '60' : '80'}%)" />
+          fill="hsl(${tile.frequency * 360}, 70%, ${tier === 'nes' ? '40' : tier === 'snes' ? '60' : `80` }%)" />
     `
       )
       .join('')}
   </pattern>
 </defs>`;
-    default: return `// Unsupported shader format: ${format}`;
+    default: return `// Unsupported shader; format: ${format}`;
   }
 }
 /*
@@ -569,7 +550,7 @@ export const GET: RequestHandler = async () => {
         tensor_caching: true,
         png_embedding: true,
         neural_sprite_integration: true,
-        portable_artifacts: true,
+        portable_artifacts: true
       },
       supported_formats: ['webgl', 'webgpu', 'css', 'svg'],
       performance_tiers: ['nes', 'snes', 'n64'],
@@ -577,19 +558,18 @@ export const GET: RequestHandler = async () => {
       integration_status: {
         glyph_diffusion_service: 'connected',
         simd_gpu_tiling_engine: 'connected',
-        png_embed_extractor: 'connected',
-      },
+        png_embed_extractor: 'connected'
+      }
     };
     return json({
       success: true,
-      data: stats,
+      data: stats
     });
   } catch (error) {
     return json(
       {
         success: false,
-        error: 'SIMD glyph service unavailable',
-      },
+        error: `SIMD glyph service unavailable` },
       { status: 503 }
     );
   }

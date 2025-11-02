@@ -27,8 +27,8 @@ import type { Document } from '$lib/types';
     }
   });
   // File upload state
-  let selectedFile: File | null = $state(null);
-  let filePreview: string | null = $state(null);
+  let selectedFile: File | null = null;
+  let filePreview: string | null = null;
   let dragOver = $state<boolean>(false);
   let uploading = $state<boolean>(false);
   let progressPercent = $state<number>(0);

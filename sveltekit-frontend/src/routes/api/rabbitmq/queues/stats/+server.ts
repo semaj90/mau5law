@@ -64,8 +64,8 @@ export const GET: RequestHandler = async ({ url }) => {
         throughput: {
           publish_rate: 2.3,
           deliver_rate: 2.1,
-          ack_rate: 2.1,
-        },
+          ack_rate: 2.1
+        }
       },
       'legal.chunks.embed': {
         name: 'legal.chunks.embed',
@@ -79,8 +79,8 @@ export const GET: RequestHandler = async ({ url }) => {
         throughput: {
           publish_rate: 8.7,
           deliver_rate: 8.5,
-          ack_rate: 8.3,
-        },
+          ack_rate: 8.3
+        }
       },
       'legal.chunks.store': {
         name: 'legal.chunks.store',
@@ -94,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
         throughput: {
           publish_rate: 5.2,
           deliver_rate: 5.0,
-          ack_rate: 4.9,
-        },
+          ack_rate: 4.9
+        }
       },
       'legal.dlq': {
         name: 'legal.dlq',
@@ -109,9 +109,9 @@ export const GET: RequestHandler = async ({ url }) => {
         throughput: {
           publish_rate: 0.1,
           deliver_rate: 0,
-          ack_rate: 0,
-        },
-      },
+          ack_rate: 0
+        }
+      }
     };
 
     // Decide whether to use real RabbitMQ Management API or simulated fallback
@@ -144,37 +144,35 @@ export const GET: RequestHandler = async ({ url }) => {
             throughput: {
               publish_rate: q.message_stats?.publish_details?.rate ?? 0,
               deliver_rate: q.message_stats?.deliver_get_details?.rate ?? 0,
-              ack_rate: q.message_stats?.ack_details?.rate ?? 0,
-            },
+              ack_rate: q.message_stats?.ack_details?.rate ?? 0
+            }
           };
           if (detailed) {
             return json(
               {
                 ...queueStats,
                 timestamp,
-                detailed_metrics: {
-                  message_rates: {
-                    last_5_minutes: {
-                      published: Math.floor(Math.random() * 100),
+                detailed_metrics: { message_rates: {, last_5_minutes: {
+                     , published: Math.floor(Math.random() * 100),
                       delivered: Math.floor(Math.random() * 95),
                       acknowledged: Math.floor(Math.random() * 95),
-                      redelivered: Math.floor(Math.random() * 5),
+                      redelivered: Math.floor(Math.random() * 5)
                     },
                     last_hour: {
                       published: Math.floor(Math.random() * 1000),
                       delivered: Math.floor(Math.random() * 950),
                       acknowledged: Math.floor(Math.random() * 950),
-                      redelivered: Math.floor(Math.random() * 50),
-                    },
+                      redelivered: Math.floor(Math.random() * 50)
+                    }
                   },
                   consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
                     tag: `consumer_${i + 1}`,
                     channel: `channel_${i + 1}`,
                     prefetch_count: 10,
                     ack_required: true,
-                    active: true,
-                  })),
-                },
+                    active: true
+                  }))
+                }
               },
               { headers: { 'X-Source': source, 'X-Runtime': runtime } }
             );
@@ -199,29 +197,27 @@ export const GET: RequestHandler = async ({ url }) => {
           {
             ...queueStats,
             timestamp,
-            detailed_metrics: {
-              message_rates: {
-                last_5_minutes: {
-                  published: Math.floor(Math.random() * 100),
+            detailed_metrics: { message_rates: {, last_5_minutes: {
+                 , published: Math.floor(Math.random() * 100),
                   delivered: Math.floor(Math.random() * 95),
                   acknowledged: Math.floor(Math.random() * 95),
-                  redelivered: Math.floor(Math.random() * 5),
+                  redelivered: Math.floor(Math.random() * 5)
                 },
                 last_hour: {
                   published: Math.floor(Math.random() * 1000),
                   delivered: Math.floor(Math.random() * 950),
                   acknowledged: Math.floor(Math.random() * 950),
-                  redelivered: Math.floor(Math.random() * 50),
-                },
+                  redelivered: Math.floor(Math.random() * 50)
+                }
               },
               consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
                 tag: `consumer_${i + 1}`,
                 channel: `channel_${i + 1}`,
                 prefetch_count: 10,
                 ack_required: true,
-                active: true,
-              })),
-            },
+                active: true
+              }))
+            }
           },
           { headers: { 'X-Source': source, 'X-Runtime': runtime } }
         );
@@ -235,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
       total_queues: Object.keys(baseStats).length,
       total_messages: Object.values(baseStats).reduce((sum, queue) => sum + queue.messages, 0),
       total_consumers: Object.values(baseStats).reduce((sum, queue) => sum + queue.consumers, 0),
-      queues: baseStats,
+      queues: baseStats
     };
     if (detailed) {
       allStats['system_metrics'] = {
@@ -246,10 +242,10 @@ export const GET: RequestHandler = async ({ url }) => {
         erlang_processes: 428,
         file_descriptors: {
           used: 156,
-          available: 65536,
+          available: 65536
         },
         connection_count: 12,
-        channel_count: 24,
+        channel_count: 24
       };
     }
     return json(allStats, {
@@ -257,8 +253,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache-Control': 'max-age=30',
         'X-Queue-Count': String(Object.keys(baseStats).length),
         'X-Source': source,
-        'X-Runtime': runtime,
-      },
+        'X-Runtime': runtime
+      }
     });
   } catch (error) {
     console.error('Failed to fetch queue statistics:', error);
@@ -266,7 +262,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Failed to fetch queue statistics',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -301,7 +297,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   action: 'purge',
                   queue,
                   result: 'success',
-                  timestamp: new Date().toISOString(),
+                  timestamp: new Date().toISOString()
                 },
                 { headers: { 'X-Source': 'rabbitmq', 'X-Runtime': runtime } }
               );
@@ -319,7 +315,7 @@ export const POST: RequestHandler = async ({ request }) => {
             queue,
             result: 'success',
             messages_purged: Math.floor(Math.random() * 50),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { headers: { 'X-Source': 'simulated', 'X-Runtime': runtime } }
         );
@@ -330,11 +326,11 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             action: 'reset_stats',
             result: 'success',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { headers: { 'X-Source': mgmtAvailable ? 'rabbitmq' : 'simulated', 'X-Runtime': runtime } }
         );
-      default: return json({ error: `Unknown action: ${action}` }, { status: 400 });
+      default: return json({ error: `Unknown, action: ${action}' }, { status: 400 });
     }
   } catch (error) {
     console.error('Queue management action failed:', error);
@@ -342,7 +338,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Queue management action failed',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

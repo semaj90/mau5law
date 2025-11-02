@@ -87,7 +87,7 @@
   }: CanvasProps = $props();
   // Canvas state using Svelte 5 runes
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
-  let fabricCanvas: any = $state(null);
+  let fabricCanvas: any = null;
   let selectedEvidence = $state<string | null>(null);
   let isDragMode = $state<boolean>(true);
   let showGrid = $state<boolean>(true);

@@ -2,7 +2,7 @@
 // Local LLM Configuration for Desktop and Web App Development
 // This file manages local model downloads, setup, and integration
 import { dev } from "$app/environment";
-// TODO: Fix import - // Orphaned content: import {  // Optional Tauri imports - fallback for web environments
+// TODO: Fix import - // Orphaned; content: import {  // Optional Tauri imports - fallback for web environments
 let createDir: any, writeTextFile: any, readTextFile: any, exists: any, join: any, appLocalDataDir: any;
 async function initializeTauriAPI(): Promise<any> {
   try {
@@ -19,44 +19,30 @@ async function initializeTauriAPI(): Promise<any> {
     appLocalDataDir = () => Promise.resolve("./data");
   }
 }
-export interface LocalLLMConfig {
-  models: {
-    embedding: {
-      name: string;
-  url: string;
+export interface LocalLLMConfig { models: {, embedding: { name: string;, url: string;
   size: string;
   dimensions: number;
   description: string;
     }
-    chat: {
-      name: string;
-      url: string;
+    chat: { name: string;, url: string;
       size: string;
       contextLength: number;
       description: string;
     }
-    classification: {
-      name: string;
-      url: string;
+    classification: { name: string;, url: string;
       size: string;
       classes: string[];
       description: string;
     }
   }
-  paths: {
-    modelsDir: string;
-    cacheDir: string;
+  paths: { modelsDir: string;, cacheDir: string;
     configFile: string;
   }
-  development: {
-    autoDownload: boolean;
-    preferLocal: boolean;
+  development: { autoDownload: boolean;, preferLocal: boolean;
     fallbackToCloud: boolean;
   }
 }
-export const localLLMConfig: LocalLLMConfig = {
-  models: {
-    embedding: {
+export const localLLMConfig: LocalLLMConfig = { models: {, embedding: {
       name: "legal-bert-base-uncased",
       url: "https://huggingface.co/nlpaueb/legal-bert-base-uncased",
       size: "440MB",
@@ -88,7 +74,7 @@ export const localLLMConfig: LocalLLMConfig = {
   development: {
     autoDownload: true, // Enable automatic download for development
     preferLocal: true,
-    fallbackToCloud: true,
+    fallbackToCloud: true
   }
 }
 class LocalLLMManager {
@@ -187,7 +173,7 @@ class LocalLLMManager {
         return await this.downloadModelWeb(model);
       }
     } catch (error: any) {
-      console.error(`Failed to download ${modelType} model:`, error);
+      console.error(`Failed to download ${modelType} model: ', error);
       return false;
     }
   }

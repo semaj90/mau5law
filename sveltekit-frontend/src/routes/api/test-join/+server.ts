@@ -39,7 +39,7 @@ export const GET: RequestHandler = async _event => {
         userId: users.id,
         userEmail: users.email,
         sessionId: sessions.id,
-        sessionUserId: sessions.user_id,
+        sessionUserId: sessions.user_id
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id))
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async _event => {
         session_ip_address: sessions.ip_address,
         session_user_agent: sessions.user_agent,
         session_context: sessions.session_context,
-        session_created_at: sessions.created_at,
+        session_created_at: sessions.created_at
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id))
@@ -88,10 +88,10 @@ export const GET: RequestHandler = async _event => {
       success: true,
       message: 'JOIN query tests completed successfully',
       tests: {
-        sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0,
+       , sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0,
         joinResults: Array.isArray(joinResults) ? joinResults.length : 0,
-        luciaQuerySQL: getToSQL(luciaQuery),
-      },
+        luciaQuerySQL: getToSQL(luciaQuery)
+      }
     });
   } catch (error: any) {
     console.error('JOIN Test Error:', error);
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async _event => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

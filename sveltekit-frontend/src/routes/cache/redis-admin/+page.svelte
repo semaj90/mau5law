@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
@@ -188,7 +190,7 @@
     ] as tab}
       <Button
         onclick={() => selectedTab = tab.id}
-        class="flex" items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+        class="flex items-center gap-2" px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
         {@render tab.icon({ class: "w-4 h-4" })}

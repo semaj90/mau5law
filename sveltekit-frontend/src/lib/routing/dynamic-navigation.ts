@@ -11,25 +11,19 @@ import type { GeneratedRoute } from './dynamic-route-generator.js';
 import { routeRegistry } from './route-registry.js';
 // Remove unused Node.js imports - not needed for this implementation
 }
-export interface NavigationState {
-  currentPath: string;
-  previousPath: string | null;
+export interface NavigationState { currentPath: string;, previousPath: string | null;
   navigationHistory: NavigationHistoryEntry[];
   breadcrumbs: BreadcrumbItem[];
   canGoBack: boolean;
   canGoForward: boolean;
   isNavigating: boolean;
 }
-export interface NavigationHistoryEntry {
-  path: string;
-  timestamp: number;
+export interface NavigationHistoryEntry { path: string;, timestamp: number;
   routeId?: string;
   params?: Record<string, string>;
   state?: any;
 }
-export interface BreadcrumbItem {
-  label: string;
-  path: string;
+export interface BreadcrumbItem { label: string;, path: string;
   routeId?: string;
   isActive: boolean;
 }
@@ -42,9 +36,7 @@ export interface NavigationOptions {
   preserveParams?: boolean;
   guardBypass?: boolean;
 }
-export interface NavigationGuard {
-  name: string;
-  condition: (to: string, from string) => boolean | Promise<boolean>;
+export interface NavigationGuard { name: string;, condition: (to: string, from string) => boolean | Promise<boolean>;
   action?: 'prevent' | 'redirect' | 'confirm';
   redirectTo?: string;
   message?: string;
@@ -57,7 +49,7 @@ export class DynamicNavigation {
     breadcrumbs: [],
     canGoBack: false,
     canGoForward: false,
-    isNavigating: false,
+    isNavigating: false
   });
   private guards: Map<string, NavigationGuard> = new Map();
   private maxHistorySize = 100;
@@ -234,7 +226,7 @@ export class DynamicNavigation {
    */
   private updateCurrentPath(
     path: string;
-    params: Record<string, string> = {},
+   , params: Record<string, string> = {},
     routeId?: string;
   ): void {
     this.state.update((state) => {
@@ -291,8 +283,7 @@ export class DynamicNavigation {
     breadcrumbs.push({
       label: 'Home',
       path: '/',
-      isActive: path === '/'
-    });
+      isActive: path === '/' });
     // Build breadcrumbs from path segments
     let currentPath = '';
     for (let i = 0; i < segments.length; i++) {
@@ -368,7 +359,7 @@ export class DynamicNavigation {
       ...state,
       navigationHistory: [],
       canGoBack: false,
-      canGoForward: false,
+      canGoForward: false
     });
     this.historyIndex = -1;
   }

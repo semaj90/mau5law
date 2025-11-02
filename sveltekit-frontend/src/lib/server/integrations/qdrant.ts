@@ -19,9 +19,7 @@ import type {
   Filter
 } from '$lib/types/qdrant';
 
-interface QdrantConfig {
-  url: string;
-  collectionName: string;
+interface QdrantConfig { url: string;, collectionName: string;
   vectorSize?: number;
   timeout?: number;
 }
@@ -73,7 +71,7 @@ class QdrantVectorService implements IQdrantVectorService {
    * Upsert batch of vectors
    */
   async upsertBatch(
-    items: Array<{ id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }>
+    items: Array<{, id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }>
   ): Promise<void> {
     if (items.length === 0) return;
 
@@ -92,7 +90,7 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points`,
       {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(body)
       }
     );
@@ -131,7 +129,7 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points/search`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(body)
       }
     );
@@ -159,9 +157,9 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          points: ids,
+         , points: ids,
           wait: true
         })
       }
@@ -180,9 +178,9 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          filter: this.buildFilter(filter),
+         , filter: this.buildFilter(filter),
           wait: true
         })
       }
@@ -199,7 +197,7 @@ class QdrantVectorService implements IQdrantVectorService {
   async getCollectionInfo(): Promise<any> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: 'GET' }
+      { method: `GET` }
     );
 
     if (!response.ok) {
@@ -232,7 +230,7 @@ class QdrantVectorService implements IQdrantVectorService {
         collections
       };
     } catch (error) {
-      return { status: 'unavailable' };
+      return { status: `unavailable` };
     }
   }
 
@@ -242,7 +240,7 @@ class QdrantVectorService implements IQdrantVectorService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.url}/collections/${this.config.collectionName}`,
-        { method: 'GET' },
+        { method: `GET` },
         5000
       );
       return response.ok;
@@ -257,13 +255,10 @@ class QdrantVectorService implements IQdrantVectorService {
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: {
-            size: this.config.vectorSize,
-            distance: 'Cosine'
-          },
+        body: JSON.stringify({ vectors: {, size: this.config.vectorSize,
+            distance: `Cosine` },
           optimizers_config: {
-            indexing_threshold: 10000
+           , indexing_threshold: 10000
           }
         })
       }
@@ -277,7 +272,7 @@ class QdrantVectorService implements IQdrantVectorService {
   private async deleteCollection(): Promise<void> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: 'DELETE' }
+      { method: `DELETE` }
     );
 
     if (!response.ok) {

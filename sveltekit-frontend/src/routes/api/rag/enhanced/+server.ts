@@ -46,9 +46,7 @@ interface EnhancedSearchResult {
   source: 'langchain' | 'pgvector' | 'hybrid';
 }
 
-interface EnhancedSearchResponse {
-  success: boolean;
-  query: string;
+interface EnhancedSearchResponse { success: boolean;, query: string;
   results: EnhancedSearchResult[];
   langchain_results?: number;
   pgvector_results?: number;
@@ -56,9 +54,7 @@ interface EnhancedSearchResponse {
   processing_time: number;
   embedding_time?: number;
   search_time?: number;
-  semantic_scores?: {
-    highest_relevance: number;
-    lowest_relevance: number;
+  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
     average_relevance: number;
   };
 }
@@ -139,7 +135,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const { query, k = 5, limit, threshold, useGemmaEmbeddings = false, includePgVector = false, filters } = body;
 
     if (!query) {
-      return json({ error: 'Query is required' }, { status: 400 });
+      return json({ error: `Query is required` }, { status: 400 });
     }
 
     const results: EnhancedSearchResult[] = [];
@@ -150,7 +146,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     if (!useGemmaEmbeddings && !includePgVector) {
       const searchStart = Date.now();
       const store = await loadVectorStore();
-      // strongly-typed langchain results (avoid `any`)
+      // strongly-typed langchain results (avoid `any')
       const langchainResults = (await store.similaritySearch(query, k)) as unknown as LangchainSearchResult[];
       searchTime = Date.now() - searchStart;
 
@@ -171,7 +167,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
               relevance_level: relevance,
               doc: docs[0],
-              source: 'langchain',
+              source: 'langchain'
             });
             continue;
           }
@@ -183,7 +179,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           score: scoreNum,
           semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
           relevance_level: relevance,
-          source: 'langchain',
+          source: 'langchain'
         });
       }
     }
@@ -194,14 +190,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const semanticResponse = await fetch('/api/rag/semantic-search', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': `application/json` },
           body: JSON.stringify({
             query,
             limit: limit || k,
             threshold: threshold ?? 1.0,
-            filters,
-          }),
+            filters
+          })
         });
 
         if (semanticResponse.ok) {
@@ -221,13 +216,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               // This avoids assigning a value with optional `id` to DocumentRow.id (required).
               const docRow: DocumentRow | null = resultData.id ? (resultData as unknown as DocumentRow) : null;
               results.push({
-                chunk: resultData.content || `Document: ${resultData.title || 'unknown'}`,
+                chunk: resultData.content || `Document: ${resultData.title || 'unknown` }`,
                 distance: resultData.distance,
                 semantic_score: resultData.semantic_score,
                 relevance_level: resultData.relevance_level,
                 doc: docRow,
                 metadata: resultData.metadata,
-                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid',
+                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid'
               });
             }
           }
@@ -242,8 +237,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             results.push({
               chunk: r.pageContent,
               score: typeof r.score === 'number' ? r.score : undefined,
-              source: 'langchain',
-            });
+              source: `langchain` });
           }
         }
       }
@@ -258,13 +252,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       semanticScores = {
         highest_relevance: Math.min(...distances),
         lowest_relevance: Math.max(...distances),
-        average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length,
+        average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
       };
     } else if (scores.length > 0) {
       semanticScores = {
         highest_relevance: Math.min(...scores),
         lowest_relevance: Math.max(...scores),
-        average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length,
+        average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length
       };
     }
 
@@ -278,7 +272,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       processing_time: Date.now() - startTime,
       ...(embeddingTime ? { embedding_time: embeddingTime } : {}),
       ...(searchTime ? { search_time: searchTime } : {}),
-      ...(semanticScores ? { semantic_scores: semanticScores } : {}),
+      ...(semanticScores ? { semantic_scores: semanticScores } : {})
     };
 
     return json(response);
@@ -302,7 +296,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       {
         success: false,
         error: message,
-        processing_time: Date.now() - startTime,
+        processing_time: Date.now() - startTime
       },
       { status: 500 }
     );

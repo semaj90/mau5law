@@ -25,13 +25,13 @@ export const POST: RequestHandler = async ({ request }) => {
       model,
       max_tokens: body.max_tokens || 512,
       temperature,
-      use_gpu: true,
+      use_gpu: true
     };
     // Forward the request to the Go GPU server
     const gpuServerResponse = await fetch(GO_GPU_SERVER_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(inferenceRequest),
       signal: AbortSignal.timeout(30000), // 30 second timeout
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
         legal_domain: responseData.legal_domain,
         similar_queries: responseData.similar_queries || [],
         gpu_utilization: responseData.gpu_utilization,
-        memory_usage_mb: responseData.memory_usage_mb,
+        memory_usage_mb: responseData.memory_usage_mb
       }),
       {
         status: gpuServerResponse.status,
@@ -63,8 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-        },
+          'Connection': `keep-alive` }
       }
     );
   } catch (err: any) {
@@ -82,7 +81,7 @@ export const GET: RequestHandler = async () => {
   try {
     const healthUrl = GO_GPU_SERVER_URL.replace('/api/v1/inference', '/api/v1/health');
     const response = await fetch(healthUrl, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (response.ok) {
       return new Response(
@@ -90,10 +89,10 @@ export const GET: RequestHandler = async () => {
           status: 'healthy',
           service: 'go-gpu-server',
           url: GO_GPU_SERVER_URL, // <-- added missing comma
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` }
         }
       );
     } else {
@@ -106,11 +105,11 @@ export const GET: RequestHandler = async () => {
         status: 'error',
         error: msg,
         url: GO_GPU_SERVER_URL,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 503,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       }
     );
   }

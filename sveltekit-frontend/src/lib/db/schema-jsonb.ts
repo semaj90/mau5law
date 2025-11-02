@@ -62,30 +62,22 @@ export const jobPriorityEnum = pgEnum('job_priority', [
   'urgent'
 ]);
 // TypeScript interfaces for JSONB data
-export interface SummaryData {
-  executive_summary: string | null;
-  key_findings: string[];
+export interface SummaryData { executive_summary: string | null;, key_findings: string[];
   legal_issues: LegalIssue[];
   recommendations: Recommendation[];
   risk_assessment: RiskAssessment;
   confidence_score: number;
   processing_metrics: ProcessingMetrics;
 }
-export interface LegalIssue {
-  issue: string;
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export interface LegalIssue { issue: string;, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description: string;
   precedents?: string[];
 }
-export interface Recommendation {
-  action: string;
-  priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
+export interface Recommendation { action: string;, priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
   rationale: string;
   timeline?: string;
 }
-export interface RiskAssessment {
-  overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  risk_factors: Array<any>;
+export interface RiskAssessment { overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, risk_factors: Array<any>;
   mitigation: string[];
 }
 export interface ProcessingMetrics {
@@ -115,19 +107,13 @@ export interface JobConfig {
   language?: string;
   model_override?: string;
 }
-export interface UserPreferences {
-  default_style: string;
-  max_summary_length: number;
+export interface UserPreferences { default_style: string;, max_summary_length: number;
   include_citations: boolean;
   auto_summarize: boolean;
-  notification_settings?: {
-    email: boolean;
-    push: boolean;
+  notification_settings?: { email: boolean;, push: boolean;
     webhook_url?: string;
   };
-  api_limits?: {
-    daily_quota: number;
-    rate_limit_per_minute: number;
+  api_limits?: { daily_quota: number;, rate_limit_per_minute: number;
   };
 }
 // Main documents table
@@ -181,7 +167,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
-  ),
+  )
 }, (table: any) => ({
   statusIdx: index('idx_documents_status').on(table.status),
   typeIdx: index('idx_documents_type').on(table.documentType),
@@ -202,7 +188,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   embedding: vector('embedding'),
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 }, (table: any) => ({
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
@@ -232,7 +218,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   lockedBy: varchar('locked_by', { length: 100 }),
   lockedAt: timestamp('locked_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 }, (table: any) => ({
   statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority, table.scheduledAt),
   documentIdx: index('idx_jobs_document').on(table.documentId),

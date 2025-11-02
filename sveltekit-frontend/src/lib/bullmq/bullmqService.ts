@@ -3,9 +3,9 @@ import type { Document } from '$lib/types';
 import { Queue, Worker, Job, QueueEvents } from "bullmq";
 import Redis from "ioredis";
 // Mock imports for missing modules
-const aiPipeline = { process: async (content: string) => ({ processed: true }) };
-const ollamaService = { analyze: async (content: string) => ({ analysis: 'completed' }) };
-const multiLayerCache = { invalidate: async (pattern: string) => ({ invalidated: true }) };
+const aiPipeline = { process: async (content: string) => ({, processed: true }) };
+const ollamaService = { analyze: async (content: string) => ({, analysis: 'completed' }) };
+const multiLayerCache = { invalidate: async (pattern: string) => ({, invalidated: true }) };
 import { db } from "$lib/server/db";
 import { eq } from 'drizzle-orm';
 import { documentEmbeddings } from "$lib/server/db/schema-unified";
@@ -18,9 +18,7 @@ export interface DocumentProcessingOptions {
 }
 import { EventEmitter } from "events";
 // Job types
-export interface DocumentProcessingJob {
-  documentId: string;
-  content: string;
+export interface DocumentProcessingJob { documentId: string;, content: string;
   options: DocumentProcessingOptions;
   metadata: {
     userId: string;
@@ -28,21 +26,15 @@ export interface DocumentProcessingJob {
   filename?: string;
   }
 }
-export interface EmbeddingGenerationJob {
-  content: string;
-  type: 'document' | 'query' | 'case_summary';
+export interface EmbeddingGenerationJob { content: string;, type: 'document' | 'query' | 'case_summary';
   entityId: string;
   metadata?: { [key: string]: any };
 }
-export interface AIAnalysisJob {
-  content: string;
-  analysisType: 'summary' | 'entities' | 'sentiment' | 'classification';
+export interface AIAnalysisJob { content: string;, analysisType: 'summary' | 'entities' | 'sentiment' | 'classification';
   documentId: string;
   userId: string;
 }
-export interface RecommendationJob {
-  userId: string;
-  type: 'document' | 'case' | 'evidence';
+export interface RecommendationJob { userId: string;, type: 'document' | 'case' | 'evidence';
   context?: { [key: string]: any };
 }
 export interface CacheInvalidationJob {
@@ -100,7 +92,7 @@ export class BullMQService {
           removeOnFail: 50,
           attempts: 3,
           backoff: {
-            type: 'exponential',
+           , type: 'exponential',
             delay: 2000
           }
         }
@@ -171,7 +163,7 @@ export class BullMQService {
       console.log(`Worker completed job ${job.id} in ${queueName}`);
     });
     worker.on('failed', (job, err) => {
-      console.error(`Worker failed job ${job?.id} in ${queueName}:`, err);
+      console.error(`Worker failed job ${job?.id} in ${queueName}: ', err);
     });
     this.workers.set(queueName, worker);
   }

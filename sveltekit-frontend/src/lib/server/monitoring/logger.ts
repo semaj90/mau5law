@@ -6,9 +6,7 @@ import { dev } from "$app/environment";
  * For Legal Case Management Application
  */
 }
-export interface LogEntry {
-  timestamp: string;
-  level: "info" | "warn" | "error" | "debug" | "perf";
+export interface LogEntry { timestamp: string;, level: "info" | "warn" | "error" | "debug" | "perf";
   message: string;
   userId?: string;
   action?: string;
@@ -18,9 +16,7 @@ export interface LogEntry {
   userAgent?: string;
   ip?: string;
 }
-export interface PerformanceMetrics {
-  endpoint: string;
-  method: string;
+export interface PerformanceMetrics { endpoint: string;, method: string;
   duration: number;
   timestamp: string;
   status: number;
@@ -160,7 +156,7 @@ class AppLogger {
           endpoint,
           duration,
           metadata: {
-            error: error instanceof Error ? error.message: String(error)
+           , error: error instanceof Error ? error.message: String(error)
           }
         });
         throw error;

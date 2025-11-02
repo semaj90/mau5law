@@ -33,7 +33,7 @@ export const minio = new MinioClient({
   port: MINIO_PORT,
   useSSL: MINIO_USE_SSL,
   accessKey: MINIO_ACCESS_KEY,
-  secretKey: MINIO_SECRET_KEY,
+  secretKey: MINIO_SECRET_KEY
 });
 export async function ensureBucket(bucketName: string): Promise<boolean> {
   try {

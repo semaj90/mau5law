@@ -1,6 +1,9 @@
 <!-- Enhanced-Bits Legal AI Dashboard -->
 <!-- Complete integration of Citations, Reports, and POI systems -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import {

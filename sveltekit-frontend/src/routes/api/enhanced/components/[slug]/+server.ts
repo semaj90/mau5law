@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types';
 const logger = {
   // Use unknown/Record instead of `any`. Use nullish coalescing when logging.
   info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
-  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data ?? ''),
+  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data ?? '')
 };
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
   const { slug } = params;
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
         setHeaders({
           'cache-control': 'public, max-age=300, stale-while-revalidate=600',
           'x-cache': 'HIT',
-          'x-cache-layer': cacheLayer,
+          'x-cache-layer': cacheLayer
         });
         logger.info('Cache hit for enhanced component', { slug, variant, cacheLayer });
         return json(cached);
@@ -43,8 +43,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     await cacheManager.set(cacheKey, componentData, 'enhanced-component', 300);
     setHeaders({
       'cache-control': 'public, max-age=300, stale-while-revalidate=600',
-      'x-cache': 'MISS',
-    });
+      'x-cache': `MISS` });
     logger.info('Generated enhanced component', { slug, variant });
     return json(componentData);
   } catch (error: any) {
@@ -54,7 +53,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
       {
         error: 'Component generation failed',
         slug,
-        details: msg,
+        details: msg
       },
       { status: 500 }
     );
@@ -73,7 +72,7 @@ async function generateEnhancedComponent(slug: string, variant: string, searchPa
     case 'document-insights':
       return await generateDocumentInsights(variant, searchParams);
     default:
-      throw new Error(`Unknown enhanced component: ${slug}`);
+      throw new Error(`Unknown enhanced; component: ${slug}`);
   }
 }
 async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -142,15 +141,14 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
         total: evidenceItems.length,
         // count items flagged as high priority (null-safe)
         high_priority: evidenceItems.filter(isHighPriority).length,
-        // safe recent calc: guard created_at before using new Date(...)
-        recent: evidenceItems.filter(isRecent).length,
-      },
+        // safe recent calc: guard created_at before using new Date(...); recent: evidenceItems.filter(isRecent).length
+      }
     },
     meta: {
       generated_at: new Date().toISOString(),
       cache_key: `evidence-board:${variant}`,
-      query_time_ms: Date.now() - startTime,
-    },
+      query_time_ms: Date.now() - startTime
+    }
   };
 }
 async function generateLegalTimeline(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -171,11 +169,11 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
     data: {
       events,
       milestones: events.filter(e => e.is_milestone),
-      range: timeRange,
+      range: timeRange
     },
     meta: {
-      generated_at: new Date().toISOString(),
-    },
+      generated_at: new Date().toISOString()
+    }
   };
 }
 async function generateSemanticSearch(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -189,7 +187,7 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
       component: 'semantic-search',
       variant,
       data: { results: [], query: '' },
-      meta: { generated_at: new Date().toISOString() },
+      meta: { generated_at: new Date().toISOString() }
     };
   }
   // Generate query embedding and perform vector search
@@ -202,12 +200,12 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     data: {
       results,
       query,
-      suggestions: await generateSearchSuggestions(query),
+      suggestions: await generateSearchSuggestions(query)
     },
     meta: {
       generated_at: new Date().toISOString(),
-      query_embedding_dims: queryEmbedding?.length || 0,
-    },
+      query_embedding_dims: queryEmbedding?.length || 0
+    }
   };
 }
 async function generateCaseAnalysis(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -217,7 +215,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
       component: 'case-analysis',
       variant,
       data: { error: 'case_id required' },
-      meta: { generated_at: new Date().toISOString() },
+      meta: { generated_at: new Date().toISOString() }
     };
   }
   // Multi-source analysis combining PostgreSQL, vector search, and graph data
@@ -233,11 +231,11 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
       case: caseData,
       related_cases: relatedCases,
       insights,
-      risk_assessment: await calculateRiskScore(caseId),
+      risk_assessment: await calculateRiskScore(caseId)
     },
     meta: {
-      generated_at: new Date().toISOString(),
-    },
+      generated_at: new Date().toISOString()
+    }
   };
 }
 async function generateDocumentInsights(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -246,8 +244,8 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     return {
       component: 'document-insights',
       variant,
-      data: { error: 'doc_id required' },
-      meta: { generated_at: new Date().toISOString() },
+      data: { error: `doc_id required` },
+      meta: { generated_at: new Date().toISOString() }
     };
   }
   const insights = await analyzeDocument(docId);
@@ -256,8 +254,8 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     variant,
     data: insights,
     meta: {
-      generated_at: new Date().toISOString(),
-    },
+      generated_at: new Date().toISOString()
+    }
   };
 }
 // Add a concrete type for evidence rows used in this module
@@ -301,7 +299,7 @@ async function generateCaseInsights(_caseId: string): Promise<any> {
   return {
     key_points: [],
     risk_factors: [],
-    recommendations: [],
+    recommendations: []
   };
 }
 async function calculateRiskScore(_caseId: string): Promise<any> {
@@ -309,7 +307,7 @@ async function calculateRiskScore(_caseId: string): Promise<any> {
   return {
     score: 0.5,
     factors: [],
-    confidence: 0.8,
+    confidence: 0.8
   };
 }
 
@@ -319,6 +317,6 @@ async function analyzeDocument(_docId: string): Promise<any> {
     summary: '',
     entities: [],
     key_phrases: [],
-    sentiment: 0.0,
+    sentiment: 0.0
   };
 }

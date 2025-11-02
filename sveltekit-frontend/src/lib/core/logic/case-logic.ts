@@ -2,9 +2,7 @@
  * Pure business logic for case management
  * No UI dependencies here — usable by DOM or Canvas renderers
  */
-export type CaseFile = {
-  id: string;
-  title: string;
+export type CaseFile = { id: string;, title: string;
   summary?: string;
   pages?: number;
   attachments?: number;

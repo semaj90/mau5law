@@ -22,8 +22,8 @@ import type { Document } from '$lib/types';
   import { BufferDebugUtils, toFloat32Array } from '$lib/utils/buffer-conversion.js';
   // Demo state
   let webgpuSupported = $state<boolean>(false);
-  let device: GPUDevice | null = $state(null);
-  let uploader: WebGPUBufferUploader | null = $state(null);
+  let device: GPUDevice | null = null;
+  let uploader: WebGPUBufferUploader | null = null;
   let demoRunning = $state<boolean>(false);
   let currentDemo = $state<string>('basic');
   let results = $state<any[]>([]);

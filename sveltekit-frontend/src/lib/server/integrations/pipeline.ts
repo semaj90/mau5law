@@ -29,23 +29,14 @@ interface DocumentMetadata {
   tags?: string[];
   [key: string]: any;
 }
-interface ProcessedDocument {
-  id: string;
-  content: string;
-  embedding: Float32Array;
+interface ProcessedDocument { id: string; content: string;, embedding: Float32Array;
   metadata: DocumentMetadata;
   cached: boolean;
 }
-interface SearchResult {
-  id: string;
-  score: number;
-  content: string;
+interface SearchResult { id: string; score: number;, content: string;
   metadata: DocumentMetadata;
 }
-interface RAGResponse {
-  answer: string;
-  sources: SearchResult[];
-  model: string;
+interface RAGResponse { answer: string; sources: SearchResult[];, model: string;
   tokensUsed?: number;
   cacheHit: boolean;
   processingTimeMs: number;
@@ -115,7 +106,7 @@ export class LegalAIPipeline {
           {
             contentType: 'application/octet-stream',
             metadata: {
-              title: metadata.title || 'Untitled',
+             , title: metadata.title || 'Untitled',
               type: metadata.type || 'document',
               ingestionDate: new Date().toISOString()
             }
@@ -306,7 +297,7 @@ export class LegalAIPipeline {
       temperature?: number;
       maxTokens?: number;
     }
-  ): AsyncIterable<{ type: 'sources' | 'token' | 'done'; data: any }> {
+  ): AsyncIterable<{ type: 'sources' | 'token' | 'done';, data: any }> {
     const topK = options?.topK || 5;
     // 1. Search for sources
     const sources = await this.searchDocuments(query, topK, options?.filter);
@@ -314,8 +305,7 @@ export class LegalAIPipeline {
     if (sources.length === 0) {
       yield {
         type: 'token',
-        data: 'I could not find any relevant information to answer your question.'
-      };
+        data: `I could not find any relevant information to answer your question.` };
       yield { type: 'done', data: { sources: [], processingTimeMs: 0 } };
       return;
     }
@@ -328,7 +318,7 @@ export class LegalAIPipeline {
       'Cite sources using [1], [2], etc.';
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}` }
+      { role: 'user', content: 'Context:\n${context}\n\nQuestion: ${query}' }
     ];
     // 3. Stream tokens
     for await (const token of this.ollama.streamChat(messages, options)) {
@@ -340,7 +330,7 @@ export class LegalAIPipeline {
    * Batch ingest documents (with parallelization)
    */
   async batchIngest(
-    documents: Array<{ content: string; metadata: DocumentMetadata; file?: Buffer }>,
+    documents: Array<{, content: string; metadata: DocumentMetadata; file?: Buffer }>,
     batchSize: number = 10
   ): Promise<ProcessedDocument[]> {
     const results: ProcessedDocument[] = [];
@@ -356,12 +346,7 @@ export class LegalAIPipeline {
   /**
    * Health check for all services
    */
-  async healthCheck(): Promise<{
-    overall: 'healthy' | 'degraded' | 'unavailable';
-    services: {
-      ollama: any;
-      redis: any;
-      qdrant: any;
+  async healthCheck(): Promise<{ overall: 'healthy' | 'degraded' | 'unavailable'; services: { ollama: any; redis: any;, qdrant: any;
       minio: any;
     };
   }> {
@@ -369,7 +354,7 @@ export class LegalAIPipeline {
       this.ollama.health().catch(() => ({ status: 'unavailable' })),
       this.redis.health().catch(() => ({ status: 'unavailable' })),
       this.qdrant.health().catch(() => ({ status: 'unavailable' })),
-      this.minio.health().catch(() => ({ status: 'unavailable' }))
+      this.minio.health().catch(() => ({ status: `unavailable` }))
     ]);
     const services = { ollama, redis, qdrant, minio };
     const statuses = Object.values(services).map(s => s.status);

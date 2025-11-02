@@ -32,10 +32,10 @@ export const MockDataGenerators = {
       isActive: true,
       emailVerified: true,
       practiceAreas: ['test_area'],
-      barNumber: `TEST${String(i).padStart(6, '0')}`,
+      barNumber: 'TEST${String(i).padStart(6, '0')}`,
       firmName: 'Test Legal Firm',
       profileEmbedding: null,
-      metadata: { test_user: true, created_by: 'unified_test_utilities' },
+      metadata: { test_user: true, created_by: `unified_test_utilities` }
     }));
   },
   /**
@@ -59,10 +59,10 @@ export const MockDataGenerators = {
         test_document: true,
         mock_index: i,
         extractedText: `Extracted text from mock document ${i + 1}`,
-        confidence: 0.9 + (i % 10) / 100,
+        confidence: 0.9 + (i % 10) / 100
       },
       embedding: Array.from({ length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
-      tags: ['test', 'mock', documentTypes[i % documentTypes.length]],
+      tags: ['test', 'mock', documentTypes[i % documentTypes.length]]
     }));
   },
   /**
@@ -82,9 +82,9 @@ export const MockDataGenerators = {
         test_evidence: true,
         priority: i % 2 === 0 ? 'high' : 'medium',
         source: 'unified_test_mock',
-        relevanceScore: 0.7 + (i % 4) * 0.075,
+        relevanceScore: 0.7 + (i % 4) * 0.075
       },
-      tags: ['test', 'evidence', evidenceTypes[i % evidenceTypes.length]],
+      tags: ['test', 'evidence', evidenceTypes[i % evidenceTypes.length]]
     }));
   },
   /**
@@ -106,17 +106,17 @@ export const MockDataGenerators = {
       metadata: {
         test_session: true,
         mock_index: i,
-        estimated_hours: 10 + i * 5,
-      },
+        estimated_hours: 10 + i * 5
+      }
     }));
-  },
+  }
 };
 // ============================================================================
 // MOCK SERVICES
 // ============================================================================
 
 interface MockDatabase {
-  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }>;
   transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
 }
 
@@ -126,9 +126,7 @@ interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
   body?: BodyInit | Record<string, unknown> | null | undefined;
 }
 
-interface MockApiResponse {
-  status: number;
-  data: any;
+interface MockApiResponse { status: number;, data: any;
 }
 
 /**
@@ -150,14 +148,14 @@ export const MockServices = {
    */
   createMockDatabase(config?: MockServiceConfig): MockDatabase {
     return {
-      async query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }> {
-        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A'}): ${sql}`, params);
+      async query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }> {
+        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A` }): ${sql}`, params);
         return { rows: [], rowCount: 0 };
       },
       async transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T> {
-        console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A'})`);
+        console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A` })`);
         return fn(this);
-      },
+      }
     };
   },
   /**
@@ -167,7 +165,7 @@ export const MockServices = {
     return {
       async makeRequest(endpoint: string, options: MockApiClientOptions = {}): Promise<MockApiResponse> {
         console.log(
-          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET'} ${endpoint}`
+          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET` } ${endpoint}`
         );
         // Simulate successful responses based on endpoint patterns
         if (endpoint.includes('/auth/login')) {
@@ -175,8 +173,8 @@ export const MockServices = {
             status: 200,
             data: {
               token: 'mock_jwt_token_' + Date.now(),
-              user: MockDataGenerators.generateMockUsers(1)[0],
-            },
+              user: MockDataGenerators.generateMockUsers(1)[0]
+            }
           };
         }
         if (endpoint.includes('/sessions')) {
@@ -185,13 +183,13 @@ export const MockServices = {
               status: 201,
               data: {
                 session_id: 'mock_session_' + Date.now(),
-                ...MockDataGenerators.generateMockSessions(1)[0],
-              },
+                ...MockDataGenerators.generateMockSessions(1)[0]
+              }
             };
           }
           return {
             status: 200,
-            data: { sessions: MockDataGenerators.generateMockSessions(2) },
+            data: { sessions: MockDataGenerators.generateMockSessions(2) }
           };
         }
         if (endpoint.includes('/evidence')) {
@@ -199,13 +197,13 @@ export const MockServices = {
             status: 200,
             data: {
               evidence: MockDataGenerators.generateMockEvidenceItems(3),
-              canvas_id: 'mock_canvas_' + Date.now(),
-            },
+              canvas_id: 'mock_canvas_' + Date.now()
+            }
           };
         }
         // Default successful response
         return { status: 200, data: { success: true, endpoint } };
-      },
+      }
     };
   },
   /**
@@ -228,10 +226,10 @@ export const MockServices = {
       onopen: null as ((_event: Event) => void) | null,
       onclose: null as ((_event: CloseEvent) => void) | null,
       onmessage: null as ((_event: MessageEvent) => void) | null,
-      onerror: null as ((_event: Event) => void) | null,
+      onerror: null as ((_event: Event) => void) | null
     };
     return mockWs;
-  },
+  }
 };
 // ============================================================================
 // TEST UTILITIES
@@ -299,15 +297,13 @@ export const TestUtilities = {
    */
   createTempPath(testName: string): string {
     return `/tmp/legal-ai-tests/${testName.replace(/\s+/g, '_')}_${Date.now()}`;
-  },
+  }
 };
 // ============================================================================
 // VITEST HELPERS
 // ============================================================================
 
-interface CallDetails<T extends (...args: any[]) => unknown> {
-  args: Parameters<T>;
-  result: ReturnType<T> | undefined;
+interface CallDetails<T extends (...args: any[]) => unknown> { args: Parameters<T>;, result: ReturnType<T> | undefined;
   timestamp: number;
 }
 
@@ -332,7 +328,7 @@ export const VitestHelpers = {
     vi.useFakeTimers();
     return {
       advanceTime: (ms: number) => vi.advanceTimersByTime(ms),
-      restore: () => vi.useRealTimers(),
+      restore: () => vi.useRealTimers()
     };
   },
   /**
@@ -359,9 +355,9 @@ export const VitestHelpers = {
       resetCalls: () => {
         calls.length = 0;
         spy.mockClear();
-      },
+      }
     });
-  },
+  }
 };
 // ============================================================================
 // UNIFIED EXPORT
@@ -385,7 +381,7 @@ export const UnifiedTestUtils = {
         redisUrl: 'redis://:redis@redis:6379/0',
         ollamaUrl: 'http://ollama:11434',
         minioEndpoint: 'minio:9000',
-        neo4jUri: 'bolt://neo4j:7687',
+        neo4jUri: 'bolt://neo4j:7687'
       };
 
       const mockDb = MockServices.createMockDatabase(mockServiceConfig);
@@ -400,8 +396,7 @@ export const UnifiedTestUtils = {
         REDIS_URL: mockServiceConfig.redisUrl || '',
         OLLAMA_URL: mockServiceConfig.ollamaUrl || '',
         MINIO_ENDPOINT: mockServiceConfig.minioEndpoint || '',
-        NEO4J_URI: mockServiceConfig.neo4jUri || '',
-      });
+        NEO4J_URI: mockServiceConfig.neo4jUri || '` });
 
       return {
         mockDb,
@@ -413,8 +408,8 @@ export const UnifiedTestUtils = {
           restoreConsole();
           restoreEnv(); // Restore original environment variables
           vi.clearAllMocks();
-        },
+        }
       };
-    },
-  },
+    }
+  }
 };

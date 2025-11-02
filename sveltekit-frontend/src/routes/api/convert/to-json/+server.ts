@@ -41,21 +41,19 @@ export const POST: RequestHandler = async ({ request }) => {
       jsonSize: JSON.stringify(structuredData).length,
       sections: structuredData.document.structure.sections.length,
       chunks: structuredData.document.vectorization.chunks.length,
-      concepts: structuredData.document.legalAnalysis.concepts.length,
-    },
+      concepts: structuredData.document.legalAnalysis.concepts.length
+    }
   });
 };
 
 function buildStructuredDocument(ocrData: OCRData, text: string) {
-  return {
-    document: {
-      metadata: {
+  return { document: {, metadata: {
         filename: ocrData.filename ?? 'unknown',
         processedAt: ocrData.extractedAt ?? new Date().toISOString(),
         totalPages: ocrData.pages ?? ocrData.pageResults?.length ?? 0,
         totalCharacters: ocrData.totalCharacters ?? text.length,
         averageConfidence: ocrData.averageConfidence ?? 0,
-        processingMethod: ocrData.processingStats ?? null,
+        processingMethod: ocrData.processingStats ?? null
       },
       content: {
         fullText: text,
@@ -65,8 +63,8 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
           confidence: page.confidence ?? null,
           extractionMethod: page.method ?? 'unknown',
           wordCount: page.text ? page.text.split(/\s+/).filter(Boolean).length : 0,
-          sections: extractSections(page.text ?? ''),
-        })),
+          sections: extractSections(page.text ?? '')
+        }))
       },
       legalAnalysis: {
         concepts: ocrData.legalConcepts ?? [],
@@ -75,34 +73,34 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         jurisdiction: extractJurisdiction(text),
         parties: extractParties(text),
         dates: extractDates(text),
-        amounts: extractMonetaryAmounts(text),
+        amounts: extractMonetaryAmounts(text)
       },
       structure: {
         sections: identifyDocumentSections(text),
         headings: extractHeadings(text),
         paragraphs: splitParagraphs(text),
-        tableOfContents: generateTableOfContents(text),
+        tableOfContents: generateTableOfContents(text)
       },
       vectorization: {
         embeddings: generateEmbeddingIds(text),
         chunks: chunkTextForEmbedding(text),
-        semanticSections: identifySemanticSections(text),
+        semanticSections: identifySemanticSections(text)
       },
       qualityMetrics: {
         confidence: ocrData.averageConfidence ?? 0,
         completeness: calculateCompleteness(ocrData),
         readability: calculateReadabilityScore(text),
-        legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts ?? []),
-      },
-    },
+        legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts ?? [])
+      }
+    }
   };
 }
 
 function extractSections(text: string) {
   if (!text) return [];
   const lines = text.split('\n');
-  const sections: Array<{ title: string; content: string; startLine: number; endLine: number }> = [];
-  let current: { title: string; content: string; startLine: number } | null = null;
+  const sections: Array<{ title: string; content: string; startLine: number;, endLine: number }> = [];
+  let current: { title: string; content: string;, startLine: number } | null = null;
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
@@ -126,7 +124,7 @@ function extractSections(text: string) {
 function isHeaderLine(line: string): boolean {
   if (!line) return false;
   const headerPatterns = [
-    /^[A-Z][A-Z\s]{3,}$/, // ALL CAPS
+    /^[A-Z][A-Z\s]{3}$/, // ALL CAPS
     /^\d+\.\s+[A-Z]/, // Numbered sections
     /^ARTICLE\s+[IVX]+/i,
     /^SECTION\s+\d+/i,
@@ -145,7 +143,7 @@ function classifyDocumentType(text: string): string {
     settlement: /(?:settlement agreement|hereby settle|release and discharge)/i,
     lease: /(?:lease agreement|landlord|tenant|premises)/i,
     will: /(?:last will|testament|hereby bequeath)/i,
-    corporate: /(?:board resolution|articles of incorporation|bylaws)/i,
+    corporate: /(?:board resolution|articles of incorporation|bylaws)/i
   };
   for (const [type, pattern] of Object.entries(classifiers)) {
     if (pattern.test(text)) return type;
@@ -207,7 +205,7 @@ function identifyDocumentSections(text: string) {
     .filter((name) => new RegExp(`\\b${name}\\b`, 'i').test(text))
     .map((name) => ({
       name,
-      position: text.toLowerCase().indexOf(name.toLowerCase()),
+      position: text.toLowerCase().indexOf(name.toLowerCase())
     }))
     .sort((a, b) => a.position - b.position);
 }
@@ -224,14 +222,14 @@ function generateTableOfContents(text: string) {
   return extractHeadings(text).map((heading, index) => ({
     level: determineHeadingLevel(heading),
     title: heading,
-    order: index + 1,
+    order: index + 1
   }));
 }
 
 function determineHeadingLevel(heading: string): number {
   if (/^\d+\.\s+/.test(heading)) return 1;
   if (/^\d+\.\d+\s+/.test(heading)) return 2;
-  if (/^[A-Z]{3,}/.test(heading)) return 1;
+  if (/^[A-Z]{3}/.test(heading)) return 1;
   return 2;
 }
 
@@ -269,7 +267,7 @@ function identifySemanticSections(text: string) {
   const patterns = [
     { type: 'legal_obligation', pattern: /(?:shall|must|required to|obligated to)/gi },
     { type: 'conditional_clause', pattern: /(?:if|unless|provided that|subject to)/gi },
-    { type: 'definition', pattern: /(?:means|defined as|refers to)/gi },
+    { type: 'definition', pattern: /(?:means|defined as|refers to)/gi }
   ];
   return patterns
     .map(({ type, pattern }) => {
@@ -277,7 +275,7 @@ function identifySemanticSections(text: string) {
       return {
         type,
         count: matches.length,
-        density: matches.length / Math.max(text.length, 1),
+        density: matches.length / Math.max(text.length, 1)
       };
     })
     .filter((entry) => entry.count > 0);

@@ -11,6 +11,6 @@ export async function initWebGPUWorker(): Promise<void> {
       // placeholder: will eventually implement client-side model
       console.log('WebGPU fallback inference called', inputs);
       return Array.from(inputs).map((x) => x * Math.random());
-    },
+    }
   };
 }

@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -30,14 +30,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       success: true,
       message: 'AI analysis request received and processed (placeholder)',
       data: body,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Legal AI analysis error:', error);
     return json(
       {
         success: false,
-        error: 'Failed to perform AI analysis',
+        error: 'Failed to perform AI analysis'
       },
       { status: 500 }
     );

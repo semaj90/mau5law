@@ -2,14 +2,10 @@
  * Gaming Gradient Utilities
  * Generate retro gaming-style gradients
  */
-export interface GradientOptions {
-  variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
-  direction: 'horizontal' | 'vertical' | 'diagonal' | 'radial';
+export interface GradientOptions { variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';, direction: 'horizontal' | 'vertical' | 'diagonal' | 'radial';
   colorPalette: RetroColorPalette;
 }
-export interface RetroColorPalette {
-  primary: string[];
-  secondary: string[];
+export interface RetroColorPalette { primary: string[];, secondary: string[];
   success: string[];
   warning: string[];
   error: string[];
@@ -24,7 +20,7 @@ export const SNES_PALETTE: RetroColorPalette = {
   success: ['#9cfc38', '#92cc41', '#4a7c23'],
   warning: ['#f7d51d', '#fc9838', '#cc6600'],
   error: ['#fc5c5c', '#f83800', '#cc2800'],
-  info: ['#5cc3ff', '#3c9cfc', '#0050cc'],
+  info: ['#5cc3ff', '#3c9cfc', '#0050cc']
 };
 /**
  * NES 8-bit color palette
@@ -35,7 +31,7 @@ export const NES_PALETTE: RetroColorPalette = {
   success: ['#00d800', '#00a800', '#006800'],
   warning: ['#fca044', '#fc7800', '#ac5000'],
   error: ['#f83800', '#cc0000', '#880000'],
-  info: ['#00b8fc', '#0078f8', '#0040a8'],
+  info: ['#00b8fc', '#0078f8', '#0040a8']
 };
 /**
  * Generate CSS gradient string
@@ -47,7 +43,7 @@ export function generateGradient(options: GradientOptions): string {
     horizontal: 'to right',
     vertical: 'to bottom',
     diagonal: 'to bottom right',
-    radial: 'circle',
+    radial: 'circle'
   };
   const gradientType =
     direction === 'radial'
@@ -58,17 +54,14 @@ export function generateGradient(options: GradientOptions): string {
 /**
  * Get size-based styling
  */
-export interface SizeStyles {
-  padding: string;
-  fontSize: string;
+export interface SizeStyles { padding: string;, fontSize: string;
   minHeight: string;
 }
 export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeStyles {
-  const sizeMap: Record<string, SizeStyles> = {
-    small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
+  const sizeMap: Record<string, SizeStyles> = { small: {, padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
     medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px' },
     large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },
-    xl: { padding: '22px 28px', fontSize: '17px', minHeight: '60px' },
+    xl: { padding: '22px 28px', fontSize: '17px', minHeight: `60px` }
   };
   return sizeMap[size] || sizeMap.medium;
 }

@@ -10,16 +10,14 @@ const StreamQuerySchema = z.object({
 		.object({
 			maxResults: z.number().min(1).max(50).optional().default(10),
 			includeGraph: z.boolean().optional().default(true),
-			confidenceThreshold: z.number().min(0).max(1).optional().default(0.7),
+			confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
 		})
 		.optional()
-		.default({}),
+		.default({})
 });
 
 // Minimal typed wrapper for the RAG service
-type RagService = {
-	processLegalQuery: (
-		q: string,
+type RagService = { processLegalQuery: (;, q: string,
 		opts?: { maxResults?: number; includeGraph?: boolean; confidenceThreshold?: number }
 	) => Promise<{
 		response: string;
@@ -48,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         sendEvent({
           type: 'status',
           message: 'Processing query through Enhanced RAG pipeline',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
         // small debounce so client can attach
@@ -71,10 +69,10 @@ export const POST: RequestHandler = async ({ request }) => {
             graphRelationships: ragResponse.graphRelationships,
             processingTime,
             metadata: {
-              timestamp: new Date().toISOString(),
+             , timestamp: new Date().toISOString(),
               queryId: ragResponse.queryId,
-              systemVersion: '2.0.0-enhanced-rag-stream',
-            },
+              systemVersion: '2.0.0-enhanced-rag-stream'
+            }
           });
 
           // Completion event
@@ -82,14 +80,14 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'complete',
             message: 'Enhanced RAG processing complete',
             processingTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         } catch (err: any) {
           console.error('❌ Enhanced RAG Stream Error:', err);
           sendEvent({
             type: 'error',
             error: err instanceof Error ? err.message : String(err),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         } finally {
           try {
@@ -98,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
             /* ignore close errors */
           }
         }
-      },
+      }
     });
 
     return new Response(stream, {
@@ -107,8 +105,8 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
     });
   } catch (error: any) {
     console.error('❌ Enhanced RAG Stream Setup Error:', error);
@@ -116,11 +114,11 @@ export const POST: RequestHandler = async ({ request }) => {
       JSON.stringify({
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       }
     );
   }

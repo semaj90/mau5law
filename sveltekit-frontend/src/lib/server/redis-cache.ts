@@ -3,7 +3,7 @@
  * Caches search results (NOT embeddings) for fast retrieval
  *
  * Architecture:
- * - Redis: Caches search results + metadata (TTL: 1 hour)
+ * -; Redis: Caches search results + metadata (TTL: 1 hour)
  * - PostgreSQL: Primary vector storage with HNSW index
  * - Ollama: Embedding generation
  */
@@ -43,7 +43,7 @@ export function generateSearchCacheKey(
     query,
     limit: options?.limit ?? 10,
     threshold: options?.threshold ?? 0.5,
-    filters: options?.filters ?? {},
+    filters: options?.filters ?? {}
   });
 
   const hash = crypto.createHash('sha256').update(hashInput).digest('hex');
@@ -195,7 +195,7 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     const cached = await getCache(key);
     return cached ? (JSON.parse(cached) as number[]) : null;
   } catch (error) {
-    console.error('Error getting cached embedding:', error);
+    console.error('Error getting cached embedding: `, error);
     return null;
   }
 }
@@ -216,9 +216,7 @@ async function recordCacheHit(hit: boolean): Promise<void> {
 /**
  * Get cache statistics
  */
-export async function getCacheStats(): Promise<{
-  hits: number;
-  misses: number;
+export async function getCacheStats(): Promise<{ hits: number;, misses: number;
   hitRate: number;
 }> {
   try {
@@ -231,7 +229,7 @@ export async function getCacheStats(): Promise<{
     return {
       hits,
       misses,
-      hitRate: total > 0 ? hits / total : 0,
+      hitRate: total > 0 ? hits / total : 0
     };
   } catch (error) {
     console.error('Error getting cache stats:', error);
@@ -275,7 +273,7 @@ export async function clearEmbeddingCache(): Promise<number> {
 export async function getRedisHealth(): Promise<{
   healthy: boolean;
   ping?: number;
-  memory?: { used: string; total: string };
+  memory?: { used: string;, total: string };
 }> {
   try {
     await ensureRedisReady();
@@ -292,8 +290,7 @@ export async function getRedisHealth(): Promise<{
       ping,
       memory: {
         used: usedMatch ? usedMatch[1] : 'unknown',
-        total: totalMatch ? totalMatch[1] : 'unknown',
-      },
+        total: totalMatch ? totalMatch[1] : 'unknown` }
     };
   } catch (error) {
     console.error('Error checking Redis health:', error);
@@ -304,17 +301,11 @@ export async function getRedisHealth(): Promise<{
 /**
  * Search result interface for caching
  */
-export interface CachedSearchResult {
-  query: string;
-  results: Array<{
-    id: string;
-    title: string;
+export interface CachedSearchResult { query: string;, results: Array<{ id: string;, title: string;
     content?: string;
     similarity: number;
   }>;
-  stats: {
-    totalResults: number;
-    processingTimeMs: number;
+  stats: { totalResults: number;, processingTimeMs: number;
   };
   timestamp: number;
   ttl: number;

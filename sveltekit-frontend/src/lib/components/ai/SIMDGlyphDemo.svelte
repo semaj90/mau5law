@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';

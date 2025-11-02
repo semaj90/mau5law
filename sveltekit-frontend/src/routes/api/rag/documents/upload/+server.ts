@@ -24,7 +24,7 @@ const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
   secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  useSSL: process.env.MINIO_USE_SSL === 'true',
+  useSSL: process.env.MINIO_USE_SSL === 'true'
 });
 
 const EVIDENCE_BUCKET = 'evidence-images';
@@ -49,7 +49,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'embeddinggemma:latest',
+       , model: 'embeddinggemma:latest',
         prompt: text
       })
     });
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async (event) => {
       return json(
         {
           success: false,
-          error: 'Invalid file type. Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
+          error: 'Invalid file type.; Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
           code: 'INVALID_TYPE',
           status: 400
         },
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async (event) => {
       success: true,
       message: 'Document uploaded and processed successfully',
       document: {
-        id: doc.id,
+       , id: doc.id,
         filename: doc.filename,
         title: doc.title,
         fileSize: doc.fileSize,
@@ -303,8 +303,7 @@ export const POST: RequestHandler = async (event) => {
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,
-        embeddingModel: 'embeddinggemma:latest'
-      }
+        embeddingModel: 'embeddinggemma:latest' }
     });
   } catch (error) {
     console.error('Error uploading document:', error);

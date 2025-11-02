@@ -45,30 +45,23 @@ export interface WASMExports {
   [key: string]: WebASMExportValue;
 }
 
-export interface WebASMModel {
-  name: string;
-  wasmBuffer: Uint8Array;
+export interface WebASMModel { name: string;, wasmBuffer: Uint8Array;
   config: WebASMModelConfig;
   instance?: WebAssembly.Instance;
   memory?: WebAssembly.Memory;
   exports?: WASMExports; // Changed from { [key: string]: any } to WASMExports
 }
 
-export interface WebASMInferenceMetrics {
-  modelName: string;
-  inferenceTime: number;
+export interface WebASMInferenceMetrics { modelName: string;, inferenceTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
   wasmMemoryPages: number;
   simdInstructions: boolean;
   threadCount: number;
-  gpuEnabled: boolean; // Added: Indicates if the model is configured for GPU acceleration
-  timestamp: number;
+  gpuEnabled: boolean; // Added: Indicates if the model is configured for GPU acceleration; timestamp: number;
 }
 
-export interface WebASMModelConfig {
-  modelType: 'embedding' | 'similarity' | 'classification' | 'ranking';
-  inputDimension: number;
+export interface WebASMModelConfig { modelType: 'embedding' | 'similarity' | 'classification' | 'ranking';, inputDimension: number;
   outputDimension: number;
   memoryPages: number;
   simdEnabled: boolean;
@@ -78,24 +71,18 @@ export interface WebASMModelConfig {
   expectedExportFunction?: string; // Added: Optional specific name of the inference function (e.g., 'inference', 'forward', 'predict')
 }
 
-export interface InferenceRequest {
-  modelName: string;
-  input: Float32Array | number[];
+export interface InferenceRequest { modelName: string;, input: Float32Array | number[];
   batchSize?: number;
   timeout?: number;
 }
 
-export interface InferenceResult {
-  output: Float32Array;
-  inferenceTime: number;
+export interface InferenceResult { output: Float32Array;, inferenceTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
   metrics: WebASMInferenceMetrics;
 }
 
-export interface VectorSearchInferenceConfig {
-  embeddingModel: string;
-  similarityModel: string;
+export interface VectorSearchInferenceConfig { embeddingModel: string;, similarityModel: string;
   rerankingModel?: string;
   batchSize: number;
   cacheTTL: number;
@@ -105,9 +92,7 @@ export interface VectorSearchInferenceConfig {
 /** Minimal WebASM Inference Service */
 export class WebASMInferenceService {
   private models = new Map<string, WebASMModel>();
-  private inferenceQueue: Array<{
-    request: InferenceRequest;
-    resolve: (r: InferenceResult) => void;
+  private inferenceQueue: Array<{ request: InferenceRequest;, resolve: (r: InferenceResult) => void;
     reject: (e: Error) => void;
     timestamp: number;
   }> = [];
@@ -143,7 +128,7 @@ export class WebASMInferenceService {
       // Best-effort SIMD detection; platform support varies
       // Use the `in` operator instead of calling hasOwnProperty on globalThis
       const simdSupported = typeof WebAssembly !== 'undefined' && 'SIMD' in globalThis;
-      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : 'Disabled'}`);
+      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : 'Disabled' }`);
       return simdSupported;
     } catch {
       return false;
@@ -155,7 +140,7 @@ export class WebASMInferenceService {
     try {
       const memory = new WebAssembly.Memory({
         initial: config.memoryPages,
-        maximum: config.memoryPages * 2,
+        maximum: config.memoryPages * 2
       });
 
       const imports: WebAssembly.Imports = {
@@ -164,13 +149,13 @@ export class WebASMInferenceService {
           abort: () => {
             throw new Error('WebASM abort');
           },
-          trace: (value: number) => console.log(`WASM trace: ${value}`),
+          trace: (value: number) => console.log(`WASM; trace: ${value}`)
         },
         wasi_snapshot_preview1: {
           proc_exit: () => {},
           fd_write: () => 0,
-          fd_close: () => 0,
-        },
+          fd_close: () => 0
+        }
       };
 
       // Compile / instantiate
@@ -205,7 +190,7 @@ export class WebASMInferenceService {
         request,
         resolve,
         reject,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       if (!this.isProcessing) {
         this.processInferenceQueue().catch(e => console.error('Queue processing failed:', e));
@@ -301,8 +286,7 @@ export class WebASMInferenceService {
         wasmMemoryPages: model.config.memoryPages,
         simdInstructions: model.config.simdEnabled,
         threadCount: model.config.threadCount,
-        gpuEnabled: model.config.gpuEnabled, // Added: Include GPU enablement in metrics
-        timestamp: Date.now(),
+        gpuEnabled: model.config.gpuEnabled, // Added: Include GPU enablement in metrics; timestamp: Date.now()
       };
 
       // Integrate with global metrics store (guarded to avoid TS errors when the method is not declared)
@@ -321,7 +305,7 @@ export class WebASMInferenceService {
         inferenceTime,
         tokensPerSecond,
         memoryUsage,
-        metrics,
+        metrics
       };
     } catch (error: any) {
       performance.clearMarks?.(`webasm-inference-${modelName}-start`);
@@ -408,14 +392,14 @@ export class WebASMInferenceService {
 export class VectorSearchInferenceEngine {
   private wasmService: WebASMInferenceService;
   private config: VectorSearchInferenceConfig;
-  private embeddingCache = new Map<string, { embedding: Float32Array; timestamp: number }>();
+  private embeddingCache = new Map<string, { embedding: Float32Array;, timestamp: number }>();
 
   constructor(config: VectorSearchInferenceConfig) {
     this.wasmService = new WebASMInferenceService();
     this.config = config;
   }
 
-  async initialize(models: { name: string; wasmBuffer: Uint8Array; config: WebASMModelConfig }[]): Promise<void> {
+  async initialize(models: { name: string; wasmBuffer: Uint8Array;, config: WebASMModelConfig }[]): Promise<void> {
     for (const model of models) {
       await this.wasmService.loadModel(model.name, model.wasmBuffer, model.config);
     }
@@ -432,7 +416,7 @@ export class VectorSearchInferenceEngine {
     const result = await this.wasmService.runInference({
       modelName: this.config.embeddingModel,
       input: tokenized,
-      batchSize: 1,
+      batchSize: 1
     });
     const embedding = result.output;
     if (useCache) {
@@ -445,7 +429,7 @@ export class VectorSearchInferenceEngine {
     queryEmbedding: Float32Array,
     candidateEmbeddings: Float32Array[],
     topK = 10
-  ): Promise<Array<{ index: number; similarity: number }>> {
+  ): Promise<Array<{ index: number;, similarity: number }>> {
     const startTime = performance.now();
     const similarities = await Promise.all(
       candidateEmbeddings.map(async (candidate, index) => {
@@ -465,7 +449,7 @@ export class VectorSearchInferenceEngine {
       indexType: 'flat',
       similarityFunction: 'cosine',
       cacheHitRate: this.getCacheHitRate(),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     try {
       const store = gpuSummaryStore as unknown as GPUSummaryStoreShape;
@@ -483,7 +467,7 @@ export class VectorSearchInferenceEngine {
     const result = await this.wasmService.runInference({
       modelName: this.config.similarityModel,
       input,
-      batchSize: 1,
+      batchSize: 1
     });
     return result.output[0];
   }
@@ -520,7 +504,7 @@ export class VectorSearchInferenceEngine {
     return {
       loadedModels: this.wasmService.getLoadedModels().length,
       cacheSize: this.embeddingCache.size,
-      cacheHitRate: this.getCacheHitRate(),
+      cacheHitRate: this.getCacheHitRate()
     };
   }
 

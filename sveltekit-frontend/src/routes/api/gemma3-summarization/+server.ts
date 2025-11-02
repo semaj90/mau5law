@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: response.ok ? 'healthy' : 'degraded',
         service: 'gemma3-summarization',
         timestamp: new Date().toISOString(),
-        backend: healthData,
+        backend: healthData
       });
     } catch (err) {
       return json(
@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'unavailable',
           service: 'gemma3-summarization',
           timestamp: new Date().toISOString(),
-          error: 'Service unreachable',
+          error: 'Service unreachable'
         },
         { status: 503 }
       );
@@ -47,9 +47,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const response = await fetch(`${GEMMA3_SUMMARIZATION_SERVICE_URL}${backendEndpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+        'Content-Type': 'application/json` },
+      body: JSON.stringify(body)
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

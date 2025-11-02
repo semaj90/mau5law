@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
         id: documents.id,
         filename: documents.filename,
         extractedText: documents.extractedText,
-        caseId: documents.caseId,
+        caseId: documents.caseId
       })
       .from(documents)
       .where(eq(documents.id, documentId))
@@ -59,8 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseContext = {
           caseType: (caseData.metadata as any)?.type || 'general',
           jurisdiction: (caseData.metadata as any)?.jurisdiction || 'federal',
-          priority: caseData.priority || 'medium'
-        }
+          priority: caseData.priority || 'medium` }
       }
     }
     // Create review task
@@ -92,19 +91,17 @@ export const POST: RequestHandler = async ({ request }) => {
           id: agentId,
           name: LEGAL_AGENTS[agentId].name,
           role: LEGAL_AGENTS[agentId].role,
-          expertise: LEGAL_AGENTS[agentId].expertise,
+          expertise: LEGAL_AGENTS[agentId].expertise
         })),
         estimatedTime: calculateEstimatedTime(assignedAgents, document.extractedText.length),
-        status: 'started',
-      },
-      message: `CrewAI review started with ${assignedAgents.length} agents`,
-    });
+        status: `started` },
+      message: `CrewAI review started with ${assignedAgents.length} agents` });
   } catch (err: any) {
     console.error('❌ CrewAI review error:', err)
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-    throw error(500, `CrewAI review failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `CrewAI review failed: ${err instanceof Error ? err.message: `Unknown error` }`)
   }
 }
 // ============================================================================
@@ -122,16 +119,16 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: true,
             data: {
-              activeReviews: activeReviews.length,
+             , activeReviews: activeReviews.length,
               reviews: activeReviews.map((review: any) => ({
                 taskId: review.taskId,
                 documentId: review.documentId,
                 reviewType: review.reviewType,
                 priority: review.priority,
                 assignedAgents: review.assignedAgents.length,
-                status: 'in_progress',
-              })),
-            },
+                status: 'in_progress'
+              }))
+            }
           });
         } else {
           // Get specific review status
@@ -141,22 +138,21 @@ export const GET: RequestHandler = async ({ url }) => {
             return json(
               {
                 success: false,
-                error: 'Review not found or completed',
-              },
+                error: `Review not found or completed` },
               { status: 404 }
             );
           }
           return json({
             success: true,
             data: {
-              taskId: review.taskId,
+             , taskId: review.taskId,
               documentId: review.documentId,
               reviewType: review.reviewType,
               priority: review.priority,
               assignedAgents: review.assignedAgents,
               status: 'in_progress',
-              progress: calculateProgress(review),
-            },
+              progress: calculateProgress(review)
+            }
           });
         }
       case 'agents':
@@ -164,16 +160,14 @@ export const GET: RequestHandler = async ({ url }) => {
         const agents = crewAIOrchestrator.getAvailableAgents();
         return json({
           success: true,
-          data: {
-            agents: agents.map((agent: any) => ({
-              id: agent.id,
+          data: {, agents: agents.map((agent: any) => ({, id: agent.id,
               name: agent.name,
               role: agent.role,
               expertise: agent.expertise,
               model: agent?.model || 'unknown', // @ts-ignore - Model property access
-              description: getAgentDescription(agent),
-            })),
-          },
+              description: getAgentDescription(agent)
+            }))
+          }
         });
       case 'presets':
         // Get common agent combinations
@@ -182,12 +176,12 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             presets: [
               {
-                id: 'comprehensive_review',
+               , id: 'comprehensive_review',
                 name: 'Comprehensive Review',
                 description: 'Full analysis with all agents',
                 agents: ['compliance_specialist', 'risk_analyst', 'contract_specialist', 'legal_editor'],
                 estimatedTime: '5-8 minutes',
-                bestFor: ['new_contracts', 'major_agreements', 'high_risk_documents'],
+                bestFor: ['new_contracts', 'major_agreements', 'high_risk_documents']
               },
               {
                 id: 'risk_focused',
@@ -195,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 description: 'Emphasis on risk identification and mitigation',
                 agents: ['risk_analyst', 'compliance_specialist'],
                 estimatedTime: '2-3 minutes',
-                bestFor: ['risk_assessment', 'due_diligence', 'litigation_prep'],
+                bestFor: ['risk_assessment', 'due_diligence', 'litigation_prep']
               },
               {
                 id: 'contract_review',
@@ -203,10 +197,10 @@ export const GET: RequestHandler = async ({ url }) => {
                 description: 'Specialized contract and agreement analysis',
                 agents: ['contract_specialist', 'legal_editor'],
                 estimatedTime: '3-4 minutes',
-                bestFor: ['contracts', 'agreements', 'terms_conditions'],
+                bestFor: ['contracts', 'agreements', 'terms_conditions']
               },
-            ],
-          },
+            ]
+          }
         });
       case 'health':
         // Health check for CrewAI system
@@ -217,7 +211,7 @@ export const GET: RequestHandler = async ({ url }) => {
             success: true,
             healthy: isHealthy,
             data: {
-              status: isHealthy ? 'healthy' : 'overloaded',
+             , status: isHealthy ? 'healthy' : 'overloaded',
               activeReviews: activeReviews.length,
               availableAgents: Object.keys(LEGAL_AGENTS).length,
               systemLoad: activeReviews.length / 10, // Percentage
@@ -227,11 +221,11 @@ export const GET: RequestHandler = async ({ url }) => {
                     'System overloaded - consider queuing reviews',
                     'Review agent allocation and performance',
                     'Check for stuck or failed reviews',
-                  ],
-            },
+                  ]
+            }
           },
           {
-            status: isHealthy ? 200 : 503,
+            status: isHealthy ? 200 : 503
           }
         );
       default:
@@ -242,7 +236,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -270,14 +264,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
         taskId,
         status: 'cancelled'
       },
-      message: 'Review cancelled successfully'
-    })
+      message: `Review cancelled successfully` })
   } catch (err: any) {
     console.error('❌ CrewAI cancellation error:', err)
     if (err instanceof Error && 'status' in err) {
       throw err
     }
-    throw error(500, `Failed to cancel review: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `Failed to cancel review: ${err instanceof Error ? err.message: `Unknown error` }`)
   }
 }
 // ============================================================================
@@ -304,11 +297,9 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   // Add synthesis time
   totalTime += 15
   if (totalTime < 60) {
-    return `${Math.round(totalTime)} seconds`
-  } else {
+    return `${Math.round(totalTime)} seconds` } else {
     const minutes = Math.round(totalTime / 60)
-    return `${minutes} minute${minutes > 1 ? 's' : ''}`
-  }
+    return `${minutes} minute${minutes > 1 ? 's' : ''}' }
 }
 function calculateProgress(review: DocumentReviewTask): number {
   // This would be implemented to track actual progress
@@ -322,5 +313,4 @@ function getAgentDescription(agent: any): string {
     'contract_specialist': 'Analyzes contract terms, liability provisions, and negotiation opportunities',
     'legal_editor': 'Improves document clarity, structure, and legal writing effectiveness'
   }
-  return descriptions[agent.id as keyof typeof descriptions] || 'Specialized legal analysis agent'
-}
+  return descriptions[agent.id as keyof typeof descriptions] || 'Specialized legal analysis agent` }

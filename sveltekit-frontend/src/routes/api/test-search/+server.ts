@@ -9,9 +9,9 @@ export const GET: RequestHandler = async ({ url }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
-        input: query,
-      }),
+       , model: 'nomic-embed-text',
+        input: query
+      })
     });
     if (!embeddingResponse.ok) {
       return json({ error: 'Embedding service failed', status: embeddingResponse.status }, { status: 500 });
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
       embedding_dimensions: queryEmbedding.length,
       embedding_sample: queryEmbedding.slice(0, 5),
       cuda_service: cudaResult ? 'available' : 'unavailable',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Test endpoint error:', error);
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error.message,
-        stack: error.stack,
+        stack: error.stack
       },
       { status: 500 }
     );

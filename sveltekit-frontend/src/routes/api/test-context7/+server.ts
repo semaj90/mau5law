@@ -37,13 +37,13 @@ const summarize = (r: LibraryDocResult) => {
     tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0,
     snippets: ok ? (r.snippets?.length ?? 0) : 0,
     firstSnippet,
-    error: isErrorResult(r) ? r.error : null,
+    error: isErrorResult(r) ? r.error : null
   };
 };
 
 function wrapError<T>(promise: Promise<T>): Promise<T | LibraryDocError> {
   return promise.catch((e: any) => ({
-    error: e instanceof Error ? e.message : String(e),
+    error: e instanceof Error ? e.message : String(e)
   }));
 }
 
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async event => {
 
     const results = {
       svelteRunes: summarize(svelteRunes),
-      xstateMachine: summarize(xstateMachine),
+      xstateMachine: summarize(xstateMachine)
     };
 
     // safe aggregation (explicit variables, no stray tokens)
@@ -79,12 +79,12 @@ export const GET: RequestHandler = async event => {
     return json({
       success: failedCount === 0,
       summary: {
-        total: totalCount,
+       , total: totalCount,
         successful: successfulCount,
-        failed: failedCount,
+        failed: failedCount
       },
       results,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Context7 test error', err);
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async event => {
       {
         success: false,
         error: err instanceof Error ? err.message : String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

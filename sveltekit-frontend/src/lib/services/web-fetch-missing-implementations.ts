@@ -21,7 +21,7 @@ export class WebFetchMissingImplementations {
       sources: this.initializeSources(),
       cacheEnabled: true,
       timeout: 5000,
-      retries: 2,
+      retries: 2
     } as WebFetchConfig;
 
     this.config = { ...defaults, ...config } as WebFetchConfig;
@@ -57,7 +57,7 @@ export class WebFetchMissingImplementations {
     const fetchers = [
       (it: string) => this.fetchGitHubImplementation(it),
       (it: string) => this.fetchNpmImplementation(it),
-      (it: string) => this.fetchTypeScriptImplementation(it),
+      (it: string) => this.fetchTypeScriptImplementation(it)
     ];
 
     for (const f of fetchers) {
@@ -80,22 +80,19 @@ export class WebFetchMissingImplementations {
 
   // Small curated map for common XState helpers / patterns
   private getXStateImplementation(item: string): ImplementationResult | null {
-    const xstateImplementations: Record<string, ImplementationResult> = {
-      createMachine: {
-        name: 'createMachine',
-        implementation: `// Minimal XState createMachine usage
+    const xstateImplementations: Record<string, ImplementationResult> = { createMachine: {, name: 'createMachine',
+        implementation: '// Minimal XState createMachine usage
 export const machine = createMachine({
   id: 'example',
   initial: 'idle',
-  states: {
-    idle: { on: { START: 'running' } },
-    running: { on: { STOP: 'idle' } }
+  states: { idle: {, on: {, START: 'running' } },
+    running: {, on: {, STOP: 'idle' } }
   }
 });`,
-        types: `import { createMachine } from 'xstate';\nexport declare const machine: any;`,
-        usage: `import { createMachine } from 'xstate';\nconst m = createMachine({...});`,
+        types: 'import { createMachine } from 'xstate';\nexport declare const machine: any;`,
+        usage: 'import { createMachine } from 'xstate';\nconst m = createMachine({...});`,
         source: 'XState Documentation',
-        confidence: 0.9,
+        confidence: 0.9
       },
       createActor: {
         name: 'createActor',
@@ -105,10 +102,10 @@ export function createActorFromService(service: any) {
   return service;
 }`,
         types: `export declare function createActorFromService(service: any): any;`,
-        usage: `import { createActorFromService } from './helpers';`,
+        usage: 'import { createActorFromService } from './helpers';`,
         source: 'XState Documentation',
-        confidence: 0.9,
-      },
+        confidence: 0.9
+      }
     };
 
     return xstateImplementations[item] || null;
@@ -143,18 +140,17 @@ export function createActorFromService(service: any) {
   private createFallbackImplementation(item: string): ImplementationResult {
     const impl = {
       name: item,
-      implementation: `// Fallback implementation for ${item}
+      implementation: '// Fallback implementation for ${item}
 export const ${item} = (...args: any[]): any => {
   console.warn('${item} is using fallback implementation');
   // No-op fallback
   return undefined;
 };`,
       types: `export declare const ${item}: (...args: any[]) => any;`,
-      usage: `import { ${item} } from 'your-fallbacks';`,
+      usage: 'import { ${item} } from 'your-fallbacks';`,
       source: 'fallback',
       confidence: 0.2,
-      warning: `Fallback implementation - consider providing a proper implementation for ${item}`,
-    } as unknown as ImplementationResult;
+      warning: `Fallback implementation - consider providing a proper implementation for ${item}' } as unknown as ImplementationResult;
 
     return impl;
   }
@@ -168,22 +164,22 @@ export const ${item} = (...args: any[]): any => {
         name: 'github',
         baseUrl: 'https://api.github.com',
         headers: { Accept: 'application/vnd.github.v3+json' },
-        rateLimit: 60,
+        rateLimit: 60
       },
       {
         name: 'npm',
         baseUrl: 'https://registry.npmjs.org',
-        rateLimit: 100,
+        rateLimit: 100
       },
       {
         name: 'svelte-docs',
         baseUrl: 'https://svelte.dev',
-        rateLimit: 30,
+        rateLimit: 30
       },
       {
         name: 'drizzle-docs',
         baseUrl: 'https://orm.drizzle.team',
-        rateLimit: 30,
+        rateLimit: 30
       },
     ];
   }

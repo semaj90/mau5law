@@ -32,30 +32,22 @@ const SSR_SAFE_STORAGE = {
     } catch {
       // Silently fail
     }
-  },
+  }
 };
 
 // Base interfaces for the barrel pattern
-export interface StoreMetadata {
-  id: string;
-  version: string;
+export interface StoreMetadata { id: string;, version: string;
   lastUpdated: number;
   dependencies: string[];
   cacheable: boolean;
   ttl?: number;
 }
-export interface BarrelStoreEntry<T = any> {
-  store: Writable<T> | Readable<T>;
-  metadata: StoreMetadata;
+export interface BarrelStoreEntry<T = any> { store: Writable<T> | Readable<T>;, metadata: StoreMetadata;
   validator?: (_value: T) => boolean;
-  serializer?: {
-    serialize: (_value: T) => string;
-    deserialize: (_value: string) => T;
+  serializer?: { serialize: (_value: T) => string;, deserialize: (_value: string) => T;
   };
 }
-export interface StoreConfig<T> {
-  id: string;
-  initialValue: T;
+export interface StoreConfig<T> { id: string;, initialValue: T;
   persistent?: boolean;
   cacheable?: boolean;
   ttl?: number;
@@ -86,7 +78,7 @@ export class BarrelStoreManager {
       cacheable = false,
       ttl = 1000 * 60 * 15, // 15 minutes
       validator,
-      dependencies = [],
+      dependencies = []
     } = config;
 
     if (this.stores.has(id)) {
@@ -110,7 +102,7 @@ export class BarrelStoreManager {
       lastUpdated: Date.now(),
       dependencies,
       cacheable,
-      ttl: cacheable ? ttl : undefined,
+      ttl: cacheable ? ttl : undefined
     };
 
     const entry: BarrelStoreEntry<T> = {
@@ -119,8 +111,8 @@ export class BarrelStoreManager {
       validator,
       serializer: {
         serialize: (_value: T) => JSON.stringify(_value),
-        deserialize: (_value: string) => JSON.parse(_value),
-      },
+        deserialize: (_value: string) => JSON.parse(_value)
+      }
     };
 
     this.stores.set(id, entry);
@@ -190,7 +182,7 @@ export class BarrelStoreManager {
       const currentValue = await this.getCurrentValue(entry.store);
       exportsObj[id] = {
         value: currentValue,
-        metadata: entry.metadata,
+        metadata: entry.metadata
       };
     }
     return exportsObj;
@@ -237,7 +229,7 @@ export class BarrelStoreManager {
       entry.metadata = {
         ...entry.metadata,
         ...updates,
-        lastUpdated: Date.now(),
+        lastUpdated: Date.now()
       };
     }
   }
@@ -287,11 +279,11 @@ export class BarrelStoreManager {
           JSON.stringify({
             ts: Date.now(),
             ttl: ttl ?? null,
-            value,
+            value
           })
         );
       } catch (error: any) {
-        console.error(`Failed to cache store ${id}:`, error);
+        console.error(`Failed to cache store ${id}: ', error);
       }
     });
     // Track unsubscribe so dispose() can clean it up
@@ -319,14 +311,14 @@ export const legalAIStores = {
     id: 'legal-ai-current-case',
     initialValue: null,
     persistent: true,
-    cacheable: true,
+    cacheable: true
   }),
   // Document processing
   documentQueue: barrelStore.createStore<any>({
     id: 'legal-ai-document-queue',
     initialValue: [],
     persistent: true,
-    cacheable: true,
+    cacheable: true
   }),
   // AI analysis results
   analysisResults: barrelStore.createStore<Record<string, any>>({
@@ -340,38 +332,38 @@ export const legalAIStores = {
   userPreferences: barrelStore.createStore<any>({
     id: 'legal-ai-user-preferences',
     initialValue: {
-      theme: 'dark',
+     , theme: 'dark',
       aiModel: 'gemma3-legal',
       autoSave: true,
-      notifications: true,
+      notifications: true
     },
     persistent: true,
     validator: (prefs: any) => {
       return typeof prefs === 'object' && prefs !== null && typeof prefs.theme === 'string';
-    },
+    }
   }),
   // Application state
   appState: barrelStore.createStore<any>({
     id: 'legal-ai-app-state',
     initialValue: {
-      loading: false,
+     , loading: false,
       error: null,
       currentStep: 0,
-      totalSteps: 5,
+      totalSteps: 5
     },
-    cacheable: true,
+    cacheable: true
   }),
   // OCR processing state
   ocrState: barrelStore.createStore<any>({
     id: 'legal-ai-ocr-state',
     initialValue: {
-      processing: false,
+     , processing: false,
       progress: 0,
       results: [],
-      errors: [],
+      errors: []
     },
-    cacheable: true,
-  }),
+    cacheable: true
+  })
 };
 
 // Computed stores for complex derived state
@@ -397,7 +389,7 @@ export const legalAIComputed = {
         processed,
         processing,
         remaining: total - processed,
-        progress: total > 0 ? (processed / total) * 100 : 0,
+        progress: total > 0 ? (processed / total) * 100 : 0
       };
     }
   ),
@@ -407,7 +399,7 @@ export const legalAIComputed = {
     ([preferences, appState]) => {
       return !appState.loading && !appState.error && preferences !== null;
     }
-  ),
+  )
 };
 
 // Utility functions for store management
@@ -437,7 +429,7 @@ export const storeUtils = {
 
   async debug(): Promise<{ [key: string]: any }> {
     return await barrelStore.exportStores();
-  },
+  }
 };
 
 export default barrelStore;

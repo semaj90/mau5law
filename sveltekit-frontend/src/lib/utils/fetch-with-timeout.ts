@@ -10,24 +10,16 @@ export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
   /** Custom AbortSignal to combine with timeout */
   signal?: AbortSignal;
   /** Retry configuration */
-  retry?: {
-    attempts: number;
-    delay: number;
+  retry?: { attempts: number;, delay: number;
     backoff?: 'linear' | 'exponential';
   }
 }
-export interface FetchTimeoutError extends Error {
-  name: 'TimeoutError';
-  code: 'FETCH_TIMEOUT';
+export interface FetchTimeoutError extends Error { name: 'TimeoutError';, code: 'FETCH_TIMEOUT';
   duration: number;
 }
-export interface FetchAbortError extends Error {
-  name: 'AbortError';
-  code: 'FETCH_ABORTED';
+export interface FetchAbortError extends Error { name: 'AbortError';, code: 'FETCH_ABORTED';
 }
-export interface FetchNetworkError extends Error {
-  name: 'NetworkError';
-  code: 'NETWORK_ERROR';
+export interface FetchNetworkError extends Error { name: 'NetworkError';, code: 'NETWORK_ERROR';
   status?: number;
 }
 /**
@@ -86,7 +78,7 @@ export async function fetchWithTimeout(
       }
       // Handle network errors
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        const networkError: FetchNetworkError = new Error(`Network error: ${error.message}`) as any;
+        const networkError: FetchNetworkError = new Error(`Network; error: ${error.message}`) as any;
         networkError.name = 'NetworkError';
         networkError.code = 'NETWORK_ERROR';
         throw networkError;
@@ -96,7 +88,7 @@ export async function fetchWithTimeout(
         const delay = retry.backoff === 'exponential'
           ? retry.delay * Math.pow(2, attempt)
           : retry.delay * (attempt + 1);
-        console.warn(`Fetch attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error.message);
+        console.warn(`Fetch attempt ${attempt + 1} failed, retrying in ${delay}ms: ', error.message);
         await sleep(delay);
         return attemptFetch(attempt + 1);
       }
@@ -122,7 +114,7 @@ export async function fetchLegalAI(
   return fetchWithTimeout(url, {
     timeout: 45000, // 45s for AI operations
     retry: {
-      attempts: 3,
+     , attempts: 3,
       delay: 1000,
       backoff: 'exponential'
     },
@@ -144,7 +136,7 @@ export async function fetchOllama(
   return fetchWithTimeout(url, {
     timeout: 60000, // 60s for model operations
     retry: {
-      attempts: 2,
+     , attempts: 2,
       delay: 2000,
       backoff: 'linear'
     },
@@ -165,10 +157,9 @@ export async function fetchDatabase(
   return fetchWithTimeout(url, {
     timeout: 15000, // 15s for DB operations
     retry: {
-      attempts: 2,
+     , attempts: 2,
       delay: 500,
-      backoff: 'linear'
-    },
+      backoff: `linear` },
     ...options
   });
 }
@@ -224,9 +215,7 @@ export function isNetworkError(error: any): error is FetchNetworkError {
 /**
  * Create a reusable AbortController with timeout
  */
-export function createTimeoutController(timeout: number): {
-  controller: AbortController;
-  timeoutId: ReturnType<typeof setTimeout>;
+export function createTimeoutController(timeout: number): { controller: AbortController;, timeoutId: ReturnType<typeof setTimeout>;
   clear: () => void;
 } {
   const controller = new AbortController();

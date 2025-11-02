@@ -2,9 +2,7 @@ import crypto from 'crypto';
 /**
  * Normalised OCR result shared by browser and server callers.
  */
-export interface OCRResult {
-  text: string;
-  confidence: number | null;
+export interface OCRResult { text: string;, confidence: number | null;
   engine: 'tesseract' | 'service' | 'none';
   pages: number;
   durationMs: number;

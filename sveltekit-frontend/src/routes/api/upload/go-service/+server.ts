@@ -41,14 +41,14 @@ export const POST: RequestHandler = async ({ request }) => {
       // File size may not exist for Blob in server env; short-circuit
       fileSize: file && typeof file.size === 'number' ? file.size : undefined,
       caseId,
-      evidenceId,
+      evidenceId
     });
 
     // Forward to Go service
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/upload`, {
       method: 'POST',
       body: goFormData,
-      signal: (AbortSignal as any).timeout?.(GO_UPLOAD_TIMEOUT) ?? undefined,
+      signal: (AbortSignal as any).timeout?.(GO_UPLOAD_TIMEOUT) ?? undefined
     });
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
   try {
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/health`, {
       method: 'GET',
-      signal: (AbortSignal as any).timeout?.(5000) ?? undefined,
+      signal: (AbortSignal as any).timeout?.(5000) ?? undefined
     });
     const isHealthy = response.ok;
     const statusCode = isHealthy ? 200 : 503;
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async () => {
         service: 'go-upload-service',
         url: GO_UPLOAD_SERVICE_URL,
         status: isHealthy ? 'healthy' : 'unhealthy',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: statusCode }
     );
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
         url: GO_UPLOAD_SERVICE_URL,
         status: 'unavailable',
         error: healthError?.message ?? String(healthError),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

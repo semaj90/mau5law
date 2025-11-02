@@ -3,7 +3,7 @@ import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
   import { Button } from '$lib/components/ui/core.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
 
   interface ChatMessage {
     id: string;

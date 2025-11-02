@@ -6,35 +6,25 @@ import type { Case } from '$lib/types';
 
 type CaseContext = Record<string, unknown>;
 
-interface GenerateStrategyArgs {
-  evidenceIds: string[];
-  strategyType: string;
+interface GenerateStrategyArgs { evidenceIds: string[];, strategyType: string;
   caseContext: CaseContext;
   includeRiskAssessment?: boolean;
   generateAlternatives?: boolean;
 }
 
 // Strongly-typed risk assessment and outcome structures
-interface RiskAssessment {
-  overallRisk: 'low' | 'medium' | 'high' | 'critical';
-  riskFactors: string[];
+interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: string[];
   mitigationStrategies: string[];
 }
 
-interface OutcomeProjection {
-  scenario: string;
-  probability: number;
+interface OutcomeProjection { scenario: string;, probability: number;
   description: string;
 }
 
-interface Approach {
-  name: string;
-  rationale: string;
+interface Approach { name: string;, rationale: string;
 }
 
-interface StrategyResult {
-  primaryApproach: Approach;
-  alternativeApproaches: Approach[];
+interface StrategyResult { primaryApproach: Approach;, alternativeApproaches: Approach[];
   riskAssessment?: RiskAssessment;
   outcomeProjections: OutcomeProjection[];
 }
@@ -54,13 +44,13 @@ export class LegalStrategyEngine {
 
     const primary: Approach = {
       name: strategyType,
-      rationale: 'Derived from evidence thematic clustering and case context',
+      rationale: 'Derived from evidence thematic clustering and case context'
     };
 
     const alternativeApproaches: Approach[] = generateAlternatives
       ? [
           { name: 'fallback-mediation', rationale: 'Lower cost resolution' },
-          { name: 'evidence-consolidation', rationale: 'Strengthen documentary chain' },
+          { name: 'evidence-consolidation', rationale: 'Strengthen documentary chain' }
         ]
       : [];
 
@@ -71,7 +61,7 @@ export class LegalStrategyEngine {
           mitigationStrategies: ['gather supplementary affidavits', 'perform deeper forensic review'].slice(
             0,
             Math.floor(pr(3) * 2) + 1
-          ),
+          )
         }
       : undefined;
 
@@ -79,17 +69,17 @@ export class LegalStrategyEngine {
       {
         scenario: 'settlement',
         probability: +(0.4 + pr(4) * 0.2).toFixed(2),
-        description: 'Early negotiated resolution',
+        description: 'Early negotiated resolution'
       },
       {
         scenario: 'trial_success',
         probability: +(0.3 + pr(5) * 0.2).toFixed(2),
-        description: 'Favorable judgment at trial',
+        description: 'Favorable judgment at trial'
       },
       {
         scenario: 'dismissal',
         probability: +(0.1 + pr(6) * 0.1).toFixed(2),
-        description: 'Case risk due to procedural challenge',
+        description: 'Case risk due to procedural challenge'
       },
     ];
 
@@ -97,7 +87,7 @@ export class LegalStrategyEngine {
       primaryApproach: primary,
       alternativeApproaches,
       riskAssessment,
-      outcomeProjections,
+      outcomeProjections
     };
   }
 }

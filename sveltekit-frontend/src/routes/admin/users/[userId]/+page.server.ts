@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         // Profile data
         profile_id: profileTable.id,
         firstName: profileTable.firstName,
-        lastName: profileTable.lastName,
+        lastName: profileTable.lastName
       })
       .from(users)
       .leftJoin(profileTable, eq(profileTable.id, users.id))
@@ -74,7 +74,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         status: cases.status,
         priority: cases.priority,
         created_at: cases.created_at,
-        updated_at: cases.updated_at,
+        updated_at: cases.updated_at
       })
       .from(cases)
       .where(eq(cases.user_id, userId))
@@ -90,7 +90,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         response: aiHistory.response,
         model_used: aiHistory.model_used,
         tokens_used: aiHistory.tokens_used,
-        created_at: aiHistory.created_at,
+        created_at: aiHistory.created_at
       })
       .from(aiHistory)
       .where(eq(aiHistory.user_id, userId))
@@ -101,31 +101,29 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       .select({
         id: sessions.id,
         expires_at: sessions.expires_at,
-        created_at: sessions.created_at,
+        created_at: sessions.created_at
       })
       .from(sessions)
       .where(eq(sessions.user_id, userId))
       .orderBy(desc(sessions.created_at))
       .limit(5);
-    return {
-      user: {
-        id: user.id,
+    return { user: {, id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         created_at: user.created_at,
         updated_at: user.updated_at,
-        profile_id: user.profile_id,
+        profile_id: user.profile_id
       },
       stats: {
         casesCount,
         evidenceCount,
         sessionsCount,
-        aiHistoryCount,
+        aiHistoryCount
       },
       recentCases,
       recentAIInteractions,
-      activeSessions,
+      activeSessions
     };
   } catch (err) {
     console.error('Error loading user details:', err);
@@ -153,7 +151,7 @@ export const actions: Actions = {
           .update(profileTable)
           .set({
             firstName,
-            lastName,
+            lastName
           })
           .where(eq(profileTable.id, userId));
       } else {
@@ -161,7 +159,7 @@ export const actions: Actions = {
         await db.insert(profileTable).values({
           id: userId,
           firstName,
-          lastName,
+          lastName
         });
       }
       return { success: true, message: 'Profile updated successfully' };
@@ -204,14 +202,14 @@ export const actions: Actions = {
         memoryCost: 19456,
         timeCost: 2,
         outputLen: 32,
-        parallelism: 1,
+        parallelism: 1
       });
       // Update user password
       await db
         .update(users)
         .set({
           password_hash: passwordHash,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where(eq(users.id, userId));
       // Revoke all existing sessions for this user
@@ -221,5 +219,5 @@ export const actions: Actions = {
       console.error('Error resetting password:', err);
       return { success: false, error: 'Failed to reset password' };
     }
-  },
+  }
 };

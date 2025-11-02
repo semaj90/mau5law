@@ -4,9 +4,7 @@
  */
 import { redisComponentStore, type CacheOptions } from './redis-component-store.js';
 import type { Evidence, AnalysisResult, CaseData } from '$lib/types/legal-types.js';
-export interface EvidenceAnalysisCache {
-  evidenceId: string;
-  analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
+export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
   result: AnalysisResult;
   confidence: number;
   processingTime: number;
@@ -16,9 +14,7 @@ export interface EvidenceAnalysisCache {
   modelVersion: string;
   metadata: { [key: string]: any }
 }
-export interface CacheKey {
-  evidenceId: string;
-  analysisType: string;
+export interface CacheKey { evidenceId: string;, analysisType: string;
   parameters?: { [key: string]: any }
   modelVersion?: string;
 }
@@ -34,9 +30,7 @@ class EvidenceAnalysisCacheService {
   async cacheAnalysisResult(
     key: CacheKey,
     result: AnalysisResult,
-    options: {
-      confidence: number;
-      processingTime: number;
+    options: {, confidence: number;, processingTime: number;
       userId?: string;
       caseId?: string;
       metadata?: { [key: string]: any };
@@ -52,7 +46,7 @@ class EvidenceAnalysisCacheService {
       userId: options.userId,
       caseId: options.caseId,
       modelVersion: key.modelVersion || 'gemma3:legal-latest',
-      metadata: options.metadata || {},
+      metadata: options.metadata || {}
     };
     const cacheKey = this.generateCacheKey(key);
     const ttl = this.getTTLForAnalysisType(key.analysisType);
@@ -121,16 +115,14 @@ class EvidenceAnalysisCacheService {
       evidenceIds,
       matrix,
       timestamp: Date.now(),
-      metadata,
+      metadata
     };
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SIMILARITY_TTL);
   }
   /**
    * Get cached similarity matrix
    */
-  async getCachedSimilarityMatrix(evidenceIds: string[]): Promise<{
-    evidenceIds: string[];
-    matrix: number[][];
+  async getCachedSimilarityMatrix(evidenceIds: string[]): Promise<{ evidenceIds: string[];, matrix: number[][];
     timestamp: number;
     metadata: { [key: string]: any };
   } | null> {
@@ -142,20 +134,18 @@ class EvidenceAnalysisCacheService {
    */
   async cacheCaseAnalysisSummary(
     caseId: string,
-    summary: {
-      evidenceCount: number;
-      analysisTypes: string[];
+    summary: { evidenceCount: number;, analysisTypes: string[];
       overallConfidence: number;
       keyFindings: string[];
       recommendations: string[];
-      processingTime: number;
+     , processingTime: number;
     }
   ): Promise<void> {
     const key = `case:summary:${caseId}`;
     const cacheEntry = {
       caseId,
       ...summary,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SUMMARY_TTL);
   }
@@ -208,7 +198,7 @@ class EvidenceAnalysisCacheService {
       hitCount: this.hitCount,
       missCount: this.missCount,
       hitRate: Math.round(hitRate * 100) / 100,
-      ...redisComponentStore.getCacheStats(),
+      ...redisComponentStore.getCacheStats()
     };
   }
   /**
@@ -289,9 +279,7 @@ export async function cacheAnalysis(
   evidenceId: string,
   analysisType: string,
   result: AnalysisResult,
-  options: {
-    confidence: number;
-    processingTime: number;
+  options: {, confidence: number;, processingTime: number;
     userId?: string;
     caseId?: string;
     metadata?: { [key: string]: any };

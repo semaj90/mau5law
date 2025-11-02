@@ -20,9 +20,7 @@ import { getGpuOrchestratorUrl } from '$lib/utils/gpu-orchestrator-endpoint'; //
 type LocalsLike = Record<string, unknown>;
 
 // Define interfaces for the AI extracted timeline data
-interface TimelineEvent {
-  date: string; // ISO format date string
-  date_confidence: number;
+interface TimelineEvent { date: string; // ISO format date string, date_confidence: number;
   event_type: string;
   description: string;
   importance_score: number;
@@ -33,21 +31,15 @@ interface TimelineEvent {
   id?: string; // Added for mock data, might be generated later
 }
 
-interface TimelineDateRange {
-  earliest: string;
-  latest: string;
+interface TimelineDateRange { earliest: string;, latest: string;
 }
 
-interface TimelineConfidenceSummary {
-  overall_confidence: number;
-  extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
+interface TimelineConfidenceSummary { overall_confidence: number;, extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
   // allow AI to return optional context notes
   missing_context?: string[];
 }
 
-interface TimelineData {
-  timeline_events: TimelineEvent[];
-  date_range: TimelineDateRange;
+interface TimelineData { timeline_events: TimelineEvent[];, date_range: TimelineDateRange;
   confidence_summary: TimelineConfidenceSummary;
 }
 
@@ -64,9 +56,9 @@ const TimelineExtractionSchema = z.object({
       confidenceThreshold: z.number().min(0).max(1).default(0.7),
       maxEvents: z.number().min(1).max(100).default(50),
       enableEntityLinking: z.boolean().default(true),
-      mergeSimilarEvents: z.boolean().default(true),
+      mergeSimilarEvents: z.boolean().default(true)
     })
-    .default({}),
+    .default({})
 });
 
 const TimelineQuerySchema = z.object({
@@ -75,7 +67,7 @@ const TimelineQuerySchema = z.object({
   endDate: z.string().datetime().optional(),
   eventTypes: z.array(z.string()).optional(),
   minImportance: z.number().min(0).max(1).default(0),
-  format: z.enum(['json', 'csv', 'timeline_vis']).default('json'),
+  format: z.enum(['json', 'csv', 'timeline_vis']).default('json')
 });
 
 // Configuration for AI analysis
@@ -93,7 +85,7 @@ async function extractTimelineWithAI(
   const extractionPrompt = `You are a legal AI assistant specializing in chronological analysis. Extract all temporal events from this legal document and provide a structured timeline.
 
 DOCUMENT TYPE: ${documentType}
-CONTENT: ${content.substring(0, 4000)}${content.length > 4000 ? '...' : ''}
+CONTENT: ${content.substring(0, 4000)}${content.length > 4000 ? '...' : `` }
 
 ANALYSIS REQUIREMENTS:
 1. Extract all events with dates or time references
@@ -132,18 +124,18 @@ Provide your analysis in this exact JSON format:
   try {
     const response = await fetch(getOllamaEndpoint('api/generate'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: extractionPrompt,
         stream: false,
         options: {
-          temperature: 0.1,
+         , temperature: 0.1,
           top_p: 0.9,
           num_predict: 2048,
-          num_ctx: 8192,
-        },
-      }),
+          num_ctx: 8192
+        }
+      })
     });
 
     if (!response.ok) {
@@ -193,20 +185,20 @@ function generateFallbackTimeline(content: string, documentType: string): Timeli
     participants: [],
     location: null,
     evidence_references: [],
-    legal_significance: 'Requires manual review',
+    legal_significance: 'Requires manual review'
   }));
 
   return {
     timeline_events: events,
     date_range: {
       earliest: events.length > 0 ? events[0].date : new Date().toISOString(),
-      latest: events.length > 0 ? events[events.length - 1].date : new Date().toISOString(),
+      latest: events.length > 0 ? events[events.length - 1].date : new Date().toISOString()
     },
     confidence_summary: {
       overall_confidence: 0.4,
       extraction_quality: 'fallback',
-      missing_context: ['AI analysis unavailable'],
-    },
+      missing_context: ['AI analysis unavailable']
+    }
   };
 }
 
@@ -267,16 +259,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             total_events: processedEvents.length,
             date_range: timelineData.date_range,
             confidence: timelineData.confidence_summary,
-            extraction_method: 'ai_powered',
+            extraction_method: 'ai_powered'
           },
           metadata: {
-            document_type: documentType,
+           , document_type: documentType,
             extraction_options: extractionOptions,
             processed_at: new Date().toISOString(),
-            model_used: await getOptimalModel(),
-          },
-        },
-      },
+            model_used: await getOptimalModel()
+          }
+        }
+      }
     });
   } catch (error: any) {
     // Type error as unknown
@@ -286,7 +278,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           message: 'Invalid timeline extraction request',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );
@@ -339,7 +331,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           participants: ['John Doe', 'Jane Smith'],
           location: '123 Main Street',
           evidence_references: ['DOC-001', 'PHOTO-001'],
-          legal_significance: 'High - establishes timeline of events',
+          legal_significance: 'High - establishes timeline of events'
         },
         {
           id: crypto.randomUUID(),
@@ -350,18 +342,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           participants: ['Officer Johnson'],
           location: 'Police Station',
           evidence_references: ['REPORT-001'],
-          legal_significance: 'Medium - procedural requirement',
+          legal_significance: 'Medium - procedural requirement'
         },
       ] as TimelineEvent[], // Cast mock events to TimelineEvent[]
       summary: {
         total_events: 2,
         date_range: {
           earliest: '2024-01-15T14:30:00Z',
-          latest: '2024-01-16T09:00:00Z',
-        },
+          latest: `2024-01-16T09:00:00Z` },
         event_types: ['incident', 'investigation'],
-        confidence: 0.85,
-      },
+        confidence: 0.85
+      }
     };
 
     // Apply filters
@@ -388,8 +379,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       events: filteredEvents,
       summary: {
         ...mockTimeline.summary,
-        total_events: filteredEvents.length,
-      },
+        total_events: filteredEvents.length
+      }
     };
 
     return json({
@@ -397,7 +388,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       data: {
         ...response,
         requested_format: format, // explicitly include the requested format to avoid unused variable
-      },
+      }
     });
   } catch (error: any) {
     // Type error as unknown
@@ -407,7 +398,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json(
         {
           message: 'Invalid timeline query',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );

@@ -1,6 +1,4 @@
-export interface Route {
-  name: string;
-  href: string;
+export interface Route { name: string;, href: string;
   children?: Route[];
 }
 
@@ -19,7 +17,7 @@ export function getRoutes(): Route[] {
 
     routes.push({
       name: name.charAt(0).toUpperCase() + name.slice(1),
-      href: href || '/',
+      href: href || '/'
     });
   });
 

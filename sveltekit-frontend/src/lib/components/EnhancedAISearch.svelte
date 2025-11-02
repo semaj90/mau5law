@@ -169,7 +169,7 @@ import type { Document } from '$lib/types';
           bind:value={query}
           keydown={handleKeydown}
           placeholder="Search legal documents with AI..."
-          class="w-full" px-4 py-3 rounded-lg border border-gray-300 dark: border-gray-600
+          class="w-full px-4 py-3" rounded-lg border border-gray-300 dark: border-gray-600
                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
                  placeholder-gray-500 dark:placeholder-gray-400"
@@ -183,7 +183,7 @@ import type { Document } from '$lib/types';
       <Button.Root
         onclick={performSearch}
         disabled={loading || !query.trim()}
-        class="px-6" py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
+        class="px-6 py-3 bg-blue-600" hover: bg-blue-700 text-white rounded-lg;
                disabled:opacity-50 disabled:cursor-not-allowed
                flex items-center gap-2 bits-btn bits-btn"
       >

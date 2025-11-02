@@ -23,13 +23,11 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
   statement_timeout: 30000,
-  query_timeout: 30000,
+  query_timeout: 30000
 });
 
 // Thread synchronization primitives
-interface QueryLock {
-  id: string;
-  acquired: boolean;
+interface QueryLock { id: string;, acquired: boolean;
   waitingQueries: Array<() => void>;
   lastAccessed: number;
 }
@@ -38,14 +36,10 @@ const queryLocks = new Map<string, QueryLock>();
 const activeTxs = new Map<string, PoolClient>();
 
 // Add a local HealthCheckResult type to describe the health-check return shape
-interface HealthCheckResult {
-  connected: boolean;
-  activeConnections: number;
+interface HealthCheckResult { connected: boolean;, activeConnections: number;
   activeLocks: number;
   activeTransactions: number;
-  performance: {
-    avgQueryTime: number;
-    totalQueries: number;
+  performance: { avgQueryTime: number;, totalQueries: number;
   };
   message?: string;
 }
@@ -81,7 +75,7 @@ export class ThreadSafePostgres {
             id: queryId,
             acquired: false,
             waitingQueries: [],
-            lastAccessed: Date.now(),
+            lastAccessed: Date.now()
           };
           queryLocks.set(queryId, lock);
         }
@@ -164,7 +158,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(queryId);
       }
     } catch (error) {
-      console.error(`Failed to store JSONB document ${id}:`, error);
+      console.error(`Failed to store JSONB document ${id}: ', error);
       return false;
     } finally {
       release();
@@ -344,7 +338,7 @@ export class ThreadSafePostgres {
           await cognitiveCache.storeJsonbDocument(cacheKey, results, {
             queryType: 'jsonb_search',
             resultCount: results.length,
-            gpuProcessed: options.useGPU || false,
+            gpuProcessed: options.useGPU || false
           });
         }
 
@@ -425,7 +419,7 @@ export class ThreadSafePostgres {
         console.warn(`Failed to update cache metadata for ${effectiveCacheKey}:`, err);
       }
     } catch (error) {
-      console.warn(`GPU processing failed for query ${queryId}:`, error);
+      console.warn(`GPU processing failed for query ${queryId}: ', error);
     }
   }
 
@@ -457,7 +451,7 @@ export class ThreadSafePostgres {
           SELECT
             id,
             1 - (embedding <=> $1::vector) as similarity
-            ${includeMetadata ? ', content, metadata' : ''}
+            ${includeMetadata ? ', content, metadata' : '' }
           FROM ${table}
           WHERE 1 - (embedding <=> $1::vector) > $2
         `;
@@ -484,7 +478,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(queryId);
       }
     } catch (error) {
-      console.error(`Vector similarity search failed:`, error);
+      console.error(`Vector similarity search failed: ', error);
       return [];
     } finally {
       release();
@@ -495,10 +489,8 @@ export class ThreadSafePostgres {
    * Batch JSONB operations with thread safety
    */
   async batchJsonbOperations(
-    operations: Array<{
-      type: 'insert' | 'update' | 'delete';
-      table: string;
-      id: string;
+    operations: Array<{ type: 'insert' | 'update' | 'delete';, table: string;
+     , id: string;
       data?: any;
     }>,
     options: {
@@ -568,7 +560,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(batchId);
       }
     } catch (error) {
-      console.error(`Batch JSONB operations failed:`, error);
+      console.error(`Batch JSONB operations failed: ', error);
       return false;
     } finally {
       release();
@@ -595,8 +587,8 @@ export class ThreadSafePostgres {
           activeTransactions: activeTxs.size,
           performance: {
             avgQueryTime: 0, // Could be enhanced with metrics
-            totalQueries: 0,
-          },
+            totalQueries: 0
+          }
         };
       } finally {
         client.release();
@@ -610,9 +602,9 @@ export class ThreadSafePostgres {
         activeTransactions: activeTxs.size,
         performance: {
           avgQueryTime: 0,
-          totalQueries: 0,
+          totalQueries: 0
         },
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error.message : String(error)
       };
     }
   }
@@ -638,7 +630,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(id);
         console.warn(`Cleaned up stuck transaction: ${id}`);
       } catch (error) {
-        console.error(`Failed to cleanup transaction ${id}:`, error);
+        console.error(`Failed to cleanup transaction ${id}: ', error);
       }
     }
   }
@@ -734,14 +726,14 @@ export async function searchLegalDocuments(
     path: 'topics',
     operator: '@>' as const,
     value: params.practiceArea ? [params.practiceArea] : undefined,
-    conditions,
+    conditions
   };
 
   return await safeJsonbQuery('legal_documents', jsonbQuery, {
     limit: options.limit || 50,
     orderBy: 'relevance',
     useGPU: options.useGPU,
-    cacheResults: true,
+    cacheResults: true
   });
 }
 
@@ -749,7 +741,7 @@ export async function searchLegalDocuments(
  * Store legal document with thread-safe JSONB operations
  */
 export async function storeLegalDocument(
-  legalDoc: { id: string } & Record<string, unknown>, // renamed param to avoid global Document collision
+  legalDoc: {, id: string } & Record<string, unknown>, // renamed param to avoid global Document collision
   options: {
     generateEmbedding?: boolean;
     gpuAccelerated?: boolean;
@@ -762,10 +754,10 @@ export async function storeLegalDocument(
     cacheKey: options.cacheForSearch ? cacheKey : undefined,
     gpuAccelerated: options.gpuAccelerated,
     metadata: {
-      documentType: 'legal',
+     , documentType: 'legal',
       indexed: true,
       searchable: true,
-      hasEmbedding: options.generateEmbedding || false,
-    },
+      hasEmbedding: options.generateEmbedding || false
+    }
   });
 }

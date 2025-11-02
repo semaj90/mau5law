@@ -18,9 +18,7 @@ export interface BaseMetadata {
 }
 
 /** Generic stored object format used by RAG pipelines */
-export interface RAGObject {
-  id: string;
-  type: DataType;
+export interface RAGObject { id: string;, type: DataType;
   title: string;
   content: string;
   embedding?: EmbeddingVector;
@@ -65,9 +63,7 @@ export interface CUDAMemoryRegion {
  * Minimal NES memory stats shape referenced by GPU sync logic.
  * Updated to include totalRAM/totalCHR since synchronization code uses both used/total values.
  */
-export interface NESMemoryStats {
-  usedPRG: number;
-  totalPRG: number;
+export interface NESMemoryStats { usedPRG: number;, totalPRG: number;
   usedRAM: number;
   totalRAM: number;
   usedCHR: number;

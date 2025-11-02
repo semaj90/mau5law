@@ -8,7 +8,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
   let auditResults: SemanticAuditResult[] = $state([]);
   let loading = $state<boolean>(true);
   let isLoading = $state<boolean>(false);
-  let error: string | null = $state(null);
+  let error: string | null = null;
   // Fetch audit results from backend
   async function fetchAuditResults(): Promise<Response> {
     loading = true;

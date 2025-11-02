@@ -9,7 +9,7 @@
   import { onMount } from 'svelte';
   // Export state
   let exportLoading = $state<boolean>(false);
-  let exportError: string | null = $state(null);
+  let exportError: string | null = null;
   let exportSuccess = $state<boolean>(false);
   let availableCases: Case[] = $state([]);
   // Export configuration

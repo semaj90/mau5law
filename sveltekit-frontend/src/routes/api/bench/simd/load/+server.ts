@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       const r = await fetch(target, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload ?? {}),
+        body: JSON.stringify(payload ?? {})
       });
       // We only touch body to ensure full pipeline runs; discard content
       await r.text().catch(() => '');

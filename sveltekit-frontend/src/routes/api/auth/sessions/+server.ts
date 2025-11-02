@@ -17,10 +17,10 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -32,10 +32,10 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async (event) => {
       createdAt: s.createdAt,
       lastActivityAt: s.expiresAt || new Date(),
       isCurrent: s.id === sessionId,
-      deviceType: detectDeviceType(s.userAgent || ''),
+      deviceType: detectDeviceType(s.userAgent || '')
     }));
 
     return json(formattedSessions);
@@ -65,10 +65,10 @@ export const GET: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to fetch sessions',
+         , message: 'Failed to fetch sessions',
           code: 'FETCH_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );
@@ -86,10 +86,10 @@ export const DELETE: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Session ID required',
+         , message: 'Session ID required',
           code: 'NO_SESSION_ID',
-          status: 400,
-        },
+          status: 400
+        }
       },
       { status: 400 }
     );
@@ -103,10 +103,10 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -118,10 +118,10 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -133,10 +133,10 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Cannot revoke current session',
+           , message: 'Cannot revoke current session',
             code: 'CANNOT_REVOKE_CURRENT',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -153,10 +153,10 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Session not found',
+           , message: 'Session not found',
             code: 'NOT_FOUND',
-            status: 404,
-          },
+            status: 404
+          }
         },
         { status: 404 }
       );
@@ -168,10 +168,10 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Unauthorized',
+           , message: 'Unauthorized',
             code: 'UNAUTHORIZED',
-            status: 403,
-          },
+            status: 403
+          }
         },
         { status: 403 }
       );
@@ -182,7 +182,7 @@ export const DELETE: RequestHandler = async (event) => {
 
     return json({
       success: true,
-      message: 'Session revoked successfully',
+      message: 'Session revoked successfully'
     });
   } catch (error) {
     console.error('Error revoking session:', error);
@@ -190,10 +190,10 @@ export const DELETE: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to revoke session',
+         , message: 'Failed to revoke session',
           code: 'REVOKE_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

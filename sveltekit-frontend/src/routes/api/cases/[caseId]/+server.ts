@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ params, ...event }) => {
     return json({
       success: true,
       case: caseData,
-      _testMode: auth.isTestMode,
+      _testMode: auth.isTestMode
     });
   } catch (err) {
     console.error('Error fetching case:', err);
@@ -63,7 +63,7 @@ export const PUT: RequestHandler = async ({ request, params, ...event }) => {
         status,
         priority,
         tags,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(cases.id, caseId))
       .returning();
@@ -71,7 +71,7 @@ export const PUT: RequestHandler = async ({ request, params, ...event }) => {
     return json({
       success: true,
       case: updateResult[0],
-      _testMode: auth.isTestMode,
+      _testMode: auth.isTestMode
     });
   } catch (err) {
     console.error('Error updating case:', err);
@@ -91,7 +91,7 @@ export const DELETE: RequestHandler = async ({ params, ...event }) => {
     return json({
       success: true,
       message: 'Case deleted successfully',
-      _testMode: auth.isTestMode,
+      _testMode: auth.isTestMode
     });
   } catch (err) {
     console.error('Error deleting case:', err);

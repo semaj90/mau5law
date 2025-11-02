@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ params }) => {
     }
 
     const evidenceRecord = await db.query.evidence.findFirst({
-      where: eq(evidence.id, evidenceId),
+      where: eq(evidence.id, evidenceId)
     });
 
     if (!evidenceRecord) {

@@ -21,9 +21,7 @@ import { writable, derived } from 'svelte/store';
  */
 export type ElementType = 'node' | 'connection' | 'label' | 'image' | 'annotation';
 
-export interface CanvasElement {
-  id: string;
-  type: ElementType;
+export interface CanvasElement { id: string;, type: ElementType;
   x: number;
   y: number;
   width: number;
@@ -34,36 +32,28 @@ export interface CanvasElement {
   lockedBy?: string;
 }
 
-export interface CanvasConnection {
-  id: string;
-  fromId: string;
+export interface CanvasConnection { id: string;, fromId: string;
   toId: string;
   type: string;
   label?: string;
   style?: Record<string, unknown>;
 }
 
-export interface CanvasState {
-  id: string;
-  elements: CanvasElement[];
+export interface CanvasState { id: string;, elements: CanvasElement[];
   connections: CanvasConnection[];
   version: number;
   createdAt: number;
   updatedAt: number;
 }
 
-export interface CollaboratorCursor {
-  userId: string;
-  name: string;
+export interface CollaboratorCursor { userId: string;, name: string;
   x: number;
   y: number;
   color: string;
   timestamp: number;
 }
 
-export interface CanvasHistoryEntry {
-  version: number;
-  action: string;
+export interface CanvasHistoryEntry { version: number;, action: string;
   timestamp: number;
   userId: string;
   changes: any;
@@ -147,8 +137,7 @@ function createCanvasStore() {
       update(s => ({ ...s, isLoading: true, error: null }));
       try {
         const response = await fetch(`/api/canvas/${canvasId}`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -362,7 +351,7 @@ function createCanvasStore() {
      * Save canvas
      */
     async saveCanvas() {
-      const state: { canvasId: string | null; elements: CanvasElement[]; connections: CanvasConnection[] } = {
+      const state: { canvasId: string | null; elements: CanvasElement[];, connections: CanvasConnection[] } = {
         canvasId: null,
         elements: [],
         connections: []
@@ -383,11 +372,10 @@ function createCanvasStore() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            elements: state.elements,
+           , elements: state.elements,
             connections: state.connections
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -488,8 +476,7 @@ function createCanvasStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ format }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const blob = await response.blob();
@@ -521,8 +508,7 @@ function createCanvasStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userIds }),
-          credentials: 'include'
-        });
+          credentials: `include` });
       } catch (error) {
         console.error('Share error:', error);
       }

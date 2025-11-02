@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           cached: result,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         })
       }
       case 'get': {
@@ -46,12 +46,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           found: !!cached,
           data: cached
             ? {
-                embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
+               , embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
                 attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null,
-                metadata: cached.metadata,
+                metadata: cached.metadata
               }
             : null,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'clear': {
@@ -66,8 +66,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -92,11 +91,10 @@ export const GET: RequestHandler = async ({ url }) => {
         memoryUsage: stats.memoryUsage
       },
       endpoints: {
-        store: '/api/dimensional-cache?action=store (POST)',
+       , store: '/api/dimensional-cache?action=store (POST)',
         get: '/api/dimensional-cache?action=get (POST)',
         clear: '/api/dimensional-cache?action=clear (POST)',
-        stats: '/api/dimensional-cache (GET)'
-      },
+        stats: '/api/dimensional-cache (GET)' },
       capabilities: [
         'Multi-dimensional array storage',
         'LRU eviction policy',

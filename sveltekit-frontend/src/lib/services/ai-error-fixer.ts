@@ -7,9 +7,7 @@ import { parallelAnalysisAPI } from './parallel-error-analyzer.js';
 // import { browser } from '$app/environment'; // removed: unused
 import { writable, derived } from 'svelte/store';
 
-export interface FixAttempt {
-  id: string;
-  errorId: string;
+export interface FixAttempt { id: string;, errorId: string;
   strategy: string;
   originalCode: string;
   fixedCode: string;
@@ -20,9 +18,7 @@ export interface FixAttempt {
   llmModel?: string;
 }
 
-export interface ErrorFix {
-  errorId: string;
-  file: string;
+export interface ErrorFix { errorId: string;, file: string;
   line: number;
   originalText: string;
   fixedText: string;
@@ -33,9 +29,7 @@ export interface ErrorFix {
   validated: boolean;
 }
 
-export interface AIFixConfig {
-  model: string;
-  endpoint: string;
+export interface AIFixConfig { model: string;, endpoint: string;
   maxRetries: number;
   confidenceThreshold: number;
   batchSize: number;
@@ -43,7 +37,7 @@ export interface AIFixConfig {
   embeddingModel: string;
 }
 
-// New: typed shape for analyzer results (replace many: 'any' occurrences)
+// New: typed shape for analyzer results (replace; many: 'any' occurrences)
 export interface ErrorAnalysisResult {
   id: string;
   file?: string;
@@ -87,13 +81,13 @@ export interface RedisCacheHelper {
 export interface QdrantIndexer {
   upsert(
     collection: string,
-    vectors: Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{, id: string; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<void>;
   search(
     collection: string,
     vector: number[],
     topK?: number
-  ): Promise<Array<{ id: string; score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string;, score: number; payload?: Record<string, unknown> }>>;
 }
 
 export interface PGJsonPersistence {
@@ -119,7 +113,7 @@ export class AIErrorFixer {
     confidenceThreshold: 0.7,
     batchSize: 10,
     validateFixes: true,
-    embeddingModel: 'nomic-embed-text',
+    embeddingModel: 'nomic-embed-text'
   };
 
   private fixHistory = new Map<string, FixAttempt[]>();
@@ -136,17 +130,17 @@ export class AIErrorFixer {
         try {
           const resp = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               model,
               prompt,
               stream: false,
               options: {
-                temperature: 0.1,
+               , temperature: 0.1,
                 top_p: 0.9,
-                max_tokens: 1000,
-              },
-            }),
+                max_tokens: 1000
+              }
+            })
           });
           if (!resp.ok) throw new Error(`Ollama request failed: ${resp.status}`);
           const data = await resp.json();
@@ -158,7 +152,7 @@ export class AIErrorFixer {
           console.error('Ollama generation failed:', err);
           return '';
         }
-      },
+      }
     };
   }
 
@@ -230,21 +224,19 @@ export class AIErrorFixer {
   private createFixPrompt(error: ErrorAnalysisResult): string {
     const line = error.line || 0;
     const original = error.originalCode ?? '// Code not available';
-    return `You are a TypeScript expert. Fix this error:
-Error: ${error.code || 'unknown'} - ${error.message || ''}
+    return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || ''}
 File: ${error.file || 'unknown'}
 Line: ${line}
-Category: ${error.category || 'general'}
+Category: ${error.category || 'general` }
 Context around line ${line}:
 \`\`\`typescript
 // Line ${Math.max(0, line - 1)}:
 // Line ${line}: ${original}
 \`\`\`
 Provide ONLY the fixed code for line ${line} with this format:
-FIXED_CODE: [your fix here]
-REASONING: [brief explanation]
+FIXED_CODE: [your fix here]; REASONING: [brief explanation]
 CONFIDENCE: [0.0-1.0]
-Common fixes for ${error.code || 'unknown'}:
+Common fixes for ${error.code || 'unknown` }:
 ${this.getCommonFixes(error.code || '')}`;
   }
 
@@ -255,7 +247,7 @@ ${this.getCommonFixes(error.code || '')}`;
       TS2307: '- Fix module path\n- Install missing package\n- Check file exists',
       TS2457: '- Rename type alias\n- Use different name\n- Avoid reserved keywords',
       TS1005: '- Add missing semicolon\n- Add missing comma\n- Check syntax',
-      TS1128: '- Add missing declaration\n- Complete the statement\n- Fix syntax',
+      TS1128: '- Add missing declaration\n- Complete the statement\n- Fix syntax'
     };
     return fixes[code] || '- Manual review required\n- Check TypeScript documentation';
   }
@@ -282,7 +274,7 @@ ${this.getCommonFixes(error.code || '')}`;
         confidence,
         reasoning,
         dependencies: (error.dependencies as string[]) || [],
-        validated: false,
+        validated: false
       };
       return fix;
     } catch (e) {
@@ -299,8 +291,7 @@ ${this.getCommonFixes(error.code || '')}`;
       TS2307: 'fix_module_path',
       TS2457: 'rename_type',
       TS1005: 'add_punctuation',
-      TS1128: 'add_declaration',
-    };
+      TS1128: `add_declaration` };
     return (code && strategies[code]) || 'manual_fix';
   }
 
@@ -311,7 +302,7 @@ ${this.getCommonFixes(error.code || '')}`;
 
     // Basic heuristics: strategy-based minimal checks
     try {
-      if (fix.strategy === 'add_punctuation' && !/[;,.{}()[\]]/.test(fix.fixedText)) return false;
+      if (fix.strategy === 'add_punctuation' && !/[; .{}()[\]]/.test(fix.fixedText)) return false;
       if (fix.strategy === 'add_import' && !/import\s+/.test(fix.fixedText)) return false;
       return true;
     } catch {
@@ -345,7 +336,7 @@ ${this.getCommonFixes(error.code || '')}`;
       applied: false,
       result: 'success',
       timestamp: new Date(),
-      llmModel: this.config.model,
+      llmModel: this.config.model
     };
     const history = this.fixHistory.get(errorId) || [];
     history.push(attempt);
@@ -375,7 +366,7 @@ ${this.getCommonFixes(error.code || '')}`;
               (this.ollamaEmbeddings && (await this.ollamaEmbeddings.embed(fix.fixedText, this.config.embeddingModel))) ||
               (await this.generateEmbedding(fix.fixedText));
             if (vector && vector.length) {
-              await this.qdrantIndexer.upsert('ai_fixes', [{ id: errorId, vector, payload: { file: fix.file, line: fix.line } }]);
+              await this.qdrantIndexer.upsert('ai_fixes', [{ id: errorId, vector, payload: {, file: fix.file, line: fix.line } }]);
             }
           } catch (e) {
             // non-fatal
@@ -391,7 +382,7 @@ ${this.getCommonFixes(error.code || '')}`;
             strategy: fix.strategy,
             confidence: fix.confidence,
             reasoning: fix.reasoning,
-            timestamp: attempt.timestamp.toISOString(),
+            timestamp: attempt.timestamp.toISOString()
           });
         }
       } catch {
@@ -447,7 +438,7 @@ ${this.getCommonFixes(error.code || '')}`;
       const resp = await fetch('/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: this.config.embeddingModel, text }),
+        body: JSON.stringify({, model: this.config.embeddingModel, text })
       });
       if (!resp.ok) return [];
       const data = await resp.json();
@@ -459,7 +450,7 @@ ${this.getCommonFixes(error.code || '')}`;
   }
   // --- end helper ---
 
-  async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number; results: any[] }> {
+  async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number;, results: any[] }> {
     const results: any[] = [];
     let applied = 0;
     let failed = 0;
@@ -472,7 +463,7 @@ ${this.getCommonFixes(error.code || '')}`;
           if (result.success) applied++;
           else failed++;
         } else {
-          results.push({ errorId: fix.errorId, success: false, reason: 'Fix not validated or confidence too low' });
+          results.push({ errorId: fix.errorId, success: false, reason: `Fix not validated or confidence too low` });
           failed++;
         }
       } catch (e) {
@@ -491,7 +482,7 @@ ${this.getCommonFixes(error.code || '')}`;
       const resp = await fetch(`/api/files/read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file: fix.file }),
+        body: JSON.stringify({, file: fix.file })
       });
       if (!resp.ok) return { errorId: fix.errorId, success: false, reason: 'Could not read file' };
 
@@ -499,7 +490,7 @@ ${this.getCommonFixes(error.code || '')}`;
       const lines = typeof content === 'string' ? content.split(/\r?\n/) : [];
 
       if (fix.line <= 0 || fix.line > lines.length + 1) {
-        return { errorId: fix.errorId, success: false, reason: 'Line number out of range' };
+        return { errorId: fix.errorId, success: false, reason: `Line number out of range` };
       }
 
       // Replace or insert line (line numbers are 1-based)
@@ -508,11 +499,11 @@ ${this.getCommonFixes(error.code || '')}`;
       const writeResp = await fetch(`/api/files/write`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file: fix.file, content: lines.join('\n') }),
+        body: JSON.stringify({, file: fix.file, content: lines.join('\n') })
       });
 
       if (!writeResp.ok) {
-        return { errorId: fix.errorId, success: false, reason: 'Could not write file' };
+        return { errorId: fix.errorId, success: false, reason: `Could not write file` };
       }
 
       // Mark latest attempt as applied
@@ -562,12 +553,12 @@ export const errorFixerStore = writable({
   appliedFixes: 0,
   failedFixes: 0,
   stats: {
-    totalAttempts: 0,
+   , totalAttempts: 0,
     successfulFixes: 0,
     failedFixes: 0,
     averageConfidence: 0,
-    appliedFixes: 0,
-  },
+    appliedFixes: 0
+  }
 });
 
 export const fixerProgressStore = derived(errorFixerStore, ($store) => ({
@@ -578,7 +569,7 @@ export const fixerProgressStore = derived(errorFixerStore, ($store) => ({
   successRate:
     $store.appliedFixes + $store.failedFixes > 0
       ? $store.appliedFixes / ($store.appliedFixes + $store.failedFixes)
-      : 0,
+      : 0
 }));
 
 export const aiErrorFixerAPI = {
@@ -603,7 +594,7 @@ export const aiErrorFixerAPI = {
         fixes,
         appliedFixes: applyResults.applied,
         failedFixes: applyResults.failed,
-        stats,
+        stats
       }));
 
       return {
@@ -611,7 +602,7 @@ export const aiErrorFixerAPI = {
         fixableErrors: fixes.length,
         appliedFixes: applyResults.applied,
         failedFixes: applyResults.failed,
-        fixes,
+        fixes
       };
     } catch (error) {
       console.error('Error fixing pipeline failed:', error);
@@ -626,5 +617,5 @@ export const aiErrorFixerAPI = {
 
   async getFixHistory(errorId?: string) {
     return aiErrorFixer.getFixHistory(errorId);
-  },
+  }
 };

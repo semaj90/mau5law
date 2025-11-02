@@ -27,13 +27,13 @@
   <div
     use:overlay
     class="space-y-4"
-    transition:fade={{ duration: 200 }}
+    transitionfade={{ duration: 200 }}
   ></div>
   <!-- Content -->
   <div
     use:content
     class="space-y-4"
-    transition:fly={{ y: 10, duration: 200 }}
+    transitionfly={{ y: 10, duration: 200 }}
   >
     {#if children}
       {@render children()}

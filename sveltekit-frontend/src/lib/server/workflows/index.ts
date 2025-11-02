@@ -56,5 +56,5 @@ export type {
   // Utility types
   DeepPartial,
   RequireKeys,
-  AsyncFunction,
+  AsyncFunction
 } from './shared-types.js';

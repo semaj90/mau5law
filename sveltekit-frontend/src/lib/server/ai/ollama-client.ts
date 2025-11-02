@@ -1,8 +1,6 @@
 // Lightweight Ollama HTTP client for local models
 // Defaults target to http://localhost:11434
-export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
+export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
 }
 export interface ChatCompletionOptions {
   model?: string;

@@ -27,7 +27,7 @@ async function findOrCreateDevUser(): Promise<any> {
       hashed_password: 'dev-hash',
       role: 'admin',
       is_active: true,
-      metadata: { theme: 'dev' },
+      metadata: {, theme: 'dev' }
     })
     .returning({ id: users.id });
   if (!inserted.length) throw new Error('Failed to create dev user');
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
             title: 'Sample Investigative Case',
             description: 'Demonstration case seeded in development environment for UI & API testing.',
             priority: 'medium',
-            status: 'open',
+            status: 'open'
           });
         }
       } catch (e) {
@@ -62,18 +62,18 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
       .values({
         id: sessionId,
         user_id: userInfo.id,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       })
-      .onConflictDoUpdate({ target: sessions.id, set: { expires_at: expiresAt } });
+      .onConflictDoUpdate({ target: sessions.id, set: {, expires_at: expiresAt } });
     cookies.set('session', sessionId, { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 60 * 60 * 8 });
     logger.info('dev-auth.session.created', { userId: userInfo.id, sessionId, seed, createdUser: userInfo.created });
     return json({
       success: true,
-      user: { id: userInfo.id, email: 'dev@example.com' },
+      user: {, id: userInfo.id, email: 'dev@example.com' },
       sessionId,
       expires: expiresAt.toISOString(),
       seeded: seed,
-      createdUser: userInfo.created,
+      createdUser: userInfo.created
     });
   } catch (error) {
     logger.error('dev-auth.error', error);
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
       {
         error: 'Failed to create development session',
         details: error instanceof Error ? error.message : 'Unknown error',
-        stack: dev && error instanceof Error ? error.stack : undefined,
+        stack: dev && error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

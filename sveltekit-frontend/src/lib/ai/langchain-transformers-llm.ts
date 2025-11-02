@@ -61,7 +61,7 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> {
     const stream = this.adapter.generateText(prompt, {
       maxTokens: this.maxTokens,
       temperature: this.temperature,
-      stream: true,
+      stream: true
     });
 
     for await (const chunk of stream) {

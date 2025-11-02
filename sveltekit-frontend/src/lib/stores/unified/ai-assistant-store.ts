@@ -22,9 +22,7 @@ import { writable, derived } from 'svelte/store';
 export type MessageRole = 'user' | 'assistant' | 'system';
 export type AIModel = 'gemma3' | 'llama2' | 'mistral' | 'neural' | 'gpt-4';
 
-export interface Message {
-  id: string;
-  role: MessageRole;
+export interface Message { id: string;, role: MessageRole;
   content: string;
   model?: AIModel;
   timestamp: number;
@@ -33,9 +31,7 @@ export interface Message {
   metadata?: Record<string, unknown>;
 }
 
-export interface Conversation {
-  id: string;
-  title: string;
+export interface Conversation { id: string;, title: string;
   messages: Message[];
   model: AIModel;
   temperature: number;
@@ -64,8 +60,8 @@ interface AIAssistantStoreState {
 
   // Active context
   activeContext: AnalysisContext;
-  contextDocuments: Array<{ id: string; title: string; type: string }>;
-  relevantCitations: Array<{ id: string; text: string }>;
+  contextDocuments: Array<{ id: string; title: string;, type: string }>;
+  relevantCitations: Array<{ id: string;, text: string }>;
 
   // AI Configuration
   aiModel: AIModel;
@@ -85,7 +81,7 @@ interface AIAssistantStoreState {
 
   // Suggestions
   suggestedQueries: string[];
-  suggestedActions: Array<{ label: string; action: string }>;
+  suggestedActions: Array<{ label: string;, action: string }>;
 
   // Metadata
   tokenUsage: number;
@@ -156,7 +152,7 @@ function createAIAssistantStore() {
       }));
 
       try {
-        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } = {
+        const state: { activeContext: AnalysisContext; aiModel: AIModel;, temperature: number } = {
           activeContext: {},
           aiModel: 'gemma3',
           temperature: 0.7
@@ -177,8 +173,7 @@ function createAIAssistantStore() {
             temperature: state.temperature,
             context: state.activeContext
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -229,8 +224,7 @@ function createAIAssistantStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (!response.body) throw new Error('No response body');
 
@@ -304,8 +298,7 @@ function createAIAssistantStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -413,7 +406,7 @@ function createAIAssistantStore() {
      * Save conversation
      */
     async saveConversation() {
-      const state: { currentConversationId: string | null; messages: Message[] } = {
+      const state: { currentConversationId: string | null;, messages: Message[] } = {
         currentConversationId: null,
         messages: []
       };
@@ -430,10 +423,9 @@ function createAIAssistantStore() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: state.messages
+           , messages: state.messages
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -453,8 +445,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/conversations/${conversationId}`, {
           method: 'DELETE',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -492,9 +483,8 @@ function createAIAssistantStore() {
         const response = await fetch(`/api/ai/analyze/${scope}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ context: {} }),
-          credentials: 'include'
-        });
+          body: JSON.stringify({, context: {} }),
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -517,7 +507,7 @@ function createAIAssistantStore() {
         const response = await fetch(`/api/ai/generate-report/${scope}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ context: {} }),
+          body: JSON.stringify({, context: {} }),
           credentials: 'include'
         });
 
@@ -538,8 +528,7 @@ function createAIAssistantStore() {
     async getSuggestedQueries() {
       try {
         const response = await fetch('/api/ai/suggestions', {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();

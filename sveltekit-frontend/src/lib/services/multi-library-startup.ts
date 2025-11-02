@@ -30,18 +30,12 @@ interface AmqpModuleLike {
   default?: { connect?: (...args: any[]) => unknown };
 }
 
-type HealthStatus = {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  services: StartupStatus['services'];
+type HealthStatus = { status: 'healthy' | 'degraded' | 'unhealthy';, services: StartupStatus['services'];
   uptime: number;
   errors: string[];
 };
 
-export interface StartupStatus {
-  initialized: boolean;
-  services: {
-    loki: boolean;
-    fuse: boolean;
+export interface StartupStatus { initialized: boolean;, services: { loki: boolean;, fuse: boolean;
     fabric: boolean;
     xstate: boolean;
     redis: boolean;
@@ -64,10 +58,10 @@ class MultiLibraryStartupService {
       redis: false,
       rabbitmq: false,
       orchestrator: false,
-      ollama: false,
+      ollama: false
     },
     errors: [],
-    startTime: Date.now(),
+    startTime: Date.now()
   };
   private initPromise: Promise<void> | null = null;
   async initialize(): Promise<StartupStatus> {
@@ -124,10 +118,10 @@ class MultiLibraryStartupService {
       const mod = await import('fuse.js');
       const Fuse = (mod as { default?: FuseLike }).default ?? (mod as unknown as FuseLike);
       // Test with a small dataset to verify functionality
-      const testData = [{ title: 'Legal Document', content: 'Sample legal text' }];
+      const testData = [{ title: 'Legal Document', content: `Sample legal text` }];
       const testFuse = new (Fuse as unknown as FuseLike)(testData, {
         keys: ['title', 'content'],
-        threshold: 0.3,
+        threshold: 0.3
       });
       const testResult = (testFuse as unknown as { search: (q: string) => unknown[] }).search('legal');
       if (Array.isArray(testResult) && testResult.length > 0) {
@@ -170,14 +164,11 @@ class MultiLibraryStartupService {
         ? createMachine({
             id: 'test',
             initial: 'idle',
-            states: {
-              idle: {
-                on: { START: 'active' },
+            states: { idle: {, on: { START: 'active` }
               },
-              active: {
-                on: { STOP: 'idle' },
-              },
-            },
+              active: {, on: {, STOP: `idle` }
+              }
+            }
           })
         : null;
       if (testMachine && typeof createActor === 'function') {
@@ -280,10 +271,10 @@ class MultiLibraryStartupService {
     Object.entries(this.status.services).forEach(([service, status]) => {
       const icon = status ? '✅' : '❌';
       const name = service.charAt(0).toUpperCase() + service.slice(1);
-      console.log(`   ${icon} ${name.padEnd(12)} - ${status ? 'Ready' : 'Failed'}`);
+      console.log(`   ${icon} ${name.padEnd(12)} - ${status ? 'Ready' : `Failed` }`);
     });
     if (this.status.errors.length > 0) {
-      console.log('\n⚠️ Initialization Errors:');
+      console.log('\n⚠️ Initialization Errors: `);
       this.status.errors.forEach(error => console.log(`   • ${error}`));
     }
     const healthyCount = Object.values(this.status.services).filter(v => v === true).length;
@@ -308,7 +299,7 @@ class MultiLibraryStartupService {
       status,
       services: this.status.services,
       uptime: Date.now() - this.status.startTime,
-      errors: this.status.errors,
+      errors: this.status.errors
     };
   }
 }

@@ -23,13 +23,11 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
       [vec, radius, limit]
     );
     const rows = res.rows ?? [];
-    return {
-      ann: rows.map((r: any) => ({
-        id: String(r.id),
+    return { ann: rows.map((r: any) => ({, id: String(r.id),
         text: r.text,
         metadata: r.metadata ?? {},
-        embedding: r.embedding,
-      })),
+        embedding: r.embedding
+      }))
     };
   } finally {
     if (conn && typeof conn.release === 'function') conn.release();

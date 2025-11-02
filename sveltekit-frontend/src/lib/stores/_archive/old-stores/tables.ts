@@ -1,9 +1,7 @@
 import type { Case } from '$lib/types';
 import { writable, derived, type Writable } from 'svelte/store';
 }
-export interface TableState {
-  id: string;
-  sortColumn: string | null;
+export interface TableState { id: string;, sortColumn: string | null;
   sortDirection: 'asc' | 'desc';
   selectedRows: Set<string | number>;
   currentPage: number;
@@ -13,9 +11,7 @@ export interface TableState {
   columnWidths: Map<string, number>;
   expandedRows: Set<string | number>;
 }
-export interface TableNotification {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+export interface TableNotification { id: string;, type: 'info' | 'success' | 'warning' | 'error';
   title?: string;
   message: string;
   timestamp: Date;
@@ -133,7 +129,7 @@ class TableManager {
     table.update(state => ({
       ...state,
       currentPage: page,
-      pageSize: pageSize || state.pageSize,
+      pageSize: pageSize || state.pageSize
     });
   }
   updateColumnWidth(tableId: string, column: string, width: number) {
@@ -255,9 +251,7 @@ export function createTableStats(tableId: string) {
 // Export types and utilities
 // TableState and TableNotification are already exported as interfaces above
 // Legal AI specific table configurations
-export const legalAITableConfigs = {
-  cases: {
-    pageSize: 25,
+export const legalAITableConfigs = { cases: {, pageSize: 25,
     sortColumn: 'created_at',
     sortDirection: 'desc' as const
   },
@@ -285,7 +279,7 @@ export const legalAITableConfigs = {
 // Utility functions
 export function formatTableData(data: any[], columns: string[]): any[] {
   return (data as { map?: any; length?: any }).map(row => {
-    const formatted: any = { id: row.id }
+    const formatted: any = {, id: row.id }
     columns.forEach(col => {
       formatted[col] = row[col] ?? '';
     });

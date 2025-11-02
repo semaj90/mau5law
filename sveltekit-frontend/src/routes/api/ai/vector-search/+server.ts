@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query) {
       return json(
         {
-          error: 'Query is required',
+          error: 'Query is required'
         },
         { status: 400 }
       );
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
         query,
         type,
         limit,
-        threshold,
+        threshold
       });
 
       if (ragResponse.success && ragResponse.data) {
@@ -49,8 +49,8 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             ...ragResponse.data.metadata,
             source: 'enhanced-rag',
-            processingTime: ragResponse.processingTime,
-          },
+            processingTime: ragResponse.processingTime
+          }
         });
       }
     } catch (error) {
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: caseEmbeddings.id,
             content: caseEmbeddings.content,
             metadata: caseEmbeddings.metadata,
-            caseId: caseEmbeddings.caseId,
+            caseId: caseEmbeddings.caseId
           })
           .from(caseEmbeddings)
           .orderBy(desc(caseEmbeddings.createdAt))
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: evidenceVectors.id,
             content: evidenceVectors.content,
             metadata: evidenceVectors.metadata,
-            evidenceId: evidenceVectors.evidenceId,
+            evidenceId: evidenceVectors.evidenceId
           })
           .from(evidenceVectors)
           .orderBy(desc(evidenceVectors.createdAt))
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
             contentId: contentEmbeddings.contentId,
             contentType: contentEmbeddings.contentType,
             textContent: contentEmbeddings.textContent,
-            metadata: contentEmbeddings.metadata,
+            metadata: contentEmbeddings.metadata
           })
           .from(contentEmbeddings)
           .orderBy(desc(contentEmbeddings.createdAt))
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const enrichedResults = results.map((result, index) => ({
       ...result,
       similarity: 0.95 - index * 0.05, // Mock similarity scores
-      source: 'database',
+      source: 'database'
     }));
 
     return json({
@@ -115,9 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         count: results.length,
         threshold,
-        source: 'database', // Will be: 'enhanced-rag' when connected
-        processingTime: Date.now() % 100, // Mock processing time
-      },
+        source: 'database', // Will be: 'enhanced-rag' when connected; processingTime: Date.now() % 100, // Mock processing time
+      }
     });
   } catch (error) {
     console.error('❌ Vector search error:', error);
@@ -125,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Vector search failed',
         results: [],
-        metadata: { query: '', count: 0, source: 'error' },
+        metadata: {, query: '', count: 0, source: `error` }
       },
       { status: 500 }
     );
@@ -144,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
       enhanced_rag_response_time: healthCheck.response_time,
       quic_available: healthCheck.quic_available,
       wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json({
@@ -153,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
       enhanced_rag_connected: false,
       error: 'Enhanced-RAG service unavailable',
       wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };

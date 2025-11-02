@@ -9,9 +9,7 @@ import { eq } from 'drizzle-orm';
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
 // ============================================================================
-export interface LegalAgent {
-  id: string;
-  name: string;
+export interface LegalAgent { id: string;, name: string;
   role: string;
   expertise: string[];
   model: 'claude' | 'gemma3:legal-latest' | 'gpt-4';
@@ -19,9 +17,7 @@ export interface LegalAgent {
   maxTokens: number;
   temperature: number;
 }
-export interface DocumentReviewTask {
-  taskId: string;
-  documentId: string;
+export interface DocumentReviewTask { taskId: string;, documentId: string;
   documentContent: string;
   reviewType: 'comprehensive' | 'compliance' | 'risk_assessment' | 'quick_scan';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -33,9 +29,7 @@ export interface DocumentReviewTask {
     riskTolerance?: 'low' | 'medium' | 'high';
   };
 }
-export interface AgentResponse {
-  agentId: string;
-  taskId: string;
+export interface AgentResponse { agentId: string;, taskId: string;
   reviewSummary: string;
   findings: string[];
   recommendations: string[];
@@ -54,14 +48,14 @@ export const legalAgents: LegalAgent[] = [
     role: 'Primary Document Reviewer',
     expertise: ['contract-law', 'risk-assessment', 'compliance'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts for:
+    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts; for:
     - Key terms and obligations
     - Risk factors and liability exposure
     - Compliance with applicable laws
     - Missing or problematic clauses
     Provide structured analysis with confidence scores.`,
     maxTokens: 2000,
-    temperature: 0.1,
+    temperature: 0.1
   },
   {
     id: 'compliance-auditor',
@@ -69,14 +63,14 @@ export const legalAgents: LegalAgent[] = [
     role: 'Compliance Verification',
     expertise: ['regulatory-compliance', 'industry-standards', 'legal-requirements'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus on:
+    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus; on:
     - Regulatory compliance violations
     - Industry standard adherence
     - Legal requirement gaps
     - Recommended corrective actions
     Flag all potential compliance issues with severity ratings.`,
     maxTokens: 1800,
-    temperature: 0.05,
+    temperature: 0.05
   },
   {
     id: 'risk-assessor',
@@ -84,14 +78,14 @@ export const legalAgents: LegalAgent[] = [
     role: 'Risk Analysis',
     expertise: ['risk-management', 'liability-analysis', 'litigation-prevention'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a legal risk assessment expert. Evaluate documents for:
+    systemPrompt: `You are a legal risk assessment expert. Evaluate documents; for:
     - Potential litigation risks
     - Financial exposure
     - Operational risks
     - Mitigation strategies
     Quantify risks where possible with probability assessments.`,
     maxTokens: 1500,
-    temperature: 0.2,
+    temperature: 0.2
   },
 ];
 // ============================================================================
@@ -121,7 +115,7 @@ export class CrewAILegalReviewSystem {
           responses.push((result as { status?: any; value?: any; reason?: any }).value);
         } else {
           console.error(
-            `Agent ${assignedAgents[index]} failed:`,
+            `Agent ${assignedAgents[index]} failed: ',
             (result as { status?: any; value?: any; reason?: any }).reason
           );
           responses.push({
@@ -133,7 +127,7 @@ export class CrewAILegalReviewSystem {
             riskLevel: 'high',
             confidence: 0,
             processingTime: 0,
-            errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'],
+            errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error']
           });
         }
       });
@@ -156,15 +150,15 @@ export class CrewAILegalReviewSystem {
         baseUrl: 'http://localhost:11434',
         model: 'gemma3:legal-latest',
         temperature: agent.temperature,
-        maxTokens: agent.maxTokens,
+        maxTokens: agent.maxTokens
       });
       const messages = [
         new SystemMessage(agent.systemPrompt),
         new HumanMessage(`
 Document Review Task:
-- Type: ${task.reviewType}
+-; Type: ${task.reviewType}
 - Priority: ${task.priority}
-- Context: ${JSON.stringify(task.context, null, 2)}
+-, Context: ${JSON.stringify(task.context, null, 2)}
 Document Content:
 ${task.documentContent}
 Please provide your analysis in the following JSON format:
@@ -189,10 +183,10 @@ Please provide your analysis in the following JSON format:
         recommendations: analysis.recommendations,
         riskLevel: analysis.riskLevel,
         confidence: analysis.confidence,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } catch (error: any) {
-      console.error(`Error processing with agent ${agentId}:`, error);
+      console.error(`Error processing with agent ${agentId}: ', error);
       return {
         agentId,
         taskId: task.taskId,
@@ -202,7 +196,7 @@ Please provide your analysis in the following JSON format:
         riskLevel: 'high',
         confidence: 0,
         processingTime: Date.now() - startTime,
-        errors: [error instanceof Error ? error.message : String(error)],
+        errors: [error instanceof Error ? error.message : String(error)]
       };
     }
   }
@@ -222,7 +216,7 @@ Please provide your analysis in the following JSON format:
       findings: [responseText],
       recommendations: ['Manual review recommended'],
       riskLevel: 'medium' as const,
-      confidence: 0.5,
+      confidence: 0.5
     };
   }
   private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
@@ -230,20 +224,18 @@ Please provide your analysis in the following JSON format:
       // Store in ai_history table
       const { db } = await import('$lib/db');
       await db.insert(aiHistory).values({
-        userId: 'system', // TODO: Get from context
-        prompt: `Legal document review: ${task.reviewType}`,
+        userId: 'system', // TODO: Get from context; prompt: `Legal document, review: ${task.reviewType}`,
         response: JSON.stringify(responses),
         model: 'gemma3:legal-latest',
         tokensUsed: Math.floor(
           (task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4
         ),
-        cost: 0, // TODO: Calculate based on token usage
-        metadata: {
+        cost: 0, // TODO: Calculate based on token usage; metadata: {
           taskType: 'legal-document-review',
           reviewType: task.reviewType,
           priority: task.priority,
-          agentCount: responses.length,
-        },
+          agentCount: responses.length
+        }
       });
     } catch (error: any) {
       console.error('Failed to store agent results:', error);

@@ -3,9 +3,7 @@
  * Type definitions for the Gemma3 Legal AI Chat System
  */
 }
-export interface ChatMessage {
-  id: string;
-  content: string;
+export interface ChatMessage { id: string;, content: string;
   role: "user" | "assistant";
   timestamp: Date;
   conversationId?: string;
@@ -24,9 +22,7 @@ export interface ChatMessage {
     vectorResults?: VectorSearchResult[];
   }
 }
-export interface Conversation {
-  id: string;
-  title: string;
+export interface Conversation { id: string;, title: string;
   messages: ChatMessage[];
   created: Date;
   updated: Date;
@@ -38,9 +34,7 @@ export interface Conversation {
     contextDocuments?: string[];
   }
 }
-export interface ChatSettings {
-  model: string;
-  temperature: number;
+export interface ChatSettings { model: string;, temperature: number;
   maxTokens: number;
   streaming: boolean;
   contextWindow: number;
@@ -52,9 +46,7 @@ export interface ChatSettings {
   topK?: number;
   repeatPenalty?: number;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: {
     title?: string;
@@ -64,9 +56,7 @@ export interface VectorSearchResult {
     jurisdiction?: string;
   }
 }
-export interface ModelInfo {
-  name: string;
-  status: "ready" | "loading" | "error" | "unknown";
+export interface ModelInfo { name: string;, status: "ready" | "loading" | "error" | "unknown";
   parameters?: {
     size?: string;
     quantization?: string;
@@ -78,17 +68,13 @@ export interface ModelInfo {
     multimodal?: boolean;
   }
 }
-export interface ContextInjection {
-  enabled: boolean;
-  documents: string[];
+export interface ContextInjection { enabled: boolean;, documents: string[];
   vectorResults: VectorSearchResult[];
   strategy: "semantic" | "keyword" | "hybrid";
   maxResults?: number;
   threshold?: number;
 }
-export interface StreamingResponse {
-  id: string;
-  chunk: string;
+export interface StreamingResponse { id: string;, chunk: string;
   isComplete: boolean;
   metadata?: {
     tokenCount?: number;
@@ -98,9 +84,7 @@ export interface StreamingResponse {
 export interface ApiResponse {
   response: string;
   conversationId?: string;
-  metadata?: {
-    model: string;
-    tokensUsed: number;
+  metadata?: { model: string;, tokensUsed: number;
     processingTime: number;
     confidence?: number;
     references?: string[];
@@ -108,9 +92,7 @@ export interface ApiResponse {
   }
   error?: string;
 }
-export interface ServiceStatus {
-  ollama: "connected" | "disconnected" | "error" | "unknown";
-  qdrant: "connected" | "disconnected" | "error" | "unknown";
+export interface ServiceStatus { ollama: "connected" | "disconnected" | "error" | "unknown";, qdrant: "connected" | "disconnected" | "error" | "unknown";
   database: "connected" | "disconnected" | "error" | "unknown";
   gemma3: "ready" | "loading" | "error" | "unknown";
 }
@@ -123,9 +105,7 @@ export interface LegalContext {
   relevantStatutes?: string[];
   precedentCases?: string[];
 }
-export interface EvidenceDocument {
-  id: string;
-  title: string;
+export interface EvidenceDocument { id: string;, title: string;
   type: "exhibit" | "testimony" | "expert_report" | "case_law" | "statute";
   content: string;
   metadata?: {
@@ -136,14 +116,10 @@ export interface EvidenceDocument {
   }
 }
 // UI State types
-export interface UIState {
-  sidebar: {
-    isOpen: boolean;
+export interface UIState { sidebar: {, isOpen: boolean;
     activeTab: "conversations" | "documents" | "settings";
   }
-  modal: {
-    isOpen: boolean;
-    type: "settings" | "document-upload" | "context-injection" | null;
+  modal: { isOpen: boolean;, type: "settings" | "document-upload" | "context-injection" | null;
   }
   theme: "light" | "dark" | "system";
 }
@@ -155,25 +131,17 @@ export interface ChatError extends Error {
   context?: { [key: string]: any }
 }
 // Configuration types
-export interface SystemConfig {
-  api: {
-    baseUrl: string;
+export interface SystemConfig { api: {, baseUrl: string;
     timeout: number;
     retries: number;
   }
-  models: {
-    default: string;
-    available: string[];
+  models: { default: string;, available: string[];
   }
-  features: {
-    streaming: boolean;
-    contextInjection: boolean;
+  features: { streaming: boolean;, contextInjection: boolean;
     vectorSearch: boolean;
     multimodal: boolean;
   }
-  ui: {
-    theme: "light" | "dark" | "system";
-    animations: boolean;
+  ui: { theme: "light" | "dark" | "system";, animations: boolean;
     notifications: boolean;
   }
 }

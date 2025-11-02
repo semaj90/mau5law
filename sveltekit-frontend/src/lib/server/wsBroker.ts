@@ -97,7 +97,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
     }
   });
   ws.on('error', error => {
-    console.error(`❌ WebSocket error for session ${sessionId}:`, error);
+    console.error(`❌ WebSocket error for session ${sessionId}: ', error);
   });
   // Send initial connection confirmation
   try {
@@ -105,7 +105,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
       JSON.stringify({
         type: 'connection-established',
         sessionId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })
     );
   } catch (err: any) {
@@ -123,7 +123,7 @@ function sendWsMessageToSessionLocal(sessionId: string, msg: ProgressMsg): void 
   const messageStr = JSON.stringify({
     ...msg,
     timestamp: new Date().toISOString(),
-    sessionId,
+    sessionId
   });
   // Send to all connections for this session
   for (const ws of Array.from(sessionSet)) {
@@ -225,12 +225,11 @@ export function broadcastToAllSessions(msg: ProgressMsg): void {
 }
 
 // Health check
-export function wsHealthCheck(): { local: number; redis: boolean } {
+export function wsHealthCheck(): { local: number;, redis: boolean } {
   const localConnections = Array.from(sessions.values()).reduce((total, set) => total + set.size, 0);
   return {
     local: localConnections,
-    redis: redis?.status === 'ready',
-  };
+    redis: redis?.status === 'ready` };
 }
 
 // Graceful shutdown

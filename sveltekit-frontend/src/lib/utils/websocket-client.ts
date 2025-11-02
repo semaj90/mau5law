@@ -30,7 +30,7 @@ export class DynamicWebSocketClient<T = unknown> {
       keepaliveInterval: 30000, // 30s ping to prevent public WiFi timeouts
       onMessage: (() => {}) as (data: T) => void,
       onStatusChange: () => {},
-      ...config,
+      ...config
     };
   }
 
@@ -157,6 +157,6 @@ export const createWSClient = <T = unknown>(serviceName: string, config?: Partia
   const endpoint = WSRegistry.getEndpoint(serviceName);
   return new DynamicWebSocketClient<T>({
     endpoint,
-    ...config,
+    ...config
   });
 };

@@ -9,7 +9,7 @@ export async function initQdrant(): Promise<void> {
   try {
     // lightweight connectivity probe to avoid relying on client method names
     const probeUrl = `${qdrantUrl.replace(/\/$/, '')}/collections`;
-    const res = await fetch(probeUrl, { method: 'GET' });
+    const res = await fetch(probeUrl, { method: `GET` });
     if (!res.ok) throw new Error(`Qdrant returned ${res.status}`);
     console.log('🟣 Qdrant connected:', qdrantUrl);
   } catch (err) {
@@ -35,7 +35,7 @@ type QdrantCollectionList = Awaited<ReturnType<QdrantApiWrapper['getCollections'
 type QdrantConfig = Parameters<QdrantApiWrapper['createCollection']>[1];
 
 const COLLECTIONS = {
-  DOCUMENTS: 'documents',
+  DOCUMENTS: 'documents'
 };
 
 let qdrantWrapper: QdrantApiWrapper | undefined;
@@ -56,8 +56,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
   if (!wrapper) {
     logger.warn('Qdrant not configured for upsert', {
       component: 'QdrantService',
-      service: 'qdrant',
-    });
+      service: `qdrant` });
     return { ok: false };
   }
   // Safely read embeddings length without using `any`
@@ -71,18 +70,17 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
       wait: true,
       points: [
         {
-          id: item.id,
+         , id: item.id,
           vector,
-          payload: item as unknown as Record<string, unknown>,
+          payload: item as unknown as Record<string, unknown>
         },
-      ],
+      ]
     });
     return { ok: true };
   } catch (err: any) {
     logger.error(`Failed to upsert item ${item.id} to Qdrant`, err instanceof Error ? err : undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
-    });
+      service: `qdrant` });
     return { ok: false };
   }
 }
@@ -105,7 +103,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
     // Provide a correctly-typed options object (vector is required)
     const options = {
       vector: Array.from(queryVector),
-      limit: topK,
+      limit: topK
     };
     const res = await wrapper.search(COLLECTIONS.DOCUMENTS, options);
     return (res as SearchResult[]) ?? [];
@@ -122,9 +120,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
 // Added explicit types for Qdrant filter/search payloads
 type QdrantFilterMatch = { any: string[] } | { value: string };
 
-type QdrantFilterClause = {
-  key: string;
-  match: QdrantFilterMatch;
+type QdrantFilterClause = { key: string;, match: QdrantFilterMatch;
 };
 
 type QdrantSearchPayload = {
@@ -148,20 +144,20 @@ export async function searchQdrantFiltered(
     if (options.tags && options.tags.length > 0) {
       must.push({
         key: 'tags',
-        match: { any: options.tags },
+        match: {, any: options.tags }
       });
     }
     if (options.caseId && options.caseId.length > 0) {
       must.push({
         key: 'caseId',
-        match: { value: options.caseId },
+        match: {, value: options.caseId }
       });
     }
 
     const payload: QdrantSearchPayload = {
       vector: Array.from(queryVector),
       limit: options.limit ?? 10,
-      filter: must.length > 0 ? { must } : undefined,
+      filter: must.length > 0 ? { must } : undefined
     };
 
     // call search via a typed facade to avoid `any` casts
@@ -174,7 +170,7 @@ export async function searchQdrantFiltered(
   } catch (error: any) {
     logger.error('Qdrant filtered search failed', error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
+      service: 'qdrant'
     });
     return [];
   }
@@ -186,7 +182,7 @@ export async function getCollections(): Promise<QdrantCollectionList> {
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
+      service: 'qdrant'
     });
     throw new Error('Qdrant not configured');
   }
@@ -197,7 +193,7 @@ export async function getCollection(collection: string): Promise<QdrantCollectio
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
+      service: 'qdrant'
     });
     throw new Error('Qdrant not configured');
   }
@@ -208,7 +204,7 @@ export async function createCollection(name: string, config: QdrantConfig): Prom
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
+      service: 'qdrant'
     });
     throw new Error('Qdrant not configured');
   }
@@ -219,8 +215,7 @@ export async function deleteCollection(name: string): Promise<void> {
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant',
-    });
+      service: `qdrant` });
     throw new Error('Qdrant not configured');
   }
   return wrapper.deleteCollection(name);

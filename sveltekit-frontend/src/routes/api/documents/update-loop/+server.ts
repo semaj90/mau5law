@@ -10,13 +10,11 @@ import { eq } from 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
 // Instantiate the DocumentUpdateLoop service
 const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
   queueDocumentUpdate: (documentId: string, content: string) => Promise<void>;
-  getQueueStatus: () => Promise<{ processing: boolean; queued: number }>;
+  getQueueStatus: () => Promise<{ processing: boolean;, queued: number }>;
 };
 
 // Define a type for batch operation results
-type BatchResultItem = {
-  documentId: string;
-  success: boolean;
+type BatchResultItem = { documentId: string;, success: boolean;
   result?: any;
   error?: string;
 };
@@ -48,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'queued',
           documentId,
           message: 'Document update queued for processing',
-          status: await documentUpdateLoop.getQueueStatus(),
+          status: await documentUpdateLoop.getQueueStatus()
         };
         break;
       } // End block
@@ -71,15 +69,15 @@ export const POST: RequestHandler = async ({ request }) => {
                   ) / rerankingJobs.length // Added types for sum and job
                 : 0,
             jobs: rerankingJobs.map(
-              (job: { queryId: string; query?: string; improvement?: number; newResults?: any[] }) => ({
+              (job: {, queryId: string; query?: string; improvement?: number; newResults?: any[] }) => ({
                 // Typed job
                 queryId: job.queryId,
                 query: (job.query || '').substring(0, 100) + '...',
                 improvement: job.improvement,
-                newResultsCount: (job.newResults || []).length,
+                newResultsCount: (job.newResults || []).length
               })
-            ),
-          },
+            )
+          }
         };
         break;
       } // End block
@@ -95,9 +93,9 @@ export const POST: RequestHandler = async ({ request }) => {
                 changeType: change.changeType,
                 priority: change.priority,
                 affectedChunks: change.affectedChunks?.length || 0,
-                hasChanges: true,
+                hasChanges: true
               }
-            : { hasChanges: false },
+            : { hasChanges: false }
         };
         break;
       } // End block
@@ -107,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     // Changed from any to unknown
@@ -115,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-    throw error(500, `Document update failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Document update failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // ============================================================================
@@ -131,10 +129,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            queue: status,
+           , queue: status,
             service: 'Document Update Loop',
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       } // End block
       case 'health': {
@@ -147,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
             success: true,
             healthy: isHealthy,
             data: {
-              status: isHealthy ? 'healthy' : 'overloaded',
+             , status: isHealthy ? 'healthy' : 'overloaded',
               queue: healthStatus,
               recommendations: isHealthy
                 ? []
@@ -155,11 +153,11 @@ export const GET: RequestHandler = async ({ url }) => {
                     'Queue is overloaded - consider scaling processing',
                     'Review document update frequency',
                     'Check for failed updates requiring manual intervention',
-                  ],
-            },
+                  ]
+            }
           },
           {
-            status: isHealthy ? 200 : 503,
+            status: isHealthy ? 200 : 503
           }
         );
       } // End block
@@ -172,7 +170,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -200,26 +198,26 @@ export const PATCH: RequestHandler = async ({ request }) => {
             batchResults.push({
               documentId,
               success: true,
-              result,
+              result
             });
           } catch (err: any) {
             // Changed from any to unknown
             batchResults.push({
               documentId,
               success: false,
-              error: err instanceof Error ? err.message : 'Unknown error',
+              error: err instanceof Error ? err.message : 'Unknown error'
             });
           }
         }
         return json({
           success: true,
           data: {
-            action: 'batch_reembed',
+           , action: 'batch_reembed',
             processed: batchResults.length,
             successful: batchResults.filter((r: BatchResultItem) => r.success).length, // Typed filter
             failed: batchResults.filter((r: BatchResultItem) => !r.success).length, // Typed filter
-            results: batchResults,
-          },
+            results: batchResults
+          }
         });
       } // End block
       case 'clear_queue': {
@@ -228,9 +226,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-            action: 'clear_queue',
-            message: 'Queue cleared (implementation needed in DocumentUpdateLoop class)',
-          },
+           , action: 'clear_queue',
+            message: `Queue cleared (implementation needed in DocumentUpdateLoop class)` }
         });
       } // End block
       default:
@@ -242,6 +239,6 @@ export const PATCH: RequestHandler = async ({ request }) => {
     if (err instanceof Error && 'status' in err) {
       throw err;
     }
-    throw error(500, `Batch operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Batch operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };

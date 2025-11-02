@@ -27,9 +27,7 @@ export interface CacheOptions {
   tags?: string[]; // Tags for cache invalidation
   priority?: number; // Cache priority (higher = more important)
 }
-export interface CacheStats {
-  hits: number;
-  misses: number;
+export interface CacheStats { hits: number;, misses: number;
   evictions: number;
   size: number;
   memoryUsage: number;
@@ -38,7 +36,7 @@ class CachingLayer {
   private redis: Redis | null = null;
   private lruCache: InstanceType<typeof LRUCache>;
   private stats: CacheStats;
-  private hotCache: Map<string, { data: any; hits: number; lastAccess: number }>;
+  private hotCache: Map<string, { data: any; hits: number;, lastAccess: number }>;
   private cacheConfig = {
     maxMemory: 512 * 1024 * 1024, // 512MB max memory
     maxItems: 10000,
@@ -278,7 +276,7 @@ class CachingLayer {
       this.hotCache.set(key, {
         data,
         hits: accessCount,
-        lastAccess: Date.now(),
+        lastAccess: Date.now()
       });
       // Limit hot cache size
       if (this.hotCache.size > 100) {

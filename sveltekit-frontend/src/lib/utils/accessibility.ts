@@ -111,11 +111,10 @@ export class FocusManager {
   }
   static announceFileUpload(stage: 'starting' | 'progress' | 'complete' | 'error', context?: string): void {
     const messages = {
-      starting: `File upload starting${context ? ` for ${context}` : ''}`,
-      progress: `File upload in progress${context ? ` for ${context}` : ''}`,
-      complete: `File upload completed successfully${context ? ` for ${context}` : ''}`,
-      error: `File upload failed${context ? ` for ${context}` : ''}`,
-    };
+      starting: `File upload starting${context ? ` for ${context}` : `` }`,
+      progress: `File upload in progress${context ? ` for ${context}` : `` }`,
+      complete: `File upload completed successfully${context ? ` for ${context}` : `` }`,
+      error: `File upload failed${context ? ` for ${context}` : `` }` };
     const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -124,12 +123,11 @@ export class FocusManager {
     context?: string
   ): void {
     const messages = {
-      analyzing: `Analyzing${context ? ` ${context}` : ''}, please wait...`,
-      processing: `Processing${context ? ` ${context}` : ''}, please wait...`,
-      generating: `Generating${context ? ` ${context}` : ''}, please wait...`,
-      complete: `Processing completed${context ? ` for ${context}` : ''}`,
-      error: `Processing failed${context ? ` for ${context}` : ''}`,
-    };
+      analyzing: `Analyzing${context ? ` ${context}` : `` }, please wait...`,
+      processing: `Processing${context ? ` ${context}` : `` }, please wait...`,
+      generating: `Generating${context ? ` ${context}` : `` }, please wait...`,
+      complete: `Processing completed${context ? ` for ${context}` : `` }`,
+      error: `Processing failed${context ? ` for ${context}` : `` }` };
     const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -232,13 +230,13 @@ export class ColorContrast {
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
-  static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  static hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
           r: parseInt(result[1], 16),
           g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
+          b: parseInt(result[3], 16)
         }
       : null;
   }
@@ -453,7 +451,7 @@ export class AccessibilityValidator {
       if (color && backgroundColor && color !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'rgba(0, 0, 0, 0)') {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
-            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : ''}${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : ''}`
+            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : ''}${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`
           );
         }
       }

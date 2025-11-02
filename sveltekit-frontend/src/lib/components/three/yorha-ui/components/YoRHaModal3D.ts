@@ -45,13 +45,13 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         blur: 1.0,
         intensity: 0.8,
         offsetY: -0.3,
-        ...options.shadow,
+        ...options.shadow
       },
       // Initial state (hidden)
       opacity: 0,
       transform: {
-        scale: new THREE.Vector3(0.8, 0.8, 0.8),
-      },
+        scale: new THREE.Vector3(0.8, 0.8, 0.8)
+      }
     });
     this.options = options;
     // Create backdrop
@@ -103,7 +103,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 4,
       bevelSize: radius * 0.1,
-      bevelThickness: depth * 0.1,
+      bevelThickness: depth * 0.1
     };
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
@@ -117,28 +117,28 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.white,
           transparent: true,
-          opacity: 0.2,
+          opacity: 0.2
         });
         break;
       case 'dark':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
-          opacity: 0.7,
+          opacity: 0.7
         });
         break;
       case 'transparent':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
-          opacity: 0.3,
+          opacity: 0.3
         });
         break;
       default:
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.5
         });
     }
     this.backdrop = new THREE.Mesh(backdropGeometry, backdropMaterial);
@@ -147,7 +147,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     if (!this.options.persistent) {
       this.backdrop.userData = {
         interactive: true,
-        onClick: () => this.close(),
+        onClick: () => this.close()
       };
     }
     this.add(this.backdrop);
@@ -160,7 +160,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: this.options.variant === 'terminal' ? YORHA_COLORS.primary.black : YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.9
     });
     this.headerMesh = new THREE.Mesh(headerGeometry, headerMaterial);
     this.headerMesh.position.set(
@@ -183,7 +183,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const titleGeometry = new THREE.PlaneGeometry((this.style.width || 4) - 1, 0.3);
     const titleMaterial = new THREE.MeshBasicMaterial({
       color: this.options.variant === 'terminal' ? YORHA_COLORS.accent.gold : YORHA_COLORS.primary.white,
-      transparent: true,
+      transparent: true
     });
     this.titleMesh = new THREE.Mesh(titleGeometry, titleMaterial);
     this.titleMesh.position.set(
@@ -203,7 +203,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const lineGeometry = new THREE.PlaneGeometry(buttonSize * 0.8, 0.03);
     const lineMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.status.error,
-      transparent: true,
+      transparent: true
     });
     const line1 = new THREE.Mesh(lineGeometry, lineMaterial);
     line1.rotation.z = Math.PI / 4;
@@ -233,7 +233,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
             child.material.color.setHex(YORHA_COLORS.status.error);
           }
         });
-      },
+      }
     };
     this.closeButtonMesh = buttonGroup; // Removed: 'as any'
     this.add(buttonGroup);
@@ -246,7 +246,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const footerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.8
     });
     this.footerMesh = new THREE.Mesh(footerGeometry, footerMaterial);
     this.footerMesh.position.set(
@@ -264,7 +264,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       const lineMaterial = new THREE.MeshBasicMaterial({
         color: YORHA_COLORS.accent.gold,
         transparent: true,
-        opacity: 0.1,
+        opacity: 0.1
       });
       const line = new THREE.Mesh(lineGeometry, lineMaterial);
       line.position.y = ((this.style.height || 3) / 10) * i - (this.style.height || 3) / 2;
@@ -288,11 +288,9 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   }
   private static getVariantStyle(variant: string, _size: string): Partial<YoRHaStyle> {
     // Marked size as unused
-    const variantStyles = {
-      default: {
-        backgroundColor: YORHA_COLORS.primary.beige,
+    const variantStyles = { default: {, backgroundColor: YORHA_COLORS.primary.beige,
         borderColor: YORHA_COLORS.primary.black,
-        borderRadius: 0.1,
+        borderRadius: 0.1
       },
       alert: {
         backgroundColor: YORHA_COLORS.status.warning,
@@ -301,8 +299,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.status.error,
-          intensity: 0.4,
-        },
+          intensity: 0.4
+        }
       },
       confirm: {
         backgroundColor: YORHA_COLORS.primary.white,
@@ -311,14 +309,14 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.gold,
-          intensity: 0.3,
-        },
+          intensity: 0.3
+        }
       },
       fullscreen: {
         backgroundColor: YORHA_COLORS.primary.black,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.05,
-        opacity: 0.95,
+        opacity: 0.95
       },
       terminal: {
         backgroundColor: YORHA_COLORS.primary.black,
@@ -328,14 +326,14 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.gold,
-          intensity: 0.5,
+          intensity: 0.5
         },
         animation: {
           type: 'scan' as const,
           duration: 1000,
-          loop: true,
-        },
-      },
+          loop: true
+        }
+      }
     };
     return variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
   }
@@ -344,7 +342,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       small: 3,
       medium: 5,
       large: 7,
-      fullscreen: 12,
+      fullscreen: 12
     };
     return sizes[size as keyof typeof sizes] || sizes.medium;
   }
@@ -353,7 +351,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       small: 2,
       medium: 3.5,
       large: 5,
-      fullscreen: 8,
+      fullscreen: 8
     };
     return sizes[size as keyof typeof sizes] || sizes.medium;
   }

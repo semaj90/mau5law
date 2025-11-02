@@ -11,7 +11,7 @@ import {
   criminals,
   personsOfInterest,
   legalDocuments,
-  notes,
+  notes
 } from './unified-schema.js';
 // Inferred types from schema
 export type Case = InferSelectModel<typeof cases>;
@@ -58,5 +58,5 @@ export {
   criminals,
   personsOfInterest,
   legalDocuments,
-  notes,
+  notes
 } from './unified-schema.js';

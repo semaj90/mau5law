@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 const logger = {
   info: (message: string, data?: any) => console.log(`[INFO] ${message}`, data || ''),
   error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data || ''),
-  warn: (message: string, data?: any) => console.warn(`[WARN] ${message}`, data || ''),
+  warn: (message: string, data?: any) => console.warn(`[WARN] ${message}`, data || '')
 };
 /*
  * Enhanced Caching API with Data Parallelism
@@ -34,26 +34,26 @@ export const GET: RequestHandler = async ({ url }) => {
         Object.values(layerStats)
           .filter(layer => layer.enabled)
           .reduce((sum, layer) => sum + layer.avgResponseTime, 0) /
-        Object.values(layerStats).filter(item => item.length),
+        Object.values(layerStats).filter(item => item.length)
     };
     logger.info('📊 Cache stats requested', {
       metrics: systemMetrics,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     return json({
       success: true,
       data: {
-        layers: layerStats,
+       , layers: layerStats,
         system: systemMetrics,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   }
   if (!key) {
     return json(
       {
         success: false,
-        error: 'Key parameter is required',
+        error: 'Key parameter is required'
       },
       { status: 400 }
     );
@@ -67,34 +67,34 @@ export const GET: RequestHandler = async ({ url }) => {
         key,
         type,
         responseTime,
-        source: 'multi-layer-cache',
+        source: 'multi-layer-cache'
       });
       return json({
         success: true,
         data,
         meta: {
-          hit: true,
+         , hit: true,
           responseTime,
           type,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     } else {
       logger.info('❌ Cache miss', {
         key,
         type,
-        responseTime,
+        responseTime
       });
       return json(
         {
           success: false,
           error: 'Cache miss',
           meta: {
-            hit: false,
+           , hit: false,
             responseTime,
             type,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         },
         { status: 404 }
       );
@@ -103,13 +103,13 @@ export const GET: RequestHandler = async ({ url }) => {
     logger.error('💥 Cache retrieval error', {
       key,
       type,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     return json(
       {
         success: false,
         error: 'Cache retrieval failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Keys array is required for batch_get operation',
+              error: 'Keys array is required for batch_get operation'
             },
             { status: 400 }
           );
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
           keysFound: results.size,
           hitRate: (results.size / keys.length) * 100,
           responseTime,
-          type,
+          type
         });
         return json({
           success: true,
@@ -160,8 +160,8 @@ export const POST: RequestHandler = async ({ request }) => {
             hitRate: (results.size / keys.length) * 100,
             responseTime,
             type,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'batch_set': {
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Key-data map is required for batch_set operation',
+              error: 'Key-data map is required for batch_set operation'
             },
             { status: 400 }
           );
@@ -183,18 +183,18 @@ export const POST: RequestHandler = async ({ request }) => {
           keysSet: dataMap.size,
           type,
           ttl,
-          responseTime,
+          responseTime
         });
         return json({
           success: true,
           message: 'Batch data cached successfully',
           meta: {
-            keysSet: dataMap.size,
+           , keysSet: dataMap.size,
             type,
             ttl,
             responseTime,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'warm': {
@@ -203,8 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Keys array and dataUrl are required for warm operation',
-            },
+              error: 'Keys array and dataUrl are required for warm operation` },
             { status: 400 }
           );
         }
@@ -216,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
             if (!response.ok) return null;
             return await response.json();
           } catch (error: any) {
-            console.warn(`Failed to load data for key ${key}:`, error);
+            console.warn(`Failed to load data for key ${key}: ', error);
             return null;
           }
         };
@@ -225,17 +224,17 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info('🔥 Cache warming completed', {
           keysWarmed: keys.length,
           type,
-          responseTime,
+          responseTime
         });
         return json({
           success: true,
           message: 'Cache warming completed',
           meta: {
-            keysWarmed: keys.length,
+           , keysWarmed: keys.length,
             type,
             responseTime,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       default: {
@@ -245,7 +244,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Key and data parameters are required',
+              error: 'Key and data parameters are required'
             },
             { status: 400 }
           );
@@ -258,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
           type,
           ttl,
           responseTime,
-          dataSize: JSON.stringify(data).length,
+          dataSize: JSON.stringify(data).length
         });
         return json({
           success: true,
@@ -268,20 +267,20 @@ export const POST: RequestHandler = async ({ request }) => {
             type,
             ttl,
             responseTime,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
     }
   } catch (error: any) {
     logger.error('💥 Cache storage error', {
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     return json(
       {
         success: false,
         error: 'Cache storage failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -294,19 +293,19 @@ export const DELETE: RequestHandler = async ({ url }) => {
     try {
       // Clear all cache layers (implementation would need to be added to CacheLayerManager)
       logger.info('🧹 Clearing all caches', {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
       return json({
         success: true,
         message: 'All caches cleared successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       return json(
         {
           success: false,
           error: 'Failed to clear all caches',
-          details: error instanceof Error ? error.message : 'Unknown error',
+          details: error instanceof Error ? error.message : 'Unknown error'
         },
         { status: 500 }
       );
@@ -316,8 +315,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Key parameter is required',
-      },
+        error: 'Key parameter is required` },
       { status: 400 }
     );
   }
@@ -325,23 +323,22 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Cache deletion would need to be implemented in CacheLayerManager
     logger.info('🗑️ Cache deletion requested', {
       key,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     return json({
       success: true,
-      message: `Cache key: "${key}" deletion requested`,
+      message: `Cache; key: "${key}" deletion requested`,
       meta: {
         key,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: 'Cache deletion failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

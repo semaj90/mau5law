@@ -4,9 +4,7 @@ import Redis from "ioredis";
 
 // Lightweight local typings to avoid depending on exported Job/JobCounts types
 // (match only the fields used in this module)
-type BullJob<TData = unknown, TReturn = unknown> = {
-  id: string | number;
-  data: TData;
+type BullJob<TData = unknown, TReturn = unknown> = { id: string | number;, data: TData;
   getState: () => Promise<string>;
   remove: () => Promise<void>;
   progress?: number | (() => Promise<number>);
@@ -41,16 +39,14 @@ export const documentQueue = new Queue<DocumentProcessingJobData, DocumentProces
     removeOnFail: 50,
     attempts: 3,
     backoff: {
-      type: 'exponential',
+     , type: 'exponential',
       delay: 2000
     }
   }
 });
 
 // Job types
-export interface DocumentProcessingJobData {
-  documentId: string;
-  content: string;
+export interface DocumentProcessingJobData { documentId: string;, content: string;
   documentType: string;
   caseId?: string;
   filePath?: string;
@@ -65,24 +61,18 @@ export interface DocumentProcessingJobData {
 }
 
 // Define a more specific type for detected entities
-export interface LegalEntity {
-  text: string;
-  type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
+export interface LegalEntity { text: string;, type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
   confidence?: number;  // Optional: confidence score of the detection
   metadata?: Record<string, unknown>; // <-- changed from Record<string, any>
 }
 
-export interface DocumentProcessingJobResult {
-  success: boolean;
-  documentId: string;
+export interface DocumentProcessingJobResult { success: boolean;, documentId: string;
   processingTime: string;
   summary?: string;
   entities?: Array<LegalEntity>; // Changed from Array<any>
-  riskAssessment?: {
-    overall_risk: string;
-    risk_score: number;
+  riskAssessment?: { overall_risk: string;, risk_score: number;
     risk_factors: string[];
     recommendations: string[];
     confidence: number;
@@ -92,23 +82,16 @@ export interface DocumentProcessingJobResult {
 }
 
 // Define a more specific return type for queueDocumentProcessing
-interface QueueDocumentProcessingResult {
-  jobId: string;
-  estimated: number;
+interface QueueDocumentProcessingResult { jobId: string;, estimated: number;
 }
 
 // Define specific return types for getJobStatus and getQueueStats
-interface JobStatusResult {
-  status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';
-  progress: number;
+interface JobStatusResult { status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';, progress: number;
   error?: string;
   result?: DocumentProcessingJobResult; // For: 'completed'
-  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed'
-}
+  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed' }
 
-interface QueueStatsResult {
-  waiting: number;
-  active: number;
+interface QueueStatsResult { waiting: number;, active: number;
   completed: number;
   failed: number;
   total: number;

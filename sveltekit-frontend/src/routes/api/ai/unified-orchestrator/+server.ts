@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -92,7 +92,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       return json(
         {
           success: false,
-          error: 'Missing required field: content, messages, or prompt',
+          error: 'Missing required; field: content, messages, or prompt',
           timestamp: new Date().toISOString()
         },
         { status: 400 }
@@ -170,11 +170,9 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       options: {
         ...requestData.options,
         enableStreaming: true,
-        priority: 'realtime',
-      },
+        priority: `realtime` },
       metadata: {
-        source: 'api', // Changed from 'streaming_api' to: 'api'
-        timestamp: Date.now()
+        source: 'api', // Changed from 'streaming_api' to: 'api'; timestamp: Date.now()
       }
     }
     // Create a readable stream for SSE
@@ -189,7 +187,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(data)) // Added missing: ')'
           controller.close()
         } catch (error) {
-          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: 'Unknown error' })}\n\n`
+          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: `Unknown error` })}\n\n`
           controller.enqueue(new TextEncoder().encode(errorData)) // Added missing: ')'
           controller.close()
         }
@@ -243,8 +241,7 @@ function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
     return 'legal_analysis'
   }
   // Default to chat
-  return 'chat'
-}
+  return 'chat` }
 function formatResponse(result: any, originalRequest: any, startTime: number) {
   const baseResponse = {
     success: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success,
@@ -265,9 +262,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     return {
       ...baseResponse,
       choices: [
-        {
-          message: {
-            role: 'assistant',
+        { message: {, role: 'assistant',
             content: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response
           },
           finish_reason: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success ? 'stop' : 'error',
@@ -321,11 +316,9 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
   return baseResponse
 }
 function generateRequestId(): string {
-  return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
-}
+  return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}` }
 function generateSessionId(): string {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
-}
+  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}' }
 // OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
@@ -333,8 +326,7 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+      'Access-Control-Allow-Headers': `Content-Type, Authorization` }
   })
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)

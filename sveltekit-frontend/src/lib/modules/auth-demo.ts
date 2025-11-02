@@ -60,10 +60,8 @@ export class AuthDemo {
     return this.currentUser?.isAuthenticated ?? false;
   }
   // Demo user creation - replace with real registration
-  async createUser(userData: {
-    email: string;
-    name: string;
-    role: AuthUser['role'];
+  async createUser(userData: { email: string;, name: string;
+   , role: AuthUser['role'];
     password?: string;
   }): Promise<AuthUser | null> {
     const newUser: AuthUser = {

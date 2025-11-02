@@ -7,9 +7,7 @@ import { writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal;';
 }
-export interface LogEntry {
-  id: string;
-  timestamp: number;
+export interface LogEntry { id: string;, timestamp: number;
   level: LogLevel;
   category: string;
   message: string;
@@ -23,9 +21,7 @@ export interface LogEntry {
   meta?: { [key: string]: any }
 }
 }
-export interface LogTransport {
-  name: string;
-  enabled: boolean;
+export interface LogTransport { name: string;, enabled: boolean;
   minLevel: LogLevel;
   format?: 'json' | 'text' | 'structured';
   send: (entry: LogEntry) => Promise<void>;
@@ -36,14 +32,10 @@ export interface LogFilter {
   level?: LogLevel[];
   service?: string[];
   tags?: string[];
-  timeRange?: {
-    start: number;
-  end: number;
+  timeRange?: { start: number;, end: number;
   }
 }
-export interface LogStats {
-  totalEntries: number;
-  entriesByLevel: Record<LogLevel, number>;
+export interface LogStats { totalEntries: number;, entriesByLevel: Record<LogLevel, number>;
   entriesByCategory: Record<string, number>;
   entriesByService: Record<string, number>;
   recentErrors: LogEntry[];
@@ -60,7 +52,7 @@ class LoggingAggregationService {
   public entriesStore: Writable<LogEntry[]> = writable([]);
   public statsStore: Writable<LogStats> = writable({,
     totalEntries: 0,
-    entriesByLevel: { debug: 0, info: 0, warn: 0, error: 0, fatal: 0 },
+    entriesByLevel: {, debug: 0, info: 0, warn: 0, error: 0, fatal: 0 },
     entriesByCategory: { [key,: strin,g]: any },
     entriesByService: { [key,: strin,g]: any },
     recentErrors: [],
@@ -76,8 +68,7 @@ class LoggingAggregationService {
     bufferSize: 100,
     flushInterval: 5000,
     remoteEndpoint: '/api/logs',
-    categories: {
-      system: { enabled: true, color: '#007bff' },
+    categories: { system: {, enabled: true, color: '#007bff' },
       auth: { enabled: true, color: '#28a745' },
       api: { enabled: true, color: '#ffc107' },
       ai: { enabled: true, color: '#6f42c1' },
@@ -239,8 +230,7 @@ class LoggingAggregationService {
     this.processLogEntry(fullEntry);
   }
   private log()
-    level: LogLevel
-    category: string;
+    level: LogLevel; category: string;
     message: string
     data?: any
     error?: Error
@@ -355,7 +345,7 @@ class LoggingAggregationService {
             await transport.send(entry);
           } catch (error: any) {
             // Don't log transport errors to avoid infinite loops
-            console.error(`Transport ${transport.name} failed:`, error);
+            console.error(`Transport ${transport.name} failed: ', error);
           }
         }
       }
@@ -438,8 +428,7 @@ class LoggingAggregationService {
       info: '#007bff',
       warn: '#ffc107',
       error: '#dc3545',
-      fatal: '#721c24'
-    }
+      fatal: '#721c24' }
     return `color: ${levelColors[level]} font-weight: bold;`;
   }
   private formatConsoleMessage(entry,: LogEntry): string {

@@ -36,16 +36,16 @@ class LegalAIServiceClient {
       `${ENHANCED_RAG_URL}/api/rag`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           context: {
-            searchType: 'legal',
+           , searchType: 'legal',
             includeVectorSearch: true,
             includeSemanticAnalysis: true,
-            ...context,
-          },
-        }),
+            ...context
+          }
+        })
       },
       [8095, 8096]
     ).then(r => r.json());
@@ -55,14 +55,14 @@ class LegalAIServiceClient {
       `${ENHANCED_RAG_URL}/api/vector/search`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           categories,
           limit,
           threshold: 0.7,
-          includeMetadata: true,
-        }),
+          includeMetadata: true
+        })
       },
       [8095, 8096]
     ).then(r => r.json());
@@ -72,14 +72,14 @@ class LegalAIServiceClient {
       `${UPLOAD_SERVICE_URL}/api/search`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           filters: {
-            documentTypes: ['legal-brief', 'court-filing', 'contract', 'evidence'],
-            ...filters,
-          },
-        }),
+           , documentTypes: ['legal-brief', 'court-filing', 'contract', 'evidence'],
+            ...filters
+          }
+        })
       },
       [8092, 8091]
     ).then(r => r.json());
@@ -89,14 +89,14 @@ class LegalAIServiceClient {
       `${ENHANCED_RAG_URL}/api/analyze`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           text,
           analysisType,
           includeEntities: true,
           includeSentiment: true,
-          includeKeywords: true,
-        }),
+          includeKeywords: true
+        })
       },
       [8095, 8096]
     ).then(r => r.json());
@@ -117,9 +117,7 @@ const LegalSearchSchema = z.object({
   legalAnalysis: z.coerce.boolean().default(false), // Optional deep legal analysis
 });
 
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   type: 'case' | 'evidence' | 'criminal' | 'document';
   content: string;
   score: number;
@@ -202,9 +200,7 @@ export interface SearchResult {
     legalIssues?: string[];
     recommendations?: string[];
     confidence?: number;
-    similarCases?: Array<{
-      id: string;
-      title: string;
+    similarCases?: Array<{ id: string;, title: string;
       score: number;
       tags?: string[];
     }>;
@@ -221,7 +217,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const validatedParams = LegalSearchSchema.parse(params);
     const { q: query, limit, threshold, categories, vectorSearch, aiSuggestions, legalAnalysis } = validatedParams;
     console.log(
-      `🔍 Enhanced Legal AI Search: "${query}" | Categories: ${categories.join(', ')} | Vector: ${vectorSearch}`
+      `🔍 Enhanced Legal AI Search: "${query}" |, Categories: ${categories.join(', ')} | Vector: ${vectorSearch}`
     );
     const startTime = Date.now();
 
@@ -244,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
           default: return [];
         }
       } catch (error: any) {
-        console.error(`Error searching ${category}:`, error);
+        console.error(`Error searching ${category}: ', error);
         return []; // Return empty array on error to continue with other categories
       }
     });
@@ -286,7 +282,7 @@ export const GET: RequestHandler = async ({ url }) => {
             return {
               ...result,
               semanticAnalysis: analysis, // Added missing: ','
-              confidence: analysis.confidence || result.score,
+              confidence: analysis.confidence || result.score
             };
           } catch (error: any) {
             return result;
@@ -377,16 +373,16 @@ export const GET: RequestHandler = async ({ url }) => {
           uploadService: categories.includes('documents'),
           vectorDB: vectorSearch, // Added missing: ','
           semanticAnalysis: aiSuggestions,
-          legalDocumentAnalyzer: legalAnalysis,
-        },
+          legalDocumentAnalyzer: legalAnalysis
+        }
       },
       // Legal AI platform specific enhancements
       legalContext: {
         jurisdiction: 'federal', // Could be dynamic based on user preferences
         practiceAreas: extractPracticeAreas(query),
         urgencyLevel: calculateUrgencyLevel(enhancedResults),
-        recommendedActions: generateRecommendedActions(enhancedResults, query),
-      },
+        recommendedActions: generateRecommendedActions(enhancedResults, query)
+      }
     });
   } catch (error: any) {
     console.error('Enhanced Legal AI Search error:', error);
@@ -396,7 +392,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: 'Invalid search parameters',
           details: error.errors,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 400 }
       );
@@ -407,7 +403,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Enhanced search failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
-        fallbackAvailable: true,
+        fallbackAvailable: true
       },
       { status: 500 }
     );
@@ -429,10 +425,10 @@ async function searchCases(
       threshold,
       includeRelatedEntities: true, // Added missing: ','
       legalContext: {
-        jurisdiction: 'all',
+       , jurisdiction: 'all',
         practiceAreas: ['criminal', 'civil', 'constitutional', 'commercial'],
-        includePreservation: true,
-      },
+        includePreservation: true
+      }
     });
 
     // Vector search enhancement if enabled
@@ -469,7 +465,7 @@ async function searchCases(
         status: result.status || result.caseStatus || 'active',
         caseNumber: result.caseNumber,
         tags: result.tags || result.practiceAreas || [query.toLowerCase()],
-        confidence: result.confidence || result.score,
+        confidence: result.confidence || result.score
       },
       highlights: result.highlights || [],
       createdAt: result.createdAt || new Date().toISOString(),
@@ -477,7 +473,7 @@ async function searchCases(
       caseNumber: result.caseNumber,
       court: result.court,
       practiceArea: result.practiceArea,
-      attorneys: result.attorneys || [],
+      attorneys: result.attorneys || []
     }));
   } catch (error: any) {
     console.error('Error in enhanced case search:', error);
@@ -500,7 +496,7 @@ async function searchEvidence(
       threshold,
       forensicAnalysis: true, // Added missing: ','
       evidenceTypes: ['physical', 'digital', 'documentary', 'testimonial', 'forensic'],
-      chainOfCustody: true,
+      chainOfCustody: true
     });
 
     // Document search for evidence files
@@ -508,7 +504,7 @@ async function searchEvidence(
     try {
       const docResponse = await serviceClient.documentSearch(query, {
         documentTypes: ['evidence', 'forensic-report', 'lab-analysis'],
-        confidentiality: ['public', 'restricted', 'confidential'],
+        confidentiality: ['public', 'restricted', 'confidential']
       });
       documentResults = docResponse.results || [];
     } catch (error: any) {
@@ -525,7 +521,7 @@ async function searchEvidence(
         ...doc,
         type: 'evidence',
         evidenceSource: 'document',
-        isAdmissible: doc.admissible !== false,
+        isAdmissible: doc.admissible !== false
       })),
     ];
 
@@ -561,7 +557,7 @@ async function searchEvidence(
         evidenceType: result.evidenceType || result.type,
         tags: result.tags || [query.toLowerCase(), result.evidenceType || 'evidence'],
         chainOfCustody: result.chainOfCustody || [],
-        confidence: result.confidence || result.score,
+        confidence: result.confidence || result.score
       },
       highlights: result.highlights || [],
       createdAt: result.createdAt || new Date().toISOString(),
@@ -570,7 +566,7 @@ async function searchEvidence(
       collectionDate: result.collectionDate,
       collectedBy: result.collectedBy,
       location: result.collectionLocation,
-      labAnalysis: result.labAnalysis || {},
+      labAnalysis: result.labAnalysis || {}
     }));
   } catch (error: any) {
     console.error('Error in enhanced evidence search:', error);
@@ -588,7 +584,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
       includeAliases: true, // Added missing: ','
       includeCriminalHistory: true, // Added missing: ','
       riskAssessment: true, // Added missing: ','
-      backgroundCheck: true,
+      backgroundCheck: true
     });
 
     const processedResults = await processRAGResults(ragResults, 'criminal');
@@ -596,7 +592,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
     return processedResults.slice(0, limit).map((result: any) => ({
       // Removed extra: ','
       id: result.id || `person-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title: result.fullName || `${result.firstName || ''} ${result.lastName || ''}`.trim() || `Person: ${query}`,
+      title: result.fullName || `${result.firstName || ''} ${result.lastName || '` }`.trim() || `Person: ${query}`,
       type: 'criminal' as const,
       content: result.notes || result.description || result.summary || '',
       score:
@@ -610,7 +606,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
         jurisdiction: result.jurisdiction,
         riskLevel: result.riskLevel,
         tags: result.aliases || result.tags || [query.toLowerCase()],
-        confidence: result.confidence || result.score,
+        confidence: result.confidence || result.score
       },
       highlights: result.highlights || [],
       createdAt: result.createdAt || new Date().toISOString(),
@@ -621,7 +617,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
       riskLevel: result.riskLevel || 'unknown',
       lastKnownAddress: result.lastKnownAddress,
       criminalHistory: result.criminalHistory || [],
-      associatedCases: result.associatedCases || [],
+      associatedCases: result.associatedCases || []
     }));
   } catch (error: any) {
     console.error('Error in enhanced person search:', error);
@@ -641,7 +637,7 @@ async function searchDocuments(
       documentTypes: ['legal-brief', 'court-filing', 'contract', 'motion', 'pleading', 'memorandum'],
       confidentiality: ['public', 'confidential', 'attorney-client'],
       includeContent: true, // Added missing: ','
-      includeMetadata: true,
+      includeMetadata: true
     });
 
     // Enhanced RAG search for document content
@@ -651,7 +647,7 @@ async function searchDocuments(
       threshold,
       includeFullText: true, // Added missing: ','
       documentAnalysis: true, // Added missing: ','
-      legalCitations: true,
+      legalCitations: true
     });
 
     // Combine and process results
@@ -660,8 +656,7 @@ async function searchDocuments(
       ...(documentResults.results?.map((doc: any) => ({
         ...doc,
         type: 'document',
-        documentSource: 'upload_service',
-      })) || []),
+        documentSource: `upload_service` })) || []),
     ];
 
     // Vector search enhancement
@@ -696,7 +691,7 @@ async function searchDocuments(
         tags: result.tags || [query.toLowerCase(), result.documentType || 'document'],
         fileSize: result.fileSize,
         pageCount: result.pageCount,
-        confidence: result.confidence || result.score,
+        confidence: result.confidence || result.score
       },
       highlights: result.highlights || [],
       createdAt: result.createdAt || new Date().toISOString(),
@@ -706,7 +701,7 @@ async function searchDocuments(
       uploadedBy: result.uploadedBy,
       lastModified: result.lastModified,
       citations: result.citations || [],
-      legalConcepts: result.legalConcepts || [],
+      legalConcepts: result.legalConcepts || []
     }));
   } catch (error: any) {
     console.error('Error in enhanced document search:', error);
@@ -718,17 +713,17 @@ async function fallbackDocumentSearch(query: string, limit: number): Promise<Sea
   return [
     {
       id: `fallback-document-${Date.now()}`,
-      title: `Document Search: ${query}`,
+      title: `Document; Search: ${query}`,
       type: 'document' as const,
-      content: `Fallback search result for documents related to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for documents related; to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
         status: 'fallback',
         confidentiality: 'unknown',
-        tags: [query.toLowerCase(), 'fallback'],
+        tags: [query.toLowerCase(), 'fallback']
       },
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     },
   ].slice(0, limit);
 }
@@ -739,15 +734,15 @@ async function searchPrecedents(query: string, limit: number): Promise<SearchRes
   return [
     {
       id: `precedent-${Date.now()}`,
-      title: `Precedent case for: "${query}"`,
+      title: `Precedent case; for: "${query}"`,
       type: 'document' as const,
       content: 'Legal precedent analysis would go here...',
       score: 0.8,
       metadata: {
         date: new Date().toISOString(),
         jurisdiction: 'Federal',
-        tags: ['precedent', 'case-law'],
-      },
+        tags: ['precedent', 'case-law']
+      }
     },
   ].slice(0, limit);
 }
@@ -757,15 +752,15 @@ async function searchStatutes(query: string, limit: number): Promise<SearchResul
   return [
     {
       id: `statute-${Date.now()}`,
-      title: `Relevant statute for: "${query}"`,
+      title: `Relevant statute; for: "${query}"`,
       type: 'document' as const,
       content: 'Statute text and analysis would go here...',
       score: 0.75,
       metadata: {
         date: new Date().toISOString(),
         jurisdiction: 'Federal',
-        tags: ['statute', 'legislation'],
-      },
+        tags: ['statute', 'legislation']
+      }
     },
   ].slice(0, limit);
 }
@@ -814,18 +809,17 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
             legalConcepts,
             relevanceExplanation: analysis.explanation,
             confidenceScore: analysis.confidence,
-            keyTerms: analysis.keyTerms || [],
+            keyTerms: analysis.keyTerms || []
           },
           // Enhanced metadata with AI insights;
           metadata: {
             ...result.metadata,
             aiEnhanced: true, // Added missing: ','
             relevanceFactors: analysis.relevanceFactors || [],
-            practiceAreaMatch: analysis.practiceAreaMatch || 'general',
-          },
+            practiceAreaMatch: analysis.practiceAreaMatch || 'general` }
         };
       } catch (error: any) {
-        console.warn(`AI enhancement failed for result ${result.id}:`, error);
+        console.warn(`AI enhancement failed for result ${result.id}: ', error);
         return result;
       }
     });
@@ -845,7 +839,7 @@ async function processRAGResults(ragResults: any, resultType: string): Promise<S
       type: resultType, // Added missing: ','
       ragEnhanced: true,
       confidence: result.confidence || result.score || 0.5,
-      processingTimestamp: new Date().toISOString(),
+      processingTimestamp: new Date().toISOString()
     }));
   } catch (error: any) {
     console.warn('Error processing RAG results:', error);
@@ -867,7 +861,7 @@ async function mergeWithVectorResults(primaryResults: SearchResult[], vectorResu
         merged.push({
           ...vectorResult,
           vectorEnhanced: true, // Added missing: ','
-          score: vectorResult.similarity || vectorResult.score || 0.5,
+          score: vectorResult.similarity || vectorResult.score || 0.5
         });
       }
     });
@@ -900,8 +894,7 @@ function calculateEnhancedScore(result: SearchResult, query: string): number {
       score += 0.1 * (1 - daysSinceCreation / 30);
     }
   }
-  return Math.min(1.0, Math.max(0, score)); // Added missing: ')'
-}
+  return Math.min(1.0, Math.max(0, score)); // Added missing: `)` }
 
 function extractPracticeAreas(query: string): string[] {
   const practiceAreaMap: Record<string, string[]> = {
@@ -912,7 +905,7 @@ function extractPracticeAreas(query: string): string[] {
     'family': ['divorce', 'custody', 'adoption', 'marriage', 'child support'],
     'intellectual property': ['patent', 'trademark', 'copyright', 'trade secret'],
     'employment': ['discrimination', 'harassment', 'wrongful termination', 'wage'],
-    'immigration': ['visa', 'asylum', 'deportation', 'citizenship', 'green card'],
+    'immigration': ['visa', 'asylum', 'deportation', 'citizenship', 'green card']
   };
   const queryLower = query.toLowerCase();
   const matchedAreas: string[] = [];
@@ -972,8 +965,7 @@ function extractHighlights(content: string, query: string): string[] {
     const regex = new RegExp(`(.{0,30}\\b${word}\\b.{0,30})`, 'gi');
     const matches = contentLower.match(regex);
     if (matches) {
-      highlights.push(...matches.slice(0, 2)); // Added missing: ')'
-    }
+      highlights.push(...matches.slice(0, 2)); // Added missing: `)` }
   }
   return Array.from(new Set(highlights)).slice(0, 3); // Remove duplicates and limit
 }
@@ -983,16 +975,16 @@ async function fallbackCaseSearch(query: string, limit: number): Promise<SearchR
   return [
     {
       id: `fallback-case-${Date.now()}`,
-      title: `Legal Case Search: ${query}`,
+      title: `Legal Case; Search: ${query}`,
       type: 'case' as const,
-      content: `Fallback search result for legal cases related to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for legal cases related; to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
         status: 'fallback',
-        tags: [query.toLowerCase(), 'fallback'],
+        tags: [query.toLowerCase(), 'fallback']
       },
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     },
   ].slice(0, limit);
 }
@@ -1001,17 +993,17 @@ async function fallbackEvidenceSearch(query: string, limit: number): Promise<Sea
   return [
     {
       id: `fallback-evidence-${Date.now()}`,
-      title: `Evidence Search: ${query}`,
+      title: `Evidence; Search: ${query}`,
       type: 'evidence' as const,
-      content: `Fallback search result for evidence related to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for evidence related; to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
         status: 'fallback',
         confidentiality: 'unknown',
-        tags: [query.toLowerCase(), 'fallback'],
+        tags: [query.toLowerCase(), 'fallback']
       },
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     },
   ].slice(0, limit);
 }
@@ -1020,16 +1012,16 @@ async function fallbackPersonSearch(query: string, limit: number): Promise<Searc
   return [
     {
       id: `fallback-person-${Date.now()}`,
-      title: `Person Search: ${query}`,
+      title: `Person; Search: ${query}`,
       type: 'criminal' as const,
-      content: `Fallback search result for persons related to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for persons related; to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
         status: 'fallback',
-        tags: [query.toLowerCase(), 'fallback'],
+        tags: [query.toLowerCase(), 'fallback']
       },
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     },
   ].slice(0, limit);
 }
@@ -1052,13 +1044,13 @@ export const POST: RequestHandler = async ({ request }) => {
       ];
       return json({
         success: true,
-        suggestions: suggestions.slice(0, 5),
+        suggestions: suggestions.slice(0, 5)
       });
     }
     return json(
       {
         success: false,
-        error: 'Invalid action',
+        error: 'Invalid action'
       },
       { status: 400 }
     );
@@ -1066,8 +1058,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Failed to process request',
-      },
+        error: `Failed to process request` },
       { status: 500 }
     );
   }

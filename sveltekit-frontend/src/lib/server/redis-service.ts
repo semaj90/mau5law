@@ -35,9 +35,7 @@ interface AugmentedIORedisClient extends IORedisClass {
   on(event: string | symbol, listener: (...args: any[]) => void): this; // General overload
 }
 
-interface RedisConfig {
-  host: string;
-  port: number;
+interface RedisConfig { host: string;, port: number;
   password?: string;
   db: number;
   maxRetriesPerRequest: number;
@@ -48,9 +46,7 @@ interface RedisConfig {
   family: number;
   keyPrefix?: string;
 }
-interface RedisConnectionPool {
-  primary: AugmentedIORedisClient; // Use augmented type
-  subscriber: AugmentedIORedisClient; // Use augmented type
+interface RedisConnectionPool { primary: AugmentedIORedisClient; // Use augmented type, subscriber: AugmentedIORedisClient; // Use augmented type
   publisher: AugmentedIORedisClient; // Use augmented type
 }
 
@@ -66,9 +62,7 @@ interface CachedEmbedding {
   dimension: number;
 }
 
-interface CachedSearch {
-  query: string;
-  results: any[];
+interface CachedSearch { query: string;, results: any[];
   cached_at: string;
   result_count: number;
 }
@@ -91,7 +85,7 @@ class RedisService {
     lazyConnect: true,
     keepAlive: 30000,
     family: 4,
-    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
+    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
   };
   /**
    * Initialize Redis connection pool
@@ -112,18 +106,18 @@ class RedisService {
         primary: new IORedis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-primary',
+          connectionName: 'legal-ai-primary'
         }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
         // Separate connection for pub/sub operations
         subscriber: new IORedis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-subscriber',
+          connectionName: 'legal-ai-subscriber'
         }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
         publisher: new IORedis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-publisher',
+          connectionName: 'legal-ai-publisher'
         }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
       };
       // Set up event handlers
@@ -160,7 +154,7 @@ class RedisService {
       this.isConnected = true;
     });
     redis.on('error', (error: Error) => {
-      console.error(`❌ [RedisService] ${name} error:`, error);
+      console.error(`❌ [RedisService] ${name} error: ', error);
       this.isConnected = false;
       // Trigger reconnection logic if not already connected and not max attempts
       if (!this.isConnected && this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -221,7 +215,7 @@ class RedisService {
    * Get Redis client for operations
    */
   getClient(): AugmentedIORedisClient | null {
-    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists' and: 'call' are recognized
+    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists'; and: 'call' are recognized
     return (this.pool?.primary as AugmentedIORedisClient) || null;
   }
   /**
@@ -247,9 +241,7 @@ class RedisService {
   /**
    * Get Redis connection statistics
    */
-  getStats(): {
-    connected: boolean;
-    status: string;
+  getStats(): { connected: boolean;, status: string;
     reconnectAttempts: number;
     config: RedisConfig;
   } {
@@ -260,8 +252,8 @@ class RedisService {
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
-        password: this.config.password ? '[REDACTED]' : undefined,
-      },
+        password: this.config.password ? '[REDACTED]' : undefined
+      }
     };
   }
   /**
@@ -358,7 +350,7 @@ class RedisService {
       await client.del(key);
       return true;
     } catch (error) {
-      console.error(`[RedisService] Failed to delete ${key}:`, error);
+      console.error(`[RedisService] Failed to delete ${key}: ', error);
       return false;
     }
   }
@@ -458,7 +450,7 @@ class RedisService {
       embedding,
       metadata,
       cached_at: new Date().toISOString(),
-      dimension: embedding.length,
+      dimension: embedding.length
     };
     return await this.set(key, data);
   }
@@ -473,7 +465,7 @@ class RedisService {
       query,
       results,
       cached_at: new Date().toISOString(),
-      result_count: results.length,
+      result_count: results.length
     };
     return await this.set(key, data, ttl);
   }

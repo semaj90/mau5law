@@ -16,16 +16,12 @@ export interface FormAuditResult {
   hasErrorHandling: boolean;
   hasAccessibilityFeatures: boolean;
   hasLoadingStates: boolean;
-  compliance: {
-    score: number; // 0-100
-    level: 'poor' | 'basic' | 'good' | 'excellent';
+  compliance: { score: number; // 0-100, level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
     recommendations: string[];
   };
 }
-export interface FormIssue {
-  type: 'critical' | 'warning' | 'info';
-  category: 'functionality' | 'accessibility' | 'ux' | 'performance';
+export interface FormIssue { type: 'critical' | 'warning' | 'info';, category: 'functionality' | 'accessibility' | 'ux' | 'performance';
   message: string;
   element?: string;
   fix?: string;
@@ -109,8 +105,8 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
       score: 0,
       level: 'poor',
       issues: [],
-      recommendations: [],
-    },
+      recommendations: []
+    }
   };
   // Calculate compliance score and generate recommendations
   calculateComplianceScore(result);
@@ -190,7 +186,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality',
       message: 'Form lacks action attribute - will not work without JavaScript',
       element: 'form',
-      fix: 'Add action="/api/form-handler" attribute to form element',
+      fix: 'Add action="/api/form-handler" attribute to form element'
     });
   }
   if (result.hasMethodAttribute) {
@@ -201,7 +197,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality',
       message: 'Form method not explicitly set - defaults to GET',
       element: 'form',
-      fix: 'Add method="POST" attribute to form element',
+      fix: 'Add method="POST" attribute to form element'
     });
   }
   if (result.usesEnhance) {
@@ -211,7 +207,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'Form does not use SvelteKit enhance - missing progressive enhancement',
-      fix: 'Add use:enhance action to form element',
+      fix: 'Add; use:enhance action to form element'
     });
   }
   // Progressive enhancement (25 points)
@@ -226,7 +222,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'critical',
       category: 'accessibility',
       message: 'Form inputs missing proper labels',
-      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes',
+      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes'
     });
   }
   if (result.hasAccessibilityFeatures) {
@@ -236,7 +232,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'accessibility',
       message: 'Form lacks accessibility features like live regions or fieldsets',
-      fix: 'Add aria-live regions for error announcements and fieldsets for grouping',
+      fix: 'Add aria-live regions for error announcements and fieldsets for grouping'
     });
   }
   // Error handling and UX (15 points)
@@ -247,7 +243,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'No error handling elements detected',
-      fix: 'Add error message elements with role="alert" or aria-live="polite"',
+      fix: 'Add error message elements with role="alert" or aria-live="polite"'
     });
   }
   if (result.hasLoadingStates) {
@@ -257,8 +253,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'info',
       category: 'ux',
       message: 'No loading state indicators found',
-      fix: 'Add loading spinners and disable form during submission',
-    });
+      fix: `Add loading spinners and disable form during submission` });
   }
   // Determine compliance level
   let level: FormAuditResult['compliance']['level'];
@@ -270,7 +265,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     score,
     level,
     issues,
-    recommendations: [],
+    recommendations: []
   };
 }
 function generateRecommendations(result: FormAuditResult): void {
@@ -326,7 +321,7 @@ ${results
 - **Action**: ${result.formAction || 'Missing'}
 - **Method**: ${result.method}
 - **Uses Enhance**: ${result.usesEnhance ? '✅' : '❌'}
-- **Accessibility**: ${result.hasAccessibilityFeatures ? '✅' : '❌'}
+- **Accessibility**: ${result.hasAccessibilityFeatures ? '✅' : `❌` }
 **Issues**:
 ${result.compliance.issues.map((issue: FormIssue) => `- ${issue.type.toUpperCase()}: ${issue.message}`).join('\n')}
 **Recommendations**:
@@ -391,9 +386,9 @@ export function createProgressiveForm<T extends Record<string, unknown> = Record
         isLoading: false,
         isSubmitting: false,
         hasSubmitted: false,
-        isDirty: false,
+        isDirty: false
       };
-    },
+    }
   };
 }
 // Utility to check if JavaScript is available

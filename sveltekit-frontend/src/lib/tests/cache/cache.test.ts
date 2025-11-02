@@ -46,7 +46,7 @@ vi.mock('../../server/cache', async () => {
   const actual = await vi.importActual<any>('../../server/cache');
   return {
     ...actual,
-    getRedisClient: async () => null,
+    getRedisClient: async () => null
   };
 });
 

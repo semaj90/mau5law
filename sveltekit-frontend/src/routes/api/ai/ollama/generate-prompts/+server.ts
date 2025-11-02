@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -34,16 +34,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const promptGenerationPrompt = `
 You are an expert legal AI assistant. Generate contextual prompts and recommendations for a legal professional during document upload and analysis.
 Context:
-- Timing: ${timing}
+-; Timing: ${timing}
 - Files: ${context.files?.length || 0} documents
 - Case ID: ${context.caseId || 'No active case'}
 - Legal Context: ${JSON.stringify(legalContext || {})}
 - User Expertise: ${context.userAnalytics?.caseContext?.expertise || 'associate'}
 - Practice Area: ${legalContext?.practiceArea || 'General'}
 - Urgency: ${legalContext?.urgency || 'medium'}
-File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None'}
-Generate 2-4 relevant prompts based on the timing phase:
-For: "before-upload": Focus on preparation, organization, and potential issues
+File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }
+Generate 2-4 relevant prompts based on the timing phase:; For: "before-upload": Focus on preparation, organization, and potential issues
 For: "during-upload": Focus on monitoring, insights, and real-time guidance
 For: "after-upload": Focus on next steps, analysis results, and recommendations
 Each prompt should be actionable and specific to legal workflows.
@@ -63,18 +62,17 @@ Respond in JSON format:
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
         model: model,
         prompt: promptGenerationPrompt,
         format: 'json',
         stream: false,
         options: {
-          temperature: 0.6,
-          top_p: 0.9,
-        },
-      }),
+         , temperature: 0.6,
+          top_p: 0.9
+        }
+      })
     });
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
@@ -91,8 +89,7 @@ Respond in JSON format:
     const prompts = promptsData.prompts.map((prompt: any) => ({
       ...prompt,
       timing: timing,
-      id: prompt.id || `${timing}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    }));
+      id: prompt.id || `${timing}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` }));
     return json({ prompts });
   } catch (error) {
     console.error('Prompt generation error:', error);
@@ -118,7 +115,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.95,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
     if (context.files?.length > 10) {
@@ -130,7 +127,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.7,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
     if (legalContext?.practiceArea === 'litigation') {
@@ -142,7 +139,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.8,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
   }
@@ -155,7 +152,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.7,
       actionable: false,
-      legalSpecific: true,
+      legalSpecific: true
     });
     if (context.files?.length > 5) {
       prompts.push({
@@ -166,7 +163,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.6,
         actionable: false,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
   }
@@ -179,7 +176,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.8,
       actionable: true,
-      legalSpecific: true,
+      legalSpecific: true
     });
     if (legalContext?.caseId) {
       prompts.push({
@@ -189,7 +186,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
     prompts.push({
@@ -200,7 +197,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.8,
       relevance: 0.7,
       actionable: true,
-      legalSpecific: true,
+      legalSpecific: true
     });
   }
   return { prompts };

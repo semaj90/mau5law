@@ -8,10 +8,7 @@ import type { RequestHandler } from './$types.js'
 import { createRedisInstance } from '$lib/server/redis'
 // Create Redis client directly
 let redis = createRedisInstance()
-interface PerformanceResult {
-  operation: string
-  uncachedTime: number
-  cachedTime: number
+interface PerformanceResult { operation: string, uncachedTime: number; cachedTime: number
   speedupFactor: number;
   result: any
 }
@@ -27,14 +24,14 @@ async function expensiveVectorSearch(query: string): Promise<any> {
         title: 'Employment Contract Analysis - Remote Work Clauses',
         similarity: 0.94,
         content: 'This landmark case establishes precedent for remote work provisions...',
-        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)'],
+        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)']
       },
       {
         id: 'doc_002',
         title: 'Department of Labor Guidelines - Remote Work Rights',
         similarity: 0.87,
         content: 'Federal guidelines outline minimum standards for remote work agreements...',
-        citations: ['DOL Regulation 29 CFR 785.12'],
+        citations: ['DOL Regulation 29 CFR 785.12']
       },
     ],
     metadata: {
@@ -42,7 +39,7 @@ async function expensiveVectorSearch(query: string): Promise<any> {
       totalResults: 2,
       model: 'legal-nomic-embed',
       embedding: new Array(768).fill(0).map(() => Math.random()), // Mock 768-dim vector
-    },
+    }
   };
 }
 async function expensiveLegalAnalysis(_document: string): Promise<any> {
@@ -60,9 +57,9 @@ async function expensiveLegalAnalysis(_document: string): Promise<any> {
         'Review remote work policy compliance',
         'Verify termination clause enforceability',
         'Update compensation structure documentation',
-      ],
+      ]
     },
-    processingTime: '800ms',
+    processingTime: '800ms'
   };
 }
 export const POST: RequestHandler = async ({ request }) => {
@@ -134,11 +131,11 @@ export const POST: RequestHandler = async ({ request }) => {
         title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
         testQuery: query,
-        operationsTested: operation,
+        operationsTested: operation
       },
       results,
       performance: {
-        totalDemoTime: `${totalTime.toFixed(2)}ms`,
+       , totalDemoTime: `${totalTime.toFixed(2)}ms`,
         avgSpeedup:
           results.length > 0
             ? Math.round(results.reduce((sum, r) => sum + r.speedupFactor, 0) / results.length)
@@ -150,8 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
       costSavings: {
         computeReduction: '99.6%',
         estimatedSavings: '$1,200/month for 10K daily requests',
-        energyEfficiency: '240x reduction in CPU usage per query'
-      },
+        energyEfficiency: `240x reduction in CPU usage per query` },
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
@@ -190,7 +186,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       redis: {
-        status: 'Connected',
+       , status: 'Connected',
         version: server.redis_version,
         uptime: `${Math.floor((server.uptime_in_seconds || 0) / 60)} minutes`,
         memory: {
@@ -199,8 +195,7 @@ export const GET: RequestHandler = async () => {
           fragmentation: memory.mem_fragmentation_ratio
         },
         keys: keyCount,
-        performance: `${responseTime.toFixed(2)}ms`
-      },
+        performance: '${responseTime.toFixed(2)}ms' },
       cacheDemo: {
         endpoint: 'POST /api/demo/redis-performance',
         operations: ['vector-search', 'legal-analysis', 'all'],
@@ -217,13 +212,11 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         redis: {
-          status: 'Disconnected',
+         , status: 'Disconnected',
           error: error instanceof Error ? error.message : String(error)
         },
-        troubleshooting: {
-          dockerCommand: 'docker run -d --name redis-demo -p 6379:6379 redis:7-alpine',
-          testConnection: 'redis-cli ping'
-        },
+        troubleshooting: { dockerCommand: 'docker run -d --name redis-demo -p; 6379:6379, redis:7-alpine',
+          testConnection: `redis-cli ping` },
         timestamp: new Date().toISOString()
       },
       { status: 500 }

@@ -91,7 +91,7 @@ async function lexicalCandidates(query: string, limit: number): Promise<any> {
   return (rows as any[]).map(r => ({
     term: r.term as string,
     score: Number(r.score),
-    source: 'lexical' as const,
+    source: 'lexical' as const
   }));
 }
 
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'query required' }), { status: 400 })
   }
   const redis = getRedisService()
-  const key = `dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon'}:${includeAI}`
+  const key = 'dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon' }:${includeAI}`
   const cached = await redis.getCache(key)
   if (cached) {
     return new Response(JSON.stringify({
@@ -140,16 +140,15 @@ export const POST: RequestHandler = async ({ request }) => {
         taskSuggestions: cached.taskSuggestions,
         userProfile: cached.userProfile,
         cached: true,
-        took_ms: Math.round(performance.now() - started),
+        took_ms: Math.round(performance.now() - started)
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: { 'Content-Type': `application/json` } }
     )
   }
   // Track term usage (fire and forget)
   try {
     if (sql) {
-      await sql`SELECT increment_search_term(${query}, ${query})`
-    }
+      await sql`SELECT increment_search_term(${query}, ${query})' }
   } catch (e) {
     console.warn('increment_search_term failed', e)
   }
@@ -218,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const aiEnhanced = aiSuggestions.didYouMean.map((suggestion: DidYouMeanSuggestion) => ({
       ...suggestion,
       source: 'ai' as const,
-      enhanced: true,
+      enhanced: true
     }));
     // Merge and deduplicate while favoring enhanced items
     const allSuggestions = [...traditionalSuggestions, ...aiEnhanced];
@@ -242,7 +241,7 @@ export const POST: RequestHandler = async ({ request }) => {
         learningPhase: userInsights.learningPhase ?? null,
         preferredIntents: Array.isArray(userInsights.topIntents)
           ? userInsights.topIntents.slice(0, 3)
-          : [],
+          : []
       }
     : null;
 
@@ -253,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
     taskSuggestions: taskSuggestions || [],
     userProfile,
     cached: false,
-    took_ms: Math.round(performance.now() - started),
+    took_ms: Math.round(performance.now() - started)
   };
 
   // Cache the combined results (best-effort)
@@ -265,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
           suggestions: combinedSuggestions,
           aiSuggestions: aiSuggestions || null,
           taskSuggestions: taskSuggestions || [],
-          userProfile,
+          userProfile
         },
         REDIS_TTL_SECONDS
       );

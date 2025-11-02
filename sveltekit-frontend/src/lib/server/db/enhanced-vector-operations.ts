@@ -1,23 +1,19 @@
 // Minimal, clean stub for EnhancedVectorOperations
 // Purpose: provide a syntactically-valid, safe fallback while migrating the project.
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata: any;
   sourceType?: string;
 }
-export interface RAGContext {
-  query: string;
-  userId: string;
+export interface RAGContext { query: string;, userId: string;
   caseId?: string;
   limit?: number;
   threshold?: number;
   includeMetadata?: boolean;
 }
 export class EnhancedVectorOperations {
-  async generateEmbedding(params: { id: string; content: string; metadata: any }): Promise<void> {
+  async generateEmbedding(params: { id: string; content: string;, metadata: any }): Promise<void> {
     // Stub implementation - in production this would generate real embeddings
     console.log('Generating embedding for:', params.id, 'with content length:', params.content.length);
   }

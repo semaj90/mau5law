@@ -12,9 +12,7 @@
 import { extractTextFromImage, type OCRResult, type ImageSource } from '$lib/ocr/ocr-client';
 import { browser } from '$app/environment';
 
-export interface UnifiedOCRResult {
-  success: boolean;
-  text: string;
+export interface UnifiedOCRResult { success: boolean;, text: string;
   confidence?: number;
   entities?: any;
   embedding?: number[];
@@ -123,8 +121,8 @@ class UnifiedOCRService {
       processingTime,
       metadata: {
         filename: file.name,
-        fileType: file.type,
-      },
+        fileType: file.type
+      }
     };
   }
 
@@ -161,7 +159,7 @@ class UnifiedOCRService {
       embedding: data.embedding,
       engine: 'surya-gpu',
       processingTime: 0, // Will be set by caller
-      metadata: data.metadata,
+      metadata: data.metadata
     };
   }
 
@@ -195,8 +193,8 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0,
-        device: 'cuda',
-      },
+        device: 'cuda'
+      }
     };
   }
 
@@ -225,8 +223,7 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: result.text.length,
-        device: 'cpu',
-      },
+        device: 'cpu` }
     };
   }
 
@@ -244,7 +241,7 @@ class UnifiedOCRService {
     const response = await fetchFn(`${this.EVIDENCE_OCR_URL}/${options.evidenceId}/ocr`, {
       method: 'POST',
       body: formData,
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(45000)
     });
 
     if (!response.ok) {
@@ -262,8 +259,8 @@ class UnifiedOCRService {
       metadata: {
         filename: file.name,
         fileType: file.type,
-        textLength: data.text?.length || 0,
-      },
+        textLength: data.text?.length || 0
+      }
     };
   }
 
@@ -293,16 +290,14 @@ class UnifiedOCRService {
       embedding: data.embedding,
       engine: 'minio',
       processingTime: 0,
-      metadata: data.metadata,
+      metadata: data.metadata
     };
   }
 
   /**
    * Health check for all OCR services
    */
-  async healthCheck(fetchFn: typeof fetch = fetch): Promise<{
-    gpuOCR: boolean;
-    cudaOCR: boolean;
+  async healthCheck(fetchFn: typeof fetch = fetch): Promise<{ gpuOCR: boolean;, cudaOCR: boolean;
     clientOCR: boolean;
     evidenceOCR: boolean;
     minioStorage: boolean;
@@ -317,7 +312,7 @@ class UnifiedOCRService {
       // Evidence OCR health
       fetchFn(`${this.EVIDENCE_OCR_URL}/health`, { signal: AbortSignal.timeout(5000) }).then(r => r.ok),
       // MinIO health
-      fetchFn(`${this.MINIO_URL}/health`, { signal: AbortSignal.timeout(5000) }).then(r => r.ok),
+      fetchFn(`${this.MINIO_URL}/health`, { signal: AbortSignal.timeout(5000) }).then(r => r.ok)
     ]);
 
     return {
@@ -325,7 +320,7 @@ class UnifiedOCRService {
       cudaOCR: results[1].status === 'fulfilled' ? results[1].value : false,
       clientOCR: results[2].status === 'fulfilled' ? results[2].value : false,
       evidenceOCR: results[3].status === 'fulfilled' ? results[3].value : false,
-      minioStorage: results[4].status === 'fulfilled' ? results[4].value : false,
+      minioStorage: results[4].status === 'fulfilled' ? results[4].value : false
     };
   }
 }

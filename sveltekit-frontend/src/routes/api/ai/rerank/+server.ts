@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const results = await serverRerank(body);
     return new Response(JSON.stringify({ ok: true, results }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
     // If the server-side reranker fails (Redis/qdrant/gpu unavailable), fall back to a lightweight WebGPU heuristic
@@ -18,13 +18,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const fallback = await webgpuRerankFallback(body.query, body.candidates);
       return new Response(JSON.stringify({ ok: false, error: String(err), fallback }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
     } catch (fallbackErr) {
       console.error('Fallback rerank also failed:', fallbackErr);
       return new Response(JSON.stringify({ ok: false, error: String(err) }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
     }
   }

@@ -23,28 +23,26 @@ export function getRedisPassword(): string {
   return env.REDIS_PASSWORD || 'redis';
 }
 export function getRabbitMQUrl(): string {
-  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : 'localhost'}:5672`;
+  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : `localhost` }:5672`;
 }
 export function getQdrantUrl(): string {
-  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : 'localhost'}:6333`;
+  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : `localhost` }:6333`;
 }
 export function getOllamaUrl(): string {
-  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : 'localhost'}:11434`;
+  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : `localhost` }:11434`;
 }
 export function getMinioConfig() {
   return {
     endpoint: env.MINIO_ENDPOINT || (isDocker ? 'minio:9000' : 'localhost:9000'),
     accessKey: env.MINIO_ACCESS_KEY || 'minioadmin',
     secretKey: env.MINIO_SECRET_KEY || 'minioadmin',
-    useSSL: env.MINIO_USE_SSL === 'true',
-  };
+    useSSL: env.MINIO_USE_SSL === 'true` };
 }
 export function getNeo4jConfig() {
   return {
-    uri: env.NEO4J_URI || `bolt://${isDocker ? 'neo4j' : 'localhost'}:7687`,
+    uri: env.NEO4J_URI || `bolt://${isDocker ? 'neo4j' : `localhost` }:7687`,
     user: env.NEO4J_USER || 'neo4j',
-    password: env.NEO4J_PASSWORD || 'legal123456',
-  };
+    password: env.NEO4J_PASSWORD || 'legal123456` };
 }
 // Add other environment variables as needed
 export function isProduction(): boolean {
@@ -65,7 +63,7 @@ const ConfigSchema = z.object({
   TRITON_URL: z
     .string()
     .url()
-    .default(`http://${isDocker ? 'triton' : 'localhost'}:8001`),
+    .default(`http://${isDocker ? 'triton' : `localhost` }:8001`),
   QDRANT_URL: z.string().url().default(getQdrantUrl()),
   NEO4J_URL: z.string().url().default(getNeo4jConfig().uri),
   NEO4J_USER: z.string().default('neo4j'),
@@ -92,7 +90,7 @@ const ConfigSchema = z.object({
   // Backward-compatible (legacy) aliases - optional, will be populated if present in env
   DATABASE_URL: z.string().url().optional(),
   MINIO_ENDPOINT: z.string().url().optional(),
-  MINIO_REGION: z.string().optional(),
+  MINIO_REGION: z.string().optional()
 });
 const parsed = ConfigSchema.safeParse({
   NODE_ENV: env.NODE_ENV,
@@ -110,8 +108,7 @@ const parsed = ConfigSchema.safeParse({
   NEO4J_URL: env.NEO4J_URI,
   NEO4J_USER: env.NEO4J_USER,
   NEO4J_PASSWORD: env.NEO4J_PASSWORD,
-  // Normalize MINIO entries for local development: allow bare host:port and prefix http://
-  MINIO_URL: (() => {
+  // Normalize MINIO entries for local development: allow bare host:port and prefix http://; MINIO_URL: (() => {
     const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
     if (!raw) return undefined;
     // If already looks like a URL, return as-is
@@ -142,7 +139,7 @@ const parsed = ConfigSchema.safeParse({
   // Legacy aliases - pass them directly if they exist in env
   DATABASE_URL: env.DATABASE_URL,
   MINIO_ENDPOINT: env.MINIO_ENDPOINT,
-  MINIO_REGION: env.MINIO_REGION,
+  MINIO_REGION: env.MINIO_REGION
 });
 if (!parsed.success) {
   console.error('❌ CONFIG validation failed:', parsed.error.format());
@@ -158,7 +155,7 @@ export const getEnvironmentInfo = () => ({
   nodeEnv: CONFIG.NODE_ENV,
   gpuEnabled: CONFIG.ENABLE_GPU,
   cudaEnabled: CONFIG.ENABLE_CUDA,
-  quicEnabled: CONFIG.QUIC_ENABLED,
+  quicEnabled: CONFIG.QUIC_ENABLED
 });
 // Provide backward-compatible alias helpers for legacy call sites.
 // These mirror old env names to the canonical keys in CONFIG.
@@ -167,5 +164,5 @@ export const LEGACY = {
   POSTGRES_URL: CONFIG.POSTGRES_URL,
   MINIO_ENDPOINT: CONFIG.MINIO_ENDPOINT ?? CONFIG.MINIO_URL,
   MINIO_URL: CONFIG.MINIO_URL,
-  MINIO_REGION: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined,
+  MINIO_REGION: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined
 };

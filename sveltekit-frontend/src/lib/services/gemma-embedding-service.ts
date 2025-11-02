@@ -23,25 +23,19 @@ interface EmbeddingResponse {
   };
   model?: string;
 }
-interface EmbeddingProvider {
-  name: string;
-  endpoint: string;
+interface EmbeddingProvider { name: string;, endpoint: string;
   headers?: Record<string, string>;
   timeout?: number;
   maxBatchSize?: number;
   rateLimit?: number; // requests per minute
 }
-interface EmbeddingMetrics {
-  provider: string;
-  requestCount: number;
+interface EmbeddingMetrics { provider: string;, requestCount: number;
   totalTokens: number;
   averageLatency: number;
   errorRate: number;
   cacheHitRate: number;
 }
-interface CachedEmbedding {
-  embedding: number[];
-  timestamp: number;
+interface CachedEmbedding { embedding: number[];, timestamp: number;
   provider: string;
   ttl: number; // milliseconds
 }
@@ -56,7 +50,7 @@ class EmbeddingCache {
       embedding,
       timestamp: Date.now(),
       provider,
-      ttl: ttl ?? this.defaultTTL,
+      ttl: ttl ?? this.defaultTTL
     });
   }
 
@@ -95,7 +89,7 @@ export class GemmaEmbeddingService {
   private providers: EmbeddingProvider[] = [];
   private metrics = new Map<string, EmbeddingMetrics>();
   private cache = new EmbeddingCache();
-  private rateLimiters = new Map<string, { requests: number; lastReset: number }>();
+  private rateLimiters = new Map<string, { requests: number;, lastReset: number }>();
 
   constructor() {
     this.initializeProviders();
@@ -111,11 +105,11 @@ export class GemmaEmbeddingService {
       endpoint: primaryEndpoint,
       headers: {
         'Content-Type': 'application/json',
-        ...(process.env.GEMMA_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_API_KEY}` } : {}),
+        ...(process.env.GEMMA_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_API_KEY}' } : {})
       },
       timeout: parseInt(process.env.GEMMA_TIMEOUT || '30000', 10),
       maxBatchSize: parseInt(process.env.GEMMA_BATCH_SIZE || '32', 10),
-      rateLimit: parseInt(process.env.GEMMA_RATE_LIMIT || '60', 10),
+      rateLimit: parseInt(process.env.GEMMA_RATE_LIMIT || '60', 10)
     });
 
     if (process.env.GEMMA_FALLBACK_ENDPOINT) {
@@ -124,11 +118,11 @@ export class GemmaEmbeddingService {
         endpoint: process.env.GEMMA_FALLBACK_ENDPOINT,
         headers: {
           'Content-Type': 'application/json',
-          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_FALLBACK_API_KEY}` } : {}),
+          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_FALLBACK_API_KEY}' } : {})
         },
         timeout: 30000,
         maxBatchSize: 16,
-        rateLimit: 30,
+        rateLimit: 30
       });
     }
 
@@ -138,11 +132,10 @@ export class GemmaEmbeddingService {
         endpoint: 'https://api.openai.com/v1/embeddings',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}' },
         timeout: 30000,
         maxBatchSize: 2048,
-        rateLimit: 3000,
+        rateLimit: 3000
       });
     }
 
@@ -153,7 +146,7 @@ export class GemmaEmbeddingService {
         totalTokens: 0,
         averageLatency: 0,
         errorRate: 0,
-        cacheHitRate: 0,
+        cacheHitRate: 0
       })
     );
   }
@@ -176,7 +169,7 @@ export class GemmaEmbeddingService {
       dimensions = 1536,
       normalize = true,
       useCache = true,
-      preferredProvider,
+      preferredProvider
     } = options;
 
     const textArray = Array.isArray(texts) ? texts : [texts];
@@ -251,7 +244,7 @@ export class GemmaEmbeddingService {
         this.updateMetrics(provider.name, texts.length, 0, Date.now() - Date.now()); // latency updated in callProvider separately
         return embeddings;
       } catch (err) {
-        console.warn(`Provider ${provider.name} failed:`, err);
+        console.warn(`Provider ${provider.name} failed: ', err);
         this.updateMetrics(provider.name, texts.length, 1, 0);
         continue;
       }
@@ -280,7 +273,7 @@ export class GemmaEmbeddingService {
         input: batch,
         model: options.model,
         dimensions: options.dimensions,
-        normalize: options.normalize,
+        normalize: options.normalize
       };
 
       // { changed code }
@@ -292,7 +285,7 @@ export class GemmaEmbeddingService {
           method: 'POST',
           headers: provider.headers ?? { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
-          signal: controller.signal,
+          signal: controller.signal
         });
 
         if (!response.ok) {
@@ -335,7 +328,7 @@ export class GemmaEmbeddingService {
       return response.embeddings;
     }
 
-    // Some providers return { data: [ { embedding: [...] } ] } or other shapes
+    // Some providers return { data: [ {, embedding: [...] } ] } or other shapes
     throw new Error('Unexpected embedding response format');
   }
 
@@ -402,8 +395,8 @@ export class GemmaEmbeddingService {
             const res = await fetch(provider.endpoint, {
               method: 'POST',
               headers: provider.headers ?? { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ input: ['health check'] }),
-              signal: controller.signal,
+              body: JSON.stringify({, input: ['health check'] }),
+              signal: controller.signal
             });
             results[provider.name] = res.ok;
           } finally {

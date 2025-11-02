@@ -55,8 +55,7 @@ const enhancedCachingOptimizerRankingHook = async (results: RagResult[]): Promis
 type CollectionsListResponse = {
   collections?: Array<{ name: string }>;
 };
-type CreateCollectionBody = {
-  vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' };
+type CreateCollectionBody = { vectors: {;, size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' };
   // optional additional fields used by some SDKs
   replication?: number;
   on_disk?: boolean;
@@ -96,7 +95,7 @@ type QdrantLike = {
   createCollection?: (name: string, body: CreateCollectionBody) => Promise<unknown>;
   createPayloadIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
   createFieldIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
-  search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
+  search?: (collectionName: string; body: SearchRequestBody) => Promise<SearchHit[]>;
   // nested APIs
   collectionsApi?: CollectionsApiShape;
   collections?: { get?: () => Promise<CollectionsListResponse> };
@@ -173,10 +172,10 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
 export async function initQdrantIndexes(): Promise<void> {
   try {
     const cols = await qdrantGetCollections();
-    const exists = cols?.collections?.some((c: { name: string }) => c.name === COLLECTION);
+    const exists = cols?.collections?.some((c: {, name: string }) => c.name === COLLECTION);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrantCreateCollection(COLLECTION, { vectors: { size: vectorSize, distance: 'Cosine' } });
+      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine` } });
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
     }
     // Payload indexes
@@ -184,12 +183,12 @@ export async function initQdrantIndexes(): Promise<void> {
       ['type', 'keyword'],
       ['title', 'text'],
       ['tags', 'keyword'],
-    ] as const) {
+    ] as const ) {
       try {
         // try normalized body shape used by some SDKs
         await qdrantCreatePayloadIndex(COLLECTION, {
           field_name: field,
-          field_schema: schema,
+          field_schema: schema
         });
       } catch {
         /* ignore if unsupported */
@@ -204,18 +203,18 @@ export async function initQdrantIndexes(): Promise<void> {
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-function normalizeWeights(items: Array<{ id: string; weight?: number }>) {
+function normalizeWeights(items: Array<{, id: string; weight?: number }>) {
   const weights = items.map(i => (typeof i.weight === 'number' ? i.weight : 0));
   const max = weights.length ? Math.max(...weights) : 1;
   return items.map((i, idx) => ({
     id: i.id,
-    norm: max > 0 ? weights[idx] / max : 0,
+    norm: max > 0 ? weights[idx] / max : 0
   }));
 }
 async function queryPostgresGraph(
   query: string,
   pool: Pool
-): Promise<Array<{ id: string; weight: number; content: string }>> {
+): Promise<Array<{ id: string; weight: number;, content: string }>> {
   try {
     const client = await pool.connect();
     const res = await client.query(
@@ -226,16 +225,13 @@ async function queryPostgresGraph(
     );
     client.release();
     // Postgres row type shim
-    type PostgresEdgeRow = {
-      target_node_id: string | number | null;
-      weight: number | null;
+    type PostgresEdgeRow = { target_node_id: string | number | null;, weight: number | null;
       relation: string | null;
     };
     return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
-      content: r.relation ?? '',
-    }));
+      content: r.relation ?? '` }));
   } catch (error) {
     console.error('[graph-rag] Postgres query failed:', error);
     return [];
@@ -255,9 +251,7 @@ export interface QueryOptions {
   filters?: Record<string, unknown>;
   wireCaching?: boolean;
 }
-export interface RagResult {
-  id: string;
-  score: number;
+export interface RagResult { id: string;, score: number;
   similarity: number;
   graphWeight?: number;
   content: string;
@@ -283,14 +277,14 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
     const res = (await qdrantSearch(COLLECTION, {
       vector: embedding,
       limit,
-      with_payload: true,
+      with_payload: true
     })) as QdrantHit[];
     baseHits = (res ?? []).map((r: QdrantHit) => ({
       id: r.id,
       similarity: r.score ?? 0,
       content: (r.payload?.content as string) ?? '',
       metadata: r.payload ?? {},
-      score: 0,
+      score: 0
     }));
   } catch (e) {
     console.warn('[graph-rag] Qdrant search failed:', e);
@@ -298,7 +292,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   if (baseHits.length === 0) return [];
   const baseIds = baseHits.map(h => h.id);
   // 3️⃣ Graph expansion
-  let neighbors: { id: string; weight: number }[] = [];
+  let neighbors: { id: string;, weight: number }[] = [];
   if (neo4jDriver) {
     const session = neo4jDriver.session();
     try {
@@ -310,13 +304,13 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
       `;
       const result = await session.run(cypher, {
         ids: baseIds,
-        limit: expand * limit,
+        limit: expand * limit
       });
       // Neo4j record shim
       type Neo4jRecordShim = { get: (k: string) => unknown };
       neighbors = (result.records as Neo4jRecordShim[]).map(rec => ({
         id: String(rec.get('id') ?? ''),
-        weight: Number(rec.get('weight') ?? 0),
+        weight: Number(rec.get('weight') ?? 0)
       }));
     } catch (e) {
       console.error('[graph-rag] Neo4j traversal failed:', e);
@@ -354,7 +348,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
       graphWeight: gw,
       score,
       content: '',
-      metadata: {},
+      metadata: {}
     });
   }
   let results = Array.from(candidates.values())

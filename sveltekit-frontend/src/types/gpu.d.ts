@@ -9,32 +9,26 @@ declare global {
   }
 }
 // CUDA Service Types
-export interface CUDADevice {
-  id: number;
-  name: string;
+export interface CUDADevice { id: number;, name: string;
   computeCapability: string;
   memoryTotal: number;
   memoryFree: number;
   temperature?: number;
   utilization?: number;
 }
-export interface CUDAServiceStatus {
-  available: boolean;
-  devices: CUDADevice[];
+export interface CUDAServiceStatus { available: boolean;, devices: CUDADevice[];
   driverVersion?: string;
   runtimeVersion?: string;
 }
 // WebGPU SOM Cache Types
-export interface WebGPUSOMCache {
-  maxNodes: number;
-  dimensions: number;
+export interface WebGPUSOMCache { maxNodes: number;, dimensions: number;
   learningRate: number;
   neighborhoodRadius: number;
   decayRate: number;
   // Methods that were missing
   findSimilar(vector: Float32Array, k?: number): Array<any>;
   updateWithWeight(id: string, vector: Float32Array, weight: number): void;
-  getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
+  getStats(): { nodeCount: number; avgSimilarity: number;, lastUpdate: number };
   storeVector(id: string, vector: Float32Array): void;
 }
 // WebGPU Topology Accelerator
@@ -56,11 +50,9 @@ export interface LocalLLMConnector {
 }
 // Hidden Markov Model for AssemblyScript compatibility
 export class HiddenMarkaraiModel {
-  constructor(config: {
-    stateCount: number;
-    observationCount: number;
-    transitionSmoothness: number;
-    emissionSmoothness: number;
+  constructor(config: { stateCount: number;, observationCount: number;
+   , transitionSmoothness: number;
+   , emissionSmoothness: number;
   });
   train(observations: number[][]): void;
   predict(sequence: number[]): number[];

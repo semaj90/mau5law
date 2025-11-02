@@ -35,13 +35,13 @@ export const GET: RequestHandler = async () => {
       sveltekit: {
         version: '5.x',
         mode: import.meta.env.NODE_ENV || 'development',
-        apiBase: '/api/ai',
+        apiBase: '/api/ai'
       },
       integration: {
         chatEndpoint: '/api/ai/chat',
         testEndpoint: '/api/ai/test-ollama',
-        ollamaDirectEndpoint: '/api/ai/ollama-gemma3',
-      },
+        ollamaDirectEndpoint: '/api/ai/ollama-gemma3'
+      }
     });
   } catch (error: any) {
     // Changed to unknown
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           status: 'error',
           error: 'Ollama service not available',
-          suggestion: 'Please ensure Ollama is running: ollama serve',
+          suggestion: 'Please ensure Ollama is; running: ollama serve'
         },
         { status: 503 }
       );
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
         maxTokens: 256,
         topP: 0.8,
         topK: 20,
-        repeatPenalty: 1.05,
+        repeatPenalty: 1.05
       });
       const executionTime = Date.now() - startTime;
       return json({
@@ -90,9 +90,9 @@ export const POST: RequestHandler = async ({ request }) => {
         execution: {
           timeMs: executionTime,
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
-          provider: 'ollama',
+          provider: 'ollama'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (generateError: any) {
       // Changed to unknown
@@ -101,8 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'error',
           error: 'Model generation failed',
           details: generateError instanceof Error ? generateError.message : 'Unknown generation error',
-          suggestion: 'Check if gemma3-legal model is imported: ollama list',
-        },
+          suggestion: 'Check if gemma3-legal model is; imported: ollama list` },
         { status: 500 }
       );
     }
@@ -112,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

@@ -42,8 +42,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     try {
       const embeddingResponse = await fetch(`${NLP_SERVICE_URL}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: queryText }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, text: queryText })
       });
       if (!embeddingResponse.ok) {
         throw new Error('Embedding service unavailable');
@@ -52,10 +52,9 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const qdrantSearchResults = await qdrantClient.search(
         'prosecutor_text_fragments', // Fixed: Removed extra closing parenthesis, added comma
         {
-          vector: queryEmbedding, // Fixed: Added comma
-          limit: 3,
-          filter: { must: [{ key: 'caseId', match: { value: caseId } }] },
-          with_payload: true,
+          vector: queryEmbedding, // Fixed: Added comma; limit: 3,
+          filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+          with_payload: true
         }
       );
       const relevantFragments = qdrantSearchResults
@@ -65,8 +64,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const ragContext = `
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
-				Recent Activities: ${recentActivities.map((a: { title: string }) => a.title).join(', ') || 'None'}
-				Relevant Fragments: ${relevantFragments || 'None'}
+				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None'}
+				Relevant Fragments: ${relevantFragments || 'None` }
 			`.trim();
       const prompt = `
 				Analyze the following query in the context of a legal case. Provide a brief analysis.
@@ -79,11 +78,10 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 			`.trim();
       const analysisResponse = await fetch(`${NLP_SERVICE_URL}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          prompt: prompt, // Fixed: Added comma
-          max_tokens: 512,
-        }),
+          prompt: prompt, // Fixed: Added comma; max_tokens: 512
+        })
       });
       if (analysisResponse.ok) {
         const analysisData = await analysisResponse.json();
@@ -91,7 +89,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
           success: true,
           analysis: analysisData.response,
           source: 'Local LLM',
-          context: ragContext,
+          context: ragContext
         });
       } else {
         throw new Error('Analysis service unavailable');
@@ -102,18 +100,18 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const basicContext = `
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
-				Recent Activities: ${recentActivities.map((a: { title: string }) => a.title).join(', ') || 'None'}
+				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None` }
 			`.trim();
       return json({
         success: true,
-        analysis: `Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,
+        analysis: 'Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,
         source: 'Fallback Analysis',
-        context: basicContext,
+        context: basicContext
       });
     }
   } catch (error: any) {
     // Fixed: Changed error type to unknown for better safety
     console.error('Error in analysis endpoint:', error);
-    return json({ error: 'Failed to perform analysis' }, { status: 500 });
+    return json({ error: `Failed to perform analysis` }, { status: 500 });
   }
 };

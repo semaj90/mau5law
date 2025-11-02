@@ -18,7 +18,7 @@ import {
   varchar,
   real,
   index,
-  vector,
+  vector
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
@@ -34,7 +34,7 @@ export const users = pgTable('users', {
   role: varchar('role', { length: 50 }).notNull().default('user'),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -46,7 +46,7 @@ export const cases = pgTable('cases', {
   createdBy: uuid('created_by').references(() => users.id),
   assignedTo: uuid('assigned_to').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 export const documents = pgTable(
   'documents',
@@ -66,12 +66,12 @@ export const documents = pgTable(
     source: varchar('source', { length: 100 }).default('upload'),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     embeddingIdx: index('documents_embedding_idx').on(table.embedding),
     caseIdx: index('documents_case_idx').on(table.caseId),
-    contentIdx: index('documents_content_idx').on(table.content),
+    contentIdx: index('documents_content_idx').on(table.content)
   }),
 );
 export const documentChunks = pgTable(
@@ -86,12 +86,12 @@ export const documentChunks = pgTable(
     endIndex: integer('end_index'),
     tokenCount: integer('token_count'),
     metadata: json('metadata'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table) => ({
     embeddingIdx: index('document_chunks_embedding_idx').on(table.embedding),
     documentIdx: index('document_chunks_document_idx').on(table.documentId),
-    chunkIdx: index('document_chunks_chunk_idx').on(table.documentId, table.chunkIndex),
+    chunkIdx: index('document_chunks_chunk_idx').on(table.documentId, table.chunkIndex)
   }),
 );
 export const evidence = pgTable(
@@ -112,11 +112,11 @@ export const evidence = pgTable(
     embedding: vector('embedding', { dimensions: 384 }),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     embeddingIdx: index('evidence_embedding_idx').on(table.embedding),
-    caseIdx: index('evidence_case_idx').on(table.caseId),
+    caseIdx: index('evidence_case_idx').on(table.caseId)
   }),
 );
 export const searchIndex = pgTable(
@@ -129,12 +129,12 @@ export const searchIndex = pgTable(
     embedding: vector('embedding', { dimensions: 384 }).notNull(),
     metadata: json('metadata'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     embeddingIdx: index('search_index_embedding_idx').on(table.embedding),
     entityIdx: index('search_index_entity_idx').on(table.entityType, table.entityId),
-    contentIdx: index('search_index_content_idx').on(table.content),
+    contentIdx: index('search_index_content_idx').on(table.content)
   }),
 );
 export const aiInteractions = pgTable(
@@ -153,12 +153,12 @@ export const aiInteractions = pgTable(
     contextEmbedding: vector('context_embedding', { dimensions: 384 }),
     feedback: json('feedback'),
     metadata: json('metadata'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table) => ({
     contextEmbeddingIdx: index('ai_interactions_context_embedding_idx').on(table.contextEmbedding),
     sessionIdx: index('ai_interactions_session_idx').on(table.sessionId),
-    userIdx: index('ai_interactions_user_idx').on(table.userId),
+    userIdx: index('ai_interactions_user_idx').on(table.userId)
   }),
 );
 export const vectorSimilarityCache = pgTable(
@@ -171,11 +171,11 @@ export const vectorSimilarityCache = pgTable(
     hitCount: integer('hit_count').default(1),
     lastAccessed: timestamp('last_accessed').defaultNow(),
     expiresAt: timestamp('expires_at'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table) => ({
     queryHashIdx: index('vector_similarity_cache_hash_idx').on(table.queryHash),
-    expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt),
+    expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt)
   }),
 );
 export const legalKnowledgeBase = pgTable(
@@ -196,12 +196,12 @@ export const legalKnowledgeBase = pgTable(
     verifiedBy: uuid('verified_by').references(() => users.id),
     verifiedAt: timestamp('verified_at'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     embeddingIdx: index('legal_knowledge_base_embedding_idx').on(table.embedding),
     categoryIdx: index('legal_knowledge_base_category_idx').on(table.category, table.subcategory),
-    jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction),
+    jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction)
   }),
 );
 export const embeddingJobs = pgTable(
@@ -221,12 +221,12 @@ export const embeddingJobs = pgTable(
     error: text('error'),
     metadata: json('metadata'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     statusIdx: index('embedding_jobs_status_idx').on(table.status),
     entityIdx: index('embedding_jobs_entity_idx').on(table.entityType, table.entityId),
-    priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt),
+    priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt)
   }),
 );
 export const personsOfInterest = pgTable(
@@ -241,11 +241,11 @@ export const personsOfInterest = pgTable(
     isActive: boolean('is_active').default(true),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     nameIdx: index('persons_of_interest_name_idx').on(table.name),
-    activeIdx: index('persons_of_interest_active_idx').on(table.isActive),
+    activeIdx: index('persons_of_interest_active_idx').on(table.isActive)
   }),
 );
 export const casePoiRelations = pgTable(
@@ -257,10 +257,10 @@ export const casePoiRelations = pgTable(
     role: varchar('role', { length: 100 }),
     notes: text('notes'),
     createdBy: uuid('created_by').references(() => users.id),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table) => ({
-    casePoiIdx: index('case_poi_relations_case_poi_idx').on(table.caseId, table.poiId),
+    casePoiIdx: index('case_poi_relations_case_poi_idx').on(table.caseId, table.poiId)
   }),
 );
 export const evidenceBoards = pgTable(
@@ -274,11 +274,11 @@ export const evidenceBoards = pgTable(
     metadata: json('metadata'),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     caseIdx: index('evidence_boards_case_idx').on(table.caseId),
-    activeIdx: index('evidence_boards_active_idx').on(table.isActive),
+    activeIdx: index('evidence_boards_active_idx').on(table.isActive)
   }),
 );
 export const evidenceBoardItems = pgTable(
@@ -297,13 +297,13 @@ export const evidenceBoardItems = pgTable(
     zIndex: integer('z_index').default(0),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     boardIdx: index('evidence_board_items_board_idx').on(table.boardId),
     evidenceIdx: index('evidence_board_items_evidence_idx').on(table.evidenceId),
     poiIdx: index('evidence_board_items_poi_idx').on(table.poiId),
-    typeIdx: index('evidence_board_items_type_idx').on(table.itemType),
+    typeIdx: index('evidence_board_items_type_idx').on(table.itemType)
   }),
 );
 export const evidenceBoardConnections = pgTable(
@@ -320,13 +320,13 @@ export const evidenceBoardConnections = pgTable(
     isVisible: boolean('is_visible').default(true),
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table) => ({
     boardIdx: index('evidence_board_connections_board_idx').on(table.boardId),
     fromItemIdx: index('evidence_board_connections_from_item_idx').on(table.fromItemId),
     toItemIdx: index('evidence_board_connections_to_item_idx').on(table.toItemId),
-    typeIdx: index('evidence_board_connections_type_idx').on(table.connectionType),
+    typeIdx: index('evidence_board_connections_type_idx').on(table.connectionType)
   }),
 );
 // ------------------------------------------------------------------
@@ -344,21 +344,21 @@ export const usersRelations = relations(users, ({ many }) => ({
   createdEvidenceBoards: many(evidenceBoards, { relationName: 'evidence_board_creator' }),
   createdEvidenceBoardItems: many(evidenceBoardItems, { relationName: 'evidence_board_item_creator' }),
   createdEvidenceBoardConnections: many(evidenceBoardConnections, {
-    relationName: 'evidence_board_connection_creator',
-  }),
+    relationName: 'evidence_board_connection_creator'
+  })
 }));
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case one(cases, { fields: [documents.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [documents.createdBy],
     references: [users.id],
-    relationName: 'document_creator',
+    relationName: 'document_creator'
   }),
   chunks: many(documentChunks),
-  evidence: many(evidence),
+  evidence: many(evidence)
 }));
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
-  document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
+  document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] })
 }));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case one(cases, { fields: [evidence.caseId], references: [cases.id] }),
@@ -366,41 +366,41 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
   creator: one(users, {
     fields: [evidence.createdBy],
     references: [users.id],
-    relationName: 'evidence_creator',
-  }),
+    relationName: 'evidence_creator'
+  })
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.createdBy],
     references: [users.id],
-    relationName: 'case_creator',
+    relationName: 'case_creator'
   }),
   assignee: one(users, {
     fields: [cases.assignedTo],
     references: [users.id],
-    relationName: 'case_assignee',
+    relationName: 'case_assignee'
   }),
   documents: many(documents),
   evidence: many(evidence),
   aiInteractions: many(aiInteractions),
   casePoiRelations: many(casePoiRelations),
-  evidenceBoards: many(evidenceBoards),
+  evidenceBoards: many(evidenceBoards)
 }));
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, { fields: [aiInteractions.userId], references: [users.id] }),
-  case one(cases, { fields: [aiInteractions.caseId], references: [cases.id] }),
+  case one(cases, { fields: [aiInteractions.caseId], references: [cases.id] })
 }));
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
-  verifier: one(users, { fields: [legalKnowledgeBase.verifiedBy], references: [users.id] }),
+  verifier: one(users, { fields: [legalKnowledgeBase.verifiedBy], references: [users.id] })
 }));
 export const personsOfInterestRelations = relations(personsOfInterest, ({ one, many }) => ({
   creator: one(users, {
     fields: [personsOfInterest.createdBy],
     references: [users.id],
-    relationName: 'poi_creator',
+    relationName: 'poi_creator'
   }),
   caseRelations: many(casePoiRelations),
-  evidenceBoardItems: many(evidenceBoardItems),
+  evidenceBoardItems: many(evidenceBoardItems)
 }));
 export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) => ({
   case one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
@@ -408,18 +408,18 @@ export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) =
   creator: one(users, {
     fields: [casePoiRelations.createdBy],
     references: [users.id],
-    relationName: 'case_poi_relation_creator',
-  }),
+    relationName: 'case_poi_relation_creator'
+  })
 }));
 export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
   case one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [evidenceBoards.createdBy],
     references: [users.id],
-    relationName: 'evidence_board_creator',
+    relationName: 'evidence_board_creator'
   }),
   items: many(evidenceBoardItems),
-  connections: many(evidenceBoardConnections),
+  connections: many(evidenceBoardConnections)
 }));
 export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardItems.boardId], references: [evidenceBoards.id] }),
@@ -428,8 +428,8 @@ export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one 
   creator: one(users, {
     fields: [evidenceBoardItems.createdBy],
     references: [users.id],
-    relationName: 'evidence_board_item_creator',
-  }),
+    relationName: 'evidence_board_item_creator'
+  })
 }));
 export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnections, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardConnections.boardId], references: [evidenceBoards.id] }),
@@ -438,8 +438,7 @@ export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnecti
   creator: one(users, {
     fields: [evidenceBoardConnections.createdBy],
     references: [users.id],
-    relationName: 'evidence_board_connection_creator',
-  }),
+    relationName: `evidence_board_connection_creator` })
 }));
 export const embeddingJobsRelations = relations(embeddingJobs, () => ({
   // Polymorphic relation. Query manually based on entityType and entityId.

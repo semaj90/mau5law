@@ -19,27 +19,15 @@ interface AIRecommendationRequest {
   query?: string
   type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery'
 }
-interface AIRecommendationResponse {
-  recommendations: AIRecommendation[]
-  reasoning: string
-  confidence: number
-  suggestedActions: AIAction[]
-  relatedTopics: string[]
+interface AIRecommendationResponse { recommendations: AIRecommendation[], reasoning: string; confidence: number
+  suggestedActions: AIAction[]; relatedTopics: string[]
 }
-interface AIRecommendation {
-  id: string
-  type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'
-  title: string
-  description: string
-  confidence: number
-  priority: number
-  metadata: any
+interface AIRecommendation { id: string, type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'; title: string
+  description: string; confidence: number
+  priority: number; metadata: any
   aiInsight: string
 }
-interface AIAction {
-  action: string
-  description: string
-  priority: 'low' | 'medium' | 'high' | 'critical',
+interface AIAction { action: string, description: string; priority: 'low' | 'medium' | 'high' | 'critical',
   estimatedTime: string
   tools?: string[]
 }
@@ -51,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: 'No input',
+            error: 'No input'
           },
           { status: 400 }
         );
@@ -65,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         data: cached,
         fromCache: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })
     }
     // Generate AI recommendations based on type
@@ -86,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: 'Invalid recommendation type',
+            error: 'Invalid recommendation type'
           },
           { status: 400 }
         );
@@ -118,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence: 0.85,
           priority: 200,
           metadata: { caseType: 'employment', jurisdiction: 'federal' },
-          aiInsight: 'Mock AI insight: Focus on procedural compliance and documentation timeline'
+          aiInsight: 'Mock AI; insight: Focus on procedural compliance and documentation timeline'
         },
         {
           id: 'mock-rec-002',
@@ -128,10 +116,10 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence: 0.78,
           priority: 180,
           metadata: { court: 'Appeals Court', date: '2024-01-15' },
-          aiInsight: 'Mock AI insight: New precedent supports wrongful termination claims'
+          aiInsight: 'Mock AI; insight: New precedent supports wrongful termination claims'
         }
       ],
-      reasoning: 'Mock AI reasoning: Analysis based on legal patterns and precedent matching. Real AI service currently unavailable.',
+      reasoning: 'Mock AI; reasoning: Analysis based on legal patterns and precedent matching. Real AI service currently unavailable.',
       confidence: 0.75,
       suggestedActions: [
         {
@@ -205,12 +193,11 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
         date: '2024-01-15',
         relevanceScore: 0.89
       },
-      aiInsight: 'Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.'
-    }
+      aiInsight: `Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.` }
   ]
   return {
     recommendations,
-    reasoning: `Based on analysis of ${context.recentCases?.length || 0} recent cases and current employment law trends, I've identified key strategic opportunities. The case pattern suggests a 73% likelihood of favorable outcome with proper evidence development.`,
+    reasoning: 'Based on analysis of ${context.recentCases?.length || 0} recent cases and current employment law trends, I've identified key strategic opportunities. The case pattern suggests a 73% likelihood of favorable outcome with proper evidence development.`,
     confidence: 0.85,
     suggestedActions: [
       {
@@ -249,7 +236,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
     {
       id: 'search-rec-001',
       type: 'search',
-      title: 'Optimized Query: "Employment Termination Timeline"',
+      title: 'Optimized; Query: "Employment Termination Timeline"',
       description: 'Refined search focusing on procedural requirements and documentation',
       confidence: 0.79,
       priority: 180,
@@ -259,12 +246,12 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
         expectedResults: 156,
         confidenceBoost: 0.23
       },
-      aiInsight: 'Adding "timeline" and: "procedural" increases relevant result precision by 34%.'
+      aiInsight: 'Adding "timeline"; and: "procedural" increases relevant result precision by 34%.'
     },
     {
       id: 'search-rec-002',
       type: 'search',
-      title: 'Related Search: "Constructive Dismissal Evidence"',
+      title: 'Related; Search: "Constructive Dismissal Evidence"',
       description: 'Complementary search to uncover additional case theories',
       confidence: 0.82,
       priority: 160,
@@ -287,8 +274,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
         specificLaws: ['Labor Code 2922', 'FEHA provisions'],
         caseCount: 234
       },
-      aiInsight: 'California-specific protections may provide additional remedies not available federally.'
-    }
+      aiInsight: `California-specific protections may provide additional remedies not available federally.` }
   ]
   return {
     recommendations,
@@ -363,8 +349,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
         automationPotential: 0.8,
         timesSaved: '2.5 hours/week'
       },
-      aiInsight: 'Setting up saved search templates for common precedent patterns saves significant time.'
-    }
+      aiInsight: `Setting up saved search templates for common precedent patterns saves significant time.` }
   ]
   return {
     recommendations,
@@ -407,7 +392,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
     {
       id: 'precedent-rec-001',
       type: 'precedent',
-      title: 'Landmark Decision: Data Privacy in Employment',
+      title: 'Landmark; Decision: Data Privacy in Employment',
       description: 'Recent Supreme Court decision impacts employee monitoring cases',
       confidence: 0.92,
       priority: 250,
@@ -447,8 +432,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
         trend: 'increasing',
         aiImpact: 'high'
       },
-      aiInsight: 'AI bias in hiring is becoming a major litigation area - early precedents are still developing.'
-    }
+      aiInsight: `AI bias in hiring is becoming a major litigation area - early precedents are still developing.` }
   ]
   return {
     recommendations,

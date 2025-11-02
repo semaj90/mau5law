@@ -100,9 +100,8 @@ export async function rerank(
   const res = await fetch('/api/rerank', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query, candidates, options }),
+      'Content-Type': 'application/json` },
+    body: JSON.stringify({ query, candidates, options })
   });
   let reranked: Candidate[] = [];
   if (!res.ok) {

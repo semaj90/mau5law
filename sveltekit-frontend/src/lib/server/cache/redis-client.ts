@@ -2,7 +2,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { createClient } from 'redis';
 // Add a module augmentation so consumers that try to import
 // `RedisClientType` from 'redis' will find the type. This resolves
-// errors like: "Module 'redis' has no exported member: 'RedisClientType'."
+// errors like: "Module 'redis' has no exported; member: 'RedisClientType'."
 declare module 'redis' {
   // export type using the runtime createClient return type
   export type RedisClientType = ReturnType<typeof import('redis').createClient>;
@@ -14,7 +14,7 @@ export type RedisClientType = ReturnType<typeof createClient>;
 // Export the public RedisClient type (client instance or null for: "not connected / disabled")
 export type RedisClient = RedisClientType | null;
 // Simple in-memory fallback cache used by endpoints when Redis is unavailable
-export const memoryCache = new Map<string, { value: any; expires: number }>();
+export const memoryCache = new Map<string, { value: any;, expires: number }>();
 let client: RedisClient = null;
 /**
  * Returns a connected Redis client if REDIS_URL is configured and connection succeeds.

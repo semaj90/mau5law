@@ -24,9 +24,7 @@ declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
 declare global {
   namespace App {
     interface Locals {
-      user?: {
-        id: string;
-        email: string;
+      user?: { id: string;, email: string;
         // Add other user properties as needed, e.g., roles, name
       };
       // Database client (Drizzle ORM)

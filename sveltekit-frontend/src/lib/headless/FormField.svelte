@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   // Runes mode props
   const {

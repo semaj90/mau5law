@@ -6,34 +6,24 @@
 // Type declarations
 declare global {
   namespace Telemetry {
-    interface BaseEvent {
-      timestamp: number;
-      sessionId: string;
+    interface BaseEvent { timestamp: number;, sessionId: string;
       userId?: string;
     }
-    interface GPUEvent extends BaseEvent {
-      type: 'gpu_usage' | 'context_switch' | 'memory_allocation';
-      gpuUtilization: number;
+    interface GPUEvent extends BaseEvent { type: 'gpu_usage' | 'context_switch' | 'memory_allocation';, gpuUtilization: number;
       memoryUsed: number;
       temperature?: number;
     }
-    interface PerformanceEvent extends BaseEvent {
-      type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';
-      duration: number;
+    interface PerformanceEvent extends BaseEvent { type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';, duration: number;
       operation: string;
       success: boolean;
     }
-    interface ErrorEvent extends BaseEvent {
-      type: 'error' | 'warning' | 'critical';
-      message: string;
+    interface ErrorEvent extends BaseEvent { type: 'error' | 'warning' | 'critical';, message: string;
       stack?: string;
       component: string;
     }
   }
   namespace Nintendo {
-    interface MemoryBank {
-      id: number;
-      size: number;
+    interface MemoryBank { id: number;, size: number;
       used: number;
       available: number;
       type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';
@@ -48,7 +38,7 @@ declare global {
 }
 // Environment configuration mock (to avoid import issues)
 const ENV_CONFIG = {
-  GPU_DEBUG: false,
+  GPU_DEBUG: false
 };
 // Import meta environment variable handling
 interface ImportMetaEnv {
@@ -58,15 +48,11 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 export type TelemetryEvent = Telemetry.GPUEvent | Telemetry.PerformanceEvent | Telemetry.ErrorEvent;
-interface TelemetryOptions {
-  maxBufferSize: number;
-  flushInterval: number; // milliseconds
+interface TelemetryOptions { maxBufferSize: number;, flushInterval: number; // milliseconds
   enableDebug: boolean;
   endpoint?: string;
 }
-interface TelemetryMetrics {
-  eventsCollected: number;
-  eventsFlushed: number;
+interface TelemetryMetrics { eventsCollected: number;, eventsFlushed: number;
   bufferSize: number;
   avgFlushTime: number;
   lastFlushTimestamp: number;
@@ -90,7 +76,7 @@ export class TelemetryEventBus {
       eventsFlushed: 0,
       bufferSize: 0,
       avgFlushTime: 0,
-      lastFlushTimestamp: 0,
+      lastFlushTimestamp: 0
     };
     this.startAutoFlush();
     // Browser integration
@@ -100,7 +86,7 @@ export class TelemetryEventBus {
     if (this.options.enableDebug) {
       console.log('[Telemetry] Event bus initialized', {
         sessionId: this.sessionId,
-        options: this.options,
+        options: this.options
       });
     }
   }
@@ -117,7 +103,7 @@ export class TelemetryEventBus {
     const event: Telemetry.GPUEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     this.addEvent(event);
   }
@@ -128,7 +114,7 @@ export class TelemetryEventBus {
     const event: Telemetry.PerformanceEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     this.addEvent(event);
   }
@@ -139,7 +125,7 @@ export class TelemetryEventBus {
     const event: Telemetry.ErrorEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     this.addEvent(event);
     // Immediate flush for errors
@@ -164,7 +150,7 @@ export class TelemetryEventBus {
         type: 'error',
         message: error.message,
         stack: error.stack,
-        component,
+        component
       });
       throw err;
     } finally {
@@ -173,7 +159,7 @@ export class TelemetryEventBus {
         type: 'api_latency',
         duration,
         operation,
-        success,
+        success
       });
     }
   }
@@ -205,14 +191,14 @@ export class TelemetryEventBus {
       type: 'vector_encoding',
       duration: encodingTime,
       operation: `vector_encode_${dimensions}d`,
-      success,
+      success
     });
     if (this.options.enableDebug) {
       console.log('[Telemetry] Vector encoding', {
         dimensions,
         encodingTime: `${encodingTime.toFixed(2)}ms`,
         compressionRatio: `${(compressionRatio * 100).toFixed(1)}%`,
-        success,
+        success
       });
     }
   }
@@ -222,7 +208,7 @@ export class TelemetryEventBus {
   getMetrics(): TelemetryMetrics & { bufferUtilization: number } {
     return {
       ...this.metrics,
-      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100,
+      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100
     };
   }
   /**
@@ -237,11 +223,11 @@ export class TelemetryEventBus {
       environment: {
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
         viewport: typeof window !== 'undefined' ? { width: window.innerWidth, height: window.innerHeight } : null,
-        gpu: typeof window !== 'undefined' && window.__GPU_MANAGER__ ? await this.getGPUInfo() : null,
-      },
+        gpu: typeof window !== 'undefined' && window.__GPU_MANAGER__ ? await this.getGPUInfo() : null
+      }
     };
     return new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json',
+      type: 'application/json'
     });
   }
   /**
@@ -307,14 +293,13 @@ export class TelemetryEventBus {
     const payload = {
       sessionId: this.sessionId,
       timestamp: Date.now(),
-      events,
+      events
     };
     const response = await fetch(this.options.endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+        'Content-Type': 'application/json` },
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`Telemetry endpoint returned ${response.status}`);
@@ -328,8 +313,7 @@ export class TelemetryEventBus {
       if (window.__GPU_MANAGER__) {
         return {
           acceleration: window.__GPU_MANAGER__.getAcceleration(),
-          contextType: 'detected',
-        };
+          contextType: 'detected` };
       }
     } catch {
       return null;

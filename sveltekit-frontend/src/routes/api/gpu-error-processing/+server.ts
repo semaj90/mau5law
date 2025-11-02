@@ -5,9 +5,7 @@ import type { RequestHandler } from './$types.js';
 
 const execAsync = promisify(exec);
 
-export interface ParsedError {
-  id: string;
-  code: string;
+export interface ParsedError { id: string;, code: string;
   message: string;
   file: string;
   line: number;
@@ -17,9 +15,7 @@ export interface ParsedError {
 }
 
 // New: concrete fix suggestion type to avoid `any`
-export interface FixSuggestion {
-  errorId: string;
-  originalCode: string;
+export interface FixSuggestion { errorId: string;, originalCode: string;
   fixedCode: string;
   confidence: number;
   explanation: string;
@@ -49,8 +45,8 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
         file: fileMatch ? fileMatch[1].trim() : 'unknown',
         line: fileMatch ? parseInt(fileMatch[2], 10) : 0,
         column: fileMatch ? parseInt(fileMatch[3], 10) : 0,
-        severity: line.includes('error') ? ('error' as const) : ('warning' as const),
-        category: detectErrorCategory(tsCodeMatch ? `TS${tsCodeMatch[1]}` : '', line),
+        severity: line.includes('error') ? ('error' as const ) : ('warning' as const ),
+        category: detectErrorCategory(tsCodeMatch ? `TS${tsCodeMatch[1]}` : '', line)
       };
     });
 
@@ -76,7 +72,7 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
         processing_time_ms: processingTime,
         gpu_utilization: 78.5 + Math.random() * 15, // Simulated GPU usage
         memory_usage_mb: 1024 + Math.random() * 500,
-        tokens_per_second: ((fixes.length * 150) / processingTime) * 1000,
+        tokens_per_second: ((fixes.length * 150) / processingTime) * 1000
       },
       status: 'completed',
       categories: Object.entries(categorizedErrors).map(([category, errors]) => {
@@ -88,9 +84,9 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
         return {
           name: category,
           count,
-          avgConfidence,
+          avgConfidence
         };
-      }),
+      })
     };
 
     console.log(`⚡ GPU processing complete:`);
@@ -99,7 +95,7 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
     console.log(`   - Processing time: ${processingTime.toFixed(2)}ms`);
     console.log(
       `   - GPU utilization: ${(
-        result as { performance: { gpu_utilization: number } }
+        result as {, performance: {, gpu_utilization: number } }
       ).performance.gpu_utilization.toFixed(1)}%`
     );
 
@@ -111,7 +107,7 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
       {
         error: 'GPU processing failed',
         message,
-        status: 'failed',
+        status: 'failed'
       },
       { status: 500 }
     );
@@ -155,28 +151,25 @@ async function processErrorsWithGPU(categorizedErrors: Record<string, ParsedErro
 
 // change signature to return FixSuggestion
 function generateErrorFix(error: ParsedError, category: string): FixSuggestion {
-  const fixTemplates: Record<string, { code: string; explanation: string }> = {
-    svelte5: {
-      code: 'let { prop1, prop2, ...restProps } = $props();',
-      explanation: 'Convert let { ... } = $props(); for Svelte 5 compatibility',
+  const fixTemplates: Record<string, { code: string;, explanation: string }> = { svelte5: {, code: 'let { prop1, prop2, ...restProps } = $props();',
+      explanation: 'Convert let { ... } = $props(); for Svelte 5 compatibility'
     },
     import {
       code: '// Check import path and module existence',
-      explanation: 'Verify import statement and file location',
+      explanation: 'Verify import statement and file location'
     },
     type: { code: '// Add proper type annotations', explanation: 'Fix TypeScript type mismatch' },
     syntax: {
       code: '// Fix syntax error (missing semicolon, bracket, etc.)',
-      explanation: 'Correct syntax issue',
+      explanation: 'Correct syntax issue'
     },
     binding: {
       code: '// Update Svelte binding syntax',
-      explanation: 'Fix Svelte event or data binding',
+      explanation: 'Fix Svelte event or data binding'
     },
     unknown: {
       code: '// Review error context and apply appropriate fix',
-      explanation: 'General error analysis required',
-    },
+      explanation: `General error analysis required` }
   };
   const template = fixTemplates[category] || fixTemplates.unknown;
   const priority: FixSuggestion['priority'] =
@@ -188,7 +181,7 @@ function generateErrorFix(error: ParsedError, category: string): FixSuggestion {
     confidence: 0.7 + Math.random() * 0.25,
     explanation: template.explanation,
     category,
-    priority,
+    priority
   };
 }
 
@@ -205,8 +198,7 @@ export const GET: RequestHandler = async () => {
       'Performance optimization'
     ],
     endpoints: {
-      process: 'POST /api/gpu-error-processing',
-      status: 'GET /api/gpu-error-processing'
-    }
+     , process: 'POST /api/gpu-error-processing',
+      status: `GET /api/gpu-error-processing` }
   })
 }

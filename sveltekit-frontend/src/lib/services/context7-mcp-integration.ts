@@ -5,9 +5,7 @@ import type { Document } from '$lib/types';
  */
 import { writable, get } from "svelte/store";
 // Types and Interfaces
-export interface Context7BestPractice {
-  id: string;
-  category: 'performance' | 'security' | 'accessibility' | 'maintainability';
+export interface Context7BestPractice { id: string;, category: 'performance' | 'security' | 'accessibility' | 'maintainability';
   title: string;
   description: string;
   implementation: string;
@@ -19,14 +17,10 @@ export interface Context7BestPractice {
   legalSpecific: boolean;
 }
 
-export interface Context7Integration {
-  component: string;
-  context: string;
+export interface Context7Integration { component: string;, context: string;
   bestPractices: Context7BestPractice[];
   integrationGuide: string;
-  performance_metrics?: {
-    load_time: number;
-  bundle_size: number;
+  performance_metrics?: { load_time: number;, bundle_size: number;
   lighthouse_score: number;
   }
 }
@@ -38,9 +32,7 @@ export interface AIRecommendation {
   [key: string]: any;
 }
 
-export interface MCPEnhancedRecommendation {
-  originalRecommendation: AIRecommendation;
-  context7Enhancement: Context7BestPractice;
+export interface MCPEnhancedRecommendation { originalRecommendation: AIRecommendation;, context7Enhancement: Context7BestPractice;
   combinedConfidence: number;
   implementationPlan: string[];
   riskMitigation: string[];
@@ -71,12 +63,11 @@ class Context7MCPIntegration {
       title: 'Legal Document Caching',
       description: 'Implement specialized caching for legal documents with confidentiality controls',
       implementation: 'Use advanced cache manager with TTL and tags for legal documents',
-      codeExample: `// Cache legal document with confidentiality tags
+      codeExample: '// Cache legal document with confidentiality tags
 await advancedCache.set('doc_' + documentId, document, {
   ttl: 3600,
   tags: ['legal', 'confidential', caseId],
-  priority: 'high'
-});`,
+  priority: 'high' });`,
       priority: 'high',
       estimatedEffort: '4-6 hours',
       dependencies: ['advanced-cache-manager', 'legal-security-utils'],
@@ -89,7 +80,7 @@ await advancedCache.set('doc_' + documentId, document, {
       title: 'AI Recommendation Engine',
       description: 'Integrate AI-powered recommendation system for legal workflows',
       implementation: 'Connect recommendation engine with legal context and user behavior',
-      codeExample: `// Generate legal recommendations
+      codeExample: '// Generate legal recommendations
 const recommendations = await aiRecommendationEngine.generateRecommendations({
   component: 'legal-search',
   userBehavior: userActivity,
@@ -107,7 +98,7 @@ const recommendations = await aiRecommendationEngine.generateRecommendations({
       title: 'Intelligent Lazy Loading',
       description: 'Implement intersection observer-based lazy loading with prefetching',
       implementation: 'Use advanced cache manager with lazy loading for legal documents and components',
-      codeExample: `// Observe element for lazy loading
+      codeExample: '// Observe element for lazy loading
 const observer = new IntersectionObserver(async (entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
@@ -128,7 +119,7 @@ const observer = new IntersectionObserver(async (entries) => {
       title: 'Legal Data Security Standards',
       description: 'Implement attorney-client privilege and confidentiality protections',
       implementation: 'Add encryption, audit logging, and access controls for sensitive legal data',
-      codeExample: `// Encrypt sensitive legal data before caching
+      codeExample: '// Encrypt sensitive legal data before caching
 const encryptedData = await encryptLegalData(document, {
   privileged: document.isPrivileged,
   classification: document.securityLevel

@@ -13,7 +13,7 @@ export async function upsertVector(
     // older/newer SDK shapes can differ; try to match common param shapes
     return await client.upsert({
       collection_name: collection,
-      points: [{ id, vector, payload }],
+      points: [{ id, vector, payload }]
     }).catch((e: any) => {
       // some SDK variants expect different key names
       throw e;
@@ -22,13 +22,13 @@ export async function upsertVector(
   if (typeof client.upsertPoints === 'function') {
     return await client.upsertPoints({
       collectionName: collection,
-      points: [{ id, vector, payload }],
+      points: [{ id, vector, payload }]
     });
   }
   // fallback: attempt low-level request if available
   if (typeof client.request === 'function') {
     return await client.request('POST', `/collections/${collection}/points?wait=true`, {
-      points: [{ id, vector, payload }],
+      points: [{ id, vector, payload }]
     });
   }
   throw new Error('Qdrant client does not expose an upsert-like method');
@@ -43,20 +43,20 @@ export async function searchVector(
     return await client.search({
       collection_name: collection,
       vector,
-      limit,
+      limit
     });
   }
   if (typeof client.searchPoints === 'function') {
     return await client.searchPoints({
       collectionName: collection,
       vector,
-      limit,
+      limit
     });
   }
   if (typeof client.request === 'function') {
     return await client.request('POST', `/collections/${collection}/points/search`, {
       vector,
-      limit,
+      limit
     });
   }
   throw new Error('Qdrant client does not expose a search-like method');

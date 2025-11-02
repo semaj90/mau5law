@@ -20,9 +20,7 @@ import type { PgVectorIndexingService } from './pgvector-indexing-service';
 /**
  * MCP Context7 Configuration
  */
-export interface MCPContext7Config {
-  baseUrl: string;
-  workers: number;
+export interface MCPContext7Config { baseUrl: string;, workers: number;
   timeout: number;
   retryAttempts: number;
   fallbackToLocal: boolean;
@@ -30,9 +28,7 @@ export interface MCPContext7Config {
 /**
  * Function Call Request
  */
-export interface FunctionCallRequest {
-  functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';
-  input: {
+export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: {
     text: string;
     context?: string;
     query?: string;
@@ -45,9 +41,7 @@ export interface FunctionCallRequest {
 /**
  * Function Call Response
  */
-export interface FunctionCallResponse {
-  functionName: string;
-  result: any;
+export interface FunctionCallResponse { functionName: string;, result: any;
   processingTime: number;
   model: string;
   success: boolean;
@@ -56,18 +50,14 @@ export interface FunctionCallResponse {
 /**
  * Parallel Embedding Request
  */
-export interface ParallelEmbeddingRequest {
-  texts: string[];
-  embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
+export interface ParallelEmbeddingRequest { texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
   parallelism?: number;
   cacheKeys?: string[];
 }
 /**
  * Parallel Embedding Response
  */
-export interface ParallelEmbeddingResponse {
-  embeddings: number[][];
-  processingTime: number;
+export interface ParallelEmbeddingResponse { embeddings: number[][];, processingTime: number;
   workersUsed: number;
   cacheHitCount: number;
   successRate: number;
@@ -75,9 +65,7 @@ export interface ParallelEmbeddingResponse {
 /**
  * Task Distribution Result
  */
-export interface TaskDistributionResult {
-  taskId: string;
-  workerIds: string[];
+export interface TaskDistributionResult { taskId: string;, workerIds: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   results?: any[];
@@ -91,7 +79,7 @@ export class MCPContext7EmbeddingIntegration {
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
   private isAvailable = $state(false);
-  private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
+  private workerPool: Map<string, { busy: boolean;, tasksCompleted: number }> = new Map();
   constructor(
     config: MCPContext7Config,
     embeddingService?: GemmaEmbeddingService,
@@ -183,9 +171,7 @@ export class MCPContext7EmbeddingIntegration {
     texts: string[],
     workerId: string,
     embeddingType: string
-  ): Promise<{
-    embeddings: number[][];
-    cacheHitCount: number;
+  ): Promise<{ embeddings: number[][];, cacheHitCount: number;
     success: boolean;
   }> {
     try {
@@ -196,16 +182,13 @@ export class MCPContext7EmbeddingIntegration {
           texts,
           workerId,
           embeddingType,
-          model: 'embeddinggemma:latest'
-        }),
+          model: `embeddinggemma:latest` }),
         timeout: this.config.timeout
       });
       if (!response.ok) {
         throw new Error(`Worker error: ${response.statusText}`);
       }
-      const data = (await response.json()) as {
-        embeddings: number[][];
-        cacheHitCount: number;
+      const data = (await response.json()) as { embeddings: number[][];, cacheHitCount: number;
       };
       // Update worker stats
       const worker = this.workerPool.get(workerId);
@@ -240,16 +223,13 @@ export class MCPContext7EmbeddingIntegration {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...request,
-          model: request.model || 'gemma3:latest'
-        }),
+          model: request.model || 'gemma3:latest` }),
         timeout: this.config.timeout
       });
       if (!response.ok) {
         throw new Error(`Function call error: ${response.statusText}`);
       }
-      const data = (await response.json()) as {
-        result: any;
-        model: string;
+      const data = (await response.json()) as { result: any;, model: string;
       };
       return {
         functionName: request.functionName,
@@ -313,7 +293,7 @@ export class MCPContext7EmbeddingIntegration {
     const embeddingRequests = request.texts.map((text, idx) => ({
       text,
       type: request.embeddingType,
-      cacheKey: request.cacheKeys?.[idx],
+      cacheKey: request.cacheKeys?.[idx]
     }));
     const response = await this.embeddingService.embedBatch(embeddingRequests);
     return {
@@ -321,7 +301,7 @@ export class MCPContext7EmbeddingIntegration {
       processingTime: response.totalProcessingTime,
       workersUsed: 1,
       cacheHitCount: response.cacheHitCount,
-      successRate: 1.0,
+      successRate: 1.0
     };
   }
   /**
@@ -338,15 +318,12 @@ export class MCPContext7EmbeddingIntegration {
       processingTime: 0,
       model: 'local-ollama',
       success: false,
-      error: 'Local function calling not yet implemented'
-    };
+      error: `Local function calling not yet implemented` };
   }
   /**
    * Get worker pool statistics
    */
-  getWorkerStats(): {
-    totalWorkers: number;
-    busyWorkers: number;
+  getWorkerStats(): { totalWorkers: number;, busyWorkers: number;
     totalTasksCompleted: number;
     averageTasksPerWorker: number;
   } {

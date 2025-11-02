@@ -372,8 +372,8 @@
   const adjustQuality = (direction 'up' | 'down') => {
     if (direction === 'down') {
       // Reduce effects for better performance
-      if (enableBloom) enableBloom = $state(false);
-      else if (enableParticleSystem) enableParticleSystem = $state(false);
+      if (enableBloom) enableBloom = false;
+      else if (enableParticleSystem) enableParticleSystem = false;
       else if (anisotropicLevel > 1) anisotropicLevel = Math.max(1, anisotropicLevel / 2);
     } else {
       // Increase effects for better quality

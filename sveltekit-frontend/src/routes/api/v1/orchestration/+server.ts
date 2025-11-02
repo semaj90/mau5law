@@ -10,7 +10,7 @@ const orchestrator = new ServiceOrchestrator();
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as OrchestrationRequest;
-    console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all'} services`);
+    console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all' } services`);
     let result;
     switch (body.action) {
       case 'start':
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         result = await orchestrator.deployServices(body.services, body.options);
         break;
       default:
-        throw new Error(`Unsupported orchestration action: ${body.action}`);
+        throw new Error(`Unsupported orchestration; action: ${body.action}`);
     }
     console.log(`✅ Orchestrator: ${body.action} completed successfully`);
     return json({
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       action: body.action,
       result,
       timestamp: new Date().toISOString(),
-      orchestration_id: generateOrchestrationId(),
+      orchestration_id: generateOrchestrationId()
     });
   } catch (error: any) {
     console.error('Orchestration Error:', error);
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Service orchestration failed',
         details: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async () => {
       capabilities,
       managed_services: orchestrator.getManagedServices(),
       performance_metrics: await orchestrator.getPerformanceMetrics(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
         status: 'degraded',
         error: 'Unable to get system status',
         details: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

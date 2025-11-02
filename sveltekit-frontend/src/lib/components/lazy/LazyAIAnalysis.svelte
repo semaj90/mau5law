@@ -32,10 +32,10 @@ import type { Document } from '$lib/types';
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
   // Dynamic import and analysis state
-  let analysisComponent: any = $state(null);
-  let analysisResult: any = $state(null);
+  let analysisComponent: any = null;
+  let analysisResult: any = null;
   let isAnalyzing = $state<boolean>(false);
-  let loadError: Error | null = $state(null);
+  let loadError: Error | null = null;
   // Progress tracking
   let analysisProgress = $state<number>(0);
   let analysisStep = $state<string>('Initializing...');

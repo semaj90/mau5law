@@ -7,7 +7,7 @@ import type {
   VectorSearchAPI,
   HealthAPI,
   StandardApiResponse,
-  RequestOf,
+  RequestOf
 } from '../types/api-contracts.js';
 import { browser } from '$app/environment';
 // API Client Configuration
@@ -59,8 +59,8 @@ class EnhancedApiClient {
       retries: config.retries || 3,
       defaultHeaders: {
         'Content-Type': 'application/json',
-        ...config.defaultHeaders,
-      },
+        ...config.defaultHeaders
+      }
     };
   }
   // Generic request method with retry logic
@@ -92,9 +92,9 @@ class EnhancedApiClient {
           method,
           headers: {
             ...this.config.defaultHeaders,
-            ...options.headers,
+            ...options.headers
           },
-          signal: abortController.signal,
+          signal: abortController.signal
         };
         if (data) {
           if (method === 'GET') {
@@ -118,8 +118,7 @@ class EnhancedApiClient {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: `HTTP ${response.status}: ${response.statusText}`,
-            code: 'HTTP_ERROR',
-          }));
+            code: 'HTTP_ERROR` }));
           throw new ApiClientError(
             errorData.message || `HTTP ${response.status}`,
             response.status,
@@ -276,29 +275,27 @@ export function createApiClient(config?: ApiClientConfig): EnhancedApiClient {
   return new EnhancedApiClient(config);
 }
 // Convenience export for common use cases
-export const api = {
-  cases: {
-    list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
+export const api = { cases: {, list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
     create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
     update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
-    get: (id: string) => apiClient.getCase(id),
+    get: (id: string) => apiClient.getCase(id)
   },
   evidence: {
     list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
     create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data),
     update: (id: string, data: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
       apiClient.updateEvidence(id, data, custodyNotes),
-    delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason),
+    delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason)
   },
   ai: {
-    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data),
+    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data)
   },
   vectorSearch: {
-    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data),
+    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
   },
   health: {
     check: (detailed = false) => apiClient.healthCheck(detailed),
-    maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) => apiClient.performMaintenance(action),
-  },
+    maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) => apiClient.performMaintenance(action)
+  }
 };
 // Error classes already exported above

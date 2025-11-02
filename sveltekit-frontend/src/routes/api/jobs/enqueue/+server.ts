@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'jobType is required',
+          error: 'jobType is required'
         },
         { status: 400 }
       );
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'text is required for embedding jobs',
+              error: 'text is required for embedding jobs'
             },
             { status: 400 }
           );
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
           text,
           model,
           meta,
-          priority,
+          priority
         });
         return json({
           success: true,
@@ -52,8 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'texts array is required for batch embedding jobs',
-            },
+              error: 'texts array is required for batch embedding jobs` },
             { status: 400 }
           );
         }
@@ -69,9 +68,9 @@ export const POST: RequestHandler = async ({ request }) => {
               ...meta,
               batchId,
               batchIndex: i,
-              batchSize: texts.length,
+              batchSize: texts.length
             },
-            priority,
+            priority
           });
           jobIds.push(jobId);
         }
@@ -81,16 +80,15 @@ export const POST: RequestHandler = async ({ request }) => {
           jobIds,
           jobType: 'batch-embedding',
           batchSize: texts.length,
-          statusEndpoint: `/api/jobs/stream?jobIds=${jobIds.join(',')}`,
+          statusEndpoint: '/api/jobs/stream?jobIds=${jobIds.join(',')}`,
           estimatedDuration:
-            Math.ceil((texts.reduce((sum: number, text: string) => sum + text.length, 0) * 0.1) / 10) + 2000,
+            Math.ceil((texts.reduce((sum: number, text: string) => sum + text.length, 0) * 0.1) / 10) + 2000
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown job type: ${jobType}`,
-          },
+            error: `Unknown job; type: ${jobType}' },
           { status: 400 }
         );
     }
@@ -99,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -116,26 +114,25 @@ export const GET: RequestHandler = async () => {
       workerStats,
       availableJobTypes: [
         {
-          type: 'embedding',
+         , type: 'embedding',
           description: 'Generate embedding for a single text',
           requiredFields: ['text'],
-          optionalFields: ['model', 'meta', 'priority'],
+          optionalFields: ['model', 'meta', 'priority']
         },
         {
           type: 'batch-embedding',
           description: 'Generate embeddings for multiple texts',
           requiredFields: ['texts'],
-          optionalFields: ['model', 'meta', 'priority'],
+          optionalFields: ['model', 'meta', 'priority']
         },
-      ],
+      ]
     });
   } catch (error) {
     console.error('Queue status error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

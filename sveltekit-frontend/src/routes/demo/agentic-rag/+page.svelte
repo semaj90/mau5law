@@ -216,7 +216,7 @@ import type { Message } from '$lib/types';
               <div class="space-y-2">
                 {#each Array.isArray(message.toolCalls) ? message.toolCalls : [] as toolCall}
                   <div
-                    class="bg-slate-900" p-2 rounded text-xs {toolCall.success
+                    class="bg-slate-900 p-2 rounded text-xs" {toolCall.success
                       ? 'border-l-4 border-green-500'
                       : 'border-l-4 border-red-500'}"
                   >

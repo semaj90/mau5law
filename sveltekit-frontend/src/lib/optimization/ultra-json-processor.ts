@@ -6,9 +6,7 @@ import { EventEmitter } from 'events';
  * Memory-efficient streaming parser with intelligent compression
  */
 // Add small shared types to avoid repeating: 'any'
-type JSONCharacteristics = {
-  size: number;
-  depth: number;
+type JSONCharacteristics = { size: number;, depth: number;
   arrays: number;
   objects: number;
   strings: number;
@@ -16,9 +14,7 @@ type JSONCharacteristics = {
   complexity: number;
   repetition: number;
 };
-type ObjectCharacteristics = {
-  isSimple: boolean;
-  hasRepeatingPatterns: boolean;
+type ObjectCharacteristics = { isSimple: boolean;, hasRepeatingPatterns: boolean;
   depth: number;
   size: number;
 };
@@ -42,25 +38,21 @@ export interface JSONOptimizationConfig {
   cacheSize: number; // Number of parsed objects to cache
   enableSIMD: boolean; // Use SIMD instructions if available
 }
-export interface JSONPerformanceMetrics {
-  parseTime: number;
-  stringifyTime: number;
+export interface JSONPerformanceMetrics { parseTime: number;, stringifyTime: number;
   memoryUsed: number;
   compressionRatio: number;
   cacheHitRate: number;
   simdAcceleration: boolean;
   throughputMBps: number;
 }
-export interface StreamingParseResult {
-  chunks: any[];
-  totalSize: number;
+export interface StreamingParseResult { chunks: any[];, totalSize: number;
   parseTime: number;
   errors: string[];
 }
 export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   private wasmModule: WasmJSONParser | null = null;
   private config: JSONOptimizationConfig;
-  private cache: Map<string, { value: any; timestamp: number; accessCount: number }> = new Map();
+  private cache: Map<string, { value: any; timestamp: number;, accessCount: number }> = new Map();
   private metrics: JSONPerformanceMetrics;
   private isInitialized = $state(false);
   // Neural network for pattern recognition and optimization (stubbed)
@@ -71,14 +63,13 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     weights1: null as Float32Array | null,
     weights2: null as Float32Array | null,
     bias1: null as Float32Array | null,
-    bias2: null as Float32Array | null,
+    bias2: null as Float32Array | null
   };
   // Performance optimization patterns
-  private optimizationPatterns = {
-    smallObjects: { threshold: 1024, strategy: 'direct' },
+  private optimizationPatterns = { smallObjects: {, threshold: 1024, strategy: 'direct' },
     largeObjects: { threshold: 100 * 1024, strategy: 'streaming' },
     repetitiveData: { threshold: 0.7, strategy: 'compression' },
-    complexNested: { threshold: 10, strategy: 'neural' },
+    complexNested: { threshold: 10, strategy: 'neural' }
   };
   constructor(config: Partial<JSONOptimizationConfig> = {}) {
     super();
@@ -89,7 +80,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       enableNeuralOptimization: true,
       cacheSize: 1000,
       enableSIMD: true,
-      ...config,
+      ...config
     };
     this.metrics = {
       parseTime: 0,
@@ -98,7 +89,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       compressionRatio: 1.0,
       cacheHitRate: 0,
       simdAcceleration: false,
-      throughputMBps: 0,
+      throughputMBps: 0
     };
     // Fire-and-forget initialization; listeners can wait for: 'initialized'
     void this.initializeAsync();
@@ -152,7 +143,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       optimize: () => this.optimizeParser(),
       dispose: () => {
         /* no-op */
-      },
+      }
     };
     this.metrics.simdAcceleration = this.checkSIMDSupport();
   }
@@ -280,7 +271,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       strings,
       numbers,
       complexity: maxDepth > 0 ? (maxDepth * (objects + arrays)) / safeLength : 0,
-      repetition,
+      repetition
     };
   }
   private detectRepeatingPatterns(text: string): boolean {
@@ -501,7 +492,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       isSimple: typeof obj === 'string' || typeof obj === 'number' || Array.isArray(obj) === false,
       hasRepeatingPatterns: this.detectRepeatingPatterns(s),
       depth: 1,
-      size: s.length,
+      size: s.length
     };
   }
   // ---------- Public API ----------
@@ -543,7 +534,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         chunks: Array.isArray(result.chunks) ? result.chunks : [],
         totalSize: typeof result.totalSize === 'number' ? result.totalSize : data.length,
         parseTime,
-        errors: Array.isArray(result.errors) ? result.errors : [],
+        errors: Array.isArray(result.errors) ? result.errors : []
       };
     } catch (err: any) {
       const parseTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
@@ -596,17 +587,16 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
    * Benchmark against native JSON and RapidJSON (lightweight)
    */
   async benchmark(): Promise<Record<string, unknown>> {
-    const testData = {
-      users: Array.from({ length: 1000 }, (_, i) => ({
+    const testData = { users: Array.from({, length: 1000 }, (_, i) => ({
         id: i,
         name: `User ${i}`,
         email: `user${i}@example.com`,
-        scores: Array.from({ length: 10 }, () => Math.random() * 100),
+        scores: Array.from({, length: 10 }, () => Math.random() * 100),
         metadata: {
           created: new Date().toISOString(),
-          tags: [`tag${i % 10}`, `category${i % 5}`],
-        },
-      })),
+          tags: [`tag${i % 10}`, `category${i % 5}`]
+        }
+      }))
     };
     const jsonString = JSON.stringify(testData);
     const iterations = 20; // reduced iterations to keep benchmark bounded
@@ -623,13 +613,12 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     const ourStringifyStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
     for (let i = 0; i < iterations; i++) await this.stringify(testData);
     const ourStringifyTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - ourStringifyStart;
-    return {
-      native: { parse: nativeParseTime / iterations, stringify: nativeStringifyTime / iterations },
+    return { native: {, parse: nativeParseTime / iterations, stringify: nativeStringifyTime / iterations },
       ours: { parse: ourParseTime / iterations, stringify: ourStringifyTime / iterations },
       speedup: {
         parse: nativeParseTime / Math.max(ourParseTime, 1),
-        stringify: nativeStringifyTime / Math.max(ourStringifyTime, 1),
-      },
+        stringify: nativeStringifyTime / Math.max(ourStringifyTime, 1)
+      }
     };
   }
   // ---------- Small missing helpers (added safely) ----------

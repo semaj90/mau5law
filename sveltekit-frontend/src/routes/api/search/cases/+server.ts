@@ -16,9 +16,7 @@ interface CaseFilters {
 
 type CaseSelect = typeof cases.$inferSelect; // Type for a selected case from the database
 
-interface CaseSearchResult extends CaseSelect {
-  searchScore: number;
-  matchType: 'text' | 'semantic' | 'hybrid';
+interface CaseSearchResult extends CaseSelect { searchScore: number;, matchType: 'text' | 'semantic' | 'hybrid';
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -31,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Use the new interface
       status: url.searchParams.get('status'),
       priority: url.searchParams.get('priority'),
-      category: url.searchParams.get('category'),
+      category: url.searchParams.get('category')
     };
     if (!query || query.length < 2) {
       return json({
@@ -39,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
         searchType: 'none',
         executionTime: 0,
         total: 0,
-        message: 'Query too short',
+        message: 'Query too short'
       });
     }
     const startTime = Date.now();
@@ -54,16 +52,16 @@ export const GET: RequestHandler = async ({ url }) => {
       total: results.length,
       query,
       filters,
-      fromCache: false,
+      fromCache: false
     });
   } catch (error: any) {
-    // Change: 'any' to: 'unknown'
+    // Change: 'any'; to: 'unknown'
     console.error('Case search error:', error);
     return json(
       {
         results: [],
         error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -100,10 +98,9 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       // Explicitly type case_
       ...case_,
       searchScore: 1.0,
-      matchType: 'text',
-    }));
+      matchType: 'text` }));
   } catch (error: any) {
-    // Change: 'any' to: 'unknown'
+    // Change: 'any'; to: 'unknown'
     console.error('Text search failed:', error);
     return [];
   }

@@ -44,9 +44,9 @@ import type { Document } from '$lib/types';
   }: EvidenceBoardProps = $props();
   const dispatch = createEventDispatcher<EvidenceBoardEvents>();
   let boardElement: HTMLDivElement;
-  let draggedItem: EvidenceItem | null = $state(null);
+  let draggedItem: EvidenceItem | null = null;
   let dragOffset = $state({ x: 0, y: 0 });
-  let connectionStart: string | null = $state(null);
+  let connectionStart: string | null = null;
   let selectedItems = $state<Set<string>>(new Set());
   let isConnecting = $state<boolean>(false);
   // Sample evidence items for demo
@@ -355,7 +355,7 @@ import type { Document } from '$lib/types';
         e.preventDefault();
         startConnection(item.id);
       }}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      transitionscale={{ duration: 200, easing: quintOut }}
     >
       <!-- Item Header -->
       <div class="flex items-center justify-between mb-2">

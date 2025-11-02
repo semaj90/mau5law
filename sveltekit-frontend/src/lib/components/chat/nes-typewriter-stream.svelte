@@ -72,7 +72,7 @@
     textureCanvas.height = 128; // 16x8 characters
     textureCtx = textureCanvas.getContext('2d')!;
     // Configure for NES-style pixel art
-    textureCtx.imageSmoothingEnabled = $state(false);
+    textureCtx.imageSmoothingEnabled = false;
     textureCtx.font = '8px "Courier New", monospace';
     textureCtx.textAlign = 'left';
     textureCtx.textBaseline = 'top';

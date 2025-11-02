@@ -13,7 +13,7 @@ export const cases = pgTable('cases', {
   status: varchar('status', { length: 50 }).notNull().default('active'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 // Documents table with file information
 export const documents = pgTable('documents', {
@@ -32,7 +32,7 @@ export const documents = pgTable('documents', {
   processingError: text('processing_error'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 // Document chunks for RAG retrieval
 export const documentChunks = pgTable('document_chunks', {
@@ -46,7 +46,7 @@ export const documentChunks = pgTable('document_chunks', {
   wordCount: integer('word_count').notNull(),
   embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions;
   metadata: jsonb('metadata'), // Contains entities, concepts, etc.
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // Processing jobs for Redis job queue tracking
 export const processingJobs = pgTable('processing_jobs', {
@@ -61,7 +61,7 @@ export const processingJobs = pgTable('processing_jobs', {
   error: text('error'),
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // Entity extraction results
 export const extractedEntities = pgTable('extracted_entities', {
@@ -76,7 +76,7 @@ export const extractedEntities = pgTable('extracted_entities', {
   startOffset: integer('start_offset'),
   endOffset: integer('end_offset'),
   context: text('context'), // Surrounding text
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // RAG queries for analytics and improvement
 export const ragQueries = pgTable('rag_queries', {
@@ -92,7 +92,7 @@ export const ragQueries = pgTable('rag_queries', {
   similarityThreshold: real('similarity_threshold').notNull().default(0.7),
   resultsCount: integer('results_count'),
   userFeedback: jsonb('user_feedback'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // RAG query results for source tracking
 export const ragQueryResults = pgTable('rag_query_results', {
@@ -106,7 +106,7 @@ export const ragQueryResults = pgTable('rag_query_results', {
   similarityScore: real('similarity_score').notNull(),
   rank: integer('rank').notNull(), // 1, 2, 3... order in results;
   used: boolean('used').notNull().default(true), // Was this chunk actually used in response?
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // Zod schemas for validation - Fixed compatibility issues
 export const insertCaseSchema = createInsertSchema(cases) as any;

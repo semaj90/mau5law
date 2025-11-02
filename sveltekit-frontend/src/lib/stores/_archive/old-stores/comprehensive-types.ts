@@ -78,7 +78,7 @@ export interface LoadEvent {
     set(name: string, value: string, options?: any): void;
   };
   locals: Record<string, unknown>;
-  parent(): Promise<Record<string, unknown>>; // Fixed: Added closing: '>'
+  parent(): Promise<Record<string, unknown>>; // Fixed: Added; closing: '>'
   depends(...deps: string[]): void;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
@@ -108,18 +108,16 @@ export interface RequestHandler {
 }
 // SvelteKit hooks
 export interface Handle {
-  (input: { event: RequestEvent; resolve: any }): Promise<Response>;
+  (input: {, event: RequestEvent; resolve: any }): Promise<Response>;
 }
 export interface HandleError {
-  (input: { error: any; event: RequestEvent }): any;
+  (input: {, error: any; event: RequestEvent }): any;
 }
 export interface HandleFetch {
-  (input: { event: RequestEvent; request: Request; fetch: typeof fetch }): Promise<Response>;
+  (input: { event: RequestEvent; request: Request;, fetch: typeof fetch }): Promise<Response>;
 }
 // SvelteKit stores
-export interface PageStore {
-  url: URL;
-  params: Record<string, string>;
+export interface PageStore { url: URL;, params: Record<string, string>;
   route: { id: string | null };
   data: Record<string, unknown>;
   error: any;
@@ -147,14 +145,12 @@ export interface SQL<T = Record<string, unknown>> {
   /** Phantom property to reference generic T so linters/TS don't complain about unused type param */
   _rowType?: T;
 }
-export interface QueryResult<T = unknown> {
-  rows: T[];
-  rowCount: number;
+export interface QueryResult<T = unknown> { rows: T[];, rowCount: number;
   command?: string;
   fields?: Array<unknown>;
 }
 export interface DatabaseConnection {
-  query<T = unknown>(sql: string, params?: any[]): Promise<QueryResult<T>>; // Fixed: Added closing: '>'
+  query<T = unknown>(sql: string, params?: any[]): Promise<QueryResult<T>>; // Fixed: Added; closing: '>'
   transaction<T>(callback: (client: DatabaseConnection) => Promise<T>): Promise<T>;
   end(): Promise<void>;
 }
@@ -186,9 +182,7 @@ export interface DrizzleConfig {
   mode?: 'default' | 'planetscale';
 }
 // Enhanced Drizzle column functions to fix untyped function calls
-export interface DrizzleColumnHelpers {
-  pgTable: any;
-  serial: any;
+export interface DrizzleColumnHelpers { pgTable: any;, serial: any;
   text: any;
   varchar: any;
   integer: any;
@@ -227,17 +221,12 @@ export interface DrizzleColumnHelpers {
   sql: any;
 }
 export interface DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> {
-  // Fixed: Added closing: '>'
-  _: {
-    name: string;
-    columns: T;
+  // Fixed: Added closing: '>'; _: { name: string;, columns: T;
     schema?: string;
     baseName: string;
   };
 }
-export interface DrizzleColumn<T = unknown> {
-  name: string;
-  dataType: string;
+export interface DrizzleColumn<T = unknown> { name: string;, dataType: string;
   columnType: string;
   data?: T;
   notNull?: boolean;
@@ -245,14 +234,10 @@ export interface DrizzleColumn<T = unknown> {
   enumValues?: readonly string[];
 }
 // Vector database types
-export interface EmbeddingVector {
-  id: string;
-  values: number[];
+export interface EmbeddingVector { id: string;, values: number[];
   metadata?: Record<string, unknown>;
 }
-export interface VectorSearchResult {
-  id: string;
-  score: number;
+export interface VectorSearchResult { id: string;, score: number;
   values?: number[];
   metadata?: Record<string, unknown>;
   document?: any;
@@ -266,9 +251,7 @@ export interface VectorSearchOptions {
 }
 // ===== AI/ML TYPES =====
 // Ollama types
-export interface OllamaGenerateRequest {
-  model: string;
-  prompt: string;
+export interface OllamaGenerateRequest { model: string;, prompt: string;
   stream?: boolean;
   format?: 'json' | string;
   options?: {
@@ -286,9 +269,7 @@ export interface OllamaGenerateRequest {
   raw?: boolean;
   keep_alive?: string;
 }
-export interface OllamaGenerateResponse {
-  model: string;
-  created_at: string;
+export interface OllamaGenerateResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -299,31 +280,23 @@ export interface OllamaGenerateResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-export interface OllamaEmbeddingRequest {
-  model: string;
-  prompt: string;
+export interface OllamaEmbeddingRequest { model: string;, prompt: string;
   options?: any;
   keep_alive?: string;
 }
 export interface OllamaEmbeddingResponse {
   embedding: number[];
 }
-export interface OllamaModel {
-  name: string;
-  modified_at: string;
+export interface OllamaModel { name: string;, modified_at: string;
   size: number;
   digest: string;
-  details: {
-    format: string;
-    family: string;
+  details: { format: string;, family: string;
     parameter_size: string;
     quantization_level?: string;
   };
 }
 // RAG types
-export interface RAGDocument {
-  id: string;
-  content: string;
+export interface RAGDocument { id: string;, content: string;
   metadata: Record<string, unknown>;
   embedding?: number[];
 }
@@ -338,9 +311,7 @@ export interface RAGQuery {
     maxTokens?: number;
   };
 }
-export interface RAGResponse {
-  response: string;
-  context: RAGDocument[];
+export interface RAGResponse { response: string;, context: RAGDocument[];
   sources: any[];
   confidence: number;
   processingTime: number;
@@ -349,9 +320,7 @@ export interface RAGResponse {
 }
 // ===== CACHE TYPES =====
 // Enhanced cache configuration (fixing our previous errors)
-export interface CacheConfiguration {
-  layers: CacheLayerConfig[];
-  defaultTtl: number;
+export interface CacheConfiguration { layers: CacheLayerConfig[];, defaultTtl: number;
   defaultTTL?: number; // Alias for defaultTtl
   maxMemoryUsage: number;
   enableCompression: boolean;
@@ -363,17 +332,13 @@ export interface CacheConfiguration {
   metricsInterval?: number;
   analyticsInterval?: number;
 }
-export interface CacheLayerConfig {
-  type: 'memory' | 'redis' | 'postgres' | 'vector' | 'filesystem' | 'cdn' | 'browser';
-  priority: number;
+export interface CacheLayerConfig { type: 'memory' | 'redis' | 'postgres' | 'vector' | 'filesystem' | 'cdn' | 'browser';, priority: number;
   capacity: number;
   ttl: number;
   enabled?: boolean;
   options?: Record<string, unknown>;
 }
-export interface CacheEntry {
-  value: any;
-  metadata: Record<string, unknown>;
+export interface CacheEntry { value: any;, metadata: Record<string, unknown>;
   ttl: number;
   createdAt: number;
   lastAccessed?: number;
@@ -381,9 +346,7 @@ export interface CacheEntry {
   size?: number;
   compressed?: boolean;
 }
-export interface CacheMetrics {
-  hits: number;
-  misses: number;
+export interface CacheMetrics { hits: number;, misses: number;
   errors?: number;
   gets?: number;
   sets?: number;
@@ -402,9 +365,7 @@ export interface CacheAnalytics {
   performanceMetrics?: Record<string, unknown>;
   usageStats?: Record<string, unknown>;
 }
-export interface CacheStats {
-  totalEntries: number;
-  memoryUsage: number;
+export interface CacheStats { totalEntries: number;, memoryUsage: number;
   hitRate: number;
   size?: number;
 }
@@ -472,21 +433,19 @@ export interface TestContext {
   skip?: boolean;
   only?: boolean;
 }
-export interface ExpectationResult {
-  pass: boolean;
-  message: string;
+export interface ExpectationResult { pass: boolean;, message: string;
 }
 export interface MockFunction<T extends (...args: any[]) => unknown = (...args: any[]) => unknown> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
   mockReturnValue(_value: ReturnType<T>): this;
-  mockResolvedValue(_value: Awaited<ReturnType<T>>): this; // Fixed: Added closing: '>'
+  mockResolvedValue(_value: Awaited<ReturnType<T>>): this; // Fixed: Added; closing: '>'
   mockRejectedValue(error: any): this;
   mockClear(): this;
   mockReset(): this;
   mockRestore(): this;
   calls: Parameters<T>[];
-  results: { type: 'return' | 'throw'; value: any }[];
+  results: { type: 'return' | 'throw';, value: any }[];
 }
 // ===== ENVIRONMENT TYPES =====
 export interface EnvironmentConfig {

@@ -8,9 +8,7 @@ import { cachedRAGService } from './cached-rag-service.js';
 import { enhancedRAGQueryWithCache } from './enhanced-rag-semantic-analyzer.js';
 import type { RAGQuery } from './enhanced-rag-semantic-analyzer.js';
 
-export interface CacheTestResult {
-  test: string;
-  success: boolean;
+export interface CacheTestResult { test: string;, success: boolean;
   duration: number;
   details: any;
   error?: string;
@@ -68,9 +66,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-          firstCall: { 
-            cached: result1.cached, 
+        details: { firstCall: { , cached: result1.cached, 
             dimensions: result1.dimensions, 
             model: result1?.model || "unknown"
           },
@@ -188,8 +184,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-          firstCall: { cached: result1.cached, resultsCount: result1.results.length },
+        details: { firstCall: {, cached: result1.cached, resultsCount: result1.results.length },
           secondCall: { cached: result2.cached, resultsCount: result2.results.length },
           model: result1?.model || "unknown" // @ts-ignore - Model property access
         }
@@ -219,7 +214,7 @@ export class CachingIntegrationTester {
         semantic: {
           useEmbeddings: true,
           expandConcepts: true,
-          includeRelated: true,
+          includeRelated: true
         },
         filters: {
           legalCategories: ["TORT"],
@@ -234,9 +229,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-          firstCall: {
-            resultsCount: result1.results.length,
+        details: { firstCall: {, resultsCount: result1.results.length,
             processingTime: result1.processingTime,
             cacheStats: (result1 as any).cacheStats
           },
@@ -275,9 +268,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: {
-          metrics: {
-            embeddings: {
+        details: { metrics: {, embeddings: {
               totalRequests: metrics.embeddings.totalRequests,
               hits: metrics.embeddings.hits,
               misses: metrics.embeddings.misses,

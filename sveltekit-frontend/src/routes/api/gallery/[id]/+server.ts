@@ -12,9 +12,7 @@ import { unlink } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 
-export interface GalleryItemDetail {
-  id: string;
-  type: 'evidence' | 'document' | 'image' | 'ai-generated';
+export interface GalleryItemDetail { id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated';
   title: string;
   description?: string;
   fileName: string;
@@ -34,9 +32,7 @@ export interface GalleryItemDetail {
   ocrText?: string;
   contentText?: string;
   embedding?: number[];
-  processingStatus: {
-    uploaded: boolean;
-    ocrComplete: boolean;
+  processingStatus: { uploaded: boolean;, ocrComplete: boolean;
     embeddingComplete: boolean;
     thumbnailComplete: boolean;
     processed: boolean;
@@ -88,7 +84,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const evidenceQuery = await db
       .select({
         evidence: evidence,
-        caseTitle: cases.title,
+        caseTitle: cases.title
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id))
@@ -102,7 +98,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // single typed item
     const item = {
       ...evidenceQuery[0].evidence,
-      caseTitle: evidenceQuery[0].caseTitle,
+      caseTitle: evidenceQuery[0].caseTitle
     } as EvidenceRow;
 
     // Determine item type based on fileType
@@ -166,25 +162,24 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         ocrComplete: !!item.ocrText,
         embeddingComplete: !!embeddingArray,
         thumbnailComplete: !!generateThumbnailUrl(item.filePath || '', item.fileType || ''),
-        processed: !!item.processedAt,
+        processed: !!item.processedAt
       },
       downloadUrl: `/api/gallery/${itemId}/download`,
-      shareUrl: `/gallery/share/${itemId}`,
-    };
+      shareUrl: `/gallery/share/${itemId}` };
 
     return json(response, {
       headers: {
         'X-Item-Type': itemType,
         'X-File-Size': (item.fileSize ?? 0).toString(),
         'Cache-Control': 'private, max-age=300', // Cache for 5 minutes
-      },
+      }
     });
   } catch (err) {
     console.error('Gallery item fetch error:', err);
     if (err instanceof Error && err.message.includes('404')) {
       throw error(404, 'Gallery item not found');
     }
-    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // PUT - Update gallery item
@@ -246,14 +241,14 @@ export const PUT: RequestHandler = async ({ params, request, locals: _locals }) 
     return json({
       success: true,
       item: updatedItem[0],
-      updated: Object.keys(updateFields),
+      updated: Object.keys(updateFields)
     });
   } catch (err) {
     console.error('Gallery item update error:', err);
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
-    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // DELETE - Remove gallery item
@@ -306,17 +301,17 @@ export const DELETE: RequestHandler = async ({ params, locals: _locals }) => {
     return json({
       success: true,
       deleted: {
-        id: itemId,
+       , id: itemId,
         fileName: item.fileName,
-        filePath: item.filePath,
-      },
+        filePath: item.filePath
+      }
     });
   } catch (err) {
     console.error('Gallery item deletion error:', err);
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
-    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // Helper functions
@@ -327,8 +322,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     const pathParts = filePath.split('/')
     const fileName = pathParts.pop()
     const dir = pathParts.join('/')
-    return `${dir}/thumb_${fileName}`
-  }
+    return `${dir}/thumb_${fileName}' }
   // For other file types, return type-specific icons
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg'
@@ -342,16 +336,14 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   if (fileType.includes('document') || fileType.includes('text')) {
     return '/icons/document-thumbnail.svg'
   }
-  return '/icons/file-thumbnail.svg'
-}
+  return '/icons/file-thumbnail.svg` }
 function generateThumbnailPath(filePath: string): string | null {
   try {
     const pathParts = filePath.split('/')
     const fileName = pathParts.pop()
     if (!fileName) return null
     const dir = pathParts.join('/')
-    return `${dir}/thumb_${fileName}`
-  } catch (error) {
+    return `${dir}/thumb_${fileName}` } catch (error) {
     return null
   }
 }

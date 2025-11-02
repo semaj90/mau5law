@@ -92,7 +92,7 @@
       </h4>
       <div class="mt-1">
         <span
-          class="inline-flex" items-center px-2 py-1 rounded-full text-xs font-medium {getTypeColor(
+          class="inline-flex items-center px-2" py-1 rounded-full text-xs font-medium {getTypeColor(
             evidence.evidenceType || evidence.type
           )}"
         >

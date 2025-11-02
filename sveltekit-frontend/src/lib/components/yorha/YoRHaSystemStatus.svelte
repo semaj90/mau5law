@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- System Status Indicator -->
     <div class="flex items-center space-x-2">
       <div
-        class="status-dot" w-2 h-2 rounded-full animate-pulse {systemStatus === 'normal'
+        class="status-dot w-2 h-2" rounded-full animate-pulse {systemStatus === 'normal'
           ? 'bg-green-400'
           : systemStatus === 'warning'
             ? 'bg-yellow-400'
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
         {networkLatency}ms
       </span>
       <div
-        class="network-indicator" w-1 h-1 rounded-full {getStatusColor(networkStatus)?.replace('text-', 'bg-') ||
+        class="network-indicator w-1 h-1 rounded-full" {getStatusColor(networkStatus)?.replace('text-', 'bg-') ||
           'bg-gray-400'}"
       ></div>
     </div>

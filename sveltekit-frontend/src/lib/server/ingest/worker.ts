@@ -27,9 +27,7 @@ import {
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
 }
-interface WorkerJobData {
-  id: string;
-  type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process';
+interface WorkerJobData { id: string;, type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process';
   payload: any;
   options?: any;
 }
@@ -66,7 +64,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
         result = await handleImageProcessing(jobData.payload);
         break;
       default:
-        throw new Error(`Unknown job type: ${jobData.type}`);
+        throw new Error(`Unknown job; type: ${jobData.type}`);
     }
     const response: WorkerJobResult = {
       success: true,
@@ -76,9 +74,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
     }
     parentPort!.postMessage(response);
   } catch (error) {
-    const response: WorkerJobResult = {
-      success: false;
-      error: error instanceof Error ? error.message: String(error),
+    const response: WorkerJobResult = { success: false;, error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
     }
@@ -87,7 +83,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
 });
 // Job handlers
 async function handleOCR(payload: {
-  buffer: number[]; // Buffer as array
+ , buffer: number[]; // Buffer as array
   contentType?: string;
   options?: any;
 }): Promise<any> {
@@ -98,28 +94,24 @@ async function handleOCR(payload: {
     return await extractTextFromImage(buffer, payload.options);
   }
 }
-async function handleAudioExtraction(payload: {
-  buffer: number[];
-  filename: string;
+async function handleAudioExtraction(payload: {, buffer: number[];, filename: string;
 }): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
 }
-async function handleVideoFrames(payload: {
-  buffer: number[];
-  filename: string;
+async function handleVideoFrames(payload: {, buffer: number[];, filename: string;
   frameCount?: number;
 }): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await sampleFramesFromVideo(buffer, payload.filename, payload.frameCount);
 }
 async function handleJsonParsing(payload: {
-  jsonText: string;
+ , jsonText: string;
 }): Promise<any> {
   return await parseJsonWithSimd(payload.jsonText);
 }
 async function handleEmbedding(payload: {
-  content: string | number[]; // string for text, number[] for Buffer
+ , content: string | number[]; // string for text, number[] for Buffer
   contentType: string;
   options?: any;
 }): Promise<any> {
@@ -132,9 +124,7 @@ async function handleEmbedding(payload: {
     return await embedContent(buffer, payload.contentType, payload.options);
   }
 }
-async function handleImageProcessing(payload: {
-  buffer: number[];
-  operations: Array<any>): Promise<any> {
+async function handleImageProcessing(payload: {, buffer: number[];, operations: Array<any>): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   // Dynamic import Sharp
   const sharp = await import('sharp');
@@ -184,9 +174,7 @@ async function handleImageProcessing(payload: {
 }
 // Error handling
 process.on('uncaughtException', (error) => {
-  const response: WorkerJobResult = {
-    success: false;
-    error: `Uncaught exception: ${error.message}`,
+  const response: WorkerJobResult = { success: false;, error: `Uncaught; exception: ${error.message}`,
     processingTime: 0,
     workerId
   }
@@ -194,9 +182,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
-  const response: WorkerJobResult = {
-    success: false;
-    error: `Unhandled rejection: ${reason}`,
+  const response: WorkerJobResult = { success: false;, error: `Unhandled; rejection: ${reason}`,
     processingTime: 0,
     workerId
   }

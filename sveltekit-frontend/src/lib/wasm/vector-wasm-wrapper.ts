@@ -82,7 +82,7 @@ export class VectorWasmWrapper {
   async computeBatchSimilarities(
     query: Float32Array,
     vectors: Float32Array[];
-    algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
+   , algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
   ): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -191,7 +191,7 @@ export class VectorWasmWrapper {
   /**
    * Get memory usage statistics
    */
-  getMemoryStats(): { pages: number; bytes: number } | null {
+  getMemoryStats(): { pages: number;, bytes: number } | null {
     if (!this.module) return null;
     const pages = this.module.memory.buffer.byteLength / 65536;
     return {

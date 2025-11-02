@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Upload, Camera, X } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   interface Props {
     poiId: string;
     poiName?: string;

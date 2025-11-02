@@ -45,9 +45,8 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ model, prompt: text }),
+        'Content-Type': 'application/json` },
+      body: JSON.stringify({ model, prompt: text })
     });
 
     if (!response.ok) {
@@ -73,7 +72,7 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
  * @returns A promise that resolves to the generated chat completion string, or null if an error occurs.
  */
 export async function generateOllamaChatCompletion(
-  messages: Array<{ role: string; content: string }>,
+  messages: Array<{, role: string; content: string }>,
   model: string = 'gemma3',
   options?: Record<string, unknown>
 ): Promise<string | null> {
@@ -82,14 +81,13 @@ export async function generateOllamaChatCompletion(
     const response = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
-        model: model,
+       , model: model,
         messages: messages,
         stream: false, // For a single completion, stream is usually false
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {

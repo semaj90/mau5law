@@ -7,7 +7,7 @@ import type { Case } from '$lib/types';
  * Instead of importing from 101 fragmented store files, import from here.
  *
  * Pattern:
- *   OLD: import { user  } from '$lib/stores/unified'
+ *  ; OLD: import { user  } from '$lib/stores/unified'
  *   NEW: import { userStore } from '$lib/stores/unified'
  *
  * Consolidation Progress:

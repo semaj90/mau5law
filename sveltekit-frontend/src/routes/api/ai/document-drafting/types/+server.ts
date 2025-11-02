@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -121,9 +121,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       success: true,
       documentTypes,
       meta: {
-        total: documentTypes.length,
+       , total: documentTypes.length,
         categories: Array.from(new Set(documentTypes.map(dt => dt.category))),
-        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity))),
+        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity)))
       }
     })
   } catch (error) {

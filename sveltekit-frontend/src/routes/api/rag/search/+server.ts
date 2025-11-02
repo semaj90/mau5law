@@ -88,7 +88,7 @@ async function generateQueryEmbedding(
       console.log('[GPU RAG] Generated embedding via Ollama GPU');
       return gpuResult.embedding;
     } catch (gpuErr) {
-      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback:', gpuErr);
+      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback: `, gpuErr);
     }
   }
 
@@ -97,9 +97,9 @@ async function generateQueryEmbedding(
     const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings';
     const resp = await fetchFn(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: fastStringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
-      signal: AbortSignal.timeout(30000),
+      headers: { 'Content-Type': `application/json` },
+      body: fastStringify({, text: query, model: model || 'embeddinggemma:latest', save: false }),
+      signal: AbortSignal.timeout(30000)
     });
     if (!resp.ok) {
       const txt = await resp.text();
@@ -153,7 +153,7 @@ async function vectorSearch(
         createdAt: documentsC.createdAt,
         similarity: sql<number>`1 - (${embeddingsC.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`.as(
           'similarity'
-        ),
+        )
       })
       .from(embeddingsC)
       .innerJoin(documentsC, eq(embeddingsC.documentId, documentsC.id))
@@ -210,7 +210,7 @@ async function textSearch(
         createdAt: documentsC.createdAt,
         rank: sql<number>`ts_rank(to_tsvector('english', ${documentsC.content}), plainto_tsquery('english', ${query}))`.as(
           'rank'
-        ),
+        )
       })
       .from(documentsC)
       .where(sql`to_tsvector('english', ${documentsC.content}) @@ plainto_tsquery('english', ${query})`);
@@ -229,10 +229,10 @@ async function textSearch(
       ...r,
       similarity: Math.min((r.rank ?? 0) * 2, 1.0),
       searchType: 'text',
-      score: r.rank ?? 0,
+      score: r.rank ?? 0
     }));
   } catch (err: any) {
-    console.error('Text search failed:', err);
+    console.error('Text search failed: `, err);
     try {
       const fallback = await dbC
         .select({
@@ -242,17 +242,17 @@ async function textSearch(
           metadata: documentsC.metadata,
           confidence: documentsC.confidence,
           legalAnalysis: documentsC.legalAnalysis,
-          createdAt: documentsC.createdAt,
+          createdAt: documentsC.createdAt
         })
         .from(documentsC)
-        .where(sql`${documentsC.content} ILIKE ${`%${query}%`}`)
+        .where(sql`${documentsC.content} ILIKE ${`%${query}%` }`)
         .orderBy(desc(documentsC.createdAt))
         .limit(limit);
       return (fallback as RawSearchResult[]).map((r: RawSearchResult) => ({
         ...r,
         similarity: 0.7,
         searchType: 'text',
-        score: 0.7,
+        score: 0.7
       }));
     } catch (fallbackErr: any) {
       console.error('Fallback text search failed:', fallbackErr);
@@ -276,9 +276,9 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       confidenceMin,
       model,
       includeMetadata = true,
-      includeContent = true,
+      includeContent = true
     } = await readBodyFastWithMetrics(request);
-    if (!query) return json({ error: 'Query is required' }, { status: 400 });
+    if (!query) return json({ error: `Query is required` }, { status: 400 });
     const filters = { caseId, documentTypes, dateRange, confidenceMin };
     let results: RawSearchResult[] = [];
     // Wrap DB-backed search operations in a defensive try/catch so
@@ -308,15 +308,14 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           query,
           results: [],
           analytics: {
-            totalResults: 0,
+           , totalResults: 0,
             searchType,
             processingTime: `${processingTime}ms`,
-            hasEmbedding: !!queryEmbedding,
+            hasEmbedding: !!queryEmbedding
           },
           timestamp: new Date().toISOString(),
           warning:
-            'Database unavailable. Running in degraded mode — search is temporarily disabled. Start Postgres or set DATABASE_URL to enable full search.',
-        },
+            'Database unavailable. Running in degraded mode — search is temporarily disabled. Start Postgres or set DATABASE_URL to enable full search.` },
         { status: 200 }
       );
     }
@@ -369,12 +368,12 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       query,
       results: uniqueResults,
       analytics: {
-        totalResults: uniqueResults.length,
+       , totalResults: uniqueResults.length,
         searchType,
         processingTime: `${processingTime}ms`,
-        hasEmbedding: !!queryEmbedding,
+        hasEmbedding: !!queryEmbedding
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const emsg = extractErrorMessage(error);
@@ -384,7 +383,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         error: 'Search failed',
         details: emsg,
         query: 'unknown',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -403,17 +402,16 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           healthy: true,
           database: {
-            connected: true,
+           , connected: true,
             documentsCount: dbTest[0]?.count || 0,
-            responseTime: `${processingTime}ms`,
-          },
-          timestamp: new Date().toISOString(),
+            responseTime: `${processingTime}ms` },
+          timestamp: new Date().toISOString()
         });
       }
       case 'stats': {
         const [docStats, embeddingStats] = await Promise.all([
           dbC.select({ count: sql<number>`count(*)` }).from(documentsC),
-          dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC),
+          dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC)
         ]);
         return json({
           docCount: docStats[0]?.count || 0,

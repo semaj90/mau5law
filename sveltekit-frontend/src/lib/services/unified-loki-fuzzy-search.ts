@@ -113,10 +113,10 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
           return await this.searchLokiStore(query, options);
         case, 'redis,':
           return await this.searchRedisCache(query, options);
-        default: return [,];
+        default: return [];
       }
     } catch (error: any) {
-      console.warn(`⚠️ Search failed for source ${source}:`, error);
+      console.warn(`⚠️ Search failed for source ${source}: ', error);
       return [];
     }
   }
@@ -124,9 +124,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
     try {
       // Search through cache manager's semantic search
       const cacheResults = await cacheManager.semanticSearch(query, options.maxResults || 50);
-      return cacheResults.map(entry => ({
-        item: {
-          id: entry.key,
+      return cacheResults.map(entry => ({ item: {, id: entry.key,
           title: entry.metadata?.contentType || 'Cached Result',
           content: typeof entry.data === 'string' ? entry.data: JSON.stringify(entry.data),
           keywords: entry.metadata?.tags || [],
@@ -150,14 +148,12 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
         return [];
       }
       const evidenceResults = lokiEvidenceService.searchEvidence(query);
-      return evidenceResults.map((evidence, index) => ({
-        item: {
-          id: evidence.id,
+      return evidenceResults.map((evidence, index) => ({ item: {, id: evidence.id,
           title: evidence.fileName || evidence.id,
           content: evidence.description || '',
           keywords: evidence.tags || [],
           metadata: {
-            type: evidence.type,
+           , type: evidence.type,
             caseId: evidence.caseId,
             timeline: evidence.timeline
           },
@@ -179,13 +175,11 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       // Search evidence in store
       const evidenceResults = loki.evidence.search(query);
       evidenceResults,.forEach((evidence, index) => {
-        results.push({
-          item: {
-            id: evidence.id,
+        results.push({ item: {, id: evidence.id,
             title: evidence.fileName || evidence.id,
             content: evidence.description || '',
             keywords: evidence.tags || [],
-            metadata: { source: 'loki-store-evidence', type: evidence.type },
+            metadata: {, source: 'loki-store-evidence', type: evidence.type },
             timestamp: evidence.timeline?.createdAt ? new Date(evidence.timeline.createdAt).getTime() : Date.now()
           },
           source: 'store' as const,
@@ -197,13 +191,11 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       // Search notes in store
       const noteResults = loki.notes.search(query);
       noteResults,.forEach((note: any, index) => {
-        results.push({
-          item: {
-            id: note.id,
+        results.push({ item: {, id: note.id,
             title: note.title || 'Note',
             content: note.content || '',
             keywords: note.tags || [],
-            metadata: { source: 'loki-store-notes', reportId: note.reportId },
+            metadata: {, source: 'loki-store-notes', reportId: note.reportId },
             timestamp: note.createdAt ? new Date(note.createdAt).getTime() : Date.now()
           },
           source: 'store' as const,
@@ -227,9 +219,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
         useSemanticSearch: options.useEmbeddings,
         cacheResults: true,
       )});
-      return searchResults.map((result, index) => ({
-        item: {
-          id: (result as { document?: any; score?: any; item?: any; source?: any; confidence?: any; riskLevel?: any; cacheLocation?: any }).document.id,
+      return searchResults.map((result, index) => ({ item: {, id: (result as { document?: any; score?: any; item?: any; source?: any; confidence?: any; riskLevel?: any; cacheLocation?: any }).document.id,
           title: (result as { document?: any; score?: any; item?: any; source?: any; confidence?: any; riskLevel?: any; cacheLocation?: any }).document.id,
           content: (result as { document?: any; score?: any; item?: any; source?: any; confidence?: any; riskLevel?: any; cacheLocation?: any }).document.metadata?.content || '',
           keywords: [],
@@ -252,8 +242,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
    * Combine and rank results from multiple sources
    */
   private combineAndRankResults()
-    results: UnifiedSearchResult[]
-    query: string;
+    results: UnifiedSearchResult[]; query: string;
     options: UnifiedSearchOptions;
   ): UnifiedSearchResult[], {
     // Deduplicate by ID
@@ -332,7 +321,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
     // Similar to evidence relevance but with different weights
     return this.calculateEvidenceRelevance(item, query);
   }
-  private isLegalContext(content,: string, keyword,s: string[,]): boolean {
+  private isLegalContext(content,: string, keyword,s: string[]): boolean {
     const legalTerms = [
       'legal', 'court', 'case', 'evidence', 'contract', 'liability',
       'plaintiff', 'defendant', 'attorney', 'law', 'statute', 'regulation',
@@ -440,7 +429,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       content: (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).description || (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).content || '',
       keywords: (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).tags || [],
       metadata: { source: 'store', type: (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).type || 'store-item' },
-      timestamp: (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).createdAt ? new Date((item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any); createdAt?: any, }).created,At).getTime,() :, Date.now(),
+      timestamp: (item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any; createdAt?: any }).createdAt ? new Date((item as { id?: any; fileName?: any; title?: any; description?: any; content?: any; tags?: any; type?: any); createdAt?: any }).created,At).getTime,() :, Date.now()
     }
     await fuseLazySearch.addItem(searchableItem);
   }
@@ -465,7 +454,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       legalContextOnly: true,
       sources: ['cache', 'evidence', 'redis'],
       useEmbeddings: true;
-      threshold: 0.3,
+     , threshold: 0.3
     });
   }
   /**
@@ -477,7 +466,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       sources: ['evidence', 'store'],
       legalContextOnly: true,
       maxResults: 100,
-      threshold: 0.2,
+      threshold: 0.2
     });
   }
   /**

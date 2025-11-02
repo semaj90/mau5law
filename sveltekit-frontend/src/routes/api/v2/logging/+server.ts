@@ -9,9 +9,7 @@ import crypto from 'crypto';
 // Log levels
 type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
-export interface LogEntry {
-  level: LogLevel;
-  message: string;
+export interface LogEntry { level: LogLevel;, message: string;
   timestamp: string;
   // Replace `any` with explicit safe types
   error?: Error | string | Record<string, unknown>;
@@ -23,11 +21,7 @@ export interface LogEntry {
   url?: string;
   clientAddress?: string;
 }
-export interface LogBatch {
-  logs: LogEntry[];
-  clientInfo: {
-    userAgent: string;
-    url: string;
+export interface LogBatch { logs: LogEntry[];, clientInfo: { userAgent: string;, url: string;
     timestamp: string;
   };
 }
@@ -39,7 +33,7 @@ function processLogEntry(entry: LogEntry): LogEntry {
   return {
     ...entry,
     timestamp: entry.timestamp || new Date().toISOString(),
-    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString(),
+    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString()
   };
 }
 function storeLogEntry(entry: LogEntry): void {
@@ -76,9 +70,8 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}`,
-        },
-        body: JSON.stringify(entry),
+          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}' },
+        body: JSON.stringify(entry)
       });
     }
   } catch (err: any) {
@@ -99,13 +92,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         ...body,
         userAgent,
         url: url.pathname,
-        clientAddress,
+        clientAddress
       });
       storeLogEntry(entry);
       return json({
         success: true,
         message: 'Log entry recorded',
-        entryId: entry.requestId,
+        entryId: entry.requestId
       });
     }
     // Handle batch log entries
@@ -116,7 +109,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
           ...log,
           userAgent: batch.clientInfo?.userAgent || userAgent,
           url: batch.clientInfo?.url || url.pathname,
-          clientAddress,
+          clientAddress
         })
       );
       processedEntries.forEach(storeLogEntry);
@@ -124,7 +117,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         success: true,
         message: 'Log batch recorded',
         entriesProcessed: processedEntries.length,
-        entryIds: processedEntries.map(e => e.requestId),
+        entryIds: processedEntries.map(e => e.requestId)
       });
     }
     throw error(400, 'Invalid log format. Expected single entry or batch.');
@@ -179,8 +172,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       level,
       since,
       limit,
-      userId,
-    },
+      userId
+    }
   });
 };
 // DELETE endpoint for clearing logs (development only)
@@ -197,6 +190,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
   return json({
     success: true,
     message: `Cleared ${originalCount} log entries`,
-    clearedCount: originalCount,
+    clearedCount: originalCount
   });
 };

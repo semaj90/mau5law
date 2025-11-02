@@ -33,6 +33,6 @@ export async function fetchWithTimings<T = any>(input: RequestInfo | URL, init?:
   const res = await fetch(input, init);
   const timings = extractTimingHeaders(res);
   let data: T | null = null;
-  try { data = await res.json(), } catch { /* ignore */ }
+  try { data = await res.json() } catch { /* ignore */ }
   return { data, timings, raw: res }
 }

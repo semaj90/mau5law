@@ -6,9 +6,7 @@ import type { RequestHandler } from './$types.js';
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient';
 import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
-interface AttentionRequest {
-  jobId: string;
-  text: string;
+interface AttentionRequest { jobId: string;, text: string;
   type: 'attention' | 'multi-head' | 'flash-attention' | 'kernel-splicing';
   useCache?: boolean;
   userId?: string;
@@ -20,9 +18,7 @@ interface AttentionRequest {
     batch_size?: number;
   };
 }
-interface AttentionResponse {
-  jobId: string;
-  status: 'success' | 'error';
+interface AttentionResponse { jobId: string;, status: 'success' | 'error';
   output: number[];
   attention: number[];
   cached: boolean;
@@ -45,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'jobId and text are required',
+          error: 'jobId and text are required'
         },
         { status: 400 }
       );
@@ -118,8 +114,8 @@ export const POST: RequestHandler = async ({ request }) => {
                     embeddings?: any;
                     attentionWeights?: any;
                   }
-                ).processTime,
-              },
+                ).processTime
+              }
             });
           } catch (err) {
             console.warn('Cache store failed:', err);
@@ -133,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status: 'error',
             error: error instanceof Error ? error.message : String(error),
             processTime: performance.now() - startTime,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           },
           { status: 500 }
         );
@@ -168,20 +164,20 @@ export const POST: RequestHandler = async ({ request }) => {
         heads: options.heads || 8,
         dimensions: options.dimensions || 768,
         kernelSplicing: type === 'kernel-splicing',
-        flashAttention: type === 'flash-attention',
-      },
+        flashAttention: type === 'flash-attention'
+      }
     };
     return json({
       success: true,
       ...response,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -198,18 +194,18 @@ export const GET: RequestHandler = async () => {
         model: 'NVIDIA GeForce RTX 3060 Ti',
         memory: '8GB',
         utilization: '87%',
-        temperature: '72°C',
+        temperature: '72°C'
       },
       cache: {
         size: stats.size,
         hitRate: stats.hitRate,
-        memoryUsage: stats.memoryUsage,
+        memoryUsage: stats.memoryUsage
       },
       performance: {
         kernelSplicing: '<1ms',
         flashAttention: '<5ms',
         multiHead: '<10ms',
-        basic: '<15ms',
+        basic: '<15ms'
       },
       capabilities: [
         'Kernel splicing attention',
@@ -221,18 +217,17 @@ export const GET: RequestHandler = async () => {
         'T5-style encoder-decoder',
       ],
       endpoints: {
-        process: '/api/attention (POST)',
-        status: '/api/attention (GET)',
-      },
+       , process: '/api/attention (POST)',
+        status: '/api/attention (GET)` },
       supportedTypes: ['attention', 'multi-head', 'flash-attention', 'kernel-splicing'],
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -248,7 +243,7 @@ async function processKernelSplicingAttention(text: string, options: any): Promi
     processTime,
     memoryUsage: '1.8GB',
     confidence: 0.98,
-    kernelSplicing: true,
+    kernelSplicing: true
   };
 }
 async function processFlashAttention(text: string, options: any): Promise<any> {
@@ -260,7 +255,7 @@ async function processFlashAttention(text: string, options: any): Promise<any> {
     processTime,
     memoryUsage: '2.1GB',
     confidence: 0.96,
-    flashAttention: true,
+    flashAttention: true
   };
 }
 async function processMultiHeadAttention(text: string, options: any): Promise<any> {
@@ -274,7 +269,7 @@ async function processMultiHeadAttention(text: string, options: any): Promise<an
     memoryUsage: '2.4GB',
     confidence: 0.94,
     multiHead: true,
-    heads: 8,
+    heads: 8
   };
 }
 async function processBasicAttention(text: string, options: any): Promise<any> {
@@ -285,6 +280,6 @@ async function processBasicAttention(text: string, options: any): Promise<any> {
     attention: new Array(64).fill(0).map(() => Math.random()),
     processTime,
     memoryUsage: '2.0GB',
-    confidence: 0.92,
+    confidence: 0.92
   };
 }

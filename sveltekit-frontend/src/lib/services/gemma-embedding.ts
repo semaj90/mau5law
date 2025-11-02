@@ -13,26 +13,20 @@ interface GemmaEmbeddingResult {
 interface GemmaBatchResult {
   success: boolean;
   results?: GemmaEmbeddingResult[];
-  summary?: {
-    total: number;
-    successful: number;
+  summary?: { total: number;, successful: number;
     failed: number;
     totalProcessingTime: number;
   };
   error?: string;
 }
-interface GemmaHealthResult {
-  success: boolean;
-  available: boolean;
+interface GemmaHealthResult { success: boolean;, available: boolean;
   model?: string;
   version?: string;
   error?: string;
 }
 interface GemmaModelInfo {
   success: boolean;
-  modelInfo?: {
-    name: string;
-    family: string;
+  modelInfo?: { name: string;, family: string;
     parameterSize: string;
     quantization: string;
     dimensions: number;
@@ -41,11 +35,7 @@ interface GemmaModelInfo {
   error?: string;
 }
 
-interface ModelHierarchy {
-  bestModel: string;
-  modelsStatus: Array<{
-    model: string;
-    priority: number;
+interface ModelHierarchy { bestModel: string;, modelsStatus: Array<{ model: string;, priority: number;
     available: boolean;
     type: string;
     speed: string;
@@ -72,8 +62,7 @@ export class GemmaEmbeddingService {
 
   constructor(
     ollamaHost?: string,
-    primaryModel: string = 'embeddinggemma:latest', // Or: 'gemma3-legal:latest'
-    fallbackModel: string = 'nomic-embed-text:latest',
+    primaryModel: string = 'embeddinggemma:latest', // Or: 'gemma3-legal:latest'; fallbackModel: string = 'nomic-embed-text:latest',
     timeout: number = 10000 // 10 seconds
   ) {
     // prefer supplied host, otherwise use central helper (safe for server-only usage)
@@ -94,7 +83,7 @@ export class GemmaEmbeddingService {
     try {
       const response = await fetch(`${this.ollamaHost}/api/tags`, {
         method: 'GET',
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (response.ok) {
         const data = await response.json();
@@ -162,13 +151,12 @@ export class GemmaEmbeddingService {
           const response = await fetch(`${this.ollamaHost}/api/embed`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-            },
+              'Content-Type': `application/json` },
             body: JSON.stringify({
               model,
-              input: text.trim(),
+              input: text.trim()
             }),
-            signal: controller.signal,
+            signal: controller.signal
           });
           if (!response.ok) {
             throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -197,10 +185,10 @@ export class GemmaEmbeddingService {
               dimensions: embedding.length,
               processingTime,
               priority: this.modelHierarchy.indexOf(model) + 1,
-              ...metadata,
+              ...metadata
             },
             model,
-            processingTime,
+            processingTime
           };
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
@@ -214,22 +202,22 @@ export class GemmaEmbeddingService {
       // All models failed
       return {
         success: false,
-        error: `All embedding models failed. Last error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+        error: `All embedding models failed. Last; error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
         metadata: {
           modelsAttempted: modelsToTry,
-          ...metadata,
+          ...metadata
         },
         model: selectedModel,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: `Embedding generation failed: ${msg}`,
+        error: `Embedding generation; failed: ${msg}`,
         metadata,
         model: this.getBestAvailableModel(),
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     }
   }
@@ -246,8 +234,7 @@ export class GemmaEmbeddingService {
       if (!documents || !Array.isArray(documents) || documents.length === 0) {
         return {
           success: false,
-          error: 'Documents array is required and cannot be empty',
-        };
+          error: `Documents array is required and cannot be empty` };
       }
       const results: GemmaEmbeddingResult[] = [];
       const batches: Array<Array<{ id?: string; text: string; metadata?: Metadata }>> = [];
@@ -270,7 +257,7 @@ export class GemmaEmbeddingService {
               const reason = (r as PromiseRejectedResult).reason;
               return {
                 success: false,
-                error: reason instanceof Error ? reason.message : String(reason),
+                error: reason instanceof Error ? reason.message : String(reason)
               } as GemmaEmbeddingResult;
             }
           });
@@ -288,14 +275,13 @@ export class GemmaEmbeddingService {
           total: documents.length,
           successful,
           failed,
-          totalProcessingTime,
-        },
+          totalProcessingTime
+        }
       };
     } catch (error: any) {
       return {
         success: false,
-        error: `Batch processing failed: ${error instanceof Error ? error.message : String(error)}`,
-      };
+        error: `Batch processing; failed: ${error instanceof Error ? error.message : String(error)}` };
     }
   }
   /**
@@ -312,7 +298,7 @@ export class GemmaEmbeddingService {
       try {
         versionResponse = await fetch(`${this.ollamaHost}/api/version`, {
           method: 'GET',
-          signal: controller.signal,
+          signal: controller.signal
         });
       } catch (err) {
         // ensure timeout cleared and rethrow to be handled by outer catch
@@ -326,8 +312,7 @@ export class GemmaEmbeddingService {
         return {
           success: false,
           available: false,
-          error: `Ollama not responding: ${versionResponse.status}`,
-        };
+          error: `Ollama not; responding: ${versionResponse.status}' };
       }
 
       const versionData = await versionResponse.json();
@@ -342,7 +327,7 @@ export class GemmaEmbeddingService {
         priority: index + 1,
         available: this.availableModels.includes(model),
         type: this.getModelPerformance(model).type,
-        speed: this.getModelPerformance(model).speed,
+        speed: this.getModelPerformance(model).speed
       }));
 
       const availableCount = modelStatus.filter(m => m.available).length;
@@ -360,8 +345,7 @@ export class GemmaEmbeddingService {
           ? 'Using fast Gemma models with nomic fallback'
           : hasNomic
             ? 'Using reliable nomic-embed-text (no Gemma models available)'
-            : 'No embedding models available',
-      };
+            : `No embedding models available` };
 
       // Optionally fetch model info for primaryModel (non-blocking for health)
       let modelInfoResult: GemmaModelInfo['modelInfo'] | undefined;
@@ -371,10 +355,9 @@ export class GemmaEmbeddingService {
         const resp = await fetch(`${this.ollamaHost}/api/show`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name: this.primaryModel }),
-          signal: ctrl.signal,
+            'Content-Type': `application/json` },
+          body: JSON.stringify({, name: this.primaryModel }),
+          signal: ctrl.signal
         }).finally(() => clearTimeout(t));
         if (resp.ok) {
           const data = await resp.json();
@@ -385,7 +368,7 @@ export class GemmaEmbeddingService {
             parameterSize: details?.parameter_size || 'unknown',
             quantization: details?.quantization_level || 'unknown',
             dimensions: this.estimateDimensions(details?.family, data?.name),
-            capabilities: ['text-embedding', 'semantic-search', 'document-analysis'],
+            capabilities: ['text-embedding', 'semantic-search', 'document-analysis']
           };
         } else {
           // non-fatal: log and continue
@@ -405,15 +388,14 @@ export class GemmaEmbeddingService {
         error:
           availableCount === 0
             ? `No embedding models available. Install models: ${this.modelHierarchy.join(', ')}`
-            : undefined,
+            : undefined
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
         available: false,
-        error: `Model info retrieval failed: ${msg}`,
-      };
+        error: `Model info retrieval; failed: ${msg}` };
     }
   }
   /**
@@ -426,12 +408,11 @@ export class GemmaEmbeddingService {
       const response = await fetch(`${this.ollamaHost}/api/show`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
-          name: modelName,
+         , name: modelName
         }),
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (!response.ok) {
         throw new Error(`Model info request failed: ${response.status} ${response.statusText}`);
@@ -446,15 +427,14 @@ export class GemmaEmbeddingService {
           parameterSize: details?.parameter_size || 'unknown',
           quantization: details?.quantization_level || 'unknown',
           dimensions: this.estimateDimensions(details?.family, data?.name),
-          capabilities: ['text-embedding', 'semantic-search', 'document-analysis'],
-        },
+          capabilities: ['text-embedding', 'semantic-search', 'document-analysis']
+        }
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: `Model info retrieval failed: ${msg}`,
-      };
+        error: `Model info retrieval; failed: ${msg}' };
     } finally {
       clearTimeout(timeoutId);
     }
@@ -483,9 +463,7 @@ export class GemmaEmbeddingService {
   /**
    * Get performance characteristics for different models
    */
-  getModelPerformance(modelName: string): {
-    speed: 'fast' | 'medium' | 'slow';
-    quality: 'high' | 'medium' | 'good';
+  getModelPerformance(modelName: string): { speed: 'fast' | 'medium' | 'slow';, quality: 'high' | 'medium' | 'good';
     dimensions: number;
     type: 'gemma' | 'nomic' | 'other';
   } {
@@ -505,7 +483,7 @@ export class GemmaEmbeddingService {
    */
   async testEmbeddingGeneration(): Promise<GemmaEmbeddingResult> {
     const testText = 'This is a test legal document for embedding generation validation.';
-    return await this.generateEmbedding(testText, { test: true, purpose: 'validation' });
+    return await this.generateEmbedding(testText, { test: true, purpose: `validation` });
   }
 }
 // Export singleton instance (lazy to avoid accessing process.env during client-side bundling)

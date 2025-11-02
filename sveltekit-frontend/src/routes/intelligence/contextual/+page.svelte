@@ -21,7 +21,7 @@ import type { Case } from '$lib/types';
   import { LoadingButton } from '$lib/headless';
   import { FormField } from '$lib/headless';
   // Enhanced UI components
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';

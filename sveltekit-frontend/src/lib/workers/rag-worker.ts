@@ -7,9 +7,7 @@ import { documents } from '$lib/server/db/enhanced-embedding-schema';
 import { eq } from 'drizzle-orm';
 import { QdrantClient } from '@qdrant/js-client-rest';
 
-interface IngestResult {
-  title: string;
-  contentLength: number;
+interface IngestResult { title: string;, contentLength: number;
   embeddingSize: number;
   mirroredToQdrant: boolean;
 }
@@ -70,9 +68,9 @@ export async function processDocument(bucket: string, objectKey: string): Promis
           collection_name: 'documents',
           points: [
             {
-              id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+             , id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
               vector: embedding,
-              payload: { title, source_uri: `minio://${bucket}/${objectKey}` }
+              payload: { title, source_uri: `minio://${bucket}/${objectKey}' }
             }
           ]
         });

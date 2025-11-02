@@ -34,7 +34,7 @@ const config = {
     'text/markdown',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ],
+  ]
 };
 // Text extraction utilities
 async function extractText(file: File): Promise<string> {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       document: {
-        filename: file.name,
+       , filename: file.name,
         filePath,
         extractedText: extractedText.substring(0, 500) + '...', // Preview
         fileSize: file.size,
@@ -103,8 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         title, // Added title
         userId, // Added userId
       },
-      message: 'Document uploaded successfully',
-    });
+      message: 'Document uploaded successfully` });
   } catch (err: any) {
     console.error('❌ Upload error:', err);
     if (err instanceof Error) {
@@ -119,15 +118,14 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       config: {
-        model: config.embeddingModel,
+       , model: config.embeddingModel,
         chunkSize: config.chunkSize,
         uploadDir: config.uploadDir,
-        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB`,
-      },
+        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB` },
       ollama: {
         baseUrl: config.ollamaBaseUrl,
-        connected: true,
-      },
+        connected: true
+      }
     });
   } catch (err: any) {
     return json(
@@ -135,9 +133,9 @@ export const GET: RequestHandler = async () => {
         status: 'unhealthy',
         error: err instanceof Error ? err.message : 'Unknown error',
         config: {
-          model: config.embeddingModel,
-          ollamaBaseUrl: config.ollamaBaseUrl,
-        },
+         , model: config.embeddingModel,
+          ollamaBaseUrl: config.ollamaBaseUrl
+        }
       },
       { status: 500 }
     );

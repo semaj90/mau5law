@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -41,7 +41,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
    - Time limitations apply for filing charges
 **Recommendation**: Review the evidence carefully and consider consulting with the legal department for complex constitutional issues.`,
       `Regarding "${prompt}", the legal analysis suggests:
-**Constitutional Considerations:**
+**Constitutional; Considerations:**
 - Fourth Amendment protections apply to search and seizure
 - Due process requirements must be met throughout
 **Statutory Framework:**
@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       response,
       timestamp: new Date().toISOString(),
-      promptId: Math.random().toString(36).substr(2, 9),
+      promptId: Math.random().toString(36).substr(2, 9)
     });
   } catch (error: any) {
     console.error('Error processing AI prompt:', error);

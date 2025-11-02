@@ -22,7 +22,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true,
+  oneofs: true
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GemmaProtoAny = { GemmaEmbeddingService: any };
@@ -30,24 +30,18 @@ const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma
 // =============================================================================
 // PROTOBUF TYPE DEFINITIONS (generated types)
 // =============================================================================
-interface EmbeddingRequest {
-  document_id: string;
-  text_content: string;
+interface EmbeddingRequest { document_id: string;, text_content: string;
   metadata: Record<string, unknown>;
   batch_id?: string;
   priority: number;
   options: EmbeddingOptions;
 }
-interface EmbeddingOptions {
-  model_version: string;
-  context_length: number;
+interface EmbeddingOptions { model_version: string;, context_length: number;
   normalize: boolean;
   quantize: boolean;
   cache_result: boolean;
 }
-interface EmbeddingResponse {
-  document_id: string;
-  embedding: number[];
+interface EmbeddingResponse { document_id: string;, embedding: number[];
   dimensions: number;
   model_version: string;
   processing_time: number;
@@ -55,39 +49,27 @@ interface EmbeddingResponse {
   metadata: Record<string, unknown>;
   status: EmbeddingStatus;
 }
-interface EmbeddingStatus {
-  code: number;
-  message: string;
+interface EmbeddingStatus { code: number;, message: string;
   retry_after?: number;
 }
-interface BatchEmbeddingRequest {
-  batch_id: string;
-  requests: EmbeddingRequest[];
+interface BatchEmbeddingRequest { batch_id: string;, requests: EmbeddingRequest[];
   batch_options: BatchOptions;
 }
-interface BatchOptions {
-  max_concurrent: number;
-  timeout_ms: number;
+interface BatchOptions { max_concurrent: number;, timeout_ms: number;
   enable_streaming: boolean;
   postgresql_optimization: boolean;
 }
-interface BatchEmbeddingResponse {
-  batch_id: string;
-  responses: EmbeddingResponse[];
+interface BatchEmbeddingResponse { batch_id: string;, responses: EmbeddingResponse[];
   batch_statistics: BatchStatistics;
   postgresql_results?: PostgreSQLBatchResult;
 }
-interface BatchStatistics {
-  total_requests: number;
-  successful_embeddings: number;
+interface BatchStatistics { total_requests: number;, successful_embeddings: number;
   failed_embeddings: number;
   avg_processing_time: number;
   total_batch_time: number;
   throughput_per_second: number;
 }
-interface PostgreSQLBatchResult {
-  inserted_rows: number;
-  updated_rows: number;
+interface PostgreSQLBatchResult { inserted_rows: number;, updated_rows: number;
   jsonb_compression_ratio: number;
   index_update_time: number;
 }
@@ -103,7 +85,7 @@ interface GemmaEmbeddingServiceClient extends grpc.Client {
   ): void;
   StreamBatchEmbeddings(): grpc.ClientDuplexStream<EmbeddingRequest, EmbeddingResponse>;
   Check(
-    request: { service: string },
+    request: {, service: string },
     options: grpc.CallOptions | object | undefined,
     callback: (error: grpc.ServiceError | null, response?: { status?: string }) => void
   ): void;
@@ -128,10 +110,10 @@ class GRPCGemmaEmbeddingClient {
     failedRequests: 0,
     avgLatency: 0,
     throughput: 0,
-    connectionRetries: 0,
+    connectionRetries: 0
   };
   constructor(config: {
-    grpcEndpoint: string;
+   , grpcEndpoint: string;
     // dbConfig is accepted for compatibility but the shim manages connections via DATABASE_URL
     dbConfig?: Record<string, unknown>;
     // use explicit RedisOptions type
@@ -146,7 +128,7 @@ class GRPCGemmaEmbeddingClient {
     this.redis = redis;
     this.circuitBreaker = new CircuitBreaker({
       failureThreshold: 5,
-      recoveryTimeout: 30000,
+      recoveryTimeout: 30000
     });
     console.log(`🚀 gRPC Gemma Embedding Client initialized:`);
     console.log(`   - Endpoint: ${config.grpcEndpoint}`);
@@ -290,7 +272,7 @@ class GRPCGemmaEmbeddingClient {
         const batchTime = performance.now() - startTime;
         const batchStats = this.calculateBatchStatistics(batchRequest.requests, responses, batchTime);
         if (errors.length > 0) {
-          console.warn(`Streaming completed with ${errors.length} error(s). Example:`, errors[0]);
+          console.warn(`Streaming completed with ${errors.length} error(s). Example: ', errors[0]);
         }
         resolve({
           batch_id: batchRequest.batch_id,
@@ -431,7 +413,7 @@ class GRPCGemmaEmbeddingClient {
             confidence_score = EXCLUDED.confidence_score,
             updated_at = NOW()
           RETURNING
-            CASE WHEN xmax = 0 THEN: 'inserted' ELSE: 'updated' END as operation
+            CASE WHEN xmax = 0 THEN: 'inserted'; ELSE: 'updated' END as operation
         `;
         const result = await client.query(bulkUpsertSql, [
           documentIds,
@@ -461,7 +443,7 @@ class GRPCGemmaEmbeddingClient {
         inserted_rows: insertedRows,
         updated_rows: updatedRows,
         jsonb_compression_ratio: originalSize / compressedSize,
-        index_update_time: insertTime,
+        index_update_time: insertTime
       };
     } catch (error) {
       await client.query('ROLLBACK');
@@ -494,7 +476,7 @@ class GRPCGemmaEmbeddingClient {
       failed_embeddings: failed,
       avg_processing_time: avgProcessingTime,
       total_batch_time: batchTime,
-      throughput_per_second: throughput,
+      throughput_per_second: throughput
     };
   }
   /**
@@ -520,7 +502,7 @@ class GRPCGemmaEmbeddingClient {
       ...this.metrics,
       successRate: this.metrics.successfulRequests / Math.max(1, this.metrics.totalRequests),
       connectionPoolSize: this.connectionPool.length,
-      circuitBreakerState: this.circuitBreaker.getState(),
+      circuitBreakerState: this.circuitBreaker.getState()
     };
   }
   /**
@@ -528,8 +510,7 @@ class GRPCGemmaEmbeddingClient {
    */ async healthCheck(): Promise<boolean> {
     try {
       const healthRequest = {
-        service: 'GemmaEmbeddingService',
-      };
+        service: 'GemmaEmbeddingService` };
       return new Promise(resolve => {
         this.client.Check(
           healthRequest,
@@ -570,11 +551,9 @@ class CircuitBreaker {
   private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
   private failureCount = 0;
   private lastFailureTime = 0;
-  private config: {
-    failureThreshold: number;
-    recoveryTimeout: number;
+  private config: { failureThreshold: number;, recoveryTimeout: number;
   };
-  constructor(config: { failureThreshold: number; recoveryTimeout: number }) {
+  constructor(config: {, failureThreshold: number; recoveryTimeout: number }) {
     this.config = config;
   }
   async execute<T>(operation: () => Promise<T>): Promise<T> {
@@ -613,5 +592,5 @@ export {
   type BatchEmbeddingResponse,
   type EmbeddingOptions,
   type BatchOptions,
-  type PostgreSQLBatchResult,
+  type PostgreSQLBatchResult
 };

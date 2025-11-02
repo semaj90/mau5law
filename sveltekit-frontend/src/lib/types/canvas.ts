@@ -1,9 +1,7 @@
 import type { Case as LegalCase, Evidence as EvidenceType } from './database'; // ensure database.ts exports these types
 
 // Define specific interfaces for node data
-export interface Person {
-  id: string;
-  name: string;
+export interface Person { id: string;, name: string;
   // Add other relevant person properties here
 }
 
@@ -15,9 +13,7 @@ export interface CanvasConnectionData {
 }
 
 // Discriminated union for nodes to ensure node.type and node.data align
-export interface CaseNode {
-  id: string;
-  x: number;
+export interface CaseNode { id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -25,9 +21,7 @@ export interface CaseNode {
   data: LegalCase;
 }
 
-export interface EvidenceNode {
-  id: string;
-  x: number;
+export interface EvidenceNode { id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -35,9 +29,7 @@ export interface EvidenceNode {
   data: EvidenceType;
 }
 
-export interface PersonNode {
-  id: string;
-  x: number;
+export interface PersonNode { id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -45,9 +37,7 @@ export interface PersonNode {
   data: Person;
 }
 
-export interface ConnectionNode {
-  id: string;
-  x: number;
+export interface ConnectionNode { id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -59,9 +49,7 @@ export interface ConnectionNode {
 export type CanvasNode = CaseNode | EvidenceNode | PersonNode | ConnectionNode;
 
 // Explicit connection edge type (separate from connection-as-node)
-export interface CanvasConnection {
-  id: string;
-  sourceId: string;
+export interface CanvasConnection { id: string;, sourceId: string;
   targetId: string;
   type: 'related' | 'involves' | 'contains';
   strength: number;
@@ -72,9 +60,7 @@ export interface InteractiveCanvasState {
   id?: string;
   nodes: CanvasNode[];
   connections: CanvasConnection[];
-  viewport: {
-    x: number;
-    y: number;
+  viewport: { x: number;, y: number;
     zoom: number;
   };
   animation?: string;

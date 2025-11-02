@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!cluster.isPrimary) {
       return json(
         {
-          error: 'Cluster scaling only available from primary process',
+          error: 'Cluster scaling only available from primary process'
         },
         { status: 403 }
       );
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!Number.isInteger(workers) || workers < 1 || workers > 16) {
       return json(
         {
-          error: 'Invalid worker count. Must be between 1 and 16.',
+          error: 'Invalid worker count. Must be between 1 and 16.'
         },
         { status: 400 }
       );
@@ -30,9 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Get cluster manager instance (use a concrete typed shape instead of `any`)
     const clusterManager = (
       globalThis as unknown as {
-        clusterManager?: {
-          getWorkerMetrics: () => {
-            workerId: string | number;
+        clusterManager?: { getWorkerMetrics: () => {, workerId: string | number;
             status?: string;
             memoryUsage?: { heapUsed?: number } | null;
             connections?: number;
@@ -46,8 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available',
-        },
+          error: 'Cluster manager not available` },
         { status: 503 }
       );
     }
@@ -57,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         message: 'No scaling needed',
         currentWorkers,
-        targetWorkers: workers,
+        targetWorkers: workers
       });
     }
     // Perform scaling operation
@@ -69,22 +66,21 @@ export const POST: RequestHandler = async ({ request }) => {
       action: 'cluster_scale',
       previousWorkers: currentWorkers,
       newWorkers: workers,
-      initiator: 'admin_api',
-    };
+      initiator: 'admin_api` };
     console.log('📝 Scaling audit log:', auditLog);
     return json({
       success: true,
       message: `Scaling cluster from ${currentWorkers} to ${workers} workers`,
       previousWorkers: currentWorkers,
       targetWorkers: workers,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     console.error('Cluster scaling error:', error);
     return json(
       {
         error: 'Failed to scale cluster',
-        message: error instanceof Error ? error.message : String(error) || 'Unknown error',
+        message: error instanceof Error ? error.message : String(error) || 'Unknown error'
       },
       { status: 500 }
     );
@@ -114,8 +110,7 @@ export const GET: RequestHandler = async () => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available',
-        },
+          error: 'Cluster manager not available` },
         { status: 503 }
       );
     }
@@ -130,7 +125,7 @@ export const GET: RequestHandler = async () => {
       maxWorkers: 16,
       minWorkers: 1,
       scalingPolicy: {
-        autoScale: false, // Would be configurable
+       , autoScale: false, // Would be configurable
         cpuThreshold: 80,
         memoryThreshold: 85,
         scaleUpCooldown: 300000, // 5 minutes
@@ -140,15 +135,15 @@ export const GET: RequestHandler = async () => {
         id: w.workerId,
         status: w.status ?? 'unknown',
         memoryUsage: w.memoryUsage?.heapUsed ?? null,
-        connections: w.connections ?? 0,
-      })),
+        connections: w.connections ?? 0
+      }))
     });
   } catch (error: any) {
     console.error('Cluster scaling info error:', error);
     return json(
       {
         error: 'Failed to get scaling information',
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

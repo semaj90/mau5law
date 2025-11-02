@@ -9,8 +9,8 @@ export async function load(event): Promise<any> {
       session: {
         id: session.id,
         fresh: session.fresh,
-        expiresAt: session.expiresAt,
-      },
+        expiresAt: session.expiresAt
+      }
     };
   } catch (err) {
     // Redirect to login if not authenticated

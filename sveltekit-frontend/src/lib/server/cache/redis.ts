@@ -55,15 +55,13 @@ function getRedisConfig() {
     return { url: `redis://:${password}@${host}:${port}` };
   } else {
     // Connect without authentication for local development
-    return { url: `redis://${host}:${port}` };
+    return { url: `redis://${host}:${port}' };
   }
 }
 const redisConfig = getRedisConfig();
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const MEMORY_CACHE_MAX_SIZE = 1000;
-interface MemoryEntry {
-  data: any;
-  timestamp: number;
+interface MemoryEntry { data: any;, timestamp: number;
   ttl: number;
 }
 const memoryCache = new Map<string, MemoryEntry>();
@@ -79,9 +77,8 @@ if (IS_SERVER) {
       rawRedisClient = createClient({
         url: redisConfig.url,
         socket: {
-          // simple reconnect strategy: linear-backoff capped at 2s
-          reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000),
-        },
+          // simple reconnect strategy: linear-backoff capped at 2s; reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
+        }
       });
       // handle runtime errors (suppress auth errors for local dev)
       rawRedisClient.on('error', (err: any) => {
@@ -98,10 +95,10 @@ if (IS_SERVER) {
           console.warn('⚠️ Redis auth mismatch detected — trying without password...');
           // Try reconnecting without auth
           rawRedisClient = createClient({
-            url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`,
+            url: 'redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379` }`,
             socket: {
-              reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000),
-            },
+             , reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
+            }
           });
           rawRedisClient.on('error', () => {}); // Suppress further errors
           void rawRedisClient.connect().catch(() => {

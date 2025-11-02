@@ -133,7 +133,7 @@ export class SIMDJSONParser {
     const doc: Partial<LegalDocument> = {
       id,
       title,
-      documentType: documentTypeNormalized,
+      documentType: documentTypeNormalized
     };
     if (typeof obj.content === 'string') doc.content = obj.content;
     if (Array.isArray(obj.parties)) doc.parties = obj.parties as unknown as LegalDocument['parties'];
@@ -169,7 +169,7 @@ export class SIMDJSONParser {
     const ev: Partial<Evidence> = {
       id,
       title,
-      evidenceType: evidenceTypeNormalized,
+      evidenceType: evidenceTypeNormalized
     };
     if (typeof obj.description === 'string') ev.description = obj.description;
     if (obj.metadata && typeof obj.metadata === 'object') ev.metadata = obj.metadata as Record<string, unknown>;
@@ -193,13 +193,11 @@ export class SIMDJSONParser {
     return {
       simdEnabled: this.initialized,
       workerAvailable: !!this.worker,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     };
   }
   private getMemoryUsage() {
-    type PerformanceMemory = {
-      usedJSHeapSize: number;
-      totalJSHeapSize: number;
+    type PerformanceMemory = { usedJSHeapSize: number;, totalJSHeapSize: number;
       jsHeapSizeLimit: number;
     };
     const perf = (typeof performance !== 'undefined' ? performance : undefined) as
@@ -235,7 +233,7 @@ export class SIMDPerformanceTester {
     const results = {
       simd: 0,
       native: 0,
-      speedup: 0,
+      speedup: 0
     };
     // Test SIMD parsing
     const simdStart = performance.now();
@@ -267,7 +265,7 @@ export class SIMDPerformanceTester {
     return {
       sizeGB: sizeGB.toFixed(3),
       elapsed: elapsed.toFixed(3),
-      throughput: throughput.toFixed(2),
+      throughput: throughput.toFixed(2)
     };
   }
   private static generateTestLegalDocument(sizeKB: number) {
@@ -277,7 +275,7 @@ export class SIMDPerformanceTester {
       documentType: 'contract',
       content: '',
       parties: [],
-      citations: [],
+      citations: []
     };
     // Fill with test data to reach target size
     const targetSize = sizeKB * 1024;

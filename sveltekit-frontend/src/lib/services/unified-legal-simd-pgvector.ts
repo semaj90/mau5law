@@ -7,23 +7,16 @@ import type { Document } from '$lib/types';
 let db: DBClient | undefined;
 let sql: SQLTag | undefined;
 // Import types and services with fallbacks
-interface ParsedDocument {
-  content: string;
-  entities: ExtractedEntity[];
-  suggestions: DidYouMeanSuggestion[];
+interface ParsedDocument { content: string;, entities: ExtractedEntity[]; suggestions: DidYouMeanSuggestion[];
   confidence: number;
   processingTime: number;
 }
-interface ExtractedEntity {
-  text: string;
-  type: string;
+interface ExtractedEntity { text: string;, type: string;
   confidence: number;
   startIndex: number;
   endIndex: number;
 }
-interface DidYouMeanSuggestion {
-  original: string;
-  suggestion: string;
+interface DidYouMeanSuggestion { original: string;, suggestion: string;
   confidence: number;
   type: 'spelling' | 'legal_term' | 'entity';
 }
@@ -39,12 +32,10 @@ interface ParsingConfig {
 }
 
 // NEW: concrete processing stats type (replaces `any` usage)
-interface ProcessingStats {
-  simdTime: number;
-  vectorizationTime: number;
+interface ProcessingStats { simdTime: number;, vectorizationTime: number;
   totalTime: number;
   // allow optional numeric diagnostic fields
-  [key: string]: number;
+  [key:, string]: number;
 }
 
 // Mock implementations for missing dependencies
@@ -62,17 +53,14 @@ class MockSIMDGPUParserIntegration {
       title?: string;
       documentType?: LegalDocumentVector['document_type'];
       jurisdiction?: string;
-      practiceAreas?: string[];
-    }
+      practiceAreas?: string[]; }
   ): Promise<ParsedDocument> {
-    const entities: ExtractedEntity[] = [];
-    const suggestions: DidYouMeanSuggestion[] = [];
-    return {
+    const entities: ExtractedEntity[] = []; const suggestions: DidYouMeanSuggestion[] = []; return {
       content,
       entities,
       suggestions,
       confidence: 0.8,
-      processingTime: 100,
+      processingTime: 100
     };
   }
   getSIMDStats() {
@@ -125,12 +113,12 @@ class WindowsRedisClient implements RedisConnection {
   private host = 'localhost';
   private port = 4005;
 
-  private async execCmd(cmd: string): Promise<{ stdout: string; stderr: string }> {
+  private async execCmd(cmd: string): Promise<{ stdout: string;, stderr: string }> {
     const { exec } = await import('child_process');
     return new Promise((resolve, reject) => {
       exec(cmd, (error, stdout, stderr) => {
         if (error) return reject(error);
-        resolve({ stdout: stdout ?? '', stderr: stderr ?? '' });
+        resolve({ stdout: stdout ?? '', stderr: stderr ?? '` });
       });
     });
   }
@@ -179,7 +167,7 @@ class WindowsRedisClient implements RedisConnection {
   }
 
   pipeline(): RedisPipeline {
-    const commands: Array<{ cmd: 'GET' | 'SET'; key: string; value?: string }> = [];
+    const commands: Array<{ cmd: 'GET' | 'SET';, key: string; value?: string }> = [];
     const pipelineObj: RedisPipeline = {
       get: (key: string) => {
         commands.push({ cmd: 'GET', key });
@@ -190,8 +178,7 @@ class WindowsRedisClient implements RedisConnection {
         return pipelineObj;
       },
       exec: async () => {
-        const results: Array<string | null | 'OK'> = [];
-        for (const c of commands) {
+        const results: Array<string | null | 'OK'> = []; for (const c of commands) {
           if (c.cmd === 'GET') {
             results.push(await this.get(c.key));
           } else if (c.cmd === 'SET') {
@@ -200,16 +187,14 @@ class WindowsRedisClient implements RedisConnection {
           }
         }
         return results;
-      },
+      }
     };
     return pipelineObj;
   }
 }
 const redis = new WindowsRedisClient();
 // PostgreSQL + pgvector schema types
-export interface LegalDocumentVector {
-  id: string;
-  title: string;
+export interface LegalDocumentVector { id: string;, title: string;
   content: string;
   document_type: 'contract' | 'brief' | 'evidence' | 'citation' | 'statute' | 'regulation';
   jurisdiction?: string;
@@ -220,8 +205,7 @@ export interface LegalDocumentVector {
   legal_term_embeddings: number[][]; // Legal term vectors
   // SIMD-parsed metadata
   extracted_entities: ExtractedEntity[];
-  suggestions: DidYouMeanSuggestion[];
-  confidence_score: number;
+  suggestions: DidYouMeanSuggestion[]; confidence_score: number;
   processing_time_ms: number;
   // pgvector indexing metadata
   vector_index_version: string;
@@ -231,17 +215,12 @@ export interface LegalDocumentVector {
   updated_at: Date;
 }
 
-export interface VectorSearchResult {
-  document: LegalDocumentVector;
-  similarity_score: number;
+export interface VectorSearchResult { document: LegalDocumentVector;, similarity_score: number;
   matching_entities: ExtractedEntity[];
-  suggested_improvements: DidYouMeanSuggestion[];
-  relevance_explanation: string;
+  suggested_improvements: DidYouMeanSuggestion[]; relevance_explanation: string;
 }
 
-export interface SIMDPGVectorStats {
-  total_documents: number;
-  total_vectors: number;
+export interface SIMDPGVectorStats { total_documents: number;, total_vectors: number;
   avg_processing_time: number;
   gpu_utilization: number;
   pgvector_index_efficiency: number;
@@ -258,12 +237,12 @@ export class UnifiedLegalSIMDPGVector {
     confidenceThreshold: 0.7,
     maxSuggestions: 20,
     simdOptimization: true,
-    gpuAcceleration: true,
+    gpuAcceleration: true
   };
   constructor(config: Partial<ParsingConfig> = {}) {
     this.simdParser = new MockSIMDGPUParserIntegration({
       ...this.defaultConfig,
-      ...config,
+      ...config
     });
     console.log('🚀 UnifiedLegalSIMDPGVector initialized');
   }
@@ -342,21 +321,20 @@ export class UnifiedLegalSIMDPGVector {
             sql = (strings: TemplateStringsArray, ...values: any[]) => ({
               toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
               strings,
-              values,
+              values
             });
           }
         } catch (error) {
           console.warn('⚠️ Database module not available, using mock implementation');
           const globalCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
           db = {
-            execute: async (_query: string | { toString(): string }, _params?: any[]) => ({
-              rows: [{ id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }],
-            }),
+            execute: async (_query: string | { toString(): string }, _params?: any[]), => ({ rows: [{, id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }]
+            })
           };
-          sql = (strings: TemplateStringsArray, ...values: any[]) => ({
+          sql = (strings: TemplateStringsArray, ...values: any[]), => ({
             toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
             strings,
-            values,
+            values
           });
         }
       }
@@ -366,15 +344,14 @@ export class UnifiedLegalSIMDPGVector {
         sql = (strings: TemplateStringsArray, ...values: any[]) => ({
           toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
           strings,
-          values,
+          values
         });
       }
       if (!db) {
         const globalCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
         db = {
-          execute: async (_query: string | { toString(): string }, _params?: any[]) => ({
-            rows: [{ id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }],
-          }),
+          execute: async (_query: string | { toString(): string }, _params?: any[]), => ({ rows: [{, id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }]
+          })
         };
       }
 
@@ -389,7 +366,7 @@ export class UnifiedLegalSIMDPGVector {
     }
   }
   // NEW helper: ensure DB/sql are initialized and return them typed (awaits ensurePGVectorExtension if necessary)
-  private async getDB(): Promise<{ db: DBClient; sql: SQLTag }> {
+  private async getDB(): Promise<{ db: DBClient;, sql: SQLTag }> {
     if (!db || !sql) {
       // ensurePGVectorExtension will set db/sql (it handles mock fallback)
       await this.ensurePGVectorExtension();
@@ -413,7 +390,7 @@ export class UnifiedLegalSIMDPGVector {
 					content TEXT NOT NULL,
 					document_type VARCHAR(20) NOT NULL,
 					jurisdiction VARCHAR(100),
-					practice_areas TEXT[] DEFAULT: '{}',
+					practice_areas TEXT[], DEFAULT: '{}',
 					-- Vector embeddings (768-dimensional for BERT-like models)
 					content_embedding vector(768),
 					entity_embeddings vector(768)[],
@@ -474,10 +451,8 @@ export class UnifiedLegalSIMDPGVector {
     content: string,
     title: string,
     documentType: LegalDocumentVector['document_type'],
-    metadata: { jurisdiction?: string; practiceAreas?: string[] } = {}
-  ): Promise<{
-    documentId: string;
-    parsedDocument: ParsedDocument;
+    metadata: { jurisdiction?: string; practiceAreas?: string[], } = {}
+  ): Promise<{ documentId: string;, parsedDocument: ParsedDocument;
     vectorized: boolean;
     processingStats: ProcessingStats;
   }> {
@@ -494,15 +469,14 @@ export class UnifiedLegalSIMDPGVector {
         type: 'inference',
         requiredMemory,
         estimatedDuration,
-        priority: 'high',
-      });
+        priority: `high` });
 
       const simdStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       const parsedDocument = await this.simdParser.parseDocument(content, {
         title,
         documentType,
         jurisdiction: metadata.jurisdiction,
-        practiceAreas: metadata.practiceAreas,
+        practiceAreas: metadata.practiceAreas
       });
       const simdEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
@@ -513,7 +487,7 @@ export class UnifiedLegalSIMDPGVector {
       await cognitiveCache.storeJsonbDocument(`legal_doc_${documentId}`, parsedDocument, {
         documentType: 'simd_parsed_legal',
         gpuProcessed: true,
-        vectorized: true,
+        vectorized: true
       });
 
       const vectorizationEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -523,14 +497,14 @@ export class UnifiedLegalSIMDPGVector {
       const processingStats: ProcessingStats = {
         simdTime: simdEndTime - simdStartTime,
         vectorizationTime: vectorizationEndTime - vectorizationStartTime,
-        totalTime: totalEndTime - startTime,
+        totalTime: totalEndTime - startTime
       };
 
       return {
         documentId,
         parsedDocument,
         vectorized: true,
-        processingStats,
+        processingStats
       };
     } catch (error) {
       console.error('❌ Document processing failed:', error);
@@ -539,16 +513,12 @@ export class UnifiedLegalSIMDPGVector {
   }
 
   // ======================= EMBEDDING & VECTOR OPS =======================
-  private async generateDocumentEmbeddings(parsedDocument: ParsedDocument): Promise<{
-    contentEmbedding: number[];
-    entityEmbeddings: number[][];
-    legalTermEmbeddings: number[][];
-  }> {
+  private async generateDocumentEmbeddings(parsedDocument: ParsedDocument): Promise<{ contentEmbedding: number[];, entityEmbeddings: number[][]; legalTermEmbeddings: number[][]; }> {
     // Use the module-level helper to resolve the Ollama endpoint (avoid hardcoded URLs)
     const OLLAMA_MODEL = (process.env.OLLAMA_EMBED_MODEL as string) || 'nomic-embed-text';
     const DIM = 768;
 
-    const normalize = (v: number[]): number[] => {
+    const normalize = (v: number[]): number[], => {
       if (v.length === DIM) return v.slice();
       if (v.length > DIM) return v.slice(0, DIM);
       const out = v.slice();
@@ -557,7 +527,7 @@ export class UnifiedLegalSIMDPGVector {
     };
 
     // typed dynamic import for node-fetch to avoid `any`
-    type NodeFetchModule = { default?: typeof fetch; fetch?: typeof fetch };
+    type NodeFetchModule = { default?: typeof | fetch; fetch?: typeof fetch };
     const ensureFetch = async (): Promise<typeof fetch> => {
       if (typeof fetch !== 'undefined') return fetch;
       // dynamic import with explicit local type
@@ -571,10 +541,9 @@ export class UnifiedLegalSIMDPGVector {
     };
 
     const entityTexts = (parsedDocument.entities || []).map(e => e.text);
-    const legalTerms = (parsedDocument.suggestions || []).map(s => s.suggestion);
+    const legalTerms = (parsedDocument.suggestions || []).map(s, => s.suggestion);
 
-    const allInputs: string[] = [];
-    const seen = new Set<string>();
+    const allInputs: string[] = []; const seen = new Set<string>();
     const add = (t?: string) => {
       if (!t) return;
       const trimmed = t.length > 12000 ? t.slice(0, 12000) : t;
@@ -615,22 +584,21 @@ export class UnifiedLegalSIMDPGVector {
             const url = `${ep.replace(/\/$/, '')}/api/embed`;
             const res = await f(url, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ model: OLLAMA_MODEL, input: allInputs }),
+              headers: { 'Content-Type': `application/json` },
+              body: JSON.stringify({, model: OLLAMA_MODEL, input: allInputs }),
               // Only add: 'signal' if supported in this environment
-              ...(signal ? { signal } : {}),
+              ...(signal ? { signal } : {})
             } as RequestInit);
 
             if (timer) clearTimeout(timer);
             if (!res.ok) throw new Error(`Ollama HTTP ${res.status} @ ${url}`);
 
             const j = await res.json();
-            const vectors: number[][] = Array.isArray(j.embeddings)
+            const vectors: number[][], = Array.isArray(j.embeddings)
               ? j.embeddings
               : Array.isArray(j.embedding)
                 ? [j.embedding]
-                : [];
-            if (vectors.length !== allInputs.length) throw new Error('Embedding count mismatch');
+                : []; if (vectors.length !== allInputs.length) throw new Error('Embedding count mismatch');
 
             vectors.forEach((vec, i) => map.set(allInputs[i], normalize(vec)));
             ok = true;
@@ -654,11 +622,11 @@ export class UnifiedLegalSIMDPGVector {
     return {
       contentEmbedding: map.get(parsedDocument.content) || this.generateSimulatedEmbedding(parsedDocument.content, DIM),
       entityEmbeddings: entityTexts.map(t => map.get(t) || this.generateSimulatedEmbedding(t, DIM)),
-      legalTermEmbeddings: legalTerms.map(t => map.get(t) || this.generateSimulatedEmbedding(t, DIM)),
+      legalTermEmbeddings: legalTerms.map(t => map.get(t) || this.generateSimulatedEmbedding(t, DIM))
     };
   }
 
-  private generateSimulatedEmbedding(text: string, dimension: number): number[] {
+  private generateSimulatedEmbedding(text: string, dimension: number): number[], {
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       hash = (hash << 5) - hash + text.charCodeAt(i);
@@ -668,7 +636,7 @@ export class UnifiedLegalSIMDPGVector {
     let seed = Math.abs(hash) || 1;
     for (let i = 0; i < dimension; i++) {
       seed = (seed * 16807) % 2147483647;
-      arr[i] = (seed / 2147483647) * 2 - 1;
+      arr[i], = (seed / 2147483647) * 2 - 1;
     }
     const mag = Math.sqrt(arr.reduce((s, v) => s + v * v, 0) || 1);
     return arr.map(v => v / mag);
@@ -678,8 +646,8 @@ export class UnifiedLegalSIMDPGVector {
     parsedDocument: ParsedDocument,
     title: string,
     documentType: LegalDocumentVector['document_type'],
-    metadata: { jurisdiction?: string; practiceAreas?: string[] },
-    embeddings: { contentEmbedding: number[]; entityEmbeddings: number[][]; legalTermEmbeddings: number[][] }
+    metadata: { jurisdiction?: string; practiceAreas?: string[], },
+    embeddings: {, contentEmbedding: number[]; entityEmbeddings: number[][]; legalTermEmbeddings: number[][], }
   ): Promise<string> {
     try {
       // Ensure DB available
@@ -711,7 +679,7 @@ export class UnifiedLegalSIMDPGVector {
       ];
       // Execute with parameters when available
       const result = await _db.execute(query, params);
-      const id = result?.rows?.[0]?.id ?? (crypto?.randomUUID ? crypto.randomUUID() : `id-${Date.now()}`);
+      const id = result?.rows?.[0]?.id, ?? (crypto?.randomUUID ? crypto.randomUUID() : `id-${Date.now()}`);
       return String(id);
     } catch (e) {
       console.error('❌ Failed to store vectorized document:', e);
@@ -723,8 +691,7 @@ export class UnifiedLegalSIMDPGVector {
     options: {
       documentType?: LegalDocumentVector['document_type'];
       jurisdiction?: string;
-      practiceAreas?: string[];
-      similarityThreshold?: number;
+      practiceAreas?: string[]; similarityThreshold?: number;
       limit?: number;
     } = {}
   ): Promise<VectorSearchResult[]> {
@@ -732,8 +699,7 @@ export class UnifiedLegalSIMDPGVector {
       const cacheKey = `search:${Buffer.from(JSON.stringify({ query, options })).toString('base64')}`;
       try {
         const cached = await redis.get(cacheKey);
-        if (cached) return JSON.parse(cached) as VectorSearchResult[];
-      } catch {
+        if (cached) return JSON.parse(cached) as VectorSearchResult[]; } catch {
         // ignore cache errors
       }
 
@@ -742,25 +708,22 @@ export class UnifiedLegalSIMDPGVector {
       const limit = options.limit ?? 20;
 
       // Simple SQL string - in real code, use parameterized queries and pgvector operator
-      const whereClauses: string[] = ['1=1'];
-      if (options.documentType) whereClauses.push(`document_type = '${options.documentType}'`);
+      const whereClauses: string[] = ['1=1']; if (options.documentType) whereClauses.push(`document_type = '${options.documentType}'`);
       if (options.jurisdiction) whereClauses.push(`jurisdiction = '${options.jurisdiction}'`);
       if (options.practiceAreas?.length)
-        whereClauses.push(`practice_areas && ARRAY[${options.practiceAreas.map(p => `'${p}'`).join(',')}]::text[]`);
-
-      const sqlQuery = `SELECT id,title,content,document_type,jurisdiction,practice_areas,extracted_entities,suggestions,confidence_score,processing_time_ms,created_at,updated_at FROM legal_documents_vectorized WHERE ${whereClauses.join(' AND: ')} LIMIT ${limit};`;
+        whereClauses.push(`practice_areas && ARRAY[${options.practiceAreas.map(p => `'${p}'`).join(',')}]::text[]`); const sqlQuery = `SELECT id,title,content,document_type,jurisdiction,practice_areas,extracted_entities,suggestions,confidence_score,processing_time_ms,created_at,updated_at FROM legal_documents_vectorized WHERE ${whereClauses.join(' AND: ')} LIMIT ${limit};`;
 
       const { db: _db } = await this.getDB();
       const results = await _db.execute(sqlQuery);
       const rows = results.rows || [];
-      const vectorResults: VectorSearchResult[] = rows.map((row: DBRow) => {
+      const vectorResults: VectorSearchResult[], = rows.map((row: DBRow) => {
         const doc: LegalDocumentVector = {
           id: (row.id as string) || `id-${Date.now()}`,
           title: (row.title as string) || '',
           content: (row.content as string) || '',
           document_type: (row.document_type as LegalDocumentVector['document_type']) || 'evidence',
           jurisdiction: (row.jurisdiction as string) || undefined,
-          practice_areas: (row.practice_areas as string[]) || [],
+          practice_areas: (row.practice_areas as string[]), || [],
           content_embedding: [],
           entity_embeddings: [],
           legal_term_embeddings: [],
@@ -772,7 +735,7 @@ export class UnifiedLegalSIMDPGVector {
           last_indexed: (row.last_indexed as Date) || new Date(),
           similarity_threshold: threshold,
           created_at: (row.created_at as Date) || new Date(),
-          updated_at: (row.updated_at as Date) || new Date(),
+          updated_at: (row.updated_at as Date) || new Date()
         };
         const similarity_score = Math.random(); // placeholder; real query should compute similarity
         return {
@@ -780,7 +743,7 @@ export class UnifiedLegalSIMDPGVector {
           similarity_score,
           matching_entities: this.findMatchingEntities(query, doc.extracted_entities),
           suggested_improvements: (doc.suggestions || []).slice(0, 5),
-          relevance_explanation: this.generateRelevanceExplanation(query, doc, similarity_score),
+          relevance_explanation: this.generateRelevanceExplanation(query, doc, similarity_score)
         };
       });
 
@@ -803,17 +766,16 @@ export class UnifiedLegalSIMDPGVector {
     document: Partial<LegalDocumentVector>,
     similarity: number
   ): string {
-    const reasons: string[] = [];
+    const reasons: string[], = [];
     if (similarity > 0.9) reasons.push('Very high semantic similarity');
     else if (similarity > 0.8) reasons.push('High semantic similarity');
     else reasons.push('Moderate semantic similarity');
-    const matches = this.findMatchingEntities(query, document.extracted_entities || []);
-    if (matches.length) reasons.push(`Contains ${matches.length} matching legal entities`);
+    const matches = this.findMatchingEntities(query, document.extracted_entities || []); if (matches.length) reasons.push(`Contains ${matches.length} matching legal entities`);
     if ((document.confidence_score ?? 0) > 0.8) reasons.push('High-confidence document analysis');
     return reasons.join(', ');
   }
 
-  private findMatchingEntities(query: string, entities: ExtractedEntity[] = []): ExtractedEntity[] {
+  private findMatchingEntities(query: string, entities: ExtractedEntity[] = []):, ExtractedEntity[] {
     if (!entities || entities.length === 0) return [];
     const q = query.toLowerCase();
     return entities.filter(e => (e.text || '').toLowerCase().includes(q));
@@ -831,9 +793,9 @@ export class UnifiedLegalSIMDPGVector {
         'SELECT COUNT(*) as vectors FROM (SELECT unnest(entity_embeddings) FROM legal_documents_vectorized) t;'
       );
 
-      const docCount = parseInt(String(docCountRes.rows?.[0]?.total || '0'), 10);
+      const docCount = parseInt(String(docCountRes.rows?.[0]?.total, || '0'), 10);
       const avgProcessing = parseFloat(String(avgProcessingRes.rows?.[0]?.avg_time || '0'));
-      const vectorCount = parseInt(String(vectorCountRes.rows?.[0]?.vectors || '0'), 10);
+      const vectorCount = parseInt(String(vectorCountRes.rows?.[0]?.vectors, || '0'), 10);
 
       const gpuStats = physicsAwareGPUOrchestrator.getGPUStats?.() ?? { totalUtilization: 0 };
       const simdStats = this.simdParser.getSIMDStats?.() ?? { processed: 0, avgTime: 0 };
@@ -847,7 +809,7 @@ export class UnifiedLegalSIMDPGVector {
         avg_processing_time: avgProcessing,
         gpu_utilization: gpuStats.totalUtilization ?? 0,
         pgvector_index_efficiency: 0.85,
-        cache_hit_rate: cacheStats.averageAccessCount > 0 ? 0.75 : 0,
+        cache_hit_rate: cacheStats.averageAccessCount > 0 ? 0.75 : 0
       };
     } catch {
       return {
@@ -856,7 +818,7 @@ export class UnifiedLegalSIMDPGVector {
         avg_processing_time: 0,
         gpu_utilization: 0,
         pgvector_index_efficiency: 0,
-        cache_hit_rate: 0,
+        cache_hit_rate: 0
       };
     }
   }
@@ -873,7 +835,7 @@ export class UnifiedLegalSIMDPGVector {
 // Replace loose any usage with concrete lightweight types
 type DBExecuteResult = { rows?: Record<string, unknown>[] };
 type DBClient = {
-  execute: (query: string | { toString(): string }, params?: any[]) => Promise<DBExecuteResult>;
+  execute: (query: string | { toString(): string }, params?: any[]), => Promise<DBExecuteResult>;
 };
 type SQLTag = (
   strings: TemplateStringsArray,
@@ -881,8 +843,7 @@ type SQLTag = (
 ) => {
   toString(): string;
   strings: TemplateStringsArray;
-  values: any[];
-};
+  values: any[]; };
 type DrizzleModuleShape = { sql?: SQLTag };
 
 const isDBClient = (x: any): x is DBClient => !!x && typeof (x as DBClient).execute === 'function';
@@ -920,7 +881,7 @@ export default UnifiedLegalSIMDPGVector;
  * 1) import.meta.env.VITE_OLLAMA_ENDPOINT / import.meta.env.OLLAMA_ENDPOINT (when available)
  * 2) globalThis.OLLAMA_ENDPOINT
  * 3) process.env.OLLAMA_ENDPOINT or process.env.VITE_OLLAMA_ENDPOINT
- * 4) fallback to protocol://hostname:DEFAULT_OLLAMA_PORT or http://localhost:DEFAULT_OLLAMA_PORT
+ * 4) fallback to protocol://hostname:DEFAULT_OLLAMA_PORT or; http://localhost:DEFAULT_OLLAMA_PORT
  */
 export function getOllamaEndpoint(): string {
   try {
@@ -988,7 +949,7 @@ function getOllamaEndpointCandidates(): string[] {
       const u = new URL(primary);
       return { host: u.hostname, protocol: u.protocol.replace(/:$/, '') };
     } catch {
-      return { host: primary.replace(/https?:\/\//, ''), protocol: 'http' };
+      return { host: primary.replace(/https?:\/\//, ''), protocol: `http` };
     }
   })();
   const host = parsed.host || 'localhost';

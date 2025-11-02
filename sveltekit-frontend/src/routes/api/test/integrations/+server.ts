@@ -12,7 +12,7 @@ async function runCheck(): Promise<any> {
     const res = await Promise.race([
       initPromise,
       new Promise<boolean>(resolve => setTimeout(() => resolve(false), timeoutMs)),
-    ] as const);
+    ] as const );
     initialized = Boolean(res);
   } catch (e: any) {
     // swallow - we will surface status below
@@ -23,7 +23,7 @@ async function runCheck(): Promise<any> {
     elapsedMs: Date.now() - start,
     rabbitmqUrl: process.env.RABBITMQ_URL ?? 'amqp://localhost:5672',
     rabbitConnected: bridge.getStatus().connected,
-    cudaHealthy: bridge.getStatus().cudaHealthy,
+    cudaHealthy: bridge.getStatus().cudaHealthy
   };
 
   try {
@@ -34,7 +34,7 @@ async function runCheck(): Promise<any> {
 
   return new Response(JSON.stringify(status, null, 2), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }
   });
 }
 

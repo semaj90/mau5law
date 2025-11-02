@@ -50,7 +50,7 @@
   // Local state
   let inputValue = $state<string>('');
   let open = $state<boolean>(false);
-  let selectedResult: any = $state(null);
+  let selectedResult: any = null;
   // add missing search history state (was referenced but not declared)
   let searchHistory = $state<string[]>([]);
   // Reactive computations (fixed: derive from the actual variables via functions)
@@ -235,7 +235,7 @@
       <!-- Enhanced Search Results -->
       {#if CommandContent}
         <CommandContent
-          class="absolute" z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
+          class="absolute z-50 mt-2" max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
                  bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
                  data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
         >

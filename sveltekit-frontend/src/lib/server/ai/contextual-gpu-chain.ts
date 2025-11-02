@@ -8,7 +8,7 @@ import { createClient, type RedisClientType } from 'redis';
 import { CONFIG } from '$lib/config/env.server';
 import { TensorRtEmbeddings } from '$lib/server/ai/tensorrt-embeddings';
 const redisMemoryClient: RedisClientType = createClient({
-  url: process.env.REDIS_URL ?? CONFIG.REDIS_URL,
+  url: process.env.REDIS_URL ?? CONFIG.REDIS_URL
 });
 const memoryReady = redisMemoryClient.connect().catch((error) => {
   console.warn('[contextualChain] redis memory unavailable', error);
@@ -17,17 +17,17 @@ const llm = new ChatOllama({
   baseUrl: process.env.OLLAMA_URL ?? CONFIG.OLLAMA_URL,
   model: process.env.OLLAMA_CONTEXT_MODEL ?? 'gemma3-legal:latest',
   temperature: 0.1,
-  numPredict: 1024,
+  numPredict: 1024
 });
 const embeddings = new TensorRtEmbeddings();
 const vectorStorePromise = QdrantVectorStore.fromExistingCollection(embeddings, {
   url: process.env.QDRANT_URL ?? CONFIG.QDRANT_URL,
-  collectionName: process.env.QDRANT_COLLECTION ?? 'legal_documents',
+  collectionName: process.env.QDRANT_COLLECTION ?? 'legal_documents'
 });
 const graph = new Neo4jGraph({
   url: process.env.NEO4J_URI ?? CONFIG.NEO4J_URL,
   username: process.env.NEO4J_USERNAME ?? CONFIG.NEO4J_USER,
-  password: process.env.NEO4J_PASSWORD ?? CONFIG.NEO4J_PASSWORD,
+  password: process.env.NEO4J_PASSWORD ?? CONFIG.NEO4J_PASSWORD
 });
 export interface ContextualChainInput {
   input: string;
@@ -72,7 +72,7 @@ export async function invokeContextualChain(input: string, userId?: string): Pro
     userId && redisMemoryClient.isOpen
       ? new RedisChatMemory({
           redisClient: redisMemoryClient,
-          sessionId: userId,
+          sessionId: userId
         })
       : undefined;
   const response = await contextualChain.invoke({ input, userId });

@@ -9,9 +9,7 @@ import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer
 import { autoencoderContextSwitcher } from '$lib/orchestration/autoencoder-context-switcher';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 // Feedback data structure
-interface RLFeedbackData {
-  sessionId: string;
-  userId: string;
+interface RLFeedbackData { sessionId: string;, userId: string;
   queryId: string;
   query: string;
   response: string;
@@ -22,9 +20,7 @@ interface RLFeedbackData {
     completeness: number; // 1-5 scale,
     clarity: number; // 1-5 scale
   };
-  context: {
-    documentType: string;
-    legalDomain: string;
+  context: { documentType: string;, legalDomain: string;
     complexityLevel: 'basic' | 'intermediate' | 'advanced';
     modelUsed: string;
     responseTime: number;
@@ -35,19 +31,13 @@ interface RLFeedbackData {
   preferredResponse?: string;
 }
 // Training data for QLoRA distillation
-interface QLorATrainingExample {
-  instruction: string;
-  input: string;
+interface QLorATrainingExample { instruction: string;, input: string;
   output: string;
   preference_score: number;
-  quality_metrics: {
-    accuracy: number;
-    relevance: number;
+  quality_metrics: { accuracy: number;, relevance: number;
     completeness: number;
   };
-  metadata: {
-    domain: string;
-    model_used: string;
+  metadata: { domain: string;, model_used: string;
     user_feedback: string;
     context_embedding: Float32Array;
   };
@@ -93,14 +83,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       quality_metrics: {
         accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
         relevance: estimateRelevance(feedbackData),
-        completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData),
+        completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
       },
       metadata: {
         domain: feedbackData.context.legalDomain,
         model_used: feedbackData.context.modelUsed,
         user_feedback: feedbackData.feedback,
-        context_embedding: contextEmbedding,
-      },
+        context_embedding: contextEmbedding
+      }
     };
 
     // If DB available and user authenticated, write to real DB; otherwise use existing trainer mock
@@ -116,7 +106,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           feedbackDetails: feedbackData.feedbackDetails || null,
           context: feedbackData.context,
           timestamp: new Date(feedbackData.timestamp || Date.now()).toISOString(),
-          training_example: trainingExample,
+          training_example: trainingExample
         });
         console.log('✅ Feedback persisted to DB for authenticated user');
       } catch (err) {
@@ -129,14 +119,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             corrections: feedbackData.userCorrections || [],
             preference_type: determinePrefererenceType(feedbackData),
             legal_domain: feedbackData.context.legalDomain,
-            confidence_delta: calculateConfidenceDelta(feedbackData),
+            confidence_delta: calculateConfidenceDelta(feedbackData)
           },
           {
             document_type: feedbackData.context.documentType,
             jurisdiction: 'federal',
             practice_area: feedbackData.context.legalDomain,
             complexity_level: feedbackData.context.complexityLevel,
-            prior_interactions: [],
+            prior_interactions: []
           }
         );
       }
@@ -149,7 +139,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           corrections: feedbackData.userCorrections || [],
           preference_type: determinePrefererenceType(feedbackData),
           legal_domain: feedbackData.context.legalDomain,
-          confidence_delta: calculateConfidenceDelta(feedbackData),
+          confidence_delta: calculateConfidenceDelta(feedbackData)
         },
         {
           document_type: feedbackData.context.documentType,
@@ -165,7 +155,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     await autoencoderContextSwitcher.switchContext(feedbackData.userId, feedbackData.query, {
       feedback: feedbackData.feedback,
       model_performance: feedbackScore,
-      sessionId: feedbackData.sessionId,
+      sessionId: feedbackData.sessionId
     });
 
     // Update predictive engine with user interaction
@@ -177,7 +167,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         document_type: feedbackData.context.documentType,
         task: 'feedback_collection',
         legal_domain: feedbackData.context.legalDomain,
-        feedback_score: feedbackScore,
+        feedback_score: feedbackScore
       }
     );
 
@@ -206,7 +196,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       training_examples: 1,
       distillation_ready: feedbackCount >= 50,
       next_training_eta:
-        typeof estimateNextTrainingTime === 'function' ? estimateNextTrainingTime(feedbackCount) : null,
+        typeof estimateNextTrainingTime === 'function' ? estimateNextTrainingTime(feedbackCount) : null
     });
   } catch (error) {
     console.error('❌ RL Feedback API error:', error);
@@ -268,34 +258,32 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         ? await db.getAverageQualityScore()
         : await getAverageQualityScore();
 
-    return json({
-      training: {
-        total_feedback: trainingStats.training_queue_size,
+    return json({ training: {, total_feedback: trainingStats.training_queue_size,
         successful_training_runs: trainingStats.data_flywheel_status === 'training' ? 1 : 0,
         model_versions: trainingStats.model_versions,
-        next_training_eta: trainingStats.next_training_eta,
+        next_training_eta: trainingStats.next_training_eta
       },
       context_switching: {
         switching_latency: switchingStats.switchingLatency,
         active_models: switchingStats.activeModels,
         total_switches: switchingStats.totalSwitches,
-        average_cost: switchingStats.averageSwitchingCost,
+        average_cost: switchingStats.averageSwitchingCost
       },
       prediction: {
         success_rate: predictionStats.success_rate,
         average_confidence: predictionStats.average_confidence,
-        cache_improvements: predictionStats.cache_improvements,
+        cache_improvements: predictionStats.cache_improvements
       },
       domain_specific: domainStats,
       enhanced_rag: {
-        training_examples: enhancedCount,
+       , training_examples: enhancedCount,
         distilled_models: distilledCount,
-        average_quality_score: avgQuality,
-      },
+        average_quality_score: avgQuality
+      }
     });
   } catch (error) {
     console.error('❌ RL Stats API error:', error);
-    return json({ error: 'Failed to retrieve statistics' }, { status: 500 });
+    return json({ error: `Failed to retrieve statistics` }, { status: 500 });
   }
 };
 // ===============================
@@ -450,7 +438,7 @@ async function storeEnhancedRAGExample(example: QLorATrainingExample): Promise<v
       created_at: new Date().toISOString(),
       quality_score:
         (example.quality_metrics.accuracy + example.quality_metrics.relevance + example.quality_metrics.completeness) /
-        3,
+        3
     };
     // Would implement actual storage here
     console.log(`✅ RAG example stored with quality score: ${ragExample.quality_score.toFixed(2)}`);
@@ -490,14 +478,13 @@ async function triggerDomainSpecificDistillation(domain: string, userId: string)
       targetModelName: `gemma3-legal-${domain}-distilled-${Date.now()}`,
       trainingExamples: await getEnhancedRAGExampleCount(),
       qualityThreshold: 0.8,
-      maxTrainingTime: '2 hours',
-    };
+      maxTrainingTime: `2 hours` };
     // Start distillation process (would be async in production)
     console.log(`🚀 Starting distillation with config:`, distillationConfig);
     // Update user that specialized model is being created
     await notifyUserOfDistillation(userId, domain, distillationConfig.targetModelName);
   } catch (error) {
-    console.error(`❌ Distillation failed for domain ${domain}:`, error);
+    console.error(`❌ Distillation failed for domain ${domain}: ', error);
   }
 }
 /**
@@ -533,7 +520,7 @@ async function getDomainSpecificStats(domain: string, userId?: string): Promise<
     negative_feedback: Math.floor(Math.random() * 80),
     average_quality_score: 0.75 + Math.random() * 0.2,
     specialized_models: [`gemma3-legal-${domain}-v1`, `gemma3-legal-${domain}-v2`],
-    distillation_ready: Math.random() > 0.5,
+    distillation_ready: Math.random() > 0.5
   };
 }
 /**

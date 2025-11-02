@@ -71,7 +71,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
         .offset(offset);
       // Get total count for pagination
       const totalCountResult = await db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: sql<number>`count(*)' })
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined);
       const totalCount = totalCountResult[0]?.count || 0;
@@ -82,8 +82,8 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
         pagination: {
           limit,
           offset,
-          total: totalCount,
-        },
+          total: totalCount
+        }
       });
     }
   } catch (error: any) {
@@ -111,7 +111,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
       layoutData: data.layoutData,
       description: (data.description as string) || null,
       isDefault: (data.isDefault as boolean) || false,
-      createdBy: getUserId(locals),
+      createdBy: getUserId(locals)
     };
     const [newCanvasState] = await db.insert(canvasLayouts).values(canvasStateData).returning();
     return json(newCanvasState, { status: 201 });
@@ -143,7 +143,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       return json({ error: 'Canvas state not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Only update provided fields
     if (data.name !== undefined) updateData.name = (data.name as string).trim();
@@ -208,7 +208,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       return json({ error: 'Canvas state not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Handle specific patch operations
     if (data.operation === 'setAsDefault') {
@@ -238,6 +238,6 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
     return json(updatedCanvasState);
   } catch (error: any) {
     console.error('Error patching canvas state:', formatError(error));
-    return json({ error: 'Failed to update canvas state' }, { status: 500 });
+    return json({ error: `Failed to update canvas state` }, { status: 500 });
   }
 }

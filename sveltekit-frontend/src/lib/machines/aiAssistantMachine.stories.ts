@@ -9,28 +9,22 @@ const meta: any = {
   component: AIAssistantMachine,
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: 'Enterprise-grade XState 5 AI Assistant Machine with full-stack legal AI integration, multi-protocol service support, and real-time capabilities'
+    docs: { description: {, component: 'Enterprise-grade XState 5 AI Assistant Machine with full-stack legal AI integration, multi-protocol service support, and real-time capabilities'
       }
     }
   },
   tags: ['autodocs'],
   // Cast argTypes to any to suppress prop name validation (alignment not critical for current story functionality)
-  argTypes: {
-    initialContext: {
-      control: 'object',
+  argTypes: { initialContext: {, control: 'object',
       description: 'Initial context for the AI Assistant Machine',
-      table: {
-        type: { summary: 'AIAssistantContext' },
+      table: { type: {, summary: 'AIAssistantContext' },
         defaultValue: { summary: 'Default idle state context' }
       }
     },
     enableStreamingMode: {
       control: 'boolean',
       description: 'Enable real-time streaming responses',
-      table: {
-        type: { summary: 'boolean' },
+      table: { type: {, summary: 'boolean' },
         defaultValue: { summary: 'false' }
       }
     },
@@ -38,8 +32,7 @@ const meta: any = {
       control: 'select',
       options: ['http', 'grpc', 'quic', 'websocket'],
       description: 'Preferred communication protocol for AI services',
-      table: {
-        type: { summary: 'string' },
+      table: { type: {, summary: 'string' },
         defaultValue: { summary: 'http' }
       }
     }
@@ -48,9 +41,7 @@ const meta: any = {
 export default meta as Meta;
 type Story = StoryObj<any>;
 // Default idle state - ready for interaction
-export const Default: Story = {
-  args: {
-    initialContext: {
+export const Default: Story = { args: {, initialContext: {
       currentQuery: '',
       response: '',
       conversationHistory: [],
@@ -103,13 +94,11 @@ export const Default: Story = {
       collaborationUsers: []
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   }
 }
 // Processing state with AI interaction
-export const Processing: Story = {
-  args: {
-    initialContext: {
+export const Processing: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
       isProcessing: true;
@@ -131,23 +120,19 @@ export const Processing: Story = {
         }
       ],
       activeStreaming: false,
-      streamBuffer: 'Analyzing legal document structure...',
+      streamBuffer: 'Analyzing legal document structure...'
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'AI Assistant in processing state - actively analyzing legal documents'
       }
     }
   }
 }
 // Streaming mode with real-time responses
-export const StreamingMode: Story = {
-  args: {
-    initialContext: {
+export const StreamingMode: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'What are the key provisions in this merger agreement?',
       isProcessing: true;
@@ -174,20 +159,16 @@ export const StreamingMode: Story = {
       ]
     },
     enableStreamingMode: true,
-    preferredProtocol: 'websocket',
+    preferredProtocol: 'websocket'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'Streaming mode with real-time AI response generation and WebSocket communication'
       }
     }
   }
 }
 // Multi-document analysis scenario
-export const MultiDocumentAnalysis: Story = {
-  args: {
-    initialContext: {
+export const MultiDocumentAnalysis: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Compare these three contracts for common risk factors',
       isProcessing: true;
@@ -246,20 +227,16 @@ export const MultiDocumentAnalysis: Story = {
       }
     },
     enableStreamingMode: false,
-    preferredProtocol: 'grpc',
+    preferredProtocol: 'grpc'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'Multi-document analysis with vector search and comparative risk assessment'
       }
     }
   }
 }
 // High-performance QUIC protocol scenario
-export const HighPerformanceMode: Story = {
-  args: {
-    initialContext: {
+export const HighPerformanceMode: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Perform deep semantic analysis on this 500-page legal brief',
       isProcessing: true,
@@ -301,20 +278,16 @@ export const HighPerformanceMode: Story = {
       }
     },
     enableStreamingMode: true,
-    preferredProtocol: 'quic',
+    preferredProtocol: 'quic'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'High-performance mode using QUIC protocol with GPU acceleration and load balancing'
       }
     }
   }
 }
 // Error state with circuit breaker activation
-export const ErrorRecovery: Story = {
-  args: {
-    initialContext: {
+export const ErrorRecovery: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze this corrupted document',
       isProcessing: false;
@@ -329,7 +302,7 @@ export const ErrorRecovery: Story = {
         {
           id: '2',
           type: 'system',
-          content: 'Document processing failed: Unable to extract text from corrupted PDF',
+          content: 'Document processing; failed: Unable to extract text from corrupted PDF',
           timestamp: new Date(Date.now() - 25000)
         },
         {
@@ -362,20 +335,16 @@ export const ErrorRecovery: Story = {
       ]
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'Error recovery state with circuit breaker patterns and service degradation handling'
       }
     }
   }
 }
 // Collaborative session with multiple users
-export const CollaborativeMode: Story = {
-  args: {
-    initialContext: {
+export const CollaborativeMode: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Draft a motion for summary judgment based on these case files',
       isProcessing: true;
@@ -429,20 +398,16 @@ export const CollaborativeMode: Story = {
       activeProtocol: 'websocket'
     },
     enableStreamingMode: true,
-    preferredProtocol: 'websocket',
+    preferredProtocol: 'websocket'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'Collaborative mode with multiple users working together on legal document analysis'
       }
     }
   }
 }
 // Context7 integration showcase
-export const Context7Integration: Story = {
-  args: {
-    initialContext: {
+export const Context7Integration: Story = { args: {, initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
       isProcessing: true;
@@ -482,11 +447,9 @@ export const Context7Integration: Story = {
       ]
     },
     enableStreamingMode: true,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
-  parameters: {
-    docs: {
-      description: {
+  parameters: { docs: {, description: {
         story: 'Context7 integration for intelligent code generation and framework-specific assistance'
       }
     }

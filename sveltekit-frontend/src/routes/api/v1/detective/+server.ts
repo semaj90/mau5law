@@ -25,9 +25,9 @@ const DetectiveAnalysisSchema = z.object({
     .object({
       confidenceThreshold: z.number().min(0).max(1).default(0.7),
       includeHypotheses: z.boolean().default(true),
-      maxInsights: z.number().min(1).max(50).default(10),
+      maxInsights: z.number().min(1).max(50).default(10)
     })
-    .default({}),
+    .default({})
 });
 // Add a derived TypeScript type for clearer typing (replaces inline z.infer usage)
 type DetectiveAnalysis = z.infer<typeof DetectiveAnalysisSchema>;
@@ -55,7 +55,7 @@ class DetectiveModeService {
       totalInsights: insights.length,
       insights,
       processingTime: Date.now(),
-      options,
+      options
     };
   }
   // Rename unused args to start with underscore and type options properly
@@ -73,7 +73,7 @@ class DetectiveModeService {
           title: 'Recurring Location Pattern',
           description: 'Multiple evidence pieces reference the same location',
           confidence: 0.85,
-          priority: 'high',
+          priority: 'high'
         },
       ],
       anomaly_detection: [
@@ -81,7 +81,7 @@ class DetectiveModeService {
           title: 'Timeline Inconsistency',
           description: "Evidence timestamps don't align with witness statements",
           confidence: 0.78,
-          priority: 'high',
+          priority: 'high'
         },
       ],
       connection_analysis: [
@@ -89,7 +89,7 @@ class DetectiveModeService {
           title: 'Person of Interest Connection',
           description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: 'critical',
+          priority: 'critical'
         },
       ],
       timeline_gap: [
@@ -97,7 +97,7 @@ class DetectiveModeService {
           title: 'Missing Evidence Window',
           description: '30-day gap in evidence collection',
           confidence: 0.88,
-          priority: 'medium',
+          priority: 'medium'
         },
       ],
       risk_assessment: [
@@ -105,9 +105,8 @@ class DetectiveModeService {
           title: 'High-Stakes Case Risk',
           description: 'Case contains indicators requiring immediate attention',
           confidence: 0.94,
-          priority: 'critical',
-        },
-      ],
+          priority: `critical` },
+      ]
     };
     return sampleInsights[analysisType as keyof typeof sampleInsights] || [];
   }
@@ -153,16 +152,16 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         description: 'Multiple evidence pieces show correlation patterns',
         confidence: 0.87,
         priority: 'high',
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       },
     ];
     return json({
       success: true,
       data: insights,
       meta: {
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+       , userId: getUserId(locals),
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     const errMsg = getErrorMessage(err);
@@ -188,9 +187,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: true,
         data: result,
         meta: {
-          userId: getUserId(locals),
-          timestamp: new Date().toISOString(),
-        },
+         , userId: getUserId(locals),
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 201 }
     );
@@ -205,7 +204,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Domain-specific error checks
     if (errMsg === 'Case not found') {
-      return json({ success: false, message: 'Case not found' }, { status: 404 });
+      return json({ success: false, message: `Case not found` }, { status: 404 });
     }
 
     return json({ success: false, message: 'Analysis failed', details: errMsg }, { status: 500 });

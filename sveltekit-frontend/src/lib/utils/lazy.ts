@@ -34,9 +34,7 @@ export function lazy<T extends PropsRecord = PropsRecord>(importFn: () => Promis
     static __loadPromise: Promise<ComponentCtor<T>> | null = null;
 
     constructor(options: ComponentOptions<T>) {
-      const ctor = this.constructor as unknown as typeof LazyWrapper & {
-        __component: ComponentCtor<T> | null;
-        __loadPromise: Promise<ComponentCtor<T>> | null;
+      const ctor = this.constructor as unknown as typeof LazyWrapper & { __component: ComponentCtor<T> | null;, __loadPromise: Promise<ComponentCtor<T>> | null;
       };
 
       // if already loaded, instantiate real component
@@ -66,7 +64,7 @@ export function lazy<T extends PropsRecord = PropsRecord>(importFn: () => Promis
         $destroy: () => {},
         $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
           return () => {};
-        },
+        }
       };
 
       return placeholder as unknown as ComponentCtor<T>;
@@ -95,9 +93,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
     static __loadPromise: Promise<ComponentCtor<T>> | null = null;
 
     constructor(componentOptions: ComponentOptions<T>) {
-      const ctor = this.constructor as unknown as typeof LazyIntersectionWrapper & {
-        __component: ComponentCtor<T> | null;
-        __loadPromise: Promise<ComponentCtor<T>> | null;
+      const ctor = this.constructor as unknown as typeof LazyIntersectionWrapper & { __component: ComponentCtor<T> | null;, __loadPromise: Promise<ComponentCtor<T>> | null;
       };
       // If already loaded, instantiate real component
       if (ctor.__component) {
@@ -114,7 +110,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
           $destroy: () => {},
           $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
             return () => {};
-          },
+          }
         };
         // Also start background preload if desired
         if (!ctor.__loadPromise) {
@@ -194,7 +190,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
         $destroy: () => {},
         $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
           return () => {};
-        },
+        }
       };
 
       return placeholder as unknown as ComponentCtor<T>;

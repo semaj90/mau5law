@@ -46,9 +46,7 @@ interface RagHealthStatus {
   message?: string;
 }
 
-interface RagDetailedHealthMetrics {
-  health: {
-    status: string;
+interface RagDetailedHealthMetrics { health: {, status: string;
     components: {
       system?: {
         details?: Record<string, unknown>;
@@ -84,8 +82,8 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
       signal: controller.signal,
       headers: {
         'User-Agent': 'SvelteKit-Frontend/1.0.0',
-        ...options.headers,
-      },
+        ...options.headers
+      }
     });
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
@@ -96,7 +94,7 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
         status: response.status,
-        error: errorText,
+        error: errorText
       });
       throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
     }
@@ -114,9 +112,9 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
     // Log error
     if (err instanceof Error) {
       // Type narrowing for Error
-      console.error(`RAG Backend API call error [${duration}ms]:`, {
+      console.error(`RAG Backend API call error [${duration}ms]: ', {
         endpoint,
-        error: err.message,
+        error: err.message
       });
       if (err.name === 'AbortError') {
         throw new Error('RAG Backend request timed out');
@@ -125,7 +123,7 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
     } else {
       console.error(`RAG Backend API call unknown error [${duration}ms]:`, {
         endpoint,
-        error: String(err),
+        error: String(err)
       });
       throw new Error(`An unknown error occurred: ${String(err)}`);
     }
@@ -145,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleStatus();
       case 'queue-summarize':
         return await handleQueueSummarize(request);
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: `Invalid action` }, { status: 400 });
     }
   } catch (err: any) {
     // Use unknown for catch block
@@ -159,7 +157,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         error: errorMessage,
         action,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -210,7 +208,7 @@ async function handleSearch(request: Request): Promise<Response> {
       dateRange,
       confidenceMin,
       model,
-      includeMetadata = true,
+      includeMetadata = true
     } = await request.json();
     if (!query) {
       throw error(400, 'Query is required');
@@ -233,8 +231,8 @@ async function handleSearch(request: Request): Promise<Response> {
           dateRange,
           confidenceMin,
           model,
-          includeMetadata,
-        }),
+          includeMetadata
+        })
       });
       return json({
         success: true,
@@ -243,7 +241,7 @@ async function handleSearch(request: Request): Promise<Response> {
         results: result.results, // Use typed result
         metadata: result.metadata, // Use typed result
         total: result.total || result.results?.length || 0, // Use typed result
-        source: 'rag-backend',
+        source: 'rag-backend'
       });
     } catch (backendError: any) {
       // Use unknown for catch block
@@ -256,7 +254,7 @@ async function handleSearch(request: Request): Promise<Response> {
       // Fallback to local search API
       const localSearchResponse = await fetch(new URL('/api/rag/search', request.url), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           searchType,
@@ -268,8 +266,8 @@ async function handleSearch(request: Request): Promise<Response> {
           confidenceMin,
           model,
           includeMetadata,
-          includeContent,
-        }),
+          includeContent
+        })
       });
       if (!localSearchResponse.ok) {
         throw new Error(`Local search also failed: ${localSearchResponse.status}`);
@@ -284,8 +282,7 @@ async function handleSearch(request: Request): Promise<Response> {
         total: localResult.analytics?.totalResults || 0,
         source: 'local-search',
         fallback: true,
-        warning: 'Used local search due to backend unavailability',
-      });
+        warning: `Used local search due to backend unavailability` });
     }
   } catch (err: any) {
     // Use unknown for catch block
@@ -311,12 +308,12 @@ async function handleAnalyze(request: Request): Promise<Response> {
     const result = await forwardToRAGBackend<RagAnalysisResult>('/api/v1/rag/analyze', {
       // Use specific type
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         text,
         analysisType,
-        options,
-      }),
+        options
+      })
     });
     return json({
       success: true,
@@ -347,12 +344,12 @@ async function handleSummarize(request: Request): Promise<Response> {
     const result = await forwardToRAGBackend<RagSummarizeResult>('/api/v1/rag/summarize', {
       // Use specific type
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         text,
         length,
-        options,
-      }),
+        options
+      })
     });
     return json({
       success: true,
@@ -402,15 +399,15 @@ async function handleStatus(): Promise<Response> {
     return json({
       success: true,
       backend: {
-        url: RAG_BACKEND_URL,
+       , url: RAG_BACKEND_URL,
         healthy: isHealthy,
-        status: status,
+        status: status
       },
       services: metrics?.health?.components || {},
       ragStats: stats?.stats || {},
       systemMetrics: metrics?.health?.components?.system?.details || {},
       timestamp: new Date().toISOString(),
-      responseTime: metrics?.responseTime || null,
+      responseTime: metrics?.responseTime || null
     });
   } catch (err: any) {
     // Use unknown for catch block
@@ -423,12 +420,12 @@ async function handleStatus(): Promise<Response> {
     return json({
       success: false,
       backend: {
-        url: RAG_BACKEND_URL,
+       , url: RAG_BACKEND_URL,
         healthy: false,
-        status: 'unreachable',
+        status: 'unreachable'
       },
       error: errorMessage,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }
@@ -473,15 +470,15 @@ export const GET: RequestHandler = async ({ url }) => {
               searchType,
               limit,
               threshold,
-              includeContent: true,
-            }),
+              includeContent: true
+            })
           });
           return json({
             success: true,
             query,
             results: searchResult.results,
             total: searchResult.total,
-            source: 'rag-backend',
+            source: 'rag-backend'
           });
         } catch (backendError: any) {
           // Use unknown for catch block
@@ -497,7 +494,7 @@ export const GET: RequestHandler = async ({ url }) => {
           localSearchUrl.searchParams.set('query', query);
           localSearchUrl.searchParams.set('searchType', searchType);
           localSearchUrl.searchParams.set('limit', limit.toString());
-          const localResponse = await fetch(localSearchUrl, { method: 'GET' });
+          const localResponse = await fetch(localSearchUrl, { method: `GET` });
           if (!localResponse.ok) {
             throw new Error(`Local search failed: ${localResponse.status}`);
           }
@@ -508,16 +505,16 @@ export const GET: RequestHandler = async ({ url }) => {
             results: localResult.results,
             total: localResult.results?.length || 0,
             source: 'local-search',
-            fallback: true,
+            fallback: true
           });
         }
       }
       default:
-        throw error(400, `Invalid action: ${action || 'none'}`);
+        throw error(400, `Invalid action: ${action || 'none` }`);
     }
   } catch (err: any) {
     // Use unknown for catch block
-    console.error(`GET /${action} error:`, err);
+    console.error(`GET /${action} error: ', err);
     // Check if err is an instance of HttpError from SvelteKit or has a status property
     if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
       throw err; // Re-throw SvelteKit HttpError
@@ -542,7 +539,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
           // Use specific type
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'refresh' }),
+          body: JSON.stringify({, action: `refresh` })
         });
         return json({ success: true, result: refreshResult.result }); // Use typed result
       }
@@ -574,16 +571,15 @@ export const PATCH: RequestHandler = async ({ url }) => {
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const pattern = url.searchParams.get('pattern');
-    const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : ''}`;
+    const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : `` }`;
     const result = await forwardToRAGBackend<RagCacheResult>(cacheUrl, {
       // Use specific type
-      method: 'DELETE',
+      method: 'DELETE'
     });
     return json({
       success: true,
       message: result.message || 'Cache cleared successfully', // Use typed result
-      pattern: pattern || 'all',
-    });
+      pattern: pattern || 'all` });
   } catch (err: any) {
     // Use unknown for catch block
     console.error('Cache clear error:', err);

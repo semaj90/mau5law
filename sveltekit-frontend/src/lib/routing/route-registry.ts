@@ -24,9 +24,7 @@ export interface RouteRegistryState {
 /**
  * Route Registry Options interface
  */
-export interface RouteRegistryOptions {
-  maxHistorySize: number;
-  maxRecentSize: number;
+export interface RouteRegistryOptions { maxHistorySize: number;, maxRecentSize: number;
   persistState: boolean;
   storageKey: string;
 }
@@ -47,7 +45,7 @@ export class RouteRegistry {
     currentRoute: null,
     routeHistory: [],
     favorites: new Set(),
-    recentRoutes: [],
+    recentRoutes: []
   });
 
   private cachedState: RouteRegistryState;
@@ -59,7 +57,7 @@ export class RouteRegistry {
       maxRecentSize: 10,
       persistState: true,
       storageKey: 'yorha-route-registry',
-      ..._options,
+      ..._options
     };
     // Initialize cachedState with initial value
     this.cachedState = {
@@ -68,7 +66,7 @@ export class RouteRegistry {
       currentRoute: null,
       routeHistory: [],
       favorites: new Set(),
-      recentRoutes: [],
+      recentRoutes: []
     };
     // Subscribe to state changes to keep cachedState updated
     this.state.subscribe(state => {
@@ -99,7 +97,7 @@ export class RouteRegistry {
       return {
         ...state,
         routes: routesMap,
-        dynamicRoutes: dynamicRoutesMap,
+        dynamicRoutes: dynamicRoutesMap
       };
     });
 
@@ -164,7 +162,7 @@ export class RouteRegistry {
       newRoutes.set(route.id, route);
       return {
         ...state,
-        routes: newRoutes,
+        routes: newRoutes
       };
     });
   }
@@ -179,7 +177,7 @@ export class RouteRegistry {
       newDynamicRoutes.set(id, generatedRoute);
       return {
         ...state,
-        dynamicRoutes: newDynamicRoutes,
+        dynamicRoutes: newDynamicRoutes
       };
     });
     return generatedRoute;
@@ -205,7 +203,7 @@ export class RouteRegistry {
       return {
         ...state,
         routes: newRoutes,
-        dynamicRoutes: newDynamicRoutes,
+        dynamicRoutes: newDynamicRoutes
       };
     });
     return removed;
@@ -285,7 +283,7 @@ export class RouteRegistry {
         ...state,
         currentRoute: route,
         routeHistory: newHistory,
-        recentRoutes: newRecent,
+        recentRoutes: newRecent
       };
     });
   }
@@ -299,7 +297,7 @@ export class RouteRegistry {
       newFavorites.add(routeId);
       return {
         ...state,
-        favorites: newFavorites,
+        favorites: newFavorites
       };
     });
   }
@@ -313,7 +311,7 @@ export class RouteRegistry {
       newFavorites.delete(routeId);
       return {
         ...state,
-        favorites: newFavorites,
+        favorites: newFavorites
       };
     });
   }
@@ -349,9 +347,7 @@ export class RouteRegistry {
   /**
    * Get route statistics
    */
-  public getStatistics(): {
-    total: number;
-    static: number;
+  public getStatistics(): { total: number;, static: number;
     dynamic: number;
     favorites: number;
     recent: number;
@@ -369,7 +365,7 @@ export class RouteRegistry {
       dynamic: state.dynamicRoutes.size,
       favorites: state.favorites.size,
       recent: state.recentRoutes.length,
-      categories,
+      categories
     };
   }
 
@@ -379,7 +375,7 @@ export class RouteRegistry {
   public clearHistory(): void {
     this.state.update(state => ({
       ...state,
-      routeHistory: [],
+      routeHistory: []
     }));
   }
 
@@ -389,7 +385,7 @@ export class RouteRegistry {
   public clearFavorites(): void {
     this.state.update(state => ({
       ...state,
-      favorites: new Set(),
+      favorites: new Set()
     }));
   }
 
@@ -424,7 +420,7 @@ export class RouteRegistry {
       const persistedData = {
         favorites: Array.from(state.favorites),
         recentRoutes: state.recentRoutes,
-        routeHistory: state.routeHistory,
+        routeHistory: state.routeHistory
       };
       window.localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
     } catch (error: any) {
@@ -464,7 +460,7 @@ export class RouteRegistry {
             ...state,
             favorites: new Set((p.favorites ?? []) as string[]),
             recentRoutes: (p.recentRoutes ?? []) as string[],
-            routeHistory: (p.routeHistory ?? []) as string[],
+            routeHistory: (p.routeHistory ?? []) as string[]
           }));
         } else {
           console.warn('Route registry state in localStorage is invalid, ignoring.');
@@ -521,7 +517,7 @@ export const routeStatistics = derived(routeRegistry.getState(), state => {
     dynamic: state.dynamicRoutes.size,
     favorites: state.favorites.size,
     recent: state.recentRoutes.length,
-    categories,
+    categories
   };
 });
 
@@ -535,7 +531,7 @@ function getPathHref(route: RouteDefinition | GeneratedRoute): { path?: string; 
   const r = route as unknown as Record<string, unknown>;
   return {
     path: asString(r['path']),
-    href: asString(r['href']),
+    href: asString(r['href'])
   };
 }
 
@@ -552,9 +548,7 @@ function getRouteCategory(route: RouteDefinition | GeneratedRoute): string {
   return metaCat ?? CATEGORY_UNKNOWN;
 }
 
-function getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): {
-  title: string;
-  description: string;
+function getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: string;, description: string;
   tags: string[];
   id: string;
 } {

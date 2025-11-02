@@ -4,9 +4,7 @@ import type { Case } from '$lib/types';
  * Automatically discovers all SvelteKit routes in the application
  */
 
-export interface RouteInfo {
-  path: string;
-  name: string;
+export interface RouteInfo { path: string;, name: string;
   category: string;
   icon?: string;
   description?: string;
@@ -40,7 +38,7 @@ export function discoverRoutes(): RouteInfo[] {
 
     // YoRHa routes
     { path: '/yorha', name: 'YoRHa Terminal', category: 'yorha', icon: '⚡' },
-    { path: '/yorha/dashboard', name: 'YoRHa Dashboard', category: 'yorha', icon: '📊' },
+    { path: '/yorha/dashboard', name: 'YoRHa Dashboard', category: 'yorha', icon: '📊' }
   ];
 
   return routes;

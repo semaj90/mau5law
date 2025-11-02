@@ -450,7 +450,7 @@ import type { Document } from '$lib/types';
       <div class="flex items-center justify-between mb-2">
         <span class="font-medium">Overall Success Rate</span>
         <span
-          class="text-2xl" font-bold {overallSuccessRate >= 80
+          class="text-2xl font-bold" {overallSuccessRate >= 80
             ? 'text-green-400'
             : overallSuccessRate >= 60
               ? 'text-yellow-400'
@@ -461,7 +461,7 @@ import type { Document } from '$lib/types';
       </div>
       <div class="w-full bg-slate-600 rounded-full h-3">
         <div
-          class="h-3" rounded-full transition-all duration-500 {overallSuccessRate >= 80
+          class="h-3 rounded-full transition-all duration-500" {overallSuccessRate >= 80
             ? 'bg-green-400'
             : overallSuccessRate >= 60
               ? 'bg-yellow-400'

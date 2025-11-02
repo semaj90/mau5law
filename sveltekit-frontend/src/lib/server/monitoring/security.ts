@@ -12,34 +12,26 @@ function logWarn(message: string, data?: any): void {
 function logError(message: string, data?: any): void {
   console.error(message, data);
 }
-export interface RateLimitEntry {
-  count: number;
-  resetTime: number;
+export interface RateLimitEntry { count: number;, resetTime: number;
   blocked: boolean;
 }
-export interface SecurityConfig {
-  rateLimits: {
-    general: { requests: number; windowMs: number };
-    auth: { requests: number; windowMs: number };
-    api: { requests: number; windowMs: number };
-    upload: { requests: number; windowMs: number };
+export interface SecurityConfig { rateLimits: {, general: { requests: number;, windowMs: number };
+    auth: { requests: number;, windowMs: number };
+    api: { requests: number;, windowMs: number };
+    upload: { requests: number;, windowMs: number };
   };
-  jwt: {
-    accessTokenExpiry: string;
-    refreshTokenExpiry: string;
+  jwt: { accessTokenExpiry: string;, refreshTokenExpiry: string;
   };
 }
-const config: SecurityConfig = {
-  rateLimits: {
-    general: { requests: 1000, windowMs: 15 * 60 * 1000 }, // 1000 requests per 15 minutes
+const config: SecurityConfig = { rateLimits: {, general: { requests: 1000, windowMs: 15 * 60 * 1000 }, // 1000 requests per 15 minutes
     auth: { requests: 5, windowMs: 15 * 60 * 1000 }, // 5 auth attempts per 15 minutes
     api: { requests: 300, windowMs: 15 * 60 * 1000 }, // 300 API calls per 15 minutes
     upload: { requests: 10, windowMs: 60 * 1000 }, // 10 uploads per minute
   },
   jwt: {
     accessTokenExpiry: '15m',
-    refreshTokenExpiry: '7d',
-  },
+    refreshTokenExpiry: '7d'
+  }
 };
 class SecurityManager {
   private rateLimitStore = new Map<string, RateLimitEntry>();
@@ -56,7 +48,7 @@ class SecurityManager {
       this.rateLimitStore.set(key, {
         count: 1,
         resetTime: now + limit.windowMs,
-        blocked: false,
+        blocked: false
       });
       return true;
     }
@@ -107,7 +99,7 @@ class SecurityManager {
     // Content Security Policy
     headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws: wss:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws:, wss:;"
     );
     // Other security headers
     headers.set('X-Content-Type-Options', 'nosniff');
@@ -117,7 +109,7 @@ class SecurityManager {
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers,
+      headers
     });
   }
   /**

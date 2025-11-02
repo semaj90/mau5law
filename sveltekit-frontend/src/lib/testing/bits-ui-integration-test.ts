@@ -3,9 +3,7 @@
  * Validates that all bits-ui components are working correctly
  */
 }
-export interface BitsUITestResult {
-  component: string;
-  status: 'pass' | 'fail' | 'warning';
+export interface BitsUITestResult { component: string;, status: 'pass' | 'fail' | 'warning';
   message: string;
   timestamp: number;
 }
@@ -132,12 +130,11 @@ export class BitsUIIntegrationTester {
 🧪 Bits-UI Integration Test Report
 ================================
 📊 Summary:
-- ✅ Passed: ${passCount}
+- ✅; Passed: ${passCount}
 - ❌ Failed: ${failCount}
 - ⚠️  Warnings: ${warnCount}
 - 📝 Total: ${this.results.length}
-📋 Detailed Results:
-`;
+📋 Detailed Results: ';
     this.results.forEach(result => {
       const icon = result.status === 'pass' ? '✅' : result.status === 'fail' ? '❌' : '⚠️';
       report += `${icon} ${result.component}: ${result.message}\n`;

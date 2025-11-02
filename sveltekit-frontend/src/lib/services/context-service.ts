@@ -1,6 +1,4 @@
-export type ContextData = {
-  pageType: string;
-  entityId: string | null;
+export type ContextData = { pageType: string;, entityId: string | null;
   userActivity: Array<Record<string, any>>;
   recentActions: Array<Record<string, any>>;
   complexity: number; // 0..1
@@ -8,7 +6,7 @@ export type ContextData = {
   lastUpdated?: string;
 };
 
-export type UpdateResult = { success: true; id?: string } | { success: false; error: string };
+export type UpdateResult = { success: true; id?: string } | { success: false;, error: string };
 
 export class ContextService {
   static async getCurrentContext(): Promise<ContextData> {
@@ -39,7 +37,7 @@ export class ContextService {
       recentActions: [],
       complexity: 0.2,
       urgency: 0.1,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
   }
 

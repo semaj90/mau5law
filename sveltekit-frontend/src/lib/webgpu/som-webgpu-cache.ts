@@ -6,31 +6,24 @@ import type { Document } from '$lib/types';
 import Loki from 'lokijs';
 // LokiJS types may not be available; use loose typing for collections
 type Collection<T> = any;
-export interface NPMError {
-  message: string;
-  file: string;
+export interface NPMError { message: string;, file: string;
   line: number;
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: string;
   type: string;
   timestamp: string;
-  context?: string[];
-  dependencies?: string[];
+  context?: string[]; dependencies?: string[];
 }
-export interface IntelligentTodo {
-  id: string;
-  priority: number;
+export interface IntelligentTodo { id: string;, priority: number;
   category: string;
   title: string;
   description: string;
   estimated_effort: number; // nanoseconds
-  dependencies: string[];
-  suggested_fixes: string[];
-  related_errors: NPMError[];
-  confidence: number;
+  dependencies: string[]; suggested_fixes: string[];
+  related_errors: NPMError[]; confidence: number;
   tags: string[];
   created_at: string;
-  metadata: { [key: string]: any };
+  metadata: { [key:, string]: any };
 }
 // Respect environment flag to enable/disable WebGPU features in dev
 const _ENABLE_GPU = (() => {
@@ -92,21 +85,19 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(64);
     fn compute_similarity(@builtin(global_invocation_id) id: vec3<u32>) {
       let doc_id = id.x;
-      let vector_dim = metadata[0];
-      let num_docs = metadata[1];
+      let vector_dim = metadata[0]; let num_docs = metadata[1];
       if (doc_id >= num_docs) { return }
       var dot_product = 0.0;
       var query_norm = 0.0;
       var doc_norm = 0.0;
       for (var i = 0u; i < vector_dim; i++) {
-        let q_val = query_vector[i];
-        let d_val = document_vectors[doc_id * vector_dim + i];
+        let q_val = query_vector[i]; let d_val = document_vectors[doc_id * vector_dim + i];
         dot_product += q_val * d_val;
         query_norm += q_val * q_val;
         doc_norm += d_val * d_val;
       }
       let cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm);
-      similarities[doc_id] = cosine_sim;
+      similarities[doc_id], = cosine_sim;
     }
   `;
   private pageRankShader = `
@@ -117,20 +108,19 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(64);
     fn pagerank_iteration(@builtin(global_invocation_id) id: vec3<u32>) {
       let node_id = id.x;
-      let num_nodes = u32(params[0]);
-      let damping = params[1];
+      let num_nodes = u32(params[0]); let damping = params[1];
       if (node_id >= num_nodes) { return }
       var rank_sum = 0.0;
       for (var i = 0u; i < num_nodes; i++) {
-        let edge_weight = adjacency_matrix[i * num_nodes + node_id];
+        let edge_weight = adjacency_matrix[i, * num_nodes + node_id];
         if (edge_weight > 0.0) {
           // Calculate out-degree
           var out_degree = 0.0;
           for (var j = 0u; j < num_nodes; j++) {
-            out_degree += adjacency_matrix[i * num_nodes + j];
+            out_degree += adjacency_matrix[i, * num_nodes + j];
           }
           if (out_degree > 0.0) {
-            rank_sum += pagerank_scores[i] * edge_weight / out_degree;
+            rank_sum += pagerank_scores[i], * edge_weight / out_degree;
           }
         }
       }
@@ -144,14 +134,12 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(32);
     fn compute_error_embedding(@builtin(global_invocation_id) id: vec3<u32>) {
       let embedding_id = id.x;
-      let text_length = config[0];
-      let embedding_dim = config[1];
+      let text_length = config[0]; let embedding_dim = config[1];
       if (embedding_id >= embedding_dim) { return }
       var value = 0.0;
       // Simple bag-of-words embedding with positional encoding
       for (var i = 0u; i < text_length; i++) {
-        let char_code = error_text[i];
-        let position_weight = 1.0 / (1.0 + f32(i) * 0.1);
+        let char_code = error_text[i]; let position_weight = 1.0 / (1.0 + f32(i) * 0.1);
         let char_contribution = f32(char_code) / 255.0 * position_weight;
         // Hash to embedding dimension
         let hash = (char_code * 17u + i * 31u) % embedding_dim;
@@ -171,17 +159,15 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(64);
     fn compute_legal_embedding(@builtin(global_invocation_id) id: vec3<u32>) {
       let embedding_id = id.x;
-      let text_length = config[0];
-      let embedding_dim = config[1];
-      let legal_weight = f32(config[2]) / 100.0; // Boost legal terms
+      let text_length = config[0]; let embedding_dim = config[1];
+      let legal_weight = f32(config[2]), / 100.0; // Boost legal terms
       let case_weight = f32(config[3]) / 100.0;  // Boost case references
       if (embedding_id >= embedding_dim) { return }
       var value = 0.0;
       var legal_term_bonus = 0.0;
       // Legal document embedding with domain-specific weighting
       for (var i = 0u; i < text_length; i++) {
-        let char_code = document_text[i];
-        let position_weight = 1.0 / (1.0 + f32(i) * 0.05); // Slower decay for legal docs
+        let char_code = document_text[i]; let position_weight = 1.0 / (1.0 + f32(i) * 0.05); // Slower decay for legal docs
         var char_contribution = f32(char_code) / 255.0 * position_weight;
         // Legal term detection (simplified)
         if (char_code >= 65u && char_code <= 90u) { // Uppercase letters often indicate legal terms
@@ -209,13 +195,10 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(64);
     fn quantize_vectors(@builtin(global_invocation_id) id: vec3<u32>) {
       let vector_id = id.x;
-      let vector_count = u32(params[0]);
-      let vector_dim = u32(params[1]);
-      let scale_factor = params[2];
-      let offset = params[3];
+      let vector_count = u32(params[0]); let vector_dim = u32(params[1]);
+      let scale_factor = params[2]; let offset = params[3];
       if (vector_id >= vector_count * vector_dim) { return }
-      let value = input_vectors[vector_id];
-      // Quantize to 8-bit signed integer (-128 to 127)
+      let value = input_vectors[vector_id]; // Quantize to 8-bit signed integer (-128 to 127)
       let scaled_value = (value + offset) * scale_factor;
       let quantized = i32(clamp(scaled_value, -128.0, 127.0);
       quantized_vectors[vector_id] = quantized;
@@ -230,9 +213,8 @@ export class WebGPUSOMCache {
     @compute @workgroup_size(64);
     fn compute_legal_similarity(@builtin(global_invocation_id) id: vec3<u32>) {
       let doc_id = id.x;
-      let vector_dim = config[0];
-      let num_docs = config[1];
-      let jurisdiction_boost = f32(config[2]) / 100.0;
+      let vector_dim = config[0]; let num_docs = config[1];
+      let jurisdiction_boost = f32(config[2]), / 100.0;
       let doc_type_boost = f32(config[3]) / 100.0;
       if (doc_id >= num_docs) { return }
       var dot_product = 0.0;
@@ -240,16 +222,14 @@ export class WebGPUSOMCache {
       var doc_norm = 0.0;
       // Compute cosine similarity
       for (var i = 0u; i < vector_dim; i++) {
-        let q_val = query_vector[i];
-        let d_val = legal_documents[doc_id * vector_dim + i];
+        let q_val = query_vector[i]; let d_val = legal_documents[doc_id * vector_dim + i];
         dot_product += q_val * d_val;
         query_norm += q_val * q_val;
         doc_norm += d_val * d_val;
       }
       var cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm);
       // Apply legal domain-specific boosts
-      let doc_metadata = legal_metadata[doc_id];
-      let doc_type = doc_metadata & 0xFFu; // Lower 8 bits for document type
+      let doc_metadata = legal_metadata[doc_id]; let doc_type = doc_metadata & 0xFFu; // Lower 8 bits for document type
       let jurisdiction = (doc_metadata >> 8u) & 0xFFu; // Next 8 bits for jurisdiction
       // Boost based on document type relevance
       if (doc_type == 1u) { // Contracts
@@ -269,7 +249,7 @@ export class WebGPUSOMCache {
       autoload: true,
       autoloadCallback: () => this.initializeCollections(),
       autosave: true,
-      autosaveInterval: 4000,
+      autosaveInterval: 4000
     });
   }
   private initializeCollections() {
@@ -277,14 +257,12 @@ export class WebGPUSOMCache {
       this.lokiDB.getCollection('todos') ||
       this.lokiDB.addCollection('todos', {
         indices: ['priority', 'category', 'confidence'],
-        unique: ['id'],
-      });
+        unique: ['id'], });
     this.errorsCollection =
       this.lokiDB.getCollection('errors') ||
       this.lokiDB.addCollection('errors', {
         indices: ['severity', 'category', 'file'],
-        unique: ['id'],
-      });
+        unique: ['id'], });
     this.cacheCollection =
       this.lokiDB.getCollection('cache') ||
       this.lokiDB.addCollection('cache', {
@@ -300,7 +278,7 @@ export class WebGPUSOMCache {
       const indexDBInitialized = await this.initializeIndexDB();
       return gpuInitialized && indexDBInitialized;
     } catch (error) {
-      console.error('❌ [WebGPUSOMCache] Failed to initialize:', error);
+      console.error('❌ [WebGPUSOMCache], Failed to initialize:', error);
       return false;
     }
   }
@@ -315,7 +293,7 @@ export class WebGPUSOMCache {
         return false;
       }
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) {
         console.warn('No WebGPU adapter found');
@@ -324,9 +302,9 @@ export class WebGPUSOMCache {
       this.device = await adapter.requestDevice({
         requiredFeatures: ['shader-f16'] as GPUFeatureName[],
         requiredLimits: {
-          maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-          maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize,
-        },
+         , maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
+          maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize
+        }
       });
       console.log('🚀 WebGPU initialized for SOM semantic caching');
       return true;
@@ -396,14 +374,12 @@ export class WebGPUSOMCache {
     await this.persistTodos(rankedTodos);
     return rankedTodos;
   }
-  private parseNPMErrors(npmOutput: string): NPMError[] {
-    const errors: NPMError[] = [];
-    const lines = npmOutput ? npmOutput.split(/\r?\n/) : [];
+  private parseNPMErrors(npmOutput: string): NPMError[], {
+    const errors: NPMError[] = []; const lines = npmOutput ? npmOutput.split(/\r?\n/) : [];
     for (const line of lines) {
       if (line.includes('error') || line.includes('Error')) {
         // Parse TypeScript-style errors
-        const match = line.match(/(.+\.ts[x]?)[(:](\d+)[),:]?\s*(.+)/);
-        if (match) {
+        const match = line.match(/(.+\.ts[x]?)[(:](\d+)[),:]?\s*(.+)/); if (match) {
           errors.push({
             message: match[3].trim(),
             file: match[1],
@@ -412,8 +388,7 @@ export class WebGPUSOMCache {
             category: this.determineCategory(match[3]),
             type: 'error',
             timestamp: new Date().toISOString(),
-            context: [line],
-          });
+            context: [line], });
         } else {
           // Generic error fallback
           errors.push({
@@ -424,7 +399,7 @@ export class WebGPUSOMCache {
             category: this.determineCategory(line),
             type: 'error',
             timestamp: new Date().toISOString(),
-            context: [line],
+            context: [line]
           });
         }
       }
@@ -447,43 +422,43 @@ export class WebGPUSOMCache {
     if (lowerMessage.includes('build') || lowerMessage.includes('compile')) return 'build';
     return 'general';
   }
-  private async computeErrorEmbeddingsGPU(errors: NPMError[]): Promise<Float32Array[]> {
+  private async computeErrorEmbeddingsGPU(errors: NPMError[]):, Promise<Float32Array[]> {
     if (!this.device) return [];
-    const embeddings: Float32Array[] = [];
+    const embeddings: Float32Array[], = [];
     const embeddingDim = 128;
     // Create compute pipeline
     const shaderModule = this.device.createShaderModule({
-      code: this.errorEmbeddingShader,
+      code: this.errorEmbeddingShader
     });
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'compute_error_embedding',
-      },
+       , module: shaderModule,
+        entryPoint: 'compute_error_embedding'
+      }
     });
     for (const error of errors) {
       const textData = new TextEncoder().encode(error.message);
       const paddedText = new Uint32Array(256); // Fixed size
       for (let i = 0; i < Math.min(textData.length, 256); i++) {
-        paddedText[i] = textData[i];
+        paddedText[i], = textData[i];
       }
       // Create buffers
       const textBuffer = this.device.createBuffer({
         size: paddedText.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       const embeddingBuffer = this.device.createBuffer({
         size: embeddingDim * 4, // 4 bytes per float32;
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const configBuffer = this.device.createBuffer({
         size: 16, // 4 uint32s;
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
       const resultBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
       // Write data to buffers
       this.device.queue.writeBuffer(textBuffer, 0, paddedText);
@@ -492,10 +467,10 @@ export class WebGPUSOMCache {
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: textBuffer } },
+          {, binding: 0, resource: { buffer: textBuffer } },
           { binding: 1, resource: { buffer: embeddingBuffer } },
-          { binding: 2, resource: { buffer: configBuffer } },
-        ],
+          { binding: 2, resource: { buffer: configBuffer } }
+        ]
       });
       // Run compute
       const encoder = this.device.createCommandEncoder();
@@ -505,8 +480,7 @@ export class WebGPUSOMCache {
       computePass.dispatchWorkgroups(Math.ceil(embeddingDim / 32));
       computePass.end();
       encoder.copyBufferToBuffer(embeddingBuffer, 0, resultBuffer, 0, embeddingDim * 4);
-      this.device.queue.submit([encoder.finish()]);
-      // Read result
+      this.device.queue.submit([encoder.finish()]); // Read result
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const embedding = new Float32Array(resultBuffer.getMappedRange());
       embeddings.push(embedding.slice());
@@ -519,7 +493,7 @@ export class WebGPUSOMCache {
     }
     return embeddings;
   }
-  private computeErrorEmbeddingsCPU(errors: NPMError[]): Float32Array[] {
+  private computeErrorEmbeddingsCPU(errors: NPMError[]): Float32Array[], {
     // Fallback CPU implementation
     return errors.map(error => {
       const embedding = new Float32Array(128);
@@ -530,12 +504,12 @@ export class WebGPUSOMCache {
       return embedding;
     });
   }
-  private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
+  private async callGoSOMAnalyzer(errors: NPMError[]):, Promise<IntelligentTodo[]> {
     try {
       const response: Response = await fetch('http://localhost:8080/api/som/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ errors }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ errors })
       });
       if (!response.ok) {
         throw new Error(`SOM analyzer failed: ${response.status}`);
@@ -546,17 +520,15 @@ export class WebGPUSOMCache {
       return this.generateMockTodos(errors);
     }
   }
-  private generateMockTodos(errors: NPMError[]): IntelligentTodo[] {
+  private generateMockTodos(errors: NPMError[]):, IntelligentTodo[] {
     // Generate mock intelligent todos based on the SOM analyzer output format
     const categories = new Map<string, NPMError[]>();
     errors.forEach(error => {
       if (!categories.has(error.category)) {
-        categories.set(error.category, []);
-      }
+        categories.set(error.category, []); }
       categories.get(error.category)!.push(error);
     });
-    const todos: IntelligentTodo[] = [];
-    let todoId = 0;
+    const todos: IntelligentTodo[] = []; let todoId = 0;
     categories.forEach((categoryErrors, category) => {
       const severity = categoryErrors.reduce(
         (max, error) => (this.getSeverityWeight(error.severity) > this.getSeverityWeight(max) ? error.severity : max),
@@ -566,7 +538,7 @@ export class WebGPUSOMCache {
         id: `mock-todo-${todoId++}`,
         priority: this.getSeverityWeight(severity) + Math.random() * 0.1,
         category,
-        title: `Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : 'errors'}`,
+        title: 'Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : `errors` }`,
         description: `Address ${category} issues in ${new Set(categoryErrors.map((e: any) => e.file)).size} files`,
         estimated_effort: categoryErrors.length * 15 * 60 * 1000000000, // 15 minutes per error in nanoseconds
         dependencies: [],
@@ -577,8 +549,8 @@ export class WebGPUSOMCache {
         created_at: new Date().toISOString(),
         metadata: {
           error_count: categoryErrors.length,
-          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size,
-        },
+          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size
+        }
       });
     });
     return todos.sort((a, b) => b.priority - a.priority);
@@ -587,18 +559,18 @@ export class WebGPUSOMCache {
     const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
-  private generateSuggestedFixes(category: string): string[] {
+  private generateSuggestedFixes(category: string): string[], {
     const fixes: Record<string, string[]> = {
-      typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
-      syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
-      service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
-      build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
-      general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
+      typescript: ['Add, missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
+      import ['Check, module paths', 'Install missing dependencies', 'Update import syntax'],
+      syntax: ['Fix, syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
+      service: ['Check, service connectivity', 'Verify configuration', 'Restart services'],
+      build: ['Clear, build cache', 'Update dependencies', 'Check build configuration'],
+      general: ['Review, error messages', 'Check documentation', 'Apply standard fixes']
     };
-    return fixes[category] ?? fixes.general;
+    return fixes[category], ?? fixes.general;
   }
-  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
+  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]>, {
     if (!this.device || todos.length === 0) return todos;
     const numNodes = todos.length;
     const adjacencyMatrix = new Float32Array(numNodes * numNodes);
@@ -606,8 +578,7 @@ export class WebGPUSOMCache {
     for (let i = 0; i < numNodes; i++) {
       for (let j = 0; j < numNodes; j++) {
         if (i !== j) {
-          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]);
-          adjacencyMatrix[i * numNodes + j] = similarity;
+          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]); adjacencyMatrix[i * numNodes + j] = similarity;
         }
       }
     }
@@ -616,35 +587,34 @@ export class WebGPUSOMCache {
     pageRankScores.fill(1.0 / numNodes);
     // Create WebGPU resources
     const shaderModule = this.device.createShaderModule({
-      code: this.pageRankShader,
+      code: this.pageRankShader
     });
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'pagerank_iteration',
-      },
+       , module: shaderModule,
+        entryPoint: `pagerank_iteration` }
     });
     // Create buffers
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const scoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const newScoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     const resultBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Write initial data
     this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -654,11 +624,11 @@ export class WebGPUSOMCache {
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: adjacencyBuffer } },
+        {, binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
         { binding: 2, resource: { buffer: newScoresBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Run PageRank iterations
     for (let iter = 0; iter < 20; iter++) {
@@ -670,8 +640,7 @@ export class WebGPUSOMCache {
       computePass.end();
       // Copy new scores back to current scores
       encoder.copyBufferToBuffer(newScoresBuffer, 0, scoresBuffer, 0, pageRankScores.byteLength);
-      this.device.queue.submit([encoder.finish()]);
-      await this.device.queue.onSubmittedWorkDone();
+      this.device.queue.submit([encoder.finish()]); await this.device.queue.onSubmittedWorkDone();
     }
     // Read final results
     const encoder = this.device.createCommandEncoder();
@@ -682,7 +651,7 @@ export class WebGPUSOMCache {
     // Apply refined scores to todos
     const refinedTodos = todos.map((todo, index) => ({
       ...todo,
-      priority: finalScores[index] * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
+      priority: finalScores[index], * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
     }));
     resultBuffer.unmap();
     // Cleanup
@@ -724,7 +693,7 @@ export class WebGPUSOMCache {
     }
     return `som_analysis_${Math.abs(hash)}`;
   }
-  private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
+  private getLocalCachedTodos(key: string): IntelligentTodo[], | null {
     const cached = this.cacheCollection.findOne({ key });
     if (cached && Date.now() - cached.timestamp < 300000) {
       // 5 minutes
@@ -738,15 +707,15 @@ export class WebGPUSOMCache {
     this.cacheCollection.insert({
       key,
       result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
+  private async callGoSOMAnalyzer(errors: NPMError[]):, Promise<IntelligentTodo[]> {
     try {
       const response: Response = await fetch('http://localhost:8080/api/som/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ errors }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ errors })
       });
       if (!response.ok) {
         throw new Error(`SOM analyzer failed: ${response.status}`);
@@ -757,17 +726,15 @@ export class WebGPUSOMCache {
       return this.generateMockTodos(errors);
     }
   }
-  private generateMockTodos(errors: NPMError[]): IntelligentTodo[] {
+  private generateMockTodos(errors: NPMError[]):, IntelligentTodo[] {
     // Generate mock intelligent todos based on the SOM analyzer output format
     const categories = new Map<string, NPMError[]>();
     errors.forEach(error => {
       if (!categories.has(error.category)) {
-        categories.set(error.category, []);
-      }
+        categories.set(error.category, []); }
       categories.get(error.category)!.push(error);
     });
-    const todos: IntelligentTodo[] = [];
-    let todoId = 0;
+    const todos: IntelligentTodo[] = []; let todoId = 0;
     categories.forEach((categoryErrors, category) => {
       const severity = categoryErrors.reduce(
         (max, error) => (this.getSeverityWeight(error.severity) > this.getSeverityWeight(max) ? error.severity : max),
@@ -777,7 +744,7 @@ export class WebGPUSOMCache {
         id: `mock-todo-${todoId++}`,
         priority: this.getSeverityWeight(severity) + Math.random() * 0.1,
         category,
-        title: `Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : 'errors'}`,
+        title: 'Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : `errors` }`,
         description: `Address ${category} issues in ${new Set(categoryErrors.map((e: any) => e.file)).size} files`,
         estimated_effort: categoryErrors.length * 15 * 60 * 1000000000, // 15 minutes per error in nanoseconds
         dependencies: [],
@@ -788,8 +755,8 @@ export class WebGPUSOMCache {
         created_at: new Date().toISOString(),
         metadata: {
           error_count: categoryErrors.length,
-          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size,
-        },
+          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size
+        }
       });
     });
     return todos.sort((a, b) => b.priority - a.priority);
@@ -798,18 +765,18 @@ export class WebGPUSOMCache {
     const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
-  private generateSuggestedFixes(category: string): string[] {
+  private generateSuggestedFixes(category: string): string[], {
     const fixes: Record<string, string[]> = {
-      typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
-      syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
-      service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
-      build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
-      general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
+      typescript: ['Add, missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
+      import ['Check, module paths', 'Install missing dependencies', 'Update import syntax'],
+      syntax: ['Fix, syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
+      service: ['Check, service connectivity', 'Verify configuration', 'Restart services'],
+      build: ['Clear, build cache', 'Update dependencies', 'Check build configuration'],
+      general: ['Review, error messages', 'Check documentation', 'Apply standard fixes']
     };
-    return fixes[category] ?? fixes.general;
+    return fixes[category], ?? fixes.general;
   }
-  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
+  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]>, {
     if (!this.device || todos.length === 0) return todos;
     const numNodes = todos.length;
     const adjacencyMatrix = new Float32Array(numNodes * numNodes);
@@ -817,8 +784,7 @@ export class WebGPUSOMCache {
     for (let i = 0; i < numNodes; i++) {
       for (let j = 0; j < numNodes; j++) {
         if (i !== j) {
-          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]);
-          adjacencyMatrix[i * numNodes + j] = similarity;
+          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]); adjacencyMatrix[i * numNodes + j] = similarity;
         }
       }
     }
@@ -827,35 +793,34 @@ export class WebGPUSOMCache {
     pageRankScores.fill(1.0 / numNodes);
     // Create WebGPU resources
     const shaderModule = this.device.createShaderModule({
-      code: this.pageRankShader,
+      code: this.pageRankShader
     });
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'pagerank_iteration',
-      },
+       , module: shaderModule,
+        entryPoint: `pagerank_iteration` }
     });
     // Create buffers
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const scoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const newScoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     const resultBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Write initial data
     this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -865,11 +830,11 @@ export class WebGPUSOMCache {
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: adjacencyBuffer } },
+        {, binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
         { binding: 2, resource: { buffer: newScoresBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Run PageRank iterations
     for (let iter = 0; iter < 20; iter++) {
@@ -881,8 +846,7 @@ export class WebGPUSOMCache {
       computePass.end();
       // Copy new scores back to current scores
       encoder.copyBufferToBuffer(newScoresBuffer, 0, scoresBuffer, 0, pageRankScores.byteLength);
-      this.device.queue.submit([encoder.finish()]);
-      await this.device.queue.onSubmittedWorkDone();
+      this.device.queue.submit([encoder.finish()]); await this.device.queue.onSubmittedWorkDone();
     }
     // Read final results
     const encoder = this.device.createCommandEncoder();
@@ -893,7 +857,7 @@ export class WebGPUSOMCache {
     // Apply refined scores to todos
     const refinedTodos = todos.map((todo, index) => ({
       ...todo,
-      priority: finalScores[index] * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
+      priority: finalScores[index], * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
     }));
     resultBuffer.unmap();
     // Cleanup
@@ -935,7 +899,7 @@ export class WebGPUSOMCache {
     }
     return `som_analysis_${Math.abs(hash)}`;
   }
-  private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
+  private getLocalCachedTodos(key: string): IntelligentTodo[], | null {
     const cached = this.cacheCollection.findOne({ key });
     if (cached && Date.now() - cached.timestamp < 300000) {
       // 5 minutes
@@ -949,15 +913,15 @@ export class WebGPUSOMCache {
     this.cacheCollection.insert({
       key,
       result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
+  private async callGoSOMAnalyzer(errors: NPMError[]):, Promise<IntelligentTodo[]> {
     try {
       const response: Response = await fetch('http://localhost:8080/api/som/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ errors }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ errors })
       });
       if (!response.ok) {
         throw new Error(`SOM analyzer failed: ${response.status}`);
@@ -968,17 +932,15 @@ export class WebGPUSOMCache {
       return this.generateMockTodos(errors);
     }
   }
-  private generateMockTodos(errors: NPMError[]): IntelligentTodo[] {
+  private generateMockTodos(errors: NPMError[]):, IntelligentTodo[] {
     // Generate mock intelligent todos based on the SOM analyzer output format
     const categories = new Map<string, NPMError[]>();
     errors.forEach(error => {
       if (!categories.has(error.category)) {
-        categories.set(error.category, []);
-      }
+        categories.set(error.category, []); }
       categories.get(error.category)!.push(error);
     });
-    const todos: IntelligentTodo[] = [];
-    let todoId = 0;
+    const todos: IntelligentTodo[] = []; let todoId = 0;
     categories.forEach((categoryErrors, category) => {
       const severity = categoryErrors.reduce(
         (max, error) => (this.getSeverityWeight(error.severity) > this.getSeverityWeight(max) ? error.severity : max),
@@ -988,7 +950,7 @@ export class WebGPUSOMCache {
         id: `mock-todo-${todoId++}`,
         priority: this.getSeverityWeight(severity) + Math.random() * 0.1,
         category,
-        title: `Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : 'errors'}`,
+        title: 'Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : `errors` }`,
         description: `Address ${category} issues in ${new Set(categoryErrors.map((e: any) => e.file)).size} files`,
         estimated_effort: categoryErrors.length * 15 * 60 * 1000000000, // 15 minutes per error in nanoseconds
         dependencies: [],
@@ -999,8 +961,8 @@ export class WebGPUSOMCache {
         created_at: new Date().toISOString(),
         metadata: {
           error_count: categoryErrors.length,
-          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size,
-        },
+          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size
+        }
       });
     });
     return todos.sort((a, b) => b.priority - a.priority);
@@ -1009,18 +971,18 @@ export class WebGPUSOMCache {
     const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
-  private generateSuggestedFixes(category: string): string[] {
+  private generateSuggestedFixes(category: string): string[], {
     const fixes: Record<string, string[]> = {
-      typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
-      syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
-      service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
-      build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
-      general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
+      typescript: ['Add, missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
+      import ['Check, module paths', 'Install missing dependencies', 'Update import syntax'],
+      syntax: ['Fix, syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
+      service: ['Check, service connectivity', 'Verify configuration', 'Restart services'],
+      build: ['Clear, build cache', 'Update dependencies', 'Check build configuration'],
+      general: ['Review, error messages', 'Check documentation', 'Apply standard fixes']
     };
-    return fixes[category] ?? fixes.general;
+    return fixes[category], ?? fixes.general;
   }
-  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
+  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]>, {
     if (!this.device || todos.length === 0) return todos;
     const numNodes = todos.length;
     const adjacencyMatrix = new Float32Array(numNodes * numNodes);
@@ -1028,8 +990,7 @@ export class WebGPUSOMCache {
     for (let i = 0; i < numNodes; i++) {
       for (let j = 0; j < numNodes; j++) {
         if (i !== j) {
-          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]);
-          adjacencyMatrix[i * numNodes + j] = similarity;
+          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]); adjacencyMatrix[i * numNodes + j] = similarity;
         }
       }
     }
@@ -1038,35 +999,34 @@ export class WebGPUSOMCache {
     pageRankScores.fill(1.0 / numNodes);
     // Create WebGPU resources
     const shaderModule = this.device.createShaderModule({
-      code: this.pageRankShader,
+      code: this.pageRankShader
     });
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'pagerank_iteration',
-      },
+       , module: shaderModule,
+        entryPoint: `pagerank_iteration` }
     });
     // Create buffers
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const scoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const newScoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     const resultBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Write initial data
     this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -1076,11 +1036,11 @@ export class WebGPUSOMCache {
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: adjacencyBuffer } },
+        {, binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
         { binding: 2, resource: { buffer: newScoresBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Run PageRank iterations
     for (let iter = 0; iter < 20; iter++) {
@@ -1092,8 +1052,7 @@ export class WebGPUSOMCache {
       computePass.end();
       // Copy new scores back to current scores
       encoder.copyBufferToBuffer(newScoresBuffer, 0, scoresBuffer, 0, pageRankScores.byteLength);
-      this.device.queue.submit([encoder.finish()]);
-      await this.device.queue.onSubmittedWorkDone();
+      this.device.queue.submit([encoder.finish()]); await this.device.queue.onSubmittedWorkDone();
     }
     // Read final results
     const encoder = this.device.createCommandEncoder();
@@ -1104,7 +1063,7 @@ export class WebGPUSOMCache {
     // Apply refined scores to todos
     const refinedTodos = todos.map((todo, index) => ({
       ...todo,
-      priority: finalScores[index] * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
+      priority: finalScores[index], * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
     }));
     resultBuffer.unmap();
     // Cleanup
@@ -1146,7 +1105,7 @@ export class WebGPUSOMCache {
     }
     return `som_analysis_${Math.abs(hash)}`;
   }
-  private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
+  private getLocalCachedTodos(key: string): IntelligentTodo[], | null {
     const cached = this.cacheCollection.findOne({ key });
     if (cached && Date.now() - cached.timestamp < 300000) {
       // 5 minutes
@@ -1160,15 +1119,15 @@ export class WebGPUSOMCache {
     this.cacheCollection.insert({
       key,
       result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
-  private async callGoSOMAnalyzer(errors: NPMError[]): Promise<IntelligentTodo[]> {
+  private async callGoSOMAnalyzer(errors: NPMError[]):, Promise<IntelligentTodo[]> {
     try {
       const response: Response = await fetch('http://localhost:8080/api/som/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ errors }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ errors })
       });
       if (!response.ok) {
         throw new Error(`SOM analyzer failed: ${response.status}`);
@@ -1179,17 +1138,15 @@ export class WebGPUSOMCache {
       return this.generateMockTodos(errors);
     }
   }
-  private generateMockTodos(errors: NPMError[]): IntelligentTodo[] {
+  private generateMockTodos(errors: NPMError[]):, IntelligentTodo[] {
     // Generate mock intelligent todos based on the SOM analyzer output format
     const categories = new Map<string, NPMError[]>();
     errors.forEach(error => {
       if (!categories.has(error.category)) {
-        categories.set(error.category, []);
-      }
+        categories.set(error.category, []); }
       categories.get(error.category)!.push(error);
     });
-    const todos: IntelligentTodo[] = [];
-    let todoId = 0;
+    const todos: IntelligentTodo[] = []; let todoId = 0;
     categories.forEach((categoryErrors, category) => {
       const severity = categoryErrors.reduce(
         (max, error) => (this.getSeverityWeight(error.severity) > this.getSeverityWeight(max) ? error.severity : max),
@@ -1199,7 +1156,7 @@ export class WebGPUSOMCache {
         id: `mock-todo-${todoId++}`,
         priority: this.getSeverityWeight(severity) + Math.random() * 0.1,
         category,
-        title: `Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : 'errors'}`,
+        title: 'Fix ${categoryErrors.length} ${category} ${categoryErrors.length === 1 ? 'error' : `errors` }`,
         description: `Address ${category} issues in ${new Set(categoryErrors.map((e: any) => e.file)).size} files`,
         estimated_effort: categoryErrors.length * 15 * 60 * 1000000000, // 15 minutes per error in nanoseconds
         dependencies: [],
@@ -1210,8 +1167,8 @@ export class WebGPUSOMCache {
         created_at: new Date().toISOString(),
         metadata: {
           error_count: categoryErrors.length,
-          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size,
-        },
+          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size
+        }
       });
     });
     return todos.sort((a, b) => b.priority - a.priority);
@@ -1220,18 +1177,18 @@ export class WebGPUSOMCache {
     const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
     return weights[severity] ?? 0.2;
   }
-  private generateSuggestedFixes(category: string): string[] {
+  private generateSuggestedFixes(category: string): string[], {
     const fixes: Record<string, string[]> = {
-      typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
-      syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
-      service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
-      build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
-      general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
+      typescript: ['Add, missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
+      import ['Check, module paths', 'Install missing dependencies', 'Update import syntax'],
+      syntax: ['Fix, syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
+      service: ['Check, service connectivity', 'Verify configuration', 'Restart services'],
+      build: ['Clear, build cache', 'Update dependencies', 'Check build configuration'],
+      general: ['Review, error messages', 'Check documentation', 'Apply standard fixes']
     };
-    return fixes[category] ?? fixes.general;
+    return fixes[category], ?? fixes.general;
   }
-  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
+  private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]>, {
     if (!this.device || todos.length === 0) return todos;
     const numNodes = todos.length;
     const adjacencyMatrix = new Float32Array(numNodes * numNodes);
@@ -1239,8 +1196,7 @@ export class WebGPUSOMCache {
     for (let i = 0; i < numNodes; i++) {
       for (let j = 0; j < numNodes; j++) {
         if (i !== j) {
-          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]);
-          adjacencyMatrix[i * numNodes + j] = similarity;
+          const similarity = this.calculateTodoSimilarity(todos[i], todos[j]); adjacencyMatrix[i * numNodes + j] = similarity;
         }
       }
     }
@@ -1249,35 +1205,34 @@ export class WebGPUSOMCache {
     pageRankScores.fill(1.0 / numNodes);
     // Create WebGPU resources
     const shaderModule = this.device.createShaderModule({
-      code: this.pageRankShader,
+      code: this.pageRankShader
     });
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'pagerank_iteration',
-      },
+       , module: shaderModule,
+        entryPoint: `pagerank_iteration` }
     });
     // Create buffers
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const scoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const newScoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     const resultBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Write initial data
     this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
@@ -1287,11 +1242,11 @@ export class WebGPUSOMCache {
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: adjacencyBuffer } },
+        {, binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
         { binding: 2, resource: { buffer: newScoresBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     // Run PageRank iterations
     for (let iter = 0; iter < 20; iter++) {
@@ -1303,8 +1258,7 @@ export class WebGPUSOMCache {
       computePass.end();
       // Copy new scores back to current scores
       encoder.copyBufferToBuffer(newScoresBuffer, 0, scoresBuffer, 0, pageRankScores.byteLength);
-      this.device.queue.submit([encoder.finish()]);
-      await this.device.queue.onSubmittedWorkDone();
+      this.device.queue.submit([encoder.finish()]); await this.device.queue.onSubmittedWorkDone();
     }
     // Read final results
     const encoder = this.device.createCommandEncoder();
@@ -1315,7 +1269,7 @@ export class WebGPUSOMCache {
     // Apply refined scores to todos
     const refinedTodos = todos.map((todo, index) => ({
       ...todo,
-      priority: finalScores[index] * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
+      priority: finalScores[index], * 0.3 + todo.priority * 0.7, // Blend WebGPU ranking with original
     }));
     resultBuffer.unmap();
     // Cleanup
@@ -1357,7 +1311,7 @@ export class WebGPUSOMCache {
     }
     return `som_analysis_${Math.abs(hash)}`;
   }
-  private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
+  private getLocalCachedTodos(key: string): IntelligentTodo[], | null {
     const cached = this.cacheCollection.findOne({ key });
     if (cached && Date.now() - cached.timestamp < 300000) {
       // 5 minutes
@@ -1371,7 +1325,7 @@ export class WebGPUSOMCache {
     this.cacheCollection.insert({
       key,
       result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -1408,22 +1362,22 @@ export class WebGPUSOMCache {
       // Create GPU buffers for training
       const inputBuffer = this.device.createBuffer({
         size: flatVectors.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const outputBuffer = this.device.createBuffer({
         size: vectorCount * dimensions * 4, // Int32 buffer (4 bytes)
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const paramsBuffer = this.device.createBuffer({
         size: 32, // 8 floats
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       const resultBuffer = this.device.createBuffer({
         size: vectorCount * dimensions * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Write training data to GPU
@@ -1436,25 +1390,24 @@ export class WebGPUSOMCache {
 
       // Create compute pipeline for quantization training
       const shaderModule = this.device.createShaderModule({
-        code: this.vectorQuantizationShader,
+        code: this.vectorQuantizationShader
       });
 
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule,
-          entryPoint: 'quantize_vectors',
-        },
+         , module: shaderModule,
+          entryPoint: `quantize_vectors` }
       });
 
       // Create bind group
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: inputBuffer } },
+          {, binding: 0, resource: { buffer: inputBuffer } },
           { binding: 1, resource: { buffer: outputBuffer } },
-          { binding: 2, resource: { buffer: paramsBuffer } },
-        ],
+          { binding: 2, resource: { buffer: paramsBuffer } }
+        ]
       });
 
       // Execute GPU compute (training phase)
@@ -1465,20 +1418,17 @@ export class WebGPUSOMCache {
       computePass.dispatchWorkgroups(Math.ceil((vectorCount * dimensions) / 64));
       computePass.end();
       encoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, vectorCount * dimensions * 4);
-      this.device.queue.submit([encoder.finish()]);
-
-      // Read trained results from GPU
+      this.device.queue.submit([encoder.finish()]); // Read trained results from GPU
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const quantizedData = new Int32Array(resultBuffer.getMappedRange());
 
       // Convert to Int8Array format (one per vector) for array cache buffer
-      const quantizedVectors: Int8Array[] = [];
-      for (let i = 0; i < vectorCount; i++) {
+      const quantizedVectors: Int8Array[] = []; for (let i = 0; i < vectorCount; i++) {
         const vecStart = i * dimensions;
         const vecEnd = vecStart + dimensions;
         const int8Vec = new Int8Array(dimensions);
         for (let j = 0; j < dimensions; j++) {
-          int8Vec[j] = quantizedData[vecStart + j];
+          int8Vec[j] = quantizedData[vecStart, + j];
         }
         quantizedVectors.push(int8Vec);
       }
@@ -1524,28 +1474,28 @@ export class WebGPUSOMCache {
       const textData = new TextEncoder().encode(text);
       const paddedText = new Uint32Array(4096); // 4KB max text
       for (let i = 0; i < Math.min(textData.length, 4096); i++) {
-        paddedText[i] = textData[i];
+        paddedText[i], = textData[i];
       }
 
       // Create GPU buffers
       const textBuffer = this.device.createBuffer({
         size: paddedText.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const embeddingBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const configBuffer = this.device.createBuffer({
         size: 32, // 8 uint32s
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       const resultBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Write data to GPU
@@ -1558,25 +1508,24 @@ export class WebGPUSOMCache {
 
       // Create compute pipeline
       const shaderModule = this.device.createShaderModule({
-        code: this.legalDocumentEmbeddingShader,
+        code: this.legalDocumentEmbeddingShader
       });
 
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule,
-          entryPoint: 'compute_legal_embedding',
-        },
+         , module: shaderModule,
+          entryPoint: `compute_legal_embedding` }
       });
 
       // Create bind group
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: textBuffer } },
+          {, binding: 0, resource: { buffer: textBuffer } },
           { binding: 1, resource: { buffer: embeddingBuffer } },
-          { binding: 2, resource: { buffer: configBuffer } },
-        ],
+          { binding: 2, resource: { buffer: configBuffer } }
+        ]
       });
 
       // Execute GPU compute
@@ -1587,9 +1536,7 @@ export class WebGPUSOMCache {
       computePass.dispatchWorkgroups(Math.ceil(embeddingDim / 64));
       computePass.end();
       encoder.copyBufferToBuffer(embeddingBuffer, 0, resultBuffer, 0, embeddingDim * 4);
-      this.device.queue.submit([encoder.finish()]);
-
-      // Read results from GPU
+      this.device.queue.submit([encoder.finish()]); // Read results from GPU
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const embedding = new Float32Array(resultBuffer.getMappedRange());
       const result = embedding.slice(); // Copy before unmap
@@ -1626,7 +1573,7 @@ export class WebGPUSOMCache {
       docTypeBoost?: number;
       topK?: number;
     }
-  ): Promise<Array<{ similarity: number; index: number; metadata: any }>> {
+  ): Promise<Array<{ similarity: number; index: number;, metadata: any }>> {
     if (!this.device || documentVectors.length === 0) {
       console.warn('⚠️ WebGPU not available, falling back to CPU search');
       return this.searchLegalDocumentsCPU(queryVector, documentVectors, documentMetadata);
@@ -1649,39 +1596,39 @@ export class WebGPUSOMCache {
       const metadataArray = new Uint32Array(numDocs);
       for (let i = 0; i < numDocs; i++) {
         const docType = documentMetadata[i]?.docType || 0;
-        const jurisdiction = documentMetadata[i]?.jurisdiction || 0;
+        const jurisdiction = documentMetadata[i]?.jurisdiction, || 0;
         metadataArray[i] = docType | (jurisdiction << 8);
       }
 
       // Create GPU buffers
       const queryBuffer = this.device.createBuffer({
         size: queryVector.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const docsBuffer = this.device.createBuffer({
         size: flatDocs.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const metadataBuffer = this.device.createBuffer({
         size: metadataArray.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const similaritiesBuffer = this.device.createBuffer({
         size: numDocs * 4, // Float32 per document
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const configBuffer = this.device.createBuffer({
         size: 32, // 8 uint32s
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       const resultBuffer = this.device.createBuffer({
         size: numDocs * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Write data to GPU
@@ -1696,27 +1643,26 @@ export class WebGPUSOMCache {
 
       // Create compute pipeline for legal similarity search
       const shaderModule = this.device.createShaderModule({
-        code: this.legalSimilarityShader,
+        code: this.legalSimilarityShader
       });
 
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule,
-          entryPoint: 'compute_legal_similarity',
-        },
+         , module: shaderModule,
+          entryPoint: `compute_legal_similarity` }
       });
 
       // Create bind group
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: queryBuffer } },
+          {, binding: 0, resource: { buffer: queryBuffer } },
           { binding: 1, resource: { buffer: docsBuffer } },
           { binding: 2, resource: { buffer: metadataBuffer } },
           { binding: 3, resource: { buffer: similaritiesBuffer } },
-          { binding: 4, resource: { buffer: configBuffer } },
-        ],
+          { binding: 4, resource: { buffer: configBuffer } }
+        ]
       });
 
       // Execute GPU compute (similarity search)
@@ -1727,9 +1673,7 @@ export class WebGPUSOMCache {
       computePass.dispatchWorkgroups(Math.ceil(numDocs / 64));
       computePass.end();
       encoder.copyBufferToBuffer(similaritiesBuffer, 0, resultBuffer, 0, numDocs * 4);
-      this.device.queue.submit([encoder.finish()]);
-
-      // Read results from GPU
+      this.device.queue.submit([encoder.finish()]); // Read results from GPU
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const similarities = new Float32Array(resultBuffer.getMappedRange());
 
@@ -1737,8 +1681,7 @@ export class WebGPUSOMCache {
       const results = Array.from({ length: numDocs }, (_, i) => ({
         similarity: similarities[i],
         index: i,
-        metadata: documentMetadata[i],
-      }))
+        metadata: documentMetadata[i], }))
         .filter(r => r.similarity > 0.1)
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, topK);
@@ -1770,7 +1713,7 @@ export class WebGPUSOMCache {
       for (let j = 0; j < textBytes.length; j++) {
         const hash = (textBytes[j] * 23 + j * 47) % 768;
         if (hash === i) {
-          value += textBytes[j] / 255.0;
+          value += textBytes[j], / 255.0;
         }
       }
       embedding[i] = Math.tanh(value * 0.7);
@@ -1781,20 +1724,20 @@ export class WebGPUSOMCache {
     query: Float32Array,
     docs: Float32Array[],
     metadata: any[]
-  ): Array<{ similarity: number; index: number; metadata: any }> {
+  ): Array<{ similarity: number; index: number;, metadata: any }> {
     return docs
       .map((doc, index) => {
         let dotProduct = 0;
         let queryNorm = 0;
         let docNorm = 0;
         for (let i = 0; i < query.length && i < doc.length; i++) {
-          dotProduct += query[i] * doc[i];
-          queryNorm += query[i] * query[i];
-          docNorm += doc[i] * doc[i];
+          dotProduct += query[i], * doc[i];
+          queryNorm += query[i], * query[i];
+          docNorm += doc[i], * doc[i];
         }
         const denom = Math.sqrt(queryNorm) * Math.sqrt(docNorm) || 1;
         const similarity = dotProduct / denom;
-        return { similarity, index, metadata: metadata[index] };
+        return { similarity, index, metadata: metadata[index], };
       })
       .filter(item => item.similarity > 0.1)
       .sort((a, b) => b.similarity - a.similarity);

@@ -62,7 +62,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const wordCount = textContent ? textContent.split(/\s+/).filter(word => word.length > 0).length : 0;
 
     const updateData: JsonObject = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Only update provided and validated fields
@@ -84,7 +84,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         ...currentMetadata,
         ...incomingMetadata,
         wordCount,
-        estimatedReadTime: Math.ceil(wordCount / 200),
+        estimatedReadTime: Math.ceil(wordCount / 200)
       };
     }
 
@@ -144,7 +144,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     }
 
     const updateData: JsonObject = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations (validate fields)

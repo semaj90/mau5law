@@ -22,22 +22,16 @@ export enum RankingAspect {
   WEIGHT = 2,        // Relative importance weight
   METADATA = 3       // Additional metadata score
 }
-export interface RankingMatrix {
-  documentId: string;
-  matrix: Float32Array; // 4x4 = 16 values
+export interface RankingMatrix { documentId: string;, matrix: Float32Array; // 4x4 = 16 values
   timestamp: number;
   version: number;
 }
-export interface RankingStats {
-  totalDocuments: number;
-  cacheHitRate: number;
+export interface RankingStats { totalDocuments: number;, cacheHitRate: number;
   lastUpdateTime: number;
   gpuMemoryUsed: number;
   averageRankingTime: number;
 }
-export interface GPURankingConfig {
-  batchSize: number;
-  textureWidth: number;
+export interface GPURankingConfig { batchSize: number;, textureWidth: number;
   textureHeight: number;
   maxDocuments: number;
   enableCaching: boolean;
@@ -60,7 +54,7 @@ export class GPURankingMatrices {
       maxDocuments: 65536, // 1024x1024 / 16 values per doc
       enableCaching: true,
       computeShaderOptimization: 'balanced',
-      ...config,
+      ...config
     };
   }
   async initialize(): Promise<void> {
@@ -86,14 +80,12 @@ export class GPURankingMatrices {
     if (!this.device) throw new Error('GPU device not initialized');
     // Create RGBA32Float texture for ranking matrices
     // Each pixel stores 4 ranking values, so 4 pixels = one 4x4 matrix
-    this.rankingTexture = this.device.createTexture({
-      size: {
-        width: this.config.textureWidth,
+    this.rankingTexture = this.device.createTexture({ size: {, width: this.config.textureWidth,
         height: this.config.textureHeight,
-        depthOrArrayLayers: 1,
+        depthOrArrayLayers: 1
       },
       format: 'rgba32float' as GPUTextureFormat,
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST
     });
   }
   private async createComputePipeline(): Promise<void> {
@@ -107,31 +99,28 @@ export class GPURankingMatrices {
           storageTexture: {
             access: 'write-only',
             format: 'rgba32float' as GPUTextureFormat,
-            viewDimension: '2d',
-          },
+            viewDimension: '2d'
+          }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
           buffer: {
-            type: 'storage' as GPUBufferBindingType,
-          },
+           , type: 'storage' as GPUBufferBindingType
+          }
         },
-      ],
+      ]
     });
     // Create compute shader for ranking matrix operations
     const shaderModule = this.device.createShaderModule({
-      code: this.generateRankingComputeShader(),
+      code: this.generateRankingComputeShader()
     });
     // Create compute pipeline
-    this.computePipeline = this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [this.bindGroupLayout],
+    this.computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [this.bindGroupLayout]
       }),
       compute: {
         module: shaderModule,
-        entryPoint: 'main',
-      },
+        entryPoint: 'main` }
     });
   }
   private generateRankingComputeShader(): string {
@@ -139,9 +128,7 @@ export class GPURankingMatrices {
     return `
       // GPU Ranking Matrix Compute Shader
       // Processes legal document ranking matrices at GPU speeds
-      struct DocumentRanking {
-        relevance: f32;
-        precedent: f32;
+      struct DocumentRanking { relevance: f32;, precedent: f32;
         recency: f32;
         authority: f32;
         confidence: f32;
@@ -216,8 +203,7 @@ export class GPURankingMatrices {
               ? `// Accurate optimization: Normalized values
            pixelValue = normalize(pixelValue);`
               : `// Balanced optimization: Clamped values
-           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));`
-        }
+           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` }
         textureStore(rankingTexture, texCoord, pixelValue);
       }
     `;
@@ -246,7 +232,7 @@ export class GPURankingMatrices {
     // Create GPU buffer and copy data
     const rankingBuffer = this.device.createBuffer({
       size: rankingData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // writeBuffer accepts ArrayBufferView (Float32Array) directly
     this.device.queue.writeBuffer(rankingBuffer, 0, rankingData);
@@ -255,16 +241,16 @@ export class GPURankingMatrices {
       layout: this.bindGroupLayout,
       entries: [
         {
-          binding: 0,
-          resource: this.rankingTexture!.createView(),
+         , binding: 0,
+          resource: this.rankingTexture!.createView()
         },
         {
           binding: 1,
           resource: {
-            buffer: rankingBuffer,
-          },
+            buffer: rankingBuffer
+          }
         },
-      ],
+      ]
     });
     // Dispatch compute shader
     const commandEncoder = this.device.createCommandEncoder();
@@ -292,7 +278,7 @@ export class GPURankingMatrices {
           documentId: doc.id,
           matrix,
           timestamp: Date.now(),
-          version: 1,
+          version: 1
         });
       });
     }
@@ -305,23 +291,17 @@ export class GPURankingMatrices {
     const documentAge = now - new Date(document.created_at || now).getTime();
     const daysSinceCreated = documentAge / (1000 * 60 * 60 * 24);
     return {
-      // Relevance: Based on content match and keywords
-      relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
-      // Precedent: Legal authority and citation count
-      precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
+      // Relevance: Based on content match and keywords; relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
+      // Precedent: Legal authority and citation count; precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
       // Recency: Time-based decay (newer = higher score),
       recency: Math.max(0.1, Math.exp(-daysSinceCreated / 365)),
-      // Authority: Source reliability and legal weight
-      authority: Math.min(
+      // Authority: Source reliability and legal weight; authority: Math.min(
         1.0,
         0.5 + (document.status === 'active' ? 0.3 : 0.1) + (document.title?.includes('Supreme') ? 0.2 : 0.0)
       ),
-      // Confidence: How confident we are in this ranking
-      confidence: 0.8 + Math.random() * 0.2,
-      // Weight: Relative importance in ranking algorithm
-      weight: 0.7,
-      // Metadata: Additional scoring factors
-      metadata: Math.random() * 0.5 + 0.25,
+      // Confidence: How confident we are in this ranking; confidence: 0.8 + Math.random() * 0.2,
+      // Weight: Relative importance in ranking algorithm; weight: 0.7,
+      // Metadata: Additional scoring factors; metadata: Math.random() * 0.5 + 0.25
     };
   }
   async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix>> {
@@ -365,8 +345,7 @@ export class GPURankingMatrices {
     const textureMemory = this.config.textureWidth * this.config.textureHeight * 16; // RGBA32Float
     return {
       totalDocuments: this.matrixCache.size,
-      cacheHitRate: 0.85, // TODO: Track actual cache hits
-      lastUpdateTime: Date.now(),
+      cacheHitRate: 0.85, // TODO: Track actual cache hits; lastUpdateTime: Date.now(),
       gpuMemoryUsed: textureMemory,
       averageRankingTime: 2.5, // TODO: Track actual ranking times
     };
@@ -398,7 +377,7 @@ export const RankingUtils = {
       documentId: document.id,
       matrix,
       timestamp: Date.now(),
-      version: 1,
+      version: 1
     };
   },
 
@@ -419,5 +398,5 @@ export const RankingUtils = {
    */
   getPrimaryScore(matrix: RankingMatrix): number {
     return (matrix.matrix[0] + matrix.matrix[5] + matrix.matrix[10] + matrix.matrix[15]) / 4;
-  },
+  }
 };

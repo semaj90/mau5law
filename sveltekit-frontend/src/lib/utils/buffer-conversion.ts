@@ -131,9 +131,7 @@ export class WebGPUBufferUtils {
   /**
    * Prepare data for WebGPU buffer upload
    */
-  static prepareForUpload(data: BufferLike): {
-    buffer: ArrayBuffer;
-    byteLength: number;
+  static prepareForUpload(data: BufferLike): { buffer: ArrayBuffer;, byteLength: number;
     elementCount: number;
   } {
     const buffer = toArrayBuffer(data);
@@ -166,7 +164,7 @@ export const BufferTypeGuards = {
   },
   isBufferLike: (data: any): data is BufferLike => {
     return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data) || Array.isArray(data);
-  },
+  }
 };
 /**
  * Debug utilities for buffer inspection
@@ -175,9 +173,7 @@ export const BufferDebugUtils = {
   /**
    * Get detailed info about a buffer
    */
-  inspectBuffer(data: BufferLike): {
-    type: string;
-    byteLength: number;
+  inspectBuffer(data: BufferLike): { type: string;, byteLength: number;
     elementCount?: number;
     alignment: number;
     isAligned: boolean;
@@ -202,7 +198,7 @@ export const BufferDebugUtils = {
       byteLength,
       elementCount,
       alignment,
-      isAligned: alignment === 0,
+      isAligned: alignment === 0
     };
   },
   /**
@@ -217,9 +213,8 @@ export const BufferDebugUtils = {
           ? `[${Array.from(data.slice(0, 5))
               .map(n => n.toFixed(3))
               .join(', ')}...]`
-          : `${info.byteLength} bytes`,
-    });
-  },
+          : `${info.byteLength} bytes' });
+  }
 };
 /**
  * Extended WebGPU Buffer Utilities with Quantization Support
@@ -259,9 +254,7 @@ export class WebGPUBufferUtils_Advanced {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';
     } = {}
-  ): {
-    buffer: ArrayBuffer;
-    byteLength: number;
+  ): { buffer: ArrayBuffer;, byteLength: number;
     elementCount: number;
     recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';
   } {

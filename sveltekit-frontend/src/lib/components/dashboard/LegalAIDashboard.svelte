@@ -405,14 +405,14 @@ import type { Case } from '$lib/types';
                           </div>
                           <div class="flex items-center space-x-2">
                             <span
-                              class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
+                              class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
                                 caseItem?.priority || 'medium'
                               )}"
                             >
                               {caseItem?.priority || 'medium'}
                             </span>
                             <span
-                              class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
+                              class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
                                 caseItem?.status || 'open'
                               )}"
                             >
@@ -517,7 +517,7 @@ import type { Case } from '$lib/types';
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
-                          class="inline-flex" px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(
+                          class="inline-flex px-2 py-1" text-xs font-semibold rounded-full {getStatusColor(
                             caseItem?.status || 'open'
                           )}"
                         >
@@ -526,7 +526,7 @@ import type { Case } from '$lib/types';
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
-                          class="inline-flex" px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(
+                          class="inline-flex px-2 py-1" text-xs font-semibold rounded-full {getPriorityColor(
                             caseItem?.priority || 'medium'
                           )}"
                         >

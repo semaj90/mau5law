@@ -1,14 +1,10 @@
 // SOM-based intent clustering utilities (browser-friendly stub)
 // In production, consider running this in a worker or backend service for performance.
 }
-export interface IntentPoint {
-  id: string;
-  vector: number[]; // normalized embedding
+export interface IntentPoint { id: string;, vector: number[]; // normalized embedding
   ts: number; // timestamp
 }
-export interface SOMGridConfig {
-  width: number;
-  height: number;
+export interface SOMGridConfig { width: number;, height: number;
   learningRate?: number;
   radius?: number;
 }

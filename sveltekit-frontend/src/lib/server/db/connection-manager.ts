@@ -9,9 +9,7 @@ import * as schema from './schema-postgres.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Minimal pool/client shapes to avoid importing: 'pg' types broadly
-type LocalClientLike = {
-  query: (
-    textOrConfig: string | { text: string; values?: any[] },
+type LocalClientLike = { query: (;, textOrConfig: string | {, text: string; values?: any[] },
     params?: any[]
   ) => Promise<{ rows?: RowLike[] }>;
   release?: () => void;
@@ -20,14 +18,14 @@ type LocalClientLike = {
 type LocalPoolLike = {
   connect?: () => Promise<LocalClientLike>;
   end?: () => Promise<void>;
-  on?: (event: string, handler: (...args: any[]) => void) => void;
+  on?: (event: string; handler: (...args: any[]) => void) => void;
   totalCount?: number;
   idleCount?: number;
   waitingCount?: number;
 };
 
 // NOTE: the shim exports runtime shapes and not necessarily TypeScript types/namespaces.
-// Define a minimal local row shape to avoid: "Cannot use namespace: 'QueryResultRow' as a type."
+// Define a minimal local row shape to avoid: "Cannot use; namespace: 'QueryResultRow' as a type."
 type RowLike = Record<string, unknown>;
 
 // Global connection instances
@@ -53,7 +51,7 @@ export function getAppPool(): LocalPoolLike {
   if (!appPool) {
     const validation = validateDatabaseConfig();
     if (!validation.valid) {
-      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown'}`);
+      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown` }`);
     }
     const environment = (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development';
     appPool = resolvePool();
@@ -62,7 +60,7 @@ export function getAppPool(): LocalPoolLike {
     }
     // Attach basic handlers if available
     try {
-      appPool.on?.('error', (err: Error) => console.error('Database pool error:', err));
+      appPool.on?.('error', (err: Error) => console.error('Database pool; error:', err));
       appPool.on?.('connect', () => console.log('✅ Database pool connection established'));
     } catch (e) {
       console.warn('Failed to attach appPool handlers', e);
@@ -82,7 +80,7 @@ export function getAdminPool(): LocalPoolLike {
       throw new Error('No admin database pool available (poolShim and pgClient.pool missing).');
     }
     try {
-      adminPool.on?.('error', (err: Error) => console.error('Admin database pool error:', err));
+      adminPool.on?.('error', (err: Error) => console.error('Admin database pool; error:', err));
       adminPool.on?.('connect', () => console.log('🔧 Admin database pool connection established'));
     } catch (e) {
       console.warn('Failed to attach adminPool handlers', e);
@@ -154,7 +152,7 @@ export async function testDatabaseConnection(): Promise<{
   try {
     const pool = getAppPool();
     if (!pool?.connect) {
-      return { success: false, error: 'App pool unavailable or missing connect()' };
+      return { success: false, error: `App pool unavailable or missing connect()` };
     }
     const conn = await pool.connect();
     try {
@@ -181,7 +179,7 @@ export async function testDatabaseConnection(): Promise<{
         success: true,
         version,
         tables,
-        extensions,
+        extensions
       };
     } finally {
       try {
@@ -194,8 +192,7 @@ export async function testDatabaseConnection(): Promise<{
     console.error('Database connection test failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }
 
@@ -248,7 +245,7 @@ export async function getDatabaseHealth(): Promise<any> {
     return {
       status: 'unhealthy',
       errors: validation.errors,
-      config: null,
+      config: null
     };
   }
   try {
@@ -260,12 +257,10 @@ export async function getDatabaseHealth(): Promise<any> {
         port: (config as any).port,
         database: (config as any).database,
         user: (config as any).user,
-        ssl: (config as any).ssl,
+        ssl: (config as any).ssl
       },
       connection: connectionTest,
-      pools: {
-        app: {
-          totalCount: appPool?.totalCount || 0,
+      pools: { app: {, totalCount: appPool?.totalCount || 0,
           idleCount: appPool?.idleCount || 0,
-          waitingCount: appPool?.waitingCount || 0,
+          waitingCount: appPool?.waitingCount || 0
         },

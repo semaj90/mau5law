@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -36,9 +36,7 @@ export interface LegalResearchRequest {
   maxResults?: number;
   includeAnalysis?: boolean;
 }
-export interface LegalResearchResult {
-  title: string;
-  citation: string;
+export interface LegalResearchResult { title: string;, citation: string;
   summary: string;
   relevance: number;
   type: 'case' | 'statute' | 'regulation' | 'article' | 'brief';
@@ -68,7 +66,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       dateRange,
       sources = ['cases', 'statutes', 'regulations'],
       maxResults = 10,
-      includeAnalysis = true,
+      includeAnalysis = true
     } = body;
     if (!topic?.trim()) {
       return json({ error: 'Research topic is required' }, { status: 400 });
@@ -79,7 +77,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       dateRange,
       sources,
       maxResults,
-      userRole,
+      userRole
     });
     // Generate AI analysis if requested
     let analysis: string | null = null;
@@ -102,9 +100,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         sources,
         userRole,
         confidence,
-        searchTerms: extractSearchTerms(topic),
+        searchTerms: extractSearchTerms(topic)
       },
-      summary: generateResearchSummary(results, topic),
+      summary: generateResearchSummary(results, topic)
     };
     return json(response);
   } catch (error: any) {
@@ -113,7 +111,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Research failed',
         message: error instanceof Error ? error.message : String(error),
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -142,7 +140,7 @@ async function performLegalResearch(topic: string, options: LegalResearchOptions
     // Rerank results by relevance
     if (results.length > 0) {
       const reranked: any = await rerankSearchResults(topic, results, {
-        maxResults: options.maxResults,
+        maxResults: options.maxResults
       });
       // Some implementations return plain array, others an object with rerankedResults
       if (Array.isArray(reranked)) return reranked as LegalResearchResult[];
@@ -175,7 +173,7 @@ async function searchCaseLaw(topic: string, options: LegalResearchOptions): Prom
         `Established clear standard for ${topic}`,
         'Clarified constitutional requirements',
         'Set precedent for similar cases',
-      ],
+      ]
     },
     {
       title: `${topic} - Circuit Split`,
@@ -189,7 +187,7 @@ async function searchCaseLaw(topic: string, options: LegalResearchOptions): Prom
         'Created circuit split requiring Supreme Court review',
         `Different interpretation of ${topic} standards`,
         'Impact on future litigation strategy',
-      ],
+      ]
     },
   ];
   return mockCases.filter(c => !options.dateRange?.from || new Date(c.date) >= new Date(options.dateRange.from));
@@ -209,7 +207,7 @@ async function searchStatutes(topic: string, options: LegalResearchOptions): Pro
         `Defines key elements of ${topic}`,
         'Establishes penalties and procedures',
         'Provides enforcement mechanisms',
-      ],
+      ]
     },
   ];
   return options.sources?.includes('statutes') ? mockStatutes : [];
@@ -228,15 +226,14 @@ async function searchRegulations(topic: string, options: LegalResearchOptions): 
         `Detailed implementation of ${topic} requirements`,
         'Compliance procedures and deadlines',
         'Enforcement and penalty provisions',
-      ],
+      ]
     },
   ];
   return options.sources?.includes('regulations') ? mockRegulations : [];
 }
 function generateMockResults(topic: string, _options: LegalResearchOptions): LegalResearchResult[] {
   const mockResults: LegalResearchResult[] = [
-    {
-      title: `Legal Analysis: ${topic}`,
+    { title: `Legal, Analysis: ${topic}`,
       citation: 'Legal Research Database',
       summary: `Comprehensive overview of legal issues related to ${topic}.`,
       relevance: 0.75,
@@ -245,7 +242,7 @@ function generateMockResults(topic: string, _options: LegalResearchOptions): Leg
         `Overview of ${topic} legal framework`,
         'Key considerations for practitioners',
         'Recent developments and trends',
-      ],
+      ]
     },
   ];
   return mockResults;
@@ -263,17 +260,17 @@ async function generateResearchAnalysis(
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : ''}
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `' }
  This research provides a foundation for further legal analysis and case preparation.`;
   } catch (error: any) {
-    console.warn('AI analysis generation failed:', error instanceof Error ? error.message : String(error));
+    console.warn('AI analysis generation failed: `, error instanceof Error ? error.message : String(error));
     return `Research Analysis for ${topic}:
  Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : ''}
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `' }
  This research provides a foundation for further legal analysis and case preparation.`;
   }
 }

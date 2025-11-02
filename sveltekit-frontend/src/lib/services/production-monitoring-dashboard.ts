@@ -24,156 +24,111 @@ import { legalDocumentStream } from './legal-document-stream.js';
 import { enterpriseVectorSearch } from './enterprise-vector-search.js';
 
 // Monitoring Data Types
-export interface SystemHealth {
-  overall: 'healthy' | 'warning' | 'critical' | 'degraded';
-  services: ServiceHealth[];
-  infrastructure: InfrastructureHealth;
+export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'degraded';, services: ServiceHealth[]; infrastructure: InfrastructureHealth;
   performance: PerformanceMetrics;
   alerts: Alert[];
   lastUpdated: Date;
 }
 
-export interface ServiceHealth {
-  name: string;
-  status: 'healthy' | 'warning' | 'critical' | 'offline';
+export interface ServiceHealth { name: string;, status: 'healthy' | 'warning' | 'critical' | 'offline';
   uptime: number; // seconds
   responseTime: number; // milliseconds
   throughput: number; // requests per second
   errorRate: number; // percentage
-  dependencies: string[];
-  endpoints: EndpointHealth[];
+  dependencies: string[]; endpoints: EndpointHealth[];
   resources: ResourceUsage;
 }
 
-export interface EndpointHealth {
-  path: string;
-  method: string;
+export interface EndpointHealth { path: string;, method: string;
   responseTime: number;
   successRate: number;
   requestCount: number;
   lastError?: string;
 }
 
-export interface InfrastructureHealth {
-  database: {
-    postgresql: DatabaseMetrics;
+export interface InfrastructureHealth { database: {, postgresql: DatabaseMetrics;
   };
   vectorIndex: VectorIndexMetrics;
   redis: CacheMetrics;
-  compute: {
-    cpu: ResourceMetric;
-    memory: ResourceMetric;
+  compute: { cpu: ResourceMetric;, memory: ResourceMetric;
     gpu: GPUMetrics;
     network: NetworkMetrics;
   };
-  storage: {
-    documents: StorageMetric;
-    embeddings: StorageMetric;
+  storage: { documents: StorageMetric;, embeddings: StorageMetric;
     logs: StorageMetric;
     backups: StorageMetric;
   };
 }
 
-export interface PerformanceMetrics {
-  documentProcessing: {
-    totalProcessed: number;
+export interface PerformanceMetrics { documentProcessing: {, totalProcessed: number;
     processingRate: number; // docs per hour
     avgProcessingTime: number; // ms
     queueDepth: number;
     failureRate: number;
   };
-  vectorSearch: {
-    queriesPerSecond: number;
-    avgQueryTime: number;
+  vectorSearch: { queriesPerSecond: number;, avgQueryTime: number;
     cacheHitRate: number;
     indexUtilization: number;
   };
-  aiOrchestration: {
-    requestsPerMinute: number;
-    avgLatency: number;
+  aiOrchestration: { requestsPerMinute: number;, avgLatency: number;
     protocolOptimization: number; // percentage improvement
     modelSwitchingEfficiency: number;
   };
-  streaming: {
-    activeConnections: number;
-    dataTransferRate: number; // MB/s
+  streaming: { activeConnections: number;, dataTransferRate: number; // MB/s
     realTimeProcessing: number; // docs per minute
     streamingLatency: number; // ms
   };
 }
 
-export interface Alert {
-  id: string;
-  severity: 'info' | 'warning' | 'error' | 'critical';
+export interface Alert { id: string;, severity: 'info' | 'warning' | 'error' | 'critical';
   service: string;
   title: string;
   description: string;
   timestamp: Date;
   resolved: boolean;
   acknowledgedBy?: string;
-  tags: string[];
-  runbookUrl?: string;
+  tags: string[]; runbookUrl?: string;
   escalationLevel: number;
 }
 
 // Detailed Metrics Types
-export interface DatabaseMetrics {
-  connectionPool: {
-    active: number;
+export interface DatabaseMetrics { connectionPool: {, active: number;
     idle: number;
     waiting: number;
     maxConnections: number;
   };
-  queryPerformance: {
-    avgQueryTime: number;
-    slowQueries: number;
+  queryPerformance: { avgQueryTime: number;, slowQueries: number;
     deadlocks: number;
     lockWaitTime: number;
   };
-  storage: {
-    totalSize: number;
-    documentsTable: number;
+  storage: { totalSize: number;, documentsTable: number;
     embeddingsTable: number;
     metadataTable: number;
   };
-  replication: {
-    lag: number; // ms
-    status: 'active' | 'failed' | 'syncing';
+  replication: { lag: number; // ms, status: 'active' | 'failed' | 'syncing';
   };
 }
 
-export interface VectorIndexMetrics {
-  indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';
-  totalVectors: number;
+export interface VectorIndexMetrics { indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';, totalVectors: number;
   indexSize: number; // bytes
   buildTime: number; // seconds for last rebuild
-  searchPerformance: {
-    avgSearchTime: number;
-    recall: number;
+  searchPerformance: { avgSearchTime: number;, recall: number;
     throughput: number;
   };
-  maintenance: {
-    lastOptimization: Date;
-    nextOptimization: Date;
+  maintenance: { lastOptimization: Date;, nextOptimization: Date;
     fragmentationLevel: number;
   };
 }
 
-export interface CacheMetrics {
-  hitRate: number;
-  memoryUsage: number; // percentage
+export interface CacheMetrics { hitRate: number;, memoryUsage: number; // percentage
   keyCount: number;
   evictions: number;
   connectionCount: number;
-  throughput: {
-    opsPerSecond: number;
-    bytesPerSecond: number;
+  throughput: { opsPerSecond: number;, bytesPerSecond: number;
   };
 }
 
-export interface ResourceMetric {
-  usage: number; // percentage
-  total: number;
+export interface ResourceMetric { usage: number; // percentage, total: number;
   available: number;
   trend: 'increasing' | 'decreasing' | 'stable';
   alerts: boolean;
@@ -186,53 +141,37 @@ export interface GPUMetrics {
   powerEfficiency: number; // performance per watt
 }
 
-export interface NetworkMetrics {
-  bandwidth: {
-    inbound: number; // Mbps
+export interface NetworkMetrics { bandwidth: {, inbound: number; // Mbps
     outbound: number; // Mbps
     utilization: number; // percentage
   };
-  latency: {
-    internal: number; // ms
-    external: number; // ms
+  latency: { internal: number; // ms, external: number; // ms
     database: number; // ms
   };
-  connections: {
-    active: number;
-    established: number;
+  connections: { active: number;, established: number;
     waiting: number;
   };
 }
 
-export interface StorageMetric {
-  used: number; // bytes
-  available: number; // bytes
+export interface StorageMetric { used: number; // bytes, available: number; // bytes
   utilization: number; // percentage
   iops: number;
   throughput: number; // MB/s
   growthRate: number; // MB per day
 }
 
-export interface ResourceUsage {
-  cpu: number; // percentage
-  memory: number; // percentage
+export interface ResourceUsage { cpu: number; // percentage, memory: number; // percentage
   disk: number; // percentage
   network: number; // percentage
 }
 
 // Dashboard Configuration
-export interface DashboardConfig {
-  refreshInterval: number; // seconds
-  alertThresholds: {
-    responseTime: number; // ms
-    errorRate: number; // percentage
+export interface DashboardConfig { refreshInterval: number; // seconds, alertThresholds: { responseTime: number; // ms, errorRate: number; // percentage
     cpuUsage: number; // percentage
     memoryUsage: number; // percentage
     diskUsage: number; // percentage
   };
-  retentionPeriod: {
-    metrics: number; // days
-    logs: number; // days
+  retentionPeriod: { metrics: number; // days, logs: number; // days
     alerts: number; // days
   };
   notifications: {
@@ -245,21 +184,16 @@ export interface DashboardConfig {
 
 type TrendDirection = 'increasing' | 'decreasing' | 'stable';
 type Significance = 'low' | 'medium' | 'high';
-interface MetricTrend {
-  trend: TrendDirection;
-  change: number; // percent change (positive = increase)
+interface MetricTrend { trend: TrendDirection;, change: number; // percent change (positive = increase)
   significance: Significance;
 }
-interface Trends {
-  documentProcessing: MetricTrend;
-  vectorSearch: MetricTrend;
+interface Trends { documentProcessing: MetricTrend;, vectorSearch: MetricTrend;
 }
 
 export class ProductionMonitoringDashboard {
   private config: DashboardConfig;
   private metrics: SystemHealth;
-  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = [];
-  private alerts: Map<string, Alert> = new Map();
+  private metricsHistory: Array<{ timestamp: Date;, metrics: SystemHealth }> = []; private alerts: Map<string, Alert> = new Map();
   private alertHandlers: Map<string, (alert: Alert) => void> = new Map();
   private monitorTimer?: ReturnType<typeof setInterval> | null;
 
@@ -326,15 +260,11 @@ export class ProductionMonitoringDashboard {
   /**
    * Get detailed performance analytics with time-series data
    */
-  async getPerformanceAnalytics(timeRange: {
-    start: Date;
-    end: Date;
-    granularity: 'minute' | 'hour' | 'day';
-  }): Promise<{
-    timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
+  async getPerformanceAnalytics(timeRange: {, start: Date;, end: Date;
+   , granularity: 'minute' | 'hour' | 'day';
+  }): Promise<{ timeSeries: Array<{ timestamp: Date;, metrics: PerformanceMetrics }>;
     trends: Trends;
-    recommendations: string[];
-  }> {
+    recommendations: string[]; }> {
     console.log(`📈 Generating performance analytics for ${timeRange.granularity} granularity`);
     // Filter historical data to by time range
     const filteredHistory = this.metricsHistory.filter(
@@ -359,10 +289,9 @@ export class ProductionMonitoringDashboard {
    * Get active alerts with filtering and sorting
    */
   getActiveAlerts(filters?: {
-    severity?: Alert['severity'][];
-    services?: string[];
+    severity?: Alert['severity'][]; services?: string[];
     resolved?: boolean;
-  }): Alert[] {
+  }): Alert[], {
     let alerts = Array.from(this.alerts.values());
     if (filters) {
       if (filters.severity) {
@@ -378,7 +307,7 @@ export class ProductionMonitoringDashboard {
     // Sort by severity and timestamp
     const severityOrder: Record<Alert['severity'], number> = { critical: 0, error: 1, warning: 2, info: 3 };
     return alerts.sort((a, b) => {
-      const severityDiff = severityOrder[a.severity] - severityOrder[b.severity];
+      const severityDiff = severityOrder[a.severity], - severityOrder[b.severity];
       if (severityDiff !== 0) return severityDiff;
       return b.timestamp.getTime() - a.timestamp.getTime();
     });
@@ -412,7 +341,7 @@ export class ProductionMonitoringDashboard {
    */
   async exportMonitoringData(
     format: 'json' | 'csv' | 'pdf',
-    timeRange: { start: Date; end: Date },
+    timeRange: {, start: Date; end: Date },
     options: {
       includeMetrics?: boolean;
       includeAlerts?: boolean;
@@ -430,8 +359,7 @@ export class ProductionMonitoringDashboard {
     const exportData: ExportPayload = {
       exportTimestamp: new Date().toISOString(),
       timeRange,
-      generatedBy: 'Production Monitoring Dashboard v1.0'
-    };
+      generatedBy: 'Production Monitoring Dashboard v1.0' };
     if (includeMetrics) {
       exportData.systemHealth = this.metrics;
     }
@@ -451,8 +379,7 @@ export class ProductionMonitoringDashboard {
     if (includePerformance) {
       const analytics = await this.getPerformanceAnalytics({
         ...timeRange,
-        granularity: 'hour',
-      });
+        granularity: `hour` });
       exportData.performanceAnalytics = analytics;
     }
     switch (format) {
@@ -463,7 +390,7 @@ export class ProductionMonitoringDashboard {
       case 'pdf':
         return this.generatePDFReport(exportData);
       default:
-        throw new Error(`Unsupported export format: ${format}`);
+        throw new Error(`Unsupported export; format: ${format}`);
     }
   }
 
@@ -484,10 +411,8 @@ export class ProductionMonitoringDashboard {
   }
 
   // Private implementation methods
-  private async collectServiceHealth(): Promise<ServiceHealth[]> {
-    const services: ServiceHealth[] = [];
-
-    // Enhanced AI Analysis Service - simulated
+  private async collectServiceHealth(): Promise<ServiceHealth[]>, {
+    const services: ServiceHealth[] = []; // Enhanced AI Analysis Service - simulated
     try {
       services.push({
         name: 'Enhanced AI Analysis',
@@ -498,12 +423,11 @@ export class ProductionMonitoringDashboard {
         errorRate: Math.random() * 2,
         dependencies: ['Ollama Service', 'PostgreSQL'],
         endpoints: [
-          {
-            path: '/api/ai/enhanced-analysis',
+          {, path: '/api/ai/enhanced-analysis',
             method: 'POST',
             responseTime: Math.random() * 150 + 75,
             successRate: 98.5 + Math.random() * 1.5,
-            requestCount: Math.floor(Math.random() * 1000 + 500),
+            requestCount: Math.floor(Math.random() * 1000 + 500)
           }
         ],
         resources: {
@@ -562,7 +486,7 @@ export class ProductionMonitoringDashboard {
         responseTime: orchestratorMetrics?.averageLatency ?? Math.random() * 100 + 25,
         throughput: orchestratorMetrics?.totalOperations ?? Math.floor(Math.random() * 20 + 10),
         errorRate: orchestratorHealthy ? Math.random() * 1 : Math.random() * 5 + 2,
-        dependencies: ['CUDA Workers', 'Tensor Service', 'Case Scoring'],
+        dependencies: ['CUDA, Workers', 'Tensor Service', 'Case Scoring'],
         endpoints: [],
         resources: {
           cpu: Math.random() * 40 + 20,
@@ -649,20 +573,18 @@ export class ProductionMonitoringDashboard {
       }
        services.push({
          name: 'Enterprise Vector Search',
-         // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state
-         status: vectorHealth?.healthy ? 'healthy' : 'warning',
+         // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state; status: vectorHealth?.healthy ? 'healthy' : 'warning',
          uptime: 72 * 60 * 60,
          responseTime: vectorHealth?.performance?.avgQueryTime ?? (Math.random() * 200 + 50),
          throughput: Math.random() * 50 + 25,
          errorRate: vectorHealth?.healthy ? Math.random() * 0.1 : Math.random() * 3 + 1,
          dependencies: ['PostgreSQL', 'pgvector', 'Redis Cache'],
          endpoints: [
-           {
-             path: '/api/search/vector',
+           {, path: '/api/search/vector',
              method: 'POST',
              responseTime: vectorHealth?.performance?.avgQueryTime ?? 100,
              successRate: 99.2,
-             requestCount: Math.floor(Math.random() * 5000 + 2000),
+             requestCount: Math.floor(Math.random() * 5000 + 2000)
            }
          ],
          resources: {
@@ -681,11 +603,7 @@ export class ProductionMonitoringDashboard {
 
   private async collectInfrastructureMetrics(): Promise<InfrastructureHealth> {
     // Simulate infrastructure metrics collection
-    return {
-      database: {
-        postgresql: {
-          connectionPool: {
-            active: Math.floor(Math.random() * 20 + 10),
+    return { database: {, postgresql: { connectionPool: {, active: Math.floor(Math.random() * 20 + 10),
             idle: Math.floor(Math.random() * 10 + 5),
             waiting: Math.floor(Math.random() * 3),
             maxConnections: 100
@@ -704,8 +622,7 @@ export class ProductionMonitoringDashboard {
           },
           replication: {
             lag: Math.random() * 100 + 10,
-            status: 'active'
-          }
+            status: `active` }
         }
       },
       vectorIndex: {
@@ -735,9 +652,7 @@ export class ProductionMonitoringDashboard {
           bytesPerSecond: Math.floor(Math.random() * 1024 * 1024 + 512 * 1024)
         }
       },
-      compute: {
-        cpu: {
-          usage: Math.random() * 40 + 30,
+      compute: { cpu: {, usage: Math.random() * 40 + 30,
           total: 16,
           available: Math.floor(Math.random() * 8 + 8),
           trend: 'stable',
@@ -752,8 +667,7 @@ export class ProductionMonitoringDashboard {
         },
         gpu: {
           devices: [
-            {
-              id: 'gpu-0',
+            {, id: 'gpu-0',
               name: 'RTX 3060 Ti',
               utilization: Math.random() * 40 + 30,
               memoryUsage: Math.random() * 50 + 25,
@@ -767,9 +681,7 @@ export class ProductionMonitoringDashboard {
           averageTemperature: Math.random() * 20 + 65,
           powerEfficiency: Math.random() * 20 + 80
         },
-        network: {
-          bandwidth: {
-            inbound: Math.random() * 500 + 200,
+        network: { bandwidth: {, inbound: Math.random() * 500 + 200,
             outbound: Math.random() * 300 + 100,
             utilization: Math.random() * 30 + 20
           },
@@ -785,9 +697,7 @@ export class ProductionMonitoringDashboard {
           }
         }
       },
-      storage: {
-        documents: {
-          used: 30 * 1024 * 1024 * 1024,
+      storage: { documents: {, used: 30 * 1024 * 1024 * 1024,
           available: 470 * 1024 * 1024 * 1024,
           utilization: 6,
           iops: Math.floor(Math.random() * 1000 + 500),
@@ -824,13 +734,11 @@ export class ProductionMonitoringDashboard {
 
   private async collectPerformanceMetrics(): Promise<PerformanceMetrics> {
     // Safely detect and call getStatistics if available on legalDocumentStream
-    const streamStats: {
-      documentsProcessed: number;
-      throughputPerSecond: number;
+    const streamStats: { documentsProcessed: number;, throughputPerSecond: number;
       averageLatency: number;
       activeConnections: number;
       errorRate: number;
-      [k: string]: any;
+      [k:, string]: any;
     } = {
       documentsProcessed: 0,
       throughputPerSecond: 0,
@@ -869,7 +777,7 @@ export class ProductionMonitoringDashboard {
     }
 
     // Guarded orchestrator metrics (provide safe default)
-    const orchestratorMetrics: { totalOperations: number; averageLatency: number; binaryProtocolSavings: number } = {
+    const orchestratorMetrics: { totalOperations: number; averageLatency: number;, binaryProtocolSavings: number } = {
       totalOperations: 0,
       averageLatency: 0,
       binaryProtocolSavings: 0
@@ -901,14 +809,11 @@ export class ProductionMonitoringDashboard {
       console.warn('Failed to fetch orchestrator metrics for performance metrics:', err);
     }
 
-    const vectorAnalytics = enterpriseVectorSearch.getAnalytics?.() ?? {
-      queryStats: { totalQueries: 0, avgExecutionTime: 0, cacheHitRate: 0 },
-      indexStats: { performanceMetrics: { indexUtilization: 0 } }
+    const vectorAnalytics = enterpriseVectorSearch.getAnalytics?.() ?? { queryStats: {, totalQueries: 0, avgExecutionTime: 0, cacheHitRate: 0 },
+      indexStats: { performanceMetrics: {, indexUtilization: 0 } }
     };
 
-    return {
-      documentProcessing: {
-        totalProcessed: streamStats.documentsProcessed,
+    return { documentProcessing: {, totalProcessed: streamStats.documentsProcessed,
         processingRate: streamStats.throughputPerSecond * 3600,
         avgProcessingTime: streamStats.averageLatency,
         queueDepth: Math.floor(Math.random() * 10 + 5),
@@ -939,10 +844,8 @@ export class ProductionMonitoringDashboard {
     services: ServiceHealth[],
     infrastructure: InfrastructureHealth,
     _performance: PerformanceMetrics
-  ): Promise<Alert[]> {
-    const alerts: Alert[] = [];
-
-    // Service health alerts
+  ): Promise<Alert[]>, {
+    const alerts: Alert[] = []; // Service health alerts
     services.forEach(service => {
       if (service.responseTime > this.config.alertThresholds.responseTime) {
         alerts.push(this.createAlert('warning', service.name, 'High Response Time',
@@ -990,7 +893,7 @@ export class ProductionMonitoringDashboard {
     services: ServiceHealth[],
     _infrastructure: InfrastructureHealth,
     alerts: Alert[]
-  ): SystemHealth['overall'] {
+  ): SystemHealth['overall'], {
     const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
     const errorAlerts = alerts.filter(a => a.severity === 'error').length;
     const warningAlerts = alerts.filter(a => a.severity === 'warning').length;
@@ -1014,8 +917,7 @@ export class ProductionMonitoringDashboard {
     service: string,
     title: string,
     description: string,
-    tags: string[]
-  ): Alert {
+    tags: string[], ): Alert {
     return {
       id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
       severity,
@@ -1054,7 +956,7 @@ export class ProductionMonitoringDashboard {
   private storeHistoricalMetrics(): void {
     this.metricsHistory.push({
       timestamp: new Date(),
-      metrics: { ...this.metrics },
+      metrics: { ...this.metrics }
     });
     // Clean up old metrics based on retention period
     const retentionMs = this.config.retentionPeriod.metrics * 24 * 60 * 60 * 1000;
@@ -1103,7 +1005,7 @@ export class ProductionMonitoringDashboard {
   }
 
   private calculateTrends(
-    timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>
+    timeSeries: Array<{, timestamp: Date; metrics: PerformanceMetrics }>
   ): Trends {
     // Helper inside method to avoid polluting module-scope further
     const calcPercentChange = (start: number, end: number): number => {
@@ -1124,8 +1026,7 @@ export class ProductionMonitoringDashboard {
       return { documentProcessing: stable, vectorSearch: stable };
     }
 
-    const first = timeSeries[0].metrics;
-    const last = timeSeries[timeSeries.length - 1].metrics;
+    const first = timeSeries[0].metrics; const last = timeSeries[timeSeries.length - 1].metrics;
 
     // Document processing: processingRate higher => increasing throughput (good)
     const docStart = first.documentProcessing.processingRate ?? 0;
@@ -1139,17 +1040,15 @@ export class ProductionMonitoringDashboard {
     const vecChange = calcPercentChange(vecStart, vecEnd);
     const vecTrend = Math.abs(vecChange) < 1 ? 'stable' : vecChange > 0 ? 'increasing' : 'decreasing';
 
-    return {
-      documentProcessing: {
-        trend: docTrend,
+    return { documentProcessing: {, trend: docTrend,
         change: Number(docChange.toFixed(2)),
-        significance: significanceFromAbs(docChange),
+        significance: significanceFromAbs(docChange)
       },
       vectorSearch: {
         trend: vecTrend,
         change: Number(vecChange.toFixed(2)),
-        significance: significanceFromAbs(vecChange),
-      },
+        significance: significanceFromAbs(vecChange)
+      }
     };
   }
 
@@ -1157,12 +1056,10 @@ export class ProductionMonitoringDashboard {
    * Generate actionable recommendations based on performance trends and current system metrics.
    */
   private generatePerformanceRecommendations(
-    trends: { documentProcessing: MetricTrend; vectorSearch: MetricTrend } | undefined,
+    trends: {, documentProcessing: MetricTrend; vectorSearch: MetricTrend } | undefined,
     currentMetrics: SystemHealth
-  ): string[] {
-    const recommendations: string[] = [];
-
-    // Use trends where helpful
+  ): string[], {
+    const recommendations: string[] = []; // Use trends where helpful
     if (trends?.vectorSearch?.change && trends.vectorSearch.change > 10) {
       recommendations.push('Vector search query times increased >10% — schedule index optimization and warm-up.');
     }
@@ -1184,14 +1081,13 @@ export class ProductionMonitoringDashboard {
 
   private convertToCSV(data: any): string {
     // Minimal CSV exporter for tests/debugging. Exports timestamp + top-level fields if present.
-    const rows: string[] = ['timestamp,field,value'];
-    const ts = new Date().toISOString();
+    const rows: string[] = ['timestamp,field,value']; const ts = new Date().toISOString();
     const maybe = data as { systemHealth?: SystemHealth } | undefined;
     if (maybe && maybe.systemHealth) {
       const sh = maybe.systemHealth;
       rows.push(`${ts},system_overall,${sh.overall}`);
       // example metric
-      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? ''}`);
+      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '` }`);
     } else {
       rows.push(`${ts},export,empty`);
     }
@@ -1224,12 +1120,10 @@ export class ProductionMonitoringDashboard {
     return {
       overall: 'healthy',
       services: [],
-      infrastructure: {
-        database: { postgresql: {
-          connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
+      infrastructure: { database: {, postgresql: {, connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
           queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
           storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
-          replication: { lag: 0, status: 'active' }
+          replication: { lag: 0, status: `active` }
         } },
         vectorIndex: {
           indexHealth: 'good',
@@ -1243,21 +1137,18 @@ export class ProductionMonitoringDashboard {
           hitRate: 0, memoryUsage: 0, keyCount: 0, evictions: 0, connectionCount: 0,
           throughput: { opsPerSecond: 0, bytesPerSecond: 0 }
         },
-        compute: {
-          cpu: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
+        compute: { cpu: {, usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
           memory: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
           gpu: { devices: [], totalUtilization: 0, averageTemperature: 0, powerEfficiency: 0 },
-          network: { bandwidth: { inbound: 0, outbound: 0, utilization: 0 }, latency: { internal: 0, external: 0, database: 0 }, connections: { active: 0, established: 0, waiting: 0 } }
+          network: { bandwidth: {, inbound: 0, outbound: 0, utilization: 0 }, latency: { internal: 0, external: 0, database: 0 }, connections: { active: 0, established: 0, waiting: 0 } }
         },
-        storage: {
-          documents: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
+        storage: { documents: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
           embeddings: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
           logs: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
           backups: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }
         }
       } as InfrastructureHealth,
-      performance: {
-        documentProcessing: { totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 },
+      performance: { documentProcessing: {, totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 },
         vectorSearch: { queriesPerSecond: 0, avgQueryTime: 0, cacheHitRate: 0, indexUtilization: 0 },
         aiOrchestration: { requestsPerMinute: 0, avgLatency: 0, protocolOptimization: 0, modelSwitchingEfficiency: 0 },
         streaming: { activeConnections: 0, dataTransferRate: 0, realTimeProcessing: 0, streamingLatency: 0 }
@@ -1278,7 +1169,7 @@ export class ProductionMonitoringDashboard {
   }
 
   // Add helper to safely detect healthCheck presence on services
-  private hasHealthCheck(obj: any): obj is { healthCheck: (...args: any[]) => Promise<unknown> | unknown } {
+  private hasHealthCheck(obj: any): obj is { healthCheck: (...args: any[]), => Promise<unknown> | unknown } {
     return (
       typeof obj === 'object' &&
       obj !== null &&
@@ -1303,7 +1194,7 @@ interface OrchestratorMetrics {
   averageLatency?: number;
   totalOperations?: number;
   binaryProtocolSavings?: number;
-  [k: string]: any;
+  [k:, string]: any;
 }
 interface StreamHealth {
   healthy?: boolean;
@@ -1314,33 +1205,26 @@ interface VectorHealth {
   healthy?: boolean;
   performance?: {
     avgQueryTime?: number;
-    [k: string]: any;
+    [k:, string]: any;
   };
   [k: string]: any;
 }
 
 // Add small typed shapes for exports to avoid `any`
-type ExportTimeRange = { start: Date; end: Date };
+type ExportTimeRange = { start: Date;, end: Date };
 
-type ExportLogEntry = {
-  timestamp: string;
-  overall: SystemHealth['overall'];
-  vectorAvgQueryTime: number | null;
+type ExportLogEntry = { timestamp: string;, overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
   documentProcessingRate: number | null;
 };
 
-type PerformanceAnalyticsResult = {
-  timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
+type PerformanceAnalyticsResult = { timeSeries: Array<{ timestamp: Date;, metrics: PerformanceMetrics }>;
   trends: Trends;
   recommendations: string[];
 };
 
-type ExportPayload = {
-  exportTimestamp: string;
-  timeRange: ExportTimeRange;
+type ExportPayload = { exportTimestamp: string;, timeRange: ExportTimeRange;
   generatedBy: string;
   systemHealth?: SystemHealth;
-  alerts?: Alert[];
-  logs?: ExportLogEntry[];
+  alerts?: Alert[]; logs?: ExportLogEntry[];
   performanceAnalytics?: PerformanceAnalyticsResult;
 };

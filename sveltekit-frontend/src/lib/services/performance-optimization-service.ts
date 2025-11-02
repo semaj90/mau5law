@@ -7,33 +7,23 @@
 import { writable, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
 }
-export interface PerformanceMetrics {
-  memory: {
-    heapUsed: number;
+export interface PerformanceMetrics { memory: {, heapUsed: number;
   heapTotal: number;
   external: number;
   arrayBuffers: number;
   }
-  gpu: {
-    utilization: number;
-    memoryUsed: number;
+  gpu: { utilization: number;, memoryUsed: number;
     memoryTotal: number;
     temperature: number;
   }
-  latency: {
-    avgResponseTime: number;
-    minResponseTime: number;
+  latency: { avgResponseTime: number;, minResponseTime: number;
     maxResponseTime: number;
     p95ResponseTime: number;
   }
-  throughput: {
-    requestsPerSecond: number;
-    tokensPerSecond: number;
+  throughput: { requestsPerSecond: number;, tokensPerSecond: number;
     embeddingsPerSecond: number;
   }
-  cache: {
-    hitRate: number;
-    missRate: number;
+  cache: { hitRate: number;, missRate: number;
     evictionRate: number;
     totalSize: number;
   }
@@ -62,24 +52,18 @@ export interface OptimizationConfig {
   // Performance monitoring
   enableMetricsCollection: boolean;
   metricsInterval: number;
-  alertThresholds: {
-    memoryUsage: number;
-  responseTime: number;
+  alertThresholds: { memoryUsage: number;, responseTime: number;
   gpuUtilization: number;
   errorRate: number;
   }
 }
-export interface BatchRequest<T = any> {
-  id: string;
-  data: T;
+export interface BatchRequest<T = any> { id: string;, data: T;
   priority: number;
   timestamp: number;
   resolve: (result: any) => void;
   reject: (error: Error) => void;
 }
-export interface ConnectionPool {
-  active: number;
-  idle: number;
+export interface ConnectionPool { active: number;, idle: number;
   pending: number;
   total: number;
 }
@@ -137,9 +121,7 @@ class PerformanceOptimizationService {
     }
   }
   private getInitialMetrics(): PerformanceMetrics {
-    return {
-      memory: {
-        heapUsed: 0,
+    return { memory: {, heapUsed: 0,
         heapTotal: 0,
         external: 0,
         arrayBuffers: 0
@@ -280,8 +262,7 @@ class PerformanceOptimizationService {
     });
   }
   public async batchRequest<T, R>()
-    type: string
-    data: T;
+    type: string; data: T;
     priority: number = 5;
   ): Promise<R>, {
     return new Promise((resolve, reject) => {
@@ -335,7 +316,7 @@ class PerformanceOptimizationService {
       case 'similarity':
         return this.processBatchSimilarity(requests);
       default:
-        throw new Error(`Unknown batch type: ${type}`);
+        throw new Error(`Unknown batch; type: ${type}`);
     }
   }
   private async processBatchEmbeddings(requests: BatchRequest[]): Promise<any[]> {
@@ -387,7 +368,7 @@ class PerformanceOptimizationService {
     this.metrics.update((metrics: any) => ({
       ...metrics,
       memory: {
-        heapUsed: memUsage.heapUsed,
+       , heapUsed: memUsage.heapUsed,
         heapTotal: memUsage.heapTotal,
         external: memUsage.external,
         arrayBuffers: memUsage.arrayBuffers
@@ -482,7 +463,7 @@ class PerformanceOptimizationService {
     this.metrics.update((metrics: any) => ({
       ...metrics,
       gpu: {
-        utilization: Math.random() * 100,
+       , utilization: Math.random() * 100,
         memoryUsed: Math.random() * 12 * 1024 * 1024 * 1024, // Simulate RTX 3060 12GB
         memoryTotal: 12 * 1024 * 1024 * 1024,
         temperature: 60 + Math.random() * 20
@@ -494,7 +475,7 @@ class PerformanceOptimizationService {
     this.metrics.update((metrics: any) => ({
       ...metrics,
       cache: {
-        hitRate: Math.random() * 100,
+       , hitRate: Math.random() * 100,
         missRate: Math.random() * 30,
         evictionRate: Math.random() * 10,
         totalSize: Math.random() * 1000
@@ -510,8 +491,7 @@ class PerformanceOptimizationService {
       value,
       threshold: this.config.alertThresholds[type as keyof typeof this.config.alertThresholds],
       timestamp: new Date().toISOString(),
-      severity: value > (this.config.alertThresholds[type as keyof typeof this.config.alertThresholds] * 1.2) ? 'critical' : 'warning'
-    }
+      severity: value > (this.config.alertThresholds[type as keyof typeof this.config.alertThresholds] * 1.2) ? 'critical' : 'warning' }
     console.warn('🚨 Performance Alert:', alert);
     // In production, this would send alerts to monitoring systems
     if (browser) {
@@ -522,9 +502,7 @@ class PerformanceOptimizationService {
    * Optimization Utilities
    */
   public async optimizeForWorkload(workload: 'embeddings' | 'chat' | 'search' | 'batch'): Promise<void> {
-    const optimizations = {
-      embeddings: {
-        batchSize: 64,
+    const optimizations = { embeddings: {, batchSize: 64,
         maxConnections: 5,
         enableTensorCoreOptimization: true
       },

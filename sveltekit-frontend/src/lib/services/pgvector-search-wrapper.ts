@@ -21,26 +21,18 @@ export interface PgvectorSearchRequest {
   };
 }
 
-export interface PgvectorSearchResult {
-  id: string;
-  title: string;
+export interface PgvectorSearchResult { id: string;, title: string;
   content: string;
   metadata: Record<string, any>;
   similarity: number;
   processingTimeMs: number;
 }
 
-export interface PgvectorSearchResponse {
-  success: boolean;
-  query: string;
+export interface PgvectorSearchResponse { success: boolean;, query: string;
   results: PgvectorSearchResult[];
-  stats: {
-    totalResults: number;
-    limit: number;
+  stats: { totalResults: number;, limit: number;
     threshold: number;
-    timings: {
-      embeddingGenerationMs: number;
-      pgvectorSearchMs: number;
+    timings: { embeddingGenerationMs: number;, pgvectorSearchMs: number;
       totalMs: number;
     };
     filters: number;
@@ -67,7 +59,7 @@ export interface PgvectorSearchResponse {
  *   limit: 10,
  *   threshold: 0.5,
  *   filters: {
- *     practiceArea: 'employment-law'
+ *    , practiceArea: 'employment-law'
  *   }
  * });
  *
@@ -86,15 +78,14 @@ export async function pgvectorSearch(
     const response = await fetch('/api/search-pgvector-optimized', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
-        query: request.query,
+       , query: request.query,
         limit: request.limit ?? 10,
         threshold: request.threshold ?? 0.5,
         useContentEmbedding: request.useContentEmbedding ?? true,
-        filters: request.filters,
-      }),
+        filters: request.filters
+      })
     });
 
     if (!response.ok) {
@@ -110,8 +101,8 @@ export async function pgvectorSearch(
       ...data,
       metadata: {
         ...data.metadata,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -128,16 +119,15 @@ export async function pgvectorSearch(
         timings: {
           embeddingGenerationMs: 0,
           pgvectorSearchMs: 0,
-          totalMs: Math.round(performance.now() - startTime),
+          totalMs: Math.round(performance.now() - startTime)
         },
-        filters: Object.keys(request.filters ?? {}).length,
+        filters: Object.keys(request.filters ?? {}).length
       },
       metadata: {
         timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
-        indexType: 'HNSW',
-      },
-      error: errorMessage,
+        indexType: 'HNSW` },
+      error: errorMessage
     };
   }
 }
@@ -160,7 +150,7 @@ export async function pgvectorSearchWithHighlights(
 
   return response.results.map(result => ({
     ...result,
-    highlight: extractHighlight(result.content, request.query),
+    highlight: extractHighlight(result.content, request.query)
   }));
 }
 
@@ -211,7 +201,7 @@ export async function pgvectorSearchBatch(
 
   const searchPromises = queries.map(query =>
     pgvectorSearch({ query, limit })
-      .then(response => [query, response.results] as const)
+      .then(response => [query, response.results] as const )
   );
 
   const searchResults = await Promise.all(searchPromises);
@@ -226,12 +216,8 @@ export async function pgvectorSearchBatch(
 /**
  * Check the health of the pgvector search service
  */
-export async function pgvectorSearchHealth(): Promise<{
-  healthy: boolean;
-  status: string;
-  stats?: {
-    indexedDocuments: number;
-    embeddingDimensions: number;
+export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, status: string;
+  stats?: { indexedDocuments: number;, embeddingDimensions: number;
     indexType: string;
   };
   error?: string;
@@ -242,8 +228,7 @@ export async function pgvectorSearchHealth(): Promise<{
     if (!response.ok) {
       return {
         healthy: false,
-        status: `HTTP ${response.status}`,
-      };
+        status: `HTTP ${response.status}` };
     }
 
     const data = await response.json();
@@ -252,13 +237,13 @@ export async function pgvectorSearchHealth(): Promise<{
       healthy: data.success ?? true,
       status: data.status ?? 'unknown',
       stats: data.stats,
-      error: data.error,
+      error: data.error
     };
   } catch (error) {
     return {
       healthy: false,
       status: 'error',
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     };
   }
 }

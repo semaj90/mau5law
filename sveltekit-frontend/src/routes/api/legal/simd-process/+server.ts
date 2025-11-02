@@ -14,8 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'process': {
         if (!content || !title || !documentType) {
           return json(
-            {
-              error: 'Missing required fields: content, title, documentType',
+            { error: 'Missing required, fields: content, title, documentType'
             },
             { status: 400 }
           );
@@ -43,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
             .parsedDocument.processingTime,
           gpuAccelerated: true,
           vectorized: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any })
-            .vectorized,
+            .vectorized
         });
       }
       case 'search': {
@@ -51,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!query) {
           return json(
             {
-              error: 'Query is required for semantic search',
+              error: 'Query is required for semantic search'
             },
             { status: 400 }
           );
@@ -62,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
           query,
           results: searchResults,
           totalResults: searchResults.length,
-          processingMethod: 'pgvector_similarity',
+          processingMethod: 'pgvector_similarity'
         });
       }
       case 'stats': {
@@ -70,13 +69,12 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           systemStats,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       default: {
         return json(
-          {
-            error: 'Invalid action. Supported actions: process, search, stats',
+          { error: 'Invalid action. Supported, actions: process, search, stats'
           },
           { status: 400 }
         );
@@ -88,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -103,17 +101,17 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         systemStats,
         endpoints: {
-          process: 'POST /api/legal/simd-process (action: "process")',
+         , process: 'POST /api/legal/simd-process (action: "process")',
           search: 'POST /api/legal/simd-process (action: "search")',
-          stats: 'GET /api/legal/simd-process?action=stats',
+          stats: 'GET /api/legal/simd-process?action=stats'
         },
         systemInfo: {
           simdEnabled: true,
           gpuAccelerated: true,
           pgvectorEnabled: true,
-          threadSafe: true,
+          threadSafe: true
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     if (action === 'health') {
@@ -122,17 +120,17 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         status: 'healthy',
         services: {
-          simd_parser: 'operational',
+         , simd_parser: 'operational',
           pgvector: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational',
+          cognitive_cache: 'operational'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
-        error: 'Invalid action parameter',
+        error: 'Invalid action parameter'
       },
       { status: 400 }
     );
@@ -142,8 +140,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         status: 'degraded',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

@@ -23,12 +23,7 @@ type VectorSearch = {
   performSimilaritySearch: (embedding: any, limit?: number, threshold?: number) => Promise<unknown[]>
 }
 
-type MockDataGenerators = {
-  generateMockLegalDocuments: (count: number) => Promise<unknown[]> | unknown[]
-  generateMockQLoRAStates: (count: number) => Promise<unknown[]> | unknown[]
-  generateMockAssetPredictions: (count: number) => Promise<unknown[]> | unknown[]
-  generateMockEmbeddingShards: (count: number) => Promise<unknown[]> | unknown[]
-  generateMockCHRManifests: (count: number) => Promise<unknown[]> | unknown[]
+type MockDataGenerators = { generateMockLegalDocuments: (count: number) => Promise<unknown[]> | unknown[]; generateMockQLoRAStates: (count: number) => Promise<unknown[]> | unknown[]; generateMockAssetPredictions: (count: number) => Promise<unknown[]> | unknown[]; generateMockEmbeddingShards: (count: number) => Promise<unknown[]> | unknown[];, generateMockCHRManifests: (count: number) => Promise<unknown[]> | unknown[]
 }
 
 type SyncModule = {
@@ -41,12 +36,10 @@ type SyncModule = {
 // safe cast from imported namespace to the typed module
 const importedSyncModule = (syncModule as unknown) as SyncModule
 
-const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? {
-  performHealthCheck: async () => ({ status: 'unknown' }),
+const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: 'unknown' }),
   performFullSync: async () => ({ success: false })
 }
-const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? {
-  syncMockLegalDocuments: async () => ({ success: false }),
+const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({, success: false }),
   syncQLoRATrainingData: async () => ({ success: false }),
   syncPredictiveAssetCache: async () => ({ success: false })
 }
@@ -76,12 +69,11 @@ export const GET: RequestHandler = async ({ url }) => {
           version: '1.0.0',
           health: healthCheck,
           endpoints: {
-            sync: '/api/sync?action=full',
+           , sync: '/api/sync?action=full',
             search: '/api/sync/search',
             generate: '/api/sync/generate',
-            qloraSamples: '/api/sync/qlora-samples',
-          },
-          timestamp: new Date().toISOString(),
+            qloraSamples: `/api/sync/qlora-samples` },
+          timestamp: new Date().toISOString()
         });
       }
       case 'full': {
@@ -90,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'full_sync',
           result: fullSync,
           message: 'Neural topology mock data synchronized successfully',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'legal-docs': {
@@ -98,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'legal_documents_sync',
           result: docSync,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'qlora': {
@@ -106,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'qlora_sync',
           result: qloraSync,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'cache': {
@@ -114,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'predictive_cache_sync',
           result: cacheSync,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       default: {
@@ -122,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           {
             error: 'Unknown action',
             availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -136,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Sync operation failed',
         message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -168,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
           results: searchResults,
           count: Array.isArray(searchResults) ? searchResults.length : 0,
           params: { limit, threshold },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'generate_mock_data': {
@@ -192,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
-          default: return json({ error: 'Unknown mock data type' }, { status: 400 });
+          default: return json({ error: `Unknown mock data type` }, { status: 400 });
         }
         // normalize to array in case generator returned a promise or a sync array
         const resolvedData = await Promise.resolve(mockData);
@@ -201,7 +193,7 @@ export const POST: RequestHandler = async ({ request }) => {
           type,
           data: resolvedData,
           count: Array.isArray(resolvedData) ? resolvedData.length : 0,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'bulk_sync': {
@@ -222,13 +214,13 @@ export const POST: RequestHandler = async ({ request }) => {
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:
-              bulkResults[syncType] = { error: 'unsupported sync type' };
+              bulkResults[syncType] = { error: `unsupported sync type` };
           }
         }
         return json({
           action: 'bulk_sync',
           results: bulkResults,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       default: {
@@ -236,7 +228,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             error: 'Unknown POST action',
             availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -249,7 +241,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'POST operation failed',
         message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

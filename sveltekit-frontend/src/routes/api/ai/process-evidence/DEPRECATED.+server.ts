@@ -4,7 +4,7 @@
  * File upload with AI processing has been integrated into /api/v2/evidence
  *
  * Migration:
- * OLD: POST /api/ai/process-evidence (multipart/form-data)
+ *; OLD: POST /api/ai/process-evidence (multipart/form-data)
  * NEW: POST /api/v2/evidence (multipart/form-data)
  *
  * The unified API automatically:
@@ -37,29 +37,29 @@ export const POST: RequestHandler = async () => {
       endpoint: 'POST /api/v2/evidence',
       contentType: 'multipart/form-data',
       fields: {
-        file: 'File (required)',
+       , file: 'File (required)',
         caseId: 'string (required)',
-        user_id: 'string (optional, defaults to session user)',
-      },
+        user_id: 'string (optional, defaults to session user)'
+      }
     },
     response: {
       success: true,
       evidence: { id: 'uuid', title: 'filename' },
       aiProcessing: { file_id: 'evidence_abc123', message: 'Processing started' },
       websocket: 'ws://localhost:8000/ws',
-      source: 'python-ai',
+      source: 'python-ai'
     },
     features: [
       'Real-time WebSocket streaming of AI analysis',
       'Auto-tag extraction from AI output',
       'Workflow progress tracking (6 stages)',
       'Automatic fallback to TypeScript when Python unavailable',
-    ],
+    ]
   }, {
     status: 410,
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': 'POST /api/v2/evidence',
-    },
+      'X-Migrate-To': 'POST /api/v2/evidence'
+    }
   });
 };

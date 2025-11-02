@@ -1,7 +1,5 @@
 // Rate limiting utility stub
-export interface RateLimitOptions {
-  maxRequests: number;
-  windowMs: number;
+export interface RateLimitOptions { maxRequests: number;, windowMs: number;
   message?: string;
 }
 export class RateLimiter {

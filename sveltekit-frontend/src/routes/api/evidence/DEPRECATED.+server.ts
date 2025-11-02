@@ -26,38 +26,38 @@ export const GET: RequestHandler = async () => {
     deprecated: true,
     message: 'This endpoint is deprecated. Please use /api/v2/evidence',
     migration: {
-      list: 'GET /api/v2/evidence?action=list&caseId=xxx',
+     , list: 'GET /api/v2/evidence?action=list&caseId=xxx',
       search: 'GET /api/v2/evidence?action=search&q=xxx',
       status: 'GET /api/v2/evidence?action=status&fileId=xxx',
-      health: 'GET /api/v2/evidence?action=health',
+      health: 'GET /api/v2/evidence?action=health'
     },
-    documentation: '/EVIDENCE-AI-SYSTEM-COMPLETE.md',
+    documentation: '/EVIDENCE-AI-SYSTEM-COMPLETE.md'
   }, {
     status: 410, // Gone
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': '/api/v2/evidence',
-    },
+      'X-Migrate-To': '/api/v2/evidence'
+    }
   });
 };
 
 export const POST: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'This endpoint is deprecated. Please use POST /api/v2/evidence',
+    message: 'This endpoint is deprecated. Please use POST /api/v2/evidence'
   }, { status: 410 });
 };
 
 export const PUT: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'This endpoint is deprecated. Please use PUT /api/v2/evidence?id=xxx',
+    message: 'This endpoint is deprecated. Please use PUT /api/v2/evidence?id=xxx'
   }, { status: 410 });
 };
 
 export const DELETE: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'This endpoint is deprecated. Please use DELETE /api/v2/evidence?id=xxx',
+    message: 'This endpoint is deprecated. Please use DELETE /api/v2/evidence?id=xxx'
   }, { status: 410 });
 };

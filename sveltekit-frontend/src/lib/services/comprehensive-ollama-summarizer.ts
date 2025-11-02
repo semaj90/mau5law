@@ -50,9 +50,7 @@ interface ChatResponse {
   confidence?: number;
 }
 
-export interface SummarizerConfig {
-  baseUrl: string;
-  primaryModel: string;
+export interface SummarizerConfig { baseUrl: string;, primaryModel: string;
   embeddingModel: string;
   fallbackModel?: string;
   maxConcurrentRequests: number;
@@ -68,30 +66,22 @@ export interface SummarizerConfig {
   enableMetrics: boolean;
 }
 
-export interface SummarizerStats {
-  services: {
-    langchain: { status: string; models?: string[] };
+export interface SummarizerStats { services: {, langchain: { status: string; models?: string[] };
     cuda: { status: string; gpuMemory?: number };
     gemma3: { status: string; model?: string };
     cluster: { status: string; nodes?: number };
     streaming: { status: string; activeStreams?: number };
   };
-  performance: {
-    requestsProcessed: number;
-    averageLatency: number;
+  performance: { requestsProcessed: number;, averageLatency: number;
     cacheHitRate: number;
     errorRate: number;
   };
-  models: {
-    loaded: string[];
-    available: string[];
+  models: { loaded: string[];, available: string[];
     gpu: boolean;
   };
 }
 
-export interface ComprehensiveSummaryRequest {
-  content: string;
-  type: 'document' | 'case' | 'evidence' | 'legal-brief' | 'contract';
+export interface ComprehensiveSummaryRequest { content: string;, type: 'document' | 'case' | 'evidence' | 'legal-brief' | 'contract';
   context?: {
     caseId?: string;
     userId?: string;
@@ -107,12 +97,8 @@ export interface ComprehensiveSummaryRequest {
   };
 }
 
-export interface ComprehensiveSummaryResponse {
-  summary: string;
-  keyPoints: string[];
-  legalAnalysis?: {
-    risks: string[];
-    opportunities: string[];
+export interface ComprehensiveSummaryResponse { summary: string;, keyPoints: string[];
+  legalAnalysis?: { risks: string[];, opportunities: string[];
     recommendations: string[];
     precedents?: string[];
   };
@@ -121,9 +107,7 @@ export interface ComprehensiveSummaryResponse {
   processingTime: number;
   model: string;
   sources?: Array<any>;
-  metadata: {
-    wordCount: number;
-    complexity: 'low' | 'medium' | 'high';
+  metadata: { wordCount: number;, complexity: 'low' | 'medium' | 'high';
     topKeywords: string[];
     entities: Array<any>;
   };
@@ -172,9 +156,7 @@ class ComprehensiveOllamaSummarizer {
   }
 
   private initializeStats() {
-    this.stats = {
-      services: {
-        langchain: { status: 'initializing', models: [] },
+    this.stats = { services: {, langchain: { status: 'initializing', models: [] },
         cuda: { status: 'initializing' },
         gemma3: { status: 'initializing' },
         cluster: { status: 'initializing', nodes: 0 },
@@ -443,7 +425,7 @@ class ComprehensiveOllamaSummarizer {
       temperature: this.config.defaultTemperature,
       maxTokens: this.config.maxTokens,
       streaming: request.options?.streamResponse ? {
-        onToken: (token: string) => {},
+       , onToken: (token: string) => {},
         onStart: () => {},
         onEnd: () => {}
       } : undefined
@@ -483,7 +465,7 @@ class ComprehensiveOllamaSummarizer {
     };
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(chatRequest)
     });
     if (!response.ok) {
@@ -518,8 +500,7 @@ class ComprehensiveOllamaSummarizer {
           keyPoints: this.extractKeyPoints(partialContent),
           confidence: this.calculatePartialConfidence(partialContent),
           processingTime: Date.now() - startTime,
-          model: chunk?.model || 'streaming'
-        };
+          model: chunk?.model || 'streaming` };
       }
 
       const metadata = this.extractMetadata(request.content);
@@ -562,8 +543,7 @@ class ComprehensiveOllamaSummarizer {
       'case': 'What are the legal precedents and case law relevant to this matter?',
       'evidence': 'How does this evidence support or contradict legal arguments?',
       'legal-brief': 'What legal authorities and precedents support these arguments?',
-      'contract': 'What are the key contractual obligations and potential risks?'
-    };
+      'contract': `What are the key contractual obligations and potential risks?` };
     return queries[type] || queries.document;
   }
 

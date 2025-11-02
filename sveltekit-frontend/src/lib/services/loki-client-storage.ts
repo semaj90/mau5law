@@ -4,9 +4,7 @@ import { browser } from '$app/environment';
 // Define a base interface for documents stored in LokiJS
 export interface LokiDocument {
   $loki?: number; // LokiJS internal ID
-  meta?: {
-    created: number;
-    revision: number;
+  meta?: { created: number;, revision: number;
     updated: number;
     version: number;
   };
@@ -26,17 +24,13 @@ export interface LokiDocument {
 // Corrected imports for LokiJS types
 // import type { Collection, Query, Chain, PersistenceMethod } from 'lokijs'; // Removed this line
 
-export interface SyncOperation {
-  operation: 'insert' | 'update' | 'delete';
-  collection: string;
+export interface SyncOperation { operation: 'insert' | 'update' | 'delete';, collection: string;
   document: LokiDocument | { id?: string | number };
   timestamp: number;
 }
 
 // Define the configuration interface for LokiClientStorage
-export interface LokiStorageConfig {
-  dbName: string;
-  collections: {
+export interface LokiStorageConfig { dbName: string;, collections: {
     [key: string]: {
       indices?: string[];
       unique?: string[];
@@ -148,7 +142,7 @@ export class LokiClientStorage {
       ...document,
       _created: Date.now(),
       _updated: Date.now(),
-      _synced: false,
+      _synced: false
     };
     const result = collection.insert(docWithMeta);
     // Queue for server sync
@@ -226,11 +220,10 @@ export class LokiClientStorage {
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
-          operations: operationsToSend,
-        }),
+         , operations: operationsToSend
+        })
       });
       if (!response.ok) {
         throw new Error(`Sync failed: ${response.status}`);
@@ -298,8 +291,8 @@ export class LokiClientStorage {
     this.syncQueue.push({
       operation,
       collection: collectionName,
-      document: operation === 'delete' ? { id: this.extractDocumentId(document) } : document,
-      timestamp: Date.now(),
+      document: operation === 'delete' ? {, id: this.extractDocumentId(document) } : document,
+      timestamp: Date.now()
     });
     // Auto-sync if queue gets large
     if (this.syncQueue.length >= 10) {
@@ -310,16 +303,16 @@ export class LokiClientStorage {
   // Get statistics about local data
   getStats(): {
     // Specific return type
-    collections: { [key: string]: { document_count: number; unsynced_count: number } };
+    collections: { [key: string]: { document_count: number;, unsynced_count: number } };
     total_documents: number;
     unsynced_operations: number;
     database_size: number;
   } {
     const stats = {
-      collections: {} as { [key: string]: { document_count: number; unsynced_count: number } }, // Corrected object initialization
+      collections: {} as { [key: string]: { document_count: number;, unsynced_count: number } }, // Corrected object initialization
       total_documents: 0,
       unsynced_operations: this.syncQueue.length,
-      database_size: 0,
+      database_size: 0
     };
 
     for (const [name, collection] of this.collections) {
@@ -327,13 +320,13 @@ export class LokiClientStorage {
       const unsyncedCount = collection.find({ _synced: false }).length;
       stats.collections[name] = {
         document_count: count,
-        unsynced_count: unsyncedCount,
+        unsynced_count: unsyncedCount
       };
       stats.total_documents += count;
     }
 
     // Estimate database size
-    // NOTE: This estimation only works for: 'localStorage' persistence method.
+    // NOTE: This estimation only works; for: 'localStorage' persistence method.
     // For other methods like: 'indexedDB', this does not reflect the actual database size.
     if (this.db && browser && localStorage && this.config.persistenceMethod === 'localStorage') {
       const dbData = localStorage.getItem(this.config.dbName);
@@ -347,9 +340,9 @@ export class LokiClientStorage {
     query: string,
     collections?: string[],
     options?: { useFullText?: boolean; limit?: number }
-  ): (LokiDocument & { _collection: string; _relevance: number })[] {
+  ): (LokiDocument & { _collection: string;, _relevance: number })[] {
     const searchCollections = collections || Array.from(this.collections.keys());
-    const results: (LokiDocument & { _collection: string; _relevance: number })[] = [];
+    const results: (LokiDocument & { _collection: string;, _relevance: number })[] = [];
     const useFullText = options?.useFullText ?? false;
     const limit = options?.limit ?? 100;
 
@@ -361,15 +354,14 @@ export class LokiClientStorage {
       if (useFullText && typeof collection.fullTextSearch === 'function') {
         // Use Loki's built-in full-text search if available and indexed
         const ftsResults = collection.fullTextSearch(query);
-        matches = ftsResults.map((r: { doc: LokiDocument }) => r.doc); // Explicitly type: 'r'
-      } else {
+        matches = ftsResults.map((r: {, doc: LokiDocument }) => r.doc); // Explicitly type: `r` } else {
         // Fallback to regex search
         matches = collection.find({
           $or: [
-            { title: { $regex: new RegExp(query, 'i') } },
-            { content: { $regex: new RegExp(query, 'i') } },
-            { description: { $regex: new RegExp(query, 'i') } },
-          ],
+            {, title: {, $regex: new RegExp(query, 'i') } },
+            { content: {, $regex: new RegExp(query, 'i') } },
+            { description: {, $regex: new RegExp(query, 'i') } },
+          ]
         });
       }
 
@@ -377,7 +369,7 @@ export class LokiClientStorage {
         ...matches.map(doc => ({
           ...doc,
           _collection: collectionName,
-          _relevance: this.calculateRelevance(doc, query),
+          _relevance: this.calculateRelevance(doc, query)
         }))
       );
     }
@@ -425,16 +417,12 @@ export class LokiClientStorage {
   // Export data for backup
   exportData(): {
     // Specific return type
-    metadata: {
-      exported_at: string;
-      database_name: string;
+    metadata: { exported_at: string;, database_name: string;
     };
     collections: { [key: string]: LokiDocument[] };
   } {
-    const exportData = {
-      metadata: {
-        exported_at: new Date().toISOString(),
-        database_name: this.config.dbName,
+    const exportData = { metadata: {, exported_at: new Date().toISOString(),
+        database_name: this.config.dbName
       },
       collections: {} as { [key: string]: LokiDocument[] }, // Corrected object initialization
     };
@@ -460,7 +448,7 @@ export class LokiClientStorage {
         collection.insert({
           ...doc,
           _imported: true,
-          _synced: false,
+          _synced: false
         });
       }
     }
@@ -492,18 +480,16 @@ export class LokiClientStorage {
 // Predefined configurations for legal AI platform
 export const legalAIStorageConfig: LokiStorageConfig = {
   dbName: 'legal_ai_client_db',
-  collections: {
-    cases: {
-      indices: ['id', 'title', 'status', 'created_at'],
-      unique: ['id'],
+  collections: { cases: {, indices: ['id', 'title', 'status', 'created_at'],
+      unique: ['id']
     },
     documents: {
       indices: ['id', 'case_id', 'title', 'document_type', 'created_at'],
-      unique: ['id'],
+      unique: ['id']
     },
     evidence: {
       indices: ['id', 'case_id', 'priority', 'type'],
-      unique: ['id'],
+      unique: ['id']
     },
     search_history: {
       indices: ['user_id', 'query', 'timestamp'],
@@ -515,13 +501,13 @@ export const legalAIStorageConfig: LokiStorageConfig = {
     },
     user_preferences: {
       indices: ['user_id'],
-      unique: ['user_id'],
-    },
+      unique: ['user_id']
+    }
   },
   persistenceMethod: 'localStorage',
   autoload: true,
   autosave: true,
-  autosaveInterval: 5000,
+  autosaveInterval: 5000
 };
 
 // Singleton instance for the legal AI platform

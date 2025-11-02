@@ -28,7 +28,7 @@ export const userRatings = pgTable('user_ratings', {
   responseEmbedding: real('response_embedding').array(768), // For pgvector, storing as real[]
   timestamp: timestamp('timestamp', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 export const interactionHistory = pgTable('interaction_history', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -38,7 +38,7 @@ export const interactionHistory = pgTable('interaction_history', {
   details: jsonb('details'),
   timestamp: timestamp('timestamp', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 export const trainingData = pgTable('training_data', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -52,7 +52,7 @@ export const trainingData = pgTable('training_data', {
   difficultyLevel: text('difficulty_level', { enum: ['beginner', 'intermediate', 'expert'] }).notNull(),
   processed: boolean('processed').default(false).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 export const userBehaviorPatterns = pgTable('user_behavior_patterns', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -61,15 +61,13 @@ export const userBehaviorPatterns = pgTable('user_behavior_patterns', {
   preferredFeatures: jsonb('preferred_features').$type<string[]>(),
   responseTimeThreshold: real('response_time_threshold').notNull(),
   qualityExpectations: real('quality_expectations').notNull(),
-  learningProgress: jsonb('learning_progress').$type<{
-    initialAccuracy: number;
-    currentAccuracy: number;
+  learningProgress: jsonb('learning_progress').$type<{ initialAccuracy: number;, currentAccuracy: number;
     improvementRate: number;
     strongAreas: string[];
     weakAreas: string[];
   }>(),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 export const feedbackMetrics = pgTable('feedback_metrics', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -78,7 +76,7 @@ export const feedbackMetrics = pgTable('feedback_metrics', {
   timestamp: timestamp('timestamp', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 // Export types for New* for consistency with the original file
 export type NewUserRating = typeof userRatings.$inferInsert;

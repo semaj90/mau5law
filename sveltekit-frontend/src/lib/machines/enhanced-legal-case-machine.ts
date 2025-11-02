@@ -15,18 +15,14 @@ export type CaseForm = {
 export interface LegalCase extends CaseForm {
   id: string;
 }
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   description: string;
 }
 export type EvidenceInput = Omit<Evidence, 'id'>;
 export interface AIAnalysisResult {
   summary: string;
 }
-export interface EnhancedLegalCaseContext {
-  currentCase: LegalCase | null;
-  evidenceList: Evidence[];
+export interface EnhancedLegalCaseContext { currentCase: LegalCase | null;, evidenceList: Evidence[];
   aiAnalysis: { status: 'idle' | 'processing' | 'completed' | 'failed'; results?: AIAnalysisResult };
   formData: Partial<CaseForm>;
   validationErrors: Record<string, string[]>;
@@ -34,10 +30,10 @@ export interface EnhancedLegalCaseContext {
   error: string | null;
 }
 export type EnhancedLegalCaseEvent =
-  | { type: 'LOAD_CASE'; caseId: string }
-  | { type: 'CREATE_CASE'; data: CaseForm }
-  | { type: 'ADD_EVIDENCE'; caseId: string; evidence: EvidenceInput }
-  | { type: 'START_AI_ANALYSIS'; caseId: string }
+  | { type: 'LOAD_CASE';, caseId: string }
+  | { type: 'CREATE_CASE';, data: CaseForm }
+  | { type: 'ADD_EVIDENCE'; caseId: string;, evidence: EvidenceInput }
+  | { type: 'START_AI_ANALYSIS';, caseId: string }
   | { type: 'RESET' };
 const initialContext: EnhancedLegalCaseContext = {
   currentCase: null,
@@ -46,39 +42,32 @@ const initialContext: EnhancedLegalCaseContext = {
   formData: {},
   validationErrors: {},
   loading: false,
-  error: null,
+  error: null
 };
 export const enhancedLegalCaseMachine = createMachine(
   {
     id: 'enhancedLegalCase',
     initial: 'initializing',
-    types: {} as {
-      context: EnhancedLegalCaseContext;
-      events: EnhancedLegalCaseEvent;
+    types: {} as { context: EnhancedLegalCaseContext;, events: EnhancedLegalCaseEvent;
     },
     context: initialContext,
-    states: {
-      initializing: {
-        entry: assign({ loading: () => true }),
+    states: { initializing: {, entry: assign({, loading: () => true }),
         invoke: {
           src: 'initializeSystem',
           onDone: { target: 'idle', actions: assign({ loading: () => false }) },
           onError: {
             target: 'systemError',
-            actions: assign({ loading: () => false, error: () => 'Initialization failed' }),
-          },
-        },
+            actions: assign({ loading: () => false, error: () => 'Initialization failed' })
+          }
+        }
       },
-      idle: {
-        on: {
-          LOAD_CASE: 'loadingCase',
+      idle: { on: {, LOAD_CASE: 'loadingCase',
           CREATE_CASE: 'creatingCase',
           ADD_EVIDENCE: 'addingEvidence',
-          START_AI_ANALYSIS: 'startingAnalysis',
-        },
+          START_AI_ANALYSIS: 'startingAnalysis'
+        }
       },
-      loadingCase: {
-        entry: assign({ loading: () => true }),
+      loadingCase: { entry: assign({, loading: () => true }),
         invoke: {
           src: 'loadCase',
           onDone: {
@@ -92,17 +81,15 @@ export const enhancedLegalCaseMachine = createMachine(
               evidenceList: (
                 _context,
                 event // Corrected type for event.output
-              ) => event.output.evidence || [],
-            }),
+              ) => event.output.evidence || []
+            })
           },
-          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to load case' }) },
-        },
+          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to load case' }) }
+        }
       },
-      caseLoaded: {
-        on: { RESET: 'idle' },
+      caseLoaded: { on: {, RESET: 'idle' }
       },
-      creatingCase: {
-        entry: assign({ loading: () => true }),
+      creatingCase: { entry: assign({, loading: () => true }),
         invoke: {
           src: 'createCase',
           onDone: {
@@ -110,13 +97,12 @@ export const enhancedLegalCaseMachine = createMachine(
             actions: assign({
               loading: () => false,
               currentCase: (_context, event) => event.output, // event.output is LegalCase
-            }),
+            })
           },
-          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to create case' }) },
-        },
+          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to create case' }) }
+        }
       },
-      addingEvidence: {
-        entry: assign({ loading: () => true }),
+      addingEvidence: { entry: assign({, loading: () => true }),
         invoke: {
           src: 'addEvidence',
           onDone: {
@@ -124,18 +110,16 @@ export const enhancedLegalCaseMachine = createMachine(
             actions: assign({
               loading: () => false,
               evidenceList: (context, event) => [...context.evidenceList, event.output], // event.output is Evidence
-            }),
+            })
           },
           onError: {
             target: 'caseLoaded',
-            actions: assign({ loading: () => false, error: () => 'Failed to add evidence' }),
-          },
-        },
+            actions: assign({ loading: () => false, error: () => 'Failed to add evidence' })
+          }
+        }
       },
-      startingAnalysis: {
-        entry: assign({
-          loading: () => true,
-          aiAnalysis: context => ({ ...context.aiAnalysis, status: 'processing' as const }),
+      startingAnalysis: { entry: assign({, loading: () => true,
+          aiAnalysis: context => ({ ...context.aiAnalysis, status: 'processing' as const })
         }),
         invoke: {
           src: 'startAIAnalysis',
@@ -146,42 +130,39 @@ export const enhancedLegalCaseMachine = createMachine(
               aiAnalysis: (_context, event) => ({
                 // event.output is AIAnalysisResult
                 status: 'completed' as const,
-                results: event.output,
-              }),
-            }),
+                results: event.output
+              })
+            })
           },
           onError: {
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
               aiAnalysis: context => ({ ...context.aiAnalysis, status: 'failed' as const }),
-              error: () => 'AI analysis failed',
-            }),
-          },
-        },
+              error: () => 'AI analysis failed'
+            })
+          }
+        }
       },
-      systemError: {
-        on: { RESET: 'initializing' },
-      },
-    },
+      systemError: { on: {, RESET: 'initializing' }
+      }
+    }
   },
-  {
-    actors: {
-      initializeSystem: fromPromise(async () => ({ status: 'ok' })),
-      loadCase: fromPromise(async ({ input }: { input: { caseId: string } }) => {
+  { actors: {, initializeSystem: fromPromise(async () => ({ status: 'ok' })),
+      loadCase: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
         // Corrected return object syntax
-        return { case: { id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
+        return { case: {, id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
       }),
-      createCase: fromPromise(async ({ input }: { input: { data: CaseForm } }) => {
+      createCase: fromPromise(async ({ input }: { input: {, data: CaseForm } }) => {
         return { id: 'new_case', title: '', ...input.data };
       }),
-      addEvidence: fromPromise(async ({ input }: { input: { caseId: string; evidence: EvidenceInput } }) => {
+      addEvidence: fromPromise(async ({ input }: { input: {, caseId: string; evidence: EvidenceInput } }) => {
         return { id: 'evidence_' + Math.random().toString(36).slice(2), ...input.evidence };
       }),
-      startAIAnalysis: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-        return { summary: 'analysis for: ' + input.caseId };
-      }),
-    },
+      startAIAnalysis: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
+        return { summary: 'analysis, for: ' + input.caseId };
+      })
+    }
   }
 );
 export default enhancedLegalCaseMachine;

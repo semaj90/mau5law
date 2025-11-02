@@ -8,9 +8,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 // Use global Buffer (Node.js >= v18) for compatibility with SvelteKit server environments
 
 /** Typed structure for the Citation record */
-type Citation = {
-  id: string;
-  title: string;
+type Citation = { id: string;, title: string;
   content: string;
   source: string;
   tags: string[];
@@ -71,7 +69,7 @@ export const load: PageServerLoad = async ({ locals }) => {
           isFavorite: !!r.isFavorite,
           notes: r.notes ?? undefined,
           savedAt: savedAtIso,
-          contextData: r.contextData ?? {},
+          contextData: r.contextData ?? {}
         } as Citation;
       });
     } catch (dbErr) {
@@ -100,7 +98,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     return {
       savedCitations: [],
       user: locals.user,
-      error: 'Failed to load saved citations',
+      error: 'Failed to load saved citations'
     };
   }
 };
@@ -111,10 +109,10 @@ async function fetchCitationsFromMinIO(userId: string): Promise<Citation[]> {
     endpoint: CONFIG.MINIO_URL,
     region: CONFIG.MINIO_REGION ?? 'us-east-1',
     credentials: {
-      accessKeyId: CONFIG.MINIO_ACCESS_KEY,
-      secretAccessKey: CONFIG.MINIO_SECRET_KEY,
+     , accessKeyId: CONFIG.MINIO_ACCESS_KEY,
+      secretAccessKey: CONFIG.MINIO_SECRET_KEY
     },
-    forcePathStyle: true,
+    forcePathStyle: true
   });
 
   const key = `citations/${userId}.json`;
@@ -136,7 +134,7 @@ async function fetchCitationsFromMinIO(userId: string): Promise<Citation[]> {
     const parsed = JSON.parse(text) as Citation[];
     return parsed;
   } catch (err) {
-    console.warn(`⚠️ No MinIO citations for user ${userId}:`, err);
+    console.warn(`⚠️ No MinIO citations for user ${userId}: ', err);
     return [];
   }
 }
@@ -186,7 +184,7 @@ function mockCitations(): Citation[] {
       isFavorite: true,
       notes: 'Key precedent for evidence admissibility',
       savedAt: new Date('2024-01-15').toISOString(),
-      contextData: { reportId: 'report-123', caseId: 'case-456' },
+      contextData: { reportId: 'report-123', caseId: 'case-456' }
     },
   ];
 }

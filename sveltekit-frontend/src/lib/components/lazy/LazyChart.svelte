@@ -25,8 +25,8 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
   // Dynamic import for chart library
-  let chartComponent: any = $state(null);
-  let loadError: Error | null = $state(null);
+  let chartComponent: any = null;
+  let loadError: Error | null = null;
   // Load chart component when visible
   async function loadChartComponent(): Promise<any> {
     try {

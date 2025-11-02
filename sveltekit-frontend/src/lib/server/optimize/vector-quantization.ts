@@ -6,21 +6,15 @@
  *
  * Used for: Qdrant, pgvector, FAISS GPU storage
  */
-export interface QuantizationConfig {
-  dimensions: number;
-  method: 'minmax' | 'standard' | 'robust';
+export interface QuantizationConfig { dimensions: number;, method: 'minmax' | 'standard' | 'robust';
   preserveRange?: boolean;
 }
-export interface QuantizedVector {
-  quantized: Int8Array;
-  scale: number;
+export interface QuantizedVector { quantized: Int8Array;, scale: number;
   offset: number;
   dimensions: number;
   method: string;
 }
-export interface QuantizationMetrics {
-  originalSize: number;
-  quantizedSize: number;
+export interface QuantizationMetrics { originalSize: number;, quantizedSize: number;
   compressionRatio: number;
   memoryReduction: string;
   quantizationTime: number;
@@ -37,13 +31,13 @@ export class VectorQuantizer {
     compressionRatio: 0,
     memoryReduction: '0%',
     quantizationTime: 0,
-    dequantizationTime: 0,
+    dequantizationTime: 0
   };
   constructor(config: Partial<QuantizationConfig> = {}) {
     this.config = {
       dimensions: config.dimensions || 768, // Gemma embedding size
       method: config.method || 'minmax',
-      preserveRange: config.preserveRange ?? true,
+      preserveRange: config.preserveRange ?? true
     };
   }
   /**
@@ -74,7 +68,7 @@ export class VectorQuantizer {
         ({ scale, offset } = this.quantizeRobust(vec, quantized));
         break;
       default:
-        throw new Error(`Unknown quantization method: ${this.config.method}`);
+        throw new Error(`Unknown quantization; method: ${this.config.method}`);
     }
     // Update metrics
     const quantizationTime = performance.now() - startTime;
@@ -88,14 +82,14 @@ export class VectorQuantizer {
       scale,
       offset,
       dimensions: vec.length,
-      method: this.config.method,
+      method: this.config.method
     };
   }
   /**
    * Min-Max quantization: Maps [min, max] → [-127, 127]
    * Best for: Embeddings with known range
    */
-  private quantizeMinMax(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeMinMax(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     let min = Infinity;
     let max = -Infinity;
     // Find min/max
@@ -117,7 +111,7 @@ export class VectorQuantizer {
    * Standard quantization: Uses mean and stddev
    * Best for: Normal distributed embeddings
    */
-  private quantizeStandard(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeStandard(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     // Calculate mean
     let sum = 0;
     for (let i = 0; i < vec.length; i++) {
@@ -144,7 +138,7 @@ export class VectorQuantizer {
    * Robust quantization: Uses median and IQR (outlier-resistant)
    * Best for: Embeddings with outliers
    */
-  private quantizeRobust(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeRobust(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     // Sort for percentile calculation
     const sorted = Array.from(vec).sort((a, b) => a - b);
     const len = sorted.length;
@@ -205,7 +199,7 @@ export class BatchVectorQuantizer {
     totalOriginalSize: 0,
     totalQuantizedSize: 0,
     averageQuantizationTime: 0,
-    averageMSE: 0,
+    averageMSE: 0
   };
   constructor(config?: Partial<QuantizationConfig>) {
     this.quantizer = new VectorQuantizer(config);
@@ -240,8 +234,7 @@ export class BatchVectorQuantizer {
     return {
       ...this.batchMetrics,
       compressionRatio: this.batchMetrics.totalOriginalSize / this.batchMetrics.totalQuantizedSize,
-      memoryReduction: `${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%`,
-    };
+      memoryReduction: `${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%` };
   }
 }
 /**
@@ -255,7 +248,7 @@ export function quantizedToBase64(quantized: QuantizedVector): string {
     scale: quantized.scale,
     offset: quantized.offset,
     dimensions: quantized.dimensions,
-    method: quantized.method,
+    method: quantized.method
   });
   // Encode: metadata length (4 bytes) + metadata + quantized data
   const metadataBytes = new TextEncoder().encode(metadata);
@@ -292,7 +285,7 @@ export function base64ToQuantized(base64: string): QuantizedVector {
     scale: metadata.scale,
     offset: metadata.offset,
     dimensions: metadata.dimensions,
-    method: metadata.method,
+    method: metadata.method
   };
 }
 /**
@@ -303,7 +296,7 @@ export function quantizedToBytea(quantized: QuantizedVector): Buffer {
     scale: quantized.scale,
     offset: quantized.offset,
     dimensions: quantized.dimensions,
-    method: quantized.method,
+    method: quantized.method
   });
   const metadataBytes = Buffer.from(metadata, 'utf-8');
   const metadataLength = Buffer.alloc(4);
@@ -326,7 +319,7 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
     scale: metadata.scale,
     offset: metadata.offset,
     dimensions: metadata.dimensions,
-    method: metadata.method,
+    method: metadata.method
   };
 }
 /**
@@ -335,7 +328,7 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
 export const INTEGRATION_EXAMPLE = `
 // 1. QUANTIZE EMBEDDING FOR STORAGE
 import { VectorQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
-const quantizer = new VectorQuantizer({ dimensions: 768, method: 'minmax' });
+const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax` });
 const embedding = new Float32Array([0.123, -0.456, 0.789, ...]); // From Gemma
 const quantized = quantizer.quantize(embedding);
 const base64 = quantizedToBase64(quantized);
@@ -343,7 +336,7 @@ const base64 = quantizedToBase64(quantized);
 await db.insert(documents).values({
   id: docId,
   embedding_quantized: base64,  // 768 bytes instead of 3KB
-  embedding_original: embedding  // Optional: keep for accuracy comparison
+  embedding_original: embedding  //; Optional: keep for accuracy comparison
 });
 // 2. SEARCH WITH QUANTIZED VECTORS
 import { base64ToQuantized } from '$lib/server/optimize/vector-quantization';
@@ -367,5 +360,4 @@ console.log(\`Average MSE: \${metrics.averageMSE.toFixed(6)}\`);
 // Export singleton instance for common use
 export const defaultQuantizer = new VectorQuantizer({
   dimensions: 768,
-  method: 'minmax',
-});
+  method: `minmax` });

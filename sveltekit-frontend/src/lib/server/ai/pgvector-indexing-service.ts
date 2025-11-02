@@ -30,9 +30,7 @@ export interface VectorIndexConfig {
 /**
  * Vector Document for Indexing
  */
-export interface VectorDocument {
-  id: string;
-  content: string;
+export interface VectorDocument { id: string;, content: string;
   embedding: number[];
   documentId: string;
   chunkId?: string;
@@ -53,9 +51,7 @@ export interface VectorDocument {
 /**
  * Vector Search Result
  */
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   documentId: string;
   chunkId?: string;
   similarity: number;
@@ -67,9 +63,7 @@ export interface VectorSearchResult {
 /**
  * Batch Upsert Result
  */
-export interface BatchUpsertResult {
-  inserted: number;
-  updated: number;
+export interface BatchUpsertResult { inserted: number;, updated: number;
   deleted: number;
   totalProcessingTime: number;
 }
@@ -120,7 +114,7 @@ export class PgVectorIndexingService {
           ${doc.documentId},
           ${doc.metadata?.documentType || null},
           ${doc.metadata?.confidentialityLevel || 'public'},
-          ${doc.modelUsed || 'embeddinggemma:latest'},
+          ${doc.modelUsed || 'embeddinggemma:latest` },
           ${this.dimensions},
           NOW(),
           NOW()
@@ -149,7 +143,7 @@ export class PgVectorIndexingService {
           ${doc.documentId},
           ${doc.chunkId || doc.id},
           ${doc.embeddingType},
-          ${doc.modelUsed || 'embeddinggemma:latest'},
+          ${doc.modelUsed || 'embeddinggemma:latest` },
           ${JSON.stringify(doc.metadata || {})},
           NOW()
         )
@@ -336,7 +330,7 @@ export class PgVectorIndexingService {
             ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
             ${keywordWeight} * (
               CASE
-                WHEN e.content ILIKE: '%${keyword ? this.escape(keyword) : ''}%'
+                WHEN e.content ILIKE: '%${keyword ? this.escape(keyword) : `` }%'
                 THEN 1.0
                 ELSE 0.0
               END
@@ -388,9 +382,7 @@ export class PgVectorIndexingService {
   /**
    * Get document statistics
    */
-  async getStats(): Promise<{
-    totalDocuments: number;
-    totalChunks: number;
+  async getStats(): Promise<{ totalDocuments: number;, totalChunks: number;
     totalEmbeddings: number;
     averageEmbeddingDimension: number;
     indexSize?: string;
@@ -403,9 +395,7 @@ export class PgVectorIndexingService {
           (SELECT COUNT(*) FROM embeddings) as total_embeddings,
           (SELECT AVG(embedding_dimension) FROM document_chunks) as avg_dimension
       `));
-      const row = (stats as unknown[])[0] as {
-        total_documents: number;
-        total_chunks: number;
+      const row = (stats as unknown[])[0] as { total_documents: number;, total_chunks: number;
         total_embeddings: number;
         avg_dimension: number;
       };

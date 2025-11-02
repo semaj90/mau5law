@@ -46,7 +46,7 @@
   }
   // State management using Svelte 5 runes
   let editorElement: HTMLDivElement;
-  let suggestionPopup: HTMLDivElement | undefined = $state(undefined); // Declared with $state
+  let suggestionPopup: HTMLDivElement | undefined = undefined; // Declared with $state
   let isShowingSuggestions = $state<boolean>(false);
   let currentSuggestions = $state<AISuggestion[]>([]);
   let selectedSuggestionIndex = $state(-1);

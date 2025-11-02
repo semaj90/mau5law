@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       return json(
         {
           success: false,
-          error: 'Prompt is required and must be a string',
+          error: 'Prompt is required and must be a string'
         },
         { status: 400 }
       );
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Store the query in PostgreSQL (use raw SQL to avoid depending on schema exports)
     const insertedQuery = await db.execute(sql`
       INSERT INTO legal_queries (prompt, context, timestamp, status, user_ip)
-      VALUES (${prompt}, ${context || null}, ${new Date()}, 'processing', ${request.headers.get('x-forwarded-for') || 'unknown'})
+      VALUES (${prompt}, ${context || null}, ${new Date()}, 'processing', ${request.headers.get('x-forwarded-for') || 'unknown` })
       RETURNING *
     `);
     const query = Array.isArray(insertedQuery) && insertedQuery.length > 0 ? insertedQuery[0] : insertedQuery;
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         prompt,
         context: enhanced_context,
         max_tokens,
-        temperature,
+        temperature
       });
       const inference_time = Date.now() - inference_start;
       // Update the query with results
@@ -95,15 +95,15 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       return json({
         success: true,
         result: {
-          query_id: (query as Record<string, unknown>).id,
+         , query_id: (query as Record<string, unknown>).id,
           response: result.text,
           model_used: result.model_used,
           tokens: result.tokens,
           inference_time: result.inference_time,
           total_time: inference_time,
           similar_documents_found: Array.isArray(similar_documents) ? similar_documents.length : 0,
-          enhanced_with_context: enhanced_context.length > (context?.length || 0),
-        },
+          enhanced_with_context: enhanced_context.length > (context?.length || 0)
+        }
       });
     } catch (inference_error) {
       console.error('Inference error:', inference_error);
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         {
           success: false,
           error: 'Legal AI inference failed',
-          query_id: (query as Record<string, unknown>).id,
+          query_id: (query as Record<string, unknown>).id
         },
         { status: 500 }
       );
@@ -128,8 +128,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     return json(
       {
         success: false,
-        error: 'Internal server error',
-      },
+        error: `Internal server error` },
       { status: 500 }
     );
   }
@@ -149,7 +148,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       OFFSET ${offset}
     `);
     const totalCountRaw = await db.execute(
-      sql`SELECT count(*)::bigint as total FROM legal_queries ${status ? sql`WHERE status = ${status}` : sql``}`
+      sql`SELECT count(*)::bigint as total FROM legal_queries ${status ? sql`WHERE status = ${status}` : sql`` }`
     );
     const total = Number(
       Array.isArray(totalCountRaw) && totalCountRaw[0] ? ((totalCountRaw[0] as Record<string, unknown>).total ?? 0) : 0
@@ -160,15 +159,15 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       pagination: {
         limit,
         offset,
-        total,
-      },
+        total
+      }
     });
   } catch (error) {
     console.error('Failed to fetch queries:', error);
     return json(
       {
         success: false,
-        error: 'Failed to fetch queries',
+        error: 'Failed to fetch queries'
       },
       { status: 500 }
     );
@@ -197,8 +196,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!query_text) {
       return json({
         success: false,
-        error: 'Query text is required'
-      }, { status: 400 })
+        error: `Query text is required` }, { status: 400 })
     }
     // Generate embedding for search query
     const query_embedding = await generateEmbedding(query_text)
@@ -215,18 +213,17 @@ export const PUT: RequestHandler = async ({ request }) => {
       WHERE embedding IS NOT NULL
       ORDER BY embedding <-> ${query_embedding}
       LIMIT ${limit}
-    `)
+    ')
     return json({
       success: true,
       query: query_text,
       results: similar_documents,
-      count: similar_documents.length,
+      count: similar_documents.length
     })
   } catch (error) {
     console.error('Vector search error:', error)
     return json({
       success: false,
-      error: 'Vector search failed'
-    }, { status: 500 })
+      error: `Vector search failed` }, { status: 500 })
   }
 }

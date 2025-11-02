@@ -33,17 +33,17 @@ export const GET: RequestHandler = async ({ url }) => {
           health = {
             fallback: true,
             schemaValid,
-            message: 'checkDatabaseHealth not available; returned minimal fallback',
+            message: 'checkDatabaseHealth not available; returned minimal fallback'
           };
         }
         return json({
           success: true,
           health,
           metadata: {
-            processingTime: Date.now() - startTime,
+           , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            endpoint: '/api/v1/health/database',
-          },
+            endpoint: '/api/v1/health/database'
+          }
         });
       }
       case 'metrics': {
@@ -54,16 +54,15 @@ export const GET: RequestHandler = async ({ url }) => {
         } else {
           metrics = {
             fallback: true,
-            note: 'getDatabaseMetrics not available',
-          };
+            note: 'getDatabaseMetrics not available` };
         }
         return json({
           success: true,
           data: metrics,
           metadata: {
-            processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+           , processingTime: Date.now() - startTime,
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'validate': {
@@ -74,11 +73,11 @@ export const GET: RequestHandler = async ({ url }) => {
             success: true,
             data: {
               schemaValid: isValid.valid,
-              missingTables: isValid.missingTables,
+              missingTables: isValid.missingTables
             },
             metadata: {
-              processingTime: Date.now() - startTime,
-            },
+             , processingTime: Date.now() - startTime
+            }
           });
         } else {
           // fallback to validateDatabaseOnStartup which returns boolean
@@ -88,11 +87,11 @@ export const GET: RequestHandler = async ({ url }) => {
             data: {
               schemaValid: valid,
               missingTables: null,
-              fallback: true,
+              fallback: true
             },
             metadata: {
-              processingTime: Date.now() - startTime,
-            },
+             , processingTime: Date.now() - startTime
+            }
           });
         }
       }
@@ -106,18 +105,16 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             vectorOperationsWorking: vectorTest,
-            pgvectorEnabled,
+            pgvectorEnabled
           },
           metadata: {
-            processingTime: Date.now() - startTime,
-          },
+           , processingTime: Date.now() - startTime
+          }
         });
       }
       default: return error(
           400,
-          ensureError({
-            message: `Invalid action: ${action}. Available: health, metrics, validate, vector`,
-          })
+          ensureError({ message: `Invalid, action: ${action}., Available: health, metrics, validate, vector' })
         );
     }
   } catch (err: any) {
@@ -128,9 +125,9 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: normalized.message || 'Database health check failed',
         metadata: {
-          processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString(),
-        },
+         , processingTime: Date.now() - startTime,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -155,8 +152,8 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Health check cache cleared',
           metadata: {
-            processingTime: Date.now() - startTime,
-          },
+           , processingTime: Date.now() - startTime
+          }
         });
       case 'force_check': {
         // Guarded call: checkHealth might not exist; fall back to validateDatabaseOnStartup
@@ -169,23 +166,20 @@ export const POST: RequestHandler = async ({ request }) => {
           health = {
             fallback: true,
             schemaValid: valid,
-            message: 'checkHealth not available; returned minimal fallback result',
-          };
+            message: 'checkHealth not available; returned minimal fallback result` };
         }
         return json({
           success: true,
           data: health,
           metadata: {
-            processingTime: Date.now() - startTime,
-            cached: false,
-          },
+           , processingTime: Date.now() - startTime,
+            cached: false
+          }
         });
       }
       default: return error(
           400,
-          ensureError({
-            message: `Invalid action: ${action}. Available: clear_cache, force_check`,
-          })
+          ensureError({ message: `Invalid, action: ${action}., Available: clear_cache, force_check` })
         );
     }
   } catch (err: any) {
@@ -196,8 +190,8 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: normalized.message || 'Database health check failed',
         metadata: {
-          processingTime: Date.now() - startTime,
-        },
+         , processingTime: Date.now() - startTime
+        }
       },
       { status: 500 }
     );

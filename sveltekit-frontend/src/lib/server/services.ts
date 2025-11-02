@@ -123,9 +123,7 @@ export async function searchSimilarDocuments(query: string, limit: number = 10):
 /**
  * Helper: Store document with embedding in both Qdrant and PostgreSQL
  */
-export async function indexDocument(doc: {
-	id: string;
-	content: string;
+export async function indexDocument(doc: {, id: string;, content: string;
 	title?: string;
 	metadata?: Record<string, unknown>;
 }): Promise<any> {
@@ -139,7 +137,7 @@ export async function indexDocument(doc: {
 				id: doc.id,
 				vector: embedding,
 				payload: {
-					title: doc.title,
+				, title: doc.title,
 					...doc.metadata
 				}
 			}
@@ -154,7 +152,7 @@ export async function indexDocument(doc: {
 			id: doc.id,
 			vector: embedding,
 			metadata: {
-				title: doc.title,
+			, title: doc.title,
 				content: doc.content.substring(0, 1000),
 				...doc.metadata
 			}
@@ -166,7 +164,7 @@ export async function indexDocument(doc: {
  * Helper: Generate chat response with Ollama
  */
 export async function generateChatResponse(
-	messages: Array<{ role: string; content: string }>,
+	messages: Array<{, role: string; content: string }>,
 	stream: boolean = false
 ): Promise<any> {
 	return await ollama.chat?.(messages, {
@@ -192,8 +190,7 @@ export async function uploadFile(
 
 	// Upload file
 	return await minio.putObject(bucket, key, data, {
-		'Content-Type': contentType || 'application/octet-stream'
-	});
+		'Content-Type': contentType || 'application/octet-stream' });
 }
 
 /**

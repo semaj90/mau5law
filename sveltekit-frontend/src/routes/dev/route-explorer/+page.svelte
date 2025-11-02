@@ -46,7 +46,7 @@
       recommendations: string[];
     }
   }
-  let routeData: RouteData | null = $state(null);
+  let routeData: RouteData | null = null;
   let loading = $state<boolean>(true);
   let error = $state<string | null>(null);
   // Filter state

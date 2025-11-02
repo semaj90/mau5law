@@ -1,16 +1,14 @@
 <script lang="ts">
-import type { Message } from '$lib/types';
-import type { Case } from '$lib/types';
 	// Svelte 5 runes are auto-imported
 	import type { Evidence } from '$lib/types/api';
 	// onMount not used — remove to avoid unused import
 	import { page } from '$app/stores'; // correct store import for SvelteKit page
- 	import ReportEditor from "$lib/components/ReportEditor.svelte";
- 	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
-	import AIChatAssistant from "$lib/components/AIChatAssistant.svelte";
- 	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
-	let currentReport: Report | null = $state(null);
-	let currentCanvasState: CanvasState | null = $state(null);
+	import ReportEditor from '$lib/components/ReportEditor.svelte';
+	import CanvasEditor from '$lib/components/CanvasEditor.svelte';
+	import AIChatAssistant from '$lib/components/AIChatAssistant.svelte';
+	import type { Report, CanvasState, CitationPoint } from '$lib/data/types';
+	let currentReport = $state<Report | null>(null);
+	let currentCanvasState = $state<CanvasState | null>(null);
 	let evidence: Evidence[] = $state([]);
 	let citationPoints: CitationPoint[] = $state([]);
 	let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state('editor');
@@ -18,6 +16,12 @@ import type { Case } from '$lib/types';
 	let error = $state<string>('');
 	// Demo case ID - default, will be overridden from route params if present
 	let caseId = $state<string>('demo-case-123');
+
+	const components = {
+		editor: ReportEditor,
+		canvas: CanvasEditor,
+		'ai-chat': AIChatAssistant
+	};
 
 	// AI Chat context - built from current case data
 	let aiChatContext = $derived(() => {
@@ -220,21 +224,23 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
     <main class="space-y-4">
       {#if activeTab === 'editor'}
         <!-- Report Editor Tab -->
+        {@const Component = components['editor']}
         <div class="space-y-4">
           <div class="space-y-4">
             <h2>Prosecutor's Report</h2>
             <p>Write, edit, and analyze case reports with AI assistance</p>
           </div>
-          <ReportEditor report={currentReport} {caseId} save={handleReportSave} autoSaveEnabled={true} />
+          <Component report={currentReport} {caseId} save={handleReportSave} autoSaveEnabled={true} />
         </div>
       {:else if activeTab === 'canvas'}
         <!-- Canvas Editor Tab -->
+        {@const Component = components['canvas']}
         <div class="space-y-4">
           <div class="space-y-4">
             <h2>Interactive Evidence Canvas</h2>
             <p>Visualize evidence, create diagrams, and annotate with AI insights</p>
           </div>
-          <CanvasEditor
+          <Component
             canvasState={currentCanvasState}
             reportId={currentReport?.id || 'temp-report-id'}
             {evidence}
@@ -244,6 +250,7 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
         </div>
       {:else if activeTab === 'ai-chat'}
         <!-- AI Chat Assistant Tab -->
+        {@const Component = components['ai-chat']}
         <div class="space-y-4">
           <div class="space-y-4">
             <h2>AI Legal Assistant</h2>
@@ -257,7 +264,7 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
               </ul>
             </div>
           </div>
-          <AIChatAssistant {caseId} initialContext={aiChatContext} />
+          <Component {caseId} initialContext={aiChatContext} />
         </div>
       {/if}
     </main>

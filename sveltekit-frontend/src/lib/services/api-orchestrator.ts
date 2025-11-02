@@ -38,11 +38,9 @@ enum ServiceTier {
   ULTRA_FAST = 'ultra_fast',
   HIGH_PERF = 'high_perf',
   REALTIME = 'realtime',
-  STANDARD = 'standard',
+  STANDARD = 'standard'
 }
-export interface ProtocolEndpoint {
-  protocol: ServiceTier;
-  host: string;
+export interface ProtocolEndpoint { protocol: ServiceTier;, host: string;
   port: number;
   path: string;
   timeout: number;
@@ -95,8 +93,8 @@ export interface MultiProtocolRequestOptions {
 export class APIOrchestrator {
   private static instance: APIOrchestrator;
   private serviceEndpoints: ServiceEndpoints;
-  private healthCache: Map<string, { result: HealthCheckResult; timestamp: number }> = new Map();
-  private requestMetrics: Map<string, { count: number; totalTime: number; errors: number }> = new Map();
+  private healthCache: Map<string, { result: HealthCheckResult;, timestamp: number }> = new Map();
+  private requestMetrics: Map<string, { count: number; totalTime: number;, errors: number }> = new Map();
 
   // NEW: simple per-service circuit breaker state
   private circuitBreakers: Map<
@@ -107,7 +105,7 @@ export class APIOrchestrator {
   // NEW: in-memory response cache (simple, process-local)
   private responseCache: Map<
     string,
-    { data: any; headers: Record<string, string>; status: number; expires: number }
+    { data: any;, headers: Record<string, string>; status: number; expires: number }
   > = new Map();
 
   private constructor() {
@@ -135,102 +133,102 @@ export class APIOrchestrator {
         websocket: 'ws://localhost:8094/ws',
         health: '/health',
         tier: ServiceTier.ULTRA_FAST,
-        status: 'active',
+        status: 'active'
       },
       uploadService: {
         http: 'http://localhost:8093',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       documentProcessor: {
         http: 'http://localhost:8081',
         health: '/api/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       grpcServer: {
         http: 'http://localhost:50051',
         grpc: 'localhost:50051',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       // AI Enhancement Services (Tier 2) - Advanced Features
       advancedCUDA: {
         http: 'http://localhost:8095',
         health: '/health',
         tier: ServiceTier.ULTRA_FAST,
-        status: 'experimental',
+        status: 'experimental'
       },
       dimensionalCache: {
         http: 'http://localhost:8097',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'experimental',
+        status: 'experimental'
       },
       xstateManager: {
         http: 'http://localhost:8212',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       moduleManager: {
         http: 'http://localhost:8099',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'experimental',
+        status: 'experimental'
       },
       recommendationEngine: {
         http: 'http://localhost:8100',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'experimental',
+        status: 'experimental'
       },
       // Specialized AI Services
       enhancedSemanticArchitecture: {
         http: 'http://localhost:8201',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       enhancedLegalAI: {
         http: 'http://localhost:8202',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       enhancedMulticore: {
         http: 'http://localhost:8206',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       liveAgentEnhanced: {
         http: 'http://localhost:8200',
         websocket: 'ws://localhost:8200/ws',
         health: '/health',
         tier: ServiceTier.REALTIME,
-        status: 'active',
+        status: 'active'
       },
       // File & Document Services
       ginUpload: {
         http: 'http://localhost:8207',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       summarizerService: {
         http: 'http://localhost:8209',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       aiSummary: {
         http: 'http://localhost:8211',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       // Multi-Core Ollama Cluster
       ollama: {
@@ -239,7 +237,7 @@ export class APIOrchestrator {
         embeddings: ollama.embeddings,
         health: '/api/tags',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       // Database Services
       postgresql: {
@@ -247,25 +245,25 @@ export class APIOrchestrator {
         port: 5432,
         database: 'legal_ai_db',
         health: '/health',
-        status: 'active',
+        status: 'active'
       },
       redis: {
         host: 'localhost',
         port: 6379,
         health: '/health',
-        status: 'active',
+        status: 'active'
       },
       qdrant: {
         http: 'http://localhost:6333',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       neo4j: {
         http: 'http://localhost:7474',
         health: '/db/data/',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       // Messaging & Communication
       nats: {
@@ -273,59 +271,59 @@ export class APIOrchestrator {
         websocket: 'ws://localhost:4226',
         monitor: 'http://localhost:8225',
         health: '/healthz',
-        status: 'active',
+        status: 'active'
       },
       // Infrastructure & Monitoring Services
       clusterManager: {
         http: 'http://localhost:8213',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       loadBalancer: {
         http: 'http://localhost:8224',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       gpuIndexerService: {
         http: 'http://localhost:8220',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
-        status: 'active',
+        status: 'active'
       },
       contextErrorPipeline: {
         http: 'http://localhost:8219',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       simdHealth: {
         http: 'http://localhost:8217',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       // Development & Testing
       simpleServer: {
         http: 'http://localhost:8225',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       testServer: {
         http: 'http://localhost:8226',
         health: '/health',
         tier: ServiceTier.STANDARD,
-        status: 'active',
+        status: 'active'
       },
       // Frontend
       sveltekit: {
         http: 'http://localhost:5173',
         dev: 'http://localhost:5174',
         health: '/health',
-        status: 'active',
-      },
+        status: 'active'
+      }
     };
   }
 
@@ -356,8 +354,8 @@ export class APIOrchestrator {
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'SvelteKit-Legal-AI-Orchestrator/2.0',
-        ...(options.headers ?? {}),
-      },
+        ...(options.headers ?? {})
+      }
     };
 
     const timeout = options.timeout ?? this.getTimeoutForTier(serviceConfig);
@@ -389,7 +387,7 @@ export class APIOrchestrator {
             return fallbackResponse;
           }
         } catch (fallbackError) {
-          console.error(`Fallback failed for ${String(service)}:`, fallbackError);
+          console.error(`Fallback failed for ${String(service)}: ', fallbackError);
         }
       }
       this.recordMetrics(String(service), Date.now() - startTime, true);
@@ -414,7 +412,7 @@ export class APIOrchestrator {
         healthResults[serviceName] = {
           status: 'error',
           error: String(err),
-          lastCheck: new Date().toISOString(),
+          lastCheck: new Date().toISOString()
         };
       }
     });
@@ -456,7 +454,7 @@ export class APIOrchestrator {
 
       const response = await fetch(healthUrl, {
         method: 'GET',
-        signal: this.getAbortSignal(5000),
+        signal: this.getAbortSignal(5000)
       });
       const responseTime = Date.now() - startTime;
       result = {
@@ -464,13 +462,13 @@ export class APIOrchestrator {
         responseTime,
         endpoint: healthUrl,
         lastCheck: new Date().toISOString(),
-        metadata: response.ok ? await this.extractHealthMetadata(response) : undefined,
+        metadata: response.ok ? await this.extractHealthMetadata(response) : undefined
       };
     } catch (error: any) {
       result = {
         status: 'error',
         error: String(error),
-        lastCheck: new Date().toISOString(),
+        lastCheck: new Date().toISOString()
       };
     }
 
@@ -553,7 +551,7 @@ export class APIOrchestrator {
       case ServiceTier.REALTIME:
         return 5000;
       case ServiceTier.STANDARD:
-      default: return 10_000;
+     ; default: return 10_000;
     }
   }
 
@@ -565,7 +563,7 @@ export class APIOrchestrator {
     this.requestMetrics.set(service, {
       count: existing.count + 1,
       totalTime: existing.totalTime + responseTime,
-      errors: existing.errors + (hasError ? 1 : 0),
+      errors: existing.errors + (hasError ? 1 : 0)
     });
   }
 
@@ -579,7 +577,7 @@ export class APIOrchestrator {
         requestCount: stats.count,
         averageResponseTime: stats.count > 0 ? Math.round(stats.totalTime / stats.count) : 0,
         errorRate: stats.count > 0 ? Math.round((stats.errors / stats.count) * 100) : 0,
-        successRate: stats.count > 0 ? Math.round(((stats.count - stats.errors) / stats.count) * 100) : 0,
+        successRate: stats.count > 0 ? Math.round(((stats.count - stats.errors) / stats.count) * 100) : 0
       };
     }
     return metrics;
@@ -595,11 +593,11 @@ export class APIOrchestrator {
   /**
    * Get all services with their configurations
    */
-  getAllServices(): Array<{ name: string; config: ServiceEndpoint; protocols: string[] }> {
+  getAllServices(): Array<{ name: string; config: ServiceEndpoint;, protocols: string[] }> {
     return Object.entries(this.serviceEndpoints).map(([name, config]) => ({
       name,
       config,
-      protocols: this.getAvailableProtocols(config),
+      protocols: this.getAvailableProtocols(config)
     }));
   }
 
@@ -700,7 +698,7 @@ export class APIOrchestrator {
 
 // Exported helper: derive Ollama endpoints from env or defaults.
 // Use this helper from other modules instead of hardcoding Ollama URLs.
-export function getOllamaEndpoint(): { primary: string; secondary: string; embeddings: string } {
+export function getOllamaEndpoint(): { primary: string; secondary: string;, embeddings: string } {
 	// Prefer explicit env vars, then docker-specific vars, then local defaults.
 	const primary =
 		(process.env.OLLAMA_URL as string | undefined) ??

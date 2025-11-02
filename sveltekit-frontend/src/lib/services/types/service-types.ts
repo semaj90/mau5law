@@ -25,26 +25,18 @@ export interface AITask {
   model?: string;
   prompt?: string;
 }
-export interface AIResponse<T = unknown> {
-  id: string;
-  taskId: string;
+export interface AIResponse<T = unknown> { id: string;, taskId: string;
   success: boolean;
   data?: T;
-  error?: {
-    code: string;
-    message: string;
+  error?: { code: string;, message: string;
     details?: Record<string, unknown>;
   }
-  metadata?: {
-    processingTime: number;
-    model: string;
+  metadata?: { processingTime: number;, model: string;
     confidence?: number;
   }
   timestamp: number;
 }
-export interface WorkerMessage {
-  type: 'task' | 'result' | 'error' | 'status' | 'TASK_STARTED' | 'TASK_COMPLETED' | 'TASK_ERROR' | 'TASK_CANCELLED' | 'STATUS_UPDATE' | 'PROCESS_AI_TASK' | 'UPDATE_PROVIDER_CONFIG' | 'CANCEL_TASK' | 'GET_STATUS';
-  payload: AITask | AIResponse | WorkerStatus;
+export interface WorkerMessage { type: 'task' | 'result' | 'error' | 'status' | 'TASK_STARTED' | 'TASK_COMPLETED' | 'TASK_ERROR' | 'TASK_CANCELLED' | 'STATUS_UPDATE' | 'PROCESS_AI_TASK' | 'UPDATE_PROVIDER_CONFIG' | 'CANCEL_TASK' | 'GET_STATUS';, payload: AITask | AIResponse | WorkerStatus;
   timestamp: number;
   taskId?: string;
 }
@@ -53,9 +45,7 @@ export interface WorkerStatus {
   id?: string;
   status?: 'idle' | 'busy' | 'error' | 'terminated';
   currentTask?: string;
-  performance?: {
-    tasksCompleted: number;
-  averageProcessingTime: number;
+  performance?: { tasksCompleted: number;, averageProcessingTime: number;
   errorRate: number;
   }
   lastActivity?: number;
@@ -68,9 +58,7 @@ export interface WorkerStatus {
   errors?: number;
 }
 // Vector Search Types
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata: Record<string, unknown>;
   source: 'cache' | 'pgvector' | 'qdrant';
@@ -84,30 +72,22 @@ export interface VectorSearchOptions {
   filter?: Record<string, unknown>;
 }
 // Enhanced RAG Types
-export interface RAGContext {
-  query: string;
-  userId: string;
+export interface RAGContext { query: string;, userId: string;
   caseId?: string;
   documentIds?: string[];
   maxSources?: number;
   similarityThreshold?: number;
 }
 }
-export interface RAGResponse {
-  answer: string;
-  sources: VectorSearchResult[];
+export interface RAGResponse { answer: string;, sources: VectorSearchResult[];
   confidence: number;
   processingTime: number;
-  metadata: {
-    model: string;
-  tokensUsed: number;
+  metadata: { model: string;, tokensUsed: number;
   cacheHit: boolean;
   }
 }
 // Service Integration Types
-export interface ServiceConfig {
-  baseUrl: string;
-  enabled: boolean;
+export interface ServiceConfig { baseUrl: string;, enabled: boolean;
   timeout: number;
   retryAttempts: number;
   healthCheckInterval?: number;
@@ -119,9 +99,7 @@ export interface GoMicroserviceConfig extends ServiceConfig {
   gpuEnabled?: boolean;
 }
 // User and Context Types
-export interface UserContext {
-  id: string;
-  role: 'attorney' | 'paralegal' | 'investigator' | 'admin';
+export interface UserContext { id: string;, role: 'attorney' | 'paralegal' | 'investigator' | 'admin';
   permissions: string[];
   preferences?: {
     theme?: 'light' | 'dark';
@@ -146,16 +124,12 @@ export interface CacheOptions {
 export interface CacheResult<T = unknown> {
   hit: boolean;
   data?: T;
-  metadata?: {
-    createdAt: number;
-    expiresAt: number;
+  metadata?: { createdAt: number;, expiresAt: number;
     hitCount: number;
   }
 }
 // Document Types
-export interface DocumentMetadata {
-  id: string;
-  title: string;
+export interface DocumentMetadata { id: string;, title: string;
   type: string;
   caseId?: string;
   uploadedBy: string;
@@ -165,9 +139,7 @@ export interface DocumentMetadata {
   hash?: string;
 }
 }
-export interface DocumentVector {
-  id: string;
-  documentId: string;
+export interface DocumentVector { id: string;, documentId: string;
   embedding: number[];
   content: string;
   metadata: Record<string, unknown>;
@@ -182,56 +154,40 @@ export interface SearchOptions {
   sortOrder?: 'asc' | 'desc';
 }
 // Collection Info
-export interface CollectionInfo {
-  name: string;
-  vectorsCount: number;
-  config: {
-    size: number;
-  distance: 'cosine' | 'euclidean' | 'dot';
+export interface CollectionInfo { name: string;, vectorsCount: number;
+  config: { size: number;, distance: 'cosine' | 'euclidean' | 'dot';
   }
   status: 'active' | 'inactive' | 'building';
 }
 // Batch Operations
-export interface BatchUpsertResult {
-  success: boolean;
-  processed: number;
+export interface BatchUpsertResult { success: boolean;, processed: number;
   failed: number;
   errors?: Array<any>
 // Metrics and Monitoring
-export interface MetricData {
-  timestamp: Date;
-  type: 'metric' | 'event' | 'error';
+export interface MetricData { timestamp: Date;, type: 'metric' | 'event' | 'error';
   source: string;
   level: 'info' | 'warn' | 'error' | 'debug';
   category: string;
   data: Record<string, unknown>;
 }
 }
-export interface PerformanceMetrics {
-  overall: {
-    mean: number;
+export interface PerformanceMetrics { overall: {, mean: number;
   median: number;
   p95: number;
   p99: number;
   min: number;
   max: number;
   }
-  requests: {
-    total: number;
-    successful: number;
+  requests: { total: number;, successful: number;
     failed: number;
     rate: number;
   }
-  cache: {
-    hits: number;
-    misses: number;
+  cache: { hits: number;, misses: number;
     hitRate: number;
   }
 }
 // Store Types for Svelte 5 Compatibility
-export interface ServiceStore<T> extends Writable<T> {
-  reset: () => void;
-  loading: Writable<boolean>;
+export interface ServiceStore<T> extends Writable<T> { reset: () => void;, loading: Writable<boolean>;
   error: Writable<Error | null>;
 }
 // XState Integration Types
@@ -244,16 +200,12 @@ export interface MachineEvent {
   [key: string]: any;
 }
 // Environment Types
-export interface ClientEnvironment {
-  dev: boolean;
-  prod: boolean;
+export interface ClientEnvironment { dev: boolean;, prod: boolean;
   preview: boolean;
   browser: boolean;
 }
 // LLM Endpoint Health
-export interface LLMEndpoint {
-  url: string;
-  model: string;
+export interface LLMEndpoint { url: string;, model: string;
   healthy: boolean;
   latency: number;
   lastCheck: number;
@@ -269,12 +221,8 @@ export interface ComprehensiveSummaryRequest {
   }
   context?: ProcessingContext;
 }
-export interface ComprehensiveSummaryResponse {
-  summary: string;
-  keyPoints: string[];
-  metadata: {
-    originalLength: number;
-  summaryLength: number;
+export interface ComprehensiveSummaryResponse { summary: string;, keyPoints: string[];
+  metadata: { originalLength: number;, summaryLength: number;
   compressionRatio: number;
   confidence: number;
   processingTime: number;

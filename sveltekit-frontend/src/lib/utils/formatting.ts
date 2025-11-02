@@ -52,8 +52,7 @@ export function formatLegalTimestamp(date: Date | string): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZoneName: 'short',
-  });
+    timeZoneName: 'short` });
 }
 // ===== TEXT TRUNCATION =====
 /**
@@ -254,7 +253,7 @@ export const MINI_TEXT_LENGTHS = {
   TITLE: 40,
   DESCRIPTION: 50,
   NOTE: 60,
-  SUMMARY: 100,
+  SUMMARY: 100
 } as const;
 export const TIME_CONSTANTS = {
   MINUTE: 60 * 1000,
@@ -262,5 +261,5 @@ export const TIME_CONSTANTS = {
   DAY: 24 * 60 * 60 * 1000,
   WEEK: 7 * 24 * 60 * 60 * 1000,
   MONTH: 30 * 24 * 60 * 60 * 1000,
-  YEAR: 365 * 24 * 60 * 60 * 1000,
+  YEAR: 365 * 24 * 60 * 60 * 1000
 } as const;

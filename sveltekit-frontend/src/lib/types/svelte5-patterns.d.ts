@@ -39,9 +39,7 @@ export interface FormProps {
 }
 // === REACTIVE STATE PATTERNS ===
 // User State Interface (replaces generic user any type)
-export interface UserState {
-  id: string;
-  email: string;
+export interface UserState { id: string;, email: string;
   name: string;
   isLoggedIn: boolean;
   profile?: {
@@ -51,9 +49,7 @@ export interface UserState {
   };
 }
 // Case Management State (replaces generic Case any type)
-export interface CaseState {
-  id: string;
-  title: string;
+export interface CaseState { id: string;, title: string;
   description?: string;
   status: 'draft' | 'active' | 'pending' | 'closed';
   priority: 'low' | 'medium' | 'high';
@@ -63,9 +59,7 @@ export interface CaseState {
   metadata?: Record<string, unknown>;
 }
 // Evidence State (replaces generic Evidence any type)
-export interface EvidenceState {
-  id: string;
-  caseId: string;
+export interface EvidenceState { id: string;, caseId: string;
   title: string;
   description?: string;
   fileType: 'PDF' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'TEXT' | 'LINK';
@@ -81,9 +75,7 @@ export interface EvidenceState {
 }
 // === AI SERVICE TYPES ===
 // AI Task Interface (replaces generic AITask any type)
-export interface AITask {
-  id: string;
-  type: 'search' | 'embedding' | 'analysis' | 'classification' | 'summarization';
+export interface AITask { id: string;, type: 'search' | 'embedding' | 'analysis' | 'classification' | 'summarization';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   input: {
     query?: string;
@@ -105,30 +97,20 @@ export interface AITask {
 export interface AIResponse<T = unknown> {
   success: boolean;
   data?: T;
-  error?: {
-    code: string;
-    message: string;
+  error?: { code: string;, message: string;
     details?: Record<string, unknown>;
   };
-  metadata: {
-    taskId: string;
-    processingTime: number;
+  metadata: { taskId: string;, processingTime: number;
     model: string;
-    tokens?: {
-      input: number;
-      output: number;
+    tokens?: { input: number;, output: number;
     };
   };
 }
 // Worker Status Interface (replaces generic WorkerStatus any type)
-export interface WorkerStatus {
-  id: string;
-  status: 'idle' | 'busy' | 'error' | 'stopped';
+export interface WorkerStatus { id: string;, status: 'idle' | 'busy' | 'error' | 'stopped';
   activeRequests: number;
   queueLength: number;
-  performance: {
-    averageResponseTime: number;
-    successRate: number;
+  performance: { averageResponseTime: number;, successRate: number;
     totalProcessed: number;
   };
   lastActivity: Date;
@@ -150,26 +132,18 @@ export interface CaseSearchRequest {
   status?: CaseState['status'][];
   priority?: CaseState['priority'][];
   assignedTo?: string;
-  dateRange?: {
-    start: Date;
-    end: Date;
+  dateRange?: { start: Date;, end: Date;
   };
   limit?: number;
   offset?: number;
 }
-export interface CaseSearchResponse {
-  cases: CaseState[];
-  total: number;
+export interface CaseSearchResponse { cases: CaseState[];, total: number;
   hasMore: boolean;
-  pagination: {
-    limit: number;
-    offset: number;
+  pagination: { limit: number;, offset: number;
   };
 }
 // Evidence API Types
-export interface EvidenceCreateRequest {
-  caseId: string;
-  title: string;
+export interface EvidenceCreateRequest { caseId: string;, title: string;
   description?: string;
   fileType: EvidenceState['fileType'];
   file?: File;
@@ -179,9 +153,7 @@ export interface EvidenceSearchRequest {
   caseId?: string;
   query?: string;
   fileTypes?: EvidenceState['fileType'][];
-  dateRange?: {
-    start: Date;
-    end: Date;
+  dateRange?: { start: Date;, end: Date;
   };
   limit?: number;
   offset?: number;
@@ -196,17 +168,13 @@ export interface FormSubmissionResult<T = Record<string, unknown>> {
   redirectTo?: string;
 }
 // Bulk Operation Response
-export interface BulkOperationResponse {
-  processed: number;
-  successful: number;
+export interface BulkOperationResponse { processed: number;, successful: number;
   failed: number;
   errors?: Array<unknown>;
 }
 // === DATABASE TYPES ===
 // Vector Search Result (replaces generic VectorSearchResult any type)
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata: Record<string, unknown>;
   sourceType: 'document' | 'evidence' | 'case';
@@ -240,18 +208,12 @@ export interface ComponentEventHandlers {
 export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<TParams>;
 // === STATE MANAGEMENT ===
 // Shared State Pattern for Svelte 5
-export interface SharedState<T> {
-  value: T;
-  subscribe: (callback: (_value: T) => void) => () => void;
+export interface SharedState<T> { value: T;, subscribe: (callback: (_value: T) => void) => () => void;
   update: (updater: (_value: T) => T) => void;
   set: (_value: T) => void;
 }
 // Store State Types
-export interface StoreState {
-  auth: UserState;
-  ui: {
-    theme: 'light' | 'dark' | 'system';
-    sidebarOpen: boolean;
+export interface StoreState { auth: UserState;, ui: { theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
     loading: boolean;
     notifications: Array<unknown>;
   };
@@ -261,9 +223,7 @@ export interface StoreState {
     loading: boolean;
     error?: string;
   };
-  evidence: {
-    items: EvidenceState[];
-    loading: boolean;
+  evidence: { items: EvidenceState[];, loading: boolean;
     uploadProgress: Record<string, number>;
   };
 }

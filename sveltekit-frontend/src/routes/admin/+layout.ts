@@ -11,7 +11,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     const AccessControl: any = rolesModule?.AccessControl ?? rolesModule?.default ?? rolesModule;
     // Check current session
     const sessionResponse = await fetch('/api/auth/session', {
-      credentials: 'include',
+      credentials: 'include'
     });
     if (!sessionResponse.ok) {
       throw redirect(302, `/login?redirect=${encodeURIComponent(url.pathname)}`);
@@ -28,7 +28,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     return {
       user: sessionData.user,
       session: sessionData.session,
-      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? [],
+      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? []
     };
   } catch (error: any) {
     // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them

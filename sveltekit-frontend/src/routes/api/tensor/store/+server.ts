@@ -15,8 +15,8 @@ const TensorStoreSchema = z.object({
     model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
-    lod_levels: z.number().min(1).max(5).default(3),
-  }),
+    lod_levels: z.number().min(1).max(5).default(3)
+  })
 });
 type TensorStoreRequest = z.infer<typeof TensorStoreSchema>;
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         {
           success: false,
           message: 'Invalid tensor data format',
-          errors: validatedData.error.errors,
+          errors: validatedData.error.errors
         },
         { status: 400 }
       );
@@ -48,9 +48,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown',
-      },
-      body: JSON.stringify(validatedData.data),
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown` },
+      body: JSON.stringify(validatedData.data)
     });
     if (!response.ok) {
       const errorData = await response.text();
@@ -61,14 +60,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json({
       success: true,
       data: {
-        tensor_id: result.tensor_id,
+       , tensor_id: result.tensor_id,
         stored_bytes: result.stored_bytes,
         compression_ratio: result.compression_ratio,
         cache_tier: result.cache_tier,
         lod_versions: result.lod_versions,
         processing_time: result.processing_time,
-        storage_path: result.storage_path,
-      },
+        storage_path: result.storage_path
+      }
     });
   } catch (err) {
     console.error('Tensor store API error:', err);
@@ -87,8 +86,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}`,
-      },
+        'Authorization': `Bearer ${sessionId}` }
     });
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve tensor metrics');
@@ -97,12 +95,12 @@ export const GET: RequestHandler = async ({ cookies }) => {
     return json({
       success: true,
       metrics: {
-        cache_hit_rate: metrics.cache_hit_rate,
+       , cache_hit_rate: metrics.cache_hit_rate,
         total_tensors_stored: metrics.total_tensors_stored,
         storage_tiers: metrics.storage_tiers,
         memory_usage: metrics.memory_usage,
-        performance_stats: metrics.performance_stats,
-      },
+        performance_stats: metrics.performance_stats
+      }
     });
   } catch (err) {
     console.error('Tensor metrics error:', err);

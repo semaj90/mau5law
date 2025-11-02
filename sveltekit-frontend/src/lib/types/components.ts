@@ -48,9 +48,7 @@ export interface FileUploadProps extends ComponentPropsBase {
 // =====================================================
 // ENHANCED DOCUMENT TYPE FIX
 // =====================================================
-export interface LegalDocumentExtended {
-  id: string;
-  title: string;
+export interface LegalDocumentExtended { id: string;, title: string;
   type: 'contract' | 'case_law' | 'statute' | 'regulation' | 'brief' | 'evidence';
   status: 'draft' | 'reviewed' | 'approved' | 'archived';
   created: string;
@@ -65,9 +63,9 @@ export interface LegalDocumentExtended {
 // =====================================================
 export type EventHandler<T = Event> = (_event: T) => void;
 export type ClickHandler = (_event: MouseEvent) => void;
-export type InputHandler = (_event: Event & { currentTarget: HTMLInputElement }) => void;
-export type ChangeHandler = (_event: Event & { currentTarget: HTMLSelectElement | HTMLInputElement }) => void;
-export type SubmitHandler = (_event: Event & { currentTarget: HTMLFormElement }) => void;
+export type InputHandler = (_event: Event & {, currentTarget: HTMLInputElement }) => void;
+export type ChangeHandler = (_event: Event & {, currentTarget: HTMLSelectElement | HTMLInputElement }) => void;
+export type SubmitHandler = (_event: Event & {, currentTarget: HTMLFormElement }) => void;
 
 // =====================================================
 // CUSTOM EVENT TYPES
@@ -86,9 +84,7 @@ export interface FormFieldState {
   touched: boolean;
   dirty: boolean;
 }
-export interface FormValidationState {
-  isValid: boolean;
-  isSubmitting: boolean;
+export interface FormValidationState { isValid: boolean;, isSubmitting: boolean;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   values: Record<string, unknown>;
@@ -97,14 +93,10 @@ export interface FormValidationState {
 // =====================================================
 // SIDEBAR & LAYOUT STATE FIXES
 // =====================================================
-export interface SidebarState {
-  open: boolean;
-  collapsed: boolean;
+export interface SidebarState { open: boolean;, collapsed: boolean;
   pinned: boolean;
 }
-export interface LayoutState {
-  sidebar: SidebarState;
-  theme: 'light' | 'dark' | 'auto';
+export interface LayoutState { sidebar: SidebarState;, theme: 'light' | 'dark' | 'auto';
   fullscreen: boolean;
 }
 
@@ -114,38 +106,28 @@ export interface LayoutState {
 export interface SearchFilters {
   type?: string;
   caseId?: string;
-  dateRange?: {
-    start: string;
-    end: string;
+  dateRange?: { start: string;, end: string;
   };
   status?: string[];
   tags?: string[];
 }
-export interface SearchFacets {
-  types: string[];
-  statuses: string[];
+export interface SearchFacets { types: string[];, statuses: string[];
   dates: string[];
 }
 
 // =====================================================
 // AI & ML COMPONENT FIXES
 // =====================================================
-export interface AIModel {
-  id: string;
-  name: string;
+export interface AIModel { id: string;, name: string;
   type: 'chat' | 'embedding' | 'completion';
   available: boolean;
   config: Record<string, unknown>;
 }
-export interface TokenUsage {
-  prompt_tokens: number;
-  completion_tokens: number;
+export interface TokenUsage { prompt_tokens: number;, completion_tokens: number;
   total_tokens: number;
   cost?: number;
 }
-export interface ModelAvailability {
-  ollama: boolean;
-  openai: boolean;
+export interface ModelAvailability { ollama: boolean;, openai: boolean;
   claude: boolean;
   local: boolean;
 }
@@ -161,16 +143,12 @@ export interface ToastAction {
   onClick?: (() => void) | undefined;
 }
 
-export interface Toast {
-  id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+export interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message: string;
   duration?: number;
   actions?: ToastAction[];
 }
-export interface Notification extends Toast {
-  read: boolean;
-  timestamp: string;
+export interface Notification extends Toast { read: boolean;, timestamp: string;
   category: string;
 }

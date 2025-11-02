@@ -46,7 +46,7 @@ export function createSearchFilters(filters: {
     .map(([field, value]) => ({
       field,
       operator: Array.isArray(value) ? 'in' : 'contains',
-      value,
+      value
     }));
 }
 /**
@@ -57,7 +57,7 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
     const r = result as RawSearchResult; // Cast once to the new type alias
     return {
       id: r.id,
-      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || ''}`.trim(),
+      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || '` }`.trim(),
       type: r.type || inferType(r),
       content: r.content || r.description || r.summary || r.notes || '',
       score: r.score || r.similarity || calculateDefaultScore(r),
@@ -67,10 +67,10 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
         status: r.status,
         confidentiality: r.confidentialityLevel,
         caseId: r.caseId,
-        tags: Array.isArray(r.tags) ? r.tags : [],
+        tags: Array.isArray(r.tags) ? r.tags : []
       },
       highlights: r.highlights,
-      createdAt: r.createdAt,
+      createdAt: r.createdAt
     };
   });
 }
@@ -210,16 +210,13 @@ export function getCategoryDisplayName(category: string): string {
     precedents: 'Precedents',
     statutes: 'Statutes',
     criminals: 'Persons',
-    documents: 'Documents'
-  }
+    documents: `Documents` }
   return displayNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
 }
 /**
  * Validate search query
  */
-export function validateSearchQuery(query: string): {
-  isValid: boolean;
-  errors: string[];
+export function validateSearchQuery(query: string): { isValid: boolean;, errors: string[];
   suggestions: string[];
 } {
   const errors: string[] = [];

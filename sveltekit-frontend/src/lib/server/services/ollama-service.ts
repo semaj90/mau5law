@@ -9,9 +9,7 @@ export interface GenerateOptions {
   stream?: boolean;
 }
 
-export interface GenerateResult {
-  content: string;
-  model: string;
+export interface GenerateResult { content: string;, model: string;
   tokens: number;
 }
 

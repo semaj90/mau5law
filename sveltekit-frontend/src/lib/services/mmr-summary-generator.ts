@@ -37,9 +37,7 @@ export interface MMRConfig {
   relevanceWeight: number; // Weight for relevance scoring
 }
 }
-export interface ScoredSentence {
-  text: string;
-  relevanceScore: number;
+export interface ScoredSentence { text: string;, relevanceScore: number;
   diversityScore: number;
   mmrScore: number;
   position: number;
@@ -59,8 +57,7 @@ export class MMRSummaryGenerator {
     }
   }
   async generateSummary()
-    documents: LegalDocument[]
-    query: string;
+    documents: LegalDocument[]; query: string;
     request: SummaryRequest;
   ): Promise<SummaryResult>, {
     const startTime = Date.now();
@@ -245,7 +242,7 @@ export class MMRSummaryGenerator {
         body: JSON.stringify({,
           model: 'nomic-embed-text',
           prompt: text,
-        )}),
+        )})
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
@@ -263,7 +260,7 @@ export class MMRSummaryGenerator {
   private constructSummary()
     sentences: ScoredSentence[];
     request: SummaryRequest;
-  ): { text: string; metadata: any } {
+  ): { text: string;, metadata: any } {
     // Sort by original position to maintain logical flow
     const ordered = sentences.sort((a, b) => a.position - b.position);
     let summary = '';
@@ -292,8 +289,7 @@ export class MMRSummaryGenerator {
     }
   }
   private calculateAverageScore()
-    sentences: ScoredSentence[]
-    scoreType: 'relevance' | 'diversity';
+    sentences: ScoredSentence[]; scoreType: 'relevance' | 'diversity';
   ): number {
     if (sentences.length === 0) return 0;
     const sum = sentences.reduce((acc, sent) => {
@@ -301,7 +297,7 @@ export class MMRSummaryGenerator {
     }, 0);
     return sum / sentences.length;
   }
-  private extractSources(sentences,: ScoredSentence[], document,s: LegalDocument[,]): string,[] {
+  private extractSources(sentences,: ScoredSentence[], document,s: LegalDocument[]): string,[] {
     const docIds = new Set<string>();
     // This would need to be enhanced to track document IDs through the pipeline
     // For now, return all source documents
@@ -317,8 +313,7 @@ export class MMRSummaryGenerator {
 }
 // Convenience function for quick MMR summarization
 export async function generateMMRSummary()
-  documents: LegalDocument[]
-  query: string;
+  documents: LegalDocument[]; query: string;
   config: Partial<MMRConfig> = {}
 ): Promise<SummaryResult> {
   const generator = new MMRSummaryGenerator(config);
@@ -326,8 +321,7 @@ export async function generateMMRSummary()
     // 'type' prop removed; align with SummaryRequest interface sans extraneous fields
     query,
     maxLength: config.maxSummaryLength || 500,
-    format: 'paragraph',
-  } as any;
+    format: `paragraph` } as any;
   return generator.generateSummary(documents, query, request);
 }
 // Integration test helper

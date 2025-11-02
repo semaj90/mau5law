@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -41,12 +41,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       useContext7,
       maxResults,
       threshold: 0.7,
-      includeMetadata: true,
+      includeMetadata: true
     });
     return json({
       success: true,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Unified AI API Error:', error);
@@ -54,7 +54,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message || 'Unknown error occurred',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -69,11 +69,11 @@ const originalGETHandler: RequestHandler = async () => {
       success: true,
       stats,
       availableServices: {
-        wasm: !!stats.wasm,
+       , wasm: !!stats.wasm,
         langchain: !!stats.langchain,
-        gpu: !!stats.gpu,
+        gpu: !!stats.gpu
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Unified AI Stats Error:', error);
@@ -81,7 +81,7 @@ const originalGETHandler: RequestHandler = async () => {
       {
         success: false,
         error: error.message || 'Failed to get stats',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

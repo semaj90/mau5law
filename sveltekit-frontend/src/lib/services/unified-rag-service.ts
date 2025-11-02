@@ -25,9 +25,7 @@ export type VectorProvider = 'pgvector' | 'qdrant';
 /**
  * Legal document structure
  */
-export interface LegalDocument {
-  id: string;
-  content: string;
+export interface LegalDocument { id: string;, content: string;
   title?: string;
   documentType?: 'contract' | 'evidence' | 'brief' | 'citation' | 'regulation';
   caseId?: string;
@@ -45,9 +43,7 @@ export interface LegalDocument {
 /**
  * Legal entities extracted from document
  */
-export interface LegalEntities {
-  parties: string[];
-  dates: string[];
+export interface LegalEntities { parties: string[];, dates: string[];
   monetary: string[];
   clauses: string[];
   jurisdictions: string[];
@@ -60,9 +56,7 @@ export interface LegalEntities {
 /**
  * RAG search result with relevance scoring
  */
-export interface RAGSearchResult {
-  document: LegalDocument;
-  originalScore: number;
+export interface RAGSearchResult { document: LegalDocument;, originalScore: number;
   rerankScore?: number;
   relevanceReason: string;
   legalPrecedent?: boolean;
@@ -82,7 +76,7 @@ export interface RAGQueryOptions {
   caseType?: string;
   documentType?: string;
   requirePrecedent?: boolean;
-  timeRange?: { start: Date; end: Date };
+  timeRange?: { start: Date;, end: Date };
   riskThreshold?: number;
   limit?: number;
   threshold?: number;
@@ -92,7 +86,7 @@ export interface RAGQueryOptions {
   filters?: {
     entityTypes?: string[];
     legalCategories?: string[];
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date;, end: Date };
     confidenceThreshold?: number;
   };
 }
@@ -100,12 +94,10 @@ export interface RAGQueryOptions {
 /**
  * RAG query response
  */
-export interface RAGQueryResponse {
-  query: string;
-  results: RAGSearchResult[];
+export interface RAGQueryResponse { query: string;, results: RAGSearchResult[];
   totalFound: number;
   semanticExpansions?: string[];
-  mcpDocsUsed?: Array<{ libraryName: string; content: string }>;
+  mcpDocsUsed?: Array<{ libraryName: string;, content: string }>;
   processingTime: number;
   timestamp: Date;
   cacheHit?: boolean;
@@ -114,9 +106,7 @@ export interface RAGQueryResponse {
 /**
  * Service configuration
  */
-export interface UnifiedRAGConfig {
-  redis: Redis;
-  database: Sql<Record<string, unknown>>;
+export interface UnifiedRAGConfig { redis: Redis;, database: Sql<Record<string, unknown>>;
   ollamaUrl?: string;
   qdrantUrl?: string;
   qdrantApiKey?: string;
@@ -185,7 +175,7 @@ export class UnifiedRAGService {
     console.log('[UnifiedRAG] Initialization complete:', {
       pgvector: this.pgvectorHealthy ? '✅' : '❌',
       qdrant: this.qdrantHealthy ? '✅' : '❌',
-      mcp: this.mcpHealthy ? '✅' : '❌',
+      mcp: this.mcpHealthy ? '✅' : '❌'
     });
   }
 
@@ -210,7 +200,7 @@ export class UnifiedRAGService {
 
     // Step 1: MCP Context7 documentation enrichment (if enabled)
     let enhancedQuery = options.query;
-    let mcpDocsUsed: Array<{ libraryName: string; content: string }> = [];
+    let mcpDocsUsed: Array<{ libraryName: string;, content: string }> = [];
 
     if (options.useMCPDocs && options.requiredLibraries && options.requiredLibraries.length > 0 && this.mcpHealthy) {
       try {
@@ -255,7 +245,7 @@ export class UnifiedRAGService {
       mcpDocsUsed,
       processingTime: Date.now() - startTime,
       timestamp: new Date(),
-      cacheHit: false,
+      cacheHit: false
     };
 
     // Cache the response
@@ -368,15 +358,13 @@ export class UnifiedRAGService {
       LIMIT ${limit}
     `;
 
-    return results.map((row: any) => ({
-      document: {
-        id: row.id,
+    return results.map((row: any) => ({ document: {, id: row.id,
         content: row.content,
-        ...((row.metadata as Record<string, unknown>) || {}),
+        ...((row.metadata as Record<string, unknown>) || {})
       } as LegalDocument,
       originalScore: row.similarity,
-      relevanceReason: `pgvector similarity: ${(row.similarity * 100).toFixed(1)}%`,
-      source: 'pgvector' as const,
+      relevanceReason: `pgvector; similarity: ${(row.similarity * 100).toFixed(1)}%`,
+      source: 'pgvector' as const
     }));
   }
 
@@ -392,14 +380,14 @@ export class UnifiedRAGService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': this.qdrantApiKey,
+        'api-key': this.qdrantApiKey
       },
       body: JSON.stringify({
-        vector: embedding,
+       , vector: embedding,
         limit,
         score_threshold: threshold,
-        with_payload: true,
-      }),
+        with_payload: true
+      })
     });
 
     if (!response.ok) {
@@ -408,15 +396,13 @@ export class UnifiedRAGService {
 
     const data = await response.json();
 
-    return data.result.map((item: any) => ({
-      document: {
-        id: String(item.id),
+    return data.result.map((item: any) => ({ document: {, id: String(item.id),
         content: String(item.payload.content || ''),
-        ...item.payload,
+        ...item.payload
       } as LegalDocument,
       originalScore: item.score,
-      relevanceReason: `Qdrant similarity: ${(item.score * 100).toFixed(1)}%`,
-      source: 'qdrant' as const,
+      relevanceReason: `Qdrant; similarity: ${(item.score * 100).toFixed(1)}%`,
+      source: 'qdrant' as const
     }));
   }
 
@@ -441,7 +427,7 @@ export class UnifiedRAGService {
           confidenceScore: doc.confidenceScore,
           complexityIndex: doc.complexityIndex,
           legalRelevanceScore: doc.legalRelevanceScore,
-          ...doc.metadata,
+          ...doc.metadata
         })},
         CURRENT_TIMESTAMP
       )
@@ -461,7 +447,7 @@ export class UnifiedRAGService {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': this.qdrantApiKey,
+        'api-key': this.qdrantApiKey
       },
       body: JSON.stringify({
         points: [
@@ -469,7 +455,7 @@ export class UnifiedRAGService {
             id: doc.id,
             vector: doc.embedding,
             payload: {
-              content: doc.content,
+             , content: doc.content,
               title: doc.title,
               documentType: doc.documentType,
               caseId: doc.caseId,
@@ -480,11 +466,11 @@ export class UnifiedRAGService {
               confidenceScore: doc.confidenceScore,
               complexityIndex: doc.complexityIndex,
               legalRelevanceScore: doc.legalRelevanceScore,
-              ...doc.metadata,
-            },
+              ...doc.metadata
+            }
           },
-        ],
-      }),
+        ]
+      })
     });
 
     if (!response.ok) {
@@ -499,7 +485,7 @@ export class UnifiedRAGService {
     return results
       .map((result) => {
         let score = result.originalScore || 0;
-        const reasons: string[] = [`Base similarity: ${(score * 100).toFixed(1)}%`];
+        const reasons: string[] = [`Base; similarity: ${(score * 100).toFixed(1)}%`];
 
         // Legal precedent bonus
         if (result.document.entities?.caseReferences && result.document.entities.caseReferences.length > 0) {
@@ -582,7 +568,7 @@ export class UnifiedRAGService {
       const { enhancedCachingService } = await import('./enhanced-caching-service');
       const result = await enhancedCachingService.getCachedEmbedding(text, {
         source: 'unified-rag',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
       return result.embedding;
     } catch (error) {
@@ -594,9 +580,9 @@ export class UnifiedRAGService {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: this.embeddingModel,
-            input: text.substring(0, 2000),
-          }),
+           , model: this.embeddingModel,
+            input: text.substring(0, 2000)
+          })
         });
 
         if (!response.ok) {
@@ -627,7 +613,7 @@ export class UnifiedRAGService {
       caseTypes: this.extractPatterns(content, /contract|tort|criminal|constitutional|corporate|property/gi),
       organizations: this.extractPatterns(content, /([A-Z][A-Za-z\s]+ (?:Inc|Corp|LLC|Ltd|Co)\.?)/g),
       caseReferences: this.extractPatterns(content, /\w+\s+v\.?\s+\w+,?\s+\d+\s+\w+\.?\s+\d+/g),
-      statutes: this.extractPatterns(content, /\d+\s+U\.S\.C\.?\s+§?\s*\d+/g),
+      statutes: this.extractPatterns(content, /\d+\s+U\.S\.C\.?\s+§?\s*\d+/g)
     };
   }
 
@@ -708,12 +694,12 @@ export class UnifiedRAGService {
   /**
    * Fetch MCP Context7 documentation
    */
-  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string; content: string }>> {
+  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string;, content: string }>> {
     try {
       const response = await fetch(`${this.mcpUrl}/mcp/docs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ libraries }),
+        body: JSON.stringify({ libraries })
       });
 
       if (!response.ok) {
@@ -770,7 +756,7 @@ export class UnifiedRAGService {
       caseType: options.caseType || '',
       limit: options.limit || 10,
       threshold: options.threshold || 0.7,
-      filters: JSON.stringify(options.filters || {}),
+      filters: JSON.stringify(options.filters || {})
     };
 
     const hash = Buffer.from(JSON.stringify(key)).toString('base64');
@@ -800,7 +786,7 @@ export class UnifiedRAGService {
       qdrant: this.qdrantHealthy ? 'healthy' : 'unhealthy',
       mcp: this.mcpHealthy ? 'healthy' : 'unhealthy',
       primaryProvider: this.primaryProvider,
-      embeddingModel: this.embeddingModel,
+      embeddingModel: this.embeddingModel
     };
   }
 }

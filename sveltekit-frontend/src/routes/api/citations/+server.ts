@@ -14,16 +14,12 @@ import { caseManagementService } from '$lib/services/case-management-service.js'
 // Sample citations for when database is not available or for demo data
 
 // Define a minimal interface for CaseDetails based on its usage in this file
-interface CaseDetails {
-  id: string;
-  detectiveMode: boolean;
+interface CaseDetails { id: string;, detectiveMode: boolean;
   // Add other properties as needed if they are used elsewhere from caseDetails
 }
 
 // Define a minimal interface for TimelineEvent based on its usage
-interface TimelineEvent {
-  eventType: string;
-  title: string;
+interface TimelineEvent { eventType: string;, title: string;
   description: string;
   relatedEntityId: string;
   relatedEntityType: string;
@@ -56,7 +52,7 @@ const sampleCitations = [
     type: 'case',
     tags: ['criminal procedure', 'constitutional law', 'miranda rights'],
     createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15')
   },
   {
     id: '2',
@@ -67,7 +63,7 @@ const sampleCitations = [
     type: 'statute',
     tags: ['evidence', 'character evidence', 'federal rules'],
     createdAt: new Date('2024-01-16'),
-    updatedAt: new Date('2024-01-16'),
+    updatedAt: new Date('2024-01-16')
   },
   {
     id: '3',
@@ -80,7 +76,7 @@ const sampleCitations = [
     type: 'case',
     tags: ['expert testimony', 'scientific evidence', 'daubert standard'],
     createdAt: new Date('2024-01-17'),
-    updatedAt: new Date('2024-01-17'),
+    updatedAt: new Date('2024-01-17')
   },
 ];
 // UUID validation regex
@@ -115,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'caseId parameter is required',
+          error: 'caseId parameter is required'
         },
         { status: 400 }
       );
@@ -161,9 +157,9 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         offset,
         total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit)
       },
-      filters: { caseId, citationType, search, verified },
+      filters: { caseId, citationType, search, verified }
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);
@@ -172,7 +168,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: msg, // Use the extracted message
-        citations: [],
+        citations: []
       },
       { status: 500 }
     );
@@ -187,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'caseId, title, and citationType are required',
+          error: 'caseId, title, and citationType are required'
         },
         { status: 400 }
       );
@@ -198,8 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Case not found',
-        },
+          error: 'Case not found` },
         { status: 404 }
       );
     }
@@ -226,30 +221,30 @@ export const POST: RequestHandler = async ({ request }) => {
         verified: citationData.verified || false,
         metadata: citationData.metadata || {},
         tags: citationData.tags || [],
-        createdBy: citationData.createdBy || null,
+        createdBy: citationData.createdBy || null
       })
       .returning();
     // Add to case timeline if detective mode is enabled
     if (caseDetails.detectiveMode) {
       await typedCaseManagementService.addTimelineEvent(caseId, {
         eventType: 'citation_added',
-        title: `Citation added: ${title}`,
+        title: `Citation; added: ${title}`,
         description: `New ${citationType} citation added to case`,
         relatedEntityId: newCitation.id as string,
         relatedEntityType: 'citation',
         eventData: {
           citationType,
           relevanceScore: newCitation.relevanceScore,
-          purpose: newCitation.citationPurpose,
+          purpose: newCitation.citationPurpose
         },
         importance: 'medium',
-        eventDate: new Date(),
+        eventDate: new Date()
       });
     }
     return json(
       {
         success: true,
-        citation: newCitation,
+        citation: newCitation
       },
       { status: 201 }
     );
@@ -272,7 +267,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation ID is required',
+          error: 'Citation ID is required'
         },
         { status: 400 }
       );
@@ -287,7 +282,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation not found',
+          error: 'Citation not found'
         },
         { status: 404 }
       );
@@ -297,13 +292,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       .update(citations)
       .set({
         ...updateData,
-        dateModified: new Date(),
+        dateModified: new Date()
       })
       .where(eq(citations.id, id)) // Added closing parenthesis
       .returning();
     return json({
       success: true,
-      citation: updatedCitation,
+      citation: updatedCitation
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);
@@ -324,7 +319,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation ID is required',
+          error: 'Citation ID is required'
         },
         { status: 400 }
       );
@@ -335,7 +330,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation not found',
+          error: 'Citation not found'
         },
         { status: 404 }
       );
@@ -344,8 +339,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     await db.delete(citations).where(eq(citations.id, id));
     return json({
       success: true,
-      message: 'Citation deleted successfully',
-    });
+      message: 'Citation deleted successfully` });
   } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Citation deletion error:', msg);

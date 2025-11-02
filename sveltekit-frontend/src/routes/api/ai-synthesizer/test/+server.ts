@@ -17,17 +17,13 @@ import { logger } from '$lib/server/logger';
 
 type TestStatus = 'passed' | 'failed' | 'warning';
 
-interface TestResult<T = unknown> {
-	name: string;
-	status: TestStatus;
+interface TestResult<T = unknown> { name: string;, status: TestStatus;
 	durationMs: number;
 	result?: T;
 	error?: string;
 }
 
-interface HealthTestPayload {
-	synthesizer: {
-		ok: boolean;
+interface HealthTestPayload { synthesizer: {, ok: boolean;
 		latencyMs: number;
 		confidence: number;
 		contextEntries: number;
@@ -36,37 +32,27 @@ interface HealthTestPayload {
 	ollama?: OllamaHealthCheckResponse | null;
 }
 
-interface SynthesisTestPayload {
-	processedQuery: string;
-	confidence: number;
+interface SynthesisTestPayload { processedQuery: string;, confidence: number;
 	contextEntries: number;
 	latencyMs: number;
 }
 
-interface CacheTestPayload {
-	cacheWorking: boolean;
-	hitRate: number;
+interface CacheTestPayload { cacheWorking: boolean;, hitRate: number;
 	redisConnected: boolean;
 	memoryUsage: number;
 }
 
-interface StreamingTestPayload {
-	progressUpdates: number;
-	stagesCompleted: string[];
+interface StreamingTestPayload { progressUpdates: number;, stagesCompleted: string[];
 	activeStreams: number;
 }
 
-interface OllamaTestPayload {
-	available: boolean;
-	models: string[];
+interface OllamaTestPayload { available: boolean;, models: string[];
 	generationWorked: boolean;
 	embeddingsWorked: boolean;
 	latencyMs: number;
 }
 
-interface FeedbackTestPayload {
-	interactionCount: number;
-	queueSize: number;
+interface FeedbackTestPayload { interactionCount: number;, queueSize: number;
 	hasRecommendations: boolean;
 }
 
@@ -78,9 +64,7 @@ interface MonitoringPerformance {
 	[key: string]: any;
 }
 
-interface MonitoringTestPayload {
-	totalRequests: number;
-	successRate: number;
+interface MonitoringTestPayload { totalRequests: number;, successRate: number;
 	cacheHitRate: number;
 	performance: MonitoringPerformance;
 	hasPrometheusMetrics: boolean;
@@ -89,9 +73,7 @@ interface MonitoringTestPayload {
 type RecommendationPriority = 'high' | 'medium' | 'low';
 type RecommendationCategory = 'infrastructure' | 'performance' | 'quality' | 'reliability';
 
-interface Recommendation {
-	priority: RecommendationPriority;
-	category: RecommendationCategory;
+interface Recommendation { priority: RecommendationPriority;, category: RecommendationCategory;
 	message: string;
 	action: string;
 }
@@ -220,9 +202,7 @@ async function testHealthCheck(): Promise<TestResult<HealthTestPayload>> {
 			name: 'Health Check',
 			status: 'passed',
 			durationMs: now() - started,
-			result: {
-				synthesizer: {
-					ok: true,
+			result: { synthesizer: {, ok: true,
 					latencyMs: synthLatency,
 					confidence,
 					contextEntries
@@ -335,10 +315,8 @@ async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 		let progressUpdates = 0;
 		const stagesCompleted: string[] = [];
 
-		await streamingService.synthesizeWithProgress({
-			input: {
-				query: 'Streamed synthesis test query',
-				context: { userId: 'test_user' },
+		await streamingService.synthesizeWithProgress({ input: {, query: 'Streamed synthesis test query',
+				context: {, userId: `test_user` },
 				options: {}
 			},
 			onProgress: (_stage, _progress) => {
@@ -406,7 +384,7 @@ async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 			if (typeof ollamaLLM.generate === 'function') {
 				const generation = await ollamaLLM.generate({
 					prompt: 'Provide a one sentence definition of a legal contract.',
-					options: { num_predict: 64, temperature: 0.4 }
+					options: {, num_predict: 64, temperature: 0.4 }
 				});
 				generationWorked = Boolean((generation as OllamaResponse | null)?.response);
 			}
@@ -461,7 +439,7 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 		await feedbackLoop.recordInteraction({
 			requestId: `test_request_${Date.now()}`,
 			query: 'Test feedback query',
-			result: { metadata: { confidence: 0.8 } },
+			result: { metadata: {, confidence: 0.8 } },
 			userId: 'test_user',
 			timestamp: new Date()
 		});
@@ -470,8 +448,7 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 			requestId: `test_request_${Date.now()}`,
 			userId: 'test_user',
 			rating: 4,
-			feedback: 'Integration feedback'
-		});
+			feedback: `Integration feedback` });
 
 		const recommendations =
 			typeof feedbackLoop.getPersonalizedRecommendations === 'function'
@@ -599,8 +576,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'low',
 				category: 'performance',
 				message: 'Cache hit rate is below 30%.',
-				action: 'Warm the cache with common queries or review cache invalidation rules.'
-			});
+				action: `Warm the cache with common queries or review cache invalidation rules.` });
 		}
 	}
 
@@ -637,7 +613,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		};
 
 		if (!payload?.query || typeof payload.query !== 'string') {
-			return json({ error: 'Query is required' }, { status: 400 });
+			return json({ error: `Query is required` }, { status: 400 });
 		}
 
 		const contextArray = Array.isArray(payload.context)
@@ -646,8 +622,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		contextArray.push({
 			userId: 'test_user',
-			sessionId: `test_session_${Date.now()}`
-		});
+			sessionId: `test_session_${Date.now()}` });
 
 		const synthesis: SynthesizedInput = await aiAssistantSynthesizer.synthesizeInput(
 			payload.query,
@@ -657,10 +632,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		let ollamaResult: OllamaResponse | null = null;
 		if (typeof ollamaLLM?.checkAvailability === 'function' && (await ollamaLLM.checkAvailability())) {
 			if (typeof ollamaLLM.generate === 'function') {
-				ollamaResult = await ollamaLLM.generate({
-					prompt: `Summarise the following legal query in one paragraph:\n\n${payload.query}`,
+				ollamaResult = await ollamaLLM.generate({ prompt: `Summarise the following legal query in one, paragraph:\n\n${payload.query}`,
 					options: {
-						num_predict: 96,
+					, num_predict: 96,
 						temperature: 0.4
 					}
 				});
@@ -682,7 +656,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			synthesis,
 			ollama: ollamaResult,
 			stats: {
-				cache: cacheStats,
+			, cache: cacheStats,
 				monitoring: monitoringStats,
 				feedback: feedbackStats
 			}

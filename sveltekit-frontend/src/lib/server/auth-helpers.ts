@@ -5,9 +5,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 
-export interface AuthResult {
-  user: {
-    id: string;
+export interface AuthResult { user: {, id: string;
     email: string;
     role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
   };
@@ -25,17 +23,15 @@ export async function getUserWithFallback(event: RequestEvent): Promise<AuthResu
     return {
       user: event.locals.user,
       session: event.locals.session,
-      isTestMode: false,
+      isTestMode: false
     };
   }
 
   // Fallback to test mode for development/testing
   console.log('⚠️ Auth not available, using test mode');
-  return {
-    user: {
-      id: 'test-user-id',
+  return { user: {, id: 'test-user-id',
       email: 'test@legal-ai.dev',
-      role: 'admin',
+      role: 'admin'
     },
     session: {
       id: 'test-session-id',
@@ -43,7 +39,7 @@ export async function getUserWithFallback(event: RequestEvent): Promise<AuthResu
       fresh: false,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
     },
-    isTestMode: true,
+    isTestMode: true
   };
 }
 

@@ -96,7 +96,7 @@ export class HistoryManager {
       totalSnapshots: this.history.length,
       currentIndex: this.currentIndex,
       canUndo: this.canUndo(),
-      canRedo: this.canRedo(),
+      canRedo: this.canRedo()
     };
   }
 }

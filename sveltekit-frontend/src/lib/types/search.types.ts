@@ -9,9 +9,7 @@ export type SearchCategory =
   | 'demo'
   | 'all';
 }
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   description: string;
   category: SearchCategory;
   path?: string;
@@ -38,14 +36,10 @@ export interface SearchFilter {
   tags?: string[];
   status?: 'running' | 'stopped' | 'error' | 'unknown';
   port?: number;
-  dateRange?: {
-    start: Date;
-    end: Date;
+  dateRange?: { start: Date;, end: Date;
   }
 }
-export interface SearchState {
-  query: string;
-  results: SearchResult[];
+export interface SearchState { query: string;, results: SearchResult[];
   isLoading: boolean;
   error: string | null;
   filters: SearchFilter;

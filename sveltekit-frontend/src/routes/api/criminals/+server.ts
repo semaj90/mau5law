@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     finalQuery = finalQuery.limit(limit).offset(offset) as any;
     const criminalResults = await finalQuery;
     // Get total count for pagination
-    let countQuery = db.select({ count: sql<number>`count(*)` }).from(criminals);
+    let countQuery = db.select({ count: sql<number>`count(*)' }).from(criminals);
     if (filters.length > 0) {
       countQuery = countQuery.where(and(...filters)) as any;
     }
@@ -75,8 +75,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (error: any) {
     console.error('Error fetching criminals:', error);
@@ -121,12 +121,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       notes: data.notes?.trim() || null,
       aiSummary: data.aiSummary?.trim() || null,
       aiTags: data.aiTags || [],
-      createdBy: getUserId(locals),
+      createdBy: getUserId(locals)
     };
     const [newCriminal] = await db.insert(criminals).values(criminalData).returning();
     return json(newCriminal, { status: 201 });
   } catch (error: any) {
     console.error('Error creating criminal record:', error);
-    return json({ error: 'Failed to create criminal record' }, { status: 500 });
+    return json({ error: `Failed to create criminal record` }, { status: 500 });
   }
 };

@@ -5,18 +5,14 @@
 import Loki from 'lokijs';
 import type { Collection } from 'lokijs';
 import Fuse from 'fuse.js';
-interface CacheEntry<T = any> {
-  key: string;
-  value: T;
+interface CacheEntry<T = any> { key: string;, value: T;
   timestamp: number;
   ttl: number;
   priority: number;
   accessCount: number;
   sizeBytes: number;
 }
-interface CacheLayer {
-  name: string;
-  maxSize: number;
+interface CacheLayer { name: string;, maxSize: number;
   currentSize: number;
   hitRate: number;
   missRate: number;
@@ -32,11 +28,10 @@ export class MultiLayerCacheSystem {
   // Layer 4: Server cache (Redis simulation) - Shared cache
   private redisSimulation = new Map<string, CacheEntry>();
   // Cache statistics
-  private stats = {
-    hits: { l1: 0, l2: 0, l3: 0, l4: 0 },
+  private stats = { hits: {, l1: 0, l2: 0, l3: 0, l4: 0 },
     misses: { l1: 0, l2: 0, l3: 0, l4: 0 },
     evictions: 0,
-    writes: 0,
+    writes: 0
   };
   // Configuration
   private readonly config = {
@@ -44,19 +39,19 @@ export class MultiLayerCacheSystem {
     l2MaxSize: 50 * 1024 * 1024, // 50MB IndexedDB
     l3MaxSize: 100 * 1024 * 1024, // 100MB Redis
     defaultTTL: 3600, // 1 hour default TTL
-    evictionPolicy: 'lru' as: 'lru' | 'lfu' | 'fifo',
+    evictionPolicy: 'lru'; as: 'lru' | 'lfu' | 'fifo'
   };
   constructor() {
     // Initialize Loki.js in-memory database
     this.lokiDB = new Loki('legal-ai-cache.db', {
       env: 'BROWSER',
       autosave: false,
-      persistenceMethod: 'memory',
+      persistenceMethod: 'memory'
     });
     // Create collection for cache entries
     this.memoryCollection = this.lokiDB.addCollection<CacheEntry>('cache', {
       indices: ['key', 'timestamp', 'priority'],
-      unique: ['key'],
+      unique: ['key']
     });
     // Initialize other layers asynchronously
     this.initializeIndexedDB();
@@ -99,7 +94,7 @@ export class MultiLayerCacheSystem {
       keys: ['key', 'value'],
       threshold: 0.3,
       includeScore: true,
-      minMatchCharLength: 2,
+      minMatchCharLength: 2
     };
     this.fuseIndex = new Fuse([], options);
   }
@@ -166,7 +161,7 @@ export class MultiLayerCacheSystem {
         ttl,
         priority,
         accessCount: 0,
-        sizeBytes,
+        sizeBytes
       };
       this.fuseIndex.add(entry);
     }
@@ -196,7 +191,7 @@ export class MultiLayerCacheSystem {
       ttl,
       priority,
       accessCount: 1,
-      sizeBytes,
+      sizeBytes
     };
     // Remove existing entry if present
     const existing = this.memoryCollection.findOne({ key });
@@ -220,7 +215,7 @@ export class MultiLayerCacheSystem {
         ttl,
         priority,
         accessCount: 1,
-        sizeBytes: this.estimateSize(value),
+        sizeBytes: this.estimateSize(value)
       };
       const request = store.put(entry);
       request.onsuccess = () => resolve();
@@ -238,7 +233,7 @@ export class MultiLayerCacheSystem {
       ttl,
       priority,
       accessCount: 1,
-      sizeBytes: this.estimateSize(value),
+      sizeBytes: this.estimateSize(value)
     };
     this.redisSimulation.set(key, entry);
     // Simulate Redis TTL
@@ -351,9 +346,7 @@ export class MultiLayerCacheSystem {
   /**
    * Get cache statistics
    */
-  getStats(): {
-    layers: CacheLayer[];
-    totalHits: number;
+  getStats(): { layers: CacheLayer[];, totalHits: number;
     totalMisses: number;
     hitRate: number;
     evictions: number;
@@ -368,28 +361,28 @@ export class MultiLayerCacheSystem {
           maxSize: this.config.l1MaxSize,
           currentSize: this.getCurrentMemorySize(),
           hitRate: this.stats.hits.l1 / (this.stats.hits.l1 + this.stats.misses.l1) || 0,
-          missRate: this.stats.misses.l1 / (this.stats.hits.l1 + this.stats.misses.l1) || 0,
+          missRate: this.stats.misses.l1 / (this.stats.hits.l1 + this.stats.misses.l1) || 0
         },
         {
           name: 'IndexedDB',
           maxSize: this.config.l2MaxSize,
           currentSize: 0, // Would need async calculation
           hitRate: this.stats.hits.l2 / (this.stats.hits.l2 + this.stats.misses.l2) || 0,
-          missRate: this.stats.misses.l2 / (this.stats.hits.l2 + this.stats.misses.l2) || 0,
+          missRate: this.stats.misses.l2 / (this.stats.hits.l2 + this.stats.misses.l2) || 0
         },
         {
           name: 'Redis',
           maxSize: this.config.l3MaxSize,
           currentSize: Array.from(this.redisSimulation.values()).reduce((total, entry) => total + entry.sizeBytes, 0),
           hitRate: this.stats.hits.l4 / (this.stats.hits.l4 + this.stats.misses.l4) || 0,
-          missRate: this.stats.misses.l4 / (this.stats.hits.l4 + this.stats.misses.l4) || 0,
+          missRate: this.stats.misses.l4 / (this.stats.hits.l4 + this.stats.misses.l4) || 0
         },
       ],
       totalHits,
       totalMisses,
       hitRate: totalHits / (totalHits + totalMisses) || 0,
       evictions: this.stats.evictions,
-      writes: this.stats.writes,
+      writes: this.stats.writes
     };
   }
 }

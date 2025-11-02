@@ -9,9 +9,32 @@
  * Designed to work with configurable HTTP endpoints for easy swapping
  * between local and remote Gemma instances.
  */
-import fetch from 'node-fetch';
+import fetch, { type Response, type RequestInit } from 'node-fetch';
 import fs from 'fs/promises';
+import { getGemmaEmbedEndpoint } from '$lib/server/integrations/gemma'; // Import the new helper
+
+// Helper for fetch with timeout, as 'timeout' is not a standard RequestInit property
+async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    return response;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
+
+interface GemmaApiResponse {
+  model?: string;
+  embedding?: number[];
+  embeddings?: number[][];
+  data?: { embedding: number[] }[];
+}
+
 export interface EmbeddingResult {
   success: boolean;
   embedding?: number[];
@@ -22,52 +45,64 @@ export interface EmbeddingResult {
     processingTime: number;
     inputType: 'text' | 'image' | 'audio';
     inputSize?: number;
-  }
+  };
 }
 export interface BatchEmbeddingResult {
   success: boolean;
   embeddings?: number[][];
   errors?: string[];
-  metadata?: {
-    batchSize: number;
-    successCount: number;
+  metadata?: { batchSize: number;, successCount: number;
     failureCount: number;
     totalProcessingTime: number;
-  }
+  };
 }
+
+export interface EmbeddingEndpointHealth {
+  healthy: boolean;
+  status?: number;
+  statusText?: string;
+  url?: string;
+  responseTime?: number;
+  error?: string;
+}
+
 /**
  * Text embedding using Gemma
  */
 export async function embedText(texts: string | string[]): Promise<EmbeddingResult | BatchEmbeddingResult> {
   const startTime = Date.now();
-  const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
+  const endpoint = getGemmaEmbedEndpoint(); // Use the centralized helper
   if (!endpoint) {
     return {
-      success: false;
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    }
+      success: false,
+      error: 'Gemma embedding endpoint not configured', // Updated error message
+    };
   }
   try {
     const inputTexts = Array.isArray(texts) ? texts : [texts];
     const isBatch = Array.isArray(texts);
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+    const response = await fetchWithTimeout(
+      endpoint,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+         , mode: 'text',
+          input: inputTexts
+        })
       },
-      body: JSON.stringify({,
-        mode: 'text',
-        input: inputTexts
-      }),
-      timeout: 30000 // 30 second timeout
-    });
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
-      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).text();
-      throw new Error(`HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).status}: ${errorText}`);
+      30000
+    ); // 30 second timeout
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).json();
-    const embeddings = (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).embeddings || (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).data?.map((d: any) => d.embedding) || [];
+    const result = (await response.json()) as GemmaApiResponse;
+    const embeddings = result.embeddings || result.data?.map(d => d.embedding) || [];
+
     if (isBatch) {
       return {
         success: true,
@@ -78,25 +113,25 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           failureCount: Math.max(0, inputTexts.length - embeddings.length),
           totalProcessingTime: Date.now() - startTime
         }
-      }
+      };
     } else {
       return {
         success: true,
         embedding: embeddings[0],
         metadata: {
-          model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma',
+          model: result.model || 'unknown',
           dimensions: embeddings[0]?.length,
           processingTime: Date.now() - startTime,
           inputType: 'text',
           inputSize: texts.length
         }
-      }
+      };
     }
   } catch (error) {
     return {
-      success: false;
-      error: error instanceof Error ? error.message: String(error)
-    }
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
   }
 }
 /**
@@ -104,35 +139,37 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
  */
 export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult> {
   const startTime = Date.now();
-  const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
+  const endpoint = getGemmaEmbedEndpoint(); // Use the centralized helper
   if (!endpoint) {
     return {
-      success: false;
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    }
+      success: false,
+      error: 'Gemma embedding endpoint not configured', // Updated error message
+    };
   }
   try {
     // Convert buffer to base64 for JSON transport
     const base64Image = buffer.toString('base64');
     const dataUri = `data:image/jpeg;base64,${base64Image}`;
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+    const response = await fetchWithTimeout(
+      endpoint,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json` },
+        body: JSON.stringify({
+         , mode: 'image',
+          input: dataUri
+        })
       },
-      body: JSON.stringify({,
-        mode: 'image',
-        input: dataUri
-      }),
-      timeout: 60000 // 60 second timeout for images
-    });
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
-      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).text();
-      throw new Error(`HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).status}: ${errorText}`);
+      60000
+    ); // 60 second timeout for images
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).json();
-    const embedding = (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).embedding || (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).data?.[0]?.embedding;
+    const result = (await response.json()) as GemmaApiResponse;
+    const embedding = result.embedding || result.data?.[0]?.embedding;
     if (!embedding) {
       throw new Error('No embedding returned from Gemma multimodal endpoint');
     }
@@ -140,18 +177,18 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
       success: true,
       embedding,
       metadata: {
-        model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma-multimodal',
+        model: result.model || 'unknown',
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'image',
         inputSize: buffer.length
       }
-    }
+    };
   } catch (error) {
     return {
-      success: false;
-      error: error instanceof Error ? error.message: String(error)
-    }
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
   }
 }
 /**
@@ -159,36 +196,38 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
  */
 export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResult> {
   const startTime = Date.now();
-  const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
+  const endpoint = getGemmaEmbedEndpoint(); // Use the centralized helper
   if (!endpoint) {
     return {
-      success: false;
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    }
+      success: false,
+      error: 'Gemma embedding endpoint not configured', // Updated error message
+    };
   }
   try {
     // Read audio file and convert to base64
     const audioBuffer = await fs.readFile(wavPath);
     const base64Audio = audioBuffer.toString('base64');
     const dataUri = `data:audio/wav;base64,${base64Audio}`;
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+    const response = await fetchWithTimeout(
+      endpoint,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json` },
+        body: JSON.stringify({
+         , mode: 'audio',
+          input: dataUri
+        })
       },
-      body: JSON.stringify({,
-        mode: 'audio',
-        input: dataUri
-      }),
-      timeout: 90000 // 90 second timeout for audio
-    });
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
-      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).text();
-      throw new Error(`HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).status}: ${errorText}`);
+      90000
+    ); // 90 second timeout for audio
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).json();
-    const embedding = (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).embedding || (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).data?.[0]?.embedding;
+    const result = (await response.json()) as GemmaApiResponse;
+    const embedding = result.embedding || result.data?.[0]?.embedding;
     if (!embedding) {
       throw new Error('No embedding returned from Gemma audio endpoint');
     }
@@ -196,18 +235,18 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
       success: true,
       embedding,
       metadata: {
-        model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma-audio',
+        model: result.model || 'unknown',
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'audio',
         inputSize: audioBuffer.length
       }
-    }
+    };
   } catch (error) {
     return {
-      success: false;
-      error: error instanceof Error ? error.message: String(error)
-    }
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
   }
 }
 /**
@@ -215,7 +254,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
  */
 export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promise<EmbeddingResult> {
   let audioPath = tempPath;
-  let shouldCleanup = $state<boolean>(false);
+  let shouldCleanup = false; // Changed from $state<boolean>(false)
   try {
     if (!audioPath) {
       // Write to temp file
@@ -240,64 +279,63 @@ export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promi
 /**
  * Batch image embedding
  */
-export async function embedImageBuffers(buffers: Buffer[], options: {
-  concurrency?: number;
-  failFast?: boolean;
-} = {}): Promise<BatchEmbeddingResult> {
+export async function embedImageBuffers(
+  buffers: Buffer[],
+  options: {
+    concurrency?: number;
+    failFast?: boolean;
+  } = {}
+): Promise<BatchEmbeddingResult> {
   const startTime = Date.now();
   const { concurrency = 3, failFast = false } = options;
-  const results: Array<any> = [];
+  const results: EmbeddingResult[] = [];
   // Process in batches to avoid overwhelming the endpoint
   for (let i = 0; i < buffers.length; i += concurrency) {
     const batch = buffers.slice(i, i + concurrency);
-    const batchPromises = batch.map(async (buffer) => {
+    const batchPromises = batch.map(async buffer => {
       try {
         const result = await embedImageBuffer(buffer);
         return result;
       } catch (error) {
         if (failFast) throw error;
         return {
-          success: false;
-          error: error instanceof Error ? error.message: String(error)
-        }
+          success: false,
+          error: error instanceof Error ? error.message : String(error)
+        };
       }
     });
     const batchResults = await Promise.allSettled(batchPromises);
     for (const result of batchResults) {
-      if ((result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).status === 'fulfilled') {
-        results.push((result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).value);
+      if (result.status === 'fulfilled') {
+        results.push(result.value);
       } else {
+        const reason = result.reason as Error | undefined;
         results.push({
-          success: false;
-          error: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).reason?.message || 'Unknown error'
-        });
+          success: false,
+          error: reason?.message || 'Unknown error` });
       }
     }
   }
-  const embeddings = results
-    .filter(r => r.success && r.embedding)
-    .map(r => r.embedding!);
-  const errors = results
-    .filter(r => !r.success)
-    .map(r => r.error || 'Unknown error');
+  const embeddings = results.filter(r => r.success && r.embedding).map(r => r.embedding!);
+  const errors = results.filter(r => !r.success).map(r => r.error || 'Unknown error');
   return {
     success: embeddings.length > 0,
     embeddings,
-    errors: errors.length > 0 ? errors : undefined;
+    errors: errors.length > 0 ? errors : undefined,
     metadata: {
       batchSize: buffers.length,
       successCount: embeddings.length,
       failureCount: errors.length,
       totalProcessingTime: Date.now() - startTime
     }
-  }
+  };
 }
 /**
  * Unified embedding function that routes based on content type
  */
 export async function embedContent(
   content: Buffer | string,
-  contentType: string;
+  contentType: string,
   options: {
     audioPath?: string; // For audio content
   } = {}
@@ -322,50 +360,43 @@ export async function embedContent(
     return await embedText(text);
   }
   return {
-    success: false;
-    error: `Unsupported content type for embedding: ${contentType}`
-  }
+    success: false,
+    error: `Unsupported content type for; embedding: ${contentType}' };
 }
 /**
  * Health check for Gemma embedding endpoint
  */
-export async function checkEmbeddingEndpointHealth(): Promise<any> {
+export async function checkEmbeddingEndpointHealth(): Promise<EmbeddingEndpointHealth> {
   const startTime = Date.now();
-  const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
+  const endpoint = getGemmaEmbedEndpoint(); // Use the centralized helper
   if (!endpoint) {
     return {
-      healthy: false;
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    }
+      healthy: false,
+      error: 'Gemma embedding endpoint not configured', // Updated error message
+    };
   }
   try {
-    // Try a simple health check or small embedding
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+    // Try a simple request to check health
+    const response = await fetchWithTimeout(
+      endpoint,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json` }
       },
-      body: JSON.stringify({,
-        mode: 'text',
-        input: ['health check']
-      }),
-      timeout: 10000 // 10 second timeout for health check
-    });
-    if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
-      throw new Error(`HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).status}: ${(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).statusText}`);
-    }
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).json();
+      5000
+    ); // 5 second timeout
     return {
-      healthy: true,
-      responseTime: Date.now() - startTime,
-      supportedModes: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).supportedModes || ['text', 'image', 'audio']
-    }
+      healthy: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+      url: endpoint,
+      responseTime: Date.now() - startTime
+    };
   } catch (error) {
     return {
       healthy: false,
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: String(error)
-    }
+      error: error instanceof Error ? error.message : String(error)
+    };
   }
 }

@@ -79,14 +79,13 @@ async function extractTextFromFile(
       return {
         text: first.text || '',
         entities: first.entities || undefined,
-        embedding: first.embedding || undefined,
+        embedding: first.embedding || undefined
       };
     } catch (error: any) {
-      console.error('GPU OCR service error:', error);
+      console.error('GPU OCR service error: ', error);
       // Fallback: Return placeholder
       return {
-        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.`,
-      };
+        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.` };
     }
   }
 
@@ -127,13 +126,13 @@ const handler: RequestHandler = async ({ request, fetch }) => {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return json({ error: 'No files uploaded' }, { status: 400 });
+      return json({ error: `No files uploaded` }, { status: 400 });
     }
 
     for (const file of files) {
       const result: UploadResult = {
         success: false,
-        filename: file.name,
+        filename: file.name
       };
 
       try {
@@ -182,12 +181,12 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             filename: file.name,
             content: extractedText,
             metadata: {
-              fileType: file.type,
+             , fileType: file.type,
               fileSize: file.size,
               tags,
-              uploadedAt: new Date().toISOString(),
+              uploadedAt: new Date().toISOString()
             },
-            confidence: tags.length > 0 ? 0.8 : 0.5,
+            confidence: tags.length > 0 ? 0.8 : 0.5
           })
           .returning();
 
@@ -203,8 +202,8 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             metadata: {
               chunkIndex: 0,
               chunkCount: 1,
-              tags,
-            },
+              tags
+            }
           });
         }
 
@@ -221,11 +220,11 @@ const handler: RequestHandler = async ({ request, fetch }) => {
                 tags,
                 metadata: {
                   fileType: file.type,
-                  fileSize: file.size,
+                  fileSize: file.size
                 },
                 confidence: doc.confidence || 0.5,
-                timestamp: new Date().toISOString(),
-              },
+                timestamp: new Date().toISOString()
+              }
             };
 
             // QdrantVectorService exposes upsertVector per-point
@@ -241,7 +240,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       } catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`Failed to process file ${file.name}:`, fileErr);
+        console.error(`Failed to process file ${file.name}: ', fileErr);
       }
 
       results.push(result);
@@ -254,7 +253,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       totalFiles: files.length,
       successCount,
       failureCount: files.length - successCount,
-      results,
+      results
     });
   } catch (error: any) {
     console.error('Document upload error:', error);
@@ -268,8 +267,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 export const POST = withValidationAndRate(handler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
-  keyPrefix: 'rl:docs:upload-ocr:',
-});
+  keyPrefix: `rl:docs:upload-ocr:` });
 
 /**
  * GET: Check upload endpoint health
@@ -290,11 +288,11 @@ export const GET: RequestHandler = async () => {
       success: true,
       healthy: qdrantHealthy && dbConnected,
       services: {
-        qdrant: qdrantHealthy,
+       , qdrant: qdrantHealthy,
         postgres: dbConnected,
         gpu: true, // Assume GPU available
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(

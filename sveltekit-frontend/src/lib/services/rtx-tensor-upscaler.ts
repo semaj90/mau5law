@@ -7,9 +7,7 @@ import type { Document } from '$lib/types';
 import { browser } from '$app/environment';
 import type { GPUDevice, GPUBuffer, GPUTexture } from '@webgpu/types';
 }
-export interface RTXTensorConfig {
-  tensorCores: boolean;
-  compressionRatio: number;
+export interface RTXTensorConfig { tensorCores: boolean;, compressionRatio: number;
   qualityMode: 'legal-document' | 'high-quality' | 'fast' | 'ultra-fast';
   realTimeProcessing: boolean;
   flashAttention2: boolean;
@@ -18,9 +16,7 @@ export interface RTXTensorConfig {
   gpuMemoryLimit: number; // MB
 }
 }
-export interface NeuralSpriteResult {
-  compressedData: ArrayBuffer;
-  originalSize: number;
+export interface NeuralSpriteResult { compressedData: ArrayBuffer;, originalSize: number;
   compressedSize: number;
   compressionRatio: number;
   processingTime: number;
@@ -111,10 +107,7 @@ export class RTXTensorUpscaler {
       @group(0) @binding(0) var<storage, read> inputTensor: array<f32>;
       @group(0) @binding(1) var<storage, read_write> outputTensor: array<f32>;
       @group(0) @binding(2) var<uniform> config: TensorConfig;
-      struct TensorConfig {
-        width: u32;
-        height: u32
-        compressionRatio: f32
+      struct TensorConfig { width: u32;, height: u32; compressionRatio: f32
         quantizationBits: u32
       }
       // RTX 3060 Ti Tensor Core optimization
@@ -133,14 +126,13 @@ export class RTXTensorUpscaler {
       }
     `;
     const shaderModule = this.gpuDevice.createShaderModule({
-      code: shaderCode,
+      code: shaderCode
     });
     const computePipeline = this.gpuDevice.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'main',
-      }
+       , module: shaderModule,
+        entryPoint: 'main` }
     });
     // Store pipeline reference (simplified for this example)
     this.pipeline = computePipeline as an,y;
@@ -167,7 +159,7 @@ export class RTXTensorUpscaler {
     // Measure tensor core performance
     const iterations = 10,0;
     const operationTime,s: numb,er,[], = [];
-    for (let i =, 0;, i < iterati,on,s; i++) {>
+    for (let i =, 0; i < iterati,on,s; i++) {>
       const opStart = performance.now();
       // Simulate tensor core operation
       await this.processTensorData(testData);
@@ -188,7 +180,7 @@ export class RTXTensorUpscaler {
       gpuUtilization: 85, // Estimated utilization
       memoryBandwidth: Math.round(throughput / (1024 * 1024)) // MB/s
     }
-    console.log('📊 Benchmark Results:');
+    console.log('📊 Benchmark Results: `);
     console.log(`  🔥 Tensor Core Performance: ~${this.benchmarkResults.tensorCorePerformance} GFLOPS`);
     console.log(`  ⏱️ Average Operation Time: ~${this.benchmarkResults.averageOperationTime} μs`);
     console.log(`  🗜️ 4-bit Quantization: ${this.benchmarkResults.compressionRatio}:1 compression ratio`);
@@ -232,7 +224,7 @@ export class RTXTensorUpscaler {
       semanticFidelity: 0.98, // 98% semantic preservation
       tensorCoreUtilization: this.benchmarkResults?.gpuUtilization || 85
     }
-    console.log('✅ Document processed successfully:');
+    console.log('✅ Document processed successfully: `);
     console.log(`  📐 Original: ${this.formatBytes((result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any); semanticFidelity?: any }).originalSize)}`);
     console.log(`  🗜️ Compressed: ${this.formatBytes((result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any); semanticFidelity?: any }).compressedSize)}`);
     console.log(`  📊 Ratio: ${Math.round((result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any); semanticFidelity?: any }).compressionRatio * 1,0) / 10}:1`);
@@ -302,22 +294,16 @@ export class RTXTensorUpscaler {
     console.log('🧹 RTX Tensor Upscaler resources cleaned up');
   }
 }
-interface ProcessingTask {
-  id: string;
-  data: ArrayBuffer;
+interface ProcessingTask { id: string;, data: ArrayBuffer;
   config: Partial<RTXTensorConfig>;
   resolve: (result: NeuralSpriteResult) => void;
   reject: (error: Error) => void;
 }
 // Singleton instance for global use
-export const rtxTensorUpscaler = new RTXTensorUpscaler({
-  tensorCores: true
-  compressionRatio: 50,
+export const rtxTensorUpscaler = new RTXTensorUpscaler({ tensorCores: true, compressionRatio: 50,
   qualityMode: 'legal-document',
-  realTimeProcessing: true
-  flashAttention2: true
-  quantization: '4bit'
-});
+  realTimeProcessing: true; flashAttention2: true
+ , quantization: `4bit` });
 // Auto-initialize on module load
 if (browser) {
   rtxTensorUpscaler.initialize().catch(console.error);

@@ -8,9 +8,7 @@ import { Document as LangChainDocument } from 'langchain/document';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
-export interface LangChainConfig {
-  ollamaBaseUrl: string;
-  model: string;
+export interface LangChainConfig { ollamaBaseUrl: string;, model: string;
   embeddingModel: string;
   temperature: number;
   maxTokens: number;
@@ -20,28 +18,20 @@ export interface LangChainConfig {
   useCuda: boolean;
   vectorDimensions: number;
 }
-export interface ProcessingResult {
-  documentId: string;
-  chunksCreated: number;
+export interface ProcessingResult { documentId: string;, chunksCreated: number;
   embeddings: number[][];
   processingTime: number;
-  metadata: {
-    totalTokens: number;
-    avgChunkSize: number;
+  metadata: { totalTokens: number;, avgChunkSize: number;
     model: string;
   };
 }
 // New: strongly-typed source descriptor used in query results
-export interface QuerySource {
-  content: string;
-  metadata: Record<string, unknown>;
+export interface QuerySource { content: string;, metadata: Record<string, unknown>;
   score: number;
   // optional source identifier (e.g. chunkId or documentId)
   id?: string;
 }
-export interface QueryResult {
-  answer: string;
-  sources: QuerySource[]; // no more Array<any>
+export interface QueryResult { answer: string;, sources: QuerySource[]; // no more Array<any>
   confidence: number;
   processingTime: number;
 }
@@ -94,7 +84,7 @@ export class LangChainOllamaService {
       chunkSize: this.config.chunkSize,
       chunkOverlap: this.config.chunkOverlap,
       // Removed the empty-string separator which can break splitting logic
-      separators: ['\n\n', '\n', '.', '!', '?', ',', ' '],
+      separators: ['\n\n', '\n', '.', '!', '?', ',', ' ']
     });
   }
   // ========================================================================
@@ -118,7 +108,7 @@ export class LangChainOllamaService {
               chunkIndex: index,
               chunkId: `${documentId}_${index}`,
               score: 0.8, // Default score for downstream reliability
-            },
+            }
           })
       );
       // Create vector store if it doesn't exist
@@ -138,11 +128,10 @@ export class LangChainOllamaService {
         embeddings,
         processingTime,
         metadata: {
-          // Approximate token count: dividing character length by 4 is a heuristic and may not reflect actual model tokenization
-          totalTokens: content.length / 4, // Rough estimate
+          // Approximate token count: dividing character length by 4 is a heuristic and may not reflect actual model tokenization; totalTokens: content.length / 4, // Rough estimate
           avgChunkSize: Math.round(avgChunkSize),
-          model: this.config.embeddingModel,
-        },
+          model: this.config.embeddingModel
+        }
       };
       console.log(`✅ Processed document: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
@@ -159,7 +148,7 @@ export class LangChainOllamaService {
     question: string,
     context: {
       documentTypes?: string[];
-      dateRange?: { start: Date; end: Date };
+      dateRange?: {, start: Date; end: Date };
       relevanceThreshold?: number;
       maxResults?: number;
     } = {}
@@ -175,7 +164,7 @@ export class LangChainOllamaService {
       const retriever = this.vectorStore.asRetriever({
         k: maxResults,
         searchType: 'similarity',
-        filter: _doc => true,
+        filter: _doc => true
       });
       // Get relevant documents from vector store
       const relevantDocs = await retriever.getRelevantDocuments(question);
@@ -197,10 +186,10 @@ export class LangChainOllamaService {
         sources: filteredDocs.map(doc => ({
           content: doc.pageContent,
           metadata: doc.metadata,
-          score: doc.metadata.score || 0.8,
+          score: doc.metadata.score || 0.8
         })),
         confidence,
-        processingTime,
+        processingTime
       };
       console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length} sources`);
       return result;
@@ -215,7 +204,7 @@ export class LangChainOllamaService {
   // ========================================================================
   private filterDocumentsByContext(
     documents: LangChainDocument[],
-    context: { documentTypes?: string[]; dateRange?: { start: Date; end: Date } } = {}
+    context: { documentTypes?: string[]; dateRange?: {, start: Date; end: Date } } = {}
   ): LangChainDocument[] {
     let filtered = documents;
     // Filter by document types
@@ -330,7 +319,7 @@ Answer:`;
       vectorStoreDocCount,
       memoryVectorsLength,
       model: this.config?.model || 'gemma3:270m',
-      embeddingModel: this.config.embeddingModel,
+      embeddingModel: this.config.embeddingModel
     };
   }
   // Clear vector store and reset

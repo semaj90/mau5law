@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -20,9 +20,7 @@ import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from '@sveltejs/kit'; // Changed from './$types.js'
 
-interface ReportTemplate {
-  title: string;
-  sections: string[];
+interface ReportTemplate { title: string;, sections: string[];
   prompt: string;
 }
 
@@ -38,7 +36,7 @@ const REPORT_TEMPLATES: Record<string, ReportTemplate> = {
       'Conclusions and Recommendations',
     ],
     prompt:
-      'Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions.',
+      'Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions.'
   },
   'evidence-analysis': {
     title: 'Evidence Analysis Report',
@@ -51,7 +49,7 @@ const REPORT_TEMPLATES: Record<string, ReportTemplate> = {
       'Conclusions',
     ],
     prompt:
-      'Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings.',
+      'Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings.'
   },
   'legal-brief': {
     title: 'Legal Brief',
@@ -64,7 +62,7 @@ const REPORT_TEMPLATES: Record<string, ReportTemplate> = {
       'Prayer for Relief',
     ],
     prompt:
-      'Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions.',
+      'Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions.'
   },
   'investigation-report': {
     title: 'Investigation Report',
@@ -77,8 +75,8 @@ const REPORT_TEMPLATES: Record<string, ReportTemplate> = {
       'Next Steps',
     ],
     prompt:
-      'Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings.',
-  },
+      'Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings.'
+  }
 };
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
@@ -104,13 +102,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       template: template.title,
       sections: template.sections,
       metadata: {
-        generatedAt: new Date().toISOString(),
+       , generatedAt: new Date().toISOString(),
         caseId,
         reportId,
         wordCount: reportContent.split(' ').length,
         aiModel: 'Legal-GPT-5',
-        confidence: 0.92,
-      },
+        confidence: 0.92
+      }
     });
   } catch (error: any) {
     console.error('AI report generation error:', error);
@@ -122,7 +120,7 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
   const formattedDate = now.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   });
   let content = `
     <div style="text-align: center; margin-bottom: 40px;">
@@ -130,7 +128,7 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
         ${template.title}
       </h1>
       <p style="color: #6b7280; font-size: 16px; margin: 0;">
-        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report ID: ${reportId || 'N/A'}
+        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report ID: ${reportId || 'N/A` }
       </p>
     </div>
   `;
@@ -241,8 +239,7 @@ function generateSectionContent(section: string, reportType: string): string {
         <li>Prepare for potential challenges to evidence admissibility</li>
         <li>Schedule follow-up review in 30 days</li>
       </ol>
-    `,
-  };
+    ` };
   return (
     sampleContent[section] ||
     `

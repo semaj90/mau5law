@@ -8,7 +8,7 @@
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -20,31 +20,23 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit'; // Changed import to @sveltejs/kit
 
 // Define an interface for a basic legal document
-interface Law {
-  title: string;
-  code: string;
+interface Law { title: string;, code: string;
   description: string;
   [key: string]: any; // Allow other properties from basic search results
 }
 
 // Define an interface for an AI-enhanced legal document
-interface EnhancedLaw extends Law {
-  aiRelevanceScore: number;
-  aiInsights: string;
+interface EnhancedLaw extends Law { aiRelevanceScore: number;, aiInsights: string;
 }
 
 // Define an interface for the AI analysis result
-interface AIAnalysisResult {
-  summary: string;
-  concepts: string[];
+interface AIAnalysisResult { summary: string;, concepts: string[];
   suggestions: string[];
   rankings: number[];
 }
 
 // Define an interface for the enhanced AI analysis result returned by enhanceWithAI
-interface AIAnalysisResultEnhanced {
-  laws: EnhancedLaw[];
-  summary: string;
+interface AIAnalysisResultEnhanced { laws: EnhancedLaw[];, summary: string;
   suggestions: string[];
   concepts: string[];
 }
@@ -60,7 +52,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       q: query,
       jurisdiction,
       category,
-      limit: '20',
+      limit: '20'
     });
     const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`);
     const basicResults = await basicSearchResponse.json();
@@ -78,17 +70,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       query,
       filters: { jurisdiction, category },
       enhanced: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('AI legal search error:', error);
     return json(
       {
         success: false,
         error: 'AI search failed',
         laws: [],
-        count: 0,
+        count: 0
       },
       { status: 500 } // Corrected json return syntax
     );
@@ -99,11 +91,10 @@ async function enhanceWithAI(
   laws: Law[],
   fetch: typeof globalThis.fetch
 ): Promise<AIAnalysisResultEnhanced> {
-  // Replaced: 'any[]' with: 'Law[]', 'Function' with: 'typeof globalThis.fetch', and: 'any' with: 'AIAnalysisResultEnhanced'
+  // Replaced: 'any[]'; with: 'Law[]', 'Function' with: 'typeof globalThis.fetch', and: 'any'; with: 'AIAnalysisResultEnhanced'
   try {
     // Use AI to analyze the query and provide legal context
-    const aiAnalysisPrompt = `Analyze this legal search query and provide insights:
-Query: "${query}"
+    const aiAnalysisPrompt = `Analyze this legal search query and provide insights:; Query: "${query}"
 Found Laws:
 ${laws.map(law => `- ${law.title} (${law.code}): ${law.description}`).join('\n')}
 Please provide:
@@ -116,10 +107,9 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: aiAnalysisPrompt,
+       , message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
-        model: 'gemma3-legal:latest',
-      }),
+        model: `gemma3-legal:latest` })
     });
     let aiAnalysis: AIAnalysisResult | null = null; // Typed aiAnalysis
     if (aiResponse.ok) {
@@ -142,7 +132,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
             summary: aiData.response?.substring(0, 200) || 'AI analysis unavailable',
             concepts: extractLegalConcepts(query),
             suggestions: generateSuggestions(query),
-            rankings: laws.map((_, index) => index),
+            rankings: laws.map((_, index) => index)
           };
         }
       } catch {
@@ -151,17 +141,16 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
           summary: aiData.response?.substring(0, 200) || 'AI analysis unavailable',
           concepts: extractLegalConcepts(query),
           suggestions: generateSuggestions(query),
-          rankings: laws.map((_, index) => index),
+          rankings: laws.map((_, index) => index)
         };
       }
     }
     // If AI analysis failed, use fallback analysis
     if (!aiAnalysis) {
-      aiAnalysis = {
-        summary: `Search results for: "${query}" - found ${laws.length} relevant laws`,
+      aiAnalysis = { summary: `Search results, for: "${query}" - found ${laws.length} relevant laws`,
         concepts: extractLegalConcepts(query),
         suggestions: generateSuggestions(query),
-        rankings: laws.map((_, index) => index),
+        rankings: laws.map((_, index) => index)
       };
     }
     // Reorder laws based on AI rankings if available
@@ -178,27 +167,27 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       // Explicitly type enhancedLaws
       ...law,
       aiRelevanceScore: Math.max(0.9 - index * 0.1, 0.1),
-      aiInsights: generateLawInsights(law, query),
+      aiInsights: generateLawInsights(law, query)
     })); // Added missing closing parenthesis
     return {
       laws: enhancedLaws,
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
-      concepts: aiAnalysis.concepts || extractLegalConcepts(query),
+      concepts: aiAnalysis.concepts || extractLegalConcepts(query)
     };
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('AI enhancement error:', error);
     // Return basic enhancement on AI failure
     return {
       laws: laws.map(law => ({
         ...law,
         aiRelevanceScore: 0.8,
-        aiInsights: generateLawInsights(law, query),
+        aiInsights: generateLawInsights(law, query)
       })),
       summary: `Found ${laws.length} laws related to: "${query}"`,
       suggestions: generateSuggestions(query),
-      concepts: extractLegalConcepts(query),
+      concepts: extractLegalConcepts(query)
     };
   }
 }
@@ -212,7 +201,7 @@ function extractLegalConcepts(query: string): string[] {
     'search': ['fourth amendment', 'warrant', 'probable cause', 'constitutional law'],
     'robbery': ['theft', 'force', 'fear', 'felony', 'criminal law'],
     'corporation': ['business entity', 'filing', 'articles', 'corporate law'],
-    'property': ['ownership', 'title', 'real estate', 'civil law'],
+    'property': ['ownership', 'title', 'real estate', 'civil law']
   };
   for (const [keyword, relatedConcepts] of Object.entries(conceptMap)) {
     if (lowerQuery.includes(keyword)) {
@@ -258,7 +247,7 @@ function generateSuggestions(query: string): string[] {
   return suggestions.slice(0, 3);
 }
 function generateLawInsights(law: Law, query: string): string {
-  // Replaced: 'any' with: 'Law'
+  // Replaced: 'any'; with: 'Law'
   const lowerQuery = query.toLowerCase();
   const lowerTitle = law.title.toLowerCase();
   if (lowerQuery.includes('element') && lowerTitle.includes('murder')) {

@@ -6,21 +6,15 @@ import type { User } from '$lib/types';
  */
 import { createMachine, assign, type ActorRefFrom } from 'xstate';
 // Type definitions
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name: string;
   role: string;
 }
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   status: string;
   createdAt: Date;
 }
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   type: string;
   caseId: string;
   createdAt: Date;
@@ -49,30 +43,28 @@ export interface UserWorkflowContext extends WorkflowContext {
   }
   collaborators: User[];
   notifications: Array<any>;
-  preferences: {
-    autoSave: boolean;
-    notifications: boolean;
+  preferences: { autoSave: boolean;, notifications: boolean;
     collaborationMode: 'real-time' | 'async';
   }
 }
 export type UserWorkflowEvent =
-  | { type: 'LOGIN'; user: User }
+  | { type: 'LOGIN';, user: User }
   | { type: 'LOGOUT' }
-  | { type: 'START_WORKFLOW'; workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any }
+  | { type: 'START_WORKFLOW';, workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any }
   | { type: 'NEXT_STEP'; data?: any }
   | { type: 'PREVIOUS_STEP' }
-  | { type: 'COMPLETE_STEP'; stepData: any }
+  | { type: 'COMPLETE_STEP';, stepData: any }
   | { type: 'CANCEL_WORKFLOW' }
   | { type: 'COMPLETE_WORKFLOW' }
   | { type: 'SET_ACTIVE_CASE'; case LegalCase }
-  | { type: 'SET_ACTIVE_EVIDENCE'; evidence: Evidence }
-  | { type: 'ADD_COLLABORATOR'; collaborator: User }
-  | { type: 'REMOVE_COLLABORATOR'; userId: string }
-  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success'; message: string } }
-  | { type: 'MARK_NOTIFICATION_READ'; notificationId: string }
+  | { type: 'SET_ACTIVE_EVIDENCE';, evidence: Evidence }
+  | { type: 'ADD_COLLABORATOR';, collaborator: User }
+  | { type: 'REMOVE_COLLABORATOR';, userId: string }
+  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success';, message: string } }
+  | { type: 'MARK_NOTIFICATION_READ';, notificationId: string }
   | { type: 'CLEAR_NOTIFICATIONS' }
-  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserWorkflowContext['preferences']> }
-  | { type: 'ERROR'; error: string }
+  | { type: 'UPDATE_PREFERENCES';, preferences: Partial<UserWorkflowContext['preferences']> }
+  | { type: 'ERROR';, error: string }
   | { type: 'RETRY' }
   | { type: 'RESET' }
 export const userWorkflowMachine = createMachine({
@@ -101,16 +93,12 @@ export const userWorkflowMachine = createMachine({
     preferences: {
       autoSave: true,
       notifications: true,
-      collaborationMode: 'real-time',
+      collaborationMode: 'real-time'
     }
   },
-  states: {
-    idle: {
-      on: {
-        LOGIN: {
-          target: 'authenticated',
+  states: { idle: {, on: { LOGIN: {, target: 'authenticated',
           actions: assign({
-            user: ({ event }) => event.user,
+           , user: ({ event }) => event.user,
             userId: ({ event }) => event.user.id
           })
         }
@@ -121,11 +109,7 @@ export const userWorkflowMachine = createMachine({
       entry: assign({
         currentStep: 'authenticated'
       }),
-      states: {
-        ready: {
-          on: {
-            START_WORKFLOW: {
-              target: 'workflowActive',
+      states: { ready: {, on: { START_WORKFLOW: {, target: 'workflowActive',
               actions: assign({
                 workflow: ({ event, context }) => ({
                   ...context.workflow,
@@ -142,28 +126,20 @@ export const userWorkflowMachine = createMachine({
                 data: ({ event }) => event.data || {}
               })
             },
-            SET_ACTIVE_CASE: {
-              actions: assign({
-                activeCase: ({ event }) => event.case,
+            SET_ACTIVE_CASE: { actions: assign({, activeCase: ({ event }) => event.case,
                 caseId: ({ event }) => event.case.id
               })
             },
-            SET_ACTIVE_EVIDENCE: {
-              actions: assign({
-                activeEvidence: ({ event }) => event.evidence
+            SET_ACTIVE_EVIDENCE: { actions: assign({, activeEvidence: ({ event }) => event.evidence
               })
             },
-            ADD_COLLABORATOR: {
-              actions: assign({
-                collaborators: ({ context, event }) => {
+            ADD_COLLABORATOR: { actions: assign({, collaborators: ({ context, event }) => {
                   const exists = context.collaborators.some((c: any) => c.id === event.collaborator.id);
                   return exists ? context.collaborators: [...context.collaborators, event.collaborator];
                 }
               })
             },
-            REMOVE_COLLABORATOR: {
-              actions: assign({
-                collaborators: ({ context, event }) =>
+            REMOVE_COLLABORATOR: { actions: assign({, collaborators: ({ context, event }) =>
                   context.collaborators.filter((c: any) => c.id !== event.userId)
               })
             }
@@ -174,11 +150,7 @@ export const userWorkflowMachine = createMachine({
           entry: assign({
             currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown'
           }),
-          states: {
-            executingStep: {
-              on: {
-                COMPLETE_STEP: {
-                  target: 'stepCompleted',
+          states: { executingStep: {, on: { COMPLETE_STEP: {, target: 'stepCompleted',
                   actions: assign({
                     data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
                     progress: ({ context }) =>
@@ -223,9 +195,7 @@ export const userWorkflowMachine = createMachine({
                 }
               ]
             },
-            stepError: {
-              on: {
-                RETRY: {
+            stepError: { on: {, RETRY: {
                   target: 'executingStep',
                   actions: assign({
                     errors: []
@@ -263,22 +233,17 @@ export const userWorkflowMachine = createMachine({
               }
             }
           },
-          on: {
-            CANCEL_WORKFLOW: {
-              target: 'workflowCancelled',
+          on: { CANCEL_WORKFLOW: {, target: 'workflowCancelled',
               actions: assign({
                 workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'cancelled' as const
                 }),
-                currentStep: 'workflow_cancelled'
-              })
+                currentStep: `workflow_cancelled` })
             }
           }
         },
-        workflowCompleted: {
-          on: {
-            START_WORKFLOW: {
+        workflowCompleted: { on: {, START_WORKFLOW: {
               target: 'workflowActive',
               actions: assign({
                 workflow: ({ event, context }) => ({
@@ -306,7 +271,7 @@ export const userWorkflowMachine = createMachine({
                   status: 'pending' as const,
                   currentStepIndex: 0,
                   startedAt: undefined,
-                  completedAt: undefined,
+                  completedAt: undefined
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -316,9 +281,7 @@ export const userWorkflowMachine = createMachine({
             }
           }
         },
-        workflowCancelled: {
-          on: {
-            START_WORKFLOW: {
+        workflowCancelled: { on: {, START_WORKFLOW: {
               target: 'workflowActive',
               actions: assign({
                 workflow: ({ event, context }) => ({
@@ -346,7 +309,7 @@ export const userWorkflowMachine = createMachine({
                   status: 'pending' as const,
                   currentStepIndex: 0,
                   startedAt: undefined,
-                  completedAt: undefined,
+                  completedAt: undefined
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -357,9 +320,7 @@ export const userWorkflowMachine = createMachine({
           }
         }
       },
-      on: {
-        ADD_NOTIFICATION: {
-          actions: assign({
+      on: { ADD_NOTIFICATION: {, actions: assign({
             notifications: ({ context, event }) => [
               ...context.notifications,
               {
@@ -372,21 +333,15 @@ export const userWorkflowMachine = createMachine({
             ]
           })
         },
-        MARK_NOTIFICATION_READ: {
-          actions: assign({
-            notifications: ({ context, event }) =>
+        MARK_NOTIFICATION_READ: { actions: assign({, notifications: ({ context, event }) =>
               context.notifications.map((n: any) => n.id === event.notificationId ? { ...n, read: true } : n
               )
           })
         },
-        CLEAR_NOTIFICATIONS: {
-          actions: assign({
-            notifications: []
+        CLEAR_NOTIFICATIONS: { actions: assign({, notifications: []
           })
         },
-        UPDATE_PREFERENCES: {
-          actions: assign({
-            preferences: ({ context, event }) => ({
+        UPDATE_PREFERENCES: { actions: assign({, preferences: ({ context, event }) => ({
               ...context.preferences,
               ...event.preferences
             })
@@ -400,7 +355,7 @@ export const userWorkflowMachine = createMachine({
             activeCase: undefined,
             activeEvidence: undefined,
             workflow: {
-              type: 'case_creation' as const,
+             , type: 'case_creation' as const,
               status: 'pending' as const,
               steps: [],
               currentStepIndex: 0,

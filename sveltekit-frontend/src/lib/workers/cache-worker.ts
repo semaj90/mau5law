@@ -16,9 +16,7 @@ interface CacheWorkerMessage {
     data?: Uint8Array | Float32Array | string | Record<string, unknown>;
   }>;
 }
-interface WorkerConfig {
-  poolType: string;
-  threadId: number;
+interface WorkerConfig { poolType: string;, threadId: number;
   rtxOptimizations: boolean;
   simdEnabled: boolean;
 }
@@ -73,20 +71,20 @@ class CacheWorker {
           result = await this.processBatch(operations!);
           break;
         default:
-          throw new Error(`Unknown worker operation: ${type}`);
+          throw new Error(`Unknown worker; operation: ${type}`);
       }
       self.postMessage({
         type: 'result',
         id,
         result,
-        success: true,
+        success: true
       });
     } catch (error) {
       self.postMessage({
         type: 'error',
         id,
         error: error instanceof Error ? error.message : String(error),
-        success: false,
+        success: false
       });
     }
   }
@@ -251,13 +249,13 @@ class CacheWorker {
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',
-        __data: Array.from(value),
+        __data: Array.from(value)
       };
     }
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
-        __data: Array.from(new Uint8Array(value)),
+        __data: Array.from(new Uint8Array(value))
       };
     }
     return value;
@@ -290,7 +288,7 @@ class CacheWorker {
    */
   private async processBatch(
     operations: Array<{
-      type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
+     , type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
       data?: Uint8Array | Float32Array | string | Record<string, unknown>;
     }>
   ): Promise<Array<Uint8Array | string | Float32Array | unknown>> {
@@ -311,7 +309,7 @@ class CacheWorker {
             case 'deserialize':
               return await this.deserializeData(op.data as Uint8Array);
             default:
-              throw new Error(`Unknown batch operation: ${op.type}`);
+              throw new Error(`Unknown batch; operation: ${op.type}`);
           }
         })
       )) as Array<Uint8Array | string | Float32Array | unknown>;

@@ -22,9 +22,7 @@ interface WorkerJob {
 
 // Define the structure for worker pool statistics.
 // This type should ideally come from the worker-pool-simple.js definition.
-interface WorkerPoolStats {
-  totalWorkers: number;
-  busyWorkers: number;
+interface WorkerPoolStats { totalWorkers: number;, busyWorkers: number;
   freeWorkers: number;
   queuedJobs: number;
   pendingCallbacks: number;
@@ -55,9 +53,7 @@ type UserDocument = typeof userDocuments.$inferSelect & {
  */
 type DocumentMetadata = Record<string, unknown>;
 
-interface JobStatusResponse {
-  success: boolean;
-  jobId: string; // jobId is always present in the response
+interface JobStatusResponse { success: boolean;, jobId: string; // jobId is always present in the response
   status: 'queued' | 'processing' | 'completed' | 'failed' | 'not-found';
   documentId?: number;
   progress?: {
@@ -100,8 +96,8 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
         status: 'processing',
         progress: {
           stage: activeJob.stage || 'processing',
-          percentage: activeJob.progress ?? 0,
-        },
+          percentage: activeJob.progress ?? 0
+        }
       };
       return json(responseData);
     }
@@ -114,8 +110,8 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
         status: 'queued',
         progress: {
           stage: 'queued',
-          percentage: 0,
-        },
+          percentage: 0
+        }
       };
       return json(responseData);
     }
@@ -191,10 +187,10 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
           content,
           contentType,
           embeddingStatus,
-          metadata: parsedMetadata,
+          metadata: parsedMetadata
         },
         createdAt,
-        completedAt,
+        completedAt
       };
       return json(responseData);
     }
@@ -204,8 +200,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
       success: true,
       jobId,
       status: 'not-found',
-      error: 'Job not found in queue or database',
-    };
+      error: 'Job not found in queue or database` };
     return json(responseData);
   } catch (err) {
     console.error('Job status check error:', err);
@@ -213,7 +208,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
       success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
-      error: err instanceof Error ? err.message : String(err),
+      error: err instanceof Error ? err.message : String(err)
     };
     return json(errorResponseData, { status: 500 });
   }

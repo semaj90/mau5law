@@ -11,9 +11,7 @@
  */
 import type { GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
 // Binary field offsets and sizes (bytes)
-const FLATBUFFER_SCHEMA = {
-  HEADER: {
-    MAGIC: 0, // 4 bytes - "FBND" magic number
+const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic number
     VERSION: 4, // 2 bytes - schema version
     NODE_COUNT: 6, // 4 bytes - number of nodes
     TIMESTAMP: 10, // 8 bytes - creation timestamp
@@ -38,7 +36,7 @@ const FLATBUFFER_SCHEMA = {
     EMBEDDING_OFFSET: 40, // 4 bytes - offset to embedding data
     METADATA_OFFSET: 44, // 4 bytes - offset to metadata blob
     TOTAL_SIZE: 48, // Total node header size
-  },
+  }
 } as const;
 export interface FlatBufferNode {
   readonly id: number;
@@ -48,7 +46,7 @@ export interface FlatBufferNode {
   readonly flags: number;
   readonly confidence: number;
   readonly riskCode: number;
-  readonly position: { x: number; y: number; z: number };
+  readonly position: { x: number; y: number;, z: number };
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
 }
@@ -69,7 +67,7 @@ export class FlatBufferNodeSerializer {
     compressionRatio: 0,
     totalNodes: 0,
     cacheHits: 0,
-    cacheMisses: 0,
+    cacheMisses: 0
   };
   // Binary data cache with LRU eviction
   private static binaryCache = new Map<string, ArrayBuffer>();
@@ -80,16 +78,14 @@ export class FlatBufferNodeSerializer {
    * Optimized for GPU texture upload and NES memory allocation
    */
   static async serializeNodes(
-    nodes: Array<{
-      id: number;
-      type: string;
+    nodes: Array<{ id: number;, type: string;
       priority: number;
       bankId?: number;
       compressed?: boolean;
       cached?: boolean;
       confidence: number;
       riskLevel: string;
-      position: { x: number; y: number; z?: number };
+      position: {, x: number; y: number; z?: number };
       embedding?: Float32Array;
       metadata?: Record<string, unknown>; // Changed from 'any'
     }>
@@ -229,7 +225,7 @@ export class FlatBufferNodeSerializer {
         const position = {
           x: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, true),
           y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),
-          z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true),
+          z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true)
         };
         offset += FLATBUFFER_SCHEMA.NODE.TOTAL_SIZE;
         // Read embedding (zero-copy when possible)
@@ -263,7 +259,7 @@ export class FlatBufferNodeSerializer {
           riskCode,
           position,
           embedding,
-          metadata,
+          metadata
         });
       }
       const deserializeTime = performance.now() - startTime;
@@ -274,7 +270,7 @@ export class FlatBufferNodeSerializer {
         timestamp,
         checksum,
         nodes,
-        totalSize: buffer.byteLength,
+        totalSize: buffer.byteLength
       };
     } catch (error: any) {
       // Changed from 'any'
@@ -323,11 +319,11 @@ export class FlatBufferNodeSerializer {
       embedding: embeddings,
       metadata,
       priority: priorities,
-      bankId: bankIds,
+      bankId: bankIds
     };
   }
   // Cache management
-  private static generateCacheKey(nodes: Array<{ id: number }>): string {
+  private static generateCacheKey(nodes: Array<{, id: number }>): string {
     const ids = nodes.map(n => n.id).sort((a, b) => a - b); // Sort numerically
     return `nodes_${ids.length}_${ids[0] || 0}_${ids[ids.length - 1] || 0}`;
   }
@@ -378,9 +374,7 @@ export class FlatBufferNodeSerializer {
   /**
    * Get performance metrics and cache statistics
    */
-  static getMetrics(): {
-    serializeTime: number;
-    deserializeTime: number;
+  static getMetrics(): { serializeTime: number;, deserializeTime: number;
     compressionRatio: number;
     totalNodes: number;
     cacheHits: number;
@@ -396,7 +390,7 @@ export class FlatBufferNodeSerializer {
       cacheSize: this.binaryCache.size,
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes : 0,
-      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0,
+      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
     };
   }
   /**
@@ -411,7 +405,7 @@ export class FlatBufferNodeSerializer {
       compressionRatio: 0,
       totalNodes: 0,
       cacheHits: 0,
-      cacheMisses: 0,
+      cacheMisses: 0
     };
   }
 }

@@ -20,9 +20,7 @@ import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
 import { services, generateChatResponse } from '$lib/server/services';
 
 // Minimal DB insert shapes (only fields used by this endpoint)
-type NewChatSession = {
-  id: string;
-  userId: string;
+type NewChatSession = { id: string;, userId: string;
   title?: string;
   context?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
@@ -30,9 +28,7 @@ type NewChatSession = {
   updatedAt?: Date;
 };
 
-type NewChatMessage = {
-  id: string;
-  sessionId: string;
+type NewChatMessage = { id: string;, sessionId: string;
   content: string;
   role: 'user' | 'assistant' | string;
   embedding?: number[] | null;
@@ -58,9 +54,7 @@ interface ChatRequest {
   stream?: boolean;
   useProfile?: boolean;
 }
-interface CudaStreamResponse {
-  success: boolean;
-  response: string;
+interface CudaStreamResponse { success: boolean;, response: string;
   confidence: number;
   tokensPerSecond: number;
   vectorSimilarity?: number;
@@ -77,7 +71,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     }
     // Get chat session
     const session = await db.query.chatSessions.findFirst({
-      where: eq(chatSessions.id, sessionId),
+      where: eq(chatSessions.id, sessionId)
     });
     if (!session) {
       return json({ error: 'Session not found' }, { status: 404 });
@@ -85,7 +79,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     // Get messages for session
     const messages = await db.query.chatMessages.findMany({
       where: eq(chatMessages.sessionId, sessionId),
-      orderBy: [desc(chatMessages.timestamp)],
+      orderBy: [desc(chatMessages.timestamp)]
     });
     return json({
       session,
@@ -134,8 +128,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             metadata: {
               model,
               userAgent: request.headers.get('user-agent'),
-              messageCount: 0,
-            },
+              messageCount: 0
+            }
           };
           await db.insert(chatSessions).values(newSession);
         } catch (dbError) {
@@ -155,8 +149,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           embedding: null,
           metadata: {
             model,
-            userId,
-          },
+            userId
+          }
         };
         await db.insert(chatMessages).values(newUserMessage);
 
@@ -167,9 +161,9 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             metadata: {
               model,
               messageCount: messages.length + 1,
-              userAgent: request.headers.get('user-agent'),
+              userAgent: request.headers.get('user-agent')
             },
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(chatSessions.id, currentSessionId));
       } catch (dbError) {
@@ -185,7 +179,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
         ? await buildUserContextPrompt(userObj?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
             jurisdictionHint: true,
             practiceAreasHint: true,
-            tone: 'concise',
+            tone: 'concise'
           })
         : '';
       const enrichedQuery = personalization ? `${personalization}\n\nUser: ${userContent}` : userContent;
@@ -212,7 +206,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
               confidence: 0,
               tokensPerSecond: 0,
               reasoning: 'All AI services offline',
-              recommendations: ['Try again later when services are restored'],
+              recommendations: ['Try again later when services are restored']
             };
           }
         }
@@ -234,8 +228,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
               vectorSimilarity: cudaResponse.vectorSimilarity,
               grpoScore: cudaResponse.grpoScore,
               reasoning: cudaResponse.reasoning,
-              recommendations: cudaResponse.recommendations,
-            },
+              recommendations: cudaResponse.recommendations
+            }
           };
           await db.insert(chatMessages).values(newAiMessage);
         } catch (dbError) {
@@ -251,8 +245,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           model,
           confidence: cudaResponse.confidence,
           tokensPerSecond: cudaResponse.tokensPerSecond,
-          authenticated: isAuthenticated,
-        },
+          authenticated: isAuthenticated
+        }
       });
     }
     // HTTP Streaming response (preferred for AI chat)
@@ -269,7 +263,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             type: 'session',
             sessionId: currentSessionId,
             model,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           };
           controller.enqueue(`data: ${JSON.stringify(sessionInfo)}\n\n`);
           // Build contextual query again in stream scope
@@ -277,8 +271,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             ? await buildUserContextPrompt(userObj?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
                 jurisdictionHint: true,
                 practiceAreasHint: true,
-                tone: 'concise',
-              })
+                tone: `concise` })
             : '';
           const enrichedQuery = personalization ? `${personalization}\n\nUser: ${userContent}` : userContent;
           // Stream from centralized Ollama service (primary)
@@ -292,13 +285,12 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             response = await fetch(ollamaUrl, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
-              },
+                'Content-Type': `application/json` },
               body: JSON.stringify({
                 model: ollamaModel,
-                messages: [{ role: 'user', content: enrichedQuery }],
-                stream: true,
-              }),
+                messages: [{, role: 'user', content: enrichedQuery }],
+                stream: true
+              })
             });
             if (!response.ok) throw new Error('Ollama streaming failed');
             console.log('✅ Using centralized Ollama streaming:', ollamaModel);
@@ -309,19 +301,18 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Accept: 'text/event-stream',
-              },
+                Accept: `text/event-stream` },
               body: JSON.stringify({
                 type: 'inference',
                 priority: 5,
                 payload: {
-                  prompt: enrichedQuery,
+                 , prompt: enrichedQuery,
                   sessionId: currentSessionId,
                   includeReasoning: true,
                   includeRecommendations: true,
-                  stream: true,
-                },
-              }),
+                  stream: true
+                }
+              })
             });
           }
           // Safely validate response and obtain a reader
@@ -359,7 +350,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                 if (message && typeof message['content'] === 'string') {
                   const content = message['content'] as string;
                   fullResponse += content;
-                  controller.enqueue(`data: ${JSON.stringify({ type: 'token', content })}\n\n`);
+                  controller.enqueue(`data: ${JSON.stringify({, type: 'token', content })}\n\n`);
                   continue;
                 }
 
@@ -382,7 +373,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                     vectorSimilarity: parsed['vectorSimilarity'],
                     grpoScore: parsed['grpoScore'],
                     reasoning: parsed['reasoning'],
-                    recommendations: parsed['recommendations'],
+                    recommendations: parsed['recommendations']
                   };
                   controller.enqueue(`data: ${JSON.stringify(parsed)}\n\n`);
                   continue;
@@ -398,12 +389,12 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                 if (typeof parsed['text'] === 'string') {
                   const txt = parsed['text'] as string;
                   fullResponse += txt;
-                  controller.enqueue(`data: ${JSON.stringify({ type: 'token', content: txt })}\n\n`);
+                  controller.enqueue(`data: ${JSON.stringify({, type: 'token', content: txt })}\n\n`);
                 }
               } catch (parseError) {
                 console.warn('Failed to parse streaming line:', line.slice(0, 200));
                 // Best-effort: forward raw chunk
-                controller.enqueue(`data: ${JSON.stringify({ type: 'raw', chunk: line })}\n\n`);
+                controller.enqueue(`data: ${JSON.stringify({, type: 'raw', chunk: line })}\n\n`);
               }
             }
           }
@@ -420,8 +411,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                   model,
                   confidence,
                   tokensPerSecond,
-                  ...metadata,
-                },
+                  ...metadata
+                }
               };
               await db.insert(chatMessages).values(newAiMessage);
 
@@ -432,9 +423,9 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                   metadata: {
                     model,
                     messageCount: messages.length + 2,
-                    userAgent: request.headers.get('user-agent'),
+                    userAgent: request.headers.get('user-agent')
                   },
-                  updatedAt: new Date(),
+                  updatedAt: new Date()
                 })
                 .where(eq(chatSessions.id, currentSessionId));
             } catch (dbError) {
@@ -449,7 +440,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
             fullResponse,
             confidence,
             tokensPerSecond,
-            metadata,
+            metadata
           };
           controller.enqueue(`data: ${JSON.stringify(completion)}\n\n`);
           controller.enqueue(`data: [DONE]\n\n`);
@@ -457,13 +448,12 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           console.error('Streaming error:', error);
           const errorMessage = {
             type: 'error',
-            error: error instanceof Error ? error.message : 'Unknown streaming error',
-          };
+            error: error instanceof Error ? error.message : `Unknown streaming error` };
           controller.enqueue(`data: ${JSON.stringify(errorMessage)}\n\n`);
         } finally {
           controller.close();
         }
-      },
+      }
     });
     return new Response(readable, {
       headers: {
@@ -472,15 +462,15 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      },
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+      }
     });
   } catch (error) {
     console.error('Chat API error:', error);
     return json(
       {
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -493,8 +483,7 @@ import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate'
 export const POST = withValidationAndRate(chatHandler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
-  keyPrefix: 'rl:chat:',
-});
+  keyPrefix: `rl:chat:` });
 
 /**
  * Helper: Ollama chat using centralized service adapter
@@ -534,7 +523,7 @@ async function fetchOllamaResponse(query: string): Promise<CudaStreamResponse> {
       vectorSimilarity: 0.92,
       grpoScore: 0.9,
       reasoning: `${ollamaCfg?.chatModel ?? ollamaCfg?.model ?? ollamaModel} via centralized Ollama adapter`,
-      recommendations: ['Using production Ollama service with dynamic configuration'],
+      recommendations: ['Using production Ollama service with dynamic configuration']
     };
   } catch (error) {
     console.error('❌ Centralized Ollama service failed:', error);
@@ -553,14 +542,13 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
     const response = await fetch(`${TRITON_SERVER_URL}${TRITON_ENDPOINT}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
-        prompt: query,
+       , prompt: query,
         max_tokens: 150,
-        temperature: 0.3,
+        temperature: 0.3
       }),
-      signal: controller.signal,
+      signal: controller.signal
     });
 
     clearTimeout(timeout);
@@ -577,7 +565,7 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
       vectorSimilarity: 0.88,
       grpoScore: 0.85,
       reasoning: 'Triton Flash Attention with AWQ4 quantization',
-      recommendations: ['Using Gemma3 AWQ4 model via Triton'],
+      recommendations: ['Using Gemma3 AWQ4 model via Triton']
     };
   } catch (error) {
     console.error('❌ Triton server failed:', error);
@@ -591,18 +579,17 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
   const submitResponse = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-    },
+      'Content-Type': `application/json` },
     body: JSON.stringify({
       type: 'inference',
       priority: 5,
       payload: {
-        prompt: query,
+       , prompt: query,
         includeReasoning: true,
         includeRecommendations: true,
-        stream,
-      },
-    }),
+        stream
+      }
+    })
   });
   if (!submitResponse.ok) {
     throw new Error(`CUDA server error: ${submitResponse.status}`);
@@ -634,7 +621,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         vectorSimilarity: 0.85, // Mock similarity
         grpoScore: 0.9, // Mock GRPO score
         reasoning: 'CUDA GPU inference completed',
-        recommendations: ['Response generated using RTX 3060 Ti'],
+        recommendations: ['Response generated using RTX 3060 Ti']
       };
     }
     if (resultData.error) {
@@ -692,7 +679,7 @@ function getOllamaConfig(svc: any): OllamaConfigShape {
         baseUrl: typeof cfg.baseUrl === 'string' ? cfg.baseUrl : undefined,
         url: typeof cfg.url === 'string' ? cfg.url : undefined,
         chatModel: typeof cfg.chatModel === 'string' ? cfg.chatModel : undefined,
-        model: typeof cfg.model === 'string' ? cfg.model : undefined,
+        model: typeof cfg.model === 'string' ? cfg.model : undefined
       };
     }
     return {};
@@ -789,8 +776,8 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400',
-    },
+      'Access-Control-Max-Age': '86400'
+    }
   });
 };
 // DELETE: Delete chat session
@@ -807,6 +794,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({ success: true, sessionId });
   } catch (error) {
     console.error('Error deleting chat session:', error);
-    return json({ error: 'Failed to delete chat session' }, { status: 500 });
+    return json({ error: `Failed to delete chat session` }, { status: 500 });
   }
 };

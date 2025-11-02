@@ -212,7 +212,7 @@ import type { Document } from '$lib/types';
     {#if systemStatus}
       <div class="flex items-center gap-2 text-sm">
         <div
-          class="w-3" h-3 rounded-full {systemStatus.healthScore > 80
+          class="w-3 h-3 rounded-full" {systemStatus.healthScore > 80
             ? 'bg-green-500'
             : systemStatus.healthScore > 60
               ? 'bg-yellow-500'

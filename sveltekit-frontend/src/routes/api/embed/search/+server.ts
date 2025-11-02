@@ -4,9 +4,7 @@ import { json, error } from '@sveltejs/kit'
 import { generateEmbedding } from '$lib/server/services/vectorDBService';
 
 // Define types for better code quality and to remove: 'any'
-interface SimilarChunk {
-  id: string | null;
-  chunk_text: string;
+interface SimilarChunk { id: string | null;, chunk_text: string;
   chunk_sequence: number;
   evidence_id: string | null;
   embedding: number[] | null;
@@ -36,20 +34,20 @@ async function generateRAGResponse(query: string, context: SimilarChunk[]): Prom
 Context:
 ${contextText}
 Query: ${query}
-Response:`;
+Response: ';
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'legal:latest',
         prompt: prompt,
         stream: false,
         options: {
-          temperature: 0.7,
+         , temperature: 0.7,
           top_p: 0.9,
-          max_tokens: 1000,
-        },
-      }),
+          max_tokens: 1000
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Ollama generation error: ${response.statusText}`);
@@ -103,8 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: 'chat_embeddings',
-      },
+        source: `chat_embeddings` }
     }));
 
     return json({
@@ -113,12 +110,12 @@ export const POST: RequestHandler = async ({ request }) => {
       results: enhancedResults,
       ragResponse,
       metadata: {
-        resultCount: similarChunks.length,
+       , resultCount: similarChunks.length,
         threshold,
         embeddingModel: 'nomic-embed-text',
         ragModel: includeRAGResponse ? 'legal:latest' : null,
-        searchTime: Date.now(),
-      },
+        searchTime: Date.now()
+      }
     });
   } catch (err) {
     console.error('Vector search error:', err);

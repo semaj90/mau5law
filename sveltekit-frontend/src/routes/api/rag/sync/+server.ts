@@ -58,13 +58,13 @@ export const POST: RequestHandler = async ({ request }) => {
             content: text,
             embedding: (embedding as unknown) as number[] | null,
             metadata: (metadata ?? {}) as EmbeddingMetadata,
-            source: ((metadata ?? {}) as EmbeddingMetadata).source || 'user_input',
+            source: ((metadata ?? {}) as EmbeddingMetadata).source || 'user_input'
           } as NewEmbedding
 
         await db
           .insert(embeddings)
           .values(record)
-          .onConflictDoUpdate({ target: embeddings.id, set: { content: record.content, embedding: record.embedding, metadata: record.metadata, source: record.source } })
+          .onConflictDoUpdate({ target: embeddings.id, set: {, content: record.content, embedding: record.embedding, metadata: record.metadata, source: record.source } })
           .execute?.();
       } catch (e) {
         console.warn('pg upsert failed', e)
@@ -74,6 +74,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ id, embedding })
   } catch (err) {
     console.error('rag sync handler error', err)
-    return json({ error: 'server_error' }, { status: 500 })
+    return json({ error: `server_error` }, { status: 500 })
   }
 }

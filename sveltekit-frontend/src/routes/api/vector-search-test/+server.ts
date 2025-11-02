@@ -6,34 +6,32 @@ import { vectorRankingService } from '$lib/services/vector-ranking-service';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 
 // Placeholder imports for missing services
-const legalBERT = {
-  analyzeLegalText: async (_text: string) => ({
-    entities: [],
+const legalBERT = { analyzeLegalText: async (_text: string) => ({, entities: [],
     concepts: [],
-    sentiment: { classification: 'neutral', confidence: 0.5 },
+    sentiment: {, classification: 'neutral', confidence: 0.5 }
   }),
   generateLegalEmbedding: async (_text: string) => ({ embedding: [], dimensions: 0 }),
-  healthCheck: async () => ({ status: 'ok' }),
+  healthCheck: async () => ({ status: 'ok' })
 };
 const legalRAG = {
   query: async (_query: string, _options: Record<string, unknown>) => ({
     answer: '',
     sourceDocuments: [],
     confidence: 0,
-    metadata: { processingTime: 0 },
+    metadata: {, processingTime: 0 }
   }),
-  healthCheck: async () => ({ status: 'ok' }),
+  healthCheck: async () => ({ status: 'ok' })
 };
 const qdrantService = {
   searchSimilar: async (_embedding: number[], _options: Record<string, unknown>) => [],
-  healthCheck: async () => ({ status: 'ok' }),
+  healthCheck: async () => ({ status: 'ok' })
 };
 
 // Logging
 const logger = {
   info: (msg: string, data?: any) => console.log(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, data || ''),
   error: (msg: string, error?: any) =>
-    console.error(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, error || ''),
+    console.error(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, error || '')
 };
 
 interface TestResult {
@@ -42,14 +40,10 @@ interface TestResult {
   [key: string]: any;
 }
 
-interface Results {
-  query: string;
-  testType: string;
+interface Results { query: string;, testType: string;
   timestamp: string;
   tests: Record<string, TestResult>;
-  summary?: {
-    successRate: number;
-    passedTests: number;
+  summary?: { successRate: number;, passedTests: number;
     totalTests: number;
     overallProcessingTime: number;
     status: string;
@@ -82,13 +76,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { query, testType = 'all' } = await request.json();
     if (!query || typeof query !== 'string') {
-      return json({ success: false, error: 'Query parameter required' }, { status: 400 });
+      return json({ success: false, error: `Query parameter required` }, { status: 400 });
     }
     const results: Results = {
       query,
       testType,
       timestamp: new Date().toISOString(),
-      tests: {},
+      tests: {}
     };
     // Test 1: Vector Ranking Service
     if (testType === 'all' || testType === 'ranking') {
@@ -99,15 +93,14 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           resultsCount: Array.isArray(rankingResults) ? rankingResults.length : 0,
           firstResult: Array.isArray(rankingResults) ? rankingResults[0] || null : null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
         logger.info(`Vector ranking: ${Array.isArray(rankingResults) ? rankingResults.length : 0} results found`);
       } catch (error: any) {
         logger.error('Vector ranking test failed', error);
         results.tests.vectorRanking = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
+          error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
     // Test 2: Legal Analysis
@@ -120,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
           entities: Array.isArray(analysis.entities) ? analysis.entities.length : 0,
           concepts: Array.isArray(analysis.concepts) ? analysis.concepts.length : 0,
           sentiment: analysis.sentiment.classification,
-          confidence: analysis.sentiment.confidence,
+          confidence: analysis.sentiment.confidence
         };
         logger.info(
           `Legal analysis: ${results.tests.legalAnalysis.entities} entities, ${results.tests.legalAnalysis.concepts} concepts`
@@ -129,8 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Legal analysis test failed', error);
         results.tests.legalAnalysis = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
+          error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
     // Test 3: Enhanced RAG Pipeline
@@ -142,10 +134,10 @@ export const POST: RequestHandler = async ({ request }) => {
           maxSources: 5,
           minConfidence: 0.7,
           compatOptions: {
-            useSemanticSearch: true,
+           , useSemanticSearch: true,
             useMemoryGraph: true,
-            useMultiAgent: true,
-          },
+            useMultiAgent: true
+          }
         } as unknown as EnhancedRagQueryShim);
         const safeRag = rawRag as unknown as {
           response?: string;
@@ -168,15 +160,14 @@ export const POST: RequestHandler = async ({ request }) => {
             : '',
           sources: sourcesCount,
           confidence,
-          reasoning,
+          reasoning
         };
         logger.info(`Enhanced RAG: ${sourcesCount} sources, confidence ${confidence}`);
       } catch (error: any) {
         logger.error('Enhanced RAG test failed', error);
         results.tests.enhancedRAG = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
+          error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
     // Test 4: LangChain RAG
@@ -186,14 +177,14 @@ export const POST: RequestHandler = async ({ request }) => {
         const langchainResult = await legalRAG.query(query, {
           thinkingMode: true,
           maxRetrievedDocs: 5,
-          useCompression: true,
+          useCompression: true
         });
         results.tests.langchainRAG = {
           success: true,
           answer: typeof langchainResult.answer === 'string' ? langchainResult.answer.substring(0, 200) + '...' : '',
           sourceDocuments: Array.isArray(langchainResult.sourceDocuments) ? langchainResult.sourceDocuments.length : 0,
           confidence: typeof langchainResult.confidence === 'number' ? langchainResult.confidence : 0,
-          processingTime: langchainResult.metadata?.processingTime ?? 0,
+          processingTime: langchainResult.metadata?.processingTime ?? 0
         };
         logger.info(
           `LangChain RAG: ${results.tests.langchainRAG.sourceDocuments} sources, confidence ${results.tests.langchainRAG.confidence}`
@@ -202,8 +193,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('LangChain RAG test failed', error);
         results.tests.langchainRAG = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
+          error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
     // Test 5: Qdrant Direct Search
@@ -212,12 +202,12 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info('Testing Qdrant direct search');
         const embeddingResult = await legalBERT.generateLegalEmbedding(query);
         const qdrantResultsRaw = (await qdrantService.searchSimilar(embeddingResult.embedding, {
-          topK: 5,
+          topK: 5
         })) as QdrantResult[];
         const qdrantResults = (qdrantResultsRaw || []).map(r => ({
           id: r.id,
           score: r.score || 0,
-          payload: r.payload || {},
+          payload: r.payload || {}
         }));
         results.tests.qdrantSearch = {
           success: true,
@@ -226,14 +216,14 @@ export const POST: RequestHandler = async ({ request }) => {
             qdrantResults.length > 0
               ? qdrantResults.reduce((sum, r) => sum + (r.score || 0), 0) / qdrantResults.length
               : 0,
-          embeddingDimensions: embeddingResult.dimensions,
+          embeddingDimensions: embeddingResult.dimensions
         };
         logger.info(`Qdrant search: ${qdrantResults.length} results found`);
       } catch (error: any) {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
     }
@@ -246,8 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
       passedTests: successCount,
       totalTests,
       overallProcessingTime: Date.now() - startTime,
-      status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : 'all_failed',
-    };
+      status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : `all_failed` };
     logger.info(`Vector search tests completed: ${successCount}/${totalTests} passed`);
     return json(results);
   } catch (error: any) {
@@ -256,7 +245,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -269,12 +258,11 @@ export const GET: RequestHandler = async () => {
     logger.info('Vector services health check');
     const health = {
       timestamp: new Date().toISOString(),
-      services: {
-        qdrant: await qdrantService.healthCheck().catch(() => ({ status: 'error' })),
+      services: { qdrant: await qdrantService.healthCheck().catch(() => ({, status: 'error' })),
         legalBERT: await legalBERT.healthCheck().catch(() => ({ status: 'error' })),
         enhancedRAG: { status: 'available' },
-        langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: 'error' })),
-      },
+        langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: 'error' }))
+      }
     };
     return json(health);
   } catch (error: any) {
@@ -282,8 +270,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

@@ -14,8 +14,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Validate request
     if (!requestData.ownerType || !requestData.ownerId) {
       return json(
-        {
-          error: 'Missing required fields: ownerType, ownerId',
+        { error: 'Missing required, fields: ownerType, ownerId'
         },
         { status: 400 }
       );
@@ -28,7 +27,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Vector processing failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -53,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Request failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -124,13 +123,12 @@ async function processCUDA(
         event: request.operation,
         vector: request.vector,
         payload: {
-          operation: request.operation,
+         , operation: request.operation,
           data: request.data,
           use_cuda: true,
-          priority: request.options?.priority || 'medium',
+          priority: request.options?.priority || 'medium'
         },
-        priority: request.options?.priority || 'medium',
-      }),
+        priority: request.options?.priority || 'medium` })
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -146,7 +144,7 @@ async function processCUDA(
       ).queue_position,
       estimatedWaitTimeMs: (
         result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }
-      ).estimated_wait_time_ms,
+      ).estimated_wait_time_ms
     };
   } catch (error: any) {
     console.error('CUDA processing failed:', error);
@@ -173,9 +171,9 @@ async function processWebGPU(
         webgpuUsed: true,
         vectorDimension: 384,
         operationType: operation,
-        timestamp: Date.now(),
-      },
-    },
+        timestamp: Date.now()
+      }
+    }
   };
 }
 async function processWASM(
@@ -198,9 +196,9 @@ async function processWASM(
         webgpuUsed: false,
         vectorDimension: 384,
         operationType: operation,
-        timestamp: Date.now(),
-      },
-    },
+        timestamp: Date.now()
+      }
+    }
   };
 }
 async function processDefault(
@@ -220,10 +218,10 @@ async function processDefault(
       event: request.operation,
       vector: request.vector || null,
       payload: {
-        operation: request.operation,
+       , operation: request.operation,
         data: request.data,
-        use_cpu_only: true,
-      },
+        use_cpu_only: true
+      }
     });
     return {
       jobId,
@@ -242,18 +240,16 @@ async function getHealthStatus(): Promise<any> {
       checkDatabaseHealth(),
       checkRedisHealth(),
     ]);
-    const health: {
-      overall: 'healthy' | 'degraded' | 'unhealthy';
-      services: Record<string, 'connected' | 'error'>;
+    const health: { overall: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, 'connected' | 'error'>;
       timestamp: string;
     } = {
       overall: 'healthy',
       services: {
         vectorService: resolveServiceStatus(healthChecks[0]),
         database: resolveServiceStatus(healthChecks[1]),
-        redis: resolveServiceStatus(healthChecks[2]),
+        redis: resolveServiceStatus(healthChecks[2])
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     // Determine overall health
     const serviceValues = Object.values(health.services);
@@ -270,7 +266,7 @@ async function getHealthStatus(): Promise<any> {
       {
         overall: 'unhealthy',
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -286,14 +282,14 @@ async function getSystemMetrics(): Promise<any> {
       queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : ({} as { [key: string]: any }),
       performance:
         performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : ({} as { [key: string]: any }),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     return json(metrics);
   } catch (error: any) {
     return json(
       {
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -311,31 +307,29 @@ async function getQueueStatus(): Promise<any> {
     return json(
       {
         error: 'Queue status unavailable',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 503 }
     );
   }
 }
 async function getPerformanceMetrics(): Promise<any> {
-  const metrics = {
-    processing: {
-      totalOperations: 0,
+  const metrics = { processing: {, totalOperations: 0,
       averageLatency: 0,
       successRate: 0.99,
-      errorRate: 0.01,
+      errorRate: 0.01
     },
     resources: {
       cpuUsage: 0.45,
       memoryUsage: 0.67,
-      gpuUtilization: 0.23,
+      gpuUtilization: 0.23
     },
     throughput: {
       operationsPerSecond: 15.5,
       vectorsPerSecond: 120.3,
-      tokensPerSecond: 45.2,
+      tokensPerSecond: 45.2
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   return json(metrics);
 }
@@ -369,11 +363,10 @@ async function fetchQueueMetrics(): Promise<any> {
     console.warn('Queue metrics unavailable:', error);
   }
   // Return mock data
-  return {
-    embeddings: { depth: 5, consumers: 1, processingRate: 2.5 },
+  return { embeddings: {, depth: 5, consumers: 1, processingRate: 2.5 },
     similarities: { depth: 12, consumers: 2, processingRate: 8.1 },
     indexing: { depth: 3, consumers: 1, processingRate: 1.2 },
-    clustering: { depth: 0, consumers: 1, processingRate: 0.5 },
+    clustering: { depth: 0, consumers: 1, processingRate: 0.5 }
   };
 }
 async function fetchPerformanceMetrics(): Promise<any> {
@@ -382,7 +375,7 @@ async function fetchPerformanceMetrics(): Promise<any> {
     averageProcessingTimeMs: 234,
     successRate: 0.987,
     errorRate: 0.013,
-    throughputPerSecond: 12.4,
+    throughputPerSecond: 12.4
   };
 }
 function resolveServiceStatus(result: PromiseSettledResult<any>) {
@@ -408,7 +401,7 @@ export const GET_STATUS: RequestHandler = async ({ params, url }) => {
     const { eq } = await import('drizzle-orm');
     const job = await db.default.select().from(vectorJobs).where(eq(vectorJobs.id, jobId)).limit(1);
     if (job.length === 0) {
-      return json({ error: 'Job not found' }, { status: 404 });
+      return json({ error: `Job not found` }, { status: 404 });
     }
     const jobData = job[0];
     return json({
@@ -422,14 +415,14 @@ export const GET_STATUS: RequestHandler = async ({ params, url }) => {
       processingTimeMs:
         jobData.updatedAt && jobData.createdAt
           ? new Date(jobData.updatedAt).getTime() - new Date(jobData.createdAt).getTime()
-          : null,
+          : null
     });
   } catch (error: any) {
     console.error('Job status query failed:', error);
     return json(
       {
         error: 'Status query failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

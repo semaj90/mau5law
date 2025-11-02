@@ -19,72 +19,58 @@ declare global {
 // Environment detection - fallback for environments without SvelteKit
 const browser = typeof window !== 'undefined';
 
-export interface IntegrationStatus {
-  webassembly: {
-    available: boolean;
+export interface IntegrationStatus { webassembly: {, available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
   };
-  sveltekit: {
-    version: string;
-    svelte5Patterns: boolean;
+  sveltekit: { version: string;, svelte5Patterns: boolean;
     ssrReady: boolean;
   };
-  database: {
-    drizzleOrm: boolean;
-    pgvectorSupport: boolean;
+  database: { drizzleOrm: boolean;, pgvectorSupport: boolean;
     postgresqlReady: boolean;
   };
-  ui: {
-    enhancedBitsComponents: boolean;
-    unoCSS: boolean;
+  ui: { enhancedBitsComponents: boolean;, unoCSS: boolean;
     nesCSS: boolean;
     gamingTheme: boolean;
   };
-  webgpu: {
-    available: boolean;
-    dawnBackend: boolean;
+  webgpu: { available: boolean;, dawnBackend: boolean;
     unifiedRuntime: boolean;
   };
-  cache: {
-    chrRomCache: boolean;
-    redisConnected: boolean;
+  cache: { chrRomCache: boolean;, redisConnected: boolean;
     wasmCache: boolean;
   };
 }
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
-  const status: IntegrationStatus = {
-    webassembly: {
-      available: false,
+  const status: IntegrationStatus = { webassembly: {, available: false,
       simdSupport: false,
-      runtimeConnected: false,
+      runtimeConnected: false
     },
     sveltekit: {
       version: '2.0',
       svelte5Patterns: true,
-      ssrReady: true,
+      ssrReady: true
     },
     database: {
       drizzleOrm: true,
       pgvectorSupport: true,
-      postgresqlReady: false,
+      postgresqlReady: false
     },
     ui: {
       enhancedBitsComponents: true,
       unoCSS: true,
       nesCSS: true,
-      gamingTheme: true,
+      gamingTheme: true
     },
     webgpu: {
       available: false,
       dawnBackend: false,
-      unifiedRuntime: true,
+      unifiedRuntime: true
     },
     cache: {
       chrRomCache: true,
       redisConnected: false,
-      wasmCache: true,
-    },
+      wasmCache: true
+    }
   };
   if (!browser) return status;
   try {
@@ -148,36 +134,36 @@ export function formatStatusReport(status: IntegrationStatus): string {
     '🔧 WebAssembly Client Integration Status',
     '='.repeat(50),
     '',
-    '📦 WebAssembly:',
+    '📦 WebAssembly: `,
     `  ✅ Available: ${status.webassembly.available}`,
     `  ⚡ SIMD Support: ${status.webassembly.simdSupport}`,
     `  🔗 Runtime Connected: ${status.webassembly.runtimeConnected}`,
     '',
-    '🚀 SvelteKit & Svelte 5:',
+    '🚀 SvelteKit & Svelte 5: `,
     `  ✅ Version: ${status.sveltekit.version}`,
     `  🎯 Svelte 5 Patterns: ${status.sveltekit.svelte5Patterns}`,
     `  🌐 SSR Ready: ${status.sveltekit.ssrReady}`,
     '',
-    '🗄️ Database Stack:',
+    '🗄️ Database Stack: `,
     `  ✅ Drizzle ORM: ${status.database.drizzleOrm}`,
     `  📊 pgvector Support: ${status.database.pgvectorSupport}`,
     `  🐘 PostgreSQL Ready: ${status.database.postgresqlReady}`,
     '',
-    '🎨 UI & Theming:',
+    '🎨 UI & Theming: `,
     `  ✅ Enhanced-Bits Components: ${status.ui.enhancedBitsComponents}`,
     `  🎪 UnoCSS: ${status.ui.unoCSS}`,
     `  🎮 NES.css: ${status.ui.nesCSS}`,
     `  🎯 Gaming Theme: ${status.ui.gamingTheme}`,
     '',
-    '🚀 WebGPU:',
+    '🚀 WebGPU: `,
     `  ✅ Available: ${status.webgpu.available}`,
     `  🌅 Dawn Backend: ${status.webgpu.dawnBackend}`,
     `  🔧 Unified Runtime: ${status.webgpu.unifiedRuntime}`,
     '',
-    '💾 Caching:',
+    '💾 Caching: `,
     `  ✅ CHR-ROM Cache: ${status.cache.chrRomCache}`,
     `  🔴 Redis Connected: ${status.cache.redisConnected}`,
-    `  📦 WASM Cache: ${status.cache.wasmCache}`,
+    `  📦 WASM Cache: ${status.cache.wasmCache}`
   ];
   return sections.join('\n');
 }

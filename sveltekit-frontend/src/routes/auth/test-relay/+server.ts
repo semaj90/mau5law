@@ -18,22 +18,21 @@ export const POST: RequestHandler = async ({ cookies }) => {
         success: true,
         sessionId,
         message: 'Test session created without database',
-        redirectTo: '/dashboard',
+        redirectTo: '/dashboard'
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error: any) {
     console.error('Test relay error:', error);
     return new Response(
-      JSON.stringify({
-        error: 'Test failed: ' + (error instanceof Error ? error.message : 'Unknown error'),
+      JSON.stringify({ error: 'Test, failed: ' + (error instanceof Error ? error.message : 'Unknown error')
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }

@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       precedents,
       total: precedents.length,
-      query,
+      query
     });
   } catch (error) {
     console.error('Legal precedents API error:', error);
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
         summary: 'Mock precedent establishing employment law standards',
         relevance: 0.85,
         practiceArea: 'employment',
-        tags: ['wrongful-termination', 'discrimination'],
+        tags: ['wrongful-termination', 'discrimination']
       },
       {
         id: 'mock-precedent-002',
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
         summary: 'Mock precedent on patent prior art analysis',
         relevance: 0.78,
         practiceArea: 'intellectual-property',
-        tags: ['patents', 'prior-art'],
+        tags: ['patents', 'prior-art']
       },
     ];
     return json(
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
         precedents: mockPrecedents,
         total: mockPrecedents.length,
         query,
-        source: 'mock-database',
+        source: 'mock-database'
       },
       { status: 500 }
     );
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       precedent: rec,
-      message: 'Precedent created successfully',
+      message: 'Precedent created successfully'
     });
   } catch (error) {
     console.error('Create precedent API error:', error);
@@ -89,16 +89,16 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'failure default to mock - precedent created locally',
         precedent: {
-          id: 'mock-' + crypto.randomUUID(),
+         , id: 'mock-' + crypto.randomUUID(),
           caseTitle: 'Mock Precedent',
           citation: 'Mock Citation',
           created: new Date().toISOString(),
-          source: 'mock-creation',
-        },
+          source: 'mock-creation'
+        }
       },
       { status: 500 }
     );
   }
 };
 export const PUT: RequestHandler = async () => json({ success: true, similar: [] });
-export const prerender = $state(false);
+export const prerender = false;

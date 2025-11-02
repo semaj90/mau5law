@@ -6,18 +6,14 @@
 import { browser } from '$app/environment';
 import { unifiedSIMDParser, ParseMode } from './unified-simd-parser.js';
 import { redisOptimized } from '../middleware/redis-orchestrator-middleware.js';
-interface WebGPUSIMDConfig {
-  enableWebGPU: boolean;
-  enableSIMD: boolean;
+interface WebGPUSIMDConfig { enableWebGPU: boolean;, enableSIMD: boolean;
   enableRedisCache: boolean;
   maxBatchSize: number;
   gpuMemoryLimit: number; // MB
   workgroupSize: number;
   preferredDevice: 'discrete' | 'integrated' | 'auto';
 }
-interface AccelerationResult {
-  data: any;
-  processing_time_ms: number;
+interface AccelerationResult { data: any;, processing_time_ms: number;
   acceleration_method: string;
   gpu_memory_used: number;
   simd_backend: string;
@@ -39,7 +35,7 @@ export class WebGPUSIMDAccelerator {
       gpuMemoryLimit: 2048, // 2GB for RTX 3060 Ti
       workgroupSize: 64,
       preferredDevice: 'discrete',
-      ...config,
+      ...config
     };
     if (browser) {
       // don't await in constructor; kick off init
@@ -57,7 +53,7 @@ export class WebGPUSIMDAccelerator {
     try {
       console.log('🚀 Initializing WebGPU-SIMD Accelerator...');
       const adapter = await (navigator as any).gpu.requestAdapter({
-        powerPreference: this.config.preferredDevice === 'discrete' ? 'high-performance' : 'low-power',
+        powerPreference: this.config.preferredDevice === 'discrete' ? 'high-performance' : 'low-power'
       });
       if (!adapter) {
         throw new Error('No WebGPU adapter found');
@@ -66,9 +62,9 @@ export class WebGPUSIMDAccelerator {
       this.device = await adapter.requestDevice({
         requiredFeatures: [],
         requiredLimits: {
-          maxStorageBufferBindingSize: this.config.gpuMemoryLimit * 1024 * 1024,
-          maxComputeWorkgroupSizeX: this.config.workgroupSize,
-        },
+         , maxStorageBufferBindingSize: this.config.gpuMemoryLimit * 1024 * 1024,
+          maxComputeWorkgroupSizeX: this.config.workgroupSize
+        }
       });
       this.queue = this.device.queue;
       // adapter info can vary across implementations; log safely
@@ -100,7 +96,7 @@ export class WebGPUSIMDAccelerator {
             gpu_memory_used: 0,
             simd_backend: 'Cached',
             cache_status: 'hit',
-            performance_gain: 10000,
+            performance_gain: 10000
           };
         }
       }
@@ -170,7 +166,7 @@ export class WebGPUSIMDAccelerator {
       const inputData = new TextEncoder().encode(jsonString);
       const inputBuffer = this.device.createBuffer({
         size: inputData.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       this.device.queue.writeBuffer(inputBuffer, 0, inputData);
 
@@ -178,7 +174,7 @@ export class WebGPUSIMDAccelerator {
       const outputSize = Math.max(inputData.byteLength * 2, 1024 * 1024);
       const outputBuffer = this.device.createBuffer({
         size: outputSize,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       // Create a very small illustrative compute shader (WGSL)
@@ -188,9 +184,8 @@ export class WebGPUSIMDAccelerator {
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: computeShader,
-          entryPoint: 'main',
-        },
+         , module: computeShader,
+          entryPoint: 'main` }
       });
 
       // Bind group is illustrative; real binding layout depends on shader
@@ -199,8 +194,8 @@ export class WebGPUSIMDAccelerator {
         layout: bindGroupLayout,
         entries: [
           { binding: 0, resource: { buffer: inputBuffer } },
-          { binding: 1, resource: { buffer: outputBuffer } },
-        ],
+          { binding: 1, resource: {, buffer: outputBuffer } }
+        ]
       });
 
       const commandEncoder = this.device.createCommandEncoder();
@@ -221,7 +216,7 @@ export class WebGPUSIMDAccelerator {
         gpu_memory_used: Math.round(outputSize / (1024 * 1024)),
         simd_backend: 'WebGPU',
         cache_status: 'miss',
-        performance_gain: 50,
+        performance_gain: 50
       };
     } catch (error) {
       console.warn('WebGPU parsing failed, falling back to SIMD:', error);
@@ -240,7 +235,7 @@ export class WebGPUSIMDAccelerator {
       gpu_memory_used: 0,
       simd_backend: result.backend_used || 'WASM_SIMD',
       cache_status: 'miss',
-      performance_gain: this.calculateSIMDGain(result.backend_used || 'V1_Legacy'),
+      performance_gain: this.calculateSIMDGain(result.backend_used || 'V1_Legacy')
     };
   }
   /**
@@ -255,7 +250,7 @@ export class WebGPUSIMDAccelerator {
       gpu_memory_used: 0,
       simd_backend: 'Native',
       cache_status: 'bypass',
-      performance_gain: 1,
+      performance_gain: 1
     };
   }
   /**
@@ -297,7 +292,7 @@ export class WebGPUSIMDAccelerator {
   /**
    * Categorize batch inputs by optimal processing method
    */
-  private categorizeBatches(jsonStrings: string[]): { webgpu: string[]; simd: string[]; standard: string[] } {
+  private categorizeBatches(jsonStrings: string[]): { webgpu: string[]; simd: string[];, standard: string[] } {
     const batches = { webgpu: [] as string[], simd: [] as string[], standard: [] as string[] };
     for (const json of jsonStrings) {
       if (this.shouldUseWebGPU(json)) batches.webgpu.push(json);
@@ -331,7 +326,7 @@ export class WebGPUSIMDAccelerator {
       gpu_memory_used: 0,
       simd_backend: r.backend_used || 'WASM_SIMD',
       cache_status: (r.backend_used || '').includes('CACHED') ? 'hit' : 'miss',
-      performance_gain: this.calculateSIMDGain(r.backend_used || 'V1_Legacy'),
+      performance_gain: this.calculateSIMDGain(r.backend_used || 'V1_Legacy')
     }));
   }
   /**
@@ -345,7 +340,7 @@ export class WebGPUSIMDAccelerator {
       gpu_memory_used: 0,
       simd_backend: 'Native',
       cache_status: 'bypass',
-      performance_gain: 1,
+      performance_gain: 1
     }));
   }
   /**
@@ -401,7 +396,7 @@ export class WebGPUSIMDAccelerator {
       'V2_Auto': 10,
       'Redis_Cached': 10000,
       'V1_Legacy': 5,
-      'Native_JSON': 1,
+      'Native_JSON': 1
     };
     return gains[backend] || 1;
   }
@@ -424,7 +419,7 @@ export class WebGPUSIMDAccelerator {
       redis_enabled: this.config.enableRedisCache,
       gpu_memory_limit: this.config.gpuMemoryLimit,
       performance_metrics: Object.fromEntries(this.performanceMetrics),
-      acceleration_methods: ['WebGPU_Compute', 'SIMD_Multi_Backend', 'Redis_Cache', 'Standard_JSON'],
+      acceleration_methods: ['WebGPU_Compute', 'SIMD_Multi_Backend', 'Redis_Cache', 'Standard_JSON']
     };
   }
   /**
@@ -446,5 +441,4 @@ export const webgpuSIMDAccelerator = new WebGPUSIMDAccelerator({
   maxBatchSize: 32,
   gpuMemoryLimit: 2048, // Optimized for RTX 3060 Ti
   workgroupSize: 64,
-  preferredDevice: 'discrete',
-});
+  preferredDevice: 'discrete` });

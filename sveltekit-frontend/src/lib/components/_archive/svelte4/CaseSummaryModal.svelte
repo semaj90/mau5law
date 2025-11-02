@@ -1,10 +1,11 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   // Badge replaced with span - not available in enhanced-bits
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';

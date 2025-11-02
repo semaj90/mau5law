@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid batch request: errors array required',
+          error: 'Invalid batch; request: errors array required'
         },
         { status: 400 }
       );
@@ -23,11 +23,11 @@ export const POST: RequestHandler = async ({ request }) => {
         successful_count: 0,
         results: [],
         processing_stats: {
-          total_time: 0,
+         , total_time: 0,
           processed_count: 0,
-          successful_count: 0,
+          successful_count: 0
         },
-        message: 'No errors to process',
+        message: 'No errors to process'
       });
     }
     const startTime = Date.now();
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
       use_cache: body.use_cache ?? true,
       max_concurrency: body.max_concurrency ?? Math.min(errorCount, 8),
       target_latency: body.target_latency ?? (errorCount >= 20 ? 5 : 10), // ms per error
-      quality_threshold: body.quality_threshold ?? 0.8,
+      quality_threshold: body.quality_threshold ?? 0.8
     };
     // Choose optimal endpoint based on batch characteristics
     const endpoint = selectOptimalEndpoint(optimizedRequest);
@@ -53,9 +53,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: Response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(optimizedRequest),
+        'Content-Type': `application/json` },
+      body: JSON.stringify(optimizedRequest)
     });
     if (!response.ok) {
       throw new Error(`Go service error ${response.status}: ${response.statusText}`);
@@ -76,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       overhead_ms: processingTime - goServiceTime,
       throughput_errors_per_second: (errorCount / processingTime) * 1000,
       success_rate: successRate,
-      performance_grade: calculatePerformanceGrade(processingTime, errorCount, resultSuccessfulCount),
+      performance_grade: calculatePerformanceGrade(processingTime, errorCount, resultSuccessfulCount)
     };
 
     console.log(
@@ -93,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caching_enabled: optimizedRequest.use_cache,
         concurrency_level: optimizedRequest.max_concurrency,
         endpoint_used: endpoint,
-        auto_optimization: true,
+        auto_optimization: true
       },
       metadata: {
         ...result.optimization_meta,
@@ -101,8 +100,8 @@ export const POST: RequestHandler = async ({ request }) => {
         processed_at: new Date().toISOString(),
         api_version: '2.0.0',
         performance_tier: getPerformanceTier(errorCount),
-        sveltekit_batch_processor: true,
-      },
+        sveltekit_batch_processor: true
+      }
     };
     return json(enhancedResult);
   } catch (error: any) {
@@ -114,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Batch processing failed',
         details: safeError.message,
         timestamp: new Date().toISOString(),
-        batch_processing: true,
+        batch_processing: true
       },
       { status: 500 }
     );
@@ -164,6 +163,6 @@ function formatUnknownError(error: any): { message: string; stack?: string } {
   try {
     return { message: String(error) };
   } catch {
-    return { message: 'Unknown error' };
+    return { message: `Unknown error` };
   }
 }

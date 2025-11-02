@@ -8,9 +8,7 @@ import { EventEmitter } from 'events';
 import type { IncomingMessage } from 'http';
 import type { WebSocket } from 'ws';
 }
-export interface WebSocketMessage {
-  type: string;
-  payload: any;
+export interface WebSocketMessage { type: string;, payload: any;
   timestamp: string;
   userId?: string;
   sessionId?: string;
@@ -59,7 +57,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
         lastActivity: new Date()
       }
       this.clients.set(sessionId, client);
-      console.log(`🔗 Client connected: ${sessionId} (User: ${userId || 'anonymous'})`);
+      console.log(`🔗 Client connected: ${sessionId} (User: ${userId || 'anonymous' })`);
       // Send welcome message
       this.sendToClient(sessionId, {
         type: 'connection_established',
@@ -76,7 +74,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
           console.error('WebSocket message parse error:', error);
           this.sendToClient(sessionId, {
             type: 'error',
-            payload: { message: 'Invalid message format' },
+            payload: {, message: 'Invalid message format' },
             timestamp: new Date().toISOString()
           });
         }
@@ -87,7 +85,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
       });
       // Handle errors
       ws.on('error', (error: Error) => {
-        console.error(`WebSocket error for client ${sessionId}:`, error);
+        console.error(`WebSocket error for client ${sessionId}: ', error);
         this.handleClientDisconnect(sessionId);
       });
     });
@@ -105,7 +103,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
       case 'ping':
         this.sendToClient(sessionId, {
           type: 'pong',
-          payload: { timestamp: message.timestamp },
+          payload: {, timestamp: message.timestamp },
           timestamp: new Date().toISOString()
         });
         break;
@@ -116,7 +114,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
         this.handleCursorUpdate(sessionId, message);
         break;
       default:
-        console.warn(`Unknown message type: ${message.type}`);
+        console.warn(`Unknown message; type: ${message.type}`);
     }
   }
   private handleSubscription(sessionId: string, channels: string[]): void {
@@ -230,14 +228,14 @@ export class LegalAIWebSocketServer extends EventEmitter {
     this.broadcastToChannel('system', {
       type: 'system_health',
       payload: healthData;
-      timestamp: new Date().toISOString()
+     , timestamp: new Date().toISOString()
     });
   }
   public broadcastDashboardUpdate(data: any): void {
     this.broadcastToChannel('dashboard', {
       type: 'dashboard_update',
       payload: data;
-      timestamp: new Date().toISOString()
+     , timestamp: new Date().toISOString()
     });
   }
   private broadcastToChannel(channel: string, message: WebSocketMessage, excludeSessionId?: string): void {
@@ -257,7 +255,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
     try {
       client.ws.send(JSON.stringify(message);
     } catch (error) {
-      console.error(`Failed to send message to client ${sessionId}:`, error);
+      console.error(`Failed to send message to client ${sessionId}: ', error);
       this.handleClientDisconnect(sessionId);
     }
   }
@@ -267,7 +265,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
         if (client.ws.readyState === client.ws.OPEN) {
           this.sendToClient(sessionId, {
             type: 'heartbeat',
-            payload: { timestamp: new Date().toISOString() },
+            payload: {, timestamp: new Date().toISOString() },
             timestamp: new Date().toISOString()
           });
         }
@@ -290,9 +288,7 @@ export class LegalAIWebSocketServer extends EventEmitter {
     return `ws_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
   // Statistics and monitoring
-  public getStats(): {
-    connectedClients: number;
-    activeChannels: number;
+  public getStats(): { connectedClients: number;, activeChannels: number;
     channelDistribution: Record<string, number>;
   } {
     const channelDistribution: Record<string, number> = {}

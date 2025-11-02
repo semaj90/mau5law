@@ -29,7 +29,7 @@ const QUIC_VECTOR_CONFIG = {
   fallbackUrl: 'http://localhost:8446',
   timeout: 30000, // Vector operations can take longer
   cacheTTL: 300, // 5 minutes cache TTL
-  maxCacheSize: 1000,
+  maxCacheSize: 1000
 };
 /*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
@@ -42,10 +42,10 @@ export const GET: RequestHandler = async ({}) => {
       protocol: 'HTTP',
       ports: {
         quic: QUIC_VECTOR_CONFIG.primaryPort,
-        fallback: QUIC_VECTOR_CONFIG.fallbackPort,
+        fallback: QUIC_VECTOR_CONFIG.fallbackPort
       },
       backends: {
-        qdrant: 'http://localhost:6333',
+       , qdrant: 'http://localhost:6333',
         pgvector: 'http://localhost:8094', // Enhanced RAG service
       },
       features: [
@@ -58,10 +58,10 @@ export const GET: RequestHandler = async ({}) => {
       cache: {
         enabled: true,
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
-        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize,
+        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
       },
       metrics: null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err);
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({}) => {
       service: 'quic-vector-proxy',
       status: 'error',
       error: err instanceof Error ? err.message : 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const service = getVectorSearchService();
       const ragSearchResponse = await service.searchDocuments(searchQuery.query || 'vector search', {
         maxResults: searchQuery.limit || 10,
-        collection: searchQuery.collection || 'legal_documents',
+        collection: searchQuery.collection || 'legal_documents'
       });
       const response = ragSearchResponse as VectorServiceResponse;
       const results =
@@ -118,8 +118,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           totalResults,
           executionTimeMs: 0,
           cacheHit: false,
-          backend: 'local-service',
-        },
+          backend: 'local-service'
+        }
       });
     }
 
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const backend = url.searchParams.get('backend') || 'auto'; // 'auto', 'qdrant', 'pgvector'
     // Validate search query
     if (!searchQuery.query && !searchQuery.embedding) {
-      error(400, ensureError({ message: 'Either query text or embedding vector is required' }));
+      error(400, ensureError({ message: `Either query text or embedding vector is required` }));
     }
     // Determine target URL
     const targetUrl = useHttp3
@@ -142,10 +142,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         useCache,
         backend,
         requestId: randomUUID(),
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
-    // Use Go Vector Service if backend is: 'auto' or: 'vector'
+    // Use Go Vector Service if backend is: 'auto'; or: 'vector'
     if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
       // If a direct Go vector client exists in future, call it here.
       // For now, skip to Enhanced RAG fallback below.
@@ -159,8 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'Vector search failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
-      })
+        error: err instanceof Error ? err.message : `Unknown error` })
     );
   }
 };
@@ -177,9 +176,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const response = await fetch(`${targetUrl}?${query}`, {
       method: 'DELETE',
       headers: {
-        'X-QUIC-Request': 'true',
-      },
-      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
+        'X-QUIC-Request': `true` },
+      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
     });
     if (!response.ok) {
       throw new Error(`Cache clear failed: ${response.statusText}`);
@@ -187,9 +185,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: cacheKey ? `Cache key: '${cacheKey}' cleared` : 'All cache cleared',
+      message: cacheKey ? `Cache; key: '${cacheKey}' cleared` : 'All cache cleared',
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Vector cache clear error:', err);
@@ -197,7 +195,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Cache clear failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
   }
@@ -219,12 +217,12 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...QUIC_VECTOR_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
     return json({
       success: true,
       message: 'Vector proxy configuration updated',
-      config: updatedConfig,
+      config: updatedConfig
     });
   } catch (err: any) {
     console.error('Vector proxy configuration update failed:', err);
@@ -232,8 +230,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
-      })
+        error: err instanceof Error ? err.message : `Unknown error` })
     );
   }
 };

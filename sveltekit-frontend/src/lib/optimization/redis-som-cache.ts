@@ -4,16 +4,12 @@ import { EventEmitter } from "events";
  * Advanced memory management with machine learning clustering
  */
 // === Neural Network Self-Organizing Map for Cache Intelligence ===
-export interface SOMNode {
-  weights: Float64Array;
-  activation: number;
+export interface SOMNode { weights: Float64Array;, activation: number;
   cluster_id: number;
   access_count: number;
   last_update: number;
 }
-export interface CacheEntry {
-  key: string;
-  value: any;
+export interface CacheEntry { key: string;, value: any;
   ttl: number;
   created_at: number;
   access_count: number;
@@ -68,7 +64,7 @@ class SelfOrganizingMap {
     }
     return Math.sqrt(sum);
   }
-  private findBestMatchingUnit(input: Float64Array): { x: number; y: number; distance: number } {
+  private findBestMatchingUnit(input: Float64Array): { x: number; y: number;, distance: number } {
     let bestX = 0;
     let bestY = 0;
     let minDistance = Infinity;
@@ -84,7 +80,7 @@ class SelfOrganizingMap {
     }
     return { x: bestX, y: bestY, distance: minDistance }
   }
-  private updateWeights(input: Float64Array, bmu: { x: number; y: number }): void {
+  private updateWeights(input: Float64Array, bmu: {, x: number; y: number }): void {
     const time_constant = this.training_iterations / 1000;
     const current_learning_rate = this.learning_rate * Math.exp(-time_constant);
     const current_radius = this.neighborhood_radius * Math.exp(-time_constant);
@@ -106,7 +102,7 @@ class SelfOrganizingMap {
       }
     }
   }
-  train(input: Float64Array): { cluster: number; confidence: number } {
+  train(input: Float64Array): { cluster: number;, confidence: number } {
     const bmu = this.findBestMatchingUnit(input);
     this.updateWeights(input, bmu);
     this.training_iterations++;
@@ -114,9 +110,7 @@ class SelfOrganizingMap {
     const confidence = 1 / (1 + bmu.distance); // Convert distance to confidence
     return { cluster: cluster_id, confidence }
   }
-  getClusterStats(): {
-    total_clusters: number;
-    active_clusters: number;
+  getClusterStats(): { total_clusters: number;, active_clusters: number;
     avg_activation: number;
     training_iterations: number;
   } {
@@ -268,7 +262,7 @@ export class RedisSOMapCache extends EventEmitter {
     const max_len = Math.max(len_a, len_b);
     return max_len === 0 ? 1 : 1 - (matrix[len_b][len_a] / max_len);
   }
-  private compressValue(_value: any): { compressed: any; ratio: number; type: string } {
+  private compressValue(_value: any): { compressed: any; ratio: number;, type: string } {
     if (!this.compression_enabled) {
       return { compressed: value, ratio: 1, type: 'none' }
     }
@@ -319,15 +313,14 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return result;
   }
-  private calculatePriorityScore(features: Float64Array, som_result: { cluster: number; confidence: number }): number {
+  private calculatePriorityScore(features: Float64Array, som_result: {, cluster: number; confidence: number }): number {
     // Weighted combination of features and SOM results
     const feature_score = features[4] * 0.3 + features[5] * 0.4 + features[6] * 0.2 + som_result.confidence * 0.1;
     return Math.min(Math.max(feature_score, 0), 1);
   }
   // === Redis-Compatible API ===
-  async set(_key: string
-    value: any;
-    options: {
+  async set(_key: string; value: any;
+   , options: {
       ttl?: number;
       metadata?: Partial<CacheEntry['metadata']>;
     } = {}
@@ -495,9 +488,7 @@ export class RedisSOMapCache extends EventEmitter {
     }
   }
   // === Neural Network Analysis Methods ===
-  async analyzeAccessPatterns(): Promise<{
-    clusters: Array<any>;
-    recommendations: string[];
+  async analyzeAccessPatterns(): Promise<{ clusters: Array<any>;, recommendations: string[];
   }> {
     const som_stats = this.som.getClusterStats();
     const entries_by_cluster = new Map<number, CacheEntry[]>();

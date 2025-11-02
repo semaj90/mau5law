@@ -8,8 +8,8 @@ import type { Case } from '$lib/types';
   // XState State Persistence Management
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/nes-button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-Button.svelte';
+  import NesCard from '$lib/components/ui/nes-Card.svelte';
 
   let mounted = $state<boolean>(false);
   let persistedStates = $state<any[]>([]);

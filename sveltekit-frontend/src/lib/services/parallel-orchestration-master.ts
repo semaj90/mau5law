@@ -10,7 +10,7 @@ export type ParallelRequest = {
   userContext?: { userId?: string; sessionId?: string; caseId?: string; [k: string]: any };
 };
 
-export type OrchestrationError = { service: string; message: string };
+export type OrchestrationError = { service: string;, message: string };
 
 export type ParallelExecutionResult = {
   success: boolean;
@@ -20,8 +20,8 @@ export type ParallelExecutionResult = {
   cached?: boolean;
 };
 
-type CircuitBreakerState = { isOpen: boolean; failures: number; lastFailure: Date };
-type PerformanceMetrics = { avgLatency: number; throughput: number; errorRate: number };
+type CircuitBreakerState = { isOpen: boolean; failures: number;, lastFailure: Date };
+type PerformanceMetrics = { avgLatency: number; throughput: number;, errorRate: number };
 
 export class ParallelOrchestrationMaster {
   private circuitBreakers: Map<string, CircuitBreakerState> = new Map();
@@ -53,7 +53,7 @@ export class ParallelOrchestrationMaster {
       return {
         success: false,
         errors: [{ service: 'parallel-orchestrator', message: 'Too many concurrent requests' }],
-        latencyMs: Date.now() - start,
+        latencyMs: Date.now() - start
       };
     }
     this.currentResourceUsage.activeRequests++;
@@ -63,7 +63,7 @@ export class ParallelOrchestrationMaster {
       await this.prewarmCacheForRequest(request).catch(() => undefined);
 
       // Simulate parallel tasks with predictable stub results
-      const tasks: Promise<{ service: string; result: any }>[] = [
+      const tasks: Promise<{ service: string;, result: any }>[] = [
         this.simulateService('contextualMemoryChat', request),
         this.simulateService('multiEmbedding', request),
         this.simulateService('legalRAG', request),
@@ -105,7 +105,7 @@ export class ParallelOrchestrationMaster {
         data: Object.keys(data).length ? data : undefined,
         errors: errors.length ? errors : undefined,
         latencyMs,
-        cached: false,
+        cached: false
       };
     } finally {
       this.currentResourceUsage.activeRequests = Math.max(0, this.currentResourceUsage.activeRequests - 1);
@@ -113,9 +113,7 @@ export class ParallelOrchestrationMaster {
   }
 
   // Return simple health/status info for UI/health endpoints
-  async getSystemStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'overloaded';
-    resourceUsage: typeof this.currentResourceUsage;
+  async getSystemStatus(): Promise<{ status: 'healthy' | 'degraded' | 'overloaded';, resourceUsage: typeof this.currentResourceUsage;
     circuitBreakers: Record<string, boolean>;
     performanceMetrics: Record<string, PerformanceMetrics>;
   }> {
@@ -144,7 +142,7 @@ export class ParallelOrchestrationMaster {
   private async simulateService(
     service: string,
     request: ParallelRequest
-  ): Promise<{ service: string; result: any }> {
+  ): Promise<{ service: string;, result: any }> {
     // Quick circuit-breaker check
     const cb = this.circuitBreakers.get(service);
     if (cb?.isOpen) {
@@ -164,7 +162,7 @@ export class ParallelOrchestrationMaster {
       requestId: request?.id ?? null,
       service,
       payloadPreview: typeof request?.payload === 'string' ? request.payload.slice(0, 256) : Boolean(request?.payload),
-      latency,
+      latency
     };
 
     // Update perf metrics (very small function)

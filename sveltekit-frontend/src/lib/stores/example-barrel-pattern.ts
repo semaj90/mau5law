@@ -31,16 +31,14 @@ export const counterStore = (() => {
     },
     reset: () => {
       count = 0;
-    },
+    }
   };
 })();
 
 // ==================================================
 // Example 2: Todo Store with CRUD Operations
 // ==================================================
-interface Todo {
-  id: string;
-  text: string;
+interface Todo { id: string;, text: string;
   completed: boolean;
   createdAt: Date;
 }
@@ -86,7 +84,7 @@ export const todoStore = (() => {
         id: crypto.randomUUID(),
         text,
         completed: false,
-        createdAt: new Date(),
+        createdAt: new Date()
       });
     },
 
@@ -107,16 +105,14 @@ export const todoStore = (() => {
 
     clearCompleted: () => {
       todos = todos.filter(t => !t.completed);
-    },
+    }
   };
 })();
 
 // ==================================================
 // Example 3: Legal AI Store with Async Operations
 // ==================================================
-interface LegalDocument {
-  id: string;
-  title: string;
+interface LegalDocument { id: string;, title: string;
   content: string;
   embedding?: number[];
   aiSummary?: string;
@@ -125,9 +121,7 @@ interface LegalDocument {
   createdAt: Date;
 }
 
-interface LegalAIState {
-  documents: LegalDocument[];
-  selectedDocument: LegalDocument | null;
+interface LegalAIState { documents: LegalDocument[];, selectedDocument: LegalDocument | null;
   isProcessing: boolean;
   error: string | null;
   searchQuery: string;
@@ -141,7 +135,7 @@ export const legalAIStore = (() => {
     isProcessing: false,
     error: null,
     searchQuery: '',
-    searchResults: [],
+    searchResults: []
   });
 
   // Derived values
@@ -191,7 +185,7 @@ export const legalAIStore = (() => {
       state.documents.push({
         ...doc,
         id: crypto.randomUUID(),
-        createdAt: new Date(),
+        createdAt: new Date()
       });
     },
 
@@ -212,7 +206,7 @@ export const legalAIStore = (() => {
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ documentId: id }),
+          body: JSON.stringify({, documentId: id })
         });
 
         if (!response.ok) {
@@ -245,7 +239,7 @@ export const legalAIStore = (() => {
         const response = await fetch('/api/vector/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query }),
+          body: JSON.stringify({ query })
         });
 
         if (!response.ok) {
@@ -272,7 +266,7 @@ export const legalAIStore = (() => {
       state.error = null;
       state.searchQuery = '';
       state.searchResults = [];
-    },
+    }
   };
 })();
 
@@ -306,7 +300,7 @@ export const themeStore = (() => {
     },
     toggleTheme: () => {
       theme = theme === 'dark' ? 'light' : 'dark';
-    },
+    }
   };
 })();
 

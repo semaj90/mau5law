@@ -35,7 +35,7 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
       const snapshot = actor.getSnapshot();
       expect(snapshot.value).toMatchObject({ session_active: 'waiting_for_input' });
@@ -44,7 +44,7 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.userId).toBe('user-123');
@@ -57,12 +57,12 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-1',
-        caseId: 'case-1',
+        caseId: 'case-1'
       });
       actor2.send({
         type: 'START_SESSION',
         userId: 'user-2',
-        caseId: 'case-2',
+        caseId: 'case-2'
       });
       const snapshot1 = actor.getSnapshot();
       const snapshot2 = actor2.getSnapshot();
@@ -75,14 +75,14 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
     });
     it('should accept ANALYZE_DOCUMENT event', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
-        documentType: 'evidence',
+        documentType: 'evidence'
       });
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.currentDocument).toBeDefined();
@@ -93,7 +93,7 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
-        documentType: 'brief',
+        documentType: 'brief'
       });
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.currentDocument?.confidence).toBe(0);
@@ -109,7 +109,7 @@ describe('Recommendation Routing Machine', () => {
         actor.send({
           type: 'ANALYZE_DOCUMENT',
           documentId: `doc-${docType}`,
-          documentType: docType,
+          documentType: docType
         });
         const snapshot = actor.getSnapshot();
         expect(snapshot.context.currentDocument?.type).toBe(docType);
@@ -121,7 +121,7 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
     });
     it('should transition to error state when error occurs', () => {
@@ -136,9 +136,9 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
-        documentType: 'evidence',
+        documentType: 'evidence'
       });
-      actor.send({ type: 'RESET' });
+      actor.send({ type: `RESET` });
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.userId).toBe('');
       expect(snapshot.context.caseId).toBeUndefined();

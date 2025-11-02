@@ -12,7 +12,7 @@ export const enhanced_documents = pgTable('enhanced_documents', {
   status: text('status').default('active'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-  metadata: jsonb('metadata').$type<Record<string, unknown> | null>(),
+  metadata: jsonb('metadata').$type<Record<string, unknown> | null>()
 });
 // Embeddings table: store pgvector embeddings plus metadata and reference to documents
 export const enhanced_embeddings = pgTable('enhanced_embeddings', {
@@ -26,7 +26,7 @@ export const enhanced_embeddings = pgTable('enhanced_embeddings', {
   confidence: real('confidence').default(1.0),
   tokens: integer('tokens').default(0),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  additional: jsonb('additional').$type<Record<string, unknown> | null>(),
+  additional: jsonb('additional').$type<Record<string, unknown> | null>()
 });
 // Simple materialized-like search table (regular table used for recommendations/search caching)
 export const enhanced_search_cache = pgTable('enhanced_search_cache', {
@@ -35,7 +35,7 @@ export const enhanced_search_cache = pgTable('enhanced_search_cache', {
   results: jsonb('results').$type<Array<Record<string, unknown>> | null>(),
   model: text('model').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  expiresAt: timestamp('expires_at', { withTimezone: true }),
+  expiresAt: timestamp('expires_at', { withTimezone: true })
 });
 // Runtime validator for status-like fields
 export type EnhancedDocumentStatus = 'active' | 'archived' | 'processing' | 'failed';

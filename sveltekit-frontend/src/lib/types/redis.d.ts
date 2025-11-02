@@ -5,17 +5,13 @@ export type RedisClient = IORedisClient;
 
 // Define any custom types for data structures stored in Redis.
 // These examples demonstrate how you might type cached legal documents or session data.
-export interface CachedLegalDocument {
-  id: string;
-  title: string;
+export interface CachedLegalDocument { id: string;, title: string;
   contentSnippet: string;
   embeddingVector: number[];
   lastAccessed: string;
 }
 
-export interface SessionData {
-  userId: string;
-  isAuthenticated: boolean;
+export interface SessionData { userId: string;, isAuthenticated: boolean;
   roles: string[];
   lastActivity: string;
 }

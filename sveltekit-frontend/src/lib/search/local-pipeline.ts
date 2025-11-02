@@ -1,9 +1,7 @@
 import type { Case } from '$lib/types';
 import Fuse from 'fuse.js';
 
-export interface LocalDoc {
-  id: string;
-  text: string;
+export interface LocalDoc { id: string;, text: string;
   metadata?: { [key: string]: unknown }; // Changed 'any' to 'unknown'
 }
 
@@ -15,7 +13,7 @@ type MaybePromise<T> = T | Promise<T>;
 
 // Very small in-memory TTL cache (fallback when Redis is not available)
 class TinyTTLCache<V> {
-  private map = new Map<string, { v: V; t: number }>();
+  private map = new Map<string, { v: V;, t: number }>();
   constructor(private ttlMs = 60_000) {}
   get(k: string): V | undefined {
     const hit = this.map.get(k);
@@ -58,8 +56,8 @@ export class LocalSearchPipeline {
       includeScore: true,
       threshold: 0.33,
       keys: [
-        { name: 'text', weight: 0.8 },
-        { name: 'metadata.title', weight: 0.2 },
+        {, name: 'text', weight: 0.8 },
+        { name: 'metadata.title', weight: 0.2 }
       ] as Fuse.FuseOptionKey<LocalDoc>[], // Changed 'any' to Fuse.FuseOptionKey<LocalDoc>[]
     });
   }
@@ -94,12 +92,12 @@ export class LocalSearchPipeline {
         {
           id: 'seed-1',
           text: 'Contract indemnification clause and liability limitations for commercial agreements.',
-          metadata: { title: 'Indemnification Basics', type: 'contract' },
+          metadata: { title: 'Indemnification Basics', type: 'contract' }
         },
         {
           id: 'seed-2',
           text: 'Case law summary regarding breach of contract and damages calculation methods.',
-          metadata: { title: 'Breach and Damages', type: 'case-law' },
+          metadata: { title: 'Breach and Damages', type: 'case-law' }
         },
       ];
       this.addDocuments(seed);
@@ -150,7 +148,7 @@ export class LocalSearchPipeline {
       id: h.item.id,
       text: h.item.text,
       metadata: h.item.metadata,
-      score: 1 - (h.score ?? 0),
+      score: 1 - (h.score ?? 0)
     }));
 
     // Cache result

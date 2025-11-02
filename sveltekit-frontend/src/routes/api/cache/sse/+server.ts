@@ -6,7 +6,7 @@ export const GET: RequestHandler = async () => {
     start(controller) {
       // Initial hello and snapshot hook (placeholder)
       controller.enqueue(encoder.encode(`event: hello\n`));
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ok: true, ts: Date.now() })}\n\n`));
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({, ok: true, ts: Date.now() })}\n\n`));
 
       // typed event param
       const onEvent = (evt: any) => {
@@ -50,7 +50,6 @@ export const GET: RequestHandler = async () => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive'
-    }
+      Connection: 'keep-alive' }
   })
 }

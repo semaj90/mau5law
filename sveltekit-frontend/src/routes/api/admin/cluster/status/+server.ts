@@ -14,10 +14,10 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         {
           error: 'Cluster status only available from primary process',
           worker: {
-            pid: process.pid,
+           , pid: process.pid,
             memory: process.memoryUsage(),
-            uptime: process.uptime(),
-          },
+            uptime: process.uptime()
+          }
         },
         { status: 503 }
       );
@@ -29,11 +29,11 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         error: 'Cluster manager not available',
         single_process: true,
         process: {
-          pid: process.pid,
+         , pid: process.pid,
           memory: process.memoryUsage(),
           uptime: process.uptime(),
-          cpuUsage: process.cpuUsage(),
-        },
+          cpuUsage: process.cpuUsage()
+        }
       });
     }
     // Collect cluster health data
@@ -48,8 +48,8 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         totalCpus: cpus().length,
         nodeVersion: process.version,
         platform: process.platform,
-        architecture: process.arch,
-      },
+        architecture: process.arch
+      }
     });
   } catch (error: any) {
     console.error('Cluster status error:', error);
@@ -58,19 +58,17 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       {
         error: 'Failed to get cluster status',
         message: error instanceof Error ? error.message : 'Unknown error',
-        fallback: {
-          health: {
-            totalWorkers: 1,
+        fallback: { health: {, totalWorkers: 1,
             healthyWorkers: 1,
             totalRequests: 0,
             averageResponseTime: 0,
             memoryUsage: { total: 0, average: 0, peak: 0 },
             cpuUsage: { total: 0, average: 0 },
-            errors: { total: 0, rate: 0 },
+            errors: { total: 0, rate: 0 }
           },
           workers: [
             {
-              workerId: 1,
+             , workerId: 1,
               pid: process.pid,
               status: 'online' as const,
               connections: 0,
@@ -79,10 +77,10 @@ export const GET: RequestHandler = async ({ url: _url }) => {
               cpuUsage: process.cpuUsage(),
               lastHealthCheck: Date.now(),
               errors: 0,
-              uptime: process.uptime(),
+              uptime: process.uptime()
             },
-          ],
-        },
+          ]
+        }
       },
       { status: 200 }
     );

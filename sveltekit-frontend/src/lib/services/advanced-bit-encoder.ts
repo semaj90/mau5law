@@ -5,9 +5,7 @@
 // auto-encoder with deterministic values, JSON parsing with metadata encoding
 // ================================================================================
 
-export interface BitEncodingConfig {
-	bitDepth: 24 | 16 | 8;
-	colorSpace: 'RGB' | 'RGBA' | 'HSV' | 'LAB';
+export interface BitEncodingConfig { bitDepth: 24 | 16 | 8;, colorSpace: 'RGB' | 'RGBA' | 'HSV' | 'LAB';
 	compression: number;
 	enableDimensionalSplicing: boolean;
 	enableAutoEncoder: boolean;
@@ -30,18 +28,14 @@ export interface DimensionalCache {
   hitRate: number;
 }
 
-export interface CacheSplice {
-	id: string;
-  dimensions: number[];
+export interface CacheSplice { id: string;, dimensions: number[];
   data: Uint8Array;
   metadata: SpliceMetadata;
   timestamp: number;
   accessCount: number;
 }
 
-export interface SpliceMetadata {
-	originalSize: number;
-  compressedSize: number;
+export interface SpliceMetadata { originalSize: number;, compressedSize: number;
   encoding: string;
   checksum: string;
   version: string;
@@ -72,9 +66,7 @@ export class AdvancedBitEncoder {
 	private dimensionalCache: DimensionalCache;
 	private autoEncoder: AutoEncoder | null = null;
 	private browserBitDepth: number;
-	private performanceMetrics: {
-		encodeTime: number;
-		decodeTime: number;
+	private performanceMetrics: { encodeTime: number;, decodeTime: number;
 		compressionRatio: number;
 		cacheHitRate: number;
 		memoryUsage: number;
@@ -239,8 +231,7 @@ export class AdvancedBitEncoder {
 					compressedSize: Math.floor(pattern.size * this.config.compression),
 					encoding: 'dimensional-splice-v1',
 					checksum: this.calculateChecksum(new Uint8Array(pattern.size)),
-					version: '1.0.0'
-				},
+					version: '1.0.0' },
 				timestamp: Date.now(),
 				accessCount: 0
 			}
@@ -321,11 +312,7 @@ export class AdvancedBitEncoder {
 	// ============================================================================
 	// JSON PARSING WITH METADATA ENCODING
 	// ============================================================================
-	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): {
-		encoded: Uint8Array;
-		metadata: {
-			originalSize: number;
-			compressedSize: number;
+	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): { encoded: Uint8Array;, metadata: { originalSize: number;, compressedSize: number;
 			encoding: string;
 			structure: any;
 			checksum: string;
@@ -542,9 +529,7 @@ export class AdvancedBitEncoder {
 	getPerformanceMetrics() {
 		// Update memory usage
 		interface PerformanceWithMemory extends Performance {
-			memory?: {
-				usedJSHeapSize: number;
-				totalJSHeapSize: number;
+			memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
 				jsHeapSizeLimit: number;
 			};
 		}
@@ -632,13 +617,9 @@ export class AdvancedBitEncoder {
 // ============================================================================
 class AutoEncoder {
 	private config: AutoEncoderConfig;
-	private weights: {
-		encoder: Float32Array;
-		decoder: Float32Array;
+	private weights: { encoder: Float32Array;, decoder: Float32Array;
 	}
-	private biases: {
-		encoder: Float32Array;
-		decoder: Float32Array;
+	private biases: { encoder: Float32Array;, decoder: Float32Array;
 	}
 	constructor(config: AutoEncoderConfig) {
 		this.config = config;
@@ -724,8 +705,7 @@ const encoder = new AdvancedBitEncoder({
 	compression: 0.8,
 	enableDimensionalSplicing: true,
 	enableAutoEncoder: true,
-	cacheStrategy: 'aggressive'
-});
+	cacheStrategy: 'aggressive' });
 // Encode color
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);

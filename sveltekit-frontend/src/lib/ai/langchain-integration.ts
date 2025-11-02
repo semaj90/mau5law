@@ -14,27 +14,19 @@ export function getLangChainService(): LangChainOllamaService {
       embeddingModel: 'embeddinggemma:latest',
       useCuda: true,
       temperature: 0.3,
-      maxTokens: 2048,
+      maxTokens: 2048
     });
   }
   return langChainServiceInstance;
 }
 // Type helpers for RAG results
-export interface LegalRAGResult {
-  answer: string;
-  confidence: number;
+export interface LegalRAGResult { answer: string;, confidence: number;
   processingTime: number;
-  sources: Array<{
-    title: string;
-    content: string;
+  sources: Array<{ title: string;, content: string;
     score: number;
   }>;
 }
-export interface RAGDocument {
-  pageContent: string;
-  metadata: {
-    title: string;
-    type: string;
+export interface RAGDocument { pageContent: string;, metadata: { title: string;, type: string;
     score: number;
   };
 }
@@ -52,8 +44,8 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
       sources: documents.map(doc => ({
         title: doc.metadata.title,
         content: doc.pageContent.substring(0, 200),
-        score: doc.metadata.score,
-      })),
+        score: doc.metadata.score
+      }))
     };
   } catch (error) {
     console.error('LangChain RAG error:', error);
@@ -66,9 +58,7 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
 export async function processDocumentWithLangChain(
   content: string,
   documentId: string
-): Promise<{
-  chunksCreated: number;
-  embeddings: number[][];
+): Promise<{ chunksCreated: number;, embeddings: number[][];
   processingTime: number;
 }> {
   const service = getLangChainService();

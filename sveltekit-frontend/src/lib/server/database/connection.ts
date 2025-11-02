@@ -21,14 +21,12 @@ const client = postgres(connectionString, {
   prepare: false, // Required for pgvector
 });
 // Initialize Drizzle with enhanced error handling
-export const db = drizzle(client, {
-  schema: {
-    cases: casesTable,
+export const db = drizzle(client, { schema: {, cases: casesTable,
     documents: documentsTable,
     evidence: evidenceTable,
     timelineEvents: timelineEventsTable,
     analytics: analyticsEvents,
-    vectorSimilarity: vectorSimilarityView,
+    vectorSimilarity: vectorSimilarityView
   },
   logger: process.env.NODE_ENV === 'development'
 });
@@ -72,7 +70,7 @@ export class VectorSearchManager {
         target_id: targetId,
         similarity_score: score,
         similarity_type: type,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       })
       .onConflictDoNothing();
   }
@@ -122,20 +120,20 @@ export class QueryCacheManager {
         cache_key: cacheKey,
         query_type: queryType,
         result_data: data,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       });
       .onConflictDoUpdate({
         target: [queryCacheTable.cache_key],
         set: {
-          result_data: data,
+         , result_data: data,
           expires_at: expiresAt,
-          access_count: 0,
+          access_count: 0
         }
       });
   }
   async invalidate(pattern: string) {
     // Invalidate cache entries matching pattern
-    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%`}`);
+    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%` }`);
   }
 }
 // Analytics tracking

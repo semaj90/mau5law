@@ -5,8 +5,8 @@ import type { Document } from '$lib/types';
  * CLOSEST EQUIVALENT TO OLLAMA gemma3:270m (but in browser!)
  *
  * This is the smallest viable LLM for browser use:
- * - Model: Qwen 2.5 0.5B Instruct (quantized to q4)
- * - Size: ~300MB (vs gemma3:270m @ 270MB)
+ * -; Model: Qwen 2.5 0.5B Instruct (quantized to q4)
+ * - Size: ~300MB (vs; gemma3:270m @ 270MB)
  * - Speed: 10-20 tokens/sec on WebGPU
  * - Privacy: ✅ 100% browser-based
  *
@@ -75,8 +75,7 @@ export class BrowserQwen {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.generator = await pipeline('text-generation', this.modelName, {
-          device: 'wasm'
-        });
+          device: 'wasm' });
       }
       this.isInitialized = true;
       console.log(`✅ [Qwen Browser] Model loaded (${this.device})`);
@@ -101,8 +100,7 @@ export class BrowserQwen {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.'
-    } = options;
+      systemPrompt = 'You are a helpful legal AI assistant.' } = options;
     try {
       const startTime = performance.now();
       // Qwen prompt format
@@ -130,7 +128,7 @@ export class BrowserQwen {
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
+    messages: Array<{, role: 'user' | 'assistant' | 'system'; content: string }>,
     options: GenerateOptions = {}
   ): Promise<string> {
     let prompt = '';
@@ -170,8 +168,7 @@ export class BrowserQwen {
       {
         maxTokens,
         temperature: 0.3,
-        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.'
-      }
+        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.' }
     );
   }
   async answerLegalQuestion(question: string, context: string): Promise<string> {
@@ -180,8 +177,7 @@ export class BrowserQwen {
       {
         maxTokens: 300,
         temperature: 0.5,
-        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.'
-      }
+        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.' }
     );
   }
   getDevice(): string {
@@ -197,7 +193,7 @@ export class BrowserQwen {
  */
 export const browserQwen = new BrowserQwen();
 /**
- * COMPARISON: Qwen 0.5B vs Ollama gemma3:270m
+ * COMPARISON: Qwen 0.5B vs Ollama; gemma3:270m
  *
  * | Metric           | Qwen 0.5B (Browser) | gemma3:270m (Ollama) |
  * |------------------|---------------------|----------------------|
@@ -209,5 +205,5 @@ export const browserQwen = new BrowserQwen();
  * | First Load       | 1-2 min download    | Instant (preloaded)  |
  * | Memory           | ~500MB RAM          | Server RAM           |
  *
- * VERDICT: Qwen 0.5B is the closest browser equivalent to gemma3:270m!
+ * VERDICT: Qwen 0.5B is the closest browser equivalent to; gemma3:270m!
  */

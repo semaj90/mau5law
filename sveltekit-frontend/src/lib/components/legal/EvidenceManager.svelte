@@ -1,5 +1,8 @@
 <!-- Evidence Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
 import type { Document } from '$lib/types';
   import { fade, scale, fly } from 'svelte/transition';
   // the module exports a default builder (adjusted per compile hint)
@@ -269,7 +272,7 @@ import type { Document } from '$lib/types';
     <CardContent>
       <!-- Upload Section -->
       {#if showUpload}
-        <div class="upload-section" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="upload-section" transitionfly={{ y: -20, duration: 300 }}>
           <div class="upload-area">
             <input
               type="file"
@@ -339,7 +342,7 @@ import type { Document } from '$lib/types';
           <div
             class="evidence-item"
             class:selected={selectedEvidence.has(evidence.id)}
-            transition:scale={evidenceBuilder.animations.enter}
+            transitionscale={evidenceBuilder.animations.enter}
           >
             <div class="evidence-header">
               <div class="evidence-select">

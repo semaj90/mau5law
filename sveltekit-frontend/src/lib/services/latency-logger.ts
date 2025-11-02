@@ -3,9 +3,7 @@ import { set, get as idbGet, keys as idbKeys } from 'idb-keyval';
 import { systemMonitorMachine } from '$lib/machines/system-monitor';
 import { interpret } from 'xstate';
 
-export type LatencyEntry = {
-  ts: number;
-  latency: number;
+export type LatencyEntry = { ts: number;, latency: number;
   frameDelta?: number;
   gpuActive: boolean;
   fallbackMode: boolean;
@@ -37,7 +35,7 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
       latency: ctx.latency ?? 0,
       frameDelta: ctx.frameDelta ?? undefined,
       gpuActive: !(ctx.fallbackMode ?? false),
-      fallbackMode: !!ctx.fallbackMode,
+      fallbackMode: !!ctx.fallbackMode
     };
 
     const now = Date.now();
@@ -53,8 +51,8 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
       if (remoteUrl) {
         void fetch(remoteUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(entry),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(entry)
         }).catch(() => {});
       }
     }
@@ -86,7 +84,7 @@ export async function captureLatency(entry: LatencyEntry): Promise<any> {
         void fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(entry),
+          body: JSON.stringify(entry)
         }).catch((err) => {
           // non-fatal: remote post failed
           // keep quiet but expose debug information when available
@@ -141,7 +139,7 @@ export async function exportLatencyJSONL(): Promise<string> {
 
 export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl'): Promise<any> {
   const payload = await exportLatencyJSONL();
-  const blob = new Blob([payload], { type: 'application/jsonl' });
+  const blob = new Blob([payload], { type: `application/jsonl` });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

@@ -3,22 +3,16 @@ import type { Case } from '$lib/types';
  * Evidence Management Global Store - SvelteKit 2 + Svelte 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration
  */
-export interface EvidenceNode {
-  id: string;
-  title: string;
+export interface EvidenceNode { id: string;, title: string;
   content: string;
   type: 'document' | 'photo' | 'testimony' | 'physical' | 'digital';
   tags: string[];
-  position: { x: number; y: number }
+  position: { x: number;, y: number }
   connections: string[]; // IDs of connected nodes,
-  metadata: {
-    dateCreated: number;
-    lastModified: number;
+  metadata: { dateCreated: number;, lastModified: number;
     source?: string;
     relevanceScore?: number;
-    aiAnalysis?: {
-      summary: string;
-      keyTerms: string[];
+    aiAnalysis?: { summary: string;, keyTerms: string[];
       confidence: number;
       suggestedConnections: string[];
     }
@@ -26,31 +20,23 @@ export interface EvidenceNode {
   status: 'pending' | 'reviewed' | 'verified' | 'flagged';
   assignedTo?: string;
 }
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   description: string;
   jurisdiction: string;
   practiceArea: string;
   nodes: EvidenceNode[];
-  connections: Array<{
-    id: string;
-    fromNodeId: string;
+  connections: Array<{ id: string;, fromNodeId: string;
     toNodeId: string;
     relationship: string;
     strength: number;
     aiGenerated: boolean;
   }>;
-  metadata: {
-    dateCreated: number;
-    lastModified: number;
+  metadata: { dateCreated: number;, lastModified: number;
     status: 'active' | 'archived' | 'completed';
     priority: 'low' | 'medium' | 'high' | 'urgent';
   };
 }
-export interface UIState {
-  selectedNodeIds: string[];
-  draggedNodeId: string | null;
+export interface UIState { selectedNodeIds: string[];, draggedNodeId: string | null;
   modalOpen: boolean;
   modalType: 'add' | 'edit' | 'delete' | 'connect' | null;
   editingNode: EvidenceNode | null;
@@ -78,14 +64,14 @@ class EvidenceGlobalStore {
     showAISuggestions: true,
     filterBy: {},
     viewMode: 'network',
-    aiProcessing: false,
+    aiProcessing: false
   });
   // Performance tracking
   stats = $state({
     totalNodes: 0,
     totalConnections: 0,
     aiSuggestionsGenerated: 0,
-    lastSync: 0,
+    lastSync: 0
   });
   // Derived state using $derived
   currentCase = $derived(this.currentCaseId ? this.cases[this.currentCaseId] : null);
@@ -115,8 +101,8 @@ class EvidenceGlobalStore {
         dateCreated: Date.now(),
         lastModified: Date.now(),
         status: 'active',
-        priority: 'medium',
-      },
+        priority: 'medium'
+      }
     };
     this.cases[caseId] = newCase;
     this.currentCaseId = caseId;
@@ -139,8 +125,8 @@ class EvidenceGlobalStore {
         ...updates,
         metadata: {
           ...this.cases[caseId].metadata,
-          lastModified: Date.now(),
-        },
+          lastModified: Date.now()
+        }
       };
       this.persistState();
     }
@@ -157,8 +143,8 @@ class EvidenceGlobalStore {
       connections: [],
       metadata: {
         dateCreated: Date.now(),
-        lastModified: Date.now(),
-      },
+        lastModified: Date.now()
+      }
     };
     this.currentCase.nodes.push(newNode);
     this.updateCaseMetadata();
@@ -177,8 +163,8 @@ class EvidenceGlobalStore {
       ...updates,
       metadata: {
         ...this.currentCase.nodes[nodeIndex].metadata,
-        lastModified: Date.now(),
-      },
+        lastModified: Date.now()
+      }
     };
     this.updateCaseMetadata();
     // Re-analyze if content changed
@@ -206,7 +192,7 @@ class EvidenceGlobalStore {
     console.log(`🗑️ Deleted evidence node: ${nodeId}`);
   }
   // === Node Positioning (for drag & drop) ===
-  updateNodePosition(nodeId: string, position: { x: number; y: number }) {
+  updateNodePosition(nodeId: string, position: {, x: number; y: number }) {
     if (!this.currentCase) return;
     const node = this.currentCase.nodes.find(n => n.id === nodeId);
     if (node) {
@@ -236,7 +222,7 @@ class EvidenceGlobalStore {
       toNodeId,
       relationship,
       strength: aiGenerated ? 0.7 : 1.0,
-      aiGenerated,
+      aiGenerated
     };
     this.currentCase.connections.push(connection);
     // Update node connections arrays
@@ -316,11 +302,11 @@ class EvidenceGlobalStore {
               node,
               allNodes: this.currentCase.nodes,
               caseContext: {
-                title: this.currentCase.title,
+               , title: this.currentCase.title,
                 jurisdiction: this.currentCase.jurisdiction,
-                practiceArea: this.currentCase.practiceArea,
-              },
-            },
+                practiceArea: this.currentCase.practiceArea
+              }
+            }
           });
         }
       }
@@ -343,7 +329,7 @@ class EvidenceGlobalStore {
         this.currentNodes.map(node => ({
           id: node.id,
           title: node.title,
-          content: node.content,
+          content: node.content
         }))
       );
       // Add suggested connections
@@ -401,7 +387,7 @@ class EvidenceGlobalStore {
   setFilter(filterType: keyof UIState['filterBy'], value: any) {
     this.ui.filterBy = {
       ...this.ui.filterBy,
-      [filterType]: value,
+      [filterType]: value
     };
   }
   clearFilters() {
@@ -431,7 +417,7 @@ class EvidenceGlobalStore {
       const stateToSave = {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
-        stats: this.stats,
+        stats: this.stats
       };
       localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
       this.stats.lastSync = Date.now();
@@ -477,8 +463,7 @@ class EvidenceGlobalStore {
       {
         case caseData,
         exportedAt: new Date().toISOString(),
-        version: '1.0',
-      },
+        version: `1.0` },
       null,
       2
     );
@@ -522,8 +507,7 @@ export function createEvidenceNode(
     type,
     tags: [],
     position,
-    status: 'pending'
-  }
+    status: `pending` }
 }
 export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
   return evidenceStore.currentNodes.filter(node => node.type === type);

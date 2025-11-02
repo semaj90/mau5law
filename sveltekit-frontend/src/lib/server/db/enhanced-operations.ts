@@ -13,7 +13,7 @@ export class DbCaseOperations {
     status?: string[];
     priority?: string[];
     assignedTo?: string;
-    dateRange?: { start: Date; end: Date };
+    dateRange?: {, start: Date; end: Date };
     limit?: number;
     offset?: number;
     useVectorSearch?: boolean;
@@ -26,7 +26,7 @@ export class DbCaseOperations {
         or(
           sql`${cases.title} ILIKE ${`%${query}%`}`,
           sql`${cases.description} ILIKE ${`%${query}%`}`,
-          sql`${cases.caseNumber} ILIKE ${`%${query}%`}`
+          sql`${cases.caseNumber} ILIKE ${`%${query}%` }`
         )!
       );
     }
@@ -52,7 +52,7 @@ export class DbCaseOperations {
         caseNumber: cases.caseNumber,
         assignedAttorney: cases.assignedAttorney,
         createdAt: cases.createdAt,
-        updatedAt: cases.updatedAt,
+        updatedAt: cases.updatedAt
       })
       .from(cases)
       .where(whereClause)
@@ -66,7 +66,7 @@ export class DbCaseOperations {
       .where(whereClause);
     return {
       cases: caseResults,
-      total: totalQuery[0]?.count || 0,
+      total: totalQuery[0]?.count || 0
     };
   }
   /**
@@ -78,7 +78,7 @@ export class DbCaseOperations {
     const evidenceData = await db.select().from(evidence).where(eq(evidence.caseId, id));
     return {
       ...caseData,
-      evidence: evidenceData,
+      evidence: evidenceData
     };
   }
   /**
@@ -92,7 +92,7 @@ export class DbCaseOperations {
     incidentDate?: Date;
     location?: string;
     jurisdiction?: string;
-    createdBy: string;
+   , createdBy: string;
   }) {
     const [newCase] = await db
       .insert(cases)
@@ -104,7 +104,7 @@ export class DbCaseOperations {
         caseNumber: `CASE-${Date.now()}`, // Generate unique case number
         leadProsecutor: data.createdBy,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .returning();
     return newCase;
@@ -114,13 +114,11 @@ export class DbCaseOperations {
    */
   static async update(
     id: string,
-    data: Partial<{
-      title: string;
-      description: string;
+    data: Partial<{ title: string;, description: string;
       priority: string;
       status: string;
       location: string;
-      jurisdiction: string;
+     , jurisdiction: string;
     }>,
     userId: string
   ) {
@@ -128,7 +126,7 @@ export class DbCaseOperations {
       .update(cases)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(cases.id, id))
       .returning();
@@ -150,7 +148,7 @@ export class DbEvidenceOperations {
     }
     if (query) {
       conditions.push(
-        or(sql`${evidence.title} ILIKE ${`%${query}%`}`, sql`${evidence.description} ILIKE ${`%${query}%`}`)!
+        or(sql`${evidence.title} ILIKE ${`%${query}%`}`, sql`${evidence.description} ILIKE ${`%${query}%` }`)!
       );
     }
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -167,7 +165,7 @@ export class DbEvidenceOperations {
       .where(whereClause);
     return {
       evidence: evidenceResults,
-      total: totalQuery[0]?.count || 0,
+      total: totalQuery[0]?.count || 0
     };
   }
 }

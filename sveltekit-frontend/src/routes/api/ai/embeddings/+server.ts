@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: result.success,
           data: result.success ? {
-            embedding: result.embedding,
+           , embedding: result.embedding,
             dimensions: result.dimensions,
             model: result.model,
             processing_time: result.processing_time,
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           data: {
-            query: searchData.data.query,
+           , query: searchData.data.query,
             results: searchResults,
             total_results: searchResults.length
           },
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           embedding_cached: queryEmbedding.cached,
           embedding_time: queryEmbedding.processing_time,
             query_embedding_time: queryEmbedding.processing_time,
-            total_results: searchResults.length,
+            total_results: searchResults.length
           }
         })
       case 'batch',:
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           data: {
-            embeddings: batchResults,
+           , embeddings: batchResults,
             total_processed: batchResults.length,
             successful: batchResults.filter(r => r.success).length,
             failed: batchResults.filter(r => !r.success).length
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            status: 'Gemma embeddings service available',
+           , status: 'Gemma embeddings service available',
             models: ['embeddinggemma:latest', 'nomic-embed-text:latest'],
             dimensions: 512,
             features: ['caching', 'pgvector', 'batch_processing', 'vector_search', 'gpu_acceleration']
@@ -162,11 +162,11 @@ export const GET: RequestHandler = async ({ url }) => {
         await gemmaEmbeddingsService.optimizeIndexes()
         return json({
           success: true,
-          data: { message: 'Vector indexes optimized successfully' }
+          data: {, message: 'Vector indexes optimized successfully' }
         })
       default: return json({
           success: false,
-          error: 'Unknown action',
+          error: 'Unknown action'
         }, { status: 400 })
     }
   } catch (error) {

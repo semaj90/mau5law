@@ -32,19 +32,19 @@ const NES_MEMORY_MAP = {
   APU_IO_REGISTERS: {
     start: 0x4000,
     end: 0x4017,
-    size: 24,
+    size: 24
   },
   // Expansion ROM (for legal plugins)
   EXPANSION_ROM: {
     start: 0x4020,
     end: 0x5fff,
-    size: 8160,
+    size: 8160
   },
   // Save RAM (for persistent legal data)
   SAVE_RAM: {
     start: 0x6000,
     end: 0x7fff,
-    size: 8192,
+    size: 8192
   },
   // PRG-ROM (Program ROM - for legal processing logic)
   PRG_ROM: {
@@ -59,7 +59,7 @@ const NES_MEMORY_MAP = {
     end: 0x1fff,
     size: 8192,
     bankSwitchable: true
-  },
+  }
 } as const;
 export interface LegalDocument {
   readonly id: string;
@@ -147,7 +147,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
     // CHR-ROM bank (8KB - legal document patterns)
     this.memoryBanks.set('CHR_ROM', {
@@ -160,7 +160,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
     // PRG-ROM bank (32KB - legal processing logic)
     this.memoryBanks.set('PRG_ROM', {
@@ -173,7 +173,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
     // Save RAM bank (8KB - persistent legal data)
     this.memoryBanks.set('SAVE_RAM', {
@@ -186,7 +186,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
     // Expansion ROM bank (8KB - legal plugins)
     this.memoryBanks.set('EXPANSION_ROM', {
@@ -199,7 +199,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: false, // Activated on-demand
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
   }
   private setupCompressionWorker(): void {
@@ -242,7 +242,7 @@ export class NESMemoryArchitecture {
   }
   async allocateDocument(_document: Omit<LegalDocument, 'lastAccessed'>,
     data: ArrayBuffer;
-    options: {
+   , options: {
       preferredBank?: string;
       compress?: boolean;
       compressionLevel?: number;
@@ -251,7 +251,7 @@ export class NESMemoryArchitecture {
     const {
       preferredBank = this.selectOptimalBank(document, data.byteLength),
       compress = true,
-      compressionLevel = 2,
+      compressionLevel = 2
     } = options;
     try {
       const bank = this.memoryBanks.get(preferredBank);
@@ -292,7 +292,7 @@ export class NESMemoryArchitecture {
         size: documentSize,
         lastAccessed: Date.now(),
         compressed: compress,
-        bankId: bank.id,
+        bankId: bank.id
       }
       // Allocate document in bank
       bank.documents.set(document.id, legalDocument);
@@ -303,7 +303,7 @@ export class NESMemoryArchitecture {
       );
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to allocate document ${document.id}:`, error);
+      console.error(`❌ Failed to allocate document ${document.id}: ', error);
       return false;
     }
   }
@@ -364,7 +364,7 @@ export class NESMemoryArchitecture {
   }
   private async compressDocument(
     data: ArrayBuffer;
-    document: Omit<LegalDocument, 'lastAccessed'>,
+   , document: Omit<LegalDocument, 'lastAccessed'>,
     compressionLevel: number
   ): Promise<any> {
     if (!this.compressionWorker) {
@@ -380,7 +380,7 @@ export class NESMemoryArchitecture {
           resolve({
             data: e.data.compressedData,
             ratio: e.data.compressionRatio,
-            priority: e.data.legalPriority,
+            priority: e.data.legalPriority
           });
         } else {
           reject(new Error(e.data.error));
@@ -389,11 +389,11 @@ export class NESMemoryArchitecture {
       this.compressionWorker!.postMessage({
         documentData: data,
         legalContext: {
-          type: document.type,
+         , type: document.type,
           riskLevel: document.riskLevel,
-          confidenceLevel: document.confidenceLevel,
+          confidenceLevel: document.confidenceLevel
         },
-        compressionLevel,
+        compressionLevel
       });
     });
   }
@@ -439,7 +439,7 @@ export class NESMemoryArchitecture {
       );
       return freedSpace >= requiredSpace;
     } catch (error: any) {
-      console.error(`❌ Bank switch failed in ${bankName}:`, error);
+      console.error(`❌ Bank switch failed in ${bankName}: ', error);
       return false;
     }
   }
@@ -449,7 +449,7 @@ export class NESMemoryArchitecture {
     if (expansionBank.used + document.size <= expansionBank.size) {
       expansionBank.documents.set(docId, {
         ...document,
-        bankId: expansionBank.id,
+        bankId: expansionBank.id
       });
       expansionBank.used += document.size;
       expansionBank.isActive = true;
@@ -567,7 +567,7 @@ export class NESMemoryArchitecture {
       garbageCollections: this.gcCount,
       compressionSavings: this.calculateCompressionSavings(),
       documentCount,
-      averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
+      averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0
     }
   }
   private calculateCompressionSavings(): number {
@@ -666,7 +666,7 @@ class PlannerMemoryManager {
   private handleByGraphId: Map<string, number> = new Map();
   private insertionOrder: number[] = []; // for eviction
   private freeList: number[] = [];
-  private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
+  private transpositionCache: Map<string, { visits: number; value: number;, updated: number }>;
   private lastAllocation = 0;
   constructor(capacity = 8192) {
     this.capacity = capacity;
@@ -771,7 +771,7 @@ class PlannerMemoryManager {
       valueSum: this.valueSum[handle],
       prior: this.prior[handle],
       depth: this.depth[handle],
-      graphNodeId: this.records[handle]?.graphNodeId,
+      graphNodeId: this.records[handle]?.graphNodeId
     }
   }
   cacheTransposition(graphNodeId: string, visits: number, value: number) {
@@ -785,7 +785,7 @@ class PlannerMemoryManager {
       capacity: this.capacity,
       allocated: this.records.length - this.freeList.length,
       free: this.freeList.length,
-      transpositions: this.transpositionCache.size,
+      transpositions: this.transpositionCache.size
     }
   }
 }
@@ -793,7 +793,7 @@ class PlannerMemoryManager {
 export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
-  allocateNode(params: { graphNodeId: string; parentHandle: number; prior: number; depth: number }) {
+  allocateNode(params: { graphNodeId: string; parentHandle: number; prior: number;, depth: number }) {
     return plannerMemory.allocate(params.graphNodeId, params.parentHandle, params.prior, params.depth);
   },
   visit(handle: number, value: number) {
@@ -802,6 +802,6 @@ export const nesPlannerBridge = {
   select(handle: number, explorationC?: number) {
     return plannerMemory.selectChildUCB(handle, explorationC);
   },
-  stats(handle: number) { return plannerMemory.getStats(handle), },
-  summary() { return plannerMemory.summarize(), }
+  stats(handle: number) { return plannerMemory.getStats(handle) },
+  summary() { return plannerMemory.summarize() }
 }

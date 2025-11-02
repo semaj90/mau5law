@@ -10,23 +10,17 @@ try {
   vscode = null;
 }
 
-export interface CommandMetrics {
-  commandId: string;
-  executionTime: number;
+export interface CommandMetrics { commandId: string;, executionTime: number;
   memoryUsed: number;
   timestamp: number;
   success: boolean;
   resourceType: "json" | "wasm" | "vector" | "cache";
 }
-export interface MemoryPrediction {
-  nextAllocation: number;
-  confidence: number;
+export interface MemoryPrediction { nextAllocation: number;, confidence: number;
 }
 export type LODLevel = "auto" | "ultra" | "high" | "medium" | "low";
 
-export interface ExtensionConfig {
-  maxMemoryMB: number;
-  enableWebAssembly: boolean;
+export interface ExtensionConfig { maxMemoryMB: number;, enableWebAssembly: boolean;
   enableNeuralOptimization: boolean;
   cacheStrategy: "aggressive" | "balanced" | "conservative";
   lodLevel: LODLevel;
@@ -67,7 +61,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
   private config: ExtensionConfig;
   private metrics: Map<string, CommandMetrics[]> = new Map();
   constructor(config: ExtensionConfig = {
-    maxMemoryMB: 512,
+   , maxMemoryMB: 512,
     enableWebAssembly: true,
     enableNeuralOptimization: false,
     cacheStrategy: "balanced",
@@ -103,10 +97,9 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
       const metrics: CommandMetrics = {
         commandId,
         executionTime: endTime - startTime,
-        memoryUsed: 0, // TODO: Implement memory tracking
-        timestamp: Date.now(),
+        memoryUsed: 0, // TODO: Implement memory tracking; timestamp: Date.now(),
         success: true,
-        resourceType: "json",
+        resourceType: "json"
       };
       this.recordMetrics(commandId, metrics);
       return { success: true, result, metrics };
@@ -118,7 +111,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         memoryUsed: 0,
         timestamp: Date.now(),
         success: false,
-        resourceType: "json",
+        resourceType: "json"
       };
       this.recordMetrics(commandId, metrics);
       return { success: false, error: error as Error, metrics };

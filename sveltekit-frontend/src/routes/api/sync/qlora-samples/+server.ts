@@ -15,11 +15,11 @@ const qloraTopologyPredictor = {
       estimatedPerformance: {
         latency: Math.random() * 1000 + 500,
         accuracy: 0.85 + Math.random() * 0.1,
-        memoryUsage: Math.random() * 256 + 128,
+        memoryUsage: Math.random() * 256 + 128
       },
-      reasoning: 'Mock topology prediction for development',
+      reasoning: 'Mock topology prediction for development'
     };
-  },
+  }
 };
 
 // Mock implementations for commented out services
@@ -28,14 +28,14 @@ const hmmSomEngine = {
     return {
       input: 'mock_input',
       expected_output: 'mock_output',
-      metadata: { generated_at: new Date().toISOString() },
+      metadata: { generated_at: new Date().toISOString() }
     };
-  },
+  }
 };
 
 // Small helper types and functions to satisfy TS checks
 type MockDoc = { id?: string; type?: string; [k: string]: any };
-type BatchJob = { jobId: string; documentId: string; config: Record<string, unknown>; variation?: number };
+type BatchJob = { jobId: string; documentId: string;, config: Record<string, unknown>; variation?: number };
 
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
@@ -69,11 +69,11 @@ export const GET: RequestHandler = async ({ url }) => {
             samples: mockStates,
             count: mockStates.length,
             metadata: {
-              documentTypes: types,
+             , documentTypes: types,
               averageComplexity: avgComplexity,
-              configurationVariety,
+              configurationVariety
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -90,21 +90,21 @@ export const GET: RequestHandler = async ({ url }) => {
               documentFlow: [doc.type],
               interactionVelocity: 1.5,
               qualityExpectation: 0.9,
-              timeConstraints: 0.5,
+              timeConstraints: 0.5
             };
             const prediction = await qloraTopologyPredictor.predictOptimalTopology(doc as any, mockUserContext, {
               maxLatency: 2000,
               minAccuracy: 0.85,
-              memoryBudget: 512,
+              memoryBudget: 512
             });
             predictions.push({
               documentId: doc.id,
               documentType: doc.type,
               prediction,
-              mockData: true,
+              mockData: true
             });
           } catch (err: any) {
-            console.warn(`Failed to generate prediction for doc ${doc.id}:`, err?.message || err);
+            console.warn(`Failed to generate prediction for doc ${doc.id}: ', err?.message || err);
           }
         }
 
@@ -124,9 +124,9 @@ export const GET: RequestHandler = async ({ url }) => {
             count: predictions.length,
             performance: {
               avgConfidence,
-              totalLatency,
+              totalLatency
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ? {
               avgConfidence: hmmPredictions.reduce((sum, p) => sum + (p.totalConfidence || 0), 0) / countPreds,
               avgLatency: hmmPredictions.reduce((sum, p) => sum + (p.predictionLatencyMs || 0), 0) / countPreds,
-              avgCacheHitRatio: hmmPredictions.reduce((sum, p) => sum + (p.cacheHitRatio || 0), 0) / countPreds,
+              avgCacheHitRatio: hmmPredictions.reduce((sum, p) => sum + (p.cacheHitRatio || 0), 0) / countPreds
             }
           : { avgConfidence: 0, avgLatency: 0, avgCacheHitRatio: 0 };
 
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
             predictions: hmmPredictions,
             count: countPreds,
             aggregateStats,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
           accuracy: 0.8 + Math.random() * 0.15,
           trainingTime: 1000 + Math.random() * 5000,
           createdAt: new Date(Date.now() - Math.random() * 86400000).toISOString(),
-          metadata: { mockData: true },
+          metadata: { mockData: true }
         }));
 
         const stats = trainingJobs.length
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
               statusBreakdown: trainingJobs.reduce((acc: Record<string, number>, j) => {
                 acc[j.status] = (acc[j.status] || 0) + 1;
                 return acc;
-              }, {}),
+              }, {})
             }
           : { avgAccuracy: 0, avgTrainingTime: 0, statusBreakdown: {} };
 
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
             jobs: trainingJobs,
             count: trainingJobs.length,
             stats,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -205,8 +205,8 @@ export const GET: RequestHandler = async ({ url }) => {
             evidence: 12,
             brief: 10,
             citation: 8,
-            precedent: 5,
-          },
+            precedent: 5
+          }
         };
 
         return json(
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url }) => {
             action: 'performance_metrics',
             metrics,
             dataPoints: 50,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
               'training_history',
               'performance_metrics',
             ],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -243,7 +243,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'QLoRA samples operation failed',
         message: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -264,22 +264,22 @@ export const POST: RequestHandler = async ({ request }) => {
           config?: Record<string, unknown>;
         };
         if (!documentId || !config) {
-          return json({ error: 'documentId and config required for training' }, { status: 400 });
+          return json({ error: `documentId and config required for training` }, { status: 400 });
         }
         const trainingResult = {
-          jobId: `training_job_${Date.now()}`,
+          jobId: `training_job_${Date.now()}',
           documentId,
           config,
           status: 'training',
           estimatedCompletion: new Date(Date.now() + 300000).toISOString(),
-          mockTraining: true,
+          mockTraining: true
         };
         console.log(`📝 Mock: Inserted training job ${trainingResult.jobId} into database`);
         return json(
           {
             action: 'train_sample',
             result: trainingResult,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -296,13 +296,13 @@ export const POST: RequestHandler = async ({ request }) => {
           actualOutcome,
           updated: true,
           learningImpact: Math.random() * 0.1,
-          mockUpdate: true,
+          mockUpdate: true
         };
         return json(
           {
             action: 'update_prediction',
             result: updateResult,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -312,7 +312,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const {
           documents,
           baseConfig,
-          variations = 3,
+          variations = 3
         } = params as {
           documents?: any;
           baseConfig?: Record<string, unknown>;
@@ -329,14 +329,14 @@ export const POST: RequestHandler = async ({ request }) => {
               ...baseConfig,
               rank: ((baseConfig as any).rank || 0) + i * 4,
               alpha: ((baseConfig as any).alpha || 0) + i * 8,
-              learningRate: ((baseConfig as any).learningRate || 1e-4) * (1 + i * 0.1),
+              learningRate: ((baseConfig as any).learningRate || 1e-4) * (1 + i * 0.1)
             };
-            const jobId = `batch_job_${Date.now()}_${doc.id ?? 'unknown'}_${i}`;
+            const jobId = 'batch_job_${Date.now()}_${doc.id ?? 'unknown` }_${i}`;
             batchJobs.push({
               jobId,
               documentId: doc.id ?? 'unknown',
               config: variationConfig,
-              variation: i,
+              variation: i
             });
             console.log(`📝 Mock: Inserted batch job ${jobId} into database`);
           }
@@ -347,7 +347,7 @@ export const POST: RequestHandler = async ({ request }) => {
             jobs: batchJobs,
             totalJobs: batchJobs.length,
             estimatedCompletion: new Date(Date.now() + batchJobs.length * 120000).toISOString(),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 200 }
         );
@@ -358,7 +358,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             error: 'Unknown POST action',
             availableActions: ['train_sample', 'update_prediction', 'batch_train'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'POST operation failed',
         message: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

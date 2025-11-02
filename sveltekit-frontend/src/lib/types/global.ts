@@ -44,9 +44,7 @@ export interface SystemStatus {
   localModels?: Array<any>;
   recommendations?: string[];
 }
-export interface ServiceHealth {
-  service: string;
-  status: 'healthy' | 'unhealthy' | 'degraded';
+export interface ServiceHealth { service: string;, status: 'healthy' | 'unhealthy' | 'degraded';
   last_check: string;
   response_time: number;
   error_count: number;
@@ -56,9 +54,7 @@ export interface ServiceHealth {
 // SEARCH & RETRIEVAL
 // =====================================================
 }
-export interface SearchResults {
-  documents: LegalDocument[];
-  total: number;
+export interface SearchResults { documents: LegalDocument[];, total: number;
   processingTime: number;
   query: string;
   facets?: { [key: string]: any }
@@ -68,9 +64,7 @@ export interface SearchResults {
   results?: Array<any>;
   hasMore?: boolean;
   nextCursor?: string;
-  searchMetadata?: {
-    index: string;
-    algorithm: string;
+  searchMetadata?: { index: string;, algorithm: string;
     filters: any[];
   }
 }
@@ -88,9 +82,7 @@ export interface TestResults {
   // Error can be simple string or structured
   error?:
     | string;
-    | {
-        message: string;
-        code: string;
+    | { message: string;, code: string;
         stack?: string;
       }
   executionTime?: number;
@@ -125,23 +117,17 @@ export interface AnalysisResults {
   }
   error?:
     | string;
-    | {
-        message: string;
-        code: string;
+    | { message: string;, code: string;
     details?: any;
       }
   summary?:;
-    | {
-        text: string;
-        keyPoints: string[];
+    | { text: string;, keyPoints: string[];
         confidence: number;
       }
     | string; // some assignments use plain string
   riskAssessment?:
     | string;
-    | {
-        level: 'low' | 'medium' | 'high' | 'critical';
-        factors: string[];
+    | { level: 'low' | 'medium' | 'high' | 'critical';, factors: string[];
         score: number;
       }
   similarity?: number;
@@ -150,9 +136,7 @@ export interface AnalysisResults {
 // LEGAL DOMAIN TYPES
 // =====================================================
 }
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content: string;
   type: 'contract' | 'case_law' | 'statute' | 'regulation' | 'brief' | 'evidence';
   status: 'draft' | 'reviewed' | 'approved' | 'archived';
@@ -173,9 +157,7 @@ export interface LegalDocument {
   embedding?: number[];
   vector_id?: string;
 }
-export interface CaseFile {
-  id: string;
-  case_name: string;
+export interface CaseFile { id: string;, case_name: string;
   case_number: string;
   status: 'open' | 'closed' | 'pending';
   documents: LegalDocument[];
@@ -185,9 +167,7 @@ export interface CaseFile {
   created_at: string;
   updated_at: string;
 }
-export interface Evidence {
-  id: string;
-  case_id: string;
+export interface Evidence { id: string;, case_id: string;
   type: 'document' | 'photo' | 'video' | 'audio' | 'physical';
   title: string;
   description: string;
@@ -197,9 +177,7 @@ export interface Evidence {
   metadata: { [key: string]: any }
   created_at: string;
 }
-export interface PersonOfInterest {
-  id: string;
-  name: string;
+export interface PersonOfInterest { id: string;, name: string;
   role: 'suspect' | 'witness' | 'victim' | 'expert' | 'attorney';
   contact_info?: {
     email?: string;
@@ -209,18 +187,14 @@ export interface PersonOfInterest {
   notes: string;
   cases: string[];
 }
-export interface CustodyEntry {
-  id: string;
-  evidence_id: string;
+export interface CustodyEntry { id: string;, evidence_id: string;
   person: string;
   action: 'collected' | 'transferred' | 'analyzed' | 'stored';
   timestamp: string;
   location: string;
   notes?: string;
 }
-export interface TimelineEvent {
-  id: string;
-  case_id: string;
+export interface TimelineEvent { id: string;, case_id: string;
   title: string;
   description: string;
   date: string;
@@ -231,9 +205,7 @@ export interface TimelineEvent {
 // =====================================================
 // DOCUMENT / LEGAL DOCUMENT
 // A lightweight, canonical Document type used across frontend components
-export interface Document {
-  id: string;
-  title: string;
+export interface Document { id: string;, title: string;
   content: string;
   documentType?: string; // e.g., 'deed', 'contract', 'report'
   caseId?: string;
@@ -246,9 +218,7 @@ export interface Document {
 // USER & AUTHENTICATION
 // =====================================================
 }
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name: string;
   role: 'prosecutor' | 'defense' | 'judge' | 'investigator' | 'admin' | 'analyst' | 'user';
   permissions: Permission[];
@@ -256,20 +226,14 @@ export interface User {
   created_at: string;
   last_login?: string;
 }
-export interface Permission {
-  resource: string;
-  actions: ('read' | 'write' | 'delete' | 'admin')[];
+export interface Permission { resource: string;, actions: ('read' | 'write' | 'delete' | 'admin')[];
 }
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  language: string;
+export interface UserPreferences { theme: 'light' | 'dark' | 'auto';, language: string;
   notifications: boolean;
   ai_assistance: boolean;
   default_view: string;
 }
-export interface DemoUser {
-  email: string;
-  password: string;
+export interface DemoUser { email: string;, password: string;
   name: string;
   role: 'prosecutor' | 'defense' | 'judge' | 'investigator' | 'admin' | 'analyst' | 'user';
 }
@@ -277,38 +241,28 @@ export interface DemoUser {
 // AI & MACHINE LEARNING
 // =====================================================
 }
-export interface AIResponse {
-  response: string;
-  confidence: number;
+export interface AIResponse { response: string;, confidence: number;
   model: string;
   processing_time: number;
   tokens_used: number;
   suggestions?: string[];
   citations?: Citation[];
 }
-export interface EmbeddingResult {
-  text: string;
-  embedding: number[];
+export interface EmbeddingResult { text: string;, embedding: number[];
   model: string;
   processing_time: number;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata: { [key: string]: any }
   highlights?: string[];
 }
-export interface Entity {
-  text: string;
-  label: string;
+export interface Entity { text: string;, label: string;
   start: number;
   end: number;
   confidence: number;
 }
-export interface Citation {
-  id: string;
-  title: string;
+export interface Citation { id: string;, title: string;
   source: string;
   url?: string;
   date?: string;
@@ -319,9 +273,7 @@ export interface Citation {
 // FILE UPLOAD & PROCESSING
 // =====================================================
 }
-export interface UploadedFile {
-  id: string;
-  name: string;
+export interface UploadedFile { id: string;, name: string;
   size: number;
   type: string;
   path: string;
@@ -331,7 +283,7 @@ export interface UploadedFile {
   metadata: {
     pages?: number;
     duration?: number;
-    dimensions?: { width: number; height: number }
+    dimensions?: { width: number;, height: number }
     extracted_text?: string;
   }
   created_at: string;
@@ -353,9 +305,7 @@ export interface FileUploadOptions {
 // CHAT & MESSAGING
 // =====================================================
 }
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
   metadata?: {
@@ -365,9 +315,7 @@ export interface ChatMessage {
     citations?: Citation[];
   }
 }
-export interface ChatSession {
-  id: string;
-  user_id: string;
+export interface ChatSession { id: string;, user_id: string;
   messages: ChatMessage[];
   title?: string;
   created_at: string;
@@ -378,22 +326,16 @@ export interface ChatSession {
 // ERROR HANDLING & VALIDATION
 // =====================================================
 }
-export interface APIError {
-  code: string;
-  message: string;
+export interface APIError { code: string;, message: string;
   details?: any;
   timestamp: string;
   request_id?: string;
 }
-export interface ValidationError {
-  field: string;
-  message: string;
+export interface ValidationError { field: string;, message: string;
   code: string;
   value?: any;
 }
-export interface ValidationFormState {
-  isValid: boolean;
-  isSubmitting: boolean;
+export interface ValidationFormState { isValid: boolean;, isSubmitting: boolean;
   errors: ValidationError[];
   touched: Record<string, boolean>;
   values: { [key: string]: any }
@@ -402,9 +344,7 @@ export interface ValidationFormState {
 // PERFORMANCE & MONITORING
 // =====================================================
 }
-export interface PerformanceMetrics {
-  response_time: number;
-  throughput: number;
+export interface PerformanceMetrics { response_time: number;, throughput: number;
   error_rate: number;
   cpu_usage: number;
   memory_usage: number;
@@ -412,9 +352,7 @@ export interface PerformanceMetrics {
   active_connections: number;
   timestamp: string;
 }
-export interface GPUMetrics {
-  gpu_utilization: number;
-  memory_used: number;
+export interface GPUMetrics { gpu_utilization: number;, memory_used: number;
   memory_total: number;
   temperature: number;
   power_draw: number;
@@ -424,17 +362,13 @@ export interface GPUMetrics {
 // WORKFLOW & STATE MANAGEMENT
 // =====================================================
 }
-export interface WorkflowState {
-  current_step: string;
-  completed_steps: string[];
+export interface WorkflowState { current_step: string;, completed_steps: string[];
   data: { [key: string]: any }
   errors: string[];
   started_at: string;
   updated_at: string;
 }
-export interface TaskProgress {
-  id: string;
-  name: string;
+export interface TaskProgress { id: string;, name: string;
   status: 'pending' | 'running' | 'completed' | 'failed';
   progress: number;
   steps_completed: number;
@@ -446,31 +380,23 @@ export interface TaskProgress {
 // MISSING TYPES FOR STATE.TS IMPORTS
 // =====================================================
 }
-export interface TokenUsage {
-  promptTokens: number;
-  completionTokens: number;
+export interface TokenUsage { promptTokens: number;, completionTokens: number;
   totalTokens: number;
   cost?: number;
 }
 export interface ModelAvailability {
-  [modelName: string]: {
-    available: boolean;
-    loaded: boolean;
+  [modelName: string]: { available: boolean;, loaded: boolean;
     size?: string;
     capabilities?: string[];
   }
 }
-export interface Toast {
-  id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+export interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   description?: string;
   duration?: number;
   dismissible?: boolean;
 }
-export interface AIModel {
-  id: string;
-  name: string;
+export interface AIModel { id: string;, name: string;
   provider: 'ollama' | 'openai' | 'anthropic' | 'local';
   type: 'chat' | 'embedding' | 'completion';
   capabilities: string[];
@@ -478,7 +404,7 @@ export interface AIModel {
   contextWindow?: number;
 }
 export interface SearchFilters {
-  dateRange?: { start: Date; end: Date }
+  dateRange?: { start: Date;, end: Date }
   documentType?: string[];
   jurisdiction?: string[];
   tags?: string[];

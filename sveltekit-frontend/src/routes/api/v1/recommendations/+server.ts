@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
       type: 'legal_strategy',
       title: 'Stub: Review strategy',
       priority: 'medium',
-      confidence: 0.5,
+      confidence: 0.5
     },
     {
       id: 'rec-2',
@@ -19,15 +19,15 @@ export const GET: RequestHandler = async ({ url }) => {
       type: 'evidence_collection',
       title: 'Stub: Gather more evidence',
       priority: 'low',
-      confidence: 0.4,
+      confidence: 0.4
     },
   ];
   return json({
     data,
     pagination: { page, limit, total: data.length, totalPages: 1, hasNext: false, hasPrev: false },
-    analytics: { totalRecommendations: data.length },
+    analytics: {, totalRecommendations: data.length },
     success: true,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };
 export const POST: RequestHandler = async ({ request }) => {
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
   return json(
     {
       success: true,
-      data: { id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() },
+      data: {, id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() }
     },
     { status: 201 }
   );

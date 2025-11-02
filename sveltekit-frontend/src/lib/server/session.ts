@@ -11,14 +11,10 @@ import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js';
 // In-memory session store (for development)
 const sessions = new Map<string, Session>();
 }
-export interface Session {
-  id: string;
-  userId: string;
+export interface Session { id: string;, userId: string;
   expiresAt: Date;
 }
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name: string;
   role?: string;
 }
@@ -54,15 +50,14 @@ export async function validateSessionToken(
 export function invalidateSession(sessionId: string): void {
   sessions.delete(sessionId);
 }
-export function setSessionTokenCookie(_event: RequestEvent
-  token: string,
+export function setSessionTokenCookie(_event: RequestEvent; token: string,
   expiresAt: Date,
 ): void {
   event.cookies.set("session", token, {
     path: "/",
     expires: expiresAt,
     httpOnly: true;
-    secure: import.meta.env.NODE_ENV === "production",
+   , secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });
 }
@@ -70,7 +65,7 @@ export function deleteSessionTokenCookie(_event: RequestEvent): void {
   event.cookies.delete("session", {
     path: "/",
     httpOnly: true;
-    secure: import.meta.env.NODE_ENV === "production",
+   , secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });
 }

@@ -20,9 +20,7 @@ const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT || 'localhost';
 const MINIO_PORT = parseInt(process.env.MINIO_PORT || '9000');
 const queryClient = postgres(DATABASE_URL);
 const db = drizzle(queryClient);
-interface LokiDocument {
-  id: string;
-  title: string;
+interface LokiDocument { id: string;, title: string;
   content: string;
   chunks: number;
   timestamp: number;
@@ -39,7 +37,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
   try {
     const cudaCheck = await fetch('http://localhost:8095/health').catch(() => null);
     cudaAvailable = cudaCheck?.ok || false;
-    console.log(`🎮 CUDA: ${cudaAvailable ? '✅' : '⚠️ CPU'}`);
+    console.log(`🎮 CUDA: ${cudaAvailable ? '✅' : `⚠️ CPU` }`);
   } catch {
     cudaAvailable = false;
   }
@@ -61,7 +59,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
         port: MINIO_PORT,
         useSSL: false,
         accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
+        secretKey: 'minioadmin'
       });
       const exists = await minioClient.bucketExists('legal-documents');
       if (!exists) await minioClient.makeBucket('legal-documents');
@@ -80,15 +78,13 @@ export async function initializeIntegratedRAG(): Promise<void> {
         const collections = (collectionsRes as any)?.collections || [];
         const exists = collections.some((c: any) => c?.name === 'legal-documents');
         if (!exists) {
-          await qdrantClient.createCollection('legal-documents', {
-            vectors: { size: 768, distance: 'Cosine' },
+          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: 'Cosine' }
           });
         }
       } catch {
         // fallback: if listing failed for any reason, attempt to create the collection
         try {
-          await qdrantClient.createCollection('legal-documents', {
-            vectors: { size: 768, distance: 'Cosine' },
+          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine` }
           });
         } catch (err) {
           console.warn('⚠️ Qdrant collection creation failed', err);
@@ -114,8 +110,8 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text })
     });
     if (!response.ok) throw new Error(`Embedding failed: ${response.statusText}`);
     const data = await response.json();
@@ -163,7 +159,7 @@ export async function processDocument(file: File, content: string): Promise<any>
         file_type: file.type,
         file_size: file.size,
         embedding: sql`${JSON.stringify(embeddings[i])}::vector`,
-        metadata: { source_file: filename, chunkIndex: i, totalChunks: chunks.length },
+        metadata: { source_file: filename, chunkIndex: i, totalChunks: chunks.length }
       });
     } catch (e) {
       console.error(`❌ Chunk ${i} insert failed`);
@@ -174,7 +170,7 @@ export async function processDocument(file: File, content: string): Promise<any>
       const points = chunks.map((chunk, i) => ({
         id: `${documentId}_chunk_${i}`,
         vector: embeddings[i],
-        payload: { content: chunk, filename, chunkIndex: i, tags: autoTagContent(chunk) },
+        payload: {, content: chunk, filename, chunkIndex: i, tags: autoTagContent(chunk) }
       }));
       await qdrantClient.upsert('legal-documents', { wait: true, points });
       console.log(`✅ Qdrant: ${chunks.length} chunks with tags`);
@@ -190,7 +186,7 @@ export async function processDocument(file: File, content: string): Promise<any>
     chunks: chunks.length,
     minioUrl,
     qdrantStored: !!qdrantClient,
-    cudaUsed: cudaAvailable,
+    cudaUsed: cudaAvailable
   };
 }
 function autoTagContent(text: string): string[] {
@@ -209,9 +205,7 @@ function rebuildFuseIndex() {
 }
 // Add typed result shapes for search results (replace ad-hoc `any`)
 type MetadataMap = Record<string, unknown>;
-interface SearchResult {
-  content: string;
-  similarity: number;
+interface SearchResult { content: string;, similarity: number;
   metadata: MetadataMap;
 }
 interface QdrantPayload {
@@ -220,9 +214,7 @@ interface QdrantPayload {
   chunkIndex?: number;
   tags?: string[];
 }
-interface QdrantHit {
-  id: string;
-  vector: number[];
+interface QdrantHit { id: string;, vector: number[];
   score: number;
   payload: QdrantPayload;
 }
@@ -235,12 +227,12 @@ export async function searchSimilarDocuments(query: string, limit: number = 5): 
       const qdrantResults = await qdrantClient.search('legal-documents', {
         vector: queryEmbedding,
         limit,
-        with_payload: true,
+        with_payload: true
       });
       results = (qdrantResults as QdrantHit[]).map(r => ({
         content: r.payload.content,
         similarity: r.score,
-        metadata: { source_file: r.payload.filename, chunkIndex: r.payload.chunkIndex, tags: r.payload.tags },
+        metadata: {, source_file: r.payload.filename, chunkIndex: r.payload.chunkIndex, tags: r.payload.tags }
       }));
       console.log(`🔍 Qdrant: ${results.length} results`);
       return results;
@@ -256,10 +248,10 @@ export async function searchSimilarDocuments(query: string, limit: number = 5): 
       ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
       LIMIT ${limit}
     `);
-    results = (pgResults.rows as Array<{ content_text: string; similarity: number; metadata: MetadataMap }>).map(r => ({
+    results = (pgResults.rows as Array<{ content_text: string; similarity: number;, metadata: MetadataMap }>).map(r => ({
       content: r.content_text,
       similarity: r.similarity,
-      metadata: r.metadata,
+      metadata: r.metadata
     }));
     console.log(`🔍 pgvector: ${results.length} results`);
   } catch (e) {
@@ -282,6 +274,6 @@ export async function getSystemHealth(): Promise<any> {
     qdrant: !!qdrantClient,
     cuda: cudaAvailable,
     loki: lokiCollection.count(),
-    fuse: !!fuseInstance,
+    fuse: !!fuseInstance
   };
 }

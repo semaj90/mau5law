@@ -1,8 +1,6 @@
 // Evidence Service - Production Implementation for Legal AI Platform
 import { getAuthHeaders } from './auth-service.js';
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
   type: 'document' | 'testimony' | 'physical' | 'digital' | 'expert_report' | 'correspondence';
@@ -22,9 +20,7 @@ export interface Evidence {
   lastModifiedBy: string;
 }
 
-export interface ChainOfCustodyEntry {
-  id: string;
-  evidenceId: string;
+export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   timestamp: string;
   action: 'acquired' | 'transferred' | 'examined' | 'sealed' | 'unsealed' | 'copied' | 'stored';
   performedBy: string;
@@ -34,9 +30,7 @@ export interface ChainOfCustodyEntry {
   digitalSignature?: string;
 }
 
-export interface EvidenceAttachment {
-  id: string;
-  evidenceId: string;
+export interface EvidenceAttachment { id: string;, evidenceId: string;
   filename: string;
   originalFilename: string;
   mimeType: string;
@@ -49,9 +43,7 @@ export interface EvidenceAttachment {
   aiAnalysisCompleted: boolean;
 }
 
-export interface EvidenceAnalysis {
-  id: string;
-  evidenceId: string;
+export interface EvidenceAnalysis { id: string;, evidenceId: string;
   summary: string;
   keyFindings: string[];
   legalSignificance: string;
@@ -78,9 +70,7 @@ export interface EvidenceListOptions {
   search?: string;
 }
 
-export interface CreateEvidenceData {
-  caseId: string;
-  title: string;
+export interface CreateEvidenceData { caseId: string;, title: string;
   description?: string;
   type: Evidence['type'];
   source: string;
@@ -100,9 +90,7 @@ export interface UpdateEvidenceData {
   metadata?: { [key: string]: any };
 }
 
-export interface EvidenceListResponse {
-  evidence: Evidence[];
-  total: number;
+export interface EvidenceListResponse { evidence: Evidence[];, total: number;
   limit: number;
   offset: number;
   hasMore: boolean;

@@ -647,7 +647,7 @@ import type { Document } from '$lib/types';
             <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
               {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
                 {@const IconComponent = getStageIcon(stageName)}
-                <div class="flex" flex-col items-center p-2 rounded-lg {
+                <div class="flex flex-col items-center" p-2 rounded-lg {
                   stageStatus === 'completed' ? 'bg-green-100 border border-green-200' :
                   stageStatus === 'processing' ? 'bg-blue-100 border border-blue-200' :
                   stageStatus === 'error' ? 'bg-red-100 border border-red-200' :
@@ -664,7 +664,7 @@ import type { Document } from '$lib/types';
                     <div class="w-4 h-4 text-gray-400 mb-1">
   <IconComponent />
                   {/if}
-                  <span class="text-xs" font-medium capitalize text-center {
+                  <span class="text-xs font-medium capitalize text-center" {
                     stageStatus === 'completed' ? 'text-green-700' :
                     stageStatus === 'processing' ? 'text-blue-700' :
                     stageStatus === 'error' ? 'text-red-700' :

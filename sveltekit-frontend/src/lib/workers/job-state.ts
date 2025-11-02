@@ -1,9 +1,7 @@
 import EventEmitter from 'events';
 import { redis } from '$lib/server/redis';
 export type JobState = 'queued' | 'running' | 'succeeded' | 'failed' | 'retrying' | 'cancelled';
-export type JobRecord = {
-  id: string;
-  state: JobState;
+export type JobRecord = { id: string;, state: JobState;
   payload?: any;
   retries?: number;
   lastError?: string | null;
@@ -15,7 +13,7 @@ class JobStore extends EventEmitter {
   private nowIso() {
     return new Date().toISOString();
   }
-  async setJob(job: Partial<JobRecord> & { id: string }) {
+  async setJob(job: Partial<JobRecord> & {, id: string }) {
     const existing = this.items.get(job.id) ?? null;
     const record: JobRecord = {
       id: job.id,
@@ -66,7 +64,7 @@ class JobStateMachine {
   }
   async completeJob(id: string) {
     this.running.delete(id);
-    return this.store.setJob({ id, state: 'succeeded' });
+    return this.store.setJob({ id, state: `succeeded` });
   }
   async failJob(id: string, error: any, retry = false) {
     this.running.delete(id);
@@ -74,7 +72,7 @@ class JobStateMachine {
     const retries = (job?.retries ?? 0) + (retry ? 1 : 0);
     return this.store.setJob({ id, state: retry ? 'retrying' : 'failed', lastError: String((error as any)?.message ?? error), retries });
   }
-  onUpdate(cb: (rec: JobRecord) => void) { this.store.on('update', cb), }
+  onUpdate(cb: (rec: JobRecord) => void) { this.store.on('update', cb) }
 }
 // Singleton
 const globalAny = globalThis as any;

@@ -20,9 +20,7 @@ export interface QueryFilters {
   sortOrder?: 'asc' | 'desc';
   page?: number | string; // added to support page-based pagination
 }
-export interface PaginationParams {
-  page: number;
-  limit: number;
+export interface PaginationParams { page: number;, limit: number;
   offset: number;
 }
 // Minimal typed aliases to avoid any/SQL usage and satisfy lint rules
@@ -116,7 +114,7 @@ export class QueryBuilder {
     baseQuery: QueryLike,
     filters: QueryFilters,
     table: TableLike
-  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
+  ): Promise<{ data: T; total: number;, pagination: PaginationParams }> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);

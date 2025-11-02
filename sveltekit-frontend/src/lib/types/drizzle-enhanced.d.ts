@@ -125,9 +125,7 @@ declare module 'drizzle-orm/postgres-js' {
 }
 // Enhanced types using unknown/Record instead of any
 export type DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> = T;
-export interface DrizzleColumn<T = unknown> {
-  dataType: string;
-  columnType: string;
+export interface DrizzleColumn<T = unknown> { dataType: string;, columnType: string;
   data: T;
   enumValues?: any[];
 }
@@ -194,5 +192,5 @@ export type {
   DrizzleUpdate,
   DrizzleDelete,
   DrizzleSelect,
-  DrizzleDatabase,
+  DrizzleDatabase
 };

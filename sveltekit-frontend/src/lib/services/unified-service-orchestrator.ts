@@ -7,27 +7,19 @@ import { NESStyleGPUBridge } from './nes-gpu-bridge.js';
 // import { dev } from '$app/environment'; // Commented out due to module resolution issues
 const dev = true;
 // Define CanvasState interface locally if not exported
-export interface CanvasState {
-  width: number;
-  height: number;
+export interface CanvasState { width: number;, height: number;
   data?: Uint8ClampedArray;
   pixels?: number[][];
   format?: string;
 }
 // System health status
-export interface SystemHealth {
-  overall: 'healthy' | 'degraded' | 'critical';
-  services: {
-    wasmGPU: 'online' | 'degraded' | 'offline';
-    quicGateway: 'online' | 'degraded' | 'offline';
+export interface SystemHealth { overall: 'healthy' | 'degraded' | 'critical';, services: { wasmGPU: 'online' | 'degraded' | 'offline';, quicGateway: 'online' | 'degraded' | 'offline';
     llamaOllama: 'online' | 'degraded' | 'offline';
     nesGPUBridge: 'online' | 'degraded' | 'offline';
     postgres: 'online' | 'degraded' | 'offline';
     redis: 'online' | 'degraded' | 'offline';
   };
-  performance: {
-    averageLatency: number;
-    throughput: number;
+  performance: { averageLatency: number;, throughput: number;
     gpuUtilization: number;
     memoryUsage: number;
   };
@@ -39,12 +31,10 @@ export enum TaskPriority {
   HIGH = 1,
   NORMAL = 2,
   LOW = 3,
-  BACKGROUND = 4,
+  BACKGROUND = 4
 }
 // Service task definition
-export interface ServiceTask {
-  id: string;
-  type: 'document' | 'inference' | 'canvas' | 'gpu' | 'analysis';
+export interface ServiceTask { id: string;, type: 'document' | 'inference' | 'canvas' | 'gpu' | 'analysis';
   priority: TaskPriority;
   data: any;
   options?: any;
@@ -56,38 +46,26 @@ export interface ServiceTask {
   error?: string;
 }
 // Orchestration result
-export interface OrchestrationResult {
-  taskId: string;
-  success: boolean;
+export interface OrchestrationResult { taskId: string;, success: boolean;
   data?: any;
   error?: string;
   processingTime: number;
   servicesUsed: string[];
   fallbacksTriggered: string[];
-  performance: {
-    latency: number;
-    throughput: number;
+  performance: { latency: number;, throughput: number;
     resourceUsage: number;
   };
 }
 // Service configuration
-export interface ServiceConfig {
-  enabledServices: string[];
-  fallbackPriority: string[];
-  performanceThresholds: {
-    maxLatency: number;
-    minThroughput: number;
+export interface ServiceConfig { enabledServices: string[];, fallbackPriority: string[];
+  performanceThresholds: { maxLatency: number;, minThroughput: number;
     maxCpuUsage: number;
     maxMemoryUsage: number;
   };
-  retryConfiguration: {
-    maxRetries: number;
-    backoffMultiplier: number;
+  retryConfiguration: { maxRetries: number;, backoffMultiplier: number;
     initialDelay: number;
   };
-  monitoring: {
-    healthCheckInterval: number;
-    metricsRetentionPeriod: number;
+  monitoring: { healthCheckInterval: number;, metricsRetentionPeriod: number;
     alertThresholds: Record<string, number>;
   };
 }
@@ -103,7 +81,7 @@ interface IWasmGPUOrchestrator {
 
 interface ILlamaService {
   createCompletion?: (req: {
-    prompt: string;
+   , prompt: string;
     maxTokens?: number;
     temperature?: number;
     stream?: boolean;
@@ -136,12 +114,12 @@ export class UnifiedServiceOrchestrator {
         maxLatency: 1000,
         minThroughput: 10,
         maxCpuUsage: 80,
-        maxMemoryUsage: 70,
+        maxMemoryUsage: 70
       },
       retryConfiguration: {
         maxRetries: 3,
         backoffMultiplier: 2,
-        initialDelay: 100,
+        initialDelay: 100
       },
       monitoring: {
         healthCheckInterval: 30000,
@@ -149,25 +127,25 @@ export class UnifiedServiceOrchestrator {
         alertThresholds: {
           latency: 2000,
           errorRate: 5,
-          throughput: 5,
-        },
-      },
+          throughput: 5
+        }
+      }
     };
     return {
       ...defaultConfig,
       ...userConfig,
       performanceThresholds: {
         ...defaultConfig.performanceThresholds,
-        ...(userConfig.performanceThresholds || {}),
+        ...(userConfig.performanceThresholds || {})
       },
       retryConfiguration: {
         ...defaultConfig.retryConfiguration,
-        ...(userConfig.retryConfiguration || {}),
+        ...(userConfig.retryConfiguration || {})
       },
       monitoring: {
         ...defaultConfig.monitoring,
-        ...(userConfig.monitoring || {}),
-      },
+        ...(userConfig.monitoring || {})
+      }
     };
   }
   private initializeServices(): void {
@@ -193,15 +171,14 @@ export class UnifiedServiceOrchestrator {
         llamaOllama: 'online',
         nesGPUBridge: 'online',
         postgres: 'online',
-        redis: 'online',
-      },
+        redis: `online` },
       performance: {
         averageLatency: 0,
         throughput: 0,
         gpuUtilization: 0,
-        memoryUsage: 0,
+        memoryUsage: 0
       },
-      lastChecked: new Date(),
+      lastChecked: new Date()
     };
   }
   private startHealthMonitoring(): void {
@@ -270,7 +247,7 @@ export class UnifiedServiceOrchestrator {
       const response = await this.quicClient.request({
         method: 'GET',
         url: '/health',
-        timeout: 5000,
+        timeout: 5000
       } as any);
       return Boolean((response as any)?.success) && (response as any)?.statusCode === 200;
     } catch {
@@ -284,7 +261,7 @@ export class UnifiedServiceOrchestrator {
         prompt: 'health check',
         maxTokens: 1,
         temperature: 0.1,
-        stream: false,
+        stream: false
       }) ?? Promise.resolve({ success: false } as GenericResult));
       return Boolean(response?.success);
     } catch {
@@ -297,8 +274,7 @@ export class UnifiedServiceOrchestrator {
         width: 32,
         height: 32,
         data: new Uint8ClampedArray(32 * 32 * 4),
-        format: 'RGBA',
-      };
+        format: `RGBA` };
       const result = await this.nesGPUBridge.canvasStateToTensor(testCanvas);
       return Boolean((result as any)?.data && (result as any).data.length > 0);
     } catch {
@@ -336,7 +312,7 @@ export class UnifiedServiceOrchestrator {
       retries: 0,
       maxRetries: this.config.retryConfiguration.maxRetries,
       timeout: options.timeout || 30000,
-      startTime: new Date(),
+      startTime: new Date()
     };
     return await this.executeTask(task);
   }
@@ -350,7 +326,7 @@ export class UnifiedServiceOrchestrator {
       retries: 0,
       maxRetries: this.config.retryConfiguration.maxRetries,
       timeout: options.timeout || 15000,
-      startTime: new Date(),
+      startTime: new Date()
     };
     return await this.executeTask(task);
   }
@@ -364,7 +340,7 @@ export class UnifiedServiceOrchestrator {
       retries: 0,
       maxRetries: this.config.retryConfiguration.maxRetries,
       timeout: options.timeout || 20000,
-      startTime: new Date(),
+      startTime: new Date()
     };
     return await this.executeTask(task);
   }
@@ -378,7 +354,7 @@ export class UnifiedServiceOrchestrator {
       retries: 0,
       maxRetries: this.config.retryConfiguration.maxRetries,
       timeout: options.timeout || 25000,
-      startTime: new Date(),
+      startTime: new Date()
     };
     return await this.executeTask(task);
   }
@@ -421,7 +397,7 @@ export class UnifiedServiceOrchestrator {
           ));
           break;
         default:
-          throw new Error(`Unknown task type: ${task.type}`);
+          throw new Error(`Unknown task; type: ${task.type}`);
       }
       const processingTime = Date.now() - startTime;
       this.updatePerformanceMetrics(processingTime, success ? 1 : 0, success ? 0 : 1);
@@ -438,8 +414,8 @@ export class UnifiedServiceOrchestrator {
         performance: {
           latency: processingTime,
           throughput: processingTime > 0 ? 1000 / processingTime : 0,
-          resourceUsage: this.calculateResourceUsage(servicesUsed),
-        },
+          resourceUsage: this.calculateResourceUsage(servicesUsed)
+        }
       };
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
@@ -458,8 +434,8 @@ export class UnifiedServiceOrchestrator {
         performance: {
           latency: processingTime,
           throughput: 0,
-          resourceUsage: 0,
-        },
+          resourceUsage: 0
+        }
       };
     }
   }
@@ -467,7 +443,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
     const { document, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -503,11 +479,10 @@ export class UnifiedServiceOrchestrator {
       try {
         servicesUsed.push('llamaOllama');
         const llama = this.llamaService as unknown as ILlamaService;
-        const result = await (llama.createCompletion?.({
-          prompt: `Analyze this legal document:\n\n${document}`,
+        const result = await (llama.createCompletion?.({ prompt: `Analyze this legal, document:\n\n${document}`,
           maxTokens: options?.maxTokens ?? 2048,
           temperature: options?.temperature ?? 0.7,
-          stream: false,
+          stream: false
         }) ?? Promise.resolve({ success: false } as GenericResult));
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
@@ -522,7 +497,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
     const { input, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -545,11 +520,10 @@ export class UnifiedServiceOrchestrator {
         servicesUsed.push('llamaOllama');
         const inputArray = Array.from(input).slice(0, 100); // Limit for prompt
         const llama = this.llamaService as unknown as ILlamaService;
-        const result = await (llama.createCompletion?.({
-          prompt: `Perform neural inference on this data: [${inputArray.join(',')}]`,
+        const result = await (llama.createCompletion?.({ prompt: 'Perform neural inference on this, data: [${inputArray.join(',')}]`,
           maxTokens: options?.maxTokens ?? 512,
           temperature: options?.temperature ?? 0.1,
-          stream: false,
+          stream: false
         }) ?? Promise.resolve({ success: false } as GenericResult));
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
@@ -564,7 +538,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
     const { canvasState, options: $options } = task.data;
     // Primary: NES GPU Bridge
     if (this.isServiceHealthy('nesGPUBridge')) {
@@ -597,7 +571,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
     const { operation, data, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -620,7 +594,7 @@ export class UnifiedServiceOrchestrator {
           method: 'POST',
           url: '/gpu/compute',
           body: { operation, data, options },
-          timeout: task.timeout,
+          timeout: task.timeout
         } as any);
         if ((result as any)?.success) {
           return { result: (result as any).data ?? result, success: true, servicesUsed, fallbacksTriggered };
@@ -640,7 +614,7 @@ export class UnifiedServiceOrchestrator {
       wasmGPU: 0.8,
       quicGateway: 0.3,
       llamaOllama: 0.6,
-      nesGPUBridge: 0.5,
+      nesGPUBridge: 0.5
     };
     return servicesUsed.reduce((total, service) => {
       return total + (weights[service] || 0.1);
@@ -655,8 +629,8 @@ export class UnifiedServiceOrchestrator {
       timestamp: new Date(),
       latency,
       throughput: latency > 0 ? 1000 / latency : 0,
-      resourceUsage: error,
-    } as { timestamp: Date; latency: number; throughput: number; resourceUsage: number };
+      resourceUsage: error
+    } as { timestamp: Date; latency: number; throughput: number;, resourceUsage: number };
     this.performanceMetrics.push(metric);
     // Keep only recent metrics
     const cutoff = Date.now() - this.config.monitoring.metricsRetentionPeriod;

@@ -20,40 +20,34 @@ const GPU_TILING_CONFIG = {
     precision: 'fp16' as const,
     batchSize: 128,
     tilesPerBatch: 16,
-    maxConcurrentTiles: 64,
+    maxConcurrentTiles: 64
   },
   // Memory Tiling (NES Architecture)
-  memoryTiles: {
-    CHR_ROM: { size: 8192, tiles: 32 }, // Character data tiles
+  memoryTiles: { CHR_ROM: {, size: 8192, tiles: 32 }, // Character data tiles
     PRG_ROM: { size: 32768, tiles: 128 }, // Program logic tiles
     CHR_RAM: { size: 2048, tiles: 8 }, // Dynamic character tiles
     PRG_RAM: { size: 8192, tiles: 32 }, // Dynamic program tiles
   },
   // GPU Compute Configuration
-  compute: {
-    workgroupSize: { x: 16, y: 16, z: 1 },
+  compute: { workgroupSize: {, x: 16, y: 16, z: 1 },
     maxComputeUnits: 28, // RTX 3060 Ti has 28 SMs
     threadsPerSM: 1536,
-    totalThreads: 28 * 1536,
+    totalThreads: 28 * 1536
   },
   // SIMD Processing;
   simd: {
     vectorWidth: 8, // AVX2 256-bit / 32-bit float = 8 floats
     parallelChunks: 16,
     batchProcessing: true,
-    useGPUAcceleration: true,
-  },
+    useGPUAcceleration: true
+  }
 }
-export interface TiledEvidenceChunk {
-  id: string;
-  tileX: number;
+export interface TiledEvidenceChunk { id: string;, tileX: number;
   tileY: number;
   width: number;
   height: number;
   data: Float32Array; // SIMD-optimized tensor data
-  metadata: {
-    evidenceType: 'screenshot' | 'handwriting' | 'text' | 'mixed';
-    confidence: number;
+  metadata: { evidenceType: 'screenshot' | 'handwriting' | 'text' | 'mixed';, confidence: number;
     processed: boolean;
     embedding?: Float32Array;
     simdProcessTime: number;
@@ -61,12 +55,8 @@ export interface TiledEvidenceChunk {
   }
   memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;
 }
-export interface SIMDProcessingResult {
-  chunks: TiledEvidenceChunk[];
-  totalProcessingTime: number;
-  simdMetrics: {
-    totalSIMDTime: number;
-    totalGPUTime: number;
+export interface SIMDProcessingResult { chunks: TiledEvidenceChunk[];, totalProcessingTime: number;
+  simdMetrics: { totalSIMDTime: number;, totalGPUTime: number;
     throughputMBps: number;
     parallelEfficiency: number;
   }
@@ -84,7 +74,7 @@ export class SIMDGPUTilingEngine {
     totalSIMDTime: 0,
     totalGPUTime: 0,
     averageThroughput: 0,
-    memoryEfficiency: 0,
+    memoryEfficiency: 0
   }
   constructor() {
     // Only initialize in browser context
@@ -106,7 +96,7 @@ export class SIMDGPUTilingEngine {
       return;
     }
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: 'high-performance',
+      powerPreference: 'high-performance'
     });
     if (!adapter) {
       throw new Error('Failed to get WebGPU adapter');
@@ -114,10 +104,10 @@ export class SIMDGPUTilingEngine {
     this.device = await adapter.requestDevice({
       requiredFeatures: ['timestamp-query'],
       requiredLimits: {
-        maxComputeWorkgroupSizeX: GPU_TILING_CONFIG.compute.workgroupSize.x,
+       , maxComputeWorkgroupSizeX: GPU_TILING_CONFIG.compute.workgroupSize.x,
         maxComputeWorkgroupSizeY: GPU_TILING_CONFIG.compute.workgroupSize.y,
         maxStorageBufferBindingSize: 1024 * 1024 * 128, // 128MB max buffer
-      },
+      }
     });
     // Create compute pipeline for GPU tiling
     await this.createComputePipeline();
@@ -136,12 +126,8 @@ export class SIMDGPUTilingEngine {
       @group(0) @binding(1) var<storage, read_write> output_tiles: array<f32>;
       @group(0) @binding(2) var<storage, read_write> tile_metadata: array<f32>;
       @group(0) @binding(3) var<uniform> config: Config;
-      struct Config {
-        tile_width: u32
-        tile_height: u32
-        image_width: u32
-        image_height: u32
-        simd_vector_width: u32
+      struct Config { tile_width: u32, tile_height: u32; image_width: u32
+        image_height: u32; simd_vector_width: u32
         tensor_compression: f32
       }
       @compute @workgroup_size(${GPU_TILING_CONFIG.compute.workgroupSize.x}, ${GPU_TILING_CONFIG.compute.workgroupSize.y});
@@ -188,18 +174,15 @@ export class SIMDGPUTilingEngine {
         tile_metadata[metadata_offset + 3] = f32(tile_y); // tile position y
       }
     `;
-    const shaderModule = this.device.createShaderModule({
-      code: shaderCode;
-      label: 'SIMD-Evidence-Tiling-Compute',
+    const shaderModule = this.device.createShaderModule({ code: shaderCode;, label: 'SIMD-Evidence-Tiling-Compute'
     });
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shaderModule,
-        entryPoint: 'main',
+       , module: shaderModule,
+        entryPoint: 'main'
       },
-      label: 'Evidence-Tiling-Pipeline',
-    });
+      label: 'Evidence-Tiling-Pipeline` });
     console.log('🔧 GPU compute pipeline created for evidence tiling');
   }
   /**
@@ -223,7 +206,7 @@ export class SIMDGPUTilingEngine {
       evidenceType = 'mixed',
       enableCompression = true,
       priority = 'medium',
-      generateEmbeddings = true,
+      generateEmbeddings = true
     } = options;
     const startTime = performance.now();
     console.log(`🎯 Processing evidence ${evidenceId} with SIMD GPU tiling (${width}x${height})`);
@@ -235,11 +218,11 @@ export class SIMDGPUTilingEngine {
       height,
       evidenceType,
       timestamp: Date.now(),
-      processing: { enableCompression, priority, generateEmbeddings },
+      processing: { enableCompression, priority, generateEmbeddings }
     }
     const simdResult = await simdRedisClient.parseJSON(metadata);
     const simdTime = performance.now() - simdStart;
-    console.log(`📊 SIMD parsing: ${simdTime.toFixed(2)}ms (${simdResult.throughput_mbps?.toFixed(2) || 'N/A'} MB/s)`);
+    console.log(`📊 SIMD parsing: ${simdTime.toFixed(2)}ms (${simdResult.throughput_mbps?.toFixed(2) || 'N/A` } MB/s)`);
     // Step 2: GPU-accelerated tiling
     const gpuStart = performance.now();
     const tiles = await this.performGPUTiling(imageData, width, height, tileSize, evidenceType, simdTime);
@@ -268,16 +251,16 @@ export class SIMDGPUTilingEngine {
         totalSIMDTime: simdTime,
         totalGPUTime: gpuTime,
         throughputMBps,
-        parallelEfficiency,
+        parallelEfficiency
       },
       memoryUsage: this.getMemoryUsage(),
-      tensorCompressionRatio: enableCompression ? 0.3 : 1.0,
+      tensorCompressionRatio: enableCompression ? 0.3 : 1.0
     }
   }
   private async performGPUTiling(
     imageData: Float32Array,
     width: number;
-    height: number,
+   , height: number,
     tileSize: number,
     evidenceType: string,
     simdTime: number,
@@ -294,22 +277,22 @@ export class SIMDGPUTilingEngine {
     const inputBuffer = this.device.createBuffer({
       size: imageData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      label: 'Evidence-Input-Buffer',
+      label: 'Evidence-Input-Buffer'
     });
     const outputBuffer = this.device.createBuffer({
       size: totalTiles * tileSize * tileSize * 4, // Float32 output
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-      label: 'Evidence-Output-Buffer',
+      label: 'Evidence-Output-Buffer'
     });
     const metadataBuffer = this.device.createBuffer({
       size: totalTiles * 4 * 4, // 4 floats per tile metadata
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-      label: 'Tile-Metadata-Buffer',
+      label: 'Tile-Metadata-Buffer'
     });
     const configBuffer = this.device.createBuffer({
       size: 24, // 6 u32 values * 4 bytes
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      label: 'Config-Buffer',
+      label: 'Config-Buffer'
     });
     // Upload data
     this.device.queue.writeBuffer(inputBuffer, 0, imageData.buffer);
@@ -331,15 +314,15 @@ export class SIMDGPUTilingEngine {
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
         { binding: 2, resource: { buffer: metadataBuffer } },
-        { binding: 3, resource: { buffer: configBuffer } },
-      ],
+        { binding: 3, resource: { buffer: configBuffer } }
+      ]
     });
     // Dispatch compute shader
     const commandEncoder = this.device.createCommandEncoder({
-      label: 'Evidence-Tiling-Commands',
+      label: 'Evidence-Tiling-Commands'
     });
     const computePass = commandEncoder.beginComputePass({
-      label: 'Evidence-Tiling-Pass',
+      label: 'Evidence-Tiling-Pass'
     });
     computePass.setPipeline(this.computePipeline);
     computePass.setBindGroup(0, bindGroup);
@@ -349,13 +332,12 @@ export class SIMDGPUTilingEngine {
     const outputStagingBuffer = this.device.createBuffer({
       size: outputBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Output-Staging',
+      label: 'Output-Staging'
     });
     const metadataStagingBuffer = this.device.createBuffer({
       size: metadataBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Metadata-Staging',
-    });
+      label: 'Metadata-Staging` });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, outputStagingBuffer, 0, outputBuffer.size);
     commandEncoder.copyBufferToBuffer(metadataBuffer, 0, metadataStagingBuffer, 0, metadataBuffer.size);
     // Submit and wait
@@ -384,13 +366,13 @@ export class SIMDGPUTilingEngine {
         height: tileSize,
         data: tileData,
         metadata: {
-          evidenceType: evidenceType as any,
+         , evidenceType: evidenceType as any,
           confidence,
           processed: true,
           simdProcessTime: simdTime,
-          gpuProcessTime: performance.now() - gpuStart,
+          gpuProcessTime: performance.now() - gpuStart
         },
-        memoryRegion,
+        memoryRegion
       });
     }
     // Cleanup
@@ -407,7 +389,7 @@ export class SIMDGPUTilingEngine {
   private async performCPUTiling(
     imageData: Float32Array,
     width: number;
-    height: number,
+   , height: number,
     tileSize: number,
     evidenceType: string,
     simdTime: number,
@@ -452,13 +434,13 @@ export class SIMDGPUTilingEngine {
           height: tileSize,
           data: tileData,
           metadata: {
-            evidenceType: evidenceType as any,
+           , evidenceType: evidenceType as any,
             confidence,
             processed: true,
             simdProcessTime: simdTime,
-            gpuProcessTime: 0,
+            gpuProcessTime: 0
           },
-          memoryRegion,
+          memoryRegion
         });
       }
     }
@@ -510,10 +492,10 @@ export class SIMDGPUTilingEngine {
           priority: tile.metadata.confidence * 10, // Higher confidence = higher priority;
           compress: true,
           legalContext: {
-            documentType: 'evidence',
+           , documentType: 'evidence',
             confidenceLevel: tile.metadata.confidence,
-            riskIndicator: tile.metadata.confidence > 0.8,
-          },
+            riskIndicator: tile.metadata.confidence > 0.8
+          }
         });
       }
       console.log(`💾 Stored ${regionTiles.length} tiles in ${region} region`);
@@ -530,17 +512,16 @@ export class SIMDGPUTilingEngine {
           tileCount: tiles.length,
           tiles: tiles.map(tile => ({,
             id: tile.id,
-            position: { x: tile.tileX, y: tile.tileY },
+            position: {, x: tile.tileX, y: tile.tileY },
             confidence: tile.metadata.confidence,
             memoryRegion: tile.memoryRegion,
-            dataSize: tile.data.byteLength,
-          })),
+            dataSize: tile.data.byteLength
+          }))
         },
         {
           useGPUAcceleration: true,
           batchSize: tiles.length,
-          priority: 'high',
-        }
+          priority: 'high` }
       );
     } catch (error) {
       console.warn('Failed to cache tile results:', error);
@@ -587,7 +568,7 @@ export class SIMDGPUTilingEngine {
       throughputMBps: this.metrics.averageThroughput.toFixed(2),
       memoryEfficiency: (this.metrics.memoryEfficiency * 100).toFixed(1) + '%',
       cacheUtilization: this.tileCache.size,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     }
   }
   /**
@@ -616,9 +597,7 @@ export function calculateOptimalTileSize(imageWidth: number, imageHeight: number
 export function estimateProcessingTime(
   imageWidth: number,
   imageHeight: number,
-): {
-  estimatedSIMDTime: number;
-  estimatedGPUTime: number;
+): { estimatedSIMDTime: number;, estimatedGPUTime: number;
   estimatedTotalTime: number;
 } {
   const pixelCount = imageWidth * imageHeight;

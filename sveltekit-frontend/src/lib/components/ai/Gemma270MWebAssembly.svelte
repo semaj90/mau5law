@@ -9,7 +9,7 @@ import type { Message } from '$lib/types';
 	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
 	import { Alert } from '$lib/components/ui/enhanced-bits.svelte'; // use default import as compiler suggested
 	// Svelte 5 runes for reactive state
-	let wasmModule: any = $state(null);
+	let wasmModule: any = null;
 	let isLoaded = $state<boolean>(false);
 	let isProcessing = $state<boolean>(false);
 	let processingProgress = $state<number>(0);
@@ -39,7 +39,7 @@ import type { Message } from '$lib/types';
 		lastUpdated: null as string | null
 	});
 	// WebGL context for GPU acceleration
-	let webglContext: WebGLRenderingContext | null = $state(null);
+	let webglContext: WebGLRenderingContext | null = null;
 	// removed unused gpuBuffers to avoid linter noise
 	$effect(() => {
 		(async () => {
@@ -119,7 +119,7 @@ import type { Message } from '$lib/types';
 			}
 		} catch (err) {
 			console.warn('WebGL initialization failed:', err);
-			performanceMetrics.webglAcceleration = $state(false);
+			performanceMetrics.webglAcceleration = false;
 		}
 	}
 	// Client-side AI operations (added parameter typings)

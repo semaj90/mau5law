@@ -2,7 +2,7 @@
  * Svelte action: tooltip
  *
  * Usage in a Svelte component:
- * <button use:tooltip={{ text: 'Save', delay: 300 }}>Save</button>
+ * <button; use:tooltip={{ text: 'Save', delay: 300 }}>Save</button>
  *
  * The action creates a lightweight, accessible tooltip element that appears
  * near the cursor and is cleaned up automatically.
@@ -126,6 +126,6 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
       node.removeEventListener('mouseleave', handleMouseLeave);
       node.removeEventListener('focus', handleMouseEnter);
       node.removeEventListener('blur', handleMouseLeave);
-    },
+    }
   };
 }

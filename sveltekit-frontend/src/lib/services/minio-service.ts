@@ -9,9 +9,7 @@ import { vectorSearchIndex } from './vector-search-index.js';
 
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
-export interface MinIOFile {
-  id: string;
-  filename: string;
+export interface MinIOFile { id: string;, filename: string;
   objectPath: string;
   size: number;
   contentType: string;
@@ -30,9 +28,7 @@ export interface MinIOFile {
   };
 }
 
-export interface UploadProgress {
-  filename: string;
-  loaded: number;
+export interface UploadProgress { filename: string;, loaded: number;
   total: number;
   percentage: number;
   stage: 'uploading' | 'processing' | 'embedding' | 'indexing' | 'complete' | 'error';
@@ -54,14 +50,10 @@ export interface DocumentEntity {
   metadata?: Record<string, unknown>;
 }
 
-export interface DocumentProcessingResult {
-  documentId: string;
-  extractedText: string;
+export interface DocumentProcessingResult { documentId: string;, extractedText: string;
   // allow legacy responses where entities might be plain strings
   entities: Array<DocumentEntity | string>;
-  riskAssessment: {
-    level: RiskLevel;
-    factors: string[];
+  riskAssessment: { level: RiskLevel;, factors: string[];
     confidence: number;
   };
   vectorEmbedding: Float32Array;
@@ -97,7 +89,7 @@ class MinIOService {
           autoProcess,
           priority,
           caseId,
-          documentType,
+          documentType
         })
       );
     }
@@ -125,8 +117,7 @@ class MinIOService {
         total: file.size,
         percentage: 0,
         stage: 'uploading',
-        message: 'Uploading to MinIO storage...',
-      });
+        message: `Uploading to MinIO storage...` });
 
       const formData = new FormData();
       formData.append('document', file);
@@ -136,7 +127,7 @@ class MinIOService {
 
       const uploadResponse = await fetch(`${this.baseUrl}/upload`, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!uploadResponse.ok) {
@@ -151,8 +142,7 @@ class MinIOService {
         total: file.size,
         percentage: 100,
         stage: 'processing',
-        message: 'Processing document content...',
-      });
+        message: `Processing document content...` });
 
       // Stage 2: Process document if auto-processing enabled
       let processingResult: DocumentProcessingResult | null = null;
@@ -177,8 +167,8 @@ class MinIOService {
           aiProcessed: !!processingResult,
           vectorEmbedding: processingResult?.vectorEmbedding,
           caseId: options.caseId,
-          jurisdiction: this.extractJurisdiction(processingResult?.extractedText || ''),
-        },
+          jurisdiction: this.extractJurisdiction(processingResult?.extractedText || '')
+        }
       };
 
       this.notifyProgress(uploadId, {
@@ -187,8 +177,7 @@ class MinIOService {
         total: file.size,
         percentage: 100,
         stage: 'complete',
-        message: 'Document uploaded and processed successfully',
-      });
+        message: `Document uploaded and processed successfully` });
 
       return minioFile;
     } catch (error: any) {
@@ -198,8 +187,7 @@ class MinIOService {
         total: file.size || 0,
         percentage: 0,
         stage: 'error',
-        message: `Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      });
+        message: 'Upload; failed: ${error instanceof Error ? error.message : `Unknown error` }' });
       throw error;
     }
   }
@@ -218,13 +206,12 @@ class MinIOService {
         total: 100,
         percentage: 25,
         stage: 'processing',
-        message: 'Extracting text content...',
-      });
+        message: `Extracting text content...` });
 
       const extractResponse = await fetch(`${this.baseUrl}/extract-text`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ object_path: objectPath }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, object_path: objectPath })
       });
       if (!extractResponse.ok) throw new Error(`Extract failed: ${extractResponse.statusText}`);
       const extractResult = await extractResponse.json();
@@ -236,16 +223,14 @@ class MinIOService {
         total: 100,
         percentage: 50,
         stage: 'embedding',
-        message: 'Generating vector embeddings...',
-      });
+        message: `Generating vector embeddings...` });
 
       const embeddingResponse = await fetch(`${this.baseUrl}/generate-embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: extractResult.text,
-          model: 'embeddinggemma:latest',
-        }),
+         , text: extractResult.text,
+          model: `embeddinggemma:latest` })
       });
       if (!embeddingResponse.ok) throw new Error(`Embedding failed: ${embeddingResponse.statusText}`);
       const embeddingResult = await embeddingResponse.json();
@@ -257,16 +242,14 @@ class MinIOService {
         total: 100,
         percentage: 75,
         stage: 'indexing',
-        message: 'Performing risk assessment...',
-      });
+        message: `Performing risk assessment...` });
 
       const analysisResponse = await fetch(`${this.baseUrl}/analyze-document`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: extractResult.text,
-          model: 'gemma3-legal:latest',
-        }),
+         , text: extractResult.text,
+          model: `gemma3-legal:latest` })
       });
       if (!analysisResponse.ok) throw new Error(`Analysis failed: ${analysisResponse.statusText}`);
       const analysisResult = await analysisResponse.json();
@@ -278,7 +261,7 @@ class MinIOService {
         total: 100,
         percentage: 90,
         stage: 'indexing',
-        message: 'Indexing in vector search system...',
+        message: 'Indexing in vector search system...'
       });
 
       const processingResult: DocumentProcessingResult = {
@@ -288,12 +271,11 @@ class MinIOService {
         riskAssessment: analysisResult.risk_assessment || {
           level: 'medium',
           factors: [],
-          confidence: 0.5,
+          confidence: 0.5
         },
         vectorEmbedding: new Float32Array(embeddingResult.embedding || []),
         keywords: analysisResult.keywords || [],
-        summary: analysisResult.summary || '',
-      };
+        summary: analysisResult.summary || '` };
 
       // Index document in vector search system (best-effort)
       try {
@@ -315,8 +297,8 @@ class MinIOService {
             riskLevel: processingResult.riskAssessment.level,
             caseReferences: [],
             citationCount: 0,
-            lastModified: new Date().toISOString(),
-          },
+            lastModified: new Date().toISOString()
+          }
         };
 
         const textChunks = this.splitTextIntoChunks(processingResult.extractedText);
@@ -427,13 +409,13 @@ class MinIOService {
   ): Promise<MinIOFile[]> {
     const response = await fetch(`${this.baseUrl}/search-documents`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         query,
         limit: options.limit ?? 20,
         threshold: options.threshold ?? 0.7,
-        filters: options.filters ?? {},
-      }),
+        filters: options.filters ?? {}
+      })
     });
 
     if (!response.ok) {
@@ -448,8 +430,7 @@ class MinIOService {
    */
   async deleteDocument(objectPath: string): Promise<void> {
     const response = await fetch(`${this.baseUrl}/delete/${encodeURIComponent(objectPath)}`, {
-      method: 'DELETE',
-    });
+      method: `DELETE` });
     if (!response.ok) {
       throw new Error(`Failed to delete document: ${response.statusText}`);
     }
@@ -526,8 +507,8 @@ class MinIOService {
         aiProcessed: Boolean(doc.ai_processed),
         vectorEmbedding: doc.vector_embedding ? new Float32Array(doc.vector_embedding) : undefined,
         caseId: doc.case_id,
-        jurisdiction: doc.jurisdiction,
-      },
+        jurisdiction: doc.jurisdiction
+      }
     };
   }
 }

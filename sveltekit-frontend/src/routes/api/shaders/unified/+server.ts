@@ -10,15 +10,11 @@ interface UnifiedShaderQuery {
   sortBy?: 'relevance' | 'performance' | 'usage' | 'recent';
   limit?: number;
 }
-interface UnifiedShader {
-  id: string;
-  name: string;
+interface UnifiedShader { id: string;, name: string;
   shaderCode: string;
   shaderType: 'webgpu' | 'webgl';
   operation: string;
-  metadata: {
-    compiledAt: string;
-    lastUsed: string;
+  metadata: { compiledAt: string;, lastUsed: string;
     compileTime: number;
     usageCount: number;
     averageExecutionTime: number;
@@ -34,9 +30,7 @@ interface UnifiedShader {
 }
 
 // New: strongly-typed shape for WebGL cache entries (avoid `any`)
-type WebGLShaderCacheEntry = {
-  id: string;
-  name: string;
+type WebGLShaderCacheEntry = { id: string;, name: string;
   shaderCode: string;
   operation?: string;
   metadata?: {
@@ -55,7 +49,7 @@ type WebGLShaderCacheEntry = {
 // New: typed shape for cache implementations we support (avoid `any`)
 type CacheLike = {
   get?<T = unknown>(key: string): Promise<T | null | undefined>;
-  set?(key: string, value: any, ttlMs?: number): Promise<void> | void;
+  set?(key: string; value: any, ttlMs?: number): Promise<void> | void;
   delete?(key: string): Promise<number | void> | void;
   del?(key: string): Promise<number | void> | void;
   remove?(key: string): Promise<number | void> | void;
@@ -112,7 +106,7 @@ export const GET: RequestHandler = async () => {
       totalShaders: {
         webgpu: webgpuStats.totalShaders,
         webgl: webglShaderCount,
-        total: webgpuStats.totalShaders + webglShaderCount,
+        total: webgpuStats.totalShaders + webglShaderCount
       },
       searchOptions: {
         text: 'string (optional) - Semantic text search across shader code and descriptions',
@@ -120,7 +114,7 @@ export const GET: RequestHandler = async () => {
         shaderType: 'string (optional) - "webgpu", "webgl", or: "all" (default)',
         tags: 'string[] (optional) - Filter by shader tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
-        limit: 'number (optional) - Maximum results (default: 20, max: 100)',
+        limit: 'number (optional) - Maximum results (default: 20, max: 100)'
       },
       supportedOperations: [
         'vector_similarity',
@@ -137,7 +131,7 @@ export const GET: RequestHandler = async () => {
         'Performance and usage analytics',
         'Real-time search with caching',
         'Advanced filtering and sorting',
-      ],
+      ]
     };
     return json(capabilities);
   } catch (error) {
@@ -160,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'limit must be between 1 and 100' }, { status: 400 });
     }
     if (query.shaderType && !['webgpu', 'webgl', 'all'].includes(query.shaderType)) {
-      return json({ error: 'shaderType must be one of: webgpu, webgl, all' }, { status: 400 });
+      return json({ error: `shaderType must be one, of: webgpu, webgl, all` }, { status: 400 });
     }
     const results: UnifiedShader[] = [];
     const shaderType = query.shaderType || 'all';
@@ -172,11 +166,11 @@ export const POST: RequestHandler = async ({ request }) => {
           operation: query.operation,
           tags: query.tags,
           sortBy: query.sortBy,
-          limit: limit,
+          limit: limit
         });
         for (const shader of webgpuResults) {
           // Resolve a user-friendly name in a type-safe way:
-          // 1) prefer top-level 'name' or: 'title' if present,
+          // 1) prefer top-level 'name'; or: 'title' if present,
           // 2) else use the first line of metadata.description (if available),
           // 3) otherwise fallback to shader.id.
           // cast via `unknown` first to satisfy TypeScript when converting between unrelated types
@@ -203,18 +197,18 @@ export const POST: RequestHandler = async ({ request }) => {
             shaderType: 'webgpu',
             operation: shader.metadata?.operation ?? 'unknown',
             metadata: {
-              compiledAt: safeToIso(shader.metadata?.compiledAt),
+             , compiledAt: safeToIso(shader.metadata?.compiledAt),
               lastUsed: safeToIso(shader.metadata?.lastUsed),
               compileTime: Number(shader.metadata?.compileTime ?? 0),
               usageCount: Number(shader.metadata?.usageCount ?? 0),
               averageExecutionTime: Number(shader.metadata?.averageExecutionTime ?? 0),
               description: String(shader.metadata?.description ?? ''),
-              tags: Array.isArray(shader.metadata?.tags) ? shader.metadata!.tags!.map(String) : [],
+              tags: Array.isArray(shader.metadata?.tags) ? shader.metadata!.tags!.map(String) : []
             },
             config: normalizeConfig(shader.config),
             relevanceScore: shader.relevanceScore,
             embeddingSimilarity: shader.embeddingSimilarity,
-            hasEmbedding: !!shader.embedding,
+            hasEmbedding: !!shader.embedding
           });
         }
       } catch (err) {
@@ -294,18 +288,18 @@ export const POST: RequestHandler = async ({ request }) => {
             shaderType: 'webgl',
             operation: op,
             metadata: {
-              compiledAt: compiledAtIso,
+             , compiledAt: compiledAtIso,
               lastUsed: lastUsedIso,
               compileTime: compileTimeNum,
               usageCount: usageCount,
               averageExecutionTime: avgExecTimeNum,
               description: desc,
-              tags: tagsArr,
+              tags: tagsArr
             },
             config: normalizeConfig(shaderData.config),
             relevanceScore,
             embeddingSimilarity,
-            hasEmbedding: !!shaderData.embedding,
+            hasEmbedding: !!shaderData.embedding
           });
         }
       } catch (err) {
@@ -341,7 +335,7 @@ export const POST: RequestHandler = async ({ request }) => {
         shaderCodePreview:
           shader.shaderCode && shader.shaderCode.length > 500
             ? shader.shaderCode.substring(0, 500) + '...'
-            : shader.shaderCode,
+            : shader.shaderCode
       })),
       metadata: {
         totalResults: limitedResults.length,
@@ -350,9 +344,9 @@ export const POST: RequestHandler = async ({ request }) => {
         query: sanitizeQuery(query),
         breakdown: {
           webgpu: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgpu').length,
-          webgl: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgl').length,
-        },
-      },
+          webgl: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgl').length
+        }
+      }
     };
 
     return json(response);
@@ -369,8 +363,8 @@ export const POST: RequestHandler = async ({ request }) => {
         totalResults: 0,
         searchTime,
         query: null,
-        error: safeError,
-      },
+        error: safeError
+      }
     };
 
     return json(errorResponse, { status: 500 });
@@ -444,10 +438,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     return json({
       success: true,
-      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache`,
-    });
+      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache' });
   } catch (err) {
     console.error('Failed to clean shader caches:', getErrorMessage(err));
-    return json({ error: 'Failed to clean shader caches' }, { status: 500 });
+    return json({ error: `Failed to clean shader caches` }, { status: 500 });
   }
 };

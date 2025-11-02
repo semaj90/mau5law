@@ -11,8 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { caseId, evidenceContent, evidenceTitle, evidenceType = 'document' } = await request.json();
     if (!caseId || !evidenceContent || !evidenceTitle) {
       return json(
-        {
-          error: 'Missing required fields: caseId, evidenceContent, evidenceTitle',
+        { error: 'Missing required, fields: caseId, evidenceContent, evidenceTitle'
         },
         { status: 400 }
       );
@@ -77,13 +76,13 @@ export const POST: RequestHandler = async ({ request }) => {
         evidenceTitle,
         evidenceType,
         analysisDir,
-        scriptOutput: stdout,
-      },
+        scriptOutput: stdout
+      }
     };
     return json({
       success: true,
       analysis: analysisResult,
-      message: 'Multi-agent analysis completed successfully',
+      message: 'Multi-agent analysis completed successfully'
     });
   } catch (error) {
     console.error('Multi-agent analysis error:', error);
@@ -91,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: 'Multi-agent analysis failed',
+        message: 'Multi-agent analysis failed'
       },
       { status: 500 }
     );
@@ -114,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       // Allow only safe characters in caseId to avoid traversal injection
       if (!/^[A-Za-z0-9_-]+$/.test(caseId)) {
-        return json({ error: 'Invalid caseId' }, { status: 400 });
+        return json({ error: `Invalid caseId` }, { status: 400 });
       }
       // Use configurable storage dir (defaults to ./temp to remain compatible with POST)
       const storageDir = import.meta.env.ANALYSIS_STORAGE_DIR?.trim() || './temp';
@@ -127,7 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           analyses: [],
-          caseId,
+          caseId
         });
       }
       // Read entries under the storage directory
@@ -148,9 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
       };
 
       // Define a type for the analysis summary to avoid `any`
-      type AnalysisSummary = {
-        id: string;
-        caseId: string;
+      type AnalysisSummary = { id: string;, caseId: string;
         evidenceAnalysis: any;
         personsData: any;
         caseSynthesis: any;
@@ -200,7 +197,7 @@ export const GET: RequestHandler = async ({ url }) => {
             caseSynthesis,
             neo4jUpdates,
             analysisDir,
-            timestamp,
+            timestamp
           };
         })
       );
@@ -222,14 +219,14 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         analyses,
-        caseId,
+        caseId
       });
     } catch (error) {
       console.error('Error retrieving analyses:', error);
       return json(
         {
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         },
         { status: 500 }
       );
@@ -240,8 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: 'Failed to retrieve analyses',
-      },
+        message: `Failed to retrieve analyses` },
       { status: 500 }
     );
   }

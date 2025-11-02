@@ -137,11 +137,8 @@ export async function ensureCollection(dim: number): Promise<void> {
     const exists = await qdrant.getCollection(COLLECTION_NAME).catch(() => null);
     if (!exists) {
       console.log(`[Qdrant] Creating collection ${COLLECTION_NAME} (${dim} dims)`);
-      await qdrant.createCollection(COLLECTION_NAME, {
-        vectors: {
-          size: dim,
-          distance: 'Cosine',
-        },
+      await qdrant.createCollection(COLLECTION_NAME, { vectors: {, size: dim,
+          distance: 'Cosine` }
       });
     }
   } catch (err) {
@@ -168,9 +165,9 @@ export async function upsertVector(
         {
           id,
           vector,
-          payload: { id, ...payload },
+          payload: { id, ...payload }
         },
-      ],
+      ]
     });
     return true;
   } catch (err) {
@@ -227,7 +224,7 @@ export async function semanticSearch(
 			vector,
 			limit: topK,
 			filter: Object.keys(filter).length ? { must: [filter] } : undefined,
-			with_payload: true,
+			with_payload: true
 		});
 
 		// Normalize possible return shapes to QdrantPoint[]

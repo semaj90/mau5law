@@ -7,9 +7,7 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
 import { calculateDocumentPriority } from '$lib/config/legal-priorities';
-interface WorkItem {
-  id: string;
-  type: 'case' | 'document' | 'evidence' | 'contract' | 'research';
+interface WorkItem { id: string;, type: 'case' | 'document' | 'evidence' | 'contract' | 'research';
   title: string;
   lastWorked: string;
   timeSpent: number; // minutes,
@@ -25,9 +23,7 @@ interface WorkItem {
     collaborators?: string[];
   };
 }
-interface WorkActivity {
-  timestamp: string;
-  action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
+interface WorkActivity { timestamp: string;, action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
   duration: number; // minutes
   description?: string;
 }
@@ -47,13 +43,13 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 45,
-        description: 'Evidence review session',
+        description: 'Evidence review session'
       },
       {
         timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 90,
-        description: 'Updated case strategy document',
+        description: 'Updated case strategy document'
       },
     ],
     metadata: {
@@ -61,8 +57,8 @@ const mockWorkHistory: WorkItem[] = [
       clientName: 'John Smith',
       practiceArea: 'Employment Law',
       deadline: '2024-03-15',
-      collaborators: ['sarah.johnson@firm.com', 'mike.wilson@firm.com'],
-    },
+      collaborators: ['sarah.johnson@firm.com', 'mike.wilson@firm.com']
+    }
   },
   {
     id: 'work-002',
@@ -78,21 +74,21 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 67,
-        description: 'Revised termination clauses',
+        description: 'Revised termination clauses'
       },
       {
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 56,
-        description: 'Initial contract review',
+        description: 'Initial contract review'
       },
     ],
     metadata: {
       caseId: 'case-001',
       clientName: 'John Smith',
       practiceArea: 'Employment Law',
-      collaborators: ['legal.assistant@firm.com'],
-    },
+      collaborators: ['legal.assistant@firm.com']
+    }
   },
   {
     id: 'work-003',
@@ -108,13 +104,13 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 78,
-        description: 'Negotiated liability terms',
+        description: 'Negotiated liability terms'
       },
       {
         timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         action: 'commented',
         duration: 23,
-        description: 'Added notes on due diligence',
+        description: 'Added notes on due diligence'
       },
     ],
     metadata: {
@@ -122,8 +118,8 @@ const mockWorkHistory: WorkItem[] = [
       clientName: 'TechStart Inc.',
       practiceArea: 'Corporate Law',
       deadline: '2024-02-28',
-      collaborators: ['corp.counsel@techstart.com', 'partner@firm.com'],
-    },
+      collaborators: ['corp.counsel@techstart.com', 'partner@firm.com']
+    }
   },
   {
     id: 'work-004',
@@ -139,21 +135,21 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 89,
-        description: 'Analyzed email thread for prior art evidence',
+        description: 'Analyzed email thread for prior art evidence'
       },
       {
         timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 67,
-        description: 'Initial evidence categorization',
+        description: 'Initial evidence categorization'
       },
     ],
     metadata: {
       caseId: 'case-004',
       clientName: 'InnovateTech Corp',
       practiceArea: 'Intellectual Property',
-      deadline: '2024-03-01',
-    },
+      deadline: '2024-03-01'
+    }
   },
   {
     id: 'work-005',
@@ -169,28 +165,28 @@ const mockWorkHistory: WorkItem[] = [
         timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 145,
-        description: 'Research on federal estate tax changes',
+        description: 'Research on federal estate tax changes'
       },
       {
         timestamp: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 89,
-        description: 'Initial research planning',
+        description: 'Initial research planning'
       },
     ],
     metadata: {
       caseId: 'case-003',
       clientName: 'Johnson Family',
       practiceArea: 'Estate Planning',
-      deadline: '2024-03-10',
-    },
+      deadline: '2024-03-10'
+    }
   },
 ];
 export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10');
   const type = url.searchParams.get('type') as WorkItem['type'] | null;
   const status = url.searchParams.get('status') as WorkItem['status'] | null;
-  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all'}`;
+  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all` }`;
   try {
     // Check cache first
     const cached = await multiLayerCache.get<WorkItem[]>(cacheKey);
@@ -199,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         data: cached,
         fromCache: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     // Filter by type and status if specified
@@ -224,11 +220,11 @@ export const GET: RequestHandler = async ({ url }) => {
         activeReview: workItem.status === 'in-progress',
         lastAccessed: new Date(workItem.lastWorked),
         fileSize: workItem.timeSpent * 1024, // Estimate based on time spent
-        isEvidenceCritical: workItem.type === 'evidence',
+        isEvidenceCritical: workItem.type === 'evidence'
       });
       return {
         ...workItem,
-        priority,
+        priority
       };
     });
     // Sort by last worked (most recent first) and priority
@@ -253,8 +249,8 @@ export const GET: RequestHandler = async ({ url }) => {
         returnedItems: recentWork.length,
         totalTimeSpent: recentWork.reduce((sum, w) => sum + w.timeSpent, 0),
         averageProgress: recentWork.reduce((sum, w) => sum + w.progress, 0) / recentWork.length,
-        activeItems: recentWork.filter(w => w.status === 'in-progress').length,
-      },
+        activeItems: recentWork.filter(w => w.status === 'in-progress').length
+      }
     });
   } catch (error) {
     console.error('Error fetching work history:', error);
@@ -262,7 +258,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to fetch work history',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -276,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required fields: itemId, action',
+          error: 'Missing required; fields: itemId, action'
         },
         { status: 400 }
       );
@@ -287,7 +283,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Work item not found',
+          error: 'Work item not found'
         },
         { status: 404 }
       );
@@ -298,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       action,
       duration: duration || 0,
-      description,
+      description
     };
     workItem.activities.unshift(newActivity);
     workItem.lastWorked = new Date().toISOString();
@@ -320,15 +316,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Work activity recorded successfully',
       data: workItem,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error recording work activity:', error);
     return json(
       {
         success: false,
-        error: 'Failed to record work activity',
-      },
+        error: 'Failed to record work activity` },
       { status: 500 }
     );
   }

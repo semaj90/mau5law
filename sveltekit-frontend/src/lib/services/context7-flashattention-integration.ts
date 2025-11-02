@@ -9,9 +9,7 @@ import { analyzeCurrentErrors } from '$lib/../context7-multicore-error-analysis'
 import { autoGenOrchestra } from './autogen-gguf-orchestra.js';
 import { nodeJSOrchestrator } from './nodejs-orchestrator.js';
 // Enhanced Error Analysis Result
-export interface EnhancedErrorAnalysis {
-  totalErrors: number;
-  errorCategories: ErrorCategory[];
+export interface EnhancedErrorAnalysis { totalErrors: number;, errorCategories: ErrorCategory[];
   gpuAcceleratedFixes: GPUAcceleratedFix[];
   flashAttentionMetrics: FlashAttentionMetrics;
   context7Analysis: Context7Analysis;
@@ -19,18 +17,14 @@ export interface EnhancedErrorAnalysis {
   processingPerformance: ProcessingPerformance;
 }
 }
-export interface ErrorCategory {
-  type: string;
-  count: number;
+export interface ErrorCategory { type: string;, count: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
   fixComplexity: number;
   gpuAccelerated: boolean;
   estimatedFixTime: number;
 }
 }
-export interface GPUAcceleratedFix {
-  errorId: string;
-  originalError: string;
+export interface GPUAcceleratedFix { errorId: string;, originalError: string;
   proposedFix: string;
   confidence: number;
   flashAttentionScore: number;
@@ -39,35 +33,27 @@ export interface GPUAcceleratedFix {
   tokens: number;
 }
 }
-export interface FlashAttentionMetrics {
-  tokensPerSecond: number;
-  memoryEfficiency: number;
+export interface FlashAttentionMetrics { tokensPerSecond: number;, memoryEfficiency: number;
   attentionAccuracy: number;
   gpuUtilization: number;
   parallelization: number;
   sequenceOptimization: number;
 }
 }
-export interface Context7Analysis {
-  serviceHealth: string;
-  multicoreUtilization: number;
+export interface Context7Analysis { serviceHealth: string;, multicoreUtilization: number;
   taskCompletionRate: number;
   errorCategorizationAccuracy: number;
   libraryComplianceScore: number;
 }
 }
-export interface AutoGenRecommendation {
-  agentType: string;
-  recommendation: string;
+export interface AutoGenRecommendation { agentType: string;, recommendation: string;
   priority: number;
   implementationSteps: string[];
   estimatedImpact: number;
   requiredResources: string[];
 }
 }
-export interface ProcessingPerformance {
-  totalProcessingTime: number;
-  gpuAcceleration: number;
+export interface ProcessingPerformance { totalProcessingTime: number;, gpuAcceleration: number;
   multicoreEfficiency: number;
   memoryOptimization: number;
   overallSpeedup: number;
@@ -89,7 +75,7 @@ export class Context7FlashAttentionIntegration {
     autoGenConnected: false,
     orchestratorOnline: false,
     gpuAcceleration: false,
-    currentTasks: 0,
+    currentTasks: 0
   });
   public processingMetrics = writable({
     totalErrorsProcessed: 0,
@@ -107,7 +93,7 @@ export class Context7FlashAttentionIntegration {
       headDim: 128,
       numHeads: 16,
       enableGPUOptimization: true,
-      memoryOptimization: 'balanced',
+      memoryOptimization: 'balanced'
     });
     this.initialize();
   }
@@ -130,7 +116,7 @@ export class Context7FlashAttentionIntegration {
         autoGenConnected: systemStatus.autoGenConnected,
         orchestratorOnline: systemStatus.orchestratorOnline,
         gpuAcceleration: true,
-        currentTasks: 0,
+        currentTasks: 0
       });
       // Start monitoring
       this.startMonitoring();
@@ -158,7 +144,7 @@ export class Context7FlashAttentionIntegration {
       return {
         context7Active: false,
         autoGenConnected: false,
-        orchestratorOnline: false,
+        orchestratorOnline: false
       }
     }
   }
@@ -192,7 +178,7 @@ export class Context7FlashAttentionIntegration {
         flashAttentionMetrics: this.getFlashAttentionMetrics(),
         context7Analysis: this.analyzeContext7Results(context7Result),
         autoGenRecommendations: autoGenRecs,
-        processingPerformance: performance,
+        processingPerformance: performance
       }
       // Update stores
       this.enhancedAnalysis.set(enhancedAnalysis);
@@ -270,7 +256,7 @@ export class Context7FlashAttentionIntegration {
     try {
       const orchestraTask = {
         type: 'LEGAL_ANALYSIS' as const,
-        input: `Analyze error patterns and provide remediation recommendations: ${JSON.stringify(context7Result.overall_recommendations)}`,
+        input: `Analyze error patterns and provide remediation; recommendations: ${JSON.stringify(context7Result.overall_recommendations)}`,
         agents: ['legal_analyst', 'research_assistant'],
         workflow: [
           {
@@ -431,11 +417,10 @@ export class Context7FlashAttentionIntegration {
    * Generate mock error for demonstration
    */
   private generateMockError(categoryType: string): string {
-    const errors = {
-      svelte5_migration: "TS2305: Module: '\"$lib/stores/auth\"' has no exported member: 'authStore'.",
-      ui_component_mismatch: "Property 'class' does not exist on type: 'CardRootProps'.",
-      css_unused_selectors: "Unused CSS selector: '.container'",
-      binding_issues: "Cannot use: 'bind:' with non-bindable property: 'open'"
+    const errors = { svelte5_migration: "TS2305:;, Module: '\"$lib/stores/auth\"' has no exported, member: 'authStore'.",
+      ui_component_mismatch: "Property 'class' does not exist on; type: 'CardRootProps'.",
+      css_unused_selectors: "Unused CSS; selector: '.container'",
+      binding_issues: "Cannot use: 'bind:' with non-bindable; property: 'open'"
     }
     return errors[categoryType as keyof typeof errors] || "Unknown error type";
   }
@@ -443,11 +428,10 @@ export class Context7FlashAttentionIntegration {
    * Generate mock fix for demonstration
    */
   private generateMockFix(categoryType: string): string {
-    const fixes = {
-      svelte5_migration: "Update import to use proper Svelte 5 store syntax: import { authStore } from '$lib/stores/auth.svelte.js'",
-      ui_component_mismatch: "Change 'class' prop to: 'className' or use data attribute: className=\"citation-card\"",
+    const fixes = { svelte5_migration: "Update import to use proper Svelte 5 store, syntax: import { authStore } from '$lib/stores/auth.svelte.js'",
+      ui_component_mismatch: "Change 'class' prop to: 'className' or use data; attribute: className=\"citation-card\"",
       css_unused_selectors: "Remove unused CSS selector or apply to relevant element",
-      binding_issues: "Replace bind: with proper event handler: onopenchange={(open) => showDialog = open}"
+      binding_issues: "Replace bind: with proper event; handler: onopenchange={(open) => showDialog = open}"
     }
     return fixes[categoryType as keyof typeof fixes] || "Apply appropriate fix for error type";
   }
@@ -478,14 +462,12 @@ export class Context7FlashAttentionIntegration {
       autoGenConnected: false,
       orchestratorOnline: false,
       gpuAcceleration: false,
-      currentTasks: 0,
+      currentTasks: 0
     });
   }
 }
 // Interface for processing tasks
-export interface ProcessingTask {
-  id: string;
-  type: string;
+export interface ProcessingTask { id: string;, type: string;
   data: any;
   priority: number;
   timestamp: number;

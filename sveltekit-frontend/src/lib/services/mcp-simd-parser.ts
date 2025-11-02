@@ -123,7 +123,7 @@ export class MCPSIMDParser {
       enableSIMD: config.enableSIMD ?? true,
       enableMulticore: config.enableMulticore ?? true,
       memoryLimitMB: config.memoryLimitMB ?? 1024,
-      timeoutMs: config.timeoutMs ?? 30000,
+      timeoutMs: config.timeoutMs ?? 30000
     };
 
     this.mcpServerUrl = 'http://localhost:3000/mcp';
@@ -134,7 +134,7 @@ export class MCPSIMDParser {
       throughput: 0,
       coresUsed: 0,
       simdOpsCount: 0,
-      memoryUsed: 0,
+      memoryUsed: 0
     };
   }
 
@@ -152,8 +152,7 @@ export class MCPSIMDParser {
     try {
       // Verify MCP server is available
       const response = await fetch(`${this.mcpServerUrl}/health`, {
-        method: 'GET',
-      });
+        method: `GET` });
 
       if (!response.ok) {
         throw new Error(`MCP server unavailable: ${response.status}`);
@@ -191,10 +190,9 @@ export class MCPSIMDParser {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          logContent: buildLog,
+         , logContent: buildLog,
           config: this.config,
-          parseType: 'vite-errors',
-        }),
+          parseType: `vite-errors` })
       });
 
       if (!response.ok) {
@@ -212,7 +210,7 @@ export class MCPSIMDParser {
         throughput: errors.length / (parseTimeMs / 1000),
         coresUsed: this.config.workers!,
         simdOpsCount: data.simdOpsCount || 0,
-        memoryUsed: data.memoryUsed || 0,
+        memoryUsed: data.memoryUsed || 0
       };
 
       return errors;
@@ -241,10 +239,9 @@ export class MCPSIMDParser {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          logContent: diagnosticsLog,
+         , logContent: diagnosticsLog,
           config: this.config,
-          parseType: 'typescript-diagnostics',
-        }),
+          parseType: `typescript-diagnostics` })
       });
 
       if (!response.ok) {
@@ -262,7 +259,7 @@ export class MCPSIMDParser {
         throughput: errors.length / (parseTimeMs / 1000),
         coresUsed: this.config.workers!,
         simdOpsCount: data.simdOpsCount || 0,
-        memoryUsed: data.memoryUsed || 0,
+        memoryUsed: data.memoryUsed || 0
       };
 
       return errors;
@@ -290,10 +287,9 @@ export class MCPSIMDParser {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          logContent: buildLog,
+         , logContent: buildLog,
           config: this.config,
-          parseType: 'auto-detect',
-        }),
+          parseType: `auto-detect` })
       });
 
       if (!response.ok) {
@@ -311,7 +307,7 @@ export class MCPSIMDParser {
         throughput: errors.length / (parseTimeMs / 1000),
         coresUsed: this.config.workers!,
         simdOpsCount: data.simdOpsCount || 0,
-        memoryUsed: data.memoryUsed || 0,
+        memoryUsed: data.memoryUsed || 0
       };
 
       return errors;
@@ -337,7 +333,7 @@ export class MCPSIMDParser {
       category: this.categorizeError(error),
       source: this.detectSource(error),
       rawText: error.raw || error.originalText || '',
-      timestamp: new Date(),
+      timestamp: new Date()
     }));
   }
 
@@ -426,7 +422,7 @@ export class MCPSIMDParser {
         category: 'unknown',
         source: 'typescript',
         rawText: match[0],
-        timestamp: new Date(),
+        timestamp: new Date()
       });
     }
 
@@ -452,7 +448,7 @@ export class MCPSIMDParser {
       throughput: 0,
       coresUsed: 0,
       simdOpsCount: 0,
-      memoryUsed: 0,
+      memoryUsed: 0
     };
   }
 
@@ -468,18 +464,17 @@ export class MCPSIMDParser {
    *
    * @returns Server health status
    */
-  async healthCheck(): Promise<{ healthy: boolean; message: string }> {
+  async healthCheck(): Promise<{ healthy: boolean;, message: string }> {
     try {
       const response = await fetch(`${this.mcpServerUrl}/health`, {
-        method: 'GET',
-      });
+        method: `GET` });
 
       if (!response.ok) {
-        return { healthy: false, message: `Server returned ${response.status}` };
+        return { healthy: false, message: 'Server returned ${response.status}' };
       }
 
       const data = await response.json();
-      return { healthy: true, message: data.message || 'Server healthy' };
+      return { healthy: true, message: data.message || 'Server healthy` };
     } catch (error) {
       return { healthy: false, message: String(error) };
     }

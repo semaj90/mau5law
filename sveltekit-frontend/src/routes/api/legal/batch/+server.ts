@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!doc.id || !doc.content) {
         return json(
           {
-            error: 'Each document must have id and content properties',
+            error: 'Each document must have id and content properties'
           },
           { status: 400 }
         );
@@ -33,14 +33,13 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
         .statusStores) {
         jobStatuses[jobId] = {
-          subscriptionEndpoint: `/api/legal/status/${jobId}`,
-        };
+          subscriptionEndpoint: `/api/legal/status/${jobId}` };
       }
       processedDocuments[docId] = {
         jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
         jobStatuses,
-        aggregateStatusEndpoint: `/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
-        processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics,
+        aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
+        processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
       };
     }
     return json({
@@ -48,15 +47,14 @@ export const POST: RequestHandler = async ({ request }) => {
       documentsProcessed: documents.length,
       results: processedDocuments,
       batchId: `batch_${Date.now()}`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Batch processing error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

@@ -4,8 +4,7 @@ import type { RequestHandler } from './$types.js'
 
 // Define the ServiceStatus type based on usage in this file and inferred properties from apiRegistry.
 // This interface should align with the ServiceCheckResult type returned by apiRegistry.checkAllServices().
-interface ServiceStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown' | 'error'; // Added: 'error' to match HealthStatus
+interface ServiceStatus { status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown' | 'error'; //, Added: 'error' to match HealthStatus
   required?: boolean; // Used in filtering services
   name?: string; // Inferred from service-registry example
   baseUrl?: string; // Inferred from service-registry example
@@ -18,27 +17,21 @@ interface ServiceStatus {
 }
 
 // Define the type for the report returned by apiRegistry.validateApiRoutes()
-interface ApiRouteValidationReport {
-  registered: string[];
-  existing: string[];
+interface ApiRouteValidationReport { registered: string[];, existing: string[];
   missing: string[];
   extra: string[];
   error?: string;
 }
 
 // Define the comprehensive type for the system status response
-interface SystemStatusResponse {
-  system: {
-    timestamp: string;
+interface SystemStatusResponse { system: {, timestamp: string;
     uptime: number;
     platform: NodeJS.Platform;
     nodeVersion: string;
     memory: NodeJS.MemoryUsage;
     pid: number;
   };
-  summary: {
-    overall: {
-      status: 'operational' | 'degraded' | 'error';
+  summary: { overall: {, status: 'operational' | 'degraded' | 'error';
       healthScore: number;
       servicesHealthy: number;
       servicesTotal: number;
@@ -46,15 +39,11 @@ interface SystemStatusResponse {
       requiredTotal: number;
       error?: string; // Added for error case in catch block
     };
-    models: {
-      chat: string;
-      embeddings: string;
+    models: { chat: string;, embeddings: string;
       dimensions: number;
     };
     database: string;
-    features: {
-      vectorSearch: boolean;
-      aiProcessing: boolean;
+    features: { vectorSearch: boolean;, aiProcessing: boolean;
       enhancedRag: boolean;
       gpuAcceleration: boolean;
       objectStorage: boolean;
@@ -62,9 +51,7 @@ interface SystemStatusResponse {
     };
   };
   services: Record<string, ServiceStatus>;
-  details?: {
-    apiRoutes: ReturnType<typeof apiRegistry.generateServiceReport>;
-    environment: Record<string, string>;
+  details?: { apiRoutes: ReturnType<typeof apiRegistry.generateServiceReport>;, environment: Record<string, string>;
   };
   routes?: ApiRouteValidationReport; // Changed to the resolved type
 }
@@ -82,7 +69,7 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
       platform: process.platform,
       nodeVersion: process.version,
       memory: process.memoryUsage(),
-      pid: process.pid,
+      pid: process.pid
     };
     // Service summary
     const services = Array.from(serviceStatuses.values());
@@ -97,12 +84,12 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
         servicesHealthy: healthyServices.length,
         servicesTotal: services.length,
         requiredHealthy: healthyRequiredServices.length,
-        requiredTotal: requiredServices.length,
+        requiredTotal: requiredServices.length
       },
       models: {
         chat: 'gemma3-legal:latest',
         embeddings: 'embeddinggemma:latest',
-        dimensions: 768,
+        dimensions: 768
       },
       database: 'legal_ai_db',
       features: {
@@ -113,15 +100,15 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
         enhancedRag: serviceStatuses.get('enhanced_rag')?.status === 'healthy',
         gpuAcceleration: serviceStatuses.get('gpu_orchestrator')?.status === 'healthy',
         objectStorage: serviceStatuses.get('minio')?.status === 'healthy',
-        caching: serviceStatuses.get('redis')?.status === 'healthy',
-      },
+        caching: serviceStatuses.get('redis')?.status === 'healthy'
+      }
     };
     // Build response based on query parameters
     const response: SystemStatusResponse = {
       // Changed to const and added SystemStatusResponse type
       system: systemInfo,
       summary,
-      services: Object.fromEntries(serviceStatuses),
+      services: Object.fromEntries(serviceStatuses)
     };
     if (showDetails) {
       response.details = {
@@ -131,8 +118,8 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
           OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL || 'not set',
           EMBEDDING_MODEL: import.meta.env.EMBEDDING_MODEL || 'not set',
           REDIS_URL: import.meta.env.REDIS_URL ? 'configured' : 'missing',
-          QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing',
-        },
+          QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing'
+        }
       };
     }
     if (checkRoutes) {
@@ -148,31 +135,26 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
         'X-Health-Score': summary.overall.healthScore.toString(),
         'X-Services': `${summary.overall.servicesHealthy}/${summary.overall.servicesTotal}`,
         'X-Required-Services': `${summary.overall.requiredHealthy}/${summary.overall.requiredTotal}`,
-        'Cache-Control': 'no-cache, must-revalidate',
-      },
+        'Cache-Control': 'no-cache, must-revalidate` }
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown system status error';
     console.error('System status check failed:', error);
     // Return a response that conforms to SystemStatusResponse, even in error cases
-    const errorResponse: SystemStatusResponse = {
-      system: {
-        timestamp: new Date().toISOString(),
+    const errorResponse: SystemStatusResponse = { system: {, timestamp: new Date().toISOString(),
         uptime: 0, // Default value for uptime in error
         platform: process.platform,
         nodeVersion: process.version,
         memory: process.memoryUsage(),
-        pid: process.pid,
+        pid: process.pid
       },
-      summary: {
-        overall: {
-          status: 'error',
+      summary: { overall: {, status: 'error',
           error: msg,
           healthScore: 0,
           servicesHealthy: 0,
           servicesTotal: 0,
           requiredHealthy: 0,
-          requiredTotal: 0,
+          requiredTotal: 0
         },
         models: { chat: '', embeddings: '', dimensions: 0 }, // Default values
         database: '', // Default value
@@ -183,8 +165,8 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
           enhancedRag: false,
           gpuAcceleration: false,
           objectStorage: false,
-          caching: false,
-        },
+          caching: false
+        }
       },
       services: {}, // Return an empty object for services in error
     };

@@ -43,14 +43,14 @@ const EvidenceConnectionSchema = z.object({
   connectionType: z.enum(['related', 'contradicts', 'supports', 'sequence', 'location', 'person', 'time']),
   strength: z.number().min(0).max(1).default(0.5),
   notes: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 // Query schema for GET requests
 const ConnectionsQuerySchema = z.object({
   evidenceId: cuidSchema.optional(),
   caseId: cuidSchema.optional(),
   connectionType: z.string().optional(),
-  minStrength: z.coerce.number().min(0).max(1).default(0),
+  minStrength: z.coerce.number().min(0).max(1).default(0)
 });
 /*
  * POST /api/v1/evidence/connections
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         400,
         makeHttpErrorPayload({
           message: 'Cannot create connection between the same evidence',
-          code: 'INVALID_CONNECTION',
+          code: 'INVALID_CONNECTION'
         })
       );
     }
@@ -99,8 +99,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: {
         ...connectionData.metadata,
         createdBy: getUserId(locals),
-        createdAt: new Date().toISOString(),
-      },
+        createdAt: new Date().toISOString()
+      }
     };
     // Log the connection creation for audit trail
     console.log(
@@ -114,19 +114,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           evidence1: {
             id: evidence1.id,
             title: evidence1.title,
-            evidenceType: evidence1.evidenceType,
+            evidenceType: evidence1.evidenceType
           },
           evidence2: {
             id: evidence2.id,
             title: evidence2.title,
-            evidenceType: evidence2.evidenceType,
-          },
+            evidenceType: evidence2.evidenceType
+          }
         },
         meta: {
-          userId: getUserId(locals),
+         , userId: getUserId(locals),
           timestamp: new Date().toISOString(),
-          action: 'evidence_connection_created',
-        },
+          action: 'evidence_connection_created'
+        }
       },
       { status: 201 }
     );
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid connection data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to create evidence connection',
         code: 'CONNECTION_FAILED',
-        details: getErrorMessage(err),
+        details: getErrorMessage(err)
       })
     );
   }
@@ -177,18 +177,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         notes: 'Both items found at the same location',
         metadata: {
           createdBy: getUserId(locals),
-          createdAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         },
         evidence1: {
           id: 'evidence-1',
           title: 'Physical Evidence A',
-          evidenceType: 'physical',
+          evidenceType: 'physical'
         },
         evidence2: {
           id: 'evidence-2',
           title: 'Physical Evidence B',
-          evidenceType: 'physical',
-        },
+          evidenceType: `physical` }
       },
     ];
     // Filter connections based on query parameters
@@ -206,10 +205,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       success: true,
       data: filteredConnections,
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         filters: { evidenceId, caseId, connectionType, minStrength },
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching evidence connections:', err);
@@ -219,7 +218,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -228,7 +227,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch evidence connections',
         code: 'FETCH_FAILED',
-        details: getErrorMessage(err),
+        details: getErrorMessage(err)
       })
     );
   }

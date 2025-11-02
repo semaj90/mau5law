@@ -31,9 +31,7 @@ export interface ErrorContext {
   metadata?: { [key: string]: any }
 }
 
-export interface AppError {
-  id: string;
-  type: ErrorType;
+export interface AppError { id: string;, type: ErrorType;
   severity: ErrorSeverity;
   message: string;
   originalError?: Error;
@@ -42,9 +40,7 @@ export interface AppError {
   retryable?: boolean;
 }
 
-export interface ErrorReport {
-  error: AppError;
-  environment: string;
+export interface ErrorReport { error: AppError;, environment: string;
   buildVersion?: string;
   userFeedback?: string;
 }
@@ -78,10 +74,9 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
-          level: 'error',
+         , level: 'error',
           message,
           error: error ? this.serializeError(error) : undefined,
           timestamp: new Date().toISOString()
@@ -97,10 +92,9 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
-          level: 'warn',
+         , level: 'warn',
           message,
           context,
           timestamp: new Date().toISOString()
@@ -115,10 +109,9 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
-          level: 'info',
+         , level: 'info',
           message,
           context,
           timestamp: new Date().toISOString()
@@ -276,9 +269,8 @@ class ErrorHandler {
       await fetch('/api/v2/monitoring/errors', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(report),
+          'Content-Type': 'application/json' },
+        body: JSON.stringify(report)
       });
     } catch (err: any) {
       // Combine error messages for a more informative log
@@ -326,9 +318,7 @@ class ErrorHandler {
     await this.logger.debug(message, context);
   }
   // Get error statistics
-  getErrorStats(): {
-    totalErrors: number;
-    errorsByType: Record<ErrorType, number>;
+  getErrorStats(): { totalErrors: number;, errorsByType: Record<ErrorType, number>;
     errorsBySeverity: Record<ErrorSeverity, number>;
     retryableErrors: number;
   } {

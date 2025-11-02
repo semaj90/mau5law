@@ -8,23 +8,17 @@ import type { UnifiedDocument } from './unified-search-service.js';
 // Neo4j client would be imported here in production
 // import neo4j from 'neo4j-driver'
 }
-export interface Neo4jNode {
-  id: string;
-  labels: string[];
+export interface Neo4jNode { id: string;, labels: string[];
   properties: { [key: string]: any }
 }
 }
-export interface Neo4jRelationship {
-  id: string;
-  type: string;
+export interface Neo4jRelationship { id: string;, type: string;
   startNode: string;
   endNode: string;
   properties: { [key: string]: any }
 }
 }
-export interface GraphRecommendation {
-  type: 'related_cases' | 'similar_precedents' | 'linked_entities' | 'citation_network';
-  documents: UnifiedDocument[];
+export interface GraphRecommendation { type: 'related_cases' | 'similar_precedents' | 'linked_entities' | 'citation_network';, documents: UnifiedDocument[];
   confidence: number;
   reasoning: string;
   graphPath?: Neo4jRelationship[];
@@ -35,14 +29,10 @@ export interface GraphRecommendation {
   temporalProximity?: number;
   }
 }
-export interface LegalEntity {
-  id: string;
-  type: 'person' | 'organization' | 'case' | 'statute' | 'court' | 'jurisdiction';
+export interface LegalEntity { id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'court' | 'jurisdiction';
   name: string;
   properties: { [key: string]: any }
-  connections: {
-    documents: string[];
-  relatedEntities: string[];
+  connections: { documents: string[];, relatedEntities: string[];
   strength: number;
   }
 }
@@ -104,9 +94,7 @@ class Neo4jService {
       }
     } catch (error) {
       console.error(`❌ Error syncing document ${document.id} to Neo4j:`, error);
-      return {
-        success: false;
-        error: error instanceof Error ? error.message: String(error)
+      return { success: false;, error: error instanceof Error ? error.message: String(error)
       }
     }
   }
@@ -270,8 +258,7 @@ class Neo4jService {
       type: 'linked_entities',
       documents: [],
       confidence: 0.72,
-      reasoning: 'Documents connected through shared legal entities and concepts'
-    }
+      reasoning: 'Documents connected through shared legal entities and concepts' }
   }
   private getFallbackRecommendations(documents: UnifiedDocument[]): GraphRecommendation[] {
     // Provide basic recommendations when Neo4j is unavailable
@@ -326,9 +313,7 @@ class Neo4jService {
   async getLegalEntityGraph(entityName: string): Promise<any> {
     // Simulate entity graph retrieval
     console.log(`🔍 Getting legal entity graph for: ${entityName}`);
-    return {
-      entity: {
-        id: `entity_${entityName.replace(/\s+/g, '_')}`,
+    return { entity: {, id: 'entity_${entityName.replace(/\s+/g, '_')}`,
         type: 'person', // Would be inferred
         name: entityName,
         properties: {
@@ -406,9 +391,7 @@ class Neo4jService {
         return { connected: false }
       }
       // Simulate health check
-      return {
-        connected: true;
-        version: '5.0.0', // Would get from actual Neo4j
+      return { connected: true;, version: '5.0.0', // Would get from actual Neo4j
         nodeCount: 12547,
         relationshipCount: 45892,
         lastSync: new Date().toISOString()

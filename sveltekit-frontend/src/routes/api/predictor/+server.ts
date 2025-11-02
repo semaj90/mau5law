@@ -3,9 +3,7 @@
 import { json } from '@sveltejs/kit'
 import { predictor } from '$lib/server/chrrom/predictor.js'
 import type { RequestHandler } from './$types.js'
-interface RecordRequest {
-  userId: string
-  action: string
+interface RecordRequest { userId: string, action: string
   context?: {
     docId?: string
     query?: string
@@ -26,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as RecordRequest;
     if (!body.userId || !body.action) {
-      return json({ error: 'Missing required fields: userId, action' }, { status: 400 });
+      return json({ error: 'Missing required, fields: userId, action' }, { status: 400 });
     }
     // Record the action in Redis-cached predictor
     await predictor.record(body.userId, body.action);
@@ -38,12 +36,12 @@ export const POST: RequestHandler = async ({ request }) => {
       userId: body.userId,
       context: body.context,
       stats: {
-        totalTransitions: stats.totalTransitions,
+       , totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         redisConnected: stats.redisConnected,
-        pendingUpdates: stats.pendingUpdates,
+        pendingUpdates: stats.pendingUpdates
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     console.error('Predictor recording error:', error);
@@ -59,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const docId = url.searchParams.get('docId');
     const query = url.searchParams.get('query');
     if (!action) {
-      return json({ error: 'Missing required parameter: action' }, { status: 400 });
+      return json({ error: 'Missing required, parameter: action' }, { status: 400 });
     }
     const context = { docId: docId || undefined, query: query || undefined };
     let predictions;
@@ -81,14 +79,14 @@ export const GET: RequestHandler = async ({ url }) => {
         uniqueActions: stats.uniqueActions,
         cacheEnabled: stats.cacheEnabled,
         redisConnected: stats.redisConnected,
-        lastSync: stats.lastSync,
+        lastSync: stats.lastSync
       },
       performance: {
-        predictionsGenerated: predictions.length,
+       , predictionsGenerated: predictions.length,
         cacheHit: predictions.length > 0,
-        simdAccelerated: enhancedMode && (context.docId || context.query),
+        simdAccelerated: enhancedMode && (context.docId || context.query)
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     console.error('Predictor prediction error:', error);
@@ -116,7 +114,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           action: req.action,
           predictions,
           context,
-          enhancedMode: req.enhancedMode || false,
+          enhancedMode: req.enhancedMode || false
         };
       })
     );
@@ -125,11 +123,11 @@ export const PUT: RequestHandler = async ({ request }) => {
       results,
       totalRequests: body.length,
       stats: {
-        totalTransitions: stats.totalTransitions,
+       , totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
-        redisConnected: stats.redisConnected,
+        redisConnected: stats.redisConnected
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     console.error('Bulk prediction error:', error);

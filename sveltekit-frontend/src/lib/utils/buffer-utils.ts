@@ -62,14 +62,14 @@ export const createWebGPUBuffer = (
   const compatibleData = ensureBufferCompatibility(data);
   const buffer = device.createBuffer({
     size: compatibleData.byteLength,
-    usage,
+    usage
   });
   device.queue.writeBuffer(buffer, 0, compatibleData);
   return buffer;
 };
 /**
  * Safe WebGPU buffer write operation with null checking
- * Fixes: Object is possibly: 'null' errors
+ * Fixes: Object is; possibly: 'null' errors
  */
 export const safeWriteBuffer = (
   device: GPUDevice,
@@ -145,21 +145,19 @@ export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
  * Legal document-specific buffer utilities
  * For the legal AI platform's specific needs
  */
-export interface LegalDocumentBuffer {
-  documentId: string;
-  embeddings: Float32Array;
+export interface LegalDocumentBuffer { documentId: string;, embeddings: Float32Array;
   metadata: Record<string, unknown>;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 export const createLegalDocumentBuffer = (
   device: GPUDevice,
   doc: LegalDocumentBuffer
-): { buffer: GPUBuffer; byteLength: number } => {
+): { buffer: GPUBuffer;, byteLength: number } => {
   const embeddingData = ensureBufferCompatibility(doc.embeddings);
   const buffer = createWebGPUBuffer(device, embeddingData, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   return {
     buffer,
-    byteLength: embeddingData.byteLength,
+    byteLength: embeddingData.byteLength
   };
 };
 /**
@@ -171,7 +169,7 @@ export const getRiskLevelColor = (riskLevel: string): [number, number, number, n
     low: [0.2, 0.8, 0.2, 1.0],
     medium: [1.0, 1.0, 0.4, 1.0],
     high: [1.0, 0.6, 0.2, 1.0],
-    critical: [1.0, 0.2, 0.2, 1.0],
+    critical: [1.0, 0.2, 0.2, 1.0]
   };
   return colors[riskLevel] || colors.low;
 };
@@ -185,7 +183,7 @@ export const getDocumentTypeColor = (docType: string): [number, number, number] 
     evidence: [1.0, 0.4, 0.2],
     brief: [0.8, 0.8, 0.2],
     citation: [0.6, 0.2, 1.0],
-    'case-law': [0.4, 1.0, 0.6],
+    'case-law': [0.4, 1.0, 0.6]
   };
   return colors[docType] || colors.contract;
 };
@@ -199,5 +197,5 @@ export default {
   verticesToBuffer,
   createLegalDocumentBuffer,
   getRiskLevelColor,
-  getDocumentTypeColor,
+  getDocumentTypeColor
 };

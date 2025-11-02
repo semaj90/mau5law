@@ -15,11 +15,7 @@ import { randomUUID } from 'crypto';
 import { getRedis } from '$lib/server/redis.js';
 
 // Define interface for the result of evidence chain verification
-interface EvidenceVerificationResult {
-  isValid: boolean;
-  evidence: {
-    caseId: string | null;
-    id: string;
+interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: string | null;, id: string;
     metadata: any;
     embedding: number[] | null;
     createdAt: Date;
@@ -48,7 +44,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       endpoint: `/api/jsonb/legal/${path}`,
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries()),
+      headers: Object.fromEntries(request.headers.entries())
     });
     switch (path) {
       case 'analytics': {
@@ -59,7 +55,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           statusCode: 200,
           responseSize: JSON.stringify(analytics).length,
           processingTime: duration,
-          success: true,
+          success: true
         });
         return json({
           success: true,
@@ -67,8 +63,8 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           metadata: {
             requestId,
             processingTime: duration,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'performance': {
@@ -79,7 +75,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           statusCode: 200,
           responseSize: JSON.stringify(performance_metrics).length,
           processingTime: perfDuration,
-          success: true,
+          success: true
         });
         return json({
           success: true,
@@ -87,19 +83,19 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           metadata: {
             requestId,
             processingTime: perfDuration,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: `Endpoint not found: ${path}`,
+            error: `Endpoint not; found: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           },
           { status: 404 }
         );
@@ -113,15 +109,14 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       responseSize: 0,
       processingTime: duration,
       success: false,
-      error: errorMessage,
+      error: errorMessage
     });
     await logger.logError({
       error: errorMessage,
       context: 'jsonb_legal_api_get',
       requestId: requestId,
       severity: 'high',
-      category: 'api',
-    });
+      category: 'api` });
     return json(
       {
         success: false,
@@ -129,8 +124,8 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         metadata: {
           requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -151,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       method: 'POST',
       endpoint: `/api/jsonb/legal/${path}`,
       headers: Object.fromEntries(request.headers.entries()),
-      requestBody,
+      requestBody
     });
 
     const DocumentSearchSchema = z.object({
@@ -162,26 +157,26 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       dateRange: z
         .object({
           start: z.string().datetime(),
-          end: z.string().datetime(),
+          end: z.string().datetime()
         })
         .optional(),
       metadata: z.record(z.any()).optional(),
       limit: z.number().int().min(1).max(100).default(10),
-      offset: z.number().int().min(0).default(0),
+      offset: z.number().int().min(0).default(0)
     });
 
     const ConceptAnalysisSchema = z.object({
-      documentIds: z.array(cuidSchema).min(1).max(100),
+      documentIds: z.array(cuidSchema).min(1).max(100)
     });
 
     const SimilarCasesSchema = z.object({
       caseId: cuidSchema,
-      threshold: z.number().min(0).max(1).default(0.8),
+      threshold: z.number().min(0).max(1).default(0.8)
     });
 
     const CitationNetworkSchema = z.object({
       documentId: cuidSchema,
-      depth: z.number().int().min(1).max(5).default(2),
+      depth: z.number().int().min(1).max(5).default(2)
     });
 
     switch (path) {
@@ -189,7 +184,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         const schema = z.object({
           title: z.string().min(1),
           content: z.string().min(1),
-          metadata: z.record(z.any()).optional(),
+          metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
         const payload = { ...data, metadata: data.metadata ?? {} };
@@ -200,13 +195,13 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           statusCode: 201,
           responseSize: JSON.stringify(result).length,
           processingTime: duration,
-          success: true,
+          success: true
         });
         return json(
           {
             success: true,
             data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() },
+            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() }
           },
           { status: 201 }
         );
@@ -215,7 +210,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         const schema = z.object({
           title: z.string().min(1),
           description: z.string().optional(),
-          metadata: z.record(z.any()).optional(),
+          metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
         const payload = { ...data, metadata: data.metadata ?? {} };
@@ -226,13 +221,13 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           statusCode: 201,
           responseSize: JSON.stringify(result).length,
           processingTime: duration,
-          success: true,
+          success: true
         });
         return json(
           {
             success: true,
             data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() },
+            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() }
           },
           { status: 201 }
         );
@@ -243,7 +238,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           title: z.string(),
           description: z.string().optional(),
           metadata: z.record(z.any()).optional(),
-          embedding: z.array(z.number()).optional(),
+          embedding: z.array(z.number()).optional()
         });
         const data = schema.parse(requestBody);
         const payload = { ...data, metadata: data.metadata ?? {} };
@@ -254,7 +249,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           statusCode: 201,
           responseSize: JSON.stringify(evidence).length,
           processingTime: evidenceDuration,
-          success: true,
+          success: true
         });
         return json(
           {
@@ -263,8 +258,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             metadata: {
               requestId,
               processingTime: evidenceDuration,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           },
           { status: 201 }
         );
@@ -284,7 +279,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             responseSize: cached.length,
             processingTime: performance.now() - startTime,
             success: true,
-            cached: true,
+            cached: true
           });
           return json({
             success: true,
@@ -293,8 +288,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               requestId,
               cached: true,
               processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           });
         }
 
@@ -303,9 +298,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           dateRange: searchCriteria.dateRange
             ? {
                 start: new Date(searchCriteria.dateRange.start),
-                end: new Date(searchCriteria.dateRange.end),
+                end: new Date(searchCriteria.dateRange.end)
               }
-            : undefined,
+            : undefined
         };
         const searchResults = await jsonbLegalService.findDocumentsByLegalCriteria(searchCriteriaWithDates);
         await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 900 });
@@ -317,7 +312,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           responseSize: JSON.stringify(searchResults).length,
           processingTime: searchDuration,
           success: true,
-          cached: false,
+          cached: false
         });
         return json({
           success: true,
@@ -326,8 +321,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             requestId,
             processingTime: searchDuration,
             cached: false,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'concepts': {
@@ -345,7 +340,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             responseSize: cached.length,
             processingTime: performance.now() - startTime,
             success: true,
-            cached: true,
+            cached: true
           });
           return json({
             success: true,
@@ -354,8 +349,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               requestId,
               cached: true,
               processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           });
         }
 
@@ -369,7 +364,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           responseSize: JSON.stringify(conceptAnalysis).length,
           processingTime: conceptDuration,
           success: true,
-          cached: false,
+          cached: false
         });
         return json({
           success: true,
@@ -378,8 +373,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             requestId,
             processingTime: conceptDuration,
             cached: false,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'similar-cases': {
@@ -397,7 +392,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             responseSize: cached.length,
             processingTime: performance.now() - startTime,
             success: true,
-            cached: true,
+            cached: true
           });
           return json({
             success: true,
@@ -406,8 +401,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               requestId,
               cached: true,
               processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           });
         }
 
@@ -421,7 +416,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           responseSize: JSON.stringify(similarCases).length,
           processingTime: similarDuration,
           success: true,
-          cached: false,
+          cached: false
         });
         return json({
           success: true,
@@ -430,8 +425,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             requestId,
             processingTime: similarDuration,
             cached: false,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'citation-network': {
@@ -444,7 +439,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           statusCode: 200,
           responseSize: JSON.stringify(citationNetwork).length,
           processingTime: networkDuration,
-          success: true,
+          success: true
         });
         return json({
           success: true,
@@ -452,19 +447,19 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           metadata: {
             requestId,
             processingTime: networkDuration,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown endpoint: ${path}`,
+            error: `Unknown; endpoint: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString(),
-            },
+              timestamp: new Date().toISOString()
+            }
           },
           { status: 404 }
         );
@@ -488,7 +483,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       responseSize: 0,
       processingTime: duration,
       success: false,
-      error: errorMessage,
+      error: errorMessage
     });
     await logger.logError({
       error: errorMessage,
@@ -496,17 +491,16 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api',
-    });
+      category: 'api` });
     return json(
       {
         success: false,
         error: errorMessage,
         metadata: {
-          requestId: requestId,
+         , requestId: requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: statusCode }
     );
@@ -529,16 +523,16 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       requestBody,
-      headers: Object.fromEntries(request.headers.entries()),
+      headers: Object.fromEntries(request.headers.entries())
     });
     if (operation === 'cases' && action === 'timeline') {
       const CaseTimelineEventSchema = z.object({
         caseId: cuidSchema,
         event: z.object({
-          date: z.string().datetime(),
+         , date: z.string().datetime(),
           event: z.string(),
-          significance: z.enum(['low', 'medium', 'high', 'critical']),
-        }),
+          significance: z.enum(['low', 'medium', 'high', 'critical'])
+        })
       });
       type CaseTimelineEventRequest = z.infer<typeof CaseTimelineEventSchema>;
       const { caseId, event }: CaseTimelineEventRequest = CaseTimelineEventSchema.parse(requestBody);
@@ -549,7 +543,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         statusCode: 200,
         responseSize: JSON.stringify(updatedCase).length,
         processingTime: duration,
-        success: true,
+        success: true
       });
       return json({
         success: true,
@@ -557,19 +551,18 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         metadata: {
           requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     } else if (operation === 'evidence' && action === 'custody') {
       const EvidenceCustodyTransferSchema = z.object({
         evidenceId: cuidSchema,
         transfer: z.object({
-          timestamp: z.string().datetime(),
+         , timestamp: z.string().datetime(),
           custodian: z.string(),
-          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'
-          location: z.string().optional(),
-          condition: z.string().optional(),
-        }),
+          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'; location: z.string().optional(),
+          condition: z.string().optional()
+        })
       });
       type EvidenceCustodyTransferRequest = z.infer<typeof EvidenceCustodyTransferSchema>;
       const { evidenceId, transfer }: EvidenceCustodyTransferRequest = EvidenceCustodyTransferSchema.parse(requestBody);
@@ -580,7 +573,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         statusCode: 200,
         responseSize: JSON.stringify(updatedEvidence).length,
         processingTime: duration,
-        success: true,
+        success: true
       });
       return json({
         success: true,
@@ -588,12 +581,12 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         metadata: {
           requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     } else if (operation === 'evidence' && action === 'verify') {
       const EvidenceVerifySchema = z.object({
-        evidenceId: cuidSchema,
+        evidenceId: cuidSchema
       });
       type EvidenceVerifyRequest = z.infer<typeof EvidenceVerifySchema>;
       const { evidenceId }: EvidenceVerifyRequest = EvidenceVerifySchema.parse(requestBody);
@@ -608,7 +601,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         statusCode: 200,
         responseSize: JSON.stringify(verification).length,
         processingTime: duration,
-        success: true,
+        success: true
       });
       return json({
         success: true,
@@ -616,19 +609,19 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         metadata: {
           requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     } else {
       return json(
         {
           success: false,
-          error: `Operation not found: ${operation}/${action}`,
+          error: `Operation not; found: ${operation}/${action}`,
           metadata: {
             requestId,
             processingTime: performance.now() - startTime,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         },
         { status: 404 }
       );
@@ -652,7 +645,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       responseSize: 0,
       processingTime: duration,
       success: false,
-      error: errorMessage,
+      error: errorMessage
     });
     await logger.logError({
       error: errorMessage,
@@ -660,17 +653,17 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api',
+      category: 'api'
     });
     return json(
       {
         success: false,
         error: errorMessage,
         metadata: {
-          requestId: requestId,
+         , requestId: requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: statusCode }
     );
@@ -686,7 +679,7 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       endpoint: '/api/jsonb/legal',
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries()),
+      headers: Object.fromEntries(request.headers.entries())
     });
     // Update case counters
     await jsonbLegalService.updateCaseCounters();
@@ -696,7 +689,7 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       statusCode: 200,
       responseSize: 0,
       processingTime: duration,
-      success: true,
+      success: true
     });
     return json({
       success: true,
@@ -704,8 +697,8 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       metadata: {
         requestId,
         processingTime: duration,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     const duration = performance.now() - startTime;
@@ -716,15 +709,14 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       responseSize: 0,
       processingTime: duration,
       success: false,
-      error: errorMessage,
+      error: errorMessage
     });
     await logger.logError({
       error: errorMessage,
       context: 'jsonb_legal_api_patch',
       requestId,
       severity: 'high',
-      category: 'api',
-    });
+      category: 'api` });
     return json(
       {
         success: false,
@@ -732,8 +724,8 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
         metadata: {
           requestId,
           processingTime: duration,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );

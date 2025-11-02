@@ -11,37 +11,25 @@ export type OllamaOptions = {
   // Add more options as needed per Ollama spec
   [key: string]: any;
 };
-export interface OllamaGenerateRequest {
-  model: string;
-  prompt: string;
+export interface OllamaGenerateRequest { model: string;, prompt: string;
   stream?: boolean;
   options?: OllamaOptions;
 }
-export interface OllamaGenerateResponse {
-  model: string;
-  created_at: string;
+export interface OllamaGenerateResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
 }
-export interface OllamaChatMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
+export interface OllamaChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
 }
-export interface OllamaChatRequest {
-  model: string;
-  messages: OllamaChatMessage[];
+export interface OllamaChatRequest { model: string;, messages: OllamaChatMessage[];
   stream?: boolean;
   options?: OllamaOptions;
 }
-export interface OllamaChatResponseChunk {
-  model: string;
-  created_at: string;
+export interface OllamaChatResponseChunk { model: string;, created_at: string;
   message?: OllamaChatMessage;
   done: boolean;
 }
-export interface OllamaEmbeddingsRequest {
-  model: string;
-  prompt: string;
+export interface OllamaEmbeddingsRequest { model: string;, prompt: string;
 }
 export interface OllamaEmbeddingsResponse {
   embedding: number[];
@@ -57,7 +45,7 @@ async function jsonFetch<T>(path: string, body: any): Promise<T> {
   const res = await fetch(`${host}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
@@ -76,7 +64,7 @@ export async function* generateStream(
   const res = await fetch(`${host}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: req.model, prompt: req.prompt, stream: true, options: req.options }),
+    body: JSON.stringify({, model: req.model, prompt: req.prompt, stream: true, options: req.options })
   });
   if (!res.ok || !res.body) {
     throw new Error(`Ollama stream failed ${res.status}`);
@@ -125,7 +113,7 @@ export async function* chatStream(
   const res = await fetch(`${host}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: req.model, messages: req.messages, stream: true, options: req.options }),
+    body: JSON.stringify({, model: req.model, messages: req.messages, stream: true, options: req.options })
   });
   if (!res.ok || !res.body) {
     throw new Error(`Ollama chat stream failed ${res.status}`);
@@ -167,7 +155,7 @@ export async function embeddings(req: OllamaEmbeddingsRequest): Promise<OllamaEm
   const body = { model: req.model, prompt: req.prompt };
   return jsonFetch<OllamaEmbeddingsResponse>('/api/embeddings', body);
 }
-export async function listModels(): Promise<{ models: Array<{ name: string }> }> {
+export async function listModels(): Promise<{ models: Array<{, name: string }> }> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/tags`);
   if (!res.ok) throw new Error(`Failed to list models: ${res.status}`);
@@ -179,5 +167,5 @@ export const Ollama = {
   chat,
   chatStream,
   embeddings,
-  listModels,
+  listModels
 };

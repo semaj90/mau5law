@@ -389,7 +389,7 @@
             </div>
             <div class="network-status flex items-center space-x-2">
               <div
-                class="w-2" h-2 rounded-full {systemData.networkLatency < 50
+                class="w-2 h-2 rounded-full" {systemData.networkLatency < 50
                   ? 'bg-green-400'
                   : systemData.networkLatency < 100
                     ? 'bg-yellow-400'
@@ -409,7 +409,7 @@
       <div class="actions-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {#each Array.isArray(quickActions) ? quickActions : [] as action}
           <button
-            class="action-nier-bits-card" border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(
+            class="action-nier-bits-card border rounded-lg" p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(
               action.color
             )} {selectedCard === action.id ? 'scale-95' : ''}"
             onclick={() => handleQuickAction(action)}
@@ -467,7 +467,7 @@
       <div class="activity-list space-y-3">
         {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
           <div
-            class="activity-item" border rounded-lg p-4 flex items-center justify-between {getActivityColor(
+            class="activity-item border rounded-lg" p-4 flex items-center justify-between {getActivityColor(
               activity.type
             )}"
           >
@@ -499,7 +499,7 @@
     class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
     onclick={handleModalBackdropClick}
     onkeydown={e => {
-      if (e.key === 'Escape') showCaseModal = $state(false);
+      if (e.key === 'Escape') showCaseModal = false;
     }}
     role="dialog"
     aria-modal="true"

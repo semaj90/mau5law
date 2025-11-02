@@ -20,16 +20,14 @@ let redisClient: RedisClientType | null = null;
 try {
   // ensure createClient is callable
   if (typeof createClient === 'function') {
-    redisClient = createClient({
-      socket: {
-        host: redisHost,
+    redisClient = createClient({ socket: {, host: redisHost,
         port: redisPort,
         // typed parameter to avoid implicit any
-        reconnectStrategy: (retries: number) => Math.min(retries * 50, 500),
+        reconnectStrategy: (retries: number) => Math.min(retries * 50, 500)
       },
       password: redisPassword,
       database: 0,
-      legacyMode: false,
+      legacyMode: false
     });
   } else {
     console.warn('⚠️ redis.createClient is not available; proceeding without Redis cache');
@@ -67,20 +65,17 @@ async function initializeQdrantCollection(): Promise<void> {
   // Check if collection exists
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
-      method: 'GET',
-    });
+      method: `GET` });
 
     if (response.status === 404) {
       // Create collection with 384 dimensions for embeddinggemma
       await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: {
-            size: 384,
-            distance: 'Cosine',
-          },
-        }),
+        body: JSON.stringify({, vectors: {, size: 384,
+            distance: 'Cosine'
+          }
+        })
       });
       console.log('✅ Created Qdrant collection');
     }
@@ -138,7 +133,7 @@ import { generateEmbedding as serverGenerateEmbedding } from '$lib/server/servic
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const trimmed = text.slice(0, 2000);
-    const { embedding } = await serverGenerateEmbedding(trimmed, { model: 'embeddinggemma:latest' });
+    const { embedding } = await serverGenerateEmbedding(trimmed, { model: `embeddinggemma:latest` });
     if (!Array.isArray(embedding)) throw new Error('Embedding service returned invalid embedding');
     return embedding;
   } catch (error) {
@@ -153,19 +148,19 @@ async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMe
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         points: [
           {
-            id: id,
+           , id: id,
             vector: embedding,
             payload: {
               ...metadata,
-              tags: tags,
-            },
+              tags: tags
+            }
           },
-        ],
-      }),
+        ]
+      })
     });
 
     if (!response.ok) {
@@ -286,7 +281,7 @@ function extractTags(content: string, filename: string): string[] {
   return [...new Set(tags)].slice(0, 10); // Unique tags, max 10
 }
 
-// Helper: safely extract a string: 'code' property from unknown errors
+// Helper: safely extract a; string: 'code' property from unknown errors
 function getErrorCode(e: any): string | undefined {
   if (e && typeof e === 'object') {
     const maybe = e as { [key: string]: any };
@@ -320,7 +315,7 @@ export const POST: RequestHandler = async ({ request }) => {
       !allowedTypes.some(type => file.type.includes(type)) &&
       !['.txt', '.md', '.json', '.csv'].some(ext => file.name.endsWith(ext))
     ) {
-      return json({ error: 'File type not supported' }, { status: 400 });
+      return json({ error: `File type not supported` }, { status: 400 });
     }
 
     // Read file content
@@ -343,7 +338,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentId: existingDoc[0].id,
         chunks: 0,
         embeddings: 0,
-        duplicate: true,
+        duplicate: true
       });
     }
 
@@ -357,7 +352,7 @@ export const POST: RequestHandler = async ({ request }) => {
     try {
       const result = await putObject('legal-documents', minioObject, buffer, {
         'Content-Type': file.type,
-        'Original-Filename': file.name,
+        'Original-Filename': file.name
       });
 
       if (typeof result === 'string' && result.startsWith('file://')) {
@@ -410,8 +405,8 @@ export const POST: RequestHandler = async ({ request }) => {
             uploadedAt: new Date().toISOString(),
             extractionMethod: 'text_extraction',
             tags,
-            contentHash,
-          },
+            contentHash
+          }
         })
         .returning({ id: documents.id });
 
@@ -449,14 +444,14 @@ export const POST: RequestHandler = async ({ request }) => {
               processingStatus: 'completed',
               uploadedBy: '00000000-0000-0000-0000-000000000000',
               metadata: {
-                chunksCount: chunks.length,
+               , chunksCount: chunks.length,
                 uploadedAt: new Date().toISOString(),
                 extractionMethod: 'text_extraction',
                 tags,
-                contentHash,
+                contentHash
               },
-              processedAt: new Date().toISOString(),
-            },
+              processedAt: new Date().toISOString()
+            }
           })
           .returning({ id: legal_documents.id });
 
@@ -478,7 +473,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentId,
         filename: file.name,
         fileType: file.type,
-        chunksCount: chunks.length,
+        chunksCount: chunks.length
       },
       tags
     );
@@ -497,8 +492,8 @@ export const POST: RequestHandler = async ({ request }) => {
         totalChunks: chunks.length,
         filename: file.name,
         fileType: file.type,
-        tags,
-      },
+        tags
+      }
     }));
 
     await db.insert(documentChunks).values(chunkInserts);
@@ -534,7 +529,7 @@ export const POST: RequestHandler = async ({ request }) => {
           tags,
           minioObject: minioSuccess ? minioObject : storedUri,
           qdrantId,
-          processedAt: new Date().toISOString(),
+          processedAt: new Date().toISOString()
         });
 
         // Use setEx to avoid creating an untyped options object
@@ -557,7 +552,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fileSize: file.size,
       minioStored: minioSuccess,
       qdrantStored: true,
-      processedAt: new Date().toISOString(),
+      processedAt: new Date().toISOString()
     });
   } catch (error) {
     console.error('❌ RAG upload failed:', error);
@@ -565,8 +560,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to process document',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

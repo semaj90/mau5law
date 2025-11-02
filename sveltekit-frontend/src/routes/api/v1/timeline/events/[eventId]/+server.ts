@@ -37,7 +37,7 @@ const UpdateTimelineEventSchema = z.object({
   notes: z.string().optional(),
   importance: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   isPublic: z.boolean().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 
 /**
@@ -73,8 +73,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   return json({
     success: true,
     data: {
-      event: timelineEvent,
-    },
+     , event: timelineEvent
+    }
   });
 };
 
@@ -120,7 +120,7 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
     const updateData = {
       ...otherData,
       updatedAt: new Date(),
-      ...(eventDate ? { eventDate: new Date(eventDate) } : {}),
+      ...(eventDate ? { eventDate: new Date(eventDate) } : {})
     };
 
     // Update the timeline event
@@ -135,8 +135,8 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
       success: true,
       message: 'Timeline event updated successfully',
       data: {
-        event: updatedEvent,
-      },
+       , event: updatedEvent
+      }
     });
   } catch (err: any) {
     if (err instanceof z.ZodError) {
@@ -151,7 +151,7 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
       makeHttpErrorPayload({
         message: 'Failed to update timeline event',
         code: 'UPDATE_FAILED',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       })
     );
   }
@@ -201,8 +201,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       message: 'Timeline event deleted successfully',
       data: {
-        deletedEventId: eventId,
-      },
+       , deletedEventId: eventId
+      }
     });
   } catch (err: any) {
     console.error('Delete timeline event error:', err);
@@ -211,7 +211,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to delete timeline event',
         code: 'DELETE_FAILED',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       })
     );
   }

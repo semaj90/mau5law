@@ -3,18 +3,14 @@
  * High-performance attention mechanism for legal AI processing
  * Optimized for RTX 3060 Ti 8GB VRAM
  */
-export interface FlashAttention2Config {
-  maxSequenceLength: number;
-  batchSize: number;
+export interface FlashAttention2Config { maxSequenceLength: number;, batchSize: number;
   headDim: number;
   numHeads: number;
   enableGPUOptimization: boolean;
   memoryOptimization: 'balanced' | 'speed' | 'memory';
 }
 
-export interface AttentionResult {
-  embeddings: Float32Array;
-  attentionWeights: Float32Array;
+export interface AttentionResult { embeddings: Float32Array;, attentionWeights: Float32Array;
   contextualEmbeddings?: Float32Array;
   processingTime: number;
   memoryUsage: number;
@@ -22,9 +18,7 @@ export interface AttentionResult {
   sequenceLength: number;
 }
 
-export interface LegalContextAnalysis {
-  relevanceScore: number;
-  conceptClusters: string[];
+export interface LegalContextAnalysis { relevanceScore: number;, conceptClusters: string[];
   legalEntities: string[];
   precedentReferences: string[];
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
@@ -32,9 +26,7 @@ export interface LegalContextAnalysis {
   keyTerms?: string[];
   complianceScore?: number;
   recommendations?: string[];
-  confidenceMetrics: {
-    semantic: number;
-    syntactic: number;
+  confidenceMetrics: { semantic: number;, syntactic: number;
     contextual: number;
   };
 }
@@ -352,18 +344,14 @@ export const flashAttention2Service = new FlashAttention2RTX3060Service({
 /**
  * GPU Error Processing System with FlashAttention2
  */
-export interface GPUErrorContext {
-  errorType: 'compilation' | 'runtime' | 'memory' | 'model' | 'inference';
-  modelVersion: 'gemma3-legal' | 'nomic-embed-text' | string;
+export interface GPUErrorContext { errorType: 'compilation' | 'runtime' | 'memory' | 'model' | 'inference';, modelVersion: 'gemma3-legal' | 'nomic-embed-text' | string;
   errorMessage: string;
   stackTrace?: string;
   gpuMemoryUsage?: number;
   timestamp: number;
 }
 
-export interface ErrorProcessingResult {
-  resolved: boolean;
-  suggestion: string;
+export interface ErrorProcessingResult { resolved: boolean;, suggestion: string;
   fixCode?: string;
   confidence: number;
   processingTime: number;
@@ -427,7 +415,7 @@ export class GPUErrorProcessor {
       const message = err instanceof Error ? err.message : String(err);
       const result: ErrorProcessingResult = {
         resolved: false,
-        suggestion: `Failed to analyze error: ${message}`,
+        suggestion: `Failed to analyze; error: ${message}`,
         confidence: 0,
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - start,
         memoryOptimized: false

@@ -18,17 +18,15 @@ const pgvectorSearchSchema = z.object({
       documentType: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional(),
-      riskLevel: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+      riskLevel: z.enum(['low', 'medium', 'high', 'critical']).optional()
     })
     .optional(),
-  useContentEmbedding: z.boolean().default(true).describe('Use content embedding vs title'),
+  useContentEmbedding: z.boolean().default(true).describe('Use content embedding vs title')
 });
 
 type SearchRequest = z.infer<typeof pgvectorSearchSchema>;
 
-interface SearchResult {
-  id: string;
-  title: string;
+interface SearchResult { id: string;, title: string;
   content: string;
   metadata: Record<string, any>;
   similarity: number;
@@ -54,7 +52,7 @@ export const POST: RequestHandler = async event => {
       limit,
       threshold,
       filters,
-      useContentEmbedding,
+      useContentEmbedding
     } = pgvectorSearchSchema.parse(body);
 
     // STEP 1: Generate query embedding (10ms)
@@ -103,11 +101,9 @@ export const POST: RequestHandler = async event => {
         title: legalDocumentsJsonb.title,
         content: legalDocumentsJsonb.content,
         metadata: legalDocumentsJsonb.metadata,
-        // Cosine similarity: 1 - (embedding <=> queryEmbedding)
-        similarity: sql<number>`
+        // Cosine similarity: 1 - (embedding <=> queryEmbedding); similarity: sql<number>`
           1 - (${embeddingColumn} <=> ${sql.raw(JSON.stringify(queryEmbedding))})
-        `,
-      })
+        ` })
       .from(legalDocumentsJsonb)
       .where(
         sql`${whereCondition} AND (1 - (${embeddingColumn} <=> ${sql.raw(JSON.stringify(queryEmbedding))})) >= ${threshold}`
@@ -122,12 +118,12 @@ export const POST: RequestHandler = async event => {
       success: true,
       query,
       results: results.map(r => ({
-        id: r.id,
+       , id: r.id,
         title: r.title,
         content: r.content.substring(0, 500), // Truncate for response size
         metadata: r.metadata,
         similarity: Math.round(r.similarity * 10000) / 10000, // 4 decimal places
-        processingTimeMs: totalTime,
+        processingTimeMs: totalTime
       })),
       stats: {
         totalResults: results.length,
@@ -136,16 +132,16 @@ export const POST: RequestHandler = async event => {
         timings: {
           embeddingGenerationMs: Math.round(embeddingTime),
           pgvectorSearchMs: Math.round(searchTime),
-          totalMs: Math.round(totalTime),
+          totalMs: Math.round(totalTime)
         },
-        filters: filters ? Object.keys(filters).length : 0,
+        filters: filters ? Object.keys(filters).length : 0
       },
       metadata: {
         userId: auth.user.id,
         timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
-        indexType: 'HNSW',
-      },
+        indexType: 'HNSW'
+      }
     });
   } catch (error) {
     console.error('pgvector search error:', error);
@@ -155,7 +151,7 @@ export const POST: RequestHandler = async event => {
         {
           success: false,
           error: 'Invalid request parameters',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );
@@ -165,8 +161,7 @@ export const POST: RequestHandler = async event => {
       {
         success: false,
         error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }
@@ -181,24 +176,24 @@ export const GET: RequestHandler = async event => {
     const db = getDb();
 
     // Quick health check: count documents
-    const count = await db.select({ count: sql<number>`count(*)` }).from(legalDocumentsJsonb);
+    const count = await db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb);
 
     return json({
       success: true,
       service: 'pgvector-optimized-search',
       status: 'healthy',
       stats: {
-        indexedDocuments: count[0]?.count || 0,
+       , indexedDocuments: count[0]?.count || 0,
         embeddingDimensions: 384,
         indexType: 'HNSW (m=16, ef=64)',
-        vectorOperator: '<=> (cosine distance)',
+        vectorOperator: '<=> (cosine distance)'
       },
       features: {
         metadataFiltering: true,
         thresholdControl: true,
         limitControl: true,
-        embeddingSelection: true,
-      },
+        embeddingSelection: true
+      }
     });
   } catch (error) {
     console.error('Health check error:', error);
@@ -206,8 +201,7 @@ export const GET: RequestHandler = async event => {
       {
         success: false,
         status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

@@ -18,9 +18,9 @@ import type { Document } from '$lib/types';
   let searchQuery = createRedisBackedState('evidence:board:search', '', 300);
   let selectedEvidence = createRedisBackedState('evidence:board:selected', null, 1800);
   // Dynamic component loading
-  let EvidenceCard: any = $state(null);
-  let SearchInput: any = $state(null);
-  let LoadingSpinner: any = $state(null);
+  let EvidenceCard: any = null;
+  let SearchInput: any = null;
+  let LoadingSpinner: any = null;
   // Performance metrics
   let performanceMetrics = $state({
     componentLoadTime: 0,

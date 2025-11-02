@@ -7,9 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createClient } from 'redis';
 import type { RequestHandler } from './$types';
 // Enhanced RAG processing pipeline
-export interface LegalDocument {
-  id: string;
-  filename: string;
+export interface LegalDocument { id: string;, filename: string;
   jurisdiction: string;
   extractedText: string;
   entities: LegalEntity[];
@@ -18,32 +16,24 @@ export interface LegalDocument {
   prosecutionScore: number;
   processingMetadata: ProcessingMetadata;
 }
-export interface LegalEntity {
-  type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';
-  text: string;
+export interface LegalEntity { type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';, text: string;
   confidence: number;
   startIndex: number;
   endIndex: number;
   jurisdiction: string;
 }
-export interface DocumentChunk {
-  id: string;
-  text: string;
+export interface DocumentChunk { id: string;, text: string;
   embedding?: number[];
   position: number;
   legalRelevance: number;
   entities: string[];
 }
-export interface FactCheck {
-  claim: string;
-  status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
+export interface FactCheck { claim: string;, status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
   sources: string[];
   confidence: number;
   jurisdiction: string;
 }
-export interface ProcessingMetadata {
-  extractionTime: number;
-  embeddingTime: number;
+export interface ProcessingMetadata { extractionTime: number;, embeddingTime: number;
   factCheckTime: number;
   totalProcessingTime: number;
   fileHash: string;
@@ -56,9 +46,7 @@ export interface ProcessingMetadata {
 }
 
 // Legal jurisdictions and their patterns
-type JurisdictionPattern = {
-  keywords: string[];
-  statutes: string[];
+type JurisdictionPattern = { keywords: string[];, statutes: string[];
   weight: number;
 };
 
@@ -67,23 +55,23 @@ const JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
   'federal': {
     keywords: ['federal', 'supreme court', 'circuit court', 'district court', 'fda', 'sec', 'ftc'],
     statutes: ['usc', 'cfr', 'federal register'],
-    weight: 1.0,
+    weight: 1.0
   },
   'state': {
     keywords: ['state court', 'superior court', 'appellate court'],
     statutes: ['state code', 'revised statutes'],
-    weight: 0.8,
+    weight: 0.8
   },
   'local': {
     keywords: ['municipal', 'county court', 'magistrate'],
     statutes: ['ordinance', 'municipal code'],
-    weight: 0.6,
+    weight: 0.6
   },
   'international': {
     keywords: ['international court', 'treaty', 'convention'],
     statutes: ['un charter', 'geneva convention'],
-    weight: 0.9,
-  },
+    weight: 0.9
+  }
 };
 // Entity extraction patterns for legal documents
 const LEGAL_ENTITY_PATTERNS = {
@@ -116,7 +104,7 @@ const LEGAL_ENTITY_PATTERNS = {
     /(?:on|dated|executed on|filed on)\s+((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4})/gi,
     /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/gi,
     /(?:within|after|before)\s+(\d+\s+(?:days|months|years))/gi,
-  ],
+  ]
 };
 // Fact-checking trusted sources for legal validation
 const TRUSTED_LEGAL_SOURCES = [
@@ -178,13 +166,12 @@ async function getRedisClient(): Promise<RedisClientType | null> {
         socket: {
           host,
           port,
-          // Reconnect strategy: exponential-ish backoff capped at 10s
-          reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
+          // Reconnect strategy: exponential-ish backoff capped at 10s; reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
           // optional TLS for managed Redis instances
-          ...(enableTls ? { tls: {} } : {}),
+          ...(enableTls ? { tls: {} } : {})
         },
         password,
-        database: db,
+        database: db
       };
 
   try {
@@ -310,8 +297,8 @@ export const POST: RequestHandler = async ({ request }) => {
           fileHash,
           fileSize: file.size,
           pageCount: pdfData.numpages ?? 0,
-          wordCount: (pdfData.text || '').split(/\s+/).filter(Boolean).length,
-        },
+          wordCount: (pdfData.text || '').split(/\s+/).filter(Boolean).length
+        }
       };
       // Log processing results
       console.log(`✅ ${file.name}: ${entities.length} entities, score: ${prosecutionScore.toFixed(3)}`);
@@ -361,8 +348,8 @@ export const POST: RequestHandler = async ({ request }) => {
           unverified: processedDocuments.reduce(
             (sum, doc) => sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'UNVERIFIED').length,
             0
-          ),
-        },
+          )
+        }
       },
       documents: processedDocuments.map((doc: LegalDocument) => ({
         id: doc.id,
@@ -374,10 +361,10 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: doc.processingMetadata.totalProcessingTime,
         wordCount: doc.processingMetadata.wordCount,
         factCheckSummary: {
-          total: doc.factChecks.length,
+         , total: doc.factChecks.length,
           verified: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
-          disputed: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FICTION').length,
-        },
+          disputed: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FICTION').length
+        }
       })),
       nextSteps: [
         'Documents indexed in vector database',
@@ -385,7 +372,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Fact-checking results available for review',
         'Enhanced RAG system ready for queries',
         'Case AI summary score updated',
-      ],
+      ]
     };
     console.log(`🎉 Legal document processing complete: ${processedDocuments.length} documents, ${totalTime}ms`);
     return json(response);
@@ -397,7 +384,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: errMsg,
-        processingTime,
+        processingTime
       },
       { status: 500 }
     );
@@ -408,7 +395,7 @@ function detectJurisdiction(text: string, providedJurisdiction: string): string 
   const textLower = text.toLowerCase();
 
   // Typed iteration over JURISDICTION_PATTERNS to avoid `any`
-  const scores: { jurisdiction: string; score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
+  const scores: { jurisdiction: string;, score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
     ([jurisdiction, patterns]) => {
       const keywords: string[] = patterns.keywords ?? [];
       const statutes: string[] = patterns.statutes ?? [];
@@ -447,7 +434,7 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
             confidence: calculateEntityConfidence(match[1], type, text),
             startIndex: match.index || 0,
             endIndex: (match.index || 0) + match[0].length,
-            jurisdiction,
+            jurisdiction
           });
         }
         // Prevent infinite loops for zero-length matches
@@ -497,7 +484,7 @@ function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk
       text: chunkText,
       position: i,
       legalRelevance,
-      entities: chunkEntities,
+      entities: chunkEntities
     });
   }
   return chunks;
@@ -585,7 +572,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, input: inputs }),
+      body: JSON.stringify({ model, input: inputs })
     });
 
     if (!res.ok) {
@@ -627,7 +614,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
     // Map embeddings back into chunks; use undefined when missing (typed)
     return chunks.map((chunk, i) => ({
       ...chunk,
-      embedding: embeddingsArray[i],
+      embedding: embeddingsArray[i]
     }));
   } catch (err) {
     console.warn('Embedding service unavailable or failed; falling back to mock embeddings:', err);
@@ -635,7 +622,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
     const dim = Number(process.env.EMBEDDING_DIMENSION) || 384;
     return chunks.map(chunk => ({
       ...chunk,
-      embedding: Array.from({ length: dim }, () => Math.random() - 0.5),
+      embedding: Array.from({, length: dim }, () => Math.random() - 0.5)
     }));
   }
 }
@@ -652,7 +639,7 @@ function performFactChecking(entities: LegalEntity[], jurisdiction: string): Fac
       status: status as FactCheck['status'],
       sources: TRUSTED_LEGAL_SOURCES.slice(0, Math.floor(Math.random() * 3) + 1),
       confidence,
-      jurisdiction,
+      jurisdiction
     });
   });
   return factChecks;
@@ -724,11 +711,11 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
         chunkCount: doc.chunks.length,
         prosecutionScore: doc.prosecutionScore,
         processingMetadata: {
-          totalProcessingTime: doc.processingMetadata.totalProcessingTime,
+         , totalProcessingTime: doc.processingMetadata.totalProcessingTime,
           wordCount: doc.processingMetadata.wordCount,
-          pageCount: doc.processingMetadata.pageCount,
-        },
-      })),
+          pageCount: doc.processingMetadata.pageCount
+        }
+      }))
     };
 
     const key = `case:${caseId}:processing`;
@@ -743,7 +730,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       // Define a minimal typed shape for a Redis pipeline/multi used here
       type RedisPipeline = {
         // chainable set as used below
-        set: (key: string, value: string, opts?: { EX?: number }) => RedisPipeline;
+        set: (key: string; value: string, opts?: { EX?: number }) => RedisPipeline;
         // execution entry points found on different client implementations
         exec?: () => Promise<unknown>;
         execute?: () => Promise<unknown>;
@@ -762,7 +749,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
               filename: doc.filename,
               jurisdiction: doc.jurisdiction,
               prosecutionScore: doc.prosecutionScore,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             };
             // chainable set on the typed pipeline
             pipeline.set(docKey, JSON.stringify(docPayload), { EX: ttlSeconds });
@@ -785,7 +772,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
                   filename: doc.filename,
                   jurisdiction: doc.jurisdiction,
                   prosecutionScore: doc.prosecutionScore,
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }),
                 { EX: ttlSeconds }
               )
@@ -804,7 +791,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
                 filename: doc.filename,
                 jurisdiction: doc.jurisdiction,
                 prosecutionScore: doc.prosecutionScore,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }),
               { EX: ttlSeconds }
             )

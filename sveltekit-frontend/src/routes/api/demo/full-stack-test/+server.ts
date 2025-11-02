@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'brief',
         {
           jurisdiction: 'Federal District Court',
-          practiceAreas: ['Contract Law', 'Commercial Litigation'],
+          practiceAreas: ['Contract Law', 'Commercial Litigation']
         }
       )) as ProcessResult;
 
@@ -77,12 +77,12 @@ export const GET: RequestHandler = async ({ url }) => {
         const results = await unifiedLegalProcessor.semanticSearch(query, {
           documentType: 'brief',
           similarityThreshold: 0.5,
-          limit: 5,
+          limit: 5
         });
         searchResults.push({
           query,
           resultCount: results.length,
-          topResult: results[0] || null,
+          topResult: results[0] || null
         });
       }
       // Step 4: Get system performance stats
@@ -100,14 +100,14 @@ export const GET: RequestHandler = async ({ url }) => {
           confidence_score: processResult.parsedDocument?.confidence ?? 0,
           gpu_accelerated: true,
           vectorized_in_pgvector: processResult.vectorized,
-          processing_stats: processResult.processingStats,
+          processing_stats: processResult.processingStats
         },
         // Search performance results
         semantic_search: {
           queries_tested: searchQueries.length,
           results_summary: searchResults,
           redis_caching: 'enabled',
-          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A',
+          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A'
         },
         // System performance
         system_performance: systemStats,
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
           pgvector_indexing: 'operational',
           redis_caching: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational',
+          cognitive_cache: 'operational'
         },
         // Hardware utilization
         hardware_stats: {
@@ -125,8 +125,8 @@ export const GET: RequestHandler = async ({ url }) => {
           pgvector_efficiency: systemStats.pgvector_index_efficiency,
           redis_hit_rate: systemStats.cache_hit_rate,
           total_documents_indexed: systemStats.total_documents,
-          total_vectors_stored: systemStats.total_vectors,
-        },
+          total_vectors_stored: systemStats.total_vectors
+        }
       };
       console.log('✅ Full Stack Demo completed successfully!');
       return json({
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
           'Search results cached in Redis for optimal performance',
           'All components working in harmony with RTX 3060 Ti',
           'Ready for production legal document processing',
-        ],
+        ]
       });
     }
     if (action === 'health') {
@@ -155,8 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
           redis_cache: 'operational',
           gpu_orchestrator: 'operational',
           documents_indexed: 0,
-          gpu_utilization: '0%',
-        } as Record<string, string | number>,
+          gpu_utilization: '0%` } as Record<string, string | number>
       };
       try {
         await unifiedLegalProcessor.initialize();
@@ -164,8 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
         healthCheck.services = {
           ...healthCheck.services,
           documents_indexed: stats.total_documents,
-          gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%`,
-        };
+          gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%` };
       } catch (error) {
         healthCheck.overall_status = 'degraded';
         healthCheck.services.unified_processor = 'degraded';
@@ -197,25 +195,25 @@ export const GET: RequestHandler = async ({ url }) => {
            document_index: i + 1,
            processing_time: endTime - startTime,
            entities_extracted: (result.parsedDocument?.entities?.length) ?? 0,
-           suggestions_generated: (result.parsedDocument?.suggestions?.length) ?? 0,
+           suggestions_generated: (result.parsedDocument?.suggestions?.length) ?? 0
          });
       }
       const avgProcessingTime = stressResults.reduce((sum, r) => sum + r.processing_time, 0) / stressResults.length;
       return json({
         success: true,
         stress_test_results: {
-          documents_processed: testDocuments.length,
+         , documents_processed: testDocuments.length,
           average_processing_time: `${avgProcessingTime.toFixed(2)}ms`,
           total_time: `${stressResults.reduce((sum, r) => sum + r.processing_time, 0).toFixed(2)}ms`,
           throughput: `${(testDocuments.length / (avgProcessingTime / 1000)).toFixed(2)} docs/second`,
-          detailed_results: stressResults,
-        },
+          detailed_results: stressResults
+        }
       });
     }
     return json(
       {
         error: 'Invalid action',
-        available_actions: ['demo', 'health', 'stress-test'],
+        available_actions: ['demo', 'health', 'stress-test']
       },
       { status: 400 }
     );
@@ -226,7 +224,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: 'Demo failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -243,11 +241,11 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         action: 'custom_document_processing',
         result: {
-          documentId: result.documentId,
+         , documentId: result.documentId,
           entities: result.parsedDocument?.entities ?? [],
           suggestions: result.parsedDocument?.suggestions ?? [],
-          processingStats: result.processingStats ?? {},
-        },
+          processingStats: result.processingStats ?? {}
+        }
       });
     }
     if (searchQuery) {
@@ -264,7 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Invalid request',
-        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search',
+        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search'
       },
       { status: 400 }
     );
@@ -274,8 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Custom test failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

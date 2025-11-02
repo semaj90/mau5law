@@ -2,25 +2,19 @@ import type { AIResponse } from '$lib/types';
 /**
  * TypeScript types for AI Service Worker system
  */
-export interface LLMModel {
-  id: string;
-  name: string;
+export interface LLMModel { id: string;, name: string;
   displayName: string;
   provider: 'ollama' | 'llamacpp' | 'autogen' | 'crewai' | 'langchain';
   size: string;
   specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
   status: 'online' | 'offline' | 'loading' | 'error';
-  performance: {
-    tokensPerSecond: number;
-    memoryUsage: string;
+  performance: { tokensPerSecond: number;, memoryUsage: string;
     responseTime: number;
   };
   capabilities: string[];
   endpoint: string;
 }
-export interface AITask {
-  taskId: string;
-  type: 'generate' | 'analyze' | 'embed' | 'chat' | 'agent_workflow' | 'legal_analysis';
+export interface AITask { taskId: string;, type: 'generate' | 'analyze' | 'embed' | 'chat' | 'agent_workflow' | 'legal_analysis';
   providerId: string;
   model: string;
   prompt: string;
@@ -43,22 +37,18 @@ export interface AITask {
   caseId?: string;
   sessionId?: string;
 }
-export interface AIResponse {
-  id: string;
-  content: string;
+export interface AIResponse { id: string;, content: string;
   providerId: string;
   model: string;
   tokensUsed: number;
   responseTime: number;
   metadata?: Record<string, unknown>;
-  error?: {
-    name: string;
-    message: string;
+  error?: { name: string;, message: string;
     code?: string;
   };
 }
 export interface WorkerMessage {
-  type:
+  type:;
     | 'PROCESS_AI_TASK'
     | 'CANCEL_TASK'
     | 'GET_STATUS'
@@ -73,18 +63,14 @@ export interface WorkerMessage {
   taskId: string;
   payload?: Record<string, unknown> | unknown;
 }
-export interface WorkerStatus {
-  activeRequests: number;
-  queueLength: number;
+export interface WorkerStatus { activeRequests: number;, queueLength: number;
   providers: AIProviderConfig[];
   maxConcurrent: number;
   uptime: number;
   totalProcessed: number;
   errors: number;
 }
-export interface AIProviderConfig {
-  id: string;
-  type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
+export interface AIProviderConfig { id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
   endpoint: string;
   timeout: number;
   retries: number;
@@ -92,17 +78,13 @@ export interface AIProviderConfig {
   healthCheckUrl?: string;
   maxConcurrentRequests?: number;
 }
-export interface AgentWorkflow {
-  id: string;
-  name: string;
+export interface AgentWorkflow { id: string;, name: string;
   description: string;
   agents: AgentDefinition[];
   steps: WorkflowStep[];
   timeout: number;
 }
-export interface AgentDefinition {
-  id: string;
-  name: string;
+export interface AgentDefinition { id: string;, name: string;
   role: string;
   systemPrompt: string;
   model: string;
@@ -110,9 +92,7 @@ export interface AgentDefinition {
   maxTokens: number;
   temperature: number;
 }
-export interface WorkflowStep {
-  id: string;
-  agentId: string;
+export interface WorkflowStep { id: string;, agentId: string;
   dependsOn?: string[];
   prompt?: string;
   condition?: string;
@@ -126,44 +106,32 @@ export interface LegalAnalysisTask extends AITask {
   jurisdiction?: string;
   lawAreas?: string[];
 }
-export interface EmbeddingTask extends AITask {
-  type: 'embed';
-  texts: string[];
+export interface EmbeddingTask extends AITask { type: 'embed';, texts: string[];
   model: 'nomic-embed-text' | 'sentence-transformers';
   dimensions: number;
   normalize?: boolean;
 }
-export interface ChatTask extends AITask {
-  type: 'chat';
-  conversationId: string;
+export interface ChatTask extends AITask { type: 'chat';, conversationId: string;
   history: ChatMessage[];
   streamResponse?: boolean;
 }
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp: number;
   metadata?: Record<string, unknown>;
 }
-export interface AgentWorkflowTask extends AITask {
-  type: 'agent_workflow';
-  workflowId: string;
+export interface AgentWorkflowTask extends AITask { type: 'agent_workflow';, workflowId: string;
   inputs: Record<string, unknown>;
   agents: string[];
   coordination: 'sequential' | 'parallel' | 'hierarchical';
 }
-export interface MultiLLMOrchestrationConfig {
-  coordinatorModel: string;
-  specialistModels: {
+export interface MultiLLMOrchestrationConfig { coordinatorModel: string;, specialistModels: {
     [specialization: string]: string;
   };
   consensusThreshold: number;
   maxIterations: number;
   votingStrategy: 'majority' | 'weighted' | 'expert';
 }
-export interface ProcessingMetrics {
-  taskId: string;
-  startTime: number;
+export interface ProcessingMetrics { taskId: string;, startTime: number;
   endTime?: number;
   processingTime?: number;
   queueTime: number;
@@ -175,9 +143,7 @@ export interface ProcessingMetrics {
   success: boolean;
   error?: string;
 }
-export interface WorkerPool {
-  workers: Worker[];
-  taskDistribution: 'round-robin' | 'least-loaded' | 'priority-based';
+export interface WorkerPool { workers: Worker[];, taskDistribution: 'round-robin' | 'least-loaded' | 'priority-based';
   maxWorkers: number;
   currentLoad: number[];
   totalTasks: number;
@@ -208,16 +174,12 @@ export type AITaskType =
 export type AIProviderType = 'ollama' | 'autogen' | 'crewai' | 'langchain' | 'openai' | 'anthropic';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TaskStatus = 'pending' | 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'timeout';
-export interface TaskResult {
-  taskId: string;
-  status: TaskStatus;
+export interface TaskResult { taskId: string;, status: TaskStatus;
   response?: AIResponse;
   error?: Error;
   metrics: ProcessingMetrics;
 }
-export interface WorkerConfiguration {
-  maxConcurrentTasks: number;
-  defaultTimeout: number;
+export interface WorkerConfiguration { maxConcurrentTasks: number;, defaultTimeout: number;
   retryAttempts: number;
   enableMetrics: boolean;
   enableLogging: boolean;

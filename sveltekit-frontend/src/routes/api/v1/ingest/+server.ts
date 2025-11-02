@@ -9,18 +9,14 @@ import type { RequestHandler } from './$types.js';
  */
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
 const TIMEOUT = 30000; // 30 seconds for document processing
-export interface DocumentIngestRequest {
-  title: string;
-  content: string;
+export interface DocumentIngestRequest { title: string;, content: string;
   case_id?: string;
   metadata?: Record<string, unknown>;
 }
 export interface BatchIngestRequest {
   documents: DocumentIngestRequest[];
 }
-export interface IngestResponse {
-  id: string;
-  status: string;
+export interface IngestResponse { id: string;, status: string;
   document_id: string;
   embedding_id: string;
   process_time_ms: number;
@@ -32,7 +28,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const requestData = await readBodyFast(request);
     // Validate request structure
     if (!requestData.title || !requestData.content) {
-      return json({ error: 'Missing required fields: title and content are required' }, { status: 400 });
+      return json({ error: 'Missing required, fields: title and content are required' }, { status: 400 });
     }
     // Transform to Go service format
     const ingestRequest: DocumentIngestRequest = {
@@ -49,8 +45,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         timestamp: new Date().toISOString(),
         // Inherit from your established patterns
         user_agent: request.headers.get('user-agent') || 'unknown',
-        ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-      },
+        ip_address: request.headers.get('x-forwarded-for') || 'unknown'
+      }
     };
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
@@ -59,19 +55,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify(ingestRequest),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
         const errorText = await response.text();
         return json(
-          {
-            error: `Ingest service error: ${response.status} - ${errorText}`,
+          { error: `Ingest service, error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
-            port: '8227',
+            port: '8227'
           },
           { status: response.status }
         );
@@ -81,15 +75,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json({
         ...result,
         service_info: {
-          go_service: 'ingest-service',
+         , go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-api',
-          architecture: 'multi-protocol',
+          architecture: 'multi-protocol'
         },
         // Follow your established success pattern
         success: true,
-        api_version: 'v1',
-      });
+        api_version: `v1` });
     } catch (fetchError: any) {
       clearTimeout(timeoutId);
       // Safely extract `name` property without using `any`
@@ -111,8 +104,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       {
         error: 'Internal server error',
         message,
-        service: 'sveltekit-ingest-proxy',
-      },
+        service: `sveltekit-ingest-proxy` },
       { status: 500 }
     );
   }
@@ -122,7 +114,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` }
     });
     if (!response.ok) {
       return json(
@@ -130,8 +122,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: `Service unreachable: ${response.status}`,
-        },
+          error: `Service; unreachable: ${response.status}' },
         { status: 503 }
       );
     }
@@ -144,7 +135,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       upstream: health,
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
-      architecture: 'go-microservice',
+      architecture: 'go-microservice'
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -152,8 +143,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       {
         status: 'error',
         service: 'ingest-service',
-        error: message || 'Connection failed',
-      },
+        error: message || 'Connection failed` },
       { status: 503 }
     );
   }

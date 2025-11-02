@@ -6,8 +6,8 @@ import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/nes-button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-Button.svelte';
+  import NesCard from '$lib/components/ui/nes-Card.svelte';
 
   // Define Machine shape so TS can infer types (fixes any[])
   interface Machine {

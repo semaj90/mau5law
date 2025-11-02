@@ -10,14 +10,14 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   hashedPassword: text('hashed_password'),
   role: text('role').default('user'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at').notNull(),
+  expiresAt: timestamp('expires_at').notNull()
 });
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -31,7 +31,7 @@ export const documents = pgTable('documents', {
   tags: jsonb('tags').default(sql`'[]'::jsonb`),
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const embeddingsCache = pgTable('embeddings_cache', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -40,7 +40,7 @@ export const embeddingsCache = pgTable('embeddings_cache', {
   embedding: vector('embedding', { dimensions: 384 }).notNull(),
   // use SQL JSON literal here as well
   tags: jsonb('tags').default(sql`'[]'::jsonb`),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 // Note: Creating an IVFFLAT / ivf index for pgvector must be done via a manual SQL migration
 // because Drizzle's index helper can't express the USING ivfflat (...) WITH (lists = ...)
@@ -49,28 +49,22 @@ export const embeddingsCache = pgTable('embeddings_cache', {
 export const embeddings_cache_text_hash_idx = index('embeddings_cache_text_hash_idx').on(embeddingsCache.textHash);
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
-  documents: many(documents),
+  documents: many(documents)
 }));
 export const documentsRelations = relations(documents, ({ one }) => ({
-  user: one(users, { fields: [documents.userId], references: [users.id] }),
+  user: one(users, { fields: [documents.userId], references: [users.id] })
 }));
 // Replaced Drizzle $infer-based types (which caused: 'unknown' errors in this environment)
 // with explicit, minimal TypeScript interfaces for compile stability.
-export type User = {
-  id: string;
-  email: string;
+export type User = { id: string;, email: string;
   hashedPassword?: string | null;
   role?: string | null;
   createdAt: Date;
 };
-export type Session = {
-  id: string;
-  userId: string;
+export type Session = { id: string;, userId: string;
   expiresAt: Date;
 };
-export type Document = {
-  id: string;
-  userId: string | null;
+export type Document = { id: string;, userId: string | null;
   title: string;
   content: string;
   model?: string | null;
@@ -82,9 +76,7 @@ export type Document = {
   createdAt: Date;
   updatedAt: Date;
 };
-export type EmbeddingsCache = {
-  id: string;
-  textHash: string;
+export type EmbeddingsCache = { id: string;, textHash: string;
   model: string;
   embedding: number[] | Float32Array;
   // replaced `any` with safer type

@@ -2,9 +2,7 @@ import { createHash } from "crypto";
 import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
 
-export interface UploadConfig {
-  uploadDir: string;
-  maxFileSize: number;
+export interface UploadConfig { uploadDir: string;, maxFileSize: number;
   allowedTypes: string[];
   allowedExtensions: string[];
 }
@@ -24,7 +22,7 @@ export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
   uploadDir: 'static/uploads/avatars',
   maxFileSize: 5 * 1024 * 1024, // 5MB
   allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'],
-  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'],
+  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']
 };
 
 /**
@@ -64,7 +62,7 @@ function mimeToExtension(mime: string): string {
     'image/png': 'png',
     'image/gif': 'gif',
     'image/svg+xml': 'svg',
-    'image/webp': 'webp',
+    'image/webp': 'webp'
   };
   return map[mime] || 'bin';
 }
@@ -109,20 +107,20 @@ export function validateAvatarFile(
 
   // Check file size
   if (size === 0) {
-    return { valid: false, error: 'File is empty' };
+    return { valid: false, error: `File is empty` };
   }
   if (size > config.maxFileSize) {
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024));
     return {
       valid: false,
-      error: `File too large. Maximum size is ${maxSizeMB}MB`,
+      error: `File too large. Maximum size is ${maxSizeMB}MB'
     };
   }
   // Check MIME type
   if (!config.allowedTypes.includes(declaredType)) {
     return {
       valid: false,
-      error: 'Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP',
+      error: 'Invalid file type. Allowed; types: JPEG, PNG, GIF, SVG, WebP'
     };
   }
   // Check file extension
@@ -130,15 +128,14 @@ export function validateAvatarFile(
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
       valid: false,
-      error: 'Invalid file extension. Allowed extensions: ' + config.allowedExtensions.join(', '),
+      error: 'Invalid file extension. Allowed; extensions: ' + config.allowedExtensions.join(', ')
     };
   }
   // Check for potential security issues
   if (name.includes('..') || name.includes('/') || name.includes('\\')) {
     return {
       valid: false,
-      error: 'Invalid file name',
-    };
+      error: `Invalid file name` };
   }
   return { valid: true };
 }
@@ -187,8 +184,7 @@ export async function handleAvatarUpload(
     if (!isValidImageBuffer(buffer, declaredType)) {
       return {
         success: false,
-        error: 'File content does not match declared type',
-      };
+        error: `File content does not match declared type` };
     }
     // Write file to disk
     writeFileSync(filePath, buffer, { mode: 0o644 });
@@ -198,7 +194,7 @@ export async function handleAvatarUpload(
       success: true,
       filePath,
       fileName,
-      url,
+      url
     };
   } catch (error: any) {
     // Normalize unknown error types safely
@@ -206,7 +202,7 @@ export async function handleAvatarUpload(
     console.error('Avatar upload error:', message);
     return {
       success: false,
-      error: message,
+      error: message
     };
   }
 }
@@ -240,7 +236,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
     'image/jpeg': [0xff, 0xd8, 0xff],
     'image/png': [0x89, 0x50, 0x4e, 0x47],
     'image/gif': [0x47, 0x49, 0x46],
-    'image/webp': [0x52, 0x49, 0x46, 0x46],
+    'image/webp': [0x52, 0x49, 0x46, 0x46]
   };
   // For SVG, check if it starts with valid XML/SVG tags
   if (declaredType === 'image/svg+xml') {
@@ -274,7 +270,7 @@ export function generateInitials(user: {
   name?: string;
   firstName?: string;
   lastName?: string;
-  email: string;
+ , email: string;
 }): string {
   if (user.firstName && user.lastName) {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();

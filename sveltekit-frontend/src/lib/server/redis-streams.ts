@@ -22,7 +22,7 @@ try {
   client = null;
 }
 
-export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };
+export type TokenEntry = { id: string; seq: number; chunk: string;, meta: Record<string, unknown> };
 
 function streamKey(requestId: string) {
   return `stream:tokens:${requestId}`;
@@ -210,14 +210,14 @@ export interface UltraJSONParser {
  * Interface for a WASM-based clustering service running server-side.
  */
 export interface WasmClusteringService {
-  cluster(vectors: number[][], options: { numClusters: number }): Promise<number[]>;
+  cluster(vectors: number[][], options: {, numClusters: number }): Promise<number[]>;
 }
 
 /**
  * Interface for bridging with nes.css styled WebGPU components.
  */
 export interface NesGPUBridge {
-  getDeviceInfo(): Promise<{ adapter: string; device: string }>;
+  getDeviceInfo(): Promise<{ adapter: string;, device: string }>;
   runComputeShader(shader: string, data: Buffer): Promise<Buffer>;
 }
 
@@ -230,7 +230,7 @@ export class OllamaEmbeddings {
   static async getEmbedding(text: string, model = 'embeddinggemma:latest'): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
-      body: JSON.stringify({ model, prompt: text }),
+      body: JSON.stringify({ model, prompt: text })
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.statusText}`);
@@ -262,12 +262,12 @@ export class RedisCache {
 export class QdrantIndexer {
   static async upsertPoints(
     collection: string,
-    points: { id: string | number; vector: number[]; payload?: Record<string, unknown> }[]
+    points: {, id: string | number; vector: number[]; payload?: Record<string, unknown> }[]
   ) {
     const response = await fetch(`http://localhost:6333/collections/${collection}/points`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ points }),
+      body: JSON.stringify({ points })
     });
     if (!response.ok) {
       const errorBody = await response.text();
@@ -279,7 +279,7 @@ export class QdrantIndexer {
 
 /**
  * Postgres JSONB Persistence Helper (requires a Drizzle instance)
- * Example: assumes a: 'documents' table with: 'id' and: 'data' (jsonb) columns.
+ * Example: assumes a: 'documents' table with: 'id'; and: 'data' (jsonb) columns.
  */
 export class PostgresJsonbPersistence {
   // NOTE: `db` would be your imported Drizzle instance.
@@ -293,7 +293,7 @@ export class PostgresJsonbPersistence {
   static async saveDocument(db: DrizzleDB, id: string, data: Record<string, unknown>): Promise<void> {
     await db.insert(documents).values({ id, data }).onConflictDoUpdate({
       target: documents.id,
-      set: { data },
+      set: { data }
     });
   }
   */

@@ -8,7 +8,7 @@ import { z } from 'zod';
 const VectorRequestSchema = z.object({
   query: z.string().min(1),
   type: z.enum(['search', 'similarity', 'cluster']).default('search'),
-  limit: z.number().min(1).max(100).default(10),
+  limit: z.number().min(1).max(100).default(10)
 });
 // Simple response type
 interface VectorResponse {
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid request data',
+          error: 'Invalid request data'
         },
         { status: 400 }
       );
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: VectorResponse = {
       success: true,
       data: [],
-      type,
+      type
     };
     // Simple mock responses based on type
     switch (type) {
@@ -44,27 +44,26 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             id: 'doc-1',
             similarity: 0.95,
-            title: `Document matching: ${query}`,
-            content: 'Sample content...',
-          },
+            title: `Document; matching: ${query}`,
+            content: `Sample content...` },
           {
             id: 'doc-2',
             similarity: 0.87,
-            title: `Related document to: ${query}`,
-            content: 'Related content...',
+            title: `Related document; to: ${query}`,
+            content: 'Related content...'
           },
         ].slice(0, limit);
         break;
       case 'similarity':
         response.data = [
           { source: 'doc-1', target: 'doc-2', score: 0.85 },
-          { source: 'doc-1', target: 'doc-3', score: 0.79 },
+          { source: 'doc-1', target: 'doc-3', score: 0.79 }
         ];
         break;
       case 'cluster':
         response.data = [
           { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: 'Legal Documents' },
-          { cluster: 2, documents: ['doc-3', 'doc-4'], centroid: 'Evidence Files' },
+          { cluster: 2, documents: ['doc-3', 'doc-4'], centroid: 'Evidence Files' }
         ];
         break;
     }
@@ -73,8 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Vector processing failed',
-      },
+        error: error instanceof Error ? error.message : `Vector processing failed` },
       { status: 500 }
     );
   }
@@ -83,10 +81,10 @@ export const GET: RequestHandler = async () => {
   return json({
     success: true,
     data: {
-      status: 'Vector service available',
+     , status: 'Vector service available',
       operations: ['search', 'similarity', 'cluster'],
       models: ['nomic-embed-text'],
-      dimensions: 384,
-    },
+      dimensions: 384
+    }
   });
 };

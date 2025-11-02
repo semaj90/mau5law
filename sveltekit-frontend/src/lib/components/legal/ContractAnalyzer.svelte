@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
   // Move interfaces here so: 'export' modifiers are allowed
   export interface ContractClause {
     id: string;

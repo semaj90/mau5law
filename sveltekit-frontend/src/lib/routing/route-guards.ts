@@ -8,9 +8,7 @@ import type { RouteDefinition } from '$lib/data/routes-config';
 import type { GeneratedRoute } from './dynamic-route-generator.js';
 ;
 }
-export interface RouteGuardContext {
-  event: ServerLoadEvent;
-  route: RouteDefinition | GeneratedRoute;
+export interface RouteGuardContext { event: ServerLoadEvent;, route: RouteDefinition | GeneratedRoute;
   params: Record<string, string>;
   user?: any;
   session?: string;
@@ -18,9 +16,7 @@ export interface RouteGuardContext {
 export interface GuardResult {
   allowed: boolean;
   redirect?: string;
-  error?: {
-    status: number;
-    message: string;
+  error?: { status: number;, message: string;
   }
   data?: { [key: string]: any }
 }
@@ -87,14 +83,10 @@ export class RouteGuards {
     const { event } = context;
     const user = (event.locals as any).user;
     if (!user) {
-      return {
-        allowed: false;
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
+      return { allowed: false;, redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       }
     }
-    return {
-      allowed: true;
-      data: { user }
+    return { allowed: true;, data: { user }
     }
   }
   /**
@@ -104,9 +96,7 @@ export class RouteGuards {
     const { event } = context;
     const user = (event.locals as any).user;
     if (!user) {
-      return {
-        allowed: false;
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
+      return { allowed: false;, redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       }
     }
     if (user.role !== 'admin' && user.role !== 'superuser') {
@@ -154,8 +144,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 404,
-          message: 'Feature not available'
-        }
+          message: `Feature not available` }
       }
     }
     return { allowed: true }
@@ -191,10 +180,7 @@ export class RouteGuards {
     const isMaintenancePage = context.route.id === 'maintenance';
     const isAdmin = (context.event.locals as any).user?.role === 'admin';
     if (isMaintenanceMode && !isMaintenancePage && !isAdmin) {
-      return {
-        allowed: false;
-        redirect: '/maintenance'
-      }
+      return { allowed: false;, redirect: `/maintenance` }
     }
     return { allowed: true }
   }
@@ -352,7 +338,7 @@ export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
 export async function checkRoutePermission(
   routeId: string,
   user: any;
-  params: Record<string, string> = {}
+ , params: Record<string, string> = {}
 ): Promise<boolean> {
   const config = getRouteGuardConfig(routeId);
   if (!config) return true;
@@ -378,7 +364,7 @@ export async function checkRoutePermission(
 export async function checkMultipleRoutePermissions(
   routeIds: string[],
   user: any;
-  params: Record<string, string> = {}
+ , params: Record<string, string> = {}
 ): Promise<Record<string, boolean>, {
   const results: Record<string, boolean> = {}
   await Promise.all(routeIds.map(async (routeId) => {

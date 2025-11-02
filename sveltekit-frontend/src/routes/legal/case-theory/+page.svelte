@@ -4,7 +4,7 @@ import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons
@@ -383,7 +383,7 @@ import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons

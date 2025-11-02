@@ -2,7 +2,7 @@ import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
 /**
  * Gemma Models Configuration - Phase 3
- * Optimized settings for gemma3-legal:latest and embeddinggemma:latest
+ * Optimized settings for gemma3-legal:latest and; embeddinggemma:latest
  */
 import { AI_CONFIG } from '$lib/server/config';
 // ============================================================================
@@ -14,8 +14,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Extract legal citations from text (case law, statutes, regulations)',
     parameters: {
       type: 'object' as const,
-      properties: {
-        text: { type: 'string', description: 'Text containing legal citations' },
+      properties: { text: {, type: 'string', description: 'Text containing legal citations' },
         jurisdiction: { type: 'string', description: 'Jurisdiction (federal, state, international)' }
       },
       required: ['text']
@@ -26,8 +25,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Identify key legal issues in a document or case',
     parameters: {
       type: 'object' as const,
-      properties: {
-        content: { type: 'string', description: 'Legal document content' },
+      properties: { content: {, type: 'string', description: 'Legal document content' },
         practiceArea: { type: 'string', description: 'Practice area (contract, criminal, tort, etc.)' }
       },
       required: ['content']
@@ -38,8 +36,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Analyze contract terms, obligations, and potential risks',
     parameters: {
       type: 'object' as const,
-      properties: {
-        contractText: { type: 'string', description: 'Contract text to analyze' },
+      properties: { contractText: {, type: 'string', description: 'Contract text to analyze' },
         focusAreas: { type: 'string', description: 'Specific areas to focus on (liability, termination, etc.)' }
       },
       required: ['contractText']
@@ -50,8 +47,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Generate executive summary of legal document',
     parameters: {
       type: 'object' as const,
-      properties: {
-        document: { type: 'string', description: 'Legal document to summarize' },
+      properties: { document: {, type: 'string', description: 'Legal document to summarize' },
         length: { type: 'string', description: 'Summary length (brief, detailed, comprehensive)' }
       },
       required: ['document']
@@ -62,8 +58,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Assess legal risks in a situation or document',
     parameters: {
       type: 'object' as const,
-      properties: {
-        scenario: { type: 'string', description: 'Legal scenario to assess' },
+      properties: { scenario: {, type: 'string', description: 'Legal scenario to assess' },
         riskTypes: { type: 'string', description: 'Types of risk to evaluate (compliance, liability, financial)' }
       },
       required: ['scenario']
@@ -74,8 +69,7 @@ export const LEGAL_FUNCTIONS = [
     description: 'Find relevant legal precedents and case law',
     parameters: {
       type: 'object' as const,
-      properties: {
-        issue: { type: 'string', description: 'Legal issue to find precedents for' },
+      properties: { issue: {, type: 'string', description: 'Legal issue to find precedents for' },
         jurisdiction: { type: 'string', description: 'Jurisdiction to search' },
         years: { type: 'number', description: 'Number of years to search back' }
       },
@@ -86,9 +80,7 @@ export const LEGAL_FUNCTIONS = [
 // ============================================================================
 // Gemma Model Prompts
 // ============================================================================
-export const GEMMA_PROMPTS = {
-  legal: {
-    system: `You are a specialized legal AI assistant powered by Gemma 3. Your capabilities include:
+export const GEMMA_PROMPTS = { legal: {, system: `You are a specialized legal AI assistant powered by Gemma 3. Your capabilities; include:
 - Legal document analysis and summarization
 - Citation extraction and validation
 - Contract review and risk assessment
@@ -102,7 +94,7 @@ Guidelines:
 - Use legal terminology appropriately
 - Be precise and thorough
 Remember: You provide legal information, not legal advice. Users should consult with licensed attorneys for specific legal matters.`,
-    functionCalling: `When asked to perform legal analysis tasks, structure your response using the available functions:
+    functionCalling: 'When asked to perform legal analysis tasks, structure your response using the available functions:
 <function_call>
 {
   "name": "functionName",
@@ -121,8 +113,7 @@ Focus on:
 - Legal terminology and concepts
 - Document structure and organization
 - Semantic relationships between clauses
-- Citation patterns and precedent relationships`
-  }
+- Citation patterns and precedent relationships' }
 };
 // ============================================================================
 // Gemma Generation Parameters
@@ -162,9 +153,7 @@ export const GEMMA_PARAMS = {
 // ============================================================================
 // Gemma Model Validation
 // ============================================================================
-export async function validateGemmaModels(): Promise<{
-  legal: boolean;
-  embedding: boolean;
+export async function validateGemmaModels(): Promise<{ legal: boolean;, embedding: boolean;
   errors: string[];
 }> {
   const errors: string[] = [];
@@ -184,7 +173,7 @@ export async function validateGemmaModels(): Promise<{
       name.includes('gemma3-legal') || name === legalModel
     );
     if (!legalAvailable) {
-      errors.push(`Legal model: '${legalModel}' not found. Available: ${modelNames.join(', ')}`);
+      errors.push(`Legal model: '${legalModel}' not found., Available: ${modelNames.join(', ')}`);
     }
     // Check for embedding model
     const embeddingModel = AI_CONFIG.ollama.models.embedding;
@@ -192,7 +181,7 @@ export async function validateGemmaModels(): Promise<{
       name.includes('embeddinggemma') || name === embeddingModel
     );
     if (!embeddingAvailable) {
-      errors.push(`Embedding model: '${embeddingModel}' not found. Available: ${modelNames.join(', ')}`);
+      errors.push(`Embedding model: '${embeddingModel}' not found., Available: ${modelNames.join(', ')}`);
     }
     return { legal: legalAvailable, embedding: embeddingAvailable, errors };
   } catch (error: any) {
@@ -218,16 +207,12 @@ Available Functions:
 ${functionList}
 ${GEMMA_PROMPTS.legal.functionCalling}
 User Query: ${userPrompt}
-Analysis:`;
+Analysis: ';
 }
 // ============================================================================
 // Gemma Response Parser
 // ============================================================================
-export interface ParsedGemmaResponse {
-  text: string;
-  functionCalls: Array<{
-    name: string;
-    arguments: Record<string, unknown>;
+export interface ParsedGemmaResponse { text: string;, functionCalls: Array<{ name: string;, arguments: Record<string, unknown>;
   }>;
 }
 export function parseGemmaResponse(response: string): ParsedGemmaResponse {
@@ -267,7 +252,7 @@ export async function generateGemmaEmbedding(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: AI_CONFIG.ollama.models.embedding,
+     , model: AI_CONFIG.ollama.models.embedding,
       prompt: text,
       options: {
         ...GEMMA_PARAMS.embedding,
@@ -295,9 +280,7 @@ export async function generateGemmaEmbedding(
 // Export Configuration Summary
 // ============================================================================
 export function getGemmaConfigSummary() {
-  return {
-    models: {
-      legal: AI_CONFIG.ollama.models.legal,
+  return { models: {, legal: AI_CONFIG.ollama.models.legal,
       embedding: AI_CONFIG.ollama.models.embedding,
       fallback: AI_CONFIG.ollama.models.fallback
     },

@@ -15,9 +15,7 @@ import {
   Input
 } from '$lib/components/ui/enhanced-bits.svelte';
 // Legal AI specific components
-export interface LegalEvidenceItem {
-  id: string;
-  title: string;
+export interface LegalEvidenceItem { id: string;, title: string;
   type: "document" | "image" | "video" | "audio" | "transcript";
   priority: "critical" | "high" | "medium" | "low";
   confidence: number;
@@ -25,9 +23,7 @@ export interface LegalEvidenceItem {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface AIAnalysisResult {
-  confidence: number;
-  entities: Array<any>;
+export interface AIAnalysisResult { confidence: number;, entities: Array<any>;
   themes: Array<any>;
   summary: string;
 }
@@ -39,7 +35,7 @@ export const OrchestratedDialog = Object.assign(HeadlessDialog, {
   // Legal AI specific dialog variants
   EvidenceAnalysis: HeadlessDialog,
   CaseManagement: HeadlessDialog,
-  AIInsights: HeadlessDialog,
+  AIInsights: HeadlessDialog
 });
 // Orchestrated Select - combines accessibility with legal categories
 export const OrchestratedSelect = Object.assign(HeadlessSelectField, {
@@ -48,7 +44,7 @@ export const OrchestratedSelect = Object.assign(HeadlessSelectField, {
   // Legal AI specific variants
   EvidenceType: HeadlessSelectField,
   PriorityLevel: HeadlessSelectField,
-  CaseStatus: HeadlessSelectField,
+  CaseStatus: HeadlessSelectField
 });
 // Orchestrated Button - combines loading states with legal actions
 export const OrchestratedButton = Object.assign(LoadingButton, {
@@ -57,19 +53,17 @@ export const OrchestratedButton = Object.assign(LoadingButton, {
   AnalyzeEvidence: LoadingButton,
   ProcessDocument: LoadingButton,
   GenerateReport: LoadingButton,
-  SearchSimilar: LoadingButton,
+  SearchSimilar: LoadingButton
 });
 // Orchestrated Card - legal evidence display
 export const OrchestratedCard = Object.assign(Card, {
   Evidence: Card,
   Analysis: Card,
   CaseFile: Card,
-  AIInsight: Card,
+  AIInsight: Card
 });
 // State management integration
-export interface OrchestrationState {
-  currentRoute: string;
-  activeDialog: string | null;
+export interface OrchestrationState { currentRoute: string;, activeDialog: string | null;
   loadingOperations: Set<string>;
   evidenceItems: LegalEvidenceItem[];
   analysisResults: Map<string, AIAnalysisResult>;
@@ -85,7 +79,7 @@ export const OrchestrationContext = {
   // GPU acceleration status
   webgpuService: null as any,
   // Vector search integration
-  vectorService: null as any,
+  vectorService: null as any
 }
 // Legal AI utility functions
 export function getConfidenceClass(confidence: number): string {
@@ -100,8 +94,7 @@ export function getPriorityClass(priority: LegalEvidenceItem['priority']): strin
 export function formatAnalysisDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
-    timeStyle: 'short'
-  }).format(date);
+    timeStyle: 'short' }).format(date);
 }
 // Component registration for orchestration system
 export const ORCHESTRATED_COMPONENTS = {

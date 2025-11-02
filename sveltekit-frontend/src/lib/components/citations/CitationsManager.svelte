@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported

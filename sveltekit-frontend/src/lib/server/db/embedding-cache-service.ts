@@ -41,9 +41,7 @@ export interface EmbeddingCacheRow {
   // add other fields as needed
 }
 
-export interface UpsertEmbeddingOptions {
-  model: string;
-  textHash: string;
+export interface UpsertEmbeddingOptions { model: string;, textHash: string;
   embedding: number[]; // raw float embedding
   packMethod?: 'uint8-linear' | 'int8-symmetric';
 }
@@ -80,7 +78,7 @@ export async function upsertEmbedding(
       const updatePayload = {
         ...(typeof b64 !== 'undefined' && b64 !== null ? { embedding: b64 } : {}),
         ...(typeof model !== 'undefined' && model !== null ? { model } : {}),
-        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {}),
+        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
       };
       // Drizzle's .set accepts an object where omitted keys are left unchanged.
       await db.update(embeddingCache).set(updatePayload).where(eq(embeddingCache.textHash, textHash));
@@ -92,7 +90,7 @@ export async function upsertEmbedding(
         textHash,
         embedding: b64 ?? '',
         model,
-        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {}),
+        ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
       };
       await db.insert(embeddingCache).values(insertPayload);
       return { created: true, method: method ?? 'unknown', scale: normalizedScale };
@@ -122,7 +120,7 @@ export async function getEmbedding(textHash: string): Promise<EmbeddingCacheRow 
     embedding: null, // callers that need raw floats should call an unpack helper
     model: dbRow.model ?? null,
     embeddingScale: dbRow.embeddingScale ?? null,
-    createdAt: dbRow.createdAt ?? null,
+    createdAt: dbRow.createdAt ?? null
   };
 
   return serviceRow;

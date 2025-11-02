@@ -85,7 +85,7 @@ export const EnhancedBitsClasses = {
   pixelated: 'pixelated',
   gamingScanLines: 'gaming-scan-lines',
   // Inputs
-  input: 'enhanced-input',
+  input: 'enhanced-input'
 } as const;
 export type EnhancedBitsClassName = keyof typeof EnhancedBitsClasses;
 /**
@@ -97,15 +97,13 @@ export const EnhancedBitsFonts = {
   mono: 'JetBrains Mono',
   legal: 'IBM Plex Sans',
   pixel: 'Press Start 2P',
-  japanese: 'Noto Sans JP',
+  japanese: 'Noto Sans JP'
 } as const;
 /**
  * YoRHa Harvard Gaming Color System
  * Academic prestige meets technological aesthetic
  */
-export const EnhancedBitsColors = {
-  background: {
-    primary: '#0d0d0d', // Deep space black
+export const EnhancedBitsColors = { background: {, primary: '#0d0d0d', // Deep space black
     secondary: '#1a0f0f', // Harvard crimson shadow
     tertiary: '#2a1515', // Warm dark crimson
   },
@@ -131,5 +129,5 @@ export const EnhancedBitsColors = {
     matrixGreen: '#00ff41', // Classic matrix green
     cyberBlue: '#00d4ff', // Cyberpunk blue
     warningAmber: '#ffaa00', // Warning amber
-  },
+  }
 } as const;

@@ -2,9 +2,7 @@
 // Please adjust if the actual file content is different.
 
 // Ensure StreamingRequest is defined as an interface or type alias, not a namespace.
-export interface StreamingRequest {
-  id: string;
-  model: string;
+export interface StreamingRequest { id: string;, model: string;
   prompt: string;
   temperature: number;
   maxTokens: number;
@@ -29,7 +27,7 @@ export class EnhancedVLLMCudaIntegration {
     // ...existing method logic...
     yield {
       id: requests[0].id,
-      choices: [{ delta: { content: 'Mock AI response chunk.' } }]
+      choices: [{ delta: {, content: 'Mock AI response chunk.' } }]
     };
   }
 

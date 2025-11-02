@@ -33,7 +33,7 @@ export function resolveOllamaConfig(): OllamaConfig {
         baseUrl: viteUrl.replace(/\/$/, ''),
         embeddingModel: meta?.env?.VITE_OLLAMA_EMBEDDING_MODEL,
         generationModel: meta?.env?.VITE_OLLAMA_GENERATION_MODEL,
-        enabled: true,
+        enabled: true
       };
     }
   } catch (e) {
@@ -48,7 +48,7 @@ export function resolveOllamaConfig(): OllamaConfig {
         baseUrl: processUrl.replace(/\/$/, ''),
         embeddingModel: env.OLLAMA_EMBEDDING_MODEL || env.VITE_OLLAMA_EMBEDDING_MODEL,
         generationModel: env.OLLAMA_GENERATION_MODEL || env.VITE_OLLAMA_GENERATION_MODEL,
-        enabled: true,
+        enabled: true
       };
     }
   }
@@ -86,7 +86,7 @@ export function resolveOllamaConfig(): OllamaConfig {
         baseUrl: maybeOllamaBaseUrl.replace(/\/$/, ''),
         embeddingModel: maybeEmbeddingModel,
         generationModel: maybeGenerationModel,
-        enabled: true,
+        enabled: true
       };
     }
   } catch (e) {
@@ -106,7 +106,7 @@ export function resolveOllamaConfig(): OllamaConfig {
     baseUrl: getDefaultOllamaBaseUrl(),
     embeddingModel: 'embeddinggemma:latest',
     generationModel: 'gemma3-legal:latest',
-    enabled: true,
+    enabled: true
   };
 }
 export function getOllamaBaseUrlFromConfig(): string {

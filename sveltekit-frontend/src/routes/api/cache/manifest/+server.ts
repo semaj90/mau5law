@@ -5,12 +5,8 @@ import type { RequestHandler } from './$types.js'
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
 // Mock implementation - would integrate with actual Redis tensor cache
-const mockCache = new Map<string, {
-  value: any
-  timestamp: number
-  ttl: number
-  version: string
-  source: string
+const mockCache = new Map<string, { value: any, timestamp: number; ttl: number
+  version: string; source: string
   size: number
 }>()
 export const GET: RequestHandler = async ({ url }) => {

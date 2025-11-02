@@ -42,9 +42,7 @@ const documentUpdateLoop = {
   }
 }
 }
-export interface SelfPrompt {
-  id: string;
-  type: 'auto_save' | 'suggestion' | 'focus_change' | 'break_reminder' | 'progress_summary';
+export interface SelfPrompt { id: string;, type: 'auto_save' | 'suggestion' | 'focus_change' | 'break_reminder' | 'progress_summary';
   message: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   actions: Array<any>;
@@ -53,14 +51,10 @@ export interface SelfPrompt {
   position?: 'top' | 'center' | 'bottom';
 }
 }
-export interface ActivityMetrics {
-  wordsPerMinute: number;
-  editingVelocity: number; // edits per minute
+export interface ActivityMetrics { wordsPerMinute: number;, editingVelocity: number; // edits per minute
   focusScore: number; // 0-1, how focused the user appears
   productivityScore: number; // 0-1, overall productivity
-  suggestions: {
-    breakRecommended: boolean;
-  focusChangeRecommended: boolean;
+  suggestions: { breakRecommended: boolean;, focusChangeRecommended: boolean;
   aiAssistanceRecommended: boolean;
   }
 }
@@ -283,15 +277,14 @@ export class SelfPromptingSystem {
       ],
       dismissible: true,
       autoHideAfter: 10000,
-      position: 'top'
-    }
+      position: `top` }
   }
   private async createWritingAssistancePrompt(context: any): Promise<SelfPrompt> {
     const suggestions = await this.generateWritingSuggestions(context);
     return {
       id: `writing_help_${Date.now()}`,
       type: 'suggestion',
-      message: `I notice you're working on ${this.userContext.documentType} content. Would you like AI assistance?`,
+      message: 'I notice you're working on ${this.userContext.documentType} content. Would you like AI assistance?`,
       priority: 'medium',
       actions: [
         {
@@ -316,8 +309,7 @@ export class SelfPromptingSystem {
         }
       ],
       dismissible: true;
-      position: 'center'
-    }
+      position: `center` }
   }
   private createLegalReviewPrompt(): SelfPrompt {
     return {
@@ -348,15 +340,14 @@ export class SelfPromptingSystem {
         }
       ],
       dismissible: true;
-      position: 'center'
-    }
+      position: `center` }
   }
   private createFocusChangePrompt(),: SelfPrompt {
     const suggestions = this.generateFocusChangeSuggestions();
     return {
       id: `focus_change_${Date.now()}`,
       type: 'focus_change',
-      message: `You've been idle for a while. Would you like to switch focus or get a summary?`,
+      message: 'You've been idle for a while. Would you like to switch focus or get a summary?`,
       priority: 'medium',
       actions: [
         {
@@ -382,15 +373,14 @@ export class SelfPromptingSystem {
       ],
       dismissible: true,
       autoHideAfter: 15000,
-      position: 'center'
-    }
+      position: `center` }
   }
   private createBreakReminderPrompt(),: SelfPrompt {
     const sessionDuration = this.getSessionDurationMinutes();
     return {
       id: `break_reminder_${Date.now()}`,
       type: 'break_reminder',
-      message: `You've been working for ${sessionDuration} minutes. Consider taking a break?`,
+      message: 'You've been working for ${sessionDuration} minutes. Consider taking a break?`,
       priority: 'low',
       actions: [
         {
@@ -488,7 +478,7 @@ export class SelfPromptingSystem {
   private async generateWritingSuggestions(context,: any): Promise<string[]> {
     try {
       // removed unused response assignment
-        { role: 'system', content,: 'You are a legal writing assistant. Provide 3 brief, specific suggestions to improve this legal document.' })
+        { role: 'system', content,: `You are a legal writing assistant. Provide 3 brief, specific suggestions to improve this legal document.` })
         { role: 'user', content,: `Document type: ${this.userContext.documentType}\n\nContent: ${this.userContext.currentContent.substring(0, 1000)}...` }
       ]);
       return response.content.split('\n').filter((line: any) => line.trim().length > 0).slice(0, 3);
@@ -507,7 +497,7 @@ export class SelfPromptingSystem {
       documentContent: this.userContext.currentContent,
       reviewType: 'comprehensive',
       priority: 'medium',
-      assignedAgents: agents || ['compliance_specialist', 'risk_analyst', 'legal_editor'],
+      assignedAgents: agents || ['compliance_specialist', 'risk_analyst', 'legal_editor']
     });
   }
   private generateFocusChangeSuggestions(),: any {
@@ -519,8 +509,7 @@ export class SelfPromptingSystem {
       'research': 'content_creation'
     }
     return {
-      recommendedFocus: suggestions[currentFocus] || 'content_creation'
-    }
+      recommendedFocus: suggestions[currentFocus] || 'content_creation` }
   }
   private async generateProgressSummary(),: Promise<void> {
     const summary = {
@@ -558,7 +547,7 @@ export class SelfPromptingSystem {
       suggestions: {
         breakRecommended: sessionMinutes > 60,
         focusChangeRecommended: this.calculateFocusLevel() < 0.4,>
-        aiAssistanceRecommended: this.userContext.contentLength > 500 && this.userContext.totalEdits > 20,
+        aiAssistanceRecommended: this.userContext.contentLength > 500 && this.userContext.totalEdits > 20
       }
     }
   }

@@ -15,9 +15,7 @@ import { createRedisInstance } from '$lib/server/redis.js';
 import type IORedis from 'ioredis';
 
 // Define a specific interface for the context passed to recordInteraction
-export interface InteractionContext {
-  userAction: string;
-  route: string;
+export interface InteractionContext { userAction: string;, route: string;
   sessionId: string;
   accuracy: number;
   [key: string]: any; // Allow for additional properties if needed
@@ -34,18 +32,14 @@ interface IBitmapHMMSOMPredictor {
 }
 
 // Define a specific interface for the metrics returned by getMetrics
-export interface HMMSOMMetrics {
-  predictionAccuracy: number;
-  learningRate: number;
+export interface HMMSOMMetrics { predictionAccuracy: number;, learningRate: number;
   totalInteractions: number;
   // Add other relevant metrics from BitmapHMMSOMPredictor if known
   [key: string]: any; // Allow for additional properties if needed
 }
 
 // Training data point for QLoRA fine-tuning
-export interface TrainingExample {
-  id: string;
-  input: string;
+export interface TrainingExample { id: string;, input: string;
   expectedOutput: string;
   actualOutput: string;
   userFeedback: 'positive' | 'negative' | 'neutral';
@@ -67,18 +61,14 @@ export interface QLoRAConfig {
   targetModules: string[];   // Which modules to apply LoRA to
 }
 // Model performance metrics
-export interface ModelPerformance {
-  accuracy: number;
-  averageReward: number;
+export interface ModelPerformance { accuracy: number;, averageReward: number;
   totalExamples: number;
   improvementRate: number;
   lastTrainingTime: number;
   version: string;
 }
 // Data flywheel metrics
-export interface DataFlywheelMetrics {
-  totalExamples: number;
-  qualityScore: number;
+export interface DataFlywheelMetrics { totalExamples: number;, qualityScore: number;
   diversityScore: number;
   recentAccuracy: number;
   trainingEfficiency: number;
@@ -111,7 +101,7 @@ export class QLoRAReinforcementLearningService {
       totalExamples: 0,
       improvementRate: 0,
       lastTrainingTime: 0,
-      version: '1.0.0'
+      version: '1.0.0';
     }
   }
   /**
@@ -134,7 +124,7 @@ export class QLoRAReinforcementLearningService {
     input: string,
     actualOutput: string,
     userFeedback: 'positive' | 'negative' | 'neutral',
-    context: InteractionContext // Changed: 'any' to: 'InteractionContext'
+    context: InteractionContext // Changed: 'any'; to: 'InteractionContext'
   ): Promise<TrainingExample> {
     const example: TrainingExample = {
       id: `train_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Replaced: 'substr(2, 9)' with: 'slice(2, 11)'
@@ -173,8 +163,7 @@ export class QLoRAReinforcementLearningService {
     // Keep only the best examples (data flywheel curation)
     if (categoryExamples.length > 100) {
       categoryExamples.sort((a, b) => b.reward - a.reward);
-      this.dataFlywheel.set(category, categoryExamples.slice(0, 100)); // Corrected: Added missing: ')'
-    }
+      this.dataFlywheel.set(category, categoryExamples.slice(0, 100)); // Corrected: Added; missing: ')' }
     // Persist to Redis
     await this.redis.set( // Changed from setex to set
       `data_flywheel:${category}`,
@@ -307,10 +296,8 @@ export class QLoRAReinforcementLearningService {
   /**
    * Update model performance metrics
    */
-  private async updateModelPerformance(results: {
-    accuracyImprovement: number;
-    averageReward: number;
-    lossReduction: number;
+  private async updateModelPerformance(results: { accuracyImprovement: number;, averageReward: number;
+   , lossReduction: number;
   }): Promise<void> {
     // Update accuracy with exponential moving average
     const alpha = 0.1; // Learning rate for performance updates
@@ -386,9 +373,7 @@ export class QLoRAReinforcementLearningService {
   /**
    * Get WebGPU-accelerated training configuration
    */
-  getWebGPUTrainingConfig(): {
-    enabled: boolean;
-    computeShaders: string[];
+  getWebGPUTrainingConfig(): { enabled: boolean;, computeShaders: string[];
     memoryOptimization: boolean;
     parallelBatches: number;
   } {
@@ -401,7 +386,7 @@ export class QLoRAReinforcementLearningService {
         'layer_norm'
       ],
       memoryOptimization: true,
-      parallelBatches: 4,
+      parallelBatches: 4
     }
   }
   /**
@@ -450,9 +435,7 @@ export class QLoRAReinforcementLearningService {
   /**
    * Get training queue status
    */
-  getTrainingStatus(): {
-    queueLength: number;
-    isTraining: boolean;
+  getTrainingStatus(): { queueLength: number;, isTraining: boolean;
     nextTrainingETA: number;
     totalDataFlywheelExamples: number;
   } {

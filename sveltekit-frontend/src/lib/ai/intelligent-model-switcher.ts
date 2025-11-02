@@ -7,48 +7,36 @@
 import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 // New: explicit types to avoid `any` and clarify shapes
-type UserIntentPrediction = {
-  intentCategory: string;
-  domainSpecificity: number;
+type UserIntentPrediction = { intentCategory: string;, domainSpecificity: number;
   complexity: number;
   [key: string]: any;
 };
-interface OptimizationResult {
-  confidence: number;
-  recommendedModel: string;
+interface OptimizationResult { confidence: number;, recommendedModel: string;
   didYouMeanSuggestions: string[];
   userIntentPrediction: UserIntentPrediction;
   [key: string]: any;
 }
-interface IntelligentSwitchResult {
-  switchExecuted: boolean;
-  finalModel: string;
+interface IntelligentSwitchResult { switchExecuted: boolean;, finalModel: string;
   decision: ModelSwitchDecision;
   fastUXOptimizations: string[] | Record<string, unknown>;
   userLearningUpdates: string[] | Record<string, unknown>;
   didYouMeanSuggestions: string[];
   processingTime: number;
 }
-interface PerformanceStats {
-  totalSwitches: number;
-  successRate: number;
+interface PerformanceStats { totalSwitches: number;, successRate: number;
   avgSwitchTime: number;
   userSatisfactionImprovement: number;
   activeUserProfiles: number;
   learningPhaseDistribution: Record<string, number>;
 }
-interface SwitchHistoryEntry {
-  userId: string;
-  fromModel: string;
+interface SwitchHistoryEntry { userId: string;, fromModel: string;
   toModel: string;
   reason: string;
   performance: number;
   userSatisfaction: number;
   timestamp: number;
 }
-export interface ModelSwitchDecision {
-  shouldSwitch: boolean;
-  targetModel: string;
+export interface ModelSwitchDecision { shouldSwitch: boolean;, targetModel: string;
   currentModel: string;
   confidence: number;
   reason: string;
@@ -57,45 +45,33 @@ export interface ModelSwitchDecision {
     qualityGain: number; // percentage
     userSatisfactionGain: number; // percentage
   };
-  switchCost: {
-    timeMs: number;
-    memoryMB: number;
+  switchCost: { timeMs: number;, memoryMB: number;
     cpuUsage: number;
   };
 }
-export interface UserLearningProfile {
-  userId: string;
-  sessionId: string;
+export interface UserLearningProfile { userId: string;, sessionId: string;
   learningPhase: 'exploration' | 'specialization' | 'optimization' | 'mastery';
   preferredModels: Map<string, number>; // intent_category -> model_preference_score
   responseTimePreference: 'speed' | 'quality' | 'balanced';
   domainExpertise: Map<string, number>; // domain -> expertise_level (0-1)
-  queryPatterns: {
-    avgQueryLength: number;
-    commonIntents: string[];
+  queryPatterns: { avgQueryLength: number;, commonIntents: string[];
     peakUsageHours: number[];
     taskComplexityPreference: number; // 0-1
   };
   satisfactionHistory: SatisfactionEntry[]; // tightened type
   adaptationRate: number; // How quickly to adapt to new patterns
 }
-export interface FastUXOptimization {
-  prefetchedModels: string[];
-  precomputedSwitches: Map<string, string>; // query_pattern -> optimal_model
+export interface FastUXOptimization { prefetchedModels: string[];, precomputedSwitches: Map<string, string>; // query_pattern -> optimal_model
   contextualPredictions: ContextualPrediction[]; // tightened type
   didYouMeanCache: Map<string, string[]>; // query -> suggestions
   userIntentShortcuts: Map<string, string>; // shortcut -> full_query
 }
 // New: explicit typed entries for satisfaction history and contextual predictions
-type SatisfactionEntry = {
-  modelUsed: string;
-  query: string;
+type SatisfactionEntry = { modelUsed: string;, query: string;
   satisfactionScore: number; // 1-5
   timestamp: number;
 };
-type ContextualPrediction = {
-  nextLikelyIntent: string;
-  probability: number; // 0-1
+type ContextualPrediction = { nextLikelyIntent: string;, probability: number; // 0-1
   suggestedModel: string;
 };
 // New: typed shapes to avoid `any`
@@ -107,9 +83,7 @@ type UserContext = {
   // allow optional freeform text for context
   text?: string;
 };
-interface ModelSwitchResult {
-  success: boolean;
-  switchTime: number;
+interface ModelSwitchResult { success: boolean;, switchTime: number;
   error?: string;
 }
 interface UnifiedClientOrchestrator {
@@ -139,7 +113,7 @@ class IntelligentModelSwitcher {
     totalSwitches: 0,
     successfulSwitches: 0,
     avgSwitchTime: 0,
-    userSatisfactionImprovement: 0,
+    userSatisfactionImprovement: 0
   };
   constructor() {
     this.initializeIntelligentSwitcher();
@@ -150,9 +124,7 @@ class IntelligentModelSwitcher {
   async executeIntelligentSwitch(
     query: string,
     currentModel: string,
-    userContext: {
-      userId: string;
-      sessionId: string;
+    userContext: {, userId: string;, sessionId: string;
       previousQueries?: string[];
       userFeedback?: number; // 1-5 rating of last response
     }
@@ -172,8 +144,8 @@ class IntelligentModelSwitcher {
         userIntentPrediction: {
           intentCategory: 'chat',
           domainSpecificity: 0.5,
-          complexity: 0.5,
-        },
+          complexity: 0.5
+        }
       };
       // Step 3: Make switching decision using learned patterns
       const switchDecision = await this.makeModelSwitchDecision(
@@ -217,7 +189,7 @@ class IntelligentModelSwitcher {
         fastUXOptimizations,
         userLearningUpdates: learningUpdates,
         didYouMeanSuggestions: optimizationResult.didYouMeanSuggestions,
-        processingTime,
+        processingTime
       };
     } catch (error) {
       console.error('❌ Intelligent model switcher failed:', error);
@@ -231,12 +203,12 @@ class IntelligentModelSwitcher {
           confidence: 0,
           reason: 'error_fallback',
           estimatedImprovement: { speedGain: 0, qualityGain: 0, userSatisfactionGain: 0 },
-          switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 },
+          switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 }
         },
         fastUXOptimizations: [],
         userLearningUpdates: [],
         didYouMeanSuggestions: [],
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -259,7 +231,7 @@ class IntelligentModelSwitcher {
         confidence: 1.0,
         reason: 'already_optimal',
         estimatedImprovement: { speedGain: 0, qualityGain: 0, userSatisfactionGain: 0 },
-        switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 },
+        switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 }
       };
     }
     // Calculate expected improvements
@@ -293,7 +265,7 @@ class IntelligentModelSwitcher {
       confidence: optimizationResult.confidence,
       reason,
       estimatedImprovement: improvements,
-      switchCost,
+      switchCost
     };
   }
   /**
@@ -314,7 +286,7 @@ class IntelligentModelSwitcher {
         type: 'legal-analysis',
         priority: 'normal',
         userId: userContext?.userId,
-        sessionId: userContext?.sessionId,
+        sessionId: userContext?.sessionId
       });
       const switchTime = performance.now() - startTime;
       // Update performance monitoring
@@ -329,8 +301,7 @@ class IntelligentModelSwitcher {
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: message || 'Unknown error',
-      };
+        error: message || 'Unknown error` };
     }
   }
   /**
@@ -360,7 +331,7 @@ class IntelligentModelSwitcher {
         avgQueryLength: 50,
         commonIntents: ['chat'],
         peakUsageHours: [9, 10, 14, 15], // Business hours
-        taskComplexityPreference: 0.5,
+        taskComplexityPreference: 0.5
       },
       satisfactionHistory: [],
       adaptationRate: 0.1, // Moderate adaptation rate
@@ -372,7 +343,7 @@ class IntelligentModelSwitcher {
         id: `user-profile:${profileKey}`,
         type: 'context',
         priority: 'normal',
-        keys: [`user_profile:${profileKey}`],
+        keys: [`user_profile:${profileKey}`]
       });
       if (cachedProfile.success && cachedProfile.cacheResults.length > 0) {
         const savedProfile = cachedProfile.cacheResults[0].data;
@@ -467,7 +438,7 @@ class IntelligentModelSwitcher {
             taskComplexityPreference:
               typeof savedProfile.queryPatterns.taskComplexityPreference === 'number'
                 ? savedProfile.queryPatterns.taskComplexityPreference
-                : profile.queryPatterns.taskComplexityPreference,
+                : profile.queryPatterns.taskComplexityPreference
           };
         }
         // satisfactionHistory -> array
@@ -508,7 +479,7 @@ class IntelligentModelSwitcher {
       const safeIntent = userIntent || {
         intentCategory: 'chat',
         domainSpecificity: 0,
-        complexity: 0.5,
+        complexity: 0.5
       };
       // Use safeIntent everywhere below instead of userIntent
       // Update query patterns
@@ -546,7 +517,7 @@ class IntelligentModelSwitcher {
           modelUsed,
           query,
           satisfactionScore: userFeedback,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         // Keep only recent 50 satisfaction scores
         if (profile.satisfactionHistory.length > 50) {
@@ -607,7 +578,7 @@ class IntelligentModelSwitcher {
           precomputedSwitches: new Map(),
           contextualPredictions: [],
           didYouMeanCache: new Map(),
-          userIntentShortcuts: new Map(),
+          userIntentShortcuts: new Map()
         };
         this.fastUXOptimizations.set(profileKey, fastUX);
       }
@@ -633,7 +604,7 @@ class IntelligentModelSwitcher {
     recommendedModel: string,
     userProfile: UserLearningProfile,
     optimizationResult: OptimizationResult
-  ): { speedGain: number; qualityGain: number; userSatisfactionGain: number } {
+  ): { speedGain: number; qualityGain: number;, userSatisfactionGain: number } {
     // Simplified calculation - would use actual performance data
     const speedGain = currentModel === 'llama-rl' && recommendedModel === 'gemma270m' ? 25 : 10;
     const qualityGain = currentModel === 'gemma270m' && recommendedModel === 'llama-rl' ? 20 : 5;
@@ -643,20 +614,20 @@ class IntelligentModelSwitcher {
   private async calculateSwitchCost(
     fromModel: string,
     toModel: string
-  ): Promise<{ timeMs: number; memoryMB: number; cpuUsage: number }> {
+  ): Promise<{ timeMs: number; memoryMB: number;, cpuUsage: number }> {
     // Estimated switch costs - would measure actual performance
-    const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
+    const switchCosts: Record<string, { timeMs: number; memoryMB: number;, cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
       'llama-rl->gemma270m': { timeMs: 100, memoryMB: -1024, cpuUsage: 40 },
       'gemma270m->legal-bert': { timeMs: 50, memoryMB: -512, cpuUsage: 20 },
-      'legal-bert->gemma270m': { timeMs: 80, memoryMB: 512, cpuUsage: 30 },
+      'legal-bert->gemma270m': { timeMs: 80, memoryMB: 512, cpuUsage: 30 }
     };
     const key = `${fromModel}->${toModel}`;
     return switchCosts[key] || { timeMs: 150, memoryMB: 0, cpuUsage: 50 };
   }
   private calculateNetBenefit(
-    improvements: { speedGain: number; qualityGain: number; userSatisfactionGain: number },
-    switchCost: { timeMs: number; memoryMB: number; cpuUsage: number },
+    improvements: { speedGain: number; qualityGain: number;, userSatisfactionGain: number },
+    switchCost: { timeMs: number; memoryMB: number;, cpuUsage: number },
     userProfile: UserLearningProfile
   ): number {
     // Weight benefits based on user preferences
@@ -711,7 +682,7 @@ class IntelligentModelSwitcher {
     return scored.slice(0, 3).map(s => ({
       nextLikelyIntent: s.intent,
       probability: s.score,
-      suggestedModel: intentToModel(s.intent),
+      suggestedModel: intentToModel(s.intent)
     }));
   }
   private updateUserShortcuts(profile: UserLearningProfile, fastUX: FastUXOptimization): void {
@@ -738,7 +709,7 @@ class IntelligentModelSwitcher {
       reason,
       performance,
       userSatisfaction: 0.8, // Would track actual satisfaction
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     // Keep only recent 1000 switches
     if (this.switchHistory.length > 1000) {
@@ -772,7 +743,7 @@ class IntelligentModelSwitcher {
       avgSwitchTime: this.performanceMonitor.avgSwitchTime,
       userSatisfactionImprovement: this.performanceMonitor.userSatisfactionImprovement,
       activeUserProfiles: this.userProfiles.size,
-      learningPhaseDistribution: phaseDistribution,
+      learningPhaseDistribution: phaseDistribution
     };
   }
 }

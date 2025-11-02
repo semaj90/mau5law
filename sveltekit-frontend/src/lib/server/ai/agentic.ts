@@ -8,7 +8,7 @@ import type {
   WebSearchResult,
   LegalAnalysisResult,
   VectorSearchQuery,
-  VectorSearchResult,
+  VectorSearchResult
 } from '$lib/types/ai-workflows';
 // ============================================================================
 // Configuration
@@ -24,9 +24,7 @@ const AI_CONFIG: AIModelConfig = {
 // ============================================================================
 // Ollama Integration
 // ============================================================================
-interface OllamaRequest {
-  model: string;
-  prompt: string;
+interface OllamaRequest { model: string;, prompt: string;
   stream: boolean;
   options?: {
     temperature?: number;
@@ -34,9 +32,7 @@ interface OllamaRequest {
     top_k?: number;
   };
 }
-interface OllamaResponse {
-  model: string;
-  created_at: string;
+interface OllamaResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -55,14 +51,14 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
       options: {
         temperature: 0.7,
         top_p: 0.9,
-        top_k: 40,
-      },
+        top_k: 40
+      }
     };
     const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(request),
-      signal: AbortSignal.timeout(AI_CONFIG.timeout),
+      signal: AbortSignal.timeout(AI_CONFIG.timeout)
     });
     if (!response.ok) {
       throw new Error(`Ollama HTTP ${response.status}: ${response.statusText}`);
@@ -76,8 +72,8 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
         tokensUsed: (data.prompt_eval_count || 0) + (data.eval_count || 0),
         latencyMs: Date.now() - startTime,
         cached: false,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
   } catch (error) {
     console.error('❌ Ollama call failed:', error);
@@ -87,9 +83,7 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
 // ============================================================================
 // TensorRT-LLM Triton Integration
 // ============================================================================
-interface TritonRequest {
-  inputs: Array<{
-    name: string;
+interface TritonRequest { inputs: Array<{, name: string;
     shape: number[];
     datatype: string;
     data: string[];
@@ -98,9 +92,7 @@ interface TritonRequest {
     name: string;
   }>;
 }
-interface TritonResponse {
-  outputs: Array<{
-    name: string;
+interface TritonResponse { outputs: Array<{, name: string;
     datatype: string;
     shape: number[];
     data: string[];
@@ -115,22 +107,21 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
           name: 'INPUT_TEXT',
           shape: [1],
           datatype: 'BYTES',
-          data: [prompt],
+          data: [prompt]
         },
       ],
       outputs: [
         {
-          name: 'OUTPUT_TEXT',
-        },
-      ],
+          name: `OUTPUT_TEXT` },
+      ]
     };
     const response = await fetch(
       `${AI_CONFIG.tensorrtUrl}/v2/models/${AI_CONFIG.tensorrtModel}/infer`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(request),
-        signal: AbortSignal.timeout(AI_CONFIG.timeout),
+        signal: AbortSignal.timeout(AI_CONFIG.timeout)
       }
     );
     if (!response.ok) {
@@ -145,8 +136,8 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
       metadata: {
         latencyMs: Date.now() - startTime,
         cached: false,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
   } catch (error) {
     console.error('❌ TensorRT call failed:', error);
@@ -181,7 +172,7 @@ export async function runAIAgent(
       response.source = 'fallback';
     } catch (fallbackError) {
       throw new Error(
-        `Both AI models failed. Primary: ${primaryError}. Fallback: ${fallbackError}`
+        `Both AI models failed. Primary: ${primaryError}., Fallback: ${fallbackError}`
       );
     }
   }
@@ -203,7 +194,7 @@ async function executeToolCalls(aiResponse: string, originalPrompt: string): Pro
   const toolPatterns = {
     websearch: /\[TOOL:WEBSEARCH\s+"([^"]+)"\]/gi,
     legal_analysis: /\[TOOL:LEGAL_ANALYSIS\]/gi,
-    vector_search: /\[TOOL:VECTOR_SEARCH\s+"([^"]+)"\]/gi,
+    vector_search: /\[TOOL:VECTOR_SEARCH\s+"([^"]+)"\]/gi
   };
   // Web Search Tool
   const webSearchMatches = [...aiResponse.matchAll(toolPatterns.websearch)];
@@ -234,11 +225,10 @@ async function invokeWebSearch(query: string): Promise<ToolInvocation> {
   try {
     // Stub: Replace with real web search API (DuckDuckGo, SerpAPI, etc.)
     const results: WebSearchResult[] = [
-      {
-        title: `Search result for: ${query}`,
+      { title: `Search result, for: ${query}`,
         url: `https://example.com/search?q=${encodeURIComponent(query)}`,
-        snippet: `This is a stub search result for the query: ${query}`,
-        relevance: 0.85,
+        snippet: `This is a stub search result for the; query: ${query}`,
+        relevance: 0.85
       },
     ];
     return {
@@ -246,7 +236,7 @@ async function invokeWebSearch(query: string): Promise<ToolInvocation> {
       input: { query },
       output: { results },
       success: true,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   } catch (error) {
     return {
@@ -254,7 +244,7 @@ async function invokeWebSearch(query: string): Promise<ToolInvocation> {
       input: { query },
       output: { error: String(error) },
       success: false,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   }
 }
@@ -267,14 +257,14 @@ async function invokeLegalAnalysis(text: string): Promise<ToolInvocation> {
       keyPoints: ['Point 1', 'Point 2'],
       legalIssues: ['Issue 1', 'Issue 2'],
       citations: ['Citation 1', 'Citation 2'],
-      confidence: 0.75,
+      confidence: 0.75
     };
     return {
       tool: 'legal_analysis',
       input: { text },
       output: analysis,
       success: true,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   } catch (error) {
     return {
@@ -282,7 +272,7 @@ async function invokeLegalAnalysis(text: string): Promise<ToolInvocation> {
       input: { text },
       output: { error: String(error) },
       success: false,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   }
 }
@@ -296,7 +286,7 @@ async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
       input: { query },
       output: { results },
       success: true,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   } catch (error) {
     return {
@@ -304,7 +294,7 @@ async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
       input: { query },
       output: { error: String(error) },
       success: false,
-      latencyMs: Date.now() - startTime,
+      latencyMs: Date.now() - startTime
     };
   }
 }
@@ -314,12 +304,12 @@ async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
 export async function* streamAIResponse(prompt: string): AsyncGenerator<string> {
   const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({
-      model: AI_CONFIG.ollamaModel,
+     , model: AI_CONFIG.ollamaModel,
       prompt,
-      stream: true,
-    }),
+      stream: true
+    })
   });
   if (!response.body) {
     throw new Error('No response body for streaming');

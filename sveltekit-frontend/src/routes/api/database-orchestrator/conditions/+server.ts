@@ -12,10 +12,9 @@ type Condition = {
   [key: string]: any;
 };
 
-declare const databaseOrchestrator: {
-  getStatus: () => { isRunning: boolean };
+declare const databaseOrchestrator: { getStatus: () => {, isRunning: boolean };
   conditions?: Map<string, Condition>;
-  addCondition: (condition: Condition & { id: string }) => void;
+  addCondition: (condition: Condition & {, id: string }) => void;
   removeCondition: (id: string) => void;
 };
 // --- end additions ---
@@ -32,7 +31,7 @@ export const GET: RequestHandler = async () => {
     const map = databaseOrchestrator.conditions ?? new Map<string, Condition>();
     const conditions: Array<Condition & { id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
       id,
-      ...(condition as Condition),
+      ...(condition as Condition)
     }));
 
     return json({
@@ -41,7 +40,7 @@ export const GET: RequestHandler = async () => {
       active_count: conditions.filter(c => Boolean(c.isActive)).length,
       total_count: conditions.length,
       orchestrator_running: status.isRunning,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -49,7 +48,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -69,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing or invalid required fields: id (string), type (string), action (string)',
+          error: 'Missing or invalid required; fields: id (string), type (string), action (string)'
         },
         { status: 400 }
       );
@@ -81,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       condition: (conditionData.condition as Record<string, unknown>) ?? {},
       action: String(conditionData.action),
       isActive: typeof conditionData.isActive === 'boolean' ? conditionData.isActive : true,
-      metadata: (conditionData.metadata as Record<string, unknown>) ?? {},
+      metadata: (conditionData.metadata as Record<string, unknown>) ?? {}
     };
 
     databaseOrchestrator.addCondition(condition);
@@ -90,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Condition added successfully',
       condition,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -98,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -113,7 +112,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       return json(
         {
           success: false,
-          error: 'Condition ID is required',
+          error: 'Condition ID is required'
         },
         { status: 400 }
       );
@@ -125,7 +124,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       success: true,
       message: 'Condition removed successfully',
       conditionId: id,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -133,7 +132,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

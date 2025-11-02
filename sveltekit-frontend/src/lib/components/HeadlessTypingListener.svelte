@@ -45,7 +45,7 @@ import type { User } from '$lib/types';
   let currentContext: TypingContext = $state(undefined as any);
   let isTyping = $state<boolean>(false);
   let lastTypingTime = $state<number>(0);
-  let typingTimeout: number | null = $state(null);
+  let typingTimeout: number | null = null;
   // Reactive derived values
   const userEngagement = $derived(currentContext?.analytics?.userEngagement || 'medium');
   const typingSpeed = $derived(currentContext?.userBehavior?.avgTypingSpeed || 0);

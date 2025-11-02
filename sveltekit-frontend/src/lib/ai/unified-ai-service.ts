@@ -19,7 +19,7 @@ type WASMLLMService = {
 
 type LangChainOllamaService = {
   testConnection(): Promise<boolean>;
-  queryDocuments(query: string, opts: { maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
+  queryDocuments(query: string; opts: {, maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
   processDocument(
     content: string,
     meta?: { documentId?: string; title?: string; type?: string }
@@ -31,8 +31,7 @@ type LangChainOllamaService = {
 
 type NESGPUIntegration = {
   searchLegalDocumentsGPU(
-    query: string,
-    opts: { limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
+    query: string; opts: {, limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
   ): Promise<LegalDocument[]>;
   ingestLegalDocumentsBinary(docs: LegalDocument[]): Promise<void>;
   getPerformanceStats?(): Promise<unknown>;
@@ -41,7 +40,7 @@ type NESGPUIntegration = {
 };
 
 type VectorOps = {
-  searchDocuments(embedding: Float32Array, threshold: number): Promise<any>;
+  searchDocuments(embedding: Float32Array; threshold: number): Promise<any>;
   // add additional methods if you rely on them elsewhere
 };
 
@@ -57,9 +56,7 @@ type DocLike = {
 };
 
 // NEW: typed result for ingestDocuments to avoid Promise<any>
-export interface IngestResult {
-  success: boolean;
-  processedCount: number;
+export interface IngestResult { success: boolean;, processedCount: number;
   errors: number;
   processingTime: number;
   error?: string;
@@ -158,15 +155,11 @@ export interface UnifiedAIConfig {
   // LangChain Configuration
   langChainConfig?: Partial<LangChainConfig>;
   // GPU Configuration
-  gpuConfig?: {
-    useNESCache: boolean;
-    enableBinaryPipeline: boolean;
+  gpuConfig?: { useNESCache: boolean;, enableBinaryPipeline: boolean;
     batchSize: number;
   };
   // Database Configuration
-  dbConfig?: {
-    userId: string;
-    enableVectorSearch: boolean;
+  dbConfig?: { userId: string;, enableVectorSearch: boolean;
     cacheResults: boolean;
   };
 }
@@ -178,9 +171,7 @@ export interface UnifiedQueryOptions {
   threshold?: number;
   includeMetadata?: boolean;
 }
-export interface UnifiedResponse {
-  success: boolean;
-  response: string;
+export interface UnifiedResponse { success: boolean;, response: string;
   mode: string;
   processingTime: number;
   sources?: Array<any>;
@@ -204,7 +195,7 @@ export class UnifiedAIService {
       wasmConfig: {
         modelPath: 'gemma3-legal',
         maxTokens: 2048,
-        temperature: 0.7,
+        temperature: 0.7
       },
       langChainConfig: {
         model: 'gemma3-legal:latest',
@@ -212,19 +203,19 @@ export class UnifiedAIService {
         temperature: 0.3,
         chunkSize: 1000,
         chunkOverlap: 200,
-        useCuda: true,
+        useCuda: true
       },
       gpuConfig: {
         useNESCache: true,
         enableBinaryPipeline: true,
-        batchSize: 20,
+        batchSize: 20
       },
       dbConfig: {
         userId: 'system',
         enableVectorSearch: true,
-        cacheResults: true,
+        cacheResults: true
       },
-      ...config,
+      ...config
     };
   }
 
@@ -316,8 +307,8 @@ export class UnifiedAIService {
         metadata: {
           model: cached.metadata?.model || 'cached',
           ...cached.metadata,
-          cacheHit: true,
-        },
+          cacheHit: true
+        }
       };
     }
     try {
@@ -350,7 +341,7 @@ export class UnifiedAIService {
         response: '',
         mode: 'error',
         processingTime: this.nowMs() - startTime,
-        error: this.getErrorMessage(error),
+        error: this.getErrorMessage(error)
       };
     }
   }
@@ -379,8 +370,8 @@ export class UnifiedAIService {
         metadata: {
           model: wasmResponse.metadata?.model || 'wasm-model',
           tokenCount: wasmResponse.tokens,
-          confidence: wasmResponse.confidence,
-        },
+          confidence: wasmResponse.confidence
+        }
       };
     } catch (error: any) {
       throw new Error(`WASM query failed: ${this.getErrorMessage(error)}`);
@@ -400,7 +391,7 @@ export class UnifiedAIService {
     try {
       const langChainResponse: QueryResult = await langChainOllamaService.queryDocuments(_options.query, {
         maxResults: _options.maxResults || 10,
-        relevanceThreshold: _options.threshold ?? 0.7,
+        relevanceThreshold: _options.threshold ?? 0.7
       });
       return {
         success: true,
@@ -411,8 +402,8 @@ export class UnifiedAIService {
         metadata: {
           // replaced inline fallback with a robust extractor to guarantee a string model name
           model: this.getLangChainModelName(),
-          confidence: langChainResponse.confidence,
-        },
+          confidence: langChainResponse.confidence
+        }
       };
     } catch (error: any) {
       throw new Error(`LangChain query failed: ${this.getErrorMessage(error)}`);
@@ -431,7 +422,7 @@ export class UnifiedAIService {
         limit: _options.maxResults || 20,
         threshold: _options.threshold ?? 0.7,
         useNESCache: this.config.gpuConfig?.useNESCache ?? true,
-        enableGPUAcceleration: this.config.enableGPUAcceleration ?? true,
+        enableGPUAcceleration: this.config.enableGPUAcceleration ?? true
       });
       // updated: removed unused query parameter
       const textResponse = this.formatGPUResults(gpuResults);
@@ -445,13 +436,13 @@ export class UnifiedAIService {
           return {
             content: d.content ?? d.title,
             metadata: d.metadata ?? {},
-            score: d.score ?? 0.8,
+            score: d.score ?? 0.8
           };
         }),
         metadata: {
           model: 'gpu-accelerated',
-          confidence: 0.8,
-        },
+          confidence: 0.8
+        }
       };
     } catch (error: any) {
       throw new Error(`GPU query failed: ${this.getErrorMessage(error)}`);
@@ -528,7 +519,7 @@ export class UnifiedAIService {
             await langChainOllamaService.processDocument(content, {
               documentId: d.id,
               title: d.title,
-              type: d.type,
+              type: d.type
             });
             if (d.id) processedIds.add(d.id);
           } catch (lcErr) {
@@ -555,7 +546,7 @@ export class UnifiedAIService {
         success: errors === 0,
         processedCount: processedIds.size,
         errors,
-        processingTime,
+        processingTime
       };
     } catch (error: any) {
       console.error('Ingest documents failed:', error);
@@ -565,7 +556,7 @@ export class UnifiedAIService {
         errors: errors + 1,
         processingTime: this.nowMs() - startTime,
         // use the helper to safely extract message from unknown
-        error: this.getErrorMessage(error),
+        error: this.getErrorMessage(error)
       };
     }
   }
@@ -625,8 +616,8 @@ export class UnifiedAIService {
       sources: allSources,
       metadata: {
         model: best.metadata?.model ?? 'hybrid',
-        confidence: best.metadata?.confidence ?? 0,
-      },
+        confidence: best.metadata?.confidence ?? 0
+      }
     };
   }
 
@@ -639,7 +630,7 @@ export class UnifiedAIService {
       mode: _options.mode ?? null,
       maxResults: _options.maxResults ?? null,
       threshold: _options.threshold ?? null,
-      includeMetadata: _options.includeMetadata ?? false,
+      includeMetadata: _options.includeMetadata ?? false
     });
   }
 
@@ -655,7 +646,7 @@ export class UnifiedAIService {
         const dd = d as DocLike;
         const title = dd.title ?? '(untitled)';
         const snippet = (dd.content ?? dd.text ?? '').toString().slice(0, 240).replace(/\s+/g, ' ');
-        return `${title}: ${snippet ? snippet : ''}`.trim();
+        return `${title}: ${snippet ? snippet : `` }`.trim();
       })
       .join('\n\n');
   }
@@ -669,7 +660,7 @@ export class UnifiedAIService {
   private getLangChainModelName(): string {
     const m = this.config.langChainConfig?.model;
     if (typeof m === 'string') return m;
-    // common shapes: { name: 'model-name' } or { id: 'model-id' }
+    // common shapes: { name: 'model-name' } or { id: `model-id` }
     if (m && typeof m === 'object') {
       const obj = m as Record<string, unknown>;
       const name = obj['name'];

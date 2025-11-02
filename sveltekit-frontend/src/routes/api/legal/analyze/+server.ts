@@ -19,13 +19,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       response: response.text,
       model: 'gemma3',
       responseTime,
-      metadata: { documentId },
+      metadata: { documentId }
     });
     return json({
       success: true,
       response: response.text,
       responseTime,
-      model: 'gemma3',
+      model: 'gemma3'
     });
   } catch (error) {
     console.error('Legal analysis API error:', error);
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: false,
       error: 'failure default to mock',
       response:
-        'Mock legal analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
+        'Mock legal; analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
       responseTime: 1500,
       model: 'gemma3-mock',
       confidence: 0.75,
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Gather timeline documentation',
         'Interview potential witnesses',
         'Research similar case precedents',
-      ],
+      ]
     };
     return json(mockResponse, { status: 500 });
   }

@@ -2,17 +2,16 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator';
 import { dev } from '$app/environment';
-type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
+type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number;, errors: string[] };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
     const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body as { databases?: string[] };
-    const syncResults: Record<'postgresql' | 'qdrant' | 'neo4j' | 'indexeddb', SyncResult> = {
-      postgresql: { status: 'pending', entries: 0, errors: [] },
+    const syncResults: Record<'postgresql' | 'qdrant' | 'neo4j' | 'indexeddb', SyncResult> = { postgresql: {, status: 'pending', entries: 0, errors: [] },
       qdrant: { status: 'pending', entries: 0, errors: [] },
       neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] },
+      indexeddb: { status: 'pending', entries: 0, errors: [] }
     };
     for (const db of databases) {
       try {
@@ -47,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to synchronize databases',
-        details: dev ? formatError(error) : undefined,
+        details: dev ? formatError(error) : undefined
       },
       { status: 500 }
     );

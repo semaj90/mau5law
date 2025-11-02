@@ -44,7 +44,7 @@ function buildEnhancedAnalysisPrompt(
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.
 Document Text:
 ${documentText}
-${contextualInfo ? `Context: ${contextualInfo}` : ''}
+${contextualInfo ? `Context: ${contextualInfo}` : '' }
 Provide a structured analysis focusing on:
 1. Key findings
 2. Legal relevance
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const resp = await fetch(LANGEXTRACT_URL, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text })
       });
       if (resp.ok) {
         const data = await resp.json();
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       keyFindings: [],
       legalRelevance: '',
       complianceIssues: [],
-      recommendations: [],
+      recommendations: []
     };
 
     return json({ ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });

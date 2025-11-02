@@ -47,31 +47,23 @@ declare global {
     __GPU_MANAGER__?: import('$lib/gpu/global-gpu-manager').GlobalGPUManager;
     __TELEMETRY__?: import('$lib/telemetry/event-bus').TelemetryEventBus;
     // Development Utilities
-    __DEV_TOOLS__?: {
-      showGPUStats: () => void;
-      exportTelemetry: () => Promise<Blob>;
+    __DEV_TOOLS__?: { showGPUStats: () => void;, exportTelemetry: () => Promise<Blob>;
       resetMemoryBanks: () => void;
     };
     // Performance Monitoring
     __PERFORMANCE_OBSERVER__?: PerformanceObserver;
-    __MEMORY_TRACKER__?: {
-      l1GpuUsage: number;
-      l2RamUsage: number;
+    __MEMORY_TRACKER__?: { l1GpuUsage: number;, l2RamUsage: number;
       l3RedisUsage: number;
     };
   }
   // Nintendo Memory Architecture Types
   namespace Nintendo {
-    interface MemoryBank {
-      id: number;
-      size: number;
+    interface MemoryBank { id: number;, size: number;
       used: number;
       available: number;
       type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';
     }
-    interface CHRROMBank {
-      bankId: number;
-      address: number;
+    interface CHRROMBank { bankId: number;, address: number;
       size: 0x1000; // 4KB per bank,
       patternData: Uint8Array;
       isDirty: boolean;
@@ -79,26 +71,18 @@ declare global {
   }
   // Enhanced Telemetry Events
   namespace Telemetry {
-    interface BaseEvent {
-      timestamp: number;
-      sessionId: string;
+    interface BaseEvent { timestamp: number;, sessionId: string;
       userId?: string;
     }
-    interface GPUEvent extends BaseEvent {
-      type: 'gpu_usage' | 'context_switch' | 'memory_allocation';
-      gpuUtilization: number;
+    interface GPUEvent extends BaseEvent { type: 'gpu_usage' | 'context_switch' | 'memory_allocation';, gpuUtilization: number;
       memoryUsed: number;
       temperature?: number;
     }
-    interface PerformanceEvent extends BaseEvent {
-      type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';
-      duration: number;
+    interface PerformanceEvent extends BaseEvent { type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';, duration: number;
       operation: string;
       success: boolean;
     }
-    interface ErrorEvent extends BaseEvent {
-      type: 'error' | 'warning' | 'critical';
-      message: string;
+    interface ErrorEvent extends BaseEvent { type: 'error' | 'warning' | 'critical';, message: string;
       stack?: string;
       component: string;
     }

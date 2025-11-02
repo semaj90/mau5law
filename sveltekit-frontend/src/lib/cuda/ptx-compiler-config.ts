@@ -3,9 +3,7 @@ import type { Document } from '$lib/types';
  * PTX Compiler Configuration for Ampere+ Architectures
  * Optimized for RTX 30/40 series and modern NVIDIA GPUs
  */
-export interface PTXCompilerOptions {
-  architecture: 'sm_86' | 'sm_89' | 'sm_90' | 'compute_86' | 'compute_89' | 'compute_90';
-  optimizationLevel: 0 | 1 | 2 | 3;
+export interface PTXCompilerOptions { architecture: 'sm_86' | 'sm_89' | 'sm_90' | 'compute_86' | 'compute_89' | 'compute_90';, optimizationLevel: 0 | 1 | 2 | 3;
   enableTensorCores?: boolean;
   maxRegisterCount?: number;
   sharedMemorySize?: number;
@@ -13,18 +11,14 @@ export interface PTXCompilerOptions {
   enableDebugging?: boolean;
   generateLineInfo?: boolean;
 }
-export interface CUDABuildConfig {
-  ptxOptions: PTXCompilerOptions;
-  nvccFlags: string[];
+export interface CUDABuildConfig { ptxOptions: PTXCompilerOptions;, nvccFlags: string[];
   includePaths: string[];
   libraryPaths: string[];
   libraries: string[];
   outputFormat: 'ptx' | 'cubin' | 'fatbin';
 }
 // Architecture-specific configurations
-export const AMPERE_ARCHITECTURES = {
-  RTX_30_SERIES: {
-    architecture: 'sm_86' as const,
+export const AMPERE_ARCHITECTURES = { RTX_30_SERIES: {, architecture: 'sm_86' as const,
     tensorCores: true,
     maxThreadsPerBlock: 1024,
     sharedMemoryPerBlock: 49152, // 48KB
@@ -58,15 +52,13 @@ export const AMPERE_ARCHITECTURES = {
     globalMemorySize: 80 * 1024 * 1024 * 1024, // 80GB
     memoryBusWidth: 5120,
     memoryClock: 3352, // 3.35 Gbps HBM3
-  },
+  }
 };
 export class PTXCompiler {
   private config: CUDABuildConfig;
   private wasmModule: WebAssembly.Module | null = null;
   constructor(options: Partial<CUDABuildConfig> = {}) {
-    this.config = {
-      ptxOptions: {
-        architecture: 'sm_86',
+    this.config = { ptxOptions: {, architecture: 'sm_86',
         optimizationLevel: 3,
         enableTensorCores: true,
         maxRegisterCount: 255,
@@ -74,7 +66,7 @@ export class PTXCompiler {
         enableFastMath: true,
         enableDebugging: false,
         generateLineInfo: false,
-        ...options.ptxOptions,
+        ...options.ptxOptions
       },
       nvccFlags: [
         '-O3',
@@ -86,7 +78,7 @@ export class PTXCompiler {
       includePaths: ['/usr/local/cuda/include', './src/lib/cuda/include', ...(options.includePaths || [])],
       libraryPaths: ['/usr/local/cuda/lib64', './build/cuda', ...(options.libraryPaths || [])],
       libraries: ['cudart', 'cublas', 'curand', 'cusparse', ...(options.libraries || [])],
-      outputFormat: options.outputFormat || 'ptx',
+      outputFormat: options.outputFormat || 'ptx'
     };
   }
   /**
@@ -413,8 +405,7 @@ emcc -O3 -s WASM=1 \\
     -s MODULARIZE=1 -s EXPORT_NAME=CUDAModule \\
     -o static/wasm/cuda-rag-kernels.js \\
     src/lib/wasm/cuda-rag-kernels.c
-echo: "Build complete!"
-echo: "PTX: cuda_rag_kernels.${this.config.outputFormat}"
+echo: "Build complete!"; echo: "PTX: cuda_rag_kernels.${this.config.outputFormat}"
 echo: "WASM: static/wasm/cuda-rag-kernels.js"
 `;
   }
@@ -432,7 +423,7 @@ echo: "WASM: static/wasm/cuda-rag-kernels.js"
       sharedMemorySize: 49152,
       enableFastMath: true,
       enableDebugging: false,
-      generateLineInfo: false,
+      generateLineInfo: false
     };
   }
   /**
@@ -466,15 +457,14 @@ export const productionBuildConfig: CUDABuildConfig = {
   includePaths: ['/usr/local/cuda/include', './src/lib/cuda/include'],
   libraryPaths: ['/usr/local/cuda/lib64'],
   libraries: ['cudart', 'cublas', 'curand', 'cusparse'],
-  outputFormat: 'ptx',
-};
+  outputFormat: 'ptx` };
 export const debugBuildConfig: CUDABuildConfig = {
   ...productionBuildConfig,
   ptxOptions: {
     ...defaultPTXConfig,
     optimizationLevel: 0,
     enableDebugging: true,
-    generateLineInfo: true,
+    generateLineInfo: true
   },
-  nvccFlags: ['-G', '-g', '--ptxas-options=-v', '-lineinfo'],
+  nvccFlags: ['-G', '-g', '--ptxas-options=-v', '-lineinfo']
 };

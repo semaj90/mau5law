@@ -15,7 +15,7 @@ const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
   secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  useSSL: process.env.MINIO_USE_SSL === 'true',
+  useSSL: process.env.MINIO_USE_SSL === 'true'
 });
 
 const POI_BUCKET = 'poi-images';
@@ -31,10 +31,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -46,10 +46,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -65,10 +65,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'No file provided',
+           , message: 'No file provided',
             code: 'NO_FILE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -79,10 +79,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'POI ID required',
+           , message: 'POI ID required',
             code: 'NO_POI_ID',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -94,10 +94,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid file type. Only JPEG and PNG allowed.',
+           , message: 'Invalid file type. Only JPEG and PNG allowed.',
             code: 'INVALID_TYPE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -109,10 +109,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'File too large. Maximum 5MB allowed.',
+           , message: 'File too large. Maximum 5MB allowed.',
             code: 'FILE_TOO_LARGE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async (event) => {
     //     {
     //       success: false,
     //       error: {
-    //         message: 'POI not found',
+    //        , message: 'POI not found',
     //         code: 'POI_NOT_FOUND',
     //         status: 404,
     //       },
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async (event) => {
     await minioClient.putObject(POI_BUCKET, objectPath, bufferData, bufferData.length, {
       'Content-Type': file.type,
       'Cache-Control': 'public, max-age=2592000', // Cache for 30 days: 'x-amz-meta-uploaded-by': user.id,
-      'x-amz-meta-uploaded-at': new Date().toISOString(),
+      'x-amz-meta-uploaded-at': new Date().toISOString()
     });
 
     // Generate POI image URL
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async (event) => {
       message: 'POI image uploaded successfully',
       imageUrl,
       filename,
-      poiId,
+      poiId
     });
   } catch (error) {
     console.error('Error uploading POI image:', error);
@@ -180,10 +180,10 @@ export const POST: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to upload image',
+         , message: 'Failed to upload image',
           code: 'UPLOAD_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );
@@ -202,10 +202,10 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'POI ID required',
+           , message: 'POI ID required',
             code: 'NO_POI_ID',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -234,8 +234,7 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as any, {
       headers: {
         'Content-Type': latestImage.name.endsWith('.jpg') ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=2592000',
-      },
+        'Cache-Control': 'public, max-age=2592000` }
     });
   } catch (error) {
     console.error('Error retrieving POI image:', error);

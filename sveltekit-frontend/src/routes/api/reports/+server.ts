@@ -27,13 +27,10 @@ type ReportMetadata = {
 };
 
 // Define the structure of the GET response
-interface GetReportsResponse {
-  reports: (ReportUnion & { canvasState: CanvasState | null })[];
+interface GetReportsResponse { reports: (ReportUnion & {, canvasState: CanvasState | null })[];
   totalCount: number;
   hasMore: boolean;
-  pagination: {
-    limit: number;
-    offset: number;
+  pagination: { limit: number;, offset: number;
     total: number;
   };
 }
@@ -60,12 +57,12 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     try {
       query = db.select().from(aiReports);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       useAiReports = false;
       console.warn('aiReports table not found, using reports table');
       query = db.select().from(reports);
     }
-    const conditions: SQL[] = []; // Changed: 'any[]' to: 'SQL[]'
+    const conditions: SQL[] = []; // Changed: 'any[]'; to: 'SQL[]'
     // Add filters (use correct schema)
     if (caseId) {
       conditions.push(eq(useAiReports ? aiReports.caseId : reports.caseId, caseId));
@@ -114,14 +111,14 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     query = query.limit(limit).offset(offset);
     const reportResults: ReportUnion[] = await query; // Explicitly type reportResults
     // Get total count for pagination
-    const baseCountQuery = db.select({ count: sql<number>`count(*)` }).from(useAiReports ? aiReports : reports);
+    const baseCountQuery = db.select({ count: sql<number>`count(*)' }).from(useAiReports ? aiReports : reports);
     const finalCountQuery = conditions.length > 0 ? baseCountQuery.where(and(...conditions)) : baseCountQuery;
     const totalCountResult = await finalCountQuery;
     const totalCount = totalCountResult[0]?.count || 0;
     // Get associated canvas states for each report
     const enrichedReports = await Promise.all(
       reportResults.map(async (report: ReportUnion) => {
-        // Changed: 'any' to: 'ReportUnion'
+        // Changed: 'any'; to: 'ReportUnion'
         try {
           const canvasState = await db
             .select()
@@ -130,14 +127,14 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
             .limit(1);
           return {
             ...report,
-            canvasState: canvasState[0] || null,
+            canvasState: canvasState[0] || null
           };
         } catch (error: any) {
-          // Changed: 'any' to: 'unknown'
+          // Changed: 'any'; to: 'unknown'
           console.warn('Error fetching canvas state:', error);
           return {
             ...report,
-            canvasState: null,
+            canvasState: null
           };
         }
       })
@@ -149,21 +146,21 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       pagination: {
         limit,
         offset,
-        total: totalCount,
+        total: totalCount
       },
       // TODO: In future, unify aiReports and reports schemas for easier querying
       // TODO: Add GraphQL endpoint for flexible querying
       // TODO: Add service worker for predictive prefetching and caching
-      // TODO: Add advanced analytics and event streaming
+      //, TODO: Add advanced analytics and event streaming
     } satisfies GetReportsResponse); // Use: 'satisfies' to ensure type compatibility
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Error fetching reports:', error);
     return json({ error: 'Failed to fetch reports' }, { status: 500 });
   }
 }
 export async function POST({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any' to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -198,20 +195,20 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
         sections: data.sections || [],
         aiSummary: data.aiSummary || null,
         aiTags: data.aiTags || [],
-        templateId: data.templateId || null,
+        templateId: data.templateId || null
       } as ReportMetadata, // Explicitly cast to ReportMetadata
       createdBy: locals.user.id, // Replaced getUserId(locals)
     };
     const [newReport] = await db.insert(reports).values(reportData).returning();
     return json(newReport satisfies Report, { status: 201 }); // Use: 'satisfies' for type checking
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Error creating report:', error);
     return json({ error: 'Failed to create report' }, { status: 500 });
   }
 }
 export async function PUT({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any' to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -249,7 +246,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       }
     }
     const updateDataObj: Partial<Report> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Only update provided fields
     if (data.title !== undefined) updateDataObj.title = data.title;
@@ -262,19 +259,19 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
         ...currentMetadata,
         ...(data.metadata || {}),
         wordCount,
-        estimatedReadTime: Math.ceil(wordCount / 200),
+        estimatedReadTime: Math.ceil(wordCount / 200)
       } as ReportMetadata; // Explicitly cast to ReportMetadata
     }
     const [updatedReport] = await db.update(reports).set(updateDataObj).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Error updating report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });
   }
 }
 export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any' to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -295,14 +292,14 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
     return json({ success: true, deletedReport: deletedReport satisfies Report }); // Use: 'satisfies' for type checking
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Error deleting report:', error);
     return json({ error: 'Failed to delete report' }, { status: 500 });
   }
 }
 // PATCH endpoint for partial updates
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<Response> {
-  // Changed: 'any' to: 'Response'
+  // Changed: 'any'; to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -321,7 +318,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       return json({ error: 'Report not found' }, { status: 404 });
     }
     const updateData: Partial<Report> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Handle specific patch operations
     if (data.operation === 'publish') {
@@ -350,8 +347,8 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('Error patching report:', error);
-    return json({ error: 'Failed to update report' }, { status: 500 });
+    return json({ error: `Failed to update report` }, { status: 500 });
   }
 }

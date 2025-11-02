@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -31,10 +31,7 @@ interface EmbeddingResult {
   // Add any other properties that might be present in the embedding result
 }
 
-export interface ProcessingPipeline {
-  evidenceId: string;
-  stages: {
-    embedding: { status: string; result?: EmbeddingResult; error?: string }; // Changed type here
+export interface ProcessingPipeline { evidenceId: string;, stages: { embedding: {, status: string; result?: EmbeddingResult; error?: string }; // Changed type here
     tagging: { status: string; result?: any; error?: string };
     analysis: { status: string; result?: any; error?: string };
     vectorSearch: { status: string; result?: any; error?: string };
@@ -55,15 +52,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     // Initialize processing pipeline
     const pipeline: ProcessingPipeline = {
       evidenceId: evidence.id,
-      stages: {
-        embedding: { status: 'pending' },
+      stages: { embedding: {, status: 'pending' },
         tagging: { status: 'pending' },
         analysis: { status: 'pending' },
         vectorSearch: { status: 'pending' },
-        graphDiscovery: { status: 'pending' },
+        graphDiscovery: { status: 'pending' }
       },
       overallStatus: 'processing',
-      startTime: new Date(),
+      startTime: new Date()
     };
     // Stage 1: Generate Embeddings
     try {
@@ -72,9 +68,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content: evidence.content,
-          model: options.embeddingModel || 'nomic-embed-text',
-        }),
+         , content: evidence.content,
+          model: options.embeddingModel || 'nomic-embed-text'
+        })
       });
       const embeddingResult = (await embeddingResponse.json()) as EmbeddingResult; // Added type assertion
       pipeline.stages.embedding.status = 'complete';
@@ -94,8 +90,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             evidence,
             context: 'legal_investigation',
             enhance_tags: true,
-            model: options.taggingModel || 'gemma3-legal',
-          }),
+            model: options.taggingModel || 'gemma3-legal'
+          })
         });
         const taggingResult = await taggingResponse.json();
         pipeline.stages.tagging.status = 'complete';
@@ -118,8 +114,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             evidence,
             analysisType: 'comprehensive',
             model: options.analysisModel || 'gemma3-legal',
-            includeRecommendations: true,
-          }),
+            includeRecommendations: true
+          })
         });
         const analysisResult = await analysisResponse.json();
         pipeline.stages.analysis.status = 'complete';
@@ -144,11 +140,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            vector: embeddings,
+           , vector: embeddings,
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
             excludeIds: [evidence.id], // Don't match with itself
-          }),
+          })
         });
         const searchResult = await searchResponse.json();
         vectorMatches = searchResult.matches || [];
@@ -167,11 +163,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content: evidence.content,
+         , content: evidence.content,
           tags: taggingResult?.tags || [],
           depth: options.graphDepth || 2,
-          relationshipTypes: ['references', 'involves', 'located_at', 'connected_to', 'similar_to'],
-        }),
+          relationshipTypes: ['references', 'involves', 'located_at', 'connected_to', 'similar_to']
+        })
       });
       const graphResult = await graphResponse.json();
       relationships = graphResult.relationships || [];
@@ -198,20 +194,20 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         analysis: analysisResult,
         vectorMatches,
         relationships,
-        recommendations: analysisResult?.recommendations || analysisResult?.suggestedActions || [],
+        recommendations: analysisResult?.recommendations || analysisResult?.suggestedActions || []
       },
       performance: {
-        processingTime: pipeline.processingTime,
+       , processingTime: pipeline.processingTime,
         totalStages: Object.keys(pipeline.stages).length,
-        successfulStages: Object.values(pipeline.stages).filter(s => s.status === 'complete').length,
-      },
+        successfulStages: Object.values(pipeline.stages).filter(s => s.status === 'complete').length
+      }
     });
   } catch (error: any) {
     console.error('Evidence processing failed:', error);
     return json(
       {
         error: 'Processing failed',
-        details: (error as Error).message,
+        details: (error as Error).message
       },
       { status: 500 } // Corrected json response syntax
     );

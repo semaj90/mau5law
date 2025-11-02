@@ -24,9 +24,7 @@ export interface AsyncStateContext {
   conflictResolution: ConflictResolution;
   distributedLocks: Map<string, DistributedLock>;
 }
-export interface JobState {
-  id: string;
-  type: JobType;
+export interface JobState { id: string;, type: JobType;
   status: JobStatus;
   progress: number;
   result?: any;
@@ -64,9 +62,7 @@ export interface JobMetadata {
   tags: string[];
   userContext?: any;
 }
-export interface JobTimelineEntry {
-  timestamp: number;
-  event: JobTimelineEvent;
+export interface JobTimelineEntry { timestamp: number;, event: JobTimelineEvent;
   data?: any;
   source: 'client' | 'worker' | 'orchestrator' | 'queue';
 }
@@ -85,22 +81,16 @@ export type JobTimelineEvent =
   | 'state_conflict'
   | 'state_resolved';
 }
-export interface ResourceUsage {
-  cpu: number;
-  memory: number;
+export interface ResourceUsage { cpu: number;, memory: number;
   gpu?: number;
   network: number;
   storage: number;
   peakUsage: ResourcePeak;
 }
-export interface ResourcePeak {
-  cpu: number;
-  memory: number;
+export interface ResourcePeak { cpu: number;, memory: number;
   timestamp: number;
 }
-export interface QueueState {
-  name: string;
-  depth: number;
+export interface QueueState { name: string;, depth: number;
   consumers: number;
   producers: number;
   throughput: ThroughputMetrics;
@@ -108,21 +98,17 @@ export interface QueueState {
   configuration: QueueConfiguration;
   lastUpdated: number;
 }
-export interface ThroughputMetrics {
-  messagesPerSecond: number;
-  avgProcessingTime: number;
+export interface ThroughputMetrics { messagesPerSecond: number;, avgProcessingTime: number;
   peakThroughput: number;
   lowThroughput: number;
   trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';
 }
-export interface QueueHealth {
-  status: 'healthy' | 'warning' | 'critical' | 'unknown';
-  score: number; // 0-1
+export interface QueueHealth { status: 'healthy' | 'warning' | 'critical' | 'unknown';, score: number; // 0-1
   issues: QueueIssue[];
   lastHealthCheck: number;
 }
 export interface QueueIssue {
-  type:
+  type:;
     | 'high_latency'
     | 'message_buildup'
     | 'consumer_unavailable'
@@ -133,17 +119,13 @@ export interface QueueIssue {
   suggestedAction: string;
   autoResolvable: boolean;
 }
-export interface QueueConfiguration {
-  durable: boolean;
-  autoDelete: boolean;
+export interface QueueConfiguration { durable: boolean;, autoDelete: boolean;
   maxLength?: number;
   messageTtl?: number;
   deadLetterExchange?: string;
   priority?: number;
 }
-export interface GlobalSystemState {
-  totalJobs: number;
-  activeJobs: number;
+export interface GlobalSystemState { totalJobs: number;, activeJobs: number;
   completedJobs: number;
   failedJobs: number;
   systemHealth: SystemHealth;
@@ -152,52 +134,38 @@ export interface GlobalSystemState {
   maintenanceMode: boolean;
   lastSyncAt: number;
 }
-export interface SystemHealth {
-  overall: 'healthy' | 'degraded' | 'critical';
-  components: Map<string, ComponentHealth>;
+export interface SystemHealth { overall: 'healthy' | 'degraded' | 'critical';, components: Map<string, ComponentHealth>;
   uptime: number;
   lastIncident?: IncidentInfo;
 }
-export interface ComponentHealth {
-  name: string;
-  status: 'up' | 'down' | 'degraded';
+export interface ComponentHealth { name: string;, status: 'up' | 'down' | 'degraded';
   latency: number;
   errorRate: number;
   lastCheck: number;
 }
-export interface IncidentInfo {
-  id: string;
-  type: string;
+export interface IncidentInfo { id: string;, type: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   startedAt: number;
   resolvedAt?: number;
   description: string;
   affectedComponents: string[];
 }
-export interface SystemPerformance {
-  totalThroughput: number;
-  avgResponseTime: number;
+export interface SystemPerformance { totalThroughput: number;, avgResponseTime: number;
   errorRate: number;
   resourceUtilization: SystemResourceUtilization;
   bottlenecks: Bottleneck[];
 }
-export interface SystemResourceUtilization {
-  cpu: number;
-  memory: number;
+export interface SystemResourceUtilization { cpu: number;, memory: number;
   gpu?: number;
   network: number;
   storage: number;
 }
-export interface Bottleneck {
-  component: string;
-  type: 'cpu' | 'memory' | 'gpu' | 'network' | 'storage' | 'queue';
+export interface Bottleneck { component: string;, type: 'cpu' | 'memory' | 'gpu' | 'network' | 'storage' | 'queue';
   severity: number; // 0-1,
   impact: string;
   suggestedFix: string;
 }
-export interface SystemAlert {
-  id: string;
-  type: 'performance' | 'error' | 'resource' | 'health' | 'security';
+export interface SystemAlert { id: string;, type: 'performance' | 'error' | 'resource' | 'health' | 'security';
   severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
   component: string;
@@ -205,9 +173,7 @@ export interface SystemAlert {
   acknowledged: boolean;
   autoResolved: boolean;
 }
-export interface SyncStatus {
-  connected: boolean;
-  lastSync: number;
+export interface SyncStatus { connected: boolean;, lastSync: number;
   syncLag: number;
   conflictCount: number;
   retryCount: number;
@@ -224,21 +190,15 @@ export interface StateHistoryEntry {
   source: string;
   stateVersion: number;
 }
-export interface StateSubscription {
-  id: string;
-  pattern: string; // job:*, queue:legal.*, global;
+export interface StateSubscription { id: string;, pattern: string; // job:*, queue:legal.*, global;
   callback: (_event: StateEvent) => void;
   filters?: StateFilter[];
   qos?: QualityOfService;
 }
-export interface StateFilter {
-  field: string;
-  operator: 'eq' | 'ne' | 'gt' | 'lt' | 'contains' | 'regex';
+export interface StateFilter { field: string;, operator: 'eq' | 'ne' | 'gt' | 'lt' | 'contains' | 'regex';
   value: any;
 }
-export interface QualityOfService {
-  deliveryGuarantee: 'at_most_once' | 'at_least_once' | 'exactly_once';
-  ordering: 'none' | 'partition' | 'global';
+export interface QualityOfService { deliveryGuarantee: 'at_most_once' | 'at_least_once' | 'exactly_once';, ordering: 'none' | 'partition' | 'global';
   durability: boolean;
   priority: number;
 }
@@ -251,23 +211,17 @@ export interface StateEvent {
   source: string;
   stateVersion: number;
 }
-export interface ConflictResolution {
-  strategy: 'last_write_wins' | 'merge' | 'manual' | 'vector_clock';
-  pendingConflicts: StateConflict[];
+export interface ConflictResolution { strategy: 'last_write_wins' | 'merge' | 'manual' | 'vector_clock';, pendingConflicts: StateConflict[];
   resolvedConflicts: ResolvedConflict[];
 }
-export interface StateConflict {
-  id: string;
-  resourceId: string;
+export interface StateConflict { id: string;, resourceId: string;
   resourceType: 'job' | 'queue' | 'global';
   conflictingStates: ConflictingState[];
   detectedAt: number;
   severity: 'low' | 'medium' | 'high';
   autoResolvable: boolean;
 }
-export interface ConflictingState {
-  stateVersion: number;
-  source: string;
+export interface ConflictingState { stateVersion: number;, source: string;
   timestamp: number;
   data: any;
   vectorClock?: VectorClock;
@@ -275,16 +229,12 @@ export interface ConflictingState {
 export interface VectorClock {
   [nodeId: string]: number;
 }
-export interface ResolvedConflict {
-  conflictId: string;
-  resolutionStrategy: string;
+export interface ResolvedConflict { conflictId: string;, resolutionStrategy: string;
   resolvedAt: number;
   winningState: any;
   conflictDuration: number;
 }
-export interface DistributedLock {
-  resourceId: string;
-  lockId: string;
+export interface DistributedLock { resourceId: string;, lockId: string;
   owner: string;
   acquiredAt: number;
   expiresAt: number;
@@ -294,15 +244,15 @@ export interface DistributedLock {
 // Events for the state manager
 export type AsyncStateEvent =
   | { type: 'SYNC_STATE' }
-  | { type: 'JOB_STATE_UPDATE'; jobId: string; state: Partial<JobState> }
-  | { type: 'QUEUE_STATE_UPDATE'; queueName: string; state: Partial<QueueState> }
-  | { type: 'GLOBAL_STATE_UPDATE'; state: Partial<GlobalSystemState> }
-  | { type: 'SUBSCRIBE_TO_STATE'; subscription: StateSubscription }
-  | { type: 'UNSUBSCRIBE_FROM_STATE'; subscriptionId: string }
-  | { type: 'RESOLVE_CONFLICT'; conflictId: string; resolution: any }
-  | { type: 'ACQUIRE_LOCK'; resourceId: string; lockType: 'read' | 'write' | 'exclusive' }
-  | { type: 'RELEASE_LOCK'; lockId: string }
-  | { type: 'HANDLE_SYNC_ERROR'; error: any }
+  | { type: 'JOB_STATE_UPDATE'; jobId: string;, state: Partial<JobState> }
+  | { type: 'QUEUE_STATE_UPDATE'; queueName: string;, state: Partial<QueueState> }
+  | { type: 'GLOBAL_STATE_UPDATE';, state: Partial<GlobalSystemState> }
+  | { type: 'SUBSCRIBE_TO_STATE';, subscription: StateSubscription }
+  | { type: 'UNSUBSCRIBE_FROM_STATE';, subscriptionId: string }
+  | { type: 'RESOLVE_CONFLICT'; conflictId: string;, resolution: any }
+  | { type: 'ACQUIRE_LOCK'; resourceId: string;, lockType: 'read' | 'write' | 'exclusive' }
+  | { type: 'RELEASE_LOCK';, lockId: string }
+  | { type: 'HANDLE_SYNC_ERROR';, error: any }
   | { type: 'CONNECTION_LOST' }
   | { type: 'CONNECTION_RESTORED' }
 // XState Machine for Async State Management
@@ -339,9 +289,7 @@ const asyncStateMachine = createMachine();
         maintenanceMode,: false
         lastSyncAt: 0
       },
-      syncStatus: {
-        connected: false
-        lastSync: 0,
+      syncStatus: { connected: false, lastSync: 0,
         syncLag,: 0,
         conflictCount,: 0,
         retryCount,: 0,
@@ -357,9 +305,7 @@ const asyncStateMachine = createMachine();
       },
       distributedLocks: new Map()
     },
-    states: {
-      initializing: {
-        entry: 'initializeStateSync',
+    states: { initializing: {, entry: 'initializeStateSync',
         invoke,: {
           id: 'connectToStateSync',
           src,: 'establishStateSyncConnection',
@@ -390,11 +336,7 @@ const asyncStateMachine = createMachine();
           }
         ],
         initial,: 'syncing',
-        states,: {
-          syncing: {
-            on: {
-              JOB_STATE_UPDATE: {
-                actions: ['updateJobState', 'broadcastStateChange', 'recordStateHistory']
+        states,: { syncing: {, on: { JOB_STATE_UPDATE: {, actions: ['updateJobState', 'broadcastStateChange', 'recordStateHistory']
               },
               QUEUE_STATE_UPDATE: {
                 actions: ['updateQueueState', 'broadcastStateChange', 'recordStateHistory']
@@ -439,9 +381,7 @@ const asyncStateMachine = createMachine();
       }
     }
   },
-  {
-    actions: {
-      initializeStateSync: () => {
+  { actions: {, initializeStateSync: () => {
         console.log('🔄 Initializing async state management...');
       },
       markConnected,: assign({
@@ -457,7 +397,7 @@ const asyncStateMachine = createMachine();
         syncStatus: (context) => ({
           ...context.syncStatus,
           connected: false,
-          syncHealth: 'failed' as const,
+          syncHealth: 'failed' as const
         })
       }),
       updateJobState,: assign({
@@ -526,7 +466,7 @@ const asyncStateMachine = createMachine();
                 },
                 configuration: {
                   durable: true,
-                  autoDelete: false,
+                  autoDelete: false
                 },
                 lastUpdated: Date.now(),
                 ...event.state
@@ -564,7 +504,7 @@ const asyncStateMachine = createMachine();
           try {
             subscription.callback(stateEvent);
           } catch (error) {
-            console.error(`Error in state subscription ${id}:`, error);
+            console.error(`Error in state subscription ${id}: ', error);
           }
         }
       },
@@ -618,7 +558,7 @@ const asyncStateMachine = createMachine();
             acquiredAt: Date.now(),
             expiresAt: Date.now() + 60000, // 1 minute;
             renewable: true,
-            lockType: (event as any).lockType,
+            lockType: (event as any).lockType
           }
           const updated = new Map(context.distributedLocks);
           updated.set(lockId, lock);
@@ -706,7 +646,7 @@ export class AsyncRabbitMQStateManager {
       activeJobs: 0,
       completedJobs: 0,
       failedJobs: 0,
-      systemHealth: { overall: 'healthy', components: new Map(), uptime: 0 },
+      systemHealth: {, overall: 'healthy', components: new Map(), uptime: 0 },
       performance: {
         totalThroughput: 0,
         avgResponseTime: 0,
@@ -716,7 +656,7 @@ export class AsyncRabbitMQStateManager {
       },
       alerts: [],
       maintenanceMode: false,
-      lastSyncAt: 0,
+      lastSyncAt: 0
     });
     const syncStatusStore = writable<SyncStatus>({
       connected: false,
@@ -725,8 +665,7 @@ export class AsyncRabbitMQStateManager {
       conflictCount: 0,
       retryCount: 0,
       backoffDelay: 1000,
-      syncHealth: 'failed'
-    });
+      syncHealth: `failed` });
     // Make stores readonly
     this.jobStates = { subscribe: jobStatesStore.subscribe }
     this.queueStates = { subscribe: queueStatesStore.subscribe }

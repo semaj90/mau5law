@@ -6,18 +6,14 @@ import { json } from '@sveltejs/kit/utilities'; // Import json helper
 // ======================================================================
 import { spawn } from 'child_process';
 
-export interface ProcessResult {
-  success: boolean;
-  output: string;
+export interface ProcessResult { success: boolean;, output: string;
   errors: string;
   duration: number;
   exitCode: number;
 }
 
 // New interface for the return type of handleTypeScriptCheck
-export interface TypeScriptCheckResponse {
-  success: boolean;
-  errorCount: number;
+export interface TypeScriptCheckResponse { success: boolean;, errorCount: number;
   duration: number;
   output: string;
   errors: string;
@@ -26,18 +22,14 @@ export interface TypeScriptCheckResponse {
 }
 
 // New interface for the return type of handleErrorProcessing
-export interface ErrorProcessingResponse {
-  success: boolean;
-  stats: ErrorProcessingStats;
+export interface ErrorProcessingResponse { success: boolean;, stats: ErrorProcessingStats;
   fixes: FixResult[];
   recommendations: string[];
   timestamp: string;
 }
 
 // New interface for the return type of simulateGPUProcessing
-export interface SimulateGPUProcessingResult {
-  totalErrors: number;
-  processedErrors: number;
+export interface SimulateGPUProcessingResult { totalErrors: number;, processedErrors: number;
   fixedErrors: number;
   failedFixes: number;
   gpuUsed: boolean;
@@ -47,9 +39,7 @@ export interface SimulateGPUProcessingResult {
 }
 
 // New interface for individual fix results
-export interface FixResult {
-  id: string;
-  errorId: string;
+export interface FixResult { id: string;, errorId: string;
   file: string;
   line: number;
   code: string;
@@ -65,9 +55,7 @@ export interface ProcessingOptions {
   // Add other potential options here if they exist
 }
 
-export interface ErrorProcessingStats {
-  totalErrors: number;
-  processedErrors: number;
+export interface ErrorProcessingStats { totalErrors: number;, processedErrors: number;
   fixedErrors: number;
   failedFixes: number;
   processingTime: number;
@@ -76,37 +64,27 @@ export interface ErrorProcessingStats {
 }
 
 // Define interface for system statistics
-export interface SystemStats {
-  system: {
-    uptime: number;
+export interface SystemStats { system: {, uptime: number;
     memory: NodeJS.MemoryUsage;
     cpu: NodeJS.CpuUsage;
   };
-  processing: {
-    totalProcessed: number;
-    successRate: number;
+  processing: { totalProcessed: number;, successRate: number;
     averageTime: number;
     gpuAcceleration: boolean;
   };
-  cache: {
-    hitRate: number;
-    size: number;
+  cache: { hitRate: number;, size: number;
     evictions: number;
   };
 }
 
 // Define interfaces for the system test results and response
-export interface SystemTestResults {
-  gpuAvailable: boolean;
-  lokiInitialized: boolean;
+export interface SystemTestResults { gpuAvailable: boolean;, lokiInitialized: boolean;
   workersReady: boolean;
   ollama: boolean;
   apiEndpoints: boolean;
 }
 
-export interface SystemTestResponse {
-  success: boolean;
-  results: SystemTestResults;
+export interface SystemTestResponse { success: boolean;, results: SystemTestResults;
   status?: string;
   error?: string;
   timestamp?: string;
@@ -119,7 +97,7 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
     let errors = '';
     const checkProcess = spawn('npm', ['run', 'check'], {
       shell: true,
-      cwd: process.cwd(),
+      cwd: process.cwd()
     });
     checkProcess.stdout?.on('data', data => {
       output += (data as { toString?: any }).toString();
@@ -133,7 +111,7 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
         output,
         errors,
         duration: Date.now() - startTime,
-        exitCode: code || 0,
+        exitCode: code || 0
       });
     });
     // Timeout after 5 minutes
@@ -144,7 +122,7 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
         output,
         errors: errors + '\nProcess timed out after 5 minutes',
         duration: 300000,
-        exitCode: -1,
+        exitCode: -1
       });
     }, 300000);
   });
@@ -164,12 +142,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('GPU Error Processor API error:', error);
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -190,7 +168,7 @@ async function handleTypeScriptCheck(): Promise<TypeScriptCheckResponse> {
     output: result.output,
     errors: result.errors,
     exitCode: result.exitCode,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 async function handleErrorProcessing(request: Request): Promise<ErrorProcessingResponse> {
@@ -219,14 +197,14 @@ async function handleErrorProcessing(request: Request): Promise<ErrorProcessingR
       failedFixes: mockResults.failedFixes,
       processingTime,
       gpuUsed: mockResults.gpuUsed,
-      parallelWorkers: mockResults.parallelWorkers,
+      parallelWorkers: mockResults.parallelWorkers
     };
     return {
       success: true,
       stats,
       fixes: mockResults.fixes,
       recommendations: mockResults.recommendations,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     console.error('Error processing failed:', error);
@@ -242,7 +220,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
     lokiInitialized: false,
     workersReady: false,
     ollama: false,
-    apiEndpoints: false,
+    apiEndpoints: false
   };
   try {
     // Test GPU availability (mock)
@@ -265,38 +243,38 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
       success: allPassed,
       results: testResults,
       status: allPassed ? 'All tests passed' : 'Some tests failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     return json({
       success: false,
       results: testResults,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 }
 async function handleStatsRequest(): Promise<Response> {
-  // Changed: 'any' to: 'Response'
+  // Changed: 'any'; to: 'Response'
   // Mock statistics
   const stats: SystemStats = {
     // Added type annotation
     system: {
       uptime: process.uptime() * 1000,
       memory: process.memoryUsage(),
-      cpu: process.cpuUsage(),
+      cpu: process.cpuUsage()
     },
     processing: {
       totalProcessed: Math.floor(Math.random() * 1000),
       successRate: 0.85,
       averageTime: 150,
-      gpuAcceleration: true,
+      gpuAcceleration: true
     },
     cache: {
       hitRate: 0.75,
       size: Math.floor(Math.random() * 1000000),
-      evictions: Math.floor(Math.random() * 100),
-    },
+      evictions: Math.floor(Math.random() * 100)
+    }
   };
   return json(stats);
 }
@@ -348,7 +326,7 @@ async function simulateGPUProcessing(
     gpuUsed: totalErrors > 50,
     parallelWorkers: Math.min(4, Math.ceil(totalErrors / 25)),
     fixes,
-    recommendations,
+    recommendations
   };
 }
 function getFixStrategy(code: string): string {
@@ -358,7 +336,7 @@ function getFixStrategy(code: string): string {
     TS2307: 'Fix module path',
     TS2457: 'Rename type alias',
     TS1005: 'Add punctuation',
-    TS1128: 'Add declaration',
+    TS1128: 'Add declaration'
   };
   return strategies[code] || 'Manual fix required';
 }
@@ -373,8 +351,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'POST ?action=test - Run system tests',
         'GET ?action=stats - Get system statistics',
       ],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
-  return json({ error: 'Invalid action' }, { status: 400 });
+  return json({ error: `Invalid action` }, { status: 400 });
 };

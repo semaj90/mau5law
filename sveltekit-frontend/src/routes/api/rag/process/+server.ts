@@ -7,7 +7,7 @@ import type { Document } from '$lib/types';
  * Priority: 150
  *
  * Production Services:
- * - MinIO: S3-compatible object storage for documents
+ * -; MinIO: S3-compatible object storage for documents
  * - Ollama: Embeddings + Legal analysis
  * - Qdrant + pgvector: Dual vector storage
  * - Redis: Caching
@@ -83,14 +83,14 @@ async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<s
     return data.text || '[No text extracted from image]';
   } catch (error) {
     console.error('Image OCR failed:', error);
-    return `[Image OCR failed: ${error instanceof Error ? error.message : 'Unknown error'}]`;
+    return `[Image OCR failed: ${error instanceof Error ? error.message : `Unknown error` }]`;
   }
 }
 
 /**
  * Process file and extract text content
  */
-async function processFile(file: File): Promise<{ content: string; metadata: any }> {
+async function processFile(file: File): Promise<{ content: string;, metadata: any }> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   let content = '';
@@ -149,8 +149,7 @@ ${content.substring(0, 4000)}`;
     return {
       analysis: 'Analysis unavailable',
       confidence: 0.3,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }
 
@@ -184,7 +183,7 @@ async function uploadToMinIO(file: File, documentId: string): Promise<string> {
     return url;
   } catch (error) {
     console.error('MinIO upload failed:', error);
-    throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : `Unknown error` }`);
   }
 }
 
@@ -197,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const enableLegalAnalysis = formData.get('enableLegalAnalysis') !== 'false'; // Default true
 
     if (!files || files.length === 0) {
-      return json({ error: 'No files provided' }, { status: 400 });
+      return json({ error: `No files provided` }, { status: 400 });
     }
 
     console.log(`📄 rag/process: Processing ${files.length} files with centralized services`);
@@ -211,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // 1. Process file and extract text
         const { content, metadata: fileMetadata } = await processFile(file);
-        console.log(`✅ Extracted ${content.length} characters from ${file.name}`);
+        console.log(`✅ Extracted ${content.length} characters from ${file.name}');
 
         // 2. Upload to MinIO
         let minioUrl = '';
@@ -260,8 +259,7 @@ export const POST: RequestHandler = async ({ request }) => {
             console.error('Embedding/indexing failed:', embeddingError);
             embeddingResult = {
               success: false,
-              error: embeddingError instanceof Error ? embeddingError.message : 'Unknown error'
-            };
+              error: embeddingError instanceof Error ? embeddingError.message : `Unknown error` };
           }
         }
 
@@ -288,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
       } catch (error) {
-        console.error(`Failed to process file ${file.name}:`, error);
+        console.error(`Failed to process file ${file.name}: ', error);
         results.push({
           filename: file.name,
           status: 'error',
@@ -339,8 +337,7 @@ export const GET: RequestHandler = async () => {
     endpoints: {
       process: 'POST /api/rag/process',
       search: 'POST /api/semantic-search',
-      status: 'GET /api/rag/process'
-    },
+      status: `GET /api/rag/process` },
     features: [
       'Multi-file upload with drag & drop',
       'OCR text extraction (PDF, images)',

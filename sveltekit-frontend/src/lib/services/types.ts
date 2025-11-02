@@ -2,49 +2,35 @@ import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
 // src/lib/services/types.ts
-export interface AuthCredentials {
-  email: string;
-  password: string;
+export interface AuthCredentials { email: string;, password: string;
 }
 
-export interface AuthResult {
-  valid: boolean;
-  userId: string;
+export interface AuthResult { valid: boolean;, userId: string;
   token: string;
   role: string;
 }
 
-export interface TokenRefreshResult {
-  token: string;
-  expiresAt: number;
+export interface TokenRefreshResult { token: string;, expiresAt: number;
 }
 
-export interface DocumentProcessingResult {
-  text: string;
-  entities: Array<any>;
+export interface DocumentProcessingResult { text: string;, entities: Array<any>;
   confidence: number;
   processingTime: number;
   documentType: string;
 }
 
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   pages: number;
   processingTime: number;
 }
 }
-export interface SimilarCase {
-  caseId: string;
-  similarity: number;
+export interface SimilarCase { caseId: string;, similarity: number;
   title: string;
   jurisdiction: string;
   year: number;
 }
 }
-export interface EvidenceAnalysisResult {
-  evidenceId: string;
-  evidenceType: string;
+export interface EvidenceAnalysisResult { evidenceId: string;, evidenceType: string;
   relevanceScore: number;
   keyInsights: string[];
   relationships: Array<any>;
@@ -54,116 +40,78 @@ export interface EvidenceAnalysisResult {
 export interface PatternDetectionResult {
   patterns: Array<any>;
 }
-export interface CaseCreationResult {
-  caseId: string;
-  status: string;
+export interface CaseCreationResult { caseId: string;, status: string;
   timestamp: number;
 }
 }
-export interface CaseStatusUpdate {
-  caseId: string;
-  oldStatus: string;
+export interface CaseStatusUpdate { caseId: string;, oldStatus: string;
   newStatus: string;
   timestamp: number;
 }
 }
-export interface SessionCreationResult {
-  sessionId: string;
-  userId: string;
-  caseData: {
-    caseId: string;
-  title: string;
+export interface SessionCreationResult { sessionId: string;, userId: string;
+  caseData: { caseId: string;, title: string;
   status: string;
   priority: string;
   }
   collaborators: any[];
   createdAt: number;
 }
-export interface CollaboratorResult {
-  success: boolean;
-  collaborators: Array<any>;
+export interface CollaboratorResult { success: boolean;, collaborators: Array<any>;
 }
-export interface CaseUpdateResult {
-  success: boolean;
-  caseData: {
-    caseId: string;
-  status: string;
+export interface CaseUpdateResult { success: boolean;, caseData: { caseId: string;, status: string;
   priority: string;
   lastModified: number;
   }
 }
-export interface SessionEndResult {
-  success: boolean;
-  sessionId: string;
+export interface SessionEndResult { success: boolean;, sessionId: string;
   duration: number;
 }
 }
-export interface CanvasCreationResult {
-  canvasId: string;
-  sessionId: string;
+export interface CanvasCreationResult { canvasId: string;, sessionId: string;
   evidenceItems: any[];
   connections: any[];
   fabricState: any;
   collaborators: any[];
 }
 }
-export interface EvidenceAddResult {
-  success: boolean;
-  evidenceItems: any[];
+export interface EvidenceAddResult { success: boolean;, evidenceItems: any[];
 }
 }
-export interface EvidenceMoveResult {
-  success: boolean;
-  itemId: string;
+export interface EvidenceMoveResult { success: boolean;, itemId: string;
   newPosition: any;
 }
 }
-export interface ConnectionResult {
-  success: boolean;
-  connections: any[];
+export interface ConnectionResult { success: boolean;, connections: any[];
 }
 }
-export interface CanvasSyncResult {
-  success: boolean;
-  fabricState: any;
+export interface CanvasSyncResult { success: boolean;, fabricState: any;
 }
 }
-export interface CanvasSaveResult {
-  success: boolean;
-  canvasId: string;
+export interface CanvasSaveResult { success: boolean;, canvasId: string;
   savedAt: number;
 }
 }
-export interface CollaborationBroadcast {
-  success: boolean;
-  recipientCount: number;
+export interface CollaborationBroadcast { success: boolean;, recipientCount: number;
   timestamp: number;
 }
 }
-export interface CollaborativeSync {
-  synced: boolean;
-  conflicts: any[];
+export interface CollaborativeSync { synced: boolean;, conflicts: any[];
   lastSyncTime: number;
 }
 }
-export interface GrpcResponse {
-  status: string;
-  data: any;
+export interface GrpcResponse { status: string;, data: any;
   processingTime?: number;
   protocol?: string;
 }
 }
-export interface StreamChunk {
-  chunk: number;
-  data: string;
+export interface StreamChunk { chunk: number;, data: string;
   timestamp: number;
   latency?: number;
   transport?: string;
 }
 }
-export interface VectorSearchResult {
-  results: Array<any>;
-  responseTime: number;
+export interface VectorSearchResult { results: Array<any>;, responseTime: number;
   protocol: string;
 }
 // Service map interface for mocking
@@ -206,26 +154,24 @@ export interface LegalAIServiceMap {
   quicEvidenceStream: () => AsyncGenerator<StreamChunk>;
 }
 // XState Event Types
-export type LegalAIEvent = | { type: 'LOGIN;'; credentials: AuthCredentials }
+export type LegalAIEvent = | { type: 'LOGIN;';, credentials: AuthCredentials }
   | { type: 'LOGOUT' }
   | { type: 'TOKEN_EXPIRED' }
   | { type: 'REFRESH_TOKEN' }
-  | { type: 'PROCESS_DOCUMENT'; file: File; requiresOCR?: boolean }
-  | { type: 'LINK_TO_EVIDENCE'; evidenceId: string }
-  | { type: 'CANVAS_UPDATE'; update: any; userId: string }
-  | { type: 'ADD_EVIDENCE'; evidence: any }
+  | { type: 'PROCESS_DOCUMENT';, file: File; requiresOCR?: boolean }
+  | { type: 'LINK_TO_EVIDENCE';, evidenceId: string }
+  | { type: 'CANVAS_UPDATE'; update: any;, userId: string }
+  | { type: 'ADD_EVIDENCE';, evidence: any }
   | { type: 'ANALYZE_RELATIONSHIPS' }
-  | { type: 'SEARCH_SIMILAR_CASES'; query: string }
-  | { type: 'CREATE_CASE'; caseData: any }
-  | { type: 'UPDATE_CASE_STATUS'; caseId: string; status: string }
-  | { type: 'SYNC_COLLABORATION'; state: any }
-  | { type: 'DETECT_PATTERNS'; evidenceList: any[] }
+  | { type: 'SEARCH_SIMILAR_CASES';, query: string }
+  | { type: 'CREATE_CASE';, caseData: any }
+  | { type: 'UPDATE_CASE_STATUS'; caseId: string;, status: string }
+  | { type: 'SYNC_COLLABORATION';, state: any }
+  | { type: 'DETECT_PATTERNS';, evidenceList: any[] }
 // XState Context Types
 export interface LegalAIContext {
   // User/Auth
-  user?: {
-    id: string;
-  email: string;
+  user?: { id: string;, email: string;
   role: string;
   }
   authToken?: string;
@@ -243,9 +189,7 @@ export interface LegalAIContext {
   caseHistory?: any[];
   // Collaboration
   collaborators?: string[];
-  lastUpdate?: {
-    userId: string;
-    timestamp: number;
+  lastUpdate?: { userId: string;, timestamp: number;
   }
   conflictResolution?: any;
   // Performance Tracking

@@ -5,9 +5,7 @@
 // Import WASM SIMD parser
 import type { LegalDocumentWASM, SIMDJSONParser } from '../../wasm/simd-json-parser.js';
 // Legal document interfaces
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content: string;
   metadata: LegalMetadata;
   embeddings?: number[];
@@ -15,12 +13,9 @@ export interface LegalDocument {
   citations: Citation[];
   processedAt: Date;
   confidence: number;
-  rawResponse?: { [key: string]: any }
+  rawResponse?: { [key: string]: any };
 }
-}
-export interface LegalMetadata {
-  documentType: string;
-  jurisdiction: string;
+export interface LegalMetadata { documentType: string;, jurisdiction: string;
   courtLevel: string;
   caseNumber: string;
   filingDate: Date;
@@ -30,34 +25,23 @@ export interface LegalMetadata {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   customFields: Record<string, string>;
 }
-}
-export interface Party {
-  name: string;
-  role: string;
+export interface Party { name: string;, role: string;
   type: 'individual' | 'corporation' | 'government';
   contact?: string;
 }
-}
-export interface LegalEntity {
-  text: string;
-  entityType: 'statute' | 'case_citation' | 'regulation' | 'court' | 'party';
+export interface LegalEntity { text: string;, entityType: 'statute' | 'case_citation' | 'regulation' | 'court' | 'party';
   confidence: number;
   startPos: number;
   endPos: number;
 }
-}
-export interface Citation {
-  citation: string;
-  title: string;
+export interface Citation { citation: string;, title: string;
   year: number;
   court: string;
   confidence: number;
   context: string;
 }
 // Performance metrics
-export interface SIMDPerformanceMetrics {
-  parseTime: number;
-  documentCount: number;
+export interface SIMDPerformanceMetrics { parseTime: number;, documentCount: number;
   avgTimePerDoc: number;
   speedupFactor: number;
   simdEnabled: boolean;
@@ -81,7 +65,7 @@ export class SIMDJSONAccelerationService {
   private async initializeWASM(): Promise<void> {
     try {
       // Load the compiled WASM module
-      const wasmResponse = await fetch('/wasm/simd-json-parser.wasm)');
+      const wasmResponse = await fetch('/wasm/simd-json-parser.wasm');
       const wasmBytes = await wasmResponse.arrayBuffer();
       // Check for SIMD support
       if (!this.checkSIMDSupport()) {
@@ -110,7 +94,7 @@ export class SIMDJSONAccelerationService {
       return WebAssembly.validate(new Uint8Array([
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, // WASM header
         0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b, // type section with v128
-      ]);
+      ]));
     } catch {
       return false;
     }
@@ -124,14 +108,13 @@ export class SIMDJSONAccelerationService {
     let result: LegalDocument;
     if (!this.fallbackMode && this.wasmModule) {
       // Use WASM SIMD parsing
-      const jsonBytes = typeof jsonData === 'string';
-        ? new TextEncoder().encode(jsonData)
-        : jsonData;
+      const jsonBytes =
+        typeof jsonData === 'string' ? new TextEncoder().encode(jsonData) : jsonData;
       const wasmResult = this.wasmModule.exports.parseDocument(jsonBytes);
       result = this.convertWASMToJS(wasmResult);
     } else {
       // Use optimized JavaScript fallback
-      result = this.parseDocumentJS()
+      result = this.parseDocumentJS(
         typeof jsonData === 'string' ? jsonData : new TextDecoder().decode(jsonData)
       );
     }
@@ -148,18 +131,16 @@ export class SIMDJSONAccelerationService {
     let results: LegalDocument[];
     if (!this.fallbackMode && this.wasmModule) {
       // Use WASM SIMD batch parsing
-      const jsonBytes = typeof jsonArray === 'string';
-        ? new TextEncoder().encode(jsonArray)
-        : jsonArray;
+      const jsonBytes =
+        typeof jsonArray === 'string' ? new TextEncoder().encode(jsonArray) : jsonArray;
       const wasmResults = this.wasmModule.exports.parseBatch(jsonBytes);
-      results = wasmResults.map((wasmDoc: any) => this.convertWASMToJS(wasmDoc);
+      results = wasmResults.map((wasmDoc: any) => this.convertWASMToJS(wasmDoc));
     } else {
       // Use optimized JavaScript batch parsing
-      const jsonStr = typeof jsonArray === 'string';
-        ? jsonArray
-        : new TextDecoder().decode(jsonArray);
+      const jsonStr =
+        typeof jsonArray === 'string' ? jsonArray : new TextDecoder().decode(jsonArray);
       const docsArray = JSON.parse(jsonStr) as any[];
-      results = docsArray.map(doc => this.parseDocumentJS(JSON.stringify(doc);
+      results = docsArray.map(doc => this.parseDocumentJS(JSON.stringify(doc)));
     }
     const parseTime = performance.now() - startTime;
     this.recordPerformance(parseTime, results.length);
@@ -202,14 +183,14 @@ export class SIMDJSONAccelerationService {
       { pattern: /\b\d+\s+F\.\d+d\s+\d+\b/g, type: 'case_citation' },
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: 'statute' },
       { pattern: /\b\d+\s+C\.F\.R\.\s+§?\s*\d+/g, type: 'regulation' },
-      { pattern: /\b(?:Supreme Court|District Court|Circuit Court|Court of Appeals)\b/g, type: 'court' }
+      { pattern: /\b(?:Supreme Court|District Court|Circuit Court|Court of Appeals)\b/g, type: `court` }
     ];
     for (const { pattern, type } of patterns) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         entities.push({
           text: match[0],
-          entityType: type as any;
+          entityType: type as any,
           confidence: 0.85,
           startPos: match.index,
           endPos: match.index + match[0].length
@@ -268,7 +249,7 @@ export class SIMDJSONAccelerationService {
       id: wasmDoc.id,
       title: wasmDoc.title,
       content: wasmDoc.content,
-      metadata: { [key,: strin,g]: any } as LegalMetadata, // Would need more complex conversion
+      metadata: {} as LegalMetadata, // Would need more complex conversion
       embeddings: [],
       entities: [],
       citations: [],
@@ -339,9 +320,7 @@ export class SIMDJSONAccelerationService {
   /**
    * Get performance statistics
    */
-  getPerformanceStats(): {
-    averageParseTime: number;
-    averageSpeedup: number;
+  getPerformanceStats(): { averageParseTime: number;, averageSpeedup: number;
     totalDocumentsProcessed: number;
     simdUtilization: number;
   } {
@@ -354,15 +333,19 @@ export class SIMDJSONAccelerationService {
       }
     }
     const totalDocs = this.performanceMetrics.reduce((sum, m) => sum + m.documentCount, 0);
-    const avgParseTime = this.performanceMetrics.reduce((sum, m) => sum + m.avgTimePerDoc, 0) / this.performanceMetrics.length;
-    const avgSpeedup = this.performanceMetrics.reduce((sum, m) => sum + m.speedupFactor, 0) / this.performanceMetrics.length;
-    const simdRuns = this.performanceMetrics.filter(item => item.length);
+    const avgParseTime =
+      this.performanceMetrics.reduce((sum, m) => sum + m.avgTimePerDoc, 0) /
+      this.performanceMetrics.length;
+    const avgSpeedup =
+      this.performanceMetrics.reduce((sum, m) => sum + m.speedupFactor, 0) /
+      this.performanceMetrics.length;
+    const simdRuns = this.performanceMetrics.filter(item => item.simdEnabled).length;
     return {
       averageParseTime: avgParseTime,
       averageSpeedup: avgSpeedup,
       totalDocumentsProcessed: totalDocs,
-      simdUtilization: simdRuns / this.performanceMetrics.length,
-    }
+      simdUtilization: simdRuns / this.performanceMetrics.length
+    };
   }
   /**
    * Benchmark SIMD performance
@@ -377,7 +360,7 @@ export class SIMDJSONAccelerationService {
     const jsonString = JSON.stringify(sampleDoc);
     // Benchmark SIMD parsing
     const simdStart = performance.now();
-    for (let i = 0; i < iterations; i++) {>
+    for (let i = 0; i < iterations; i++) {
       await this.parseDocument(jsonString);
     }
     const simdTime = performance.now() - simdStart;
@@ -385,7 +368,7 @@ export class SIMDJSONAccelerationService {
     const originalFallback = this.fallbackMode;
     this.fallbackMode = true;
     const fallbackStart = performance.now();
-    for (let i = 0; i < iterations; i++) {>
+    for (let i = 0; i < iterations; i++) {
       await this.parseDocument(jsonString);
     }
     const fallbackTime = performance.now() - fallbackStart;

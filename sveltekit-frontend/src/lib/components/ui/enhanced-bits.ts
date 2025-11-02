@@ -31,7 +31,7 @@ export {
   Select,
   Dialog,
   Textarea,
-  Separator,
+  Separator
 };
 // Compatibility namespace for legacy: "bits.DropdownMenu.*" usage
 export const DropdownMenu = {
@@ -39,7 +39,7 @@ export const DropdownMenu = {
   Trigger: DropdownTrigger,
   Content: DropdownContent,
   Item: DropdownItem,
-  Separator: DropdownSeparator,
+  Separator: DropdownSeparator
 };
 // default export includes both for flexible imports
 export default {
@@ -59,5 +59,5 @@ export default {
   Dialog,
   Textarea,
   Separator,
-  DropdownMenu,
+  DropdownMenu
 };

@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     updatedAt: now,
     fileName: file.name,
     summary: null,
-    aiSummary: null,
+    aiSummary: null
   };
   await db.insert(evidence).values(newEvidence);
   return json(newEvidence, { status: 201 });

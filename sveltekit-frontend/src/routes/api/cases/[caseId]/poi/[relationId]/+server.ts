@@ -10,7 +10,7 @@ const updateCasePoiRelationSchema = z.object({
   relationshipType: z.enum(['suspect', 'witness', 'victim', 'informant', 'other']).optional(),
   role: z.string().optional(),
   involvementLevel: z.enum(['primary', 'secondary', 'peripheral', 'unknown']).optional(),
-  notes: z.string().optional(),
+  notes: z.string().optional()
 });
 
 // PUT /api/cases/[caseId]/poi/[relationId] - Update case-POI relationship
@@ -46,14 +46,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .update(casePoiRelations)
       .set({
         ...validatedData,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(casePoiRelations.id, relationId))
       .returning();
 
     return json({
       success: true,
-      data: updatedRelation,
+      data: updatedRelation
     });
   } catch (error) {
     console.error('Error updating case-POI relationship:', error);
@@ -95,13 +95,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(casePoiRelations)
       .set({
         isActive: false,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(casePoiRelations.id, relationId));
 
     return json({
       success: true,
-      message: 'POI removed from case successfully',
+      message: 'POI removed from case successfully'
     });
   } catch (error) {
     console.error('Error removing POI from case:', error);

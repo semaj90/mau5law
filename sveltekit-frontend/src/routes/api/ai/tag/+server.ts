@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -21,18 +21,14 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 
 // --- New Interfaces for AI Tagging Results ---
-interface OllamaGenerateResponse {
-  response: string;
-  model: string;
+interface OllamaGenerateResponse { response: string;, model: string;
   done: boolean;
   total_duration?: number;
   fallback_used?: boolean;
   models_tried?: string[];
 }
 
-interface LegalMetadata {
-  tags: string[];
-  title: string;
+interface LegalMetadata { tags: string[];, title: string;
   people: string[];
   locations: string[];
   dates: string[];
@@ -53,9 +49,7 @@ interface LegalMetadata {
   sentiment?: 'positive' | 'negative' | 'neutral';
   language?: string;
   qualityScore?: number;
-  extractionConfidence?: {
-    people: number;
-    locations: number;
+  extractionConfidence?: { people: number;, locations: number;
     dates: number;
     organizations: number;
   };
@@ -118,9 +112,9 @@ Analysis Guidelines:
 7. Rate extraction confidence for each category
 8. Identify potential red flags or concerns
 File Details:
-- Name: ${fileName || 'Unknown'}
+-; Name: ${fileName || 'Unknown'}
 - Type: ${fileType || 'Unknown'}
-- Enhanced Analysis: ${enhanced ? 'Yes' : 'No'}
+- Enhanced Analysis: ${enhanced ? 'Yes' : `No` }
 Content to analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
 Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
@@ -137,7 +131,7 @@ Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
   "summary": "Brief summary",
   "keyFacts": ["fact1", "fact2"]
 }
-File: ${fileName || 'Unknown'}
+File: ${fileName || 'Unknown` }
 Content: ${content.slice(0, 2000)}`;
     const prompt = enhanced ? enhancedPrompt : basicPrompt;
     // Try legal Gemma3 model first, with fallbacks
@@ -148,19 +142,19 @@ Content: ${content.slice(0, 2000)}`;
       try {
         const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             model,
             prompt,
             stream: false,
             options: {
-              temperature: enhanced ? 0.2 : 0.3, // Lower temperature for better consistency
+             , temperature: enhanced ? 0.2 : 0.3, // Lower temperature for better consistency
               top_p: 0.9,
               top_k: 40,
               repeat_penalty: 1.1,
               num_ctx: enhanced ? 8192 : 4096, // More context for enhanced analysis
-            },
-          }),
+            }
+          })
         });
         if (ollamaResponse.ok) {
           result = (await ollamaResponse.json()) as OllamaGenerateResponse; // Cast to OllamaGenerateResponse
@@ -188,20 +182,19 @@ Content: ${content.slice(0, 2000)}`;
       try {
         await generateEmbedding(parsedResult, content);
       } catch (error: any) {
-        // Changed: 'any' to: 'unknown'
+        // Changed: 'any'; to: 'unknown'
         console.log('Embedding generation failed:', error);
         // Non-critical, continue without embedding
       }
     }
     return parsedResult;
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('AI Tagging error:', error);
     return json(
       {
         error: 'Failed to process content for tagging',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -242,16 +235,16 @@ async function parseAndReturnTags(
       language: 'en',
       qualityScore: 0.5,
       extractionConfidence: {
-        people: 0.5,
+       , people: 0.5,
         locations: 0.5,
         dates: 0.5,
-        organizations: 0.5,
+        organizations: 0.5
       },
       redFlags: [],
       recommendations: [],
       modelUsed,
-      processingTime: new Date().toISOString(),
-    }),
+      processingTime: new Date().toISOString()
+    })
   };
   try {
     // Multiple JSON extraction strategies
@@ -283,7 +276,7 @@ async function parseAndReturnTags(
     });
     // Find JSON boundaries more robustly
     const jsonStart = cleanResponse.indexOf('{');
-    const jsonEnd = cleanResponse.lastIndexOf('}');
+    const jsonEnd = cleanResponse.lastIndexOf(` }');
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
       const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1);
       try {
@@ -291,7 +284,7 @@ async function parseAndReturnTags(
         // Validate and merge with defaults
         tagsResult = {
           ...tagsResult,
-          ...validateAndCleanParsedData(parsed, enhanced),
+          ...validateAndCleanParsedData(parsed, enhanced)
         };
       } catch (parseError) {
         console.warn('JSON parsing failed, attempting repair:', parseError);
@@ -301,7 +294,7 @@ async function parseAndReturnTags(
           const parsed = JSON.parse(repairedJson);
           tagsResult = {
             ...tagsResult,
-            ...validateAndCleanParsedData(parsed, enhanced),
+            ...validateAndCleanParsedData(parsed, enhanced)
           };
         } else {
           throw parseError;
@@ -383,7 +376,7 @@ function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: b
       locations: typeof parsed.extractionConfidence.locations === 'number' ? parsed.extractionConfidence.locations : 0,
       dates: typeof parsed.extractionConfidence.dates === 'number' ? parsed.extractionConfidence.dates : 0,
       organizations:
-        typeof parsed.extractionConfidence.organizations === 'number' ? parsed.extractionConfidence.organizations : 0,
+        typeof parsed.extractionConfidence.organizations === 'number' ? parsed.extractionConfidence.organizations : 0
     };
   }
   return result;
@@ -482,7 +475,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 
   const lower = response.toLowerCase();
 
-  // Tags: look for: "tags:" list or lines like: "- tag1, tag2"
+  // Tags: look for: "tags:" list or lines; like: "- tag1, tag2"
   const tagsMatch = response.match(/"tags"\s*:\s*\[([^\]]+)\]/i) || response.match(/tags[:\-]\s*([^\n\r]+)/i);
   if (tagsMatch) {
     const raw = tagsMatch[1];

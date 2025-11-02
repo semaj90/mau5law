@@ -59,10 +59,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   role="button"
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
-  on:dragenter={handleDragEnter}
-  on:dragleave={handleDragLeave}
+  ondragenter={handleDragEnter}
+  ondragleave={handleDragLeave}
   on:dragover|preventDefault
-  on:drop={handleDrop}
+  ondrop={handleDrop}
   onclick={() => fileInput?.click()}
   onkeydown={(e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {

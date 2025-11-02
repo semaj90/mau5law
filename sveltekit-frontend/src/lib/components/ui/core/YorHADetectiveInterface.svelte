@@ -44,7 +44,7 @@ import type { User } from '$lib/types';
   let isTyping = $state<boolean>(false);
   let systemStatus = $state<string>('Online');
   let currentTime = $state<string>('19:02');
-  let sessionId: string | null = $state(null);
+  let sessionId: string | null = null;
   let isTestMode = $state<boolean>(false);
   // Sidebar navigation items
   let sidebarItems: SidebarItem[] = $state([
@@ -246,7 +246,7 @@ import type { User } from '$lib/types';
           class="nav-item"
           class:active={item.active}
           onclick={() => selectSidebarItem(index)}
-          transition:fade={{ delay: index * 50 }}
+          transitionfade={{ delay: index * 50 }}
         >
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>
@@ -323,7 +323,7 @@ import type { User } from '$lib/types';
             <div
               class="message {message.sender}"
               class:typing={message.isTyping}
-              transition:fly={{ y: 20, duration: 300 }}
+              transitionfly={{ y: 20, duration: 300 }}
             >
               <div class="message-header">
                 <span class="message-sender">

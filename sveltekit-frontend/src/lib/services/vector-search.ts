@@ -12,9 +12,7 @@ export interface VectorSearchOptions {
   caseId?: string;
   documentType?: string;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   filename?: string;
   caseId?: string;
   distance: number;
@@ -23,9 +21,7 @@ export interface VectorSearchResult {
   keywords?: string[];
   createdAt: Date;
 }
-export interface EmbeddingCacheEntry {
-  textHash: string;
-  embedding: number[];
+export interface EmbeddingCacheEntry { textHash: string;, embedding: number[];
   model: string;
   dimensions: number;
 }
@@ -51,7 +47,7 @@ export class VectorSearchService {
    */
   private async getOrCreateEmbedding(
     text: string;
-    model: string = "ollama-nomic-embed-text"
+   , model: string = "ollama-nomic-embed-text"
   ): Promise<number[]> {
     const textHash = this.generateTextHash(text);
     // Check cache first

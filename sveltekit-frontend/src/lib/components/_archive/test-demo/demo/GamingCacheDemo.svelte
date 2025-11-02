@@ -602,7 +602,7 @@ and performance monitoring across N64 and YoRHa gaming components
       <div class="flex space-x-8 overflow-x-auto">
         {#each Array.isArray(['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics']) ? ['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics'] : [] as tab}
           <button
-            class="py-4" px-2 border-b-2 transition-colors whitespace-nowrap {
+            class="py-4 px-2 border-b-2" transition-colors whitespace-nowrap {
               activeDemo === tab
                 ? 'border-cyan-400 text-cyan-300'
                 : 'border-transparent text-slate-400 hover:text-slate-300';

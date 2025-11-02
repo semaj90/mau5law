@@ -4,23 +4,17 @@
 import { logger } from './logger.js';
 import { EventEmitter } from "events";
 }
-export interface MetricData {
-  requestId: string;
-  processingTime: number;
+export interface MetricData { requestId: string;, processingTime: number;
   confidence: number;
   sourceCount: number;
   strategies: string[];
   qualityScore: number;
 }
-export interface AlertRule {
-  name: string;
-  condition: (metrics: any) => boolean;
+export interface AlertRule { name: string;, condition: (metrics: any) => boolean;
   message: string;
   severity: 'info' | 'warning' | 'critical';
 }
-export interface PerformanceMetrics {
-  p50: number;
-  p95: number;
+export interface PerformanceMetrics { p50: number;, p95: number;
   p99: number;
   mean: number;
   stdDev: number;
@@ -67,11 +61,9 @@ class MonitoringService extends EventEmitter {
   /**
    * Track incoming request
    */
-  trackRequest(data: {
-    requestId: string;
-    userId: string;
+  trackRequest(data: { requestId: string;, userId: string;
     query: string;
-    timestamp: Date;
+   , timestamp: Date;
     sessionId?: string;
   }): void {
     this.counters.totalRequests++;
@@ -152,7 +144,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Track stream completion
    */
-  trackStreamCompletion(data: { streamId: string; requestId: string; duration: number }): void {
+  trackStreamCompletion(data: { streamId: string; requestId: string;, duration: number }): void {
     this.counters.streamRequests++;
     this.storeMetric('stream_duration', data.duration);
     this.emit('stream:complete', data);
@@ -160,7 +152,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Track errors
    */
-  trackError(data: { requestId: string; error: string; stack?: string; userId: string }): void {
+  trackError(data: { requestId: string; error: string; stack?: string;, userId: string }): void {
     this.counters.failedRequests++;
     this.errorLog.push({
       timestamp: new Date(),
@@ -185,7 +177,7 @@ class MonitoringService extends EventEmitter {
       // More than 10% error rate
       this.emit('alert', {
         severity: 'critical',
-        message: `High error rate: ${(errorRate * 100).toFixed(2)}%`,
+        message: `High error; rate: ${(errorRate * 100).toFixed(2)}%`,
         context: data
       });
     }
@@ -217,11 +209,10 @@ class MonitoringService extends EventEmitter {
       rates: {
         cacheHitRate: (cacheHitRate * 100).toFixed(2) + '%',
         successRate: (successRate * 100).toFixed(2) + '%',
-        errorRate: ((1 - successRate) * 100).toFixed(2) + '%'
-      },
+        errorRate: ((1 - successRate) * 100).toFixed(2) + '%` },
       performance: {
         overall: performanceMetrics,
-        stages: stageMetrics,
+        stages: stageMetrics
       },
       recentErrors: this.errorLog.slice(-10),
       activeRequests: this.requestTracking.size,
@@ -232,7 +223,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Get detailed metrics for analysis
    */
-  getDetailedMetrics(timeRange?: { start: Date; end: Date }): any {
+  getDetailedMetrics(timeRange?: { start: Date;, end: Date }): any {
     const metrics = {}
     for (const [name, values] of this.metrics) {
       if (values.length > 0) {
@@ -301,8 +292,7 @@ class MonitoringService extends EventEmitter {
       name: 'no_sources',
       condition: (metrics) => metrics.sourceCount === 0,
       message: 'No sources found for query',
-      severity: 'warning'
-    });
+      severity: `warning` });
   }
   private checkAlerts(metrics: MetricData): void {
     for (const alert of this.alerts) {
@@ -312,7 +302,7 @@ class MonitoringService extends EventEmitter {
           severity: alert.severity,
           message: alert.message,
           context: metrics;
-          timestamp: new Date()
+         , timestamp: new Date()
         });
         logger.warn(`[Monitoring] Alert triggered: ${alert.name} - ${alert.message}`);
       }
@@ -325,14 +315,12 @@ class MonitoringService extends EventEmitter {
         const healthy = await check();
         results.set(name, healthy);
         if (!healthy) {
-          this.emit('health:unhealthy', {
-            component: name;
-            timestamp: new Date()
+          this.emit('health:unhealthy', { component: name;, timestamp: new Date()
           });
         }
       } catch (error: any) {
         results.set(name, false);
-        logger.error(`[Monitoring] Health check failed for ${name}:`, error);
+        logger.error(`[Monitoring] Health check failed for ${name}: ', error);
       }
     }
     this.emit('health:check', {
@@ -424,7 +412,7 @@ class MonitoringService extends EventEmitter {
    */
   async recordMetric(
     metric: string;
-    value: number,
+   , value: number,
     labels?: Record<string, string>;
   ): Promise<void> {
     const data = {

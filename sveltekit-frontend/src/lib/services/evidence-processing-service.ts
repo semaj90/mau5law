@@ -34,9 +34,9 @@ class OllamaClient implements OllamaService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -62,10 +62,10 @@ class OllamaClient implements OllamaService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.completionModel,
+         , model: this.completionModel,
           prompt: prompt,
           stream: false, // For simplicity, not streaming here
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -95,9 +95,7 @@ export interface EvidenceDocumentInput {
   metadata?: Record<string, unknown>; // Changed from any
 }
 
-export interface ProcessedEvidenceResult {
-  id: string;
-  content: string;
+export interface ProcessedEvidenceResult { id: string;, content: string;
   title: string;
   caseId: string;
   documentType: string;
@@ -149,7 +147,7 @@ export class EvidenceProcessingService {
         embedding: embedding,
         metadata: documentInput.metadata || {},
         createdAt: now,
-        updatedAt: now,
+        updatedAt: now
       };
 
       // Store in PostgreSQL using Drizzle ORM
@@ -165,14 +163,14 @@ export class EvidenceProcessingService {
         embedding: sql`${processedData.embedding}::real[]`, // Cast to real[] for pgvector
         metadata: processedData.metadata, // Drizzle should handle JSONB directly
         createdAt: processedData.createdAt,
-        updatedAt: processedData.updatedAt,
+        updatedAt: processedData.updatedAt
       });
 
       console.log(`✅ Evidence document ${documentId} processed and stored in ${Date.now() - startTime}ms.`);
       return processedData;
     } catch (error: any) {
       console.error(`❌ Error processing evidence for case ${documentInput.caseId}:`, error);
-      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
@@ -190,7 +188,7 @@ export class EvidenceProcessingService {
       return null;
     } catch (error: any) {
       console.error(`❌ Error retrieving evidence by ID ${id}:`, error);
-      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
@@ -225,7 +223,7 @@ export class EvidenceProcessingService {
           createdAt: schema.evidence.createdAt,
           updatedAt: schema.evidence.updatedAt,
           // Explicitly type the raw SQL expression for similarity
-          similarity: sql<number>`1 - (${schema.evidence.embedding} <=> ${queryEmbedding}::real[])`.as('similarity'),
+          similarity: sql<number>`1 - (${schema.evidence.embedding} <=> ${queryEmbedding}::real[])`.as('similarity')
         })
         .from(schema.evidence);
 
@@ -245,7 +243,7 @@ export class EvidenceProcessingService {
       return results as Array<ProcessedEvidenceResult & { similarity: number }>;
     } catch (error: any) {
       console.error(`❌ Error searching similar evidence:`, error);
-      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 }

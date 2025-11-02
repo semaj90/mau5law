@@ -13,39 +13,29 @@ interface Evidence {
 }
 // Orphaned content note: original commented import removed during corruption repair.
 // Enhanced types for the data pipeline
-export interface CacheConfig {
-  ttl: number;
-  maxSize: number;
+export interface CacheConfig { ttl: number;, maxSize: number;
   strategy: "lru" | "lfu" | "fifo";
   syncInterval: number;
 }
-export interface SyncOperation {
-  id: string;
-  type: "create" | "update" | "delete";
+export interface SyncOperation { id: string;, type: "create" | "update" | "delete";
   collection: string;
   data: any;
   timestamp: Date;
   priority: number;
   retries: number;
 }
-export interface CacheStats {
-  hits: number;
-  misses: number;
+export interface CacheStats { hits: number;, misses: number;
   evictions: number;
   syncOperations: number;
   lastSync: Date | null;
   collections: Map<string, CollectionStats>;
 }
-export interface CollectionStats {
-  name: string;
-  documents: number;
+export interface CollectionStats { name: string;, documents: number;
   memoryUsage: number;
   lastAccess: Date;
   operations: number;
 }
-export interface IndexStrategy {
-  field: string;
-  type: "btree" | "hash" | "text" | "vector";
+export interface IndexStrategy { field: string;, type: "btree" | "hash" | "text" | "vector";
   options?: any;
 }
 // ======================================================================
@@ -126,8 +116,8 @@ class EnhancedLokiDB {
         unique: ['id'],
         transforms: {
           byCaseHighConfidence: [
-            { type: 'find', value: { caseId: { $aeq: '[%lktxp]caseId' } } },
-            { type: 'find', value: { confidence: { $gte: 0.8 } } },
+            { type: 'find', value: { caseId: {, $aeq: '[%lktxp]caseId' } } },
+            { type: 'find', value: { confidence: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
           recentProcessed: [
@@ -136,7 +126,7 @@ class EnhancedLokiDB {
             { type: 'limit', value: 50 }
           ],
           needsProcessing: [
-            { type: 'find', value: { processingStatus: { $in: ['pending', 'error'] } } },
+            { type: 'find', value: {, processingStatus: {, $in: ['pending', 'error'] } } },
             { type: 'simplesort', property: 'createdAt', desc: false }
           ]
         },
@@ -149,11 +139,11 @@ class EnhancedLokiDB {
         indices: ['evidenceId', 'analysisType', 'model', 'confidence', 'timestamp'],
         transforms: {
           highConfidenceAnalysis: [
-            { type: 'find', value: { confidence: { $gte: 0.9 } } },
+            { type: 'find', value: { confidence: {, $gte: 0.9 } } },
             { type: 'simplesort', property: 'timestamp', desc: true }
           ],
           byModel: [
-            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },
+            { type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ]
         },
@@ -165,10 +155,9 @@ class EnhancedLokiDB {
       this.db.addCollection('embeddings', {
         indices: ['contentHash', 'model', 'type', 'dimension'],
         unique: ['contentHash'],
-        transforms: {
-          byModel: [{ type: 'find', value: { model: { $aeq: '[%lktxp]model' } } }],
+        transforms: { byModel: [{, type: 'find', value: { model: {, $aeq: '[%lktxp]model' } } }],
           recentEmbeddings: [
-            { type: 'simplesort', property: 'createdAt', desc: true },
+            {, type: 'simplesort', property: 'createdAt', desc: true },
             { type: 'limit', value: 100 }
           ]
         },
@@ -181,14 +170,14 @@ class EnhancedLokiDB {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
           strongRelationships: [
-            { type: 'find', value: { strength: { $gte: 0.7 } } },
+            { type: 'find', value: { strength: {, $gte: 0.7 } } },
             { type: 'simplesort', property: 'strength', desc: true }
           ],
           byType: [
-            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },
+            { type: 'find', value: { type: {, $aeq: '[%lktxp]type' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
-          bidirectional: [{ type: 'find', value: { bidirectional: true } }]
+          bidirectional: [{ type: 'find', value: {, bidirectional: true } }]
         }
       });
     // Vector similarity matches cache
@@ -198,11 +187,11 @@ class EnhancedLokiDB {
         indices: ['queryHash', 'targetId', 'similarity', 'timestamp'],
         transforms: {
           highSimilarity: [
-            { type: 'find', value: { similarity: { $gte: 0.8 } } },
+            { type: 'find', value: { similarity: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'similarity', desc: true }
           ],
           recentMatches: [
-            { type: 'simplesort', property: 'timestamp', desc: true },
+            {, type: 'simplesort', property: 'timestamp', desc: true },
             { type: 'limit', value: 200 }
           ]
         },
@@ -219,7 +208,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'priority', desc: true }
           ],
           completed: [
-            { type: 'find', value: { status: 'completed' } },
+            { type: 'find', value: {, status: 'completed' } },
             { type: 'simplesort', property: 'timestamp', desc: true }
           ]
         },
@@ -462,8 +451,7 @@ class EnhancedLokiDB {
     const traverse = (currentId: string, depth: number) => {
       if (depth >= maxDepth || visited.has(currentId)) return;
       visited.add(currentId);
-      const query: any = {
-        $or: [{ fromId: currentId }, { toId: currentId }]
+      const query: any = { $or: [{, fromId: currentId }, { toId: currentId }]
       }
       if (type) query.type = type;
       const rels = col.find(query);
@@ -557,7 +545,7 @@ class EnhancedLokiDB {
             openSSE(urlIdx + 1);
           }
         } catch (e) {
-          console.warn(`Failed to open SSE ${url}:`, e);
+          console.warn(`Failed to open SSE ${url}: ', e);
           openSSE(urlIdx + 1);
         }
       }
@@ -678,7 +666,7 @@ class EnhancedLokiDB {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        operation: operation.type,
+       , operation: operation.type,
         data: operation.data,
         timestamp: operation.timestamp
       })
@@ -692,11 +680,10 @@ class EnhancedLokiDB {
       const config = this.config.get(name);
       if (!config?.ttl) continue;
       const cutoff = new Date(Date.now() - config.ttl);
-      const expired = collection.find({
-        createdAt: { $lt: cutoff }
+      const expired = collection.find({ createdAt: {, $lt: cutoff }
       });
       if (expired.length > 0) {
-        collection.findAndRemove({ createdAt: { $lt: cutoff } });
+        collection.findAndRemove({ createdAt: {, $lt: cutoff } });
         this.cacheStats.evictions += expired.length;
       }
     }
@@ -811,7 +798,7 @@ export const enhancedLokiDB = new EnhancedLokiDB();
 export const enhancedLokiStore = writable({
   initialized: false,
   stats: {
-    hits: 0,
+   , hits: 0,
     misses: 0,
     evictions: 0,
     syncOperations: 0,

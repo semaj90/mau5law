@@ -177,7 +177,7 @@ import type { SearchResult } from '$lib/types';
         console.error(err);
       }
     }
-    loading.upload = $state(false);
+    loading.upload = false;
     uploadProgress = 'Upload complete!';
     // Reload files and stats
     await Promise.all([loadEvidenceFiles(), loadEmbeddingStats()]);
@@ -393,7 +393,7 @@ export default {};
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <Button
-                onclick={() => { showSearchResults = $state(false); searchResults = []; }}
+                onclick={() => { showSearchResults = false; searchResults = []; }}
                 variant="ghost"
                 class="bits-btn text-sm"
               >

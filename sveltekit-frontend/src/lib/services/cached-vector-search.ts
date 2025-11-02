@@ -17,9 +17,7 @@ const QUERY_CACHE_TTL = 3600; // 1 hour for legal search results
 const SIMILARITY_THRESHOLD = 0.8; // Minimum similarity for relevant results
 const MAX_RESULTS = 10; // Top N similar documents
 
-export interface CachedSearchResult {
-  documentId: string;
-  content: string;
+export interface CachedSearchResult { documentId: string;, content: string;
   similarity: number;
   metadata: any;
   memoryBank: string;
@@ -27,9 +25,7 @@ export interface CachedSearchResult {
   chrRomPatterns?: any;
 }
 
-export interface SearchCacheStats {
-  totalQueries: number;
-  cacheHits: number;
+export interface SearchCacheStats { totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   avgQueryTime: number;
@@ -47,7 +43,7 @@ export class CachedVectorSearchService {
     cacheMisses: 0,
     hitRate: 0,
     avgQueryTime: 0,
-    lastCleanup: 0,
+    lastCleanup: 0
   };
 
   /**
@@ -70,13 +66,13 @@ export class CachedVectorSearchService {
       useCache = true,
       maxResults = MAX_RESULTS,
       similarityThreshold = SIMILARITY_THRESHOLD,
-      includeCHRRomPatterns = true,
+      includeCHRRomPatterns = true
     } = options;
 
     try {
       // Generate cache key
       const queryHash = createHash('sha256')
-        .update(`${query}:${caseId || 'global'}:${maxResults}:${similarityThreshold}`)
+        .update(`${query}:${caseId || 'global` }:${maxResults}:${similarityThreshold}`)
         .digest('hex');
       const cacheKey = `legal:vector:search:${queryHash}`;
 
@@ -209,8 +205,7 @@ export class CachedVectorSearchService {
           documentId: evidenceVectors.evidenceId,
           content: evidenceVectors.content,
           metadata: evidenceVectors.metadata,
-          similarity: sql<number>`1 - (${evidenceVectors.embedding} <=> ${embeddingVector})`,
-        })
+          similarity: sql<number>`1 - (${evidenceVectors.embedding} <=> ${embeddingVector})` })
         .from(evidenceVectors)
         .where(sql`1 - (${evidenceVectors.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`)
         .orderBy(sql`${evidenceVectors.embedding} <=> ${embeddingVector}`)
@@ -219,7 +214,7 @@ export class CachedVectorSearchService {
       searchResults = await Promise.all(
         (evidenceResults as any[]).map(async result => {
           const mockDocument: any = {
-            id: result.documentId || 'unknown',
+           , id: result.documentId || 'unknown',
             type: 'evidence',
             category: 'litigation',
             urgency: 'medium',
@@ -227,7 +222,7 @@ export class CachedVectorSearchService {
             activeReview: false,
             lastAccessed: new Date(),
             fileSize: result.content ? String(result.content).length : 0,
-            isEvidenceCritical: (result.similarity ?? 0) > 0.9,
+            isEvidenceCritical: (result.similarity ?? 0) > 0.9
           };
           const priority = calculateDocumentPriority(mockDocument);
           const memoryBank = selectMemoryBank(priority);
@@ -237,7 +232,7 @@ export class CachedVectorSearchService {
             similarity: result.similarity ?? 0,
             metadata: result.metadata ?? {},
             memoryBank,
-            priority,
+            priority
           } as CachedSearchResult;
         })
       );
@@ -247,8 +242,7 @@ export class CachedVectorSearchService {
           documentId: legalDocuments.id,
           content: legalDocuments.content,
           metadata: sql<any>`json_build_object('title', ${legalDocuments.title}, 'type', ${legalDocuments.documentType})`,
-          similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${embeddingVector})`,
-        })
+          similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${embeddingVector})` })
         .from(legalDocuments)
         .where(
           sql`${legalDocuments.embedding} IS NOT NULL
@@ -259,7 +253,7 @@ export class CachedVectorSearchService {
 
       searchResults = (globalResults as any[]).map(result => {
         const mockDocument: any = {
-          id: result.documentId,
+         , id: result.documentId,
           type: 'case_law',
           category: 'litigation',
           urgency: 'low',
@@ -267,7 +261,7 @@ export class CachedVectorSearchService {
           activeReview: false,
           lastAccessed: new Date(),
           fileSize: result.content ? String(result.content).length : 1000,
-          isEvidenceCritical: (result.similarity ?? 0) > 0.9,
+          isEvidenceCritical: (result.similarity ?? 0) > 0.9
         };
         const priority = calculateDocumentPriority(mockDocument);
         const memoryBank = selectMemoryBank(priority);
@@ -277,7 +271,7 @@ export class CachedVectorSearchService {
           similarity: result.similarity ?? 0,
           metadata: result.metadata ?? {},
           memoryBank,
-          priority,
+          priority
         } as CachedSearchResult;
       });
     }
@@ -311,7 +305,7 @@ export class CachedVectorSearchService {
         sharingPolicy: 'shared',
         updateFrequency: 'static',
         priority: 150,
-        estimatedUsage: results.length * 1024,
+        estimatedUsage: results.length * 1024
       });
 
       if (registered) {
@@ -325,8 +319,8 @@ export class CachedVectorSearchService {
               chrRomPatterns: {
                 documentIcon: iconPattern,
                 similarityGauge,
-                memoryBankIndicator,
-              },
+                memoryBankIndicator
+              }
             };
           })
         );
@@ -354,7 +348,7 @@ export class CachedVectorSearchService {
         result.chrRomPatterns = {
           documentIcon: await this.generateDocumentIconPattern(result),
           similarityGauge: await this.generateSimilarityGaugePattern(result.similarity ?? 0),
-          memoryBankIndicator: await this.generateMemoryBankPattern(result.memoryBank ?? 'CHR_ROM'),
+          memoryBankIndicator: await this.generateMemoryBankPattern(result.memoryBank ?? 'CHR_ROM')
         };
       }
     }
@@ -393,8 +387,7 @@ export class CachedVectorSearchService {
       INTERNAL_RAM: '#00d800',
       CHR_ROM: '#3cbcfc',
       PRG_ROM: '#fc9838',
-      SAVE_RAM: '#7c7c7c',
-    };
+      SAVE_RAM: '#7c7c7c` };
     const color = colors[memoryBank] || '#000000';
     const abbrev = (memoryBank || '').substring(0, 2).toUpperCase();
     return `<span style="background:${color};color:white;padding:1px 3px;font-size:8px;font-family:monospace;">${abbrev}</span>`;
@@ -432,7 +425,7 @@ export class CachedVectorSearchService {
         cacheMisses: 0,
         hitRate: 0,
         avgQueryTime: 0,
-        lastCleanup: Date.now(),
+        lastCleanup: Date.now()
       };
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);
@@ -447,7 +440,7 @@ export class CachedVectorSearchService {
     const promises = commonQueries.map(query =>
       this.searchSimilarEvidence(query, caseId, {
         useCache: false, // Force fresh search for warming
-        maxResults: 5,
+        maxResults: 5
       })
     );
     await Promise.all(promises);

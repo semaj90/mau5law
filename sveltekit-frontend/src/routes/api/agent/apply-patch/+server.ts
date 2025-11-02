@@ -12,9 +12,7 @@ type PatchInput = {
   taskId?: string;
 };
 
-type DemoPatch = {
-  id: string;
-  filePath: string;
+type DemoPatch = { id: string;, filePath: string;
   originalHash: string;
   targetHash: string;
   unifiedDiff: string;
@@ -22,9 +20,7 @@ type DemoPatch = {
   confidence: number;
   createdAt: string;
   status: 'pending' | 'applied' | 'failed';
-  metadata: {
-    agentId: string;
-    taskId: string;
+  metadata: { agentId: string;, taskId: string;
     lineChanges: number;
     insertions: number;
     deletions: number;
@@ -57,8 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing patchId',
-          message: 'patchId is required to apply a patch',
-        },
+          message: 'patchId is required to apply a patch` },
         { status: 400 }
       );
     }
@@ -76,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         targetHash: 'demo-target-unknown',
         unifiedDiff: generateSampleDiff(),
         createdAt: new Date().toISOString(),
-        metadata: { agentId: 'demo', taskId: 'demo', lineChanges: 0, insertions: 0, deletions: 0 },
+        metadata: { agentId: 'demo', taskId: 'demo', lineChanges: 0, insertions: 0, deletions: 0 }
       };
       demoPatchStorage.set(patchId, created);
       patch = created;
@@ -88,8 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Failed to retrieve or create patch ${patchId}`,
-        },
+          message: `Failed to retrieve or create patch ${patchId}` },
         { status: 500 }
       );
     }
@@ -100,8 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not applicable',
-          message: `Patch ${patchId} is in status: ${patch.status}. Only pending patches can be applied.`,
-        },
+          message: `Patch ${patchId} is in, status: ${patch.status}. Only pending patches can be applied.` },
         { status: 400 }
       );
     }
@@ -113,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ...patch,
       status: 'applied',
       appliedAt,
-      backup: backupPath,
+      backup: backupPath
     };
     demoPatchStorage.set(patchId, updatedPatch);
 
@@ -124,10 +117,10 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       patchId,
       filePath: updatedPatch.filePath,
-      message: `Successfully applied patch: ${updatedPatch.description}`,
+      message: `Successfully applied; patch: ${updatedPatch.description}`,
       linesChanged,
       backup: updatedPatch.backup,
-      appliedAt: updatedPatch.appliedAt,
+      appliedAt: updatedPatch.appliedAt
     };
 
     // Log the application for monitoring
@@ -136,11 +129,11 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       result,
       patchDetails: {
-        id: updatedPatch.id,
+       , id: updatedPatch.id,
         status: updatedPatch.status,
         confidence: updatedPatch.confidence,
-        filePath: updatedPatch.filePath,
-      },
+        filePath: updatedPatch.filePath
+      }
     });
   } catch (error: any) {
     const message = getErrorMessage(error);
@@ -150,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Patch application failed',
         message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -168,8 +161,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch ID already exists',
-          message: `A demo patch with id ${patch.id} already exists.`,
-        },
+          message: `A demo patch with id ${patch.id} already exists.` },
         { status: 409 }
       );
     }
@@ -190,8 +182,8 @@ export const PUT: RequestHandler = async ({ request }) => {
         taskId: patch.taskId || 'demo-task-1',
         lineChanges: 5,
         insertions: 3,
-        deletions: 2,
-      },
+        deletions: 2
+      }
     };
 
     demoPatchStorage.set(demoPatch.id, demoPatch);
@@ -199,8 +191,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       patch: demoPatch,
-      message: 'Demo patch created successfully',
-    });
+      message: 'Demo patch created successfully` });
   } catch (error: any) {
     const message = getErrorMessage(error);
     console.error('Error creating demo patch:', message);
@@ -208,7 +199,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to create demo patch',
-        message,
+        message
       },
       { status: 500 }
     );

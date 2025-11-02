@@ -6,9 +6,7 @@ import Redis from 'ioredis';
 import dotenv from 'dotenv';
 import createRedisConnection from '$lib/server/redis'; // Fix: createRedisConnection is the default export
 dotenv.config();
-export interface RedisConfig {
-  host: string;
-  port: number;
+export interface RedisConfig { host: string;, port: number;
   password?: string;
   db: number;
   retryDelayOnFailover: number;
@@ -24,7 +22,7 @@ const defaultConfig: RedisConfig = {
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
-  lazyConnect: true,
+  lazyConnect: true
 };
 // Replace strict dependency on package types with a minimal local interface
 // that declares only the members we use. This prevents TS errors if installed
@@ -121,7 +119,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
     password: config.password,
     db: config.db,
     maxRetriesPerRequest: 3,
-    retryStrategy: (times: number) => Math.min(times * 100, 2000),
+    retryStrategy: (times: number) => Math.min(times * 100, 2000)
   }) as unknown as IORedisClient;
   client.on('error', (error: Error) => {
     console.warn('🔴 Redis client error:', error?.message ?? String(error));
@@ -146,12 +144,12 @@ export async function checkRedisHealth(): Promise<{
     const latency = Date.now() - start;
     return {
       status: 'healthy',
-      latency,
+      latency
     };
   } catch (error) {
     return {
       status: 'error',
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     };
   }
 }

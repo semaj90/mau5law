@@ -60,8 +60,8 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           size: file.size,
           type: file.type,
-          uploadedAt: new Date().toISOString(),
-        },
+          uploadedAt: new Date().toISOString()
+        }
       });
 
       uploadedFiles.push({
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
         fileName: file.name,
         size: file.size,
         type: file.type,
-        embeddingsCount: embeddings.length,
+        embeddingsCount: embeddings.length
       });
     }
 
@@ -80,14 +80,14 @@ export const POST: RequestHandler = async ({ request }) => {
       files: uploadedFiles,
       embeddings_created: totalEmbeddings,
       processing_time_ms: processingTime,
-      context: uploadedFiles.map(f => f.fileName).join(', '),
+      context: uploadedFiles.map(f => f.fileName).join(', ')
     });
   } catch (error) {
     console.error('RAG ingest error:', error);
     return json(
       {
         error: 'Failed to process files',
-        detail: error instanceof Error ? error.message : 'Unknown error',
+        detail: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -110,11 +110,11 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
       // Limit to first 10 chunks
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'embeddinggemma:latest',
-          prompt: chunk,
-        }),
+         , model: 'embeddinggemma:latest',
+          prompt: chunk
+        })
       });
 
       if (response.ok) {
@@ -145,8 +145,7 @@ async function storeInVectorDB(data: any): Promise<any> {
         port: 5432,
         user: 'legal_admin',
         password: '123456',
-        database: 'legal_ai_db',
-      });
+        database: `legal_ai_db` });
 
       await client.connect();
 
@@ -172,7 +171,7 @@ async function storeInVectorDB(data: any): Promise<any> {
               fileId: data.fileId,
               fileName: data.fileName,
               chunkIndex: i,
-              totalChunks: data.embeddings.length,
+              totalChunks: data.embeddings.length
             }),
             'rag_document',
             data.fileName,

@@ -1,14 +1,10 @@
 import type { Document } from '$lib/types';
 // TensorRT-LLM Client for SvelteKit 2
 // Production client for gemma3-legal:latest inference
-export interface EmbeddingRequest {
-  text: string;
-  model: string;
+export interface EmbeddingRequest { text: string;, model: string;
   dimensions: number;
 }
-export interface EmbeddingResponse {
-  embedding: number[];
-  processing_time_ms: number;
+export interface EmbeddingResponse { embedding: number[];, processing_time_ms: number;
   model_version: string;
   dimensions: number;
 }
@@ -20,24 +16,18 @@ export interface LegalAnalysisRequest {
   max_tokens?: number;
   temperature?: number;
 }
-export interface LegalAnalysisResponse {
-  content: string;
-  processing_time_ms: number;
+export interface LegalAnalysisResponse { content: string;, processing_time_ms: number;
   model_version: string;
   token_count: number;
 }
-export interface TensorRTHealthResponse {
-  status: string;
-  model_loaded: boolean;
+export interface TensorRTHealthResponse { status: string;, model_loaded: boolean;
   gpu_available: boolean;
   memory_usage: {
     gpu_memory_allocated?: number;
     gpu_memory_reserved?: number;
     gpu_memory_free?: number;
   };
-  performance_metrics: {
-    total_inferences: number;
-    total_embeddings: number;
+  performance_metrics: { total_inferences: number;, total_embeddings: number;
     avg_inference_time_ms: number;
     avg_embedding_time_ms: number;
     target_latency_ms: number;
@@ -65,10 +55,10 @@ export class TensorRTLegalClient {
       const response = await this.makeRequest('/v1/embeddings', {
         method: 'POST',
         body: JSON.stringify({
-          text: request.text,
+         , text: request.text,
           model: request.model,
-          dimensions: request.dimensions,
-        }),
+          dimensions: request.dimensions
+        })
       });
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.status} ${response.statusText}`);
@@ -78,7 +68,7 @@ export class TensorRTLegalClient {
       return result;
     } catch (error) {
       const elapsedTime = performance.now() - startTime;
-      console.error(`Embedding generation failed after ${elapsedTime.toFixed(1)}ms:`, error);
+      console.error(`Embedding generation failed after ${elapsedTime.toFixed(1)}ms: ', error);
       throw error;
     }
   }
@@ -91,11 +81,11 @@ export class TensorRTLegalClient {
         context: request.context,
         model: request.model,
         max_tokens: request.max_tokens ?? 1024,
-        temperature: request.temperature ?? 0.1,
+        temperature: request.temperature ?? 0.1
       };
       const response = await this.makeRequest('/v1/legal/analysis', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         throw new Error(`Legal analysis failed: ${response.status} ${response.statusText}`);
@@ -107,15 +97,14 @@ export class TensorRTLegalClient {
       return result;
     } catch (error) {
       const elapsedTime = performance.now() - startTime;
-      console.error(`Legal analysis failed after ${elapsedTime.toFixed(1)}ms:`, error);
+      console.error(`Legal analysis failed after ${elapsedTime.toFixed(1)}ms: ', error);
       throw error;
     }
   }
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
-        method: 'GET',
-      });
+        method: `GET` });
       if (!response.ok) {
         console.warn(`TensorRT health check failed: ${response.status}`);
         return null;
@@ -130,7 +119,7 @@ export class TensorRTLegalClient {
   }
   async listModels(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/models', { method: 'GET' });
+      const response = await this.makeRequest('/v1/models', { method: `GET` });
       if (!response.ok) {
         throw new Error(`Models list failed: ${response.status} ${response.statusText}`);
       }
@@ -142,53 +131,51 @@ export class TensorRTLegalClient {
   }
   async getPerformanceMetrics(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/performance', { method: 'GET' });
+      const response = await this.makeRequest('/v1/performance', { method: `GET` });
       if (!response.ok) {
         throw new Error(`Performance metrics failed: ${response.status} ${response.statusText}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Failed to get performance metrics:', error);
+      console.error('Failed to get performance metrics: `, error);
       throw error;
     }
   }
   private buildLegalPrompt(text: string, context?: string, analysisType?: string): string {
-    const analysisTypes: Record<string, string> = {
-      comprehensive: `Provide a comprehensive legal analysis covering:
+    const analysisTypes: Record<string, string> = { comprehensive: `Provide a comprehensive legal analysis, covering:
 1. Key legal issues and risks
 2. Relevant laws and regulations
 3. Compliance requirements
 4. Recommended actions
 5. Potential liability exposure`,
-      risk: `Conduct a legal risk assessment focusing on:
+      risk: `Conduct a legal risk assessment focusing; on:
 1. Identified risk factors
 2. Risk severity and likelihood
 3. Mitigation strategies
 4. Compliance gaps
 5. Action priority matrix`,
-      compliance: `Perform a compliance analysis examining:
+      compliance: `Perform a compliance analysis; examining:
 1. Regulatory requirements
 2. Compliance gaps
 3. Required documentation
 4. Remediation steps
 5. Ongoing monitoring needs`,
-      contract: `Analyze this contract focusing on:
+      contract: `Analyze this contract focusing; on:
 1. Key terms and obligations
 2. Risk provisions
 3. Termination clauses
 4. Liability limitations
 5. Performance requirements`,
-      litigation: `Provide litigation analysis covering:
+      litigation: `Provide litigation analysis; covering:
 1. Legal claims and defenses
 2. Evidence requirements
 3. Procedural considerations
 4. Settlement opportunities
-5. Strategic recommendations`,
-    };
+5. Strategic recommendations` };
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
     return `<legal_analysis>
 Document/Text: ${text}
-${context ? `\nRelevant Context:\n${context}` : ''}
+${context ? `\nRelevant Context:\n${context}` : `` }
 Analysis Instructions:
 ${instructions}
 Provide a detailed, professional legal analysis:`;
@@ -204,12 +191,12 @@ Provide a detailed, professional legal analysis:`;
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          ...(options && options.headers ? (options.headers as Record<string, string>) : {}),
+          ...(options && options.headers ? (options.headers as Record<string, string>) : {})
         },
-        signal: controller.signal,
+        signal: controller.signal
       };
       try {
-        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET'} ${endpoint}`);
+        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET` } ${endpoint}`);
         const response = await fetch(url, requestOptions);
         clearTimeout(timeoutId);
         // Return for successful or client error (do not retry 4xx)
@@ -226,7 +213,7 @@ Provide a detailed, professional legal analysis:`;
           break;
         }
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-        console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms:`, lastError.message);
+        console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms: ', lastError.message);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -246,22 +233,20 @@ Provide a detailed, professional legal analysis:`;
         return {
           connected: false,
           latency,
-          error: 'Health check failed',
-        };
+          error: `Health check failed` };
       }
       return {
         connected: health.status === 'healthy',
         latency,
         modelLoaded: health.model_loaded,
-        error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined,
+        error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined
       };
     } catch (error) {
       const latency = performance.now() - startTime;
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        error: error instanceof Error ? error.message : `Unknown error` };
     }
   }
 }

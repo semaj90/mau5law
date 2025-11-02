@@ -33,9 +33,7 @@ interface VectorSearchRequest {
     summary?: number;
   };
 }
-interface VectorSearchResult {
-  id: string;
-  entity_type: 'document' | 'chunk' | 'case';
+interface VectorSearchResult { id: string;, entity_type: 'document' | 'chunk' | 'case';
   vector_type: 'content' | 'title' | 'summary';
   similarity: number;
   boosted_score?: number;
@@ -53,9 +51,7 @@ interface VectorSearchResult {
   };
 }
 
-type RawSearchResult = {
-  id: string;
-  entity_type: 'document' | 'chunk' | 'case';
+type RawSearchResult = { id: string;, entity_type: 'document' | 'chunk' | 'case';
   vector_type: 'content' | 'title' | 'summary';
   similarity: number | string;
   title: string | null;
@@ -84,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       vector_types = ['content', 'title', 'summary'],
       filters = {},
       include_content = false,
-      boost_factors = { title: 1.2, content: 1.0, summary: 0.9 },
+      boost_factors = { title: 1.2, content: 1.0, summary: 0.9 }
     } = searchRequest;
     // Try cache first
     const cached = await getCachedSearchResults(query, 'vector-api', {
@@ -94,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       vector_types,
       filters,
       include_content,
-      boost_factors,
+      boost_factors
     });
     if (cached) {
       const payload = typeof cached === 'string' ? JSON.parse(cached) : cached;
@@ -168,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
               case_title: sql`NULL`,
               jurisdiction: documents.jurisdiction,
               practice_area: documents.practice_area,
-              created_at: documents.created_at,
+              created_at: documents.created_at
             })
             .from(documents)
             .where(and(...conditions))
@@ -196,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: cases.title,
           jurisdiction: documents.jurisdiction,
           practice_area: documents.practice_area,
-          created_at: document_chunks.created_at,
+          created_at: document_chunks.created_at
         })
         .from(document_chunks)
         .leftJoin(documents, eq(document_chunks.document_id, documents.id))
@@ -224,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: cases.title,
           jurisdiction: cases.jurisdiction,
           practice_area: sql`NULL`,
-          created_at: cases.created_at,
+          created_at: cases.created_at
         })
         .from(cases)
         .where(and(sql`${cases.case_embedding} IS NOT NULL`, eq(cases.status, 'active')))
@@ -257,8 +253,8 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: result.case_title,
           jurisdiction: result.jurisdiction,
           practice_area: result.practice_area,
-          created_at: result.created_at?.toISOString() || new Date().toISOString(),
-        },
+          created_at: result.created_at?.toISOString() || new Date().toISOString()
+        }
       };
     });
     // Sort by boosted score and limit results
@@ -277,8 +273,8 @@ export const POST: RequestHandler = async ({ request }) => {
         entity_types_searched: entity_types,
         vector_types_searched: vector_types,
         boost_factors_applied: boost_factors,
-        filters_applied: filters,
-      },
+        filters_applied: filters
+      }
     };
     // Cache results for this query and parameter set.
     // Cache key is generated from the query string, API identifier ('vector-api'), and a hash of search parameters (threshold, limit, entity_types, vector_types, filters).
@@ -294,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -304,7 +300,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
     if (!query) {
-      return json({ error: 'Query parameter: "q" or: "query" is required' }, { status: 400 });
+      return json({ error: 'Query;, parameter: "q", or: "query" is required' }, { status: 400 });
     }
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
@@ -318,7 +314,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'content',
       ],
       include_content: url.searchParams.get('include_content') === 'true',
-      filters: {},
+      filters: {}
     };
     // Add filters from URL params
     const filterParams = [
@@ -338,7 +334,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
     // Create a fake request object to reuse POST logic
     const fakeRequest = {
-      json: async () => searchRequest,
+      json: async () => searchRequest
     };
     return await POST({ request: fakeRequest as unknown as Request, url } as unknown as RequestEvent);
   } catch (error) {
@@ -346,7 +342,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Check if report exists
     const reportResult = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
     if (!reportResult || reportResult.length === 0) {
-      return json({ error: 'Report not found' }, { status: 404 });
+      return json({ error: `Report not found` }, { status: 404 });
     }
     const report = reportResult[0];
     const data = await request.json();
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       includeCanvas: data?.includeCanvas ?? false,
       watermark: data?.watermark ?? '',
       orientation: data?.orientation ?? 'portrait',
-      margins: data?.margins ?? { top: 1, right: 1, bottom: 1, left: 1 },
+      margins: data?.margins ?? { top: 1, right: 1, bottom: 1, left: 1 }
     };
 
     const pdfMetadata = {
@@ -55,18 +55,16 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       options: exportOptions,
       estimatedPages: 10,
       fileSize: '~2.5MB',
-      downloadUrl: `/api/reports/${encodeURIComponent(reportId)}/export/pdf/download?token=${Date.now()}`,
-    };
+      downloadUrl: `/api/reports/${encodeURIComponent(reportId)}/export/pdf/download?token=${Date.now()}' };
     return json({
       success: true,
       message: 'PDF export initiated successfully',
       metadata: pdfMetadata,
-      note: 'This is a mock response. In production, actual PDF generation would occur here.',
-    });
+      note: `This is a mock response. In production, actual PDF generation would occur here.` });
   } catch (error: any) {
     // Narrow unknown to a safe message instead of using `any`
     const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : String(error);
     console.error('Error initiating PDF export:', errorMessage);
-    return json({ error: 'Failed to initiate PDF export' }, { status: 500 });
+    return json({ error: `Failed to initiate PDF export` }, { status: 500 });
   }
 };

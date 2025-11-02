@@ -77,5 +77,5 @@ export default {
   getRabbitmqUrl,
   getMinioUrl,
   getOllamaUrl,
-  getTritonUrl,
+  getTritonUrl
 };

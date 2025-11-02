@@ -24,7 +24,7 @@ const EvidenceQuerySchema = z.object({
   sortBy: z.enum(['createdAt', 'updatedAt', 'title', 'evidenceType']).default('createdAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   includeAnalysis: z.coerce.boolean().default(true),
-  search: z.string().optional(),
+  search: z.string().optional()
 });
 
 // Derive SortBy type from the Zod schema to avoid `any`
@@ -69,13 +69,13 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortOrder,
       filters: {
         ...(type && { evidenceType: type }),
-        ...(search && { search }),
-      },
+        ...(search && { search })
+      }
     } as Partial<Record<string, unknown>>;
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } =
+    const evidenceResult: { success: boolean;, data: EvidenceItem[]; total?: number; error?: any } =
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: evidenceResult.error,
+          details: evidenceResult.error
         })
       );
     }
@@ -105,13 +105,12 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                evidenceId: evidence.id,
+               , evidenceId: evidence.id,
                 content: evidence.content,
                 title: evidence.title,
                 evidenceType: evidence.evidenceType,
                 useGemmaEmbeddings: true,
-                analysisType: 'comprehensive',
-              }),
+                analysisType: `comprehensive` })
             });
             if (mcpResponse.ok) {
               const analysisData = (await mcpResponse.json()) as Partial<AiAnalysis> | null;
@@ -141,9 +140,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     embeddingVector: resolveEmbedding(analysisData),
                     confidence: analysisData?.confidence ?? 0,
                     analyzedAt: new Date().toISOString(),
-                    analyzedBy: 'embeddinggemma:latest',
-                  },
-                },
+                    analyzedBy: `embeddinggemma:latest` }
+                }
               };
             }
             return evidence;
@@ -169,20 +167,20 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const analysisStatus = {
       total: enhancedEvidence.length,
       analyzed: enhancedEvidence.filter(item => Boolean(item.metadata?.aiAnalysis)).length,
-      pending: enhancedEvidence.filter(item => !item.metadata?.aiAnalysis).length,
+      pending: enhancedEvidence.filter(item => !item.metadata?.aiAnalysis).length
     };
 
     return json({
       success: true,
       data: {
-        evidence: enhancedEvidence,
+       , evidence: enhancedEvidence,
         pagination: {
           page,
           limit,
           total: evidenceResult.total ?? enhancedEvidence.length,
           pages: Math.ceil((evidenceResult.total ?? enhancedEvidence.length) / limit),
           hasNext: page * limit < (evidenceResult.total ?? enhancedEvidence.length),
-          hasPrev: page > 1,
+          hasPrev: page > 1
         },
         metadata: {
           caseId,
@@ -190,15 +188,15 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           totalSize,
           analysisStatus,
           includeAnalysis,
-          filters: serviceOptions.filters,
-        },
+          filters: serviceOptions.filters
+        }
       },
       meta: {
         userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_list_by_case',
-        caseId,
-      },
+        caseId
+      }
     });
   } catch (err: any) {
     console.error('Error retrieving evidence by case:', err);
@@ -210,7 +208,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_PARAMS',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -228,7 +226,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to retrieve evidence',
         code: 'EVIDENCE_FETCH_FAILED',
-        details: errorMessage,
+        details: errorMessage
       })
     );
   }

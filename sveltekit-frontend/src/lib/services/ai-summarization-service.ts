@@ -23,9 +23,7 @@ export interface SummarizationOptions {
   useCache?: boolean;
 }
 
-export interface DocumentChunk {
-  id: string;
-  content: string;
+export interface DocumentChunk { id: string;, content: string;
   startIndex: number;
   endIndex: number;
   tokenCount: number;
@@ -33,22 +31,16 @@ export interface DocumentChunk {
   importance?: number;
 }
 
-export interface LegalEntity {
-  name: string;
-  type: 'person' | 'organization' | 'location' | 'other';
+export interface LegalEntity { name: string;, type: 'person' | 'organization' | 'location' | 'other';
   confidence: number;
   mentions: number;
 }
 
-export interface SummarizationResult {
-  summary: string;
-  keyPoints: string[];
+export interface SummarizationResult { summary: string;, keyPoints: string[];
   entities: LegalEntity[];
   keywords: string[];
   categories: string[];
-  sentiment?: {
-    score: number;
-    label: 'positive' | 'negative' | 'neutral';
+  sentiment?: { score: number;, label: 'positive' | 'negative' | 'neutral';
   };
   confidence: number;
   processingTime: number;
@@ -60,41 +52,31 @@ export interface SummarizationResult {
 }
 
 export type BatchSummarizationItem =
-  | {
-      documentId: string;
-      success: true;
+  | { documentId: string;, success: true;
       result: SummarizationResult;
     }
-  | {
-      documentId: string;
-      success: false;
+  | { documentId: string;, success: false;
       error: string;
     };
 
-export interface BatchSummarizationResult {
-  results: BatchSummarizationItem[];
-  totalProcessed: number;
+export interface BatchSummarizationResult { results: BatchSummarizationItem[];, totalProcessed: number;
   totalSuccess: number;
   totalFailures: number;
   processingTime: number;
 }
 
-export interface CaseSummaryStats {
-  totalEvidence: number;
-  processedEvidence: number;
+export interface CaseSummaryStats { totalEvidence: number;, processedEvidence: number;
   avgConfidence: number;
   mostCommonCategories: string[];
   totalWordCount: number;
   avgReadingTime: number;
 }
 
-interface ParsedAIResponse {
-  summary: string;
-  keyPoints: string[];
+interface ParsedAIResponse { summary: string;, keyPoints: string[];
   entities: LegalEntity[];
   keywords: string[];
   categories: string[];
-  sentiment?: { score: number; label: 'positive' | 'negative' | 'neutral' };
+  sentiment?: { score: number;, label: 'positive' | 'negative' | 'neutral' };
   confidence: number;
 }
 
@@ -126,7 +108,7 @@ class AISummarizationService {
         includeCategories: options.includeCategories ?? true,
         language: options.language || 'en',
         confidenceThreshold: options.confidenceThreshold || 0.7,
-        useCache: options.useCache ?? true,
+        useCache: options.useCache ?? true
       };
       // Check cache first
       const cacheKey = this.generateCacheKey(content, opts);
@@ -148,13 +130,13 @@ class AISummarizationService {
         [
           {
             role: 'system',
-            content: 'You are a legal AI assistant specializing in document analysis and summarization.',
+            content: 'You are a legal AI assistant specializing in document analysis and summarization.'
           },
-          { role: 'user', content: summaryPrompt },
+          { role: 'user', content: summaryPrompt }
         ],
         {
           temperature: 0.3,
-          maxTokens: 2000,
+          maxTokens: 2000
         }
       );
       // Parse AI response
@@ -175,7 +157,7 @@ class AISummarizationService {
         chunks: chunksWithEmbeddings,
         embedding: documentEmbedding,
         wordCount,
-        readingTime,
+        readingTime
       };
       // Cache result
       if (opts.useCache) {
@@ -184,14 +166,14 @@ class AISummarizationService {
       return result;
     } catch (error: any) {
       console.error('Document summarization failed:', error);
-      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
   /**
    * Batch summarize multiple documents
    */
   public async batchSummarize(
-    documents: Array<{ id: string; content: string }>,
+    documents: Array<{, id: string; content: string }>,
     options: SummarizationOptions = {}
   ): Promise<BatchSummarizationResult> {
     const startTime = Date.now();
@@ -207,7 +189,7 @@ class AISummarizationService {
         results.push({
           documentId: doc.id,
           success: true,
-          result,
+          result
         });
         totalSuccess++;
         // Brief pause to prevent overwhelming the AI service
@@ -216,8 +198,7 @@ class AISummarizationService {
         results.push({
           documentId: doc.id,
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
+          error: error instanceof Error ? error.message : `Unknown error` });
         totalFailures++;
       }
     }
@@ -226,7 +207,7 @@ class AISummarizationService {
       totalProcessed: documents.length,
       totalSuccess,
       totalFailures,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   }
   /**
@@ -267,7 +248,7 @@ class AISummarizationService {
         confidence: result.confidence,
         processingTime: result.processingTime,
         model: result.model,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       // Update evidence record with AI summary
@@ -277,12 +258,12 @@ class AISummarizationService {
           aiSummary: result.summary,
           aiAnalysis: analysisResult,
           contentEmbedding: result.embedding,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(evidence.id, evidenceId));
       return result;
     } catch (error: any) {
-      console.error(`Failed to summarize evidence ${evidenceId}:`, error);
+      console.error(`Failed to summarize evidence ${evidenceId}: ', error);
       throw error;
     }
   }
@@ -323,7 +304,7 @@ class AISummarizationService {
       const result = await this.summarizeDocument(combinedContent, {
         ...options,
         style: 'executive_summary',
-        maxLength: 800,
+        maxLength: 800
       });
       // Update case record with AI summary
       await db
@@ -331,7 +312,7 @@ class AISummarizationService {
         .set({
           aiSummary: result.summary,
           contentEmbedding: result.embedding,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(cases.id, caseId));
       return result;
@@ -348,9 +329,7 @@ class AISummarizationService {
     threshold: number = 0.8,
     limit: number = 10
   ): Promise<
-    Array<{
-      documentId: string;
-      similarity: number;
+    Array<{ documentId: string;, similarity: number;
       title: string;
       type: string | null;
       summary: string | null | undefined;
@@ -374,8 +353,7 @@ class AISummarizationService {
           title: evidence.title,
           evidenceType: evidence.evidenceType,
           aiSummary: evidence.aiSummary,
-          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})`,
-        })
+          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})` })
         .from(evidence)
         .where(
           and(
@@ -386,18 +364,16 @@ class AISummarizationService {
         .orderBy(sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}) DESC`)
         .limit(limit);
       return similarDocs.map(
-        (doc: {
-          id: string;
-          title: string;
+        (doc: { id: string;, title: string;
           evidenceType: string | null;
           aiSummary: string | null;
-          similarity: number;
+         , similarity: number;
         }) => ({
           documentId: doc.id,
           similarity: doc.similarity,
           title: doc.title,
           type: doc.evidenceType,
-          summary: doc.aiSummary || undefined,
+          summary: doc.aiSummary || undefined
         })
       );
     } catch (error: any) {
@@ -451,7 +427,7 @@ class AISummarizationService {
         avgConfidence,
         mostCommonCategories,
         totalWordCount,
-        avgReadingTime,
+        avgReadingTime
       };
     } catch (error: any) {
       console.error('Failed to get case summary stats:', error);
@@ -476,7 +452,7 @@ class AISummarizationService {
           content: currentChunk,
           startIndex,
           endIndex: startIndex + currentChunk.length,
-          tokenCount: this.estimateTokenCount(currentChunk),
+          tokenCount: this.estimateTokenCount(currentChunk)
         });
         // Start new chunk with overlap
         const overlapText = this.getOverlapText(currentChunk, this.chunkOverlap);
@@ -493,7 +469,7 @@ class AISummarizationService {
         content: currentChunk,
         startIndex,
         endIndex: startIndex + currentChunk.length,
-        tokenCount: this.estimateTokenCount(currentChunk),
+        tokenCount: this.estimateTokenCount(currentChunk)
       });
     }
     return chunks;
@@ -505,10 +481,10 @@ class AISummarizationService {
         const embedding = await ollamaCudaService.generateEmbedding(chunk.content);
         chunksWithEmbeddings.push({
           ...chunk,
-          embedding,
+          embedding
         });
       } catch (error: any) {
-        console.warn(`Failed to generate embedding for chunk ${chunk.id}:`, error);
+        console.warn(`Failed to generate embedding for chunk ${chunk.id}: ', error);
         chunksWithEmbeddings.push(chunk);
       }
     }
@@ -559,7 +535,7 @@ class AISummarizationService {
   "entities": [{"name": "Entity Name", "type": "person|organization|location|other", "confidence": 0.9, "mentions": 3}],
   "keywords": ["keyword1", "keyword2"],
   "categories": ["category1", "category2"],
-  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : ''}
+  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : `` }
   "confidence": 0.85
 }`;
     return prompt;
@@ -578,7 +554,7 @@ class AISummarizationService {
         entities: [],
         keywords: [],
         categories: [],
-        confidence: 0.5,
+        confidence: 0.5
       };
     } catch (error: any) {
       console.warn('Failed to parse AI response:', error);
@@ -588,7 +564,7 @@ class AISummarizationService {
         entities: [],
         keywords: [],
         categories: [],
-        confidence: 0.5,
+        confidence: 0.5
       };
     }
   }
@@ -626,10 +602,10 @@ class AISummarizationService {
   /**
    * Get cache statistics
    */
-  public getCacheStats(): { size: number; keys: string[] } {
+  public getCacheStats(): { size: number;, keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys()),
+      keys: Array.from(this.cache.keys())
     };
   }
 }

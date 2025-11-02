@@ -7,16 +7,12 @@ import type { Document } from '$lib/types';
 import { writable, derived } from "svelte/store";
 import { productionServiceClient } from "$lib/api/production-client";
 }
-export interface GraphNode {
-  id: string;
-  labels: string[];
+export interface GraphNode { id: string;, labels: string[];
   properties: { [key: string]: any }
   embedding?: number[];
 }
 }
-export interface GraphRelationship {
-  id: string;
-  type: string;
+export interface GraphRelationship { id: string;, type: string;
   startNode: string;
   endNode: string;
   properties: { [key: string]: any }
@@ -29,13 +25,9 @@ export interface GraphQuery {
   maxResults?: number;
 }
 }
-export interface GraphSearchResult {
-  nodes: GraphNode[];
-  relationships: GraphRelationship[];
+export interface GraphSearchResult { nodes: GraphNode[];, relationships: GraphRelationship[];
   paths: Array<any>;
-  metadata: {
-    queryTime: number;
-  resultCount: number;
+  metadata: { queryTime: number;, resultCount: number;
   graphTraversalDepth: number;
   }
 }
@@ -116,7 +108,7 @@ export const graphSchemaStore = writable<LegalGraphSchema>({
     relationships: ['CITED_BY', 'OVERRULES', 'DISTINGUISHES', 'FOLLOWS']
   },
   document: {
-    properties: ['filename', 'type', 'content', 'dateCreated', 'author'],
+   , properties: ['filename', 'type', 'content', 'dateCreated', 'author'],
     relationships: ['ATTACHED_TO', 'REFERENCES', 'AMENDED_BY', 'SUPERSEDES']
   }
 });
@@ -143,7 +135,7 @@ export class Neo4jGraphService {
    * Enhanced RAG search combining vector similarity with graph traversal
    */
   async enhancedRAGSearch(query: string, options: {
-    userId: string;
+   , userId: string;
     caseId?: string;
     maxDepth?: number;
     includeRelatedCases?: boolean;
@@ -304,9 +296,7 @@ export class Neo4jGraphService {
             n.updatedAt = datetime()
         RETURN elementId(n) as nodeId
       `;
-      const result = await this.executeQuery({
-        cypher: query;
-        parameters: {
+      const result = await this.executeQuery({ cypher: query;, parameters: {
           properties,
           embedding,
           textContent
@@ -323,7 +313,7 @@ export class Neo4jGraphService {
    */
   async updateNodeEmbeddings(nodeIds,: string[]): Promise<void> {
     const batchSize = 5,0;
-    for (let i =, 0;, i < node,Ids.le,ngt,h; i += bat,chSize) {>
+    for (let i =, 0; i < node,Ids.le,ngt,h; i += bat,chSize) {>
       const batch = nodeIds.slice(i, i + batchSize);
       const query = `;
         UNWIND $nodeIds as nodeId
@@ -342,9 +332,7 @@ export class Neo4jGraphService {
       // For now, we'll use the productionServiceClient
       await this.executeQuery({
         cypher: query,
-        parameters: {
-          nodeIds: batch;
-          embedding: [] // Placeholder - would be generated per node
+        parameters: {, nodeIds: batch;, embedding: [] // Placeholder - would be generated per node
         }
       )});
     }
@@ -398,7 +386,7 @@ export class Neo4jGraphService {
       metadata: {
         queryTime: results.reduce((sum, r) => sum + r.metadata.queryTime, 0),
         resultCount: results.reduce((sum, r) => sum + r.metadata.resultCount, 0),
-        graphTraversalDepth: Math.max(...results.map(r => r.metadata.graphTraversalDepth),
+        graphTraversalDepth: Math.max(...results.map(r => r.metadata.graphTraversalDepth)
       }
     }
     return mergedResul,t;
@@ -455,7 +443,7 @@ export class Neo4jGraphService {
   private buildRAGContext(vectorResults,: any, graphContex,t: GraphSearchResul,t): string {
     const context = [];
     // Add vector search results
-    context.push('SIMILAR CASES:');
+    context.push('SIMILAR CASES: `);
     vectorResults.nodes.forEach((node: any, index: number) => {
       context.push(`${index + 1}. ${node.properties.title} (similarity: ${(node.properties.similarity * 100).toFixed(1)}%)`);
       if (node.properties.content) {

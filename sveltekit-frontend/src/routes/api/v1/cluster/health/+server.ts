@@ -24,7 +24,7 @@ type ServiceHealthProvider = {
 async function probeServiceHealth(
   service: ServiceHealthProvider | null | undefined,
   fallbackName = 'service'
-): Promise<{ status: string; details: any }> {
+): Promise<{ status: string;, details: any }> {
   if (!service) return { status: 'unhealthy', details: { error: `${fallbackName} missing` } };
 
   if (typeof service.healthCheck === 'function') {
@@ -49,7 +49,7 @@ async function probeServiceHealth(
 
       return {
         status,
-        details,
+        details
       };
     } catch (err) {
       return { status: 'unhealthy', details: { error: String(err) } };
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // normalize redis result
       (async () => ({
         status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-        details: { connected: redisService.isConnectedToRedis() },
+        details: { connected: redisService.isConnectedToRedis() }
       }))(),
       probeServiceHealth(minioService, 'minio'),
       probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const internalServices = {
       redis: redisHealth.status === 'healthy',
       minio: minioHealth.status === 'healthy',
-      rabbitmq: rabbitmqHealth.status === 'healthy',
+      rabbitmq: rabbitmqHealth.status === 'healthy'
     };
     const internalHealthyCount = Object.values(internalServices).filter(Boolean).length;
     const externalHealthyCount = Object.values(externalServices).filter(Boolean).length;
@@ -115,19 +115,17 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: {
         total: totalServices,
         healthy: totalHealthy,
-        degraded: totalServices - totalHealthy,
+        degraded: totalServices - totalHealthy
       },
       services: {
         internal: internalServices,
-        external: externalServices,
+        external: externalServices
       },
-      ...(includeMetrics && {
-        details: {
-          redis: redisHealth.details,
+      ...(includeMetrics && { details: {, redis: redisHealth.details,
           minio: minioHealth.details,
-          rabbitmq: rabbitmqHealth.details,
-        },
-      }),
+          rabbitmq: rabbitmqHealth.details
+        }
+      })
     };
     return json(response);
   } catch (error: any) {
@@ -137,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Health check failed',
         message: formatError(error),
         timestamp: new Date().toISOString(),
-        status: 'error',
+        status: 'error'
       },
       { status: 500 }
     );
@@ -154,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const [redisHealth, minioHealth, rabbitmqHealth] = await Promise.all([
           (async () => ({
             status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-            details: { connected: redisService.isConnectedToRedis() },
+            details: { connected: redisService.isConnectedToRedis() }
           }))(),
           probeServiceHealth(minioService, 'minio'),
           probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -162,11 +160,11 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           action: 'force_health_check',
           results: {
-            redis: redisHealth.status === 'healthy',
+           , redis: redisHealth.status === 'healthy',
             minio: minioHealth.status === 'healthy',
-            rabbitmq: rabbitmqHealth.status === 'healthy',
+            rabbitmq: rabbitmqHealth.status === 'healthy'
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       default: return json({ error: 'Invalid action' }, { status: 400 });
@@ -175,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Action failed',
-        message: formatError(error),
+        message: formatError(error)
       },
       { status: 500 }
     );
@@ -187,7 +185,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
     { name: 'upload_service', url: 'http://localhost:8093/health' },
     { name: 'ollama', url: 'http://localhost:11434/api/tags' },
-    { name: 'sveltekit', url: 'http://localhost:5173/' },
+    { name: 'sveltekit', url: `http://localhost:5173/` }
   ];
   const results: Record<string, boolean> = {};
   await Promise.all(
@@ -197,7 +195,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
       try {
         const response = await fetch(url, {
           method: 'GET',
-          signal: controller.signal,
+          signal: controller.signal
         });
         results[name] = !!(response && (response.ok || response.status < 500));
       } catch {

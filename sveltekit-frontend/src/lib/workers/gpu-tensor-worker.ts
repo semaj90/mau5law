@@ -5,9 +5,7 @@
 // - Optional external Go service fallback (configurable via INITIALIZE)
 // - Simple LRU cache and processing stats
 
-export type MultiDimArray = {
-  shape: number[];
-  data: Float32Array | number[];
+export type MultiDimArray = { shape: number[];, data: Float32Array | number[];
   layout?: string;
   cacheKey?: string;
   timestamp?: number;
@@ -46,9 +44,7 @@ export interface WorkerResponse {
   error?: string;
 }
 
-export interface GPUProcessingStats {
-  totalProcessed: number;
-  cacheHitRate: number; // 0..100
+export interface GPUProcessingStats { totalProcessed: number;, cacheHitRate: number; // 0..100
   averageProcessingTime: number; // ms
   webgpuSupported: boolean;
   lastProcessedTime?: number;
@@ -63,14 +59,14 @@ interface NavigatorWithGPU {
 }
 
 class GPUTensorWorker {
-  private tensorCache = new Map<string, { data: MultiDimArray; timestamp: number }>();
+  private tensorCache = new Map<string, { data: MultiDimArray;, timestamp: number }>();
   private cacheLimit = 100;
   private stats: GPUProcessingStats = {
     totalProcessed: 0,
     cacheHitRate: 0,
     averageProcessingTime: 0,
     webgpuSupported: false,
-    lastProcessedTime: undefined,
+    lastProcessedTime: undefined
   };
   private goServiceUrl: string | null = null;
   // WebGPU placeholders
@@ -86,7 +82,7 @@ class GPUTensorWorker {
     try {
       const nav = (globalThis as unknown as NavigatorWithGPU | undefined) ?? undefined;
       if (nav?.gpu && typeof nav.gpu.requestAdapter === 'function') {
-        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance' });
+        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance` });
         if (adapter && typeof adapter.requestDevice === 'function') {
           this.gpuDevice = (await adapter.requestDevice()) ?? null;
           this.stats.webgpuSupported = Boolean(this.gpuDevice);
@@ -94,7 +90,7 @@ class GPUTensorWorker {
       }
     } catch (_err: any) {
       // ignore; fallback to CPU path
-      this.stats.webgpuSupported = $state(false);
+      this.stats.webgpuSupported = false;
     }
 
     return { webgpuSupported: this.stats.webgpuSupported };
@@ -156,7 +152,7 @@ class GPUTensorWorker {
       ...tensor,
       data: out,
       layout: (tensor.layout ?? 'unknown') + '_cpu',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -182,9 +178,8 @@ class GPUTensorWorker {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Mode': 'webworker',
-      },
-      body: JSON.stringify(tensor),
+        'X-Processing-Mode': 'webworker` },
+      body: JSON.stringify(tensor)
     });
     if (!resp.ok) throw new Error(`Go service error ${resp.status} ${resp.statusText}`);
     const body = await resp.json();
@@ -288,8 +283,7 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
         self.postMessage({
           type: 'ERROR',
           id: msg.id,
-          error: `Unknown message type: ${String(msg.type)}`,
-        } as WorkerResponse);
+          error: `Unknown message: type: ${String(msg.type)}` } as WorkerResponse);
     }
   } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);

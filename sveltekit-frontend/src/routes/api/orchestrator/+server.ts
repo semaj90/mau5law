@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import crypto from 'node:crypto'
 // Placeholder orchestrator route (repaired). Full multi-agent logic will be reinstated later.
-export interface WorkflowStatus { id: string; state: string; createdAt: string }
+export interface WorkflowStatus { id: string; state: string;, createdAt: string }
 // In-memory mock store
 const workflows: Record<string, WorkflowStatus> = {}
 // Helper to generate RFC4122 v4 UUID when crypto.randomUUID is not available
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
             const id = (body as any).workflowId
             if (!id || !workflows[id]) return json({ success: false, error: 'Workflow ID invalid' }, { status: 400 })
             workflows[id].state = 'executed'
-            return json({ success: true, workflowId: id, result: { status: 'ok' } })
+            return json({ success: true, workflowId: id, result: {, status: 'ok' } })
         }
         case 'get': {
             const id = (body as any).workflowId

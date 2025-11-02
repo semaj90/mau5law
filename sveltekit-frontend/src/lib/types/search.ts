@@ -4,9 +4,7 @@ import type { SearchResult } from '$lib/types';
  * Core types for pgvector search, embeddings, and retrieval
  * Search result from pgvector semantic search
  */
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   content: string;
   similarity: number;
   metadata?: Record<string, unknown>;
@@ -15,12 +13,8 @@ export interface SearchResult {
 /**
  * Summary response from RAG system
  */
-export interface SummaryResponse {
-  summary: string;
-  keyPoints: string[];
-  metadata: {
-    documentsProcessed: number;
-    processingTime: number;
+export interface SummaryResponse { summary: string;, keyPoints: string[];
+  metadata: { documentsProcessed: number;, processingTime: number;
     lambda: number;
     sentenceCount?: number; // Added for MMR compatibility
   };
@@ -32,16 +26,12 @@ export interface SummaryRequest {
   lambda?: number;
   type?: string;
 }
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content: string;
   type?: string;
   metadata?: Record<string, unknown>;
 }
-export interface SystemStatus {
-  database: boolean;
-  qdrant: boolean;
+export interface SystemStatus { database: boolean;, qdrant: boolean;
   embeddings: boolean;
   vectorSearch: boolean;
   redis?: boolean;
@@ -54,31 +44,21 @@ export interface SystemStatus {
   elasticsearch?: boolean;
   langchain?: boolean;
 }
-export interface TestResults {
-  query: string;
-  results: SearchResult[];
+export interface TestResults { query: string;, results: SearchResult[];
   timestamp: Date;
-  performance: {
-    duration: number;
-    documentsSearched: number;
+  performance: { duration: number;, documentsSearched: number;
   };
   error?: any;
 }
-export interface TensorOperation {
-  type: string;
-  data: any;
+export interface TensorOperation { type: string;, data: any;
   shape?: number[];
 }
-export interface MetricData {
-  name: string;
-  value: number;
+export interface MetricData { name: string;, value: number;
   timestamp: Date;
   labels?: Record<string, string>;
 }
 // GPU-specific types
-export interface GPUChatMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface GPUChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   embedding?: number[];
@@ -92,9 +72,7 @@ export interface GPUChatMessage {
 export interface GPUProcessingStatus {
   gpuAvailable: boolean;
   cudaVersion?: string;
-  gpuMemory?: {
-    total: number;
-    used: number;
+  gpuMemory?: { total: number;, used: number;
     free: number;
   };
   activeJobs: number;
@@ -110,9 +88,7 @@ export interface StreamingResponse {
   };
 }
 
-export interface VectorSearchQueryResult {
-  success: true;
-  results: SearchResult[];
+export interface VectorSearchQueryResult { success: true;, results: SearchResult[];
   query: string;
   topK: number;
   responseTime: number;

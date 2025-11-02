@@ -39,30 +39,22 @@ async function getDashboardData(locals: any): Promise<any> {
   return createSSRResponse(dashboardStats)
 }
 async function getSystemHealth(): Promise<Response> {
-  const systemHealth: SystemHealth = {
-    overall: {
-      status: 'healthy',
+  const systemHealth: SystemHealth = { overall: {, status: 'healthy',
       healthScore: 95.8,
       healthyServices: 7,
       totalServices: 8,
       timestamp: new Date().toISOString()
     },
-    services: {
-      databases: {
-        postgresql: { host: 'localhost', port: 5432, status: 'healthy' },
+    services: { databases: {, postgresql: { host: 'localhost', port: 5432, status: 'healthy' },
         redis: { host: 'localhost', port: 4005, status: 'healthy' }
       },
-      aiServices: {
-        ollama: { host: 'localhost', port: 11434, status: 'healthy' }
+      aiServices: { ollama: {, host: 'localhost', port: 11434, status: 'healthy' }
       },
-      gpuServices: {
-        rtx3060ti: { status: 'healthy', vram: '8GB' }
+      gpuServices: { rtx3060ti: {, status: 'healthy', vram: '8GB' }
       },
-      orchestration: {
-        sveltekit: { host: 'localhost', port: 5176, status: 'healthy' }
+      orchestration: { sveltekit: {, host: 'localhost', port: 5176, status: 'healthy' }
       },
-      storage: {
-        minio: { host: 'localhost', port: 4002, status: 'healthy' }
+      storage: { minio: {, host: 'localhost', port: 4002, status: 'healthy' }
       }
     },
     performance: {
@@ -123,13 +115,13 @@ async function getBatchData(locals: any): Promise<Response> {
   const batchedData = await batchSSRRequests({
     dashboard: () => getDashboardData(locals).then(r => r.json()),
     health: () => getSystemHealth().then(r => r.json()),
-    activities: () => getRecentActivities(locals).then(r => r.json()),
+    activities: () => getRecentActivities(locals).then(r => r.json())
   })
   return createSSRResponse({
     ...batchedData,
     meta: {
-      batchLoaded: true,
-      loadTime: new Date().toISOString(),
+     , batchLoaded: true,
+      loadTime: new Date().toISOString()
     }
   })
 }

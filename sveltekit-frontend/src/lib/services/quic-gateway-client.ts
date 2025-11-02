@@ -3,9 +3,7 @@ import { writable, derived } from 'svelte/store';
 const browser = typeof window !== 'undefined';
 
 // QUIC Configuration
-export interface QUICGatewayConfig {
-  baseURL: string;
-  http3Port: number;
+export interface QUICGatewayConfig { baseURL: string;, http3Port: number;
   fallbackToHTTP2: boolean;
   maxRetries: number;
   requestTimeout: number;
@@ -15,9 +13,7 @@ export interface QUICGatewayConfig {
 }
 
 // Request Configuration
-export interface QUICRequest {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  endpoint: string;
+export interface QUICRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';, endpoint: string;
   data?: any;
   headers?: Record<string, string>;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
@@ -41,35 +37,25 @@ export interface QUICResponse<T = any> {
 }
 
 // Connection Status
-export interface QUICConnectionStatus {
-  connected: boolean;
-  protocol: string;
+export interface QUICConnectionStatus { connected: boolean;, protocol: string;
   latency: number;
   throughput: number;
   errorRate: number;
-  connectionPool: {
-    active: number;
-    idle: number;
+  connectionPool: { active: number;, idle: number;
     total: number;
   };
-  capabilities: {
-    http3: boolean;
-    zeroRTT: boolean;
+  capabilities: { http3: boolean;, zeroRTT: boolean;
     streaming: boolean;
     multiplexing: boolean;
   };
 }
 
 // Performance Metrics
-export interface QUICPerformanceMetrics {
-  requestsTotal: number;
-  requestsPerSecond: number;
+export interface QUICPerformanceMetrics { requestsTotal: number;, requestsPerSecond: number;
   averageLatency: number;
   throughputMbps: number;
   cacheHitRate: number;
-  protocolDistribution: {
-    http3: number;
-    http2: number;
+  protocolDistribution: { http3: number;, http2: number;
     http1: number;
   };
   errorTypes: Record<string, number>;
@@ -85,9 +71,7 @@ export interface StreamProcessingData {
 }
 
 // New: Interface for health status data
-export interface HealthStatusData {
-  status: 'ok' | 'degraded' | 'unhealthy';
-  message: string;
+export interface HealthStatusData { status: 'ok' | 'degraded' | 'unhealthy';, message: string;
   timestamp: string;
   details?: Record<string, unknown>;
   protocol?: 'HTTP/3' | 'HTTP/2' | 'HTTP/1.1';
@@ -99,10 +83,8 @@ export interface HealthStatusData {
 export class QUICGatewayClient {
   private config: QUICGatewayConfig;
   private connectionPool: Map<string, WebTransport> = new Map();
-  private requestCache: Map<string, { response: QUICResponse<unknown>; timestamp: number }> = new Map();
-  private performanceData: Array<{
-    timestamp: number;
-    responseTime: number;
+  private requestCache: Map<string, { response: QUICResponse<unknown>;, timestamp: number }> = new Map();
+  private performanceData: Array<{ timestamp: number;, responseTime: number;
     success: boolean;
     protocol: string;
     fromCache: boolean;
@@ -118,7 +100,7 @@ export class QUICGatewayClient {
     throughput: 0,
     errorRate: 0,
     connectionPool: { active: 0, idle: 0, total: 0 },
-    capabilities: { http3: false, zeroRTT: false, streaming: false, multiplexing: false },
+    capabilities: {, http3: false, zeroRTT: false, streaming: false, multiplexing: false }
   });
 
   public performanceMetrics = writable<QUICPerformanceMetrics>({
@@ -127,9 +109,9 @@ export class QUICGatewayClient {
     averageLatency: 0,
     throughputMbps: 0,
     cacheHitRate: 0,
-    protocolDistribution: { http3: 0, http2: 0, http1: 0 },
+    protocolDistribution: {, http3: 0, http2: 0, http1: 0 },
     errorTypes: {},
-    bandwidthSaved: 0,
+    bandwidthSaved: 0
   });
 
   public isReady = writable<boolean>(false);
@@ -144,7 +126,7 @@ export class QUICGatewayClient {
       enableStreaming: true,
       connectionPoolSize: 10,
       enableZeroRTT: true,
-      ...config,
+      ...config
     };
     // fire-and-forget initialize (constructor used previously to auto-init)
     if (browser) {
@@ -188,11 +170,11 @@ export class QUICGatewayClient {
       connected: true,
       protocol: 'HTTP/2',
       capabilities: {
-        http3: false,
+       , http3: false,
         zeroRTT: false,
         streaming: true,
-        multiplexing: true,
-      },
+        multiplexing: true
+      }
     }));
     this.isReady.set(true);
     console.log('✅ QUIC Gateway Client initialized in HTTP/2 fallback mode');
@@ -209,7 +191,7 @@ export class QUICGatewayClient {
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       const response = await fetch(testURL, {
         method: 'GET',
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
       const responseTime = performance.now() - startTime;
@@ -224,8 +206,8 @@ export class QUICGatewayClient {
             http3: (data && data.protocol) === 'HTTP/3',
             zeroRTT: this.config.enableZeroRTT,
             streaming: this.config.enableStreaming,
-            multiplexing: true,
-          },
+            multiplexing: true
+          }
         }));
         console.log(`🔗 QUIC Gateway connected (${responseTime.toFixed(2)}ms latency)`);
       } else {
@@ -255,7 +237,7 @@ export class QUICGatewayClient {
         return {
           ...cached,
           responseTime: performance.now() - startTime,
-          fromCache: true,
+          fromCache: true
         } as QUICResponse<T>;
       }
     }
@@ -273,7 +255,7 @@ export class QUICGatewayClient {
         lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
         if (attempt < maxAttempts) {
-          console.warn(`⚠️ Request attempt ${attempt} failed, retrying:`, lastError);
+          console.warn(`⚠️ Request attempt ${attempt} failed, retrying: ', lastError);
           await this.sleep(Math.pow(2, attempt) * 1000);
         }
       }
@@ -289,7 +271,7 @@ export class QUICGatewayClient {
       protocol: 'HTTP/1.1',
       fromCache: false,
       connectionReused: false,
-      zeroRTT: false,
+      zeroRTT: false
     };
     this.updatePerformanceMetrics(failureResponse);
     return failureResponse;
@@ -304,7 +286,7 @@ export class QUICGatewayClient {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(request.headers || {}),
+      ...(request.headers || {})
     };
 
     if (request.useHTTP3 !== false) {
@@ -319,7 +301,7 @@ export class QUICGatewayClient {
         method: request.method,
         headers,
         signal: controller.signal,
-        body: request.method === 'GET' ? undefined : JSON.stringify(request.data ?? {}),
+        body: request.method === 'GET' ? undefined : JSON.stringify(request.data ?? {})
       };
 
       const raw = await fetch(url, fetchOptions);
@@ -344,7 +326,7 @@ export class QUICGatewayClient {
         protocol: this.detectProtocol(raw),
         fromCache: false,
         connectionReused: this.isConnectionReused(raw),
-        zeroRTT: this.isZeroRTT(raw),
+        zeroRTT: this.isZeroRTT(raw)
       };
     } catch (error: any) {
       clearTimeout(timeoutId);
@@ -364,7 +346,7 @@ export class QUICGatewayClient {
       endpoint: '/legal/analyze',
       data: { document, analysisType },
       priority: 'high',
-      useHTTP3: true,
+      useHTTP3: true
     });
   }
 
@@ -376,7 +358,7 @@ export class QUICGatewayClient {
       method: 'GET',
       endpoint: `/legal/stream/${documentId}`,
       streaming: true,
-      useHTTP3: true,
+      useHTTP3: true
     });
   }
 
@@ -387,8 +369,7 @@ export class QUICGatewayClient {
     return this.request({
       method: 'GET',
       endpoint: '/health',
-      priority: 'medium',
-    });
+      priority: 'medium` });
   }
 
   /**
@@ -462,7 +443,7 @@ export class QUICGatewayClient {
       responseTime: response.responseTime,
       success: response.success,
       protocol: response.protocol,
-      fromCache: response.fromCache,
+      fromCache: response.fromCache
     });
 
     // cap array
@@ -487,8 +468,8 @@ export class QUICGatewayClient {
       protocolDistribution: {
         http3: dist.http3 || 0,
         http2: dist.http2 || 0,
-        http1: dist.http11 || 0,
-      },
+        http1: dist.http11 || 0
+      }
     }));
   }
 
@@ -503,7 +484,7 @@ export class QUICGatewayClient {
           ...status,
           connected: healthResponse.success,
           latency: healthResponse.responseTime,
-          errorRate: healthResponse.success ? status.errorRate : Math.min(1, status.errorRate + 0.1),
+          errorRate: healthResponse.success ? status.errorRate : Math.min(1, status.errorRate + 0.1)
         }));
         if (healthResponse.success) this.reconnectAttempts = 0;
       } catch (error: any) {
@@ -528,7 +509,7 @@ export class QUICGatewayClient {
         data: undefined,
         connectionReused: false,
         zeroRTT: false,
-        error: undefined,
+        error: undefined
       } as QUICResponse<unknown>);
     }, 5_000);
   }
@@ -541,7 +522,7 @@ export class QUICGatewayClient {
     this.connectionStatus.update(status => ({
       ...status,
       connected: false,
-      errorRate: Math.min(1, status.errorRate + 0.1),
+      errorRate: Math.min(1, status.errorRate + 0.1)
     }));
     if (this.reconnectAttempts <= 5) {
       setTimeout(
@@ -586,7 +567,7 @@ export class QUICGatewayClient {
         throughput: 0,
         errorRate: 0,
         connectionPool: { active: 0, idle: 0, total: 0 },
-        capabilities: { http3: false, zeroRTT: false, streaming: false, multiplexing: false },
+        capabilities: {, http3: false, zeroRTT: false, streaming: false, multiplexing: false }
       }
     );
   }
@@ -621,7 +602,7 @@ export function createQUICGatewayClient(config?: Partial<QUICGatewayConfig>) {
     streamLegalProcessing: client.streamLegalProcessing.bind(client),
     getHealthStatus: client.getHealthStatus.bind(client),
     clearCache: client.clearCache.bind(client),
-    cleanup: client.cleanup.bind(client),
+    cleanup: client.cleanup.bind(client)
   };
 }
 
@@ -634,5 +615,5 @@ export const quicGatewayClient = new QUICGatewayClient({
   requestTimeout: 10_000,
   enableStreaming: true,
   connectionPoolSize: 10,
-  enableZeroRTT: true,
+  enableZeroRTT: true
 });

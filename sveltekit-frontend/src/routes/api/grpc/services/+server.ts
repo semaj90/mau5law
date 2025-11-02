@@ -8,19 +8,15 @@ import { json } from '@sveltejs/kit'
 import { logger } from '$lib/server/production-logger'
 
 // gRPC Service Interface for Legal AI Platform
-interface GRPCServiceEndpoint {
-  name: string
-  host: string
-  port: number
-  protocols: ('grpc' | 'http')[]
-  status: 'healthy' | 'unhealthy' | 'unknown'
-  lastHealthCheck: Date
-  capabilities: string[]
+interface GRPCServiceEndpoint { name: string, host: string; port: number
+  protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'
+  lastHealthCheck: Date; capabilities: string[]
 }
 
 // Legal AI Platform Service Registry (matches Go implementation)
 const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
-  // Core AI Services: 'legal-gateway': {
+  // Core AI Services
+  'legal-gateway': {
     name: 'legal-gateway',
     host: 'localhost',
     port: 8080,
@@ -65,7 +61,8 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['cuda-kernels', 'gpu-computation', 'parallel-processing']
   },
-  // Legal Analysis Services: 'legal-ai-inference': {
+  // Legal Analysis Services
+  'legal-ai-inference': {
     name: 'legal-ai-inference',
     host: 'localhost',
     port: 8100,
@@ -110,7 +107,8 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['named-entity-recognition', 'legal-entities', 'relationship-extraction']
   },
-  // Vector & Embedding Services: 'vector-search': {
+  // Vector & Embedding Services
+  'vector-search': {
     name: 'vector-search',
     host: 'localhost',
     port: 8110,
@@ -128,7 +126,8 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['text-embeddings', 'document-embeddings', 'legal-embeddings']
   },
-  // Streaming & Real-time Services: 'quic-streaming': {
+  // Streaming & Real-time Services
+  'quic-streaming': {
     name: 'quic-streaming',
     host: 'localhost',
     port: 8130,
@@ -137,7 +136,8 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['ultra-low-latency', 'quic-protocol', 'streaming-inference']
   },
-  // Authentication & Security: 'auth-service': {
+  // Authentication & Security
+  'auth-service': {
     name: 'auth-service',
     host: 'localhost',
     port: 8150,
@@ -146,53 +146,52 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['authentication', 'authorization', 'jwt-validation']
   }
-}
+};
 
 /**
  * gRPC Client Manager for Legal AI Platform
  */
 class LegalAIGRPCClient {
-  private services: Map<string, GRPCServiceEndpoint> = new Map()
-  private healthCheckInterval: NodeJS.Timeout | null = null
+  private services: Map<string, GRPCServiceEndpoint> = new Map();
+  private healthCheckInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     // Initialize services
     Object.entries(LEGAL_AI_SERVICES).forEach(([name, service]) => {
-      this.services.set(name, { ...service })
-    })
-    this.startHealthChecking()
+      this.services.set(name, { ...service });
+    });
+    this.startHealthChecking();
   }
 
   /**
    * Start periodic health checking of all services
    */
   private startHealthChecking(): void {
-    if (this.healthCheckInterval) return
+    if (this.healthCheckInterval) return;
     this.healthCheckInterval = setInterval(() => {
       // fire-and-forget; errors are logged per-service
-      void this.performHealthChecks()
-    }, 30_000)
+      void this.performHealthChecks();
+    }, 30_000);
   }
 
   /**
    * Perform health checks on all registered services
    */
   private async performHealthChecks(): Promise<void> {
-    const checks = Array.from(this.services.values()).map(async (service) => {
+    const checks = Array.from(this.services.values()).map(async service => {
       try {
-        const ok = await this.httpHealthCheck(service)
-        service.status = ok ? 'healthy' : 'unhealthy'
-        service.lastHealthCheck = new Date()
+        const ok = await this.httpHealthCheck(service);
+        service.status = ok ? 'healthy' : 'unhealthy';
+        service.lastHealthCheck = new Date();
       } catch (err) {
-        service.status = 'unhealthy'
-        service.lastHealthCheck = new Date()
-        logger.error(`Health check failed for ${service.name}`, err as Error, {
-          service: service.name,
-          port: service.port
-        })
+        service.status = 'unhealthy';
+        service.lastHealthCheck = new Date();
+        logger.error(`Health check failed for ${service.name} on port ${service.port}`, err as Error, {
+          service: service.name
+        });
       }
-    })
-    await Promise.allSettled(checks)
+    });
+    await Promise.allSettled(checks);
   }
 
   /**
@@ -200,16 +199,16 @@ class LegalAIGRPCClient {
    */
   private async httpHealthCheck(service: GRPCServiceEndpoint): Promise<boolean> {
     try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 5_000)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5_000);
       const response = await fetch(`http://${service.host}:${service.port}/health`, {
         method: 'GET',
         signal: controller.signal
-      })
-      clearTimeout(timeoutId)
-      return response.ok
+      });
+      clearTimeout(timeoutId);
+      return response.ok;
     } catch {
-      return false
+      return false;
     }
   }
 
@@ -217,14 +216,14 @@ class LegalAIGRPCClient {
    * Get service endpoint information
    */
   getServiceEndpoint(serviceName: string): GRPCServiceEndpoint | null {
-    return this.services.get(serviceName) ?? null
+    return this.services.get(serviceName) ?? null;
   }
 
   /**
    * Get all healthy services
    */
   getHealthyServices(): GRPCServiceEndpoint[] {
-    return Array.from(this.services.values()).filter((s) => s.status === 'healthy')
+    return Array.from(this.services.values()).filter(s => s.status === 'healthy');
   }
 
   /**
@@ -232,67 +231,74 @@ class LegalAIGRPCClient {
    */
   getServicesByCapability(capability: string): GRPCServiceEndpoint[] {
     return Array.from(this.services.values()).filter(
-      (service) => service.capabilities.includes(capability) && service.status === 'healthy'
-    )
+      service => service.capabilities.includes(capability) && service.status === 'healthy'
+    );
   }
 
   /**
    * Make gRPC request with fallback to HTTP
    */
   async makeRequest(serviceName: string, method: string, data?: Record<string, unknown>): Promise<unknown> {
-    const service = this.services.get(serviceName)
-    if (!service) throw new Error(`Service ${serviceName} not found`)
+    const service = this.services.get(serviceName);
+    if (!service) throw new Error(`Service ${serviceName} not found`);
 
     if (service.protocols.includes('grpc') && service.status === 'healthy') {
       try {
-        return await this.makeGRPCRequest(service, method, data)
+        return await this.makeGRPCRequest(service, method, data);
       } catch (err) {
-        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, err as Error)
+        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, err as Error);
       }
     }
 
     if (service.protocols.includes('http')) {
-      return await this.makeHTTPRequest(service, method, data)
+      return await this.makeHTTPRequest(service, method, data);
     }
 
-    throw new Error(`No available protocols for service ${serviceName}`)
+    throw new Error(`No available protocols for service ${serviceName}`);
   }
 
   /**
    * Make gRPC request (placeholder - requires actual gRPC client implementation)
    * Prefix unused args with underscore to satisfy unused-arg lint rule.
    */
-  private async makeGRPCRequest(_service: GRPCServiceEndpoint, _method: string, _data?: Record<string, unknown>): Promise<unknown> {
+  private async makeGRPCRequest(
+    _service: GRPCServiceEndpoint,
+    _method: string,
+    _data?: Record<string, unknown>
+  ): Promise<unknown> {
     // Placeholder: real implementation requires protobuf-generated clients.
-    throw new Error('gRPC client not yet implemented - requires protobuf generation')
+    throw new Error('gRPC client not yet implemented - requires protobuf generation');
   }
 
   /**
    * Make HTTP request as fallback
    */
-  private async makeHTTPRequest(service: GRPCServiceEndpoint, method: string, data?: Record<string, unknown>): Promise<unknown> {
-    const endpoint = `http://${service.host}:${service.port}/${method}`
-    const payload = data ?? {}
+  private async makeHTTPRequest(
+    service: GRPCServiceEndpoint,
+    method: string,
+    data?: Record<string, unknown>
+  ): Promise<unknown> {
+    const endpoint = `http://${service.host}:${service.port}/${method}`;
+    const payload = data ?? {};
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Client-Type': 'legal-ai-frontend',
-        'X-Request-Source': 'grpc-fallback'
-      },
+        'X-Request-Source': `grpc-fallback` },
       body: JSON.stringify(payload)
-    })
+    });
     if (!res.ok) {
-      throw new Error(`HTTP request failed: ${res.status} ${res.statusText}`)
+      throw new Error(`HTTP request failed: ${res.status} ${res.statusText}`);
     }
-    return (await res.json()) as unknown
+    return (await res.json()) as unknown;
   }
 
   /**
    * Get comprehensive service status
    */
   getServiceStatus(): Record<string, unknown> {
-    const out: Record<string, unknown> = {}
+    const out: Record<string, unknown> = {};
     this.services.forEach((service, name) => {
       out[name] = {
         name: service.name,
@@ -302,10 +308,9 @@ class LegalAIGRPCClient {
         lastHealthCheck: service.lastHealthCheck,
         protocols: service.protocols,
         capabilities: service.capabilities,
-        endpoint: `${service.host}:${service.port}`
-      }
-    })
-    return out
+        endpoint: `${service.host}:${service.port}' };
+    });
+    return out;
   }
 
   /**
@@ -313,8 +318,8 @@ class LegalAIGRPCClient {
    */
   destroy(): void {
     if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval)
-      this.healthCheckInterval = null
+      clearInterval(this.healthCheckInterval);
+      this.healthCheckInterval = null;
     }
   }
 }
@@ -365,14 +370,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const payload = (await request.json()) ?? {}
     const { service, method, data } = payload as { service?: string; method?: string; data?: Record<string, unknown> }
     if (!service || !method) {
-      return json({ success: false, error: 'Missing required fields: service, method' }, { status: 400 })
+      return json({ success: false, error: 'Missing required; fields: service, method' }, { status: 400 })
     }
     const result = await grpcClient.makeRequest(service, method, data ?? {})
     return json({ success: true, service, method, result, timestamp: new Date().toISOString() })
   } catch (err) {
     logger.error('gRPC request failed', err as Error)
     return json(
-      { success: false, error: 'gRPC request failed', details: err instanceof Error ? err.message : 'Unknown error' },
+      { success: false, error: 'gRPC request failed', details: err instanceof Error ? err.message : `Unknown error` },
       { status: 500 }
     )
   }

@@ -26,9 +26,7 @@ interface JSONArray extends Array<JSONValue> {}
 type JSONMap = JSONObject;
 
 // Define types for Qdrant collection configuration
-interface QdrantVectorParams {
-  size: number;
-  distance: 'Cosine' | 'Euclid' | 'Dot';
+interface QdrantVectorParams { size: number;, distance: 'Cosine' | 'Euclid' | 'Dot';
   on_disk?: boolean;
 }
 
@@ -82,9 +80,7 @@ export interface CollectionRequest {
   wal_config?: QdrantWalConfigDiff; // Changed to snake_case and used QdrantWalConfigDiff
   hnsw_config?: QdrantHnswConfigDiff; // Added hnsw_config
 }
-export interface SearchRequest {
-  collection: string;
-  query: number[] | string;
+export interface SearchRequest { collection: string;, query: number[] | string;
   limit?: number;
   offset?: number;
   filter?: JSONMap;
@@ -112,10 +108,8 @@ class QdrantAPIError extends Error {
 // Utility functions for Windows optimization
 function getOptimizedQdrantConfig(vectorSize: number): QdrantCollectionConfiguration {
   // Windows-specific optimizations for Qdrant
-  const config: QdrantCollectionConfiguration = {
-    vectors: {
-      size: vectorSize,
-      distance: 'Cosine',
+  const config: QdrantCollectionConfiguration = { vectors: {, size: vectorSize,
+      distance: 'Cosine'
     },
     optimizers_config: {
       deleted_threshold: 0.2,
@@ -124,12 +118,12 @@ function getOptimizedQdrantConfig(vectorSize: number): QdrantCollectionConfigura
       max_segment_size: process.platform === 'win32' ? 200000 : undefined, // Use undefined for optional properties instead of null
       memmap_threshold: process.platform === 'win32' ? 50000 : 20000, // Higher threshold on Windows
       indexing_threshold: process.platform === 'win32' ? 30000 : 20000, // Adjusted for Windows I/O
-      flush_interval_sec: 10,
+      flush_interval_sec: 10
     },
     wal_config: {
       wal_capacity_mb: process.platform === 'win32' ? 64 : 32, // More WAL capacity on Windows
-      wal_segments_ahead: 1,
-    },
+      wal_segments_ahead: 1
+    }
   };
   // Additional Windows optimizations
   if (process.platform === 'win32') {
@@ -137,7 +131,7 @@ function getOptimizedQdrantConfig(vectorSize: number): QdrantCollectionConfigura
       m: 16,
       ef_construct: 128,
       full_scan_threshold: 10000,
-      max_indexing_threads: Math.max(1, Math.floor(os.cpus().length / 2)),
+      max_indexing_threads: Math.max(1, Math.floor(os.cpus().length / 2))
     };
   }
   return config;
@@ -155,22 +149,22 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     // Rate limiting
     const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api');
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_sync:${clientIP}:${getUserId(locals) || 'anonymous'}`,
-      ...rateLimitConfig,
+      key: 'qdrant_sync:${clientIP}:${getUserId(locals) || 'anonymous` }`,
+      ...rateLimitConfig
     });
     if (!rateLimitResult.allowed) {
       return json(
         {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },
         {
           // Corrected json syntax
           status: 429,
           headers: {
-            'Retry-After': rateLimitResult.retryAfter.toString(),
-          },
+            'Retry-After': rateLimitResult.retryAfter.toString()
+          }
         }
       ); // Added semicolon
     }
@@ -179,8 +173,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       return json(
         {
           success: false, // Corrected semicolon to comma
-          error: 'Admin privileges required for sync operations',
-        },
+          error: `Admin privileges required for sync operations` },
         { status: 403 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -192,15 +185,13 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       limit = 1000,
       forceRecreate = false,
       source = 'postgres',
-      filters = {},
+      filters = {}
     } = body;
     const startTime = Date.now();
     // Enhanced sync logic with Windows optimizations
     try {
       // Add a typed sync result shape to avoid `any`
-      interface QdrantSyncResult {
-        synced: number;
-        errors: number;
+      interface QdrantSyncResult { synced: number;, errors: number;
         collection: string;
         message?: string;
         batchSize?: number;
@@ -230,12 +221,11 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             collection,
             message: 'PostgreSQL sync implementation needed',
             batchSize,
-            windowsOptimized: process.platform === 'win32',
-          };
+            windowsOptimized: process.platform === 'win32` };
           break;
         }
         default:
-          throw new QdrantAPIError(`Unsupported sync source: ${source}`, 400);
+          throw new QdrantAPIError(`Unsupported sync; source: ${source}`, 400);
       }
       const executionTime = Date.now() - startTime;
       return json({
@@ -249,11 +239,11 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             batchSize,
             limit,
             rateLimit: {
-              remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime,
-            },
-          },
-        },
+             , remaining: rateLimitResult.remaining,
+              resetTime: rateLimitResult.resetTime
+            }
+          }
+        }
       });
     } catch (syncError: any) {
       // Pass a real Error instance to the logger
@@ -265,14 +255,14 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     logger.error('Qdrant sync error:', normalizeError(error));
     if (error instanceof QdrantAPIError) {
       return json(
         {
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },
         { status: error.statusCode }
       );
@@ -282,7 +272,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         success: false,
         error: 'Failed to sync with Qdrant',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -296,14 +286,14 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_get:${clientIP}`,
       limit: 200, // More generous for read operations
-      windowSec: 60,
+      windowSec: 60
     });
     if (!rateLimitResult.allowed) {
       return json(
         {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },
         { status: 429 } // Corrected json syntax
       ); // Added semicolon
@@ -341,7 +331,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           limit,
           offset,
           with_payload: true, // Added comma
-          with_vector: false,
+          with_vector: false
         };
         const searchResults = await qdrant.search(searchParams);
         return json({
@@ -349,20 +339,20 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           data: {
             collection,
             query: {
-              vector: vectorQuery.slice(0, 5), // Show first 5 dimensions for debugging
+             , vector: vectorQuery.slice(0, 5), // Show first 5 dimensions for debugging
               dimensions: vectorQuery.length,
               limit,
-              offset,
+              offset
             },
             results: searchResults, // Added comma
             performance: {
               resultsCount: searchResults.length,
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime,
-              },
-            },
-          },
+                resetTime: rateLimitResult.resetTime
+              }
+            }
+          }
         });
       }
       case 'status':
@@ -373,7 +363,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           collections = await qdrant.getCollections();
           collectionInfo = await qdrant.getCollection(collection);
         } catch (err: any) {
-          // Changed: 'any' to: 'unknown'
+          // Changed: 'any'; to: 'unknown'
           logger.error('Failed to get Qdrant collections/info:', err instanceof Error ? err : new Error(String(err)));
           throw new QdrantAPIError(
             'Failed to get Qdrant collections/info',
@@ -389,8 +379,8 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           windowsOptimizations: process.platform === 'win32',
           rateLimit: {
             remaining: rateLimitResult.remaining,
-            resetTime: rateLimitResult.resetTime,
-          },
+            resetTime: rateLimitResult.resetTime
+          }
         };
         return json({
           success: true,
@@ -400,7 +390,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             currentCollection: {
               name: collection, // Added comma
               ...collectionInfo,
-              windowsOptimized: process.platform === 'win32',
+              windowsOptimized: process.platform === 'win32'
             },
             system: systemInfo, // Added comma
             endpoints: {
@@ -408,16 +398,16 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               'PUT /api/qdrant': 'Create or recreate collection',
               'DELETE /api/qdrant': 'Delete collection',
               'GET /api/qdrant': 'Get status and collection info',
-              'GET /api/qdrant?action=search&query=[...]': 'Vector similarity search',
+              'GET /api/qdrant?action=search&query=[...]': 'Vector similarity search'
             },
             capabilities: {
-              vectorSearch: true, // Added comma
+             , vectorSearch: true, // Added comma
               bulkSync: true, // Added comma
               windowsOptimized: process.platform === 'win32',
               rateLimiting: true, // Added comma
-              adminControls: locals.user?.role === 'admin',
-            },
-          },
+              adminControls: locals.user?.role === 'admin'
+            }
+          }
         });
       }
     }
@@ -428,7 +418,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         {
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },
         { status: error.statusCode }
       );
@@ -438,7 +428,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         success: false,
         error: 'Failed to get Qdrant status',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -450,16 +440,16 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
   try {
     // Rate limiting for collection operations
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_collection:${clientIP}:${getUserId(locals) || 'anonymous'}`,
+      key: 'qdrant_collection:${clientIP}:${getUserId(locals) || 'anonymous` }`,
       limit: 10, // Stricter for collection operations
-      windowSec: 60,
+      windowSec: 60
     });
     if (!rateLimitResult.allowed) {
       return json(
         {
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },
         { status: 429 } // Corrected json syntax
       ); // Added semicolon
@@ -469,7 +459,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       return json(
         {
           success: false,
-          error: 'Admin privileges required for collection management',
+          error: 'Admin privileges required for collection management'
         },
         { status: 403 } // Corrected json syntax
       ); // Added semicolon
@@ -488,8 +478,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       return json(
         {
           success: false,
-          error: 'Collection name is required',
-        },
+          error: `Collection name is required` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -512,7 +501,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     return json({
       success: true,
       data: {
-        message: `Collection '${name}' created successfully with Windows optimizations`,
+        message: 'Collection '${name}' created successfully with Windows optimizations`,
         collection: name, // Added comma
         config: {
           vectorSize,
@@ -522,25 +511,25 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
             platform: process.platform,
             memoryMappingThreshold: collectionConfig.optimizers_config.memmap_threshold,
             segmentConfiguration: collectionConfig.optimizers_config.default_segment_number,
-            flushInterval: collectionConfig.optimizers_config.flush_interval_sec,
-          },
+            flushInterval: collectionConfig.optimizers_config.flush_interval_sec
+          }
         },
         result, // Added comma
         rateLimit: {
-          remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime,
-        },
-      },
+         , remaining: rateLimitResult.remaining,
+          resetTime: rateLimitResult.resetTime
+        }
+      }
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
       return json(
         {
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },
         { status: error.statusCode }
       );
@@ -550,7 +539,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
         success: false,
         error: 'Failed to create collection',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -562,7 +551,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
   try {
     // Rate limiting for deletion operations
     const rateLimitResult = await redisRateLimit({
-      key: `qdrant_delete:${clientIP}:${getUserId(locals) || 'anonymous'}`,
+      key: 'qdrant_delete:${clientIP}:${getUserId(locals) || 'anonymous` }`,
       limit: 5, // Very strict for deletions
       windowSec: 300, // 5-minute window
     });
@@ -571,7 +560,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         {
           success: false,
           error: 'Rate limit exceeded for deletion operations',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },
         { status: 429 } // Corrected json syntax
       ); // Added semicolon
@@ -581,7 +570,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Admin privileges required for collection deletion',
+          error: 'Admin privileges required for collection deletion'
         },
         { status: 403 } // Corrected json syntax
       ); // Added semicolon
@@ -592,8 +581,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Collection name is required',
-        },
+          error: `Collection name is required` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -603,8 +591,8 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: `Cannot delete protected collection: '${collection}'. Use forceDelete=true with confirmationToken to override.`,
-          hint: 'Protected collections require explicit confirmation',
+          error: 'Cannot delete protected; collection: '${collection}`. Use forceDelete=true with confirmationToken to override.`,
+          hint: 'Protected collections require explicit confirmation'
         },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
@@ -615,7 +603,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         {
           success: false,
           error: 'Confirmation token required for force deletion',
-          hint: 'Add confirmationToken with collection name to confirm',
+          hint: 'Add confirmationToken with collection name to confirm'
         },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
@@ -624,8 +612,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Invalid confirmation token',
-        },
+          error: `Invalid confirmation token` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -636,8 +623,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: `Collection '${collection}' does not exist`,
-        },
+          error: 'Collection '${collection}` does not exist` },
         { status: 404 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -645,26 +631,26 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     return json({
       success: true,
       data: {
-        message: `Collection '${collection}' deleted successfully`,
+        message: 'Collection '${collection}' deleted successfully`,
         collection,
         forced: forceDelete, // Added comma
         result, // Added comma
         rateLimit: {
-          remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime,
+         , remaining: rateLimitResult.remaining,
+          resetTime: rateLimitResult.resetTime
         },
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
       return json(
         {
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },
         { status: error.statusCode }
       );
@@ -674,7 +660,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         success: false,
         error: 'Failed to delete collection',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

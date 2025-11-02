@@ -68,7 +68,7 @@ export async function hybridVectorSearch<T = unknown>(
       const qResults = await (qdrantClient as any).search({
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
         vector: embedding,
-        limit,
+        limit
       } as any);
       if (Array.isArray(qResults) && qResults.length > 0) return qResults;
     }
@@ -111,7 +111,7 @@ export async function storeEmbedding(
       // cast to any to bypass strict typings; use collectionName as the client expects
       await (qdrantClient as any).upsert({
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
-        points: [{ id: recordId, vector: embedding, payload: metadata as Record<string, unknown> }],
+        points: [{, id: recordId, vector: embedding, payload: metadata as Record<string, unknown> }]
       } as any);
     }
   } catch (err) {
@@ -137,7 +137,7 @@ function makeMinioClient(): MinioClient {
     port: parseInt(String(endpoint.split(':')[1] || '9000'), 10),
     useSSL,
     accessKey,
-    secretKey,
+    secretKey
   });
 }
 export async function fetchDocumentFromMinIO(bucket: string, key: string): Promise<Response> {

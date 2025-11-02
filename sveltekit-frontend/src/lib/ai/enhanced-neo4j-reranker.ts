@@ -9,51 +9,39 @@ export type UserContext = {
   role: 'prosecutor' | 'detective' | 'admin';
   search_intent: 'evidence' | 'precedent' | 'analysis';
 };
-export interface EntityRelationship {
-  source_entity: string;
-  target_entity: string;
+export interface EntityRelationship { source_entity: string;, target_entity: string;
   relationship_type: 'references' | 'contradicts' | 'supports' | 'contains';
   confidence: number;
   legal_weight: number;
   source_document: string;
 }
-export interface ConfidenceScores {
-  legal_relevance: number;
-  factual_accuracy: number;
+export interface ConfidenceScores { legal_relevance: number;, factual_accuracy: number;
   chain_of_custody: number;
   precedent_strength: number;
   overall_confidence: number;
 }
-export interface AuditEntry {
-  timestamp: number;
-  action: 'query' | 'rerank' | 'search' | 'score_adjustment';
+export interface AuditEntry { timestamp: number;, action: 'query' | 'rerank' | 'search' | 'score_adjustment';
   user_id: string;
   query_hash: string;
   score_before?: number;
   score_after?: number;
   reasoning: string;
 }
-export interface Neo4jPathContext {
-  document_id: string;
-  case_id: string;
+export interface Neo4jPathContext { document_id: string;, case_id: string;
   evidence_chain: string[];
   legal_precedents: string[];
   entity_relationships: EntityRelationship[];
   confidence_scores: ConfidenceScores;
   audit_trail: AuditEntry[];
 }
-export interface EnhancedRerankerConfig {
-  enable_neo4j_paths: boolean;
-  enable_boolean_patterns: boolean;
+export interface EnhancedRerankerConfig { enable_neo4j_paths: boolean;, enable_boolean_patterns: boolean;
   accuracy_threshold: number;
   max_path_depth: number;
   legal_weight_multiplier: number;
   audit_enabled: boolean;
   neo4j_bolt_url?: string; // added optional property
 }
-export interface RerankingResult {
-  document_id: string;
-  original_score: number;
+export interface RerankingResult { document_id: string;, original_score: number;
   enhanced_score: number;
   neo4j_boost: number;
   boolean_pattern_match: boolean[][];
@@ -77,7 +65,7 @@ export class EnhancedNeo4jReranker {
     url: process.env.QDRANT_URL ?? 'http://localhost:6333',
     collectionName: 'legal_documents',
     vectorSize: 768,
-    apiKey: process.env.QDRANT_API_KEY,
+    apiKey: process.env.QDRANT_API_KEY
   });
   private auditLog: AuditEntry[] = [];
   private isInitialized = $state(false);
@@ -92,7 +80,7 @@ export class EnhancedNeo4jReranker {
       max_path_depth: 5,
       legal_weight_multiplier: 1.0,
       audit_enabled: false,
-      ...config,
+      ...config
     };
   }
   async initialize(): Promise<void> {
@@ -143,7 +131,7 @@ export class EnhancedNeo4jReranker {
           boolean_pattern_match: [[false]],
           confidence_metrics: conf,
           path_context: path,
-          explanation: 'computed',
+          explanation: 'computed'
         });
       } catch (err) {
         // use sanitized doc instead of casting raw to any
@@ -156,7 +144,7 @@ export class EnhancedNeo4jReranker {
           boolean_pattern_match: [[false]],
           confidence_metrics: this.getDefaultConfidenceScores(),
           path_context: this.getDefaultPathContext(safeDoc),
-          explanation: String(err),
+          explanation: String(err)
         });
       }
     }
@@ -174,7 +162,7 @@ export class EnhancedNeo4jReranker {
         id: 'unknown',
         content: '',
         embedding: [],
-        metadata: {},
+        metadata: {}
       } as DocumentEmbedding;
     }
     const r = raw as Record<string, unknown>;
@@ -197,7 +185,7 @@ export class EnhancedNeo4jReranker {
       id,
       content,
       embedding,
-      metadata,
+      metadata
     } as DocumentEmbedding;
   }
   private async getNeo4jPathContext(document: DocumentEmbedding, userContext: UserContext): Promise<Neo4jPathContext> {
@@ -258,7 +246,7 @@ export class EnhancedNeo4jReranker {
                 relationship_type: String(seg.type ?? 'references') as EntityRelationship['relationship_type'],
                 confidence: 0.8,
                 legal_weight: 1.0,
-                source_document: document.id,
+                source_document: document.id
               });
             }
           } else if (Array.isArray(rValue)) {
@@ -273,7 +261,7 @@ export class EnhancedNeo4jReranker {
                 relationship_type: String(item?.type ?? 'references') as EntityRelationship['relationship_type'],
                 confidence: 0.8,
                 legal_weight: 1.0,
-                source_document: document.id,
+                source_document: document.id
               });
             }
           } else if (typeof rValue === 'object' && rValue !== null) {
@@ -287,7 +275,7 @@ export class EnhancedNeo4jReranker {
               relationship_type: String(single?.type ?? 'references') as EntityRelationship['relationship_type'],
               confidence: 0.8,
               legal_weight: 1.0,
-              source_document: document.id,
+              source_document: document.id
             });
           }
         }
@@ -298,7 +286,7 @@ export class EnhancedNeo4jReranker {
           legal_precedents,
           entity_relationships,
           confidence_scores: this.getDefaultConfidenceScores(),
-          audit_trail: [],
+          audit_trail: []
         };
       } catch (e) {
         console.warn('Neo4j query failed, falling back to mock path context', String(e));
@@ -326,11 +314,11 @@ export class EnhancedNeo4jReranker {
           relationship_type: 'contains',
           confidence: 0.9,
           legal_weight: 0.8,
-          source_document: document.id,
+          source_document: document.id
         },
       ],
       confidence_scores: this.getDefaultConfidenceScores(),
-      audit_trail: [],
+      audit_trail: []
     };
   }
   private async calculateSemanticSimilarity(_q: string, document: DocumentEmbedding): Promise<number> {
@@ -343,7 +331,7 @@ export class EnhancedNeo4jReranker {
       factual_accuracy: 0.7,
       chain_of_custody: 0.6,
       precedent_strength: 0.5,
-      overall_confidence: 0.65,
+      overall_confidence: 0.65
     };
   }
   private getDefaultPathContext(document: DocumentEmbedding): Neo4jPathContext {
@@ -354,7 +342,7 @@ export class EnhancedNeo4jReranker {
       legal_precedents: [],
       entity_relationships: [],
       confidence_scores: this.getDefaultConfidenceScores(),
-      audit_trail: [],
+      audit_trail: []
     };
   }
   getAuditTrail(): AuditEntry[] {

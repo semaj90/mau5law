@@ -10,9 +10,7 @@ interface Section {
   content?: string;
 }
 
-interface VectorChunk {
-  id: string;
-  text: string;
+interface VectorChunk { id: string;, text: string;
   metadata?: Record<string, unknown>;
 }
 
@@ -39,54 +37,38 @@ interface SimdData {
   startTime?: number;
 }
 
-interface DocumentContent {
-  fullText: string;
-  sections: Section[];
+interface DocumentContent { fullText: string;, sections: Section[];
   concepts: string[];
   citations: string[];
 }
 
-interface Embedding {
-  chunk_id: string;
-  text: string;
+interface Embedding { chunk_id: string;, text: string;
   embedding: number[];
-  metadata: {
-    section: string;
-    legal_concepts: string[];
+  metadata: { section: string;, legal_concepts: string[];
     citations: string[];
   };
 }
 
-interface VectorEmbeddings {
-  embeddings: Embedding[];
-  total_chunks: number;
+interface VectorEmbeddings { embeddings: Embedding[];, total_chunks: number;
   average_chunk_size: number;
   generationTime: number;
 }
 
-interface SentimentResult {
-  positive: number;
-  negative: number;
+interface SentimentResult { positive: number;, negative: number;
   neutral: number;
   tone: 'cooperative' | 'adversarial' | 'neutral';
 }
 
-interface RecognizedEntities {
-  persons: string[];
-  organizations: string[];
+interface RecognizedEntities { persons: string[];, organizations: string[];
   locations: string[];
   dates: string[];
   amounts: string[];
 }
 
-interface ArgumentStructure {
-  structure: string;
-  confidence: number;
+interface ArgumentStructure { structure: string;, confidence: number;
 }
 
-interface SemanticAnalysis {
-  keyTopics: string[];
-  sentimentAnalysis: SentimentResult;
+interface SemanticAnalysis { keyTopics: string[];, sentimentAnalysis: SentimentResult;
   entityRecognition: RecognizedEntities;
   argumentStructure: ArgumentStructure;
   legalPrinciples: string[];
@@ -98,27 +80,19 @@ interface SemanticAnalysis {
   processingTime: number;
 }
 
-interface SimilarCaseItem {
-  case_name: string;
-  citation: string;
+interface SimilarCaseItem { case_name: string;, citation: string;
   similarity: number;
   year: number;
 }
 
-interface PrecedentAnalysisItem {
-  citation: string;
-  status: string;
+interface PrecedentAnalysisItem { citation: string;, status: string;
   relevance: number;
 }
 
-interface CompletenessRecommendationItem {
-  suggestion: string;
-  priority: 'high' | 'medium' | 'low';
+interface CompletenessRecommendationItem { suggestion: string;, priority: 'high' | 'medium' | 'low';
 }
 
-interface ResearchSuggestionItem {
-  research_area: string;
-  priority: number;
+interface ResearchSuggestionItem { research_area: string;, priority: number;
 }
 
 type RecommendationItem =
@@ -127,9 +101,7 @@ type RecommendationItem =
   | CompletenessRecommendationItem
   | ResearchSuggestionItem;
 
-interface Recommendation {
-  type: string;
-  title: string;
+interface Recommendation { type: string;, title: string;
   summary: string;
   relevance: number;
   confidence: number;
@@ -169,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
           chunks: chunkForVectorSearch(documentContent.fullText),
           dimensions: 384, // Using 384-dimensional embeddings
           similarity_threshold: 0.75,
-          max_results: 20,
+          max_results: 20
         },
         // Legal context enhancement
         legalContext: {
@@ -177,16 +149,16 @@ export const POST: RequestHandler = async ({ request }) => {
           documentType: semanticAnalysis.documentType || 'general',
           practiceArea: inferPracticeArea(documentContent.fullText),
           complexity: calculateComplexity(documentContent.fullText),
-          precedentRelevance: assessPrecedentRelevance(documentContent),
+          precedentRelevance: assessPrecedentRelevance(documentContent)
         },
         // Performance metrics
         performance: {
           processingTime: Date.now() - (simdData.startTime || Date.now()),
           vectorization_time: embeddings.generationTime || 0,
           analysis_time: semanticAnalysis.processingTime || 0,
-          confidence: calculateOverallConfidence(semanticAnalysis, recommendations),
-        },
-      },
+          confidence: calculateOverallConfidence(semanticAnalysis, recommendations)
+        }
+      }
     };
     return json(result);
   } catch (err: any) {
@@ -201,7 +173,7 @@ function extractDocumentContent(simdData: SimdData): DocumentContent {
     fullText: simdData.document?.content?.fullText || '',
     sections: simdData.document?.structure?.sections || [],
     concepts: simdData.document?.legalAnalysis?.concepts || [],
-    citations: simdData.document?.legalAnalysis?.citations || [],
+    citations: simdData.document?.legalAnalysis?.citations || []
   };
 }
 async function generateVectorEmbeddings(content: DocumentContent): Promise<VectorEmbeddings> {
@@ -215,14 +187,14 @@ async function generateVectorEmbeddings(content: DocumentContent): Promise<Vecto
     metadata: {
       section: findChunkSection(chunk, content.sections),
       legal_concepts: extractChunkConcepts(chunk, content.concepts),
-      citations: extractChunkCitations(chunk, content.citations),
-    },
+      citations: extractChunkCitations(chunk, content.citations)
+    }
   }));
   return {
     embeddings: embeddings,
     total_chunks: chunks.length,
     average_chunk_size: chunks.length > 0 ? chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length : 0,
-    generationTime: Date.now() - startTime,
+    generationTime: Date.now() - startTime
   };
 }
 async function performSemanticAnalysis(content: DocumentContent): Promise<SemanticAnalysis> {
@@ -240,7 +212,7 @@ async function performSemanticAnalysis(content: DocumentContent): Promise<Semant
     // Quality metrics
     coherenceScore: calculateCoherenceScore(content.fullText),
     completenessScore: calculateCompletenessScore(content),
-    processingTime: Date.now() - startTime,
+    processingTime: Date.now() - startTime
   };
   return analysis;
 }
@@ -258,7 +230,7 @@ async function generateRAGRecommendations(
     relevance: Math.floor(Math.random() * 30) + 70, // 70-100%
     confidence: Math.floor(Math.random() * 20) + 80, // 80-100%
     items: generateSimilarCases(analysis.keyTopics),
-    actionRequired: false,
+    actionRequired: false
   });
   // Legal precedent recommendations
   if (content.citations.length > 0) {
@@ -269,7 +241,7 @@ async function generateRAGRecommendations(
       relevance: Math.floor(Math.random() * 20) + 75, // 75-95%
       confidence: Math.floor(Math.random() * 15) + 85, // 85-100%
       items: analyzePrecedents(content.citations),
-      actionRequired: true,
+      actionRequired: true
     });
   }
   // Document completeness recommendations
@@ -281,7 +253,7 @@ async function generateRAGRecommendations(
       relevance: 100 - analysis.completenessScore,
       confidence: 90,
       items: generateCompletenessRecommendations(analysis),
-      actionRequired: true,
+      actionRequired: true
     });
   }
   // Legal research recommendations
@@ -292,31 +264,29 @@ async function generateRAGRecommendations(
     relevance: Math.floor(Math.random() * 25) + 65, // 65-90%
     confidence: Math.floor(Math.random() * 20) + 75, // 75-95%
     items: generateResearchSuggestions(analysis.keyTopics, analysis.practiceArea),
-    actionRequired: false,
+    actionRequired: false
   });
   return recommendations.sort((a, b) => b.relevance * b.confidence - a.relevance * a.confidence);
 }
 function createEnhancedMetadata(simdData: SimdData, analysis: SemanticAnalysis): any {
-  return {
-    processing: {
-      simd_processing_time: simdData.processingTime || 0,
+  return { processing: {, simd_processing_time: simdData.processingTime || 0,
       semantic_analysis_time: analysis.processingTime || 0,
       total_chunks: simdData.document?.vectorization?.chunks?.length || 0,
-      vector_dimensions: 384,
+      vector_dimensions: 384
     },
     quality: {
       ocr_confidence: simdData.document?.metadata?.averageConfidence || 0,
       semantic_coherence: analysis.coherenceScore || 0,
       document_completeness: analysis.completenessScore || 0,
-      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || []),
+      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || [])
     },
     legal: {
       document_type: analysis.documentType || 'unknown',
       jurisdiction: analysis.jurisdiction || 'unknown',
       practice_area: analysis.practiceArea || 'general',
       complexity_level: calculateComplexity(simdData.document?.content?.fullText || ''),
-      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0,
-    },
+      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0
+    }
   };
 }
 function chunkForVectorSearch(text: string, chunkSize: number = 512, overlap: number = 64): string[] {
@@ -371,7 +341,7 @@ function extractKeyTopics(text: string): string[] {
     { pattern: /corporate|shareholder|board/gi, topic: 'Corporate Law' },
     { pattern: /real estate|property|land/gi, topic: 'Real Estate Law' },
     { pattern: /criminal|prosecution|defendant/gi, topic: 'Criminal Law' },
-    { pattern: /family|divorce|custody/gi, topic: 'Family Law' },
+    { pattern: /family|divorce|custody/gi, topic: 'Family Law' }
   ];
   topicPatterns.forEach(({ pattern, topic }) => {
     if (pattern.test(text)) {
@@ -393,8 +363,7 @@ function analyzeLegalSentiment(text: string): SentimentResult {
     positive: total > 0 ? (positive / total) * 100 : 0,
     negative: total > 0 ? (negative / total) * 100 : 0,
     neutral: total > 0 ? (neutral / total) * 100 : 0,
-    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : 'neutral',
-  };
+    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : `neutral` };
 }
 function recognizeNamedEntities(text: string): RecognizedEntities {
   const entities: RecognizedEntities = {
@@ -402,7 +371,7 @@ function recognizeNamedEntities(text: string): RecognizedEntities {
     organizations: extractOrganizations(text),
     locations: extractLocations(text),
     dates: extractDates(text),
-    amounts: extractMonetaryAmounts(text),
+    amounts: extractMonetaryAmounts(text)
   };
   return entities;
 }
@@ -513,21 +482,21 @@ function generateSimilarCases(topics: string[]): SimilarCaseItem[] {
     case_name: `Sample Case ${index + 1} - ${topic}`,
     citation: `123 F.3d ${456 + index}`,
     similarity: Math.floor(Math.random() * 20) + 80,
-    year: 2020 + index,
+    year: 2020 + index
   }));
 }
 function analyzePrecedents(citations: string[]): PrecedentAnalysisItem[] {
   return citations.slice(0, 3).map(citation => ({
     citation,
     status: 'good_law',
-    relevance: Math.floor(Math.random() * 30) + 70,
+    relevance: Math.floor(Math.random() * 30) + 70
   }));
 }
 function generateCompletenessRecommendations(_analysis: SemanticAnalysis): CompletenessRecommendationItem[] {
   return [
     { suggestion: 'Add more supporting citations', priority: 'high' },
     { suggestion: 'Expand factual background', priority: 'medium' },
-    { suggestion: 'Include counter-arguments', priority: 'low' },
+    { suggestion: 'Include counter-arguments', priority: `low` }
   ];
 }
 function generateResearchSuggestions(topics: string[], _practiceArea: string): ResearchSuggestionItem[] {
@@ -546,6 +515,6 @@ function generateResearchSuggestions(topics: string[], _practiceArea: string): R
   const allSuggestions = [...new Set([...baseSuggestions, ...specificSuggestions])];
   return allSuggestions.map(suggestion => ({
     research_area: suggestion,
-    priority: Math.floor(Math.random() * 5) + 1,
+    priority: Math.floor(Math.random() * 5) + 1
   }));
 }

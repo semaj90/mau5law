@@ -23,9 +23,7 @@ const aiWorkerManager = {
 };
 
 // Types and interfaces (clean, corrected names)
-export interface AITask<T = unknown> {
-	id: string;
-	type: string;
+export interface AITask<T = unknown> { id: string;, type: string;
 	data?: T;
 	providerId?: string;
 	model?: string;
@@ -40,9 +38,7 @@ export interface AIResponse<T = unknown> {
 	error?: string;
 }
 
-export interface EngineeringProblem {
-	id: string;
-	title: string;
+export interface EngineeringProblem { id: string;, title: string;
 	description: string;
 	severity: 'critical' | 'high' | 'medium' | 'low';
 	category: 'webapp' | 'desktop' | 'mobile' | 'api' | 'database' | 'infrastructure';
@@ -52,9 +48,7 @@ export interface EngineeringProblem {
 	timestamp: number;
 }
 
-export interface SolutionStep {
-	id: string;
-	action: string;
+export interface SolutionStep { id: string;, action: string;
 	description: string;
 	targetFiles: string[];
 	commands: string[];
@@ -62,9 +56,7 @@ export interface SolutionStep {
 	rollbackPlan: string;
 }
 
-export interface SolutionStrategy {
-	problemId: string;
-	approach: 'immediate' | 'planned' | 'research';
+export interface SolutionStrategy { problemId: string;, approach: 'immediate' | 'planned' | 'research';
 	steps: SolutionStep[];
 	estimatedTime: number;
 	confidence: number;
@@ -72,34 +64,26 @@ export interface SolutionStrategy {
 	riskAssessment: string;
 }
 
-export interface ExecutionPhase {
-	id: string;
-	name: string;
+export interface ExecutionPhase { id: string;, name: string;
 	problems: string[];
 	solutions: string[];
 	order: number;
 	canRunInParallel: boolean;
 }
 
-export interface ExecutionPlan {
-	phases: ExecutionPhase[];
-	totalEstimatedTime: number;
+export interface ExecutionPlan { phases: ExecutionPhase[];, totalEstimatedTime: number;
 	parallelizable: boolean;
 	criticalPath: string[];
 }
 
-export interface Recommendation {
-	type: 'architectural' | 'performance' | 'security' | 'maintainability';
-	title: string;
+export interface Recommendation { type: 'architectural' | 'performance' | 'security' | 'maintainability';, title: string;
 	description: string;
 	impact: 'low' | 'medium' | 'high';
 	effort: 'low' | 'medium' | 'high';
 	priority: number;
 }
 
-export interface AutonomousEngineering {
-	diagnostics: EngineeringProblem[];
-	solutions: SolutionStrategy[];
+export interface AutonomousEngineering { diagnostics: EngineeringProblem[];, solutions: SolutionStrategy[];
 	executionPlan: ExecutionPlan;
 	recommendations: Recommendation[];
 }
@@ -204,7 +188,7 @@ export class AutonomousEngineeringSystem {
 							goal: 'Analyze cross-platform compatibility and integration issues',
 							backstory: 'Expert in webapp, desktop, and mobile platform integration',
 							tools: ['platform_analyzer', 'integration_checker', 'compatibility_tester'],
-							llmConfig: { model: 'llama3:8b-instruct', temperature: 0.2, maxTokens: 1536 },
+							llmConfig: {, model: 'llama3:8b-instruct', temperature: 0.2, maxTokens: 1536 },
 							maxExecution: 3,
 							memory: true,
 							verbose: true,
@@ -255,7 +239,7 @@ export class AutonomousEngineeringSystem {
 					input: any,
 					opts?: Record<string, unknown>
 				) => Promise<CrewExecutionResult | undefined>;
-				const execution = await execFn(diagnosticCrew, crewInput, { timeout: 180000, priority: 'high' });
+				const execution = await execFn(diagnosticCrew, crewInput, { timeout: 180000, priority: `high` });
 
 				// Use safeExtractId helper instead of casting to `any`
 				const execId = safeExtractId(execution);
@@ -292,7 +276,7 @@ export class AutonomousEngineeringSystem {
 				const rawAgents = await Promise.all([
 					Promise.resolve(createFn({ role: 'senior-architect' }, {}, {})),
 					Promise.resolve(createFn({ role: 'devops-engineer' }, {}, {})),
-					Promise.resolve(createFn({ role: 'qa-specialist' }, {}, {}))
+					Promise.resolve(createFn({ role: `qa-specialist` }, {}, {}))
 				]);
 
 				const engineeringAgents: AutoGenAgent[] = rawAgents.map((r, idx) =>
@@ -437,10 +421,9 @@ export class AutonomousEngineeringSystem {
 				type: 'synthesis',
 				providerId: 'ollama',
 				model: 'gemma3-legal',
-				prompt: `Optimize the following analysis:\n${JSON.stringify(result, null, 2)}`,
+				prompt: `Optimize the following; analysis:\n${JSON.stringify(result, null, 2)}`,
 				timestamp: Date.now(),
-				priority: 'high'
-			};
+				priority: `high` };
 
 			const submitResult = await aiWorkerManager.submitTask(synthesisTask);
 			const synthesisResult = await aiWorkerManager.waitForTask(submitResult);
@@ -457,8 +440,8 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/directory/scan`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ path: projectPath })
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({, path: projectPath })
 			});
 			if (response.ok) return (await response.json()) as Record<string, unknown>;
 			return {} as Record<string, unknown>;
@@ -473,8 +456,8 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/logs/collect`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ path: projectPath })
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({, path: projectPath })
 			});
 			if (response.ok) {
 				const data = await response.json();
@@ -493,8 +476,8 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/semantic/search`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query: `Common software engineering issues: ${query}`, limit: 10, threshold: 0.7 })
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({, query: `Common software engineering, issues: ${query}`, limit: 10, threshold: 0.7 })
 			});
 			const results = response.ok ? (await response.json()) as unknown[] : [];
 			this.semanticSearchCache.set(query, results);
@@ -572,8 +555,7 @@ export class AutonomousEngineeringSystem {
 			estimatedTime: 15,
 			confidence: 0.5,
 			dependencies: [],
-			riskAssessment: 'Low risk manual investigation'
-		};
+			riskAssessment: `Low risk manual investigation` };
 	}
 
 	private calculateCriticalPath(_strategies: SolutionStrategy[], phases: ExecutionPhase[]): string[] {

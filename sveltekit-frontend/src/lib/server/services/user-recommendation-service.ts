@@ -7,32 +7,24 @@ import { userAiQueries, ragMessages, ragSessions } from '../db/schema-postgres.j
 import { eq, and, sql, count, desc } from 'drizzle-orm';
 
 // User behavior pattern interfaces
-export interface UserPattern {
-  userId: string;
-  commonQueries: string[];
+export interface UserPattern { userId: string;, commonQueries: string[];
   frequentCases: string[];
   preferredTopics: string[];
   queryComplexity: 'simple' | 'moderate' | 'complex';
   usageFrequency: 'low' | 'medium' | 'high';
-  timePatterns: {
-    mostActiveHours: number[];
-    averageSessionLength: number;
+  timePatterns: { mostActiveHours: number[];, averageSessionLength: number;
     queriesPerSession: number;
   };
 }
-export interface RecommendationResult {
-  type: 'query' | 'case' | 'document' | 'legal_precedent';
-  content: string;
+export interface RecommendationResult { type: 'query' | 'case' | 'document' | 'legal_precedent';, content: string;
   confidence: number;
   reasoning: string;
   relatedItems: string[];
 }
 
-export interface ChatAnalytics {
-  totalQueries: number;
-  successRate: number;
+export interface ChatAnalytics { totalQueries: number;, successRate: number;
   averageProcessingTime: number;
-  topTopics: Array<{ topic: string; count: number }>;
+  topTopics: Array<{ topic: string;, count: number }>;
 
   userSatisfaction: number;
   improvementSuggestions: string[];
@@ -47,7 +39,7 @@ export class UserRecommendationService {
     sessionId?: string;
     caseId?: string;
     query: string;
-    response: string;
+   , response: string;
     embedding?: number[];
     metadata?: { [key: string]: any };
     processingTimeMs?: number;
@@ -70,7 +62,7 @@ export class UserRecommendationService {
           errorMessage: params.errorMessage || null,
           processingTime: params.processingTimeMs || null,
           tokensUsed: params.tokensUsed || null,
-          model: (params.metadata?.model as string) || 'unknown',
+          model: (params.metadata?.model as string) || 'unknown'
         })
         .returning({ id: userAiQueries.id });
       const queryId = insertedQuery.id;
@@ -88,14 +80,14 @@ export class UserRecommendationService {
             sessionId: params.sessionId,
             role: 'user',
             content: params.query,
-            messageIndex: messageCount,
+            messageIndex: messageCount
           }),
           // Assistant response
           db.insert(ragMessages).values({
             sessionId: params.sessionId,
             role: 'assistant',
             content: params.response,
-            messageIndex: messageCount + 1,
+            messageIndex: messageCount + 1
           }),
         ]);
         // Update session message count is removed.
@@ -111,7 +103,7 @@ export class UserRecommendationService {
   /**
    * Create new RAG session for user
    */
-  async createRagSession(params: { userId: string; caseId?: string; sessionName?: string }): Promise<string> {
+  async createRagSession(params: {, userId: string; caseId?: string; sessionName?: string }): Promise<string> {
     try {
       const [insertedSession] = await db
         .insert(ragSessions)
@@ -119,7 +111,7 @@ export class UserRecommendationService {
           userId: params.userId,
           title: params.sessionName || `Session ${new Date().toISOString()}`,
           isActive: true,
-          metadata: params.caseId ? { caseId: params.caseId } : {},
+          metadata: params.caseId ? { caseId: params.caseId } : {}
         })
         .returning({ id: ragSessions.id });
       return insertedSession.id;
@@ -146,12 +138,12 @@ export class UserRecommendationService {
         frequentCases: queryStats.frequentCases,
         preferredTopics: topicAnalysis.topics,
         queryComplexity: queryStats.complexity,
-        usageFrequency: sessionStats.frequency as: 'high' | 'low' | 'medium',
+        usageFrequency: sessionStats.frequency; as: 'high' | 'low' | 'medium',
         timePatterns: {
           mostActiveHours: sessionStats.activeHours,
           averageSessionLength: sessionStats.avgSessionLength,
-          queriesPerSession: sessionStats.avgQueriesPerSession,
-        },
+          queriesPerSession: sessionStats.avgQueriesPerSession
+        }
       };
     } catch (error: any) {
       console.error('Failed to analyze user patterns:', error);
@@ -198,8 +190,7 @@ export class UserRecommendationService {
           totalQueries: count(userAiQueries.id),
           successfulQueries: sql<number>`COUNT(CASE WHEN is_successful = true THEN 1 END)`,
           avgProcessingTime: sql<number>`AVG(processing_time_ms)`,
-          totalTokens: sql<number>`SUM(tokens_used)`,
-        })
+          totalTokens: sql<number>`SUM(tokens_used)' })
         .from(userAiQueries)
         .where(whereCondition);
       const successRate = stats.totalQueries > 0 ? (stats.successfulQueries / stats.totalQueries) * 100 : 0;
@@ -211,7 +202,7 @@ export class UserRecommendationService {
         averageProcessingTime: Math.round(stats.avgProcessingTime || 0),
         topTopics,
         userSatisfaction: this.calculateSatisfactionScore(successRate, stats.avgProcessingTime || 0),
-        improvementSuggestions: this.generateImprovementSuggestions(stats, topTopics),
+        improvementSuggestions: this.generateImprovementSuggestions(stats, topTopics)
       };
     } catch (error: any) {
       console.error('Failed to get chat analytics:', error);
@@ -224,7 +215,7 @@ export class UserRecommendationService {
       .select({
         query: userAiQueries.query,
         caseId: userAiQueries.caseId,
-        metadata: userAiQueries.metadata,
+        metadata: userAiQueries.metadata
       })
       .from(userAiQueries)
       .where(eq(userAiQueries.userId, userId))
@@ -235,7 +226,7 @@ export class UserRecommendationService {
     return {
       commonQueries: this.findCommonPatterns(queryTexts),
       frequentCases: this.findFrequentItems(caseIds),
-      complexity: this.assessQueryComplexity(queryTexts),
+      complexity: this.assessQueryComplexity(queryTexts)
     };
   }
   private async getUserSessionStats(userId: string) {
@@ -243,7 +234,7 @@ export class UserRecommendationService {
       .select({
         startedAt: ragSessions.startedAt,
         endedAt: ragSessions.endedAt,
-        messageCount: ragSessions.messageCount,
+        messageCount: ragSessions.messageCount
       })
       .from(ragSessions)
       .where(eq(ragSessions.userId, userId))
@@ -258,7 +249,7 @@ export class UserRecommendationService {
       activeHours,
       avgSessionLength: sessionLengths.reduce((a, b) => a + b, 0) / sessionLengths.length,
       avgQueriesPerSession:
-        sessions.length > 0 ? sessions.reduce((sum, s) => sum + s.messageCount, 0) / sessions.length : 0,
+        sessions.length > 0 ? sessions.reduce((sum, s) => sum + s.messageCount, 0) / sessions.length : 0
     };
   }
   private async analyzeUserTopics(userId: string) {
@@ -279,7 +270,7 @@ export class UserRecommendationService {
         content: `Tell me more about ${topic} in recent legal cases`,
         confidence: 0.8,
         reasoning: `Based on your interest in ${topic}`,
-        relatedItems: patterns.commonQueries.filter(q => q.includes(topic.toLowerCase())),
+        relatedItems: patterns.commonQueries.filter(q => q.includes(topic.toLowerCase()))
       });
     }
     return recommendations;
@@ -344,7 +335,7 @@ export class UserRecommendationService {
     if (avgLength < 150) return 'moderate';
     return 'complex';
   }
-  private extractActiveHours(sessions: { startedAt: Date | string | null }[]): number[] {
+  private extractActiveHours(sessions: {, startedAt: Date | string | null }[]): number[] {
     const hourCounts = new Map<number, number>();
     sessions.forEach(session => {
       if (session.startedAt) {

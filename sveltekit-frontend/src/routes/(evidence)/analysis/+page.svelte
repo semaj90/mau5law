@@ -6,8 +6,8 @@
   // For now, keep default import as the module doesn't provide a named export
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
 
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
 
   // Use Svelte 5 reactive state API so updates trigger reactivity
   let showWebGPUDemo = $state<boolean>(false);

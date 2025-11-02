@@ -9,7 +9,7 @@ import type { User } from '$lib/types';
  * Theme: YoRHa (NieR: Automata aesthetic)
  *
  * Production Services:
- * - Ollama: Gemma3-legal streaming chat
+ * -; Ollama: Gemma3-legal streaming chat
  * - PostgreSQL: Session + message persistence
  * - Redis: Caching
  *
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { message, sessionId } = body;
 
     if (!message) {
-      return json({ error: 'Message is required' }, { status: 400 });
+      return json({ error: `Message is required` }, { status: 400 });
     }
 
     // Get user from session or use test mode
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const actualSessionId = sessionId || randomUUID();
 
     console.log(
-      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})`
+      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'
     );
 
     const startTime = Date.now();
@@ -74,11 +74,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const messages = [
       {
         role: 'system',
-        content: YORHA_SYSTEM_PROMPT,
+        content: YORHA_SYSTEM_PROMPT
       },
       {
         role: 'user',
-        content: message,
+        content: message
       },
     ];
 
@@ -104,16 +104,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const ollamaResponse = await fetch(ollamaUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         messages,
         stream: true,
         options: {
-          temperature: 0.7,
-          num_gpu: 30,
-        },
-      }),
+         , temperature: 0.7,
+          num_gpu: 30
+        }
+      })
     });
 
     if (!ollamaResponse.ok) {
@@ -134,13 +134,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                type: 'connection',
+               , type: 'connection',
                 sessionId: actualSessionId,
                 userId,
                 isTestMode,
                 theme: 'yorha',
-                message: 'YoRHa Legal AI online. Glory to mankind.',
-              })}\n\n`
+                message: `YoRHa Legal AI online. Glory to mankind.` })}\n\n`
             )
           );
 
@@ -167,9 +166,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({
-                        type: 'token',
+                       , type: 'token',
                         content: token,
-                        fullResponse,
+                        fullResponse
                       })}\n\n`
                     )
                   );
@@ -182,7 +181,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({
-                        type: 'complete',
+                       , type: 'complete',
                         fullResponse,
                         sessionId: actualSessionId,
                         userId,
@@ -190,7 +189,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                         theme: 'yorha',
                         signature: 'Glory to mankind.',
                         model,
-                        production: true,
+                        production: true
                       })}\n\n`
                     )
                   );
@@ -208,15 +207,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                type: 'error',
+               , type: 'error',
                 error: error instanceof Error ? error.message : 'Stream error',
-                theme: 'yorha',
-              })}\n\n`
+                theme: `yorha` })}\n\n`
             )
           );
           controller.close();
         }
-      },
+      }
     });
 
     return new Response(stream, {
@@ -224,8 +222,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
-        'X-YoRHa-Theme': 'NieR-Automata',
-      },
+        'X-YoRHa-Theme': 'NieR-Automata'
+      }
     });
   } catch (error) {
     console.error('❌ YoRHa chat API error:', error);
@@ -234,8 +232,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         error: error instanceof Error ? error.message : 'Internal server error',
         isTestMode: !locals.user,
         theme: 'yorha',
-        message: 'YoRHa Legal AI encountered an error. Glory to mankind.',
-      },
+        message: `YoRHa Legal AI encountered an error. Glory to mankind.` },
       { status: 500 }
     );
   }
@@ -260,6 +257,6 @@ export const GET: RequestHandler = async () => {
       'Centralized Ollama integration',
     ],
     message: 'Glory to mankind.',
-    production: true,
+    production: true
   });
 };

@@ -12,9 +12,7 @@ import { optimizedQdrantService as qdrant } from '$lib/services/optimized-qdrant
 import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
 
 // Minimal interface for Qdrant search results
-interface QdrantSearchResult {
-  id: string | number;
-  score: number;
+interface QdrantSearchResult { id: string | number;, score: number;
   payload?: Record<string, any>;
   vector?: number[];
 }
@@ -23,10 +21,8 @@ interface QdrantSearchResult {
 interface OptimizedQdrantService {
   search(
     collectionName: string,
-    params: {
-      vector: number[];
-      limit: number;
-      with_payload: boolean;
+    params: { vector: number[];, limit: number;
+     , with_payload: boolean;
       filter?: any;
     }
   ): Promise<QdrantSearchResult[]>;
@@ -36,9 +32,7 @@ interface OptimizedQdrantService {
 // const QUERY_CACHE_COLLECTION_NAME = 'query_cache_vectors'; // Removed, replaced by gRPC cache
 const EMBEDDING_VECTOR_SIZE = 384; // Corrected to 384 for nomic-embed-text and embeddinggemma:latest
 
-export interface InstantSearchOptions {
-  fuzzyThreshold: number;
-  fuzzyDistance: number;
+export interface InstantSearchOptions { fuzzyThreshold: number;, fuzzyDistance: number;
   includeScore: boolean;
   includeMatches: boolean;
   minQueryLength: number;
@@ -56,14 +50,12 @@ export interface SearchFilters {
   documentTypes?: string[];
   riskLevels?: ('low' | 'medium' | 'high' | 'critical')[];
   jurisdictions?: string[];
-  dateRange?: { start: Date; end: Date };
+  dateRange?: { start: Date;, end: Date };
   confidenceMin?: number;
   priorityMin?: number;
 }
 
-export interface InstantSearchResult {
-  id: string;
-  document: CachedDocument;
+export interface InstantSearchResult { id: string;, document: CachedDocument;
   score: number;
   fuseScore?: number;
   semanticScore?: number;
@@ -77,16 +69,12 @@ export interface InstantSearchResult {
   responseTime: number;
 }
 
-export interface SearchStats {
-  totalSearches: number;
-  averageResponseTime: number;
+export interface SearchStats { totalSearches: number;, averageResponseTime: number;
   cacheHitRate: number;
   fuzzySearches: number;
   semanticSearches: number;
-  popularQueries: Array<{ query: string; count: number }>;
-  performanceMetrics: {
-    p50: number;
-    p90: number;
+  popularQueries: Array<{ query: string;, count: number }>;
+  performanceMetrics: { p50: number;, p90: number;
     p95: number;
     p99: number;
   };
@@ -105,35 +93,33 @@ const DEFAULT_OPTIONS: InstantSearchOptions = {
   cacheTtl: 1800,
   enableLegalSmartSearch: true,
   prioritizeByRisk: true,
-  contextualWeighting: true,
+  contextualWeighting: true
 };
 
-const LEGAL_SEARCH_PATTERNS = {
-  criminal: {
-    patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
+const LEGAL_SEARCH_PATTERNS = { criminal: {, patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
     synonyms: ['homicide', 'manslaughter', 'killing', 'death', 'violence'],
-    boost: 1.2,
+    boost: 1.2
   },
   contract: {
     patterns: ['contract', 'agreement', 'deal', 'terms'],
     synonyms: ['agreement', 'covenant', 'arrangement', 'understanding'],
-    boost: 1.1,
+    boost: 1.1
   },
   constitutional: {
     patterns: ['search', 'warrant', 'seizure', 'fourth amendment'],
     synonyms: ['search and seizure', 'unreasonable search', 'probable cause'],
-    boost: 1.3,
+    boost: 1.3
   },
   tort: {
     patterns: ['negligence', 'liability', 'damages', 'injury'],
     synonyms: ['negligent', 'responsible', 'compensation', 'harm'],
-    boost: 1.1,
+    boost: 1.1
   },
   property: {
     patterns: ['ownership', 'title', 'deed', 'real estate'],
     synonyms: ['property rights', 'real property', 'land', 'premises'],
-    boost: 1.0,
-  },
+    boost: 1.0
+  }
 };
 
 export class InstantSearchEngine extends EventEmitter {
@@ -146,7 +132,7 @@ export class InstantSearchEngine extends EventEmitter {
     fuzzySearches: 0,
     semanticSearches: 0,
     popularQueries: [],
-    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 },
+    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 }
   };
   private responseTimeTracker: number[] = [];
   private queryTracker: Map<string, number> = new Map();
@@ -200,7 +186,7 @@ export class InstantSearchEngine extends EventEmitter {
         includeMatches: this.options.includeMatches,
         ignoreLocation: true,
         useExtendedSearch: true,
-        fieldNormWeight: 0.5,
+        fieldNormWeight: 0.5
       };
       this.fuse = new Fuse(documents, fuseOptions);
       console.log(`🔍 Fuse.js index refreshed with ${documents.length} documents`);
@@ -216,7 +202,7 @@ export class InstantSearchEngine extends EventEmitter {
       // This assumes lokiRedisCache.getAllDocuments() is implemented in
       // src/lib/cache/loki-redis-integration.ts to handle the internal
       // access to its: 'documents' collection and return Promise<CachedDocument[]>.
-      // TODO: Ensure LokiRedisCache class in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
+      // TODO: Ensure LokiRedisCache class; in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
       const documents = await (lokiRedisCache as any).getAllDocuments();
       if (!documents) {
         console.warn(
@@ -291,12 +277,12 @@ export class InstantSearchEngine extends EventEmitter {
         query: normalizedQuery,
         resultCount: results.length,
         responseTime,
-        cacheHit: false,
+        cacheHit: false
       });
 
       return results;
     } catch (error: any) {
-      console.error(`❌ Search failed for query: "${normalizedQuery}":`, error);
+      console.error(`❌ Search failed for query: "${normalizedQuery}": ', error);
       this.updateSearchStats('error', Date.now() - startTime);
       return [];
     }
@@ -333,7 +319,7 @@ export class InstantSearchEngine extends EventEmitter {
         combinedScore: 1 - (typeof f.score === 'number' ? f.score : 0),
         highlights: this.extractHighlights(f),
         resultType: 'fuzzy',
-        responseTime: 0,
+        responseTime: 0
       }));
     } catch (error: any) {
       console.error('❌ Fuzzy search failed:', error);
@@ -397,7 +383,7 @@ export class InstantSearchEngine extends EventEmitter {
           type: (r.payload?.type as string) || 'legal_doc',
           size: (r.payload?.size as number) || 0,
           priority: (r.payload?.priority as number) || 100,
-          riskLevel: (r.payload?.riskLevel as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
+          riskLevel: (r.payload?.riskLevel; as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
           confidenceLevel: r.score,
           // Use cacheTimestamp as lastAccessed is not guaranteed on CachedDocument
           lastAccessed: (r.payload?.lastAccessed as number) || Date.now(),
@@ -407,19 +393,18 @@ export class InstantSearchEngine extends EventEmitter {
             description: (r.payload?.description as string) || '',
             jurisdiction: (r.payload?.jurisdiction as string) || '',
             keywords: (r.payload?.keywords as string[]) || [],
-            concepts: (r.payload?.concepts as string[]) || [],
+            concepts: (r.payload?.concepts as string[]) || []
           },
           cacheTimestamp: Date.now(),
           accessCount: (r.payload?.accessCount as number) || 0,
           cacheLocation: 'qdrant', // Indicate source
-          syncStatus: 'synced',
-        },
+          syncStatus: 'synced` },
         score: r.score,
         semanticScore: r.score, // Store semantic score separately
         combinedScore: r.score,
         resultType: 'semantic',
         highlights: {}, // Semantic search typically doesn't provide highlights directly
-        responseTime: 0,
+        responseTime: 0
       }));
 
       // 3. Store the query embedding and its results in the gRPC VectorCache
@@ -452,40 +437,40 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getFilterKey('type'),
         match: {
-          any: filters.documentTypes,
-        },
+          any: filters.documentTypes
+        }
       });
     }
     if (filters.riskLevels && filters.riskLevels.length > 0) {
       must.push({
         key: getFilterKey('riskLevel'),
         match: {
-          any: filters.riskLevels,
-        },
+          any: filters.riskLevels
+        }
       });
     }
     if (filters.jurisdictions && filters.jurisdictions.length > 0) {
       must.push({
         key: getMetadataFilterKey('jurisdiction'),
         match: {
-          any: filters.jurisdictions,
-        },
+          any: filters.jurisdictions
+        }
       });
     }
     if (filters.confidenceMin !== undefined) {
       must.push({
         key: getFilterKey('confidenceLevel'),
         range: {
-          gte: filters.confidenceMin,
-        },
+          gte: filters.confidenceMin
+        }
       });
     }
     if (filters.priorityMin !== undefined) {
       must.push({
         key: getFilterKey('priority'),
         range: {
-          gte: filters.priorityMin,
-        },
+          gte: filters.priorityMin
+        }
       });
     }
     if (filters.dateRange) {
@@ -493,16 +478,16 @@ export class InstantSearchEngine extends EventEmitter {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
-            gte: filters.dateRange.start.getTime(),
-          },
+            gte: filters.dateRange.start.getTime()
+          }
         });
       }
       if (filters.dateRange.end) {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
-            lte: filters.dateRange.end.getTime(),
-          },
+            lte: filters.dateRange.end.getTime()
+          }
         });
       }
     }
@@ -528,7 +513,7 @@ export class InstantSearchEngine extends EventEmitter {
           ...r,
           combinedScore,
           resultType: 'hybrid',
-          semanticScore: r.semanticScore,
+          semanticScore: r.semanticScore
         });
       } else {
         resultMap.set(r.id, r);
@@ -577,7 +562,7 @@ export class InstantSearchEngine extends EventEmitter {
 
       return {
         ...r,
-        combinedScore: r.combinedScore * boost,
+        combinedScore: r.combinedScore * boost
       };
     });
   }
@@ -689,7 +674,7 @@ export class InstantSearchEngine extends EventEmitter {
         p50: sorted[Math.floor(len * 0.5)] || 0,
         p90: sorted[Math.floor(len * 0.9)] || 0,
         p95: sorted[Math.floor(len * 0.95)] || 0,
-        p99: sorted[Math.floor(len * 0.99)] || 0,
+        p99: sorted[Math.floor(len * 0.99)] || 0
       };
     }
   }

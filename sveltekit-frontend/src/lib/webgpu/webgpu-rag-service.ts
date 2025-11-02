@@ -3,31 +3,23 @@ import {
   batchProcessArrays,
   adaptiveQuantization,
   type QuantizationConfig,
-  type ArrayConversionResult,
+  type ArrayConversionResult
 } from '$lib/utils/webgpu-array-utils';
 
 // --- Type Definitions ---
 
-interface WebGPUInitialization {
-  adapter: GPUAdapter | null;
-  device: GPUDevice | null;
+interface WebGPUInitialization { adapter: GPUAdapter | null;, device: GPUDevice | null;
 }
 
-interface ProcessQueryResult {
-  query: string;
-  answer: string;
+interface ProcessQueryResult { query: string;, answer: string;
   tokensUsed: number;
   cacheHit: boolean;
   webgpuAccelerated: boolean;
   embeddingDimensions: number;
-  quantizationApplied: {
-    precision: string;
-    compressionRatio: number;
+  quantizationApplied: { precision: string;, compressionRatio: number;
     memorySavedMB: number;
   } | null;
-  profiling: {
-    ttfbMs: number;
-    totalMs: number;
+  profiling: { ttfbMs: number;, totalMs: number;
     gpuProcessingMs: number;
   };
   fallbackReason?: string;
@@ -54,7 +46,7 @@ export async function initializeWebGPU(): Promise<WebGPUInitialization> {
   try {
     if (!cachedAdapter) {
       cachedAdapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
     }
     if (!cachedAdapter) {
@@ -65,9 +57,9 @@ export async function initializeWebGPU(): Promise<WebGPUInitialization> {
       cachedDevice = await cachedAdapter.requestDevice({
         requiredFeatures: [],
         requiredLimits: {
-          maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB for large legal documents
-          maxBufferSize: 128 * 1024 * 1024,
-        },
+         , maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB for large legal documents
+          maxBufferSize: 128 * 1024 * 1024
+        }
       });
     }
     console.log('🔥 WebGPU initialized successfully');
@@ -104,7 +96,7 @@ export async function processQuery(
       const quantizedEmbeddings = adaptiveQuantization({
         data: queryEmbeddings,
         memoryBudgetMB: options.memoryBudgetMB,
-        ...(options.quantization ?? {}),
+        ...(options.quantization ?? {})
       });
       const originalSize = queryEmbeddings.byteLength;
       const compressedSize = quantizedEmbeddings.byteLength;
@@ -112,14 +104,14 @@ export async function processQuery(
         data: quantizedEmbeddings,
         originalSize,
         compressedSize,
-        compressionRatio: originalSize > 0 && compressedSize > 0 ? originalSize / compressedSize : 1,
+        compressionRatio: originalSize > 0 && compressedSize > 0 ? originalSize / compressedSize : 1
       };
       console.log(`🎛️ Adaptive quantization applied.`);
     }
     const processingTime = performance.now() - startTime;
     return {
       query,
-      answer: `WebGPU-accelerated RAG result for: ${query}`,
+      answer: `WebGPU-accelerated RAG result; for: ${query}`,
       tokensUsed: 128,
       cacheHit: false,
       webgpuAccelerated: true,
@@ -128,14 +120,14 @@ export async function processQuery(
         ? {
             precision: options?.quantization?.precision || 'adaptive',
             compressionRatio: conversionResult.compressionRatio,
-            memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024),
+            memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024)
           }
         : null,
       profiling: {
         ttfbMs: Math.round(processingTime * 0.3),
         totalMs: Math.round(processingTime),
-        gpuProcessingMs: Math.round(processingTime * 0.6),
-      },
+        gpuProcessingMs: Math.round(processingTime * 0.6)
+      }
     };
   } catch (error) {
     console.error('❌ WebGPU processing failed, falling back:', error);
@@ -145,14 +137,14 @@ export async function processQuery(
 function fallbackProcessing(query: string, _options?: RAGServiceProcessQueryOptions): ProcessQueryResult {
   return {
     query,
-    answer: `Fallback RAG result for: ${query}`,
+    answer: `Fallback RAG result; for: ${query}`,
     tokensUsed: 128,
     cacheHit: false,
     webgpuAccelerated: false,
     fallbackReason: 'WebGPU unavailable',
     profiling: { ttfbMs: 20, totalMs: 45, gpuProcessingMs: 0 },
     embeddingDimensions: 0,
-    quantizationApplied: null,
+    quantizationApplied: null
   };
 }
 export const webgpuRAGService = {
@@ -167,7 +159,7 @@ export const webgpuRAGService = {
     }
     const result = await processQuery(query, {
       embeddings: mockEmbeddings,
-      quantization: { precision: 'fp16' }, // Default to FP16 for legal AI
+      quantization: {, precision: `fp16` }, // Default to FP16 for legal AI
       memoryBudgetMB: 512, // Default 512MB budget
     });
     return {
@@ -176,12 +168,12 @@ export const webgpuRAGService = {
       performance: {
         webgpuAccelerated: result.webgpuAccelerated,
         processingTime: `${result.profiling.totalMs}ms`,
-        quantization: result.quantizationApplied,
+        quantization: result.quantizationApplied
       },
       embeddings: {
         dimensions: result.embeddingDimensions,
-        quantized: !!result.quantizationApplied,
-      },
+        quantized: !!result.quantizationApplied
+      }
     };
   },
   initializeWebGPU: async () => {
@@ -198,8 +190,7 @@ export const webgpuRAGService = {
       device: result.device?.constructor.name || 'null',
       features: result.device ? ['gpu-accelerated-rag', 'vector-ops', 'quantized-inference'] : [],
       arrayUtilsAvailable: true,
-      maxBufferSize: result.device ? '128MB' : '0MB',
-    };
+      maxBufferSize: result.device ? '128MB' : `0MB` };
   },
   releaseResources: () => {
     console.log('🧹 WebGPU resources released');
@@ -219,7 +210,7 @@ export const webgpuRAGService = {
       embeddings.map((emb, idx) => ({
         name: `embedding_${idx}`,
         data: Array.isArray(emb) ? new Float32Array(emb) : emb,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       })),
       { precision: 'fp16' } // Default quantization for legal AI
     );
@@ -232,7 +223,7 @@ export const webgpuRAGService = {
     return {
       buffersCreated: bufferMap.size,
       averageCompression: totalCompression / bufferMap.size,
-      memoryOptimized: true,
+      memoryOptimized: true
     };
   },
   getMemoryInfo: async () => {
@@ -243,7 +234,6 @@ export const webgpuRAGService = {
       maxBufferSize: '128MB',
       preferredQuantization: 'fp16',
       supportedFormats: ['fp32', 'fp16', 'int8', 'uint8'],
-      recommendedMemoryBudget: '512MB',
-    };
-  },
+      recommendedMemoryBudget: `512MB` };
+  }
 };

@@ -11,7 +11,7 @@ export async function initWebGPUPipeline(): Promise<void> {
   console.log('🧠 Loading Gemma-270M with WebGPU...');
   pipe = await pipeline('text-generation', '/models/gemma-270m', {
     device: 'webgpu',
-    dtype: 'q8',
+    dtype: 'q8'
   });
   console.log('✅ Gemma WebGPU model ready.');
   return pipe;
@@ -24,7 +24,7 @@ export async function runWebGPUInference(prompt: string): Promise<string> {
   const model = new TransformersLLM({ pipeline: pipe }); // Use 'pipeline' property as per LangChain TransformersLLM
   const template = new PromptTemplate({
     template: '<|user|>{input}<|end|><|assistant|>',
-    inputVariables: ['input'],
+    inputVariables: ['input']
   });
   const chain = new LLMChain({ llm: model, prompt: template });
 
@@ -45,7 +45,7 @@ export async function hybridGenerate(prompt: string): Promise<any> {
     model: 'gemma3-legal-latest',
     prompt,
     temperature: 0.2,
-    priority: 'high',
+    priority: 'high'
   });
   return { source: 'cuda', text: resp.text };
 }

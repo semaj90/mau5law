@@ -169,7 +169,7 @@ import type { Case } from '$lib/types';
   function handleNavigation(href: string, event?: MouseEvent) {
     event?.preventDefault();
     goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
-    if (browser && window.innerWidth < 1024) isMobileMenuOpen = $state(false);
+    if (browser && window.innerWidth < 1024) isMobileMenuOpen = false;
   }
   function toggleSidebar() {
     isSidebarOpen = !isSidebarOpen;

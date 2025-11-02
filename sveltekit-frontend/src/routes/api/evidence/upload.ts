@@ -4,9 +4,7 @@ import { json } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 
-export interface EvidenceRecord {
-  id: string;
-  title: string;
+export interface EvidenceRecord { id: string;, title: string;
   description: string;
   caseId: string;
   criminalId: string | null;
@@ -71,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     updatedAt: now,
     fileName: file.name,
     summary: null,
-    aiSummary: null,
+    aiSummary: null
   };
   try {
     await db.insert(evidence).values(newEvidence);

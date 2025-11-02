@@ -65,7 +65,7 @@
         break;
       case 'damage':
         lives = Math.max(0, lives - 1);
-        if (lives === 0) isPlaying = $state(false);
+        if (lives === 0) isPlaying = false;
         break;
       case 'reset':
         score = 1337;

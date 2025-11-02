@@ -4,9 +4,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Enhanced with Redis caching for persistence and performance
 import { env } from '$env/dynamic/private';
 type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:indemnification'
-interface PredictionResult {
-  action: Action;
-  p: number;
+interface PredictionResult { action: Action;, p: number;
 }
 class MarkovPredictorWithRedis {
   // use a flexible type for the shared client to avoid typing mismatches
@@ -24,7 +22,7 @@ class MarkovPredictorWithRedis {
     const redisConfig: any = {
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
-      lazyConnect: true,
+      lazyConnect: true
     };
 
     // Only add password if explicitly set
@@ -137,7 +135,7 @@ class MarkovPredictorWithRedis {
       }
       return {
         ...pred,
-        p: pred.p * boost,
+        p: pred.p * boost
       };
     });
     // Re-sort and normalize
@@ -179,9 +177,7 @@ class MarkovPredictorWithRedis {
     }
   }
   // Analytics and metrics
-  async getStats(): Promise<{
-    totalTransitions: number;
-    uniqueActions: number;
+  async getStats(): Promise<{ totalTransitions: number;, uniqueActions: number;
     cacheEnabled: boolean;
     lastSync: number;
     pendingUpdates: number;
@@ -211,7 +207,7 @@ class MarkovPredictorWithRedis {
       cacheEnabled: this.cacheEnabled,
       lastSync: this.lastSync,
       pendingUpdates: this.pendingUpdates,
-      redisConnected,
+      redisConnected
     };
   }
   // Cleanup method

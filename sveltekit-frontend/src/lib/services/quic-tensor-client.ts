@@ -1,9 +1,7 @@
 // Minimal QUIC Tensor Client stub to satisfy neo4j recommendation engine import
 // Provides only the API surface currently used (constructor + getStreamStatus)
 }
-export interface TensorStreamStatus {
-  active_streams: number;
-  max_concurrent: number;
+export interface TensorStreamStatus { active_streams: number;, max_concurrent: number;
   utilization_percent: number; // 0-100
 }
 export interface TensorMetadataContext {
@@ -15,9 +13,7 @@ export interface TensorMetadataContext {
   jurisdiction?: string;
   [key: string]: any;
 }
-export interface TensorMetadata {
-  document_type: string;
-  practice_area: string;
+export interface TensorMetadata { document_type: string;, practice_area: string;
   jurisdiction: string;
   embedding_model: string;
   processing_type: string;

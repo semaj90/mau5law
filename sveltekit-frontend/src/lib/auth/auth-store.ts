@@ -7,9 +7,7 @@ import { env as PUBLIC_ENV } from '$env/dynamic/public';
 import type { UserRole, Permission } from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
-interface ServerUser {
-  id: string;
-  email: string;
+interface ServerUser { id: string;, email: string;
   role: UserRole;
   isActive: boolean;
   name?: string;
@@ -17,9 +15,7 @@ interface ServerUser {
   lastName?: string;
 }
 
-export interface AuthUser extends Partial<ServerUser> {
-  id: string;
-  email: string;
+export interface AuthUser extends Partial<ServerUser> { id: string;, email: string;
   role: UserRole;
   name?: string;
   firstName?: string;
@@ -28,15 +24,11 @@ export interface AuthUser extends Partial<ServerUser> {
   avatarUrl?: string;
   emailVerified?: boolean;
 }
-export interface AuthSession {
-  id: string;
-  userId: string;
+export interface AuthSession { id: string;, userId: string;
   // expiresAt may come from the server as an ISO string; accept string or Date and normalize when used
   expiresAt: string | Date;
 }
-export interface AuthState {
-  user: AuthUser | null;
-  session: AuthSession | null;
+export interface AuthState { user: AuthUser | null;, session: AuthSession | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   permissions: Permission[];
@@ -61,7 +53,7 @@ const initialState: AuthState = {
   isLoading: true,
   isAuthenticated: false,
   permissions: [],
-  lastActivity: null,
+  lastActivity: null
 };
 // Create writable store for auth state
 export const authState = writable<AuthState>(initialState);
@@ -82,7 +74,7 @@ export const DockerEndpoints = {
   QDRANT: 'http://host.docker.internal:6333',
   OLLAMA: 'http://host.docker.internal:11434',
   CONTEXT7: 'http://host.docker.internal:8777',
-  MINIO: 'http://host.docker.internal:9000',
+  MINIO: 'http://host.docker.internal:9000'
 };
 
 /* Derive PUBLIC_API_BASE from dynamic env at runtime; keep existing fallback */
@@ -106,7 +98,7 @@ const AccessControl = {
       superadmin: ['*'],
       admin: ['manage_users', 'manage_content', 'read'],
       editor: ['edit', 'read'],
-      viewer: ['read'],
+      viewer: ['read']
     } as unknown as Record<UserRole, Permission[]>;
     return rolePermissionMap[role] ?? [];
   },
@@ -183,7 +175,7 @@ export class AuthStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, rememberMe }),
-        credentials: 'include',
+        credentials: 'include'
       });
       const result = await this.parseApiResponse(response);
       if (response.ok && result.success) {
@@ -196,7 +188,7 @@ export class AuthStore {
         return {
           success: false,
           error: result.error || 'Login failed',
-          requiresMFA: result.requiresMFA,
+          requiresMFA: result.requiresMFA
         };
       }
     } catch (error: any) {
@@ -210,9 +202,7 @@ export class AuthStore {
   /**
    * Register a new user account
    */
-  static async register(userData: {
-    email: string;
-    password: string;
+  static async register(userData: {, email: string;, password: string;
     firstName?: string;
     lastName?: string;
     role?: UserRole;
@@ -223,7 +213,7 @@ export class AuthStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-        credentials: 'include',
+        credentials: 'include'
       });
       const result = await this.parseApiResponse(response);
       if (response.ok && result.success) {
@@ -297,7 +287,7 @@ export class AuthStore {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
-        credentials: 'include',
+        credentials: 'include'
       });
       const raw = (await response.json()) as unknown;
       const result = raw as { success?: boolean; user?: AuthUser; error?: string };
@@ -305,7 +295,7 @@ export class AuthStore {
         // Update local user data
         authState.update(state => ({
           ...state,
-          user: state.user ? { ...state.user, ...(result.user as AuthUser) } : null,
+          user: state.user ? { ...state.user, ...(result.user as AuthUser) } : null
         }));
         return { success: true };
       } else {
@@ -329,12 +319,12 @@ export class AuthStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
-        credentials: 'include',
+        credentials: 'include'
       });
       const result = await this.parseApiResponse(response);
       return {
         success: response.ok && !!result.success,
-        error: result.error,
+        error: result.error
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -351,7 +341,7 @@ export class AuthStore {
     // Normalize session.expiresAt to a Date instance to make time math safe
     const normalizedSession: AuthSession = {
       ...session,
-      expiresAt: session.expiresAt ? new Date(session.expiresAt) : new Date(),
+      expiresAt: session.expiresAt ? new Date(session.expiresAt) : new Date()
     };
 
     authState.update(state => ({
@@ -361,7 +351,7 @@ export class AuthStore {
       isAuthenticated: true,
       permissions,
       lastActivity: new Date(),
-      isLoading: false,
+      isLoading: false
     }));
   }
   /**
@@ -370,7 +360,7 @@ export class AuthStore {
   private static clearAuth(): void {
     authState.set({
       ...initialState,
-      isLoading: false,
+      isLoading: false
     });
   }
 
@@ -509,8 +499,8 @@ export class AuthStore {
       fetch('/api/auth/activity', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, timestamp: now.toISOString() }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ type, timestamp: now.toISOString() })
       }).catch(() => {
         // ignore network errors for activity pings
       });

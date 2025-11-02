@@ -29,13 +29,13 @@ export async function GET(_event: RequestEvent): Promise<any> {
       services: {
         ollama: getHealthResult(ollamaHealth),
         enhancedRAG: getHealthResult(ragHealth),
-        protobufGRPC: getHealthResult(grpcHealth),
+        protobufGRPC: getHealthResult(grpcHealth)
       } as Record<string, ServiceHealth>,
       overall: {
         healthy: 0,
         degraded: 0,
-        down: 0,
-      },
+        down: 0
+      }
     };
 
     // Calculate overall health metrics
@@ -66,11 +66,10 @@ export async function GET(_event: RequestEvent): Promise<any> {
         timestamp: new Date().toISOString(),
         responseTime: Date.now() - startTime,
         error: error instanceof Error ? error.message : String(error),
-        services: {
-          ollama: { status: 'unknown', error: 'Health check failed' },
+        services: { ollama: {, status: 'unknown', error: 'Health check failed' },
           enhancedRAG: { status: 'unknown', error: 'Health check failed' },
-          protobufGRPC: { status: 'unknown', error: 'Health check failed' },
-        },
+          protobufGRPC: { status: 'unknown', error: `Health check failed` }
+        }
       },
       { status: 500 }
     );
@@ -91,7 +90,7 @@ async function checkOllamaService(): Promise<ServiceHealth> {
       status: isHealthy ? 'healthy' : 'down',
       config,
       availableModels: Array.isArray(models) ? models.length : 0,
-      models: Array.isArray(models) ? models.slice(0, 5) : [],
+      models: Array.isArray(models) ? models.slice(0, 5) : []
     };
   } catch (err) {
     return { status: 'down', error: err instanceof Error ? err.message : String(err) };
@@ -149,7 +148,7 @@ async function checkEnhancedRAGService(): Promise<ServiceHealth> {
         version: h.version ?? null,
         capabilities: h.capabilities ?? null,
         responseTime: h.responseTime ?? null,
-        config: configResult ?? null,
+        config: configResult ?? null
       };
     }
 
@@ -177,7 +176,7 @@ async function checkGRPCService(): Promise<ServiceHealth> {
     return {
       status: isHealthy ? 'healthy' : 'down',
       connected: Boolean(statusObj['connected']),
-      serviceUrl: (statusObj['serviceUrl'] as string) ?? null,
+      serviceUrl: (statusObj['serviceUrl'] as string) ?? null
     };
   } catch (err) {
     return { status: 'down', error: err instanceof Error ? err.message : String(err) };
@@ -191,7 +190,7 @@ function getHealthResult(promiseResult: PromiseSettledResult<ServiceHealth>): Se
     const reason = promiseResult.reason;
     return {
       status: 'down',
-      error: reason instanceof Error ? reason.message : String(reason ?? 'Service check failed'),
+      error: reason instanceof Error ? reason.message : String(reason ?? 'Service check failed')
     };
   }
 }

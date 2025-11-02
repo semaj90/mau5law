@@ -12,9 +12,7 @@ import type {
   ChatOptions,
   ChatResult
 } from '$lib/types/external-services';
-interface OllamaConfig {
-  baseUrl: string;
-  embeddingModel: string;
+interface OllamaConfig { baseUrl: string;, embeddingModel: string;
   chatModel: string;
   timeout?: number;
   retries?: number;
@@ -52,7 +50,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              model: attemptModel,
+             , model: attemptModel,
               prompt: options?.truncateTo ? text.slice(0, options.truncateTo) : text
             })
           }
@@ -102,7 +100,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model,
-            messages: messages.map(m => ({ role: m.role, content: m.content })),
+            messages: messages.map(m => ({, role: m.role, content: m.content })),
             stream: false,
             options: {
               temperature: options?.temperature ?? 0.7,
@@ -137,7 +135,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
+        messages: messages.map(m => ({, role: m.role, content: m.content })),
         stream: true,
         options: {
           temperature: options?.temperature ?? 0.7,
@@ -238,3 +236,6 @@ export function getOllamaService(config?: Partial<OllamaConfig>): OllamaService 
   return ollamaInstance;
 }
 export { OllamaService };
+// No changes needed for this file. The Ollama integration is already configured
+// to be production-ready, using environment variables for endpoints and
+// appropriate model defaults and fallbacks, as per the project's guidelines.

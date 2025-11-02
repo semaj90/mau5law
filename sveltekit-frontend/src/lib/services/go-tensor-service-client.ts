@@ -3,9 +3,7 @@
  * Provides TypeScript client for gRPC and HTTP tensor processing services
  */
 // Tensor processing types
-export interface TensorRequest {
-  id: string;
-  documentId: string;
+export interface TensorRequest { id: string;, documentId: string;
   data: Float32Array | number[];
   operation: 'process' | 'vectorize' | 'analyze' | 'similarity';
   options?: {
@@ -14,9 +12,7 @@ export interface TensorRequest {
     priority?: number;
   };
 }
-export interface TensorResponse {
-  id: string;
-  success: boolean;
+export interface TensorResponse { id: string;, success: boolean;
   result?: {
     processedData?: Float32Array | number[];
     embeddings?: Float32Array | number[];
@@ -42,9 +38,7 @@ interface GoTensorRawResult {
   processingTime?: number;
 }
 
-interface GoTensorRawResponse {
-  id: string;
-  success: boolean;
+interface GoTensorRawResponse { id: string;, success: boolean;
   result?: GoTensorRawResult;
   error?: string;
   timestamp: string; // Go service likely returns ISO string
@@ -54,9 +48,7 @@ interface GoTensorBatchResponse {
   responses: GoTensorRawResponse[];
 }
 
-export interface ServiceHealth {
-  status: 'healthy' | 'degraded' | 'offline';
-  lastCheck: Date;
+export interface ServiceHealth { status: 'healthy' | 'degraded' | 'offline';, lastCheck: Date;
   latency?: number;
   version?: string;
   connections?: number;
@@ -95,8 +87,7 @@ export class GoTensorHTTPClient {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` }
       });
       clearTimeout(timeoutId);
       const latency = Date.now() - start;
@@ -108,8 +99,7 @@ export class GoTensorHTTPClient {
         status: string; // e.g., "ok", "healthy", "error"
         version?: string;
         connections?: number;
-        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime'
-      }
+        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime` }
       const data: GoHealthResponse = await response.json(); // Use specific interface for data
       return {
         status: data.status === 'ok' || data.status === 'healthy' ? 'healthy' : 'degraded', // Map Go status to ServiceHealth status
@@ -122,7 +112,7 @@ export class GoTensorHTTPClient {
       console.error('GoTensorHTTPClient healthCheck failed:', error); // Added logging for debugging
       return {
         status: 'offline',
-        lastCheck: new Date(),
+        lastCheck: new Date()
       };
     }
   }
@@ -137,15 +127,14 @@ export class GoTensorHTTPClient {
         method: 'POST',
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
-          id: request.id,
+         , id: request.id,
           documentId: request.documentId,
           data,
           operation: request.operation,
-          options: request.options,
-        }),
+          options: request.options
+        })
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
@@ -160,16 +149,16 @@ export class GoTensorHTTPClient {
           embeddings: result.result?.embeddings ? new Float32Array(result.result.embeddings) : undefined,
           metadata: result.result?.metadata,
           similarity: result.result?.similarity,
-          processingTime: result.result?.processingTime,
+          processingTime: result.result?.processingTime
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     } catch (err: any) {
       return {
         id: request.id,
         success: false,
         error: err instanceof Error ? err.message : 'Unknown error',
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     }
   }
@@ -179,14 +168,13 @@ export class GoTensorHTTPClient {
       const response = await fetch(`${this.baseUrl}/api/tensor/batch`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
-          requests: requests.map(req => ({
+         , requests: requests.map(req => ({
             ...req,
-            data: req.data instanceof Float32Array ? Array.from(req.data) : req.data,
-          })),
-        }),
+            data: req.data instanceof Float32Array ? Array.from(req.data) : req.data
+          }))
+        })
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -197,15 +185,15 @@ export class GoTensorHTTPClient {
         success: res.success,
         result: res.result
           ? {
-              processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined,
+             , processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined,
               embeddings: res.result.embeddings ? new Float32Array(res.result.embeddings) : undefined,
               metadata: res.result.metadata,
               similarity: res.result.similarity,
-              processingTime: res.result.processingTime,
+              processingTime: res.result.processingTime
             }
           : undefined,
         error: res.error,
-        timestamp: new Date(res.timestamp),
+        timestamp: new Date(res.timestamp)
       }));
     } catch (error) {
       // Return failed responses for all requests
@@ -213,7 +201,7 @@ export class GoTensorHTTPClient {
         id: req.id,
         success: false,
         error: error instanceof Error ? error.message : 'Batch processing failed',
-        timestamp: new Date(),
+        timestamp: new Date()
       }));
     }
   }
@@ -223,8 +211,7 @@ export class GoTensorHTTPClient {
       const response = await fetch(`${this.baseUrl}/metrics`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` }
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -241,7 +228,7 @@ export class GoTensorHTTPClient {
         errorRate: rawMetrics.error_rate,
         uptimeSeconds: rawMetrics.uptime_seconds,
         version: rawMetrics.version,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     } catch (error) {
       console.error('GoTensorHTTPClient getMetrics failed:', error);
@@ -301,7 +288,7 @@ export class GoTensorWebSocketClient {
       const message = {
         type: 'tensor_request',
         ...request,
-        data: request.data instanceof Float32Array ? Array.from(request.data) : request.data,
+        data: request.data instanceof Float32Array ? Array.from(request.data) : request.data
       };
       this.ws.send(JSON.stringify(message));
     } else {
@@ -348,7 +335,7 @@ export class GoTensorWebSocketClient {
           id: `reconnect-error-${Date.now()}`, // Unique ID for this error event
           success: false,
           error: 'Max reconnect attempts reached',
-          timestamp: new Date(),
+          timestamp: new Date()
         })
       );
     }
@@ -386,8 +373,8 @@ export const goTensorService = {
 		try {
 			const response = await fetch('/api/tensor', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ operation: request.operation, documentId: request.id, data: request.data, options: opts })
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({, operation: request.operation, documentId: request.id, data: request.data, options: opts })
 			});
 			if (!response.ok) {
 				throw new Error(`tensor service responded ${response.status}`);

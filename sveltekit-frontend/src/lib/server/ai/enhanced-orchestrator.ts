@@ -25,7 +25,7 @@ export const legalDocuments = pgTable('legal_documents', {
   documentType: text('document_type'),
   caseId: text('case_id'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 export const autoSolveResults = pgTable('autosolve_results', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -35,7 +35,7 @@ export const autoSolveResults = pgTable('autosolve_results', {
   processingTime: integer('processing_time'),
   serviceUsed: text('service_used'),
   success: boolean('success'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 export const synthesisCache = pgTable('synthesis_cache', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -44,7 +44,7 @@ export const synthesisCache = pgTable('synthesis_cache', {
   metadata: json('metadata'),
   hitCount: integer('hit_count').default(0),
   lastAccessed: timestamp('last_accessed').defaultNow(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 // ===== DYNAMIC PORT CONFIGURATION =====
 // previously relied on `portManager` / `getServicePort` which may not exist.
@@ -83,12 +83,9 @@ function getServicePortWithFallback(serviceName: string, fallbackPort: number): 
   return fallbackPort;
 }
 // ===== SERVICE CONFIGURATION =====
-const services = {
-  neo4j: {
-    uri: process.env.NEO4J_URI || 'bolt://neo4j:7687', // Docker service name fallback
+const services = { neo4j: {, uri: process.env.NEO4J_URI || 'bolt://neo4j:7687', // Docker service name fallback
     user: process.env.NEO4J_USER || 'neo4j',
-    password: process.env.NEO4J_PASSWORD || 'password',
-  },
+    password: process.env.NEO4J_PASSWORD || 'password` },
   goMicroservice: {
     // Prioritize explicit env var, then Docker service name + port, then localhost + port
     enhancedRAG:
@@ -103,14 +100,13 @@ const services = {
       process.env.BINARY_VECTOR_ENGINE_URL ||
       `http://binary-vector-engine:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
     quicServer:
-      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}`,
-  },
+      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}' },
   ollama: {
     baseUrl: getOllamaEndpoint(), // Use the centralized helper
     models: {
       legal: 'gemma3-legal:latest',
-      embedding: 'embeddinggemma:latest',
-    },
+      embedding: 'embeddinggemma:latest'
+    }
   },
   context7: process.env.CONTEXT7_URL || 'http://context7:8777', // Docker service name + correct port
   // Postgres and Redis configurations are now handled directly by their respective connection strings
@@ -128,11 +124,11 @@ const pgConnection = process.env.DATABASE_URL
       password: process.env.POSTGRES_PASSWORD || '123456',
       max: 20,
       idle_timeout: 10_000,
-      connect_timeout: 10_000,
+      connect_timeout: 10_000
     });
 
 export const db = drizzle(pgConnection as any, {
-  schema: { legalDocuments, autoSolveResults, synthesisCache },
+  schema: { legalDocuments, autoSolveResults, synthesisCache }
 });
 // ===== REDIS CONNECTION =====
 let redis: Redis | null = null;
@@ -145,7 +141,7 @@ try {
       password: process.env.REDIS_PASSWORD || 'redis', // Default Docker password
       keyPrefix: 'legal-ai:',
       maxRetriesPerRequest: 1, // fail fast
-      connectTimeout: 5000,
+      connectTimeout: 5000
     }
   );
   // non-throwing observation handlers are removed due to type issues
@@ -269,11 +265,11 @@ export class EnhancedAISynthesisOrchestrator {
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.legal,
         temperature: 0.3,
-        format: 'json',
+        format: 'json'
       } as any);
       this.embeddings = new OllamaEmbeddings({
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
-        model: services.ollama.models.embedding,
+        model: services.ollama.models.embedding
       } as any);
       // Try to initialize vector stores (best-effort)
       try {
@@ -282,7 +278,7 @@ export class EnhancedAISynthesisOrchestrator {
           url: services.neo4j.uri,
           username: services.neo4j.user,
           password: services.neo4j.password,
-          indexName: 'legal_documents',
+          indexName: 'legal_documents'
         });
       } catch (e: unknown) {
         this.neo4jStore = null;
@@ -295,19 +291,18 @@ export class EnhancedAISynthesisOrchestrator {
           database: process.env.POSTGRES_DB || 'legal_ai_db',
           user: process.env.POSTGRES_USER || 'legal_admin',
           password: process.env.POSTGRES_PASSWORD || '123456',
-          max: 20,
+          max: 20
         };
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
           postgresConnectionOptions: pgConfig,
           tableName: 'legal_documents',
           columns: {
-            idColumnName: 'id',
+           , idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata',
+            metadataColumnName: 'metadata'
           },
-          distanceStrategy: 'cosine',
-        });
+          distanceStrategy: `cosine` });
       } catch (e: unknown) {
         this.pgVectorStore = null;
         logger.warn('[Orchestrator] PGVector init failed:', e);
@@ -330,7 +325,7 @@ export class EnhancedAISynthesisOrchestrator {
     }
   }
   // --- Small helper wrappers around external pieces ---
-  private async checkCache(query: string): Promise<{ hit: boolean; data?: unknown; source?: 'redis' | 'db' }> {
+  private async checkCache(query: string): Promise<{ hit: boolean; data?: unknown; source?: 'redis' | 'db` }> {
     const key = generateCacheKey(query);
     if (redis) {
       try {
@@ -357,14 +352,14 @@ export class EnhancedAISynthesisOrchestrator {
                 .update(synthesisCache)
                 .set({
                   hitCount: sql`${synthesisCache.hitCount} + 1`,
-                  lastAccessed: new Date(),
+                  lastAccessed: new Date()
                 })
                 .where(eq(synthesisCache.id, hitRow.id));
             }
           } catch (e: unknown) {
             logger.debug('[Cache] best-effort DB hit increment failed', e);
           }
-          return { hit: true, data: parsed, source: 'redis' };
+          return { hit: true, data: parsed, source: `redis` };
         }
       } catch (e: unknown) {
         logger.debug('[Cache] Redis read failed', e);
@@ -382,7 +377,7 @@ export class EnhancedAISynthesisOrchestrator {
         .update(synthesisCache)
         .set({
           hitCount: sql`${synthesisCache.hitCount} + 1`,
-          lastAccessed: new Date(),
+          lastAccessed: new Date()
         })
         .where(eq(synthesisCache.id, hit.id));
       if (redis) {
@@ -392,7 +387,7 @@ export class EnhancedAISynthesisOrchestrator {
           logger.debug('[Cache] Redis setex failed', e);
         }
       }
-      return { hit: true, data: hit.result, source: 'db' };
+      return { hit: true, data: hit.result, source: `db` };
     }
     return { hit: false };
   }
@@ -427,25 +422,25 @@ export class EnhancedAISynthesisOrchestrator {
       const res = await this.pgVectorStore.similaritySearch(query, limit);
       return (res || []).map((d: unknown, i: number) => ({
         ...(d as Record<string, unknown>),
-        score: 1.0 - i * 0.1,
+        score: 1.0 - i * 0.1
       }));
     } catch (e: unknown) {
       logger.warn('[PGVector] search failed:', e);
       return [];
     }
   }
-  private async runEnhancedRAGPipeline(input: { query: string; embeddings?: number[] | null }) {
+  private async runEnhancedRAGPipeline(input: {, query: string; embeddings?: number[] | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.goMicroservice.enhancedRAG}/api/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          query: input.query,
+         , query: input.query,
           limit: 10,
           useGPU: true,
-          embedding: input.embeddings || null,
-        }),
+          embedding: input.embeddings || null
+        })
       });
       if (!response.ok) throw new Error('enhancedRAG failed');
       return await response.json();
@@ -454,20 +449,20 @@ export class EnhancedAISynthesisOrchestrator {
       return { documents: [] };
     }
   }
-  private async runGoLlamaPipeline(input: { query: string; legalBertAnalysis?: LegalBertAnalysis | null }) {
+  private async runGoLlamaPipeline(input: {, query: string; legalBertAnalysis?: LegalBertAnalysis | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.goMicroservice.enhancedRAG}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
+         , model: 'gemma3-legal:latest',
           prompt: input.query,
           context: input.legalBertAnalysis,
           temperature: 0.3,
           max_tokens: 2000,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (response.ok) {
         const result = await response.json();
@@ -478,18 +473,16 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return null;
   }
-  private async rankWithCrossEncoder(context: {
-    query: string;
-    neo4jResults: unknown[];
+  private async rankWithCrossEncoder(context: { query: string;, neo4jResults: unknown[];
     pgVectorResults: unknown[];
-    ragResults: { documents: unknown[] };
+    ragResults: {, documents: unknown[] };
   }) {
     const all = [
       ...(context.neo4jResults || []),
       ...(context.pgVectorResults || []),
       ...((context.ragResults && context.ragResults.documents) || []),
     ];
-    const ranked: (RankedSource & { crossEncoderScore: number; legalRelevance: number })[] = [];
+    const ranked: (RankedSource & { crossEncoderScore: number;, legalRelevance: number })[] = [];
     for (const r of all as RankedSource[]) {
       try {
         const text = r.pageContent || r.content || r.text || '';
@@ -497,7 +490,7 @@ export class EnhancedAISynthesisOrchestrator {
         ranked.push({
           ...r,
           crossEncoderScore: sim.similarity || 0,
-          legalRelevance: (sim as any).legalRelevance || sim.confidence || 0.5,
+          legalRelevance: (sim as any).legalRelevance || sim.confidence || 0.5
         });
       } catch {
         ranked.push({ ...(r as any), crossEncoderScore: 0.0, legalRelevance: 0.0 });
@@ -506,18 +499,18 @@ export class EnhancedAISynthesisOrchestrator {
     const sorted = ranked.sort((a, b) => (b.crossEncoderScore || 0) - (a.crossEncoderScore || 0));
     return applyMMR(sorted as MMRDocument[], 0.7);
   }
-  private async enhanceWithContext7(context: { query: string; legalBertAnalysis: LegalBertAnalysis | null }) {
+  private async enhanceWithContext7(context: {, query: string; legalBertAnalysis: LegalBertAnalysis | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.context7}/api/query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          query: context.query,
+         , query: context.query,
           context: context.legalBertAnalysis,
           includeLibraries: ['langchain', 'drizzle-orm', 'xstate', 'neo4j'],
-          maxTokens: 5000,
-        }),
+          maxTokens: 5000
+        })
       });
       if (response.ok) return await response.json();
     } catch (e: unknown) {
@@ -534,13 +527,13 @@ export class EnhancedAISynthesisOrchestrator {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
+         , model: 'gemma3-legal:latest',
           prompt,
           useGPU: true,
           workers: 8,
           temperature: 0.3,
           max_tokens: 4000,
-        }),
+          format: `json` })
       });
       if (gpuResp.ok) {
         const res = await gpuResp.json();
@@ -556,7 +549,7 @@ export class EnhancedAISynthesisOrchestrator {
         // Use the centralized helper
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: services.ollama.models.legal, prompt, stream: false }),
+        body: JSON.stringify({, model: services.ollama.models.legal, prompt, stream: false, format: 'json' })
       });
       if (resp.ok) {
         const r = await resp.json();
@@ -567,26 +560,23 @@ export class EnhancedAISynthesisOrchestrator {
     }
     throw new Error('Generation failed');
   }
-  private async performFinalSynthesis(input: {
-    query: string;
-    legalBertAnalysis: LegalBertAnalysis | null;
+  private async performFinalSynthesis(input: {, query: string;, legalBertAnalysis: LegalBertAnalysis | null;
     userId?: string;
   }) {
     return AIAssistantInputSynthesizer.synthesizeInput({
       query: input.query,
       context: {
         legalBertAnalysis: input.legalBertAnalysis,
-        userId: input.userId || 'default',
-      },
+        userId: input.userId || 'default` },
       options: {
-        enableMMR: true,
+       , enableMMR: true,
         enableCrossEncoder: true,
         enableLegalBERT: true,
         enableRAG: true,
         maxSources: 10,
         similarityThreshold: 0.7,
-        diversityLambda: 0.3,
-      },
+        diversityLambda: 0.3
+      }
     });
   }
   private async cacheResult(query: string, finalSynthesis: unknown, perfStart: number) {
@@ -594,7 +584,7 @@ export class EnhancedAISynthesisOrchestrator {
     const metadata = {
       processingTime: Date.now() - perfStart,
       servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
-      confidence: (finalSynthesis as any)?.metadata?.confidence ?? null,
+      confidence: (finalSynthesis as any)?.metadata?.confidence ?? null
     };
     if (redis) {
       try {
@@ -611,16 +601,16 @@ export class EnhancedAISynthesisOrchestrator {
           result: finalSynthesis,
           metadata,
           hitCount: 1,
-          lastAccessed: new Date(),
+          lastAccessed: new Date()
         })
         .onConflictDoUpdate({
           target: synthesisCache.queryHash,
           set: {
-            result: finalSynthesis,
+           , result: finalSynthesis,
             metadata,
             hitCount: sql`${synthesisCache.hitCount} + 1`,
-            lastAccessed: new Date(),
-          },
+            lastAccessed: new Date()
+          }
         });
     } catch (e: unknown) {
       logger.debug('[Cache] DB upsert failed', e);
@@ -641,7 +631,7 @@ export class EnhancedAISynthesisOrchestrator {
         ...result,
         _cached: true,
         _cacheSource: cache.source ?? 'unknown',
-        _cachedAt: new Date().toISOString(),
+        _cachedAt: new Date().toISOString()
       };
       // Best-effort monitoring emit
       try {
@@ -649,7 +639,7 @@ export class EnhancedAISynthesisOrchestrator {
           (monitoringService as any).record('cache_hit', {
             query,
             source: cache.source,
-            elapsedMs: Date.now() - perfStart,
+            elapsedMs: Date.now() - perfStart
           });
         } else if (typeof (monitoringService as any)?.increment === 'function') {
           (monitoringService as any).increment('cache_hits');
@@ -675,24 +665,31 @@ export class EnhancedAISynthesisOrchestrator {
       query,
       neo4jResults,
       pgVectorResults,
-      ragResults,
+      ragResults
     });
     // 6) Context7 augmentation
     const context7Docs = await this.enhanceWithContext7({ query, legalBertAnalysis });
     // 7) Generate response
-    const generation = await this.generateWithGemma3Legal({
+    const generationResult = await this.generateWithGemma3Legal({
       query,
       legalBertAnalysis,
       rankedResults: ranked,
       context7Docs,
-      goLlamaResponse,
+      goLlamaResponse
     });
-    // 8) Final synthesis
-    const finalSynthesis = await this.performFinalSynthesis({
-      query,
-      legalBertAnalysis,
-      userId: (options?.userId as string) || undefined,
-    });
+
+    let finalSynthesis: unknown;
+    try {
+      // The model is instructed to return a JSON string.
+      finalSynthesis = JSON.parse(generationResult as string);
+    } catch (e) {
+      logger.error('[Orchestrator] Failed to parse JSON response from LLM', { generationResult, error: e });
+      throw new Error('AI failed to generate a valid response.');
+    }
+
+    // 8) Final synthesis step is now handled by generateWithGemma3Legal.
+    // The call to performFinalSynthesis has been removed as it was redundant.
+
     // 9) Cache
     await this.cacheResult(query, finalSynthesis, perfStart);
     // 10) Record autosolve_results (best-effort)
@@ -703,7 +700,7 @@ export class EnhancedAISynthesisOrchestrator {
         confidence: (finalSynthesis as any)?.confidence_score ?? (finalSynthesis as any)?.metadata?.confidence ?? null,
         processingTime: Date.now() - perfStart,
         serviceUsed: 'enhanced-orchestrator',
-        success: true,
+        success: true
       });
     } catch (e: unknown) {
       logger.debug('[Orchestrator] autosolve_results insert failed', e);
@@ -722,8 +719,8 @@ export class EnhancedAISynthesisOrchestrator {
         ollama: await this.checkOllama(),
         enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
         gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
-        context7: await this.checkService(services.context7),
-      },
+        context7: await this.checkService(services.context7)
+      }
     };
   }
   private async checkPostgres(): Promise<boolean> {
@@ -771,8 +768,7 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
       .map(mapFn ?? ((x: T) => String(x)))
       .filter(Boolean)
       .join(', ');
-  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.
-QUERY: ${String(input?.query ?? '')}
+  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.; QUERY: ${String(input?.query ?? '')}
 `;
   if (input?.legalBertAnalysis) {
     const entitiesStr = safeJoin<LegalBertEntity>(input.legalBertAnalysis.entities, e => e?.text ?? '');
@@ -780,7 +776,7 @@ QUERY: ${String(input?.query ?? '')}
     const complexity = input.legalBertAnalysis?.complexity?.legalComplexity ?? 0;
     const jurisdiction = input.legalBertAnalysis?.jurisdiction ?? 'General';
     prompt += `LEGAL ANALYSIS:
-- Identified Entities: ${entitiesStr}
+- Identified; Entities: ${entitiesStr}
 - Legal Concepts: ${conceptsStr}
 - Complexity Score: ${complexity}
 - Jurisdiction: ${jurisdiction}
@@ -814,13 +810,10 @@ INSTRUCTIONS:
 4. Include any important caveats or limitations
 5. Recommend next steps or actions if appropriate
 6. Distinguish between legal information and legal advice
-7. Format the response in JSON with fields: summary, analysis, detailed_discussion, recommendations, caveats, confidence_score, sources_cited
+7. Format the response as a single JSON object. The JSON must have keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from 0 to 100), and "sources_cited" (array of objects, each with "title" and "relevance" properties).
 RESPONSE:`;
   return prompt;
 }
-// Export singleton instance
-export const orchestrator = new EnhancedAISynthesisOrchestrator();
-export default orchestrator;
 // Export singleton instance
 export const orchestrator = new EnhancedAISynthesisOrchestrator();
 export default orchestrator;

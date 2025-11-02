@@ -5,10 +5,10 @@ import Fuse from 'fuse.js';
 export function createFuseIndex<T extends Record<string, unknown>>(
   items: T[],
   // Replace non-existent Fuse.FuseOptionKey with a simple input shape
-  keys: Array<string | { name: string; weight?: number }>
+  keys: Array<string | {, name: string; weight?: number }>
 ) {
   // Strongly-typed key shape that Fuse expects at runtime
-  type NormalizedKey = string | { name: string; weight: number };
+  type NormalizedKey = string | { name: string;, weight: number };
 
   const normalizedKeys: NormalizedKey[] = keys.map(k => {
     if (typeof k === 'string') return k;
@@ -24,7 +24,7 @@ export function createFuseIndex<T extends Record<string, unknown>>(
   const fuse = new Fuse<T>(items, {
     includeScore: true,
     threshold: 0.35,
-    keys: normalizedKeys,
+    keys: normalizedKeys
   });
 
   // Use a local SearchResult type that matches the shape returned by fuse.search()
@@ -44,6 +44,6 @@ export function createFuseIndex<T extends Record<string, unknown>>(
     },
     update: (next: T[]) => {
       fuse.setCollection(next);
-    },
+    }
   };
 }

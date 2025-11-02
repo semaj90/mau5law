@@ -34,7 +34,7 @@ declare module '$lib/graph/sora-graph-traversal' {
   export interface SoraGraphTraversal {
     findDocumentRelationships(
       documents: Document[],
-      options: { maxDepth: number; relationshipTypes: string[]; context?: string }
+      options: {, maxDepth: number; relationshipTypes: string[]; context?: string }
     ): Promise<Relationship[]>;
     destroy?(): void;
   }
@@ -47,7 +47,7 @@ declare module '$lib/ai/qlora-topology-predictor' {
     predictRecommendationTopology(
       documents: Document[],
       query: string,
-      userProfile: UserProfile
+      userProfile: UserProfile;
     ): Promise<Record<string, unknown>>;
     updateUserContext(userProfile: UserProfile, newContext: RecommendationContext): Promise<void>;
     destroy?(): void;
@@ -56,10 +56,10 @@ declare module '$lib/ai/qlora-topology-predictor' {
 
 declare module '$lib/wasm/qlora-wasm-loader' {
   export interface QLoRAWasmLoader {
-    load(config: { modelPath: string; enableSIMDOptimization: boolean; enableGPUOffloading: boolean }): Promise<void>;
+    load(config: { modelPath: string; enableSIMDOptimization: boolean;, enableGPUOffloading: boolean }): Promise<void>;
     enhanceRecommendations(
       recommendations: RecommendationRaw[],
-      options: { query: string; context: RecommendationContext; enhancementType: string; maxEnhancements: number }
+      options: { query: string; context: RecommendationContext; enhancementType: string;, maxEnhancements: number }
     ): Promise<RecommendationRaw[]>;
     destroy?(): void;
   }
@@ -87,9 +87,7 @@ if (browser) {
   });
 }
 
-export interface EnhancedRecommendation {
-  id: string;
-  type: 'detective' | 'legal' | 'evidence' | 'ai' | string; // Allow string for custom types
+export interface EnhancedRecommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string; // Allow string for custom types
   title: string;
   description: string;
   confidence: number;
@@ -132,20 +130,12 @@ export interface RecommendationContext {
   };
 }
 
-export interface UserProfile {
-  userId: string;
-  role: string;
+export interface UserProfile { userId: string;, role: string;
   expertise: string[];
-  preferences: {
-    recommendationTypes: string[];
-    confidenceThreshold: number;
+  preferences: { recommendationTypes: string[];, confidenceThreshold: number;
     maxRecommendations: number;
   };
-  history: {
-    queries: string[];
-    feedback: Array<{
-      recommendationId: string;
-      feedback: 'positive' | 'negative';
+  history: { queries: string[];, feedback: Array<{ recommendationId: string;, feedback: 'positive' | 'negative';
       timestamp: Date;
       context: RecommendationContext;
     }>;
@@ -153,24 +143,18 @@ export interface UserProfile {
 }
 
 // New interfaces for better type safety
-export interface Document {
-  id: string;
-  title: string;
+export interface Document { id: string;, title: string;
   content?: string;
   description?: string;
   metadata?: Record<string, unknown>;
-  graphMetadata?: {
-    relationshipCount: number;
-    relationships: Relationship[];
+  graphMetadata?: { relationshipCount: number;, relationships: Relationship[];
     centralityScore: number;
     enhancementApplied: boolean;
   };
   [key: string]: any; // Allow additional properties on documents
 }
 
-export interface Relationship {
-  sourceId: string;
-  targetId: string;
+export interface Relationship { sourceId: string;, targetId: string;
   type: string; // e.g., 'citation', 'precedent', 'related_case'
   [key: string]: any; // Allow additional properties on relationships
 }
@@ -183,9 +167,7 @@ export interface PredictedAsset {
   [key: string]: any; // Allow additional properties on predicted assets
 }
 
-export interface PredictionResult {
-  predictedAssets: PredictedAsset[];
-  confidence: number;
+export interface PredictionResult { predictedAssets: PredictedAsset[];, confidence: number;
   recommendationTypes: string[];
 }
 
@@ -236,9 +218,7 @@ export class EnhancedRecommendationIntegration {
   private isInitialized = $state(false);
   private pendingRequests = new Map<
     string,
-    {
-      resolve: (_value: any) => void;
-      reject: (error: Error) => void;
+    { resolve: (_value: any) => void;, reject: (error: Error) => void;
       timestamp: number;
     }
   >();
@@ -286,14 +266,14 @@ export class EnhancedRecommendationIntegration {
         this.soraMoogleIntegration = new SoraMoogleIntegrationModule({
           enableCHRROMOptimization: true,
           enableGraphIntegration: true,
-          enablePredictiveAssets: true,
+          enablePredictiveAssets: true
         });
       }
       // Initialize graph traversal
       if (GraphTraversalModule) {
         this.graphTraversal = new GraphTraversalModule({
           enableWebGPUAcceleration: true,
-          enableLegalEntityRecognition: true,
+          enableLegalEntityRecognition: true
         });
       }
       // Initialize QLoRA topology predictor
@@ -301,7 +281,7 @@ export class EnhancedRecommendationIntegration {
         this.qloraTopologyPredictor = new QLoRATopologyPredictorModule({
           predictionAccuracy: 0.85,
           enableRealtimeUpdates: true,
-          integrationMode: 'recommendation_enhancement',
+          integrationMode: 'recommendation_enhancement'
         });
       }
       // Initialize QLoRA WASM loader
@@ -311,7 +291,7 @@ export class EnhancedRecommendationIntegration {
           // Assuming a load method for configuration
           modelPath: '/models/qlora',
           enableSIMDOptimization: true,
-          enableGPUOffloading: true,
+          enableGPUOffloading: true
         });
       }
       console.log('AI components initialized successfully');
@@ -344,7 +324,7 @@ export class EnhancedRecommendationIntegration {
         this.handleAssetPredictionComplete(data as AssetPredictionCompleteEventData);
         break;
       default:
-        console.log('Unhandled worker message:', type, data);
+        console.log('Unhandled worker; message:', type, data);
     }
   }
 
@@ -399,12 +379,12 @@ export class EnhancedRecommendationIntegration {
           clearTimeout(timeout);
           reject(error);
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       this.worker!.postMessage({
         type,
         data: { ...data, requestId },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
   }
@@ -431,7 +411,7 @@ export class EnhancedRecommendationIntegration {
         const relationships = await this.graphTraversal.findDocumentRelationships(enhancedDocuments, {
           maxDepth: 3,
           relationshipTypes: ['citation', 'precedent', 'related_case'],
-          context: context.legalDomain,
+          context: context.legalDomain
         });
         graphEnhancedDocs = this.applyGraphRelationships(enhancedDocuments, relationships);
       }
@@ -453,10 +433,10 @@ export class EnhancedRecommendationIntegration {
         context: {
           ...context,
           topologyPredictions,
-          graphRelationships: graphEnhancedDocs.length > documents.length,
+          graphRelationships: graphEnhancedDocs.length > documents.length
         },
         userProfile,
-        startTime: Date.now(),
+        startTime: Date.now()
       });
 
       // Step 5: Post-process with QLoRA WASM if available
@@ -481,12 +461,12 @@ export class EnhancedRecommendationIntegration {
     feedback: 'positive' | 'negative',
     recommendation: EnhancedRecommendation,
     context: RecommendationContext
-  ): Promise<{ success: boolean; shouldTriggerDistillation: boolean; totalFeedbackCount: number }> {
+  ): Promise<{ success: boolean; shouldTriggerDistillation: boolean;, totalFeedbackCount: number }> {
     try {
       // Submit to RL feedback API
       const response = await fetch('/api/rl-feedback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           recommendationId,
           feedback,
@@ -498,11 +478,11 @@ export class EnhancedRecommendationIntegration {
           context: recommendation.context || '',
           query: recommendation.query || '',
           userInteractionData: {
-            timestamp: Date.now(),
+           , timestamp: Date.now(),
             context,
-            metadata: recommendation.metadata,
-          },
-        }),
+            metadata: recommendation.metadata
+          }
+        })
       });
 
       if (!response.ok) {
@@ -517,7 +497,7 @@ export class EnhancedRecommendationIntegration {
           feedbackId: result.feedbackId,
           feedback,
           recommendation,
-          context,
+          context
         }).catch(error => {
           console.warn('Worker feedback training failed:', error);
         });
@@ -526,14 +506,14 @@ export class EnhancedRecommendationIntegration {
       return {
         success: true,
         shouldTriggerDistillation: result.shouldTriggerDistillation || false,
-        totalFeedbackCount: result.totalFeedbackCount || 0,
+        totalFeedbackCount: result.totalFeedbackCount || 0
       };
     } catch (error) {
       console.error('Feedback submission failed:', error);
       return {
         success: false,
         shouldTriggerDistillation: false,
-        totalFeedbackCount: 0,
+        totalFeedbackCount: 0
       };
     }
   }
@@ -548,9 +528,9 @@ export class EnhancedRecommendationIntegration {
         await this.sendWorkerMessage('UPDATE_CONTEXT', {
           newContext,
           userState: {
-            profile: userProfile,
-            timestamp: Date.now(),
-          },
+           , profile: userProfile,
+            timestamp: Date.now()
+          }
         });
       }
 
@@ -583,13 +563,12 @@ export class EnhancedRecommendationIntegration {
         query,
         context,
         userProfile,
-        predictionType: 'recommendation_needs',
-      });
+        predictionType: `recommendation_needs` });
 
       return {
         predictedAssets: result.predictedAssets || [],
         confidence: result.confidence || 0,
-        recommendationTypes: this.extractRecommendationTypes(result.predictedAssets),
+        recommendationTypes: this.extractRecommendationTypes(result.predictedAssets)
       };
     } catch (error) {
       console.error('Asset prediction failed:', error);
@@ -607,8 +586,8 @@ export class EnhancedRecommendationIntegration {
           relationshipCount: relatedDocs.length,
           relationships: relatedDocs,
           centralityScore: this.calculateCentralityScore(doc.id, relationships),
-          enhancementApplied: true,
-        },
+          enhancementApplied: true
+        }
       };
     });
   }
@@ -633,7 +612,7 @@ export class EnhancedRecommendationIntegration {
         query,
         context,
         enhancementType: 'confidence_boost',
-        maxEnhancements: 10,
+        maxEnhancements: 10
       });
       return enhanced;
     } catch (error) {
@@ -660,7 +639,7 @@ export class EnhancedRecommendationIntegration {
       feedbackTimestamp: rec.feedbackTimestamp,
       context: rec.context,
       query: rec.query,
-      metadata: rec.metadata || {},
+      metadata: rec.metadata || {}
     };
   }
 
@@ -680,8 +659,8 @@ export class EnhancedRecommendationIntegration {
       query,
       metadata: {
         fallback: true,
-        processingTimestamp: Date.now(),
-      },
+        processingTimestamp: Date.now()
+      }
     }));
   }
 

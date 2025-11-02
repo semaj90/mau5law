@@ -20,7 +20,7 @@ import type { Document } from '$lib/types';
   // fixed typo: latestMetric
   const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
 
-  let isLoading: boolean = $state(false);
+  let isLoading: boolean = false;
   let selectedOperation: string = 'processDocument';
   let testInput: string = '';
   let errorMessage: string = '';

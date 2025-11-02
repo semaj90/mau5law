@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       temperature: (config.temperature as number) || 0.7,
       topP: (config.topP as number) || 0.9,
       // spread any other unknown keys through (keeps typing safe)
-      ...config,
+      ...config
     };
     // Create a ReadableStream for chunked response
     const stream = new ReadableStream({
@@ -65,14 +65,14 @@ export const POST: RequestHandler = async ({ request }) => {
             const data = JSON.stringify({
               type: 'token',
               content: chunk,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
             controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`));
           }
           // Send completion event
           const completeData = JSON.stringify({
             type: 'complete',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
           controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`));
           controller.close();
@@ -80,12 +80,11 @@ export const POST: RequestHandler = async ({ request }) => {
           console.error('Streaming error:', err);
           const errorData = JSON.stringify({
             type: 'error',
-            message: err instanceof Error ? err.message : 'Unknown error',
-          });
+            message: err instanceof Error ? err.message : 'Unknown error` });
           controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`));
           controller.close();
         }
-      },
+      }
     });
     // Return as Server-Sent Events stream
     return new Response(stream, {
@@ -94,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'X-Accel-Buffering': 'no', // Disable Nginx buffering
-      },
+      }
     });
   } catch (err) {
     console.error('API error:', err);
@@ -109,23 +108,22 @@ export const GET: RequestHandler = async () => {
       status: 'ready',
       gpu: {
         available: typeof navigator !== 'undefined' && 'gpu' in navigator,
-        webgpu: typeof GPUAdapter !== 'undefined',
+        webgpu: typeof GPUAdapter !== 'undefined'
       },
       memory: {
         // Server-side memory info
         heapUsed: process.memoryUsage().heapUsed,
         heapTotal: process.memoryUsage().heapTotal,
-        external: process.memoryUsage().external,
+        external: process.memoryUsage().external
       },
       simd: {
         workers: 4, // Number of SIMD workers
-        supported: true,
-      },
+        supported: true
+      }
     };
     return new Response(JSON.stringify(stats), {
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` }
     });
   } catch (err) {
     console.error('Stats error:', err);

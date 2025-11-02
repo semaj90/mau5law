@@ -8,17 +8,15 @@ import { json } from '@sveltejs/kit';
 import {
   gpuServiceIntegration,
   type GPUProcessingTask,
-  type GPUServiceStatus,
+  type GPUServiceStatus
 } from '$lib/services/gpu-service-integration';
 import { llvmWasmBridge, initializeLLVMIntegration } from '$lib/wasm/llvm-wasm-bridge';
 import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from '$lib/services/flashattention2-rtx3060';
 
 // -----------------------------------------------------------------------------
-// Add missing request body types to fix: "Cannot find name: 'XBody'." errors
+// Add missing request body types to fix: "Cannot find; name: 'XBody'." errors
 // -----------------------------------------------------------------------------
-type ProcessingBody = {
-  type: string;
-  data: any;
+type ProcessingBody = { type: string;, data: any;
   priority?: 'low' | 'medium' | 'high';
   metadata?: Record<string, unknown>;
 };
@@ -40,9 +38,7 @@ type ErrorProcessingBody = {
   errorContext: GPUErrorContext | unknown;
 };
 
-type WASMCompilationBody = {
-  moduleId: string;
-  sources: Record<string, string> | string[]; // map of filename->source or array of sources
+type WASMCompilationBody = { moduleId: string;, sources: Record<string, string> | string[]; // map of filename->source or array of sources
   options?: Record<string, unknown>;
 };
 
@@ -112,28 +108,18 @@ type ErrorProcessorStats = {
 
 // -----------------------------------------------------------------------------
 
-export interface IntegrationStatus {
-  gpuService: {
-    available: boolean;
+export interface IntegrationStatus { gpuService: {, available: boolean;
     initialized: boolean;
     status: GPUServiceStatus;
   };
-  wasmBridge: {
-    available: boolean;
-    initialized: boolean;
+  wasmBridge: { available: boolean;, initialized: boolean;
     modules: WasmModulesMap;
   };
-  flashAttention: {
-    available: boolean;
-    status: FlashAttentionStatus;
+  flashAttention: { available: boolean;, status: FlashAttentionStatus;
   };
-  errorProcessor: {
-    available: boolean;
-    cacheStats: ErrorProcessorStats;
+  errorProcessor: { available: boolean;, cacheStats: ErrorProcessorStats;
   };
-  overall: {
-    healthy: boolean;
-    readyForProcessing: boolean;
+  overall: { healthy: boolean;, readyForProcessing: boolean;
     integrationScore: number;
   };
 }
@@ -182,7 +168,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Service unavailable',
         details: getErrorMessage(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -215,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         error: 'Processing failed',
         details: getErrorMessage(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -238,44 +224,40 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
       gpuInitialized: Boolean(gpuStatus.initialized),
       wasmModulesLoaded: Object.keys(wasmModules).length,
       flashAttentionReady: Boolean(flashStatus.initialized),
-      errorProcessorReady: safeNumber((errorStats as unknown as Record<string, unknown>)?.cacheSize ?? -1) >= 0,
+      errorProcessorReady: safeNumber((errorStats as unknown as Record<string, unknown>)?.cacheSize ?? -1) >= 0
     });
-    return {
-      gpuService: {
-        available: Boolean(gpuStatus.available),
+    return { gpuService: {, available: Boolean(gpuStatus.available),
         initialized: Boolean(gpuStatus.initialized),
-        status: gpuStatus,
+        status: gpuStatus
       },
       wasmBridge: {
         available: Object.keys(wasmModules).length > 0,
         initialized: Object.values(wasmModules).some(m => Boolean((m as WasmModuleInfo)?.isLoaded)),
-        modules: wasmModules,
+        modules: wasmModules
       },
       flashAttention: {
         available: Boolean(flashStatus.initialized),
-        status: flashStatus,
+        status: flashStatus
       },
       errorProcessor: {
         available: true,
-        cacheStats: errorStats,
+        cacheStats: errorStats
       },
       overall: {
         healthy: integrationScore > 0.7,
         readyForProcessing: integrationScore > 0.5,
-        integrationScore,
-      },
+        integrationScore
+      }
     };
   } catch (err: any) {
     console.error('❌ Failed to get integration status:', getErrorMessage(err));
     throw err;
   }
 }
-function calculateIntegrationScore(metrics: {
-  gpuAvailable: boolean;
-  gpuInitialized: boolean;
+function calculateIntegrationScore(metrics: { gpuAvailable: boolean;, gpuInitialized: boolean;
   wasmModulesLoaded: number;
   flashAttentionReady: boolean;
-  errorProcessorReady: boolean;
+ , errorProcessorReady: boolean;
 }): number {
   let score = 0;
   const maxScore = 5;
@@ -302,11 +284,10 @@ async function getHealthCheck(): Promise<Record<string, unknown>> {
       gpu: gpuAvailable ? 'operational' : 'unavailable',
       wasm: wasmAvailable ? 'operational' : 'unavailable',
       flashAttention: flashAvailable ? 'operational' : 'unavailable',
-      errorProcessor: errorProcessorAvailable ? 'operational' : 'unavailable',
-    },
+      errorProcessor: errorProcessorAvailable ? 'operational' : `unavailable` },
     readyForProcessing: Boolean(overall.readyForProcessing),
     integrationScore: Number(overall.integrationScore) || 0,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 async function getModuleInformation(): Promise<Record<string, unknown>> {
@@ -320,7 +301,7 @@ async function getModuleInformation(): Promise<Record<string, unknown>> {
     gpuServiceConfig: {
       batchSize: safeNumber(gpuStatusRec?.queuedTasks),
       memoryUsage: safeNumber(gpuStatusRec?.memoryUsage),
-      performance: (gpuStatusRec?.performance as Record<string, unknown>) ?? {},
+      performance: (gpuStatusRec?.performance as Record<string, unknown>) ?? {}
     },
     availableOperations: [
       'legal-text-processing',
@@ -328,7 +309,7 @@ async function getModuleInformation(): Promise<Record<string, unknown>> {
       'similarity-calculation',
       'error-processing',
       'wasm-compilation',
-    ],
+    ]
   };
 }
 async function getPerformanceMetrics(): Promise<Record<string, unknown>> {
@@ -359,27 +340,25 @@ async function getPerformanceMetrics(): Promise<Record<string, unknown>> {
     const nowVal =
       typeof perfGlobal?.performance?.now === 'function' ? Number(perfGlobal.performance.now()) : Number(Date.now());
 
-    return {
-      gpu: {
-        utilization: safeNumber(gpuStatusRec['currentLoad']),
+    return { gpu: {, utilization: safeNumber(gpuStatusRec['currentLoad']),
         throughput: safeNumber(gpuPerformance['throughput']),
         avgProcessingTime: safeNumber(gpuPerformance['avgProcessingTime']),
         efficiency: safeNumber(gpuPerformance['efficiency']),
-        errorRate: safeNumber(gpuStatusRec['errorRate']),
+        errorRate: safeNumber(gpuStatusRec['errorRate'])
       },
       wasm: {
         modulesLoaded,
         memoryUsage: totalMemory,
-        avgCompileTime: modulesLoaded ? totalCompileMs / modulesLoaded : 0,
+        avgCompileTime: modulesLoaded ? totalCompileMs / modulesLoaded : 0
       },
       flashAttention: {
         gpuEnabled: safeBool(flashStatusRec['gpuEnabled']),
         memoryOptimization: flashStatusRec['memoryOptimization'] ?? null,
-        maxSequenceLength: safeNumber(flashStatusRec['maxSequenceLength']),
+        maxSequenceLength: safeNumber(flashStatusRec['maxSequenceLength'])
       },
       errorProcessor: status?.errorProcessor?.cacheStats ?? {},
       timestamp: new Date().toISOString(),
-      collectedAtPerfNow: nowVal,
+      collectedAtPerfNow: nowVal
     };
   } catch (err: any) {
     console.error('Failed to gather performance metrics:', getErrorMessage(err));
@@ -389,7 +368,7 @@ async function getPerformanceMetrics(): Promise<Record<string, unknown>> {
       flashAttention: {},
       errorProcessor: {},
       timestamp: new Date().toISOString(),
-      error: getErrorMessage(err),
+      error: getErrorMessage(err)
     };
   }
 }
@@ -428,7 +407,7 @@ async function safeComputeEmbedding(text: string, dimensions: number): Promise<a
   const res = (await fn(text, dimensions)) ?? {};
   return {
     embedding: Array.isArray(res.embedding) ? res.embedding : [],
-    processingTime: typeof res.processingTime === 'number' ? res.processingTime : 0,
+    processingTime: typeof res.processingTime === 'number' ? res.processingTime : 0
   };
 }
 
@@ -458,8 +437,7 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
     metadata: {
       ...metadata,
       requestTime: new Date().toISOString(),
-      source: 'gpu-wasm-integration-api',
-    },
+      source: `gpu-wasm-integration-api` }
   };
 
   // cast through unknown to satisfy the compiler when shapes don't fully overlap
@@ -469,7 +447,7 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
     taskId,
     status: 'queued',
     message: `Task ${taskId} submitted for ${type} processing`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -477,7 +455,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
   // coerce context to string[] to match downstream expectations
   const { text, context = [], analysisType = 'legal' } = body;
   if (!text || typeof text !== 'string') {
-    return json({ error: 'Missing or invalid text parameter' }, { status: 400 });
+    return json({ error: `Missing or invalid text parameter` }, { status: 400 });
   }
   try {
     const ctx: string[] = Array.isArray(context) ? context.map(c => String(c)) : [];
@@ -488,25 +466,23 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
       llvmWasmBridge.processLegalText(text, {
         extractCitations: true,
         analyzePrecedents: true,
-        riskAssessment: false,
+        riskAssessment: false
       }),
     ]);
 
     // Narrow settled values into typed locals to avoid `any`
-    // Cast via `unknown` first to acknowledge intentional shape adaptation
+    // Cast via `unknown' first to acknowledge intentional shape adaptation
     const gpuVal = gpuResult.status === 'fulfilled' ? (gpuResult.value as unknown as GPULegalAnalysis) : undefined;
     const wasmVal = wasmResult.status === 'fulfilled' ? (wasmResult.value as WASMLegalAnalysis) : undefined;
 
-    const response: {
-      success: boolean;
-      analysis: Record<string, unknown>;
+    const response: { success: boolean;, analysis: Record<string, unknown>;
       processingTime: number;
       sources: string[];
     } = {
       success: true,
       analysis: {},
       processingTime: 0,
-      sources: [],
+      sources: []
     };
 
     if (gpuVal) {
@@ -529,7 +505,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
       citations: wasmVal?.citations ?? [],
       legalEntities: gpuVal?.legalAnalysis?.legalEntities ?? [],
       conceptClusters: gpuVal?.legalAnalysis?.conceptClusters ?? [],
-      processedText: wasmVal?.processedText ?? text,
+      processedText: wasmVal?.processedText ?? text
     };
 
     return json(response);
@@ -538,7 +514,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
       {
         success: false,
         error: 'Legal analysis failed',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       },
       { status: 500 }
     );
@@ -580,14 +556,14 @@ async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response>
       dimensions,
       processingTime,
       source,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json(
       {
         success: false,
         error: 'Embedding generation failed',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       },
       { status: 500 }
     );
@@ -604,14 +580,14 @@ async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Respons
     return json({
       success: !!(result as unknown as Record<string, unknown>)?.resolved,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json(
       {
         success: false,
         error: 'Error processing failed',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       },
       { status: 500 }
     );
@@ -621,7 +597,7 @@ async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Respons
 async function handleWASMCompilation(body: WASMCompilationBody): Promise<Response> {
   const { moduleId, sources, options = {} } = body;
   if (!moduleId || sources === undefined) {
-    return json({ error: 'Missing moduleId or sources parameters' }, { status: 400 });
+    return json({ error: `Missing moduleId or sources parameters` }, { status: 400 });
   }
   try {
     // typed compile options to avoid: 'any' casts
@@ -635,7 +611,7 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
     const module = await llvmWasmBridge.compileLegalModule(moduleId, `custom_${moduleId}`, {
       sources,
       exports: opts.exports || [],
-      memoryRequired: opts.memoryRequired || 1024 * 1024,
+      memoryRequired: opts.memoryRequired || 1024 * 1024
     });
     if (!module) {
       throw new Error('Module compilation failed');
@@ -643,20 +619,20 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
     return json({
       success: true,
       module: {
-        id: module.id,
+       , id: module.id,
         name: module.name,
         isLoaded: module.isLoaded,
         exports: Object.keys(module.exports || {}),
-        performance: module.performance,
+        performance: module.performance
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json(
       {
         success: false,
         error: 'WASM compilation failed',
-        details: err instanceof Error ? err.message : String(err),
+        details: err instanceof Error ? err.message : String(err)
       },
       { status: 500 }
     );
@@ -671,12 +647,12 @@ type TestResult = {
 };
 
 async function handleIntegrationTest(body: IntegrationTestBody): Promise<Response> {
-  const { testType = 'comprehensive' } = body ?? {};
+  const { testType = 'comprehensive` } = body ?? {};
   try {
-    const results: { testType: string; timestamp: string; tests: Record<string, TestResult> } = {
+    const results: { testType: string; timestamp: string;, tests: Record<string, TestResult> } = {
       testType,
       timestamp: new Date().toISOString(),
-      tests: {},
+      tests: {}
     };
 
     // GPU service check
@@ -688,8 +664,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     const gpuAvailable = Boolean(gpuStatusRec?.available);
     const gpuTest: TestResult = {
       success: gpuInitialized,
-      details: `initialized=${gpuInitialized}, available=${gpuAvailable}${gpuStatusRec?.error ? `, error=${String(gpuStatusRec.error)}` : ''}`,
-    };
+      details: `initialized=${gpuInitialized}, available=${gpuAvailable}${gpuStatusRec?.error ? `, error=${String(gpuStatusRec.error)}` : `` }` };
 
     // If embeddings supported, attempt a lightweight embedding call
     const maybeGenerateEmbeddings = gpuServiceIntegration as unknown as {
@@ -718,12 +693,11 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
       const processedLen = String(wasmRes?.processedText ?? testText).length;
       results.tests.wasmBridge = {
         success: true,
-        details: `Processed ${processedLen} characters in ${processedMs}ms`,
-      };
+        details: `Processed ${processedLen} characters in ${processedMs}ms` };
     } catch (wasmErr: any) {
       results.tests.wasmBridge = {
         success: false,
-        details: getErrorMessage(wasmErr),
+        details: getErrorMessage(wasmErr)
       };
     }
 
@@ -732,14 +706,14 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
       const flashStatus = (await Promise.resolve(flashAttention2Service.getStatus())) as FlashAttentionStatus | null;
       results.tests.flashAttention = {
         success: Boolean(flashStatus?.initialized),
-        details: `GPU enabled: ${String(flashStatus?.gpuEnabled ?? 'unknown')}, Memory optimization: ${String(
+        details: 'GPU; enabled: ${String(flashStatus?.gpuEnabled ?? 'unknown')}, Memory optimization: ${String(
           flashStatus?.memoryOptimization ?? 'unknown'
-        )}`,
+        )}`
       };
     } catch (flashErr: any) {
       results.tests.flashAttention = {
         success: false,
-        details: getErrorMessage(flashErr),
+        details: getErrorMessage(flashErr)
       };
     }
 
@@ -749,8 +723,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     (results as Record<string, unknown>).overall = {
       success: successfulTests === testResults.length,
       successRate: testResults.length ? successfulTests / testResults.length : 0,
-      summary: `${successfulTests}/${testResults.length} tests passed`,
-    };
+      summary: `${successfulTests}/${testResults.length} tests passed` };
 
     return json(results);
   } catch (err: any) {
@@ -759,7 +732,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
         success: false,
         error: 'Integration test failed',
         details: getErrorMessage(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

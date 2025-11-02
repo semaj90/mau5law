@@ -10,9 +10,7 @@ import type { Case } from '$lib/types';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { VECTOR_CONFIG } from '../config/vector-config';
 
-export interface CollectionConfig {
-  name: string;
-  description: string;
+export interface CollectionConfig { name: string;, description: string;
   onDisk: boolean;
   replicationFactor?: number;
 }
@@ -38,7 +36,7 @@ export function createQdrantClient(): QdrantClient {
 export const QDRANT_COLLECTIONS: CollectionConfig[] = [
   {
     name: VECTOR_CONFIG.COLLECTIONS.LEGAL_DOCUMENTS,
-    description: 'Legal documents with 384-dimensional embeddings from embeddinggemma:latest',
+    description: 'Legal documents with 384-dimensional embeddings from; embeddinggemma:latest',
     onDisk: true,
     replicationFactor: 1
   },
@@ -110,16 +108,14 @@ export async function createCollection(
     // Create new collection with 384 dimensions
     console.log(`📦 Creating collection: "${config.name}"...`);
 
-    await client.createCollection(config.name, {
-      vectors: {
-        size: VECTOR_CONFIG.DIMENSIONS,
+    await client.createCollection(config.name, { vectors: {, size: VECTOR_CONFIG.DIMENSIONS,
         distance: VECTOR_CONFIG.DISTANCE_METRIC.QDRANT
       },
       optimizers_config: {
         indexing_threshold: 20000 // Start indexing after 20k vectors
       },
       hnsw_config: {
-        m: VECTOR_CONFIG.INDEX.QDRANT_HNSW_M,
+       , m: VECTOR_CONFIG.INDEX.QDRANT_HNSW_M,
         ef_construct: VECTOR_CONFIG.INDEX.QDRANT_HNSW_EF,
         on_disk: config.onDisk
       },
@@ -134,7 +130,7 @@ export async function createCollection(
 
     return true;
   } catch (error) {
-    console.error(`❌ Failed to create collection: "${config.name}":`, error);
+    console.error(`❌ Failed to create collection: "${config.name}": ', error);
     return false;
   }
 }
@@ -142,9 +138,7 @@ export async function createCollection(
 /**
  * Initialize all Qdrant collections for the legal AI platform
  */
-export async function initializeQdrantCollections(): Promise<{
-  success: boolean;
-  created: string[];
+export async function initializeQdrantCollections(): Promise<{ success: boolean;, created: string[];
   failed: string[];
 }> {
   console.log('\n🎯 Qdrant Collection Initialization (384 Dimensions)');
@@ -198,7 +192,7 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
     console.log(`🗑️  Deleted collection: ${collectionName}`);
     return true;
   } catch (error) {
-    console.error(`Failed to delete collection: "${collectionName}":`, error);
+    console.error(`Failed to delete collection: "${collectionName}": ', error);
     return false;
   }
 }
@@ -206,9 +200,7 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
 /**
  * Get collection statistics
  */
-export async function getCollectionStats(collectionName: string): Promise<{
-  pointsCount: number;
-  indexedVectorsCount: number;
+export async function getCollectionStats(collectionName: string): Promise<{ pointsCount: number;, indexedVectorsCount: number;
   onDisk: boolean;
   dimensions: number;
 } | null> {
@@ -234,13 +226,11 @@ export async function getCollectionStats(collectionName: string): Promise<{
 /**
  * Verify all collections have correct dimensions
  */
-export async function verifyCollectionDimensions(): Promise<{
-  correct: string[];
-  incorrect: Array<{ name: string; actual: number; expected: number }>;
+export async function verifyCollectionDimensions(): Promise<{ correct: string[];, incorrect: Array<{ name: string; actual: number;, expected: number }>;
 }> {
   const client = createQdrantClient();
   const correct: string[] = [];
-  const incorrect: Array<{ name: string; actual: number; expected: number }> = [];
+  const incorrect: Array<{ name: string; actual: number;, expected: number }> = [];
 
   for (const config of QDRANT_COLLECTIONS) {
     try {

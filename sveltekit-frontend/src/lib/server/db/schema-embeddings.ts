@@ -13,7 +13,7 @@ export const embeddings = pgTable('embeddings', {
   source: text('source').default('user_input'), // Track where embedding came from
   // defaultNow() + .notNull() can cause unknown typing — remove .notNull()
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });
 // Legal document embeddings (more specific for legal AI)
 export const legalDocumentEmbeddings = pgTable('legal_document_embeddings', {
@@ -30,7 +30,7 @@ export const legalDocumentEmbeddings = pgTable('legal_document_embeddings', {
   legalConcepts: jsonb('legal_concepts').$type<Record<string, unknown> | null>(), // Legal concept extraction
   // remove .notNull() after defaultNow()
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });
 // Search queries and results for learning
 export const searchQueries = pgTable('search_queries', {
@@ -45,7 +45,7 @@ export const searchQueries = pgTable('search_queries', {
   searchType: text('search_type').default('semantic'), // semantic, keyword, hybrid;
   filters: jsonb('filters').$type<Record<string, unknown> | null>(), // Applied filters
   // remove .notNull() after defaultNow()
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 });
 // Export types for TypeScript
 export type Embedding = typeof embeddings.$inferSelect;

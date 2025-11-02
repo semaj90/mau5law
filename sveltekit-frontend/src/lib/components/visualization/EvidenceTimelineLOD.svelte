@@ -867,7 +867,7 @@ if (!browser) return;
       height={timelineHeight}
       class="timeline-canvas"
       onclick={handleCanvasClick}
-      on:mousemove={handleCanvasHover}
+      onmousemove={handleCanvasHover}
     ></canvas>
     <!-- Loading overlay -->
     {#if isLoading}

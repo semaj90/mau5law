@@ -13,7 +13,7 @@ import type { Document } from '$lib/types';
   // Svelte 5 runes for reactive state management
   let isInitialized = $state<boolean>(false);
   let isAnalyzing = $state<boolean>(false);
-  let analysisResults: QLoRATrainingData | null = $state(null);
+  let analysisResults: QLoRATrainingData | null = null;
   let userAnalytics: UserAnalytics = $state({,
     userId: 'demo_user_' + Date.now(),
     sessionId: crypto.randomUUID(),

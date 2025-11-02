@@ -14,7 +14,7 @@ export const CLIENT_ENV: ClientEnvironment = {
   dev: import.meta.env.DEV,
   prod: import.meta.env.PROD,
   preview: import.meta.env.MODE === 'preview',
-  browser: browser,
+  browser: browser
 };
 
 /**
@@ -32,14 +32,14 @@ class LLMHealthChecker {
       model: 'gemma3-legal:latest',
       healthy: false,
       latency: 0,
-      lastCheck: 0,
+      lastCheck: 0
     });
     this.addEndpoint({
       url: 'http://localhost:11434',
       model: 'embeddinggemma:latest',
       healthy: false,
       latency: 0,
-      lastCheck: 0,
+      lastCheck: 0
     });
     // Only start health checking in browser
     if (CLIENT_ENV.browser) {
@@ -48,7 +48,7 @@ class LLMHealthChecker {
   }
 
   addEndpoint(endpoint: LLMEndpoint): void {
-    const key = `${endpoint.url}/${endpoint.model ?? 'unknown'}`;
+    const key = `${endpoint.url}/${endpoint.model ?? 'unknown` }`;
     this.endpoints.set(key, endpoint);
   }
 
@@ -62,8 +62,7 @@ class LLMHealthChecker {
         signal: controller.signal,
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` }
       });
 
       clearTimeout(timeoutId);
@@ -83,14 +82,14 @@ class LLMHealthChecker {
           ...endpoint,
           healthy: hasModel,
           latency: Date.now() - startTime,
-          lastCheck: Date.now(),
+          lastCheck: Date.now()
         };
       }
     } catch (error: any) {
       // Network/timeout/errors -> mark unhealthy
       // console.warn intentionally minimal per guidelines
       const errMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown'}:`, errMsg);
+      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown` }: ', errMsg);
     } finally {
       clearTimeout(timeoutId);
     }
@@ -99,7 +98,7 @@ class LLMHealthChecker {
       ...endpoint,
       healthy: false,
       latency: Date.now() - startTime,
-      lastCheck: Date.now(),
+      lastCheck: Date.now()
     };
   }
 
@@ -195,7 +194,7 @@ export function getServiceConfig(serviceName: string) {
     baseUrl: getEnvVar(`${upper}_URL`, `http://localhost:8094`),
     enabled: getEnvVar(`${upper}_ENABLED`, 'true') === 'true',
     timeout: parseInt(getEnvVar(`${upper}_TIMEOUT`, '30000')!, 10) || 30000,
-    retryAttempts: parseInt(getEnvVar(`${upper}_RETRIES`, '3')!, 10) || 3,
+    retryAttempts: parseInt(getEnvVar(`${upper}_RETRIES`, '3')!, 10) || 3
   };
 }
 

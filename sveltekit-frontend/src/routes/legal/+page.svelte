@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
   // import raw defaults and cast to the Svelte constructor type to satisfy TS
   import { SvelteComponent } from 'svelte';
   import CardDefault from '$lib/components/ui/card/Card.svelte';

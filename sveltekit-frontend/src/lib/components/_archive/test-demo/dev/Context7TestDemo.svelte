@@ -260,7 +260,7 @@
           <div class="border border-gray-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-medium text-gray-900">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).test}</h4>
-              <span class="px-2" py-1 rounded-full text-xs font-medium
+              <span class="px-2 py-1 rounded-full" text-xs font-medium
                 {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                 {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status}
               </span>

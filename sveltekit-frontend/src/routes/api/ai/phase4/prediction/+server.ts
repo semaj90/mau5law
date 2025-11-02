@@ -22,16 +22,15 @@ export const POST: RequestHandler = async ({ request }) => {
       processingInfo: {
         service: 'predictive-analytics-service',
         version: '1.0.0',
-        integrations: ['vector-search', 'recommendation-engine', 'ollama-ai'],
-      },
+        integrations: ['vector-search', 'recommendation-engine', 'ollama-ai']
+      }
     });
   } catch (error: any) {
     console.error('Prediction API error:', error);
     return json(
       {
         error: 'Failed to generate case prediction',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

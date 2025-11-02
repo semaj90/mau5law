@@ -9,14 +9,13 @@ const logger = {
   info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
   error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
   warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args)
 };
 
 // Environment fallback (typed)
 const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
 const env = {
-  QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333',
-};
+  QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333` };
 
 // Minimal internal client shape to avoid casting to `any`
 interface QdrantClientLike {
@@ -33,9 +32,7 @@ interface QdrantClientLike {
 }
 
 // Simplified types for QdrantService
-export interface VectorSearchResult {
-  id: string;
-  score: number;
+export interface VectorSearchResult { id: string;, score: number;
   payload?: Record<string, unknown>;
   vector?: number[];
   similarity?: number;
@@ -76,9 +73,7 @@ export interface CollectionInfo {
   [k: string]: any;
 }
 
-export interface BatchUpsertResult {
-  operation_id: string;
-  status: string;
+export interface BatchUpsertResult { operation_id: string;, status: string;
   successful?: boolean;
 }
 
@@ -89,8 +84,7 @@ export class QdrantService {
   private readonly COLLECTIONS = {
     documents: 'legal_documents',
     cases: 'case_embeddings',
-    evidence: 'evidence_vectors',
-  };
+    evidence: 'evidence_vectors` };
 
   constructor() {
     const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';
@@ -98,7 +92,7 @@ export class QdrantService {
     this.client = new QdrantClient({ url: qdrantUrl }) as unknown as QdrantClientLike;
     logger.info('QdrantService initialized', {
       url: qdrantUrl,
-      vectorSize: this.VECTOR_SIZE,
+      vectorSize: this.VECTOR_SIZE
     });
   }
 
@@ -119,14 +113,14 @@ export class QdrantService {
             optimizersConfig: {
               indexingThreshold: 20000,
               memmapThreshold: 50000,
-              maxOptimizationThreads: 2,
+              maxOptimizationThreads: 2
             },
             hnswConfig: {
-              m: 16,
+             , m: 16,
               efConstruct: 200,
               fullScanThreshold: 10000,
-              maxIndexingThreads: 4,
-            },
+              maxIndexingThreads: 4
+            }
           });
           logger.info(`Created collection: ${collectionName}`);
         } else {
@@ -172,13 +166,13 @@ export class QdrantService {
           metadata: document.metadata ?? {},
           created_at: new Date().toISOString(),
           case_id: document.case_id ?? null,
-          relevance_score: document.relevance_score ?? 1.0,
-        },
+          relevance_score: document.relevance_score ?? 1.0
+        }
       };
       // upsert via client
       await this.client.upsert(this.DEFAULT_COLLECTION, {
         points: [point],
-        wait: true,
+        wait: true
       });
       logger.info('Document stored in Qdrant', { id: point.id });
       return String(point.id);
@@ -208,18 +202,18 @@ export class QdrantService {
           metadata: doc.metadata ?? {},
           created_at: new Date().toISOString(),
           case_id: doc.case_id ?? null,
-          relevance_score: doc.relevance_score ?? 1.0,
-        },
+          relevance_score: doc.relevance_score ?? 1.0
+        }
       }));
       await this.client.upsert(this.DEFAULT_COLLECTION, {
         points,
-        wait: true,
+        wait: true
       });
       logger.info(`Batch stored ${points.length} documents`);
       return {
         operation_id: Date.now().toString(),
         status: 'completed',
-        successful: true,
+        successful: true
       };
     } catch (error: any) {
       logger.error('Failed to batch store documents', error);
@@ -241,7 +235,7 @@ export class QdrantService {
         filter = {},
         collection = this.DEFAULT_COLLECTION,
         includePayload = true,
-        includeVector = false,
+        includeVector = false
       } = options;
 
       // Build Qdrant filter (compatible shape)
@@ -252,14 +246,14 @@ export class QdrantService {
         if (!qdrantFilter.must) qdrantFilter.must = [];
         qdrantFilter.must.push({
           key: 'case_id',
-          match: { value: filterRecord['case_id'] },
+          match: {, value: filterRecord['case_id'] }
         });
       }
       if (filterRecord['type']) {
         if (!qdrantFilter.must) qdrantFilter.must = [];
         qdrantFilter.must.push({
           key: 'type',
-          match: { value: filterRecord['type'] },
+          match: {, value: filterRecord['type'] }
         });
       }
       if (filterRecord['date_range'] && typeof filterRecord['date_range'] === 'object') {
@@ -268,9 +262,9 @@ export class QdrantService {
         qdrantFilter.must.push({
           key: 'created_at',
           range: {
-            gte: dr['start'],
-            lte: dr['end'],
-          },
+           , gte: dr['start'],
+            lte: dr['end']
+          }
         });
       }
 
@@ -279,7 +273,7 @@ export class QdrantService {
         limit,
         with_payload: includePayload,
         with_vector: includeVector,
-        score_threshold: threshold,
+        score_threshold: threshold
       };
       if (Object.keys(qdrantFilter).length > 0) {
         searchParams.filter = qdrantFilter;
@@ -300,7 +294,7 @@ export class QdrantService {
           metadata: (payload['metadata'] as Record<string, unknown> | undefined) ?? {},
           case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
           created_at: payload['created_at'] as string | undefined,
-          relevance_score: Number(payload['relevance_score'] ?? res['score']),
+          relevance_score: Number(payload['relevance_score'] ?? res['score'])
         } as VectorSearchResult;
       });
     } catch (error: any) {
@@ -317,7 +311,7 @@ export class QdrantService {
       const results = await this.client.retrieve(collection, {
         ids: [id],
         with_payload: true,
-        with_vector: true,
+        with_vector: true
       });
       if (!Array.isArray(results) || results.length === 0) {
         return null;
@@ -332,7 +326,7 @@ export class QdrantService {
         type: String(payload['type'] ?? 'document'),
         metadata: (payload['metadata'] as Record<string, unknown> | undefined) ?? {},
         case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
-        relevance_score: payload['relevance_score'] ? Number(payload['relevance_score']) : undefined,
+        relevance_score: payload['relevance_score'] ? Number(payload['relevance_score']) : undefined
       } as DocumentVector;
     } catch (error: any) {
       logger.error('Failed to get document', error);
@@ -347,7 +341,7 @@ export class QdrantService {
     try {
       await this.client.delete(collection, {
         points: ids,
-        wait: true,
+        wait: true
       });
       logger.info(`Deleted ${ids.length} documents from ${collection}`);
     } catch (error: any) {
@@ -369,10 +363,10 @@ export class QdrantService {
         points: [
           {
             id,
-            payload: { metadata },
+            payload: { metadata }
           },
         ],
-        wait: true,
+        wait: true
       });
       logger.info('Updated document metadata', { id });
     } catch (error: any) {
@@ -394,7 +388,7 @@ export class QdrantService {
         segmentsCount: info?.['segments_count'],
         config: info?.['config'],
         status: info?.['status'],
-        optimizersStatus: info?.['optimizer_status'],
+        optimizersStatus: info?.['optimizer_status']
       };
     } catch (error: any) {
       logger.error('Failed to get collection stats', error);
@@ -407,11 +401,9 @@ export class QdrantService {
    */
   async optimizeCollection(collection: string = this.DEFAULT_COLLECTION): Promise<void> {
     try {
-      await this.client.updateCollection(collection, {
-        optimizers_config: {
-          indexing_threshold: 20000,
-          max_optimization_threads: 4,
-        },
+      await this.client.updateCollection(collection, { optimizers_config: {, indexing_threshold: 20000,
+          max_optimization_threads: 4
+        }
       });
       logger.info(`Optimized collection: ${collection}`);
     } catch (error: any) {
@@ -449,16 +441,14 @@ export class QdrantService {
 
   private async createCollection(name: string, config: Record<string, unknown>): Promise<void> {
     try {
-      await this.client.createCollection(name, {
-        vectors: {
-          size: config['vectorSize'],
+      await this.client.createCollection(name, { vectors: {, size: config['vectorSize'],
           distance: config['distance'],
-          on_disk: config['onDisk'],
+          on_disk: config['onDisk']
         },
         shard_number: config['shardNumber'],
         replication_factor: config['replicationFactor'],
         optimizers_config: config['optimizersConfig'],
-        hnsw_config: config['hnswConfig'],
+        hnsw_config: config['hnswConfig']
       } as Record<string, unknown>);
     } catch (error: any) {
       logger.error('Failed to create collection', error);

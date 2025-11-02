@@ -3,9 +3,7 @@
 // Web Worker for parallel TypeScript error analysis
 // ======================================================================
 }
-export interface ErrorContext {
-  id: string;
-  file: string;
+export interface ErrorContext { id: string;, file: string;
   line: number;
   column?: number;
   message: string;
@@ -17,9 +15,7 @@ export interface ErrorContext {
   relatedFiles: string[];
   fixable: boolean;
 }
-export interface ErrorAnalysisResult {
-  errorId: string;
-  priority: number;
+export interface ErrorAnalysisResult { errorId: string;, priority: number;
   fixable: boolean;
   complexity: number;
   suggestionCount: number;
@@ -189,7 +185,7 @@ self.addEventListener('message', (_event: MessageEvent) => {
         });
         break;
       default:
-        throw new Error(`Unknown message type: ${type}`);
+        throw new Error(`Unknown message; type: ${type}`);
     }
   } catch (error: any) {
     self.postMessage({

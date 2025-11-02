@@ -25,25 +25,25 @@ export const POST: RequestHandler = async ({ request }) => {
         clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
-        inertia: qualityMetrics.inertia,
+        inertia: qualityMetrics.inertia
       },
       som: {
         grid: somResults.grid,
         gridSize: `${somResults.width}x${somResults.height}`,
         neurons: somResults.neurons,
         trainingEpochs: somResults.trainingEpochs,
-        quantizationError: somResults.quantizationError,
+        quantizationError: somResults.quantizationError
       },
       insights: {
         dominantTopics: identifyDominantTopics(kmeansClusters),
         documentSimilarity: calculateDocumentSimilarity(ragData, kmeansClusters),
         clusterCharacteristics: analyzeClusterCharacteristics(kmeansClusters),
-        anomalies: detectAnomalies(features, kmeansClusters),
+        anomalies: detectAnomalies(features, kmeansClusters)
       },
       recommendations: {
         suggestions,
         confidence: calculateSuggestionConfidence(suggestions),
-        categories: categorizeSuggestions(suggestions),
+        categories: categorizeSuggestions(suggestions)
       },
       metrics: {
         accuracy: qualityMetrics.accuracy,
@@ -51,8 +51,8 @@ export const POST: RequestHandler = async ({ request }) => {
         recall: qualityMetrics.recall,
         processingTime: qualityMetrics.processingTime,
         featureCount: features.vectors.length,
-        dimensionality: features.dimensions,
-      },
+        dimensionality: features.dimensions
+      }
     };
 
     return json(result);
@@ -114,34 +114,26 @@ type ClusterCharacteristics = {
   variance?: number;
   density?: number;
 };
-type Cluster = {
-  id: string;
-  centroid: number[];
+type Cluster = { id: string;, centroid: number[];
   points: number[][];
   size: number;
   characteristics?: ClusterCharacteristics;
   quality?: number;
 };
-type SOMResult = {
-  grid: number[][][];
-  width: number;
+type SOMResult = { grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
   quantizationError: number;
   topology?: SOMTopology;
 };
-type ClusteringQuality = {
-  silhouetteScore: number;
-  inertia: number;
+type ClusteringQuality = { silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
   processingTime: number;
 };
-type SOMTopology = {
-  gridSize: string;
-  totalNeurons: number;
+type SOMTopology = { gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
   neighborhoodFunction: string;
 };
@@ -159,15 +151,13 @@ function normalizeRagToDocument(ragData: any): Document {
     vectorData: docCandidate.vectorData,
     metadata: docCandidate.metadata,
     performance: docCandidate.performance,
-    documentId: docCandidate.documentId,
+    documentId: docCandidate.documentId
   };
 }
 
-function extractFeaturesForClustering(ragData: any): {
-  vectors: number[][];
-  dimensions: number;
+function extractFeaturesForClustering(ragData: any): { vectors: number[][];, dimensions: number;
   labels: string[];
-  metadata: { documentId: string; processingTime: number; confidence: number };
+  metadata: { documentId: string; processingTime: number;, confidence: number };
 } {
   const document = normalizeRagToDocument(ragData);
   const textFeatures = extractTextFeatures(document);
@@ -181,8 +171,8 @@ function extractFeaturesForClustering(ragData: any): {
     metadata: {
       documentId: document.documentId ?? 'unknown',
       processingTime: document.performance?.processingTime ?? 0,
-      confidence: document.performance?.confidence ?? 0,
-    },
+      confidence: document.performance?.confidence ?? 0
+    }
   };
 }
 
@@ -255,18 +245,14 @@ type ClusterCharacteristics = {
   density?: number;
 };
 
-type Cluster = {
-  id: string;
-  centroid: number[];
+type Cluster = { id: string;, centroid: number[];
   points: number[][];
   size: number;
   characteristics?: ClusterCharacteristics;
   quality?: number;
 };
 
-type SOMResult = {
-  grid: number[][][];
-  width: number;
+type SOMResult = { grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
@@ -274,30 +260,24 @@ type SOMResult = {
   topology?: SOMTopology;
 };
 
-type ClusteringQuality = {
-  silhouetteScore: number;
-  inertia: number;
+type ClusteringQuality = { silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
 };
 
-type SOMTopology = {
-  gridSize: string;
-  totalNeurons: number;
+type SOMTopology = { gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
   neighborhoodFunction: string;
 };
 
 // Internal intermediate cluster shape used during K-means iterations
-type InternalCluster = {
-  centroid: number[];
-  points: number[][];
+type InternalCluster = { centroid: number[];, points: number[][];
   labels: string[];
 };
 
 async function performKMeansClustering(
-  features: { vectors: number[][]; dimensions: number; labels: string[] },
+  features: { vectors: number[][]; dimensions: number;, labels: string[] },
   k: number
 ): Promise<Cluster[]> {
   const vectors = features.vectors;
@@ -323,14 +303,14 @@ async function performKMeansClustering(
     points: cluster.points,
     size: cluster.points.length,
     characteristics: analyzeClusterContent(cluster.points, features.labels),
-    quality: calculateClusterQuality(cluster.points, cluster.centroid),
+    quality: calculateClusterQuality(cluster.points, cluster.centroid)
   }));
 }
 
 // Adjusted to return SOMResult instead of any and make trainingEpochs const
 async function performSOMAnalysis(
-  features: { vectors: number[][]; dimensions: number },
-  config: { width: number; height: number }
+  features: { vectors: number[][];, dimensions: number },
+  config: {, width: number; height: number }
 ): Promise<SOMResult> {
   const { width, height } = config;
   const vectors = features.vectors;
@@ -361,7 +341,7 @@ async function performSOMAnalysis(
     neurons: width * height,
     trainingEpochs,
     quantizationError,
-    topology: generateSOMTopology(neurons, width, height),
+    topology: generateSOMTopology(neurons, width, height)
   };
 }
 
@@ -377,7 +357,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
       accuracy: 0,
       precision: 0,
       recall: 0,
-      processingTime: 0,
+      processingTime: 0
     };
   }
 
@@ -424,7 +404,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
     accuracy,
     precision,
     recall,
-    processingTime,
+    processingTime
   };
 }
 

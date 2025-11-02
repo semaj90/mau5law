@@ -17,9 +17,7 @@ export interface ApiResponse<T = unknown> {
   code?: string;
   details?: Record<string, unknown> | unknown;
 }
-export interface PaginatedResponse<T = unknown> {
-  data: T[];
-  page: number;
+export interface PaginatedResponse<T = unknown> { data: T[];, page: number;
   limit: number;
   total: number;
   totalPages: number;
@@ -88,9 +86,9 @@ export class LegalAIApiClient {
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...headers,
+        ...headers
       },
-      signal,
+      signal
     };
 
     if (body && method !== 'GET') {
@@ -170,7 +168,7 @@ export class LegalAIApiClient {
    */
   async createCase(
     caseData: {
-      title: string;
+     , title: string;
       description?: string;
       caseNumber?: string;
       status?: 'open' | 'closed' | 'pending' | 'archived';
@@ -183,7 +181,7 @@ export class LegalAIApiClient {
     return this.request<ApiResponse<unknown>>('/cases', {
       method: 'POST',
       body: caseData,
-      signal,
+      signal
     });
   }
   /**
@@ -191,21 +189,19 @@ export class LegalAIApiClient {
    */
   async updateCase(
     id: string,
-    caseData: Partial<{
-      title: string;
-      description: string;
+    caseData: Partial<{ title: string;, description: string;
       caseNumber: string;
       status: 'open' | 'closed' | 'pending' | 'archived';
       priority: 'low' | 'medium' | 'high' | 'urgent';
       category: string;
-      metadata: Record<string, unknown>;
+     , metadata: Record<string, unknown>;
     }>,
     signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/cases/${id}`, {
       method: 'PUT',
       body: caseData,
-      signal,
+      signal
     });
   }
   /**
@@ -214,7 +210,7 @@ export class LegalAIApiClient {
   async deleteCase(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/cases/${id}`, {
       method: 'DELETE',
-      signal,
+      signal
     });
   }
   // ===== EVIDENCE API =====
@@ -244,10 +240,8 @@ export class LegalAIApiClient {
    * Create new evidence
    */
   async createEvidence(
-    evidenceData: {
-      caseId: string;
-      title: string;
-      evidenceType: string;
+    evidenceData: { caseId: string;, title: string;
+     , evidenceType: string;
       description?: string;
       fileUrl?: string;
       fileName?: string;
@@ -266,7 +260,7 @@ export class LegalAIApiClient {
     return this.request<ApiResponse<unknown>>('/evidence', {
       method: 'POST',
       body: evidenceData,
-      signal,
+      signal
     });
   }
   /**
@@ -274,9 +268,7 @@ export class LegalAIApiClient {
    */
   async updateEvidence(
     id: string,
-    evidenceData: Partial<{
-      title: string;
-      evidenceType: string;
+    evidenceData: Partial<{ title: string;, evidenceType: string;
       description: string;
       fileUrl: string;
       fileName: string;
@@ -288,14 +280,14 @@ export class LegalAIApiClient {
       aiSummary: string;
       summary: string;
       isAdmissible: boolean;
-      confidentialityLevel: string;
+     , confidentialityLevel: string;
     }>,
     signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/evidence/${id}`, {
       method: 'PUT',
       body: evidenceData,
-      signal,
+      signal
     });
   }
   /**
@@ -304,7 +296,7 @@ export class LegalAIApiClient {
   async deleteEvidence(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/evidence/${id}`, {
       method: 'DELETE',
-      signal,
+      signal
     });
   }
   // ===== REPORTS API =====
@@ -337,7 +329,7 @@ export class LegalAIApiClient {
     reportData: {
       title: string;
       description?: string;
-      reportType: string;
+     , reportType: string;
       caseId?: string;
       content?: string;
       status?: string;
@@ -348,7 +340,7 @@ export class LegalAIApiClient {
     return this.request<ApiResponse<unknown>>('/reports', {
       method: 'POST',
       body: reportData,
-      signal,
+      signal
     });
   }
   /**
@@ -356,21 +348,19 @@ export class LegalAIApiClient {
    */
   async updateReport(
     id: string,
-    reportData: Partial<{
-      title: string;
-      description: string;
+    reportData: Partial<{ title: string;, description: string;
       reportType: string;
       caseId: string;
       content: string;
       status: string;
-      metadata: Record<string, unknown>;
+     , metadata: Record<string, unknown>;
     }>,
     signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/reports/${id}`, {
       method: 'PUT',
       body: reportData,
-      signal,
+      signal
     });
   }
   /**
@@ -379,7 +369,7 @@ export class LegalAIApiClient {
   async deleteReport(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/reports/${id}`, {
       method: 'DELETE',
-      signal,
+      signal
     });
   }
   // ===== PERSONS OF INTEREST API =====
@@ -411,7 +401,7 @@ export class LegalAIApiClient {
     personData: {
       name: string;
       description?: string;
-      riskLevel: string;
+     , riskLevel: string;
       caseId?: string;
       contactInfo?: Record<string, unknown>;
       aliases?: string[];
@@ -422,7 +412,7 @@ export class LegalAIApiClient {
     return this.request<ApiResponse<unknown>>('/persons-of-interest', {
       method: 'POST',
       body: personData,
-      signal,
+      signal
     });
   }
   /**
@@ -430,21 +420,19 @@ export class LegalAIApiClient {
    */
   async updatePersonOfInterest(
     id: string,
-    personData: Partial<{
-      name: string;
-      description: string;
+    personData: Partial<{ name: string;, description: string;
       riskLevel: string;
       caseId: string;
       contactInfo: Record<string, unknown>;
       aliases: string[];
-      metadata: Record<string, unknown>;
+     , metadata: Record<string, unknown>;
     }>,
     signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, {
       method: 'PUT',
       body: personData,
-      signal,
+      signal
     });
   }
   /**
@@ -453,7 +441,7 @@ export class LegalAIApiClient {
   async deletePersonOfInterest(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, {
       method: 'DELETE',
-      signal,
+      signal
     });
   }
   // ===== UTILITY METHODS =====
@@ -464,7 +452,7 @@ export class LegalAIApiClient {
     file: File,
     onProgress?: (progress: number) => void,
     signal?: AbortSignal
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string; hash: string }> {
+  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string;, hash: string }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -518,8 +506,8 @@ export class LegalAIApiClient {
    */
   async getHealthStatus(
     signal?: AbortSignal
-  ): Promise<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>> {
-    return this.request<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>>(
+  ): Promise<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>> {
+    return this.request<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>>(
       '/health',
       { signal }
     );
@@ -535,7 +523,7 @@ export const CreateCaseSchema = z.object({
   status: z.enum(['open', 'closed', 'pending', 'archived']).default('open'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   category: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 export const CreateEvidenceSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -552,7 +540,7 @@ export const CreateEvidenceSchema = z.object({
   aiSummary: z.string().optional(),
   summary: z.string().optional(),
   isAdmissible: z.boolean().optional(),
-  confidentialityLevel: z.string().optional(),
+  confidentialityLevel: z.string().optional()
 });
 export const CreateReportSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
@@ -561,7 +549,7 @@ export const CreateReportSchema = z.object({
   caseId: z.string().uuid('Invalid case ID').optional(),
   content: z.string().optional(),
   status: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 export const CreatePersonOfInterestSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
@@ -570,7 +558,7 @@ export const CreatePersonOfInterestSchema = z.object({
   caseId: z.string().uuid('Invalid case ID').optional(),
   contactInfo: z.record(z.unknown()).optional(),
   aliases: z.array(z.string()).optional().default([]),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 // Type exports for forms
 export type CreateCaseData = z.infer<typeof CreateCaseSchema>;

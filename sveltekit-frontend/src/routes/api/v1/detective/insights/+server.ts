@@ -11,7 +11,7 @@ import { z } from 'zod';
 const InsightsQuerySchema = z.object({
   caseId: cuidSchema,
   insightType: z.enum(['summary', 'patterns', 'risks', 'recommendations', 'all']).default('all'),
-  depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed'),
+  depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed')
 });
 /*
  * GET /api/v1/detective/insights
@@ -50,14 +50,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           depth,
           evidenceCount: evidenceList.length,
           lastUpdated: new Date().toISOString(),
-          confidence: insights.overallConfidence,
-        },
+          confidence: insights.overallConfidence
+        }
       },
       meta: {
         userId: getUserId(locals),
         timestamp: new Date().toISOString(),
-        action: 'insights_generated',
-      },
+        action: 'insights_generated'
+      }
     });
   } catch (err: any) {
     console.error('Error getting detective insights:', err);
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to generate insights',
         code: 'INSIGHTS_FAILED',
-        details,
+        details
       })
     );
   }
@@ -96,7 +96,7 @@ type RequestLocals = {
 function getUserId(locals: RequestLocals): string {
   const id = locals?.user?.id ?? locals?.session?.user?.id ?? locals?.userId ?? null;
   if (!id) {
-    throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+    throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
   }
   return String(id);
 }
@@ -118,9 +118,7 @@ type EvidenceListResponse = {
 type InsightType = 'summary' | 'patterns' | 'risks' | 'recommendations' | 'all';
 type DepthType = 'quick' | 'detailed' | 'comprehensive';
 
-type InsightsResult = {
-  overallConfidence: number;
-  summary: any | null;
+type InsightsResult = { overallConfidence: number;, summary: any | null;
   patterns: any[];
   risks: any | null;
   recommendations: any[];
@@ -148,7 +146,7 @@ async function generateDetectiveInsights(
     recommendations: [],
     keyFindings: [],
     timeline: null,
-    connections: null,
+    connections: null
   };
   try {
     // Generate summary insights
@@ -184,7 +182,7 @@ async function generateDetectiveInsights(
     return {
       ...insights,
       error: 'Insight generation failed',
-      details,
+      details
     };
   }
 }
@@ -199,7 +197,7 @@ async function generateSummaryInsights(_caseData: any, evidence: EvidenceItem[])
     timelineClarity: 'clear', // Would analyze timeline consistency
     keyThemes: ['Evidence collection', 'Timeline establishment', 'Pattern analysis'],
     prosecutionReadiness: evidence.length > 3 ? 'ready' : 'needs more evidence',
-    confidence: 0.82,
+    confidence: 0.82
   };
 }
 /*
@@ -213,21 +211,21 @@ async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unkno
       description: 'Evidence clustering suggests coordinated activity',
       strength: 'high',
       confidence: 0.85,
-      implications: ['Multiple related incidents', 'Possible systematic behavior'],
+      implications: ['Multiple related incidents', 'Possible systematic behavior']
     },
     {
       type: 'geographical',
       description: 'Evidence concentrated in specific locations',
       strength: 'medium',
       confidence: 0.72,
-      implications: ['Location significance', 'Territorial behavior'],
+      implications: ['Location significance', 'Territorial behavior']
     },
     {
       type: 'behavioral',
       description: 'Consistent methods detected across evidence',
       strength: 'high',
       confidence: 0.88,
-      implications: ['Signature behavior', 'Repeat patterns'],
+      implications: ['Signature behavior', 'Repeat patterns']
     },
   ];
 }
@@ -236,27 +234,25 @@ async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unkno
  */
 // changed: both caseData and evidence unused -> prefix with underscore
 async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): Promise<unknown> {
-  return {
-    caseRisk: {
-      level: 'medium',
+  return { caseRisk: {, level: 'medium',
       score: 0.65,
-      factors: ['Evidence authenticity verified', 'Chain of custody documented', 'Some gaps in timeline'],
+      factors: ['Evidence authenticity verified', 'Chain of custody documented', 'Some gaps in timeline']
     },
     evidenceRisk: {
       level: 'low',
       score: 0.25,
-      factors: ['Strong digital evidence', 'Multiple corroborating sources', 'Proper collection procedures'],
+      factors: ['Strong digital evidence', 'Multiple corroborating sources', 'Proper collection procedures']
     },
     prosecutionRisk: {
       level: 'medium',
       score: 0.45,
-      factors: ['Need expert testimony', 'Complex technical evidence', 'Strong foundation exists'],
+      factors: ['Need expert testimony', 'Complex technical evidence', 'Strong foundation exists']
     },
     mitigationStrategies: [
       'Obtain expert witness for technical evidence',
       'Fill timeline gaps with additional investigation',
       'Strengthen chain of custody documentation',
-    ],
+    ]
   };
 }
 /*
@@ -275,7 +271,7 @@ async function generateRecommendationInsights(
       action: 'Collect additional corroborating evidence',
       reasoning: 'Strengthen case foundation',
       timeline: '1-2 weeks',
-      confidence: 0.92,
+      confidence: 0.92
     },
     {
       priority: 'medium',
@@ -283,7 +279,7 @@ async function generateRecommendationInsights(
       action: 'Conduct forensic analysis of digital evidence',
       reasoning: 'Ensure technical accuracy',
       timeline: '2-3 weeks',
-      confidence: 0.85,
+      confidence: 0.85
     },
     {
       priority: 'medium',
@@ -291,7 +287,7 @@ async function generateRecommendationInsights(
       action: 'Interview additional witnesses',
       reasoning: 'Fill gaps in timeline',
       timeline: '1 week',
-      confidence: 0.78,
+      confidence: 0.78
     },
   ];
   if (depth === 'comprehensive') {
@@ -302,7 +298,7 @@ async function generateRecommendationInsights(
         action: 'Prepare expert witness testimony',
         reasoning: 'Technical evidence explanation',
         timeline: '3-4 weeks',
-        confidence: 0.7,
+        confidence: 0.7
       },
       {
         priority: 'high',
@@ -310,7 +306,7 @@ async function generateRecommendationInsights(
         action: 'Create detailed case timeline',
         reasoning: 'Narrative clarity for prosecution',
         timeline: '1 week',
-        confidence: 0.95,
+        confidence: 0.95
       }
     );
   }
@@ -341,13 +337,13 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
         start: '2024-01-01',
         end: '2024-01-07',
         significance: 'Initial activity period',
-        evidenceCount: Math.floor(evidence.length * 0.4),
+        evidenceCount: Math.floor(evidence.length * 0.4)
       },
       {
         start: '2024-01-15',
         end: '2024-01-20',
         significance: 'Peak activity period',
-        evidenceCount: Math.floor(evidence.length * 0.6),
+        evidenceCount: Math.floor(evidence.length * 0.6)
       },
     ],
     gaps: [
@@ -355,9 +351,9 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
         start: '2024-01-08',
         end: '2024-01-14',
         significance: 'Suspicious quiet period',
-        recommendation: 'Investigate activities during this timeframe',
+        recommendation: 'Investigate activities during this timeframe'
       },
-    ],
+    ]
   };
 }
 /*
@@ -372,14 +368,13 @@ async function generateConnectionInsights(evidence: EvidenceItem[]): Promise<unk
       temporal: Math.floor(evidence.length * 0.4),
       geographical: Math.floor(evidence.length * 0.3),
       behavioral: Math.floor(evidence.length * 0.5),
-      technical: Math.floor(evidence.length * 0.2),
+      technical: Math.floor(evidence.length * 0.2)
     },
     centralNodes: evidence.slice(0, 3).map(item => ({
       // use typed access from EvidenceItem instead of casting to any
       id: item.id ?? null,
       title: item.title ?? null,
       connectionCount: Math.floor(Math.random() * 10) + 1,
-      significance: 'high',
-    })),
+      significance: `high` }))
   };
 }

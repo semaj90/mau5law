@@ -31,7 +31,7 @@ export {
   type LayoutVariant,
   type LegalAITheme,
   type ComponentLibrary,
-  type SelectOption,
+  type SelectOption
 } from './ui';
 // export { SelectOption as EnhancedSelectOption } from './ui/enhanced-bits/index.js'; // Disabled: empty file
 export * from './ui/modern/index.js';
@@ -54,7 +54,7 @@ export * from './ui/tabs/index.js';
 export {
   Trigger as ContextMenuTrigger,
   Content as ContextMenuContent,
-  Item as ContextMenuItem,
+  Item as ContextMenuItem
 } from './ui/context-menu/index.js';
 export * from './ui/dialog/index.js';
 // Tooltip exports - conditional based on availability
@@ -118,7 +118,7 @@ export const COMPONENT_REGISTRY = {
   ai: 8,
   legal: 15,
   realtime: 6,
-  total: 154,
+  total: 154
 } as const;
 export const COMPONENT_CATEGORIES = ['ui', 'business', 'layout', 'ai', 'legal', 'realtime', 'utility'] as const;
 export type ComponentCategory = (typeof COMPONENT_CATEGORIES)[number];
@@ -130,11 +130,11 @@ export const STORYBOOK_STORIES = {
   'Dialog': () => import('./ui/enhanced-bits/Dialog.svelte'),
   'AIChat': () => import('./AIChat.svelte'),
   'LegalCaseManager': () => import('./LegalCaseManager.svelte'),
-  'EvidencePanel': () => import('./EvidencePanel.svelte'),
+  'EvidencePanel': () => import('./EvidencePanel.svelte')
 } as const;
 // Default export for convenience
 export default {
   COMPONENT_REGISTRY,
   COMPONENT_CATEGORIES,
-  STORYBOOK_STORIES,
+  STORYBOOK_STORIES
 };

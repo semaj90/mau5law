@@ -1,14 +1,10 @@
 import { redis } from '$lib/server/redis';
 import { logger } from './logger.js';
 const CLUSTER_MODEL_KEY = 'foaf:cluster:model';
-export interface ClusterCentroid {
-  id: string;
-  vector: number[];
+export interface ClusterCentroid { id: string;, vector: number[];
   metadata?: Record<string, unknown>;
 }
-export interface ClusterModelSnapshot {
-  version: string;
-  created_at: string;
+export interface ClusterModelSnapshot { version: string;, created_at: string;
   algorithm: string;
   k: number;
   dimension: number;
@@ -110,7 +106,7 @@ export async function addClusterMember(clusterId: string, personId: string, meta
   await redisHSet(personKey, {
     cluster: clusterId,
     cluster_metadata: JSON.stringify(metadata),
-    cluster_updated_at: new Date().toISOString(),
+    cluster_updated_at: new Date().toISOString()
   });
   await redisSAdd(clusterKey, personId);
 }

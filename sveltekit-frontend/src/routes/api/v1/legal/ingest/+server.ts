@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        id: result.id,
+       , id: result.id,
         metadata: result.metadata,
         cached: result.cached,
         embeddingDimensions: result.embedding.length
@@ -90,7 +90,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        ingested: results.length,
+       , ingested: results.length,
         ids: results.map(r => r.id)
       }
     });

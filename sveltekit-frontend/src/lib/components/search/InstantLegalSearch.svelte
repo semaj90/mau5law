@@ -17,6 +17,7 @@ https://svelte.dev/e/expected_token -->
   - Fuse.js: Fuzzy search with legal-specific weighting
 -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import {
@@ -25,8 +26,8 @@ import type { Document } from '$lib/types';
     type SearchFilters,
   } from '$lib/services/instant-search-engine.js';
   import { Input } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Button } from '$lib/components/ui/nes-button.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import { Button } from '$lib/components/ui/nes-Button.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Search,

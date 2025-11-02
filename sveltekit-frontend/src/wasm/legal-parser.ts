@@ -50,9 +50,7 @@ function storeByte(ptr: usize, value: number): void {
 }
 
 // === Legal Document Structure ===
-class LegalDocument {
-  id: string = "";
-  title: string = "";
+class LegalDocument { id: string = "";, title: string = "";
   content: string = "";
   documentType: string = "";
   citations: Array<string> = [];
@@ -65,9 +63,7 @@ class LegalDocument {
   summary: string = "";
   constructor() {}
 }
-class ParseResult {
-  success: bool = $state(false);
-  documents: Array<LegalDocument> = [];
+class ParseResult { success: bool = $state(false);, documents: Array<LegalDocument> = [];
   totalChunks: i32 = 0;
   processingTime: f32 = 0.0;
   errorMessage: string = "";
@@ -434,7 +430,7 @@ function generateSummary(content: string): string {
        }
        // Ensure proper JSON object format
        if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
-       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: '}'
+       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ' }'
        const doc = parseLegalDocument(docJson);
        globalResult.documents.push(doc);
        globalResult.totalChunks++;
@@ -517,7 +513,7 @@ export function getMemoryUsage(): i32 {
 // Add a typed descriptor for expected global helpers (avoid `any`)
 type WasmGlobals = {
   load8_u?: (ptr: number) => number;
-  store8?: (ptr: number, value: number) => void;
+  store8?: (ptr: number; value: number) => void;
   __wasm_memory_bytes__?: Uint8Array;
   heap?: { alloc?: (size: number) => number; free?: (ptr: number) => void };
   [key: string]: any;

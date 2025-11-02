@@ -289,9 +289,7 @@ export const CONFIG = {
     },
     
     // Search Libraries
-    search: {
-      fuse: {
-        threshold: 0.6,
+    search: { fuse: {, threshold: 0.6,
         keys: ['title', 'content', 'tags']
       },
       loki: {
@@ -348,8 +346,7 @@ export const CONFIG = {
       ollama: '/api/health/ollama',
       database: '/api/health/database',
       redis: '/api/health/redis',
-      qdrant: '/api/health/qdrant'
-    }
+      qdrant: `/api/health/qdrant` }
   },
   
   // ========================================================================
@@ -374,9 +371,7 @@ export const CONFIG = {
     },
     
     // Security
-    security: {
-      cors: {
-        enabled: true,
+    security: { cors: {, enabled: true,
         origins: ENV.isProd ? ['https://yourdomain.com'] : ['*']
       },
       csrf: ENV.isProd,

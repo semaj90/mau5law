@@ -9,15 +9,11 @@ type EvidenceItem = {
   content?: string | null;
 };
 
-export interface CaseData {
-  id: string;
-  title: string;
+export interface CaseData { id: string;, title: string;
   description?: string | null;
   evidence?: EvidenceItem[];
 }
-export interface AISummaryReport {
-  id: string;
-  caseId: string;
+export interface AISummaryReport { id: string;, caseId: string;
   reportType: string;
   title: string;
   content: string;
@@ -39,7 +35,7 @@ export class AISummarizationService {
       reportType: 'case_overview',
       title: `Summary for ${caseData.title}`,
       content: '(stub)',
-      createdAt: new Date(),
+      createdAt: new Date()
     };
   }
 }

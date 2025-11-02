@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           emailVerified: true,
           passwordHash: 'demo-mode-no-password',
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
 
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes,
+      ...sessionCookie.attributes
     });
 
     return json({
@@ -79,20 +79,19 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         email: user.email,
         username: user.username,
         role: user.role,
-        isActive: user.isActive,
+        isActive: user.isActive
       },
       session: {
         id: session.id,
-        userId: session.userId,
+        userId: session.userId
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
     console.error('[Demo Login] Error:', err);
     return error(500, {
       message: err instanceof Error ? err.message : 'Failed to create demo session',
-      code: 'DEMO_LOGIN_ERROR'
-    });
+      code: 'DEMO_LOGIN_ERROR' });
   }
 };
 

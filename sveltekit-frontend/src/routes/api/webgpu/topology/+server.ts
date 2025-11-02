@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
       lastAccessed: Date.now(),
       compressed: true,
       metadata:
-        typeof b['metadata'] === 'object' && b['metadata'] !== null ? (b['metadata'] as Record<string, unknown>) : {},
+        typeof b['metadata'] === 'object' && b['metadata'] !== null ? (b['metadata'] as Record<string, unknown>) : {}
     };
 
     // Parse optional inputs from request body with safe defaults
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
           : [documentType || 'contract'],
       interactionVelocity: userPattern.interactionVelocity ?? 0.5,
       qualityExpectation: userPattern.qualityExpectation ?? 0.8,
-      timeConstraints: userPattern.timeConstraints ?? 0.6,
+      timeConstraints: userPattern.timeConstraints ?? 0.6
     } satisfies UserBehaviorPattern;
 
     // Performance requirements
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ? perfRaw.memoryBudget
           : typeof perfRaw.memoryBudget === 'string'
             ? Number(perfRaw.memoryBudget) || 512
-            : 512,
+            : 512
     };
     // Get topology prediction from QLoRA predictor with HMM
     const topologyPrediction = await qloraTopologyPredictor.predictOptimalTopology(document, behavior, perfReqs);
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Process query with WebGPU acceleration
     const webgpuResult = await webgpuRAGService.processQuery(query || 'topology optimization', {
       useGPU: true,
-      topologyConfig: topologyPrediction.predictedConfig,
+      topologyConfig: topologyPrediction.predictedConfig
     });
     // Get HMM accuracy metrics
     const hmmMetrics = qloraTopologyPredictor.getAccuracyMetrics();
@@ -111,21 +111,21 @@ export const POST: RequestHandler = async ({ request }) => {
       prediction: topologyPrediction,
       webgpu: {
         initialized: webgpuInit,
-        result: webgpuResult,
+        result: webgpuResult
       },
       hmm: {
         accuracy: hmmMetrics.overallAccuracy,
         confidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
-        cacheHitRate: hmmMetrics.cacheHitRate,
+        cacheHitRate: hmmMetrics.cacheHitRate
       },
       userAnalytics,
       document: {
-        id: document.id,
+       , id: document.id,
         type: document.type,
-        complexity: document.confidenceLevel,
+        complexity: document.confidenceLevel
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('❌ WebGPU Topology Prediction Error:', error);
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -149,16 +149,15 @@ export const GET: RequestHandler = async () => {
       services: {
         qloraTopology: 'ready',
         hmmPredictor: 'ready',
-        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback',
-      },
+        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback` },
       metrics: {
-        hmmAccuracy: hmmMetrics.overallAccuracy,
+       , hmmAccuracy: hmmMetrics.overallAccuracy,
         hmmConfidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
-        cacheHitRate: hmmMetrics.cacheHitRate,
+        cacheHitRate: hmmMetrics.cacheHitRate
       },
       webgpu: webgpuInit,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('❌ WebGPU Topology Health Check Error:', error);
@@ -166,7 +165,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

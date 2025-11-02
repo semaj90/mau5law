@@ -195,7 +195,7 @@ import type { Document } from '$lib/types';
       <h3 class="text-lg font-semibold mb-4">Upload Evidence</h3>
       <!-- Upload Area -->
       <div
-        class="border-2" border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors {dragOver
+        class="border-2 border-dashed border-gray-300" rounded-lg p-8 text-center transition-colors {dragOver
           ? 'border-blue-500 bg-blue-50'
           : 'hover:border-gray-400'}"
         ondragover={handleDragOver}

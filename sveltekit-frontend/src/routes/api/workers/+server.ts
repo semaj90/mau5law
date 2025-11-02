@@ -3,8 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Define interfaces for the worker and service
-interface DocumentProcessingWorker {
-  getStats: () => { isRunning: boolean; processedCount: number; failedCount: number; successRate: number };
+interface DocumentProcessingWorker { getStats: () => { isRunning: boolean; processedCount: number; failedCount: number;, successRate: number };
   start: () => Promise<void>;
   stop: () => Promise<void>;
 }
@@ -25,9 +24,7 @@ interface QueueDetailStats {
   [key: string]: JsonValue;
 }
 
-interface QueueHealthDetail {
-  name: string;
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+interface QueueHealthDetail { name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   messages?: number;
   consumers?: number;
   // Allow for additional, less critical properties with JsonValue
@@ -36,7 +33,7 @@ interface QueueHealthDetail {
 
 interface RabbitMQService {
   getQueueStats: () => Promise<Record<string, QueueDetailStats>>;
-  healthCheck: () => Promise<{ healthy: boolean; queues: QueueHealthDetail[] }>;
+  healthCheck: () => Promise<{ healthy: boolean;, queues: QueueHealthDetail[] }>;
 }
 
 // Import worker and services with error handling
@@ -47,10 +44,9 @@ try {
     .documentProcessingWorker as DocumentProcessingWorker;
 } catch (error) {
   console.warn('Document processing worker not available:', error);
-  documentProcessingWorker = {
-    getStats: () => ({ isRunning: false, processedCount: 0, failedCount: 0, successRate: 0 }),
+  documentProcessingWorker = { getStats: () => ({, isRunning: false, processedCount: 0, failedCount: 0, successRate: 0 }),
     start: () => Promise.reject(new Error('Worker not available')),
-    stop: () => Promise.reject(new Error('Worker not available')),
+    stop: () => Promise.reject(new Error('Worker not available'))
   };
 }
 try {
@@ -59,7 +55,7 @@ try {
   console.warn('RabbitMQ service not available:', error);
   rabbitMQService = {
     getQueueStats: () => Promise.resolve({}),
-    healthCheck: () => Promise.resolve({ healthy: false, queues: [] }),
+    healthCheck: () => Promise.resolve({ healthy: false, queues: [] })
   };
 }
 
@@ -86,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
           worker: workerStats,
           queues: queueStats,
           messaging: healthCheck,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'health': {
@@ -98,17 +94,17 @@ export const GET: RequestHandler = async ({ url }) => {
             running: stats.isRunning,
             processed: stats.processedCount,
             failed: stats.failedCount,
-            successRate: stats.successRate,
+            successRate: stats.successRate
           },
           messaging: {
-            connected: health.healthy,
-            queues: health.queues,
-          },
+           , connected: health.healthy,
+            queues: health.queues
+          }
         });
       }
       default: return json(
           {
-            error: 'Invalid action. Use ?action=status or ?action=health',
+            error: 'Invalid action. Use ?action=status or ?action=health'
           },
           { status: 400 }
         );
@@ -119,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get worker status',
-        details: msg,
+        details: msg
       },
       { status: 500 }
     );
@@ -133,25 +129,25 @@ export const POST: RequestHandler = async ({ request }) => {
         if (documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is already running',
-            status: 'running',
+            status: 'running'
           });
         }
         await documentProcessingWorker.start();
         return json({
           message: 'Document processing worker started successfully',
-          status: 'started',
+          status: 'started'
         });
       case 'stop':
         if (!documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is not running',
-            status: 'stopped',
+            status: 'stopped'
           });
         }
         await documentProcessingWorker.stop();
         return json({
           message: 'Document processing worker stopped successfully',
-          status: 'stopped',
+          status: 'stopped'
         });
       case 'restart':
         if (documentProcessingWorker.getStats().isRunning) {
@@ -162,11 +158,11 @@ export const POST: RequestHandler = async ({ request }) => {
         await documentProcessingWorker.start();
         return json({
           message: 'Document processing worker restarted successfully',
-          status: 'restarted',
+          status: 'restarted'
         });
       default: return json(
           {
-            error: 'Invalid action. Use start, stop, or restart',
+            error: 'Invalid action. Use start, stop, or restart'
           },
           { status: 400 }
         );
@@ -177,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to control worker',
-        details: msg,
+        details: msg
       },
       { status: 500 }
     );

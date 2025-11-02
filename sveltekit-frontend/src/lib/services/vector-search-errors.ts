@@ -159,11 +159,11 @@ export class VectorSearchErrors {
     try {
       const response = await fetch(`${this.embeddingUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -304,7 +304,7 @@ export class VectorSearchErrors {
             error,
             similarity,
             distance: 1 - similarity,
-            matchReason: 'pgvector-similarity',
+            matchReason: 'pgvector-similarity'
           });
         }
       }
@@ -329,7 +329,7 @@ export class VectorSearchErrors {
         scoreThreshold: params.threshold || 0.7,
         errorCode: params.errorCode,
         category: params.category as any,
-        filePattern: params.filePathPattern,
+        filePattern: params.filePathPattern
       });
 
       // Convert Qdrant results to VectorSearchResult format
@@ -348,8 +348,7 @@ export class VectorSearchErrors {
             error: error[0],
             similarity: result.score,
             distance: 1 - result.score,
-            matchReason: 'qdrant-hybrid',
-          });
+            matchReason: `qdrant-hybrid` });
         }
       }
 
@@ -392,7 +391,7 @@ export class VectorSearchErrors {
       limit,
       threshold: 0.7,
       includePgvector: true,
-      includeQdrant: true,
+      includeQdrant: true
     });
   }
 
@@ -471,7 +470,7 @@ export class VectorSearchErrors {
           errorCount: clusterErrors.length,
           members: clusterErrors,
           avgSimilarity,
-          centroid,
+          centroid
         });
       }
 
@@ -637,8 +636,7 @@ export class VectorSearchErrors {
             error: error[0],
             similarity: sim.similarity / 10000, // Convert back to 0-1
             distance: 1 - sim.similarity / 10000,
-            matchReason: 'precomputed',
-          });
+            matchReason: `precomputed` });
         }
       }
 

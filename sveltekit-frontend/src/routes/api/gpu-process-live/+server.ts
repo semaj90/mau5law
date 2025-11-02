@@ -8,12 +8,9 @@ type GPULiveProcessConfig = {
   jobName?: string;
   targetFiles?: string[];
   maxErrorsToProcess?: number;
-  [key: string]: any; // allow flexible config values without using `any`
-};
+  [key: string]: any; // allow flexible config values without using `any` };
 
-interface GPULiveProcess {
-  id: string;
-  status: GPULiveProcessStatus;
+interface GPULiveProcess { id: string;, status: GPULiveProcessStatus;
   config: GPULiveProcessConfig;
   startTime: Date;
   progress: number; // 0..100
@@ -33,7 +30,7 @@ class GPULiveProcessor {
       status: 'running',
       config,
       startTime: new Date(),
-      progress: 0,
+      progress: 0
     };
     this.processes.set(processId, process);
     // Simulate processing progress
@@ -102,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const process = await gpuProcessor.startProcess(config);
         return json({
           success: true,
-          process,
+          process
         });
       }
       case 'stop': {
@@ -110,21 +107,21 @@ export const POST: RequestHandler = async ({ request }) => {
         const stopped = Boolean(payload.processId && gpuProcessor.stopProcess(payload.processId));
         return json({
           success: stopped,
-          message: stopped ? 'Process stopped' : 'Process not found',
+          message: stopped ? 'Process stopped' : 'Process not found'
         });
       }
       case 'errors': {
         const errors = await getLiveTypeScriptErrors();
         return json({
           success: true,
-          errors,
+          errors
         });
       }
       default: {
         return json(
           {
             success: false,
-            error: 'Invalid action',
+            error: 'Invalid action'
           },
           { status: 400 }
         );
@@ -136,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: message,
+        error: message
       },
       { status: 500 }
     );
@@ -153,20 +150,19 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: 'Process not found',
-          },
+            error: 'Process not found` },
           { status: 404 }
         );
       }
       return json({
         success: true,
-        process,
+        process
       });
     } else {
       const processes = gpuProcessor.getAllProcesses();
       return json({
         success: true,
-        processes,
+        processes
       });
     }
   } catch (error: any) {
@@ -175,7 +171,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: message,
+        error: message
       },
       { status: 500 }
     );

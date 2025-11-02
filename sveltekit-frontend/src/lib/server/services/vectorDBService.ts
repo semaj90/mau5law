@@ -16,18 +16,14 @@ export interface ChatEmbedding {
   createdAt?: Date;
 }
 
-export interface VectorSearchResult {
-  content: string;
-  role: string;
+export interface VectorSearchResult { content: string;, role: string;
   similarity: number;
   metadata?: Record<string, unknown>; // Changed from any
   conversationId: string;
 }
 
 // Interface for rows returned by SQL queries
-interface ChatEmbeddingRow {
-  content: string;
-  role: string;
+interface ChatEmbeddingRow { content: string;, role: string;
   conversation_id: string;
   metadata: string | null;
   similarity: string;
@@ -43,8 +39,7 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
   try {
     // Use backend-agnostic gateway (tries: local embedder -> FastAPI -> vLLM -> Ollama -> Go)
     const { embedding } = await getEmbeddingViaGate(fetch, text, {
-      model: process.env.EMBED_MODEL || 'nomic-embed-text',
-    });
+      model: process.env.EMBED_MODEL || 'nomic-embed-text` });
     // Cache the result for performance
     if (useCache && Array.isArray(embedding)) {
       if (embeddingCache.size >= cacheMaxSize) {
@@ -152,14 +147,14 @@ export async function searchSimilarChats(
       role: row.role,
       conversationId: row.conversation_id,
       similarity: parseFloat(row.similarity),
-      metadata: row.metadata ? JSON.parse(row.metadata) : {},
+      metadata: row.metadata ? JSON.parse(row.metadata) : {}
     }));
   } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
       console.error('Vector search error:', error.message);
     } else {
-      console.error('Vector search error:', error);
+      console.error('Vector search error: ', error);
     }
     return [];
   }
@@ -174,7 +169,7 @@ export async function searchSimilarChatsKeyword(
     const excludeCondition = excludeConversationId ? sql`AND conversation_id != ${excludeConversationId}` : sql``;
     // Use PostgreSQL full-text search as fallback when embeddings are slow
     const results = await db.execute(
-      sql`SELECT
+      sql'SELECT
         content,
         role,
         conversation_id,
@@ -192,7 +187,7 @@ export async function searchSimilarChatsKeyword(
       role: row.role,
       conversationId: row.conversation_id,
       similarity: parseFloat(row.similarity) / 4, // Normalize to 0-1 range;
-      metadata: row.metadata ? JSON.parse(row.metadata) : {},
+      metadata: row.metadata ? JSON.parse(row.metadata) : {}
     }));
   } catch (error: any) {
     // Changed from any
@@ -255,7 +250,7 @@ setInterval(() => {
   }
 }, cacheTimeout);
 // This function stores the log and its embedding in PostgreSQL
-export async function storeLogInVectorDB(data: { log: any; embedding: number[] }): Promise<unknown> {
+export async function storeLogInVectorDB(data: {, log: any; embedding: number[] }): Promise<unknown> {
   // Changed from any
   // TODO: Implement error_logs table in schema
   console.warn('storeLogInVectorDB: errorLogs table not implemented yet');

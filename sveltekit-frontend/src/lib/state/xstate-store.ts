@@ -43,9 +43,7 @@ interface InspectionEvent {
 }
 
 // Store persistence interface
-export interface StoreState {
-  appState: any;
-  legalCaseState: any;
+export interface StoreState { appState: any;, legalCaseState: any;
   timestamp: number;
 }
 // Configuration for store behavior
@@ -72,7 +70,7 @@ class XStateStoreManager {
       devtools: browser && import.meta.env.NODE_ENV === 'development',
       logTransitions: browser && import.meta.env.NODE_ENV === 'development',
       syncAcrossTabs: true,
-      ...config,
+      ...config
     };
     if (browser) {
       this.initializeBrowserFeatures();
@@ -118,9 +116,7 @@ class XStateStoreManager {
   /**
    * Initialize the application machine and store
    */
-  public initializeApp(): {
-    appStore: Readable<unknown>;
-    appActor: ActorRefFrom<typeof appMachine>;
+  public initializeApp(): { appStore: Readable<unknown>;, appActor: ActorRefFrom<typeof appMachine>;
     send: (_event: AppEvents) => void;
     selectors: typeof appSelectors;
   } {
@@ -133,7 +129,7 @@ class XStateStoreManager {
     this.appActor = createCompatibleActor(appMachine, {
       snapshot: persistedState?.appState,
       // Add devtools inspection;
-      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
+      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined
     });
     // Create reactive Svelte store
     const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: any) => void) => {
@@ -148,7 +144,7 @@ class XStateStoreManager {
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'app-state-change',
-            state: state,
+            state: state
           });
         }
       });
@@ -170,15 +166,13 @@ class XStateStoreManager {
       appStore: { subscribe },
       appActor: this.appActor,
       send,
-      selectors: appSelectors,
+      selectors: appSelectors
     };
   }
   /**
    * Initialize the legal case machine and store
    */
-  public initializeLegalCase(): {
-    legalCaseStore: Readable<unknown>;
-    legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
+  public initializeLegalCase(): { legalCaseStore: Readable<unknown>;, legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
     send: (_event: any) => void;
     selectors: typeof legalCaseSelectors;
   } {
@@ -190,7 +184,7 @@ class XStateStoreManager {
     // Create legal case actor
     this.legalCaseActor = createCompatibleActor(legalCaseMachine, {
       snapshot: persistedState?.legalCaseState,
-      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
+      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined
     });
     // Create reactive Svelte store
     const { subscribe: subscribeCase } = readable(this.legalCaseActor.getSnapshot(), (set: (v: any) => void) => {
@@ -205,7 +199,7 @@ class XStateStoreManager {
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'legal-case-state-change',
-            state: state,
+            state: state
           });
         }
       });
@@ -223,11 +217,10 @@ class XStateStoreManager {
       }
       this.legalCaseActor?.send(event);
     };
-    return {
-      legalCaseStore: { subscribe: subscribeCase },
+    return { legalCaseStore: {, subscribe: subscribeCase },
       legalCaseActor: this.legalCaseActor,
       send: sendCase,
-      selectors: legalCaseSelectors,
+      selectors: legalCaseSelectors
     };
   }
   /**
@@ -256,7 +249,7 @@ class XStateStoreManager {
       websocketStatus: derived(appStore, $app => appSelectors.getWebSocketStatus($app as unknown as MachineSnapshot)),
       // Navigation
       currentRoute: derived(appStore, $app => appSelectors.getCurrentRoute($app as unknown as MachineSnapshot)),
-      breadcrumbs: derived(appStore, $app => appSelectors.getBreadcrumbs($app as unknown as MachineSnapshot)),
+      breadcrumbs: derived(appStore, $app => appSelectors.getBreadcrumbs($app as unknown as MachineSnapshot))
     };
   }
   /**
@@ -267,45 +260,41 @@ class XStateStoreManager {
       // Notification helpers
       notify: {
         success: (title: string, message: string) =>
-          appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'success', title, message } }),
+          appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'success', title, message } }),
         error: (title: string, message: string) =>
-          appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'error', title, message } }),
+          appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'error', title, message } }),
         warning: (title: string, message: string) =>
-          appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'warning', title, message } }),
+          appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'warning', title, message } }),
         info: (title: string, message: string) =>
-          appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'info', title, message } }),
-        dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id }),
+          appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'info', title, message } }),
+        dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id })
       },
       // Theme helpers
-      theme: {
-        setLight: () => appSend({ type: 'SET_THEME', theme: 'light' }),
+      theme: { setLight: () => appSend({, type: 'SET_THEME', theme: 'light' }),
         setDark: () => appSend({ type: 'SET_THEME', theme: 'dark' }),
-        setAuto: () => appSend({ type: 'SET_THEME', theme: 'auto' }),
+        setAuto: () => appSend({ type: 'SET_THEME', theme: 'auto' })
       },
       // Layout helpers
-      layout: {
-        setDesktop: () => appSend({ type: 'SET_LAYOUT', layout: 'desktop' }),
+      layout: { setDesktop: () => appSend({, type: 'SET_LAYOUT', layout: 'desktop' }),
         setTablet: () => appSend({ type: 'SET_LAYOUT', layout: 'tablet' }),
-        setMobile: () => appSend({ type: 'SET_LAYOUT', layout: 'mobile' }),
+        setMobile: () => appSend({ type: 'SET_LAYOUT', layout: 'mobile' })
       },
       // Error helpers (use explicit ErrorPayload type)
-      error: {
-        set: (error: ErrorPayload) => appSend({ type: 'SET_ERROR', error } as unknown as AppEvents),
+      error: { set: (error: ErrorPayload) => appSend({, type: 'SET_ERROR', error } as unknown as AppEvents),
         clear: () => appSend({ type: 'CLEAR_ERROR' } as unknown as AppEvents),
-        retry: () => appSend({ type: 'RETRY_FAILED_ACTION' } as unknown as AppEvents),
+        retry: () => appSend({ type: 'RETRY_FAILED_ACTION' } as unknown as AppEvents)
       },
       // Loading helpers
-      loading: {
-        start: (message?: string) => appSend({ type: 'GLOBAL_LOADING', message }),
-        stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' }),
+      loading: { start: (message?: string) => appSend({, type: 'GLOBAL_LOADING', message }),
+        stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' })
       },
       // Navigation helpers
       navigate: (path: string, title?: string) => appSend({ type: 'NAVIGATE', path, title }),
       // Settings helpers (avoid direct AppContext['settings'] reference)
       settings: {
         update: (settings: Partial<Record<string, unknown>>) => appSend({ type: 'UPDATE_SETTINGS', settings }),
-        reset: () => appSend({ type: 'RESET_SETTINGS' }),
-      },
+        reset: () => appSend({ type: 'RESET_SETTINGS' })
+      }
     };
   }
   // Private helper methods
@@ -315,7 +304,7 @@ class XStateStoreManager {
       if (win && win.__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = win.__REDUX_DEVTOOLS_EXTENSION__.connect({
           name: `XState: ${machineId}`,
-          trace: true,
+          trace: true
         });
         const ev = inspectionEvent as unknown as InspectionEvent;
         switch (ev?.type) {
@@ -335,7 +324,7 @@ class XStateStoreManager {
       const state: StoreState = {
         appState: this.appActor?.getSnapshot() ?? null,
         legalCaseState: this.legalCaseActor?.getSnapshot() ?? null,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       localStorage.setItem(this.config.persistKey!, JSON.stringify(state));
     } catch (error: any) {
@@ -383,8 +372,8 @@ class XStateStoreManager {
             this.appActor?.send({
               type: 'UPDATE_PERFORMANCE_METRICS',
               metrics: {
-                pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart,
-              },
+               , pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart
+              }
             } as unknown as AppEvents);
           }
         }
@@ -398,8 +387,8 @@ class XStateStoreManager {
           this.appActor?.send({
             type: 'UPDATE_PERFORMANCE_METRICS',
             metrics: {
-              memoryUsage: memory.usedJSHeapSize,
-            },
+             , memoryUsage: memory.usedJSHeapSize
+            }
           } as unknown as AppEvents);
         }, 30000); // Every 30 seconds
       }

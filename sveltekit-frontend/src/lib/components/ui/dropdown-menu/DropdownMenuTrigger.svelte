@@ -4,7 +4,7 @@
   import { cn } from '$lib/utils';
   // Resolve factory at runtime via adapter
   // make Trigger reactive so updates inside the async loader trigger component updates
-  let Trigger: any = $state(null);
+  let Trigger: any = null;
   (async () => {
     const ns = await getBitsNamespace();
     const factory = (ns as any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns;

@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
   return json({
     success: true,
     message: 'Glyph diffusion test endpoint is working',
-    status: 'ok',
+    status: 'ok'
   });
 };
 export const POST: RequestHandler = async ({ request }) => {
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
             <rect width="256" height="256" fill="#1f2937"/>
             <circle cx="128" cy="128" r="80" fill="#3b82f6" opacity="0.7"/>
             <text x="128" y="138" font-family="Arial" font-size="16" fill="white" text-anchor="middle">
-              ${body.style || 'legal'}
+              ${body.style || 'legal' }
             </text>
             <text x="128" y="158" font-family="Arial" font-size="12" fill="#9ca3af" text-anchor="middle">
               ${(body.prompt || 'test').slice(0, 20)}...
@@ -40,9 +40,9 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           style: body.style || 'legal',
           prompt: body.prompt || 'test',
-          dimensions: body.dimensions || [256, 256],
-        },
-      },
+          dimensions: body.dimensions || [256, 256]
+        }
+      }
     };
     console.log('✅ Mock glyph generated successfully');
     return json(mockGlyphResponse);
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Glyph test generation failed: ' + error.message,
+        error: 'Glyph test generation; failed: ' + error.message
       },
       { status: 500 }
     );

@@ -9,7 +9,7 @@ export function registerCleanup(fn: () => Promise<any> | any) {
 async function runCleanups(signal: string): Promise<any> {
   console.log(`[shutdown] Received ${signal}, running ${cleaners.length} cleanup tasks`);
   for (const fn of cleaners) {
-    try { await fn(), } catch (e: any) { console.error('[shutdown] cleanup error', e?.message || e), }
+    try { await fn() } catch (e: any) { console.error('[shutdown] cleanup error', e?.message || e) }
   }
   process.exit(0);
 }

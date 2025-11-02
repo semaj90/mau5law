@@ -9,7 +9,7 @@ export const fileUploadSchema = z.object({
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().default(false), // Default to false
   aiAnalysis: z.boolean().default(true), // Default to true for AI platform
-  file: z.instanceof(File, { message: 'A file is required for upload.' }),
+  file: z.instanceof(File, { message: 'A file is required for upload.' })
 });
 export type FileUploadSchema = typeof fileUploadSchema;
 export type FileUploadFormData = z.infer<typeof fileUploadSchema>;

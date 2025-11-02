@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -34,18 +34,18 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const behaviorPrompt = `
 You are an expert legal workflow analyst. Analyze the following user behavior data and legal context to provide insights and recommendations.
 User Analytics:
-- Behavior Pattern: ${userAnalytics.behaviorPattern}
+- Behavior; Pattern: ${userAnalytics.behaviorPattern}
 - Typing Speed: ${userAnalytics.interactionMetrics.typingSpeed} WPM
 - Success Rate: ${userAnalytics.uploadHistory.successRate * 100}%
 - Expertise Level: ${userAnalytics.caseContext.expertise}
 - Workflow Stage: ${userAnalytics.caseContext.workflowStage}
 - Active Cases: ${userAnalytics.caseContext.activeCases.length}
 Legal Context:
-- Practice Area: ${legalContext?.practiceArea || 'General'}
+- Practice; Area: ${legalContext?.practiceArea || 'General'}
 - Case Type: ${legalContext?.caseType || 'Unknown'}
-- Urgency: ${legalContext?.urgency || 'Medium'}
+- Urgency: ${legalContext?.urgency || 'Medium` }
 Current Session:
-- Files Selected: ${context.files.length}
+- Files; Selected: ${context.files.length}
 - Total File Size: ${context.files.reduce((sum: number, f: any) => sum + f.size, 0)} bytes
 Provide analysis in JSON format:
 {
@@ -65,18 +65,17 @@ Provide analysis in JSON format:
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma2:9b',
         prompt: behaviorPrompt,
         format: 'json',
         stream: false,
         options: {
-          temperature: 0.4,
-          top_p: 0.8,
-        },
-      }),
+         , temperature: 0.4,
+          top_p: 0.8
+        }
+      })
     });
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
@@ -95,11 +94,11 @@ Provide analysis in JSON format:
         legalSpecificInsights: {
           documentPreparation: 'Standard preparation observed',
           caseManagement: 'Active case management detected',
-          timeManagement: 'Efficient workflow patterns',
+          timeManagement: 'Efficient workflow patterns'
         },
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
-        nextBestActions: ['Process selected documents'],
+        nextBestActions: ['Process selected documents']
       };
     }
     // Update user analytics based on AI insights
@@ -109,17 +108,17 @@ Provide analysis in JSON format:
       contextualPreferences: {
         ...userAnalytics.contextualPreferences,
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
-        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate',
-      },
+        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
+      }
     };
     return json({
       analytics: updatedAnalytics,
       insights: analysis,
-      score: analysis.efficiencyScore,
+      score: analysis.efficiencyScore
     });
   } catch (error) {
     console.error('Behavior analysis error:', error);
-    return json({ error: 'Analysis failed' }, { status: 500 });
+    return json({ error: `Analysis failed` }, { status: 500 });
   }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

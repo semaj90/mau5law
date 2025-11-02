@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
         processingStatus: documents.processingStatus,
         createdAt: documents.createdAt,
         metadata: documents.metadata,
-        chunkCount: sql<number>`COUNT(${documentChunks.id})`,
+        chunkCount: sql<number>`COUNT(${documentChunks.id})`
       })
       .from(documents)
       .leftJoin(documentChunks, eq(documents.id, documentChunks.documentId));
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply search filter
     if (search.trim()) {
       query = query.where(
-        sql`${documents.filename} ILIKE ${`%${search}%`} OR ${documents.title} ILIKE ${`%${search}%`}`
+        sql`${documents.filename} ILIKE ${`%${search}%` } OR ${documents.title} ILIKE ${`%${search}%` }`
       );
     }
 
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
           chunks: doc.chunkCount || 0,
           summary,
           tags: doc.metadata?.tags ?? [],
-          contentHash: doc.metadata?.contentHash,
+          contentHash: doc.metadata?.contentHash
         };
       })
     );
@@ -89,9 +89,9 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         offset,
         total: totalCount,
-        returned: enrichedDocs.length,
+        returned: enrichedDocs.length
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Failed to list documents:', error);
@@ -99,8 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to list documents',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

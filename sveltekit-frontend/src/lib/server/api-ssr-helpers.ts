@@ -11,12 +11,8 @@ import { threadSafePostgres } from './thread-safe-postgres.js';
 import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
 import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
 import { cognitiveCache } from '../services/cognitive-cache-integration.js';
-export interface SSRResponse<T = any> {
-  success: boolean;
-  data: T;
-  meta: {
-    timestamp: string;
-    cached: boolean;
+export interface SSRResponse<T = any> { success: boolean;, data: T;
+  meta: { timestamp: string;, cached: boolean;
     source: 'ssr' | 'api';
   };
   error?: string;
@@ -50,7 +46,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
         items: [data],
         operation: 'serialize',
         priority: 'high',
-        cache: !!options?.cacheKey,
+        cache: !!options?.cacheKey
       });
       if (gpuResult?.serialized && Array.isArray(gpuResult.serialized)) {
         sanitizedData = gpuResult.serialized[0] as T;
@@ -70,14 +66,14 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     meta: {
       timestamp: new Date().toISOString(),
       cached: options?.cached ?? false,
-      source: 'ssr',
-    },
+      source: 'ssr'
+    }
   };
   // Use concurrent serializer for better performance
   try {
     serializedResponse = await serializeForAPI(response, {
       compress: estimateDataSize(response) > 50 * 1024, // Compress if > 50KB
-      gpuAccelerated: shouldUseGPU,
+      gpuAccelerated: shouldUseGPU
     });
   } catch (error) {
     console.warn('Concurrent serialization failed, using standard JSON:', error);
@@ -88,7 +84,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     await cognitiveCache.storeJsonbDocument(options.cacheKey, response, {
       responseType: 'ssr',
       gpuProcessed: shouldUseGPU,
-      threadSafe: true,
+      threadSafe: true
     });
   }
   return new Response(serializedResponse, {
@@ -98,8 +94,8 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       'Cache-Control': 'public, max-age=30',
       'X-GPU-Accelerated': shouldUseGPU ? 'true' : 'false',
       'X-Thread-Safe': 'true',
-      ...options?.headers,
-    },
+      ...options?.headers
+    }
   });
 }
 /**
@@ -111,9 +107,9 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     meta: {
       timestamp: new Date().toISOString(),
       cached: false,
-      source: 'ssr',
+      source: 'ssr'
     },
-    error,
+    error
   };
   return json(response, { status });
 }
@@ -175,7 +171,7 @@ export async function batchSSRRequests<T extends { [key: string]: any }>(
         const result = await Promise.race([requestFn(), timeoutPromise]);
         results[key] = sanitizeForSSR(result);
       } catch (error) {
-        console.error(`SSR batch request failed for ${String(key)}:`, error);
+        console.error(`SSR batch request failed for ${String(key)}: ', error);
         results[key] = null;
       }
     })
@@ -238,7 +234,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
       return await createSSRResponse(result, {
         gpuAccelerated: options?.gpuAccelerated,
         threadSafe: options?.threadSafe ?? true,
-        cacheKey,
+        cacheKey
       });
     } catch (error: any) {
       console.error('SSR API Handler Error:', error);
@@ -282,7 +278,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
           offset: options?.offset,
           orderBy: 'relevance',
           useGPU: options?.useGPU,
-          cacheResults: options?.cacheResults,
+          cacheResults: options?.cacheResults
         })
       : [];
     // Cache results if requested
@@ -290,7 +286,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
       await cognitiveCache.storeJsonbDocument(cacheKey, results, {
         queryType: 'legal_search',
         resultCount: results.length,
-        gpuProcessed: options?.useGPU || false,
+        gpuProcessed: options?.useGPU || false
       });
     }
     return results;
@@ -324,12 +320,12 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
           requestEntries.map(([key, requestFn]) => ({
             type: 'query',
             table: 'batch_requests',
-            data: { key: String(key), requestFn: requestFn.toString() },
+            data: {, key: String(key), requestFn: requestFn.toString() }
           })),
           {
             atomic: false,
             gpuSerialize: true,
-            threadSafe,
+            threadSafe
           }
         );
         if (batchResult.result?.success) {
@@ -352,7 +348,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
           const serialized = await concurrentSerializer.serialize(result, {
             gpuAccelerated: true,
             legalDocumentMode: true,
-            compress: estimateDataSize(result) > 50 * 1024,
+            compress: estimateDataSize(result) > 50 * 1024
           });
           results[key] = JSON.parse(serialized.serialized);
         } else {
@@ -364,11 +360,11 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
           await cognitiveCache.storeJsonbDocument(cacheKey, results[key], {
             batchKey: String(key),
             gpuProcessed: gpuAccelerated,
-            threadSafe,
+            threadSafe
           });
         }
       } catch (error) {
-        console.error(`SSR batch request failed for ${String(key)}:`, error);
+        console.error(`SSR batch request failed for ${String(key)}: ', error);
         results[key] = null;
       }
     })
@@ -387,7 +383,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       concurrentSerializer.getStats(),
       (gpuCoordinator as any).getSystemHealth
         ? (gpuCoordinator as any).getSystemHealth()
-        : Promise.resolve({ gpuAvailable: false }),
+        : Promise.resolve({ gpuAvailable: false })
     ]);
     const overallStatus =
       postgresHealth.connected && cacheStats.threadSafe && serializerStats.activeWorkers > 0 && gpuHealth.gpuAvailable
@@ -400,16 +396,14 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       cognitive_cache: cacheStats,
       serializer: serializerStats,
       gpu_coordinator: gpuHealth,
-      overall_status: overallStatus,
+      overall_status: overallStatus
     };
   } catch (error) {
     console.error('Health check failed:', error);
-    return {
-      postgres: { connected: false },
+    return { postgres: {, connected: false },
       cognitive_cache: { threadSafe: false },
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
-      overall_status: 'unhealthy',
-    };
+      overall_status: 'unhealthy` };
   }
 }

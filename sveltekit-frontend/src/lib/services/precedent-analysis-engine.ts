@@ -23,9 +23,7 @@ import { EnhancedAIAnalysisService as enhancedAIAnalysis } from './enhanced-ai-a
 // } from './enhanced-ai-analysis.js';
 
 // Local definition for LegalDocument as a workaround for missing export
-export interface LegalDocument {
-  id: string;
-  content: string;
+export interface LegalDocument { id: string;, content: string;
   title?: string;
   name?: string;
   type: string;
@@ -34,70 +32,50 @@ export interface LegalDocument {
 }
 
 // Add lightweight types for the AI analysis result to avoid: 'any'
-interface SemanticEntity {
-  type: string;
-  name: string;
+interface SemanticEntity { type: string;, name: string;
   [key: string]: any;
 }
-interface SemanticAnalysisResult {
-  keyTopics: string[];
-  legalEntities: SemanticEntity[];
+interface SemanticAnalysisResult { keyTopics: string[];, legalEntities: SemanticEntity[];
   embedding: number[];
   // other optional fields that the analyzer might return
   [key: string]: any;
 }
 
-export interface LegalPrincipleModification {
-  date: Date;
-  description: string;
+export interface LegalPrincipleModification { date: Date;, description: string;
   caseCitation: string;
 }
 
-export interface ApplicableJurisdiction {
-  name: string;
-  relevance: number;
+export interface ApplicableJurisdiction { name: string;, relevance: number;
   bindingAuthority: boolean;
   precedentCount: number;
   recentTrends: 'mixed' | 'strengthening' | 'weakening';
 }
 
-export interface ConflictingAuthority {
-  caseCitation: string;
-  conflictingPrinciple: string;
+export interface ConflictingAuthority { caseCitation: string;, conflictingPrinciple: string;
   jurisdiction: string;
 }
 
-export interface TrendDataPoint {
-  date: Date;
-  caseCount: number;
+export interface TrendDataPoint { date: Date;, caseCount: number;
   favorableOutcomes: number;
   significance: number;
 }
 
-export interface CitationCluster {
-  theme: string;
-  cases: string[];
+export interface CitationCluster { theme: string;, cases: string[];
   interconnectedness: number;
 }
 
-export interface AuthorityFlow {
-  source: string;
-  target: string;
+export interface AuthorityFlow { source: string;, target: string;
   influence: number;
 }
 
 // Case Law Types
-export interface CaseLaw {
-  id: string;
-  citation: string;
+export interface CaseLaw { id: string;, citation: string;
   title: string;
   court: string;
   jurisdiction: string;
   decisionDate: Date;
   judges: string[];
-  parties: {
-    plaintiff: string[];
-    defendant: string[];
+  parties: { plaintiff: string[];, defendant: string[];
   };
   legalIssues: string[];
   holdings: string[];
@@ -107,9 +85,7 @@ export interface CaseLaw {
   embedding?: number[];
 }
 // Precedent Analysis Result
-export interface PrecedentAnalysis {
-  queryCase: {
-    id: string;
+export interface PrecedentAnalysis { queryCase: {, id: string;
     title: string;
     issues: string[];
   };
@@ -120,9 +96,7 @@ export interface PrecedentAnalysis {
   citationNetwork: CitationNetwork;
   briefSuggestions: BriefSuggestion[];
   confidenceScore: number;
-  analysisMetadata: {
-    searchScope: string;
-    analysisDepth: 'surface' | 'comprehensive' | 'exhaustive';
+  analysisMetadata: { searchScope: string;, analysisDepth: 'surface' | 'comprehensive' | 'exhaustive';
     processingTime: number;
     sourcesAnalyzed: number;
   };
@@ -131,9 +105,7 @@ export interface PrecedentAnalysis {
 export interface PrecedentMatch {
   case CaseLaw;
   relevanceScore: number; // 0-1
-  similarity: {
-    factual: number;
-    legal: number;
+  similarity: { factual: number;, legal: number;
     procedural: number;
     overall: number;
   };
@@ -146,38 +118,26 @@ export interface PrecedentMatch {
   recentness: number; // Age factor (newer = higher score)
 }
 // Legal Principle Mapping
-export interface LegalPrincipleMapping {
-  principle: string;
-  description: string;
+export interface LegalPrincipleMapping { principle: string;, description: string;
   supportingCases: string[];
   jurisdiction: string;
   strength: number; // How well established this principle is,
-  evolution: {
-    established: Date;
-    modifications: LegalPrincipleModification[];
+  evolution: { established: Date;, modifications: LegalPrincipleModification[];
     currentStatus: 'active' | 'modified' | 'overruled' | 'questioned';
   };
   applications: string[];
 }
 // Jurisdiction Analysis
-export interface JurisdictionAnalysis {
-  primaryJurisdiction: string;
-  applicableJurisdictions: ApplicableJurisdiction[];
+export interface JurisdictionAnalysis { primaryJurisdiction: string;, applicableJurisdictions: ApplicableJurisdiction[];
   jurisdictionHierarchy: string[];
   conflictingAuthorities: ConflictingAuthority[];
 }
 // Temporal Trend Analysis
-export interface TemporalTrend {
-  issue: string;
-  timeRange: {
-    start: Date;
-    end: Date;
+export interface TemporalTrend { issue: string;, timeRange: { start: Date;, end: Date;
   };
   trend: 'strengthening' | 'weakening' | 'stable' | 'emerging' | 'declining';
   dataPoints: TrendDataPoint[];
-  prediction: {
-    futureOutlook: string;
-    confidence: number;
+  prediction: { futureOutlook: string;, confidence: number;
     factors: string[];
   };
 }
@@ -193,22 +153,18 @@ export interface CitationNetwork {
   };
 }
 // Brief Suggestion
-export interface BriefSuggestion {
-  section: 'introduction' | 'facts' | 'legal_argument' | 'conclusion';
-  argument: string;
+export interface BriefSuggestion { section: 'introduction' | 'facts' | 'legal_argument' | 'conclusion';, argument: string;
   supportingCases: string[];
   strength: 'primary' | 'supporting' | 'supplementary';
   oppositionConcerns: string[];
   suggestedLanguage: string;
 }
 
-interface CaseAnalysisData {
-  id: string;
-  title: string;
+interface CaseAnalysisData { id: string;, title: string;
   content: string;
   legalIssues: string[];
   embedding: number[];
-  entities: { type: string; name: string; [key: string]: any }[];
+  entities: { type: string;, name: string; [key: string]: any }[];
 }
 
 export class PrecedentAnalysisEngine {
@@ -226,7 +182,7 @@ export class PrecedentAnalysisEngine {
     options: {
       analysisDepth?: 'surface' | 'comprehensive' | 'exhaustive';
       jurisdictionScope?: string[];
-      temporalRange?: { start: Date; end: Date };
+      temporalRange?: {, start: Date; end: Date };
       includeNetworkAnalysis?: boolean;
       generateBriefSuggestions?: boolean;
     } = {}
@@ -236,7 +192,7 @@ export class PrecedentAnalysisEngine {
       jurisdictionScope = [],
       temporalRange,
       includeNetworkAnalysis = true,
-      generateBriefSuggestions = true,
+      generateBriefSuggestions = true
     } = options;
     console.log(`🔍 Starting precedent analysis for: ${targetCase.title || targetCase.id}`);
     const startTime = Date.now();
@@ -247,7 +203,7 @@ export class PrecedentAnalysisEngine {
       const candidateCases = await this.searchSimilarCases(caseAnalysis, {
         jurisdictionScope,
         temporalRange,
-        depth: analysisDepth,
+        depth: analysisDepth
       });
       // 3. Analyze relevance and similarity
       const relevantPrecedents = await this.analyzeCaseRelevance(caseAnalysis, candidateCases);
@@ -262,7 +218,7 @@ export class PrecedentAnalysisEngine {
         centralCases: [],
         citationClusters: [],
         authorityFlow: [],
-        influenceMetrics: { hubCases: [], authorityCases: [], bridgeCases: [] },
+        influenceMetrics: { hubCases: [], authorityCases: [], bridgeCases: [] }
       };
       if (includeNetworkAnalysis) {
         citationNetwork = await this.buildCitationNetwork(relevantPrecedents);
@@ -279,12 +235,10 @@ export class PrecedentAnalysisEngine {
         jurisdictionAnalysis
       );
       const processingTime = Date.now() - startTime;
-      const analysis: PrecedentAnalysis = {
-        queryCase: {
-          id: targetCase.id,
+      const analysis: PrecedentAnalysis = { queryCase: {, id: targetCase.id,
           title:
             ('title' in targetCase && targetCase.title) || ('name' in targetCase && targetCase.name) || 'Unknown Case',
-          issues: caseAnalysis.legalIssues,
+          issues: caseAnalysis.legalIssues
         },
         relevantPrecedents,
         legalPrincipleMap,
@@ -297,8 +251,8 @@ export class PrecedentAnalysisEngine {
           searchScope: jurisdictionScope.join(',') || 'all',
           analysisDepth,
           processingTime,
-          sourcesAnalyzed: candidateCases.length,
-        },
+          sourcesAnalyzed: candidateCases.length
+        }
       };
       // Cache the result
       this.analysisCache.set(targetCase.id, analysis);
@@ -372,7 +326,7 @@ export class PrecedentAnalysisEngine {
       citationStyle?: 'bluebook' | 'chicago' | 'apa' | 'mla';
     } = {}
   ): Promise<string> {
-    const { includeFullText = false, citationStyle = 'bluebook' } = options;
+    const { includeFullText = false, citationStyle = 'bluebook` } = options;
     switch (format) {
       case 'json':
         return JSON.stringify(analysis, null, 2);
@@ -384,7 +338,7 @@ export class PrecedentAnalysisEngine {
         // Would generate Word XML format in production
         return this.exportToMarkdown(analysis, citationStyle, includeFullText);
       default:
-        throw new Error(`Unsupported export format: ${format}`);
+        throw new Error(`Unsupported export; format: ${format}`);
     }
   }
   // Private helper methods
@@ -408,10 +362,10 @@ export class PrecedentAnalysisEngine {
       type: 'case',
       // provide minimal required metadata so call-site type checks pass
       metadata: {
-        dateCreated: new Date(),
-        dateModified: new Date(),
+       , dateCreated: new Date(),
+        dateModified: new Date()
       } as unknown as Record<string, unknown>,
-      chunks: [],
+      chunks: []
     });
 
     // Normalize AI response safely (avoid direct cast to SemanticAnalysisResult)
@@ -431,7 +385,7 @@ export class PrecedentAnalysisEngine {
         type: (e.type as string) ?? (e['entityType'] as string) ?? 'unknown',
         name: (e.name as string) ?? (e['text'] as string) ?? String(e),
         // copy other properties through the index signature
-        ...e,
+        ...e
       } as SemanticEntity;
     });
 
@@ -450,14 +404,14 @@ export class PrecedentAnalysisEngine {
       content,
       legalIssues: [...new Set(legalIssues)], // Remove duplicates
       embedding,
-      entities: legalEntities,
+      entities: legalEntities
     };
   }
   private async searchSimilarCases(
     caseAnalysis: CaseAnalysisData,
     options: {
       jurisdictionScope?: string[];
-      temporalRange?: { start: Date; end: Date };
+      temporalRange?: {, start: Date; end: Date };
       depth?: string;
       limit?: number;
     }
@@ -495,7 +449,7 @@ export class PrecedentAnalysisEngine {
         factual: Math.random() * 0.4 + 0.3,
         legal: Math.random() * 0.4 + 0.4,
         procedural: Math.random() * 0.3 + 0.2,
-        overall: 0,
+        overall: 0
       };
       similarity.overall = (similarity.factual + similarity.legal + similarity.procedural) / 3;
       // Determine application strength
@@ -519,7 +473,7 @@ export class PrecedentAnalysisEngine {
         keyHoldings: candidate.holdings,
         applicableRules: candidate.legalIssues,
         citationFrequency: Math.floor(Math.random() * 100), // Simulated
-        recentness: Math.max(0, 1 - (2024 - candidate.decisionDate.getFullYear()) / 50),
+        recentness: Math.max(0, 1 - (2024 - candidate.decisionDate.getFullYear()) / 50)
       });
     }
     return matches.sort((a, b) => b.relevanceScore - a.relevanceScore);
@@ -550,9 +504,8 @@ export class PrecedentAnalysisEngine {
         evolution: {
           established: new Date('1950-01-01'), // Placeholder
           modifications: [],
-          currentStatus: 'active',
-        },
-        applications: [`Application in ${targetCase.title}`],
+          currentStatus: 'active` },
+        applications: [`Application in ${targetCase.title}`]
       });
     });
     return principleMap;
@@ -572,26 +525,26 @@ export class PrecedentAnalysisEngine {
         relevance: count / precedents.length,
         bindingAuthority: name === 'Federal' || name === 'Supreme Court',
         precedentCount: count,
-        recentTrends: 'mixed' as const,
+        recentTrends: 'mixed' as const
       }))
       .sort((a, b) => b.relevance - a.relevance);
     return {
       primaryJurisdiction: applicableJurisdictions[0]?.name || 'Unknown',
       applicableJurisdictions,
       jurisdictionHierarchy: ['Supreme Court', 'Federal Circuit', 'State Supreme Court', 'State Appellate'],
-      conflictingAuthorities: [],
+      conflictingAuthorities: []
     };
   }
   private async analyzeTemporal(
     issues: string[],
     _precedents: PrecedentMatch[],
-    _temporalRange?: { start: Date; end: Date }
+    _temporalRange?: { start: Date;, end: Date }
   ): Promise<TemporalTrend[]> {
     return issues.map(issue => ({
       issue,
       timeRange: {
-        start: new Date('2000-01-01'),
-        end: new Date(),
+       , start: new Date('2000-01-01'),
+        end: new Date()
       },
       trend: 'stable' as const,
       dataPoints: [
@@ -599,14 +552,14 @@ export class PrecedentAnalysisEngine {
           date: new Date('2020-01-01'),
           caseCount: 10,
           favorableOutcomes: 7,
-          significance: 0.8,
+          significance: 0.8
         },
       ],
       prediction: {
         futureOutlook: 'Continued stability with slight strengthening trend',
         confidence: 0.75,
-        factors: ['Recent consistent rulings', 'Strong precedential support'],
-      },
+        factors: ['Recent consistent rulings', 'Strong precedential support']
+      }
     }));
   }
   private async buildCitationNetwork(precedents: PrecedentMatch[]): Promise<CitationNetwork> {
@@ -621,15 +574,15 @@ export class PrecedentAnalysisEngine {
         {
           theme: 'Constitutional Rights',
           cases: centralCases.slice(0, 3),
-          interconnectedness: 0.8,
+          interconnectedness: 0.8
         },
       ],
       authorityFlow: [],
       influenceMetrics: {
         hubCases: centralCases.slice(0, 2),
         authorityCases: centralCases.slice(2, 4),
-        bridgeCases: centralCases.slice(4, 5),
-      },
+        bridgeCases: centralCases.slice(4, 5)
+      }
     };
   }
   private async generateBriefSuggestions(
@@ -645,8 +598,7 @@ export class PrecedentAnalysisEngine {
         supportingCases: topPrecedents.map(p => p.case.citation),
         strength: 'primary',
         oppositionConcerns: ['Distinguishing factors may apply', 'Jurisdictional differences'],
-        suggestedLanguage: 'The precedent established in [Case] clearly supports...',
-      },
+        suggestedLanguage: 'The precedent established in [Case] clearly supports...` },
     ];
   }
   private calculateConfidenceScore(
@@ -711,13 +663,13 @@ export class PrecedentAnalysisEngine {
         judges: ['Earl Warren'],
         parties: {
           plaintiff: ['Oliver Brown', 'NAACP'],
-          defendant: ['Board of Education of Topeka'],
+          defendant: ['Board of Education of Topeka']
         },
         legalIssues: ['Equal Protection', 'Racial Segregation', 'Education Rights'],
         holdings: ['Separate educational facilities are inherently unequal'],
         reasoning: 'Segregation in public education violates the Equal Protection Clause',
         fullText: 'Full text of Brown v. Board decision...',
-        precedentialValue: 'binding',
+        precedentialValue: 'binding'
       },
       {
         id: 'roe-v-wade-1973',
@@ -729,14 +681,13 @@ export class PrecedentAnalysisEngine {
         judges: ['Harry Blackmun'],
         parties: {
           plaintiff: ['Jane Roe'],
-          defendant: ['Henry Wade'],
+          defendant: ['Henry Wade']
         },
         legalIssues: ['Privacy Rights', 'Due Process', 'Abortion Rights'],
         holdings: ['Constitutional right to privacy includes abortion decision'],
         reasoning: 'State regulation of abortion must be justified by compelling state interest',
         fullText: 'Full text of Roe v. Wade decision...',
-        precedentialValue: 'binding',
-      },
+        precedentialValue: 'binding` },
     ];
     sampleCases.forEach(case_ => {
       this.caseDatabase.set(case_.id, case_);

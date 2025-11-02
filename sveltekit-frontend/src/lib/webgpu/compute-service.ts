@@ -5,9 +5,7 @@
 import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
 
 // Define a specific type for the data returned by the compute service
-export interface WebGPUComputeData {
-  message: string;
-  requestType: string;
+export interface WebGPUComputeData { message: string;, requestType: string;
   timestamp: string;
 }
 
@@ -37,12 +35,11 @@ class WebGPUComputeService {
         success: true,
         data: {
           message: 'WebGPU compute request processed',
-          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a: 'type' property
-          timestamp: new Date().toISOString(),
+          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a: 'type' property; timestamp: new Date().toISOString()
         },
         performance: {
-          executionTime: performance.now() - startTime,
-        },
+          executionTime: performance.now() - startTime
+        }
       };
       return result;
     } catch (error) {
@@ -50,8 +47,8 @@ class WebGPUComputeService {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown WebGPU error',
         performance: {
-          executionTime: performance.now() - startTime,
-        },
+          executionTime: performance.now() - startTime
+        }
       };
     }
   }

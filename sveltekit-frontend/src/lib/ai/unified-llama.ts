@@ -37,9 +37,7 @@ export interface GenerateOptions extends UnifiedLlamaConfig {
 	signal?: AbortSignal;
 }
 
-export interface GenerateResult {
-	text: string;
-	tokensGenerated: number;
+export interface GenerateResult { text: string;, tokensGenerated: number;
 	processingTime: number;
 	method: 'wasm' | 'native' | 'remote';
 	modelUsed: string;
@@ -61,7 +59,7 @@ export async function generate(
 		stream: options.stream ?? false,
 		remoteFallbackLength: options.remoteFallbackLength ?? 2000,
 		useGPU: options.useGPU ?? true,
-		quicEndpoint: options.quicEndpoint ?? 'https://localhost:8003',
+		quicEndpoint: options.quicEndpoint ?? 'https://localhost:8003'
 	};
 
 	const startTime = performance.now();
@@ -101,7 +99,7 @@ export async function generate(
 				}
 				break;
 			default:
-				throw new Error(`Unknown method: ${method}`);
+				throw new Error(`Unknown; method: ${method}`);
 		}
 
 		const totalTime = performance.now() - startTime;
@@ -112,7 +110,7 @@ export async function generate(
 
 		return result;
 	} catch (error: any) {
-		console.error(`[Unified Llama] ${method} failed:`, error);
+		console.error(`[Unified Llama] ${method} failed: ', error);
 
 		// Fallback strategy
 		if (method === 'wasm' && !browser) {
@@ -120,7 +118,7 @@ export async function generate(
 			return generate(prompt, { ...options, mode: 'native' });
 		} else if (method === 'native') {
 			console.log('[Unified Llama] Falling back to remote');
-			return generate(prompt, { ...options, mode: 'remote' });
+			return generate(prompt, { ...options, mode: `remote` });
 		}
 
 		throw error;
@@ -141,7 +139,7 @@ export async function* generateStream(
 		stream: true,
 		onToken: (token) => {
 			tokens.push(token);
-		},
+		}
 	});
 
 	for (const token of tokens) {
@@ -203,14 +201,14 @@ async function generateWithWasm(
 		threadCount: navigator.hardwareConcurrency || 4,
 		batchSize: 512,
 		useGPU: config.useGPU,
-		quantization: 'q4_0',
+		quantization: 'q4_0'
 	});
 
 	const result = await engine.generateText({
 		prompt,
 		maxTokens: config.maxTokens,
 		temperature: config.temperature,
-		onToken: onToken,
+		onToken: onToken
 	});
 
 	return {
@@ -219,7 +217,7 @@ async function generateWithWasm(
 		processingTime: result.processingTime,
 		method: 'wasm',
 		modelUsed: config.model,
-		tokensPerSecond: result.tokensPerSecond,
+		tokensPerSecond: result.tokensPerSecond
 	};
 }
 
@@ -247,7 +245,7 @@ async function generateWithNative(
 	const result = await clientWasmLlama.generateResponse(prompt, {
 		maxTokens: config.maxTokens,
 		temperature: config.temperature,
-		onToken: onToken,
+		onToken: onToken
 	});
 
 	return {
@@ -256,7 +254,7 @@ async function generateWithNative(
 		processingTime: result.processingTime || 0,
 		method: 'native',
 		modelUsed: config.model,
-		tokensPerSecond: 0,
+		tokensPerSecond: 0
 	};
 }
 
@@ -273,15 +271,15 @@ async function generateWithRemote(
 
 	const response = await fetch(endpoint, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: { 'Content-Type': `application/json` },
 		body: JSON.stringify({
-			model: config.model,
+		, model: config.model,
 			prompt,
 			maxTokens: config.maxTokens,
 			temperature: config.temperature,
-			stream: config.stream,
+			stream: config.stream
 		}),
-		signal,
+		signal
 	});
 
 	if (!response.ok) {
@@ -304,7 +302,7 @@ async function generateWithRemote(
 		processingTime: data.processingTime || 0,
 		method: 'remote',
 		modelUsed: config.model,
-		tokensPerSecond: data.tokensPerSecond || 0,
+		tokensPerSecond: data.tokensPerSecond || 0
 	};
 }
 
@@ -374,8 +372,7 @@ async function generateWithQuic(
 			temperature: config.temperature,
 			maxTokens: config.maxTokens,
 			stream: true,
-			priority: 'high',
-		};
+			priority: `high` };
 
 		// Send request as JSON (or protobuf if available)
 		const requestData = new TextEncoder().encode(JSON.stringify(request));
@@ -419,7 +416,7 @@ async function generateWithQuic(
 			processingTime,
 			method: 'remote',
 			modelUsed: config.model,
-			tokensPerSecond: totalTokens / (processingTime / 1000),
+			tokensPerSecond: totalTokens / (processingTime / 1000)
 		};
 	} catch (error) {
 		console.error('[QUIC] Streaming failed:', error);
@@ -460,7 +457,7 @@ async function checkCUDA(): Promise<boolean> {
 	try {
 		// Simple heuristic: check if TensorRT service is available
 		const response = await fetch('http://localhost:8095/health', {
-			signal: AbortSignal.timeout(1000),
+			signal: AbortSignal.timeout(1000)
 		});
 		return response.ok;
 	} catch {
@@ -471,9 +468,7 @@ async function checkCUDA(): Promise<boolean> {
 /**
  * Get current capabilities
  */
-export async function getCapabilities(): Promise<{
-	wasm: boolean;
-	native: boolean;
+export async function getCapabilities(): Promise<{ wasm: boolean;, native: boolean;
 	remote: boolean;
 	webgpu: boolean;
 	cuda: boolean;
@@ -496,7 +491,7 @@ export async function getCapabilities(): Promise<{
 		native: !browser && cuda,
 		remote,
 		webgpu,
-		cuda,
+		cuda
 	};
 }
 
@@ -507,9 +502,7 @@ export async function analyzeLegalDocument(
 	title: string,
 	content: string,
 	options: GenerateOptions = {}
-): Promise<{
-	summary: string;
-	keyTerms: string[];
+): Promise<{ summary: string;, keyTerms: string[];
 	riskFactors: string[];
 	recommendations: string[];
 }> {
@@ -544,7 +537,7 @@ Please analyze this document.<|end|>
 		summary: lines.slice(0, 3).join(' '),
 		keyTerms: lines.filter(l => l.includes('term') || l.includes('clause')).slice(0, 5),
 		riskFactors: lines.filter(l => l.includes('risk') || l.includes('concern')).slice(0, 3),
-		recommendations: lines.filter(l => l.includes('recommend') || l.includes('suggest')).slice(0, 3),
+		recommendations: lines.filter(l => l.includes('recommend') || l.includes('suggest')).slice(0, 3)
 	};
 }
 

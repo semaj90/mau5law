@@ -272,12 +272,12 @@ import type { Document } from '$lib/types';
       aria-label="Close AI Interface"
       onclick={() => (showAIInterface = false)}
       onkeydown={e => {
-        if (e.key === 'Enter' || e.key === ' ') showAIInterface = $state(false);
+        if (e.key === 'Enter' || e.key === ' ') showAIInterface = false;
       }}
     ></div>
     <!-- Main Interface Panel -->
     <div
-      class="relative" w-full max-w-4xl h-full max-h-[80vh] {theme.panel} backdrop-blur-md
+      class="relative w-full max-w-4xl" h-full max-h-[80vh] {theme.panel} backdrop-blur-md
              border-2 {theme.border} rounded-2xl overflow-hidden"
       class:animate-pulse={glitchEffect}
     >
@@ -371,7 +371,7 @@ import type { Document } from '$lib/types';
                       {/if}
                     {/if}
                   <div
-                    class="px-4" py-3 rounded-lg {message.role === 'user'
+                    class="px-4 py-3 rounded-lg" {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
                       : message.role === 'system'
                         ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary
@@ -422,7 +422,7 @@ import type { Document } from '$lib/types';
                   bind:value={inputValue}
                   placeholder={isTyping ? 'AI is processing...' : 'Enter command or query...'}
                   disabled={isTyping}
-                  class="w-full" px-4 py-3 bg-gray-800/50 border {theme.border} rounded-lg
+                  class="w-full px-4 py-3" bg-gray-800/50 border {theme.border} rounded-lg
                          {theme.primary} placeholder-gray-500 focus:border-{theme.accent.split('-')[1]}-400;
                          focus:outline-none transition-colors font-mono"
                 />
@@ -431,7 +431,7 @@ import type { Document } from '$lib/types';
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isTyping}
-                class="px-6" py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600
+                class="px-6 py-3 bg-blue-600" hover:bg-blue-700 disabled:bg-gray-600
                        text-white rounded-lg transition-colors font-medium"
               >
                 EXECUTE
@@ -445,7 +445,7 @@ import type { Document } from '$lib/types';
                     inputValue = cmd;
                     sendMessage(cmd);
                   }}
-                  class="px-3" py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
+                  class="px-3 py-1 text-xs" bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
                          rounded border {theme.border} transition-colors uppercase font-mono"
                 >
                   {cmd}
@@ -462,7 +462,7 @@ import type { Document } from '$lib/types';
             {#each [{ id: 'analysis', label: 'Deep Analysis', icon Brain }, { id: 'search', label: 'Evidence Search', icon Search }, { id: 'document', label: 'Document Gen', icon FileText }, { id: 'rapid', label: 'Rapid Response', icon Zap }] as mode}
               <button
                 onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
-                class="w-full" flex items-center gap-3 p-3 rounded-lg border {theme.border}
+                class="w-full flex items-center" gap-3 p-3 rounded-lg border {theme.border}
                        hover:bg-gray-700/30 transition-colors text-left"
               >
                 {#key mode.icon}
@@ -487,7 +487,7 @@ import type { Document } from '$lib/types';
       <!-- Scanline Effect -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          class="absolute" w-full h-0.5 bg-gradient-to-r from-transparent via-{theme.accent.split(
+          class="absolute w-full h-0".5 bg-gradient-to-r from-transparent via-{theme.accent.split(
             '-'
           )[1]}-400/50 to-transparent
                  animate-[scanner_3s_infinite]"

@@ -3,9 +3,7 @@
  * Caches component metadata, dependencies, and performance stats
  */
 import { redisComponentStore } from './redis-component-store.js';
-export interface ComponentMetadata {
-  name: string;
-  category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
+export interface ComponentMetadata { name: string;, category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
   size: number; // Bundle size in bytes,
   dependencies: string[];
   props: { [key: string]: any };
@@ -16,9 +14,7 @@ export interface ComponentMetadata {
   cacheable: boolean;
   priority: 'critical' | 'high' | 'normal' | 'low';
 }
-export interface ComponentPerformanceMetrics {
-  loadTime: number;
-  renderTime: number;
+export interface ComponentPerformanceMetrics { loadTime: number;, renderTime: number;
   memoryUsage: number;
   errorCount: number;
   successCount: number;
@@ -36,21 +32,21 @@ class ComponentMetadataCache {
       size: 2048,
       dependencies: [],
       priority: 'critical',
-      cacheable: true,
+      cacheable: true
     },
     Input: {
       category: 'core',
       size: 3072,
       dependencies: ['Label'],
       priority: 'critical',
-      cacheable: true,
+      cacheable: true
     },
     Card: {
       category: 'core',
       size: 4096,
       dependencies: ['CardHeader', 'CardContent'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
     // Legal AI Components
     EvidenceBoard: {
@@ -58,21 +54,21 @@ class ComponentMetadataCache {
       size: 15360, // ~15KB
       dependencies: ['Card', 'Button', 'Input', 'Dialog'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
     EvidenceCard: {
       category: 'legal',
       size: 8192,
       dependencies: ['Card', 'Button'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     CaseManager: {
       category: 'legal',
       size: 20480, // ~20KB
       dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     // AI Components
     EmbeddingGemmaChat: {
@@ -80,14 +76,14 @@ class ComponentMetadataCache {
       size: 25600, // ~25KB
       dependencies: ['Card', 'Input', 'Button', 'ChatMessage'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
     EnhancedRAGStudio: {
       category: 'ai',
       size: 18432, // ~18KB
       dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     // Gaming Components
     NESButton: {
@@ -95,14 +91,14 @@ class ComponentMetadataCache {
       size: 6144,
       dependencies: ['Button'],
       priority: 'low',
-      cacheable: true,
+      cacheable: true
     },
     NESContainer: {
       category: 'gaming',
       size: 8192,
       dependencies: ['Card'],
       priority: 'low',
-      cacheable: true,
+      cacheable: true
     },
     // Advanced Components
     Board: {
@@ -110,15 +106,15 @@ class ComponentMetadataCache {
       size: 12288,
       dependencies: ['Card', 'DragDropZone'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     Dialog: {
       category: 'advanced',
       size: 10240,
       dependencies: ['Button'],
       priority: 'high',
-      cacheable: true,
-    },
+      cacheable: true
+    }
   };
   async initialize() {
     // Load cached metadata from Redis
@@ -168,12 +164,12 @@ class ComponentMetadataCache {
       memoryUsage: 0,
       errorCount: 0,
       successCount: 0,
-      lastAccess: Date.now(),
+      lastAccess: Date.now()
     };
     const updated = {
       ...existing,
       ...metrics,
-      lastAccess: Date.now(),
+      lastAccess: Date.now()
     };
     this.performanceMetrics.set(componentName, updated);
     // Cache performance metrics
@@ -264,7 +260,7 @@ class ComponentMetadataCache {
       averageLoadTime: 0,
       averageRenderTime: 0,
       totalMemoryUsage: 0,
-      errorRate: 0,
+      errorRate: 0
     };
     // Calculate category counts
     for (const metadata of this.metadata.values()) {
@@ -293,7 +289,7 @@ class ComponentMetadataCache {
       props: {},
       lastModified: Date.now(),
       cacheable: definition.cacheable !== false,
-      priority: definition.priority || 'normal',
+      priority: definition.priority || 'normal'
     };
   }
   private async loadCachedMetadata() {

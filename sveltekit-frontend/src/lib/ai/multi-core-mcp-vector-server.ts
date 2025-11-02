@@ -38,18 +38,14 @@ type SIMDJsonParser = any; // Placeholder for SIMD JSON parser
 }
 /**
  * Search result structure
- */ interface SearchResult {
-  document_id: string;
-  content: string;
+ */ interface SearchResult { document_id: string;, content: string;
   similarity: number;
-  metadata: { [key: string]: any };
+  metadata: { [key:, string]: any };
   score: number;
 }
 /**
  * Search performance metrics
- */ interface SearchMetrics {
-  embeddingTime: number;
-  searchTime: number;
+ */ interface SearchMetrics { embeddingTime: number;, searchTime: number;
   postProcessTime: number;
   cacheHit: boolean;
   resultsCount: number;
@@ -57,9 +53,7 @@ type SIMDJsonParser = any; // Placeholder for SIMD JSON parser
 }
 /**
  * Advanced search result with full context
- */ interface AdvancedSearchResult {
-  query: string;
-  results: SearchResult[];
+ */ interface AdvancedSearchResult { query: string;, results: SearchResult[];
   searchStrategy: SearchStrategy;
   totalTime: number;
   metrics: SearchMetrics;
@@ -70,66 +64,47 @@ type SIMDJsonParser = any; // Placeholder for SIMD JSON parser
 type SearchStrategy = 'postgres_hnsw' | 'postgres_ivf_flat' | 'langchain' | 'hybrid';
 /**
  * Document search result
- */ interface DocumentSearchResult {
-  document_id: string;
-  content: string;
+ */ interface DocumentSearchResult { document_id: string;, content: string;
   similarity: number;
-  metadata: { [key: string]: any };
+  metadata: { [key:, string]: any };
   searchTime: number;
 }
 /**
  * Semantic search result
- */ interface SemanticSearchResult {
-  query: string;
-  results: Array<{
-    document_id: string;
-    content: string;
+ */ interface SemanticSearchResult { query: string;, results: Array<{ document_id: string;, content: string;
     similarity: number;
     metadata: { [key: string]: any };
     source_collection: string;
   }>;
   total_results: number;
-  collections_searched: string[];
-  search_time: number;
+  collections_searched: string[]; search_time: number;
   cache_hit: boolean;
 }
 /**
  * Full-text search result
- */ interface FullTextSearchResult {
-  query: string;
-  results: Array<{
-    document_id: string;
-    content: string;
+ */ interface FullTextSearchResult { query: string;, results: Array<{ document_id: string;, content: string;
     snippet: string;
     rank: number;
     metadata: { [key: string]: any };
     source_collection: string;
   }>;
   total_results: number;
-  collections_searched: string[];
-  search_time: number;
+  collections_searched: string[]; search_time: number;
   cache_hit: boolean;
 }
 /**
  * Hybrid search result
- */ interface HybridSearchResult {
-  query: string;
-  results: Array<{
-    document_id: string;
-    content: string;
+ */ interface HybridSearchResult { query: string;, results: Array<{ document_id: string;, content: string;
     metadata: { [key: string]: any };
     vector_score: number;
     text_score: number;
     keyword_score: number;
     combined_score: number;
-    search_types: string[];
-    snippet?: string;
+    search_types: string[]; snippet?: string;
   }>;
   total_results: number;
   search_time: number;
-  weights: {
-    vectorWeight: number;
-    textWeight: number;
+  weights: { vectorWeight: number;, textWeight: number;
     keywordWeight: number;
   };
   cache_hit: boolean;
@@ -138,24 +113,17 @@ type SearchStrategy = 'postgres_hnsw' | 'postgres_ivf_flat' | 'langchain' | 'hyb
 interface SIMDJsonParser {
   parseBatch(jsonData: string[]): Promise<ParsedVectorBatch>;
   setVectorDimensions(dimensions: number): void;
-  enableSIMDInstructions(instructions: string[]): void;
+  enableSIMDInstructions(instructions: string[]):, void;
 }
-interface ParsedVectorBatch {
-  vectors: Float32Array[];
-  metadata: VectorMetadata[];
-  parseTime: number;
+interface ParsedVectorBatch { vectors: Float32Array[];, metadata: VectorMetadata[]; parseTime: number;
   vectorsPerSecond: number;
 }
-interface VectorMetadata {
-  documentId: string;
-  embeddingHash: string;
+interface VectorMetadata { documentId: string;, embeddingHash: string;
   dimensions: number;
   norm: number;
   timestamp: number;
 }
-interface IndexBuildProgress {
-  stage: 'parsing' | 'processing' | 'indexing' | 'caching' | 'completed';
-  totalVectors: number;
+interface IndexBuildProgress { stage: 'parsing' | 'processing' | 'indexing' | 'caching' | 'completed';, totalVectors: number;
   processedVectors: number;
   progressPercent: number;
   estimatedTimeRemaining: number;
@@ -164,8 +132,7 @@ interface IndexBuildProgress {
   gpuUtilization?: number;
 }
 export class MultiCoreMCPVectorServer {
-  private workers: Worker[] = [];
-  private simdParser: SIMDJsonParser;
+  private workers: Worker[] = []; private simdParser: SIMDJsonParser;
   private sql: ReturnType<typeof postgres>;
   private redis: Redis;
   private langchainVectorStore: PGVector | null = null;
@@ -177,12 +144,10 @@ export class MultiCoreMCPVectorServer {
     avgProcessingTime: 0,
     cacheHitRate: 0,
     errorCount: 0,
-    startTime: 0,
+    startTime: 0
   };
-  constructor(config: {
-    simdParser: SIMDJsonParser;
-    postgresConfig: any;
-    redisConfig: any;
+  constructor(config: {, simdParser: SIMDJsonParser;, postgresConfig: any;
+   , redisConfig: any;
     langchainEmbeddings?: Embeddings;
     rabbitmqUrl?: string;
   }) {
@@ -209,12 +174,12 @@ export class MultiCoreMCPVectorServer {
         postgresConnectionOptions: postgresConfig,
         tableName: 'legal_document_embeddings',
         columns: {
-          idColumnName: 'document_id',
+         , idColumnName: 'document_id',
           vectorColumnName: 'gemma_embedding',
           contentColumnName: 'document_content',
-          metadataColumnName: 'document_metadata',
+          metadataColumnName: 'document_metadata'
         },
-        distanceStrategy: 'cosine',
+        distanceStrategy: 'cosine'
       });
       console.log('🦜 LangChain PGVector store initialized');
     } catch (error) {
@@ -228,12 +193,10 @@ export class MultiCoreMCPVectorServer {
     const numCores = Math.min(os.cpus().length, 8); // Cap at 8 cores for memory management
     console.log(`🚀 Initializing ${numCores}-core vector processing pool`);
     for (let i = 0; i < numCores; i++) {
-      const worker = new Worker(__filename, {
-        workerData: {
-          workerId: i,
+      const worker = new Worker(__filename, { workerData: {, workerId: i,
           coreCount: numCores,
-          simdEnabled: true,
-        },
+          simdEnabled: true
+        }
       });
       worker.on('message', this.handleWorkerMessage.bind(this));
       worker.on('error', this.handleWorkerError.bind(this));
@@ -278,7 +241,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 0,
         estimatedTimeRemaining: 0,
         currentThroughput: 0,
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
       const parseStartTime = performance.now();
       const parsedBatch = await this.simdParser.parseBatch(embeddings);
@@ -293,7 +256,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 15,
         estimatedTimeRemaining: this.estimateRemainingTime(parseTime, parsedBatch.vectors.length),
         currentThroughput: parsedBatch.vectorsPerSecond,
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
       const processedVectors = await this.processVectorsParallel(parsedBatch);
       // Stage 3: Database index creation
@@ -304,7 +267,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 60,
         estimatedTimeRemaining: this.estimateRemainingTime(parseTime, processedVectors.length),
         currentThroughput: processedVectors.length / ((performance.now() - parseStartTime) / 1000),
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
       const indexResults = await this.createDatabaseIndexes(table, algorithm, processedVectors);
       // Stage 4: Caching
@@ -316,7 +279,7 @@ export class MultiCoreMCPVectorServer {
           progressPercent: 85,
           estimatedTimeRemaining: this.estimateRemainingTime(parseTime, processedVectors.length),
           currentThroughput: processedVectors.length / ((performance.now() - parseStartTime) / 1000),
-          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
         });
         await this.cacheProcessedVectors(processedVectors);
       }
@@ -329,7 +292,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 100,
         estimatedTimeRemaining: 0,
         currentThroughput: processedVectors.length / (totalTime / 1000),
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
       const result: IndexBuildResult = {
         success: true,
@@ -339,7 +302,7 @@ export class MultiCoreMCPVectorServer {
         throughput: processedVectors.length / (totalTime / 1000),
         memoryPeak: process.memoryUsage().heapUsed / 1024 / 1024,
         cacheHitRate: this.metrics.cacheHitRate,
-        metrics: this.metrics,
+        metrics: this.metrics
       };
       console.log(`✅ Vector index build completed: ${processedVectors.length} vectors in ${totalTime.toFixed(2)}ms`);
       return result;
@@ -351,9 +314,9 @@ export class MultiCoreMCPVectorServer {
   /**
    * Process vectors in parallel across worker threads
    */
-  private async processVectorsParallel(batch: ParsedVectorBatch): Promise<ProcessedVector[]> {
+  private async processVectorsParallel(batch: ParsedVectorBatch): Promise<ProcessedVector[]>, {
     const chunkSize = Math.ceil(batch.vectors.length / this.workers.length);
-    const workerPromises: Promise<ProcessedVector[]>[] = [];
+    const workerPromises: Promise<ProcessedVector[]>[], = [];
     for (let i = 0; i < this.workers.length; i++) {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, batch.vectors.length);
@@ -361,7 +324,7 @@ export class MultiCoreMCPVectorServer {
         const chunk = {
           vectors: batch.vectors.slice(start, end),
           metadata: batch.metadata.slice(start, end),
-          chunkId: i,
+          chunkId: i
         };
         const promise = this.processVectorChunk(this.workers[i], chunk);
         workerPromises.push(promise);
@@ -390,7 +353,7 @@ export class MultiCoreMCPVectorServer {
       worker.on('message', messageHandler);
       worker.postMessage({
         type: 'PROCESS_VECTORS',
-        chunk,
+        chunk
       });
     });
   }
@@ -400,10 +363,9 @@ export class MultiCoreMCPVectorServer {
   private async createDatabaseIndexes(
     table: string,
     algorithm: string,
-    vectors: ProcessedVector[]
-  ): Promise<IndexCreationResult[]> {
+    vectors: ProcessedVector[], ): Promise<IndexCreationResult[]> {
     const client = await this.db.connect();
-    const results: IndexCreationResult[] = [];
+    const results: IndexCreationResult[], = [];
     try {
       // Insert vectors into database first
       await this.insertVectorsInBatches(client, table, vectors);
@@ -443,8 +405,7 @@ export class MultiCoreMCPVectorServer {
       vectorCount,
       creationTime: createTime,
       estimatedSize: (vectorCount * 768 * 4) / (1024 * 1024), // MB
-      useCase: 'Memory efficient, large datasets, batch processing',
-    };
+      useCase: 'Memory efficient, large datasets, batch processing` };
   }
   /**
    * Create HNSW index with optimized parameters
@@ -469,8 +430,7 @@ export class MultiCoreMCPVectorServer {
       vectorCount,
       creationTime: createTime,
       estimatedSize: (vectorCount * 768 * 4 * 2) / (1024 * 1024), // MB (higher due to graph structure)
-      useCase: 'Low latency queries, real-time search, high recall',
-    };
+      useCase: 'Low latency queries, real-time search, high recall` };
   }
   /**
    * Insert vectors in optimized batches
@@ -508,7 +468,7 @@ export class MultiCoreMCPVectorServer {
   }
   /**
    * Cache processed vectors in Redis for fast retrieval
-   */ private async cacheProcessedVectors(vectors: ProcessedVector[]): Promise<void> {
+   */ private async cacheProcessedVectors(vectors: ProcessedVector[]):, Promise<void> {
     const pipeline = this.redis.pipeline();
     for (const vector of vectors) {
       const cacheKey = `vector:${vector.documentId}`;
@@ -516,7 +476,7 @@ export class MultiCoreMCPVectorServer {
         embedding: Array.from(vector.embedding),
         metadata: vector.metadata,
         norm: vector.norm,
-        cached_at: Date.now(),
+        cached_at: Date.now()
       };
       pipeline.setex(cacheKey, 3600, JSON.stringify(cacheData)); // 1 hour TTL
     }
@@ -537,7 +497,7 @@ export class MultiCoreMCPVectorServer {
         const message = {
           ...progress,
           timestamp: Date.now(),
-          serverId: process.pid,
+          serverId: process.pid
         };
         await this.rabbitChannel.publish(
           'legal-ai-progress',
@@ -557,7 +517,7 @@ export class MultiCoreMCPVectorServer {
       this.metrics.totalVectorsProcessed += message.vectorsProcessed;
     } else if (message.type === 'ERROR') {
       this.metrics.errorCount++;
-      console.error(`Worker error:`, message.error);
+      console.error(`Worker error: ', message.error);
     }
   }
   /**
@@ -584,7 +544,7 @@ export class MultiCoreMCPVectorServer {
       avgThroughput: this.metrics.totalVectorsProcessed / (uptime / 1000),
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
-      workerCount: this.workers.length,
+      workerCount: this.workers.length
     };
   }
   /**
@@ -612,8 +572,7 @@ export class MultiCoreMCPVectorServer {
       }
       // Generate embedding for the query
       const queryEmbedding = await this.generateEmbedding(query);
-      const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
-      // Search using pgvector similarity
+      const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`; // Search using pgvector similarity
       const results = await this.sql`
         SELECT
           document_id,
@@ -630,7 +589,7 @@ export class MultiCoreMCPVectorServer {
         content: row.content,
         similarity: row.similarity,
         metadata: row.metadata || {},
-        searchTime: performance.now() - startTime,
+        searchTime: performance.now() - startTime
       }));
       // Cache results
       if (useCache) {
@@ -652,8 +611,7 @@ export class MultiCoreMCPVectorServer {
   async semanticSearch(
     query: string,
     options: {
-      collections?: string[];
-      limit?: number;
+      collections?: string[]; limit?: number;
       threshold?: number;
       includeContent?: boolean;
       useCache?: boolean;
@@ -665,7 +623,7 @@ export class MultiCoreMCPVectorServer {
       limit = 20,
       threshold = 0.75,
       includeContent = true,
-      useCache = true,
+      useCache = true
     } = options;
     try {
       // Check cache first
@@ -679,8 +637,7 @@ export class MultiCoreMCPVectorServer {
       }
       // Generate query embedding
       const queryEmbedding = await this.generateEmbedding(query);
-      const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
-      // Search across multiple collections
+      const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`; // Search across multiple collections
       const searchPromises = collections.map(async collection => {
         try {
           let searchResults;
@@ -689,7 +646,7 @@ export class MultiCoreMCPVectorServer {
               searchResults = await this.sql`
                 SELECT
                   document_id,
-                  ${includeContent ? this.sql`content` : this.sql`'' as content`},
+                  ${includeContent ? this.sql`content` : this.sql`'' as content` },
                   metadata,
                   1 - (embedding <=> ${embeddingArray}::vector) AS similarity,
                   'vector_embeddings' as source_collection
@@ -704,12 +661,12 @@ export class MultiCoreMCPVectorServer {
               searchResults = await this.sql`
                 SELECT
                   id::text as document_id,
-                  ${includeContent ? this.sql`content` : this.sql`'' as content`},
+                  ${includeContent ? this.sql`content` : this.sql`'' as content' },
                   metadata,
                   0.8 as similarity,
                   'case_embeddings' as source_collection
                 FROM case_embeddings
-                WHERE content ILIKE ${'%' + query + '%'}
+                WHERE content ILIKE ${'%' + query + '%` }
                 LIMIT ${Math.ceil(limit / collections.length)}
               `;
               break;
@@ -718,12 +675,12 @@ export class MultiCoreMCPVectorServer {
               searchResults = await this.sql`
                 SELECT
                   id::text as document_id,
-                  ${includeContent ? this.sql`content` : this.sql`'' as content`},
+                  ${includeContent ? this.sql`content` : this.sql`'' as content' },
                   '{}' as metadata,
                   0.7 as similarity,
                   ${collection} as source_collection
                 FROM ${this.sql(collection)}
-                WHERE content ILIKE ${'%' + query + '%'}
+                WHERE content ILIKE ${'%' + query + '%` }
                 LIMIT ${Math.ceil(limit / collections.length)}
               `;
           }
@@ -732,7 +689,7 @@ export class MultiCoreMCPVectorServer {
             content: row.content,
             similarity: row.similarity,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-            source_collection: row.source_collection,
+            source_collection: row.source_collection
           }));
         } catch (error) {
           console.warn(`⚠️ Search failed for collection ${collection}:`, error.message);
@@ -761,7 +718,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         collections_searched: collections,
         search_time: performance.now() - startTime,
-        cache_hit: false,
+        cache_hit: false
       };
       // Cache the result
       if (useCache) {
@@ -783,8 +740,7 @@ export class MultiCoreMCPVectorServer {
   async fullTextSearch(
     query: string,
     options: {
-      collections?: string[];
-      limit?: number;
+      collections?: string[]; limit?: number;
       useCache?: boolean;
       includeSnippets?: boolean;
     } = {}
@@ -794,7 +750,7 @@ export class MultiCoreMCPVectorServer {
       collections = ['legal_documents', 'case_embeddings'],
       limit = 15,
       useCache = true,
-      includeSnippets = true,
+      includeSnippets = true
     } = options;
     try {
       // Check cache
@@ -820,7 +776,7 @@ export class MultiCoreMCPVectorServer {
               content,
               metadata,
               ts_rank(to_tsvector('english', content), plainto_tsquery('english', ${query})) as rank,
-              ${includeSnippets ? this.sql`ts_headline('english', content, plainto_tsquery('english', ${query}), 'MaxWords=20, MinWords=5') as snippet` : this.sql`'' as snippet`},
+              ${includeSnippets ? this.sql`ts_headline('english', content, plainto_tsquery('english', ${query}), 'MaxWords=20, MinWords=5') as snippet` : this.sql`'' as snippet` },
               ${collection} as source_collection
             FROM ${this.sql(collection)}
             WHERE to_tsvector('english', content) @@ plainto_tsquery('english', ${query})
@@ -833,12 +789,11 @@ export class MultiCoreMCPVectorServer {
             snippet: row.snippet,
             rank: row.rank,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata || '{}') : row.metadata,
-            source_collection: row.source_collection,
+            source_collection: row.source_collection
           }));
         } catch (error) {
           console.warn(`⚠️ Full-text search failed for collection ${collection}:`, error.message);
-          return [];
-        }
+          return []; }
       });
       const collectionResults = await Promise.all(searchPromises);
       const allResults = collectionResults.flat();
@@ -859,7 +814,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         collections_searched: collections,
         search_time: performance.now() - startTime,
-        cache_hit: false,
+        cache_hit: false
       };
       // Cache result
       if (useCache) {
@@ -896,7 +851,7 @@ export class MultiCoreMCPVectorServer {
       textWeight = 0.3,
       keywordWeight = 0.2,
       threshold = 0.6,
-      useCache = true,
+      useCache = true
     } = options;
     try {
       // Check cache
@@ -911,7 +866,7 @@ export class MultiCoreMCPVectorServer {
       // Run all search types in parallel
       const [vectorResults, textResults] = await Promise.all([
         this.searchDocuments(query, { limit: limit * 2, threshold: 0.5, useCache: false }),
-        this.fullTextSearch(query, { limit: limit * 2, useCache: false, includeSnippets: true }),
+        this.fullTextSearch(query, { limit: limit * 2, useCache: false, includeSnippets: true })
       ]);
       // Create a comprehensive scoring system
       const scoredResults = new Map<string, any>();
@@ -925,8 +880,7 @@ export class MultiCoreMCPVectorServer {
           text_score: 0,
           keyword_score: 0,
           combined_score: 0,
-          search_types: [],
-        };
+          search_types: [], };
         existing.vector_score = result.similarity;
         existing.search_types.push('vector');
         scoredResults.set(result.document_id, existing);
@@ -941,7 +895,7 @@ export class MultiCoreMCPVectorServer {
           text_score: 0,
           keyword_score: 0,
           combined_score: 0,
-          search_types: [],
+          search_types: []
         };
         existing.text_score = result.rank;
         existing.snippet = result.snippet;
@@ -979,7 +933,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         search_time: performance.now() - startTime,
         weights: { vectorWeight, textWeight, keywordWeight },
-        cache_hit: false,
+        cache_hit: false
       };
       // Cache result
       if (useCache) {
@@ -1024,8 +978,7 @@ export class MultiCoreMCPVectorServer {
       }
       // 3. Choose optimal search strategy
       const searchStrategy = this.selectSearchStrategy(algorithm);
-      let searchResults: SearchResult[];
-      switch (searchStrategy) {
+      let searchResults: SearchResult[]; switch (searchStrategy) {
         case 'postgres_hnsw':
           searchResults = await this.searchWithPostgresHNSW(queryEmbedding, k);
           break;
@@ -1059,8 +1012,8 @@ export class MultiCoreMCPVectorServer {
           postProcessTime: 0,
           cacheHit: false,
           resultsCount: filteredResults.length,
-          gpuAccelerated: false,
-        },
+          gpuAccelerated: false
+        }
       };
       // 6. Cache result
       if (useCache) {
@@ -1080,8 +1033,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async searchWithPostgresHNSW(queryEmbedding: Float32Array, k: number): Promise<SearchResult[]> {
     console.log('🐘 Searching with postgres.js HNSW');
-    const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
-    const results = await this.sql`
+    const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`; const results = await this.sql`
       SELECT
         document_id,
         document_content,
@@ -1096,7 +1048,7 @@ export class MultiCoreMCPVectorServer {
       content: row.document_content,
       similarity: row.similarity,
       metadata: row.document_metadata,
-      score: row.similarity,
+      score: row.similarity
     }));
   }
   /**
@@ -1104,8 +1056,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async searchWithPostgresIVFFlat(queryEmbedding: Float32Array, k: number): Promise<SearchResult[]> {
     console.log('🐘 Searching with postgres.js IVF-Flat');
-    const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`;
-    // Use IVF-Flat index with cosine distance
+    const embeddingArray = `[${Array.from(queryEmbedding).join(',')}]`; // Use IVF-Flat index with cosine distance
     const results = await this.sql`
       SELECT
         document_id,
@@ -1121,7 +1072,7 @@ export class MultiCoreMCPVectorServer {
       content: row.document_content,
       similarity: row.similarity,
       metadata: row.document_metadata,
-      score: row.similarity,
+      score: row.similarity
     }));
   } /**
    * Search using LangChain PGVector
@@ -1137,7 +1088,7 @@ export class MultiCoreMCPVectorServer {
       content: doc.pageContent,
       similarity: 1 - score, // Convert distance to similarity
       metadata: doc.metadata,
-      score,
+      score
     }));
   }
   /**
@@ -1150,7 +1101,7 @@ export class MultiCoreMCPVectorServer {
       this.langchainVectorStore ? this.searchWithLangChain(queryText, Math.ceil(k / 2)) : Promise.resolve([]),
     ]);
     // Combine and deduplicate results
-    const allResults: SearchResult[] = [];
+    const allResults: SearchResult[], = [];
     if (postgresResults.status === 'fulfilled') allResults.push(...postgresResults.value);
     if (langchainResults.status === 'fulfilled') allResults.push(...langchainResults.value);
     // Deduplicate by document_id and take best similarity
@@ -1179,9 +1130,8 @@ export class MultiCoreMCPVectorServer {
       'postgres_hnsw': 'postgres_hnsw',
       'postgres_ivf_flat': 'postgres_ivf_flat',
       'langchain': 'langchain',
-      'hybrid': 'hybrid',
-    };
-    return strategyMap[algorithm] || 'postgres_hnsw';
+      'hybrid': 'hybrid` };
+    return strategyMap[algorithm], || 'postgres_hnsw';
   }
   /**
    * Hash query for caching
@@ -1246,12 +1196,10 @@ if (!isMainThread) {
       }
     }
   });
-  async function processVectorChunkWorker(chunk: VectorChunk, workerId: number): Promise<ProcessedVector[]> {
-    const processedVectors: ProcessedVector[] = [];
-    for (let i = 0; i < chunk.vectors.length; i++) {
+  async function processVectorChunkWorker(chunk: VectorChunk, workerId: number): Promise<ProcessedVector[]>, {
+    const processedVectors: ProcessedVector[] = []; for (let i = 0; i < chunk.vectors.length; i++) {
       const vector = chunk.vectors[i];
-      const metadata = chunk.metadata[i];
-      // Calculate L2 norm for cosine similarity optimization
+      const metadata = chunk.metadata[i]; // Calculate L2 norm for cosine similarity optimization
       const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
       // Apply quantization if needed (optional optimization)
       const quantizedVector = simdEnabled ? quantizeVector(vector) : vector;
@@ -1261,10 +1209,10 @@ if (!isMainThread) {
         metadata: {
           ...metadata,
           workerId,
-          processedAt: Date.now(),
+          processedAt: Date.now()
         },
         norm,
-        hash: hashVector(quantizedVector),
+        hash: hashVector(quantizedVector)
       });
       // Report progress periodically
       if (i % 100 === 0) {
@@ -1272,7 +1220,7 @@ if (!isMainThread) {
           type: 'PROGRESS',
           workerId,
           vectorsProcessed: i,
-          totalVectors: chunk.vectors.length,
+          totalVectors: chunk.vectors.length
         });
       }
     }
@@ -1283,7 +1231,7 @@ if (!isMainThread) {
     const quantized = new Float32Array(vector.length);
     const scale = 127 / Math.max(...vector.map(Math.abs));
     for (let i = 0; i < vector.length; i++) {
-      quantized[i] = Math.round(vector[i] * scale) / scale;
+      quantized[i] = Math.round(vector[i], * scale) / scale;
     }
     return quantized;
   }
@@ -1299,30 +1247,22 @@ if (!isMainThread) {
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
-interface VectorChunk {
-  vectors: Float32Array[];
-  metadata: VectorMetadata[];
+interface VectorChunk { vectors: Float32Array[]; , metadata: VectorMetadata[];
   chunkId: number;
 }
-interface ProcessedVector {
-  documentId: string;
-  embedding: Float32Array;
+interface ProcessedVector { documentId: string;, embedding: Float32Array;
   metadata: any;
   norm: number;
   hash: string;
 }
-interface IndexCreationResult {
-  algorithm: 'IVF_FLAT' | 'HNSW';
-  indexName: string;
+interface IndexCreationResult { algorithm: 'IVF_FLAT' | 'HNSW';, indexName: string;
   parameters: any;
   vectorCount: number;
   creationTime: number;
   estimatedSize: number;
   useCase: string;
 }
-interface IndexBuildResult {
-  success: boolean;
-  totalVectors: number;
+interface IndexBuildResult { success: boolean;, totalVectors: number;
   indexes: IndexCreationResult[];
   processingTime: number;
   throughput: number;
@@ -1330,9 +1270,7 @@ interface IndexBuildResult {
   cacheHitRate: number;
   metrics: any;
 }
-interface SystemMetrics {
-  totalVectorsProcessed: number;
-  avgProcessingTime: number;
+interface SystemMetrics { totalVectorsProcessed: number;, avgProcessingTime: number;
   cacheHitRate: number;
   errorCount: number;
   startTime: number;
@@ -1354,5 +1292,5 @@ export {
   FullTextSearchResult,
   HybridSearchResult,
   AdvancedSearchResult,
-  SearchResult,
+  SearchResult
 };

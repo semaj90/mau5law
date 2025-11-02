@@ -20,33 +20,28 @@ export class QdrantManager {
     const collectionConfigs = [
       {
         name: this.collections.documents,
-        vectors: {
-          content: { size: 1536, distance: 'Cosine' }, // OpenAI embeddings
+        vectors: { content: {, size: 1536, distance: 'Cosine' }, // OpenAI embeddings
           summary: { size: 768, distance: 'Cosine' }, // Sentence transformers
         }
       },
       {
         name: this.collections.cases,
-        vectors: {
-          description: { size: 1536, distance: 'Cosine' }
+        vectors: { description: {, size: 1536, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.evidence,
-        vectors: {
-          content: { size: 1536, distance: 'Cosine' }
+        vectors: { content: {, size: 1536, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.chat_history,
-        vectors: {
-          message: { size: 768, distance: 'Cosine' }
+        vectors: { message: {, size: 768, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.embeddings_cache,
-        vectors: {
-          embedding: { size: 1536, distance: 'Cosine' }
+        vectors: { embedding: {, size: 1536, distance: 'Cosine' }
         }
       }
     ];
@@ -56,31 +51,27 @@ export class QdrantManager {
         console.log(`✅ Qdrant collection created: ${config.name}`);
       } catch (error: any) {
         if (!error.message.includes('already exists')) {
-          console.error(`❌ Failed to create collection ${config.name}:`, error);
+          console.error(`❌ Failed to create collection ${config.name}: ', error);
         }
       }
     }
   }
   // Hybrid semantic search combining PostgreSQL metadata + Qdrant vectors
-  async hybridSearch(params: {
-    query: string;
-    queryEmbedding: number[];
-    collection: keyof typeof this.collections;
+  async hybridSearch(params: { query: string;, queryEmbedding: number[];
+   , collection: keyof typeof this.collections;
     filters?: any;
     limit?: number;
     scoreThreshold?: number;
   }) {
     const startTime = Date.now();
     try {
-      const searchRequest: any = {
-        vector: {
-          name: 'content',
+      const searchRequest: any = { vector: {, name: 'content',
           vector: params.queryEmbedding
         },
         limit: params.limit || 10,
         score_threshold: params.scoreThreshold || 0.7,
         with_payload: true,
-        with_vector: false,
+        with_vector: false
       }
       // Add metadata filters if provided
       if (params.filters) {
@@ -112,7 +103,7 @@ export class QdrantManager {
           query: params.query,
           collection: params.collection,
           response_time_ms: responseTime,
-          total_results: results.length,
+          total_results: results.length
         }
       }
     } catch (error: any) {
@@ -121,30 +112,25 @@ export class QdrantManager {
     }
   }
   // Contextual chat history search for memory simulation
-  async searchChatContext(params: {
-    userEmbedding: number[];
-    userId: string;
+  async searchChatContext(params: {, userEmbedding: number[];, userId: string;
     sessionId?: string;
     limit?: number;
   }) {
-    const filters: any = {
-      must: [{ key: 'user_id', match: { value: params.userId } }]
+    const filters: any = { must: [{, key: 'user_id', match: { value: params.userId } }]
     }
     if (params.sessionId) {
       filters.must.push({
         key: 'session_id',
-        match: { value: params.sessionId }
+        match: {, value: params.sessionId }
       });
     }
-    const searchRequest: any = {
-      vector: {
-        name: 'message',
+    const searchRequest: any = { vector: {, name: 'message',
         vector: params.userEmbedding
       },
       limit: params.limit || 5,
       score_threshold: 0.6,
       filter: filters,
-      with_payload: true,
+      with_payload: true
     }
     const results = await this.client.search(this.collections.chat_history, searchRequest);
     return results.map((r) => ({
@@ -155,9 +141,7 @@ export class QdrantManager {
     });
   }
   // Batch upsert for efficient data synchronization
-  async batchUpsert(params: {
-    collection: keyof typeof this.collections;
-    points: any[]; // Changed from PointStruct[]
+  async batchUpsert(params: {, collection: keyof typeof this.collections;, points: any[]; // Changed from PointStruct[]
     batchSize?: number;
   }) {
     const batchSize = params.batchSize || 100;
@@ -166,26 +150,22 @@ export class QdrantManager {
     let totalUpserted = 0;
     for (const batch of batches) {
       try {
-        await this.client.upsert(collectionName, {
-          wait: false;
-          points: batch
+        await this.client.upsert(collectionName, { wait: false;, points: batch
         });
         totalUpserted += batch.length;
         console.log(`📝 Upserted ${batch.length} points to ${collectionName}`);
       } catch (error: any) {
-        console.error(`❌ Batch upsert failed for ${collectionName}:`, error);
+        console.error(`❌ Batch upsert failed for ${collectionName}: ', error);
       }
     }
     return { upserted: totalUpserted }
   }
   // Document embedding storage with metadata
-  async storeDocument(_document: {
-    id: string;
-    title: string;
+  async storeDocument(_document: { id: string;, title: string;
     content: string;
     contentEmbedding: number[];
     summaryEmbedding?: number[];
-    metadata: any;
+   , metadata: any;
   }) {
     const point: any = { // Changed from PointStruct,
       id: document.id,
@@ -202,9 +182,7 @@ export class QdrantManager {
         ...document.metadata
       }
     }
-    await this.client.upsert(this.collections.documents, {
-      wait: true;
-      points: [point]
+    await this.client.upsert(this.collections.documents, { wait: true;, points: [point]
     });
   }
   // Evidence relationship analysis using vector similarity
@@ -216,8 +194,7 @@ export class QdrantManager {
       },
       limit: limit + 1, // +1 to exclude self
       score_threshold: 0.75,
-      filter: {
-        must_not: [{ key: 'evidence_id', match: { value: evidenceId } }]
+      filter: { must_not: [{, key: 'evidence_id', match: { value: evidenceId } }]
       },
       with_payload: true
     }
@@ -246,16 +223,12 @@ export class QdrantManager {
         ...metadata
       }
     }
-    await this.client.upsert(this.collections.embeddings_cache, {
-      wait: false;
-      points: [point]
+    await this.client.upsert(this.collections.embeddings_cache, { wait: false;, points: [point]
     });
   }
   async getCachedEmbedding(_key: string) {
     try {
-      const results = await this.client.search(this.collections.embeddings_cache, {
-        vector: {
-          name: 'embedding',
+      const results = await this.client.search(this.collections.embeddings_cache, { vector: {, name: 'embedding',
           vector: new Array(1536).fill(0), // Dummy vector for exact match
         },
         limit: 1,
@@ -284,7 +257,7 @@ export class QdrantManager {
         optimizer_status: info.optimizer_status
       }
     } catch (error: any) {
-      console.error(`Failed to get collection info for ${collection}:`, error);
+      console.error(`Failed to get collection info for ${collection}: ', error);
       return null;
     }
   }
@@ -315,7 +288,7 @@ export class QdrantManager {
       if (Array.isArray(value)) {
         conditions.push({
           key,
-          match: { any: value }
+          match: {, any: value }
         });
       } else {
         conditions.push({

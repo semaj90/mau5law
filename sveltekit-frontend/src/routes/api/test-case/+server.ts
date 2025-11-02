@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate priority enum
     const validPriorities = ['low', 'medium', 'high'];
     if (data.priority && !validPriorities.includes(data.priority)) {
-      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 });
+      return json({ error: 'Invalid priority. Must, be: low, medium, or high' }, { status: 400 });
     }
     // Resolve user id: prefer locals, then X-User-Id header, then env TEST_USER_ID, then legacy mock
     const localId = getUserId(locals);
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       caseNumber: data.caseNumber,
       title: data.title,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     // ✅ REAL PostgreSQL DATABASE INSERT
     const [createdCase] = await db
@@ -68,10 +68,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId: userId,
         jurisdiction: 'test',
         metadata: {
-          source: 'test-case-api',
+         , source: 'test-case-api',
           createdVia: 'form-submission',
-          userAgent: request.headers.get('user-agent') || 'unknown',
-        },
+          userAgent: request.headers.get('user-agent') || 'unknown'
+        }
       })
       .returning();
     console.log('✅ PostgreSQL Case Created Successfully:', {
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       status: createdCase.status,
       priority: createdCase.priority,
       userId: createdCase.userId,
-      timestamp: createdCase.createdAt,
+      timestamp: createdCase.createdAt
     });
     return json(
       {
@@ -98,8 +98,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId: createdCase.userId,
           jurisdiction: createdCase.jurisdiction,
           createdAt: createdCase.createdAt,
-          updatedAt: createdCase.updatedAt,
-        },
+          updatedAt: createdCase.updatedAt
+        }
       },
       { status: 201 }
     );
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: false,
         error: error instanceof Error ? error.message : 'Database error occurred',
         details: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async () => {
         title: cases.title,
         status: cases.status,
         priority: cases.priority,
-        createdAt: cases.createdAt,
+        createdAt: cases.createdAt
       })
       .from(cases)
       .limit(5)
@@ -140,15 +140,15 @@ export const GET: RequestHandler = async () => {
       database: {
         connection: 'Active',
         recent_cases_count: recentCases.length,
-        recent_cases: recentCases,
+        recent_cases: recentCases
       },
       features: {
         'postgresql-integration': '✅ Active',
         'drizzle-orm': '✅ Connected',
         'case-creation': '✅ Functional',
         'database-queries': '✅ Working',
-        'api-endpoints': '✅ Production Ready',
-      },
+        'api-endpoints': '✅ Production Ready'
+      }
     });
   } catch (error) {
     console.error('❌ Database connectivity test failed:', error);
@@ -161,8 +161,8 @@ export const GET: RequestHandler = async () => {
           'postgresql-integration': '❌ Failed',
           'drizzle-orm': '❌ Error',
           'case-creation': '❌ Unavailable',
-          'database-queries': '❌ Failed',
-        },
+          'database-queries': '❌ Failed'
+        }
       },
       { status: 500 }
     );

@@ -11,8 +11,7 @@ export async function triggerAgentActions(auditResults: SemanticAuditResult[]): 
     .map((r, i) => ({
       todoId: r.todoId || `todo-${i}`,
       action: 'code_review',
-      status: 'pending',
-    }));
+      status: 'pending` }));
   // For now, just log
   console.log('[Agent Trigger] Would trigger agent actions for:', triggers);
   return triggers;

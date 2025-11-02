@@ -15,9 +15,7 @@ type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 export type RecommendationSource = 'nes-rl' | 'idle-detection' | 'rabbit-mq' | 'manual' | 'qlora-training';
 
-export interface Recommendation {
-  id: string;
-  type: 'detective' | 'legal' | 'evidence' | 'ai';
+export interface Recommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai';
   title: string;
   description: string;
   confidence: number;
@@ -31,9 +29,7 @@ export interface Recommendation {
   metadata?: Record<string, JsonValue>;
 }
 
-interface RecommendationState {
-  recommendations: Recommendation[];
-  isLoading: boolean;
+interface RecommendationState { recommendations: Recommendation[];, isLoading: boolean;
   error: string | null;
   lastUpdate: number;
   nesRLStats: NESRLContext | null;
@@ -41,9 +37,7 @@ interface RecommendationState {
 }
 
 // RabbitMQ payload types
-interface EvidenceProcessedPayload {
-  evidenceId: string;
-  confidence: number;
+interface EvidenceProcessedPayload { evidenceId: string;, confidence: number;
   // Structured payload for details
   details?: Record<string, JsonValue> | JsonValue;
 }
@@ -54,9 +48,7 @@ interface VectorSearchCompletePayload {
   results: Array<Record<string, JsonValue>>;
 }
 
-interface SystemAlertPayload {
-  title: string;
-  message: string;
+interface SystemAlertPayload { title: string;, message: string;
   severity?: Priority;
   action?: () => void;
   ttl?: number;
@@ -69,9 +61,7 @@ interface DetectiveContext {
   pendingTasks: string[];
   timeInMode: number;
 }
-interface NESRLContext {
-  generation: number;
-  bestFitness: number;
+interface NESRLContext { generation: number;, bestFitness: number;
   epsilon: number;
   // Use structured items for recent actions instead of `any[]`
   recentActions: Array<Record<string, JsonValue>>;
@@ -79,9 +69,7 @@ interface NESRLContext {
 }
 
 // Add a narrow context type used for idle/detective/evidence recommendation logic
-type IdleContext = {
-  currentPage: string;
-  evidenceInProcessing: number;
+type IdleContext = { currentPage: string;, evidenceInProcessing: number;
   recentUploads: number;
   unprocessedImages: number;
   hasUnanalyzedContent: boolean;
@@ -105,7 +93,7 @@ type RabbitMQLike = {
   // common subscribe API (some libs)
   subscribe?: (event: string, handler: (...args: any[]) => void) => void;
   // alternative naming
-  subscribeEvent?: (event: string, handler: (...args: any[]) => void) => void;
+  subscribeEvent?: (event: string; handler: (...args: any[]) => void) => void;
   // allow extra optional members but keep them typed
   [key: string]: any;
 };
@@ -118,7 +106,7 @@ export class RecommendationOrchestrator {
   private detectiveContext: DetectiveContext = {
     evidenceCount: 0,
     pendingTasks: [],
-    timeInMode: 0,
+    timeInMode: 0
   };
   private userActivityTimer = 0 as unknown as number;
   private lastUserAction = Date.now();
@@ -131,8 +119,7 @@ export class RecommendationOrchestrator {
       error: null,
       lastUpdate: Date.now(),
       nesRLStats: null,
-      userActivity: 'active',
-    });
+      userActivity: 'active` });
     this.initializeServices();
   }
   /**
@@ -181,11 +168,11 @@ export class RecommendationOrchestrator {
       this.worker.postMessage({
         type: 'init',
         config: {
-          stateSize: 384,
+         , stateSize: 384,
           actionSize: 256,
           populationSize: 25,
-          learningRate: 0.02,
-        },
+          learningRate: 0.02
+        }
       });
     } catch (error) {
       console.error('Failed to initialize NES-RL worker:', error);
@@ -311,7 +298,7 @@ export class RecommendationOrchestrator {
         priority: 'medium',
         source: 'idle-detection',
         action: () => this.runPatternAnalysis(),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     recommendations.forEach(rec => this.addRecommendation(rec));
@@ -333,7 +320,7 @@ export class RecommendationOrchestrator {
         priority: 'medium',
         source: 'idle-detection',
         action: () => this.startOCRProcessing(),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     recommendations.forEach(rec => this.addRecommendation(rec));
@@ -355,7 +342,7 @@ export class RecommendationOrchestrator {
         priority: 'low',
         source: 'idle-detection',
         action: () => this.startAIAnalysis(),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     recommendations.forEach(rec => this.addRecommendation(rec));
@@ -376,8 +363,8 @@ export class RecommendationOrchestrator {
       createdAt: Date.now(),
       metadata: {
         generation: data.generation,
-        fitness: data.fitness,
-      },
+        fitness: data.fitness
+      }
     };
     this.addRecommendation(recommendation);
   }
@@ -397,7 +384,7 @@ export class RecommendationOrchestrator {
         priority: data.confidence < 0.5 ? 'critical' : 'high',
         source: 'rabbit-mq',
         action: () => this.openEvidenceReview(data.evidenceId),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       };
       this.addRecommendation(recommendation);
     }
@@ -418,7 +405,7 @@ export class RecommendationOrchestrator {
         priority: 'medium',
         source: 'rabbit-mq',
         action: () => this.suggestSearchAlternatives(data.query),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       };
       this.addRecommendation(recommendation);
     }
@@ -438,7 +425,7 @@ export class RecommendationOrchestrator {
       source: 'rabbit-mq',
       action: data.action ? () => data.action!() : undefined,
       createdAt: Date.now(),
-      expiresAt: Date.now() + (data.ttl ?? 300000),
+      expiresAt: Date.now() + (data.ttl ?? 300000)
     };
     this.addRecommendation(recommendation);
   }
@@ -463,7 +450,7 @@ export class RecommendationOrchestrator {
       return {
         ...state,
         recommendations: trimmed,
-        lastUpdate: Date.now(),
+        lastUpdate: Date.now()
       };
     });
     console.log(`🎯 New recommendation: ${recommendation.title} (${recommendation.priority})`);
@@ -476,7 +463,7 @@ export class RecommendationOrchestrator {
     const now = Date.now();
     this.recommendations.update(state => ({
       ...state,
-      recommendations: state.recommendations.filter(rec => !rec.expiresAt || rec.expiresAt > now),
+      recommendations: state.recommendations.filter(rec => !rec.expiresAt || rec.expiresAt > now)
     }));
   }
 
@@ -490,7 +477,7 @@ export class RecommendationOrchestrator {
       evidenceInProcessing: this.detectiveContext.evidenceCount,
       recentUploads: 0,
       unprocessedImages: 0,
-      hasUnanalyzedContent: false,
+      hasUnanalyzedContent: false
     };
   }
 
@@ -500,14 +487,14 @@ export class RecommendationOrchestrator {
   private updateUserActivity(activity: 'idle' | 'typing' | 'active' | 'away') {
     this.recommendations.update(state => ({
       ...state,
-      userActivity: activity,
+      userActivity: activity
     }));
     // Send activity to NES-RL agent for learning
     if (this.worker) {
       this.worker.postMessage({
         type: 'user_activity',
         activity,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
   }
@@ -518,7 +505,7 @@ export class RecommendationOrchestrator {
   private updateNESRLStats(stats: NESRLContext) {
     this.recommendations.update(state => ({
       ...state,
-      nesRLStats: stats,
+      nesRLStats: stats
     }));
   }
 
@@ -583,7 +570,7 @@ export class RecommendationOrchestrator {
   public dismissRecommendation(id: string) {
     this.recommendations.update(state => ({
       ...state,
-      recommendations: state.recommendations.filter(rec => rec.id !== id),
+      recommendations: state.recommendations.filter(rec => rec.id !== id)
     }));
   }
   public executeRecommendation(id: string) {
@@ -596,7 +583,7 @@ export class RecommendationOrchestrator {
         this.worker.postMessage({
           type: 'recommendation_executed',
           recommendationId: id,
-          source: recommendation.source,
+          source: recommendation.source
         });
       }
     }

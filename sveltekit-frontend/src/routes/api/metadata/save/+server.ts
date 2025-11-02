@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       mimeType = null,
       fileSize = null,
       storagePath = null,
-      metadata = {},
+      metadata = {}
     } = body;
 
     if (!originalFilename || !storedFilename) {
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         mimeType,
         fileSize,
         storagePath,
-        metadata,
+        metadata
       })
       .returning();
 

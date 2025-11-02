@@ -135,7 +135,7 @@
   }
 
   function escHandler(e: KeyboardEvent) {
-    if (e.key === 'Escape' && previewOpen) previewOpen = $state(false);
+    if (e.key === 'Escape' && previewOpen) previewOpen = false;
   }
 
   onMount(() => {

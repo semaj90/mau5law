@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     hint:
       process.env.DEV_AUTH_AUTO === 'true'
         ? 'DEV_AUTH_AUTO enabled: auto session provisioning active.'
-        : 'Enable DEV_AUTH_AUTO=true to auto-create a session.',
+        : 'Enable DEV_AUTH_AUTO=true to auto-create a session.'
   };
   return new Response(JSON.stringify(info, null, 2), { status: 200, headers: { 'Content-Type': 'application/json' } });
 };

@@ -6,9 +6,7 @@ import type { User } from '$lib/types';
 import { writable, derived } from 'svelte/store';
 import { productionServiceClient } from '$lib/services/production-service-client';
 
-export interface Recommendation {
-  id: string;
-  type: 'case_action' | 'document_analysis' | 'evidence_review' | 'legal_precedent' | 'workflow_optimization';
+export interface Recommendation { id: string;, type: 'case_action' | 'document_analysis' | 'evidence_review' | 'legal_precedent' | 'workflow_optimization';
   title: string;
   description: string;
   confidence: number; // 0-1
@@ -29,27 +27,17 @@ export interface Recommendation {
   dismissed?: boolean;
   accepted?: boolean;
 }
-export interface TrendItem {
-  date: string; // Or number for timestamp
-  score: number;
+export interface TrendItem { date: string; // Or number for timestamp, score: number;
   // Add other relevant trend metrics if known, e.g., activityCount: number;
 }
-export interface UserAnalytics {
-  userId: string;
-  profile: {
-    userType: 'attorney' | 'paralegal' | 'investigator' | 'administrator';
-    experienceLevel: 'junior' | 'mid' | 'senior' | 'expert';
+export interface UserAnalytics { userId: string;, profile: { userType: 'attorney' | 'paralegal' | 'investigator' | 'administrator';, experienceLevel: 'junior' | 'mid' | 'senior' | 'expert';
     specializations: string[];
-    workPatterns: {
-      mostActiveHours: number[];
-      averageSessionLength: number;
+    workPatterns: { mostActiveHours: number[];, averageSessionLength: number;
       documentsPerWeek: number;
       casesHandled: number;
     };
   };
-  behavior: {
-    searchPatterns: string[];
-    documentTypes: string[];
+  behavior: { searchPatterns: string[];, documentTypes: string[];
     commonQueries: string[];
     toolUsage: Record<string, number>;
     navigationPaths: string[];
@@ -59,9 +47,7 @@ export interface UserAnalytics {
     accuracyScores: Record<string, number>;
     productivityTrends: Array<TrendItem>; // Changed from Array<any>
   };
-  preferences: {
-    aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';
-    notificationFrequency: 'real-time' | 'hourly' | 'daily';
+  preferences: { aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';, notificationFrequency: 'real-time' | 'hourly' | 'daily';
     recommendationTypes: string[];
   };
 }
@@ -73,17 +59,13 @@ export interface RecommendationState {
   dismissedRecommendations: Recommendation[];
   // User Analytics
   userAnalytics: UserAnalytics | null;
-  behaviorInsights: {
-    patterns: string[];
-    suggestions: string[];
+  behaviorInsights: { patterns: string[];, suggestions: string[];
     trends: Array<TrendItem>; // Changed from Array<any>
   };
   // AI Models
   isAnalyzing: boolean;
   lastAnalysisTime: number | null;
-  aiModelsStatus: {
-    nvidia_llama: boolean;
-    gemma3_legal: boolean;
+  aiModelsStatus: { nvidia_llama: boolean;, gemma3_legal: boolean;
     recommendation_engine: boolean;
   };
   // Performance
@@ -103,20 +85,20 @@ const initialState: RecommendationState = {
   behaviorInsights: {
     patterns: [],
     suggestions: [],
-    trends: [],
+    trends: []
   },
   isAnalyzing: false,
   lastAnalysisTime: null,
   aiModelsStatus: {
     nvidia_llama: false,
     gemma3_legal: false,
-    recommendation_engine: false,
+    recommendation_engine: false
   },
   analyticsLatency: 0,
   recommendationAccuracy: 0,
   enableRealTimeAnalysis: true,
   privacyLevel: 'standard',
-  error: null,
+  error: null
 };
 
 // Core store
@@ -219,7 +201,7 @@ export const recommendationActions = {
     recommendationStore.update(state => ({
       ...state,
       isAnalyzing: true,
-      error: null,
+      error: null
     }));
     const startTime = Date.now();
     try {
@@ -228,11 +210,11 @@ export const recommendationActions = {
         userId,
         context,
         options: {
-          model: 'nvidia-llama',
+         , model: 'nvidia-llama',
           analysisDepth: 'comprehensive',
           includeUserAnalytics: true,
-          maxRecommendations: 10,
-        },
+          maxRecommendations: 10
+        }
       });
 
       const resp = isRecord(rawResponse) ? rawResponse : {};
@@ -247,7 +229,7 @@ export const recommendationActions = {
         behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
         analyticsLatency: latency,
         lastAnalysisTime: Date.now(),
-        isAnalyzing: false,
+        isAnalyzing: false
       }));
     } catch (error: any) {
       const msg = normalizeErrorMessage(error);
@@ -255,7 +237,7 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         isAnalyzing: false,
-        error: msg,
+        error: msg
       }));
     }
   },
@@ -265,10 +247,8 @@ export const recommendationActions = {
    */
   async analyzeUserBehavior(
     userId: string,
-    activityData: {
-      action: string;
-      context: any;
-      timestamp: number;
+    activityData: { action: string;, context: any;
+     , timestamp: number;
       duration?: number;
     }
   ): Promise<void> {
@@ -278,9 +258,9 @@ export const recommendationActions = {
         userId,
         activity: activityData,
         options: {
-          updateProfile: true,
-          generateInsights: true,
-        },
+         , updateProfile: true,
+          generateInsights: true
+        }
       });
       const resp = isRecord(rawResponse) ? rawResponse : {};
       const ua = resp['userAnalytics'] ?? undefined;
@@ -289,7 +269,7 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         userAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics,
-        behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+        behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights)
       }));
     } catch (error: any) {
       console.error('Behavior analysis failed:', normalizeErrorMessage(error));
@@ -301,9 +281,7 @@ export const recommendationActions = {
    */
   async acceptRecommendation(
     recommendationId: string,
-    feedback?: {
-      helpful: boolean;
-      implemented: boolean;
+    feedback?: { helpful: boolean;, implemented: boolean;
       notes?: string;
     }
   ): Promise<void> {
@@ -311,12 +289,12 @@ export const recommendationActions = {
       await productionServiceClient.makeRequest('recommendations.feedback', {
         recommendationId,
         action: 'accept',
-        feedback,
+        feedback
       });
       recommendationStore.update(state => ({
         ...state,
         recommendations: state.recommendations.map(r => (r.id === recommendationId ? { ...r, accepted: true } : r)),
-        activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId),
+        activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId)
       }));
     } catch (error: any) {
       console.error('Failed to accept recommendation:', normalizeErrorMessage(error));
@@ -331,7 +309,7 @@ export const recommendationActions = {
       await productionServiceClient.makeRequest('recommendations.feedback', {
         recommendationId,
         action: 'dismiss',
-        reason,
+        reason
       });
       recommendationStore.update(state => {
         const dismissedRec = state.activeRecommendations.find(r => r.id === recommendationId);
@@ -341,7 +319,7 @@ export const recommendationActions = {
           activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId),
           dismissedRecommendations: dismissedRec
             ? [...state.dismissedRecommendations, dismissedRec]
-            : state.dismissedRecommendations,
+            : state.dismissedRecommendations
         };
       });
     } catch (error: any) {
@@ -358,8 +336,7 @@ export const recommendationActions = {
         userId,
         includePerformance: true,
         includeBehavior: true,
-        timeRange: '30d',
-      });
+        timeRange: '30d` });
       const resp = isRecord(rawResponse) ? rawResponse : {};
       const analytics = resp['analytics'] ?? undefined;
       const insights = resp['insights'] ?? undefined;
@@ -367,14 +344,14 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         userAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics,
-        behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+        behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights)
       }));
     } catch (error: any) {
       const msg = normalizeErrorMessage(error);
       console.error('Failed to load user analytics:', msg);
       recommendationStore.update(state => ({
         ...state,
-        error: msg,
+        error: msg
       }));
     }
   },
@@ -382,13 +359,13 @@ export const recommendationActions = {
   /**
    * Track recommendation accuracy based on user feedback
    */
-  updateAccuracyMetrics(feedback: Array<{ helpful: boolean; confidence: number }>): void {
+  updateAccuracyMetrics(feedback: Array<{, helpful: boolean; confidence: number }>): void {
     if (!feedback || feedback.length === 0) return;
     const accuracy =
       feedback.reduce((sum: number, f) => sum + (f.helpful ? f.confidence : 1 - f.confidence), 0) / feedback.length;
     recommendationStore.update(state => ({
       ...state,
-      recommendationAccuracy: accuracy,
+      recommendationAccuracy: accuracy
     }));
   },
 
@@ -398,7 +375,7 @@ export const recommendationActions = {
   updateSettings(settings: Partial<RecommendationState>): void {
     recommendationStore.update(state => ({
       ...state,
-      ...settings,
+      ...settings
     }));
   },
 
@@ -422,20 +399,20 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         aiModelsStatus: {
-          nvidia_llama: flag('nvidia_llama', 'nvidiaLlama'),
+         , nvidia_llama: flag('nvidia_llama', 'nvidiaLlama'),
           gemma3_legal: flag('gemma3_legal', 'gemma3Legal'),
-          recommendation_engine: flag('recommendation_engine', 'recommendationEngine'),
-        },
+          recommendation_engine: flag('recommendation_engine', 'recommendationEngine')
+        }
       }));
     } catch (error: any) {
       console.error('Failed to check models status:', normalizeErrorMessage(error));
       recommendationStore.update(state => ({
         ...state,
         aiModelsStatus: {
-          nvidia_llama: false,
+         , nvidia_llama: false,
           gemma3_legal: false,
-          recommendation_engine: false,
-        },
+          recommendation_engine: false
+        }
       }));
     }
   },
@@ -448,9 +425,9 @@ export const recommendationActions = {
       ...state,
       recommendations: [],
       activeRecommendations: [],
-      error: null,
+      error: null
     }));
-  },
+  }
 };
 
 // Auto-initialize

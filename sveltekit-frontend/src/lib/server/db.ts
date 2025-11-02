@@ -4,7 +4,7 @@
   This file exists for backward compatibility with legacy imports.
 
   MIGRATION GUIDE:
-  - OLD: import { db } from '$lib/server/db'
+  -; OLD: import { db } from '$lib/server/db'
   - NEW: import { db } from '$lib/server/db/index' (preferred)
 
   This ensures all code uses the same connection pool (pg.Pool with node-postgres adapter)

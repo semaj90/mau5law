@@ -5,30 +5,22 @@ export interface Context7Tool {
   description?: string;
   schema?: Record<string, unknown>;
 }
-export interface Context7Analysis {
-  component: string;
-  recommendations: string[];
+export interface Context7Analysis { component: string;, recommendations: string[];
   integration?: string;
   bestPractices?: string[];
 }
-export interface VectorIntelligence {
-  query: string;
-  results: Array<Record<string, unknown>>;
+export interface VectorIntelligence { query: string;, results: Array<Record<string, unknown>>;
   suggestions: string[];
 }
-export interface AutoFixResult {
-  success: boolean;
-  timestamp: string;
-  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean; area: string };
+export interface AutoFixResult { success: boolean;, timestamp: string;
+  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean;, area: string };
   fixes: Record<string, Array<Record<string, unknown>>>;
   configImprovements: string[];
   recommendations: string[];
 }
 
 // New typed result for legal document analysis to avoid `any`
-export interface LegalDocumentAnalysis {
-  summary: string;
-  entities: Record<string, string[]>;
+export interface LegalDocumentAnalysis { summary: string;, entities: Record<string, string[]>;
   riskScore: number; // 0-100
   confidence: number; // 0.0-1.0
   recommendations: string[];
@@ -102,7 +94,7 @@ export class Context7Service {
   // Analyze a component (cached, sets reactive store)
   public async analyzeComponent(component: string, context?: string): Promise<Context7Analysis> {
     this.isAnalyzing.set(true);
-    const cacheKey = `analysis-${component}-${context ?? 'default'}`;
+    const cacheKey = `analysis-${component}-${context ?? 'default` }`;
     if (this.cacheEnabled && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey) as Context7Analysis;
       this.currentAnalysis.set(cached);
@@ -113,8 +105,8 @@ export class Context7Service {
       // Attempt to call MCP endpoint; fallback to stubbed analysis
       const res = await this.fetchWithTimeout(`${this.mcpEndpoint}/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ component, context }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ component, context })
       });
       let result: Context7Analysis;
       if (res.ok) {
@@ -123,7 +115,7 @@ export class Context7Service {
           component,
           recommendations: payload.recommendations ?? ['No recommendations returned'],
           integration: payload.integration ?? 'No integration advice',
-          bestPractices: payload.bestPractices ?? [],
+          bestPractices: payload.bestPractices ?? []
         };
       } else {
         result = this.getFallbackAnalysis(component);
@@ -154,7 +146,7 @@ export class Context7Service {
       const res = await this.fetchWithTimeout(`${this.mcpEndpoint}/vector-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, filters }),
+        body: JSON.stringify({ query, filters })
       });
       let intelligence: VectorIntelligence;
       if (res.ok) {
@@ -163,7 +155,7 @@ export class Context7Service {
         intelligence = {
           query,
           results,
-          suggestions: (payload.suggestions ?? []) as string[],
+          suggestions: (payload.suggestions ?? []) as string[]
         };
       } else {
         intelligence = this.getFallbackVectorResults(query);
@@ -195,11 +187,10 @@ export class Context7Service {
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all',
-        },
+          area: options?.area ?? 'all` },
         fixes: {} as Record<string, Array<Record<string, unknown>>>,
         configImprovements: [],
-        recommendations: [],
+        recommendations: []
       };
       // Optionally enrich recommendations with best practices
       if (!options?.dryRun) {
@@ -218,11 +209,10 @@ export class Context7Service {
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all',
-        },
+          area: options?.area ?? 'all` },
         fixes: {} as Record<string, Array<Record<string, unknown>>>,
         configImprovements: [],
-        recommendations: [error instanceof Error ? error.message : 'Unknown error'],
+        recommendations: [error instanceof Error ? error.message : 'Unknown error']
       };
     }
   }
@@ -239,8 +229,8 @@ export class Context7Service {
 
       // Reuse component analysis as a high-level guidance source
       const analysis = await this.analyzeComponent(
-        `legal-document-${caseType ?? 'general'}`,
-        `Legal document analysis for ${jurisdiction ?? 'general'}`
+        `legal-document-${caseType ?? 'general` }`,
+        `Legal document analysis for ${jurisdiction ?? 'general` }`
       );
 
       // Simple heuristic for riskScore and confidence based on extracted entities
@@ -260,7 +250,7 @@ export class Context7Service {
         riskScore,
         confidence,
         recommendations: analysis.recommendations,
-        extractedFromContent: true,
+        extractedFromContent: true
       };
     } catch (error) {
       console.warn('analyzeLegalDocument failed:', error);
@@ -278,7 +268,7 @@ export class Context7Service {
         monetary: this.extractPatterns(content, /\$[\d,]+\.?\d*/g),
         clauses: this.extractPatterns(content, /[Cc]lause \d+|[Ss]ection \d+/g),
         jurisdictions: this.extractPatterns(content, /\b(?:federal|state|local|international)\b/gi),
-        caseTypes: this.extractPatterns(content, /\b(?:contract|litigation|compliance|regulatory)\b/gi),
+        caseTypes: this.extractPatterns(content, /\b(?:contract|litigation|compliance|regulatory)\b/gi)
       };
 
       // If caller passed specific entityTypes, filter keys (case-insensitive)
@@ -311,12 +301,12 @@ export class Context7Service {
       {
         name: 'analyze-stack',
         description: 'Analyze technology stack components',
-        schema: { type: 'object', properties: { component: { type: 'string' } } },
+        schema: { type: 'object', properties: { component: {, type: 'string' } } }
       },
       {
         name: 'generate-best-practices',
         description: 'Generate best practices for development areas',
-        schema: { type: 'object', properties: { area: { type: 'string' } } },
+        schema: { type: 'object', properties: { area: {, type: `string` } } }
       },
     ];
   }
@@ -330,7 +320,7 @@ export class Context7Service {
         'Implement proper error handling',
       ],
       integration: 'Standard SvelteKit component integration recommended',
-      bestPractices: ['Use proper TypeScript types', 'Implement accessibility features', 'Follow naming conventions'],
+      bestPractices: ['Use proper TypeScript types', 'Implement accessibility features', 'Follow naming conventions']
     };
   }
 
@@ -353,7 +343,7 @@ export class Context7Service {
         'Implement responsive design',
         'Use consistent design patterns',
         'Provide clear feedback',
-      ],
+      ]
     };
     return practices[area] ?? [];
   }
@@ -383,7 +373,7 @@ export class Context7Service {
    * @returns A list of suggested integrations.
    */
   async suggestIntegration(system: string, securityAspect: string): Promise<string[]> {
-    console.log(`Context7: Suggesting integration for: '${system}' with security aspect: '${securityAspect}'`);
+    console.log(`Context7: Suggesting integration; for: '${system}' with security, aspect: '${securityAspect}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 150));
     return [
@@ -399,7 +389,7 @@ export class Context7Service {
    * @returns A list of best practice recommendations.
    */
   async generateBestPractices(area: string): Promise<string[]> {
-    console.log(`Context7: Generating best practices for area: '${area}'`);
+    console.log(`Context7: Generating best practices for; area: '${area}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 120));
     if (area === 'performance') {

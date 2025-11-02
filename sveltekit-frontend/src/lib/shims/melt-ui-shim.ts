@@ -8,7 +8,7 @@ function createPrimitive() {
     options: {} as { [key: string]: any },
     openModal: () => {},
     closeModal: () => {},
-    toggle: () => {},
+    toggle: () => {}
   } as any;
 }
 export const melt = (..._args: any[]) => ({}) as any;
@@ -31,5 +31,5 @@ export default {
   createSelect,
   createCombobox,
   createToolbar,
-  createResizable,
+  createResizable
 };

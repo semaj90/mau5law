@@ -7,14 +7,10 @@ export interface AIResponse {
   legalRisk?: string;
   [key: string]: any;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata?: Record<string, unknown>;
-  source?: {
-    type: string;
-    name: string;
+  source?: { type: string;, name: string;
     url: string;
   };
   highlights?: string[];
@@ -30,15 +26,11 @@ export interface SemanticEntity {
   metadata?: Record<string, unknown>;
 }
 // Context7 integration types
-export interface OrchestrationOptions {
-  enabled: boolean;
-  priority: 'low' | 'medium' | 'high';
+export interface OrchestrationOptions { enabled: boolean;, priority: 'low' | 'medium' | 'high';
   timeout?: number;
   retries?: number;
 }
-export interface MCPToolRequest {
-  tool: string;
-  args: Record<string, unknown>;
+export interface MCPToolRequest { tool: string;, args: Record<string, unknown>;
   context?: Record<string, unknown>;
 }
 export interface EnhancedRAGEngine {
@@ -59,14 +51,10 @@ export interface ChatRequest {
     previousMessages?: ApiChatMessage[]; // use shared type
   };
 }
-export interface ChatResponse {
-  response: string;
-  model: string;
+export interface ChatResponse { response: string;, model: string;
   timestamp: string;
   conversationId?: string;
-  performance: {
-    duration: number;
-    tokens: number;
+  performance: { duration: number;, tokens: number;
     promptTokens: number;
     responseTokens: number;
     tokensPerSecond: number;
@@ -75,9 +63,7 @@ export interface ChatResponse {
   relatedCases?: string[];
   vectorSearchResults?: VectorSearchResult[];
 }
-export interface SystemStatus {
-  gpu: boolean;
-  ollama: boolean;
+export interface SystemStatus { gpu: boolean;, ollama: boolean;
   enhancedRAG: boolean;
   postgres: boolean;
   neo4j: boolean;

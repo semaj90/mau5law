@@ -421,14 +421,14 @@ https://svelte.dev/e/js_parse_error -->
 		try {
 			recognition = new Rec();
 			recognition.continuous = false;
-			recognition.interimResults = $state(false);
+			recognition.interimResults = false;
 			recognition.lang = 'en-US';
 			recognition.onresult = (event: any) => {
 				const transcript = (event?.results?.[0]?.[0]?.transcript || '').toLowerCase();
 				handleVoiceCommand(transcript);
 			};
-			recognition.onerror = () => { isListening = $state(false); };
-			recognition.onend = () => { isListening = $state(false); };
+			recognition.onerror = () => { isListening = false; };
+			recognition.onend = () => { isListening = false; };
 		} catch (e) {
 			console.warn('SpeechRecognition init failed', e);
 			recognition = null;
@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
 			try { recognition.stop(); } catch (e) { /* ignore */ }
 			isListening = false;
 		} else {
-			try { recognition.start(); isListening = true; } catch (e) { console.warn(e); isListening = $state(false); }
+			try { recognition.start(); isListening = true; } catch (e) { console.warn(e); isListening = false; }
 		}
 	}
 	function handleVoiceCommand(command: string): void {
@@ -567,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if recognition}
                         <button
                             onclick={toggleVoiceListening}
-                            class="p-2" rounded-lg border border-gray-300 dark:border-gray-600
+                            class="p-2 rounded-lg border" border-gray-300 dark:border-gray-600
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
                             title="Toggle voice commands"
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
                         <button
                             onclick={previousStep}
                             disabled={isFirstStep || isProcessing}
-                            class="px-4" py-2 border border-gray-300 dark:border-gray-600
+                            class="px-4 py-2 border" border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
                                    bg-white dark:bg-gray-700
@@ -669,7 +669,7 @@ https://svelte.dev/e/js_parse_error -->
                         <button
                             onclick={resetCase}
                             disabled={isProcessing}
-                            class="px-4" py-2 border border-red-300 dark:border-red-600
+                            class="px-4 py-2 border" border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-red-700 dark:text-red-300
                                    bg-white dark:bg-gray-700
@@ -684,7 +684,7 @@ https://svelte.dev/e/js_parse_error -->
                         <button
                             onclick={saveProgress}
                             disabled={isProcessing}
-                            class="px-4" py-2 border border-gray-300 dark:border-gray-600
+                            class="px-4 py-2 border" border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
                                    bg-white dark:bg-gray-700
@@ -698,7 +698,7 @@ https://svelte.dev/e/js_parse_error -->
                             <button
                                 onclick={submitCase}
                                 disabled={isProcessing}
-                                class="px-4" py-2 border border-transparent
+                                class="px-4 py-2 border" border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
                                        hover:bg-blue-700
@@ -711,7 +711,7 @@ https://svelte.dev/e/js_parse_error -->
                             <button
                                 onclick={nextStep}
                                 disabled={isProcessing}
-                                class="px-4" py-2 border border-transparent
+                                class="px-4 py-2 border" border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
                                        hover:bg-blue-700

@@ -25,18 +25,16 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       messages: [
         {
           role: 'system',
-          content:
-            'You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.',
-        },
+          content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.` },
         {
           role: 'user',
-          content: message,
+          content: message
         },
       ],
       options: {
-        temperature: 0.7,
-        max_tokens: 1000,
-      },
+       , temperature: 0.7,
+        max_tokens: 1000
+      }
     });
     if (!response?.message?.content) {
       throw error(500, 'Invalid response from AI model');
@@ -48,11 +46,11 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       userId,
       processing_time: 2000, // Simulated slow processing
       cached: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
     console.error('AI chat error:', err);
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 /**

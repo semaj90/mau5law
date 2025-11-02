@@ -14,15 +14,13 @@ const worker = new Worker('logQueue', async (job) => {
     const embedding = await getEmbedding(logData.message);
     // 2. Enhanced RAG Integration
     // Store the original log and its vector in your database for future analysis
-    await storeLogInVectorDB({
-      log: logData;
-      embedding: embedding
+    await storeLogInVectorDB({ log: logData;, embedding: embedding
     });
         console.log(`✅ Successfully processed and indexed log job ${job.id}.`);
     // NEXT STEP: This is where you would trigger the self-prompting/analysis agent
     // For now, we are just indexing the errors.
   } catch (error: any) {
-    console.error(`❌ Failed to process log job ${job.id}:`, error);
+    console.error(`❌ Failed to process log job ${job.id}: ', error);
     // It's important to throw the error so BullMQ knows the job failed and can retry it
     throw error;
   }

@@ -4,9 +4,7 @@ import { EventEmitter } from 'events';
  * High-performance JSON processing with WebAssembly and ECMAScript optimization
  */
 // === WebAssembly JSON Parser Interface ===
-export interface WebAssemblyModule {
-  memory: WebAssembly.Memory;
-  parse_json: (ptr: number, len: number) => number;
+export interface WebAssemblyModule { memory: WebAssembly.Memory;, parse_json: (ptr: number, len: number) => number;
   stringify_json: (ptr: number) => number;
   free_memory: (ptr: number) => void;
   malloc: (size: number) => number;
@@ -15,9 +13,7 @@ export interface WebAssemblyModule {
   compress_lz4: (ptr: number, len: number) => number;
   decompress_lz4: (ptr: number, len: number) => number;
 }
-export interface OptimizedJSON {
-  original_size: number;
-  compressed_size: number;
+export interface OptimizedJSON { original_size: number;, compressed_size: number;
   compression_ratio: number;
   parse_time_ms: number;
   stringify_time_ms: number;
@@ -82,13 +78,11 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
             Uint8Array.from(wasmBytes).buffer;
       // Create WebAssembly module from ArrayBuffer
       const module = await WebAssembly.compile(wasmArrayBuffer);
-      const instance = await WebAssembly.instantiate(module, {
-        env: {
-          malloc: (size: number) => {
+      const instance = await WebAssembly.instantiate(module, { env: {, malloc: (size: number) => {
             // Simple malloc implementation for WASM (placeholder)
             return size * 4;
-          },
-        },
+          }
+        }
       });
       // safer cast to WebAssemblyModule
       this.wasmModule = instance.exports as unknown as WebAssemblyModule;
@@ -101,7 +95,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     }
   }
   // === High-Performance JSON Operations ===
-  async parseJSON<T = unknown>(jsonString: string): Promise<{ data: T; stats: OptimizedJSON }> {
+  async parseJSON<T = unknown>(jsonString: string): Promise<{ data: T;, stats: OptimizedJSON }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: T;
     let wasm_acceleration = $state<boolean>(false);
@@ -127,11 +121,11 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       compression_ratio: 1,
       parse_time_ms: parseTime,
       stringify_time_ms: 0,
-      wasm_acceleration,
+      wasm_acceleration
     };
     return { data: result, stats };
   }
-  async stringifyJSON(data: any): Promise<{ json: string; stats: OptimizedJSON }> {
+  async stringifyJSON(data: any): Promise<{ json: string;, stats: OptimizedJSON }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: string;
     let wasm_acceleration = $state<boolean>(false);
@@ -157,12 +151,12 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       compression_ratio: 1,
       parse_time_ms: 0,
       stringify_time_ms: stringifyTime,
-      wasm_acceleration,
+      wasm_acceleration
     };
     return { json: result, stats };
   }
   // === Compression with LZ4 ===
-  async compressJSON(data: any): Promise<{ compressed: Uint8Array; stats: OptimizedJSON }> {
+  async compressJSON(data: any): Promise<{ compressed: Uint8Array;, stats: OptimizedJSON }> {
     const { json, stats } = await this.stringifyJSON(data);
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let compressed: Uint8Array;
@@ -185,11 +179,11 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         ...stats,
         compressed_size: compressed.length,
         compression_ratio,
-        stringify_time_ms: stats.stringify_time_ms + compressionTime,
-      },
+        stringify_time_ms: stats.stringify_time_ms + compressionTime
+      }
     };
   }
-  async decompressJSON<T = unknown>(compressed: Uint8Array): Promise<{ data: T; stats: OptimizedJSON }> {
+  async decompressJSON<T = unknown>(compressed: Uint8Array): Promise<{ data: T;, stats: OptimizedJSON }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let decompressed: string;
     try {
@@ -211,8 +205,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         compressed_size: compressed.length,
         compression_ratio:
           decompressed.length > 0 && compressed.length > 0 ? decompressed.length / compressed.length : 1,
-        parse_time_ms: stats.parse_time_ms + decompressionTime,
-      },
+        parse_time_ms: stats.parse_time_ms + decompressionTime
+      }
     };
   }
   // === WebAssembly Implementation ===
@@ -429,8 +423,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return JSON.stringify(data).length * 2;
   }
   // === Public API ===
-  getPerformanceStats(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const result: Record<string, { avg: number; min: number; max: number; count: number }> = {};
+  getPerformanceStats(): Record<string, { avg: number; min: number; max: number;, count: number }> {
+    const result: Record<string, { avg: number; min: number; max: number;, count: number }> = {};
     for (const [operation, times] of this.performance_stats) {
       if (times.length === 0) continue;
       const avg = times.reduce((sum, time) => sum + time, 0) / times.length;
@@ -548,7 +542,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       .replace(/\s+$/gm, '') // Remove trailing whitespace
       .replace(/\n\s*\n/g, '\n') // Remove empty lines
       .replace(/\s*{\s*/g, '{') // Compress braces
-      .replace(/\s*}\s*/g, '}')
+      .replace(/\s*}\s*/g, ' }')
       .replace(/\s*;\s*/g, ';'); // Compress semicolons
   }
 }
@@ -564,9 +558,7 @@ export function createHighPerformanceJSONProcessor(): JSONWebAssemblyOptimizer {
 // === Global Instance ===
 export const jsonWasmOptimizer = new JSONWebAssemblyOptimizer();
 // === Utility Functions ===
-export async function optimizeJSONForTransport(data: any): Promise<{
-  optimized: string | Uint8Array;
-  stats: OptimizedJSON;
+export async function optimizeJSONForTransport(data: any): Promise<{ optimized: string | Uint8Array;, stats: OptimizedJSON;
   useCompression: boolean;
 }> {
   const { json, stats: stringifyStats } = await jsonWasmOptimizer.stringifyJSON(data);
@@ -577,20 +569,20 @@ export async function optimizeJSONForTransport(data: any): Promise<{
       return {
         optimized: compressed,
         stats: compressStats,
-        useCompression: true,
+        useCompression: true
       };
     }
   }
   return {
     optimized: json,
     stats: stringifyStats,
-    useCompression: false,
+    useCompression: false
   };
 }
 export async function parseOptimizedTransport<T = unknown>(
   data: string | Uint8Array,
   isCompressed: boolean
-): Promise<{ data: T; stats: OptimizedJSON }> {
+): Promise<{ data: T;, stats: OptimizedJSON }> {
   if (isCompressed && data instanceof Uint8Array) {
     return jsonWasmOptimizer.decompressJSON<T>(data);
   } else {

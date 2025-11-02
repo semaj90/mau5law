@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     threshold?: number;
   }
   // State
-  let state: ObservabilityState | null = $state(null);
+  let state: ObservabilityState | null = null;
   let alerts: Alert[] = $state([]);
   let isConnected = $state<boolean>(false);
   let ws = $state<WebSocket | null >(null);

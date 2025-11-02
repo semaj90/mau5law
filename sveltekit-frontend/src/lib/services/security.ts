@@ -1,12 +1,8 @@
-interface RateLimitInfo {
-  allowed: boolean;
-  remaining: number;
+interface RateLimitInfo { allowed: boolean;, remaining: number;
   resetTime: number; // Unix timestamp in milliseconds
 }
 
-interface AuditEvent {
-  action: string;
-  resource: string;
+interface AuditEvent { action: string;, resource: string;
   clientIP: string;
   userAgent: string;
   success: boolean;
@@ -33,7 +29,6 @@ export const securityService = {
       'Content-Security-Policy':
         "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-      'Referrer-Policy': 'no-referrer-when-downgrade',
-    };
-  },
+      'Referrer-Policy': 'no-referrer-when-downgrade` };
+  }
 };

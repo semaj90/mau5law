@@ -21,8 +21,8 @@ import type { Document } from '$lib/types';
   let { documents = [], showPerformanceMetrics = false }: Props = $props();
   // Reactive state for CHR-ROM patterns
   let documentPatterns = $state(new Map<string, Map<string, CHRROMPattern | null>>());
-  let performanceStats: any = $state(null);
-  let hoveredDocument: string | null = $state(null);
+  let performanceStats: any = null;
+  let hoveredDocument: string | null = null;
   // Pattern types to load
   const patternTypes = ['summary_icon', 'category_color', 'confidence_badge', 'status_indicator', 'risk_gauge'];
   // Performance tracking

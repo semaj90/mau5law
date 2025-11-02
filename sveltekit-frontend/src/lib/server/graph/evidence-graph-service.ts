@@ -26,7 +26,7 @@ async function ensureSchema(): Promise<any> {
     await s.close()
   }
 }
-export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string; relation: string }> = []): Promise<any> {
+export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string;, relation: string }> = []): Promise<any> {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -67,7 +67,7 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
   }
 }
 // Optional helper to create similarity links given neighbors (id, score)
-export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{ key: string; similarity: number }>): Promise<any> {
+export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{, key: string; similarity: number }>): Promise<any> {
   if (!CREATE_SIMILARITY) return
   if (!neighbors || neighbors.length === 0) return
   const d = getDriver()
@@ -93,9 +93,7 @@ export async function createSimilarityLinks(evidenceId: string, neighbors: Array
 ensureSchema().catch((e) => console.debug('neo4j schema init failed', e))
 export default { evidenceGraphService, createSimilarityLinks }
 import neo4j, { Driver } from 'neo4j-driver';
-interface EvidenceGraphConfig {
-  url: string;
-  user: string;
+interface EvidenceGraphConfig { url: string;, user: string;
   password: string;
   initSchema: boolean;
 }
@@ -108,7 +106,7 @@ interface EvidenceGraphUpsertInput {
   caseName?: string | null;
   entities?: Array<{ name: string; type?: string | null }>;
   relatedEvidence?: Array<{ evidenceId: string }>;
-  similarEvidence?: Array<{ evidenceId: string; score: number }>;
+  similarEvidence?: Array<{ evidenceId: string;, score: number }>;
 }
 class EvidenceGraphService {
   private static driver: Driver | null = null;
@@ -126,7 +124,7 @@ class EvidenceGraphService {
     const config = this.resolveConfig();
     if (!config) return null;
     this.driver = neo4j.driver(config.url, neo4j.auth.basic(config.user, config.password), {
-      disableLosslessIntegers: true,
+      disableLosslessIntegers: true
     });
     if (config.initSchema && !this.isSchemaInitialized) {
       try {
@@ -167,7 +165,7 @@ class EvidenceGraphService {
       caseName,
       entities = [],
       relatedEvidence = [],
-      similarEvidence = [],
+      similarEvidence = []
     } = data;
     const session = driver.session();
     try {
@@ -221,7 +219,7 @@ class EvidenceGraphService {
                   r.updatedAt = datetime()
             `,
               {
-                pairs: this.buildEntityPairs(entities),
+                pairs: this.buildEntityPairs(entities)
               }
             );
             relationshipsCreated += resultCo.summary.counters.updates().relationshipsCreated ?? 0;
@@ -263,17 +261,16 @@ class EvidenceGraphService {
       await session.close();
     }
   }
-  private static buildEntityPairs(entities: Array<{ name: string; type?: string | null }>) {
-    const pairs: Array<{ a: { name: string; type: string | null }; b: { name: string; type: string | null } }> =
+  private static buildEntityPairs(entities: Array<{, name: string; type?: string | null }>) {
+    const pairs: Array<{ a: { name: string;, type: string | null }; b: { name: string;, type: string | null } }> =
       [];
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
         const b = entities[j];
         if (!a?.name || !b?.name) continue;
-        pairs.push({
-          a: { name: a.name, type: a.type ?? null },
-          b: { name: b.name, type: b.type ?? null },
+        pairs.push({ a: {, name: a.name, type: a.type ?? null },
+          b: {, name: b.name, type: b.type ?? null }
         });
       }
     }

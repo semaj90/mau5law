@@ -7,9 +7,7 @@ import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { cpus } from 'os';
 import { performance } from 'perf_hooks';
 // Types for serialization context
-interface SerializationTask {
-  id: string;
-  data: any;
+interface SerializationTask { id: string;, data: any;
   options: SerializationOptions;
   priority: 'low' | 'medium' | 'high' | 'critical';
   timestamp: number;
@@ -23,12 +21,8 @@ interface SerializationOptions {
   gpuAccelerated?: boolean;
   legalDocumentMode?: boolean;
 }
-interface SerializationResult {
-  id: string;
-  serialized: string;
-  metadata: {
-    originalSize: number;
-    serializedSize: number;
+interface SerializationResult { id: string;, serialized: string;
+  metadata: { originalSize: number;, serializedSize: number;
     compressionRatio: number;
     processingTime: number;
     method: 'cpu' | 'gpu' | 'worker';
@@ -109,8 +103,7 @@ class WorkerPool {
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
-                method: 'worker'
-              }
+                method: `worker` }
             }
           }
         }
@@ -177,7 +170,7 @@ class WorkerPool {
     worker.postMessage({
       id: task.id,
       data: task.data,
-      options: task.options,
+      options: task.options
     });
   }
   terminate() {
@@ -230,10 +223,10 @@ class WorkerPool {
         chunkSize: 1024 * 1024, // 1MB chunks
         gpuAccelerated: false,
         legalDocumentMode: false,
-        ...options,
+        ...options
       },
       priority: this.determinePriority(data, options),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     // Determine optimal serialization method
     const dataSize = this.estimateDataSize(data);
@@ -261,7 +254,7 @@ class WorkerPool {
       const buffer = this.gpuContext.createBuffer({
         size: inputData.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
       // Copy data to GPU
       new Uint8Array(buffer.getMappedRange()).set(inputData);
@@ -275,7 +268,7 @@ class WorkerPool {
       console.log(`🎯 GPU serialization completed for task ${task.id}`);
       return result;
     } catch (error) {
-      console.warn(`GPU serialization failed, falling back to worker:`, error);
+      console.warn(`GPU serialization failed, falling back to worker: ', error);
       return await this.workerPool.execute(task);
     }
   }
@@ -328,8 +321,8 @@ class WorkerPool {
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
-          method: 'cpu',
-        },
+          method: 'cpu'
+        }
       };
     } catch (error) {
       const processingTime = performance.now() - start;
@@ -341,10 +334,9 @@ class WorkerPool {
           serializedSize: 2,
           compressionRatio: 1,
           processingTime,
-          method: 'cpu',
+          method: 'cpu'
         },
-        error: error instanceof Error ? error.message : 'Unknown serialization error',
-      };
+        error: error instanceof Error ? error.message : `Unknown serialization error` };
     }
   }
   /**
@@ -353,7 +345,7 @@ class WorkerPool {
   async serializeBatch<T>(items: T[], options: SerializationOptions = {}): Promise<SerializationResult[]> {
     const batchOptions = {
       ...options,
-      priority: 'medium' as const,
+      priority: 'medium' as const
     };
     // Process in parallel with worker pool
     const promises = items.map((item, index) => {
@@ -421,9 +413,7 @@ class WorkerPool {
   }
   /**
    * Get performance statistics
-   */ getStats(): {
-    activeWorkers: number;
-    queueLength: number;
+   */ getStats(): { activeWorkers: number;, queueLength: number;
     totalProcessed: number;
     averageProcessingTime: number;
     gpuEnabled: boolean;
@@ -433,7 +423,7 @@ class WorkerPool {
       queueLength: this.workerPool['taskQueue'].length,
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics
-      gpuEnabled: !!this.gpuContext,
+      gpuEnabled: !!this.gpuContext
     };
   }
   /**
@@ -450,7 +440,7 @@ export async function serializeForAPI<T>(data: T, options?: Partial<Serializatio
     compress: true,
     validateStructure: true,
     legalDocumentMode: false,
-    ...options,
+    ...options
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
@@ -468,7 +458,7 @@ export async function serializeLegalDocument<T>(
     compress: false,
     validateStructure: true,
     maxDepth: 15, // Legal docs can be deeply nested
-    ...options,
+    ...options
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
@@ -484,7 +474,7 @@ export async function serializeBatchForCache<T>(
   return await concurrentSerializer.serializeBatch(items, {
     compress: true,
     gpuAccelerated: items.length > 100,
-    ...options,
+    ...options
   });
 }
 export function deserializeFromAPI<T = any>(serialized: string): T {

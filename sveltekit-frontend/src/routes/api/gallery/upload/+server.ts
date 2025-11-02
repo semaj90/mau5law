@@ -49,9 +49,7 @@ const ALLOWED_TYPES = [
 
 export interface UploadResponse {
   success: boolean;
-  file?: {
-    id: string;
-    filename: string;
+  file?: { id: string;, filename: string;
     originalName: string;
     size: number;
     type: string;
@@ -113,7 +111,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       category,
       fileExtension,
       dimensions: await getImageDimensions(buffer, file.type),
-      checksum: generateChecksum(buffer),
+      checksum: generateChecksum(buffer)
     };
     // Save to database as evidence (use camelCase column names that match DB schema)
     const evidenceData = {
@@ -138,7 +136,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       processedAt: null,
       ocrText: null,
       contentText: null,
-      embedding: null,
+      embedding: null
     };
     await db.insert(evidence).values(evidenceData).execute();
     // Generate thumbnail if it's an image
@@ -154,7 +152,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       caseId,
       needsOCR: needsOCR(file.type),
       needsEmbedding: true,
-      needsThumbnail: !thumbnailUrl,
+      needsThumbnail: !thumbnailUrl
     });
     const response: UploadResponse = {
       success: true,
@@ -164,28 +162,26 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         originalName: file.name,
         size: file.size,
         type: file.type,
-        url: `/${relativePath}`, // relativePath already includes: "uploads/..."
-        uploadPath: relativePath,
-        thumbnailUrl,
-      },
+        url: `/${relativePath}`, // relativePath already includes: "uploads/..."; uploadPath: relativePath,
+        thumbnailUrl
+      }
     };
     return json(response, {
       headers: {
         'X-Upload-ID': fileId,
         'X-File-Size': file.size.toString(),
-        'Cache-Control': 'no-cache',
-      },
+        'Cache-Control': `no-cache` }
     });
   } catch (err) {
     console.error('Upload error:', err);
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message);
     }
-    throw error(500, `Upload failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // tighten the return type instead of `any`
-async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number; height: number } | null> {
+async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number;, height: number } | null> {
   try {
     // Simple image dimension detection for common formats
     if (mimeType === 'image/jpeg') {
@@ -200,7 +196,7 @@ async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ w
     return null;
   }
 }
-function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | null {
+function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } | null {
   try {
     let i = 2; // Skip SOI marker
     while (i < buffer.length) {
@@ -210,7 +206,7 @@ function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | 
           // SOF markers
           return {
             height: buffer.readUInt16BE(i + 5),
-            width: buffer.readUInt16BE(i + 7),
+            width: buffer.readUInt16BE(i + 7)
           };
         }
         i += 2 + buffer.readUInt16BE(i + 2);
@@ -223,13 +219,13 @@ function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | 
     return null;
   }
 }
-function getPNGDimensions(buffer: Buffer): { width: number; height: number } | null {
+function getPNGDimensions(buffer: Buffer): { width: number;, height: number } | null {
   try {
     // PNG signature is 8 bytes, IHDR chunk starts at byte 8
     if (buffer.length < 24) return null;
     return {
       width: buffer.readUInt32BE(16),
-      height: buffer.readUInt32BE(20),
+      height: buffer.readUInt32BE(20)
     };
   } catch (error) {
     return null;
@@ -258,20 +254,18 @@ function needsOCR(fileType: string): boolean {
 }
 async function triggerBackgroundProcessing(
   fileId: string,
-  options: {
-    type: string;
-    category: string;
+  options: { type: string;, category: string;
     fileType: string;
     caseId?: string | null;
     needsOCR: boolean;
     needsEmbedding: boolean;
-    needsThumbnail: boolean;
+   , needsThumbnail: boolean;
   }
 ): Promise<any> {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
     // For now, we'll just log the processing request
-    console.log(`Background processing triggered for file ${fileId}:`, options);
+    console.log(`Background processing triggered for file ${fileId}: ', options);
     // Could send to Redis queue like this:
     // await redis.xAdd('file_processing:requests', '*', {
     //   fileId,
@@ -302,11 +296,11 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         file: fileData[0],
         processingStatus: {
-          uploaded: true,
+         , uploaded: true,
           ocrComplete: !!fileData[0].ocrText,
           embeddingComplete: !!fileData[0].embedding,
-          processed: !!fileData[0].processedAt,
-        },
+          processed: !!fileData[0].processedAt
+        }
       });
     }
 
@@ -327,10 +321,10 @@ export const GET: RequestHandler = async ({ url }) => {
     const recentUploads = await query.execute();
     return json({
       uploads: recentUploads,
-      total: recentUploads.length,
+      total: recentUploads.length
     });
   } catch (err) {
     console.error('Upload status error:', err);
-    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error` }`);
  }
 };

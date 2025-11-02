@@ -14,7 +14,7 @@ const tables = {
   queryVectors: (schema as any).queryVectors ?? (schema as any).query_vectors,
   knowledgeNodes: (schema as any).knowledgeNodes ?? (schema as any).knowledge_nodes,
   knowledgeEdges: (schema as any).knowledgeEdges ?? (schema as any).knowledge_edges,
-  recommendationCache: (schema as any).recommendationCache ?? (schema as any).recommendation_cache,
+  recommendationCache: (schema as any).recommendationCache ?? (schema as any).recommendation_cache
 };
 
 // Define the expected interface for OllamaService, stubbing the missing dependency
@@ -26,13 +26,9 @@ interface IOllamaService {
 // Cast the imported ollamaService to the defined interface to resolve type errors
 const typedOllamaService: IOllamaService = ollamaService as any;
 
-export interface RankedSearchResult {
-  id: string;
-  content: string;
+export interface RankedSearchResult { id: string;, content: string;
   score: number;
-  rankingFactors: {
-    vectorSimilarity: number;
-    documentRecency: number;
+  rankingFactors: { vectorSimilarity: number;, documentRecency: number;
     userPreference: number;
     contextRelevance: number;
     entityOverlap: number;
@@ -62,7 +58,7 @@ export class VectorRankingService {
       documentType = 'document',
       includeExplanation = false,
       personalized = false,
-      userId,
+      userId
     } = options;
 
     // Generate query embedding
@@ -91,7 +87,7 @@ export class VectorRankingService {
       vectorResults.map(async (result: any) => {
         const rankingFactors = await this.calculateRankingFactors(result, queryEmbedding, queryEntities, {
           personalized,
-          userId,
+          userId
         });
         // Calculate final score (weighted combination)
         const finalScore = this.calculateFinalScore(rankingFactors);
@@ -101,7 +97,7 @@ export class VectorRankingService {
           score: finalScore,
           rankingFactors,
           metadata: result.metadata || {},
-          explanation: includeExplanation ? this.generateExplanation(rankingFactors) : undefined,
+          explanation: includeExplanation ? this.generateExplanation(rankingFactors) : undefined
         } as RankedSearchResult;
       })
     );
@@ -132,7 +128,7 @@ export class VectorRankingService {
         documentId: dv.documentId,
         content: dv.content,
         metadata: dv.metadata,
-        similarity: sql<number>`1 - (${dv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
+        similarity: sql<number>`1 - (${dv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`
       })
       .from(dv)
       .orderBy(sql`${dv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`)
@@ -151,7 +147,7 @@ export class VectorRankingService {
         evidenceId: ev.evidenceId,
         content: ev.content,
         metadata: ev.metadata,
-        similarity: sql<number>`1 - (${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
+        similarity: sql<number>`1 - (${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`
       })
       .from(ev)
       .orderBy(sql`${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`)
@@ -170,8 +166,7 @@ export class VectorRankingService {
         caseId: cv.caseId,
         content: cv.summary,
         confidence: cv.confidence,
-        similarity: sql<number>`1 - (${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
-      })
+        similarity: sql<number>`1 - (${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)' })
       .from(cv)
       .orderBy(sql`${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
@@ -185,7 +180,7 @@ export class VectorRankingService {
     result: any,
     queryEmbedding: number[],
     queryEntities: string[],
-    options: { personalized: boolean; userId?: string }
+    options: {, personalized: boolean; userId?: string }
   ): Promise<RankedSearchResult['rankingFactors']> {
     // 1. Vector similarity (already calculated)
     const vectorSimilarity = result.similarity ?? 0;
@@ -212,7 +207,7 @@ export class VectorRankingService {
       documentRecency,
       userPreference,
       contextRelevance,
-      entityOverlap,
+      entityOverlap
     };
   }
 
@@ -225,7 +220,7 @@ export class VectorRankingService {
       documentRecency: 0.1,
       userPreference: 0.2,
       contextRelevance: 0.2,
-      entityOverlap: 0.1,
+      entityOverlap: 0.1
     };
     return (Object.keys(weights) as Array<keyof typeof weights>).reduce((score, factor) => {
       // @ts-ignore access by key
@@ -330,7 +325,7 @@ export class VectorRankingService {
       query,
       embedding,
       resultCount: 0,
-      clickedResults: [],
+      clickedResults: []
     });
   }
 
@@ -342,7 +337,7 @@ export class VectorRankingService {
     const recommendations = results.slice(0, 5).map(r => ({
       id: r.id,
       score: r.score,
-      metadata: r.metadata,
+      metadata: r.metadata
     }));
     await db.insert(rc).values({
       userId,
@@ -386,7 +381,7 @@ export class VectorRankingService {
       limit: 10,
       documentType: type,
       personalized: true,
-      userId,
+      userId
     });
   }
 

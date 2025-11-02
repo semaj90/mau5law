@@ -12,29 +12,21 @@ import { Worker } from 'worker_threads';
 import { performance } from 'perf_hooks';
 // SIMD instruction sets we can leverage
 type SIMDInstructionSet = 'SSE2' | 'SSE4' | 'AVX' | 'AVX2' | 'AVX512';
-interface SIMDParserConfig {
-  vectorDimensions: number;
-  batchSize: number;
+interface SIMDParserConfig { vectorDimensions: number;, batchSize: number;
   enabledInstructions: SIMDInstructionSet[];
   memoryAlignment: number;
   parallelParsers: number;
 }
-interface VectorParseResult {
-  vectors: Float32Array[];
-  metadata: ParsedMetadata[];
+interface VectorParseResult { vectors: Float32Array[];, metadata: ParsedMetadata[];
   parseStatistics: ParseStatistics;
 }
-interface ParsedMetadata {
-  documentId: string;
-  embeddingHash: string;
+interface ParsedMetadata { documentId: string;, embeddingHash: string;
   dimensions: number;
   norm: number;
   timestamp: number;
   parseTime: number;
 }
-interface ParseStatistics {
-  totalVectors: number;
-  parseTime: number;
+interface ParseStatistics { totalVectors: number;, parseTime: number;
   vectorsPerSecond: number;
   memoryUsed: number;
   simdUtilization: number;
@@ -52,7 +44,7 @@ export class SIMDVectorJsonParser {
       enabledInstructions: this.detectSIMDCapabilities(),
       memoryAlignment: 32, // 256-bit alignment for AVX
       parallelParsers: Math.min(4, Math.ceil(require('os').cpus().length / 2)),
-      ...config,
+      ...config
     };
     this.initializeMemoryPool();
     this.initializeParseWorkers();
@@ -87,7 +79,7 @@ export class SIMDVectorJsonParser {
         vectorsPerSecond,
         memoryUsed: process.memoryUsage().heapUsed / 1024 / 1024,
         simdUtilization: this.calculateSIMDUtilization(chunkResults),
-        cacheHitRate: this.calculateCacheHitRate(totalVectors),
+        cacheHitRate: this.calculateCacheHitRate(totalVectors)
       };
       console.log(`⚡ SIMD JSON Parse: ${totalVectors} vectors in ${parseTime.toFixed(2)}ms`);
       console.log(`📊 Throughput: ${vectorsPerSecond.toFixed(0)} vectors/second`);
@@ -218,7 +210,7 @@ export class SIMDVectorJsonParser {
         }
         simdOperations++;
       } catch (error) {
-        console.warn(`⚠️ Failed to parse vector at index ${i}:`, error);
+        console.warn(`⚠️ Failed to parse vector at index ${i}: ', error);
         // Continue with null vector or default
       }
     }
@@ -228,7 +220,7 @@ export class SIMDVectorJsonParser {
       metadata,
       parseTime,
       simdOperations,
-      chunkIndex,
+      chunkIndex
     };
   }
   /**
@@ -383,7 +375,7 @@ export class SIMDVectorJsonParser {
         memoryUsed: 0, // Will be filled by caller
         simdUtilization: 0, // Will be filled by caller
         cacheHitRate: 0, // Will be filled by caller
-      },
+      }
     };
   }
   /**
@@ -425,7 +417,7 @@ export class SIMDVectorJsonParser {
       enabledSIMD: this.config.enabledInstructions,
       vectorDimensions: this.config.vectorDimensions,
       batchSize: this.config.batchSize,
-      parallelParsers: this.config.parallelParsers,
+      parallelParsers: this.config.parallelParsers
     };
   }
   /**
@@ -450,16 +442,12 @@ export class SIMDVectorJsonParser {
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
-interface ChunkParseResult {
-  vectors: Float32Array[];
-  metadata: ParsedMetadata[];
+interface ChunkParseResult { vectors: Float32Array[];, metadata: ParsedMetadata[];
   parseTime: number;
   simdOperations: number;
   chunkIndex: number;
 }
-interface SIMDParserStatistics {
-  cacheSize: number;
-  memoryPoolSize: number;
+interface SIMDParserStatistics { cacheSize: number;, memoryPoolSize: number;
   enabledSIMD: SIMDInstructionSet[];
   vectorDimensions: number;
   batchSize: number;
@@ -471,5 +459,5 @@ export {
   ParsedMetadata,
   ParseStatistics,
   SIMDInstructionSet,
-  SIMDParserConfig,
+  SIMDParserConfig
 };

@@ -18,9 +18,7 @@ const NES_CACHE_CONSTRAINTS = {
   PALETTE_MEMORY: 32, // Color palette memory - Theme Cache (32B)
   TOTAL_BUDGET: 59424, // Total NES-inspired budget (~58KB)
 } as const;
-export interface NESCacheState {
-  id: string;
-  type: 'yorha-component' | 'gpu-animation' | 'canvas-state' | 'webgpu-shader' | 'ui-theme';
+export interface NESCacheState { id: string;, type: 'yorha-component' | 'gpu-animation' | 'canvas-state' | 'webgpu-shader' | 'ui-theme';
   data: any;
   priority: number;
   memoryUsage: number;
@@ -30,17 +28,13 @@ export interface NESCacheState {
   animations?: string[];
   uiComponents?: string[];
 }
-export interface YoRHaUICache {
-  component: string;
-  props: { [key: string]: any };
+export interface YoRHaUICache { component: string;, props: { [key: string]: any };
   styles: { [key: string]: any };
   animations: string[];
   gpu_buffers: ArrayBuffer[];
   webgpu_pipeline?: GPUComputePipeline;
 }
-export interface WebGPUCacheEntry {
-  shaderCode: string;
-  pipeline: GPUComputePipeline;
+export interface WebGPUCacheEntry { shaderCode: string;, pipeline: GPUComputePipeline;
   bindGroups: GPUBindGroup[];
   buffers: Map<string, GPUBuffer>;
   memoryFootprint: number;
@@ -69,13 +63,12 @@ export class NESCacheOrchestrator {
       compressionThreshold: 1024,
       defaultTTL: 300000, // 5 minutes (short for NES-style efficiency)
       maxMemoryUsage: NES_CACHE_CONSTRAINTS.TOTAL_BUDGET,
-      layers: {
-        memory: { enabled: true, priority: 1, capacity: 1000, ttl: 300000 },
+      layers: { memory: {, enabled: true, priority: 1, capacity: 1000, ttl: 300000 },
         redis: { enabled: true, priority: 2, capacity: 10000, ttl: 1800000 },
         postgres: { enabled: true, priority: 3, capacity: 100000, ttl: 3600000 },
         webgpu: { enabled: true, priority: 4, capacity: 500, ttl: 600000 },
-        filesystem: { enabled: true, priority: 5, capacity: 50000, ttl: 3600000 },
-      },
+        filesystem: { enabled: true, priority: 5, capacity: 50000, ttl: 3600000 }
+      }
     });
     this.initializeWebGPU();
     this.setupEventListeners();
@@ -97,7 +90,7 @@ export class NESCacheOrchestrator {
       PPU_MEMORY: 0,
       SPRITE_MEMORY: 0,
       PALETTE_MEMORY: 0,
-      TOTAL_BUDGET: 0,
+      TOTAL_BUDGET: 0
     };
   }
   private async initializeWebGPU(): Promise<void> {
@@ -162,15 +155,14 @@ export class NESCacheOrchestrator {
       priority: options.priority || 1,
       memoryUsage: estimatedSize,
       lastAccessed: Date.now(),
-      nesRegion: 'CHR_ROM',
-    };
+      nesRegion: `CHR_ROM` };
     this.allocateToNESRegion('CHR_ROM', nesState);
     // Also cache in advanced cache manager
     await this.advancedCache.set(spriteKey, optimizedStates, {
       strategy: 'adaptive',
       ttl: 600000, // 10 minutes
       layers: ['memory', 'redis'],
-      compress: options.compression,
+      compress: options.compression
     });
     console.log(`✅ Cached sprite sheet: ${spriteKey} (${estimatedSize} bytes)`);
     return spriteKey;
@@ -197,11 +189,9 @@ export class NESCacheOrchestrator {
   // =============================================================================
   // YORHA UI COMPONENT CACHING
   // =============================================================================
-  async cacheYoRHaComponent(componentData: {
-    name: string;
-    props: { [key: string]: any };
+  async cacheYoRHaComponent(componentData: { name: string;, props: { [key: string]: any };
     styles: { [key: string]: any };
-    animations: string[];
+   , animations: string[];
     webgpuShaders?: string[];
   }): Promise<void> {
     const componentKey = `yorha_${componentData.name}`;
@@ -211,14 +201,13 @@ export class NESCacheOrchestrator {
     if (this.gpuDevice && componentData.webgpuShaders?.length) {
       try {
         const shaderModule = this.gpuDevice.createShaderModule({
-          code: await this.generateYoRHaShader(componentData),
+          code: await this.generateYoRHaShader(componentData)
         });
         webgpuPipeline = this.gpuDevice.createComputePipeline({
           layout: 'auto',
           compute: {
-            module: shaderModule,
-            entryPoint: 'main',
-          },
+           , module: shaderModule,
+            entryPoint: `main` }
         });
         // Create component-specific GPU buffers
         const propsBuffer = this.createGPUBufferFromProps(componentData.props);
@@ -233,7 +222,7 @@ export class NESCacheOrchestrator {
       styles: componentData.styles,
       animations: componentData.animations,
       gpu_buffers: gpuBuffers,
-      webgpu_pipeline: webgpuPipeline,
+      webgpu_pipeline: webgpuPipeline
     };
     this.yorhaUICache.set(componentKey, cacheEntry);
     // Cache in NES memory (PRG_ROM for component templates)
@@ -247,7 +236,7 @@ export class NESCacheOrchestrator {
         memoryUsage: size,
         lastAccessed: Date.now(),
         nesRegion: 'PRG_ROM',
-        uiComponents: [componentData.name],
+        uiComponents: [componentData.name]
       };
       this.allocateToNESRegion('PRG_ROM', nesState);
     }
@@ -255,7 +244,7 @@ export class NESCacheOrchestrator {
     await this.basicCache.set(componentKey, cacheEntry, {
       ttl: 1800000, // 30 minutes
       priority: 'medium',
-      tags: ['yorha-ui', componentData.name],
+      tags: ['yorha-ui', componentData.name]
     });
     console.log(`✅ Cached YoRHa component: ${componentData.name}`);
   }
@@ -273,12 +262,10 @@ export class NESCacheOrchestrator {
   // =============================================================================
   // GPU ANIMATION CACHING
   // =============================================================================
-  async cacheGPUAnimation(animationData: {
-    id: string;
-    type: string;
+  async cacheGPUAnimation(animationData: { id: string;, type: string;
     shaderCode: string;
     uniforms: { [key: string]: any };
-    duration: number;
+   , duration: number;
     legalContext?: any;
   }): Promise<void> {
     const animationKey = `gpu_anim_${animationData.id}`;
@@ -293,7 +280,7 @@ export class NESCacheOrchestrator {
         memoryUsage: size,
         lastAccessed: Date.now(),
         nesRegion: 'SPRITE_MEMORY',
-        animations: [animationData.id],
+        animations: [animationData.id]
       };
       this.allocateToNESRegion('SPRITE_MEMORY', nesState);
     }
@@ -310,9 +297,7 @@ export class NESCacheOrchestrator {
   // =============================================================================
   // WEBGPU SHADER CACHING
   // =============================================================================
-  async cacheWebGPUShader(shaderData: {
-    name: string;
-    computeShader: string;
+  async cacheWebGPUShader(shaderData: {, name: string;, computeShader: string;
     vertexShader?: string;
     fragmentShader?: string;
     bindGroupLayout?: GPUBindGroupLayoutDescriptor;
@@ -322,22 +307,21 @@ export class NESCacheOrchestrator {
     try {
       // Create shader modules
       const computeModule = this.gpuDevice.createShaderModule({
-        code: shaderData.computeShader,
+        code: shaderData.computeShader
       });
       // Create compute pipeline
       const pipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: computeModule,
-          entryPoint: 'main',
-        },
+         , module: computeModule,
+          entryPoint: `main` }
       });
       // Create buffers for shader data
       const buffers = new Map<string, GPUBuffer>();
       // Create uniform buffer for shader parameters
       const uniformBuffer = this.gpuDevice.createBuffer({
         size: 256, // 256 bytes for uniforms
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
       buffers.set('uniforms', uniformBuffer);
       const cacheEntry: WebGPUCacheEntry = {
@@ -358,7 +342,7 @@ export class NESCacheOrchestrator {
           memoryUsage: cacheEntry.memoryFootprint,
           lastAccessed: Date.now(),
           nesRegion: 'PPU_MEMORY',
-          gpuBuffers: [uniformBuffer],
+          gpuBuffers: [uniformBuffer]
         };
         this.allocateToNESRegion('PPU_MEMORY', nesState);
       }
@@ -469,8 +453,8 @@ export class NESCacheOrchestrator {
           ...state.metadata,
           nesOptimized: true,
           compressionApplied: !!options.compression,
-          lodLevels: options.lodLevels || 1,
-        },
+          lodLevels: options.lodLevels || 1
+        }
       };
     });
   }
@@ -548,7 +532,7 @@ export class NESCacheOrchestrator {
     await this.advancedCache.start();
     console.log('🎮 NES Cache Orchestrator started');
     console.log(`📊 Memory budget: ${NES_CACHE_CONSTRAINTS.TOTAL_BUDGET} bytes`);
-    console.log(`🎯 WebGPU: ${this.gpuDevice ? 'Available' : 'Not available'}`);
+    console.log(`🎯 WebGPU: ${this.gpuDevice ? 'Available' : `Not available` }`);
   }
   getMemoryStats() {
     return {
@@ -561,14 +545,13 @@ export class NESCacheOrchestrator {
         RAM: `${this.memoryUsage.RAM}/${NES_CACHE_CONSTRAINTS.RAM}`,
         PPU_MEMORY: `${this.memoryUsage.PPU_MEMORY}/${NES_CACHE_CONSTRAINTS.PPU_MEMORY}`,
         SPRITE_MEMORY: `${this.memoryUsage.SPRITE_MEMORY}/${NES_CACHE_CONSTRAINTS.SPRITE_MEMORY}`,
-        PALETTE_MEMORY: `${this.memoryUsage.PALETTE_MEMORY}/${NES_CACHE_CONSTRAINTS.PALETTE_MEMORY}`,
-      },
+        PALETTE_MEMORY: `${this.memoryUsage.PALETTE_MEMORY}/${NES_CACHE_CONSTRAINTS.PALETTE_MEMORY}` },
       caches: {
         spritesheets: this.spritesheetCache.size,
         yorhaComponents: this.yorhaUICache.size,
         animations: this.animationCache.size,
-        webgpuShaders: this.webgpuCache.size,
-      },
+        webgpuShaders: this.webgpuCache.size
+      }
     };
   }
   async clearRegion(region: keyof typeof NES_CACHE_CONSTRAINTS): Promise<void> {

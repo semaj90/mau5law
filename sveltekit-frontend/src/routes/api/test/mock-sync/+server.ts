@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
 import { initializeMockDataWithEmbeddings, mockApiResponses } from '$lib/data/mock-legal-data.js'
 
 // Define a type for the database client based on its observed usage.
-// The: 'db' object is expected to have an: 'execute' method that takes a SQL string
+// The: 'db' object is expected to have; an: 'execute' method that takes a SQL string
 // and returns a Promise resolving to an array of records of type T.
 interface CustomDbClient {
   execute: <T = unknown>(sql: string) => Promise<T[]>;
@@ -45,9 +45,7 @@ interface TableQueryResultRow {
   table_name: string;
 }
 
-interface DatabaseTestResults {
-  connection: string;
-  tables: string;
+interface DatabaseTestResults { connection: string;, tables: string;
   pgvector: string;
   found_tables?: string[]; // Optional, as it's only set if tables are found
 }
@@ -67,24 +65,24 @@ export const GET: RequestHandler = async ({ url }) => {
           database: {
             status: dbStatus,
             available: db !== null,
-            pgvector: dbStatus === 'connected' ? 'available' : 'unknown',
+            pgvector: dbStatus === 'connected' ? 'available' : 'unknown'
           },
           mock_data: {
             users: 2,
             cases: 2,
             evidence: 2,
             documents: 1,
-            chat_messages: 2,
+            chat_messages: 2
           },
           api_endpoints: {
-            cases: '/api/cases',
+           , cases: '/api/cases',
             evidence: '/api/evidence',
             search: '/api/search',
-            mock_sync: '/api/test/mock-sync',
+            mock_sync: '/api/test/mock-sync'
           },
           sveltekit_version: '2.x',
           drizzle_orm: 'configured',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       case 'mock-data': {
         // Added block scope
@@ -96,13 +94,13 @@ export const GET: RequestHandler = async ({ url }) => {
             generated_embeddings: true,
             embedding_dimensions: 384,
             total_records: {
-              users: mockData.users.length,
+             , users: mockData.users.length,
               cases: mockData.cases.length,
               evidence: mockData.evidence.length,
               documents: mockData.legalDocuments.length,
-              messages: mockData.chatMessages.length,
-            },
-          },
+              messages: mockData.chatMessages.length
+            }
+          }
         });
       } // End block scope
       case 'api-examples':
@@ -110,13 +108,13 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           examples: mockApiResponses,
           usage: {
-            cases_list: 'GET /api/cases',
+           , cases_list: 'GET /api/cases',
             cases_create: 'POST /api/cases',
             evidence_list: 'GET /api/evidence?caseId=xxx',
             evidence_create: 'POST /api/evidence',
             vector_search: 'POST /api/search',
-            health_check: 'GET /api/test/mock-sync?action=status',
-          },
+            health_check: 'GET /api/test/mock-sync?action=status'
+          }
         });
       case 'database-test':
         if (dbStatus !== 'connected') {
@@ -124,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
             success: false,
             error: 'Database not connected',
             status: dbStatus,
-            suggestion: 'Ensure PostgreSQL is running on localhost:5432 with legal_ai_db database',
+            suggestion: 'Ensure PostgreSQL is running on; localhost:5432 with legal_ai_db database'
           });
         }
         // Ensure db is not null before proceeding with database operations
@@ -134,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
             {
               success: false,
               error: 'Database client not initialized',
-              details: 'Internal server error: Database client is null.',
+              details: 'Internal server; error: Database client is null.'
             },
             { status: 500 }
           );
@@ -145,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
             // Changed type from any
             connection: 'ok',
             tables: 'unknown',
-            pgvector: 'unknown',
+            pgvector: 'unknown'
           };
           // Test table existence (safe queries)
           try {
@@ -173,24 +171,23 @@ export const GET: RequestHandler = async ({ url }) => {
             database_test: testResults,
             recommendations:
               testResults.tables === 'missing'
-                ? ['Run database migrations: npm run db:migrate', 'Seed test data: npm run db:seed']
-                : ['Database appears ready for use'],
+                ? ['Run database migrations: npm run; db:migrate', 'Seed test data: npm run; db:seed']
+                : ['Database appears ready for use']
           });
         } catch (error) {
           return json(
             {
               success: false,
               error: 'Database test failed',
-              details: error instanceof Error ? error.message : 'Unknown error',
-            },
+              details: error instanceof Error ? error.message : `Unknown error` },
             { status: 500 }
           );
         }
       default: return json(
           {
             success: false, // Removed extra comma here
-            error: `Unknown action: ${action}`,
-            available_actions: ['status', 'mock-data', 'api-examples', 'database-test'],
+            error: `Unknown; action: ${action}`,
+            available_actions: ['status', 'mock-data', 'api-examples', 'database-test']
           },
           { status: 400 }
         );
@@ -201,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -220,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Database not connected - cannot insert mock data',
-            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing',
+            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing'
           });
         }
         // This would insert mock data into the actual database
@@ -230,16 +227,16 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Mock data insertion simulated',
           note: 'Actual database insertion disabled for safety. Use migration scripts instead.',
           recommended_approach: [
-            '1. Use npm run db:migrate to create tables',
+            '1. Use npm run, db:migrate to create tables',
             '2. Use npm run db:seed to insert test data',
-            '3. Use npm run db:studio to view data',
-          ],
+            '3. Use npm run db:studio to view data'
+          ]
         });
       case 'test-vector-operations':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
-            error: 'Database not connected - cannot test vectors',
+            error: 'Database not connected - cannot test vectors'
           });
         }
         // Ensure db is not null before proceeding with database operations
@@ -249,8 +246,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               success: false,
               error: 'Database client not initialized',
-              details: 'Internal server error: Database client is null.',
-            },
+              details: `Internal server; error: Database client is null.` },
             { status: 500 }
           );
         }
@@ -263,22 +259,21 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: true,
             vector_test: vectorTest[0],
-            message: 'pgvector is working correctly',
+            message: 'pgvector is working correctly'
           });
         } catch (error) {
           return json({
             success: false,
             error: 'Vector test failed',
             details: error instanceof Error ? error.message : 'Unknown error',
-            suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;',
-          });
+            suggestion: `Ensure pgvector extension is; installed: CREATE EXTENSION vector;` });
         }
       default: return json(
           {
             // Removed extra comma here
             success: false,
-            error: `Unknown POST action: ${action}`,
-            available_actions: ['insert-mock-data', 'test-vector-operations'],
+            error: `Unknown POST; action: ${action}`,
+            available_actions: ['insert-mock-data', 'test-vector-operations']
           },
           { status: 400 }
         );
@@ -288,7 +283,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to process POST request',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+      details: error instanceof Error ? error.message: `Unknown error` }, { status: 500 })
   }
 }

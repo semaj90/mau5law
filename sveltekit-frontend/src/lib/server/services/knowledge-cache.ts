@@ -55,7 +55,7 @@ if (!globalRef.knowledgeCache) {
       process.env.OPENAI_KEY ??
       process.env.ANTHROPIC_API_KEY ??
       undefined,
-    transformersModel: process.env.KGCL_TRANSFORMER_MODEL,
+    transformersModel: process.env.KGCL_TRANSFORMER_MODEL
   });
   globalRef.knowledgeCache = store;
   globalRef.knowledgeCacheReady = initializeStore(store);

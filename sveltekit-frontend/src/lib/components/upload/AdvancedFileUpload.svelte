@@ -70,9 +70,9 @@
   let isUploading = $state<boolean>(false);
   let totalProgress = $state<number>(0);
   let uploadQueue: FileUploadItem[] = $state([]);
-  let mediaRecorder: MediaRecorder | null = $state(null);
+  let mediaRecorder: MediaRecorder | null = null;
   let isRecording = $state<boolean>(false);
-  let recordingStream: MediaStream | null = $state(null);
+  let recordingStream: MediaStream | null = null;
   interface FileUploadItem {
     id: string;
     file: Fil;

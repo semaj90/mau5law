@@ -7,23 +7,17 @@ interface HelloData {
   message: string;
 }
 
-interface SystemMetricsData {
-  cpu: number;
-  memMB: number;
+interface SystemMetricsData { cpu: number;, memMB: number;
   vectorQueriesPerMin: number;
   gpuQueueDepth: number;
   timestamp: number;
 }
 
-interface HelloEnvelope {
-  type: 'sse_hello';
-  data: HelloData;
+interface HelloEnvelope { type: 'sse_hello';, data: HelloData;
   ts: string;
 }
 
-interface SystemMetricsEnvelope {
-  type: 'system_metrics';
-  data: SystemMetricsData;
+interface SystemMetricsEnvelope { type: 'system_metrics';, data: SystemMetricsData;
   ts: string;
 }
 
@@ -43,14 +37,14 @@ export const GET: RequestHandler = ({ url }) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
-      send({ type: 'sse_hello', data: { message: 'YoRHa stream online' }, ts: new Date().toISOString() });
+      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online' }, ts: new Date().toISOString() });
 
       intervalId = setInterval(
         () =>
           send({
             type: 'system_metrics',
             data: collectMetrics(),
-            ts: new Date().toISOString(),
+            ts: new Date().toISOString()
           }),
         Math.max(1000, intervalMs)
       );
@@ -61,7 +55,7 @@ export const GET: RequestHandler = ({ url }) => {
       if (intervalId) clearInterval(intervalId);
       if (keepAliveId) clearInterval(keepAliveId);
       console.log('Client disconnected. SSE intervals cleared.');
-    },
+    }
   });
 
   return new Response(stream, {
@@ -70,8 +64,7 @@ export const GET: RequestHandler = ({ url }) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       Connection: 'keep-alive',
-      'Transfer-Encoding': 'chunked',
-    },
+      'Transfer-Encoding': `chunked` }
   });
 };
 
@@ -82,7 +75,7 @@ function collectMetrics(): SystemMetricsData {
     memMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
     vectorQueriesPerMin: Math.floor(Math.random() * 20),
     gpuQueueDepth: Math.floor(Math.random() * 4),
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 }
 // (End of file)

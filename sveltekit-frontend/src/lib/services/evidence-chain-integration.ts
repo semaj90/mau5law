@@ -9,24 +9,18 @@ import type { EvidenceItem } from '../types/api.js';
 import { OllamaEmbeddingService } from './ollamaEmbeddingService'; // NEW: Import centralized Ollama embedding service
 import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // NEW: Ensure getOllamaEndpoint is imported for potential direct use or clarity
 
-export interface RecursiveEvidenceChainResult {
-  evidenceId: string;
-  depth: number;
+export interface RecursiveEvidenceChainResult { evidenceId: string;, depth: number;
   chainOfCustody: ChainEntry[];
    RecursiveEvidenceChainResult[];
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   confidence: number;
-  metadata: {
-    processingTime: number;
-    recursionPath: string[];
+  metadata: { processingTime: number;, recursionPath: string[];
     analysisTimestamp: string;
   };
 }
 
-export interface ChainEntry {
-  officer_id: string;
-  officer_name: string;
+export interface ChainEntry { officer_id: string;, officer_name: string;
   timestamp: string;
   action: string;
   location: string;
@@ -35,9 +29,7 @@ export interface ChainEntry {
   equipment_used?: string;
 }
 
-export interface EvidenceRelationship {
-  relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';
-  strength: number;
+export interface EvidenceRelationship { relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';, strength: number;
   description: string;
   legalSignificance: 'critical' | 'high' | 'medium' | 'low';
   supportingEvidence: string[];
@@ -57,7 +49,7 @@ export class EvidenceChainIntegrationService {
   private messageId = 0;
   private pendingMessages = new Map<
     string,
-    { resolve: (value: any) => void; reject: (err: any) => void; timeout?: number }
+    { resolve: (value: any) => void;, reject: (err: any) => void; timeout?: number }
   >();
   private ollamaEmbeddingService: OllamaEmbeddingService; // NEW: Instance of OllamaEmbeddingService
 
@@ -71,7 +63,7 @@ export class EvidenceChainIntegrationService {
 
     try {
       this.worker = new Worker('/workers/recursive-evidence-chain-worker.js', {
-        type: 'module',
+        type: 'module'
       });
 
       this.worker.onmessage = (event: MessageEvent) => {
@@ -125,7 +117,7 @@ export class EvidenceChainIntegrationService {
           type: 'PROCESS_EVIDENCE_CHAIN',
           evidenceId,
           options,
-          messageId,
+          messageId
         });
       }).then(({ result }: any) => result as RecursiveEvidenceChainResult);
     }
@@ -144,7 +136,7 @@ export class EvidenceChainIntegrationService {
     options: RecursiveAnalysisOptions = {}
   ): Promise<RecursiveEvidenceChainResult> {
     try {
-      const resp = await fetch(`/api/evidence/${encodeURIComponent(evidenceId)}`, { method: 'GET' });
+      const resp = await fetch(`/api/evidence/${encodeURIComponent(evidenceId)}`, { method: `GET` });
       if (!resp.ok) throw new Error(`Failed to fetch evidence ${evidenceId}: ${resp.status}`);
       const item: any = await resp.json();
 
@@ -165,8 +157,8 @@ export class EvidenceChainIntegrationService {
         metadata: {
           processingTime,
           recursionPath: [evidenceId],
-          analysisTimestamp: new Date().toISOString(),
-        },
+          analysisTimestamp: new Date().toISOString()
+        }
       };
 
       return result;
@@ -226,14 +218,14 @@ export class EvidenceChainIntegrationService {
               name: 'TEXT',
               shape: [1],
               datatype: 'BYTES',
-              data: [String(text)],
+              data: [String(text)]
             },
-          ],
+          ]
         };
         const r = await fetch(inferUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(payload)
         });
         if (r.ok) {
           const json = await r.json();
@@ -290,7 +282,7 @@ export class EvidenceChainIntegrationService {
           // prefer SharedArrayBuffer-based worker for multi-core concurrency if available
           const sab = typeof SharedArrayBuffer !== 'undefined' ? new SharedArrayBuffer(1024) : null;
           const workerUrl = new URL('../workers/embeddingWorker.js', import.meta.url);
-          const worker = new Worker(workerUrl, { type: 'module' });
+          const worker = new Worker(workerUrl, { type: `module` });
           const embedding = await new Promise<number[]>(resolve => {
             const timer = setTimeout(() => {
               try {
@@ -337,7 +329,7 @@ export class EvidenceChainIntegrationService {
   /**
    * Compute clustering assignments using TensorRT (Triton) server when available,
    * otherwise fall back to a browser-side WebGPU k-means worker.
-   * Accepts embeddings: number[][] and returns clusters: Cluster[] (same format as simpleCluster output)
+   * Accepts embeddings: number[][] and returns; clusters: Cluster[] (same format as simpleCluster output)
    */
   async computeClustering(embeddings: number[][], documents: SearchDoc[], numClusters = 5): Promise<Cluster[]> {
     if (!Array.isArray(embeddings) || embeddings.length === 0) return this.simpleCluster([], documents, numClusters);
@@ -357,20 +349,20 @@ export class EvidenceChainIntegrationService {
               shape: [embeddings.length, embeddings[0].length],
               datatype: 'FP32',
               // many Triton adapters accept nested numeric arrays
-              data: embeddings,
+              data: embeddings
             },
             {
               name: 'K',
               shape: [1],
               datatype: 'INT32',
-              data: [numClusters],
+              data: [numClusters]
             },
-          ],
+          ]
         };
         const r = await fetch(inferUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(payload)
         });
         if (r.ok) {
           const json = await r.json();
@@ -383,7 +375,7 @@ export class EvidenceChainIntegrationService {
               clusters[ci].items.push({
                 document: documents[idx],
                 embedding: embeddings[idx],
-                clusterId: ci,
+                clusterId: ci
               });
             });
             return clusters;
@@ -469,9 +461,9 @@ export class EvidenceChainIntegrationService {
         // @ts-ignore
         const qdrant = await import('qdrant-wasm').catch(() => null);
         if (qdrant && typeof qdrant.search === 'function') {
-          const localResults: Array<{ id: string; score: number; payload?: any }> = await qdrant.search(qEmbedding, {
+          const localResults: Array<{ id: string;, score: number; payload?: any }> = await qdrant.search(qEmbedding, {
             topK,
-            filterHints: filters,
+            filterHints: filters
           });
           const ids = localResults.map(r => r.id);
           if (ids.length) {
@@ -489,7 +481,7 @@ export class EvidenceChainIntegrationService {
       const resp = await fetch(serverTopKEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embedding: qEmbedding, topK, filters }),
+        body: JSON.stringify({, embedding: qEmbedding, topK, filters })
       });
       if (resp.ok) {
         const payload = await resp.json();
@@ -515,7 +507,7 @@ export class EvidenceChainIntegrationService {
       const fallback = await fetch('/api/documents/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: query, topK }),
+        body: JSON.stringify({, q: query, topK })
       });
       if (fallback.ok) {
         const docs: SearchDoc[] = await fallback.json();
@@ -533,7 +525,7 @@ export class EvidenceChainIntegrationService {
       const r = await fetch(docsBulkEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids }),
+        body: JSON.stringify({ ids })
       });
       if (r.ok) {
         const json = await r.json();
@@ -548,7 +540,7 @@ export class EvidenceChainIntegrationService {
   private rankAndSelect(
     queryEmbedding: number[],
     docs: SearchDoc[],
-    candidates: Array<{ id: string; score?: number; embedding?: number[] }>,
+    candidates: Array<{, id: string; score?: number; embedding?: number[] }>,
     topK: number
   ): SearchDoc[] {
     // Build map of embeddings/scores provided by server/candidate list
@@ -601,7 +593,7 @@ export class EvidenceChainIntegrationService {
       if (mDates) mDates.forEach(d => tokens.add(d));
 
       // Capitalized token sequences (simple proper noun detection)
-      const capRegex = /\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]{2,}){0,2})\b/g;
+      const capRegex = /\b([A-Z][a-z]{2}(?:\s+[A-Z][a-z]{2}){0,2})\b/g;
       let m: RegExpExecArray | null;
       while ((m = capRegex.exec(text))) {
         tokens.add(m[1]);
@@ -657,14 +649,10 @@ export class EvidenceChainIntegrationService {
 
 /* Supporting interfaces */
 
-export interface RecursiveOrganizationResult {
-  type: 'recursive_chain';
-  caseId: string;
+export interface RecursiveOrganizationResult { type: 'recursive_chain';, caseId: string;
   hierarchy: EvidenceHierarchyNode[];
   metrics: AnalysisMetrics;
-  metadata: {
-    totalEvidence: number;
-    hierarchicalDepth: number;
+  metadata: { totalEvidence: number;, hierarchicalDepth: number;
     relationshipCount: number;
     confidenceScore: number;
     processingTime: number;
@@ -672,24 +660,18 @@ export interface RecursiveOrganizationResult {
   };
 }
 
-export interface EvidenceHierarchyNode {
-  evidenceId: string;
-  depth: number;
+export interface EvidenceHierarchyNode { evidenceId: string;, depth: number;
   confidence: number;
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   chainOfCustody: ChainEntry[];
    EvidenceHierarchyNode[];
-  metadata: {
-    processingTime: number;
-    recursionPath: string[];
+  metadata: { processingTime: number;, recursionPath: string[];
     analysisTimestamp: string;
   };
 }
 
-export interface AnalysisMetrics {
-  totalRelationships: number;
-  criticalRelationships: number;
+export interface AnalysisMetrics { totalRelationships: number;, criticalRelationships: number;
   averageConfidence: number;
   averageChainCompleteness: number;
   evidenceWithIssues: number;
@@ -700,23 +682,20 @@ export interface SearchDoc {
   id: string;
   title?: string;
   content?: string;
-  chunks?: Array<{ id: string; text: string; metadata?: any }>;
+  chunks?: Array<{ id: string;, text: string; metadata?: any }>;
   metadata?: Record<string, any>;
   embedding?: number[];
   score?: number;
 }
 
-export interface Cluster {
-  clusterId: number;
-  items: Array<{ document: SearchDoc; embedding?: number[]; clusterId: number }>;
+export interface Cluster { clusterId: number;, items: Array<{ document: SearchDoc; embedding?: number[];, clusterId: number }>;
 }
 
 interface RetrievalOptions {
   useLangExtract?: boolean;
   preferLocalQdrant?: boolean;
   serverTopKEndpoint?: string; // e.g. '/api/search/redis-topk'
-  docsBulkEndpoint?: string; // e.g. '/api/documents/bulk'
-}
+  docsBulkEndpoint?: string; // e.g. '/api/documents/bulk` }
 
 /* Create singleton instance for use across the application */
 export const evidenceChainService = new EvidenceChainIntegrationService();

@@ -1,6 +1,4 @@
-export interface CacheConfiguration {
-  maxSize: number;
-  ttl: number;
+export interface CacheConfiguration { maxSize: number;, ttl: number;
   compression: boolean;
   persistence: boolean;
 }
@@ -15,9 +13,7 @@ export interface CacheLayerInterface<T = unknown> {
 }
 
 // internal entry shape (value can be T or compressed string)
-type CacheEntry<T> = {
-  value: T | string;
-  expiresAt: number | null;
+type CacheEntry<T> = { value: T | string;, expiresAt: number | null;
   size: number;
 };
 
@@ -36,7 +32,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       maxSize: config?.maxSize ?? 50 * 1024 * 1024,
       ttl: config?.ttl ?? 60 * 60 * 1000,
       compression: !!config?.compression,
-      persistence: !!config?.persistence,
+      persistence: !!config?.persistence
     };
     console.log('🗄️ Advanced cache manager initialized with config:', this.config);
     if (this.config.persistence && typeof localStorage !== 'undefined') {
@@ -127,7 +123,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       const payload = {
         value: entry.value,
         expiresAt: entry.expiresAt,
-        size: entry.size,
+        size: entry.size
       };
       localStorage.setItem(this.storagePrefix + key, JSON.stringify(payload));
     } catch (e) {
@@ -161,7 +157,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
             this.cache.set(key, {
               value: parsed.value as CacheEntry<T>['value'],
               expiresAt: parsed.expiresAt ?? null,
-              size: parsed.size ?? this.byteSizeOf(parsed.value),
+              size: parsed.size ?? this.byteSizeOf(parsed.value)
             });
             this.currentSize += parsed.size ?? this.byteSizeOf(parsed.value);
           } else {

@@ -12,8 +12,6 @@ export const sessions = pgTable("sessions", {
   user_id: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires_at: timestamp("expires_at", {
-    withTimezone: true;
-    mode: "date"
+  expires_at: timestamp("expires_at", { withTimezone: true;, mode: "date"
   }).notNull()
 });

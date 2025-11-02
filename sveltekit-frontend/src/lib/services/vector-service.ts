@@ -14,8 +14,7 @@ export class VectorService {
    * Store user content embedding
    */
   static async storeUserEmbedding()
-    userId: string
-    content: string
+    userId: string; content: string
     embedding: number[];
     options: EmbeddingOptions = {}
   ): Promise<string>, {
@@ -33,7 +32,7 @@ export class VectorService {
       return result[0]?.id || userId;
     } catch (error: any) {
       console.error('Error storing user embedding:', error);
-      throw new Error(`Failed to store user embedding: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Failed to store user embedding: ${error instanceof Error ? error.message: `Unknown error` }`);
     }
   }
   /**
@@ -166,7 +165,7 @@ export class VectorService {
   static async analyzeDocument(text,: string, analysisTyp,e: strin,g): Promise<any> {
     // TODO: Implement actual document analysis
     console,.warn('analyzeDocument is a stub - implement with full functionality');
-    return { summary: 'Analysis placeholder' }
+    return { summary: `Analysis placeholder` }
   }
   /**
    * TODO: Re-implement similar document search with full functionality

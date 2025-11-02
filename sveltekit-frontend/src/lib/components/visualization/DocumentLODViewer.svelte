@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
@@ -143,7 +143,7 @@ if (!browser || !enableWebGPU) return;
     // Implement Canvas2D fallback with NES-style pixelated rendering
     const ctx = canvasElement?.getContext('2d');
     if (ctx) {
-      ctx.imageSmoothingEnabled = $state(false); // Pixelated rendering like NES
+      ctx.imageSmoothingEnabled = false; // Pixelated rendering like NES
       isWebGPUReady = true; // Ready with fallback
     }
   }
@@ -366,7 +366,7 @@ if (!browser || !enableWebGPU) return;
     renderCurrentPage();
   }
   function handleMouseUp(): void {
-    dragState.isDragging = $state(false);
+    dragState.isDragging = false;
   }
   // Wheel zoom handler
   function handleWheel(_event: WheelEvent): void {

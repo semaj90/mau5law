@@ -4,9 +4,7 @@
  */
 import type { ConsolePalette } from './retro-console-palettes';
 import { CONSOLE_PALETTES, applyConsolePalette } from './retro-console-palettes';
-export interface DesignTokens {
-  spacing: {
-    xs: string;
+export interface DesignTokens { spacing: {, xs: string;
     sm: string;
     md: string;
     lg: string;
@@ -14,78 +12,56 @@ export interface DesignTokens {
     '2xl': string;
     '3xl': string;
   }
-  typography: {
-    fontFamily: {
-      mono: string;
+  typography: { fontFamily: {, mono: string;
       sans: string;
       pixel: string;
     }
-    fontSize: {
-      xs: string;
-      sm: string;
+    fontSize: { xs: string;, sm: string;
       base: string;
       lg: string;
       xl: string;
       '2xl': string;
       '3xl': string;
     }
-    lineHeight: {
-      tight: string;
-      normal: string;
+    lineHeight: { tight: string;, normal: string;
       relaxed: string;
     }
   }
-  borderRadius: {
-    none: string;
-    sm: string;
+  borderRadius: { none: string;, sm: string;
     md: string;
     lg: string;
     pixel: string;
   }
-  shadows: {
-    sm: string;
-    md: string;
+  shadows: { sm: string;, md: string;
     lg: string;
     pixel: string;
     neon: string;
   }
-  animations: {
-    duration: {
-      fast: string;
+  animations: { duration: {, fast: string;
       normal: string;
       slow: string;
     }
-    easing: {
-      linear: string;
-      easeIn: string;
+    easing: { linear: string;, easeIn: string;
       easeOut: string;
       easeInOut: string;
     }
   }
 }
-export interface CustomTheme extends DesignTokens {
-  name: string;
-  palette: ConsolePalette;
+export interface CustomTheme extends DesignTokens { name: string;, palette: ConsolePalette;
   mode: 'light' | 'dark' | 'retro';
-  effects: {
-    pixelatedBorders: boolean;
-    scanlines: boolean;
+  effects: { pixelatedBorders: boolean;, scanlines: boolean;
     crtEffect: boolean;
     glowEffects: boolean;
   }
 }
 // Base design tokens (NES-inspired minimal design)
-export const BASE_DESIGN_TOKENS: DesignTokens = {
-  spacing: {
-    xs: '0.25rem',    // 4px
+export const BASE_DESIGN_TOKENS: DesignTokens = { spacing: {, xs: '0.25rem',    // 4px
     sm: '0.5rem',     // 8px
     md: '1rem',       // 16px
     lg: '1.5rem',     // 24px
     xl: '2rem',       // 32px: '2xl': '3rem',    // 48px: '3xl': '4rem'     // 64px
   },
-  typography: {
-    fontFamily: {
-      mono: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
+  typography: { fontFamily: {, mono: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
       sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       pixel: '"Press Start 2P", "Courier New", monospace'
     },
@@ -116,9 +92,7 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
     pixel: '2px 2px 0 rgba(0, 0, 0, 0.8)',
     neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor'
   },
-  animations: {
-    duration: {
-      fast: '150ms',
+  animations: { duration: {, fast: '150ms',
       normal: '300ms',
       slow: '500ms'
     },
@@ -131,16 +105,14 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
   }
 }
 // Predefined theme configurations
-export const THEME_PRESETS = {
-  nesClassic: {
-    name: 'NES Classic',
+export const THEME_PRESETS = { nesClassic: {, name: 'NES Classic',
     palette: CONSOLE_PALETTES.nes,
     mode: 'retro' as const,
     effects: {
       pixelatedBorders: true,
       scanlines: false,
       crtEffect: false,
-      glowEffects: false,
+      glowEffects: false
     }
   },
   snesMode7: {
@@ -151,7 +123,7 @@ export const THEME_PRESETS = {
       pixelatedBorders: false,
       scanlines: true,
       crtEffect: true,
-      glowEffects: true,
+      glowEffects: true
     }
   },
   ps1Legal: {
@@ -162,7 +134,7 @@ export const THEME_PRESETS = {
       pixelatedBorders: false,
       scanlines: false,
       crtEffect: false,
-      glowEffects: true,
+      glowEffects: true
     }
   },
   n64Ultra: {
@@ -173,18 +145,16 @@ export const THEME_PRESETS = {
       pixelatedBorders: true,
       scanlines: false,
       crtEffect: false,
-      glowEffects: true,
+      glowEffects: true
     }
   },
   ps2Emotion: {
     name: 'PS2 Emotion',
     palette: CONSOLE_PALETTES.ps2,
     mode: 'dark' as const,
-    effects: {
-      pixelatedBorders: false;
-      scanlines: false,
+    effects: { pixelatedBorders: false;, scanlines: false,
       crtEffect: false,
-      glowEffects: true,
+      glowEffects: true
     }
   }
 } as const;
@@ -313,9 +283,7 @@ export function generateUtilityCSS(theme: CustomTheme): string {
   image-rendering: pixelated;
   border-radius: 0 !important;
 }
-.scanlines::before {
-  content: '';
-  position: fixed;
+.scanlines::before { content: '';, position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -331,9 +299,7 @@ export function generateUtilityCSS(theme: CustomTheme): string {
 .crt-effect {
   filter: contrast(1.1) brightness(1.2);
 }
-.crt-effect::after {
-  content: '';
-  position: fixed;
+.crt-effect::after { content: '';, position: fixed;
   top: 0;
   left: 0;
   width: 100%;

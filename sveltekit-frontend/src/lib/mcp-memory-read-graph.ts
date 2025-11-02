@@ -4,25 +4,19 @@
 // Ensures #mcp_memory2_read_graph is available in the codebase
 import type { RequestHandler } from "@sveltejs/kit";
 }
-export interface GraphNode {
-  id: string;
-  type: 'component' | 'variable' | 'prop' | 'store' | 'function';
+export interface GraphNode { id: string;, type: 'component' | 'variable' | 'prop' | 'store' | 'function';
   name: string;
   file: string;
   lineNumber?: number;
   duplicateCount?: number;
   relationships: string[];
 }
-export interface GraphReadResponse {
-  nodes: GraphNode[];
-  edges: {
+export interface GraphReadResponse { nodes: GraphNode[];, edges: {
     from string;
     to: string;
     type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';
   }[];
-  metadata: {
-    totalNodes: number;
-    duplicateVariables: number;
+  metadata: { totalNodes: number;, duplicateVariables: number;
     componentCount: number;
     lastUpdated: string;
   }
@@ -92,8 +86,7 @@ export async function analyzePropDestructuring(filePath: string): Promise<any> {
     return {
       duplicateVariables: [propName],
       suggestedInterface: `interface Props {\n  ${propName}?: any;\n}`,
-      suggestedDestructuring: `let { ${propName} } = $props();`
-    }
+      suggestedDestructuring: `let { ${propName} } = $props();` }
   });
   return { duplicateProps, consolidationSuggestions }
 }

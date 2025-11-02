@@ -123,7 +123,7 @@ export interface DraggableOptions {
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
-      button: 0,
+      button: 0
     });
     handleMouseDown(mouseEvent);
   }
@@ -133,7 +133,7 @@ export interface DraggableOptions {
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
-      clientY: touch.clientY,
+      clientY: touch.clientY
     });
     handleMouseMove(mouseEvent);
   }
@@ -141,7 +141,7 @@ export interface DraggableOptions {
     if (!isDragging) return;
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
-      clientY: 0,
+      clientY: 0
     });
     handleMouseUp(mouseEvent);
   }
@@ -179,6 +179,6 @@ export interface DraggableOptions {
       constraint = newOptions.constraint;
       // Update cursor
       node.style.cursor = disabled ? '' : isDragging ? 'grabbing' : 'grab';
-    },
+    }
   };
 }

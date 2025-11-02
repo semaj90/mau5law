@@ -1,9 +1,7 @@
 // TypeScript types for Vector Job Processing System
 // Redis Streams + CUDA Worker + XState integration types
 
-export interface VectorJob {
-  id: string;
-  ownerType: 'evidence' | 'report' | 'case' | 'document';
+export interface VectorJob { id: string;, ownerType: 'evidence' | 'report' | 'case' | 'document';
   ownerId: string;
   event: 'upsert' | 'delete' | 'reembed' | 'cluster';
   vector?: number[];
@@ -16,15 +14,11 @@ export interface VectorJob {
   maxAttempts: number;
   error?: string;
 }
-export interface VectorJobResult {
-  jobId: string;
-  status: 'success' | 'failed';
+export interface VectorJobResult { jobId: string;, status: 'success' | 'failed';
   vector?: number[];
   similarity?: number;
   clusters?: number[][];
-  metadata: {
-    processingTimeMs: number;
-    cudaUsed: boolean;
+  metadata: { processingTimeMs: number;, cudaUsed: boolean;
     webgpuUsed: boolean;
     vectorDimension: number;
     operationType: string;
@@ -32,63 +26,45 @@ export interface VectorJobResult {
   };
   error?: string;
 }
-export interface CUDAProcessingStatus {
-  jobId: string;
-  stage: 'initializing' | 'preprocessing' | 'computing' | 'postprocessing' | 'completed';
+export interface CUDAProcessingStatus { jobId: string;, stage: 'initializing' | 'preprocessing' | 'computing' | 'postprocessing' | 'completed';
   progress: number; // 0-100,
   currentOperation: string;
   estimatedTimeRemainingMs?: number;
   gpuUtilization?: number;
   memoryUsage?: number;
 }
-export interface WebGPUProcessingOptions {
-  useFloat16: boolean;
-  batchSize: number;
+export interface WebGPUProcessingOptions { useFloat16: boolean;, batchSize: number;
   workgroupSize: number;
   fallbackToWebGL: boolean;
 }
-export interface VectorOperationRequest {
-  operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering';
-  ownerType: string;
+export interface VectorOperationRequest { operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering';, ownerType: string;
   ownerId: string;
   data?: any;
   vector?: number[];
-  options?: {
-    priority: 'high' | 'medium' | 'low';
-    useWebGPU: boolean;
+  options?: { priority: 'high' | 'medium' | 'low';, useWebGPU: boolean;
     webgpuOptions?: WebGPUProcessingOptions;
     timeout?: number;
     retryAttempts?: number;
   };
 }
-export interface VectorOperationResponse {
-  jobId: string;
-  status: 'queued' | 'processing' | 'completed' | 'failed';
+export interface VectorOperationResponse { jobId: string;, status: 'queued' | 'processing' | 'completed' | 'failed';
   result?: VectorJobResult;
   error?: string;
   queuePosition?: number;
   estimatedWaitTimeMs?: number;
 }
 // Redis Streams specific types
-export interface RedisStreamMessage {
-  id: string;
-  fields: Record<string, string>;
+export interface RedisStreamMessage { id: string;, fields: Record<string, string>;
 }
-export interface RedisStreamGroup {
-  name: string;
-  consumers: RedisStreamConsumer[];
+export interface RedisStreamGroup { name: string;, consumers: RedisStreamConsumer[];
   pending: number;
   lastDeliveredId: string;
 }
-export interface RedisStreamConsumer {
-  name: string;
-  pending: number;
+export interface RedisStreamConsumer { name: string;, pending: number;
   idle: number;
 }
 // Outbox pattern types for reliable messaging
-export interface VectorOutboxEntry {
-  id: string;
-  ownerType: string;
+export interface VectorOutboxEntry { id: string;, ownerType: string;
   ownerId: string;
   event: string;
   vector?: number[];
@@ -98,30 +74,22 @@ export interface VectorOutboxEntry {
   createdAt: Date;
 }
 // WebGPU types
-export interface WebGPUDevice {
-  device: GPUDevice;
-  queue: GPUQueue;
+export interface WebGPUDevice { device: GPUDevice;, queue: GPUQueue;
   adapter: GPUAdapter;
   features: string[];
   limits: Record<string, number>;
   isAvailable: boolean;
 }
-export interface WebGPUComputeShader {
-  module: GPUShaderModule;
-  pipeline: GPUComputePipeline;
+export interface WebGPUComputeShader { module: GPUShaderModule;, pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
 }
-export interface WebGPUVectorOperation {
-  inputBuffer: GPUBuffer;
-  outputBuffer: GPUBuffer;
+export interface WebGPUVectorOperation { inputBuffer: GPUBuffer;, outputBuffer: GPUBuffer;
   uniformBuffer: GPUBuffer;
   bindGroup: GPUBindGroup;
   workgroupCount: [number, number, number];
 }
 // WASM LLM types
-export interface WASMLLMConfig {
-  modelPath: string;
-  tokenizer: string;
+export interface WASMLLMConfig { modelPath: string;, tokenizer: string;
   maxTokens: number;
   temperature: number;
   topK: number;
@@ -129,38 +97,28 @@ export interface WASMLLMConfig {
   useGPU: boolean;
   memoryLimit: number;
 }
-export interface WASMLLMResponse {
-  text: string;
-  tokens: number;
+export interface WASMLLMResponse { text: string;, tokens: number;
   processingTimeMs: number;
   confidence: number;
-  metadata: {
-    model: string;
-    promptTokens: number;
+  metadata: { model: string;, promptTokens: number;
     completionTokens: number;
     totalTokens: number;
   };
 }
 // Legal AI specific vector types
-export interface LegalVectorEmbedding {
-  id: string;
-  documentId: string;
+export interface LegalVectorEmbedding { id: string;, documentId: string;
   caseId?: string;
   evidenceId?: string;
   text: string;
   embedding: number[];
-  metadata: {
-    documentType: 'contract' | 'case_law' | 'statute' | 'evidence' | 'brief';
-    jurisdiction: string;
+  metadata: { documentType: 'contract' | 'case_law' | 'statute' | 'evidence' | 'brief';, jurisdiction: string;
     practiceArea: string[];
     confidence: number;
     extractedAt: Date;
     modelVersion: string;
   };
 }
-export interface LegalSimilarityResult {
-  sourceId: string;
-  targetId: string;
+export interface LegalSimilarityResult { sourceId: string;, targetId: string;
   similarity: number;
   commonConcepts: string[];
   legalCitations: string[];
@@ -168,45 +126,31 @@ export interface LegalSimilarityResult {
   precedentStrength: 'strong' | 'moderate' | 'weak';
 }
 // Monitoring and metrics types
-export interface VectorServiceMetrics {
-  queueDepth: {
-    embeddings: number;
+export interface VectorServiceMetrics { queueDepth: {, embeddings: number;
     similarities: number;
     indexing: number;
     clustering: number;
   };
-  processingStats: {
-    totalProcessed: number;
-    averageProcessingTimeMs: number;
+  processingStats: { totalProcessed: number;, averageProcessingTimeMs: number;
     successRate: number;
     errorRate: number;
   };
-  resourceUsage: {
-    cudaUtilization: number;
-    webgpuUtilization: number;
+  resourceUsage: { cudaUtilization: number;, webgpuUtilization: number;
     memoryUsage: number;
     redisConnections: number;
   };
-  performance: {
-    cudaOpsPerSecond: number;
-    webgpuOpsPerSecond: number;
+  performance: { cudaOpsPerSecond: number;, webgpuOpsPerSecond: number;
     vectorsPerSecond: number;
     throughputMBps: number;
   };
 }
-export interface VectorHealthStatus {
-  overall: 'healthy' | 'degraded' | 'unhealthy';
-  services: {
-    redis: 'connected' | 'disconnected' | 'error';
-    postgres: 'connected' | 'disconnected' | 'error';
+export interface VectorHealthStatus { overall: 'healthy' | 'degraded' | 'unhealthy';, services: { redis: 'connected' | 'disconnected' | 'error';, postgres: 'connected' | 'disconnected' | 'error';
     rabbitmq: 'connected' | 'disconnected' | 'error';
     cuda: 'available' | 'unavailable' | 'error';
     webgpu: 'available' | 'unavailable' | 'not_supported';
   };
   queues: {
-    [queueName: string]: {
-      depth: number;
-      consumers: number;
+    [queueName: string]: { depth: number;, consumers: number;
       processingRate: number;
     };
   };

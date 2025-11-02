@@ -5,18 +5,14 @@
  */
 // Mock GPU Cache Orchestrator for development
 const gpuCacheOrchestrator = {
-  async initialize() { console.log('GPU Cache Mock: initialized'), },
-  async store(_key: string, _data: any, _options?: any) { console.log('GPU Cache Mock: stored', key), },
-  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return null as unknown as { data: any } | null, }
+  async initialize() { console.log('GPU Cache Mock: initialized') },
+  async store(_key: string, _data: any, _options?: any) { console.log('GPU Cache Mock: stored', key) },
+  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return null as unknown as { data: any } | null }
 }
 // === WebGPU Texture Configuration ===
-export interface TextureStreamConfig {
-  device: GPUDevice;
-  format: GPUTextureFormat;
+export interface TextureStreamConfig { device: GPUDevice;, format: GPUTextureFormat;
   usage: GPUTextureUsageFlags;
-  dimensions: {
-    width: number;
-    height: number;
+  dimensions: { width: number;, height: number;
     depthOrArrayLayers?: number;
   }
   mipLevelCount?: number;
@@ -24,14 +20,10 @@ export interface TextureStreamConfig {
   viewFormats?: GPUTextureFormat[];
   label?: string;
 }
-export interface StreamingTextureEntry {
-  id: string;
-  texture: GPUTexture;
+export interface StreamingTextureEntry { id: string;, texture: GPUTexture;
   textureView: GPUTextureView;
   buffer: GPUBuffer;
-  metadata: {
-    width: number;
-    height: number;
+  metadata: { width: number;, height: number;
     format: GPUTextureFormat;
     size: number;
     timestamp: number;
@@ -53,7 +45,7 @@ const RTX_3060_TI_CONFIG = {
     timerQuery: true,
     timestampQuery: true,
     multiDrawIndirect: true,
-    depthClipControl: true,
+    depthClipControl: true
   }
 }
 // === WebGPU Texture Streaming Service ===
@@ -98,7 +90,7 @@ export class WebGPUTextureStreamingService {
       this.device = await this.adapter.requestDevice({
         requiredFeatures: ['texture-compression-bc'] as GPUFeatureName[],
         requiredLimits: {
-          maxTextureDimension2D: 16384,
+         , maxTextureDimension2D: 16384,
           maxTextureArrayLayers: 256,
           maxBindGroups: 8,
           maxComputeWorkgroupSizeX: 1024,
@@ -143,7 +135,7 @@ export class WebGPUTextureStreamingService {
   // === Texture Creation and Management ===
   async createStreamingTexture(
     id: string;
-    config: TextureStreamConfig,
+   , config: TextureStreamConfig,
     initialData?: ArrayBuffer | Float32Array,
   ): Promise<StreamingTextureEntry> {
     if (!this.device) {
@@ -176,14 +168,13 @@ export class WebGPUTextureStreamingService {
         buffer = this.device.createBuffer({
           size: initialData.byteLength,
           usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-          label: `StagingBuffer_${id}`
-        });
+          label: `StagingBuffer_${id}` });
         // Upload initial data with proper type conversion
         let bufferData: ArrayBuffer;
         if (initialData instanceof ArrayBuffer) {
           bufferData = initialData;
         } else {
-          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
+          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
           bufferData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
         }
         this.device.queue.writeBuffer(buffer, 0, bufferData);
@@ -218,8 +209,7 @@ export class WebGPUTextureStreamingService {
       await gpuCacheOrchestrator.store(`texture_${id}`, entry {
         tags: ['webgpu-texture', 'streaming', entry.cacheRegion],
         vertexBuffers: initialData ? [new Float32Array(initialData)] : undefined,
-        userId: 'texture-streaming-service',
-      });
+        userId: `texture-streaming-service` });
       // Update metrics
       this.metrics.texturesStreamed++;
       this.metrics.totalMemoryUsed += textureSize;
@@ -227,7 +217,7 @@ export class WebGPUTextureStreamingService {
       console.log(`🎨 Texture created: ${id} (${textureSize} bytes, ${entry.cacheRegion})`);
       return entry;
     } catch (error: any) {
-      console.error(`❌ Failed to create texture ${id}:`, error);
+      console.error(`❌ Failed to create texture ${id}: ', error);
       throw error;
     }
   }
@@ -236,11 +226,9 @@ export class WebGPUTextureStreamingService {
     textureId: string,
     data: ArrayBuffer | Float32Array,
     options: {
-      region?: {
-        x: number;
-        y: number;
+      region?: { x: number;, y: number;
         width: number;
-        height: number;
+       , height: number;
       }
       mipLevel?: number;
       compress?: boolean;
@@ -272,14 +260,13 @@ export class WebGPUTextureStreamingService {
       if (processedData instanceof ArrayBuffer) {
         stagingData = processedData;
       } else {
-        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
+        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
         stagingData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
       }
       this.device.queue.writeBuffer(stagingBuffer, 0, stagingData);
       // Create command encoder
       const commandEncoder = this.device.createCommandEncoder({
-        label: `TextureStream_${textureId}`
-      });
+        label: `TextureStream_${textureId}` });
       // Copy from staging buffer to texture
       const region = options.region || {
         x: 0,
@@ -313,12 +300,11 @@ export class WebGPUTextureStreamingService {
       // Update GPU cache
       await gpuCacheOrchestrator.store(`texture_${textureId}`, entry {
         tags: ['webgpu-texture', 'streaming', 'updated', entry.cacheRegion],
-        userId: 'texture-streaming-service'
-      });
+        userId: `texture-streaming-service` });
       const streamTime = performance.now() - startTime;
       console.log(`📤 Texture streamed: ${textureId} (${streamTime.toFixed(2)}ms)`);
     } catch (error: any) {
-      console.error(`❌ Failed to stream texture data for ${textureId}:`, error);
+      console.error(`❌ Failed to stream texture data for ${textureId}: ', error);
       throw error;
     }
   }
@@ -438,8 +424,7 @@ export class WebGPUTextureStreamingService {
       cacheHitRatio: (this.metrics.cacheHitRatio * 100).toFixed(1) + '%',
       activeTextures: this.texturePool.size,
       streamingQueueSize: this.streamingQueue.size,
-      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%'
-    }
+      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%` }
   }
   // === Shutdown ===
   async shutdown(): Promise<void> {

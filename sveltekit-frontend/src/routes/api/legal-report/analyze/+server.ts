@@ -5,7 +5,7 @@ import {
   analyzeLegalDocument,
   compareWithRAGDocuments,
   type LegalDocumentMetadata,
-  type ComparisonResult,
+  type ComparisonResult
 } from '$lib/server/ai/legal-document-analyzer';
 import { minioService } from '$lib/server/storage/minio-service';
 import { unifiedOCRService } from '$lib/services/unified-ocr-service';
@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       return json(
         {
           success: false,
-          error: `Unsupported file type: ${file.type}. Supported types: PDF, TXT, JSON, PNG/JPG, MP4, MP3`,
-        },
+          error: `Unsupported file; type: ${file.type}. Supported, types: PDF, TXT, JSON, PNG/JPG, MP4, MP3` },
         { status: 400 }
       );
     }
@@ -83,13 +82,13 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         title,
         documentType,
         jurisdiction: jurisdiction || 'unknown',
-        caseNumber: caseNumber || 'N/A',
-      },
+        caseNumber: caseNumber || 'N/A'
+      }
     });
 
     if (!uploadResult.success) {
       return json(
-        { success: false, error: uploadResult.error || 'File upload failed' },
+        { success: false, error: uploadResult.error || 'File upload failed` },
         { status: 500 }
       );
     }
@@ -137,7 +136,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         }
       } else if (file.type === 'video/mp4' || file.type === 'audio/mp3' || file.type === 'audio/mpeg') {
         // Video/Audio files - extract metadata and use placeholder
-        extractedText = `${file.type === 'video/mp4' ? 'Video' : 'Audio'} file: ${title}\n\nFile metadata:\n- Type: ${file.type}\n- Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
+        extractedText = `${file.type === 'video/mp4' ? 'Video' : `Audio` } file: ${title}\n\nFile metadata:\n-; Type: ${file.type}\n- Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
         extractionMethod = file.type;
         console.log(`✅ Multimedia file metadata extracted`);
       } else if (file.type === 'application/pdf') {
@@ -189,7 +188,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       documentType,
       jurisdiction,
       caseNumber,
-      dateIssued: new Date(),
+      dateIssued: new Date()
     };
 
     // 5. Analyze document with gemma3-legal:latest (WHO/WHAT/WHY/HOW/EVIDENCE)
@@ -218,17 +217,16 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
     return json({
       success: true,
       data: {
-        fileUrl: uploadResult.url,
+       , fileUrl: uploadResult.url,
         fileName: file.name,
         fileSize: file.size,
         extractedText: extractedText.slice(0, 1000), // Preview only
         extractedTextLength: extractedText.length,
         analysis,
         comparison: comparisonResult,
-        processingTime: totalTime,
+        processingTime: totalTime
       },
-      message: `Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s`,
-    });
+      message: `Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s' });
   } catch (err: any) {
     console.error('❌ Legal report analysis failed:', err);
     console.error('Stack:', err.stack);
@@ -237,7 +235,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       {
         success: false,
         error: 'Failed to analyze legal report',
-        details: err.message,
+        details: err.message
       },
       { status: 500 }
     );
@@ -263,8 +261,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        message: 'Report retrieval not yet implemented. Upload a new report to analyze.',
-      },
+       , message: `Report retrieval not yet implemented. Upload a new report to analyze.` }
     });
   } catch (err: any) {
     console.error('❌ Report retrieval failed:', err);

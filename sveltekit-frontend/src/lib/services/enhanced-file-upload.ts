@@ -4,9 +4,7 @@
  */
 import localStorageFiles from './localStorage-file-fallback.js';
 
-export interface UploadResponse {
-  success: boolean;
-  fileName: string;
+export interface UploadResponse { success: boolean;, fileName: string;
   size: number;
   storageType: 'server' | 'localStorage';
   fallbackUsed: boolean;
@@ -26,9 +24,7 @@ export interface UploadOptions {
  * Interface for a file record stored in local storage.
  * Inferred from the `fileRecord` object created in `uploadToLocalStorage`.
  */
-export interface LocalFileRecord {
-  id: string;
-  fileName: string;
+export interface LocalFileRecord { id: string;, fileName: string;
   size: number;
   type: string; // MIME type
   data: string; // Base64 content
@@ -42,9 +38,7 @@ export interface LocalFileRecord {
  * Interface for file details returned by the server's /api/evidence/{fileId} endpoint.
  * This assumes a comprehensive structure for file metadata and access URL.
  */
-export interface ServerFileDetails {
-  fileId: string; // Unique identifier for the file on the server
-  fileName: string;
+export interface ServerFileDetails { fileId: string; // Unique identifier for the file on the server, fileName: string;
   size: number;
   type: string; // MIME type
   url: string; // URL to access the file
@@ -253,8 +247,7 @@ class EnhancedFileUpload {
       return localStorageFiles.deleteFile(fileId);
     } else {
       const response = await fetch(`/api/evidence/${encodeURIComponent(fileId)}`, {
-        method: 'DELETE'
-      });
+        method: 'DELETE' });
       return response.ok;
     }
   }

@@ -5,30 +5,22 @@ import {
   searchSimilarMessages,
   searchSimilarEvidence,
   searchAcrossAllVectors,
-  type VectorSearchResult,
+  type VectorSearchResult
 } from '$lib/server/db/pgvector-utils.js';
 
-export interface GraphNode {
-  id: string;
-  type: 'case' | 'evidence' | 'precedent' | 'person';
+export interface GraphNode { id: string;, type: 'case' | 'evidence' | 'precedent' | 'person';
   properties: Record<string, string>;
 }
 
-export interface GraphRelationship {
-  fromNode: string;
-  toNode: string;
+export interface GraphRelationship { fromNode: string;, toNode: string;
   relationshipType: string;
   weight: number;
 }
 
-export interface GraphContext {
-  relatedNodes: GraphNode[];
-  relationships: GraphRelationship[];
+export interface GraphContext { relatedNodes: GraphNode[];, relationships: GraphRelationship[];
 }
 
-export interface ContextualSuggestion {
-  content: string;
-  type: string;
+export interface ContextualSuggestion { content: string;, type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -43,9 +35,7 @@ export interface ContextualSuggestion {
   } & Record<string, unknown>;
 }
 
-type VectorSearchContext = {
-  documentId: string;
-  content: string;
+type VectorSearchContext = { documentId: string;, content: string;
   similarityScore: number;
   documentType: string;
   metadata: Record<string, unknown>;
@@ -110,7 +100,7 @@ export class VectorSuggestionsService {
       const similarMessages = (await searchSimilarMessages(embedding, {
         limit: this.maxResults,
         threshold: this.similarityThreshold,
-        includeMetadata: true,
+        includeMetadata: true
       })) as VectorSearchResult[];
 
       const vectorContext: VectorSearchContext[] = [];
@@ -122,11 +112,11 @@ export class VectorSuggestionsService {
             .select({
               content: chatRecommendations.content,
               recommendationType: chatRecommendations.recommendationType,
-              confidence: chatRecommendations.confidence,
+              confidence: chatRecommendations.confidence
             })
             .from(chatRecommendations)
             .where(eq(chatRecommendations.messageId, result.id))
-            .limit(3)) as Array<{ content: string; recommendationType: string; confidence: number }>;
+            .limit(3)) as Array<{ content: string; recommendationType: string;, confidence: number }>;
 
           const baseMetadata =
             typeof result.metadata === 'object' && result.metadata !== null
@@ -143,9 +133,9 @@ export class VectorSuggestionsService {
               recommendations: recs.map(r => ({
                 content: r.content,
                 type: r.recommendationType,
-                confidence: r.confidence,
-              })),
-            },
+                confidence: r.confidence
+              }))
+            }
           });
         } catch (err) {
           console.warn('Failed to fetch recommendations for message:', (result as any)?.id, err);
@@ -158,7 +148,7 @@ export class VectorSuggestionsService {
             content: String(result.content ?? ''),
             similarityScore: typeof result.similarity === 'number' ? result.similarity : 0,
             documentType: String(result.documentType ?? 'chat_message'),
-            metadata: fallbackMetadata,
+            metadata: fallbackMetadata
           });
         }
       }
@@ -196,8 +186,8 @@ export class VectorSuggestionsService {
             title: caseData.title || '',
             description: caseData.description || '',
             status: caseData.status || '',
-            caseNumber: caseData.caseNumber || '',
-          },
+            caseNumber: caseData.caseNumber || ''
+          }
         },
       ];
 
@@ -209,17 +199,17 @@ export class VectorSuggestionsService {
           id: ev.id,
           type: 'evidence',
           properties: {
-            description: ev.description ?? '',
+           , description: ev.description ?? '',
             evidenceType: String(ev.type ?? (evMetadata as Record<string, unknown>).evidenceType ?? ''),
             source: String(ev.source ?? (evMetadata as Record<string, unknown>).source ?? ''),
-            significance: String(ev.significance ?? (evMetadata as Record<string, unknown>).significance ?? ''),
-          },
+            significance: String(ev.significance ?? (evMetadata as Record<string, unknown>).significance ?? '')
+          }
         });
         relationships.push({
           fromNode: caseData.id,
           toNode: ev.id,
           relationshipType: 'HAS_EVIDENCE',
-          weight: 1.0,
+          weight: 1.0
         });
       });
 
@@ -252,8 +242,7 @@ export class VectorSuggestionsService {
             source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'similarity_based',
-          },
+            category: 'similarity_based` }
         });
       }
 
@@ -265,11 +254,10 @@ export class VectorSuggestionsService {
           confidence: ctx.similarityScore * 0.8,
           reasoning: 'Similar documents used effective legal analysis patterns',
           metadata: {
-            source: 'vector_search',
+           , source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'pattern_matching',
-          },
+            category: 'pattern_matching` }
         });
       }
     }
@@ -296,16 +284,15 @@ export class VectorSuggestionsService {
         confidence: 0.8,
         reasoning: 'Multiple evidence items available in case context',
         metadata: {
-          source: 'graph_context',
+         , source: 'graph_context',
           contextNodes: evidenceNodes.map(n => n.id),
-          category: 'case_integration',
-        },
+          category: 'case_integration` }
       });
 
       const evidenceTypes = new Set(evidenceNodes.map(n => n.properties.evidenceType).filter(Boolean));
       if (evidenceTypes.size > 1) {
         suggestions.push({
-          content: `Cross-reference different types of evidence (${Array.from(evidenceTypes).join(', ')}) to build a comprehensive argument.`,
+          content: 'Cross-reference different types of evidence (${Array.from(evidenceTypes).join(', ')}) to build a comprehensive argument.`,
           type: 'evidence_correlation',
           confidence: 0.75,
           reasoning: 'Multiple evidence types available for cross-validation',
@@ -313,8 +300,7 @@ export class VectorSuggestionsService {
             source: 'graph_context',
             contextNodes: evidenceNodes.map(n => n.id),
             keywords: Array.from(evidenceTypes),
-            category: 'evidence_analysis',
-          },
+            category: 'evidence_analysis` }
         });
       }
     }
@@ -331,7 +317,7 @@ export class VectorSuggestionsService {
         limit: 10,
         threshold: 0.4,
         includeEvidence: true,
-        includeMessages: false,
+        includeMessages: false
       })) as VectorSearchResult[];
 
       const suggestions: ContextualSuggestion[] = [];
@@ -349,7 +335,7 @@ export class VectorSuggestionsService {
             .select({
               title: cases.title,
               status: cases.status,
-              caseType: cases.caseType,
+              caseType: cases.caseType
             })
             .from(cases)
             .where(eq(cases.id, caseId))
@@ -373,8 +359,8 @@ export class VectorSuggestionsService {
                 similarityScore: sim,
                 keywords: [case_data.status || '', case_data.caseType || '', evidenceType].filter(Boolean),
                 category: 'precedent_analysis',
-                evidenceType,
-              },
+                evidenceType
+              }
             });
           }
         }
@@ -395,7 +381,7 @@ export class VectorSuggestionsService {
       const similarEvidence = (await searchSimilarEvidence(embedding, undefined, {
         limit: 15,
         threshold: 0.5,
-        includeMetadata: true,
+        includeMetadata: true
       })) as VectorSearchResult[];
 
       const suggestions: ContextualSuggestion[] = [];
@@ -419,8 +405,8 @@ export class VectorSuggestionsService {
               similarityScore: sim,
               keywords: [evidenceType, 'authentication', 'chain of custody'],
               category: 'procedural_compliance',
-              evidenceType,
-            },
+              evidenceType
+            }
           });
         }
 
@@ -437,8 +423,8 @@ export class VectorSuggestionsService {
               similarityScore: sim,
               keywords: [evidenceType, 'procedures', 'handling'],
               category: 'evidence_handling',
-              evidenceType,
-            },
+              evidenceType
+            }
           });
         }
       }
@@ -452,11 +438,11 @@ export class VectorSuggestionsService {
             confidence: 0.75,
             reasoning: `Content mentions ${type} evidence which has specific legal requirements`,
             metadata: {
-              source: 'evidence_analysis',
+             , source: 'evidence_analysis',
               keywords: [type, 'standards', 'admissibility'],
               category: 'legal_compliance',
-              evidenceType: type,
-            },
+              evidenceType: type;
+            }
           });
         }
       }
@@ -483,7 +469,7 @@ export class VectorSuggestionsService {
       const embedding = await (gen as (c: string, opts?: Record<string, unknown>) => Promise<number[]>)(content, {
         provider: 'nomic-embed',
         legalDomain: true,
-        cache: true,
+        cache: true
       });
       return embedding ?? [];
     } catch (err: any) {

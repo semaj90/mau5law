@@ -10,9 +10,7 @@ import { browser } from '$app/environment';
 import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
 import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 // Citation Types and Interfaces
-export interface LegalCitation {
-  id: string;
-  type: 'case_law' | 'statute' | 'regulation' | 'constitution' | 'treaty' | 'law_review' | 'secondary_source' | 'custom';
+export interface LegalCitation { id: string;, type: 'case_law' | 'statute' | 'regulation' | 'constitution' | 'treaty' | 'law_review' | 'secondary_source' | 'custom';
   citation: string; // Full citation text (e.g., "Brown v. Board of Education, 347 U.S. 483 (1954)")
   shortCitation?: string; // Abbreviated form (e.g., "Brown, 347 U.S. at 483")
   // Core Information
@@ -24,9 +22,7 @@ export interface LegalCitation {
   reporter?: string;
   page?: string;
   // Case-specific
-  parties?: {
-    plaintiff: string[];
-    defendant: string[];
+  parties?: { plaintiff: string[];, defendant: string[];
     appellant?: string[];
     appellee?: string[];
   }
@@ -75,9 +71,7 @@ export interface LegalCitation {
     justia?: string;
   }
 }
-export interface CitationFilters {
-  search: string;
-  type: string;
+export interface CitationFilters { search: string;, type: string;
   jurisdiction: string;
   court: string;
   yearRange?: [number, number];
@@ -87,9 +81,7 @@ export interface CitationFilters {
   aiExtracted?: boolean;
   tags: string[];
 }
-export interface CitationStats {
-  total: number;
-  byType: Record<string, number>;
+export interface CitationStats { total: number;, byType: Record<string, number>;
   byJurisdiction: Record<string, number>;
   byCourt: Record<string, number>;
   byYear: Record<number, number>;
@@ -228,12 +220,12 @@ class LegalCitationsManager {
   private simdCache = createSIMDJSONCache({
     defaultTTL: 7200, // 2 hours for citations
     compressionEnabled: true,
-    enableMetrics: true,
+    enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
     enableSIMD: true,
-    redisCache: true,
+    redisCache: true
   });
   static getInstance(): LegalCitationsManager {
     if (!LegalCitationsManager.instance) {
@@ -306,8 +298,7 @@ class LegalCitationsManager {
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: 'ai-extraction',
-      processingStatus: 'completed'
-    }
+      processingStatus: `completed` }
     // Generate embeddings
     await this.enhanceCitationWithAI(citation);
     return citation;
@@ -325,7 +316,7 @@ class LegalCitationsManager {
     try {
       // Generate embeddings
       const embeddingResult = await this.workerPool.generateEmbeddings(
-        `${citation.citation} ${citation.title} ${citation.summary || ''}`,
+        `${citation.citation} ${citation.title} ${citation.summary || '` }`,
         'embeddinggemma:latest'
       );
       if (embeddingResult.success) {
@@ -333,7 +324,7 @@ class LegalCitationsManager {
       }
       // Enhance with legal analysis
       const analysisResult = await this.workerPool.analyzeDocument(
-        `Citation: ${citation.citation}\nTitle: ${citation.title}\nSummary: ${citation.summary || 'No summary available'}`,
+        `Citation: ${citation.citation}\nTitle: ${citation.title}\nSummary: ${citation.summary || 'No summary available` }`,
         'legal_citation_analysis',
         'gemma3:legal-latest'
       );
@@ -357,7 +348,7 @@ class LegalCitationsManager {
     try {
       const response = await fetch('/api/graph/neo4j/citations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           citationId: citation.id,
           type: citation.type,
@@ -383,16 +374,16 @@ class LegalCitationsManager {
   // Index citation in RAG system
   private async indexInRAG(citation: LegalCitation): Promise<void> {
     try {
-      const content = `${citation.citation}\n${citation.title}\n${citation.summary || ''}\nKey Holdings: ${citation.keyHoldings?.join(', ') || 'None'}`;
+      const content = `${citation.citation}\n${citation.title}\n${citation.summary || ''}\nKey Holdings: ${citation.keyHoldings?.join(', ') || 'None` }`;
       const response = await fetch('/api/rag/index/citations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           documentId: citation.id,
           content: content,
           embeddings: citation.embeddings,
           metadata: {
-            type: citation.type,
+           , type: citation.type,
             jurisdiction: citation.jurisdiction,
             court: citation.court,
             year: citation.year,
@@ -514,7 +505,7 @@ class LegalCitationsManager {
       const response = await fetch('/api/citations/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ citation: citation.citation, type: citation.type })
+        body: JSON.stringify({, citation: citation.citation, type: citation.type })
       });
       if (response.ok) {
         const result = await response.json();
@@ -560,7 +551,7 @@ class LegalCitationsManager {
     try {
       await fetch('/api/citations/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(citation)
       });
     } catch (error) {
@@ -574,13 +565,13 @@ class LegalCitationsManager {
       localStorage.removeItem(`${this.dbPrefix}${citationId}`);
     }
     try {
-      await fetch(`/api/citations/${citationId}`, { method: 'DELETE' });
+      await fetch(`/api/citations/${citationId}`, { method: `DELETE` });
     } catch (error) {
       console.warn('Failed to remove citation from server:', error);
     }
   }
   // Bulk import citations
-  async importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
+  async importCitations(citationsData: any[]): Promise<{ success: number; failed: number;, errors: string[] }> {
     const result = { success: 0, failed: 0, errors: [] as string[] }
     for (const data of citationsData) {
       try {
@@ -620,8 +611,7 @@ class LegalCitationsManager {
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: 'import',
-      processingStatus: 'completed'
-    }
+      processingStatus: `completed` }
   }
 }
 // Export singleton
@@ -645,7 +635,7 @@ export async function validateCitation(citationId: string): Promise<{ valid: boo
 export async function removeCitation(citationId: string): Promise<void> {
   await citationsManager.removeCitation(citationId);
 }
-export async function importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
+export async function importCitations(citationsData: any[]): Promise<{ success: number; failed: number;, errors: string[] }> {
   return citationsManager.importCitations(citationsData);
 }
 export function setCitationFilter(filter: Partial<CitationFilters>): void {

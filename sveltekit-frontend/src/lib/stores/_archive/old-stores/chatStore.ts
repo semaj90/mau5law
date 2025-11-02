@@ -5,9 +5,7 @@
  */
 import { writable, derived, readonly, readable } from "svelte/store";
 // === TYPE DEFINITIONS ===
-export interface ChatMessage {
-  id: string;
-  content: string;
+export interface ChatMessage { id: string;, content: string;
   role: "user" | "assistant" | "system";
   timestamp: Date;
   conversationId?: string;
@@ -20,9 +18,7 @@ export interface ChatMessage {
     executionTime?: number;
   }
 }
-export interface Conversation {
-  id: string;
-  title: string;
+export interface Conversation { id: string;, title: string;
   messages: ChatMessage[];
   created: Date;
   updated: Date;
@@ -32,9 +28,7 @@ export interface Conversation {
     precedents?: string[];
   }
 }
-export interface ChatSettings {
-  model: string;
-  temperature: number;
+export interface ChatSettings { model: string;, temperature: number;
   maxTokens: number;
   streaming: boolean;
   contextWindow: number;
@@ -43,16 +37,12 @@ export interface ChatSettings {
   legalMode?: boolean;
   citationMode?: boolean;
 }
-export interface ServiceStatus {
-  ollama: "unknown" | "loading" | "connected" | "error";
-  qdrant: "unknown" | "loading" | "connected" | "error";
+export interface ServiceStatus { ollama: "unknown" | "loading" | "connected" | "error";, qdrant: "unknown" | "loading" | "connected" | "error";
   database: "unknown" | "loading" | "connected" | "error";
   gemma3: "unknown" | "loading" | "ready" | "error";
 }
 // === CHAT STATE INTERFACE ===
-export interface ChatContext {
-  messages: ChatMessage[];
-  conversations: Conversation[];
+export interface ChatContext { messages: ChatMessage[];, conversations: Conversation[];
   currentConversation: Conversation | null;
   error: Error | null;
   settings: ChatSettings;
@@ -60,9 +50,7 @@ export interface ChatContext {
   isTyping: boolean;
   isStreaming: boolean;
   modelStatus: "unknown" | "loading" | "ready" | "error";
-  contextInjection: {
-    enabled: boolean;
-    documents: string[];
+  contextInjection: { enabled: boolean;, documents: string[];
     vectorResults: any[];
     precedents?: string[];
     caseContext?: any;
@@ -98,7 +86,7 @@ const initialState: ChatContext = {
     proactiveMode: true,
     emotionalMode: false,
     legalMode: true,
-    citationMode: true,
+    citationMode: true
   },
   isLoading: false,
   isTyping: false,
@@ -177,8 +165,7 @@ export const chatActions = {
     });
   },
   // Add message
-  addMessage: (
-    content: string,
+  addMessage: (; content: string,
     role: "user" | "assistant" | "system",
     metadata?: Partial<ChatMessage["metadata"]>
   ) => {
@@ -228,7 +215,7 @@ export const chatActions = {
       ...state,
       isLoading: true,
       isTyping: true,
-      error: null,
+      error: null
     }));
     try {
       const response = await fetch("/api/ai/chat", {
@@ -269,7 +256,7 @@ export const chatActions = {
         ...state,
         isLoading: false,
         isTyping: false,
-        isStreaming: false,
+        isStreaming: false
       }));
     }
   },
@@ -302,7 +289,7 @@ export const chatActions = {
         enabled: true,
         documents,
         precedents: precedents || [],
-        caseContext: caseContext ?? null,
+        caseContext: caseContext ?? null
       }
     }));
   },
@@ -321,7 +308,7 @@ export const chatActions = {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
-        enabled: false,
+       , enabled: false,
         documents: [],
         vectorResults: [],
         precedents: [],
@@ -488,13 +475,9 @@ async function handleStreamingResponse(response: Response): Promise<void> {
   }
 }
 // === XSTATE-LIKE COMPATIBILITY ===
-export interface XStateCompatibleState {
-  context: ChatContext;
-  matches: (state: string) => boolean;
+export interface XStateCompatibleState { context: ChatContext;, matches: (state: string) => boolean;
 }
-export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
-  context: $chatStore;
-  matches: (state: string) => {
+export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({ context: $chatStore;, matches: (state: string) => {
     switch (state) {
       case "loading":
         return $chatStore.isLoading;

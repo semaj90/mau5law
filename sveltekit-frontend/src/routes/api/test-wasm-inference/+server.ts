@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       enableRAG,
       priority: 'high' as const,
       systemMessage:
-        'You are a legal AI assistant specialized in analyzing legal documents and providing expert insights.',
+        'You are a legal AI assistant specialized in analyzing legal documents and providing expert insights.'
     };
     const directResult = await WASMInferenceRAGService.processInferenceWithRAG(wasmRequest);
     console.log('✅ Direct WASM inference completed');
@@ -37,20 +37,20 @@ export const POST: RequestHandler = async ({ request }) => {
       await RabbitMQXStateIntegration.publishMessage({
         type: 'wasm_inference',
         payload: {
-          id: wasmRequest.id + '_mq',
+         , id: wasmRequest.id + '_mq',
           prompt,
           maxTokens,
           temperature,
           enableRAG,
           priority: 'high',
-          startTime: Date.now(),
+          startTime: Date.now()
         },
-        priority: 8,
+        priority: 8
       });
       rabbitMQResult = {
         status: 'queued',
         messageType: 'wasm_inference',
-        queuedAt: new Date().toISOString(),
+        queuedAt: new Date().toISOString()
       };
       console.log('✅ RabbitMQ message queued successfully');
     } catch (rabbitError) {
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       rabbitMQResult = {
         status: 'failed',
         error: rabbitError instanceof Error ? rabbitError.message : String(rabbitError),
-        fallback: 'Direct processing mode available',
+        fallback: 'Direct processing mode available'
       };
     }
     // Test 3: PostgreSQL-Qdrant Sync Integration
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         health,
         wasmStats,
         status: 'operational',
-        optimizedRetrieval: true,
+        optimizedRetrieval: true
       };
       console.log('✅ PostgreSQL-Qdrant sync test completed');
     } catch (syncError) {
@@ -84,8 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       syncResult = {
         status: 'failed',
         error: syncError instanceof Error ? syncError.message : String(syncError),
-        fallback: 'Enhanced RAG service fallback available',
-      };
+        fallback: `Enhanced RAG service fallback available` };
     }
     // Test 4: XState Machine Integration
     console.log('📊 Test 4: XState Machine');
@@ -161,9 +160,9 @@ export const POST: RequestHandler = async ({ request }) => {
       contextStructure: {
         hasWasmModule: 'wasmModule' in ctxObj,
         hasPerformanceMetrics: 'performanceMetrics' in ctxObj,
-        hasActiveRequests: 'activeRequests' in ctxObj,
+        hasActiveRequests: 'activeRequests' in ctxObj
       },
-      status: 'configured',
+      status: 'configured'
     };
     console.log('✅ XState machine test completed');
     const totalTime = Date.now() - startTime;
@@ -176,36 +175,32 @@ export const POST: RequestHandler = async ({ request }) => {
         prompt: prompt.slice(0, 100) + (prompt.length > 100 ? '...' : ''),
         enableRAG,
         maxTokens,
-        temperature,
+        temperature
       },
-      results: {
-        wasmInference: {
-          id: directResult.id,
+      results: { wasmInference: {, id: directResult.id,
           text: directResult.text,
           tokens: directResult.tokens,
           processingTime: directResult.processingTime,
           ragContext: directResult.ragContext,
           metadata: directResult.metadata,
-          cacheHit: directResult.cacheHit,
+          cacheHit: directResult.cacheHit
         },
         rabbitMQIntegration: rabbitMQResult,
         postgresqlQdrantSync: syncResult,
-        xstateMachine: machineResult,
+        xstateMachine: machineResult
       },
       integration: {
         wasmInferenceService: '✅ Operational',
         rabbitMQMessaging: rabbitMQResult?.status === 'queued' ? '✅ Operational' : '⚠️ Degraded',
         postgresqlQdrantSync: syncResult?.status === 'operational' ? '✅ Operational' : '⚠️ Degraded',
-        xstateMachine: '✅ Operational',
-      },
+        xstateMachine: `✅ Operational` },
       performance: {
         totalProcessingTime: `${totalTime}ms`,
         wasmInferenceTime: `${directResult.processingTime}ms`,
         ragEnabled: enableRAG,
         documentsRetrieved: directResult.ragContext?.documentsUsed || 0,
         memoryUsage: `${directResult.memoryUsage} bytes`,
-        cacheUtilization: directResult.cacheHit ? 'Cache Hit' : 'Cache Miss',
-      },
+        cacheUtilization: directResult.cacheHit ? 'Cache Hit' : `Cache Miss` },
       nextSteps: {
         suggestions: [
           'Run more inference requests to test performance under load',
@@ -213,8 +208,8 @@ export const POST: RequestHandler = async ({ request }) => {
           'Monitor RabbitMQ message processing and queue performance',
           'Verify PostgreSQL-Qdrant sync performance with real document data',
           'Test batch inference and streaming inference modes',
-        ],
-      },
+        ]
+      }
     };
     console.log(`🎉 WebAssembly inference test completed successfully in ${totalTime}ms`);
     return json(testResults, {
@@ -223,8 +218,8 @@ export const POST: RequestHandler = async ({ request }) => {
         'Content-Type': 'application/json',
         'X-Processing-Time': totalTime.toString(),
         'X-WASM-Version': '1.0.0',
-        'X-Integration-Status': 'fully-operational',
-      },
+        'X-Integration-Status': 'fully-operational'
+      }
     });
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
@@ -251,16 +246,16 @@ export const POST: RequestHandler = async ({ request }) => {
             'Test individual components separately',
             'Check browser console for additional error details',
             'Ensure WebAssembly is supported in the current environment',
-          ],
-        },
+          ]
+        }
       },
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': errorTime.toString(),
-          'X-Error-Source': 'wasm-inference-test',
-        },
+          'X-Error-Source': 'wasm-inference-test'
+        }
       }
     );
   }
@@ -275,12 +270,12 @@ export const GET: RequestHandler = async () => {
     const services = {
       wasmInferenceService: healthStatus.status === 'healthy',
       enhancedRAGService: false,
-      postgresqlQdrantSync: false,
+      postgresqlQdrantSync: false
     };
     // Test Enhanced RAG Service
     try {
       const response = await fetch('http://localhost:8094/api/health', {
-        method: 'GET',
+        method: 'GET'
       });
       services.enhancedRAGService = response.ok;
     } catch (_error) {
@@ -304,17 +299,16 @@ export const GET: RequestHandler = async () => {
       endpoints: {
         testInference: '/api/test-wasm-inference (POST)',
         healthCheck: '/api/test-wasm-inference (GET)',
-        enhancedRAG: 'http://localhost:8094/api/rag',
+        enhancedRAG: 'http://localhost:8094/api/rag'
       },
-      version: '1.0.0',
-    });
+      version: `1.0.0` });
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     return json(
       {
         status: 'unhealthy',
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

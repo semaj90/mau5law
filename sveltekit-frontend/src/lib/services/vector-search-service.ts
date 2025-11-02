@@ -27,9 +27,7 @@ export interface VectorSearchQuery {
     caseId?: string;
   evidenceTypes?: string[];
   confidentialityLevels?: string[];
-  dateRange?: {
-      start: Date;
-  end: Date;
+  dateRange?: { start: Date;, end: Date;
     }
     tags?: string[];
     isAdmissible?: boolean;
@@ -55,9 +53,7 @@ export interface VectorSearchQuery {
     }
   }
 }
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   description?: string;
   content?: string;
   evidenceType: string;
@@ -79,26 +75,18 @@ export interface SearchResult {
   processingTime?: number;
   }
 }
-export interface VectorSearchResult {
-  results: SearchResult[];
-  totalCount: number;
+export interface VectorSearchResult { results: SearchResult[];, totalCount: number;
   processingTime: number;
   queryExpansions?: string[];
-  facets: {
-    evidenceTypes: Array<any>;
-  cases: Array<any>;
+  facets: { evidenceTypes: Array<any>;, cases: Array<any>;
   tags: Array<any>;
   dateRanges: Array<any>;
-  performance: {
-    vectorSearchTime: number;
-  textSearchTime: number;
+  performance: { vectorSearchTime: number;, textSearchTime: number;
   rankingTime: number;
   totalTime: number;
   }
 }
-export interface QueryExpansion {
-  originalTerm: string;
-  expandedTerms: string[];
+export interface QueryExpansion { originalTerm: string;, expandedTerms: string[];
   synonyms: string[];
   relatedConcepts: string[];
 }
@@ -176,15 +164,14 @@ class VectorSearchService {
       return result;
     } catch (error: any) {
       console.error('Vector search failed:', error);
-      throw new Error(`Search failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Search failed: ${error instanceof Error ? error.message: 'Unknown error' }`);
     }
   }
   /**
    * Find similar documents using vector similarity
    */
   public async findSimilarDocuments()
-    documentId: string
-    options: {
+    documentId: string; options: {
       limit?: number;
       threshold?: number;
       includeContent?: boolean;
@@ -261,7 +248,7 @@ class VectorSearchService {
         confidenceScore: (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).similarity,
         recencyScore: this.calculateRecencyScore((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any); aiAnalysis?: any }).createdAt),
         highlights: [],
-        reasoning: `Semantic similarity: ${((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).similarity * 100).toFixed(1)}%`,
+        reasoning: `Semantic; similarity: ${((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).similarity * 100).toFixed(1)}%`,
         metadata: {
           fileSize: (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).fileSize || undefined,
           mimeType: (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).mimeType || undefined,
@@ -278,8 +265,7 @@ class VectorSearchService {
    * Semantic clustering of documents
    */
   public async clusterDocuments()
-    documentIds: string[]
-    options: {
+    documentIds: string[]; options: {
       numClusters?: number;
       minClusterSize?: number;
       threshold?: number);
@@ -299,7 +285,7 @@ class VectorSearchService {
           tags: evidence.tags,
           embedding: evidence.contentEmbedding,
           createdAt: evidence.createdAt,
-          updatedAt: evidence.updatedAt
+          updatedAt: evidence.updatedAt;
         )})
         .from(evidence)
         .where()
@@ -332,12 +318,12 @@ class VectorSearchService {
           reasoning: `,Cluster coherence: ${(cluster.coherenceScore * 100).toFixed(1)}%`,
           metadata: {
             createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt
+            updatedAt: doc.updatedAt;
           }
         })),
         centroid: cluster.centroid,
         coherenceScore: cluster.coherenceScore,
-        topics: cluster.topics
+        topics: cluster.topics;
       });
     } catch (error: any) {
       console.error('Document clustering failed:', error);
@@ -348,8 +334,7 @@ class VectorSearchService {
    * Generate query suggestions based on existing data
    */
   public async generateQuerySuggestions()
-    partialQuery: string
-    limit: number = 5;
+    partialQuery: string; limit: number = 5;
   ): Promise<Array<a>n>>y>> {
     try {
       if (partialQuery.length < 2) return [];>
@@ -359,19 +344,18 @@ class VectorSearchService {
           title: evidence.title,
           tags: evidence.tags,
           categories: sql<string[]>`,COALESCE((ai_analysis->>'categories)'): jsonb, '[,]': jsonb)`,
-          keywords: sql<string[]>`COALESCE((ai_analysis->>'keywords'),: jsonb, '[],': jsonb)`,
-        })
+          keywords: sql<string[]>`COALESCE((ai_analysis->>'keywords'),: jsonb, '[],': jsonb)' })
         .from(evidence)
         .where()
           or()
             ilike(evidence.title, `%$,{partialQuery}%`),
             ilike(evidence.description, `%$,{partialQuery}%`),
-            sql`,${evidence.tags}: text ILIKE ${'%' + partialQuery + '%'}`
+            sql`,${evidence.tags}: text ILIKE ${'%' + partialQuery + '%' }`
           )
         )
         .limit(50);
       // Aggregate suggestions
-      const suggestionMap = new Map<string, { count: number; type: string }>();
+      const suggestionMap = new Map<string, { count: number;, type: string }>();
       suggestions.forEach((item: any) => {
         // Extract from titles
         if ((item as { title?: any; tags?: any; categories?: any; keywords?: any }).title.toLowerCase().includes(partialQuery.toLowerCase())) {
@@ -424,10 +408,9 @@ class VectorSearchService {
       const embedding = await ollamaCudaService.generateEmbedding(query);
       // Cache for future use
       await db.insert(embeddingCache).values({
-        textHash: queryHash
+        textHash: queryHash;
         embedding,
-        model: 'nomic-embed-text'
-      }).onConflictDoNothing();
+        model: 'nomic-embed-text' }).onConflictDoNothing();
       return embedding;
     } catch (error: any) {
       console.error('Failed to generate query embedding:', error);
@@ -435,8 +418,7 @@ class VectorSearchService {
     }
   }
   private async performVectorSearch()
-    queryEmbedding: number[]
-    searchQuery: VectorSearchQuery;
+    queryEmbedding: number[]; searchQuery: VectorSearchQuery;
   ): Promise<any> {
     const startTime = Date.now();
     try {
@@ -501,7 +483,7 @@ class VectorSearchService {
         .offset(offset);
       return {
         results,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime;
       }
     } catch (error: any) {
       console.error('Vector search failed:', error);
@@ -509,8 +491,7 @@ class VectorSearchService {
     }
   }
   private async performTextSearch()
-    queries: string[]
-    searchQuery: VectorSearchQuery;
+    queries: string[]; searchQuery: VectorSearchQuery;
   ): Promise<any> {
     const startTime = Date.now();
     try {
@@ -537,7 +518,7 @@ class VectorSearchService {
       }
       return {
         results: Array.from(allResults.values()),
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime;
       }
     } catch (error: any) {
       console.error('Text search failed:', error);
@@ -545,10 +526,9 @@ class VectorSearchService {
     }
   }
   private async combineAndRankResults()
-    vectorResults: { results: any[]; processingTime: number },
-    textResults: { results: any[]); processingTime: number },
-    searchQuery: VectorSearchQuery
-    queryEmbedding: number[];
+    vectorResults: { results: any[];, processingTime: number },
+    textResults: { results: any[]);, processingTime: number },
+    searchQuery: VectorSearchQuery; queryEmbedding: number[];
   ): Promise<SearchResult[]> {
     const hybridWeight = searchQuery.options?.hybridWeight || 0.7;
     const strategy = searchQuery.ranking?.strategy || 'hybrid';
@@ -557,7 +537,7 @@ class VectorSearchService {
       text: 0.3,
       recency: 0.1,
       relevance: 0.1,
-      authority: 0.1
+      authority: 0.1;
     }
     // Create combined results map
     const combinedMap = new Map<string, SearchResult>();
@@ -566,7 +546,7 @@ class VectorSearchService {
       combinedMap.set((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any); aiAnalysis?: any }).id, this.formatSearchResult(result, {
         semanticScore: (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any); aiAnalysis?: any }).similarity,
         textScore: 0,
-        source: 'vector'
+        source: 'vector';
       });
     });
     // Merge text results
@@ -579,8 +559,7 @@ class VectorSearchService {
         combinedMap.set((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any); aiAnalysis?: any }).id, this.formatSearchResult(result, {
           semanticScore: 0,
           textScore: (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any); aiAnalysis?: any }).textScore,
-          source: 'text'
-        });
+          source: 'text' });
       }
     });
     // Calculate final scores and rank
@@ -594,10 +573,8 @@ class VectorSearchService {
     return results;
   }
   private calculateFinalScore()
-    result: SearchResult
-    strategy: string;
-    weights: any
-    hybridWeight: number;
+    result: SearchResult; strategy: string;
+    weights: any; hybridWeight: number;
   ): number {
     switch (strategy) {
       case 'semantic':
@@ -607,7 +584,7 @@ class VectorSearchService {
       case 'neural':
         return ((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore + (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore) / 2;
       case 'hybrid':
-      default: return (
+      default: return (;
           (weights.semantic || 0.4) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore +
           (weights.text || 0.3) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore +
           (weights.recency || 0.1) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).recencyScore +
@@ -676,12 +653,12 @@ class VectorSearchService {
           aiSummary: evidence.aiSummary,
           tags: evidence.tags,
           evidenceType: evidence.evidenceType,
-          caseId: evidence.caseId
+          caseId: evidence.caseId;
         )})
         .from(evidence);
       const searchableDocuments = documents.map((doc: any) => ({
         ...doc,
-        searchText: [
+        searchText: [;
           doc.title,
           doc.description,
           doc.aiSummary,
@@ -689,15 +666,14 @@ class VectorSearchService {
         ].filter(Boolean).join(' ')
       });
       this.fuseIndex = new Fuse(searchableDocuments, {
-        keys: [
-          { name: 'title', weight: 0.4 },
+        keys: [;
+          {, name: 'title', weight: 0.4 },
           { name: 'description', weight: 0.3 },
           { name: 'aiSummary', weight: 0.2 })
           { name: 'tags', weight: 0.1 }
         ],
         threshold: 0.3,
-        includeScore: true
-        includeMatches: true
+        includeScore: true; includeMatches: true
       });
       this.lastIndexUpdate = new Date();
     } catch (error: any) {
@@ -729,7 +705,7 @@ class VectorSearchService {
         new HumanMessage(expansionPrompt);
       ] as unknown as import('@langchain/core/messages').BaseMessage[], {
         temperature: 0.5,
-        maxTokens: 200
+        maxTokens: 200;
       });
       const expansions = response;
         .split('\n')
@@ -748,7 +724,7 @@ class VectorSearchService {
       evidenceTypes: [],
       cases: [],
       tags: [],
-      dateRanges: []
+      dateRanges: [];
     }
   }
   private async performKMeansClustering(documents: any[], numClusters: number): Promise<any[]> {
@@ -782,15 +758,13 @@ class VectorSearchService {
   /**
    * Get service statistics
    */
-  public getStats(): {
-    cacheSize: number;
-    lastIndexUpdate: Date | null;
+  public getStats(): { cacheSize: number;, lastIndexUpdate: Date | null;
     indexSize: number;
   } {
     return {
       cacheSize: this.queryCache.size,
       lastIndexUpdate: this.lastIndexUpdate,
-      indexSize: Array.isArray((this.fuseIndex as any)?._docs) ? (this.fuseIndex as any)._docs.length: 0
+      indexSize: Array.isArray((this.fuseIndex as any)?._docs) ? (this.fuseIndex as any)._docs.length: 0;
     }
   }
 }

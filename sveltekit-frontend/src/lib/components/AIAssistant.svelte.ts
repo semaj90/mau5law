@@ -16,10 +16,10 @@ export class AIAssistant {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
+         , model: 'gemma3-legal:latest',
           prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       const data = await resp.json();
       // defensive: handle unexpected payloads

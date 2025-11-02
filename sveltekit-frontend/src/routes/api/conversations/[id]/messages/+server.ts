@@ -30,7 +30,7 @@ export const POST: RequestHandler = withErrorHandling(async event => {
       processingTime,
       confidence,
       vectorSearchResults,
-      metadata,
+      metadata
     });
     return apiSuccess({ message }, 'Message added successfully', requestId);
   } catch (err: any) {

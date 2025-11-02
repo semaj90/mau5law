@@ -70,9 +70,7 @@ export const MODEL_CONFIGS = {
 }
 // Check if local installations are available
 export function checkLocalInstallations() {
-  const status = {
-    ollama: {
-      available: existsSync(LOCAL_LLM_PATHS.ollama.executable),
+  const status = { ollama: {, available: existsSync(LOCAL_LLM_PATHS.ollama.executable),
       path: LOCAL_LLM_PATHS.ollama.executable
     },
     llamaCpp: {

@@ -9,9 +9,7 @@ import { createWorker } from 'tesseract.js';
 import pdfParse from 'pdf-parse';
 import sharp from 'sharp';
 import { readFile } from 'fs/promises';
-export interface PDFProcessingResult {
-  text: string;
-  pageCount: number;
+export interface PDFProcessingResult { text: string;, pageCount: number;
   metadata: {
     title?: string;
     author?: string;
@@ -25,23 +23,17 @@ export interface PDFProcessingResult {
     dates?: string[];
     legalCitations?: string[];
   };
-  ocr?: {
-    confidence: number;
-    text: string;
+  ocr?: { confidence: number;, text: string;
   };
   processingTime: number;
 }
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   processingTime: number;
 }
 /**
  * Extract text from PDF using pdf-parse
  */
-export async function extractPDFText(filePath: string): Promise<{
-  text: string;
-  pages: number;
+export async function extractPDFText(filePath: string): Promise<{ text: string;, pages: number;
   metadata: Record<string, any>;
 }> {
   const dataBuffer = await readFile(filePath);
@@ -52,17 +44,17 @@ export async function extractPDFText(filePath: string): Promise<{
       return pageData
         .getTextContent({
           normalizeWhitespace: true,
-          disableCombineTextItems: false,
+          disableCombineTextItems: false
         })
         .then((textContent: any) => {
           return textContent.items.map((item: any) => item.str).join(' ');
         });
-    },
+    }
   });
   return {
     text: data.text,
     pages: data.numpages,
-    metadata: data.info || {},
+    metadata: data.info || {}
   };
 }
 /**
@@ -85,7 +77,7 @@ export async function performOCR(
       .resize(2000, 2000, {
         // Max 2000px
         fit: 'inside',
-        withoutEnlargement: true,
+        withoutEnlargement: true
       })
       .grayscale() // Convert to grayscale for better OCR
       .normalize() // Normalize contrast
@@ -105,7 +97,7 @@ export async function performOCR(
     gzip: false,
     // Use optimized model
     legacyCore: false,
-    legacyLang: false,
+    legacyLang: false
   });
   try {
     const result = await worker.recognize(imageBuffer);
@@ -114,7 +106,7 @@ export async function performOCR(
     return {
       text: result.data.text,
       confidence: result.data.confidence / 100, // Normalize to 0-1
-      processingTime,
+      processingTime
     };
   } finally {
     await worker.terminate();
@@ -124,9 +116,7 @@ export async function performOCR(
  * Extract entities from text using langextract Python API
  * Assumes langextract service running at localhost:8099
  */
-export async function extractEntities(text: string): Promise<{
-  persons: string[];
-  organizations: string[];
+export async function extractEntities(text: string): Promise<{ persons: string[];, organizations: string[];
   locations: string[];
   dates: string[];
   legalCitations: string[];
@@ -136,10 +126,10 @@ export async function extractEntities(text: string): Promise<{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: text.slice(0, 10000), // Limit to 10k chars for performance
+       , text: text.slice(0, 10000), // Limit to 10k chars for performance
         extract_entities: true,
-        extract_legal: true,
-      }),
+        extract_legal: true
+      })
     });
     if (!response.ok) {
       throw new Error(`langextract API error: ${response.status}`);
@@ -150,7 +140,7 @@ export async function extractEntities(text: string): Promise<{
       organizations: data.entities?.ORG || [],
       locations: data.entities?.GPE || data.entities?.LOC || [],
       dates: data.entities?.DATE || [],
-      legalCitations: data.legal?.citations || [],
+      legalCitations: data.legal?.citations || []
     };
   } catch (error) {
     console.warn('⚠️ langextract extraction failed, continuing without NLP:', error);
@@ -159,7 +149,7 @@ export async function extractEntities(text: string): Promise<{
       organizations: [],
       locations: [],
       dates: [],
-      legalCitations: [],
+      legalCitations: []
     };
   }
 }
@@ -207,11 +197,11 @@ export async function processPDF(
       title: pdfData.metadata.Title,
       author: pdfData.metadata.Author,
       subject: pdfData.metadata.Subject,
-      createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined,
+      createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined
     },
     entities,
     ocr: ocrResult,
-    processingTime,
+    processingTime
   };
 }
 /**
@@ -242,7 +232,7 @@ export async function processImage(
     metadata: {},
     entities,
     ocr: ocrResult,
-    processingTime,
+    processingTime
   };
 }
 /**

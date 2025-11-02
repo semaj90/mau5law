@@ -24,20 +24,20 @@ export const appPool = isDevelopment
       connectionString: appConnectionString,
       max: 5, // Smaller pool for development
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
+      connectionTimeoutMillis: 10000
     })
   : new Pool({
       connectionString: appConnectionString,
       max: 20,
       idleTimeoutMillis: 60000,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 5000
     });
 // Admin connection pool (for migrations/extensions)
 export const adminPool = new Pool({
   connectionString: adminConnectionString,
   max: 2, // Small pool since admin operations are infrequent
   idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 5000
 });
 // Drizzle instances
 export const db: PostgresJsDatabase<typeof schema> = drizzle(appPool, { schema });
@@ -46,7 +46,7 @@ export const adminDb: PostgresJsDatabase<typeof schema> = drizzle(adminPool, { s
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
   admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password;
-  environment: isDevelopment ? 'development' : 'production',
+  environment: isDevelopment ? 'development' : 'production'
 };
 // Utility functions
 export async function testAppConnection(): Promise<boolean> {

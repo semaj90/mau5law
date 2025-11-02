@@ -2,24 +2,20 @@
  * N64-Inspired Cache Hierarchy Implementation
  *
  * Three-tier cache system inspired by N64's memory architecture:
- * - L1: Browser Memory (1MB) - Fastest access, temporary storage
+ * -; L1: Browser Memory (1MB) - Fastest access, temporary storage
  * - L2: CHR-ROM Patterns (2MB) - Pattern-based caching for UI elements
- * - L3: Palace Cache (1MB) - Visual Memory Palace with 127:1 compression
+ * - L3: Palace Cache (1MB) - Visual Memory Palace with; 127:1 compression
  *
  * Achieves zero-latency UI interactions through predictive pattern caching
  */
 }
-export interface CacheEntry<T = any> {
-  key: string;
-  data: T;
+export interface CacheEntry<T = any> { key: string;, data: T;
   timestamp: number;
   accessCount: number;
   size: number;
   compressionRatio?: number;
 }
-export interface CacheMetrics {
-  hitRate: number;
-  missRate: number;
+export interface CacheMetrics { hitRate: number;, missRate: number;
   memoryUsage: number;
   evictions: number;
   totalRequests: number;
@@ -32,8 +28,7 @@ export class N64CacheLevel<T = any> {
   private misses = 0;
   private evictions = 0;
   constructor()
-    private name: string
-    maxSizeBytes: number
+    private name: string; maxSizeBytes: number
     private evictionPolicy: 'LRU' | 'LFU' | 'FIFO' = 'LRU';
   ) {
     this.maxSize = maxSizeBytes;
@@ -241,7 +236,7 @@ export class N64CacheHierarchy {
       levels: {
         l1: l1Metrics,
         l2: l2Metrics,
-        l3: l3Metrics,
+        l3: l3Metrics
       }
     }
   }

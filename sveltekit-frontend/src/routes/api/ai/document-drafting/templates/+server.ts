@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -63,7 +63,7 @@ Respectfully submitted,
           { name: 'FACTUAL_BACKGROUND', type: 'textarea', required: true, description: 'Factual background' },
           { name: 'LEGAL_STANDARD', type: 'textarea', required: false, description: 'Applicable legal standard' },
           { name: 'ARGUMENT_SECTIONS', type: 'textarea', required: true, description: 'Legal arguments' },
-          { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: 'Attorney signature block' }
+          { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: `Attorney signature block` }
         ],
         lastUpdated: '2024-09-10T15:00:00Z',
         usage_count: 127
@@ -99,7 +99,7 @@ AGREED TO AND ACCEPTED:
           { name: 'COOPERATION_TERMS', type: 'textarea', required: false, description: 'Cooperation agreement' },
           { name: 'WAIVER_PROVISIONS', type: 'textarea', required: true, description: 'Rights waived' },
           { name: 'BREACH_TERMS', type: 'textarea', required: false, description: 'Breach consequences' },
-          { name: 'SIGNATURE_BLOCK', type: 'text', required: true, description: 'Signature block' }
+          { name: 'SIGNATURE_BLOCK', type: 'text', required: true, description: `Signature block` }
         ],
         lastUpdated: '2024-09-08T10:30:00Z',
         usage_count: 89
@@ -138,7 +138,7 @@ Respectfully submitted,
           { name: 'GIGLIO_REQUESTS', type: 'textarea', required: false, description: 'Giglio material requests' },
           { name: 'EXPERT_REQUESTS', type: 'textarea', required: false, description: 'Expert witness materials' },
           { name: 'ELECTRONIC_REQUESTS', type: 'textarea', required: false, description: 'Electronic evidence requests' },
-          { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: 'Attorney signature block' }
+          { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: `Attorney signature block` }
         ],
         lastUpdated: '2024-09-05T16:45:00Z',
         usage_count: 203
@@ -148,7 +148,7 @@ Respectfully submitted,
         name: 'Criminal Opening Statement',
         documentTypeId: 'opening_statement',
         description: 'Opening statement template for criminal defense',
-        content: `OPENING STATEMENT,
+        content: 'OPENING STATEMENT,
 case {{CASE_TITLE}}
 Defendant: {{DEFENDANT_NAME}}
 May it please the Court, counsel, and members of the jury:
@@ -172,7 +172,7 @@ Thank you for your attention.`,
           { name: 'EVIDENCE_PREVIEW', type: 'textarea', required: true, description: 'Evidence preview' },
           { name: 'BURDEN_DISCUSSION', type: 'textarea', required: true, description: 'Burden of proof discussion' },
           { name: 'KEY_FACTS', type: 'textarea', required: true, description: 'Key facts presentation' },
-          { name: 'CONCLUSION', type: 'textarea', required: true, description: 'Opening conclusion' }
+          { name: 'CONCLUSION', type: 'textarea', required: true, description: `Opening conclusion` }
         ],
         lastUpdated: '2024-09-07T11:20:00Z',
         usage_count: 156
@@ -227,7 +227,7 @@ Respectfully submitted,
       success: true,
       templates,
       meta: {
-        total: templates.length,
+       , total: templates.length,
         totalUsage: templates.reduce((sum, t) => sum + t.usage_count, 0),
         lastUpdated: templates.reduce((latest, t) =>
           new Date(t.lastUpdated) > new Date(latest) ? t.lastUpdated: latest,
@@ -238,7 +238,7 @@ Respectfully submitted,
   } catch (error) {
     console.error('Error fetching document templates:', error)
     return json(
-      { success: false, message: 'Failed to fetch document templates' },)
+      { success: false, message: `Failed to fetch document templates` },)
       { status: 500 }
     )
   }

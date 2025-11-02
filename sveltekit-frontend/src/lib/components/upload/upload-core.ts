@@ -8,9 +8,7 @@ export type UploadResult = {
   size?: number;
   message?: string;
 };
-export type FileState = {
-  file: File;
-  status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
+export type FileState = { file: File;, status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
   progress: number; // 0-100
   attempts?: number;
   error?: string | null;
@@ -24,9 +22,7 @@ export interface UploadManagerOptions {
   onProgress?: (state: FileState[]) => void;
   onComplete?: (results: UploadResult[]) => void;
 }
-export class UploadManager {
-  fileStates: FileState[] = [];
-  queue: FileState[] = [];
+export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] = [];
   active = 0;
   opts: Required<UploadManagerOptions>;
   constructor(opts?: UploadManagerOptions) {
@@ -37,7 +33,7 @@ export class UploadManager {
         enableGPUProcessing: true,
         enableEmbeddings: true,
         onProgress: () => {},
-        onComplete: () => {},
+        onComplete: () => {}
       },
       opts || {}
     );
@@ -85,7 +81,7 @@ export class UploadManager {
         id: json.id || '',
         url: json.url || '',
         fileName: state.file.name,
-        size: state.file.size,
+        size: state.file.size
       };
       state.progress = 100;
       state.status = 'completed';
@@ -95,7 +91,7 @@ export class UploadManager {
           await fetch('/api/gpu/process', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fileName: state.file.name }),
+            body: JSON.stringify({, fileName: state.file.name })
           }).catch(() => null);
         } catch {
           // ignore GPU errors; not blocking
@@ -105,8 +101,8 @@ export class UploadManager {
         try {
           await fetch('/api/embed/process', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fileName: state.file.name }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, fileName: state.file.name })
           }).catch(() => null);
         } catch {
           // ignore

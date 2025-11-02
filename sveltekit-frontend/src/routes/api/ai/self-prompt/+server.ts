@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -33,7 +33,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         prompt: `As a legal AI assistant for prosecutors, generate 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.
 Context: ${context}
 Phase: ${currentPhase}
-Focus on practical prosecutor needs:
+Focus on practical prosecutor, needs:
 - Evidence strength assessment
 - Legal strategy development
 - Timeline analysis
@@ -41,8 +41,8 @@ Focus on practical prosecutor needs:
 - Defense preparation
 Return only 4 concise, actionable questions as a JSON array:
 ["Question 1", "Question 2", "Question 3", "Question 4"]`,
-        stream: false,
-      }),
+        stream: false
+      })
     });
     const result = await (response as { json?: any }).json();
     try {
@@ -56,7 +56,7 @@ Return only 4 concise, actionable questions as a JSON array:
               'Find similar cases with comparable evidence',
               'Identify potential defense arguments',
               'Review timeline for inconsistencies',
-            ],
+            ]
       });
     } catch (parseError) {
       // Fallback suggestions
@@ -67,7 +67,7 @@ Return only 4 concise, actionable questions as a JSON array:
           'Find similar cases with comparable evidence',
           'Identify potential defense arguments',
           'Review timeline for inconsistencies',
-        ],
+        ]
       });
     }
   } catch (error: any) {

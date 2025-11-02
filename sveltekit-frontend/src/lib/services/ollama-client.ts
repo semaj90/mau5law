@@ -16,7 +16,7 @@ export class OllamaClient {
     const res = await fetch(`${this.baseUrl}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: prompt, options, )})
+      body: JSON.stringify({, message: prompt, options, )})
     });
     if (!res,.ok) throw new Error(`Generate failed: ${res.statusText}`);
     return res.json();

@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
               {@const isCurrentStep = fileProgress.step === step}
               {@const isCompleted = steps.indexOf(fileProgress.step || '') > index}
               <div
-                class="flex" items-center space-x-3 p-3 rounded-lg {isCurrentStep
+                class="flex items-center space-x-3" p-3 rounded-lg {isCurrentStep
                   ? 'bg-blue-50 border border-blue-200'
                   : isCompleted
                     ? 'bg-green-50 border border-green-200'
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
                 <span class="text-xl">{getStepIcon(step)}</span>
                 <div class="flex-1">
                   <div
-                    class="font-medium" capitalize {isCurrentStep
+                    class="font-medium capitalize" {isCurrentStep
                       ? 'text-blue-900'
                       : isCompleted
                         ? 'text-green-900'

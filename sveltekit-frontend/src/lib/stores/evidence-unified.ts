@@ -12,7 +12,7 @@ type EvidenceState = {
 const initialState: EvidenceState = {
 	evidence: [],
 	isLoading: false,
-	error: null,
+	error: null
 };
 
 const { subscribe, set, update } = writable<EvidenceState>(initialState);
@@ -39,5 +39,5 @@ export const evidenceStore = {
 	},
 	setError(err: any) {
 		update((s) => ({ ...s, error: err }));
-	},
+	}
 };

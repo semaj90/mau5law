@@ -14,8 +14,7 @@ export class VectorService {
    * Store user content embedding
    */
   static async storeUserEmbedding()
-    userId: string
-    content: string
+    userId: string; content: string
     embedding: number[];
     options: EmbeddingOptions = {},
   ): Promise<string>, {

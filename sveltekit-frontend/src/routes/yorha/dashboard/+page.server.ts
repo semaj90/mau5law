@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
       multicoreStatus,
       graphData,
       initialLoad: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (err: any) {
     console.error('Error loading dashboard data:', err);
@@ -20,16 +20,15 @@ export const load: PageServerLoad = async ({ fetch }) => {
       graphData: generateSystemGraphData(),
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load system data',
+      error: 'Failed to load system data'
     };
   }
 };
 function generateMockSystemStatus() {
-  return {
-    database: { connected: true },
+  return { database: {, connected: true },
     backend: { healthy: true },
     frontend: { webGPUEnabled: true },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 function generateSystemGraphData() {

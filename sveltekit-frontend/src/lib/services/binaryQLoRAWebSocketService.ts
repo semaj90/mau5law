@@ -11,9 +11,7 @@ export interface StreamingMessage {
   message?: string;
   value?: string;
   data?: ArrayBuffer;
-  metadata?: {
-    compressionRatio: number;
-  originalSize: number;
+  metadata?: { compressionRatio: number;, originalSize: number;
   compressedSize: number;
   cacheHit: boolean;
   processingTime: number;
@@ -172,8 +170,7 @@ function updateMetrics(message: StreamingMessage): void {
     metricsData.push({
       compressionRatio: message.metadata.compressionRatio,
       bytesReceived: message.metadata.compressedSize || 0,
-      isBinary: message.type === 'binary'
-    });
+      isBinary: message.type === 'binary' });
     // Update performance metrics
     performanceMetrics.update(metrics => {
       const totalMessages = metrics.totalMessages + 1);

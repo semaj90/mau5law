@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import {
   unifiedDocumentProcessor,
   type DocumentProcessingConfig,
-  type ProcessingResult,
+  type ProcessingResult
 } from '$lib/services/unified-document-processor.js';
 import { json, error } from '@sveltejs/kit';
 
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
       caseId: caseId || undefined,
       documentType: documentType || undefined,
       limit,
-      threshold,
+      threshold
     });
     console.log(`✅ Search completed: ${results.results.length} results found`);
     return json({
@@ -88,11 +88,11 @@ export const GET: RequestHandler = async ({ url }) => {
       query,
       results: results.results,
       metadata: {
-        resultCount: results.results.length,
+       , resultCount: results.results.length,
         processingTime: results.processingTime,
         threshold,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     const { message, stack, status } = extractErrorInfo(err);
@@ -101,10 +101,10 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: message || 'Semantic search failed',
-        details: stack,
+        details: stack
       },
       {
-        status: status || 500,
+        status: status || 500
       }
     );
   }
@@ -116,17 +116,16 @@ export const OPTIONS: RequestHandler = async () => {
     return json({
       success: true,
       health,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     const { message } = extractErrorInfo(err);
     return json(
       {
         success: false,
-        error: message || 'Health check failed',
-      },
+        error: message || 'Health check failed` },
       {
-        status: 500,
+        status: 500
       }
     );
   }
@@ -163,8 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(t => t.trim())
         .filter(Boolean),
       userId: String(formData.get('userId') || 'anonymous'),
-      // keep raw priority as string (may be numeric or textual like: 'medium')
-      priority: String(formData.get('priority') || 'medium'),
+      // keep raw priority as string (may be numeric or textual like: 'medium'); priority: String(formData.get('priority') || 'medium')
     };
 
     if (!metadata.caseId) {
@@ -250,7 +248,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       model: normalizeModel(formData.get('model') as string | null),
       chunkSize: parseInt(String(formData.get('chunkSize') || '1000')),
-      confidence: parseFloat(String(formData.get('confidence') || '0.7')),
+      confidence: parseFloat(String(formData.get('confidence') || '0.7'))
     };
     console.log(`📁 Processing ${files.length} file(s) for case ${metadata.caseId}`);
     console.log(
@@ -277,8 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Use the imported ProcessingResult type (already imported at the top of the file)
         batchProcess?: (
           files: File[],
-          config: DocumentProcessingConfig,
-          metadata: any
+          config: DocumentProcessingConfig; metadata: any
         ) => Promise<ProcessingResult[]>;
       };
       if ((udp as UnifiedWithBatch).batchProcess) {
@@ -302,10 +299,10 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       results,
       metadata: {
-        filesProcessed: files.length,
+       , filesProcessed: files.length,
         processingTime: getTotalProcessingTime(results),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     const { message, stack, status } = extractErrorInfo(err);
@@ -314,10 +311,10 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: message || 'Document processing failed',
-        details: stack,
+        details: stack
       },
       {
-        status: status || 500,
+        status: status || 500
       }
     );
   }

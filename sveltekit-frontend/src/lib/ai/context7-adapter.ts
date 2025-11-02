@@ -15,7 +15,7 @@ export async function ensureContext7Ready(opts?: any): Promise<any> {
   }
 }
 export async function performContext7Search(_options: {
-  query: string;
+ , query: string;
   maxResults?: number;
   confidenceThreshold?: number;
   includeCode?: boolean;
@@ -24,9 +24,9 @@ export async function performContext7Search(_options: {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: any[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
-    const results = [] as { id: string; content: string; score: number }[];
+    const results = [] as { id: string; content: string;, score: number }[];
     for (let i = 0; i < (options.maxResults || 5); i++) {
-      results.push({ id: `mock-${i}`, content: `Mock search result for: '${options.query}' (#${i})`, score: 0.5 });
+      results.push({ id: `mock-${i}`, content: 'Mock search result; for: '${options.query}' (#${i})`, score: 0.5 });
     }
     return results;
   }
@@ -39,7 +39,7 @@ export const context7AgentOrchestrator = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as any).triggerAgent !== 'function') {
       // mock behavior: echo back a completed trigger
-      return { ...trigger, result: `Mocked trigger for ${trigger.todoId || 'unknown'}`, status: 'completed' };
+      return { ...trigger, result: 'Mocked trigger for ${trigger.todoId || 'unknown' }`, status: 'completed' };
     }
     return (impl as any).triggerAgent(trigger);
   },
@@ -59,7 +59,7 @@ export const context7AgentOrchestrator = {
   getAuditLog() {
     // real impl or empty
     return [] as any[];
-  },
+  }
 };
 // Semantic auditor wrapper
 export const context7SemanticAuditor = {
@@ -70,11 +70,11 @@ export const context7SemanticAuditor = {
       return [{ id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null }];
     }
     return (impl as any).performSemanticAudit(component);
-  },
+  }
 };
 export default {
   ensureContext7Ready,
   performContext7Search,
   context7AgentOrchestrator,
-  context7SemanticAuditor,
+  context7SemanticAuditor
 };

@@ -1,23 +1,17 @@
 /* AI Chat Type Definitions */
-export interface AIMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface AIMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: Date;
   metadata?: Record<string, unknown>; // replaced `any` with safer type
 }
-export interface AIChat {
-  id: string;
-  messages: AIMessage[];
+export interface AIChat { id: string;, messages: AIMessage[];
   model?: string;
   temperature?: number;
   maxTokens?: number;
   createdAt: Date;
   updatedAt: Date;
 }
-export interface AIStreamResponse {
-  text: string;
-  isComplete: boolean;
+export interface AIStreamResponse { text: string;, isComplete: boolean;
   error?: string;
 }
 export interface AICompletionOptions {
@@ -35,9 +29,7 @@ export interface AIProvider {
   embed(text: string): Promise<number[]>;
 }
 export type AIModelType = 'gpt-4.1' | 'gpt-4.0' | 'gpt-5.0-mini' | 'claude' | 'gemma' | 'llama' | 'custom';
-export interface AIConfig {
-  provider: 'openai' | 'anthropic' | 'ollama' | 'custom';
-  model: AIModelType;
+export interface AIConfig { provider: 'openai' | 'anthropic' | 'ollama' | 'custom';, model: AIModelType;
   apiKey?: string;
   baseUrl?: string;
   defaultOptions?: AICompletionOptions;

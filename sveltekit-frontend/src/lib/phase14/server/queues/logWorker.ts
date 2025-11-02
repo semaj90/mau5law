@@ -2,9 +2,7 @@
 import { Worker } from "bullmq";
 import { logQueue } from './logQueue.js';
 // Define the type for the log entry data
-export interface LogEntryData {
-  timestamp: string;
-  level: string;
+export interface LogEntryData { timestamp: string;, level: string;
   message: string;
 }
 // Create a new BullMQ Worker instance
@@ -23,7 +21,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
         model: embeddingModel;
-        prompt: message
+       , prompt: message
       })
     });
     if (!response.ok) {
@@ -38,16 +36,14 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
     // --- Placeholder for RAG Integration (e.g., Qdrant) ---
     // Replace with actual vector database insertion logic
     console.log(`Integrating log into RAG system: ${message}`);
-    // Example: qdrantClient.upsert({ points: [{ id: someId, vector: embedding, payload: { timestamp, level, message } }] })
+    // Example: qdrantClient.upsert({ points: [{, id: someId, vector: embedding, payload: { timestamp, level, message } }] })
     // For now, just simulate success
     console.log(`Successfully processed log: ${message}`);
   } catch (error: any) {
-    console.error(`Error processing log job ${job.id}:`, error);
+    console.error(`Error processing log job ${job.id}: ', error);
     throw error; // Re-throw to mark the job as failed in BullMQ
   }
-}, {
-  connection: {
-    host: 'localhost',
+}, { connection: {, host: 'localhost',
     port: 6379
   }
 });

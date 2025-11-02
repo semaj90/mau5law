@@ -71,7 +71,7 @@
     location: ''
   });
   let isLoading = $state<boolean>(false);
-  let error: string | null = $state(null);
+  let error: string | null = null;
   // Filter persons based on search and threat level
   let filteredPersons = $derived(() => {
     // make a shallow copy to avoid mutating original

@@ -26,9 +26,7 @@ export interface TextureStreamingMetrics {
   visualQuality: number; // 0-1
 }
 }
-export interface EvaluationScenario {
-  name: string;
-  description: string;
+export interface EvaluationScenario { name: string;, description: string;
   textureCount: number;
   textureSizes: number[]; // LOD levels
   cacheEnabled: boolean;
@@ -37,17 +35,13 @@ export interface EvaluationScenario {
   memoryConstraint: number; // MB
 }
 }
-export interface EvaluationResult {
-  scenario: EvaluationScenario;
-  metrics: TextureStreamingMetrics;
+export interface EvaluationResult { scenario: EvaluationScenario;, metrics: TextureStreamingMetrics;
   samples: PerformanceSample[];
   timestamp: Date;
   environment: EnvironmentInfo;
 }
 }
-export interface PerformanceSample {
-  timestamp: number;
-  operation: 'load' | 'cache_hit' | 'cache_miss' | 'lod_switch' | 'upload';
+export interface PerformanceSample { timestamp: number;, operation: 'load' | 'cache_hit' | 'cache_miss' | 'lod_switch' | 'upload';
   duration: number; // ms,
   textureId: string;
   lodLevel: number;
@@ -55,9 +49,7 @@ export interface PerformanceSample {
   success: boolean;
 }
 }
-export interface EnvironmentInfo {
-  userAgent: string;
-  webgpuSupported: boolean;
+export interface EnvironmentInfo { userAgent: string;, webgpuSupported: boolean;
   maxTextureSize: number;
   memoryLimit: number;
   deviceType: 'desktop' | 'mobile' | 'unknown';
@@ -72,7 +64,7 @@ export class TextureStreamingEvaluator {
   private readonly scenarios: EvaluationScenario[] = [
     {
       name: 'N64_Classic',
-      description: 'N64-style constraints: 64MB RAM, 256x256 max textures',
+      description: 'N64-style; constraints: 64MB RAM, 256x256 max textures',
       textureCount: 50,
       textureSizes: [256, 128, 64, 32], // N64 LOD levels
       cacheEnabled: false,
@@ -160,7 +152,7 @@ export class TextureStreamingEvaluator {
         // Brief pause between scenarios
         await this.sleep(1000);
       } catch (error) {
-        console.error(`[TextureStreamingEvaluator] Scenario ${scenario.name} failed:`, error);
+        console.error(`[TextureStreamingEvaluator] Scenario ${scenario.name} failed: ', error);
       }
     }
     console.log('[TextureStreamingEvaluator] Evaluation complete');
@@ -391,8 +383,7 @@ export class TextureStreamingEvaluator {
     if (!this.device) return null;
     const loadStart = performance.now();
     try {
-      const gpuTexture = this.device.createTexture({
-        size: { width: texture.size, height: texture.size, depthOrArrayLayers: 1 },
+      const gpuTexture = this.device.createTexture({ size: {, width: texture.size, height: texture.size, depthOrArrayLayers: 1 },
         format: 'rgba8unorm',
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
@@ -558,7 +549,7 @@ export class TextureStreamingEvaluator {
       averageCacheMissTime: this.average(allMetrics.map(m => m.cacheMissTime)),
       overallCacheHitRate: this.average(allMetrics.map(m => m.cacheHitRate)),
       totalFrameDrops: allMetrics.reduce((sum, m) => sum + m.frameDrops, 0),
-      averageVisualQuality: this.average(allMetrics.map(m => m.visualQuality),
+      averageVisualQuality: this.average(allMetrics.map(m => m.visualQuality)
     }
   }
   private generateComparisons(results: EvaluationResult[]): ScenarioComparison[] {
@@ -574,7 +565,7 @@ export class TextureStreamingEvaluator {
           withoutCache: withoutCache.metrics,
           withCache: withCache.metrics,
           improvement: {
-            loadTime: ((withoutCache.metrics.initialLoadTime - withCache.metrics.initialLoadTime) / withoutCache.metrics.initialLoadTime) * 100,
+           , loadTime: ((withoutCache.metrics.initialLoadTime - withCache.metrics.initialLoadTime) / withoutCache.metrics.initialLoadTime) * 100,
             cachePerformance: withCache.metrics.cacheHitRate * 100,
             memoryEfficiency: ((withoutCache.metrics.memoryUsage - withCache.metrics.memoryUsage) / withoutCache.metrics.memoryUsage) * 100
           }
@@ -608,33 +599,25 @@ export class TextureStreamingEvaluator {
   }
 }
 // Supporting interfaces
-interface TestTexture {
-  id: string;
-  size: number;
+interface TestTexture { id: string;, size: number;
   lodLevel: number;
   data: ArrayBuffer;
   priority: number;
   type: 'document' | 'graph' | 'timeline' | 'evidence';
 }
-interface PerformanceReport {
-  summary: PerformanceSummary;
-  scenarioComparisons: ScenarioComparison[];
+interface PerformanceReport { summary: PerformanceSummary;, scenarioComparisons: ScenarioComparison[];
   recommendations: string[];
   detailedMetrics: EvaluationResult[];
   timestamp: Date;
 }
-interface PerformanceSummary {
-  averageLoadTime: number;
-  averageLODSwitchTime: number;
+interface PerformanceSummary { averageLoadTime: number;, averageLODSwitchTime: number;
   averageCacheHitTime: number;
   averageCacheMissTime: number;
   overallCacheHitRate: number;
   totalFrameDrops: number;
   averageVisualQuality: number;
 }
-interface ScenarioComparison {
-  name: string;
-  withoutCache: TextureStreamingMetrics;
+interface ScenarioComparison { name: string;, withoutCache: TextureStreamingMetrics;
   withCache: TextureStreamingMetrics;
   improvement: {
     loadTime: number; // % improvement,

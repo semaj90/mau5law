@@ -25,16 +25,14 @@ declare global {
 // Extend module declarations for better type safety (avoid `any`)
 declare module '@qdrant/js-client-rest' {
   export interface QdrantClient {
-    upsert(collection: string, options: { points: PointStruct[]; wait?: boolean }): Promise<unknown>;
+    upsert(collection: string, options: {, points: PointStruct[]; wait?: boolean }): Promise<unknown>;
     search(collection: string, request: SearchRequest): Promise<unknown>;
     getCollections(): Promise<unknown>;
     getCollection(name: string): Promise<unknown>;
     createCollection(name: string, options: Record<string, unknown>): Promise<unknown>;
   }
 
-  export interface PointStruct {
-    id: string;
-    vector: number[];
+  export interface PointStruct { id: string;, vector: number[];
     payload?: Record<string, unknown>;
   }
 

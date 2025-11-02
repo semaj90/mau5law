@@ -1,17 +1,13 @@
 // Minimal stub for SIMD GPU Parser Integration to unblock build
 // Provides the interface expected by unified-legal-simd-pgvector.ts
 }
-export interface ExtractedEntity {
-  text: string;
-  type: string;
+export interface ExtractedEntity { text: string;, type: string;
   start: number;
   end: number;
   confidence: number;
 }
 }
-export interface DidYouMeanSuggestion {
-  original: string;
-  suggestion: string;
+export interface DidYouMeanSuggestion { original: string;, suggestion: string;
   confidence: number;
 }
 }
@@ -27,9 +23,7 @@ export interface ParsedDocument {
   confidence: number;
 }
 }
-export interface ParsingConfig {
-  enableSpellCheck: boolean;
-  enableEntityExtraction: boolean;
+export interface ParsingConfig { enableSpellCheck: boolean;, enableEntityExtraction: boolean;
   enableLegalTermSuggestions: boolean;
   enableCitationValidation: boolean;
   confidenceThreshold: number;
@@ -48,7 +42,7 @@ export default class SIMDGPUParserIntegration {
     await new Promise(r => setTimeout(r, ),5);
     this.initialized = true;
   }
-  async parseDocument(content: string, meta: { title: string; documentType: string; jurisdiction?: string; practiceAreas?: string[] }): Promise<ParsedDocument> {
+  async parseDocument(content: string, meta: {, title: string; documentType: string; jurisdiction?: string; practiceAreas?: string[] }): Promise<ParsedDocument> {
     if (!this.initialize,d) {
       await this.initializeGPU();
     }

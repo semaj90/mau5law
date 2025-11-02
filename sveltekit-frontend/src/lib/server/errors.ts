@@ -8,9 +8,7 @@
  * Base authentication error class
  * All auth-related errors inherit from this for consistent handling
  */
-export class AuthError extends Error {
-  code: string;
-  status: number;
+export class AuthError extends Error { code: string;, status: number;
   context?: Record<string, unknown>;
 
   constructor(
@@ -32,7 +30,7 @@ export class AuthError extends Error {
       message: this.message,
       code: this.code,
       status: this.status,
-      context: this.context,
+      context: this.context
     };
   }
 }
@@ -151,8 +149,8 @@ export function formatErrorResponse(error: any) {
         message: error.message,
         code: error.code,
         status: error.status,
-        ...(error.context && { context: error.context }),
-      },
+        ...(error.context && { context: error.context })
+      }
     };
   }
 
@@ -162,8 +160,8 @@ export function formatErrorResponse(error: any) {
     error: {
       message: 'An unexpected error occurred',
       code: 'UNKNOWN_ERROR',
-      status: 500,
-    },
+      status: 500
+    }
   };
 }
 
@@ -209,5 +207,5 @@ export const ERROR_CODES = {
   DB_CONNECTION_FAILED: 'DB_CONNECTION_FAILED',
 
   // Generic errors
-  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
 } as const;

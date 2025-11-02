@@ -46,7 +46,7 @@ export const NES_YORHA_PALETTE = {
   nesSuccess: 0x00d800,
   nesWarning: 0xfc9838,
   nesError: 0xf83800,
-  nesInfo: 0x3cbcfc,
+  nesInfo: 0x3cbcfc
 } as const;
 
 export interface NESYoRHaHybridStyle extends YoRHaStyle {
@@ -63,9 +63,7 @@ export interface NESYoRHaHybridStyle extends YoRHaStyle {
   animationStyle?: 'nes-8bit' | 'yorha-smooth' | 'hybrid-morphing';
 }
 
-export interface DOMSyncData {
-  domElement: HTMLElement;
-  position: THREE.Vector3;
+export interface DOMSyncData { domElement: HTMLElement;, position: THREE.Vector3;
   rotation: THREE.Euler;
   scale: THREE.Vector3;
   opacity: number;
@@ -96,7 +94,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       pixelPerfect: true,
       renderMode: 'hybrid-sync',
       animationStyle: 'hybrid-morphing',
-      ...hybridStyle,
+      ...hybridStyle
     } as NESYoRHaHybridStyle;
     super(mergedStyle);
     this.hybridStyle = mergedStyle;
@@ -127,7 +125,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       opacity: this.hybridStyle.opacity ?? 1,
       transparent: (this.hybridStyle.opacity ?? 1) < 1,
       metalness: 0,
-      roughness: 1,
+      roughness: 1
     };
     if (this.hybridStyle.crtEffect) {
       this.material = this.createCRTMaterial(materialProps);
@@ -140,14 +138,12 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
 
   private createCRTMaterial(baseProps: THREE.MeshStandardMaterialParameters): THREE.ShaderMaterial {
-    this.crtShader = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0 },
-        resolution: { value: new THREE.Vector2(800, 600) },
+    this.crtShader = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
+        resolution: {, value: new THREE.Vector2(800, 600) },
         baseColor: { value: new THREE.Color(baseProps.color) },
         scanlineIntensity: { value: 0.8 },
         curvature: { value: 2.0 },
-        brightness: { value: 1.2 },
+        brightness: { value: 1.2 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -190,7 +186,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           color += noise * 0.05;
           gl_FragColor = vec4(color, 1.0);
         }
-      `,
+      `
     });
     return this.crtShader;
   }
@@ -202,8 +198,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     );
     const scanlineMaterial = new THREE.ShaderMaterial({
       transparent: true,
-      uniforms: {
-        time: { value: 0 },
+      uniforms: {, time: {, value: 0 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -219,8 +214,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           float scanlines = sin(vUv.y * 100.0 + time * 2.0) * 0.04;
           gl_FragColor = vec4(0.0, 0.0, 0.0, scanlines);
         }
-      `,
-    });
+      ` });
     const scanlineMesh = new THREE.Mesh(scanlineGeometry, scanlineMaterial);
     scanlineMesh.position.z = 0.001; // Slightly in front
     this.add(scanlineMesh);
@@ -305,40 +299,36 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
    */
   private async loadShaderResources(): Promise<void> {
     // Load NES pixel processing shaders for different backends
-    const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', {
-      webgpu: {
-        compute: this.createWebGPUPixelShader(),
+    const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', { webgpu: {, compute: this.createWebGPUPixelShader()
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2FragmentShader(),
+        fragment: this.createWebGL2FragmentShader()
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(),
-        fragment: this.createWebGL1FragmentShader(),
+        fragment: this.createWebGL1FragmentShader()
       },
       cpu: {
         // CPU implementation metadata
-        uniforms: { processingMode: 'nes-quantization' },
-      },
+        uniforms: { processingMode: `nes-quantization` }
+      }
     });
     if (nesPixelShaders) {
       this.shaderResources.set('nes-pixel-processing', nesPixelShaders);
       console.log(`🔧 Loaded ${this.activeBackend} shaders for NES pixel processing`);
     }
     // Load CRT effect shaders
-    const crtShaders = await gpuContextProvider.loadShaderResources('crt-effects', {
-      webgpu: {
-        compute: this.createWebGPUCRTShader(),
+    const crtShaders = await gpuContextProvider.loadShaderResources('crt-effects', { webgpu: {, compute: this.createWebGPUCRTShader()
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2CRTFragmentShader(),
+        fragment: this.createWebGL2CRTFragmentShader()
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(),
-        fragment: this.createWebGL1CRTFragmentShader(),
-      },
+        fragment: this.createWebGL1CRTFragmentShader()
+      }
     });
     if (crtShaders) {
       this.shaderResources.set('crt-effects', crtShaders);
@@ -354,7 +344,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Create pixel buffer for 256x240 NES resolution with RGBA format
     this.gpuPixelBuffer = device.createBuffer({
       size: 256 * 240 * 4 * 4, // RGBA float32
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
     });
   }
   /**
@@ -373,7 +363,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           240, // Resolution
           this.hybridStyle.pixelScale || 1,
           this.hybridStyle.scanlines ? 1 : 0,
-        ]),
+        ])
       });
 
       // Defensive checks: results may be undefined or contain various typed representations
@@ -429,7 +419,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       console.warn('🔄 Unable to coerce GPU output to Float32Array, falling back to CPU');
       return this.processPixelsCPU(pixelData, effect);
     } catch (error) {
-      console.warn(`🔄 GPU pixel processing failed, falling back to CPU:`, error);
+      console.warn(`🔄 GPU pixel processing failed, falling back to CPU: ', error);
       return this.processPixelsCPU(pixelData, effect);
     }
   }
@@ -746,7 +736,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Create DOM elements that overlay the 3D scene
     if (typeof window !== 'undefined') {
       this.domOverlay = document.createElement('div');
-      this.domOverlay.className = `nes-container ${this.hybridStyle.nesContainer || 'with-title'}`;
+      this.domOverlay.className = `nes-container ${this.hybridStyle.nesContainer || 'with-title` }`;
       // Add NES.css button if specified
       if (this.hybridStyle.nesButton) {
         const button = document.createElement('button');
@@ -780,7 +770,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     this.setupPredictiveCaching();
   }
   private async cacheCurrentState(): Promise<void> {
-    const stateId = `hybrid_${this.hybridStyle.variant || 'default'}_${Date.now()}`;
+    const stateId = `hybrid_${this.hybridStyle.variant || 'default` }_${Date.now()}`;
     const canvasState: InteractiveCanvasState = {
       id: stateId,
       nodes: [],
@@ -793,15 +783,14 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         renderMode: this.hybridStyle.renderMode,
         nesCssClass: this.hybridStyle.nesCssClass,
         yorhaVariant: this.hybridStyle.variant,
-        cacheRegion: 'CHR_ROM',
-      },
+        cacheRegion: `CHR_ROM` }
     };
 
     // Corrected cache call (array + options)
     try {
       await nesCacheOrchestrator.cacheCanvasStateAsSprite('hybrid_component', [canvasState], {
         priority: 2,
-        compression: true,
+        compression: true
       });
       this.nesStateCache.set(stateId, canvasState);
     } catch (err) {
@@ -831,10 +820,10 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           nesStyle: {
             cssClass: this.hybridStyle.nesCssClass,
             container: this.hybridStyle.nesContainer,
-            pixelPerfect: this.hybridStyle.pixelPerfect,
-          },
+            pixelPerfect: this.hybridStyle.pixelPerfect
+          }
         },
-      ],
+      ]
     };
     return JSON.stringify(fabricData);
   }
@@ -846,15 +835,15 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         id: `hybrid_${variant}_predicted`,
         nodes: [],
         connections: [],
-        viewport: { x: 0, y: 0, zoom: 1 },
+        viewport: {, x: 0, y: 0, zoom: 1 },
         animation: 'hybrid_component',
         frame: 0,
         fabricJSON: JSON.stringify(this.generateVariantFabricJSON(variant)),
         metadata: {
           renderMode: this.hybridStyle.renderMode,
           predictive: true,
-          variant,
-        },
+          variant
+        }
       };
       // Ensure key is a confirmed string before using as Map key
       const key: string = predictiveState.id ?? `hybrid_${variant}_predicted`;
@@ -869,7 +858,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       secondary: NES_YORHA_PALETTE.nesGray,
       accent: NES_YORHA_PALETTE.hybridAccent,
       hover: NES_YORHA_PALETTE.nesLightGray,
-      active: NES_YORHA_PALETTE.nesSuccess,
+      active: NES_YORHA_PALETTE.nesSuccess
     };
     const baseJSON = JSON.parse(this.serializeToFabricJSON());
     if (baseJSON.objects?.[0]) {

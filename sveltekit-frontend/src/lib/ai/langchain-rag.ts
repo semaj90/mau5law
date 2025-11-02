@@ -53,9 +53,7 @@ interface LegalDocumentMetadata {
   createdAt?: string;
   [key: string]: any;
 }
-export interface LegalRAGConfig {
-  qdrantUrl: string;
-  ollamaGenerationUrl: string;
+export interface LegalRAGConfig { qdrantUrl: string;, ollamaGenerationUrl: string;
   ollamaEmbeddingUrl: string;
   apiKey: string;
   collectionName: string;
@@ -73,14 +71,10 @@ export interface RAGQueryOptions {
   confidenceThreshold?: number;
   useEnhancedSemanticSearch?: boolean; // New option for enhanced semantic search API
 }
-export interface RAGResult {
-  answer: string;
-  sourceDocuments: LangChainDocumentType[];
+export interface RAGResult { answer: string;, sourceDocuments: LangChainDocumentType[];
   confidence: number;
   reasoning?: string;
-  metadata: {
-    retrievedChunks: number;
-    processingTime: number;
+  metadata: { retrievedChunks: number;, processingTime: number;
     usedThinkingMode: boolean;
     usedCompression: boolean;
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
@@ -121,7 +115,7 @@ Instructions:
 Answer:`),
     THINKING_MODE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant operating in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
-Context from legal documents:)
+Context from legal, documents:)
 {context}
 Question: {question}
 Instructions for thinking mode:
@@ -150,28 +144,26 @@ Detailed Legal Analysis:`),
     QUERY_GENERATION: PromptTemplate.fromTemplate(`
 You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
 Original question: {question}
-Generate 3 different search queries that would help find relevant legal information:
+Generate 3 different search queries that would help find relevant legal, information:
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
-Only return the queries, one per line.`),
+Only return the queries, one per line.`)
   };
   constructor(config: LegalRAGConfig) {
     this.config = config;
     this.llm = new ChatOpenAI({
       model: 'gemma-3-legal',
       apiKey: config.apiKey,
-      // Note: baseURL may not be supported in this version
-      temperature: 0.1, // Low temperature for legal accuracy
+      // Note: baseURL may not be supported in this version; temperature: 0.1, // Low temperature for legal accuracy
       maxTokens: 4096,
-      timeout: 120000,
+      timeout: 120000
     } as any);
     // Initialize embeddings
     this.embeddings = new OpenAIEmbeddings({
       model: 'nomic-embed-legal',
       apiKey: config.apiKey,
-      // Note: baseURL may not be supported in this version
-      dimensions: config.embeddingDimensions,
+      // Note: baseURL may not be supported in this version; dimensions: config.embeddingDimensions
     } as any);
     // Initialize Qdrant client (typed minimal mock for runtime and tests)
     this.qdrantClient = {
@@ -179,8 +171,8 @@ Only return the queries, one per line.`),
       // minimal mock implementation to satisfy typed interface;
       // real client should implement getCollection with actual HTTP call
       async getCollection(_: string) {
-        return { result: { points_count: 0 } };
-      },
+        return { result: {, points_count: 0 } };
+      }
     } as QdrantClient;
     // Initialize text splitter optimized for legal documents
     this.textSplitter = new RecursiveCharacterTextSplitter({
@@ -188,7 +180,7 @@ Only return the queries, one per line.`),
       chunkOverlap: 200, // Substantial overlap to preserve legal context
       separators: [
         '\n\n', // Paragraph breaks: '\n', // Line breaks: '. ', // Sentence endings: ', ', // Clause separators: ' ', // Word breaks
-      ],
+      ]
     });
     this.initializeVectorStore();
   }
@@ -230,9 +222,9 @@ Only return the queries, one per line.`),
                 console.warn('Mock retriever similaritySearch failed:', err);
                 return [] as LangChainDocumentType[];
               }
-            },
+            }
           };
-        },
+        }
       } as QdrantVectorStore;
       this.vectorStore = mockStore;
       console.log('✅ Legal RAG vector store initialized');
@@ -263,7 +255,7 @@ Only return the queries, one per line.`),
       documentType,
       jurisdiction,
       practiceArea,
-      useEnhancedSemanticSearch = true,
+      useEnhancedSemanticSearch = true
     } = options;
     try {
       // NEW: Try enhanced semantic search first (preferred method)
@@ -272,18 +264,17 @@ Only return the queries, one per line.`),
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-            },
+              'Content-Type': `application/json` },
             body: JSON.stringify({
               query: question,
               limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
               threshold: confidenceThreshold,
               filters: {
-                category: documentType,
+               , category: documentType,
                 jurisdiction,
-                practice_area: practiceArea,
-              },
-            }),
+                practice_area: practiceArea
+              }
+            })
           });
           if (semanticResponse.ok) {
             const semanticData = await semanticResponse.json();
@@ -291,14 +282,13 @@ Only return the queries, one per line.`),
               const enhancedRetrievedDocs = semanticData.results.map((result: SemanticSearchResult) => ({
                 pageContent:
                   result?.content ||
-                  `${result?.title || 'Untitled'}\n\n${result?.metadata?.summary || 'No content available'}`,
+                  `${result?.title || 'Untitled'}\n\n${result?.metadata?.summary || 'No content available` }`,
                 metadata: {
                   ...result.metadata,
                   title: result?.title,
                   score: result?.semantic_score ?? (result?.distance ? 1 - (result.distance as number) : 1),
                   document_type: result?.document_type,
-                  source: 'enhanced_semantic_search',
-                },
+                  source: `enhanced_semantic_search` }
               }));
               const contextText = formatDocumentsAsString(enhancedRetrievedDocs);
               let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
@@ -309,7 +299,7 @@ Only return the queries, one per line.`),
               }
               const formattedPrompt = await promptTemplate.format({
                 context: contextText,
-                question,
+                question
               });
               const llmResponse = await this.llm.invoke(formattedPrompt);
               const enhancedAnswer =
@@ -341,8 +331,8 @@ Only return the queries, one per line.`),
                   usedThinkingMode: thinkingMode,
                   usedCompression: useCompression,
                   enhancedSemanticSearch: true,
-                  semanticProcessingTime: semanticData.processingTime || 0,
-                },
+                  semanticProcessingTime: semanticData.processingTime || 0
+                }
               };
             }
           }
@@ -356,7 +346,7 @@ Only return the queries, one per line.`),
       // Use the strongly-typed QdrantVectorStore.asRetriever to avoid `any`
       const retriever = (this.vectorStore as QdrantVectorStore).asRetriever({
         k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
-        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)
       });
       // Use MultiQueryRetriever for thinking mode
       // TODO: Fix MultiQueryRetriever import issue
@@ -376,7 +366,7 @@ Only return the queries, one per line.`),
       //   const compressor = LLMChainExtractor.fromLLM(this.llm)
       //   const compressionRetriever = new ContextualCompressionRetriever({
       //     baseCompressor: compressor
-      //     baseRetriever: retriever
+      //    , baseRetriever: retriever
       //   })
       //   // Use ContextualCompressionRetriever directly
       //   retriever = compressionRetriever
@@ -395,7 +385,7 @@ Only return the queries, one per line.`),
       const ragChain = RunnableSequence.from([
         RunnableMap.from({
           context: contextRetriever,
-          question: new RunnablePassthrough(),
+          question: new RunnablePassthrough()
         }),
         promptTemplate,
         this.llm,
@@ -424,8 +414,8 @@ Only return the queries, one per line.`),
           retrievedChunks: retrievedDocs.length,
           processingTime,
           usedThinkingMode: thinkingMode,
-          usedCompression: useCompression,
-        },
+          usedCompression: useCompression
+        }
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -441,8 +431,8 @@ Only return the queries, one per line.`),
           retrievedChunks: 0,
           processingTime: Date.now() - startTime,
           usedThinkingMode: options.thinkingMode ?? false,
-          usedCompression: options.useCompression ?? false,
-        },
+          usedCompression: options.useCompression ?? false
+        }
       };
     }
   }
@@ -461,8 +451,8 @@ Only return the queries, one per line.`),
           ...metadata,
           chunkIndex: index,
           totalChunks: chunks.length,
-          chunkSize: chunk.length,
-        },
+          chunkSize: chunk.length
+        }
       }));
       const ids = await this.vectorStore.addDocuments(documents);
       // Update lightweight index statistics
@@ -474,7 +464,7 @@ Only return the queries, one per line.`),
       } catch {
         // ignore stats collection failures
       }
-      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
+      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown` }`);
       return ids || [];
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -521,7 +511,7 @@ Only return the queries, one per line.`),
     Provide specific references to where each item is mentioned.`;
     return await this.query(entityQuery, {
       ...options,
-      documentType,
+      documentType
     });
   }
   /**
@@ -530,15 +520,15 @@ Only return the queries, one per line.`),
   private buildMetadataFilter(documentType?: string, jurisdiction?: string, practiceArea?: string): MetadataFilter {
     const must: MetadataCondition[] = [];
     if (documentType) {
-      must.push({ key: 'documentType', match: { value: documentType } });
+      must.push({ key: 'documentType', match: {, value: documentType } });
     }
     if (jurisdiction) {
-      must.push({ key: 'jurisdiction', match: { value: jurisdiction } });
+      must.push({ key: 'jurisdiction', match: {, value: jurisdiction } });
     }
     if (practiceArea) {
       must.push({
         key: 'classification.practiceArea',
-        match: { value: practiceArea },
+        match: {, value: practiceArea }
       });
     }
     // Return a valid empty object as the fallback
@@ -579,7 +569,7 @@ Only return the queries, one per line.`),
         status: 'healthy',
         vectorStoreConnected: Boolean(this.vectorStore),
         collectionExists,
-        documentsCount,
+        documentsCount
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -589,7 +579,7 @@ Only return the queries, one per line.`),
         vectorStoreConnected: Boolean(this.vectorStore),
         collectionExists: false,
         documentsCount: 0,
-        errorMessage: msg,
+        errorMessage: msg
       };
     }
   }
@@ -646,24 +636,23 @@ Only return the queries, one per line.`),
           size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).filter(Boolean).length,
-          language: 'en',
-        },
+          language: `en` },
         classification: {
           documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
-          tags: [],
+          tags: []
         },
         extraction: {
           extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
-          confidence: this.calculateExtractionConfidence(documentContent, fileName),
+          confidence: this.calculateExtractionConfidence(documentContent, fileName)
         },
         // cast the incoming metadata to a partial LegalDocumentMetadata to avoid `any`
         ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}),
         filePath,
-        caseId: options?.caseId,
+        caseId: options?.caseId
       };
       const chunkIds = await this.indexDocument(documentContent, metadata);
       const processingTime = Date.now() - startTime;
@@ -673,7 +662,7 @@ Only return the queries, one per line.`),
             title: metadata.title,
             content: documentContent.substring(0, 1000),
             metadata,
-            chunks: chunkIds.length,
+            chunks: chunkIds.length
           });
         } catch (error) {
           console.warn('Failed to notify semantic search API:', error);
@@ -687,8 +676,8 @@ Only return the queries, one per line.`),
           fileSize,
           extractedLength: documentContent.length,
           processingTime,
-          chunksCreated: chunkIds.length,
-        },
+          chunksCreated: chunkIds.length
+        }
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -699,8 +688,8 @@ Only return the queries, one per line.`),
           fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
-          chunksCreated: 0,
-        },
+          chunksCreated: 0
+        }
       };
     }
   }
@@ -786,10 +775,10 @@ Only return the queries, one per line.`),
     // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
     type PDFJSModule = {
       default?: {
-        getDocument(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+        getDocument(src: {, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
         GlobalWorkerOptions?: { workerSrc?: string };
       };
-      getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+      getDocument?(src: {, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
       GlobalWorkerOptions?: { workerSrc?: string };
     };
     try {
@@ -1089,7 +1078,7 @@ Only return the queries, one per line.`),
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: 'application/rtf',
+      rtf: 'application/rtf'
     };
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
@@ -1103,12 +1092,12 @@ Only return the queries, one per line.`),
       if (typeof fetch !== 'undefined') {
         await fetch('/api/documents/indexed', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             documentId,
             action: 'indexed',
-            ...documentInfo,
-          }),
+            ...documentInfo
+          })
         });
       }
     } catch (error) {
@@ -1132,7 +1121,7 @@ Only return the queries, one per line.`),
         averageQueryTime,
         averageResponseTime: averageQueryTime, // don't have separate response tracking; reuse query time
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
-        uptime: Math.max(0, uptimeMs),
+        uptime: Math.max(0, uptimeMs)
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -1144,7 +1133,7 @@ Only return the queries, one per line.`),
         averageQueryTime: 0,
         averageResponseTime: 0,
         indexStatus: 'error',
-        uptime: 0,
+        uptime: 0
       };
     }
   }
@@ -1181,15 +1170,13 @@ Only return the queries, one per line.`),
 }
 // --- MOVED TYPES: place these above the class so they are available when referenced ---
 // Add HealthCheckResult at top-level so class methods can reference it
-type HealthCheckResult = {
-  status: 'healthy' | 'unhealthy';
-  vectorStoreConnected: boolean;
+type HealthCheckResult = { status: 'healthy' | 'unhealthy';, vectorStoreConnected: boolean;
   collectionExists: boolean;
   documentsCount: number;
   errorMessage?: string;
 };
 type MetadataMatch = { value: string | number | boolean };
-type MetadataCondition = { key: string; match: MetadataMatch };
+type MetadataCondition = { key: string;, match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
 interface UploadOptions {
@@ -1200,28 +1187,20 @@ interface UploadOptions {
   file?: File;
   content?: string;
 }
-type ProcessingDetails = {
-  fileSize: number;
-  extractedLength: number;
+type ProcessingDetails = { fileSize: number;, extractedLength: number;
   processingTime: number;
   chunksCreated: number;
 };
-type UploadResultSuccess = {
-  success: true;
-  documentId: string;
+type UploadResultSuccess = { success: true;, documentId: string;
   chunks: number;
   processingDetails: ProcessingDetails;
 };
-type UploadResultFailure = {
-  success: false;
-  error: string;
+type UploadResultFailure = { success: false;, error: string;
   processingDetails: ProcessingDetails;
 };
 type UploadResult = UploadResultSuccess | UploadResultFailure;
 // Add SystemStats type near the other top-level types
-type SystemStats = {
-  documentCount: number;
-  queryCount: number;
+type SystemStats = { documentCount: number;, queryCount: number;
   indexSize: number; // bytes
   averageQueryTime: number; // ms
   averageResponseTime: number; // ms
@@ -1229,9 +1208,7 @@ type SystemStats = {
   uptime: number; // ms
 };
 // New type: strongly-typed payload for semantic search notifications
-type SemanticSearchDocumentInfo = {
-  title: string;
-  content: string;
+type SemanticSearchDocumentInfo = { title: string;, content: string;
   metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
   chunks?: number;
   summary?: string;
@@ -1255,5 +1232,5 @@ export const legalRAG = new LegalRAGService({
   ollamaEmbeddingUrl: import.meta.env.OLLAMA_EMBEDDING_URL || 'http://localhost:11434/v1',
   apiKey: import.meta.env.OLLAMA_API_KEY || 'EMPTY',
   collectionName: 'legal_documents',
-  embeddingDimensions: 768,
+  embeddingDimensions: 768
 });

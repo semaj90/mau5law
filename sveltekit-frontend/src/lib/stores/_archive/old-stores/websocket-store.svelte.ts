@@ -22,11 +22,11 @@ export const websocketStore = {
     evidence: [],
     reports: [],
     stats: {
-      totalCases: 0,
+     , totalCases: 0,
       totalEvidence: 0,
       pendingAnalysis: 0,
-      activeCases: 0,
-    },
+      activeCases: 0
+    }
   }),
 
   // Real-time updates
@@ -36,7 +36,7 @@ export const websocketStore = {
     api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
-    jobQueue: 'unknown',
+    jobQueue: 'unknown'
   }),
 
   // Collaborative editing state
@@ -50,7 +50,7 @@ export const websocketStore = {
   subscribeToEvidence,
   subscribeToDashboard,
   broadcastEvidenceEdit,
-  broadcastCursorPosition,
+  broadcastCursorPosition
 };
 
 /**
@@ -153,7 +153,7 @@ function broadcastEvidenceEdit(evidenceId: number, operation: string, data: any)
     wsClient.send({
       type: 'evidence_edit',
       payload: { evidenceId, operation, data },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }
@@ -166,7 +166,7 @@ function broadcastCursorPosition(evidenceId: number, position: any, selection?: 
     wsClient.send({
       type: 'cursor_position',
       payload: { evidenceId, position, selection },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }
@@ -181,7 +181,7 @@ function handleCaseUpdate(data: any): void {
   if (caseIndex !== -1) {
     websocketStore.dashboardData.cases[caseIndex] = {
       ...websocketStore.dashboardData.cases[caseIndex],
-      ...updateData,
+      ...updateData
     };
   }
 
@@ -190,7 +190,7 @@ function handleCaseUpdate(data: any): void {
     type: 'case_updated',
     title: `Case "${updateData.title || caseId}" was updated`,
     timestamp: new Date().toISOString(),
-    entityId: caseId,
+    entityId: caseId
   });
 
   // Keep only last 20 activities
@@ -216,7 +216,7 @@ function handleEvidenceAdded(data: any): void {
     type: 'evidence_added',
     title: `Evidence "${evidence.title}" was added to case ${caseId}`,
     timestamp: new Date().toISOString(),
-    entityId: evidence.id,
+    entityId: evidence.id
   });
 
   // Keep only last 20 activities
@@ -236,14 +236,14 @@ function handleProcessingStatus(data: any): void {
   if (jobIndex !== -1) {
     websocketStore.processingJobs[jobIndex] = {
       ...websocketStore.processingJobs[jobIndex],
-      status,
+      status
     };
   } else {
     websocketStore.processingJobs.push({
       entityType,
       entityId,
       status,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -284,7 +284,7 @@ function handleCollaborativeEdit(data: any): void {
     userId,
     evidenceId,
     operation,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 
   // Mark evidence as being edited
@@ -315,7 +315,7 @@ function handleCursorUpdate(data: any): void {
       ...editor,
       cursorPosition: position,
       selection,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }

@@ -8,9 +8,7 @@ import type { User } from '$lib/types';
 // Replace external type import with a small local shape to avoid bundler/type resolution issues
 type BaseMessage = { role?: string; content?: string; [k: string]: any };
 
-export interface CudaConfig {
-  enabled: boolean;
-  deviceId: number;
+export interface CudaConfig { enabled: boolean;, deviceId: number;
   memoryFraction: number;
   enableTensorCores: boolean;
   cudaVersion: string;
@@ -39,9 +37,7 @@ export interface OllamaModelConfig {
   };
 }
 
-export interface ModelMetrics {
-  loadTime: number;
-  inferenceTime: number;
+export interface ModelMetrics { loadTime: number;, inferenceTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
   gpuUtilization: number;
@@ -165,7 +161,7 @@ class OllamaCudaService {
       memoryFraction,
       enableTensorCores,
       cudaVersion: String(env?.CUDA_VERSION || '12.0'),
-      computeCapability: String(env?.CUDA_COMPUTE_CAPABILITY || '8.6'),
+      computeCapability: String(env?.CUDA_COMPUTE_CAPABILITY || '8.6')
     };
   }
 
@@ -190,8 +186,7 @@ class OllamaCudaService {
                 baseUrl: this.baseUrl,
                 headers: {
                   'Content-Type': 'application/json',
-                  'User-Agent': 'legal-ai-sveltekit/1.0.0',
-                },
+                  'User-Agent': `legal-ai-sveltekit/1.0.0` }
               })
             : null;
 
@@ -208,7 +203,7 @@ class OllamaCudaService {
                 f16Kv: true,
                 useMmap: true,
                 useMlock: true,
-                numThread: 8,
+                numThread: 8
               })
             : null;
 
@@ -217,9 +212,9 @@ class OllamaCudaService {
                 baseUrl: this.baseUrl,
                 model: 'embeddinggemma:latest',
                 requestOptions: {
-                  numGpu: this.cudaConfig.enabled ? 1 : 0,
-                  mainGpu: this.cudaConfig.deviceId,
-                },
+                 , numGpu: this.cudaConfig.enabled ? 1 : 0,
+                  mainGpu: this.cudaConfig.deviceId
+                }
               })
             : null;
         } catch (err) {
@@ -242,13 +237,11 @@ class OllamaCudaService {
             } catch {
               return [];
             }
-          },
+          }
         };
 
         // Chat model wrapper that uses the Ollama HTTP endpoints conservatively
-        this.chatModel = new (class {
-          model: string;
-          baseUrl: string;
+        this.chatModel = new (class { model: string;, baseUrl: string;
           constructor(baseUrl: string, model = 'gemma2:9b') {
             this.model = model;
             this.baseUrl = baseUrl;
@@ -258,7 +251,7 @@ class OllamaCudaService {
             const body: Record<string, unknown> = {
               model: this.model,
               messages,
-              ...opts,
+              ...opts
             };
             const urlCandidates = [
               `${this.baseUrl}/chat/completions`,
@@ -270,8 +263,8 @@ class OllamaCudaService {
               try {
                 const resp = await fetch(url, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body),
+                  headers: { 'Content-Type': `application/json` },
+                  body: JSON.stringify(body)
                 });
                 if (!resp.ok) {
                   lastError = new Error(`HTTP ${resp.status}`);
@@ -318,9 +311,7 @@ class OllamaCudaService {
         })(this.baseUrl, 'gemma2:9b');
 
         // Simple embeddings wrapper (typed, no `any`)
-        this.embeddings = new (class {
-          baseUrl: string;
-          model: string;
+        this.embeddings = new (class { baseUrl: string;, model: string;
           constructor(baseUrl: string, model = 'embeddinggemma:latest') {
             this.baseUrl = baseUrl;
             this.model = model;
@@ -331,8 +322,8 @@ class OllamaCudaService {
               try {
                 const resp = await fetch(url, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ model: this.model, input: texts }),
+                  headers: { 'Content-Type': `application/json` },
+                  body: JSON.stringify({, model: this.model, input: texts })
                 });
                 if (!resp.ok) continue;
                 const data: any = await resp.json();
@@ -426,9 +417,9 @@ class OllamaCudaService {
           useMmap: true,
           useMlock: true,
           numThread: 8,
-          ...(config?.parameters || {}),
+          ...(config?.parameters || {})
         },
-        ...config,
+        ...config
       };
 
       const availableModels = await this.getAvailableModels();
@@ -449,7 +440,7 @@ class OllamaCudaService {
         f16Kv: modelConfig.parameters?.f16Kv,
         useMmap: modelConfig.parameters?.useMmap,
         useMlock: modelConfig.parameters?.useMlock,
-        numThread: modelConfig.parameters?.numThread,
+        numThread: modelConfig.parameters?.numThread
       });
 
       this.models.set(modelName, modelConfig);
@@ -461,12 +452,12 @@ class OllamaCudaService {
         memoryUsage: 0,
         gpuUtilization: 0,
         temperature: modelConfig.parameters?.temperature ?? 0.7,
-        contextLength: modelConfig.parameters?.numCtx ?? 32768,
+        contextLength: modelConfig.parameters?.numCtx ?? 32768
       });
       console.log(`✅ Model ${modelName} loaded in ${loadTime}ms`);
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to load model ${modelName}:`, safeErrorToString(error));
+      console.error(`❌ Failed to load model ${modelName}: ', safeErrorToString(error));
       return false;
     }
   }
@@ -491,7 +482,7 @@ class OllamaCudaService {
         // delegate to streaming implementation
         return await this.streamingChat(messages, {
           streaming: typeof options.streaming === 'object' ? (options.streaming as StreamingOptions) : {},
-          temperature: options.temperature,
+          temperature: options.temperature
         });
       }
 
@@ -501,7 +492,7 @@ class OllamaCudaService {
 
       const response =
         (await (this.chatModel as ChatModelLike).invoke?.(messages, {
-          temperature: options?.temperature,
+          temperature: options?.temperature
         })) ?? '';
 
       const inferenceTime = Date.now() - startTime;
@@ -526,7 +517,7 @@ class OllamaCudaService {
 
   private async streamingChat(
     messages: BaseMessage[],
-    options: { streaming: StreamingOptions; temperature?: number }
+    options: {, streaming: StreamingOptions; temperature?: number }
   ): Promise<string> {
     let fullResponse = '';
     const startTime = Date.now();
@@ -538,7 +529,7 @@ class OllamaCudaService {
       options.streaming.onStart?.();
 
       const streamIter = await (this.chatModel as ChatModelLike).stream!(messages, {
-        temperature: options.temperature,
+        temperature: options.temperature
       });
 
       for await (const chunk of streamIter as AsyncIterable<unknown>) {
@@ -606,9 +597,9 @@ class OllamaCudaService {
         memory: {
           total: memoryInfo.heapTotal,
           used: memoryInfo.heapUsed,
-          free: memoryInfo.heapTotal - memoryInfo.heapUsed,
+          free: memoryInfo.heapTotal - memoryInfo.heapUsed
         },
-        ...(gpuInfo ? { gpu: gpuInfo } : {}),
+        ...(gpuInfo ? { gpu: gpuInfo } : {})
       };
     } catch (error: any) {
       console.error('Failed to get system health:', safeErrorToString(error));
@@ -618,7 +609,7 @@ class OllamaCudaService {
         cuda: false,
         models: [],
         metrics: {},
-        memory: { total: 0, used: 0, free: 0 },
+        memory: { total: 0, used: 0, free: 0 }
       };
     }
   }
@@ -654,7 +645,7 @@ class OllamaCudaService {
         memoryTotal: 12 * 1024 * 1024 * 1024,
         memoryUsed: 0,
         utilization: 0,
-        temperature: 0,
+        temperature: 0
       };
     } catch {
       return null;
@@ -668,7 +659,7 @@ class OllamaCudaService {
       this.metrics.set(modelName, {
         ...existing,
         inferenceTime,
-        tokensPerSecond,
+        tokensPerSecond
       });
     } else {
       this.metrics.set(modelName, {
@@ -678,25 +669,21 @@ class OllamaCudaService {
         memoryUsage: 0,
         gpuUtilization: 0,
         temperature: 0.7,
-        contextLength: 0,
+        contextLength: 0
       });
     }
   }
 
   public async optimizeForUseCase(useCase: 'legal-analysis' | 'document-search' | 'chat' | 'embedding'): Promise<void> {
     const optimizations: Record<string, Partial<OllamaModelConfig>> = {
-      'legal-analysis': {
-        parameters: { temperature: 0.3, numCtx: 65536, topP: 0.9, repeatPenalty: 1.1 },
+      'legal-analysis': { parameters: {, temperature: 0.3, numCtx: 65536, topP: 0.9, repeatPenalty: 1.1 }
       },
-      'document-search': {
-        parameters: { temperature: 0.1, numCtx: 32768, topK: 10 },
+      'document-search': { parameters: {, temperature: 0.1, numCtx: 32768, topK: 10 }
       },
-      'chat': {
-        parameters: { temperature: 0.7, numCtx: 16384, topP: 0.95 },
+      'chat': { parameters: {, temperature: 0.7, numCtx: 16384, topP: 0.95 }
       },
-      'embedding': {
-        parameters: { temperature: 0.0, numCtx: 8192 },
-      },
+      'embedding': { parameters: {, temperature: 0.0, numCtx: 8192 }
+      }
     };
     const config = optimizations[useCase];
     if (config && this.chatModel) {

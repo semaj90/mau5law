@@ -69,7 +69,7 @@ export const viteErrors = pgTable('vite_errors', {
   /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   /** Updated timestamp */
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * JSONB metadata structure for viteErrors
@@ -82,9 +82,7 @@ export interface ErrorMetadataJSON {
   /** Stack trace if available */
   stackTrace?: string[];
   /** Build context */
-  buildContext?: {
-    command: string;
-    duration: number;
+  buildContext?: { command: string;, duration: number;
     exitCode: number;
   };
   /** Similar error IDs */
@@ -118,7 +116,7 @@ export const errorClusters = pgTable('error_clusters', {
   /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   /** Updated timestamp */
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * JSONB metadata structure for errorClusters
@@ -154,7 +152,7 @@ export const errorClusterMembership = pgTable('error_cluster_membership', {
   /** Confidence score (0-1) */
   confidence: integer('confidence').notNull(),
   /** Created timestamp */
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * Error history tracking for evolution analysis
@@ -176,18 +174,16 @@ export const errorHistory = pgTable('error_history', {
   /** Error count by source */
   errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
   /** Top 10 error codes */
-  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
+  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string;, count: number }>>(),
   /** Top 10 affected files */
-  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
+  topFiles: jsonb('top_files').$type<Array<{ path: string;, count: number }>>(),
   /** Build metadata */
-  buildMetadata: jsonb('build_metadata').$type<{
-    command: string;
-    duration: number;
+  buildMetadata: jsonb('build_metadata').$type<{ command: string;, duration: number;
     exitCode: number;
     timestamp: string;
   }>(),
   /** Created timestamp */
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * Error embeddings query cache
@@ -213,7 +209,7 @@ export const errorQueryCache = pgTable('error_query_cache', {
   /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   /** Updated timestamp */
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * Error similarity pairs (precomputed for fast lookup)
@@ -235,7 +231,7 @@ export const errorSimilarity = pgTable('error_similarity', {
   /** Cosine similarity score (0-1) */
   similarity: integer('similarity').notNull(),
   /** Computed timestamp */
-  computedAt: timestamp('computed_at', { mode: 'string' }).defaultNow().notNull(),
+  computedAt: timestamp('computed_at', { mode: `string` }).defaultNow().notNull()
 });
 // ============================================================================
 // Type Exports

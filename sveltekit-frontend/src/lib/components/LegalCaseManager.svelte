@@ -279,33 +279,33 @@ import type { Document } from '$lib/types';
       currentStep={$currentStep}
       {totalSteps}
       stepTitles={['Case Information', 'Document Upload', 'Evidence Analysis', 'AI Analysis', 'Review & Submit']}
-      on:stepclick={(e) => goToStep((e as CustomEvent<number>).detail)}
+      onstepclick={(e) => goToStep((e as CustomEvent<number>).detail)}
     />
   </div>
   <!-- Loading Overlay -->
   {#if $isLoading}
-    <div class="loading-overlay" transition:fade={{ duration: 300 }}>
+    <div class="loading-overlay" transitionfade={{ duration: 300 }}>
       <LoadingSpinner />
       <p class="loading-message">{$processingMessage}</p>
     {/if}
   <!-- Form Steps -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration: 300, easing: cubicOut }}>
         <CaseInfoForm
           data={$formData.caseInfo}
-          on:update={(e) => formData.update(d => ({ ...d, caseInfo: (e as CustomEvent).detail }))}
+          onupdate={(e) => formData.update(d => ({ ...d, caseInfo: (e as CustomEvent).detail }))}
           next={nextStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 2}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration: 300, easing: cubicOut }}>
         {#if DocumentUploadComp}
           <svelte:component
             this={DocumentUploadComp}
             data={$formData.documents}
-            on:process={(e) => processDocuments((e as CustomEvent<File[]>).detail)}
+            onprocess={(e) => processDocuments((e as CustomEvent<File[]>).detail)}
             next={nextStep}
             prev={prevStep}
             isValid={$stepValidation}
@@ -314,13 +314,13 @@ import type { Document } from '$lib/types';
           <div>Loading upload form…{/if}
       </div>
     {:else if $currentStep === 3}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration: 300, easing: cubicOut }}>
         {#if EvidenceAnalysisComp}
           <svelte:component
             this={EvidenceAnalysisComp}
             data={$formData.evidence}
             ocrResults={$formData.documents.ocr_results}
-            on:extract={() => extractEvidence()}
+            onextract={() => extractEvidence()}
             next={nextStep}
             prev={prevStep}
           />
@@ -330,26 +330,26 @@ import type { Document } from '$lib/types';
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          on:analyze={() => performAIAnalysis()}
+          onanalyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 4}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration: 300, easing: cubicOut }}>
         <svelte:component
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          on:analyze={() => performAIAnalysis()}
+          onanalyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 5}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration: 300, easing: cubicOut }}>
         <ReviewSubmitForm
           data={$formData.review}
           fullCaseData={$formData}

@@ -4,7 +4,7 @@ import type { Document } from '$lib/types';
 // Integrates with our legal AI system for intelligent resource loading
 
 export interface UserIntent {
-  action:
+  action:;
     | "open_settings"
     | "search_evidence"
     | "create_case"
@@ -23,35 +23,27 @@ export interface UserIntent {
     scrollPosition: number;
     mouseActivity: MouseEvent[];
     keyboardActivity: KeyboardEvent[];
-    eyeTracking?: { x: number; y: number; timestamp: number }[];
+    eyeTracking?: { x: number; y: number;, timestamp: number }[];
   };
-  userProfile: {
-    role: "prosecutor" | "detective" | "admin" | "user";
-    recentActions: string[];
+  userProfile: { role: "prosecutor" | "detective" | "admin" | "user";, recentActions: string[];
     preferences: { [key: string]: any };
     workflowPatterns: string[];
   };
 }
-export interface PrefetchItem {
-  type: "route" | "api" | "asset" | "ui-buffer" | "css";
-  url: string;
+export interface PrefetchItem { type: "route" | "api" | "asset" | "ui-buffer" | "css";, url: string;
   priority: "critical" | "high" | "medium" | "low";
   size: number;
   cacheStrategy: "aggressive" | "conservative" | "lazy";
   dependencies: string[];
   aiReasoning: string;
 }
-export interface LegalWorkflowPattern {
-  name: string;
-  sequence: string[];
+export interface LegalWorkflowPattern { name: string;, sequence: string[];
   triggerConditions: { [key: string]: any };
   successProbability: number;
   typicalAssets: string[];
   preloadTiming: "immediate" | "on-hover" | "predictive";
 }
-export interface PrefetchStrategy {
-  routes: string[];
-  assets: string[];
+export interface PrefetchStrategy { routes: string[];, assets: string[];
   uiBuffers: string[];
   priority: "critical" | "high" | "medium" | "low";
   conditions: {
@@ -106,7 +98,7 @@ export class PredictivePrefetcher {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           prompt: "Initialize legal workflow intent prediction model",
           stream: false
         })
@@ -170,7 +162,7 @@ export class PredictivePrefetcher {
       uiBuffers: ["analysis-panel", "document-viewer"],
       priority: "high",
       conditions: {
-        viewport: "desktop",
+       , viewport: "desktop",
         connection: "fast"
       }
     });
@@ -191,7 +183,7 @@ export class PredictivePrefetcher {
       uiBuffers: ["search-results", "filter-panel"],
       priority: "high",
       conditions: {
-        connection: "fast"
+       , connection: "fast"
       }
     });
 
@@ -203,7 +195,7 @@ export class PredictivePrefetcher {
       priority: "low",
       conditions: {}, // replaced invalid placeholder
       llmIntegration: {
-        useLocalLLM: true,
+       , useLocalLLM: true,
         intentThreshold: 0.7
       }
     });
@@ -218,7 +210,7 @@ export class PredictivePrefetcher {
         userRole: ["prosecutor", "detective"]
       },
       llmIntegration: {
-        useLocalLLM: true,
+       , useLocalLLM: true,
         intentThreshold: 0.8
       }
     });
@@ -233,7 +225,7 @@ export class PredictivePrefetcher {
         connection: "fast"
       },
       llmIntegration: {
-        useLocalLLM: true,
+       , useLocalLLM: true,
         intentThreshold: 0.75
       }
     });
@@ -352,7 +344,7 @@ export class PredictivePrefetcher {
   /**
    * Enhanced prediction with additional context
    */
-  private async predictUserIntentEnhanced(context: { mouseEvents: MouseEvent[]; keyboardEvents: KeyboardEvent[] }): Promise<UserIntent | null> {
+  private async predictUserIntentEnhanced(context: {, mouseEvents: MouseEvent[]; keyboardEvents: KeyboardEvent[] }): Promise<UserIntent | null> {
     const currentContext: any = {
       currentPage: (typeof window !== "undefined" && window.location ? window.location.pathname : "/"),
       recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),

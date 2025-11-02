@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Query is required',
+          error: 'Query is required'
         },
         { status: 400 }
       );
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const cacheQuery = {
       query: body.query.toLowerCase().trim(),
       limit: body.limit || 5,
-      type: 'semantic-search',
+      type: 'semantic-search'
     };
 
     // Use query cache with 30 minute TTL
@@ -36,8 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
-            },
+              'Content-Type': `application/json` },
             signal: AbortSignal.timeout(15000), // 15 second timeout
           }
         );
@@ -50,11 +49,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return await searchResponse.json();
       },
-      { ttl: 1800, namespace: 'semantic-search' } // 30 minutes
+      { ttl: 1800, namespace: `semantic-search` } // 30 minutes
     );
 
     console.log(
-      `🔍 Search ${cacheHit.hit ? 'HIT' : 'MISS'} (${cacheHit.source}) - Latency: ${cacheHit.latency.toFixed(2)}ms`
+      `🔍 Search ${cacheHit.hit ? 'HIT' : `MISS` } (${cacheHit.source}) - Latency: ${cacheHit.latency.toFixed(2)}ms`
     );
 
     // Return semantic search results with similarity scores
@@ -67,16 +66,14 @@ export const POST: RequestHandler = async ({ request }) => {
       cache: {
         hit: cacheHit.hit,
         source: cacheHit.source,
-        latency: `${cacheHit.latency.toFixed(2)}ms`,
-      },
+        latency: `${cacheHit.latency.toFixed(2)}ms` }
     });
   } catch (error: any) {
     console.error('Semantic search API error:', error);
     return json(
       {
         success: false,
-        error: `Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      },
+        error: 'Semantic search; failed: ${error instanceof Error ? error.message : `Unknown error`}` },
       { status: 500 }
     );
   }
@@ -85,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
   try {
     const healthResponse = await fetch(GO_SEARCH_URL.replace('/search', '/health'), {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     const healthData = await healthResponse.json();
     return json({
@@ -93,7 +90,7 @@ export const GET: RequestHandler = async () => {
       service: 'semantic-search',
       backend_status: healthData.status,
       pgvector_enabled: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
@@ -101,7 +98,7 @@ export const GET: RequestHandler = async () => {
         status: 'error',
         service: 'semantic-search',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

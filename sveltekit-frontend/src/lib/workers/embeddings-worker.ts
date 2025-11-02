@@ -24,9 +24,7 @@ interface BatchEmbeddingRequest {
   model?: string;
 }
 // WASM module interface
-interface WASMEmbeddings {
-  memory: WebAssembly.Memory;
-  preprocess_text: (textPtr: number, textLen: number) => number;
+interface WASMEmbeddings { memory: WebAssembly.Memory;, preprocess_text: (textPtr: number, textLen: number) => number;
   generate_embeddings: (preprocessedPtr: number, modelPtr: number) => number;
   get_embedding_dim: () => number;
   cleanup: (ptr: number) => void;
@@ -57,8 +55,8 @@ class EmbeddingsWorker {
             const mem = new Uint8Array(memory.buffer);
             mem.copyWithin(dest, src, src + num);
             return dest;
-          },
-        },
+          }
+        }
       };
 
       const wasmModule = await WebAssembly.instantiate(wasmBytes, imports);
@@ -85,7 +83,7 @@ class EmbeddingsWorker {
       throw error;
     }
   }
-  private copyStringToWasm(text: string): { ptr: number; length: number } {
+  private copyStringToWasm(text: string): { ptr: number;, length: number } {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
@@ -143,12 +141,8 @@ class EmbeddingsWorker {
     }
     return results;
   }
-  async preprocessTextForVector(text: string): Promise<{
-    cleanText: string;
-    tokens: string[];
-    metadata: {
-      originalLength: number;
-      cleanedLength: number;
+  async preprocessTextForVector(text: string): Promise<{ cleanText: string;, tokens: string[];
+    metadata: { originalLength: number;, cleanedLength: number;
       tokenCount: number;
       hasSpecialChars: boolean;
     };
@@ -177,8 +171,8 @@ class EmbeddingsWorker {
           originalLength: text.length,
           cleanedLength: cleanText.length,
           tokenCount: tokens.length,
-          hasSpecialChars: /[^\w\s]/.test(text),
-        },
+          hasSpecialChars: /[^\w\s]/.test(text)
+        }
       };
     } catch (error) {
       console.error('❌ Text preprocessing failed:', error);
@@ -192,23 +186,23 @@ const embeddingsWorker = new EmbeddingsWorker();
 // Well-typed incoming message envelope
 type WorkerIncomingMessage =
   | { type: 'initialize'; id?: string }
-  | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest }
-  | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest }
-  | { type: 'preprocess_text'; id?: string; data: { text: string; startTime?: number } }
+  | { type: 'generate_embedding'; id?: string;, data: EmbeddingRequest }
+  | { type: 'generate_batch_embeddings'; id?: string;, data: BatchEmbeddingRequest }
+  | { type: 'preprocess_text'; id?: string;, data: {, text: string; startTime?: number } }
   | { type: 'ping'; id?: string };
 
 // Outgoing message shapes
 type WorkerOutgoingMessage =
-  | { type: 'initialized'; id?: string; success: true }
-  | { type: 'embedding_result'; id?: string; data: EmbeddingResponse }
+  | { type: 'initialized'; id?: string;, success: true }
+  | { type: 'embedding_result'; id?: string;, data: EmbeddingResponse }
   | {
       type: 'batch_embedding_result';
       id?: string;
-      data: { success: true; embeddings: number[][]; count: number; processingTime: number };
+      data: { success: true; embeddings: number[][]; count: number;, processingTime: number };
     }
-  | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
-  | { type: 'pong'; timestamp: number }
-  | { type: 'error'; id?: string; error: string };
+  | { type: 'preprocess_result'; id?: string;, data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
+  | { type: 'pong';, timestamp: number }
+  | { type: 'error'; id?: string;, error: string };
 
 self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessage>) => {
   const msg = event.data;
@@ -219,7 +213,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'initialized',
           id: msg.id,
-          success: true,
+          success: true
         } as WorkerOutgoingMessage);
         break;
       case 'generate_embedding': {
@@ -229,12 +223,12 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         const response: EmbeddingResponse = {
           success: true,
           embedding: Array.from(embedding),
-          processingTime: performance.now() - (req.startTime ?? performance.now()),
+          processingTime: performance.now() - (req.startTime ?? performance.now())
         };
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'embedding_result',
           id: msg.id,
-          data: response,
+          data: response
         } as WorkerOutgoingMessage);
         break;
       }
@@ -246,12 +240,12 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           success: true,
           embeddings: embeddings.map(e => Array.from(e)),
           count: embeddings.length,
-          processingTime: performance.now() - (req.startTime ?? performance.now()),
+          processingTime: performance.now() - (req.startTime ?? performance.now())
         };
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'batch_embedding_result',
           id: msg.id,
-          data: batchResponse,
+          data: batchResponse
         } as WorkerOutgoingMessage);
         break;
       }
@@ -262,14 +256,14 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'preprocess_result',
           id: msg.id,
-          data: preprocessResult,
+          data: preprocessResult
         } as WorkerOutgoingMessage);
         break;
       }
       case 'ping':
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'pong',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         } as WorkerOutgoingMessage);
         break;
       default: {
@@ -286,7 +280,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
     (self as DedicatedWorkerGlobalScope).postMessage({
       type: 'error',
       id: maybeId,
-      error: errorMessage,
+      error: errorMessage
     } as WorkerOutgoingMessage);
   }
 });

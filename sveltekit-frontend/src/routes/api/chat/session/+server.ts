@@ -21,14 +21,14 @@ export const POST: RequestHandler = async ({ request }) => {
           ...(sessionData.metadata || {}),
           model: sessionData?.model || 'unknown', // @ts-expect-error - Model property access || 'gemma3-legal',
           messageCount: 0,
-          isActive: true,
+          isActive: true
         },
         // createdAt and updatedAt have defaultNow() so they're auto-populated
       })
       .returning();
     return json({
       success: true,
-      session: newSession,
+      session: newSession
     });
   } catch (error: any) {
     // Changed from 'any' to: 'unknown'
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to create chat session',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 } // Corrected placement of status object
     );
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to fetch chat sessions',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 } // Corrected placement of status object
     );

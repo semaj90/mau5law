@@ -165,8 +165,7 @@ export const API_ROUTES = {
     ollama: '/api/health/ollama',
     database: '/api/health/database',
     redis: '/api/health/redis',
-    qdrant: '/api/health/qdrant'
-  }
+    qdrant: `/api/health/qdrant` }
 } as const;
 
 /**
@@ -179,7 +178,7 @@ export function buildServiceUrl(service: keyof typeof ENDPOINTS, path: string = 
   }
   
   const base = endpoint.url;
-  return path ? `${base}${path.startsWith('/') ? path : `/${path}`}` : base;
+  return path ? `${base}${path.startsWith('/') ? path : `/${path}` }` : base;
 }
 
 /**
@@ -254,6 +253,6 @@ export async function getAllServicesStatus(): Promise<Record<string, boolean>> {
  * // Use API routes
  * const response = await fetch(API_ROUTES.contextual.chat, {
  *   method: 'POST',
- *   body: JSON.stringify({ message: 'Hello' })
+ *   body: JSON.stringify({, message: `Hello` })
  * });
  */

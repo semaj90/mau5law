@@ -1,9 +1,7 @@
 import crypto from 'crypto';
 // Centralized cache utilities for summarize endpoint (memory + optional Redis)
 // Provides LRU + TTL eviction and write-through to Redis if available.
-export interface CachePerformanceMeta {
-  duration: number;
-  tokens: number;
+export interface CachePerformanceMeta { duration: number;, tokens: number;
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
@@ -128,7 +126,7 @@ export function memoryStats() {
       size: memoryCache.size,
       keys: Array.from(memoryCache.keys()).slice(0, 20),
       maxItems: MAX_ITEMS,
-      ttlMs: TTL_MS,
+      ttlMs: TTL_MS
     };
   }
   export async function redisHas(_key: string): Promise<boolean> {

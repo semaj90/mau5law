@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         job: jobStatus,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     // Get overall queue stats
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       queue_stats: stats,
       healthy: stats.active >= 0, // Basic health check
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('❌ Queue status error:', error);
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to get queue status',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -49,14 +49,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: `Job ${jobId} cancelled`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       } else {
         return json(
           {
             success: false,
-            error: `Job ${jobId} not found or could not be cancelled`,
-          },
+            error: `Job ${jobId} not found or could not be cancelled` },
           { status: 404 }
         );
       }
@@ -68,13 +67,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: true,
         message: `Cleared ${clearedCount} completed jobs`,
         cleared_count: clearedCount,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
         success: false,
-        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed',
+        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed'
       },
       { status: 400 }
     );
@@ -84,8 +83,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Delete operation failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

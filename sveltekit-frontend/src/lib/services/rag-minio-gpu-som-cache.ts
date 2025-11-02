@@ -2,24 +2,18 @@
  * GPU-Accelerated Cache with Self-Organizing Map Clustering
  * 3-tier cache hierarchy with CUDA acceleration for intelligent document placement
  */
-interface CacheEntry {
-  id: string;
-  content: string;
+interface CacheEntry { id: string;, content: string;
   vector: Float32Array;
   timestamp: number;
   accessCount: number;
   clusterId: number;
   priority: number;
 }
-interface SOMNode {
-  weights: Float32Array;
-  documents: string[];
+interface SOMNode { weights: Float32Array;, documents: string[];
   lastAccess: number;
   cluster: number;
 }
-interface GPUCacheStats {
-  l1Hits: number;
-  l2Hits: number;
+interface GPUCacheStats { l1Hits: number;, l2Hits: number;
   l3Hits: number;
   misses: number;
   totalRequests: number;
@@ -59,7 +53,7 @@ export class RAGMinIOGPUSOMCache {
       misses: 0,
       totalRequests: 0,
       avgResponseTime: 0,
-      clusterEfficiency: 0,
+      clusterEfficiency: 0
     };
     this.initializeSOM();
   }
@@ -76,7 +70,7 @@ export class RAGMinIOGPUSOMCache {
           weights,
           documents: [],
           lastAccess: Date.now(),
-          cluster: i * this.gridWidth + j,
+          cluster: i * this.gridWidth + j
         };
       }
     }
@@ -101,11 +95,11 @@ export class RAGMinIOGPUSOMCache {
   }
 
   // Find Best Matching Unit (BMU)
-  private async findBMU(inputVector: Float32Array): Promise<{ x: number; y: number; distance: number }> {
+  private async findBMU(inputVector: Float32Array): Promise<{ x: number; y: number;, distance: number }> {
     let bestDistance = Infinity;
     let bestX = 0;
     let bestY = 0;
-    const promises: Promise<{ x: number; y: number; distance: number }>[] = [];
+    const promises: Promise<{ x: number; y: number;, distance: number }>[] = [];
 
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
@@ -114,7 +108,7 @@ export class RAGMinIOGPUSOMCache {
           this.computeSimilarityGPU(inputVector, this.somGrid[i][j].weights).then(similarity => ({
             x: j,
             y: i,
-            distance: 1 - similarity,
+            distance: 1 - similarity
           }))
         );
       }
@@ -172,7 +166,7 @@ export class RAGMinIOGPUSOMCache {
       timestamp: Date.now(),
       accessCount: 1,
       clusterId: 0,
-      priority: this.calculatePriority(content, vector),
+      priority: this.calculatePriority(content, vector)
     };
     const bmu = await this.findBMU(vector);
     entry.clusterId = bmu.y * this.gridWidth + bmu.x;
@@ -234,7 +228,7 @@ export class RAGMinIOGPUSOMCache {
   // Semantic search within clusters (simulated GPU)
   async semanticSearch(queryVector: Float32Array, limit = 10): Promise<CacheEntry[]> {
     const bmu = await this.findBMU(queryVector);
-    const results: Array<{ entry: CacheEntry; similarity: number }> = [];
+    const results: Array<{ entry: CacheEntry;, similarity: number }> = [];
 
     const pushIfFound = async (docId: string) => {
       const entry = this.l1Cache.get(docId) || this.l2Cache.get(docId) || this.l3Cache.get(docId);
@@ -347,8 +341,8 @@ export class RAGMinIOGPUSOMCache {
     return contentScore * vectorMag;
   }
 
-  private getNeighboringClusters(x: number, y: number): Array<{ x: number; y: number }> {
-    const neighbors: Array<{ x: number; y: number }> = [];
+  private getNeighboringClusters(x: number, y: number): Array<{ x: number;, y: number }> {
+    const neighbors: Array<{ x: number;, y: number }> = [];
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         const nx = x + dx;
@@ -380,9 +374,7 @@ export class RAGMinIOGPUSOMCache {
   }
 
   // Expose stats
-  getStats(): GPUCacheStats & {
-    l1Size: number;
-    l2Size: number;
+  getStats(): GPUCacheStats & { l1Size: number;, l2Size: number;
     l3Size: number;
     hitRate: number;
     somGridUtilization: number;
@@ -395,13 +387,13 @@ export class RAGMinIOGPUSOMCache {
       l2Size: this.l2Cache.size,
       l3Size: this.l3Cache.size,
       hitRate,
-      somGridUtilization: this.stats.clusterEfficiency,
+      somGridUtilization: this.stats.clusterEfficiency
     };
   }
 
   // Export SOM visualization data for debugging
-  getSOMVisualization(): Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> {
-    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> = [];
+  getSOMVisualization(): Array<{ x: number; y: number; docCount: number; lastAccess: number;, clusterId: number }> {
+    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number;, clusterId: number }> = [];
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
         visualization.push({
@@ -409,7 +401,7 @@ export class RAGMinIOGPUSOMCache {
           y: i,
           docCount: this.somGrid[i][j].documents.length,
           lastAccess: this.somGrid[i][j].lastAccess,
-          clusterId: this.somGrid[i][j].cluster,
+          clusterId: this.somGrid[i][j].cluster
         });
       }
     }

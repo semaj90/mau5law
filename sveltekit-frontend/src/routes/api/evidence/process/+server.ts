@@ -19,9 +19,7 @@ export type StepName =
   | 'similarity'
   | 'indexing';
 
-export interface ProcessingRequest {
-  evidenceId: string;
-  steps: StepName[];
+export interface ProcessingRequest { evidenceId: string;, steps: StepName[];
   options?: ProcessingOptions;
 }
 export interface ProcessingResult {
@@ -62,9 +60,7 @@ export interface EvidenceData {
 }
 
 // Added: typed results for each processing step and a union used as StepResult
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   ocrEngine?: string;
   pages?: number;
 }
@@ -75,9 +71,7 @@ export interface EmbeddingResult {
   dimensions?: number;
 }
 
-export interface AnalysisResult {
-  summary: string;
-  keywords: string[];
+export interface AnalysisResult { summary: string;, keywords: string[];
   confidence?: number;
   insights?: Record<string, unknown> | null;
 }
@@ -90,9 +84,7 @@ export interface ClassificationResult {
   categories?: string[];
 }
 
-export interface EntityExtractionResult {
-  entities: Array<{
-    text: string;
+export interface EntityExtractionResult { entities: Array<{, text: string;
     type: string;
     confidence?: number;
     start?: number;
@@ -138,7 +130,7 @@ class EvidenceProcessingService {
     return EvidenceProcessingService.instance;
   }
   // Return a typed shape instead of any
-  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string; jobId: string }> {
+  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string;, jobId: string }> {
     const sessionId = randomUUID();
     const jobId = randomUUID();
     const processingResult: ProcessingResult = {
@@ -153,7 +145,7 @@ class EvidenceProcessingService {
       error: null,
       startTime: new Date(),
       processingTime: 0,
-      gpuAccelerated: !!request.options?.useGPUAcceleration,
+      gpuAccelerated: !!request.options?.useGPUAcceleration
     };
     this.processingJobs.set(jobId, processingResult);
     // Background processing (non-blocking)
@@ -207,7 +199,7 @@ class EvidenceProcessingService {
           classification: this.performClassification.bind(this),
           entity_extraction: this.extractEntities.bind(this),
           similarity: this.findSimilarEvidence.bind(this),
-          indexing: this.indexEvidence.bind(this),
+          indexing: this.indexEvidence.bind(this)
         };
 
         let stepResult: StepResult;
@@ -253,12 +245,12 @@ class EvidenceProcessingService {
       evidenceId: evidenceData.id,
       fileUrl: evidenceData.fileUrl
     });
-    return { text: evidenceData.description || evidenceData.title || '', confidence: 0.9, ocrEngine: 'tesseract-gpu' };
+    return { text: evidenceData.description || evidenceData.title || '', confidence: 0.9, ocrEngine: `tesseract-gpu` };
   }
   private async generateEmbedding(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<EmbeddingResult> {
     // Use real Ollama embeddings (embeddinggemma:latest)
     const { generateEmbedding } = await import('$lib/server/services');
-    const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`.trim();
+    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
     const embedding = await generateEmbedding(text, evidenceData.id);
     return { embedding, model: 'embeddinggemma:latest', dimensions: embedding.length };
   }
@@ -267,7 +259,7 @@ class EvidenceProcessingService {
     return {
       summary: (evidenceData.description || evidenceData.title || '').slice(0, 200),
       keywords: evidenceData.tags || [],
-      confidence: 0.8,
+      confidence: 0.8
     };
   }
   private async performClassification(
@@ -280,7 +272,7 @@ class EvidenceProcessingService {
       weight: 'circumstantial',
       admissibility: 'questionable',
       priority: 'routine',
-      categories: [],
+      categories: []
     };
   }
   private async extractEntities(
@@ -288,8 +280,8 @@ class EvidenceProcessingService {
     _options?: ProcessingOptions
   ): Promise<EntityExtractionResult> {
     await new Promise(r => setTimeout(r, 60));
-    const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`;
-    return { entities: text ? [{ text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: 'stub' };
+    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`;
+    return { entities: text ? [{, text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: `stub` };
   }
   private async findSimilarEvidence(
     evidenceData: EvidenceData,
@@ -297,36 +289,33 @@ class EvidenceProcessingService {
   ): Promise<SimilarEvidenceResult> {
     // Use real vector search (Qdrant + pgvector)
     const { searchSimilarDocuments } = await import('$lib/server/services');
-    const query = `${evidenceData.title || ''} ${evidenceData.description || ''}`.trim();
+    const query = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
     const results = await searchSimilarDocuments(query, 5);
 
-    return {
-      similarEvidence: results.map((r: any) => ({
-        id: r.id,
+    return { similarEvidence: results.map((r: any) => ({, id: r.id,
         score: r.score || r.similarity,
-        snippet: r.payload?.title || ''
-      })),
+        snippet: r.payload?.title || '` })),
       totalFound: results.length
     };
   }
   private async indexEvidence(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<IndexResult> {
     // Index in both Qdrant and PostgreSQL + pgvector
     const { indexDocument } = await import('$lib/server/services');
-    const content = `${evidenceData.title || ''} ${evidenceData.description || ''}`.trim();
+    const content = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
 
     await indexDocument({
       id: evidenceData.id,
       content,
       title: evidenceData.title,
       metadata: {
-        type: 'evidence',
+       , type: 'evidence',
         caseId: evidenceData.caseId,
         uploadedAt: evidenceData.uploadedAt,
         fileType: evidenceData.fileType
       }
     });
 
-    return { indexed: true, vectorId: evidenceData.id, collection: 'legal_documents' };
+    return { indexed: true, vectorId: evidenceData.id, collection: `legal_documents` };
   }
   private async updateEvidenceWithResults(evidenceId: string, results: Record<string, unknown>): Promise<void> {
     // use a generic record to avoid `any`
@@ -389,8 +378,8 @@ export const POST: RequestHandler = async ({ request }) => {
         priority: options.priority ?? 'normal',
         notify: !!options.notify,
         saveIntermediateResults: !!options.saveIntermediateResults,
-        overrideExisting: !!options.overrideExisting,
-      },
+        overrideExisting: !!options.overrideExisting
+      }
     };
     const { sessionId, jobId } = await processingService.startProcessing(processingRequest);
     return json({
@@ -398,7 +387,7 @@ export const POST: RequestHandler = async ({ request }) => {
       jobId,
       status: 'started',
       steps: processingRequest.steps,
-      options: processingRequest.options,
+      options: processingRequest.options
     });
   } catch (err: any) {
     console.error('POST processing error:', err);
@@ -434,10 +423,10 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       cancelled,
       jobId,
-      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable',
+      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable'
     });
   } catch (err: any) {
     console.error('DELETE error:', err);
-    return json({ error: 'Failed to cancel processing' }, { status: 500 });
+    return json({ error: `Failed to cancel processing` }, { status: 500 });
   }
 };

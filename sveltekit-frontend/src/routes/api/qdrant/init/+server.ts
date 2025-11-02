@@ -16,21 +16,21 @@ export const POST: RequestHandler = async ({ request }) => {
       distance = 'Cosine',
       quantizationType = 'scalar', // scalar | product | none
       onDisk = false,
-      recreate = false,
+      recreate = false
     } = body;
 
     // Check if collection already exists
     const existingCollection = await qdrantService.getCollectionInfo();
 
     if (existingCollection && recreate) {
-      console.log(`Deleting existing collection: ${collectionName || 'default'}`);
+      console.log(`Deleting existing collection: ${collectionName || 'default` }`);
       await qdrantService.deleteCollection(collectionName);
     } else if (existingCollection && !recreate) {
       return json({
         success: true,
         message: 'Collection already exists',
         collection: existingCollection,
-        recreated: false,
+        recreated: false
       });
     }
 
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       vectorSize,
       distance,
       quantizationType,
-      onDisk,
+      onDisk
     });
 
     if (!created) {
@@ -59,15 +59,15 @@ export const POST: RequestHandler = async ({ request }) => {
         distance,
         quantizationType,
         onDisk,
-        memorySavings: quantizationType === 'scalar' ? '4x-8x' : quantizationType === 'product' ? '16x' : 'none',
-      },
+        memorySavings: quantizationType === 'scalar' ? '4x-8x' : quantizationType === 'product' ? '16x' : 'none'
+      }
     });
   } catch (error: any) {
     console.error('Qdrant initialization error:', error);
     return json(
       {
         error: 'Initialization failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         exists: false,
         healthy,
-        message: 'Collection does not exist. Use POST to create it.',
+        message: 'Collection does not exist. Use POST to create it.'
       });
     }
 
@@ -96,14 +96,14 @@ export const GET: RequestHandler = async () => {
       exists: true,
       healthy,
       collection: collectionInfo,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Qdrant info retrieval error:', error);
     return json(
       {
         error: 'Failed to get collection info',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -127,15 +127,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Collection deleted successfully',
-      collectionName: collectionName || 'default',
+      collectionName: collectionName || 'default'
     });
   } catch (error: any) {
     console.error('Qdrant deletion error:', error);
     return json(
       {
         error: 'Deletion failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

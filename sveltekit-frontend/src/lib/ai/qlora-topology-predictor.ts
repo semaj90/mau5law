@@ -25,11 +25,9 @@ class HiddenMarkovModel {
   private transitionMatrix: Float32Array;
   private emissionMatrix: Float32Array;
   private initialProbabilities: Float32Array;
-  constructor(options: {
-    stateCount: number;
-    observationCount: number;
+  constructor(options: { stateCount: number;, observationCount: number;
     transitionSmoothness: number;
-    emissionSmoothness: number;
+   , emissionSmoothness: number;
   }) {
     this.stateCount = options.stateCount;
     this.observationCount = options.observationCount;
@@ -41,7 +39,7 @@ class HiddenMarkovModel {
   }
   async predictNext(
     sequence: QLoRATopologyState[]
-  ): Promise<{ nextState: number; probability: number; confidence: number }> {
+  ): Promise<{ nextState: number; probability: number;, confidence: number }> {
     if (sequence.length === 0) {
       return { nextState: 0, probability: 1.0 / this.stateCount, confidence: 0.1 };
     }
@@ -141,9 +139,7 @@ class HiddenMarkovModel {
   }
 }
 // Topology prediction types
-export interface QLoRATopologyState {
-  id: string;
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
+export interface QLoRATopologyState { id: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
   complexity: number; // 0-1 (document complexity),
   userPattern: UserBehaviorPattern;
   contextEmbedding: Float32Array; // 1536-dim semantic context,
@@ -151,9 +147,7 @@ export interface QLoRATopologyState {
   currentConfig: QLoRAConfig;
   performanceHistory: PerformanceSnapshot[];
 }
-export interface UserBehaviorPattern {
-  sessionType: 'research' | 'analysis' | 'drafting' | 'review';
-  focusIntensity: number; // 0-1 (how focused is the user)
+export interface UserBehaviorPattern { sessionType: 'research' | 'analysis' | 'drafting' | 'review';, focusIntensity: number; // 0-1 (how focused is the user)
   documentFlow: string[]; // Sequence of document types accessed,
   interactionVelocity: number; // Documents per minute
   qualityExpectation: number; // 0-1 (user's quality requirements),
@@ -176,21 +170,15 @@ export interface QLoRAConfig {
   epochs: number; // Training epochs,
   quantizationBits: 4 | 8; // Quantization precision
 }
-export interface PerformanceSnapshot {
-  timestamp: number;
-  config: QLoRAConfig;
+export interface PerformanceSnapshot { timestamp: number;, config: QLoRAConfig;
   accuracy: number; // Model accuracy (0-1),
   throughput: number; // Tokens per second
   memoryUsage: number; // MB used,
   userSatisfaction: number; // User feedback score (0-1)
   convergenceSpeed: number; // Epochs to convergence
 }
-export interface TopologyPrediction {
-  predictedConfig: QLoRAConfig;
-  confidence: number; // Prediction confidence (0-1)
-  expectedPerformance: {
-    accuracy: number;
-    throughput: number;
+export interface TopologyPrediction { predictedConfig: QLoRAConfig;, confidence: number; // Prediction confidence (0-1)
+  expectedPerformance: { accuracy: number;, throughput: number;
     convergenceEpochs: number;
   };
   adaptationReason: string;
@@ -220,7 +208,7 @@ export interface TopologyPrediction {
       stateCount: 25, // 25 hidden states for topology patterns
       observationCount: 64, // 64 observable features
       transitionSmoothness: 0.1,
-      emissionSmoothness: 0.05,
+      emissionSmoothness: 0.05
     });
     // Enhanced SOM for pattern clustering
     this.som = new WebGPUSOMCache();
@@ -240,10 +228,8 @@ export interface TopologyPrediction {
   async predictOptimalTopology(
     legalDoc: LegalDocument,
     userContext: UserBehaviorPattern,
-    performanceRequirements: {
-      maxLatency: number;
-      minAccuracy: number;
-      memoryBudget: number;
+    performanceRequirements: { maxLatency: number;, minAccuracy: number;
+     , memoryBudget: number;
     }
   ): Promise<TopologyPrediction> {
     console.log(`🔮 TOPOLOGY PREDICTION: Analyzing ${legalDoc.id}`);
@@ -310,9 +296,7 @@ export interface TopologyPrediction {
   }
   /**
    * Get prediction accuracy and model statistics
-   */ getAccuracyMetrics(): {
-    overallAccuracy: number;
-    documentTypeAccuracy: Map<string, number>;
+   */ getAccuracyMetrics(): { overallAccuracy: number;, documentTypeAccuracy: Map<string, number>;
     modelConfidence: number;
     totalPredictions: number;
     cacheHitRate: number;
@@ -325,17 +309,15 @@ export interface TopologyPrediction {
       documentTypeAccuracy: this.calculateDocumentTypeAccuracy(),
       modelConfidence: this.calculateModelConfidence(),
       totalPredictions: stats && typeof stats.totalQueries === 'number' ? stats.totalQueries : 0,
-      cacheHitRate: stats && typeof stats.cacheHitRate === 'number' ? stats.cacheHitRate : 0.0,
+      cacheHitRate: stats && typeof stats.cacheHitRate === 'number' ? stats.cacheHitRate : 0.0
     };
   }
   /**
    * Preload and cache topology predictions for anticipated documents
    */
   async preloadTopologyPredictions(
-    anticipatedDocuments: {
-      type: string;
-      complexity: number;
-      urgency: number;
+    anticipatedDocuments: { type: string;, complexity: number;
+     , urgency: number;
     }[]
   ): Promise<void> {
     console.log(`🚀 TOPOLOGY PRELOAD: Preparing ${anticipatedDocuments.length} predictions`);
@@ -347,7 +329,7 @@ export interface TopologyPrediction {
         documentFlow: [doc.type],
         interactionVelocity: 0.5 + doc.urgency * 0.5,
         qualityExpectation: Math.min(0.9, 0.7 + doc.complexity * 0.2),
-        timeConstraints: doc.urgency,
+        timeConstraints: doc.urgency
       };
       // Create synthetic document
       const syntheticDoc: LegalDocument = {
@@ -359,13 +341,13 @@ export interface TopologyPrediction {
         riskLevel: 'medium',
         lastAccessed: Date.now(),
         compressed: true,
-        metadata: {} as { [key: string]: any },
+        metadata: {} as { [key: string]: any }
       };
       // Generate and cache prediction
       const prediction = await this.predictOptimalTopology(syntheticDoc, syntheticContext, {
         maxLatency: 1000,
         minAccuracy: 0.85,
-        memoryBudget: 512,
+        memoryBudget: 512
       });
       // Store in cache for quick retrieval
       const cacheKey = `topology_preload:${doc.type}:${doc.complexity.toFixed(1)}`;
@@ -402,7 +384,7 @@ export interface TopologyPrediction {
       dayOfWeek: new Date().getDay(),
       seasonality: Math.sin((2 * Math.PI * Date.now()) / (365 * 24 * 60 * 60 * 1000)), // Yearly cycle
       workloadPressure: await this.calculateWorkloadPressure(),
-      recentPerformance: this.predictionAccuracy,
+      recentPerformance: this.predictionAccuracy
     };
     // Get current baseline config for this document type
     const baselineConfig = this.getBaselineConfig(legalDoc.type);
@@ -414,7 +396,7 @@ export interface TopologyPrediction {
       contextEmbedding,
       temporalFeatures,
       currentConfig: baselineConfig,
-      performanceHistory: this.getPerformanceHistory(legalDoc.type),
+      performanceHistory: this.getPerformanceHistory(legalDoc.type)
     };
     // Store state in history
     const docTypeHistory = this.stateHistory.get(legalDoc.type) || [];
@@ -433,7 +415,7 @@ export interface TopologyPrediction {
   private async enhanceWithLocalLLM(state: QLoRATopologyState, requirements: any): Promise<any> {
     const prompt = `
 Analyze this legal AI configuration:
-- Document Type: ${state.documentType}
+- Document; Type: ${state.documentType}
 - Complexity: ${state.complexity.toFixed(2)}
 - User Session: ${state.userPattern.sessionType}
 - Current Performance: ${state.temporalFeatures.recentPerformance.toFixed(2)}
@@ -461,7 +443,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       learningRate: gpuOptimization.optimalLearningRate || baseConfig.learningRate,
       batchSize: gpuOptimization.optimalBatchSize || baseConfig.batchSize,
       epochs: gpuOptimization.optimalEpochs || baseConfig.epochs,
-      quantizationBits: gpuOptimization.optimalQuantization || baseConfig.quantizationBits,
+      quantizationBits: gpuOptimization.optimalQuantization || baseConfig.quantizationBits
     };
     // Calculate prediction confidence
     const confidence = Math.min(
@@ -474,7 +456,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     const expectedPerformance = {
       accuracy: Math.min(0.98, this.predictionAccuracy + confidence * 0.2),
       throughput: this.estimateThroughput(optimizedConfig),
-      convergenceEpochs: this.estimateConvergence(optimizedConfig, state.complexity),
+      convergenceEpochs: this.estimateConvergence(optimizedConfig, state.complexity)
     };
     // Generate alternatives
     const alternativeConfigs = this.generateAlternatives(optimizedConfig, 3);
@@ -484,7 +466,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       expectedPerformance,
       adaptationReason: gpuOptimization.reason || 'Optimized based on historical patterns',
       alternativeConfigs,
-      cacheStrategy: this.determineCacheStrategy(state, confidence),
+      cacheStrategy: this.determineCacheStrategy(state, confidence)
     };
   }
   private async updatePredictionModels(state: QLoRATopologyState, prediction: TopologyPrediction): Promise<void> {
@@ -493,7 +475,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     await this.som.storeVector(`prediction_${state.id}`, Array.from(predictionVector), {
       confidence: prediction.confidence,
       documentType: state.documentType,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     // Update HMM observation model
     await this.hmm.updateObservation(state, prediction.confidence);
@@ -526,16 +508,14 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     return Math.min(1.0, (cacheLoad + timeLoad) / 2);
   }
   private getBaselineConfig(documentType: string): QLoRAConfig {
-    const baselineConfigs: Record<string, QLoRAConfig> = {
-      contract: {
-        rank: 16,
+    const baselineConfigs: Record<string, QLoRAConfig> = { contract: {, rank: 16,
         alpha: 32,
         dropout: 0.05,
         targetModules: ['q_proj', 'v_proj'],
         learningRate: 2e-4,
         batchSize: 4,
         epochs: 3,
-        quantizationBits: 4,
+        quantizationBits: 4
       },
       evidence: {
         rank: 12,
@@ -545,7 +525,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
         learningRate: 1.5e-4,
         batchSize: 6,
         epochs: 4,
-        quantizationBits: 4,
+        quantizationBits: 4
       },
       brief: {
         rank: 20,
@@ -555,7 +535,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
         learningRate: 3e-4,
         batchSize: 2,
         epochs: 5,
-        quantizationBits: 8,
+        quantizationBits: 8
       },
       citation: {
         rank: 8,
@@ -565,7 +545,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
         learningRate: 1e-4,
         batchSize: 8,
         epochs: 2,
-        quantizationBits: 4,
+        quantizationBits: 4
       },
       precedent: {
         rank: 24,
@@ -575,8 +555,8 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
         learningRate: 2.5e-4,
         batchSize: 3,
         epochs: 6,
-        quantizationBits: 8,
-      },
+        quantizationBits: 8
+      }
     };
     return baselineConfigs[documentType] || baselineConfigs.contract;
   }
@@ -635,8 +615,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       'evidence': 'analysis',
       'brief': 'drafting',
       'citation': 'research',
-      'precedent': 'research',
-    };
+      'precedent': `research` };
     return (typeMapping[docType as keyof typeof typeMapping] || 'analysis') as UserBehaviorPattern['sessionType'];
   }
   private estimateThroughput(config: QLoRAConfig): number {
@@ -708,7 +687,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       documentType,
       config,
       performance,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     const cacheKey = `rag_${documentType}_${performance.accuracy.toFixed(2)}`;
     this.ragCache.set(cacheKey, ragEntry);
@@ -787,15 +766,15 @@ class WebGPUTopologyAccelerator {
     // Create buffers with explicit sizes
     const inputBuffer = device.createBuffer({
       size: inputData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = device.createBuffer({
       size: outputByteSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const readBuffer = device.createBuffer({
       size: outputByteSize,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Upload input data
     device.queue.writeBuffer(inputBuffer, 0, inputData.buffer, inputData.byteOffset, inputData.byteLength);
@@ -803,20 +782,19 @@ class WebGPUTopologyAccelerator {
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
         { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-      ],
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'storage' } }
+      ]
     });
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
-        { binding: 1, resource: { buffer: outputBuffer } },
-      ],
+        { binding: 1, resource: {, buffer: outputBuffer } }
+      ]
     });
     // Create pipeline
-    const pipeline = device.createComputePipeline({
-      layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: this.computeShader!, entryPoint: 'main' },
+    const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
+      compute: { module: this.computeShader!, entryPoint: 'main' }
     });
     // Dispatch compute work (single invocation)
     const encoder = device.createCommandEncoder();
@@ -850,9 +828,7 @@ class WebGPUTopologyAccelerator {
     hmmPrediction: { probability?: number },
     similarPatterns: any[],
     llmEnhancement: any
-  ): {
-    optimalRank: number;
-    optimalAlpha: number;
+  ): { optimalRank: number;, optimalAlpha: number;
     optimalDropout: number;
     optimalModules: string[];
     optimalLearningRate: number;
@@ -876,7 +852,7 @@ class WebGPUTopologyAccelerator {
       optimalEpochs: Math.floor(3 * complexity + 2),
       optimalQuantization: complexity > 0.7 ? 8 : (4 as 4 | 8),
       confidence: 0.8 + complexity * 0.15,
-      reason: 'CPU-optimized configuration based on document complexity',
+      reason: 'CPU-optimized configuration based on document complexity'
     };
   }
   private prepareOptimizationData(state: QLoRATopologyState, hmmPrediction: any, similarPatterns: any[]): Float32Array {
@@ -906,8 +882,7 @@ class WebGPUTopologyAccelerator {
       optimalEpochs: Math.max(2, Math.min(10, Math.floor(result[4]))),
       optimalQuantization: result[5] > 6 ? 8 : (4 as 4 | 8),
       confidence: Math.max(0.5, Math.min(1.0, result[7] + (llmEnhancement.confidenceBoost || 0))),
-      reason: 'WebGPU-accelerated optimization with HMM and SOM integration',
-    };
+      reason: `WebGPU-accelerated optimization with HMM and SOM integration` };
   }
 }
 class LocalLLMConnector {
@@ -929,11 +904,11 @@ class LocalLLMConnector {
     try {
       const response = await fetch(`${this.baseURL}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: fastStringify({
-          model: 'nomic-embed-text',
-          prompt: text,
-        }),
+         , model: 'nomic-embed-text',
+          prompt: text
+        })
       });
       const result = await fastParse(await (response as { ok?: any; text?: any }).text());
       return new Float32Array((result as { embedding?: any; response?: any }).embedding);
@@ -946,17 +921,17 @@ class LocalLLMConnector {
     try {
       const response = await fetch(`${this.baseURL}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: fastStringify({
           model: 'gemma3-legal:latest',
           prompt: prompt,
           stream: false,
           options: {
-            temperature: 0.1,
+           , temperature: 0.1,
             top_p: 0.9,
-            max_tokens: 200,
-          },
-        }),
+            max_tokens: 200
+          }
+        })
       });
       const result = await fastParse(await (response as { ok?: any; text?: any }).text());
       return (result as { embedding?: any; response?: any }).response || 'No response from LLM';
@@ -987,6 +962,6 @@ class LocalLLMConnector {
 export const qloraTopologyPredictor = new QLoRATopologyPredictor({
   maxHistoryLength: 100,
   learningRate: 0.03,
-  cacheSize: 15000,
+  cacheSize: 15000
 });
 console.log('🎯 QLoRA Topology Predictor with enhanced HMM loaded - ready for topology prediction');

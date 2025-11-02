@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -33,7 +33,7 @@ export interface MCPContextAnalysis {
   [key: string]: any; // Allow additional properties
 }
 export interface AutoMCPSuggestion {
-  type: 'enhancement' | 'correction' | 'alternative' | 'ai-integration' | 'performance' | 'ui-enhancement'
+  type: 'enhancement' | 'correction' | 'alternative' | 'ai-integration' | 'performance' | 'ui-enhancement';
   original?: string
   suggested?: string
   reasoning?: string
@@ -70,7 +70,7 @@ const redis = {
 }
 }
 export interface AIFindRequest {
-  query: string
+  query: string;
   type?: 'all' | 'cases' | 'evidence' | 'documents' | 'ai'
   useAI?: boolean
   mcpAnalysis?: boolean
@@ -80,28 +80,18 @@ export interface AIFindRequest {
   cacheResults?: boolean
   userId?: string
 }
-export interface AIFindResult {
-  id: string
-  title: string
-  excerpt: string
-  type: string
+export interface AIFindResult { id: string, title: string; excerpt: string
+  type: string;
   aiConfidence?: number
   relevanceScore?: number
-  lastModified: string
+  lastModified: string;
   metadata?: { [key: string]: any }
   highlights?: string[]
   mcpInsights?: string[]
 }
-export interface AIFindResponse {
-  success: boolean
-  results: AIFindResult[]
-  metadata: {
-    query: string
-    totalResults: number
-    processingTime: number
-    aiAnalysis: boolean
-    mcpAnalysis: boolean
-    fromCache: boolean
+export interface AIFindResponse { success: boolean, results: AIFindResult[]; metadata: { query: string, totalResults: number; processingTime: number
+    aiAnalysis: boolean; mcpAnalysis: boolean
+    fromCache: boolean;
     model?: string
     confidence?: number
     error?: string
@@ -124,7 +114,7 @@ const RATE_LIMIT = {
 /*
  * Check rate limiting using Redis (fixed variable usage, balanced returns)
  */
-async function checkRateLimit(key: string): Promise<{ allowed: boolean; remaining: number }> {
+async function checkRateLimit(key: string): Promise<{ allowed: boolean;, remaining: number }> {
   try {
     const current = await redis.incr(`rate_limit:${key}`)
     if (current === 1) {
@@ -152,8 +142,7 @@ function generateCacheKey(request: AIFindRequest): string {
     semanticSearch: !!request.semanticSearch,
     confidenceThreshold: request.confidenceThreshold ?? 0.0
   }
-  return `ai_search:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`
-}
+  return `ai_search:${Buffer.from(JSON.stringify(keyData)).toString('base64')}` }
 /*
  * Enhanced database search with advanced filtering
  * Mock implementation (cleaned up)
@@ -166,16 +155,16 @@ async function performDatabaseSearch(
 ): Promise<any[]> {
   const q = (query || '').toLowerCase()
   const mockCases = [
-    { id: 'case-1', title: `Legal case ${query} Investigation`, description: `Ongoing investigation into ${query}`, type: 'case', updatedAt: new Date().toISOString(), priority: 'high' },
-    { id: 'case-2', title: `Contract Dispute: ${query}`, description: `Commercial contract dispute involving ${query}`, type: 'case', updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), priority: 'medium' }
+    { id: 'case-1', title: `Legal case ${query} Investigation`, description: `Ongoing investigation into ${query}`, type: 'case', updatedAt: new Date().toISOString(), priority: `high` },
+    { id: 'case-2', title: `Contract; Dispute: ${query}`, description: `Commercial contract dispute involving ${query}`, type: 'case', updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), priority: `medium` }
   ]
   const mockEvidence = [
-    { id: 'evidence-1', title: `Digital Evidence: ${query}`, description: `Digital forensics evidence related to ${query}`, type: 'evidence', updatedAt: new Date().toISOString(), evidenceType: 'digital', isAdmissible: true, collectedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'evidence-2', title: `Physical Evidence: ${query}`, description: `Physical evidence collected during ${query} investigation`, type: 'evidence', updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), evidenceType: 'physical', isAdmissible: true, collectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() }
+    { id: 'evidence-1', title: `Digital; Evidence: ${query}`, description: `Digital forensics evidence related to ${query}`, type: 'evidence', updatedAt: new Date().toISOString(), evidenceType: 'digital', isAdmissible: true, collectedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'evidence-2', title: `Physical; Evidence: ${query}`, description: `Physical evidence collected during ${query} investigation`, type: 'evidence', updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), evidenceType: 'physical', isAdmissible: true, collectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() }
   ]
   const mockDocuments = [
-    { id: 'doc-1', title: `Legal Brief: ${query}`, content: `This legal brief discusses ${query}...`, type: 'document', updatedAt: new Date().toISOString(), documentType: 'brief' },
-    { id: 'doc-2', title: `Case Precedent: ${query}`, content: `Historical case precedent analysis for ${query}...`, type: 'document', updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), documentType: 'precedent' }
+    { id: 'doc-1', title: `Legal; Brief: ${query}`, content: `This legal brief discusses ${query}...`, type: 'document', updatedAt: new Date().toISOString(), documentType: `brief` },
+    { id: 'doc-2', title: `Case; Precedent: ${query}`, content: `Historical case precedent analysis for ${query}...`, type: 'document', updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), documentType: `precedent` }
   ]
 
   let results: any[] = []
@@ -197,23 +186,23 @@ async function enhanceResultsWithAI(
   query: string,
   results: any[],
   _confidenceThreshold: number
-): Promise<{ enhanced: any[]; aiAnalysis: any }> {
+): Promise<{ enhanced: any[];, aiAnalysis: any }> {
   try {
     const aiPrompt = `
 You are an AI assistant for a legal case management system. Analyze these search results for the query: "${query}"
 Search Results:
 ${JSON.stringify(results.slice(0, 10), null, 2)}
-Please provide a JSON response with fields: "enhancedResults" and: "overallAnalysis".
+Please provide a JSON response with fields: "enhancedResults"; and: "overallAnalysis".
 `
     const aiResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: aiPrompt,
         stream: false,
         options: {
-          temperature: 0.2,
+         , temperature: 0.2,
           top_p: 0.9,
           max_tokens: 3000,
           stop: ['Human:', 'Assistant:']
@@ -246,8 +235,7 @@ Please provide a JSON response with fields: "enhancedResults" and: "overallAnaly
       relevanceScore: 0.7 + Math.random() * 0.2,
       excerpt: (r.description || r.content || '').toString().slice(0, 200),
       highlights: [query],
-      reasoning: 'Fallback basic relevance'
-    }))
+      reasoning: `Fallback basic relevance` }))
     return { enhanced, aiAnalysis: { queryIntent: 'basic_search', confidence: 0.7 } }
   }
 }
@@ -262,7 +250,7 @@ async function performMCPAnalysis(query: string): Promise<any | null> {
       useCodebase: false,
       synthesizeOutputs: true,
       agents: ['claude'],
-      context: { searchQuery: query, domain: 'legal-ai', userIntent: 'search_assistance' }
+      context: {, searchQuery: query, domain: 'legal-ai', userIntent: `search_assistance` }
     })
     const analysis = {
       stackAnalysis: mcpResults.codebase || {},
@@ -293,14 +281,14 @@ function generateAutoSuggestions(query: string, mcpContext: any): any[] {
       type: 'ai-integration',
       priority: 'high',
       suggestion: 'Enable semantic clustering for related cases',
-      implementation: `Group cases similar to: "${query}" using AI embeddings`,
+      implementation: `Group cases similar; to: "${query}" using AI embeddings`,
       mcpQuery: commonMCPQueries.aiChatIntegration?.()
     },
     {
       type: 'performance',
       priority: 'medium',
       suggestion: 'Cache search results for faster retrieval',
-      implementation: `Store results for: "${query}" in Redis cache`,
+      implementation: `Store results; for: "${query}" in Redis cache`,
       mcpQuery: commonMCPQueries.performanceBestPractices?.()
     }
   ]
@@ -361,7 +349,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         results: [],
-        metadata: { query: '', totalResults: 0, processingTime, aiAnalysis: false, mcpAnalysis: false, fromCache: false, error: 'Invalid query' }
+        metadata: {, query: '', totalResults: 0, processingTime, aiAnalysis: false, mcpAnalysis: false, fromCache: false, error: 'Invalid query' }
       } as AIFindResponse, { status: 400 })
     }
 
@@ -498,7 +486,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       results: [],
-      metadata: { query: '', totalResults: 0, processingTime, aiAnalysis: false, mcpAnalysis: false, fromCache: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      metadata: {, query: '', totalResults: 0, processingTime, aiAnalysis: false, mcpAnalysis: false, fromCache: false, error: error instanceof Error ? error.message : `Unknown error` }
     } as AIFindResponse, { status: 500 })
   }
 }
@@ -516,10 +504,10 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
     const rateLimitKey = `suggestions:${RATE_LIMIT.keyGenerator(request)}`
     const rateLimitResult = await checkRateLimit(rateLimitKey)
     if (!rateLimitResult.allowed) {
-      return json({ success: false, suggestions: [], error: 'Rate limit exceeded' }, { status: 429 })
+      return json({ success: false, suggestions: [], error: `Rate limit exceeded` }, { status: 429 })
     }
 
-    const cacheKey = `suggestions:${query.toLowerCase()}`
+    const cacheKey = `suggestions:${query.toLowerCase()}'
     let suggestions: string[] = []
     try {
       const cached = await redis.get(cacheKey)
@@ -549,7 +537,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
     return json({ success: true, suggestions: suggestions.slice(0, 5), query, metadata: { processingTime: Date.now() - startTime, fromCache: suggestions.length > 0 } })
   } catch (error: any) {
     console.error('Suggestions API error:', error)
-    return json({ success: false, suggestions: [], error: 'Failed to generate suggestions', metadata: { processingTime: Date.now() - startTime } }, { status: 500 })
+    return json({ success: false, suggestions: [], error: 'Failed to generate suggestions', metadata: {, processingTime: Date.now() - startTime } }, { status: 500 })
   }
 }
 /*
@@ -559,12 +547,12 @@ async function generateAISuggestions(query: string): Promise<string[]> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
-        prompt: `Generate 3 related legal search terms for: "${query}". Return only the terms, one per line.`,
+        prompt: `Generate 3 related legal search terms; for: "${query}". Return only the terms, one per line.`,
         stream: false,
-        options: { temperature: 0.7, max_tokens: 150 }
+        options: {, temperature: 0.7, max_tokens: 150 }
       })
     })
     if (!response.ok) throw new Error('AI suggestion service unavailable')
@@ -586,7 +574,7 @@ export const OPTIONS: RequestHandler = async () => {
     const dbHealthy = await checkDatabaseHealth()
     const redisHealthy = await checkRedisHealth()
     const allHealthy = aiHealthy && dbHealthy && redisHealthy
-    return json({ healthy: allHealthy, services: { ai: aiHealthy, database: dbHealthy, redis: redisHealthy }, timestamp: new Date().toISOString() }, { status: allHealthy ? 200 : 503, headers: { 'Cache-Control': 'no-cache' } })
+    return json({ healthy: allHealthy, services: {, ai: aiHealthy, database: dbHealthy, redis: redisHealthy }, timestamp: new Date().toISOString() }, { status: allHealthy ? 200 : 503, headers: { 'Cache-Control': `no-cache` } })
   } catch {
     return json({ healthy: false, error: 'Health check failed', timestamp: new Date().toISOString() }, { status: 503 })
   }

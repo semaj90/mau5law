@@ -14,7 +14,7 @@ const logger = {
   info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
   error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
   warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args)
 };
 // Minimal interface for the Ollama-like service used here
 // Removed OllamaServiceType and const ollama = ...
@@ -33,7 +33,7 @@ export class CaseScoringService {
       legal_precedent: 0.2,
       public_interest: 0.15,
       case_complexity: 0.1,
-      resource_requirements: 0.1,
+      resource_requirements: 0.1
     };
   }
   /**
@@ -62,14 +62,13 @@ export class CaseScoringService {
         recommendations,
         scoringDate: new Date(),
         model: this.SCORING_MODEL,
-        version: '1.0',
-      };
+        version: '1.0` };
       await this.saveScoring(scoringResult, this.DEFAULT_TEMPERATURE);
       await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
       logger.info('Case scored successfully', {
         caseId: request.caseId,
         score: finalScore,
-        elapsedMs: Date.now() - startTime,
+        elapsedMs: Date.now() - startTime
       });
       return scoringResult;
     } catch (error: any) {
@@ -96,11 +95,11 @@ export class CaseScoringService {
         ? request.scoring_criteria
         : (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
     const prompt = `Analyze this legal case for prosecution viability:
-Case Title: ${caseData.title || 'N/A'}
+Case; Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
 Defendants: ${defendants}
-Jurisdiction: ${caseData.jurisdiction || 'N/A'}
+Jurisdiction: ${caseData.jurisdiction || 'N/A` }
 Scoring Criteria Provided:
 ${JSON.stringify(criteriaProvided, null, 2)}
 Provide a comprehensive analysis covering:
@@ -122,7 +121,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
           : this.DEFAULT_TEMPERATURE;
       analysisRaw = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
         temperature,
-        max_tokens: 1000,
+        max_tokens: 1000
       });
     }
     return String(analysisRaw || '');
@@ -134,8 +133,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
     // simplified nullish coalescing for clarity
     const provided =
       request.scoring_criteria ?? (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria ?? {};
-    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:
-Analysis: ${aiAnalysis}
+    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:; Analysis: ${aiAnalysis}
 Rate the following on a scale of 0 to 1:
 1. Evidence Strength (considering admissibility and weight)
 2. Witness Reliability (considering credibility and consistency)
@@ -149,7 +147,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
       if (typeof ollama.generateCompletion === 'function') {
         aiScoresRaw = await ollama.generateCompletion(this.SCORING_MODEL, aiScorePrompt, {
           temperature: 0.3,
-          max_tokens: 200,
+          max_tokens: 200
         });
       }
       const aiScores = this.parseAIScores(String(aiScoresRaw || '{}'));
@@ -190,7 +188,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
             ? provided.resource_requirements
             : aiScores.resource_requirements != null
               ? aiScores.resource_requirements
-              : 0.5,
+              : 0.5
       } as ScoringCriteria;
     } catch (error: any) {
       logger.warn(
@@ -203,7 +201,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
         legal_precedent: provided.legal_precedent != null ? provided.legal_precedent : 0.5,
         public_interest: provided.public_interest != null ? provided.public_interest : 0.5,
         case_complexity: provided.case_complexity != null ? provided.case_complexity : 0.5,
-        resource_requirements: provided.resource_requirements != null ? provided.resource_requirements : 0.5,
+        resource_requirements: provided.resource_requirements != null ? provided.resource_requirements : 0.5
       } as ScoringCriteria;
     }
   }
@@ -262,14 +260,14 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
       recommendations.push('Resource requirements are reasonable - proceed with standard allocation');
     const caseData = request.metadata || {};
     const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis:
-${caseData.description || 'No description provided'}
+${caseData.description || 'No description provided` }
 Provide 2-3 specific strategic recommendations for the prosecution team.`;
     try {
       let aiRecommendationsRaw: any = null;
       if (typeof ollama.generateCompletion === 'function') {
         aiRecommendationsRaw = await ollama.generateCompletion(this.SCORING_MODEL, strategyPrompt, {
           temperature: 0.5,
-          max_tokens: 200,
+          max_tokens: 200
         });
       }
       if (aiRecommendationsRaw) {
@@ -352,7 +350,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
         recommendations: Array.isArray(result.recommendations) ? result.recommendations : [],
         calculatedBy: null,
         calculatedAt: scoringDate.toISOString(),
-        updatedAt: updatedAtIso,
+        updatedAt: updatedAtIso
       };
       await db.insert(caseScores).values(insertRow);
     } catch (error: any) {
@@ -388,7 +386,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
           timestamp: r.calculatedAt,
           scoring_criteria: r.criteria,
           ai_analysis: (r.notes as string) || '',
-          processing_time: r.processing_time || 0,
+          processing_time: r.processing_time || 0
         } as CaseScoringResult;
       });
     } catch (error: any) {
@@ -401,7 +399,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
    */
   private determineRiskLevel(
     score: number,
-    thresholds: { low: number; medium: number; high: number }
+    thresholds: { low: number; medium: number;, high: number }
   ): 'LOW' | 'MEDIUM' | 'HIGH' {
     if (score >= thresholds.high) return 'HIGH';
     if (score >= thresholds.medium) return 'MEDIUM';

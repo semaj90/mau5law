@@ -9,67 +9,45 @@ import type { User } from '$lib/types';
 import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
 import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
 import { browser } from '$app/environment';
-export interface WebElement {
-  id: string;
-  tagName: string;
+export interface WebElement { id: string;, tagName: string;
   textContent: string;
   innerHTML: string;
   boundingBox: DOMRect;
   attributes: Record<string, string>;
-  metadata: {
-    importance: 'high' | 'medium' | 'low';
-    elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
+  metadata: { importance: 'high' | 'medium' | 'low';, elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
     lastInteraction?: number; // optional: can be populated for richer analytics
   };
 }
-export interface PageChunk {
-  id: string;
-  content: string;
+export interface PageChunk { id: string;, content: string;
   elements: WebElement[];
-  position: { start: number; end: number };
+  position: { start: number;, end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
 }
-export interface ClickPoint {
-  x: number;
-  y: number;
+export interface ClickPoint { x: number;, y: number;
   count: number;
   timestamp?: number; // optional: can be populated for richer analytics
 }
-export interface UserAnalytics {
-  userId: string;
-  sessionId: string;
-  typingPatterns: {
-    avgSpeed: number; // WPM
-    commonWords: string[];
+export interface UserAnalytics { userId: string;, sessionId: string;
+  typingPatterns: { avgSpeed: number; // WPM, commonWords: string[];
     specialization: string[]; // legal, technical, etc.
   };
-  interactionPatterns: {
-    clickHeatmap: ClickPoint[]; // typed instead of Array<any>
-    scrollBehavior: { depth: number; speed: number };
+  interactionPatterns: { clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number;, speed: number };
     focusAreas: string[]; // element selectors
   };
-  caseContext: {
-    activeCases: string[];
-    currentTask: string;
+  caseContext: { activeCases: string[];, currentTask: string;
     relevantDocuments: string[];
   };
 }
-export type TrainingChunk = {
-  input_text: string;
-  embeddings: number[]; // serialized embeddings for transport/storage
+export type TrainingChunk = { input_text: string;, embeddings: number[]; // serialized embeddings for transport/storage
   context: UserAnalytics;
   importance_weight: number;
   created_at: number;
 };
-export interface QLoRATrainingData {
-  user_id: string;
-  chunks: TrainingChunk[]; // typed training chunk array
-  metadata: {
-    page_url: string;
-    session_data: UserAnalytics;
+export interface QLoRATrainingData { user_id: string;, chunks: TrainingChunk[]; // typed training chunk array
+  metadata: { page_url: string;, session_data: UserAnalytics;
     distilled_size: number;
     training_ready: boolean;
   };
@@ -89,20 +67,20 @@ export class IntelligentWebAnalyzer {
         avgSpeed: 0,
         commonWords: [],
         specialization: [],
-        ...initialAnalytics.typingPatterns,
+        ...initialAnalytics.typingPatterns
       },
       interactionPatterns: {
         clickHeatmap: [],
         scrollBehavior: { depth: 0, speed: 0 },
         focusAreas: [],
-        ...initialAnalytics.interactionPatterns,
+        ...initialAnalytics.interactionPatterns
       },
       caseContext: {
         activeCases: [],
         currentTask: '',
         relevantDocuments: [],
-        ...initialAnalytics.caseContext,
-      },
+        ...initialAnalytics.caseContext
+      }
     };
   }
   /**
@@ -186,7 +164,7 @@ export class IntelligentWebAnalyzer {
       this.userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
         y: e.clientY,
-        count: 1,
+        count: 1
       });
       // Update element interaction count
       const elementId = this.getElementId(e.target as Element);
@@ -213,7 +191,7 @@ export class IntelligentWebAnalyzer {
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         this.userAnalytics.interactionPatterns.scrollBehavior = {
           depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
-          speed: scrollSpeed,
+          speed: scrollSpeed
         };
       }
       lastScrollTime = currentTime;
@@ -267,8 +245,8 @@ export class IntelligentWebAnalyzer {
         metadata: {
           importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
-          interactionCount: 0,
-        },
+          interactionCount: 0
+        }
       };
       elements.push(webElement);
       this.pageElements.set(elementId, webElement);
@@ -313,7 +291,7 @@ export class IntelligentWebAnalyzer {
     const { RecursiveCharacterTextSplitter } = await import('langchain/text_splitter');
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 750,
-      chunkOverlap: 100,
+      chunkOverlap: 100
     });
     const texts = await splitter.splitText(fullText);
     const chunks: PageChunk[] = [];
@@ -338,8 +316,8 @@ export class IntelligentWebAnalyzer {
         id: `chunk_${chunks.length}`,
         content: txt,
         elements: includedElements,
-        position: { start: posStart, end: posEnd },
-        confidence: this.calculateChunkConfidence(includedElements),
+        position: {, start: posStart, end: posEnd },
+        confidence: this.calculateChunkConfidence(includedElements)
       });
     }
     return chunks;
@@ -363,10 +341,9 @@ export class IntelligentWebAnalyzer {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                text: chunk.content,
+               , text: chunk.content,
                 model: 'nomic-text',
-                source: 'web-analysis',
-              }),
+                source: `web-analysis` })
             });
             if (response.ok) {
               const data = await response.json();
@@ -402,7 +379,7 @@ export class IntelligentWebAnalyzer {
       embeddings: chunk.embeddings ? Array.from(chunk.embeddings) : [],
       context: this.userAnalytics,
       importance_weight: this.calculateImportanceWeight(chunk),
-      created_at: Date.now(),
+      created_at: Date.now()
     }));
     return {
       user_id: this.userAnalytics.userId,
@@ -411,8 +388,8 @@ export class IntelligentWebAnalyzer {
         page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
-        training_ready: true,
-      },
+        training_ready: true
+      }
     };
   }
   /**
@@ -423,9 +400,9 @@ export class IntelligentWebAnalyzer {
       const cacheKey = `web_analysis:${this.userAnalytics.userId}:${window.location.pathname}`;
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          results: qloraData.chunks.map((chunk, index) => {
+         , results: qloraData.chunks.map((chunk, index) => {
             const embeddings = chunk.embeddings ?? [];
             return {
               text: chunk.input_text,
@@ -443,8 +420,8 @@ export class IntelligentWebAnalyzer {
             user_id: this.userAnalytics.userId,
             session_id: this.userAnalytics.sessionId,
             cache_key: cacheKey, // use the cacheKey to avoid: "assigned but never used"
-          },
-        }),
+          }
+        })
       });
       if (response.ok) {
         console.log('✅ Analysis results cached successfully');
@@ -561,14 +538,12 @@ export class IntelligentWebAnalyzer {
    */ updateUserContext(context: Partial<UserAnalytics>): void {
     this.userAnalytics = {
       ...this.userAnalytics,
-      ...context,
+      ...context
     };
   }
   /**
    * Get current analysis state for debugging
-   */ getAnalysisState(): {
-    elementsCount: number;
-    chunksInQueue: number;
+   */ getAnalysisState(): { elementsCount: number;, chunksInQueue: number;
     userAnalytics: UserAnalytics;
     isProcessing: boolean;
   } {
@@ -576,7 +551,7 @@ export class IntelligentWebAnalyzer {
       elementsCount: this.pageElements.size,
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
-      isProcessing: this.isProcessing,
+      isProcessing: this.isProcessing
     };
   }
   /**

@@ -5,47 +5,33 @@ import type { Redis as RedisClient } from 'ioredis';
 import { encoding_for_model } from '@dqbd/tiktoken';
 
 // Job types for the legal document processing pipeline
-export interface BaseJobData {
-  uploadId: string;
-  caseId: string;
+export interface BaseJobData { uploadId: string;, caseId: string;
   timestamp: string;
   priority: 'low' | 'normal' | 'high' | 'critical';
 }
 
-export interface DocumentExtractionJob extends BaseJobData {
-  filename: string;
-  contentType: string;
+export interface DocumentExtractionJob extends BaseJobData { filename: string;, contentType: string;
   storageUrl: string;
   extractionType: 'pdf' | 'image' | 'video' | 'audio' | 'text';
 }
-export interface EmbeddingJob extends BaseJobData {
-  textChunks: string[];
-  chunkMetadata: Array<Record<string, unknown>>;
+export interface EmbeddingJob extends BaseJobData { textChunks: string[];, chunkMetadata: Array<Record<string, unknown>>;
   embeddingModel: 'sentence-transformers' | 'ollama' | 'openai';
 }
-export interface TensorProcessingJob extends BaseJobData {
-  tensorData: number[];
-  dimensions: [number, number, number, number]; // 4D tensor
+export interface TensorProcessingJob extends BaseJobData { tensorData: number[];, dimensions: [number, number, number, number]; // 4D tensor
   operation: 'tricubic' | 'som_cluster' | 'attention' | 'convolution';
   tileSize?: [number, number, number, number];
   haloSize?: number;
 }
-export interface VectorIndexJob extends BaseJobData {
-  embeddings: number[][];
-  metadata: Array<Record<string, unknown>>;
+export interface VectorIndexJob extends BaseJobData { embeddings: number[][];, metadata: Array<Record<string, unknown>>;
   indexType: 'qdrant' | 'pgvector' | 'faiss';
 }
 
-export interface NotificationJob extends BaseJobData {
-  message: string;
-  type: 'completion' | 'error' | 'progress';
+export interface NotificationJob extends BaseJobData { message: string;, type: 'completion' | 'error' | 'progress';
 }
 
 type JobData = DocumentExtractionJob | EmbeddingJob | TensorProcessingJob | VectorIndexJob | NotificationJob;
 
-interface ProgressUpdate {
-  stage: string;
-  status: 'processing' | 'completed' | 'failed';
+interface ProgressUpdate { stage: string;, status: 'processing' | 'completed' | 'failed';
   progress?: number;
   result?: any;
   error?: string;
@@ -67,7 +53,7 @@ export class LegalAIJobQueue {
       { name: 'embedding-generation', concurrency: 3 },
       { name: 'tensor-processing', concurrency: 2 },
       { name: 'vector-indexing', concurrency: 4 },
-      { name: 'notification', concurrency: 10 },
+      { name: 'notification', concurrency: 10 }
     ];
     queueConfigs.forEach(({ name, concurrency }) => {
       const queue = new Queue(name, {
@@ -77,10 +63,10 @@ export class LegalAIJobQueue {
           removeOnFail: 50,
           attempts: 3,
           backoff: {
-            type: 'exponential',
-            delay: 2000,
-          },
-        },
+           , type: 'exponential',
+            delay: 2000
+          }
+        }
       });
       this.queues.set(name, queue);
       // Create worker for each queue
@@ -89,8 +75,8 @@ export class LegalAIJobQueue {
         concurrency,
         limiter: {
           max: concurrency * 2,
-          duration: 1000,
-        },
+          duration: 1000
+        }
       });
       // Worker event handlers (cast to any to satisfy current typings)
       const any = worker as any;
@@ -100,16 +86,16 @@ export class LegalAIJobQueue {
           stage: name,
           status: 'completed',
           progress: 100,
-          result: result,
+          result: result
         });
       });
       any.on('failed', (job: BullMQJob<JobData> | undefined, err: Error) => {
-        console.error(`❌ Job ${job?.id} failed in queue ${name}:`, err?.message);
+        console.error(`❌ Job ${job?.id} failed in queue ${name}: ', err?.message);
         if (job?.data?.uploadId) {
           this.broadcastProgress(job.data.uploadId, {
             stage: name,
             status: 'failed',
-            error: err?.message,
+            error: err?.message
           });
         }
       });
@@ -118,7 +104,7 @@ export class LegalAIJobQueue {
         this.broadcastProgress(job.data.uploadId, {
           stage: name,
           status: 'processing',
-          progress: typeof progress === 'number' ? progress : undefined,
+          progress: typeof progress === 'number' ? progress : undefined
         });
       });
       this.workers.set(name, worker);
@@ -140,7 +126,7 @@ export class LegalAIJobQueue {
         case 'notification':
           return this.processNotification(job as BullMQJob<NotificationJob>);
         default:
-          throw new Error(`Unknown queue: ${queueName}`);
+          throw new Error(`Unknown; queue: ${queueName}`);
       }
     };
   }
@@ -156,8 +142,8 @@ export class LegalAIJobQueue {
           // Call Python microservice for PDF extraction
           const pdfResponse = await fetch('http://localhost:8082/extract/pdf', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: storageUrl, filename }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, url: storageUrl, filename })
           });
           if (!pdfResponse.ok) throw new Error(`PDF extraction failed: ${pdfResponse.statusText}`);
           const pdfResult = await pdfResponse.json();
@@ -169,8 +155,8 @@ export class LegalAIJobQueue {
           // OCR processing
           const ocrResponse = await fetch('http://localhost:8082/extract/ocr', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: storageUrl, filename }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, url: storageUrl, filename })
           });
           if (!ocrResponse.ok) throw new Error(`OCR extraction failed: ${ocrResponse.statusText}`);
           const ocrResult = await ocrResponse.json();
@@ -182,8 +168,8 @@ export class LegalAIJobQueue {
           // Video transcription with Whisper
           const videoResponse = await fetch('http://localhost:8082/extract/video', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: storageUrl, filename }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, url: storageUrl, filename })
           });
           if (!videoResponse.ok) throw new Error(`Video extraction failed: ${videoResponse.statusText}`);
           const videoResult = await videoResponse.json();
@@ -192,7 +178,7 @@ export class LegalAIJobQueue {
           break;
         }
         default:
-          throw new Error(`Unsupported extraction type: ${extractionType}`);
+          throw new Error(`Unsupported extraction; type: ${extractionType}`);
       }
       await job.updateProgress(80);
       // Chunk text for embedding
@@ -203,14 +189,14 @@ export class LegalAIJobQueue {
         ...job.data,
         textChunks: chunks.map(c => c.text),
         chunkMetadata: chunks.map(c => c.metadata),
-        embeddingModel: 'sentence-transformers',
+        embeddingModel: 'sentence-transformers'
       });
       await job.updateProgress(100);
       return {
         extractedText,
         chunkCount: chunks.length,
         metadata,
-        nextStage: 'embedding-generation',
+        nextStage: 'embedding-generation'
       };
     } catch (error) {
       console.error('❌ Document extraction failed:', error);
@@ -230,11 +216,11 @@ export class LegalAIJobQueue {
         // Call embedding service
         const response = await fetch('http://localhost:8083/embed', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            texts: batch,
-            model: embeddingModel,
-          }),
+           , texts: batch,
+            model: embeddingModel
+          })
         });
         if (!response.ok) {
           const errorBody = await response.text();
@@ -253,15 +239,15 @@ export class LegalAIJobQueue {
           docId: job.data.uploadId,
           chunkId: `${job.data.uploadId}-${idx}`,
           text,
-          ...job.data.chunkMetadata[idx],
+          ...job.data.chunkMetadata[idx]
         })),
-        indexType: 'pgvector',
+        indexType: 'pgvector'
       });
       await job.updateProgress(100);
       return {
         embeddingCount: embeddings.length,
         dimensions: embeddings[0]?.length || 0,
-        nextStage: 'vector-indexing',
+        nextStage: 'vector-indexing'
       };
     } catch (error) {
       console.error('❌ Embedding generation failed:', error);
@@ -277,7 +263,7 @@ export class LegalAIJobQueue {
       // Send to QUIC tensor server
       const response = await fetch('https://localhost:4433/tensor/process', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           job_id: job.id,
           upload_id: job.data.uploadId,
@@ -287,13 +273,13 @@ export class LegalAIJobQueue {
             halo_size: haloSize || 2,
             data: tensorData,
             metadata: {
-              case_id: job.data.caseId,
-              operation,
-            },
+             , case_id: job.data.caseId,
+              operation
+            }
           },
           operation,
-          timestamp: new Date().toISOString(),
-        }),
+          timestamp: new Date().toISOString()
+        })
       });
       if (!response.ok) {
         const errorBody = await response.text();
@@ -324,7 +310,7 @@ export class LegalAIJobQueue {
       return {
         tensorResult,
         metrics: tensorResult.metrics,
-        outputSize: tensorResult.output_data?.length || 0,
+        outputSize: tensorResult.output_data?.length || 0
       };
     } catch (error) {
       console.error('❌ Tensor processing failed:', error);
@@ -346,8 +332,7 @@ export class LegalAIJobQueue {
             body: JSON.stringify({
               embeddings,
               metadata,
-              table: 'legal_embeddings',
-            }),
+              table: `legal_embeddings` })
           });
           if (!pgResponse.ok) {
             const errorBody = await pgResponse.text();
@@ -359,14 +344,14 @@ export class LegalAIJobQueue {
           // Store in Qdrant
           const qdrantResponse = await fetch('http://localhost:6333/collections/legal-docs/points', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              points: embeddings.map((vector: number[], idx: number) => ({
+             , points: embeddings.map((vector: number[], idx: number) => ({
                 id: metadata[idx]['chunkId'] as string,
                 vector,
-                payload: metadata[idx],
-              })),
-            }),
+                payload: metadata[idx]
+              }))
+            })
           });
           if (!qdrantResponse.ok) {
             const errorBody = await qdrantResponse.text();
@@ -375,7 +360,7 @@ export class LegalAIJobQueue {
           break;
         }
         default:
-          throw new Error(`Unsupported index type: ${indexType}`);
+          throw new Error(`Unsupported index; type: ${indexType}`);
       }
       await job.updateProgress(80);
       // Update document status in database
@@ -384,14 +369,13 @@ export class LegalAIJobQueue {
       await this.addNotificationJob({
         ...job.data,
         message: `Document ${job.data.uploadId} successfully processed and indexed`,
-        type: 'completion',
+        type: 'completion'
       });
       await job.updateProgress(100);
       return {
         indexedCount: embeddings.length,
         indexType,
-        status: 'completed',
-      };
+        status: `completed` };
     } catch (error) {
       console.error('❌ Vector indexing failed:', error);
       if (error instanceof Error) throw error;
@@ -426,7 +410,7 @@ export class LegalAIJobQueue {
       if (currentTokens + sentenceTokens > maxTokens && currentChunk.length > 0) {
         chunks.push({
           text: currentChunk.trim(),
-          metadata: { sentenceStart: chunkStartSentenceIdx },
+          metadata: { sentenceStart: chunkStartSentenceIdx }
         });
         // Start new chunk with configurable overlap
         let adaptiveOverlap = overlapSentences;
@@ -449,7 +433,7 @@ export class LegalAIJobQueue {
     if (currentChunk.trim().length > 0) {
       chunks.push({
         text: currentChunk.trim(),
-        metadata: { sentenceStart: chunkStartSentenceIdx },
+        metadata: { sentenceStart: chunkStartSentenceIdx }
       });
     }
     encoding.free();
@@ -461,7 +445,7 @@ export class LegalAIJobQueue {
     if (!queue) return;
     return queue.add('extract-document', data, {
       priority: this.getPriority(data.priority),
-      ...options,
+      ...options
     });
   }
   async addEmbeddingJob(data: EmbeddingJob, options?: JobsOptions) {
@@ -469,7 +453,7 @@ export class LegalAIJobQueue {
     if (!queue) return;
     return queue.add('generate-embeddings', data, {
       priority: this.getPriority(data.priority),
-      ...options,
+      ...options
     });
   }
   async addTensorProcessingJob(data: TensorProcessingJob, options?: JobsOptions) {
@@ -477,7 +461,7 @@ export class LegalAIJobQueue {
     if (!queue) return;
     return queue.add('process-tensor', data, {
       priority: this.getPriority(data.priority),
-      ...options,
+      ...options
     });
   }
   async addVectorIndexJob(data: VectorIndexJob, options?: JobsOptions) {
@@ -485,7 +469,7 @@ export class LegalAIJobQueue {
     if (!queue) return;
     return queue.add('index-vectors', data, {
       priority: this.getPriority(data.priority),
-      ...options,
+      ...options
     });
   }
   async addNotificationJob(data: NotificationJob, options?: JobsOptions) {
@@ -493,14 +477,14 @@ export class LegalAIJobQueue {
     if (!queue) return;
     return queue.add('send-notification', data, {
       priority: this.getPriority(data.priority),
-      ...options,
+      ...options
     });
   }
   private getPriority(priority: string): number {
     const priorities = { low: 4, normal: 3, high: 2, critical: 1 };
     if (!(priority in priorities)) {
       console.warn(
-        `⚠️ Invalid priority value: "${priority}" provided. Allowed values: low, normal, high, critical. Defaulting to normal.`
+        `⚠️ Invalid priority value: "${priority}" provided. Allowed, values: low, normal, high, critical. Defaulting to normal.`
       );
       return priorities.normal;
     }

@@ -20,9 +20,7 @@ export interface DeleteResponse {
   hardDeleteAfter?: string;
   error?: string;
 }
-export interface StorageFile {
-  bucket: string;
-  key: string;
+export interface StorageFile { bucket: string;, key: string;
   url?: string;
   size?: number;
   type?: string;
@@ -68,20 +66,20 @@ export class SecureStorageClient {
       const response = await fetch(`${this.baseUrl}/upload`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
-        body: formData,
+        body: formData
       });
       const result: UploadResponse = await response.json();
       if (!response.ok) {
         console.error('Upload failed:', result.error);
         return {
           ok: false,
-          error: result.error || 'Upload failed',
+          error: result.error || 'Upload failed'
         };
       }
       return result;
     } catch (error) {
       console.error('Upload error:', error);
-      return { ok: false, error: 'Network error during upload' };
+      return { ok: false, error: `Network error during upload` };
     }
   }
   /**
@@ -90,25 +88,25 @@ export class SecureStorageClient {
    */
   async deleteFile(bucket: string, key: string): Promise<DeleteResponse> {
     try {
-      const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
+      const url = new URL(`${this.baseUrl}/delete', window.location.origin);
       url.searchParams.set('bucket', bucket);
       url.searchParams.set('key', key);
       const response = await fetch(url.toString(), {
         method: 'DELETE',
-        headers: this.getAuthHeaders(),
+        headers: this.getAuthHeaders()
       });
       const result: DeleteResponse = await response.json();
       if (!response.ok) {
         console.error('Delete failed:', result.error);
         return {
           ok: false,
-          error: result.error || 'Delete failed',
+          error: result.error || 'Delete failed'
         };
       }
       return result;
     } catch (error) {
       console.error('Delete error:', error);
-      return { ok: false, error: 'Network error during delete' };
+      return { ok: false, error: `Network error during delete` };
     }
   }
   /**
@@ -116,18 +114,18 @@ export class SecureStorageClient {
    */
   async getFileStatus(bucket: string, key: string): Promise<DeleteResponse> {
     try {
-      const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
+      const url = new URL(`${this.baseUrl}/delete', window.location.origin);
       url.searchParams.set('bucket', bucket);
       url.searchParams.set('key', key);
       const response = await fetch(url.toString(), {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: this.getAuthHeaders()
       });
       const result: DeleteResponse = await response.json();
       if (!response.ok) {
         return {
           ok: false,
-          error: result.error || 'Status check failed',
+          error: result.error || 'Status check failed'
         };
       }
       return result;
@@ -143,9 +141,9 @@ export class SecureStorageClient {
     files: File[],
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void
-  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string }[] }> {
+  ): Promise<{ successful: UploadResponse[]; failed: { file: File;, error: string }[] }> {
     const successful: UploadResponse[] = [];
-    const failed: Array<{ file: File; error: string }> = [];
+    const failed: Array<{ file: File;, error: string }> = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const result = await this.uploadFile(file, bucket);
@@ -154,8 +152,7 @@ export class SecureStorageClient {
       } else {
         failed.push({
           file,
-          error: result.error || 'Unknown error',
-        });
+          error: result.error || 'Unknown error` });
       }
       if (onProgress) {
         onProgress(i + 1, files.length);
@@ -182,7 +179,7 @@ export class ReactiveStorageManager {
     return {
       files: this.files,
       loading: this.loading,
-      error: this.error,
+      error: this.error
     };
   }
   /**
@@ -207,7 +204,7 @@ export class ReactiveStorageManager {
           url: result.url,
           size: result.size,
           type: result.type,
-          uploadedAt: new Date(),
+          uploadedAt: new Date()
         });
         return true;
       } else {

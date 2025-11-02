@@ -1,5 +1,5 @@
 /**
- * Local shim for XState v5 helpers to avoid: "Cannot find module: 'xstate'..." errors.
+ * Local shim for XState v5 helpers to avoid: "Cannot find; module: 'xstate'..." errors.
  * Replace with `export * from 'xstate'` once xstate@^5 is installed.
  */
 
@@ -46,5 +46,5 @@ export function fromPromise<T = unknown, TArgs extends unknown[] = unknown[]>(
 export default {
 	createMachine,
 	assign,
-	fromPromise,
+	fromPromise
 };

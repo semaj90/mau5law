@@ -52,7 +52,7 @@ type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
   close: () => Promise<void>;
-  on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void;
+  on: (event: 'error' | 'close' | string; cb: (...args: any[]) => void) => void;
 };
 
 // Define the AmqplibModule interface for dynamic import typing
@@ -66,9 +66,9 @@ interface AmqplibModule {
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
   assertExchange: (name: string, type: string, opts?: Record<string, unknown>) => Promise<void>;
-  publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean;
+  publish: (exchange: string, routingKey: string; content: Uint8Array | ArrayBuffer | Buffer) => boolean;
   close: () => Promise<void>;
-  assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
+  assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number;, consumerCount: number }>;
   bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
   consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void, options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
   cancel: (consumerTag: string) => Promise<void>;
@@ -78,11 +78,7 @@ type Channel = {
 };
 
 // Define a minimal ConsumeMessage type based on amqplib's ConsumeMessage interface
-type ConsumeMessage = {
-  content: Buffer;
-  fields: {
-    deliveryTag: number;
-    redelivered: boolean;
+type ConsumeMessage = { content: Buffer;, fields: { deliveryTag: number;, redelivered: boolean;
     exchange: string;
     routingKey: string;
   };
@@ -105,16 +101,12 @@ type ConsumeMessage = {
 };
 
 // --- Simplified/cleaned types (kept for compatibility) ---
-export interface ConversationEntry {
-  id: string;
-  type: 'user' | 'assistant' | 'system';
+export interface ConversationEntry { id: string;, type: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   metadata?: Record<string, unknown>;
 }
-export interface DocumentType {
-  id: string;
-  title: string;
+export interface DocumentType { id: string;, title: string;
   filename: string;
   fileSize: number;
   extractedText: string;
@@ -159,9 +151,9 @@ type LegalSearchFilters = Record<string, string | number | boolean>;
 
 /** Payload for setting the context of a legal case. */
 interface CaseContextPayload {
-  documents?: Array<{ id: string; title: string }>;
+  documents?: Array<{ id: string;, title: string }>;
   keyFacts?: string[];
-  timeline?: Array<{ date: string; event: string }>;
+  timeline?: Array<{ date: string;, event: string }>;
 }
 
 /** Options for analysis using the Context7 service. */
@@ -178,73 +170,63 @@ interface BenchmarkOptions {
 }
 
 /** Configuration for scaling microservices. */
-interface ServiceScaleConfig {
-  serviceName: string;
-  replicas: number;
+interface ServiceScaleConfig { serviceName: string;, replicas: number;
   cpuLimit?: string;
   memoryLimit?: string;
 }
 
 /** A reference to a document for batch processing. */
-interface DocumentReference {
-  id: string;
-  source: 'minio' | 'local';
+interface DocumentReference { id: string;, source: 'minio' | 'local';
 }
 
 /** Configuration for training a custom AI model. */
-interface ModelTrainingConfig {
-  modelName: string;
-  baseModel: string;
+interface ModelTrainingConfig { modelName: string;, baseModel: string;
   datasetId: string;
   epochs: number;
   learningRate: number;
 }
 
 /** Defines a workflow to be executed. */
-interface WorkflowPayload {
-  workflowId: string;
-  parameters: Record<string, unknown>;
+interface WorkflowPayload { workflowId: string;, parameters: Record<string, unknown>;
 }
 
 /** Represents a user in a collaboration session. */
-interface Collaborator {
-  userId: string;
-  name: string;
+interface Collaborator { userId: string;, name: string;
   role: 'attorney' | 'paralegal' | 'viewer';
 }
 
 // Strongly typed events for the AI Assistant machine
 type AIAssistantEvent =
-  | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean; caseId?: string }
-  | { type: 'UPLOAD_DOCUMENT'; file: File; caseId?: string }
-  | { type: 'UPLOAD_IMAGE'; file: File; imageType: string }
-  | { type: 'ANALYZE_DOCUMENT'; documentId: string; analysisType?: string }
+  | { type: 'SEND_MESSAGE';, message: string; useContext7?: boolean; caseId?: string }
+  | { type: 'UPLOAD_DOCUMENT';, file: File; caseId?: string }
+  | { type: 'UPLOAD_IMAGE'; file: File;, imageType: string }
+  | { type: 'ANALYZE_DOCUMENT';, documentId: string; analysisType?: string }
   | { type: 'CLEAR_CONVERSATION' }
   | { type: 'RETRY_LAST' }
-  | { type: 'SET_MODEL'; model: string }
-  | { type: 'SET_TEMPERATURE'; temperature: number }
+  | { type: 'SET_MODEL';, model: string }
+  | { type: 'SET_TEMPERATURE';, temperature: number }
   | { type: 'CHECK_SERVICE_HEALTH' }
   | { type: 'STOP_GENERATION' }
-  | { type: 'STREAM_CHUNK'; chunk: string }
+  | { type: 'STREAM_CHUNK';, chunk: string }
   | { type: 'STREAM_END'; summary?: string }
-  | { type: 'PERFORM_OCR'; imageId: string }
-  | { type: 'SEARCH_SEMANTIC'; query: string; context?: SemanticSearchContext }
-  | { type: 'SEARCH_VECTOR'; query: string; options?: VectorSearchOptions }
-  | { type: 'SEARCH_LEGAL'; query: string; filters?: LegalSearchFilters }
-  | { type: 'SET_PROTOCOL'; protocol: string }
-  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: CaseContextPayload }
-  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: Context7Options }
+  | { type: 'PERFORM_OCR';, imageId: string }
+  | { type: 'SEARCH_SEMANTIC';, query: string; context?: SemanticSearchContext }
+  | { type: 'SEARCH_VECTOR';, query: string; options?: VectorSearchOptions }
+  | { type: 'SEARCH_LEGAL';, query: string; filters?: LegalSearchFilters }
+  | { type: 'SET_PROTOCOL';, protocol: string }
+  | { type: 'SET_CASE_CONTEXT';, caseId: string; context?: CaseContextPayload }
+  | { type: 'ANALYZE_WITH_CONTEXT7';, query: string; options?: Context7Options }
   | { type: 'CONNECT_RABBITMQ'; config?: { url?: string } }
   | { type: 'DISCONNECT_RABBITMQ' }
   | { type: 'BENCHMARK_PERFORMANCE'; options?: BenchmarkOptions }
   | { type: 'OPTIMIZE_RESOURCES' }
   | { type: 'SCALE_SERVICES'; scaleConfig?: ServiceScaleConfig }
   | { type: 'MEMORY_CLEANUP' }
-  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: DocumentReference[] }
+  | { type: 'BATCH_ANALYZE_DOCUMENTS';, documents: DocumentReference[] }
   | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: ModelTrainingConfig }
   | { type: 'EXECUTE_WORKFLOW'; workflow?: WorkflowPayload }
-  | { type: 'COLLABORATION_USER_JOINED'; user: Collaborator }
-  | { type: 'COLLABORATION_USER_LEFT'; user: Collaborator }
+  | { type: 'COLLABORATION_USER_JOINED';, user: Collaborator }
+  | { type: 'COLLABORATION_USER_LEFT';, user: Collaborator }
   | { type: 'CACHE_CLEAR' }
   | { type: 'PERFORMANCE_RESET' }
   | { type: 'ERROR_RECOVER'; errorId?: string };
@@ -338,7 +320,7 @@ class MemoryManager {
     try {
       const perf = typeof performance !== 'undefined' ? performance : undefined;
       if (perf && 'memory' in perf) {
-        const memoryInfo = (perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+        const memoryInfo = (perf as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } }).memory;
         if (memoryInfo) {
           return memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit;
         }
@@ -359,9 +341,9 @@ class MemoryManager {
 }
 
 // --- Minimal worker pool (uses blobs safely) ---
-type Task = { type: 'processDocument'; data: { content: string } } | { type: string; data?: Record<string, unknown> };
+type Task = { type: 'processDocument'; data: {;, content: string } } | { type: string; data?: Record<string, unknown> };
 
-type TaskResult = { ok: true; result: any } | { ok: false; error: string };
+type TaskResult = { ok: true;, result: any } | { ok: false;, error: string };
 
 class $WebWorkerPool {
   private _workers: Worker[] = [];
@@ -383,7 +365,7 @@ class $WebWorkerPool {
           // basic simulation of task execution
           if (task.type === 'processDocument') {
             const text = task.data?.content || '';
-            self.postMessage({ ok: true, result: { wordCount: text.split(/\\s+/).filter(Boolean).length }});
+            self.postMessage({ ok: true, result: {, wordCount: text.split(/\\s+/).filter(Boolean).length }});
           } else {
             self.postMessage({ ok: true, result: null });
           }
@@ -392,7 +374,7 @@ class $WebWorkerPool {
         }
       }
     `;
-    const blob = new Blob([code], { type: 'application/javascript' });
+    const blob = new Blob([code], { type: `application/javascript` });
     const worker = new Worker(URL.createObjectURL(blob));
     return new Promise<TaskResult>((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -522,9 +504,9 @@ class RabbitMQService {
     for (const entry of Array.from(this.channels.values())) {
       try {
         if (entry.consumerTag && entry.channel?.cancel) {
-          await entry.channel.cancel(entry.consumerTag).catch((e: any) => console.warn('[RabbitMQ] Error cancelling consumer:', e)); // Added error logging
+          await entry.channel.cancel(entry.consumerTag).catch((e: any) => console.warn('[RabbitMQ] Error cancelling; consumer:', e)); // Added error logging
         }
-        await entry.channel?.close?.().catch((e: any) => console.warn('[RabbitMQ] Error closing channel:', e)); // Added error logging
+        await entry.channel?.close?.().catch((e: any) => console.warn('[RabbitMQ] Error closing; channel:', e)); // Added error logging
       } catch (e) {
         console.warn('[RabbitMQ] Error during channel disconnect cleanup:', e); // Added error logging
       }
@@ -780,15 +762,13 @@ class RabbitMQService {
 const rabbitmqService = new RabbitMQService();
 
 // --- Simplified machine that is syntactically correct and provides the same export name ---
-export const aiAssistantMachine = createMachine({
-  types: {
-    context: {} as AIAssistantContext,
-    events: {} as AIAssistantEvent,
+export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAssistantContext,
+    events: {} as AIAssistantEvent
   },
   id: 'enhancedAiAssistant',
   initial: 'initializing',
   context: {
-    currentQuery: '',
+   , currentQuery: '',
     response: '',
     conversationHistory: [],
     sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -802,16 +782,12 @@ export const aiAssistantMachine = createMachine({
     rabbitmqConnected: false,
     gpuProcessingEnabled: false,
     currentDocuments: [],
-    error: null,
+    error: null
   },
-  states: {
-    initializing: {
-      invoke: {
+  states: { initializing: {, invoke: {
         id: 'init',
         src: fromPromise(
-          async (): Promise<{
-            gpuReady: boolean;
-            cacheStats: ReturnType<MultiLayerCache['getCacheStats']>;
+          async (): Promise<{ gpuReady: boolean;, cacheStats: ReturnType<MultiLayerCache['getCacheStats']>;
             memoryUsage: number;
           }> => {
             // Initialize core pieces (best-effort)
@@ -823,43 +799,37 @@ export const aiAssistantMachine = createMachine({
             return {
               gpuReady,
               cacheStats: cache.getCacheStats(),
-              memoryUsage: mem.getMemoryUsage(),
+              memoryUsage: mem.getMemoryUsage()
             };
           }
         ),
         onDone: {
           target: 'idle',
           actions: assign<AIAssistantContext, { output?: { gpuReady?: boolean } }>((_ctx, event) => ({
-            gpuProcessingEnabled: Boolean(event.output?.gpuReady),
-          })),
+            gpuProcessingEnabled: Boolean(event.output?.gpuReady)
+          }))
         },
         onError: {
           target: 'idle',
-          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
-            error: { message: String(event.error) },
-          })),
-        },
-      },
+          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({ error: {, message: String(event.error) }
+          }))
+        }
+      }
     },
-    idle: {
-      on: {
-        SEND_MESSAGE: {
+    idle: { on: {, SEND_MESSAGE: {
           target: 'processing',
           actions: assign<AIAssistantContext, { message: string }>((_ctx, event) => ({
             currentQuery: event.message,
-            isProcessing: true,
-          })),
+            isProcessing: true
+          }))
         },
-        CLEAR_CONVERSATION: {
-          actions: assign(() => ({ conversationHistory: [] })),
-        },
-      },
+        CLEAR_CONVERSATION: { actions: assign(() => ({, conversationHistory: [] }))
+        }
+      }
     },
-    processing: {
-      invoke: {
-        id: 'processQuery',
+    processing: { invoke: {, id: 'processQuery',
         input: ({ context }) => ({ currentQuery: context.currentQuery }),
-        src: fromPromise(async ({ input }: { input: { currentQuery: string } }): Promise<ProcessQueryOutput> => {
+        src: fromPromise(async ({ input }: { input: {, currentQuery: string } }): Promise<ProcessQueryOutput> => {
           // simple echo behavior for now; replace with real implementation later
           await new Promise(r => setTimeout(r, 10));
           return { response: `Echo: ${input.currentQuery}` };
@@ -872,32 +842,29 @@ export const aiAssistantMachine = createMachine({
               id: `assistant_${Date.now()}`,
               type: 'assistant',
               content: resp,
-              timestamp: new Date(),
+              timestamp: new Date()
             };
             return {
               response: resp,
               conversationHistory: [...context.conversationHistory, newEntry],
               isProcessing: false,
-              currentQuery: '',
-            };
-          }),
+              currentQuery: `` };
+          })
         },
         onError: {
           target: 'error',
-          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
-            error: { message: String(event.error) },
-            isProcessing: false,
-          })),
-        },
-      },
+          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({ error: {, message: String(event.error) },
+            isProcessing: false
+          }))
+        }
+      }
     },
     error: {
       entry: 'logError',
-      on: {
-        ERROR_RECOVER: { target: 'idle', actions: assign(() => ({ error: null })) },
-      },
-    },
-  },
+      on: { ERROR_RECOVER: {, target: 'idle', actions: assign(() => ({ error: null })) }
+      }
+    }
+  }
 });
 
 /**
@@ -915,9 +882,7 @@ export const aiAssistantMachine = createMachine({
  * actor.start();
  * ```
  */
-export const aiAssistantProvider = {
-  actions: {
-    clearError: assign(() => ({ error: null })),
+export const aiAssistantProvider = { actions: {, clearError: assign(() => ({ error: null })),
     logError: (ctx: AIAssistantContext) => {
       if (ctx.error) {
         console.error('[aiAssistant] error', ctx.error);
@@ -929,11 +894,11 @@ export const aiAssistantProvider = {
           console.debug('[aiAssistant] RabbitMQ publish failed', logError);
         }
       }
-    },
+    }
   },
   actors: {},
   delays: {},
-  guards: {},
+  guards: {}
 };
 
 export default aiAssistantMachine;

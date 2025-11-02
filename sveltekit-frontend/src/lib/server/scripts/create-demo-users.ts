@@ -16,7 +16,7 @@ export async function createDemoUsers(): Promise<any> {
       password: 'Admin@123456',
       firstName: 'Demo',
       lastName: 'Admin',
-      displayName: 'Admin User',
+      displayName: 'Admin User'
     });
     console.log('✅ Admin created: admin@example.com / Admin@123456');
     // Demo regular user
@@ -25,7 +25,7 @@ export async function createDemoUsers(): Promise<any> {
       password: 'User@123456',
       firstName: 'Demo',
       lastName: 'User',
-      displayName: 'Regular User',
+      displayName: 'Regular User'
     });
     console.log('✅ User created: user@example.com / User@123456');
     console.log('✨ Demo users ready for testing!');

@@ -11,9 +11,7 @@
 import { browser } from '$app/environment';
 
 // Service availability tracking
-interface ServiceStatus {
-  ollama: boolean;
-  embedding: boolean;
+interface ServiceStatus { ollama: boolean;, embedding: boolean;
   qdrant: boolean;
   rag: boolean;
   lastCheck: number;
@@ -25,7 +23,7 @@ const CACHE_KEYS = {
   EMBEDDINGS_CACHE: 'legal-ai:embeddings-cache',
   ANALYSIS_CACHE: 'legal-ai:analysis-cache',
   SEARCH_CACHE: 'legal-ai:search-cache',
-  OFFLINE_QUEUE: 'legal-ai:offline-queue',
+  OFFLINE_QUEUE: 'legal-ai:offline-queue'
 } as const;
 
 // Cache TTL (time to live)
@@ -65,7 +63,7 @@ class StorageManager {
       const item = {
         value,
         timestamp: Date.now(),
-        ttl: ttl || null,
+        ttl: ttl || null
       };
 
       if (this.isAvailable) {
@@ -118,7 +116,7 @@ class StorageManager {
         delete (window as any).__memoryStorage?.[key];
       }
     } catch (error) {
-      console.error(`[StorageManager] Failed to remove ${key}:`, error);
+      console.error(`[StorageManager] Failed to remove ${key}: ', error);
     }
   }
 
@@ -164,7 +162,7 @@ export class AIPs {
       embedding: false,
       qdrant: false,
       rag: false,
-      lastCheck: Date.now(),
+      lastCheck: Date.now()
     };
 
     try {
@@ -192,7 +190,7 @@ export class AIPs {
   /**
    * Generate embeddings with fallback
    */
-  async generateEmbedding(text: string): Promise<{ embedding: number[] | null; cached: boolean }> {
+  async generateEmbedding(text: string): Promise<{ embedding: number[] | null;, cached: boolean }> {
     // Check cache first
     const cacheKey = `${CACHE_KEYS.EMBEDDINGS_CACHE}:${this.hashText(text)}`;
     const cached = this.storage.get<number[]>(cacheKey);
@@ -241,7 +239,7 @@ export class AIPs {
   async analyzeDocument(
     content: string,
     documentType: string = 'unknown'
-  ): Promise<{ analysis: any | null; cached: boolean }> {
+  ): Promise<{ analysis: any | null;, cached: boolean }> {
     // Check cache
     const cacheKey = `${CACHE_KEYS.ANALYSIS_CACHE}:${this.hashText(content)}`;
     const cached = this.storage.get<any>(cacheKey);
@@ -257,7 +255,7 @@ export class AIPs {
       console.warn('[AIPipelineClient] Analysis service unavailable');
       return {
         analysis: this.getFallbackAnalysis(content, documentType),
-        cached: false,
+        cached: false
       };
     }
 
@@ -286,7 +284,7 @@ export class AIPs {
 
     return {
       analysis: this.getFallbackAnalysis(content, documentType),
-      cached: false,
+      cached: false
     };
   }
 
@@ -296,8 +294,8 @@ export class AIPs {
   async semanticSearch(
     query: string,
     options: { limit?: number; caseId?: string } = {}
-  ): Promise<{ results: any[]; cached: boolean }> {
-    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all'}`;
+  ): Promise<{ results: any[];, cached: boolean }> {
+    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all' }`;
     const cached = this.storage.get<any[]>(cacheKey);
 
     if (cached) {
@@ -341,10 +339,8 @@ export class AIPs {
   /**
    * Queue operation for retry when offline
    */
-  queueOfflineOperation(operation: {
-    type: 'upload' | 'analyze' | 'search';
-    data: any;
-    timestamp: number;
+  queueOfflineOperation(operation: { type: 'upload' | 'analyze' | 'search';, data: any;
+   , timestamp: number;
   }): void {
     const queue = this.storage.get<any[]>(CACHE_KEYS.OFFLINE_QUEUE) || [];
     queue.push(operation);
@@ -433,7 +429,7 @@ export class AIPs {
       keywords: keywords.length > 0 ? keywords : ['document', documentType],
       confidenceLevel: 0.3, // Low confidence for fallback
       recommendations: ['Retry analysis when services are available'],
-      offline: true,
+      offline: true
     };
   }
 }
@@ -449,5 +445,5 @@ export async function checkAIServices(): Promise<ServiceStatus> {
 // Export cache utilities
 export const cacheUtils = {
   clear: () => aiPipelineClient.clearCache(),
-  processQueue: () => aiPipelineClient.processOfflineQueue(),
+  processQueue: () => aiPipelineClient.processOfflineQueue()
 };

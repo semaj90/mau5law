@@ -525,7 +525,7 @@ import type { Document } from '$lib/types';
     <button
       type="button"
       class="absolute inset-0 bg-black bg-opacity-50"
-      transition:fade={{ duration: 200 }}
+      transitionfade={{ duration: 200 }}
       onclick={() => (showJobDialog = false)}
       aria-label="Close dialog"
     ></button>
@@ -533,7 +533,7 @@ import type { Document } from '$lib/types';
     <!-- Modal content -->
     <div
       class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full p-6"
-      transition:fly={{ y: 10, duration: 200 }}
+      transitionfly={{ y: 10, duration: 200 }}
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-semibold text-gray-900">New Processing Job</h3>

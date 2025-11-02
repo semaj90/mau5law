@@ -19,8 +19,7 @@ const QUEUE_NAMES = {
   RAG_PROCESSING: 'rag.processing',
   EMAIL_NOTIFICATIONS: 'email.notifications',
   SEARCH_INDEXING: 'search.indexing',
-  CASE_UPDATES: 'case.updates',
-} as const;
+  CASE_UPDATES: 'case.updates` } as const;
 
 export interface ServiceWorkerConfig {
   enableLogging?: boolean;
@@ -54,7 +53,7 @@ type RabbitMQServiceLike = {
     cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   on?: (event: string, cb: (...args: any[]) => void) => void;
-  publish?: (exchange: string, routingKey: string, payload: any) => Promise<unknown> | unknown;
+  publish?: (exchange: string, routingKey: string; payload: any) => Promise<unknown> | unknown;
   healthCheck?: () => Promise<unknown>;
 };
 
@@ -67,7 +66,7 @@ export class RabbitMQServiceWorker {
     messagesProcessed: 0,
     errors: 0,
     startTime: Date.now(),
-    avgProcessingTime: 0,
+    avgProcessingTime: 0
   };
 
   constructor(config: ServiceWorkerConfig = {}) {
@@ -75,7 +74,7 @@ export class RabbitMQServiceWorker {
       enableLogging: config.enableLogging ?? true,
       maxRetries: config.maxRetries ?? 3,
       processingTimeout: config.processingTimeout ?? 30000,
-      enableN64Logging: config.enableN64Logging ?? false,
+      enableN64Logging: config.enableN64Logging ?? false
     };
   }
 
@@ -246,7 +245,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue(QUEUE_NAMES.VECTOR_EMBEDDING, {
         ...msg,
         stage: 'embedding_ready',
-        processedAt: Date.now(),
+        processedAt: Date.now()
       });
     });
 
@@ -264,7 +263,7 @@ export class RabbitMQServiceWorker {
           fileName: getString(msg, 'fileName'),
           stage: 'analysis_ready',
           cudaAccelerated: getBoolean(msg, 'cudaAccelerated'),
-          priority,
+          priority
         });
       }
     });
@@ -277,8 +276,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue(QUEUE_NAMES.SEARCH_INDEXING, {
         ...msg,
         embeddings: 'generated',
-        stage: 'indexing_ready',
-      });
+        stage: 'indexing_ready` });
     });
 
     // Evidence analysis handler
@@ -293,8 +291,7 @@ export class RabbitMQServiceWorker {
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
-          summary: 'Legal document analysis completed',
-        },
+          summary: 'Legal document analysis completed` }
       });
     });
 
@@ -334,17 +331,15 @@ export class RabbitMQServiceWorker {
     this.processingStats.avgProcessingTime = (currentAvg * (messageCount - 1) + processingTime) / messageCount;
   }
 
-  getStats(): typeof this.processingStats & { uptime: number; isRunning: boolean } {
+  getStats(): typeof this.processingStats & { uptime: number;, isRunning: boolean } {
     return {
       ...this.processingStats,
       uptime: Date.now() - this.processingStats.startTime,
-      isRunning: this.isRunning,
+      isRunning: this.isRunning
     };
   }
 
-  async healthCheck(): Promise<{
-    status: 'healthy' | 'unhealthy';
-    stats: (typeof RabbitMQServiceWorker.prototype)['processingStats'] & { uptime: number; isRunning: boolean };
+  async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy';, stats: (typeof RabbitMQServiceWorker.prototype)['processingStats'] & { uptime: number;, isRunning: boolean };
     rabbitmq: RabbitMQHealth;
   }> {
     // Call healthCheck() if present, then normalize result safely to RabbitMQHealth
@@ -370,14 +365,14 @@ export class RabbitMQServiceWorker {
 
     const rabbitmqHealth: RabbitMQHealth = {
       status: (inferredStatus as RabbitMQHealth['status']) ?? 'unhealthy',
-      details: partial && typeof partial === 'object' ? { ...partial } : undefined,
+      details: partial && typeof partial === 'object' ? { ...partial } : undefined
     };
 
     const stats = this.getStats();
     return {
       status: this.isRunning && rabbitmqHealth?.status === 'healthy' ? 'healthy' : 'unhealthy',
       stats,
-      rabbitmq: rabbitmqHealth,
+      rabbitmq: rabbitmqHealth
     };
   }
 
@@ -386,8 +381,7 @@ export class RabbitMQServiceWorker {
       const publishResult = await rabbitmqService.publish('workers', queueName, {
         ...message,
         publishedAt: Date.now(),
-        workerVersion: '1.0.0',
-      });
+        workerVersion: '1.0.0` });
       const publishedOk = Boolean(publishResult);
       if (!publishedOk) {
         this.log(`Failed to publish message to ${queueName}`, 'error');

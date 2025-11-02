@@ -6,9 +6,7 @@ const STORAGE_PREFIX = 'legal-ai-files:';
 const STORAGE_INDEX = 'legal-ai-files:index';
 const MAX_STORAGE_SIZE = 5 * 1024 * 1024; // 5MB limit for localStorage
 }
-export interface FileRecord {
-  id: string;
-  fileName: string;
+export interface FileRecord { id: string;, fileName: string;
   size: number;
   type: string;
   data: string; // base64 encoded
@@ -18,9 +16,7 @@ export interface FileRecord {
   uploadedAt: string;
 }
 }
-export interface StorageStats {
-  used: number;
-  available: number;
+export interface StorageStats { used: number;, available: number;
   percentage: number;
   fileCount: number;
 }
@@ -130,7 +126,7 @@ class LocalStorageFiles {
   private getFileIndex(),: { [ke,y: strin,g]: any } {
     try {
       const indexData = localStorage.getItem(STORAGE_INDEX);
-      return indexData ? JSON.parse(indexData) : { [key,: strin,g]: any },
+      return indexData ? JSON.parse(indexData) : { [key,: strin,g]: any }
     } catch (error) {
       console.error('Failed to get file index:', error);
       return {}
@@ -194,7 +190,7 @@ class LocalStorageFiles {
   /**
    * Import files from JSON (for restore)
    */
-  importFiles(jsonData,: string): { success: number; failed: number } {
+  importFiles(jsonData,: string): { success: number;, failed: number } {
     let success = 0;
     let failed = 0;
     try {

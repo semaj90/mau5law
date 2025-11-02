@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -87,7 +87,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
     redisTTL: ttl,
     memory: memoryStats(),
     summary: includeSummary ? entry.summary : undefined,
-    structuredPayload: includeSummary ? entry.structured : undefined,
+    structuredPayload: includeSummary ? entry.structured : undefined
   });
 };
 const originalDELETEHandler: RequestHandler = async ({ params }) => {

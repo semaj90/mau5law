@@ -40,7 +40,7 @@ export async function computeKMeansPlusPlus(vectors: number[][], k = 32): Promis
     init: "kmeans++",
     nInit: 10,
     tol: 1e-4,
-    maxIter: 500,
+    maxIter: 500
   });
   const matrix = homogeneous.map((row) => Float64Array.from(row));
   const result = (await km.fit(matrix)) as Record<string, unknown> | undefined;
@@ -55,68 +55,50 @@ export async function computeKMeansPlusPlus(vectors: number[][], k = 32): Promis
   const clusterCenters = Array.from(centersSource, (center) => Array.from(center as Iterable<number>));
   return { labels, clusterCenters };
 }
-export interface MemoryPool {
-  id: string;
-  size: number;
+export interface MemoryPool { id: string;, size: number;
   used: number;
   type: "high" | "medium" | "low" | "emergency";
   priority: number;
   lastAccessed: number;
   resourceType: "json" | "image" | "vector" | "cache" | "wasm";
 }
-export interface LODLevel {
-  level: number;
-  name: 'ultra' | 'high' | 'medium' | 'low';
+export interface LODLevel { level: number;, name: 'ultra' | 'high' | 'medium' | 'low';
   memoryLimit: number; // MB
   quality: number; // 0-1
   compressionRatio: number;
   cacheSize: number;
-  features: {
-    webAssembly: boolean;
-    vectorProcessing: boolean;
+  features: { webAssembly: boolean;, vectorProcessing: boolean;
     neuralNetworking: boolean;
     rapidJSON: boolean;
   };
 }
-export interface MemoryPrediction {
-  expectedUsage: number;
-  confidence: number;
+export interface MemoryPrediction { expectedUsage: number;, confidence: number;
   timeHorizon: number; // minutes
   recommendations: string[];
   optimizations: Optimization[]; // changed from any[]
 }
-export interface ClusterMetrics {
-  centroid: number[];
-  documents: string[];
+export interface ClusterMetrics { centroid: number[];, documents: string[];
   memoryFootprint: number;
   accessFrequency: number;
   lastUpdate: number;
   compressionLevel: number;
 }
 // New typed interfaces
-export interface UsageEntry {
-  timestamp: number;
-  memory: number;
+export interface UsageEntry { timestamp: number;, memory: number;
   operations: number;
 }
 export type OptimizationType = 'compress' | 'cluster' | 'other';
-export interface Optimization {
-  type: OptimizationType;
-  priority: number;
+export interface Optimization { type: OptimizationType;, priority: number;
   estimatedSavings: number;
   details?: Record<string, unknown>;
 }
-export interface PerformanceReport {
-  memoryEfficiency: number;
-  lodLevel: LODLevel;
+export interface PerformanceReport { memoryEfficiency: number;, lodLevel: LODLevel;
   poolUtilization: Record<string, number>;
   clusterCount: number;
   predictions: MemoryPrediction;
   recommendations: string[];
 }
-export interface RecentMetrics {
-  avgMemory: number;
-  avgOperations: number;
+export interface RecentMetrics { avgMemory: number;, avgOperations: number;
   trend: number;
   cacheHitRate: number;
 }
@@ -128,9 +110,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private neuralWeights: number[][][] = [];
   private maxMemoryMB: number;
   private isTraining = $state(false);
-  private lodLevels: Record<string, LODLevel> = {
-    ultra: {
-      level: 4,
+  private lodLevels: Record<string, LODLevel> = { ultra: {, level: 4,
       name: 'ultra',
       memoryLimit: 4096,
       quality: 1.0,
@@ -140,8 +120,8 @@ export class NeuralMemoryManager extends EventEmitter {
         webAssembly: true,
         vectorProcessing: true,
         neuralNetworking: true,
-        rapidJSON: true,
-      },
+        rapidJSON: true
+      }
     },
     high: {
       level: 3,
@@ -154,8 +134,8 @@ export class NeuralMemoryManager extends EventEmitter {
         webAssembly: true,
         vectorProcessing: true,
         neuralNetworking: false,
-        rapidJSON: true,
-      },
+        rapidJSON: true
+      }
     },
     medium: {
       level: 2,
@@ -168,8 +148,8 @@ export class NeuralMemoryManager extends EventEmitter {
         webAssembly: false,
         vectorProcessing: true,
         neuralNetworking: false,
-        rapidJSON: true,
-      },
+        rapidJSON: true
+      }
     },
     low: {
       level: 1,
@@ -182,9 +162,9 @@ export class NeuralMemoryManager extends EventEmitter {
         webAssembly: false,
         vectorProcessing: false,
         neuralNetworking: false,
-        rapidJSON: false,
-      },
-    },
+        rapidJSON: false
+      }
+    }
   };
   constructor(maxMemoryMB: number = 2048) {
     super();
@@ -217,31 +197,31 @@ export class NeuralMemoryManager extends EventEmitter {
         id: 'json_pool',
         type: 'high' as const,
         size: this.currentLOD.memoryLimit * 0.3,
-        resourceType: 'json' as const,
+        resourceType: 'json' as const
       },
       {
         id: 'vector_pool',
         type: 'medium' as const,
         size: this.currentLOD.memoryLimit * 0.25,
-        resourceType: 'vector' as const,
+        resourceType: 'vector' as const
       },
       {
         id: 'cache_pool',
         type: 'medium' as const,
         size: this.currentLOD.memoryLimit * 0.2,
-        resourceType: 'cache' as const,
+        resourceType: 'cache' as const
       },
       {
         id: 'wasm_pool',
         type: 'high' as const,
         size: this.currentLOD.memoryLimit * 0.15,
-        resourceType: 'wasm' as const,
+        resourceType: 'wasm' as const
       },
       {
         id: 'emergency_pool',
         type: 'emergency' as const,
         size: this.currentLOD.memoryLimit * 0.1,
-        resourceType: 'cache' as const,
+        resourceType: 'cache' as const
       },
     ];
     for (const config of poolConfigs) {
@@ -252,7 +232,7 @@ export class NeuralMemoryManager extends EventEmitter {
         type: config.type,
         priority: config.type === 'high' ? 3 : config.type === 'medium' ? 2 : 1,
         lastAccessed: Date.now(),
-        resourceType: config.resourceType,
+        resourceType: config.resourceType
       });
     }
     console.log(`🏊 Memory pools initialized for ${this.currentLOD.name} LOD level`);
@@ -282,7 +262,7 @@ export class NeuralMemoryManager extends EventEmitter {
     this.usageHistory.push({
       timestamp: Date.now(),
       memory: totalUsed,
-      operations: operationsCount,
+      operations: operationsCount
     });
     // Keep only last 100 entries
     if (this.usageHistory.length > 100) {
@@ -294,7 +274,7 @@ export class NeuralMemoryManager extends EventEmitter {
       this.emit('memory_pressure', {
         level: memoryPressure,
         used: totalUsed,
-        limit: this.currentLOD.memoryLimit,
+        limit: this.currentLOD.memoryLimit
       });
     }
   }
@@ -315,7 +295,7 @@ export class NeuralMemoryManager extends EventEmitter {
         memoryFootprint: cluster.centroid[0],
         accessFrequency: cluster.points.length,
         lastUpdate: Date.now(),
-        compressionLevel: this.calculateOptimalCompression(cluster.centroid[0]),
+        compressionLevel: this.calculateOptimalCompression(cluster.centroid[0])
       });
     });
     console.log(`🎯 K-means clustering complete: ${clusters.length} memory pattern clusters`);
@@ -326,7 +306,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private async kMeansCluster(
     points: number[][],
     k: number
-  ): Promise<Array<{ centroid: number[]; points: number[][] }>> {
+  ): Promise<Array<{ centroid: number[];, points: number[][] }>> {
     if (!points || points.length === 0) return [];
     const dimensions = points[0].length;
     // Initialize centroids by sampling
@@ -335,9 +315,9 @@ export class NeuralMemoryManager extends EventEmitter {
       centroids.push(Array.from({ length: dimensions }, () => Math.random() * (Math.max(...points.flat()) || 1)));
     }
     for (let iteration = 0; iteration < 50; iteration++) {
-      const clusters: Array<{ centroid: number[]; points: number[][] }> = Array.from({ length: k }, () => ({
+      const clusters: Array<{ centroid: number[];, points: number[][] }> = Array.from({ length: k }, () => ({
         centroid: [],
-        points: [] as number[][],
+        points: [] as number[][]
       }));
       // Assign points to clusters
       for (const point of points) {
@@ -382,7 +362,7 @@ export class NeuralMemoryManager extends EventEmitter {
           }
         }
         return closestCluster === i;
-      }),
+      })
     }));
   }
   /**
@@ -424,7 +404,7 @@ export class NeuralMemoryManager extends EventEmitter {
         confidence: 0.1,
         timeHorizon: timeHorizonMinutes,
         recommendations: ['Insufficient data for prediction'],
-        optimizations: [],
+        optimizations: []
       };
     }
     const recentMetrics = this.getRecentMetrics();
@@ -444,7 +424,7 @@ export class NeuralMemoryManager extends EventEmitter {
       confidence,
       timeHorizon: timeHorizonMinutes,
       recommendations,
-      optimizations,
+      optimizations
     };
   }
   /**
@@ -496,7 +476,7 @@ export class NeuralMemoryManager extends EventEmitter {
       poolUtilization,
       clusterCount: this.clusters.size,
       predictions: await this.predictMemoryUsage(),
-      recommendations: this.generateSystemRecommendations(),
+      recommendations: this.generateSystemRecommendations()
     };
   }
   // Utility methods
@@ -528,9 +508,9 @@ export class NeuralMemoryManager extends EventEmitter {
   private calculateOptimalCompression(memoryUsage: number): number {
     return Math.min(0.9, Math.max(0.1, memoryUsage / this.currentLOD.memoryLimit));
   }
-  private prepareTrainingData(): Array<{ input: number[]; target: number[] }> {
+  private prepareTrainingData(): Array<{ input: number[];, target: number[] }> {
     // Build simple supervised samples from usageHistory: predict normalized usage next step
-    const samples: Array<{ input: number[]; target: number[] }> = [];
+    const samples: Array<{ input: number[];, target: number[] }> = [];
     const recent = this.usageHistory.slice(-50);
     for (let i = 0; i < recent.length - 1; i++) {
       const cur = recent[i];
@@ -608,12 +588,12 @@ export class NeuralMemoryManager extends EventEmitter {
       {
         type: 'compress',
         priority: expectedUsage > this.currentLOD.memoryLimit * 0.8 ? 3 : 1,
-        estimatedSavings: expectedUsage * 0.2,
+        estimatedSavings: expectedUsage * 0.2
       },
       {
         type: 'cluster',
         priority: 2,
-        estimatedSavings: expectedUsage * 0.1,
+        estimatedSavings: expectedUsage * 0.1
       },
     ];
   }
@@ -621,7 +601,7 @@ export class NeuralMemoryManager extends EventEmitter {
     return [
       'Memory optimization active',
       `Current LOD: ${this.currentLOD.name}`,
-      `Active clusters: ${this.clusters.size}`,
+      `Active clusters: ${this.clusters.size}`
     ];
   }
   private async reconfigureMemoryPools(): Promise<void> {
@@ -644,7 +624,7 @@ export class NeuralMemoryManager extends EventEmitter {
       if (pool.size > 0 && pool.used / pool.size > 0.9) {
         this.emit('pool_pressure', {
           poolId: id,
-          utilization: pool.used / pool.size,
+          utilization: pool.used / pool.size
         });
       }
     }

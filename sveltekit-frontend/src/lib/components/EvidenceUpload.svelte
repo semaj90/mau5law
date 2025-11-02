@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, fly } from 'svelte/transition';
   // Add named component imports used in the template.
   // Adjust paths if your UI components live elsewhere (e.g. '$lib/components/ui' index).
-  import { Button } from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { Progress } from '$lib/components/ui/progress.svelte';
   import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   {#if processing}
-    <div class="processing-status" transition:fly={{ y: 20 }}>
+    <div class="processing-status" transitionfly={{ y: 20 }}>
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-medium text-gray-900">Processing Evidence</h3>

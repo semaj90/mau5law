@@ -15,29 +15,21 @@ interface CHRROMPrecomputationService {
 }
 
 // Cache hit/miss statistics
-interface CacheStats {
-  hits: number;
-  misses: number;
+interface CacheStats { hits: number;, misses: number;
   totalRequests: number;
   averageLatency: number;
   hitRate: number;
 }
 
-interface PatternResult {
-  pattern: CHRROMPattern;
-  source: 'cache' | 'generated' | 'fallback';
+interface PatternResult { pattern: CHRROMPattern;, source: 'cache' | 'generated' | 'fallback';
   latency: number;
 }
 
-interface BatchPatternRequest {
-  docId: string;
-  patternType: string;
+interface BatchPatternRequest { docId: string;, patternType: string;
   generateOnMiss?: boolean;
 }
 
-interface BatchPatternResult extends PatternResult {
-  docId: string;
-  patternType: string;
+interface BatchPatternResult extends PatternResult { docId: string;, patternType: string;
 }
 
 export class CHRROMCacheReader {
@@ -46,7 +38,7 @@ export class CHRROMCacheReader {
     misses: 0,
     totalRequests: 0,
     averageLatency: 0,
-    hitRate: 0,
+    hitRate: 0
   };
   private latencyHistory: number[] = [];
   private maxHistorySize = 100;
@@ -67,7 +59,7 @@ export class CHRROMCacheReader {
         return {
           pattern: cachedPattern,
           source: 'cache',
-          latency,
+          latency
         };
       }
       // Step 2: Cache miss - generate on demand if enabled
@@ -82,7 +74,7 @@ export class CHRROMCacheReader {
           return {
             pattern: generatedPattern,
             source: 'generated',
-            latency,
+            latency
           };
         }
       }
@@ -92,16 +84,16 @@ export class CHRROMCacheReader {
       return {
         pattern: this.getFallbackPattern(patternType),
         source: 'fallback',
-        latency,
+        latency
       };
     } catch (error) {
-      console.error(`CHR-ROM pattern retrieval failed for ${docId}:${patternType}:`, error);
+      console.error(`CHR-ROM pattern retrieval failed for ${docId}:${patternType}: ', error);
       const latency = performance.now() - startTime;
       this.recordMiss(latency);
       return {
         pattern: this.getFallbackPattern(patternType),
         source: 'fallback',
-        latency,
+        latency
       };
     }
   }
@@ -117,7 +109,7 @@ export class CHRROMCacheReader {
         return {
           docId: req.docId,
           patternType: req.patternType,
-          ...result,
+          ...result
         };
       })
     );
@@ -133,7 +125,7 @@ export class CHRROMCacheReader {
     const prefetchPromises = docIds.flatMap(docId =>
       patternTypes.map(patternType =>
         this.getPattern(docId, patternType, false).catch(error => {
-          console.warn(`Prefetch failed for ${docId}:${patternType}:`, error);
+          console.warn(`Prefetch failed for ${docId}:${patternType}: ', error);
         })
       )
     );
@@ -160,7 +152,7 @@ export class CHRROMCacheReader {
       }
       return null;
     } catch (error) {
-      console.warn(`Cache retrieval failed for ${cacheKey}:`, error);
+      console.warn(`Cache retrieval failed for ${cacheKey}: ', error);
       return null;
     }
   }
@@ -194,8 +186,7 @@ export class CHRROMCacheReader {
       'confidence_badge': 'doc:{id}:confidence:badge',
       'similarity_graph': 'doc:{id}:similarity:graph',
       'category_color': 'doc:{id}:category:color',
-      'status_indicator': 'doc:{id}:status:indicator',
-    };
+      'status_indicator': `doc:{id}:status:indicator` };
     const keyTemplate = keyMappings[patternType] || `doc:{id}:${patternType}`;
     return keyTemplate.replace('{id}', docId);
   }
@@ -203,49 +194,47 @@ export class CHRROMCacheReader {
    * Get fallback pattern when cache miss and generation fails
    */
   private getFallbackPattern(patternType: string): CHRROMPattern {
-    const fallbackPatterns: { [key: string]: CHRROMPattern } = {
-      summary_icon: {
-        type: 'icon' as const,
+    const fallbackPatterns: { [key: string]: CHRROMPattern } = { summary_icon: {, type: 'icon' as const,
         size: 'sm' as const,
         data: '<div style="w:16px;h:16px;bg:#e5e7eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#6b7280">?</div>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       risk_gauge: {
         type: 'gauge' as const,
         size: 'xs' as const,
         data: '<div style="w:40px;h:4px;bg:#e5e7eb;border-radius:2px"></div>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       confidence_badge: {
         type: 'badge' as const,
         size: 'xs' as const,
         data: '<span style="px:6px;py:2px;border-radius:4px;bg:#6b7280;color:white;font-size:10px">--</span>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       category_color: {
         type: 'badge' as const,
         size: 'xs' as const,
         data: '#6B7280', // Default gray
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       entity_heatmap: {
         type: 'heatmap;' as const,
         size: 'sm' as const,
         data: '<div style="width:100%;height:12px;background:linear-gradient(to right, #e5e7eb, #f3f4f6);"></div>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       similarity_graph: {
         type: 'graph' as const,
         size: 'sm' as const,
         data: '<svg width="40" height="16" viewbox="0 0 40 16"><path d="M 0 8 L 40 8" stroke="#e5e7eb" stroke-width="2"></path></svg>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       status_indicator: {
         type: 'icon' as const,
         size: 'xs' as const,
         data: '<span style="color:#6b7280;font-size:12px">⏸️</span>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' },
-      },
+        metadata: { confidence: 0, timestamp: Date.now(), version: `1.0` }
+      }
     };
     return fallbackPatterns[patternType] || fallbackPatterns.summary_icon;
   }
@@ -290,9 +279,7 @@ export class CHRROMCacheReader {
   /**
    * Get comprehensive cache statistics
    */
-  getStats(): CacheStats & {
-    recentLatencies: number[];
-    performance: 'excellent' | 'good' | 'poor';
+  getStats(): CacheStats & { recentLatencies: number[];, performance: 'excellent' | 'good' | 'poor';
   } {
     const performance =
       this.stats.hitRate > 0.9 && this.stats.averageLatency < 10
@@ -303,7 +290,7 @@ export class CHRROMCacheReader {
     return {
       ...this.stats,
       recentLatencies: [...this.latencyHistory].slice(-10),
-      performance,
+      performance
     };
   }
   /**
@@ -324,7 +311,7 @@ export class CHRROMCacheReader {
       misses: 0,
       totalRequests: 0,
       averageLatency: 0,
-      hitRate: 0,
+      hitRate: 0
     };
     this.latencyHistory = [];
   }

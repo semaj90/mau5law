@@ -7,15 +7,14 @@ import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
-  import Card from '$lib/components/ui/bits/Card.svelte';
-  import CardHeader from '$lib/components/ui/bits/CardHeader.svelte';
-  import CardContent from '$lib/components/ui/bits/CardContent.svelte';
-  import CardTitle from '$lib/components/ui/bits/CardTitle.svelte';
-  import Dialog from '$lib/components/ui/bits/Dialog.svelte';
-  import DialogTrigger from '$lib/components/ui/wrappers/bits/DialogTrigger.svelte';
-  import DialogContent from '$lib/components/ui/wrappers/bits/DialogContent.svelte';
-  import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
-  import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    DialogTrigger
+  } from '$lib/components/ui/dialog';
   interface Props {
     data: PageData;
   }
@@ -490,7 +489,7 @@ import type { User } from '$lib/types';
         </div>
         <!-- Section Overview -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-          <Card.Root class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
+          <Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-blue-800 flex items-center gap-2">👤 Core User</h3>
@@ -498,8 +497,8 @@ import type { User } from '$lib/types';
                 <p class="text-sm text-blue-600">Production ready</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-green-800 flex items-center gap-2">🔌 API Routes</h3>
@@ -507,8 +506,8 @@ import type { User } from '$lib/types';
                 <p class="text-sm text-green-600">Backend services</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-purple-800 flex items-center gap-2">🧪 Demo Routes</h3>
@@ -516,8 +515,8 @@ import type { User } from '$lib/types';
                 <p class="text-sm text-purple-600">Development</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-yellow-800 flex items-center gap-2">🧪 Need Testing</h3>
@@ -525,8 +524,8 @@ import type { User } from '$lib/types';
                 <p class="text-sm text-yellow-600">API testing</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">📊 Total Routes</h3>
@@ -534,7 +533,7 @@ import type { User } from '$lib/types';
                 <p class="text-sm text-gray-600">Platform-wide</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
+          </Card>
         </div>
         <!-- Priority Breakdown -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -724,7 +723,7 @@ import type { User } from '$lib/types';
               layoutMode = 'grid';
               showClustered = false;
             }}
-            class="px-3" py-1 rounded text-sm transition-colors {layoutMode === 'grid' && !showClustered
+            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'grid' && !showClustered
               ? 'bg-blue-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -735,7 +734,7 @@ import type { User } from '$lib/types';
               layoutMode = 'flexbox';
               showClustered = false;
             }}
-            class="px-3" py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' && !showClustered
+            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' && !showClustered
               ? 'bg-blue-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -743,7 +742,7 @@ import type { User } from '$lib/types';
           </button>
           <button
             onclick={() => (showClustered = !showClustered)}
-            class="px-3" py-1 rounded text-sm transition-colors {showClustered
+            class="px-3 py-1 rounded text-sm transition-colors {showClustered
               ? 'bg-green-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -757,7 +756,7 @@ import type { User } from '$lib/types';
     </div>
     <!-- SSR Testing Info Panel -->
     {#if showSSRTest}
-      <Card.Root class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200">
+      <Card class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200">
         {#snippet children()}
           <CardContent class="p-4">
             <h3 class="text-lg font-bold text-purple-800 mb-2 flex items-center gap-2">🧪 SSR UI Components Test</h3>
@@ -787,7 +786,7 @@ import type { User } from '$lib/types';
             </div>
           </CardContent>
         {/snippet}
-      </Card.Root>
+      </Card>
     {/if}
     <!-- Clustered API Services View -->
     {#if showClustered}
@@ -821,7 +820,7 @@ import type { User } from '$lib/types';
                               : serviceName === 'gpu-services'
                                 ? '🖥️'
                                 : '🔌'}
-            <Card.Root class="service-cluster border-2 border-gray-300 hover:border-blue-400">
+            <Card class="service-cluster border-2 border-gray-300 hover:border-blue-400">
               {#snippet children()}
                 <CardHeader>
                   <CardTitle class="flex items-center justify-between">
@@ -911,7 +910,7 @@ import type { User } from '$lib/types';
                   </div>
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           {/each}
         </div>
       </div>
@@ -927,7 +926,7 @@ import type { User } from '$lib/types';
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card.Root
+            <Card
               class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group border-2"
             >
               {#snippet children()}
@@ -954,7 +953,7 @@ import type { User } from '$lib/types';
                   {/snippet}
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           </button>
         {/each}
       </div>
@@ -969,7 +968,7 @@ import type { User } from '$lib/types';
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card.Root class={'hover:' + cls.border300 + ' group'}>
+            <Card class={'hover:' + cls.border300 + ' group'}>
               {#snippet children()}
                 <CardContent class="p-4">
                   <!-- Route Header -->
@@ -1043,7 +1042,7 @@ import type { User } from '$lib/types';
                   </div>
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           </button>
         {/each}
       </div>
@@ -1165,7 +1164,7 @@ import type { User } from '$lib/types';
         <div>
           <span class="font-semibold text-gray-700">Type:</span>
           <span
-            class="ml-2" px-2 py-1 rounded text-xs {selectedRoute.type === 'configured'
+            class="ml-2 px-2 py-1 rounded text-xs {selectedRoute.type === 'configured'
               ? 'bg-green-100 text-green-800'
               : 'bg-purple-100 text-purple-800'}"
           >

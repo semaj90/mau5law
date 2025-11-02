@@ -28,7 +28,7 @@ export type {
   AnyActorRef,
   AnyEventObject,
   Observer,
-  Subscription,
+  Subscription
 } from 'xstate';
 export {
   createMachine,
@@ -41,7 +41,7 @@ export {
   fromPromise,
   fromCallback,
   fromObservable,
-  fromEventObservable,
+  fromEventObservable
 } from 'xstate';
 // Common state machine types
 export interface MachineContext {
@@ -88,23 +88,17 @@ export type JobType =
   | 'ai_chat'
   | 'notification'
   | 'search_indexing';
-export interface JobDefinition {
-  id: string;
-  type: JobType;
+export interface JobDefinition { id: string;, type: JobType;
   priority: number;
   data: Record<string, unknown>;
   options?: {
     delay?: number;
     attempts?: number;
-    backoff?: {
-      type: 'exponential' | 'fixed';
-      delay: number;
+    backoff?: { type: 'exponential' | 'fixed';, delay: number;
     };
   };
 }
-export interface JobStatus {
-  id: string;
-  status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
+export interface JobStatus { id: string;, status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
   progress: number;
   result?: any;
   error?: string;
@@ -112,9 +106,7 @@ export interface JobStatus {
   processedAt?: Date;
   completedAt?: Date;
 }
-export interface QueueState {
-  name: string;
-  size: number;
+export interface QueueState { name: string;, size: number;
   processing: number;
   completed: number;
   failed: number;

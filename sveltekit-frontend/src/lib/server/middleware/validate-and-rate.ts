@@ -32,7 +32,7 @@ export function withValidationAndRate(
       } catch (err) {
         return new Response(JSON.stringify({ success: false, error: 'Invalid request', details: err instanceof Error ? err.message : String(err) }), {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         });
       }
     }
@@ -60,7 +60,7 @@ export function withValidationAndRate(
         const retryAfter = Math.ceil((1 - tokens) / refillPerSecond);
         return new Response(JSON.stringify({ success: false, error: 'Rate limit exceeded', retryAfter }), {
           status: 429,
-          headers: { 'Content-Type': 'application/json', 'Retry-After': String(retryAfter) },
+          headers: { 'Content-Type': 'application/json', 'Retry-After': String(retryAfter) }
         });
       }
     } catch (err) {
