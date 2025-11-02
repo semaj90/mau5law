@@ -87,17 +87,17 @@ export class LegalDatabaseBridge {
     const now = new Date();
     const newDocument: LegalDocument = {
       id,
-      title: document.title || 'Untitled Document',
-      content: document.content || '',
-      document_type: document.document_type || 'contract',
-      jurisdiction: document.jurisdiction || 'federal',
-      metadata: document.metadata || {},
+      title: _document.title || 'Untitled Document',
+      content: _document.content || '',
+      document_type: _document.document_type || 'contract',
+      jurisdiction: _document.jurisdiction || 'federal',
+      metadata: _document.metadata || {},
       created_at: now,
       updated_at: now,
-      case_id: document.case_id,
-      client_id: document.client_id,
-      status: document.status || 'draft'
-    }
+      case_id: _document.case_id,
+      client_id: _document.client_id,
+      status: _document.status || 'draft',
+    };
     try {
       // Use the existing SSR helper for JSONB operations
       await this.executeQuery(
@@ -114,7 +114,7 @@ export class LegalDatabaseBridge {
           newDocument.client_id,
           newDocument.status,
           newDocument.created_at,
-          newDocument.updated_at
+          newDocument.updated_at,
         ]
       );
       return newDocument;
@@ -125,10 +125,7 @@ export class LegalDatabaseBridge {
   }
   async getLegalDocument(id: string): Promise<LegalDocument | null> {
     try {
-      const result = await this.executeQuery(
-        'SELECT * FROM legal_documents WHERE id = $1',
-        [id]
-      );
+      const result = await this.executeQuery('SELECT * FROM legal_documents WHERE id = $1', [id]);
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
         return null;
       }
@@ -138,7 +135,8 @@ export class LegalDatabaseBridge {
       return null;
     }
   }
-  async searchLegalDocuments(query: {
+  async searchLegalDocuments(
+    query: {
       searchTerm?: string;
       documentType?: string;
       jurisdiction?: string;
@@ -153,25 +151,26 @@ export class LegalDatabaseBridge {
   ): Promise<LegalDocument[]> {
     try {
       // Use the enhanced JSONB query from SSR helpers
-      const documents = await queryLegalDocumentsSSR({
-          path: query.searchTerm ? 'title,content' : undefined
+      const documents = await queryLegalDocumentsSSR(
+        {
+          path: query.searchTerm ? 'title,content' : undefined,
           operator: '@>',
           value: query,
           conditions: {
             document_type: query.documentType,
             jurisdiction: query.jurisdiction,
             case_id: query.caseId,
-            client_id: query.clientId
-          }
-        });
+            client_id: query.clientId,
+          },
+        },
         {
           limit: options.limit || 50,
-          offset,: options.offset || 0,
-          useGPU,: options.useVector,
-          cacheResults,: true
+          offset: options.offset || 0,
+          useVector: options.useVector,
+          cacheResults: true,
         }
       );
-      return documents.map(row => this.mapRowToDocument(row);
+      return documents.map(row => this.mapRowToDocument(row));
     } catch (error) {
       console.error('Failed to search legal documents:', error);
       return [];
@@ -183,10 +182,13 @@ export class LegalDatabaseBridge {
         .filter(key => key !== 'id' && key !== 'created_at')
         .map((key, index) => `${key} = $${index + 2}`)
         .join(', ');
-      const values = [id, ...Object.values(updates).filter((_, index) =>
-        Object.keys(updates)[index] !== 'id' && Object.keys(updates)[index] !== 'created_at'
-      )];
-      values.push(new Date(); // updated_at
+      const values = [
+        id,
+        ...Object.values(updates).filter(
+          (_, index) => Object.keys(updates)[index] !== 'id' && Object.keys(updates)[index] !== 'created_at'
+        ),
+      ];
+      values.push(new Date()); // updated_at
       await this.executeQuery(
         `UPDATE legal_documents SET ${setClause}, updated_at = $${values.length} WHERE id = $1`,
         values
@@ -212,8 +214,8 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       metadata: caseData.metadata || {},
-      priority: caseData.priority || 'medium'
-    }
+      priority: caseData.priority || 'medium',
+    };
     try {
       await this.executeQuery(
         `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)
@@ -229,7 +231,7 @@ export class LegalDatabaseBridge {
           JSON.stringify(newCase.metadata),
           newCase.priority,
           newCase.created_at,
-          newCase.updated_at
+          newCase.updated_at,
         ]
       );
       return newCase;
@@ -240,10 +242,7 @@ export class LegalDatabaseBridge {
   }
   async getLegalCase(id: string): Promise<LegalCase | null> {
     try {
-      const result = await this.executeQuery(
-        'SELECT * FROM legal_cases WHERE id = $1',
-        [id]
-      );
+      const result = await this.executeQuery('SELECT * FROM legal_cases WHERE id = $1', [id]);
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
         return null;
       }
@@ -272,7 +271,7 @@ export class LegalDatabaseBridge {
       admissibility_status: evidenceData.admissibility_status || 'unknown',
       created_at: now,
       updated_at: now,
-    }
+    };
     try {
       await this.executeQuery(
         `INSERT INTO evidence_items (id, title, description, evidence_type, file_path, metadata, case_id, relevance_score, admissibility_status, created_at, updated_at)
@@ -288,7 +287,7 @@ export class LegalDatabaseBridge {
           newEvidence.relevance_score,
           newEvidence.admissibility_status,
           newEvidence.created_at,
-          newEvidence.updated_at
+          newEvidence.updated_at,
         ]
       );
       return newEvidence;
@@ -322,8 +321,8 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       message_count: 0,
-      last_activity: now
-    }
+      last_activity: now,
+    };
     try {
       await this.executeQuery(
         `INSERT INTO conversations (id, user_id, title, case_id, context, created_at, updated_at, message_count, last_activity)
@@ -337,7 +336,7 @@ export class LegalDatabaseBridge {
           newConversation.created_at,
           newConversation.updated_at,
           newConversation.message_count,
-          newConversation.last_activity
+          newConversation.last_activity,
         ]
       );
       return newConversation;
@@ -354,12 +353,12 @@ export class LegalDatabaseBridge {
       conversation_id: messageData.conversation_id || '',
       role: messageData.role || 'user',
       content: messageData.content || '',
-      model: messageData?.model || "unknown" // @ts-ignore - Model property access,
+      model: messageData?.model || 'unknown', // @ts-ignore - Model property access
       token_count: messageData.token_count,
       processing_time: messageData.processing_time,
       metadata: messageData.metadata || {},
-      created_at: now
-    }
+      created_at: now,
+    };
     try {
       // Insert message
       await this.executeQuery(
@@ -370,11 +369,11 @@ export class LegalDatabaseBridge {
           newMessage.conversation_id,
           newMessage.role,
           newMessage.content,
-          newMessage?.model || "unknown" // @ts-ignore - Model property access,
+          newMessage?.model || 'unknown', // @ts-ignore - Model property access
           newMessage.token_count,
           newMessage.processing_time,
           JSON.stringify(newMessage.metadata),
-          newMessage.created_at
+          newMessage.created_at,
         ]
       );
       // Update conversation message count and last activity
@@ -418,8 +417,8 @@ export class LegalDatabaseBridge {
       updated_at: new Date(row.updated_at),
       case_id: row.case_id,
       client_id: row.client_id,
-      status: row.status
-    }
+      status: row.status,
+    };
   }
   private mapRowToCase(row: any): LegalCase {
     return {
@@ -433,8 +432,8 @@ export class LegalDatabaseBridge {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      priority: row.priority
-    }
+      priority: row.priority,
+    };
   }
   private mapRowToEvidence(row: any): EvidenceItem {
     return {
@@ -448,8 +447,8 @@ export class LegalDatabaseBridge {
       relevance_score: row.relevance_score,
       admissibility_status: row.admissibility_status,
       created_at: new Date(row.created_at),
-      updated_at: new Date(row.updated_at)
-    }
+      updated_at: new Date(row.updated_at),
+    };
   }
   private mapRowToMessage(row: any): MessageRecord {
     return {
@@ -457,12 +456,12 @@ export class LegalDatabaseBridge {
       conversation_id: row.conversation_id,
       role: row.role,
       content: row.content,
-      model: row?.model || "unknown" // @ts-ignore - Model property access,
+      model: row?.model || 'unknown', // @ts-ignore - Model property access
       token_count: row.token_count,
       processing_time: row.processing_time,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      created_at: new Date(row.created_at)
-    }
+      created_at: new Date(row.created_at),
+    };
   }
   // Execute query helper (would integrate with actual PostgreSQL client)
   private async executeQuery(query: string, params: any[] = []): Promise<any> {
@@ -472,8 +471,8 @@ export class LegalDatabaseBridge {
     // Mock response structure
     return {
       rows: [],
-      rowCount: 0
-    }
+      rowCount: 0,
+    };
   }
   // Health check
   async isConnected(): Promise<boolean> {
@@ -485,29 +484,32 @@ export class LegalDatabaseBridge {
     }
   }
   // Statistics
-  async getDatabaseStats(): Promise<{ [key: string]: any }, {
+  async getDatabaseStats(): Promise<Record<string, number>> {
     try {
       const stats = {
         legal_documents: await this.executeQuery('SELECT COUNT(*) FROM legal_documents'),
         legal_cases: await this.executeQuery('SELECT COUNT(*) FROM legal_cases'),
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
         conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
-        messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
-      }
-      return Object.entries(stats).reduce((acc, [table, result]) => {
-        acc[table] = (result as { rows?: any }).rows?.[0]?.count || 0;
-        return acc;
-      }, {} as Record<string, number>);
+        messages: await this.executeQuery('SELECT COUNT(*) FROM messages'),
+      };
+      return Object.entries(stats).reduce(
+        (acc, [table, result]) => {
+          acc[table] = (result as { rows?: any }).rows?.[0]?.count || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
     } catch (error) {
       console.error('Failed to get database stats:', error);
-      return {}
+      return {};
     }
   }
 }
 // Global database bridge instance
 export const legalDB = new LegalDatabaseBridge();
 // API integration helpers
-export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument>, {
+export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument>> {
   try {
     const document = await legalDB.createLegalDocument(documentData);
     return {
@@ -515,10 +517,10 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       data: document,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
-        source: 'api'
-      }
-    }
+        cached: false,
+        source: 'api',
+      },
+    };
   } catch (error) {
     return {
       success: false,
@@ -528,11 +530,11 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
         cached: false,
         source: 'api',
       },
-      error: error instanceof Error ? error.message: 'Document creation failed'
-    }
+      error: error instanceof Error ? error.message : 'Document creation failed',
+    };
   }
 }
-export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase>, {
+export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase>> {
   try {
     const legalCase = await legalDB.createLegalCase(caseData);
     return {
@@ -540,10 +542,10 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       data: legalCase,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
-        source: 'api'
-      }
-    }
+        cached: false,
+        source: 'api',
+      },
+    };
   } catch (error) {
     return {
       success: false,
@@ -553,14 +555,11 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
         cached: false,
         source: 'api',
       },
-      error: error instanceof Error ? error.message: 'Case creation failed'
-    }
+      error: error instanceof Error ? error.message : 'Case creation failed',
+    };
   }
 }
-export async function apiSearchDocuments(
-  searchQuery: any,
-  options: any = {}
-): Promise<SSRResponse<LegalDocument[]>, {
+export async function apiSearchDocuments(searchQuery: any, options: any = {}): Promise<SSRResponse<LegalDocument[]>> {
   try {
     const documents = await legalDB.searchLegalDocuments(searchQuery, options);
     return {
@@ -568,10 +567,10 @@ export async function apiSearchDocuments(
       data: documents,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false;
-        source: 'api'
-      }
-    }
+        cached: false,
+        source: 'api',
+      },
+    };
   } catch (error) {
     return {
       success: false,
@@ -581,7 +580,7 @@ export async function apiSearchDocuments(
         cached: false,
         source: 'api',
       },
-      error: error instanceof Error ? error.message: 'Document search failed'
-    }
+      error: error instanceof Error ? error.message : 'Document search failed',
+    };
   }
 }
