@@ -1,10 +1,9 @@
 import * as amqp from 'amqplib';
 import type * as amqpTypes from 'amqplib';
-import { writable, get } from 'svelte/store';
 
 let connection: amqpTypes.Connection | null = null;
 let channel: amqpTypes.Channel | null = null;
-const connectionFailed = writable(false);
+let connectionFailed = false;
 
 function getRabbitMQUrls(): string[] {
   const urls: string[] = [];
@@ -33,18 +32,18 @@ async function connectWithFallback(): Promise<amqpTypes.Connection | null> {
 }
 
 export async function getRabbitMQChannel(): Promise<amqpTypes.Channel | null> {
-  if (get(connectionFailed)) return null;
+  if (connectionFailed) return null;
 
   if (!channel) {
     connection = await connectWithFallback();
     if (!connection) {
       console.warn('⚠️ Could not connect to RabbitMQ — continuing without it.');
-      connectionFailed.set(true);
+      connectionFailed = true;
       return null;
     }
     connection.on('error', (err) => {
       console.error('RabbitMQ connection error:', err);
-      connectionFailed.set(true);
+      connectionFailed = true;
       void closeRabbitMQConnection();
     });
     connection.on('close', () => {
