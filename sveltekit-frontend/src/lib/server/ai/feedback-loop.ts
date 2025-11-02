@@ -22,6 +22,14 @@ export interface LearningMetrics {
   strategyEffectiveness: Map<string, number>;
   userSatisfaction: Map<string, number>;
 }
+
+interface UserPatterns {
+  commonTopics: string[];
+  preferredStrategies: string[];
+  averageComplexity: number;
+  peakUsageTimes: number[];
+}
+
 class FeedbackLoop {
   private learningMetrics: LearningMetrics;
   private feedbackQueue: FeedbackData[] = [];
@@ -163,11 +171,11 @@ class FeedbackLoop {
   async getPersonalizedRecommendations(userId: string): Promise<any> {
     try {
       // Get user's interaction history
-      const userInteractions = Array.from(this.interactionHistory.values()
+      const userInteractions = Array.from(this.interactionHistory.values())
         .filter(i => i.userId === userId)
         .slice(-20); // Last 20 interactions
       // Analyze patterns
-      const patterns = {
+      const patterns: UserPatterns = {
         commonTopics: this.extractCommonTopics(userInteractions),
         preferredStrategies: this.getPreferredStrategies(userInteractions),
         averageComplexity: this.calculateAverageComplexity(userInteractions),
@@ -499,9 +507,9 @@ class FeedbackLoop {
     // Find top 3 hours
     const indexed = hourCounts.map((count, hour) => ({ hour, count }));
     indexed.sort((a, b) => b.count - a.count);
-    return indexed.slice(0, 3).map(item => (item as { hour?: any }).hour);
+    return indexed.slice(0, 3).map(item => item.hour);
   }
-  private suggestStrategies(patterns: any): string[] {
+  private suggestStrategies(patterns: UserPatterns): string[] {
     const suggestions = [];
     if (patterns.averageComplexity > 0.8) {
       suggestions.push('Enable cross-encoder reranking for better precision');
@@ -515,7 +523,7 @@ class FeedbackLoop {
     }
     return suggestions;
   }
-  private recommendSources(patterns: any): string[] {
+  private recommendSources(patterns: UserPatterns): string[] {
     const recommendations = [];
     for (const topic of patterns.commonTopics) {
       switch (topic) {
@@ -532,7 +540,7 @@ class FeedbackLoop {
     }
     return recommendations.slice(0, 5);
   }
-  private generateOptimizationTips(patterns: any): string[] {
+  private generateOptimizationTips(patterns: UserPatterns): string[] {
     const tips = [];
     if (patterns.averageComplexity < 0.3) {
       tips.push('Your queries are simple - try asking more detailed questions');

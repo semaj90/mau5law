@@ -4,7 +4,7 @@
   // Svelte 5 runes are built-in, no import needed
   import { Card as CardOriginal } from '$lib/components/ui/card.svelte'; // named export
   import { Button } from '$lib/components/ui/button.svelte'; // named export
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import { Progress } from '$lib/components/ui/progress'; // Changed to named import from index.ts
   import * as Lucide from 'lucide-svelte';
 
   // lucide-svelte typing can be inconsistent — cast to any and destructure the icons we use.
@@ -358,7 +358,7 @@
     padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
     display: flex;
     flex-direction: column;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
   }
   .nav-section {
     display: flex;
@@ -379,7 +379,7 @@
     font-size: 11px;
     cursor: pointer;
     transition: all 0.2s;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
   }
   .nav-item:hover {
     background: #2a2a2a;
@@ -419,7 +419,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -604,7 +604,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
     align-items: center;
     margin-bottom: 10px;
   }
@@ -640,7 +640,7 @@
   }
   .analysis-footer {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
     align-items: center;
     margin-top: 10px;
   }
