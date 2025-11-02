@@ -1,0 +1,525 @@
+// Search Service Protocol Buffers  
+// Comprehensive semantic and vector search for Legal AI documents
+
+syntax = "proto3";
+package legal.search;
+option go_package = "legal-ai-production/proto/search";
+
+import "google/protobuf/timestamp.proto";
+
+// Search service for legal documents and embeddings
+service SearchService {
+  // Perform semantic search using embeddings
+  rpc SemanticSearch(SemanticSearchRequest) returns (SemanticSearchResponse);
+  
+  // Perform keyword search
+  rpc KeywordSearch(KeywordSearchRequest) returns (KeywordSearchResponse);
+  
+  // Hybrid search (semantic + keyword)
+  rpc HybridSearch(HybridSearchRequest) returns (HybridSearchResponse);
+  
+  // Vector similarity search
+  rpc VectorSearch(VectorSearchRequest) returns (VectorSearchResponse);
+  
+  // Get search suggestions/autocomplete
+  rpc GetSearchSuggestions(SuggestionsRequest) returns (SuggestionsResponse);
+  
+  // Save search query for history/analytics
+  rpc SaveSearchQuery(SaveSearchRequest) returns (SaveSearchResponse);
+  
+  // Get search history for user
+  rpc GetSearchHistory(SearchHistoryRequest) returns (SearchHistoryResponse);
+  
+  // Get search analytics
+  rpc GetSearchAnalytics(SearchAnalyticsRequest) returns (SearchAnalyticsResponse);
+  
+  // Index new documents (for search indexing)
+  rpc IndexDocument(IndexDocumentRequest) returns (IndexDocumentResponse);
+  
+  // Remove document from index
+  rpc RemoveFromIndex(RemoveIndexRequest) returns (RemoveIndexResponse);
+}
+
+// Semantic search using embeddings
+message SemanticSearchRequest {
+  string query = 1;
+  SearchParameters parameters = 2;
+  SearchFilters filters = 3;
+  string user_id = 4;
+  string session_id = 5;
+  string request_id = 6;
+}
+
+// General search parameters
+message SearchParameters {
+  int32 limit = 1; // Max results to return
+  int32 offset = 2; // For pagination
+  float similarity_threshold = 3; // Min similarity score
+  bool include_chunks = 4; // Include document chunks in response
+  bool include_embeddings = 5; // Include embeddings in response
+  bool include_highlights = 6; // Include search highlights
+  SortOrder sort_order = 7;
+  repeated string return_fields = 8; // Specific fields to return
+}
+
+// Sort order options
+enum SortOrder {
+  RELEVANCE = 0;
+  DATE_DESC = 1;
+  DATE_ASC = 2;
+  TITLE_ASC = 3;
+  TITLE_DESC = 4;
+  SIZE_DESC = 5;
+  SIZE_ASC = 6;
+}
+
+// Search filters
+message SearchFilters {
+  repeated string case_ids = 1;
+  repeated string document_types = 2; // "contract", "evidence", "brief"
+  repeated string file_types = 3; // "pdf", "docx", "txt"
+  DateRange date_range = 4;
+  repeated string tags = 5;
+  repeated string authors = 6;
+  SizeRange size_range = 7;
+  ConfidenceRange confidence_range = 8;
+  repeated string entity_types = 9; // Filter by entity types found
+  LanguageFilter language = 10;
+}
+
+// Date filtering
+message DateRange {
+  google.protobuf.Timestamp from = 1;
+  google.protobuf.Timestamp to = 2;
+}
+
+// Size filtering (file size or content length)
+message SizeRange {
+  int64 min_bytes = 1;
+  int64 max_bytes = 2;
+  int32 min_pages = 3;
+  int32 max_pages = 4;
+}
+
+// Confidence filtering
+message ConfidenceRange {
+  float min_confidence = 1;
+  float max_confidence = 2;
+}
+
+// Language filtering
+message LanguageFilter {
+  repeated string languages = 1; // ["en", "es", "fr"]
+  float confidence_threshold = 2;
+}
+
+// Semantic search response
+message SemanticSearchResponse {
+  repeated SearchResult results = 1;
+  int32 total_found = 2;
+  float search_time_ms = 3;
+  string query_embedding_id = 4; // For caching
+  SearchMetadata metadata = 5;
+  SearchDebugInfo debug_info = 6;
+}
+
+// Individual search result
+message SearchResult {
+  string document_id = 1;
+  string filename = 2;
+  string title = 3;
+  string snippet = 4; // Relevant excerpt
+  float relevance_score = 5;
+  float similarity_score = 6; // Cosine similarity
+  DocumentInfo document_info = 7;
+  repeated ChunkMatch chunk_matches = 8;
+  repeated SearchHighlight highlights = 9;
+  map<string, string> metadata = 10;
+}
+
+// Document information
+message DocumentInfo {
+  string mime_type = 1;
+  int64 file_size = 2;
+  int32 page_count = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  string case_id = 6;
+  repeated string tags = 7;
+  string uploaded_by = 8;
+  string processing_status = 9;
+}
+
+// Chunk match within document
+message ChunkMatch {
+  string chunk_id = 1;
+  int32 chunk_index = 2;
+  string text = 3;
+  float similarity_score = 4;
+  int32 start_offset = 5;
+  int32 end_offset = 6;
+  repeated int32 page_numbers = 7;
+  string section = 8;
+  repeated EntityMatch entities = 9;
+}
+
+// Entity match within chunk
+message EntityMatch {
+  string text = 1;
+  string type = 2; // "PERSON", "ORGANIZATION", etc.
+  float confidence = 3;
+  int32 start_offset = 4;
+  int32 end_offset = 5;
+}
+
+// Search highlighting
+message SearchHighlight {
+  string field = 1; // "title", "content", etc.
+  repeated string fragments = 2; // Highlighted text fragments
+  string pre_tag = 3; // HTML tag before highlight
+  string post_tag = 4; // HTML tag after highlight
+}
+
+// Search metadata
+message SearchMetadata {
+  string query_id = 1;
+  int32 total_documents_indexed = 2;
+  int32 total_chunks_indexed = 3;
+  repeated string models_used = 4; // Embedding models used
+  SearchAggregations aggregations = 5;
+  QueryAnalysis query_analysis = 6;
+}
+
+// Search aggregations (facets)
+message SearchAggregations {
+  map<string, int32> document_types = 1;
+  map<string, int32> file_types = 2;
+  map<string, int32> case_ids = 3;
+  map<string, int32> tags = 4;
+  map<string, int32> authors = 5;
+  map<string, int32> languages = 6;
+  DateHistogram date_histogram = 7;
+}
+
+// Date histogram for time-based aggregation
+message DateHistogram {
+  repeated DateBucket buckets = 1;
+  string interval = 2; // "day", "week", "month"
+}
+
+message DateBucket {
+  google.protobuf.Timestamp date = 1;
+  int32 doc_count = 2;
+}
+
+// Query analysis
+message QueryAnalysis {
+  repeated string detected_entities = 1;
+  string detected_language = 2;
+  float language_confidence = 3;
+  repeated string suggested_terms = 4;
+  QueryIntent intent = 5;
+}
+
+// Query intent classification
+enum QueryIntent {
+  GENERAL_SEARCH = 0;
+  LEGAL_RESEARCH = 1;
+  CASE_ANALYSIS = 2;
+  DOCUMENT_REVIEW = 3;
+  COMPLIANCE_CHECK = 4;
+  PRECEDENT_SEARCH = 5;
+}
+
+// Debug information
+message SearchDebugInfo {
+  string execution_plan = 1;
+  repeated string warnings = 2;
+  map<string, float> scoring_details = 3;
+  int32 cache_hits = 4;
+  int32 cache_misses = 5;
+}
+
+// Keyword search request
+message KeywordSearchRequest {
+  string query = 1;
+  SearchParameters parameters = 2;
+  SearchFilters filters = 3;
+  KeywordSearchOptions options = 4;
+  string user_id = 5;
+  string session_id = 6;
+}
+
+// Keyword search options
+message KeywordSearchOptions {
+  bool fuzzy_matching = 1;
+  int32 fuzzy_distance = 2; // Edit distance for fuzzy matching
+  bool phrase_matching = 3; // Exact phrase matching
+  bool wildcard_matching = 4; // Support * and ? wildcards
+  repeated string boost_fields = 5; // Fields to boost in scoring
+  map<string, float> field_weights = 6; // Custom field weights
+}
+
+// Keyword search response (reuses SearchResult from semantic search)
+message KeywordSearchResponse {
+  repeated SearchResult results = 1;
+  int32 total_found = 2;
+  float search_time_ms = 3;
+  SearchMetadata metadata = 4;
+  repeated string query_terms = 5; // Parsed query terms
+}
+
+// Hybrid search (combines semantic + keyword)
+message HybridSearchRequest {
+  string query = 1;
+  SearchParameters parameters = 2;
+  SearchFilters filters = 3;
+  HybridSearchOptions options = 4;
+  string user_id = 5;
+  string session_id = 6;
+}
+
+// Hybrid search options
+message HybridSearchOptions {
+  float semantic_weight = 1; // 0.0 to 1.0, weight for semantic search
+  float keyword_weight = 2; // 0.0 to 1.0, weight for keyword search
+  SemanticSearchOptions semantic_options = 3;
+  KeywordSearchOptions keyword_options = 4;
+  RankingFusion fusion_method = 5;
+}
+
+// Semantic search specific options
+message SemanticSearchOptions {
+  string embedding_model = 1;
+  bool enable_query_expansion = 2;
+  repeated string expansion_terms = 3;
+  float expansion_weight = 4;
+}
+
+// Ranking fusion methods
+enum RankingFusion {
+  LINEAR_COMBINATION = 0;
+  RECIPROCAL_RANK_FUSION = 1;
+  BORDA_COUNT = 2;
+  CONDORCET = 3;
+}
+
+// Hybrid search response
+message HybridSearchResponse {
+  repeated SearchResult results = 1;
+  int32 total_found = 2;
+  float search_time_ms = 3;
+  SearchMetadata metadata = 4;
+  HybridSearchMetadata hybrid_metadata = 5;
+}
+
+// Hybrid search specific metadata
+message HybridSearchMetadata {
+  int32 semantic_results = 1;
+  int32 keyword_results = 2;
+  int32 merged_results = 3;
+  float semantic_time_ms = 4;
+  float keyword_time_ms = 5;
+  float fusion_time_ms = 6;
+}
+
+// Vector search (direct vector similarity)
+message VectorSearchRequest {
+  repeated float query_vector = 1;
+  SearchParameters parameters = 2;
+  SearchFilters filters = 3;
+  VectorSearchOptions options = 4;
+  string user_id = 5;
+}
+
+// Vector search options
+message VectorSearchOptions {
+  string distance_metric = 1; // "cosine", "euclidean", "dot_product"
+  bool include_distances = 2;
+  string index_type = 3; // "hnsw", "ivf", "flat"
+  map<string, string> index_parameters = 4;
+}
+
+// Vector search response
+message VectorSearchResponse {
+  repeated VectorSearchResult results = 1;
+  int32 total_found = 2;
+  float search_time_ms = 3;
+  VectorSearchMetadata metadata = 4;
+}
+
+// Vector search result
+message VectorSearchResult {
+  string document_id = 1;
+  string chunk_id = 2;
+  float distance = 3;
+  float similarity = 4;
+  string text = 5;
+  DocumentInfo document_info = 6;
+  map<string, string> metadata = 7;
+}
+
+// Vector search metadata
+message VectorSearchMetadata {
+  int32 vectors_compared = 1;
+  string index_used = 2;
+  map<string, string> index_stats = 3;
+}
+
+// Search suggestions
+message SuggestionsRequest {
+  string prefix = 1;
+  int32 limit = 2;
+  SuggestionFilters filters = 3;
+  string user_id = 4;
+}
+
+message SuggestionFilters {
+  repeated string contexts = 1; // "legal", "case", "document"
+  bool popular_only = 2;
+  bool user_history_only = 3;
+}
+
+message SuggestionsResponse {
+  repeated SearchSuggestion suggestions = 1;
+  float response_time_ms = 2;
+}
+
+message SearchSuggestion {
+  string text = 1;
+  string completion = 2;
+  float confidence = 3;
+  int32 frequency = 4; // How often this was searched
+  string category = 5; // "legal_term", "case_name", "entity"
+}
+
+// Save search query
+message SaveSearchRequest {
+  string user_id = 1;
+  string query = 2;
+  string search_type = 3; // "semantic", "keyword", "hybrid"
+  SearchFilters filters = 4;
+  int32 results_count = 5;
+  float search_time_ms = 6;
+  string session_id = 7;
+}
+
+message SaveSearchResponse {
+  string query_id = 1;
+  bool success = 2;
+}
+
+// Search history
+message SearchHistoryRequest {
+  string user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  DateRange date_range = 4;
+}
+
+message SearchHistoryResponse {
+  repeated SearchHistoryEntry entries = 1;
+  int32 total_entries = 2;
+}
+
+message SearchHistoryEntry {
+  string query_id = 1;
+  string query = 2;
+  string search_type = 3;
+  int32 results_count = 4;
+  float search_time_ms = 5;
+  google.protobuf.Timestamp searched_at = 6;
+  string session_id = 7;
+}
+
+// Search analytics
+message SearchAnalyticsRequest {
+  DateRange date_range = 1;
+  string user_id = 2; // Optional: specific user analytics
+  bool detailed = 3;
+}
+
+message SearchAnalyticsResponse {
+  SearchAnalytics analytics = 1;
+  google.protobuf.Timestamp generated_at = 2;
+}
+
+message SearchAnalytics {
+  int64 total_searches = 1;
+  int64 unique_users = 2;
+  float avg_search_time_ms = 3;
+  float avg_results_per_query = 4;
+  TopQueries top_queries = 5;
+  SearchTypeBreakdown search_types = 6;
+  PopularFilters popular_filters = 7;
+  UserEngagement engagement = 8;
+}
+
+message TopQueries {
+  repeated QueryStats queries = 1;
+}
+
+message QueryStats {
+  string query = 1;
+  int32 count = 2;
+  float avg_results = 3;
+  float avg_time_ms = 4;
+}
+
+message SearchTypeBreakdown {
+  int32 semantic_searches = 1;
+  int32 keyword_searches = 2;
+  int32 hybrid_searches = 3;
+  int32 vector_searches = 4;
+}
+
+message PopularFilters {
+  map<string, int32> document_types = 1;
+  map<string, int32> date_ranges = 2;
+  map<string, int32> case_ids = 3;
+}
+
+message UserEngagement {
+  float avg_session_duration_minutes = 1;
+  float avg_queries_per_session = 2;
+  int32 repeat_users = 3;
+  float click_through_rate = 4;
+}
+
+// Document indexing
+message IndexDocumentRequest {
+  string document_id = 1;
+  string title = 2;
+  string content = 3;
+  DocumentInfo document_info = 4;
+  repeated DocumentChunk chunks = 5;
+  bool force_reindex = 6;
+}
+
+message DocumentChunk {
+  string chunk_id = 1;
+  string text = 2;
+  repeated float embedding = 3;
+  int32 chunk_index = 4;
+  map<string, string> metadata = 5;
+}
+
+message IndexDocumentResponse {
+  bool success = 1;
+  string document_id = 2;
+  int32 chunks_indexed = 3;
+  float indexing_time_ms = 4;
+  repeated string warnings = 5;
+}
+
+// Remove from index
+message RemoveIndexRequest {
+  string document_id = 1;
+  string reason = 2;
+}
+
+message RemoveIndexResponse {
+  bool success = 1;
+  int32 chunks_removed = 2;
+  string message = 3;
+}

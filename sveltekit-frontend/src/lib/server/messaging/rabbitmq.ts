@@ -1,8 +1,7 @@
 import * as amqp from 'amqplib';
-import type * as amqpTypes from 'amqplib';
 
-let connection: amqpTypes.Connection | null = null;
-let channel: amqpTypes.Channel | null = null;
+let connection: amqp.Connection | null = null;
+let channel: amqp.Channel | null = null;
 let connectionFailed = false;
 
 function getRabbitMQUrls(): string[] {
@@ -15,7 +14,7 @@ function getRabbitMQUrls(): string[] {
   return urls;
 }
 
-async function connectWithFallback(): Promise<amqpTypes.Connection | null> {
+async function connectWithFallback(): Promise<amqp.Connection | null> {
   const urls = getRabbitMQUrls();
   for (const url of urls) {
     try {
@@ -31,7 +30,7 @@ async function connectWithFallback(): Promise<amqpTypes.Connection | null> {
   return null;
 }
 
-export async function getRabbitMQChannel(): Promise<amqpTypes.Channel | null> {
+export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
   if (connectionFailed) return null;
 
   if (!channel) {
@@ -41,7 +40,7 @@ export async function getRabbitMQChannel(): Promise<amqpTypes.Channel | null> {
       connectionFailed = true;
       return null;
     }
-    connection.on('error', (err) => {
+    connection.on('error', (err: Error) => {
       console.error('RabbitMQ connection error:', err);
       connectionFailed = true;
       void closeRabbitMQConnection();
@@ -62,7 +61,7 @@ export async function closeRabbitMQConnection(): Promise<void> {
     try {
       await channel.close();
       console.log('RabbitMQ channel closed.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error closing channel:', err);
     } finally {
       channel = null;
@@ -72,7 +71,7 @@ export async function closeRabbitMQConnection(): Promise<void> {
     try {
       await connection.close();
       console.log('RabbitMQ connection closed.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error closing connection:', err);
     } finally {
       connection = null;
@@ -83,9 +82,10 @@ export async function closeRabbitMQConnection(): Promise<void> {
 export async function publishMessage(
   queueName: string,
   message: object,
-  options?: amqpTypes.Options.Publish
+  options?: amqp.Options.Publish
 ): Promise<boolean> {
   const ch = await getRabbitMQChannel();
   if (!ch) return false;
   await ch.assertQueue(queueName, { durable: true });
-  return ch.sen
+  return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
+}
