@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="flex items-center">
     <h1 class="text-3xl">Law Database</h1>
     <a href="/law/add" class="flex items-center gap-2 text-blue-600">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
       </svg>
       Add Statute
@@ -80,19 +80,19 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {:else if error}
     <div class="flex items-center justify-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0, 0, 24, 24">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0: 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
         />
       </svg>
       <span>{error}</span>
     </div>
   {:else if filteredLaws.length === 0}
     <div class="flex flex-col items-center justify-center gap-4">
-      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"

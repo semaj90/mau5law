@@ -25,9 +25,9 @@ interface GPUCacheStats {
   clusterEfficiency: number}
 
 export class RAGMinIOGPUSOMCache {
-  private l1Cache: Map<string, CacheEntry>; // Hot cache (GPU memory)
-  private l2Cache: Map<string, CacheEntry>; // Warm cache (system RAM)
-  private l3Cache: Map<string, CacheEntry>; // Cold cache (MinIO simulation)
+  private l1Cache: Map<string: CacheEntry>; // Hot cache (GPU memory)
+  private l2Cache: Map<string: CacheEntry>; // Warm cache (system RAM)
+  private l3Cache: Map<string: CacheEntry>; // Cold cache (MinIO simulation)
   private somGrid: SOMNode[][];
   private gridWidth: number
   private gridHeight: number
@@ -395,4 +395,5 @@ export class RAGMinIOGPUSOMCache {
 
 // Singleton instance for global cache management
 export const globalGPUCache = new RAGMinIOGPUSOMCache();
+
 

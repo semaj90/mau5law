@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   LegalSearchCombobox.svelte
   Sophisticated legal search component with:
   - Vector search integration
@@ -77,7 +77,7 @@ import type { SearchResult } from '$lib/types';
     recent: Clock
   };
   const typeColors: Record<string string> = {
-    case, 'text-blue-600',
+    case: 'text-blue-600',
     evidence: 'text-red-600',
     precedent: 'text-purple-600',
     statute: 'text-green-600',
@@ -248,7 +248,7 @@ import type { SearchResult } from '$lib/types';
       aria-label="Clear search"
       title="Clear search"
     >
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24" aria-hidden="true" focusable="false">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24" aria-hidden="true" focusable="false">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12" />
       </svg>
     </button>

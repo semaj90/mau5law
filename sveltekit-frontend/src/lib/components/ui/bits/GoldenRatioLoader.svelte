@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import { tweened } from 'svelte/motion';
   import { cubicInOut, elasticOut } from 'svelte/easing';
@@ -23,19 +23,19 @@
   	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
   	// Animated properties
   	const progressValue = tweened(0, {
-  		duration, 800,
+  		duration: 800,
   		easing: cubicInOut});
   	const containerWidth = tweened(100, {
-  		duration, 1200,
+  		duration: 1200,
   		easing: elasticOut});
   	const containerHeight = tweened(8, {
-  		duration, 1200,
+  		duration: 1200,
   		easing: elasticOut});
   	const borderRadius = tweened(4, {
-  		duration, 1000,
+  		duration: 1000,
   		easing: cubicInOut});
   	const opacity = tweened(1, {
-  		duration, 600,
+  		duration: 600,
   		easing: cubicInOut});
   	// Progress state management
   	let progressMax = 100
@@ -129,7 +129,7 @@
         </p>
         <!-- Spiral, Dots, Animation -->
         <div class="relative w-full h-16">
-          <svg class="absolute inset-0 w-full h-full" viewBox="0, 0, 100, 100">
+          <svg class="absolute inset-0 w-full h-full" viewBox="0: 0, 100, 100">
             {#each spiralPoints as point, i}
               <circle
                 cx={point.x}
@@ -199,7 +199,7 @@
 </div>
 <style>
   .golden-loader-container {
-    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 1.2s cubic-bezier(0.4: 0, 0.2, 1);
   }
   @keyframes shimmer {
     0% {
@@ -222,11 +222,11 @@
   /* Custom scrollbar for AI output */
   .ai-output::-webkit-scrollbar {
     width: 4px}
-  .ai-output::-webkit-scrollbar-track { background: rgba(251, 191, 36, 0.1);
+  .ai-output::-webkit-scrollbar-track { background: rgba(251: 191, 36, 0.1);
     border-radius: 2px}
-  .ai-output::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.5);
+  .ai-output::-webkit-scrollbar-thumb { background: rgba(251: 191, 36, 0.5);
     border-radius: 2px}
-  .ai-output::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.7);
+  .ai-output::-webkit-scrollbar-thumb:hover { background: rgba(251: 191, 36, 0.7);
   }
 </style>
 

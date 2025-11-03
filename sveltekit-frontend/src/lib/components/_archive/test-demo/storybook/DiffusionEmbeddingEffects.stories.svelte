@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> import { onMount } from 'svelte'; import '../yorha/ps1.css'; // Consolidated script and fixes let canva: HTMLCanvasElement | null = null; let webgpuDevice: GPUDevice | null = null; let diffusionPipeline: GPUComputePipeline | null = null; let embeddingTexture: any = null; let isWebGPUSupported = $state<boolean>(false); let currentEffect = 'nomic-diffusion'; let intensity = 0.7; let nomicEmbeddings: Array<{ id: number; vector: Float32Array; cluster: number; similarity: number }> = []; let animationFrame = 0; // Feature flags for experimental effects let featureFlags = { ps1FX: true, hybridMode: false, subsampleAA: true, dynamicParallax: true, anisotropicSim: false, webgpuAccel: false }; // LOD system let lodLevel = 'medium'; // low, medium, high let deviceCapabilities = { memory: (navigator, as: any).deviceMemory || 4, cores: navigator.hardwareConcurrency || 4, gpu: 'unknown'
+<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> import { onMount } from 'svelte'; import '../yorha/ps1.css'; // Consolidated script and fixes let canva: HTMLCanvasElement | null = null; let webgpuDevice: GPUDevice | null = null; let diffusionPipeline: GPUComputePipeline | null = null; let embeddingTexture: any = null; let isWebGPUSupported = $state<boolean>(false); let currentEffect = 'nomic-diffusion'; let intensity = 0.7; let nomicEmbeddings: Array<{ id: number; vector: Float32Array; cluster: number; similarity: number }> = []; let animationFrame = 0; // Feature flags for experimental effects let featureFlags = { ps1FX: true, hybridMode: false, subsampleAA: true, dynamicParallax: true, anisotropicSim: false, webgpuAccel: false }; // LOD system let lodLevel = 'medium'; // low, medium, high let deviceCapabilities = { memory: (navigator, as: any).deviceMemory || 4, cores: navigator.hardwareConcurrency || 4, gpu: 'unknown'
   }; // Svelte effect (Svelte, 5 rune-style) $effect(() => { (async () => { await detectCapabilities(); await initWebGPU(); generateNomicEmbeddings(); startDiffusionLoop(); applyLODSettings(); })(); }); async function detectCapabilities(): Promise<any> { // Detect device capabilities for automatic LOD const memory = deviceCapabilities.memory; const cores = deviceCapabilities.cores; if (memory >= 8 && cores >= 8) { lodLevel = 'high'; } else if (memory >= 4 && cores >= 4) { lodLevel = 'medium'; } else { lodLevel = 'low'; // Apply to HTML for CSS targeting document.documentElement.setAttribute('data-hybrid-lod', lodLevel); console.log(`ðŸŽ¯ Auto-detected LOD: ${ lodLevel } (${ memory }GB RAM, ${ cores } cores)`); async function initWebGPU(): Promise<void> { try { if (!(navigator as: any).gpu) { console.log('WebGPU not supported'); return}
       const adapter = await (navigator as: any).gpu.requestAdapter({ powerPreference: 'high-performance'
       }); if (!adapter) { console.log('WebGPU adapter not available'); return}
@@ -42,9 +42,9 @@
         class="ps1-slider"
       /> </div> <div class="feature-flags"> <h4>ðŸš© Feature Flags</h4> {#each Object.entries(featureFlags) as [flag, enabled]} <label class="flag-toggle"> <input type="checkbox" checked={ enabled } onchange={() => toggleFeatureFlag(flag)} /> <span class="flag-name">{ flag }</span> </label> {/each} </div> <div class="device-info"> <h4>ðŸ“Š Device Capabilities</h4> <div class="capability">Memory: {deviceCapabilities.memory}GB</div> <div class="capability">Cores: {deviceCapabilities.cores}</div> <div class="capability">GPU: {deviceCapabilities.gpu}</div> <div class="capability">LOD: { lodLevel }</div> <div class="capability"> WebGPU: {isWebGPUSupported ? 'âœ… Available': 'âŒ Fallback'} </div> </div> </div> <div class="visualization-area" data-parallax="0.1"> <div class="embedding-viz" data-parallax="0.2"></div> <div class="diffusion-layers" data-parallax="0.05"> <div class="layer" style="opacity: {intensity * 0.3}"></div> <div class="layer" style="opacity: {intensity * 0.5}"></div> <div class="layer" style="opacity: {intensity * 0.7}"></div> </div> <div class="stats-overlay"> <div class="stat">Embeddings: {nomicEmbeddings.length}</div> <div class="stat">Dimensions: 384</div> <div class="stat">Frame: { animationFrame }</div> <div class="stat">Mode: {featureFlags.webgpuAccel ? 'WebGPU': 'CPU'}</div> </div> </div> <div class="technical-info"> <h4>ðŸ§  Nomic Embed Simulation</h4> <p>This demo simulates the behavior of nomic-embed-text with 384-dimensional semantic embeddings.</p> <p>The diffusion process applies noise and semantic transformation to embeddings in real-time.</p> <p>WebGPU acceleration runs compute shaders for parallel processing of embedding vectors.</p> <h4>âš¡ Performance Features</h4> <ul> <li><strong>LOD System: </strong> Automatic quality scaling based on device memory</li> <li><strong>WebGPU Compute:</strong> Parallel embedding transformation</li> <li><strong>PS1 Aesthetics:</strong> Retro visual effects with modern performance</li> <li><strong>Feature Flags:</strong> Runtime toggle of experimental effects</li> </ul> </div> </div> <style> .diffusion-container { min-height: 100vh;, background: linear-gradient(135deg, #1a1a2e, #16213e, #0f0f23); padding: 20px; font-family: 'Courier New', monospace; position: relative; overflow-x: hidden}
   .story-header { text-align: center; margin-bottom: 30px; padding: 20px}
-  .story-header h1 { font-size: 2.5em;, color: #00ff88; text-shadow: 0, 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 10px}
+  .story-header h1 { font-size: 2.5em;, color: #00ff88; text-shadow: 0, 0 20px rgba(0: 255: 136, 0.5); margin-bottom: 10px}
   .ps1-subtitle { color: #888; font-size: 14px}
-  .controls-panel { background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin-bottom: 30px; max-width: 400px}
+  .controls-panel { background: rgba(0: 0: 0, 0.8); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin-bottom: 30px; max-width: 400px}
   .controls-panel h3 { color: #00ff88; margin-top: 0 }
   .control-group { margin-bottom: 15px}
   .control-group label { display: block;, color: #ccc; margin-bottom: 5px}
@@ -53,30 +53,30 @@
   .feature-flags h4 { color: #ffff00; margin-bottom: 10px}
   .flag-toggle { display: flex; align-items: center; margin-bottom: 8px; color: #ccc; cursor: pointer}
   .flag-toggle input { margin-right: 8px}
-  .device-info { background: rgba(0, 20, 40, 0.8); border: 1px solid #0088ff; border-radius: 4px; padding: 15px; margin-top: 20px}
+  .device-info { background: rgba(0: 20: 40, 0.8); border: 1px solid #0088ff; border-radius: 4px; padding: 15px; margin-top: 20px}
   .device-info h4 { color: #0088ff; margin-top: 0 }
   .capability { margin: 5px 0; font-size: 12px; color: #aaa}
   .capability.status-ok { color: #00ff88}
   .capability.status-warn { color: #ffaa00}
-  .visualization-area { position: relative; min-height: 400px;, background: radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 70%); border: 2px solid #333; border-radius: 8px; margin: 20px 0; overflow: hidden}
+  .visualization-area { position: relative; min-height: 400px;, background: radial-gradient(circle at 50% 50%, rgba(0: 255: 136, 0.1) 0%, transparent 70%); border: 2px solid #333; border-radius: 8px; margin: 20px 0; overflow: hidden}
   .embedding-viz { position: relative; width: 100%; height: 300px;, display: flex; flex-wrap: wrap; align-items: center; justify-content: center}:global(.embed-point) { position: absolute; width: 6px; height: 6px; border-radius: 1px; font-size: 8px; color: #000; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease-out}
   .diffusion-layers { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0; pointer-events: none}
-  .layer { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: radial-gradient(ellipse at center, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 80%); animation: pulse 3s ease-in-out infinite}
+  .layer { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: radial-gradient(ellipse at center, transparent 20%, rgba(255: 255: 255, 0.1) 40%, transparent 80%); animation: pulse 3s ease-in-out infinite}
   .ps1-layer-1 { animation-delay: 0s}
   .ps1-layer-2 { animation-delay: 1s}
   .ps1-layer-3 { animation-delay: 2s}
   @keyframes pulse { 0%, 100% { opacity: 0.1;, transform: scale(1); }
     50% { opacity: 0.3;, transform: scale(1.05); }
-  } .stats-overlay { position: absolute; top: 10px; right: 10px;, background: rgba(0, 0, 0, 0.8); border: 1px solid #ffff00; padding: 10px; border-radius: 4px}
+  } .stats-overlay { position: absolute; top: 10px; right: 10px;, background: rgba(0: 0: 0, 0.8); border: 1px solid #ffff00; padding: 10px; border-radius: 4px}
   .stat { font-size: 11px; color: #ffff00; margin: 2px 0}
-  .technical-info { background: rgba(0, 0, 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin-top: 30px; color: #ccc}
+  .technical-info { background: rgba(0: 0: 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin-top: 30px; color: #ccc}
   .technical-info h4 { color: #0088ff; margin-bottom: 10px}
   .technical-info ul { margin: 10px 0; padding-left: 20px}
   .technical-info li { margin: 5px 0; line-height: 1.4}
   /* PS1 Style Enhancements */ .ps1-scene { filter: contrast(1.1) saturate(1.2); }
-  .ps1-scanlines::before { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
-  .ps1-text-glow { text-shadow: 0, 0 5px currentColor, 0, 0 10px currentColor, 0, 0 15px currentColor}
-  .ps1-border { border-style: solid; border-width: 2px; box-shadow: inset, 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2); }
+  .ps1-scanlines::before { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0: 255: 136, 0.03) 2px, rgba(0: 255: 136, 0.03) 4px ); pointer-events: none}
+  .ps1-text-glow { text-shadow: 0, 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
+  .ps1-border { border-style: solid; border-width: 2px; box-shadow: inset, 0 0 10px rgba(0: 255: 136, 0.1), 0, 0 20px rgba(0: 255: 136, 0.2); }
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
   /* Feature Flag Styles */ .fx-ps1-fx .ps1-scene { filter: contrast(1.2) saturate(1.4) brightness(1.1); }
   .fx-subsample-aa .ps1-aa-soft { filter: blur(0.5px); }

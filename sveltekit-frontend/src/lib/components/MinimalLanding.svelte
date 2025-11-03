@@ -1,4 +1,4 @@
-﻿<svelte:head>
+<svelte:head>
 	<title>Minimal Landing Â· Deeds Web App</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
 </svelte:head>
@@ -10,7 +10,7 @@
 	:root {
 		--accent: #ff3e00
 		--text: #333
-		--base-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+		--base-font: system-ui, -apple-system: "Segoe UI", Roboto: "Helvetica Neue", Arial}
 	.minimal-landing {
 		padding: 2rem
 		max-width: 72ch

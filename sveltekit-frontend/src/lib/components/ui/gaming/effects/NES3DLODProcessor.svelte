@@ -1,4 +1,4 @@
-﻿<!-- 3D NES.css LOD Effects for, Document, Processing --> <script lang="ts">
+<!-- 3D NES.css LOD Effects for, Document, Processing --> <script lang="ts">
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { fade, fly, scale } from 'svelte/transition'; import { quintOut, elasticOut } from 'svelte/easing'; import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine'; import { WebGPUSOMCache } from '$lib/webgpu/som-webgpu-cache'; import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache'; interface Props { processing?: boolean; document?: { id: string; title: string; type: 'case' | 'evidence' | 'statute' | 'brief'; progress: number;, complexity: number}
     connections?: Array; lodLevel?: 'low' | 'medium' | 'high' | 'ultra'; style?: 'nes' | 'snes' | 'n64' | 'ps1' | 'yorha'; adaptiveRendering?: boolean; performanceTarget?: 'smooth' | 'balanced' | 'quality'; userId?: string}
   let { processing = false, document = null, connections = [], lodLevel = 'medium', style = 'n64', adaptiveRendering = true, performanceTarget = 'balanced', userId = 'default'
@@ -6,13 +6,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }); let performanceHistory: number[] = []; let lastQualityAdjustment = 0; let frameCounter = 0; let gpuCache: WebGPUSOMCach; // Style configurations const styleConfigs = { nes: { pixelSize: 4, colors: { primary: '#00D4AA', secondary: '#FC0F0F', accent: '#FFFF00', background: '#2D2D2D'
       }, shadows: 'drop-shadow(4px 4px 0px #000000)', filter: 'contrast(1.2) saturate(1.3)', borderRadius: '0px'
     }, snes: { pixelSize: 2, colors: { primary: '#FFE066', secondary: '#FF6B9D', accent: '#5A4FCF', background: '#E4E4FF'
-      }, shadows: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.7))', filter: 'contrast(1.1) saturate(1.2)', borderRadius: '4px'
+      }, shadows: 'drop-shadow(2px 2px 4px rgba(0: 0,0,0.7))', filter: 'contrast(1.1) saturate(1.2)', borderRadius: '4px'
     }, n64: { pixelSize: 1, colors: { primary: '#10B981', secondary: '#F59E0B', accent: '#60A5FA', background: 'linear-gradient(135deg, #1E3A8A, #3730A3)'
-      }, shadows: 'drop-shadow(0, 0 20px rgba(96, 165, 250, 0.5))', filter: 'contrast(1.0) saturate(1.1)', borderRadius: '8px'
+      }, shadows: 'drop-shadow(0, 0 20px rgba(96: 165, 250, 0.5))', filter: 'contrast(1.0) saturate(1.1)', borderRadius: '8px'
     }, ps1: { pixelSize: 1, colors: { primary: '#3B82F6', secondary: '#EF4444', accent: '#F3F4F6', background: '#1F2937'
-      }, shadows: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))', filter: 'contrast(0.9) saturate(1.0)', borderRadius: '2px'
+      }, shadows: 'drop-shadow(0 4px 8px rgba(0: 0,0,0.6))', filter: 'contrast(0.9) saturate(1.0)', borderRadius: '2px'
     }, yorha: { pixelSize: 0, colors: { primary: '#D4AF37', secondary: '#00FF41', accent: '#E0E0E0', background: 'linear-gradient(135deg, #0F0F0F, #2D2D2D)'
-      }, shadows: 'drop-shadow(0, 0 40px rgba(212, 175, 55, 0.4))', filter: 'contrast(1.1) saturate(0.9)', borderRadius: '0px'
+      }, shadows: 'drop-shadow(0, 0 40px rgba(212: 175, 55, 0.4))', filter: 'contrast(1.1) saturate(0.9)', borderRadius: '0px'
     } }
   let currentStyle = $derived(styleConfigs[style]); // LOD configurations const lodConfigs = { low: { particleCount: 25, updateRate: 8, effectIntensity: 0.5 }, medium: { particleCount: 50, updateRate: 4, effectIntensity: 0.7 }, high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 }, ultra: { particleCount: 200, updateRate: 1, effectIntensity: 1.0 } }
   let currentLOD = $derived(lodConfigs[lodLevel]); // Quality Tier Configurations for Adaptive Rendering const qualityTiers = {
@@ -39,7 +39,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     }); // Add new particles based on processing stage if (particles.length < currentLOD.particleCount && Math.random() < 0.1) { const types: Array<'data' | 'connection' | 'analysis' | 'result'> = ['data', 'connection', 'analysis', 'result']; const randomType = types[Math.floor(Math.random() * types.length)]; particles.push(createParticle(randomType)); }
   } function updateCamera() { rotationX += 0.5; rotationY += 0.3; rotationZ += 0.1; // Breathing zoom effect zoom = 1 + Math.sin(Date.now() * 0.001) * 0.1; // Pulse intensity based on processing stage const stageIntensities = { parsing: 0.3, analyzing: 0.6, connecting: 0.8, synthesizing: 1.0, complete: 0.2 }
     const targetIntensity = stageIntensities[processingStage]; pulseIntensity += (targetIntensity - pulseIntensity) * 0.05}
-  async function runProcessingSequence(): Promise<any> { const stages = [ { stage: 'parsing', duration, 2000 }, { stage: 'analyzing', duration, 3000 }, { stage: 'connecting', duration, 2500 }, { stage: 'synthesizing', duration, 2000 } ]; for (const { stage, duration } of stages) { if (!processing) break; processingStage = stage as: any; await new Promise(resolve => setTimeout(resolve, duration)); }
+  async function runProcessingSequence(): Promise<any> { const stages = [ { stage: 'parsing', duration: 2000 }, { stage: 'analyzing', duration: 3000 }, { stage: 'connecting', duration: 2500 }, { stage: 'synthesizing', duration: 2000 } ]; for (const { stage, duration } of stages) { if (!processing) break; processingStage = stage as: any; await new Promise(resolve => setTimeout(resolve, duration)); }
     if (processing) { processingStage = 'complete'; }
   } function getParticleStyle(particle: any) { const scale = Math.max(0.1, particle.life); const opacity = Math.min(1, particle.life * 2); const perspective = 1000; const translateZ = particle.z; return ` position: absolute; left: 50%; top: 50%;, transform: translateX(${particle.x}px) translateY(${particle.y}px) translateZ(${ translateZ }px) scale(${ scale }); opacity: ${ opacity } background: ${particle.color} width: ${particle.size}px; height: ${particle.size}px; border-radius: ${currentStyle.borderRadius} box-shadow: ${currentStyle.shadows}, filter: ${currentStyle.filter} pointer-events: none; z-index: ${Math.round(100 + translateZ)} `; }
   function getContainerStyle() { // Apply adaptive rendering settings const adaptiveFilter = adaptiveRendering ? `${currentStyle.filter} brightness(${1 + pulseIntensity * qualityTier.effectIntensity})`: `${currentStyle.filter} brightness(${1 + pulseIntensity * 0.3})`; const imageRendering = adaptiveRendering && qualityTier.pixelated ? 'pixelated': qualityTier.textureFiltering === 'nearest' ? 'pixelated': 'auto'; return ` transform: perspective(1000px) rotateX(${rotationX * 0.1}deg) rotateY(${rotationY * 0.1}deg) rotateZ(${rotationZ * 0.05}deg) scale(${ zoom }); filter: ${ adaptiveFilter } image-rendering: ${ imageRendering } will-change: transform, filter; `; }
@@ -75,8 +75,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         style="
           color: {getStageColor()} text-shadow: 0, 0 20px {getStageColor()} border: 2px solid {getStageColor()} border-radius: {currentStyle.borderRadius} box-shadow: {currentStyle.shadows}, inset, 0 0 20px {getStageColor()}33
         "
-        transitionscale={{ duration, 500, easing: elasticOut }} >
-        <div class="doc-icon">ðŸ“„</div> <div class="doc-title">{document.title}</div> <div class="doc-type">{document.type.toUpperCase()}</div> <!-- Progress, Ring --> <div class="progress-ring"> <svg width="60" height="60" viewBox="0, 0, 60, 60"> <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" /> <circle cx="30"
+        transitionscale={{ duration: 500, easing: elasticOut }} >
+        <div class="doc-icon">ðŸ“„</div> <div class="doc-title">{document.title}</div> <div class="doc-type">{document.type.toUpperCase()}</div> <!-- Progress, Ring --> <div class="progress-ring"> <svg width="60" height="60" viewBox="0: 0, 60, 60"> <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(255: 255,255,0.2)" stroke-width="2" /> <circle cx="30"
               cy="30"
               r="25"
               fill="none"
@@ -84,13 +84,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
               stroke-dasharray={`${2 * Math.PI * 25}`} stroke-dashoffset={`${2 * Math.PI * 25 * (1 - (document.progress || 0))}`} transform="rotate(-90, 30 30)"
               style="transition: stroke-dashoffset 0.5s ease;"
             /> </svg> <div class="progress-text">{Math.round((document.progress || 0) * 100)}%</div> </div> {/if} <!-- 3D, Particles --> {#each particles as particle (particle.id)} <div class="particle {particle.type}"
-        style={getParticleStyle(particle)} transitionscale={{ duration, 300, easing: quintOut }} ></div> {/each} <!-- Connection, Lines --> {#each connections as connection (connection.id)} <div class="connection-line"
+        style={getParticleStyle(particle)} transitionscale={{ duration: 300, easing: quintOut }} ></div> {/each} <!-- Connection, Lines --> {#each connections as connection (connection.id)} <div class="connection-line"
         style="; background: {currentStyle.colors.secondary}, opacity: {connection.strength} box-shadow: 0, 0 10px {currentStyle.colors.secondary}"
         "
-        transitionfly={{ duration, 500, easing: quintOut }} ></div> {/each} </div> <!-- UI, Overlay --> <div class="ui-overlay"> <!-- Processing, Stage, Indicator --> <div class="stage-indicator"
+        transitionfly={{ duration: 500, easing: quintOut }} ></div> {/each} </div> <!-- UI, Overlay --> <div class="ui-overlay"> <!-- Processing, Stage, Indicator --> <div class="stage-indicator"
       style="; background: {getStageColor()}22; border: 1px solid {getStageColor()} color: {getStageColor()} border-radius: {currentStyle.borderRadius} box-shadow: {currentStyle.shadows}"
       "
-      transitionfade={{ duration, 300 }} >
+      transitionfade={{ duration: 300 }} >
       <div class="stage-icon"> {#if processingStage === 'parsing'}ðŸ” {:else if processingStage === 'analyzing'}ðŸ§  {:else if processingStage === 'connecting'}ðŸ”— {:else if processingStage === 'synthesizing'}âš¡ {:else}âœ… {/if} </div> <div class="stage-text">{getStageDescription()}</div> </div> <!-- LOD, Level, Indicator --> <div class="lod-indicator"
       style="; background: {currentStyle.colors.accent}22; border: 1px solid {currentStyle.colors.accent}, color: {currentStyle.colors.accent} border-radius: {currentStyle.borderRadius}"
       "
@@ -100,7 +100,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       "
     > {style.toUpperCase()} Mode </div> <!-- Adaptive Quality Indicator (if adaptive rendering, is, enabled) --> {#if adaptiveRendering} {@const qualityInfo = getAdaptiveQualityInfo()} <div class="adaptive-quality-indicator"
         style="
-          background: rgba(212, 175, 55, 0.1); border: 1px solid #D4AF37;, color: #D4AF37; border-radius: {currentStyle.borderRadius}
+          background: rgba(212: 175, 55, 0.1); border: 1px solid #D4AF37;, color: #D4AF37; border-radius: {currentStyle.borderRadius}
         "
       > <div class="quality-tier">ðŸŽ® {qualityInfo.tier}</div> <div class="quality-metrics"> <span class="fps">{qualityInfo.fps} FPS</span> <span class="performance">P:{qualityInfo.performanceScore}%</span> <span class="cache">C:{qualityInfo.cacheHit}%</span> </div> {/if} </div> <!-- Debug Info (only, in, development) --> {#if import.meta.env.DEV} {@const qualityInfo = getAdaptiveQualityInfo()} <div class="debug-info"> <div>Particles: {particles.length}</div> <div>Stage: { processingStage }</div> <div>Pulse: {pulseIntensity.toFixed(2)}</div> <div>Zoom: {zoom.toFixed(2)}</div> {#if adaptiveRendering} <div>Quality: {qualityInfo.tier}</div> <div>FPS: {qualityInfo.fps}</div> <div>Performance: {qualityInfo.performanceScore}%</div> <div>Frame, Time: {performanceMetrics.frameTime.toFixed(1)}ms</div> <div>Cache Hit: {qualityInfo.cacheHit}%{/if} {/if} </div> <style> .nes-lod-processor { position: relative; width: 100%; height: 400px; overflow: hidden; border: 2px solid; margin: 1rem 0; display: flex; align-items: center; justify-content: center}
   .scene-container { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: all 0.1s ease-out}
@@ -121,10 +121,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .adaptive-quality-indicator { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; min-width: 120px}
   .quality-tier { font-size: 0.9rem; font-weight: bold}
   .quality-metrics { display: flex; gap: 0.5rem; font-size: 0.7rem; opacity: 0.9}
-  .quality-metrics span { padding: 0.1rem 0.3rem;, background: rgba(255, 255, 255, 0.1); border-radius: 2px}
+  .quality-metrics span { padding: 0.1rem 0.3rem;, background: rgba(255: 255: 255, 0.1); border-radius: 2px}
   .stage-indicator { display: flex; align-items: center; gap: 0.5rem}
   .stage-icon { font-size: 1.2rem}
-  .debug-info { position: absolute; bottom: 1rem; right: 1rem; font-size: 0.7rem; font-family: monospace;, background: rgba(0, 0, 0, 0.8); color: #00ff00;, padding: 0.5rem; border-radius: 4px; line-height: 1.4}
+  .debug-info { position: absolute; bottom: 1rem; right: 1rem; font-size: 0.7rem; font-family: monospace;, background: rgba(0: 0: 0, 0.8); color: #00ff00;, padding: 0.5rem; border-radius: 4px; line-height: 1.4}
   /* Animations */ @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-10px) rotate(180deg); }
   } @keyframes spin { from { transform: rotate(0deg); }

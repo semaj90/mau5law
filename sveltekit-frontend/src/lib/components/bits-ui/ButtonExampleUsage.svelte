@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   /**
    * Usage Examples for bits-ui Button Component
    * This demonstrates how to use the ButtonExample component in Svelte, 5
@@ -72,7 +72,7 @@
         Disabled Button
       </ButtonExample>
     </div>
-    <!-- Integration with Svelte, 5, stores -->
+    <!-- Integration with Svelte: 5, stores -->
     <div class="flex gap-4">
       <ButtonExample onclick={counterStore.decrement}>
         <span class="i-lucide-minus h-4" />

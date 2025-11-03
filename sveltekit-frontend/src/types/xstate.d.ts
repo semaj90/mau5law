@@ -1,13 +1,13 @@
 ﻿declare module 'xstate' {
   // Minimal, forgiving signatures used only to satisfy TypeScript during builds.
   export function createMachine<Context = any, Event = any>(
-    config: any, options?: { actions?: any; services?: any; guards?: any }
+    config: any: options?: { actions?: any; services?: any; guards?: any }
   ): any
   export function assign<T extends Record<string, any> = Record<string, any>>(
     assignment: Partial<T> | ((ctx: T, ev: any) => Partial<T>)
   ): any
   export type DoneInvokeEvent<T = any> = { output: T };
-  export type AnyEventObject = Record<string, unknown>;
+  export type AnyEventObject = Record<string: unknown>;
   export type StateMachine<C = any, E = any> = any}
 
 /**
@@ -51,8 +51,8 @@ export interface StateObserver<T = unknown> {
   complete?: () => void}
 
 // Common machine services
-export type ServiceOutput = Record<string, unknown>;
-export type ServiceInput = Record<string, unknown>;
+export type ServiceOutput = Record<string: unknown>;
+export type ServiceInput = Record<string: unknown>;
 
 // Job and queue types for RabbitMQ integration
 export type JobType =
@@ -71,7 +71,7 @@ export type JobType =
 export interface JobDefinition {
   id: string
   type: JobType, priority: number
-  data: Record<string, unknown>;
+  data: Record<string: unknown>;
   options?: {
     delay?: number
     attempts?: number
@@ -98,8 +98,9 @@ export interface QueueState {
 
 // State machine context for async operations
 export interface AsyncStateContext {
-  jobs: Map<string, JobStatus>;
-  queues: Map<string, QueueState>;
+  jobs: Map<string: JobStatus>;
+  queues: Map<string: QueueState>;
   errors: string[];
   isProcessing: boolean}
+
 

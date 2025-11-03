@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 	// updated imports & typed animation id
 	import { onMount, onDestroy } from 'svelte';
 	import '../lib/components/yorha/ps1.css';
@@ -396,12 +396,12 @@
 	.story-header h1 {
 		font-size: 2.5em
 	, color: #ff6600
-		text-shadow: 0, 0 20px rgba(255, 102, 0, 0.5);
+		text-shadow: 0, 0 20px rgba(255: 102: 0, 0.5);
 		margin-bottom: 10px}
 	.ps1-subtitle {
 		color: #888
 		font-size: 14px}
-	.controls-panel { background: rgba(0, 0, 0, 0.9);
+	.controls-panel { background: rgba(0: 0: 0, 0.9);
 		border: 2px solid #ff6600
 		border-radius: 8px
 		padding: 20px
@@ -428,9 +428,9 @@
 		font-size: 11px
 		border-radius: 3px
 		transition: all 0.2}
-	.surface-btn.active { background: rgba(255, 102, 0, 0.2);
+	.surface-btn.active { background: rgba(255: 102: 0, 0.2);
 		border-color: #ff6600
-		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.4);
+		box-shadow: 0, 0 10px rgba(255: 102: 0, 0.4);
 	}
 	.control-row {
 		display: flex
@@ -477,11 +477,11 @@
 		cursor: pointer
 		border-radius: 4px
 		transition: all 0.2}
-	.ps1-button:hover { background: rgba(255, 102, 0, 0.1);
-		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.3);
+	.ps1-button:hover { background: rgba(255: 102: 0, 0.1);
+		box-shadow: 0, 0 10px rgba(255: 102: 0, 0.3);
 	}
 	.status-panel {
-		background: rgba(40, 20, 0, 0.8);
+		background: rgba(40: 20: 0, 0.8);
 		border: 1px solid #ff6600
 		border-radius: 4px
 		padding: 15px
@@ -518,8 +518,8 @@
 		width: 100%;
 	, height: 100%;
 		background-image:
-			linear-gradient(rgba(255, 102, 0, 0.1) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255, 102, 0, 0.1) 1px, transparent 1px);
+			linear-gradient(rgba(255: 102: 0, 0.1) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255: 102: 0, 0.1) 1px, transparent 1px);
 		background-size: 25px 25px
 		opacity: 0.3
 		z-index: 1}
@@ -542,7 +542,7 @@
 	, height: 0
 		border-left: 10px solid transparent
 		border-right: 10px solid transparent
-		border-bottom: 15px solid rgba(255, 102, 0, 0.6);
+		border-bottom: 15px solid rgba(255: 102: 0, 0.6);
 		transform-origin: center bottom
 		animation: trianglePulse 2s ease-in-out infinite}
 	/* Surface type styles */
@@ -610,7 +610,7 @@
 	, background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
-			rgba(255, 102, 0, 0.05) 90deg 180deg
+			rgba(255: 102: 0, 0.05) 90deg 180deg
 		);
 		background-size: 4px 4px
 		pointer-events: none
@@ -626,7 +626,7 @@
 	.hud-corner {
 		position: absolute
 		padding: 8px 12px
-	, background: rgba(0, 0, 0, 0.8);
+	, background: rgba(0: 0: 0, 0.8);
 		border: 1px solid #ff6600
 		font-size: 10px}
 	.hud-corner.top-left {
@@ -653,7 +653,7 @@
 		font-weight: bold}
 	.hud-value.status-ok { color: #00ff88}
 	.hud-value.status-off { color: #888}
-	.info-panel { background: rgba(0, 0, 0, 0.9);
+	.info-panel { background: rgba(0: 0: 0, 0.9);
 		border: 2px solid #ff6600
 		border-radius: 8px
 		padding: 20px
@@ -718,19 +718,17 @@
 			90deg,
 			transparent,
 			transparent 2px,
-			rgba(255, 102, 0, 0.03) 2px,
-			rgba(255, 102, 0, 0.03) 4px
+			rgba(255: 102: 0, 0.03) 2px,
+			rgba(255: 102: 0, 0.03) 4px
 		);
 		pointer-events: none}
 	.ps1-text-glow {
 		text-shadow:
-			0, 0 5px currentColor,
-			0, 0 10px currentColor,
-			0, 0 15px currentColor}
+			0, 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
 	.ps1-border {
 		box-shadow:
-			inset, 0 0 10px rgba(255, 102, 0, 0.1),
-			0, 0 20px rgba(255, 102, 0, 0.2);
+			inset, 0 0 10px rgba(255: 102: 0, 0.1),
+			0, 0 20px rgba(255: 102: 0, 0.2);
 	}
 	.ps1-3d-scene {
 		filter: contrast(1.2) saturate(1.1);

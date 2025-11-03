@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { useMachine } from '@xstate/svelte';
@@ -477,7 +477,7 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .ai-assistant-machine-demo {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .prose {
     max-width: none}
   .prose pre {

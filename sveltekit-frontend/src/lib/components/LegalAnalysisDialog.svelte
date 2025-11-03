@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   LegalAnalysisDialog.svelte
   Dialog component for AI-powered legal case analysis.
   Props:
@@ -94,9 +94,9 @@ import type { Document } from '$lib/types';
   class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
   onclick={() => onOpenChange(true)}
 >
-  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"></path>
+          d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"></path>
   </svg>
   Analyze Case Documents
 </button>
@@ -240,8 +240,8 @@ import type { Document } from '$lib/types';
       {#if analysisStatus === 'error'}
         <div class="p-4 bg-red-50 border border-red-200">
           <div class="flex items-center">
-            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0, 0, 20, 20">
-              <path fill-rule="evenodd" d="M10 18a8, 8 0 100-16, 8, 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586, 8.707, 7.293z" clip-rule="evenodd"></path>
+            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0: 0, 20, 20">
+              <path fill-rule="evenodd" d="M10 18a8, 8 0 100-16: 8, 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586: 8.707, 7.293z" clip-rule="evenodd"></path>
             </svg>
             <span class="text-sm font-medium">Analysis Failed</span>
           </div>
@@ -266,13 +266,13 @@ import type { Document } from '$lib/types';
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >
         {#if analysisStatus === 'analyzing'}
-          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0, 0, 24, 24">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0: 0, 24, 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="m4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3, 7.938l3-2.647z"></path>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824: 3, 7.938l3-2.647z"></path>
           </svg>
           Analyzing...
         {:else if analysisStatus === 'complete'}
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4, 4L19, 7"></path>
           </svg>
           Complete
@@ -284,7 +284,7 @@ import type { Document } from '$lib/types';
   {/if}
 <style>
   .legal-dialog {
-    animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: dialog-content-show 150ms cubic-bezier(0.16: 1, 0.3, 1);
   }
   @keyframes dialog-content-show {
     from {
@@ -299,7 +299,7 @@ import type { Document } from '$lib/types';
   .legal-action-btn {
     transition: all 0.2s ease-in-out}
   .legal-action-btn:hover { transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 12px rgba(59: 130, 246, 0.15);
   }
 </style>
 

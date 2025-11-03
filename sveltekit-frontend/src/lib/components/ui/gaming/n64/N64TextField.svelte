@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -37,10 +37,8 @@ https://svelte.dev/e/js_parse_error -->
    , outline: none
     font-family:
       system-ui,
-      -apple-system,
-      'Segoe UI',
-      Roboto,
-      'Helvetica Neue',
+      -apple-system: 'Segoe UI',
+      Roboto: 'Helvetica Neue',
       Arial
     font-size: 0.95rem
    , transition: box-shadow 0.12s ease,

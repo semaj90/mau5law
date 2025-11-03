@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
 <script lang="ts">
@@ -168,6 +168,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     padding: 0.08rem 0.4rem
     border-radius: 0.25rem
    , background: rgba(255,255,255,0.03);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace}
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Helvetica Neue", monospace}
 </style>
 

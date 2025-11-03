@@ -1,5 +1,5 @@
-﻿<!-- YoRHa Detective Command, Center, Component --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { goto } from '$app/navigation'; import { page } from '$app/state'; import type { Case, Evidence, User } from '$lib/types/legal-document'; import  YoRHaDetectiveModal  from "./YoRHaDetectiveModal.svelte"; import  YoRHaDetectiveForm  from "./YoRHaDetectiveForm.svelte"; import  YoRHaDetectiveNotification  from "./YoRHaDetectiveNotification.svelte"; // Props interface Props { currentUser?: User; systemData?: { activeCases: number; evidenceItems: number; personsOfInterest: number; aiQueries: number; systemLoad: number; gpuUtilization: number; memoryUsage: number;, networkLatency: number}
-  } let { currentUser = undefined, systemData = { activeCases: 12, evidenceItems: 247, personsOfInterest: 8, aiQueries: 1543, systemLoad: 34, gpuUtilization, 67, memoryUsage: 42, networkLatency: 23 }
+<!-- YoRHa Detective Command, Center, Component --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { goto } from '$app/navigation'; import { page } from '$app/state'; import type { Case, Evidence, User } from '$lib/types/legal-document'; import  YoRHaDetectiveModal  from "./YoRHaDetectiveModal.svelte"; import  YoRHaDetectiveForm  from "./YoRHaDetectiveForm.svelte"; import  YoRHaDetectiveNotification  from "./YoRHaDetectiveNotification.svelte"; // Props interface Props { currentUser?: User; systemData?: { activeCases: number; evidenceItems: number; personsOfInterest: number; aiQueries: number; systemLoad: number; gpuUtilization: number; memoryUsage: number;, networkLatency: number}
+  } let { currentUser = undefined, systemData = { activeCases: 12, evidenceItems: 247, personsOfInterest: 8, aiQueries: 1543, systemLoad: 34, gpuUtilization: 67, memoryUsage: 42, networkLatency: 23 }
   }: Props = $props(); // State let activeTab = $state<string>('dashboard'); let showNewCaseModal = $state<boolean>(false); let showAIAssistant = $state<boolean>(false); let currentTime = $state(new Date()); let notification = $state({ show: false, message: '', type: 'info' }); // Navigation items const navigationItems = [ { id: 'dashboard', label: 'COMMAND CENTER', icon: 'âŒ˜', active: true }, { id: 'evidence', label: 'EVIDENCE', icon: 'ðŸ”', route: '/evidenceboard' }, { id: 'persons', label: 'PERSONS OF INTEREST', icon: 'ðŸ‘¤', route: '/yorha/persons' }, { id: 'analysis', label: 'ANALYSIS', icon: 'ðŸ“Š', route: '/yorha/analysis' }, { id: 'search', label: 'GLOBAL SEARCH', icon: 'ðŸ”Ž', route: '/yorha/search' }, { id: 'terminal', label: 'TERMINAL', icon: 'ðŸ’»', route: '/yorha/terminal' } ]; // Active cases data (mock) let activeCases = $state([ { id: 'CASE-2024-087', title: 'Corporate Espionage Investigation', status: 'active', priority: 'high', lastUpdate: '2 hours ago' }, { id: 'CASE-2024-088', title: 'Missing Person Dr. Sarah Chen', status: 'active', priority: 'medium', lastUpdate: '4 hours ago' }, { id: 'CASE-2024-089', title: 'Financial Fraud Analysis', status: 'pending', priority: 'low', lastUpdate: '1 day ago' } ]); // Form fields for new case const newCaseFormFields = [ { name: 'title', label: 'CASE TITLE', type: 'text', required: true, placeholder: 'e.g., The Missing Android'
     }, {
       name: 'description', label: 'CASE DESCRIPTION / SYNOPSIS', type: 'textarea', required: true, placeholder: 'Initial details of the investigation...', rows: 4 }, {
@@ -14,14 +14,14 @@
   } function handleGlobalSearch() { goto('/yorha/search'); }
   function getCasePriorityColor(priority: string): string { switch (priority) { case, 'high': return 'border-red-400 bg-red-400/10 text-red-300'; case, 'medium': return 'border-yellow-400 bg-yellow-400/10 text-yellow-300'; case, 'low': return 'border-green-400 bg-green-400/10 text-green-300'; default: return 'border-gray-400 bg-gray-400/10 text-gray-300'; }
   } function getCaseStatusColor(status: string): string { switch (status) { case, 'active': return 'text-green-400'; case, 'pending': return 'text-yellow-400'; case, 'closed': return 'text-gray-400'; default: return 'text-gray-400'; }
-  } </script> <!-- YoRHa Detective, Command, Center --> <div class="yorha-detective-command-center min-h-screen bg-yorha-sand text-yorha-dark"> <!-- Header --> <header class="yorha-header"> <div class="header-content"> <div class="brand-section"> <h1 class="command-center-title">COMMAND CENTER</h1> <p class="timestamp">YoRHa Detective Interface - {formatDateTime(currentTime)}</p> </div> <div class="header-actions"> <button class="header-btn" onclick={ openNewCaseModal }> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6"></path> </svg> NEW CASE </button> <button class="header-btn" onclick={ handleGlobalSearch }> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round"
+  } </script> <!-- YoRHa Detective, Command, Center --> <div class="yorha-detective-command-center min-h-screen bg-yorha-sand text-yorha-dark"> <!-- Header --> <header class="yorha-header"> <div class="header-content"> <div class="brand-section"> <h1 class="command-center-title">COMMAND CENTER</h1> <p class="timestamp">YoRHa Detective Interface - {formatDateTime(currentTime)}</p> </div> <div class="header-actions"> <button class="header-btn" onclick={ openNewCaseModal }> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6"></path> </svg> NEW CASE </button> <button class="header-btn" onclick={ handleGlobalSearch }> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M21 21l-6-6m2-5a7, 7 0 11-14, 0, 7, 7, 0, 0114 0z"
-            ></path> </svg> GLOBAL SEARCH </button> <button class="header-btn" onclick={() => (showAIAssistant = true)}> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round"
+              d="M21 21l-6-6m2-5a7, 7 0 11-14: 0, 7: 7, 0, 0114 0z"
+            ></path> </svg> GLOBAL SEARCH </button> <button class="header-btn" onclick={() => (showAIAssistant = true)}> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
+              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
             ></path> </svg> AI ASSISTANT </button> </div> </div> </header> <!-- Main, Content --> <main class="main-content"> <!-- Sidebar --> <aside class="yorha-sidebar"> <h2 class="sidebar-title">YORHA DETECTIVE</h2> <nav class="sidebar-nav"> {#each Array.isArray(navigationItems) ? navigationItems: [] as item} <button class="sidebar-link" {activeTab === (item, as { route?: any; id?: any; icon?: any; label?: any }).id ? 'active': ''}"
             onclick={() => handleNavigation(item)} >
             <span class="nav-icon"
@@ -35,11 +35,11 @@
               ></div> </div> </div> <div class="health-metric"> <div class="health-label"> <span>NETWORK</span> <span class="health-value">{systemData.networkLatency}ms</span> </div> <div class="network-status"> <div class="network-indicator" {systemData.networkLatency < 50 ? 'excellent': systemData.networkLatency < 100 ? 'good': 'poor'}"
               ></div> <span class="network-label"> {systemData.networkLatency < 50 ? 'EXCELLENT': systemData.networkLatency < 100 ? 'GOOD': 'POOR'} </span> </div> </div> </div> </div> </div> </main> </div> <!-- New, Case, Modal --> {#if showNewCaseModal} <YoRHaDetectiveModal showModal={ showNewCaseModal } title="CREATE NEW, CASE, FILE" onClose={ closeNewCaseModal }> <YoRHaDetectiveForm fields={ newCaseFormFields } onsubmit={ handleNewCaseSubmit } submitText="SAVE TO, DATABASE"
       submitClass="yorha-btn-success"
-    /> </YoRHaDetectiveModal> {/if} <!-- AI, Assistant, Modal --> {#if showAIAssistant} <YoRHaDetectiveModal showModal={ showAIAssistant } title="AI, ASSISTANT" onClose={() => (showAIAssistant = false)}> <div class="ai-assistant-content"> <div class="ai-status-section"> <div class="ai-status-indicator"></div> <span class="ai-status-text">Neural Network Status: ACTIVE</span> </div> <div class="ai-capabilities"> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round"
+    /> </YoRHaDetectiveModal> {/if} <!-- AI, Assistant, Modal --> {#if showAIAssistant} <YoRHaDetectiveModal showModal={ showAIAssistant } title="AI, ASSISTANT" onClose={() => (showAIAssistant = false)}> <div class="ai-assistant-content"> <div class="ai-status-section"> <div class="ai-status-indicator"></div> <span class="ai-status-text">Neural Network Status: ACTIVE</span> </div> <div class="ai-capabilities"> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
-            ></path> </svg> <span>Evidence Pattern Analysis</span> </div> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z"></path> </svg> <span>Case Correlation Engine</span> </div> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24"> <path stroke-linecap="round"
+              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
+            ></path> </svg> <span>Evidence Pattern Analysis</span> </div> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z"></path> </svg> <span>Case Correlation Engine</span> </div> <div class="ai-capability"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M12 6.253v13m0-13C10.832 5.477 9.246, 5 7.5 5S4.168 5.477, 3 6.253v13C4.168 18.477 5.754, 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754, 5 16.5 5c1.747, 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246, 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
@@ -67,7 +67,7 @@
   .dashboard-content { display: flex; flex-direction: column; gap: 1.5rem}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .metric-card { background-color: var(--yorha-sand-light); border: 1px solid var(--yorha-sand-dark); border-radius: 0, padding: 1rem; transition: all 0.3s ease}
-  .metric-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+  .metric-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0: 0: 0, 0.1); }
   .metric-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem}
   .metric-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8}
   .metric-icon { font-size: 1.5rem}
@@ -104,9 +104,9 @@
     50% { opacity: 0.5}
   } /* Responsive adjustments */ @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr}
     .yorha-sidebar { position: stati; c}
-  } /* AI Assistant Styles */ .header-btn.ai-assistant { background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important; color: white !important; border-color: #2E8B57 !important; font-weight: bold !important; box-shadow: 0, 0 10px rgba(46, 139, 87, 0.3) !important; animation: ai-pulse 2s infinite}
-  .header-btn.ai-assistant:hover { background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important; box-shadow: 0, 0 15px rgba(46, 139, 87, 0.5) !important}
-  @keyframes ai-pulse { 0% { box-shadow: 0, 0 10px rgba(46, 139, 87, 0.3) } 50% { box-shadow: 0, 0 20px rgba(46, 139, 87, 0.6) } 100% { box-shadow: 0, 0 10px rgba(46, 139, 87, 0.3) } }
+  } /* AI Assistant Styles */ .header-btn.ai-assistant { background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important; color: white !important; border-color: #2E8B57 !important; font-weight: bold !important; box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) !important; animation: ai-pulse 2s infinite}
+  .header-btn.ai-assistant:hover { background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important; box-shadow: 0, 0 15px rgba(46: 139: 87, 0.5) !important}
+  @keyframes ai-pulse { 0% { box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) } 50% { box-shadow: 0, 0 20px rgba(46: 139: 87, 0.6) } 100% { box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) } }
   .ai-assistant-content { padding: 1.5rem}
   .ai-status-section { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #F7F6F2; border: 1px solid #2E8B57; margin-bottom: 1rem}
   .ai-status-indicator { width: 8px; height: 8px; border-radius: 50%; background: #FF6B6B}
@@ -118,7 +118,7 @@
   .ai-query-section { margin-bottom: 1rem}
   .ai-query-label { display: block; font-weight: bold; margin-bottom: 0.5rem; color: #3D3D3D; font-size: 0.875rem}
   .ai-query-input { width: 100%; padding: 0.75rem; background: white; border: 1px solid #D1CFC7; color: #3D3D3D; font-family: inherit; font-size: 0.875rem; resize: vertical}
-  .ai-query-input:focus { outline: none; border-color: #2E8B57; box-shadow: 0, 0 0 3px rgba(46, 139, 87, 0.2); }
+  .ai-query-input:focus { outline: none; border-color: #2E8B57; box-shadow: 0, 0 0 3px rgba(46: 139: 87, 0.2); }
   .ai-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem}
   .ai-actions .yorha-btn-primary { grid-column: span 2; background: #2E8B57 !important;, color: white !important; border-color: #2E8B57 !important}
   @media (max-width: 768px) { .header-content { flex-direction: column; gap: 1rem}

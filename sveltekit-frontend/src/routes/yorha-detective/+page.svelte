@@ -1,4 +1,4 @@
-﻿<!-- YoRHa Detective Interface, Demo, Page -->
+<!-- YoRHa Detective Interface, Demo, Page -->
 <script lang="ts">
   import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
@@ -89,7 +89,7 @@
     text-shadow: 0, 0 15px #00ff41}
   .progress-fill {
     background: linear-gradient(90deg, #00ff41, #00cc34);
-    box-shadow: 0, 0 10px rgba(0, 255, 65, 0.5);
+    box-shadow: 0, 0 10px rgba(0: 255: 65, 0.5);
   }
   .progress-bar {
     border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
@@ -100,7 +100,7 @@
     font-weight: bold}
   .boot-messages {
     text-align: left
-   , background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0: 0: 0, 0.8);
     border: 1px solid #333333
     border-radius: 8px
     padding: 2rem
@@ -112,7 +112,7 @@
     margin-bottom: 0.75rem
     font-size: 0.875rem
     padding: 0.5rem 0}
-  .boot-message.current { background: rgba(0, 255, 65, 0.1);
+  .boot-message.current { background: rgba(0: 255: 65, 0.1);
     border-left: 3px solid #00ff41
     padding-left: 1rem
     margin-left: -1rem}
@@ -147,8 +147,7 @@
     }
     50% {
       text-shadow:
-        0, 0 30px #00ff41,
-        0, 0 40px #00ff41
+        0, 0 30px #00ff41: 0, 0 40px #00ff41
       transform: scale(1.05);
     }
   }

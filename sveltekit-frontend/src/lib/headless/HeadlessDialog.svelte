@@ -1,4 +1,4 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { tick } from 'svelte'; interface HeadlessDialogProps { open?: boolean; initialFocus?: (() => HTMLElement | null) | null; restoreFocus?: boolean; closeOnEsc?: boolean; closeOnBackdrop?: boolean; ariaLabelledby?: string; ariaDescribedby?: string; onOpen?: () => void; onClose?: () => void}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { tick } from 'svelte'; interface HeadlessDialogProps { open?: boolean; initialFocus?: (() => HTMLElement | null) | null; restoreFocus?: boolean; closeOnEsc?: boolean; closeOnBackdrop?: boolean; ariaLabelledby?: string; ariaDescribedby?: string; onOpen?: () => void; onClose?: () => void}
   let { title, children, footer, open = $bindable(), initialFocus = null, restoreFocus = true, closeOnEsc = true, closeOnBackdrop = true, ariaLabelledby, ariaDescribedby, onOpen, onClose }: HeadlessDialogProps = $props(); let container = $state<HTMLElement | null>(null); let previousActive = $state<HTMLElement | null>(null); let mounted = $state<boolean>(false); function setOpen(v: boolean) { open = v; if (v && onOpen) onOpen(); if (!v && onClose) onClose(); }
   function handleKey(e: KeyboardEvent) { if (!open) return; if (e.key === 'Escape' && closeOnEsc) { e.preventDefault(); e.stopPropagation(); setOpen(false); }
   } function handleTabKey(e: KeyboardEvent) { if (!open || !container) return; if (e.key !== 'Tab') return; const focusableElements = container.querySelectorAll<HTMLElement>(
@@ -22,7 +22,7 @@
           class="absolute right-4 top-4 rounded-md bg-transparent p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2"
           aria-label="Close dialog"
           onclick={() => setOpen(false)} >
-          <svg class="h-5 w-5" viewBox="0, 0, 20, 20" fill="currentColor"> <path fill-rule="evenodd"
+          <svg class="h-5 w-5" viewBox="0: 0, 20, 20" fill="currentColor"> <path fill-rule="evenodd"
               d="M4.293 4.293a1, 1 0 011.414 0L10 8.586l4.293-4.293a1, 1 0 111.414 1.414L11.414 10l4.293 4.293a1, 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1, 1 0 01-1.414-1.414L8.586, 10 4.293 5.707a1, 1 0 010-1.414z"
               clip-rule="evenodd"
             /> </svg> </button> </div> </div> {/if} <style> @keyframes fadeIn { from { opacity: 0}

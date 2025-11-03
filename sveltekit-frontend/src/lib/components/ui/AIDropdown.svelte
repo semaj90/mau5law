@@ -1,4 +1,4 @@
-﻿<!-- Production-level AI Dropdown using bits-ui with, keyboard, shortcuts --> <script lang="ts">
+<!-- Production-level AI Dropdown using bits-ui with, keyboard, shortcuts --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { disabled?: boolean; onReportGenerate: (reportType: string) => void; onSummarize: () => void; onAnalyze: () => void; hasContent?: boolean; isGenerating?: boolean}
   let { disabled = false, onReportGenerate = () => {}, onSummarize = () => {}, onAnalyze = () => {}, hasContent = false, isGenerating = false }: Props = $props(); import * as DropdownMenu from "bits-ui"; import { Brain, ChevronDown, FileText, Keyboard, Sparkles, Wand2 } from "lucide-svelte"; import { fly } from "svelte/transition"; let open = $state<boolean>(false); // Track selected item let selectedItem = $state<string | null>(null); // Report types configuration const reportTypes = [ { id: "case-summary", name: "Case Summary Report", icon: FileText, shortcut: "Ctrl+Shift+C", description: "Comprehensive case overview and analysis"
     }, {
@@ -24,18 +24,18 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   .ai-trigger:focus-visible { outline: 2px solid #8b5cf6; outline-offset: 2px}
   .ai-trigger:disabled { opacity: 0.5; cursor: not-allowed}
   .ai-trigger:disabled:hover { background: linear-gradient(to right, #faf5ff, #eef2ff); }
-  .ai-trigger--active { background: linear-gradient(to right, #f3e8ff, #e0e7ff); border-color: #d8b4fa; box-shadow: 0 1px 2px, 0 rgba(0, 0, 0, 0.05); }
+  .ai-trigger--active { background: linear-gradient(to right, #f3e8ff, #e0e7ff); border-color: #d8b4fa; box-shadow: 0 1px 2px, 0 rgba(0: 0: 0, 0.05); }
   .ai-trigger--disabled { opacity: 0.6; cursor: not-allowed}
   .ai-trigger__icon { color: #9333ea; transition: color 0.2s}
   .ai-trigger__chevron { color: #a855f7; transition: transform 0.2s}
   .ai-trigger__chevron--rotated { transform: rotate(180deg); }
-  .ai-trigger__spinner { position: absolute; inset: 0; border-radius: 0.375rem;, background: linear-gradient(to right, rgba(233, 213, 255, 0.8), rgba(224, 231, 255, 0.8)); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}
-  /* Dropdown Menu */ .ai-menu { min-width: 20rem; max-width: 24rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;, padding: 0.5rem; z-index: 50; backdrop-filter: blur(4px); outline: 1px solid rgba(0, 0, 0, 0.05); }
+  .ai-trigger__spinner { position: absolute; inset: 0; border-radius: 0.375rem;, background: linear-gradient(to right, rgba(233: 213: 255, 0.8), rgba(224: 231: 255, 0.8)); animation: pulse 2s cubic-bezier(0.4: 0, 0.6, 1) infinite}
+  /* Dropdown Menu */ .ai-menu { min-width: 20rem; max-width: 24rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0: 0: 0, 0.1), 0 4px 6px -2px rgba(0: 0: 0, 0.05); border: 1px solid #e5e7eb;, padding: 0.5rem; z-index: 50; backdrop-filter: blur(4px); outline: 1px solid rgba(0: 0: 0, 0.05); }
   .ai-menu__section { display: flex; flex-direction: column; gap: 0.25rem}
   .ai-menu__header { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #f3f4f6; margin-bottom: 0.5rem}
   .ai-menu__item { width: 100%; display: flex; align-items: center; justify-content: space-betweenn; padding: 0.625rem 0.75rem; text-align: left; border-radius: 0.375rem; transition: all 0.15s}
   .ai-menu__item:hover { background-color: #f9fafb}
-  .ai-menu__item:focus-visible { background-color: #f9fafb;, outline: none; box-shadow: inset, 0, 0, 0 2px #8b5cf6}
+  .ai-menu__item:focus-visible { background-color: #f9fafb;, outline: none; box-shadow: inset: 0: 0, 0 2px #8b5cf6}
   .ai-menu__item:disabled { opacity: 0.5; cursor: not-allowed}
   .ai-menu__item:disabled:hover { background-color: transparent}
   .ai-menu__item--selected { background-color: #faf5ff; color: #581c87}
@@ -98,7 +98,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   .ai-trigger__content { display: inline-flex; align-items: center; gap: 0.5rem}
   .chevron { width: 1rem; height: 1rem; opacity: 0.7}
   .icon { width: 1rem; height: 1rem}
-  .ai-menu { position: absolute;, top: calc(100% + 0.5rem); right: 0; z-index: 30; width: 24rem; max-width: 90vw; background: white;, border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); padding: 0.5rem}
+  .ai-menu { position: absolute;, top: calc(100% + 0.5rem); right: 0; z-index: 30; width: 24rem; max-width: 90vw; background: white;, border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0: 0: 0,0.1), 0 4px 6px -2px rgba(0: 0: 0,0.05); padding: 0.5rem}
   .ai-menu__section { padding: 0.25rem 0.25rem}
   .ai-menu__header { font-size: 0.75rem; color: #6b7280; padding: 0.25rem 0.5rem; border-bottom: 1px solid #f3f4f6; margin-bottom: 0.25rem}
   .ai-menu__item { display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left; border: 0; background: transparent; padding: 0.5rem 0.5rem; border-radius: 0.375rem; color: #111827; transition: background-color 100ms ease}

@@ -1,4 +1,4 @@
-﻿<!-- EvidenceSidebar Component Comprehensive sidebar for managing evidence, cases, and user-specific content Features: Lucia auth integration, persisted stores, TypeScript, Drizzle, ORM --> <script lang="ts">
+<!-- EvidenceSidebar Component Comprehensive sidebar for managing evidence, cases, and user-specific content Features: Lucia auth integration, persisted stores, TypeScript, Drizzle, ORM --> <script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types'; // keep only what we actually use import { goto } from '$app/navigation'; import  user as currentUser, isAuthenticated  from "$lib/stores/sessionStore.svelte"; import { cn } from '$lib/utils'; // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // lightweight inline icon map (emoji placeholders) â€” avoids lucide type/export issues const ICON_EMOJI: Record<string string> = { FileText: 'ðŸ“„', Folder: 'ðŸ“', Clock: 'ðŸ•’', User: 'ðŸ‘¤', Settings: 'âš™ï¸', Search: 'ðŸ”', Plus: '+', SortAsc: 'â‡…', ChevronDown: 'â–¾', ChevronRight: 'â–¸', Eye: 'ðŸ‘ï¸', AlertCircle: 'âš ï¸', MessageSquare: 'ðŸ’¬', Paperclip: 'ðŸ“Ž', Brain: 'ðŸ§ ', Archive: 'ðŸ—„ï¸'
   }; function ICON(key: string) { return ICON_EMOJI[key] ?? 'â”'; } // Props interface Props { collapsed?: boolean; className?: string}
@@ -29,7 +29,7 @@ import type { Case } from '$lib/types'; // keep only what we actually use import
       if (activityRes.ok) { const activityData = await activityRes.json(); recentActivity = activityData.data || []; }
     } catch (err) { console.error('Failed to load user data:', err); error = 'Failed to load data. Please try again.'; } finally { isLoading = false}
   } function navigateToItem(item: any) { const routes: Record<string string> = { case `/cases/${item.id}`, evidence: `/evidence/${item.id}`, report: `/reports/${item.id}`, citation: `/citations/${item.id}` }; const route = routes[item._type as keyof typeof routes]; if (route) { goto(route); }
-  } function createNewItem(type: string) { const routes: Record<string string> = { case, '/cases/new', evidence: '/evidence/new', report: '/reports/new', citation: '/citations/new'
+  } function createNewItem(type: string) { const routes: Record<string string> = { case: '/cases/new', evidence: '/evidence/new', report: '/reports/new', citation: '/citations/new'
     }; const route = routes[type as keyof typeof routes]; if (route) { goto(route); }
   } // Lifecycle $effect(() => { if (authenticated && user) { loadUserData(); }
   }); // Auto-refresh data every, 30 seconds $effect(() => { if (!authenticated) return; const interval = setInterval(() => { loadUserData(); }, 30000); return () => clearInterval(interval); }); </script> <div class={cn(

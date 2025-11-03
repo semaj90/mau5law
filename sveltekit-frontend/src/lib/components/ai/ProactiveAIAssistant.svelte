@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let { userId, onCaseCreated: (caseId) = > void = () => } = $props(); </script> import { onMount } from 'svelte'; import { fly, fade } from 'svelte/transition'; import { cubicOut } from 'svelte/easing'; import { writable } from 'svelte/store'; import { enhance } from '$app/forms'; // Props // State let isVisible = $state<boolean>(false); let currentPrompt = $state<string>(''); let isTyping = $state<boolean>(false); let isProcessing = $state<boolean>(false); let showCreateForm = $state<boolean>(false); let showQuickInput = $state<boolean>(false); let typewriterIndex = $state<number>(0); let currentSuggestionIndex = $state<number>(0); let currentWorkflowStep = $state<number>(0); // Form data let caseTitle = $state<string>(''); let caseDescription = $state<string>(''); let priority = $state<string>('medium'); let category = $state<string>('criminal'); // Quick input for: "what's wrong"'
 	let quickInput = $state<string>(''); let timestamp = $state<string>(''); // Prosecution workflow state let workflowAnswers = $state({ what: '', who: '', why: '', how: '', when: '', where: ''; }); // AI Assistant prompts and suggestions const aiPrompts = [
 		"ðŸ” I notice you're reviewing evidence. Should I analyze patterns for potential connections?",'
@@ -30,12 +30,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
 				}) }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); startTypewriter(`âœ… case, "${ caseTitle }" created successfully! Ready to assist with evidence collection and analysis.`); onCaseCreated((result as { data?: any }).data.id); // Reset form caseTitle = ''; caseDescription = ''; priority = 'medium'; category = 'criminal'; showCreateForm = false} else { throw new Error('Failed to create case'); }
 		} catch (error) { startTypewriter('âŒ Failed to create case. Please check your input and try again.'); } finally { isProcessing = false}
 	} $effect(() => { // Show assistant after brief delay setTimeout(() => { isVisible = true; startSelfPrompting(); }, 1000); }); </script> <div class="ai-assistant-container"> {#if isVisible} <div class="ai-assistant-panel"
-			transitionFly={{ y: 50, duration, 500, easing: cubicOut }} >
-			<!-- AI Avatar and, Status --> <div class="ai-header"> <div class="ai-avatar" class:pulsing={isTyping || isProcessing}> <div class="ai-brain">ðŸ¤–</div> <div class="status-indicator" class:active={ isTyping }></div> </div> <div class="ai-info"> <h3>Legal AI Assistant</h3> <p class="ai-status"> {#if isProcessing} Processing... {:else if isTyping} Analyzing {:else} Ready to assist {/if} </p> </div> </div> <!-- Typewriter, Display --> <div class="typewriter-container"> <div class="prompt-text"> { currentPrompt } {#if isTyping} <span class="cursor">|</span> {/if} </div> </div> <!-- Action, Buttons --> {#if !isTyping && !isProcessing && currentPrompt} <div class="action-buttons" transitionFade={{ duration, 300 }}> <button class="nes-btn is-primary"
+			transitionFly={{ y: 50, duration: 500, easing: cubicOut }} >
+			<!-- AI Avatar and, Status --> <div class="ai-header"> <div class="ai-avatar" class:pulsing={isTyping || isProcessing}> <div class="ai-brain">ðŸ¤–</div> <div class="status-indicator" class:active={ isTyping }></div> </div> <div class="ai-info"> <h3>Legal AI Assistant</h3> <p class="ai-status"> {#if isProcessing} Processing... {:else if isTyping} Analyzing {:else} Ready to assist {/if} </p> </div> </div> <!-- Typewriter, Display --> <div class="typewriter-container"> <div class="prompt-text"> { currentPrompt } {#if isTyping} <span class="cursor">|</span> {/if} </div> </div> <!-- Action, Buttons --> {#if !isTyping && !isProcessing && currentPrompt} <div class="action-buttons" transitionFade={{ duration: 300 }}> <button class="nes-btn is-primary"
 						onclick={() => showCreateForm = true} >
 						Create Case Instantly </button> <button class="nes-btn"
 						onclick={() => startTypewriter("ðŸ” Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")} >
-						Analyze Evidence </button> {/if} <!-- Quick Case, Creation, Panel --> {#if showCreateForm} <div class="case-creation-panel" transitionFly={{ y: 20, duration, 400 }}> <h4>âš¡ Instant Case Creation</h4> <!-- Quick, Templates --> <div class="quick-templates"> <h5>Quick Templates</h5> <div class="template-grid"> {#each Array.isArray(quickCaseTemplates) ? quickCaseTemplates: [] as template} <button class="template-nier-bits-card"
+						Analyze Evidence </button> {/if} <!-- Quick Case, Creation, Panel --> {#if showCreateForm} <div class="case-creation-panel" transitionFly={{ y: 20, duration: 400 }}> <h4>âš¡ Instant Case Creation</h4> <!-- Quick, Templates --> <div class="quick-templates"> <h5>Quick Templates</h5> <div class="template-grid"> {#each Array.isArray(quickCaseTemplates) ? quickCaseTemplates: [] as template} <button class="template-nier-bits-card"
 									onclick={ disabled } >
 									<div class="template-title">{template.title}</div> <div class="template-priority"> {template.priority.toUpperCase()} </div> </button> {/each} </div> </div> <!-- Custom, Case, Form --> <div class="custom-case-form"> <h5>Custom Case</h5> <div class="form-grid"> <div class="form-group"> <label for="case-title">Case Title</label><input id="case-title"
 									type="text"
@@ -50,7 +50,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
 									{#if isProcessing} Creating... {:else} Create Case {/if} </button> <button class="nes-btn"
 									onclick={() => showCreateForm = false} >
 									Cancel </button> </div> </div> </div> {/if} {/if} </div> <style> .ai-assistant-container { position: fixed; d; bottom: 20px; right: 20px; z-index: 1000; max-width: 400px}
-	.ai-assistant-panel { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid #3d4466; border-radius: 16px;, padding: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); }
+	.ai-assistant-panel { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid #3d4466; border-radius: 16px;, padding: 20px; box-shadow: 0 10px 40px rgba(0: 0: 0, 0.3); backdrop-filter: blur(10px); }
 	.ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px}
 	.ai-avatar { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%;, background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s ease}
 	.ai-avatar.pulsing { animation: pulse 2s infinite}
@@ -59,28 +59,28 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
 	.status-indicator.active { background: #f59e0b; animation: blink 1s infinite}
 	.ai-info h3 { margin: 0; color: #e5e7eb; font-size: 16px; font-weight: 600}
 	.ai-status { margin: 0; color: #9ca3af; font-size: 12px}
-	.typewriter-container { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; margin: 16px 0; min-height: 60px; display: flex; align-items: center}
+	.typewriter-container { background: rgba(255: 255: 255, 0.05); border-radius: 12px; padding: 16px; margin: 16px 0; min-height: 60px; display: flex; align-items: center}
 	.prompt-text { color: #e5e7eb; font-size: 14px; line-height: 1.5}
 	.cursor { animation: blink 1s infinite; font-weight: bold; color: #10b981}
 	.action-buttons { display: flex;, gap: 8px; margin-top: 16px}
 	.btn-primary, .btn-secondary { padding: 8px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; flex: 1 }
 	.btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white}
-	.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
-	.btn-secondary { background: rgba(255, 255, 255, 0.1); color: #e5e7eb;, border: 1px solid rgba(255, 255, 255, 0.2); }
-	.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+	.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16: 185: 129, 0.4); }
+	.btn-secondary { background: rgba(255: 255: 255, 0.1); color: #e5e7eb;, border: 1px solid rgba(255: 255: 255, 0.2); }
+	.btn-secondary:hover { background: rgba(255: 255: 255, 0.2); }
 	.case-creation-panel { margin-top: 20px; padding-top: 20px; border-top: 1px solid #3d4466}
 	.case-creation-panel h4, .case-creation-panel h5 { margin: 0, 0 12px 0; color: #e5e7eb; font-size: 14px}
 	.template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px}
-	.template-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s ease; text-align: left}
-	.template-card:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+	.template-card { background: rgba(255: 255: 255, 0.05); border: 1px solid rgba(255: 255: 255, 0.1); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s ease; text-align: left}
+	.template-card:hover { background: rgba(255: 255: 255, 0.1); transform: translateY(-1px); }
 	.template-title { color: #e5e7eb; font-size: 11px; font-weight: 600; margin-bottom: 4px}
 	.template-priority { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px}
 	.priority-low { background: #374151; color: #9ca3af } .priority-medium { background: #1f2937; color: #fbbf24 } .priority-high { background: #1f2937; color: #f97316 } .priority-urgent { background: #1f2937; color: #ef4444 } .custom-case-form { margin-top: 20px}
 	.form-group { margin-bottom: 12px}
 	.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px}
 	.form-group label { display: block;, color: #9ca3af; font-size: 11px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase}
-	.form-input, .form-textarea, .form-select { width: 100%;, background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px 12px;, color: #e5e7eb; font-size: 12px}
-	.form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: #10b981; box-shadow: 0, 0 0 2px rgba(16, 185, 129, 0.2); }
+	.form-input, .form-textarea, .form-select { width: 100%;, background: rgba(255: 255: 255, 0.05); border: 1px solid rgba(255: 255: 255, 0.1); border-radius: 6px; padding: 8px 12px;, color: #e5e7eb; font-size: 12px}
+	.form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: #10b981; box-shadow: 0, 0 0 2px rgba(16: 185: 129, 0.2); }
 	.form-actions { display: flex;, gap: 8px; margin-top: 16px}
 	@keyframes pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.05) } }
 	@keyframes blink { 0%, 50% { opacity: 1} 51%, 100% { opacity: 0} }

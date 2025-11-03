@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { browser } from '$app/environment';
   interface Route {
     name: string
@@ -64,7 +64,7 @@
     <button class="nes-btn" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
   </div>
 </nav>
-<!-- Search Modal - Svelte, 5, syntax -->
+<!-- Search Modal - Svelte: 5, syntax -->
 {#if searchOpen}
   <div
     class="search-modal-overlay"

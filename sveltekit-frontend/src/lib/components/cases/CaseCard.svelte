@@ -1,4 +1,4 @@
-﻿
+
 <script lang="ts">
 import type { Case } from '$lib/types';
   import * as ContextMenu from 'bits-ui';
@@ -200,7 +200,7 @@ import type { Case } from '$lib/types';
 {#if $open}
   <div
     class="nier-panel p-2 min-w-[200px] z-50"
-    transitionscale={{ duration, 200, start: 0.95 }}
+    transitionscale={{ duration: 200, start: 0.95 }}
   >
     <Button
       onclick={() => onView(caseData.id)}

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -532,7 +532,7 @@ if (browser) {
     max-width: 1200px
     margin: 0 auto
    , padding: 1rem
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white

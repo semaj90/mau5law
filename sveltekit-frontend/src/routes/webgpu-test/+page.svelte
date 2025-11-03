@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
   import { onMount } from 'svelte';
 
@@ -129,7 +129,7 @@ import type { User } from '$lib/types';
     max-width: 900px
     margin: 0 auto
    , padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif
     color: #111827}
 
   header {

@@ -37,14 +37,6 @@ const config = {
       publicPrefix: 'PUBLIC_', // Ensures variables starting with PUBLIC_ are exposed to client
       privatePrefix: 'PRIVATE_', // Ensures variables starting with PRIVATE_ are server-only
     },
-    vite: {
-      // prevent externalizing so SSR build can resolve Svelte packages that import @internationalized/date
-      noExternal: ['@internationalized/date', 'bits-ui'],
-      optimizeDeps: {
-        // ensure Vite pre-bundles this dependency for dev for faster, resolvable builds
-        include: ['@internationalized/date'],
-      },
-    },
   },
 };
 

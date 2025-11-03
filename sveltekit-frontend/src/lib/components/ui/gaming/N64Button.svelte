@@ -1,4 +1,4 @@
-﻿<!-- N64-Style Gaming Button Component Nintendo, 64 inspired button with authentic retro styling and legal AI integration --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; interface Props { variant?: 'a' | 'b' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'l' | 'r' | 'custom'; size?: 'sm' | 'md' | 'lg' | 'xl'; disabled?: boolean; pressed?: boolean; glowing?: boolean; soundEnabled?: boolean; vibrationEnabled?: boolean; // Legal AI integration evidenceAction?: 'analyze' | 'classify' | 'correlate' | 'submit'; confidence?: number; priority?: 'low' | 'medium' | 'high' | 'critical'; // Styling customColor?: string; class?: string; style?: string; // Events onclick?: (_event: MouseEvent) => void; onmousedown?: (_event: MouseEvent) => void; onmouseup?: (_event: MouseEvent) => void; children?: any}
+<!-- N64-Style Gaming Button Component Nintendo, 64 inspired button with authentic retro styling and legal AI integration --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; interface Props { variant?: 'a' | 'b' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'l' | 'r' | 'custom'; size?: 'sm' | 'md' | 'lg' | 'xl'; disabled?: boolean; pressed?: boolean; glowing?: boolean; soundEnabled?: boolean; vibrationEnabled?: boolean; // Legal AI integration evidenceAction?: 'analyze' | 'classify' | 'correlate' | 'submit'; confidence?: number; priority?: 'low' | 'medium' | 'high' | 'critical'; // Styling customColor?: string; class?: string; style?: string; // Events onclick?: (_event: MouseEvent) => void; onmousedown?: (_event: MouseEvent) => void; onmouseup?: (_event: MouseEvent) => void; children?: any}
   let { variant = 'a', size = 'md', disabled = false, pressed = false, glowing = false, soundEnabled = true, vibrationEnabled = false, evidenceAction, confidence, priority, customColor, class: className = '', style = '', onclick, onmousedown, onmouseup, children, ...restProps }: Props = $props(); const dispatch = createEventDispatcher(); // N64 button color scheme const buttonColors = { a: '#0066ff', // Blue A button b: '#00cc00', // Green B button: 'c-up': '#ffff00', // Yellow C buttons: 'c-down': '#ffff00',
     'c-left': '#ffff00',
     'c-right': '#ffff00', start: '#ff0000', // Red start button z: '#666666', // Gray Z trigger l: '#666666', // Gray L shoulder r: '#666666', // Gray R shoulder; custom: customColor || '#0066ff'
@@ -22,7 +22,7 @@
           {/if} {/if} </div> <!-- Priority, indicator --> {#if priority === 'critical'} <div class="n64-button__priority-pulse">{/if} </div> </button> <style> .n64-button { position: relative; border: none; background: none; cursor: pointer; user-select: none;, transition: all 0.1s ease; font-family: 'Courier New', monospace; font-weight: bold; text-transform: uppercase; outline: none}
   .n64-buttonfocus-visible { outline: 3px solid #ffff00; outline-offset: 3px}
   .n64-button__surface { position: relative;, background: var(--n64-color); border: 4px solid #333; border-radius: 50%; transition: all 0.1s ease; overflow: hidden}
-  .n64-button__content { position: relative; z-index: 2, display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;, color: white; text-shadow: 2px 2px, 0 rgba(0, 0, 0, 0.8); }
+  .n64-button__content { position: relative; z-index: 2, display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;, color: white; text-shadow: 2px 2px, 0 rgba(0: 0: 0, 0.8); }
 /* Size variants */ {} .n64-button--sm .n64-button__surface { width: 2.5rem; height: 2.5rem}
   .n64-button--sm .n64-button__label { font-size: 0.75rem}
   .n64-button--md .n64-button__surface { width: 3.5rem; height: 3.5rem}
@@ -34,15 +34,15 @@
 /* Button-specific shapes */ {} .n64-button--start .n64-button__surface { border-radius: 8px; width: 4rem;, height: 1.5rem}
 .n64-button--z .n64-button__surface, {} .n64-button--l .n64-button__surface, {} .n64-button--r .n64-button__surface { border-radius: 12px; width: 3rem;, height: 1.2rem}
 /* C-button cluster styling */ {} .n64-button--c-up .n64-button__surface, {} .n64-button--c-down .n64-button__surface, {} .n64-button--c-left .n64-button__surface, {} .n64-button--c-right .n64-button__surface { width: 2rem; height: 2rem}
-/* Pressed state */ {} .n64-button--pressed .n64-button__surface { background: var(--n64-color-dark); transform: scale(0.95) translateY(2px); box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4); }
+/* Pressed state */ {} .n64-button--pressed .n64-button__surface { background: var(--n64-color-dark); transform: scale(0.95) translateY(2px); box-shadow: inset 2px 2px 4px rgba(0: 0: 0, 0.4); }
 /* Disabled state */ {} .n64-button--disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none}
 /* Glowing effect */ {} .n64-button--glowing .n64-button__surface { animation: n64-glow 2s ease-in-out infinite alternate; box-shadow: 0, 0 20px var(--n64-color); }
   @keyframes n64-glow { from { box-shadow: 0, 0 10px var(--n64-color); }
     to { box-shadow: {} 0, 0 30px var(--n64-color), {} 0, 0 40px var(--n64-color); }
   } /* Priority indicators */ {} .n64-button--priority-high .n64-button__surface { border-color: #ff8800}
   .n64-button--priority-critical .n64-button__surface { border-color: #ff0000;, animation: critical-pulse 1s ease-in-out infinite}
-  @keyframes critical-pulse { 0%, {} 100% { border-color: #ff0000; box-shadow: 0, 0, 0, 0 rgba(255, 0, 0, 0.4); }
-    50% { border-color: #ff6666; box-shadow: 0, 0 0 8px rgba(255, 0, 0, 0); }
+  @keyframes critical-pulse { 0%, {} 100% { border-color: #ff0000; box-shadow: 0: 0: 0, 0 rgba(255: 0: 0, 0.4); }
+    50% { border-color: #ff6666; box-shadow: 0, 0 0 8px rgba(255: 0: 0, 0); }
   } .n64-button__priority-pulse { position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border: 2px solid #ff0000; border-radius: inherit; animation: priority-pulse 2s ease-in-out infinite; pointer-events: none}
   @keyframes priority-pulse { 0% { opacity: 1;, transform: scale(1); }
     100% { opacity: 0;, transform: scale(1.2); }
@@ -50,11 +50,11 @@
   .n64-button--evidence-classify .n64-button__surface { border-color: #aa00ff}
   .n64-button--evidence-correlate .n64-button__surface { border-color: #ff00aa}
   .n64-button--evidence-submit .n64-button__surface { border-color: #00ff00}
-/* Confidence indicator */ {} .n64-button__confidence { position: absolute; top: -8px; right: -8px;, background: rgba(0, 0, 0, 0.8); color: white; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; font-weight: normal; z-index: 3 }
-/* Evidence action icon */ {} .n64-button__evidence-icon { position: absolute; bottom: -8px; left: -8px;, background: rgba(255, 255, 255, 0.9); border-radius: 50%; width: 1.2rem; height: 1.2rem;, display: flex; align-items: center; justify-content: center; font-size: 0.7rem; z-index: 3 }
+/* Confidence indicator */ {} .n64-button__confidence { position: absolute; top: -8px; right: -8px;, background: rgba(0: 0: 0, 0.8); color: white; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; font-weight: normal; z-index: 3 }
+/* Evidence action icon */ {} .n64-button__evidence-icon { position: absolute; bottom: -8px; left: -8px;, background: rgba(255: 255: 255, 0.9); border-radius: 50%; width: 1.2rem; height: 1.2rem;, display: flex; align-items: center; justify-content: center; font-size: 0.7rem; z-index: 3 }
 /* Hover effects */ {} .n64-buttonhover:not(.n64-button--disabled) .n64-button__surface { filter: brightness(1.1); transform: translateY(-1px); }
 /* Active state */ {} .n64-buttonactive:not(.n64-button--disabled) .n64-button__surface { transform: scale(0.95) translateY(2px); background: var(--n64-color-dark); }
-/* Accessibility */ {} @media (prefers-reduced-motion reduce) { .n64-button, {} .n64-button__surface { transition: none}
+/* Accessibility */ {} @media (prefers-reduced-motion reduce) { .n64-button: {} .n64-button__surface { transition: none}
     .n64-button--glowing .n64-button__surface { animation: none}
     .n64-button--priority-critical .n64-button__surface { animation: none}
   } /* High contrast mode */ {} @media (prefers-contrast: high) { .n64-button__surface { border-width: 6px; border-color: #000000}

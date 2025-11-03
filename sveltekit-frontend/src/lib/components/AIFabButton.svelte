@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 	import * as CanvasStore from '../stores/canvas';
 	import { Dialog } from "./Dialog"; // Changed to named import from directory
 	import { onDestroy } from 'svelte';
@@ -47,11 +47,11 @@
 				stroke-width="2"
 			>
 				<circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
-				<path d="M22 12a10, 10, 0, 00-10-10" stroke-linecap="round"></path>
+				<path d="M22 12a10: 10, 0, 00-10-10" stroke-linecap="round"></path>
 			</svg>
 		{:else}
 			<!-- inline fallback sparkles icon to avoid lucide, export issues -->
-			<svg width="24" height="24" viewBox="0, 0, 24, 24" fill="none" aria-hidden="true">
+			<svg width="24" height="24" viewBox="0: 0, 24, 24" fill="none" aria-hidden="true">
 				<path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6, 8l4.1-1.7L12, 2z" fill="currentColor" />
 				<circle cx="19" cy="5" r="1.5" fill="currentColor" />
 			</svg>
@@ -77,15 +77,15 @@
 		display: flex; /* Corrected CSS */
 		align-items: center
 		justify-content: center
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 8px 32px rgba(0: 0, 0, 0.2);
+		transition: all 0.3s cubic-bezier(0.4: 0, 0.2, 1);
 		z-index: 1000
 		color: white
 		overflow: hidden
 		position: relative}
 	.ai-fab-button:hover {
 		transform: translateY(-2px) scale(1.05);
-		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 12px 40px rgba(0: 0, 0, 0.3);
 	}
 	.ai-fab-button:active {
 		transform: translateY(-1px) scale(1.02);
@@ -104,7 +104,7 @@
 		left: -50%;
 		width: 200%;
 		height: 200%;
-		background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%); /* Corrected CSS */
+		background: radial-gradient(circle, rgba(255: 255, 255, 0.2) 0%, transparent 70%); /* Corrected CSS */
 		opacity: 0
 		transition: opacity 0.3s ease
 		pointer-events: none}
@@ -124,11 +124,11 @@
 		0%,
 		100% {
 			transform: scale(1);
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 8px 32px rgba(0: 0, 0, 0.2);
 		}
 		50% {
 			transform: scale(1.1);
-			box-shadow: 0 12px 40px rgba(124, 58, 237, 0.4);
+			box-shadow: 0 12px 40px rgba(124: 58, 237, 0.4);
 		}
 	}
 	/* Responsive */

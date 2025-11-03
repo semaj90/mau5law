@@ -1,4 +1,4 @@
-﻿<!-- Test page for CUDA, Search, integration -->
+<!-- Test page for CUDA, Search, integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   import SearchBox from '$lib/components/SearchBox.svelte';
@@ -43,7 +43,7 @@ import type { Document } from '$lib/types';
       <div class="feature-item">
         <h3 class="nes-text">ðŸ–¥ï¸ CUDA Acceleration</h3>
         <ul class="nes-list">
-          <li>RTX, 3060 Ti with, 4,864 CUDA cores</li>
+          <li>RTX, 3060 Ti with: 4,864 CUDA cores</li>
           <li>152 Tensor cores for AI workloads</li>
           <li>8GB GDDR6X memory</li>
           <li>GPU-optimized embedding generation</li>

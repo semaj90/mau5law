@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { fly, fade } from 'svelte/transition'; // Mock user data (as if signed in) const mockUser = { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.gov', role: 'Senior Prosecutor', avatar: 'ðŸ‘©â€âš–ï¸', cases: 47, evidenceAnalyzed: 1284, convictionRate: 94.2 }; // Demo state let activeView = $state<string>('dashboard'); let isAIActive = $state<boolean>(true); let currentPrompt = $state<string>(''); let isTyping = $state<boolean>(false); let typewriterIndex = $state<number>(0); let showQuickInput = $state<boolean>(false); let quickInput = $state<string>(''); let workflowStep = $state<number>(0); let timestamp = $state<string>(''); // Demo data let cases = $state([ { id: '1', title: 'State v. Johnson - Armed Robbery', status: 'active', priority: 'high', evidence: 23, aiConfidence: 87, lastActivity: '2 hours ago', deadline: '3 days'
     }, {
       id: '2', title: 'Commonwealth v. Smith - Fraud', status: 'review', priority: 'medium', evidence: 156, aiConfidence: 94, lastActivity: '1 day ago', deadline: '1 week'
@@ -41,7 +41,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
           rows="3"
         ></textarea> <div class="input-actions"> <button class="nes-btn" onclick={ processQuickInput } disabled={!quickInput.trim()}> Auto-Fill Case </button> <button class="nes-btn"
             onclick={() => { showQuickInput = false; quickInput = ''; }} >
-            Cancel </button> </div> <div class="input-hint"> ðŸ’¡ I'll automatically detect priority, category, and start the prosecution workflow </div> </div> {/if} </div> </div> <style> .legal-platform { min-height: 100vh;, background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}'
+            Cancel </button> </div> <div class="input-hint"> ðŸ’¡ I'll automatically detect priority, category, and start the prosecution workflow </div> </div> {/if} </div> </div> <style> .legal-platform { min-height: 100vh;, background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}'
   .platform-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem;, background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #334155}
   .header-left h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: #10b981}
   .timestamp { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem}

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { scale, fly, fade } from 'svelte/transition'; import { spring } from 'svelte/motion'; import { Bot, MessageSquare, Brain, Search, FileText, Zap, X, Maximize2, Minimize2, Settings, Power, Activity, Database, Shield, Target } from 'lucide-svelte'; import  GamingAIButton  from "./GamingAIButton.svelte"; import  NierAIAssistant  from "./NierAIAssistant.svelte"; interface AIMessage { id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: Date; status?: 'sending' | 'sent' | 'error'; metadata?: { tokens?: number; model?: string; processingTime?: number; confidence?: number}; }
   interface Props { caseContext?: { id: string; title: string;, status: string}; isVisible?: boolean}
@@ -17,7 +17,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     // Add AI response const aiResponse: AIMessage = { id: (Date.now() + 1).toString(), role: 'assistant', content: response, timestamp: new Date(), metadata: { tokens: response.length, model: 'YoRHa-Legal-AI-v2', processingTime: 1.2, confidence: confidence }
     }; messages = [...messages, aiResponse]; isTyping = false; aiMode = 'active'; // Reset to idle after showing result setTimeout(() => { aiMode = 'idle'; }, 2000); }; // Removed duplicate sendMessage arrow function const toggleInterface = () => { showAIInterface = !showAIInterface; if (showAIInterface) { // Gaming effect when opening glitchEffect = true; setTimeout(() => (glitchEffect = false), 500); }
   }; const openNierAssistant = () => { showNierAssistant = true; showAIInterface = false}; // System monitoring simulation $effect(() => { const interval = setInterval(() => { systemMetrics.cpuUsage = Math.floor(Math.random() * 30) + 15; systemMetrics.memoryUsage = Math.floor(Math.random() * 20) + 60; systemMetrics.aiProcessing = Math.floor(Math.random() * 25) + 5; systemMetrics.caseAnalysis = Math.floor(Math.random() * 15) + 85}, 3000); return () => clearInterval(interval); }); </script> <!-- Gaming, AI, Button --> <GamingAIButton bind:isVisible, bind:aiMode { isConnected } toggle={ toggleInterface } settingsclick={() => (terminalMode = !terminalMode)} /> <!-- Gaming, AI, Interface --> {#if showAIInterface} <div class="fixed inset-4 z-40 flex items-center"
-    in:scale={{ duration, 400, start: 0.9 }}, out:scale={{ duration, 300, start: 0.9 }} >
+    in:scale={{ duration: 400, start: 0.9 }}, out:scale={{ duration: 300, start: 0.9 }} >
     <!-- Background, Overlay --> <div class="absolute inset-0 bg-black/80"
       role="button"
       tabindex="0"
@@ -35,7 +35,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           > <X class="w-5 h-5" /> </button> </div> </div> <!-- System, Metrics, Bar --> <div class="flex items-center gap-4 px-4 py-2 bg-gray-800/50"> {#each Object.entries(systemMetrics) as [key, value]} <div class="flex items-center"> <span class="text-xs {theme.secondary} uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}:</span> <div class="w-16 h-2 bg-gray-700 rounded-full"> <div class="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 transition-all"
                 style="width: { value }%"
               ></div> </div> <span class="text-xs {theme.accent}">{ value }%</span> </div> {/each} </div> <div class="flex"> <!-- Messages, Area --> <div class="flex-1 flex"> <!-- Messages, Container --> <div class="flex-1 overflow-y-auto p-4"> {#each messages as message (message.id)} <div class="flex {message.role === 'user' ? 'justify-end': 'justify-start'}"
-                ; in:fly={{ x: message.role === 'user' ?, 20: -20, duration, 200 }} >
+                ; in:fly={{ x: message.role === 'user' ?, 20: -20, duration: 200 }} >
                 <div class="max-w-[80%]"> {#if message.role === 'assistant' || message.role === 'system'} <div class="flex items-center gap-2"> <Bot class="w-5" /> <span class="text-sm {theme.secondary}"> {message.role === 'system' ? 'SYSTEM': 'AI ASSISTANT'} </span> {#if message.metadata?.confidence} <span class="text-xs px-2 py-1 bg-green-500/20 text-green-400"> {message.metadata.confidence}% CONFIDENCE </span> {/if} {/if} <div class="px-4 py-3 rounded-lg" {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto': message.role === 'system'
                         ? 'bg-gray-700/50 border border-gray-600/50, ' + theme.secondary: 'bg-gray-700/30 border border-gray-600/30, ' + theme.primary}"

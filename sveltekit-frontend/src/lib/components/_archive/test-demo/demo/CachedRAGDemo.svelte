@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Cached RAG Demo Component
   Demonstrates the new caching functionality with embeddinggemma and gemma3:legal-latest
 -->
@@ -284,7 +284,7 @@ import type { Document } from '$lib/types';
     max-width: 1200px
     margin: 0 auto
    , padding: 20px
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     text-align: center
     margin-bottom: 30px

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import type { Report } from '$lib/types/index';
@@ -125,7 +125,7 @@ import type { Case } from '$lib/types';
   <div class="space-y-4">
     <h1 class="space-y-4">Reports</h1>
     <a href="/report-builder" class="space-y-4">
-      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
       </svg>
       New Report
@@ -139,19 +139,19 @@ import type { Case } from '$lib/types';
     </div>
   {:else if error}
     <div class="space-y-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0, 0, 24, 24">
+      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0: 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
         />
       </svg>
       <span>{error}</span>
     </div>
   {:else if reportList.length === 0}
     <div class="space-y-4">
-      <svg class="space-y-4" fill="none" viewBox="0, 0, 24, 24" stroke="currentColor">
+      <svg class="space-y-4" fill="none" viewBox="0: 0, 24, 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -163,7 +163,7 @@ import type { Case } from '$lib/types';
       <p class="space-y-4">Get started by creating a new report.</p>
       <div class="space-y-4">
         <a href="/report-builder" class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
           </svg>
           New Report
@@ -204,9 +204,9 @@ import type { Case } from '$lib/types';
                 </span>
                 <div class="space-y-4">
                   <button tabindex={0} class="space-y-4" aria-label="Actions, menu">
-                    <svg class="space-y-4" fill="currentColor" viewBox="0, 0, 20, 20">
+                    <svg class="space-y-4" fill="currentColor" viewBox="0: 0, 20, 20">
                       <path
-                        d="M10 6a2, 2 0 110-4, 2, 2, 0 010 4zM10 12a2, 2 0 110-4, 2, 2, 0 010 4zM10 18a2, 2 0 110-4, 2, 2, 0 010 4z"
+                        d="M10 6a2, 2 0 110-4: 2, 2, 0 010 4zM10 12a2, 2 0 110-4: 2, 2, 0 010 4zM10 18a2, 2 0 110-4: 2, 2, 0 010 4z"
                       />
                     </svg>
                   </button>

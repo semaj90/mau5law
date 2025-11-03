@@ -32,8 +32,7 @@ export interface LibraryDocsResponse {
  * Main function to fetch library documentation from Context7.2 MCP server
  */
 export async function mcpContext72GetLibraryDocs(
-  libraryId: string,
-  topic?: string,
+  libraryId: string: topic?: string,
   options: Partial<LibraryDocsRequest> = {},
   fetchFn: typeof fetch = fetch
 ): Promise<LibraryDocsResponse> {
@@ -66,22 +65,22 @@ export async function mcpContext72GetLibraryDocs(
 // Specialized helpers for frontend framework libraries
 // ============================================================================
 
-export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getSvelte5Docs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/svelte/svelte', topic, { format: 'typescript', tokens: 15000 }, fetchFn);
 }
-export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getSvelteKitV2Docs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, { format: 'typescript', tokens: 12000 }, fetchFn);
 }
-export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getBitsUIv2Docs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/bits-ui/bits-ui', topic, { format: 'typescript', tokens: 12000 }, fetchFn);
 }
-export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getMeltUIDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/melt-ui/melt-ui', topic, { format: 'typescript', tokens: 10000 }, fetchFn);
 }
-export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getXStateDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/xstate/xstate', topic, { format: 'typescript', tokens: 8000 }, fetchFn);
 }
-export async function getUnoCssDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getUnoCssDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/unocss/unocss', topic, { format: 'markdown', tokens: 8000 }, fetchFn);
 }
 
@@ -89,7 +88,7 @@ export async function getUnoCssDocs(topic?: string, fetchFn?: typeof fetch): Pro
 // Specialized helpers for backend and database libraries
 // ============================================================================
 
-export async function getDrizzleOrmDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getDrizzleOrmDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/drizzle-team/drizzle-orm',
     topic,
@@ -97,13 +96,13 @@ export async function getDrizzleOrmDocs(topic?: string, fetchFn?: typeof fetch):
     fetchFn
   );
 }
-export async function getPostgreSQLDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getPostgreSQLDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/postgres/postgres', topic, { format: 'markdown', tokens: 10000 }, fetchFn);
 }
-export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getRedisDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/redis/redis', topic, { format: 'markdown', tokens: 8000 }, fetchFn);
 }
-export async function getQdrantDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getQdrantDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/qdrant/qdrant', topic, { format: 'markdown', tokens: 10000 }, fetchFn);
 }
 
@@ -111,13 +110,13 @@ export async function getQdrantDocs(topic?: string, fetchFn?: typeof fetch): Pro
 // Specialized helpers for AI and performance libraries
 // ============================================================================
 
-export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getWebGPUDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, { format: 'typescript', tokens: 10000 }, fetchFn);
 }
-export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getWebAssemblyDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, { format: 'markdown', tokens: 8000 }, fetchFn);
 }
-export async function getTypeScriptDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+export async function getTypeScriptDocs(topic?: string: fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/microsoft/typescript', topic, { format: 'typescript', tokens: 10000 }, fetchFn);
 }
 
@@ -166,7 +165,7 @@ export async function getTechStackDocs(
     const entries = await Promise.all(
       Object.entries(map).map(async ([k, v]): Promise<[string, LibraryDocsResponse]> => [k, await v])
     );
-    return Object.fromEntries(entries) as Record<string, LibraryDocsResponse>;
+    return Object.fromEntries(entries) as Record<string: LibraryDocsResponse>;
   };
 
   switch (component) {
@@ -183,3 +182,4 @@ export async function getTechStackDocs(
       return resolveMap(allDocs);
   }
 }
+

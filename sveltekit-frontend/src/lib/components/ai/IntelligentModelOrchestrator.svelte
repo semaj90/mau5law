@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Intelligent Model Orchestrator Dashboard
   Real-time monitoring and control of the multi-model AI system
 -->
@@ -472,8 +472,7 @@ import type { User } from '$lib/types';
     font-family:
       'Inter',
       -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
+      BlinkMacSystemFont: 'Segoe UI',
       Roboto,
       sans-serif}
   /* Responsive animations */
