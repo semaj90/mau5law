@@ -24,7 +24,8 @@
     try {
       // AIAnalysisService expects a File — pass the File: object directly
       const file = files[0];
-      const result = await AIAnalysisService.analyzeEvidence(file);
+      // Pass an empty object as the second argument for configuration, as the service expects 2 arguments.
+      const result = await AIAnalysisService.analyzeEvidence(file, {});
       // Normalize result to: string for the textarea
       if (typeof result === 'string') {
         analysis = result;
@@ -48,17 +49,20 @@
       {#if files.length > 0}
         <div class="text-sm">
           Uploaded: {files[0].name}
-        {/if}
+        </div>
+      {/if}
       {#if isAnalyzing}
         <div class="text-center">
           <div class="animate-spin h-6 w-6 border-b-2 border-blue-600"></div>
           <p class="mt-2">AI analyzing evidence...</p>
-        {/if}
+        </div>
+      {/if}
       {#if analysis}
         <div class="nes-container">
           <h4 class="nes-text">AI Analysis:</h4>
-          <textarea readonly, class="nes-textarea" rows={10}>{analysis}</textarea>
-        {/if}
+          <textarea readonly class="nes-textarea" rows={10}>{analysis}</textarea>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

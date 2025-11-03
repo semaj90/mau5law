@@ -28,15 +28,18 @@ Before (Deprecated)
 
 ⚙️ If You Need to Loop Over Components
 Old
+```html
 {#each cards as card}
   <card.component {...card.props} />
 {/each}
+```
 
 ✅ New
+```html
 {#each cards as card}
   <card.component {...card.props} />
 {/each}
-
+```
 
 Svelte 5 now supports dynamic tag names even in loops.
 
@@ -529,7 +532,7 @@ export const xstateIntegration = {
        <svelte:component this={currentComponent} {data} />
        ```
     3. **Component from array/object**:
-       ```svelte
+       ```html
        {#each components as comp}
          <comp.component {...comp.props} />
        {/each}
@@ -585,13 +588,13 @@ export const xstateIntegration = {
 
   - **Looping over components** (fixes "Unknown tool or toolset 'each'"):
     - Before (problematic pattern):
-      ```svelte
+      ```html
       {#each cards as card}
         <card.component {...card.props} />
       {/each}
       ```
     - After (Svelte 5 supports dynamic tags in loops):
-      ```svelte
+      ```html
       {#each cards as card}
         <card.component {...card.props} />
       {/each}
