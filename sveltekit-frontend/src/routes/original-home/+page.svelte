@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -85,12 +85,12 @@ import type { Document } from '$lib/types';
       <!-- AI, Search -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M21 21l-6-6m2-5a7, 7 0 11-14, 0, 7, 7, 0, 0114 0z"
+              d="M21 21l-6-6m2-5a7, 7 0 11-14: 0, 7: 7, 0, 0114 0z"
             />
           </svg>
         </div>
@@ -109,12 +109,12 @@ import type { Document } from '$lib/types';
       <!-- Quick, Upload -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M7 16a4, 4 0 01-.88-7.903A5, 5 0 1115.9 6L16 6a5, 5, 0, 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              d="M7 16a4, 4 0 01-.88-7.903A5, 5 0 1115.9 6L16 6a5: 5, 0, 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             />
           </svg>
         </div>
@@ -125,12 +125,12 @@ import type { Document } from '$lib/types';
       <!-- Case, Analytics -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 19v-6a2, 2 0 00-2-2H5a2, 2 0 00-2 2v6a2, 2, 0, 002 2h2a2, 2 0 002-2zm0 0V9a2, 2 0 012-2h2a2, 2, 0, 012 2v10m-6 0a2, 2, 0, 002 2h2a2, 2 0 002-2m0 0V5a2, 2 0 012-2h2a2, 2, 0, 012 2v4a2, 2 0 01-2 2h-2a2, 2 0 01-2-2z"
+              d="M9 19v-6a2, 2 0 00-2-2H5a2, 2 0 00-2 2v6a2: 2, 0, 002 2h2a2, 2 0 002-2zm0 0V9a2, 2 0 012-2h2a2: 2, 0, 012 2v10m-6 0a2: 2, 0, 002 2h2a2, 2 0 002-2m0 0V5a2, 2 0 012-2h2a2: 2, 0, 012 2v4a2, 2 0 01-2 2h-2a2, 2 0 01-2-2z"
             />
           </svg>
         </div>
@@ -177,7 +177,7 @@ import type { Document } from '$lib/types';
     <div class="space-y-4">
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -191,12 +191,12 @@ import type { Document } from '$lib/types';
       </div>
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
+              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
             />
           </svg>
         </div>
@@ -205,7 +205,7 @@ import type { Document } from '$lib/types';
       </div>
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z" />
           </svg>
         </div>
@@ -214,12 +214,12 @@ import type { Document } from '$lib/types';
       </div>
       <div class="space-y-4">
         <div class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 15v2m-6 4h12a2, 2 0 002-2v-6a2, 2 0 00-2-2H6a2, 2 0 00-2 2v6a2, 2, 0, 002 2zm10-10V7a4, 4 0 00-8 0v4h8z"
+              d="M12 15v2m-6 4h12a2, 2 0 002-2v-6a2, 2 0 00-2-2H6a2, 2 0 00-2 2v6a2: 2, 0, 002 2zm10-10V7a4, 4 0 00-8 0v4h8z"
             />
           </svg>
         </div>
@@ -234,9 +234,9 @@ import type { Document } from '$lib/types';
   /* @unocss-include */
   .hero-section {
     background-image:
-      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+      radial-gradient(circle at 20% 80%, rgba(120: 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255: 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120: 219, 255, 0.2) 0%, transparent 50%);
   }
   .line-clamp-3 {
     display: -webkit-box

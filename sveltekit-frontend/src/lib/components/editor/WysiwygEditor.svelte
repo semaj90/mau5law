@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { content?: string; placeholder?: string; readonly?: boolean; height?: string; theme?: 'default' | 'nes' | 'dark' | 'retro'; enableAI?: boolean; enableCitation?: boolean; enableCollaboration?: boolean; ondispatch?: (detail: any) => void}
   let { content = '', placeholder = 'Start typing your legal document...', readonly = false, height = '400px', enableAI = true, enableCitation = true, enableCollaboration = false, ondispatch }: Props = $props(); // removed unused onMount import and external Dialog dependency (not available). // We'll render lightweight in-file modal markup instead of importing bits-ui/dialog. import { writable } from 'svelte/store'; import type { Writable } from 'svelte/store'; // Stores let editorElement: HTMLElement; let hugerte: any; let isInitialized = $state<boolean>(false); const wordCount: Writable<number> = writable(0); const charCount: Writable<number> = writable(0); const aiOpen = writable(false); const citeOpen = writable(false); // collaboration toggle so `enableCollaboration` is used const collaborationActive = writable(false); function toggleCollaboration() { collaborationActive.update(v => !v); }'
 
@@ -14,7 +14,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify',
             'outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print',
             'insertfile image media template link anchor codesample | ltr rtl | ai-assistant citation-helper'
-          ], content_style: ` body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; color: #374151; max-width: 800px; margin: 0 auto;, padding: 20px}`
+          ], content_style: ` body { font-family: 'Inter', -apple-system, BlinkMacSystemFont: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; color: #374151; max-width: 800px; margin: 0 auto;, padding: 20px}`
             h1, h2, h3, h4, h5, h6 { color: #1f2937; font-weight: 600; margin-top: 1.5em; margin-bottom: 0.5em}
             .citation { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 0.5em; margin: 1em 0; border-radius: 0 4px 4px 0}
             .ai-suggestion { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 0.5em; border-radius: 4px;, margin: 0.5em 0}

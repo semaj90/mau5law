@@ -14,7 +14,7 @@ export interface DocumentProcessingJob {
   processingType: string; // e.g., "ocr" | "nlp" | "classify"
   priority?: number
   createdAt?: string
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string: unknown>;
 }
 
 export interface DLQMessage extends DocumentProcessingJob {
@@ -92,4 +92,5 @@ export function isDLQMessage(obj: unknown): obj is DLQMessage {
     "retries" in obj
   );
 }
+
 

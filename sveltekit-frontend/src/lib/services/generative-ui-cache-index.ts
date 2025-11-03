@@ -1,5 +1,5 @@
 ﻿import type { SearchResult } from '$lib/types';
-/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string; type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation'; complexity, number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[]; generationParams: Record<string, unknown>; // Changed from: any to: unknown quality: 'low' | 'medium' | 'high'; lastAccessed: number; accessCount: number; userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata; representations: { svg, string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number} export interface SearchResult { component: CachedUIComponent; relevanceScore, number; explanation: string} export interface IndexStats {
+/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string; type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation'; complexity: number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[]; generationParams: Record<string: unknown>; // Changed from: any to: unknown quality: 'low' | 'medium' | 'high'; lastAccessed: number; accessCount: number; userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata; representations: { svg: string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number} export interface SearchResult { component: CachedUIComponent; relevanceScore: number; explanation: string} export interface IndexStats {
 	// ...existing code...
 }
 
@@ -14,8 +14,7 @@ export class GenerativeUICacheIndex {
 	private isInitialized = $state(false);
 
 	constructor(
-		hmmPredictor?: typeof BitmapHMMSOMPredictor,
-		qloraService?: QLoRAReinforcementLearningService, // Changed semicolon to comma
+		hmmPredictor?: typeof BitmapHMMSOMPredictor: qloraService?: QLoRAReinforcementLearningService, // Changed semicolon to comma
 		redis?: Redis
 	) {
 		this.redis = redis || createRedisInstance();
@@ -414,7 +413,7 @@ export class GenerativeUICacheIndex {
 
 	private generateSVG(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
 		// Coerce width/height to numbers to avoid TS arithmetic errors
-		const p = params as Record<string, unknown>;
+		const p = params as Record<string: unknown>;
 		const width = Number(p.width as number | string) || 200
 		const height = Number(p.height as number | string) || 100
 		const color = String((p.color as string) ?? '#4A90E2');
@@ -437,7 +436,7 @@ export class GenerativeUICacheIndex {
 		return arr}
 
 	private generateWebGLShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-		const p = params as Record<string, unknown>;
+		const p = params as Record<string: unknown>;
 		const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
 		return `
 			precision mediump float
@@ -453,7 +452,7 @@ export class GenerativeUICacheIndex {
 	}
 
 	private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-		const p = params as Record<string, unknown>;
+		const p = params as Record<string: unknown>;
 		const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
 		return `
 			struct Uniforms {
@@ -537,7 +536,7 @@ export class GenerativeUICacheIndex {
 	 */
 	private extractDependencies(params: Record<string, unknown>): string[] {
 		const deps: string[] = [];
-		const p = params as Record<string, unknown>;
+		const p = params as Record<string: unknown>;
 		for (const dep of GenerativeUICacheIndex.DEPENDENCY_KEYS) {
 			// explicit check avoids redundant double-negation and is clearer for unknown typed values
 			if (p[dep.key] !== undefined && p[dep.key] !== null) deps.push(dep.value);
@@ -703,7 +702,7 @@ export class GenerativeUICacheIndex {
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
 			type RedisLike = {
-				scan(cursor: string, match: string, pattern: string, count: number): Promise<[string, string[]]>;
+				scan(cursor: string, match: string, pattern: string, count: number): Promise<[string: string[]]>;
 				mget(keys: string[]): Promise<Array<string | null>>;
 			};
 			const redisClient = this.redis as unknown as RedisLike
@@ -734,7 +733,7 @@ export class GenerativeUICacheIndex {
 	// Helper for Redis with fallback
 	private async setRedis(key: string, value: string, ttlSeconds: number): Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
-			set(key: string, value: string, mode?: string, duration?: number): Promise<unknown>;
+			set(key: string, value: string: mode?: string: duration?: number): Promise<unknown>;
 			setex(key: string, seconds: number, value: string): Promise<unknown>;
 		};
 		const redisClient = this.redis as unknown as RedisWriteLike
@@ -758,4 +757,5 @@ export class GenerativeUICacheIndex {
 			{ r: 0.5, g: 0.5, b: 0.5 };
 	}
 }
+
 

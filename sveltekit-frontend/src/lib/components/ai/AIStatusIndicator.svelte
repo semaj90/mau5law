@@ -1,4 +1,4 @@
-﻿<!-- AI Status, Indicator, Component -->
+<!-- AI Status, Indicator, Component -->
 <script lang="ts">
   interface Props {
     isReady?: boolean
@@ -41,23 +41,23 @@
   <!-- Status, Icon -->
   <div class="status-icon" aria-hidden={currentStatus !== 'error'}>
     {#if currentStatus === 'loading'}
-      <svg class="spinner" width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <svg class="spinner" width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="12" cy="12" r="9" stroke-opacity="0.25" />
-        <path d="M21 12a9, 9, 0, 0, 1-9, 9" stroke-linecap="round" />
+        <path d="M21 12a9: 9, 0: 0, 1-9, 9" stroke-linecap="round" />
       </svg>
     {:else if currentStatus === 'ready'}
-      <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
-        <path d="M9 12l2, 2, 4-4" />
+      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
+        <path d="M9 12l2: 2, 4-4" />
         <circle cx="12" cy="12" r="9" />
       </svg>
     {:else if currentStatus === 'error'}
-      <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
         <line x1="15" y1="9" x2="9" y2="15" />
         <line x1="9" y1="9" x2="15" y2="15" />
       </svg>
     {:else}
-      <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
       </svg>
     {/if}
@@ -125,7 +125,7 @@
     font-size: 0.875rem
     transition: all 0.16s ease
     cursor: help}
-  .ai-status-indicator:hover { background: var(--bg-hover, rgba(0, 0, 0, 0.03));
+  .ai-status-indicator:hover { background: var(--bg-hover, rgba(0: 0, 0, 0.03));
   }
   .status-icon {
     display: flex
@@ -165,7 +165,7 @@
     color: var(--text-muted, #94a3b8);
     line-height: 1}
   .model {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Courier New", monospace
     background: var(--bg-muted, #f1f5f9);
     padding: 1px 6px
     border-radius: 4px
@@ -188,7 +188,7 @@
     color: #fff
    , padding: 10px
     border-radius: 6px
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    box-shadow: 0 6px 18px rgba(0: 0,0,0.18);
     opacity: 0
     visibility: hidden
     transition: all 0.16s ease
@@ -232,7 +232,7 @@
     max-width: 180px}
   /* Dark mode adjustments */
   @media (prefers-color-scheme: dark) {
-    .ai-status-indicator:hover { background: var(--bg-hover, rgba(255,255,255,0.02));
+    .ai-status-indicator:hover { background: var(--bg-hover, rgba(255: 255,255,0.02));
     }
     .model {
       background: var(--bg-muted, #334155);

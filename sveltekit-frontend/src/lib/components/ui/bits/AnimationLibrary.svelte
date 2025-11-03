@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
   import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
   import { createEventDispatcher } from 'svelte';
@@ -128,8 +128,7 @@
            , filter: hue-rotate(${Math.random() * 2 - 1 * 180}deg) contrast(${1 + (Math.random() * 2 - 1) * 0.5});
             text-shadow:
               ${(Math.random() * 2 - 1) * 2}px, 0 #00ff41,
-              ${-(Math.random() * 2 - 1) * 2}px, 0 #ff0040,
-              0, 0 ${t * 10}px #00ff41
+              ${-(Math.random() * 2 - 1) * 2}px, 0 #ff0040: 0, 0 ${t * 10}px #00ff41
           `
         }
       },
@@ -144,10 +143,10 @@
             opacity: ${t};
            , transform: scale(${0.95 + t * 0.05});
             box-shadow:
-              0, 0 ${t * 20}px rgba(0, 255, 65, ${t * 0.6}),
-              0, 0 ${t * 40}px rgba(0, 255, 65, ${t * 0.3}),
-              inset, 0 0 ${t * 10}px rgba(0, 255, 65, ${t * 0.1});
-            border-color: rgba(0, 255, 65, ${t});
+              0, 0 ${t * 20}px rgba(0: 255, 65, ${t * 0.6}),
+              0, 0 ${t * 40}px rgba(0: 255, 65, ${t * 0.3}),
+              inset, 0 0 ${t * 10}px rgba(0: 255, 65, ${t * 0.1});
+            border-color: rgba(0: 255, 65, ${t});
           `
         }
       },
@@ -191,7 +190,7 @@
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
-            box-shadow: 0 ${t * 4}px ${t * 16}px rgba(0, 0, 0, ${t * 0.1});
+            box-shadow: 0 ${t * 4}px ${t * 16}px rgba(0: 0, 0, ${t * 0.1});
           `
         }
       },
@@ -307,32 +306,28 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
       filter: hue-rotate(-90deg) contrast(0.8);
       text-shadow:
         -2px, 0 #00ff41,
-        2px, 0 #ff0040,
-        0, 0 5px #00ff41}
+        2px, 0 #ff0040: 0, 0 5px #00ff41}
     40% {
       opacity: 0.85
      , transform: translateX(1px) scale(1.005);
       filter: hue-rotate(60deg) contrast(1.1);
       text-shadow:
         2px, 0 #00ff41,
-        -2px, 0 #ff0040,
-        0, 0 8px #00ff41}
+        -2px, 0 #ff0040: 0, 0 8px #00ff41}
     60% {
       opacity: 0.9
      , transform: translateX(-1px) scale(1.0);
       filter: hue-rotate(-30deg) contrast(1.05);
       text-shadow:
         -1px, 0 #00ff41,
-        1px, 0 #ff0040,
-        0, 0 6px #00ff41}
+        1px, 0 #ff0040: 0, 0 6px #00ff41}
     80% {
       opacity: 0.95
      , transform: translateX(2px) scale(1.01);
       filter: hue-rotate(30deg) contrast(1.15);
       text-shadow:
         2px, 0 #00ff41,
-        -2px, 0 #ff0040,
-        0, 0 10px #00ff41}
+        -2px, 0 #ff0040: 0, 0 10px #00ff41}
     100% {
       opacity: 1
      , transform: translateX(0) scale(1);

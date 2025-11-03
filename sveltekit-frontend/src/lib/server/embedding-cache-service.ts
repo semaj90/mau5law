@@ -13,7 +13,7 @@ interface EmbeddingCacheEntry {
 interface QueryCacheEntry {
   query: string
   results: unknown[]; // Changed from any[]
-  metadata: Record<string, unknown>; // Changed from any
+  metadata: Record<string: unknown>; // Changed from any
   timestamp: number
   ttl: number}
 
@@ -341,4 +341,5 @@ class EmbeddingCacheService {
 
 // Export singleton instance
 export const embeddingCache = new EmbeddingCacheService();
+
 

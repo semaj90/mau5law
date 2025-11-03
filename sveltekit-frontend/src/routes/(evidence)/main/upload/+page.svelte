@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Evidence Upload Page - SvelteKit + Zod + Superforms Integration
   Rich metadata support with type-safe validation
 -->
@@ -20,7 +20,7 @@ import type { Document } from '$lib/types';
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
       notice.innerHTML = 'âš ï¸ failure default to mock - Upload service temporarily unavailable';
-      notice.style.cssText = 'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px;, background: rgba(220: 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       console.log('Upload failed, using mock fallback:', result);
@@ -141,7 +141,7 @@ import type { Document } from '$lib/types';
         <span style="color: #28a745;">âœ… Local OCR Processing</span> |
         <span style="color: #28a745;">âœ… Database Storage</span>
       </p>
-      <p style="margin: 5px, 0, 0, 0; font-size: 0.8em;, color: #666;">
+      <p style="margin: 5px: 0, 0, 0; font-size: 0.8em;, color: #666;">
         Your files will be processed by multiple AI services for enhanced analysis.
       </p>
     </div>
@@ -243,7 +243,7 @@ import type { Document } from '$lib/types';
                   <img src={filePreview} alt="Preview" class="max-w-xs max-h-48 mx-auto rounded-lg" />
                 {:else}
                   <div class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex items-center">
-                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -270,7 +270,7 @@ import type { Document } from '$lib/types';
               </div>
             {:else}
               <div class="space-y-4">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0, 0, 48, 48">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0: 0, 48, 48">
                   <path
                     d="M28 8H12a4, 4 0 00-4 4v20m32-12v8m0 0v8a4, 4 0 01-4 4H12a4, 4 0 01-4-4v-4m32-4l-3.172-3.172a4, 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4, 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                     stroke-width="2"
@@ -478,7 +478,7 @@ import type { Document } from '$lib/types';
         <div class="bg-gray-50 rounded-lg">
           <h3 class="text-sm font-medium text-gray-700">Detected Metadata</h3>
           <div class="text-sm">
-            <pre class="whitespace-pre-wrap">{JSON.stringify(metadata, null, 2)}</pre>
+            <pre class="whitespace-pre-wrap">{JSON.stringify(metadata: null, 2)}</pre>
           </div>
         </div>
       {/if}

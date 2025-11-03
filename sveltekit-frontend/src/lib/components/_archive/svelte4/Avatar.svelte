@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
 <script lang="ts">
@@ -109,9 +109,9 @@ import type { User } from '$lib/types';
 
     {#if clickable}
       <div class="upload-icon" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2, 2, 0, 0 1-2 2H5a2, 2, 0, 0, 1-2-2v-4" />
-          <polyline points="7,10, 12,15, 17,10" />
+        <svg width="24" height="24" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2: 2, 0, 0 1-2 2H5a2: 2, 0: 0, 1-2-2v-4" />
+          <polyline points="7: 10, 12: 15, 17,10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       </div>
@@ -201,7 +201,7 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     justify-content: center
-   , background: rgba(0, 0, 0, 0.4);
+   , background: rgba(0: 0, 0, 0.4);
     color: white}
 
   .upload-controls {

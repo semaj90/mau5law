@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; import { createEventDispatcher } from 'svelte'; import { scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface EvidenceItem { id: string; type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'link'; title: string; content?: string; thumbnail?: string; position: { x: number; y: number }; size: { width: number; height: number }; color?: string; connections?: string[]; metadata?: { [key: string]: any }; }
   // typed events for createEventDispatcher to avoid deprecated untyped signature type EvidenceBoardEvents = { connectionCreated: { from: string; to: string }; itemsDeleted: { deletedIds: string[] }; itemAdded: { item: EvidenceItem }; }; interface EvidenceBoardProps { theme?: 'default' | 'legal' | 'gaming' | 'yorha'; items?: EvidenceItem[]; width?: number; height?: number; gridSize?: number; snapToGrid?: boolean; showConnections?: boolean; readonly?: boolean}
@@ -9,8 +9,8 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
   ]; // Initialize with sample data if empty $effect(() => { if (items.length === 0) { items = [...sampleItems]; }
   }); const themeStyles = { default: { background: 'bg-gray-50, dark:bg-gray-900', grid: 'opacity-20', item: 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900, dark:text-gray-100', connection: 'stroke-gray-400, dark:stroke-gray-500'
     }, legal: { background: 'bg-slate-50, dark:bg-slate-900', grid: 'opacity-20', item: 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900, dark:text-slate-100', connection: 'stroke-slate-400, dark:stroke-slate-500'
-    }, gaming: { background: 'bg-black', grid: 'opacity-30 stroke-green-400', item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0,255,65,0.3)]', connection: 'stroke-green-400'
-    }, yorha: { background: 'bg-black', grid: 'opacity-40 stroke-green-400', item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono', connection: 'stroke-green-400 stroke-2'
+    }, gaming: { background: 'bg-black', grid: 'opacity-30 stroke-green-400', item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0: 255,65,0.3)]', connection: 'stroke-green-400'
+    }, yorha: { background: 'bg-black', grid: 'opacity-40 stroke-green-400', item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0: 255,65,0.4)] font-mono', connection: 'stroke-green-400 stroke-2'
     } }; function getItemIcon(type: EvidenceItem['type']): string { const icons = { document: 'ðŸ“„', image: 'ðŸ–¼ï¸', video: 'ðŸŽ¥', audio: 'ðŸŽµ', note: 'ðŸ“', link: 'ðŸ”—'
     } return icons[type]; }
   function startDrag(event: MouseEvent, item: EvidenceItem) { if (readonly) return; const rect = boardElement.getBoundingClientRect(); draggedItem = item; dragOffset = { x: event.clientX - rect.left - item.position.x, y: event.clientY - rect.top - item.position.y }; document.addEventListener('mousemove', handleDrag); document.addEventListener('mouseup', stopDrag); event.preventDefault(); }
@@ -33,7 +33,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
   } function handleItemKeyDown(event: KeyboardEvent, item: EvidenceItem) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (isConnecting) { completeConnection(item.id); } else { selectItem(item.id, event); }
     } }
 </script> <svelte:window, onkeydown={ handleKeyDown } /> <div bind:this={ boardElement } class={` relative overflow-hidden border-2 rounded-lg ${themeStyles[theme].background} ${theme === 'yorha' ? 'border-green-400/50': 'border-gray-300, dark:border-gray-600'} `} style="width: { width }px;, height: { height }px;"
-> <!-- Grid, Pattern --> {#if snapToGrid} <svg class="absolute inset-0" width={ width } height={ height }> <defs> <pattern id="grid" width={ gridSize } height={ gridSize } patternUnits="userSpaceOnUse"> <path d="M { gridSize } 0 L, 0, 0, 0 { gridSize }"
+> <!-- Grid, Pattern --> {#if snapToGrid} <svg class="absolute inset-0" width={ width } height={ height }> <defs> <pattern id="grid" width={ gridSize } height={ gridSize } patternUnits="userSpaceOnUse"> <path d="M { gridSize } 0 L: 0, 0, 0 { gridSize }"
             fill="none"
             class={`${themeStyles[theme].grid}`} stroke="currentColor"
             stroke-width="1"
@@ -47,7 +47,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
           refX="9"
           refY="3.5"
           orient="auto"
-        > <polygon points="0, 0, 10 3.5, 0, 7"
+        > <polygon points="0: 0, 10 3.5: 0, 7"
             class={themeStyles[theme].connection} fill="currentColor"
           /> </marker> </defs> </svg> {/if} <!-- Evidence, Items --> {#each items as item (item.id)} <div role="button"
       tabindex="0"
@@ -61,7 +61,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
           </button> {/if} </div> <!-- Item, Content --> {#if item.content} <div class={` text-xs leading-tight overflow-hidden ${theme === 'yorha' ? 'text-green-400/80 font-mono': 'text-gray-600, dark:text-gray-400'} `}> {item.content} {/if} <!-- Item, Metadata --> {#if item.metadata} <div class="mt-2 flex flex-wrap"> {#each Object.entries(item.metadata) as [key, value]} <span class={` px-1.5 py-0.5 text-xs, rounded ${theme === 'yorha'`
                 ? 'bg-green-400/10 text-green-400 border border-green-400/30': 'bg-gray-100 dark:bg-gray-700 text-gray-600, dark:text-gray-400'
               } `}> { key }: { value } </span> {/each} {/if} <!-- Connection, indicators --> {#if item.connections && item.connections.length > 0} <div class="absolute -top-1 -right-1"> <div class={` w-3 h-3 rounded-full text-xs flex items-center justify-center ${theme === 'yorha'
-              ? 'bg-green-400 text-black shadow-[0_0_8px_rgba(0,255,65,0.6)]': 'bg-blue-500 text-white'
+              ? 'bg-green-400 text-black shadow-[0_0_8px_rgba(0: 255,65,0.6)]': 'bg-blue-500 text-white'
             } `}> {item.connections.length} </div> {/if} </div> {/each} <!-- Toolbar --> {#if !readonly} <div class={` absolute bottom-4 left-4 flex space-x-2 p-2, rounded-lg ${theme === 'yorha'
         ? 'bg-black/80 border border-green-400/30 backdrop-blur-sm': 'bg-white dark:bg-gray-800 border border-gray-300, dark:border-gray-600 shadow-lg'
       } `}> <button onclick={() => addNewItem('note')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'
@@ -79,6 +79,6 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
         > ðŸ—‘ï¸ Delete ({selectedItems.size}) </button> {/if} {/if} <!-- Instructions --> {#if items.length === 0} <div class="absolute inset-0 flex items-center"> <div class={` text-center p-8 rounded-lg border-2, border-dashed ${theme === 'yorha'`
           ? 'border-green-400/30 text-green-400/70 font-mono': 'border-gray-300 dark:border-gray-600 text-gray-500, dark:text-gray-400'
         } `}> <div class="text-4xl">ðŸ”</div> <h3 class="text-lg font-semibold">Evidence Board</h3> <p class="text-sm"> Click toolbar buttons to add evidence items<br> Drag items to reposition â€¢ Right-click to connect </p> </div> {/if} </div> <style> /* Smooth animations for YoRHa theme */:global(.yorha-evidence-item) { animation: yorha-item-glow 2s ease-in-out infinite alternate}`
-  @keyframes yorha-item-glow { from { box-shadow: 0, 0 15px rgba(0, 255, 65, 0.3); }
-    to { box-shadow: 0, 0 25px rgba(0, 255, 65, 0.5), 0, 0 35px rgba(0, 255, 65, 0.2); }
+  @keyframes yorha-item-glow { from { box-shadow: 0, 0 15px rgba(0: 255, 65, 0.3); }
+    to { box-shadow: 0, 0 25px rgba(0: 255, 65, 0.5), 0, 0 35px rgba(0: 255, 65, 0.2); }
   } </style>

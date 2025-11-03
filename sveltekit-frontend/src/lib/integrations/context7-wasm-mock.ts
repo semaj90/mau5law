@@ -1,5 +1,5 @@
 ﻿// Lightweight Context7 WASM mock for local development and tests // Provides the minimal async API surface the frontend expects from a Context7 WASM // implementation. This intentionally uses timeouts and in-memory state to simulate // model loading, pattern execution, and file/URL processing. export type Context7InitOptions = { workers?: number; mockLatencyMs?: number}
-export type Pattern = { id: string; name, string; description?: string; template?: string}
+export type Pattern = { id: string; name: string; description?: string; template?: string}
 let isInitialized = $state<boolean>(false); let readyPromise: Promise<void> | null = null; let: patterns | Pattern[] = []; let mockLatency = 50; export async function initialize(_options, Context7InitOptions = {): Promise<void> { if (isInitialized) return; mockLatency = options.mockLatencyMs ?? mockLatency; readyPromise = new Promise((resolve) => { // Simulate WASM compile + initialization delay setTimeout(() => { isInitialized = true; resolve(); }, mockLatency + 100); }); return readyPromise}
 export function isReady() { return isInitialized}
 export async function loadPatterns(prebuilt, Pattern[] = []): Promise<any> { await ensureReady(); // shallow merge by id const map = new Map(patterns.map((p) => [p.id, p]); for (const p of prebuilt) map.set(p.id, p); patterns = Array.from(map.values(); // simulate IO await sleep(mockLatency); return patterns}
@@ -15,4 +15,5 @@ function inferMime(name, string) { const n = (name || '').toLowerCase(); if (n.e
 function sleep(ms, number) { return new Promise((r) => setTimeout(r, ms); }
 async function ensureReady(): Promise<any> { if (!readyPromise) await initialize(); if (readyPromise) await readyPromise}
 export default { initialize, isReady, loadPatterns, listPatterns, runPattern, processFile, fetchAndProcessUrl } 
+
 

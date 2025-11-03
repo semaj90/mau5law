@@ -36,10 +36,10 @@ export interface RabbitMQConfig {
 }
 
 export interface IRabbitMQService {
-  initialize(retries?: number, delay?: number): Promise<void>;
+  initialize(retries?: number: delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>; // Fixed: comma to colon
   publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }>; // Fixed: comma to colon
-  getQueueStats(): Promise<Record<string, any>>;
+  getQueueStats(): Promise<Record<string: any>>;
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
   healthCheck(): Promise<any>;
@@ -374,4 +374,5 @@ export function createDocumentProcessingJob(
     priority: options.priority ?? 5,
     timestamp: new Date().toISOString()};
 }
+
 

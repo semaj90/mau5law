@@ -1,4 +1,4 @@
-﻿<!-- Enhanced File Upload Component with Full, Stack, Integration -->
+<!-- Enhanced File Upload Component with Full, Stack, Integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -778,4 +778,4 @@ import type { Document } from '$lib/types';
   </div>
 </div>
 <!-- Removed, unused <style> block that targeted `pre` to fix Svelte unused CSS selector warning -->
-<!-- SimpleFileUpload component - Svelte, 5, compatible -->
+<!-- SimpleFileUpload component - Svelte: 5, compatible -->

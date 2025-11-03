@@ -1,4 +1,4 @@
-﻿<!-- NES-Style Container Component Nintendo Entertainment System inspired container with retro styling and legal AI, integration --> <script lang="ts">
+<!-- NES-Style Container Component Nintendo Entertainment System inspired container with retro styling and legal AI, integration --> <script lang="ts">
 import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interface Props { variant?: 'cartridge' | 'console' | 'controller' | 'screen' | 'powerpad' | 'zapper'; size?: 'sm' | 'md' | 'lg' | 'xl'; theme?: 'classic' | 'famicom' | 'legal-dark' | 'evidence' | 'case-file'; animated?: boolean; glowing?: boolean; powered?: boolean; // Legal AI integration evidenceType?: 'document' | 'testimony' | 'physical' | 'digital' | 'audio' | 'video'; caseId?: string; confidenceLevel?: number; processingStatus?: 'idle' | 'processing' | 'complete' | 'error' | 'review'; priority?: 'low' | 'medium' | 'high' | 'critical'; // Layout orientation?: 'horizontal' | 'vertical'; padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl'; // Styling customColor?: string; class?: string; style?: string; // Events onclick?: (_event: MouseEvent) => void; onload?: () => void; children?: any}
   let { variant = 'cartridge', size = 'md', theme = 'classic', animated = true, glowing = false, powered = true, evidenceType, caseId, confidenceLevel, processingStatus = 'idle', priority, orientation = 'horizontal', padding = 'md', customColor, class: className = '', style = '', onclick, onload, children, ...restProps }: Props = $props(); let container: HTMLElement; let isLoaded = $state<boolean>(false); let processingProgress = $state<number>(0); // NES color schemes const nesThemes = { classic: { primary: '#8B956D', // Classic NES gray-green secondary: '#C4CFA1', // Light gray-green accent: '#4C6026', // Dark green text: '#1A1A1A', // Dark text; highlight: '#FF6B6B'   // NES red}, famicom: { primary: '#8B0000', // Famicom red secondary: '#FFD700', // Famicom gold accent: '#FFFFFF', // White text: '#1A1A1A', // Dark text; highlight: '#FF4500'   // Orange red},
     'legal-dark': { primary: '#1E293B', // Legal platform dark secondary: '#334155', // Slate gray accent: '#00FF88', // Legal AI green text: '#F1F5F9', // Light text; highlight: '#06B6D4'   // Cyan}, evidence: { primary: '#7C2D12', // Evidence brown secondary: '#A3A3A3', // Neutral gray accent: '#FBBF24', // Evidence yellow text: '#1F2937', // Dark gray; highlight: '#EF4444'   // Evidence red},
@@ -16,10 +16,10 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container--md { min-width: 300px; min-height: 180px}
   .nes-container--lg { min-width: 400px; min-height: 240px}
   .nes-container--xl { min-width: 500px; min-height: 300px}
-/* Variant-specific styling */ {} .nes-container--cartridge { border-radius: 8px 8px, 0 0; background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary)); box-shadow: inset, 0 2px 4px rgba(0, 0, 0, 0.2); }
-  .nes-container--console { border-radius: 12px;, background: linear-gradient(135deg, var(--nes-primary), var(--nes-secondary)); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); }
-  .nes-container--controller { border-radius: 24px;, background: var(--nes-primary); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
-  .nes-container--screen { border-radius: 0, background: #000000;, border: 6px solid var(--nes-primary); box-shadow: inset, 0 0 20px rgba(0, 255, 0, 0.3); }
+/* Variant-specific styling */ {} .nes-container--cartridge { border-radius: 8px 8px, 0 0; background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary)); box-shadow: inset, 0 2px 4px rgba(0: 0: 0, 0.2); }
+  .nes-container--console { border-radius: 12px;, background: linear-gradient(135deg, var(--nes-primary), var(--nes-secondary)); box-shadow: 0 8px 16px rgba(0: 0: 0, 0.3); }
+  .nes-container--controller { border-radius: 24px;, background: var(--nes-primary); box-shadow: 0 4px 8px rgba(0: 0: 0, 0.2); }
+  .nes-container--screen { border-radius: 0, background: #000000;, border: 6px solid var(--nes-primary); box-shadow: inset, 0 0 20px rgba(0: 255: 0, 0.3); }
   .nes-container--powerpad { border-radius: 4px;, background: var(--nes-primary); border: 2px solid var(--nes-secondary); }
   .nes-container--zapper { border-radius: 0 16px 16px 0;, background: linear-gradient(90deg, var(--nes-primary), var(--nes-secondary)); }
 /* Orientation */ {} .nes-container--horizontal { flex-direction row}
@@ -39,28 +39,28 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container--unpowered { filter: brightness(0.3) grayscale(1); opacity: 0.6}
 /* Processing states */ {} .nes-container--processing { animation: nes-container-processing 1s linear infinite}
   @keyframes nes-container-processing { 0% { border-color: var(--nes-secondary) } 50% { border-color: var(--nes-accent) } 100% { border-color: var(--nes-secondary) } }
-  .nes-container--complete { border-color: var(--nes-accent); box-shadow: 0, 0 15px rgba(0, 255, 0, 0.5); }
-  .nes-container--error { border-color: #ff0000; box-shadow: 0, 0 15px rgba(255, 0, 0, 0.5); animation: nes-container-error 0.5s ease-in-out 3}
+  .nes-container--complete { border-color: var(--nes-accent); box-shadow: 0, 0 15px rgba(0: 255: 0, 0.5); }
+  .nes-container--error { border-color: #ff0000; box-shadow: 0, 0 15px rgba(255: 0: 0, 0.5); animation: nes-container-error 0.5s ease-in-out 3}
   @keyframes nes-container-error { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
 /* Priority indicators */ {} .nes-container--priority-critical { border-color: #ff0000;, animation: nes-container-critical 1s ease-in-out infinite}
-  @keyframes nes-container-critical { 0%, 100% { box-shadow: 0, 0, 0, 0 rgba(255, 0, 0, 0.4) } 50% { box-shadow: 0, 0 0 8px rgba(255, 0, 0, 0) } }
+  @keyframes nes-container-critical { 0%, 100% { box-shadow: 0: 0: 0, 0 rgba(255: 0: 0, 0.4) } 50% { box-shadow: 0, 0 0 8px rgba(255: 0: 0, 0) } }
   .nes-container--priority-high { border-color: #ff8800}
 /* Evidence type styling */ {} .nes-container--evidence-document { border-style: solid}
   .nes-container--evidence-digital { border-style: dashed; animation: nes-container-digital 2s linear infinite}
   @keyframes nes-container-digital { 0% { border-style: dashed } 50% { border-style: dotted } 100% { border-style: dashed } }
 /* Power LED */ {} .nes-container__power-led { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #666666; transition: all 0.3s ease}
   .nes-container__power-led--on { background: #00ff00; box-shadow: 0, 0 8px #00ff00}
-/* Cartridge label */ {} .nes-container__cartridge-label { position: absolute; top: 8px; left: 8px; right: 8px;, background: rgba(255, 255, 255, 0.9); color: #000000; padding: 0.5rem; border-radius: 4px; text-align: center; font-size: 0.75rem}
+/* Cartridge label */ {} .nes-container__cartridge-label { position: absolute; top: 8px; left: 8px; right: 8px;, background: rgba(255: 255: 255, 0.9); color: #000000; padding: 0.5rem; border-radius: 4px; text-align: center; font-size: 0.75rem}
   .nes-container__cartridge-title { font-weight: bold; margin-bottom: 0.25rem}
   .evidence-icon { margin-right: 0.5rem}
   .nes-container__case-id { font-size: 0.6rem; opacity: 0.8}
 /* Content area */ {} .nes-container__content { position: relative; z-index: 2, width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center}
-/* Status bar */ {} .nes-container__status-bar { position: absolute;, bottom: 0, left: 0;, right: 0, background: rgba(0, 0, 0, 0.8); color: var(--nes-accent); padding: 0.25rem 0.5rem; font-size: 0.6rem; display: flex; justify-content: space-betweenn; align-items: center; flex-wrap: wrap; gap: 0.5rem}
+/* Status bar */ {} .nes-container__status-bar { position: absolute;, bottom: 0, left: 0;, right: 0, background: rgba(0: 0: 0, 0.8); color: var(--nes-accent); padding: 0.25rem 0.5rem; font-size: 0.6rem; display: flex; justify-content: space-betweenn; align-items: center; flex-wrap: wrap; gap: 0.5rem}
   .nes-container__processing-indicator { display: flex; align-items: center; gap: 0.25rem}
-  .nes-container__progress-bar { width: 60px; height: 4px;, background: rgba(255, 255, 255, 0.2); border-radius: 2px; overflow: hidden}
+  .nes-container__progress-bar { width: 60px; height: 4px;, background: rgba(255: 255: 255, 0.2); border-radius: 2px; overflow: hidden}
   .progress-fill { height: 100%;, background: var(--nes-accent); transition: width: 0.3s ease}
   .nes-container__confidence { display: flex; align-items: center; gap: 0.25rem}
-  .confidence-bar { width: 40px; height: 3px;, background: rgba(255, 255, 255, 0.2); border-radius: 2px; overflow: hidden}
+  .confidence-bar { width: 40px; height: 3px;, background: rgba(255: 255: 255, 0.2); border-radius: 2px; overflow: hidden}
   .confidence-fill { height: 100%;, background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00); transition: width: 0.3s ease}
   .nes-container__priority { display: flex; align-items: center; gap: 0.25rem}
   .nes-container__priority--critical { color: #ff0000;, animation: priority-blink 1s infinite}
@@ -74,7 +74,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container__power-button--on { background: var(--nes-accent); color: #000000; box-shadow: 0, 0 8px var(--nes-accent); }
   .nes-container__power-buttonhover { transform: scale(1.1); }
 /* Click effect */ {} .nes-container[role="button"]:active { transform: scale(0.98); filter: brightness(0.9); }
-/* Accessibility */ {} @media (prefers-reduced-motion reduce) { .nes-container, {} .nes-container__power-led, {} .progress-fill, {} .confidence-fill { animation: none;, transition: none}
+/* Accessibility */ {} @media (prefers-reduced-motion reduce) { .nes-container: {} .nes-container__power-led, {} .progress-fill, {} .confidence-fill { animation: none;, transition: none}
   } /* High contrast mode */ {} @media (prefers-contrast: high) { .nes-container { border-width: 6px;, filter: contrast(1.5); }
   } /* Responsive design */ {} @media (max-width: 640px) { .nes-container--sm { min-width: 150px; min-height: 100px}
     .nes-container__status-bar { font-size: 0.5rem; padding: 0.125rem 0.25rem}

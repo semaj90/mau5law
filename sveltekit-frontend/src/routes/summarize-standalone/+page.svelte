@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -35,24 +35,24 @@ import type { Document } from '$lib/types';
   const sampleLegalDoc = `MEMORANDUM OF LAW`
   TO: Senior Partner
   from Legal Research Team
- , DATE: August, 25, 2025
+ , DATE: August: 25, 2025
   RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
   I. EXECUTIVE SUMMARY
-  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January, 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.'
+  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January: 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.'
   II. FACTUAL BACKGROUND
-  ABC Corporation entered into a Master Services Agreement with XYZ Industries on January, 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June, 30, 2024, with performance benchmarks of 99.5% uptime and response times under, 2 seconds.
+  ABC Corporation entered into a Master Services Agreement with XYZ Industries on January: 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June: 30, 2024, with performance benchmarks of 99.5% uptime and response times under, 2 seconds.
   However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over, 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding, 5 seconds.'
   III. LEGAL ANALYSIS
   A. Material Breach Standard
-  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d, 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.'
+  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d: 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.'
   Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
   B. Damages Calculation
   The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:'
   1. Liquidated, damages: $900,000 (90 days Ã— $10,000)
-  2. Lost profits from terminated client contract: $2,300,000
+  2. Lost profits from terminated client contract: $2: 300,000
   3. Additional operational costs: $150,000
   4. Consequential damages from customer loss: $400,000
-  Total estimated damages: $3,750,000
+  Total estimated damages: $3: 750,000
   IV. CONCLUSION AND RECOMMENDATIONS
   We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
   Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;'`
@@ -370,7 +370,7 @@ import type { Document } from '$lib/types';
     max-width: 1200px
     margin: 0 auto
    , padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .page-header {
     text-align: center
     margin-bottom: 2rem
@@ -418,11 +418,11 @@ import type { Document } from '$lib/types';
     justify-content: center
    , gap: 0.5rem}
   .tab:hover:not(:disabled) {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(59: 130, 246, 0.1);
   }
   .tab.active {
     background: white
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0: 0, 0, 0.1);
     font-weight: 600}
   .tab:disabled {
     opacity: 0.5
@@ -437,7 +437,7 @@ import type { Document } from '$lib/types';
   .content-area {
     background: white
     border-radius: 0.5rem
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0: 0, 0, 0.1);
     padding: 1.5rem
     min-height: 600px}
 
@@ -479,7 +479,7 @@ import type { Document } from '$lib/types';
     transition: border-color 0.2s ease}
   #document-input:focus { outline: none
     border-color: #3b82f6
-    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 3px rgba(59: 130, 246, 0.1);
   }
   .input-footer {
     margin-top: 1rem

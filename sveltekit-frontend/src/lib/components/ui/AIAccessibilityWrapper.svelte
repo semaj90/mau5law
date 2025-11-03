@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { aiAccessibilityPatterns } from '$lib/services/ai-accessibility-patterns';
   import { accessibilityService } from '$lib/services/accessibility-service';
@@ -291,7 +291,7 @@
   }
 /* Reduced motion support */ {}
   @media (prefers-reduced-motion reduce) {
-.spinner, {}
+.spinner: {}
 .voice-toggle, {}
     .help-toggle {
       animation: none

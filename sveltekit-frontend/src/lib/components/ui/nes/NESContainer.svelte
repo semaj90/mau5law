@@ -1,4 +1,4 @@
-﻿<!-- NES-Style Container, Component --> <script lang="ts"> import type { Snippet } from 'svelte'; interface Props { variant?: 'window' | 'panel' | 'dialog' | 'card' | 'screen'; size?: 'small' | 'medium' | 'large' | 'fullscreen'; title?: string; subtitle?: string; closable?: boolean; scrollable?: boolean; bordered?: boolean; elevated?: boolean; onClose?: () => void; children?: Snippet; header?: Snippet; footer?: Snippet; class?: string; style?: string}
+<!-- NES-Style Container, Component --> <script lang="ts"> import type { Snippet } from 'svelte'; interface Props { variant?: 'window' | 'panel' | 'dialog' | 'card' | 'screen'; size?: 'small' | 'medium' | 'large' | 'fullscreen'; title?: string; subtitle?: string; closable?: boolean; scrollable?: boolean; bordered?: boolean; elevated?: boolean; onClose?: () => void; children?: Snippet; header?: Snippet; footer?: Snippet; class?: string; style?: string}
   let { variant = 'panel', size = 'medium', title, subtitle, closable = false, scrollable = false, bordered = true, elevated = true, onClose, children, header, footer, class: className = '', style = ''
   }: Props = $props(); let isMinimized = $state<boolean>(false); let isDragging = $state<boolean>(false); let dragOffset = $state({ x: 0, y: 0 }); function handleClose() { onClose?.(); }
   function toggleMinimize() { isMinimized = !isMinimized}
@@ -15,7 +15,7 @@
           > Ã—
           </button> {/if} </div> {/if} <!-- Content, Area --> {#if !isMinimized} <div class="nes-container__content"> {#if children} {@render children()} {/if} {/if} <!-- Footer --> {#if footer && !isMinimized} <div class="nes-container__footer"> {@render footer()} {/if} <!-- NES-Style Scanlines, Effect --> <div class="nes-container__scanlines" aria-hidden="true"></div> <!-- Corner, Decorations --> <div class="nes-container__corners" aria-hidden="true"> <div class="nes-container__corner"></div> <div class="nes-container__corner"></div> <div class="nes-container__corner"></div> <div class="nes-container__corner"></div> </div> </div> <style> .nes-container { position: relative; font-family: 'Courier New', monospace; color: var(--console-foreground, #fcfcfc); line-height: 1.4; /* NES-style pixelated rendering */ {} image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
 /* Base Styling */ {} .nes-container--bordered { border: 3px solid var(--console-primary, #e52521); border-image: repeating-linear-gradient( {} 90deg, {} var(--console-primary, #e52521) 0px, {} var(--console-primary, #e52521) 3px, {} transparent 3px, {} transparent 6px {} ) {} 3}
-  .nes-container--elevated { /* NES-style 3D effect */ {} box-shadow: {} inset, 0, 0, 0 1px rgba(255, 255, 255, 0.3), {} inset, 0, 0, 0 2px var(--console-secondary, #0084ff), {} 4px 4px, 0 rgba(0, 0, 0, 0.8), {} 8px 8px, 0 rgba(0, 0, 0, 0.4); }
+  .nes-container--elevated { /* NES-style 3D effect */ {} box-shadow: {} inset: 0, 0, 0 1px rgba(255: 255, 255, 0.3), {} inset: 0, 0, 0 2px var(--console-secondary, #0084ff), {} 4px 4px, 0 rgba(0: 0, 0, 0.8), {} 8px 8px, 0 rgba(0: 0, 0, 0.4); }
 /* Size Variants */ {} .nes-container--small { min-width: 200px; min-height: 120px; font-size: 12px}
   .nes-container--medium { min-width: 400px; min-height: 240px; font-size: 14px}
   .nes-container--large { min-width: 600px; min-height: 400px; font-size: 16px}
@@ -24,8 +24,8 @@
   .nes-container--panel { background: #000000; padding: 12px}
   .nes-container--dialog { background: linear-gradient(145deg, #2c2c2c, #1a1a1a); position: fixed; top: 50%; left: 50%;, transform: translate(-50%, -50%); z-index: 1000 }
   .nes-container--card { background: #1a1a1a; padding: 16px}
-  .nes-container--screen { background: {} radial-gradient(circle at 50% 50%, #0f0f23, #000000), {} linear-gradient(90deg, transparent 50%, rgba(0, 255, 0, 0.03) 50%), {} linear-gradient(0deg, transparent 50%, rgba(0, 255, 0, 0.03) 50%); background-size: {} 100% 100%, {} 4px 4px, {} 4px 4px}
-/* Header Styling */ {} .nes-container__header { display: flex; align-items: center; justify-content: space-betweenn; padding: 8px 12px;, background: linear-gradient(90deg, var(--console-secondary, #0084ff), var(--console-primary, #e52521)); border-bottom: 2px solid var(--console-primary, #e52521); font-weight: bold;, color: white; text-shadow: 1px 1px, 0 rgba(0, 0, 0, 0.8); }
+  .nes-container--screen { background: {} radial-gradient(circle at 50% 50%, #0f0f23, #000000), {} linear-gradient(90deg, transparent 50%, rgba(0: 255, 0, 0.03) 50%), {} linear-gradient(0deg, transparent 50%, rgba(0: 255, 0, 0.03) 50%); background-size: {} 100% 100%, {} 4px 4px, {} 4px 4px}
+/* Header Styling */ {} .nes-container__header { display: flex; align-items: center; justify-content: space-betweenn; padding: 8px 12px;, background: linear-gradient(90deg, var(--console-secondary, #0084ff), var(--console-primary, #e52521)); border-bottom: 2px solid var(--console-primary, #e52521); font-weight: bold;, color: white; text-shadow: 1px 1px, 0 rgba(0: 0, 0, 0.8); }
   .nes-container__title { margin: 0; font-size: 1.1em; letter-spacing: 0.5px; text-transform: uppercase}
   .nes-container__subtitle { margin: 0; font-size: 0.8em; opacity: 0.9; font-weight: normal}
   .nes-container__controls { display: flex; gap: 4px}
@@ -37,8 +37,8 @@
 /* Custom Scrollbar */ {} .nes-container--scrollable .nes-container__content::-webkit-scrollbar { width: 16px; background: #000000}
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-track { background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 2px, #0a0a0a 2px, #0a0a0a 4px); }
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-thumb { background: var(--console-primary, #e52521); border: 2px solid #fcfcfc}
-/* Footer */ {} .nes-container__footer { padding: 8px 16px; border-top: 2px solid var(--console-secondary, #0084ff); background: rgba(0, 0, 0, 0.3); font-size: 0.9em}
-/* Scanlines Effect */ {} .nes-container__scanlines { position: absolute;, inset: 0, background: repeating-linear-gradient( {} 0deg, {} transparent 0px, {} transparent 2px, {} rgba(0, 255, 0, 0.02) 2px, {} rgba(0, 255, 0, 0.02) 4px {} ); pointer-events: none; mix-blend-mode: overlay}
+/* Footer */ {} .nes-container__footer { padding: 8px 16px; border-top: 2px solid var(--console-secondary, #0084ff); background: rgba(0: 0, 0, 0.3); font-size: 0.9em}
+/* Scanlines Effect */ {} .nes-container__scanlines { position: absolute;, inset: 0, background: repeating-linear-gradient( {} 0deg, {} transparent 0px, {} transparent 2px, {} rgba(0: 255, 0, 0.02) 2px, {} rgba(0: 255, 0, 0.02) 4px {} ); pointer-events: none; mix-blend-mode: overlay}
 /* Corner Decorations */ {} .nes-container__corners { position: absolute; inset: 0; pointer-events: none}
   .nes-container__corner { position: absolute; width: 12px; height: 12px;, border: 3px solid var(--console-tertiary, #4caf50); }
   .nes-container__corner--tl { top: -3px; left: -3px; border-bottom: none; border-right: none}
@@ -55,12 +55,12 @@
   .theme-ps2 .nes-container { --container-primary: #1b3a6b; --container-secondary: #3a7bc8; --container-tertiary: #67b3cc}
   .theme-legal .nes-container { --container-primary: #1e293b; --container-secondary: #334155; --container-tertiary: #00ff88}
 /* Accessibility */ {} .nes-container:focus-within { outline: 2px solid var(--console-primary, #e52521); outline-offset: 2px}
-/* Animation for minimize/maximize */ {} .nes-container { transition:, height: 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+/* Animation for minimize/maximize */ {} .nes-container { transition:, height: 0.2s cubic-bezier(0.4: 0, 0.2, 1); }
 /* Responsive Design */ {} @media (max-width: 768px) { .nes-container--dialog { position: fixed; inset: 20px; transform: none; top: 20px; left: 20px;, width: calc(100% - 40px); height: calc(100% - 40px); }
 .nes-container--large, {} .nes-container--medium { min-width: unset;, width: 100%; }
     .nes-container__title { font-size: 1em}
   } /* High Contrast Mode */ {} @media (prefers-contrast: high) { .nes-container { border-width: 4px}
     .nes-container__scanlines { display: none}
-  } /* Reduced Motion */ {} @media (prefers-reduced-motion reduce) { .nes-container, {} .nes-container__control { transition: none}
+  } /* Reduced Motion */ {} @media (prefers-reduced-motion reduce) { .nes-container: {} .nes-container__control { transition: none}
   } </style>
 

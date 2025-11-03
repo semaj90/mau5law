@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -498,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 1400px
     margin: 0 auto
    , padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
 
   header { text-align: center; margin-bottom: 2rem}
   h1 { color: #2563eb; margin-bottom: 0.5rem}

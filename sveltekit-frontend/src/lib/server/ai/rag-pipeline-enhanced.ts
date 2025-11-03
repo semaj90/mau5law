@@ -1,4 +1,4 @@
-﻿import type { SearchResult } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 import type { Document } from '$lib/types';
 /** * Enhanced RAG Pipeline - Legal AI Platform * * Advanced Retrieval-Augmented Generation system specifically designed for legal AI * applications with comprehensive document processing, vector search, and intelligent * question answering capabilities. * * Features: * - Multi-modal document ingestion with legal-specific chunking * - Hybrid vector and keyword search with PostgreSQL pgvector * - Intelligent auto-tagging and metadata extraction * - Contract analysis and legal document processing * - Rate limiting and comprehensive error handling * - Redis caching for embeddings and search results * - Real-time metrics and performance monitoring * - Legal compliance and audit trail tracking * * @author Legal AI Platform Team * @version 4.2.0 * @lastModified 2025-01-20 */ import crypto from 'crypto'; import Redis from 'ioredis'; import postgres, { type Notice } from 'postgres'; import { drizzle } from 'drizzle-orm/postgres-js'; import { sql, eq } from 'drizzle-orm'; import { PromptTemplate } from '@langchain/core/prompts'; import { RunnableSequence } from '@langchain/core/runnables'; import { StringOutputParser } from '@langchain/core/output_parsers'; import type { Runnable } from '@langchain/core/runnables'; import * as schema from '$lib/server/db/schema-postgres';
 import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config.js';
@@ -29,7 +29,7 @@ declare module '$lib/server/db/schema-postgres' {
     createdBy: string
     confidentialityLevel: string
     clientId?: string
-    metadata: Record<string, unknown>;
+    metadata: Record<string: unknown>;
     embedding: string
     createdAt: Date, updatedAt: Date}>;
 
@@ -40,7 +40,7 @@ declare module '$lib/server/db/schema-postgres' {
     chunkIndex: number
     content: string
     embedding: string
-    metadata: Record<string, unknown>;
+    metadata: Record<string: unknown>;
     createdAt: Date}>;
 
   export const autoTags: DrizzleTable<'autoTags', {
@@ -65,7 +65,7 @@ declare module '$lib/server/db/schema-postgres' {
     processingTime: number
     contextUsed: string[];
     embedding: string
-    metadata: Record<string, unknown>;
+    metadata: Record<string: unknown>;
     isSuccessful?: boolean
     errorMessage?: string
     createdAt: Date}>;
@@ -286,7 +286,7 @@ interface DBChunkRow {
   metadata: JsonObject | null
   document_id: string
   title: string | null; // Changed to non-optional as it's selected, can be null if LEFT JOIN fails
-  confidentiality_level: string | null; // Changed to non-optional, can be null
+  confidentiality_level: string | null; // Changed to non-optional: can be null
   similarity?: number | null; // Added for vector search results
   text_rank?: number | null; // Added for keyword search results
   [key: string]: any}
@@ -310,7 +310,7 @@ export type SourceRef = {
 function getLLMText(response: any): string {
   if (typeof response === 'string') return response
   if (response && typeof response === 'object') {
-    const obj = response as Record<string, unknown>;
+    const obj = response as Record<string: unknown>;
     if (typeof obj.parse === 'string') return obj.parse
     if (typeof obj.content === 'string') return obj.content
     if (typeof obj.response === 'string') return obj.response; // Added for Ollama /api/generate
@@ -389,11 +389,11 @@ class RateLimiter {
 /** * Minimal MetricsCollector class. */
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
-  private timings: Map<string, { total: number; count: number; last: number }> = new Map(); // Corrected
+  private timings: Map<string: { total: number; count: number; last: number }> = new Map(); // Corrected
   incrementCounter(name: string, value = 1): void {
     this.counters.set(name, (this.counters.get(name) || 0) + value);
   }
-  recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
+  recordTiming(name: string, duration: number: tags?: Record<string, string>): void {
     const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
     current.total += duration
     current.count++;
@@ -536,12 +536,12 @@ class OllamaHTTPLLM /* Removed: implements Runnable<RunnableInvokeInput, Runnabl
 /** * Enhanced Legal RAG Pipeline * * Comprehensive RAG system for legal AI applications with advanced features * for document processing, vector search, and intelligent question answering. */
 export class EnhancedLegalRAGPipeline {
   private config: RAGConfig
-  private initialized = false; // Corrected: $state is for Svelte components, not class properties
+  private initialized = false; // Corrected: $state is for Svelte components: not class properties
   private sql?: ReturnType<typeof postgres>; // Corrected type
   private db?: ReturnType<typeof drizzle>; // Corrected type
   private redis?: Redis
   private embeddings?: EmbeddingsProvider; // changed type
-  private llm?: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // changed type
+  private llm?: Runnable<RunnableInvokeInput: RunnableInvokeOutput>; // changed type
   private validator: InputValidator
   private rateLimiter: RateLimiter
   private metrics: MetricsCollector
@@ -583,7 +583,7 @@ export class EnhancedLegalRAGPipeline {
     try {
       // build options with explicit typing for ssl branch to satisfy overload
       // postgres-js handles sslmode via connection: string, so we just pass the URL
-      this.sql = postgres(this.config.database.databaseUrl, {
+      this.sql = postgres(this.config.database.databaseUrl: {
         max: this.config.database.max, // Corrected
         idle_timeout: this.config.database.idle_timeout,
         // If ssl is, 'require', postgres-js will add sslmode=require if not in URL
@@ -610,7 +610,7 @@ export class EnhancedLegalRAGPipeline {
   /** * Initialize Redis connection */
   private async initializeRedis(): Promise<void> {
     try {
-      this.redis = new Redis(this.config.redis.redisUrl, {
+      this.redis = new Redis(this.config.redis.redisUrl: {
         // Use redisUrl directly
         maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest, // Corrected
         enableReadyCheck: this.config.redis.enableReadyCheck, // Corrected
@@ -798,7 +798,7 @@ export class EnhancedLegalRAGPipeline {
             chunkIndex: number
             content: string
             embedding: string
-            metadata: Record<string, unknown>;
+            metadata: Record<string: unknown>;
           };
           const isDocumentChunkInsert = (r: any): r is DocumentChunkInsert =>
             r !== null && typeof r === 'object' && 'documentId' in (r as object);
@@ -945,8 +945,7 @@ export class EnhancedLegalRAGPipeline {
         // Corrected
         const sim = typeof r.similarity === 'number' ? r.similarity : 0
         combinedResults.set(
-          r.id,
-          { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
+          r.id: { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
       });
       // Add or update with keyword results
       keywordResults.forEach((r: DBChunkRow) => {
@@ -956,8 +955,7 @@ export class EnhancedLegalRAGPipeline {
         if (existing) {
           existing.score = existing.score + tr * 0.3} else {
           combinedResults.set(
-            r.id,
-            { ...r, score: tr * 0.3, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
+            r.id: { ...r, score: tr * 0.3, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
         }
       });
       // Sort by combined score or other criteria
@@ -1142,7 +1140,7 @@ Answer: `); // Corrected
   }
   // ===== CONTRACT ANALYSIS =====
   /** * Analyze contracts with detailed legal assessment */
-  async analyzeContract(contractText: string, jurisdiction?: string): Promise<ContractAnalysisResult> {
+  async analyzeContract(contractText: string: jurisdiction?: string): Promise<ContractAnalysisResult> {
     const startTime = Date.now();
     try {
       const sanitizedText = this.validator.validateAndSanitize(contractText, 1048576);
@@ -1296,7 +1294,7 @@ Limit to 10 most relevant tags. `); // Corrected
         if (!isNaN(asNum)) return asNum
         return 0}
       if (typeof metadata === 'object' && metadata !== null) {
-        const meta = metadata as Record<string, unknown>;
+        const meta = metadata as Record<string: unknown>;
         const candidates = ['ingestionDate', 'ingestedAt', 'ingestion_date', 'createdAt', 'created_at'];
         for (const key of candidates) {
           const v = meta[key];
@@ -1535,4 +1533,5 @@ export const ragPipeline = enhancedRAGPipeline
 export { createDefaultConfig };
 /** * Export all interfaces for external use */
 // Types already exported inline above - duplicate export removed
+
 

@@ -1,7 +1,7 @@
-﻿<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain, call, expressions
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain, call, expressions
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte, code: `{@render ...}` tags can only contain, call, expressions -->
-<!-- AI Dialog: Svelte, 5, Bits, UI, UnoCSS, transitions, analytics, logging -->
+<!-- AI Dialog: Svelte: 5, Bits, UI, UnoCSS, transitions, analytics, logging -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { accessibleClick } from '$lib/actions/accessibleClick';

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
 
   export type ServiceHealth = {
@@ -165,7 +165,7 @@
     border-radius: 8px
     padding: 0.75rem
    , background: var(--bg, #fff);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+    font-family: system-ui, -apple-system: "Segoe UI", Roboto: "Helvetica Neue", Arial}
   .header {
     display: flex
     align-items: center
@@ -218,7 +218,7 @@
   .meta { min-width: 0}
   .name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis}
   .sub { color: #6b7280; font-size: 0.8rem; display: flex;, gap: 0.25rem; align-items: center}
-  .url { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
+  .url { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", monospace}
 
   .right { text-align: right; min-width: 4.5rem}
   .latency { font-size: 0.85rem; color: #374151}

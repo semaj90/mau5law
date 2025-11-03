@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
     import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from '$lib/services/legal-ai-client';
     // State management with Svelte, 5 patterns
@@ -335,7 +335,7 @@
         max-width: 1200px
         margin: 0 auto
        , padding: 2rem
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+        font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
     .workflow-header {
         text-align: center
         margin-bottom: 2rem}

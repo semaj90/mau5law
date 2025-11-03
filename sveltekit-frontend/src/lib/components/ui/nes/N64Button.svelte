@@ -1,4 +1,4 @@
-﻿<!-- N64-Style Button, Component --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; import type { Snippet } from 'svelte'; interface Props { variant?: 'primary' | 'secondary' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'a' | 'b'; size?: 'small' | 'medium' | 'large'; disabled?: boolean; loading?: boolean; onclick?: () => void; children?: Snippet; class?: string; style?: string}
+<!-- N64-Style Button, Component --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; import type { Snippet } from 'svelte'; interface Props { variant?: 'primary' | 'secondary' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'a' | 'b'; size?: 'small' | 'medium' | 'large'; disabled?: boolean; loading?: boolean; onclick?: () => void; children?: Snippet; class?: string; style?: string}
   let { variant = 'primary', size = 'medium', disabled = false, loading = false, onclick, children, class: className = '', style = ''
   }: Props = $props(); const dispatch = createEventDispatcher(); let isPressed = $state<boolean>(false); let rippleX = $state<number>(0); let rippleY = $state<number>(0); let showRipple = $state<boolean>(false); function handleClick(_event: MouseEvent) { if (disabled || loading) return; // Create ripple effect const rect = (event.currentTarget as HTMLButtonElement).getBoundingClientRect(); rippleX = event.clientX - rect.left; rippleY = event.clientY - rect.top; showRipple = true; // Reset ripple after animation: setTimeout(() => { showRipple = false}, 600); // Call handlers onclick?.(); dispatch('click', event); }
   function handleMouseDown() { if (!disabled) { isPressed = true}
@@ -41,6 +41,6 @@
   .theme-ps2 .n64-button--primary { background: linear-gradient(145deg, #1B3A6B, #0F2951); }
   .theme-legal .n64-button--primary { background: linear-gradient(145deg, #1E293B, #0F172A); }
 /* High contrast mode support */ {} @media (prefers-contrast: high) { .n64-button { border: 2px solid currentColor}
-  } /* Reduced motion support */ {} @media (prefers-reduced-motion reduce) { .n64-button, {} .n64-button__spinner, {} .n64-button__ripple { animation: none;, transition: none}
+  } /* Reduced motion support */ {} @media (prefers-reduced-motion reduce) { .n64-button: {} .n64-button__spinner, {} .n64-button__ripple { animation: none;, transition: none}
   } </style>
 

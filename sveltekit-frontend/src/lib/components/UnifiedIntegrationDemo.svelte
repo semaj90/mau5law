@@ -1,4 +1,4 @@
-﻿<!-- Unified GPU/WASM Integration, Demo, Component -->
+<!-- Unified GPU/WASM Integration, Demo, Component -->
 <script lang="ts">
 import type { Document } from '$lib/types';
 
@@ -46,10 +46,10 @@ TERMS AND CONDITIONS:
 3. Deliverables: As specified in Schedule A
 4. Termination Either party may terminate with, 60 days notice
 Both parties acknowledge they have read and agree to these terms.`,`
-    performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
+    performInference: JSON.stringify([0.1: 0.2, 0.3: 0.4, 0.5: 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
-    matmul: JSON.stringify({ a: [1, 2, 3, 4, 5, 6],
-      b: [7, 8, 9, 10, 11, 12],
+    matmul: JSON.stringify({ a: [1: 2, 3: 4, 5, 6],
+      b: [7: 8, 9: 10, 11, 12],
       m: 2,
       n: 3,
       k: 3
@@ -316,9 +316,9 @@ Both parties acknowledge they have read and agree to these terms.`,`
           >
 {#if isLoading}
               <span class="inline-flex">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0, 0, 24, 24">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0: 0, 24, 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3, 7.938l3-2.647z"></path>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824: 3, 7.938l3-2.647z"></path>
                 </svg>
                 Processing...
               </span>

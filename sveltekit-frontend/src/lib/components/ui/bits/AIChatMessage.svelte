@@ -1,4 +1,4 @@
-﻿<!-- AI Chat Message: Svelte, 5, Bits, UI, UnoCSS, analytics, logging -->
+<!-- AI Chat Message: Svelte: 5, Bits, UI, UnoCSS, analytics, logging -->
 <script lang="ts">
 import type { Message } from '$lib/types';
   interface Props {

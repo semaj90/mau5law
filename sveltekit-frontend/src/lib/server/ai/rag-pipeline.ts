@@ -51,7 +51,7 @@ type OllamaEmbeddingsOptions = { baseUrl?: string; model: string; requestOptions
 class OllamaEmbeddingsClient {
   baseUrl: string
   model: string
-  requestOptions: Record<string, unknown>; // Changed any to unknown
+  requestOptions: Record<string: unknown>; // Changed any to unknown
 
   constructor(opts: OllamaEmbeddingsOptions) {
     const resolvedBase = (opts.baseUrl ?? OLLAMA_BASE_URL).trim();
@@ -155,7 +155,7 @@ export class LegalRAGPipeline {
     title: string
     content: string
     documentType: string
-    metadata?: Record<string, unknown>; // Changed any to unknown
+    metadata?: Record<string: unknown>; // Changed any to unknown
     caseId?: string
     userId: string}) {
     const startTime = Date.now();
@@ -684,4 +684,5 @@ export const ragPipeline = new LegalRAGPipeline();
 
 // Export singleton instance
 export const ragPipeline = new LegalRAGPipeline();
+
 

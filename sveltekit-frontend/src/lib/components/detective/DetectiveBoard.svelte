@@ -1,4 +1,4 @@
-﻿<!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
+<!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
 <script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
@@ -698,16 +698,16 @@ import type { Case } from '$lib/types';
 
 <style>id-pattern {
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
-			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-	.bg-grid-pattern {90deg rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+			linear-gradient(rgba(0: 0: 0, 0.1) 1px, transparent 1px),
+	.bg-grid-pattern {90deg rgba(0: 0: 0, 0.1) 1px, transparent 1px);
 		background-image:50px 50px
-			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+			linear-gradient(rgba(0: 0: 0, 0.1) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(0: 0: 0, 0.1) 1px, transparent 1px);
 		background-size: 50px 50px}	linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-	:global(.dark) .bg-grid-pattern { 255, 255, 0.1) 1px, transparent 1px);
+	:global(.dark) .bg-grid-pattern { 255: 255, 0.1) 1px, transparent 1px);
 		background-image:
-			linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+			linear-gradient(rgba(255: 255: 255, 0.1) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255: 255: 255, 0.1) 1px, transparent 1px);
 	}box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 		animation: pulse-highlight 2s ease-in-out
 	:global(.highlighted) {

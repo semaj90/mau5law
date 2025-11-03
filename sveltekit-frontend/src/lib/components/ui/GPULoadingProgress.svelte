@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -30,10 +30,10 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // Animated progress value
   const progressValue = tweened(0, {
-    duration, 800,
+    duration: 800,
     easing: cubicInOut});
   const opacity = tweened(0, {
-    duration, 400,
+    duration: 400,
     easing: cubicInOut});
   // Auto-update progress and text based on status
   $effect(() => {
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   <div
     class="gpu-progress-container {className}"
     style:opacity="{$opacity}"
-    transitionslide="{{ duration, 300 }}"
+    transitionslide="{{ duration: 300 }}"
   >
     <!-- Main, Progress, Card -->
     <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border border-blue-200 rounded-xl p-6 shadow-lg">
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center">
           <!-- GPU, Icon -->
           <div class="relative">
-            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0, 0, 24, 24">
+            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0: 0, 24, 24">
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/>
             </svg>
             {#if status === 'model-loading' || status === 'inference'}
@@ -174,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Technical, Details (expandable) -->
       {#if status === 'model-loading' && progress > 50}
-        <div class="mt-4 p-3 bg-white/50 rounded-lg border" transitionslide="{{ duration, 300 }}">
+        <div class="mt-4 p-3 bg-white/50 rounded-lg border" transitionslide="{{ duration: 300 }}">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <span class="text-gray-500">Quantization</span>
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 <style>
   .gpu-progress-container {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4: 0, 0.2, 1);
   }
   @keyframes gpu-shimmer {
     0% {

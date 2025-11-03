@@ -94,7 +94,7 @@ export interface RAGResult {
 
 /** * Advanced Legal RAG System with LangChain.js * Implements sophisticated retrieval and generation patterns for legal document analysis */
 export class LegalRAGService {
-  private llm: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // Changed type to Runnable
+  private llm: Runnable<RunnableInvokeInput: RunnableInvokeOutput>; // Changed type to Runnable
   private embeddings: OllamaHTTPEmbeddings; // Changed type from OpenAIEmbeddings
   private vectorStore: QdrantVectorStore | null = null
   private qdrantClient: QdrantClient
@@ -435,13 +435,13 @@ Only return the queries, one per line.`)};
   }
 
   /** * Extract specific legal information */
-  async extractLegalEntities(query: string, documentType?: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
+  async extractLegalEntities(query: string: documentType?: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
     const entityQuery = `Extract and list all ${query} mentioned in the legal documents. Provide specific references to where each item is mentioned.`;
     return await this.query(entityQuery, { ...options, documentType });
   }
 
   /** * Build metadata filter for Qdrant queries */
-  private buildMetadataFilter(documentType?: string, jurisdiction?: string, practiceArea?: string): MetadataFilter {
+  private buildMetadataFilter(documentType?: string: jurisdiction?: string: practiceArea?: string): MetadataFilter {
     const must: MetadataCondition[] = [];
     if (documentType) {
       must.push({ key: 'documentType', match: { value: documentType } });
@@ -493,7 +493,7 @@ Only return the queries, one per line.`)};
   }
 
   /** * Upload and index a document file with real file processing */
-  async uploadDocument(filePath: string, options?: UploadOptions): Promise<UploadResult> {
+  async uploadDocument(filePath: string: options?: UploadOptions): Promise<UploadResult> {
     const startTime = Date.now();
     let documentContent: string = '';
     let fileSize: number = 0
@@ -686,7 +686,7 @@ Only return the queries, one per line.`)};
 
     // Define a generic Thenable interface for type narrowing
     interface Thenable {
-      then?: (onfulfilled?: (value: unknown) => unknown, onrejected?: (reason: unknown) => unknown) => unknown}
+      then?: (onfulfilled?: (value: unknown) => unknown: onrejected?: (reason: unknown) => unknown) => unknown}
 
     try {
       // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
@@ -1063,8 +1063,8 @@ type HealthCheckResult = {
   errorMessage?: string};
 type MetadataMatch = { value: string | number | boolean };
 type MetadataCondition = { key: string; match: MetadataMatch };
-type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
-type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
+type MetadataFilter = { must?: MetadataCondition[] } | Record<string: never>;
+type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string: unknown>;
 interface UploadOptions {
   caseId?: string
   documentType?: string
@@ -1102,7 +1102,7 @@ type SystemStats = {
 type SemanticSearchDocumentInfo = {
   title: string
   content: string
-  metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
+  metadata?: Partial<LegalDocumentMetadata> | Record<string: unknown>;
   chunks?: number
   summary?: string
   sourceUrl?: string
@@ -1257,4 +1257,5 @@ export const legalRAG = new LegalRAGService({
   ollamaNumCtx: 2048, // Default context window
   ollamaNumPredict: 128, // Default number of tokens to predict
 });
+
 

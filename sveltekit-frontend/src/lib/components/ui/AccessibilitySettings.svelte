@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { Settings, Eye, Type } from 'lucide-svelte';
@@ -241,6 +241,6 @@ isOpen = false}
   {/if}
 <style>
   .accessibility-settings {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif}
 </style>

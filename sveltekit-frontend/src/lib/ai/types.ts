@@ -15,7 +15,7 @@ export interface UserHistory {
 export interface UploadedFile {
   name: string
   textContent?: string
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string: unknown>;
 }
 export interface MCPServerData {
   serverId: string
@@ -88,7 +88,7 @@ interface SemanticSearchResult {
   file?: string
   path?: string
   line?: number
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string: unknown>;
 }
 // Real Context7 semantic search implementation
 export async function performContext7Search(options: Context7SearchOptions): Promise<Context7SearchResult[]> {
@@ -211,7 +211,7 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`;
     }
   }
   /** * Perform auto-fix for specific area */
-  private async performAutoFix(todoId: string, area?: string): Promise<string> {
+  private async performAutoFix(todoId: string: area?: string): Promise<string> {
     try {
       let result
       try {
@@ -416,4 +416,5 @@ export class Context7SemanticAuditor {
   getOrchestrator(): Context7AgentOrchestrator {
     return this.orchestrator}
 }
+
 

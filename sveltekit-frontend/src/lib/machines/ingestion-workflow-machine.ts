@@ -9,7 +9,7 @@ export interface DocumentChunk {
   chunkIndex: number
   text: string
   embedding?: number[];
-  metadata: Record<string, unknown>; // Changed any to unknown
+  metadata: Record<string: unknown>; // Changed any to unknown
 }
 
 export interface SimilarDocument {
@@ -502,4 +502,5 @@ export function createIngestionJob(
 }
 
 export default ingestionWorkflowMachine
+
 

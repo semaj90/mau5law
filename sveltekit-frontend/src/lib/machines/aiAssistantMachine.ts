@@ -1,4 +1,4 @@
-﻿/** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser â†’ Redis â†’ Database â†’ GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
+/** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser â†’ Redis â†’ Database â†’ GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
   close: () => Promise<void>;
@@ -12,16 +12,16 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
-  assertExchange: (name: string, type: string, opts?: Record<string, unknown>) => Promise<void>;
+  assertExchange: (name: string, type: string: opts?: Record<string, unknown>) => Promise<void>;
   publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean
   close: () => Promise<void>;
-  assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
-  bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
-  consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void, options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
+  assertQueue: (queue?: string: options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
+  bindQueue: (queue: string, source: string, pattern: string: args?: Record<string, unknown>) => Promise<void>;
+  consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void: options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
   cancel: (consumerTag: string) => Promise<void>;
-  ack: (message: ConsumeMessage, allUpTo?: boolean) => void
+  ack: (message: ConsumeMessage: allUpTo?: boolean) => void
   // Add other methods if they are used, e.g., deleteQueue
-  deleteQueue: (queue: string, options?: Record<string, unknown>) => Promise<{ messageCount: number }>;
+  deleteQueue: (queue: string: options?: Record<string, unknown>) => Promise<{ messageCount: number }>;
 };
 
 // Define a minimal ConsumeMessage type based on amqplib's ConsumeMessage interface
@@ -30,7 +30,7 @@ type ConsumeMessage = {
   properties: {
     contentType?: string
     contentEncoding?: string
-    headers: Record<string, unknown>;
+    headers: Record<string: unknown>;
     deliveryMode?: number
     priority?: number
     correlationId?: string
@@ -50,7 +50,7 @@ export interface ConversationEntry {
   type: 'user' | 'assistant' | 'system';
   content: string
   timestamp: Date
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string: unknown>;
 }
 
 export interface DocumentType {
@@ -60,7 +60,7 @@ export interface DocumentType {
   fileSize: number
   extractedText: string
   isIndexed: boolean
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string: unknown>;
 }
 
 export interface AIAssistantContext {
@@ -84,7 +84,7 @@ export interface AIAssistantContext {
 
 // --- Types for AI Assistant Events ---
 /** Context for semantic search, e.g., document IDs or case files. */
-type SemanticSearchContext = Record<string, unknown>;
+type SemanticSearchContext = Record<string: unknown>;
 
 /** Options for vector search operations. */
 interface VectorSearchOptions {
@@ -140,7 +140,7 @@ interface ModelTrainingConfig {
 /** Defines a workflow to be executed. */
 interface WorkflowPayload {
   workflowId: string
-  parameters: Record<string, unknown>;
+  parameters: Record<string: unknown>;
 }
 
 /** Represents a user in a collaboration session. */
@@ -379,7 +379,7 @@ class RabbitMQService {
   private connectionUrl = 'amqp://localhost:5672';
   private connectionPromise: Promise<boolean> | null = null
   // keep track of channels/consumers so we can close them on disconnect
-  private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> = new Map();
+  private channels: Map<string: { channel: Channel; consumerTag?: string; queue?: string }> = new Map();
 
   connect(config?: { url?: string }): Promise<boolean> {
     if (this.connection) return Promise.resolve(true);
@@ -490,7 +490,7 @@ class RabbitMQService {
       await channel.assertExchange(exchange, 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
-      const BufferGlobal = (globalThis as unknown as { Buffer?: { from(s: string, enc?: string): Uint8Array } }).Buffer
+      const BufferGlobal = (globalThis as unknown as { Buffer?: { from(s: string: enc?: string): Uint8Array } }).Buffer
       const content: Uint8Array = typeof BufferGlobal !== 'undefined' ? BufferGlobal.from(json, 'utf8') : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);
@@ -749,17 +749,17 @@ export const aiAssistantMachine = createMachine({
         ),
         onDone: {
           target: 'idle',
-          actions: assign<AIAssistantContext, { output?: { gpuReady?: boolean } }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { output?: { gpuReady?: boolean } }>((_ctx, event) => ({
             gpuProcessingEnabled: Boolean(event.output?.gpuReady)}))},
         onError: {
           target: 'idle',
-          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { error?: any }>((_ctx, event) => ({
             error: { message: String(event.error) }}))}}},
     idle: {
       on: {
         SEND_MESSAGE: {
           target: 'processing',
-          actions: assign<AIAssistantContext, { message: string }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { message: string }>((_ctx, event) => ({
             currentQuery: event.message,
             isProcessing: true}))},
         CLEAR_CONVERSATION: {
@@ -775,7 +775,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign<AIAssistantContext, { output?: ProcessQueryOutput }>((context, event) => {
+          actions: assign<AIAssistantContext: { output?: ProcessQueryOutput }>((context, event) => {
             const resp = String(event.output?.response ?? '');
             const newEntry: ConversationEntry = {
               id: `assistant_${Date.now()}`,
@@ -790,7 +790,7 @@ export const aiAssistantMachine = createMachine({
           })},
         onError: {
           target: 'error',
-          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { error?: any }>((_ctx, event) => ({
             error: { message: String(event.error) },
             isProcessing: false}))}}},
     error: {
@@ -836,4 +836,5 @@ export const aiAssistantProvider = {
 
 export default aiAssistantMachine
 // Helper: resolve Ollama endpoint safely in server or browser.
+
 
