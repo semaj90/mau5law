@@ -18,7 +18,7 @@ https://svelte.dev/e/attribute_duplicate -->
   } from '$lib/utils/file-utils';
 
   // safe fallbacks if the unified store doesn't export expected members'
-  const evidenceActions = (unified as: any).evidenceActions ?? {
+  const evidenceActions = (unified as: unknown).evidenceActions ?? {
     loadEvidence: (_caseId?: string) => {},
     setSearchQuery: (_q: string) => {},
     setViewMode: (_v: string) => {},
@@ -28,42 +28,42 @@ https://svelte.dev/e/attribute_duplicate -->
     deleteEvidence: async (_id: string) => {}
   };
 
-  const evidenceGrid = (unified as: any).evidenceGrid ?? { subscribe: (fn: any) => { fn(undefined); return () => {}} };
+  const evidenceGrid = (unified as: unknown).evidenceGrid ?? { subscribe: (fn: unknown) => { fn(undefined); return () => {}} };
 
-  const filteredEvidence = (unified as: any).filteredEvidence ?? { subscribe: (fn: any) => { fn([]); return () => {}} };
+  const filteredEvidence = (unified as: unknown).filteredEvidence ?? { subscribe: (fn: unknown) => { fn([]); return () => {}} };
 
   // Map icons safely (fall back to no-op component if icon missing)
-  const Search = (Icons as: any).Search ?? (() => null);
+  const Search = (Icons as: unknown).Search ?? (() => null);
 
-  const SortAsc = (Icons as: any).SortAsc ?? (() => null);
+  const SortAsc = (Icons as: unknown).SortAsc ?? (() => null);
 
-  const SortDesc = (Icons as: any).SortDesc ?? (() => null);
+  const SortDesc = (Icons as: unknown).SortDesc ?? (() => null);
 
-  const List = (Icons as: any).List ?? (() => null);
+  const List = (Icons as: unknown).List ?? (() => null);
 
-  const Grid = (Icons as: any).Grid ?? (() => null);
+  const Grid = (Icons as: unknown).Grid ?? (() => null);
 
-  const File = (Icons as: any).File ?? (() => null);
+  const File = (Icons as: unknown).File ?? (() => null);
 
-  const FileText = (Icons as: any).FileText ?? (() => null);
+  const FileText = (Icons as: unknown).FileText ?? (() => null);
 
-  const Image = (Icons as: any).Image ?? (() => null);
+  const Image = (Icons as: unknown).Image ?? (() => null);
 
-  const Video = (Icons as: any).Video ?? (() => null);
+  const Video = (Icons as: unknown).Video ?? (() => null);
 
-  const Music = (Icons as: any).Music ?? (() => null);
+  const Music = (Icons as: unknown).Music ?? (() => null);
 
-  const Download = (Icons as: any).Download ?? (() => null);
+  const Download = (Icons as: unknown).Download ?? (() => null);
 
-  const Archive = (Icons as: any).Archive ?? (() => null);
+  const Archive = (Icons as: unknown).Archive ?? (() => null);
 
-  const MoreHorizontal = (Icons as: any).MoreHorizontal ?? (() => null);
+  const MoreHorizontal = (Icons as: unknown).MoreHorizontal ?? (() => null);
 
-  const Eye = (Icons as: any).Eye ?? (() => null);
+  const Eye = (Icons as: unknown).Eye ?? (() => null);
 
-  const Tag = (Icons as: any).Tag ?? (() => null);
+  const Tag = (Icons as: unknown).Tag ?? (() => null);
 
-  const Trash2 = (Icons as: any).Trash2 ?? (() => null);
+  const Trash2 = (Icons as: unknown).Trash2 ?? (() => null);
 
   // Relaxed Evidence typing so template can safely access properties that might not be present
   type EvidenceAny = Evidence & Record<string, any>;
@@ -86,10 +86,10 @@ https://svelte.dev/e/attribute_duplicate -->
   let filteredData = $state<EvidenceAny[]>([]);
   // Subscribe to store changes
   $effect(() => {
-    const unsubscribe = evidenceGrid.subscribe((value: any) => {
+    const unsubscribe = evidenceGrid.subscribe((value: unknown) => {
       gridData = value});
 
-    const unsubscribeFiltered = filteredEvidence.subscribe((value: any) => {
+    const unsubscribeFiltered = filteredEvidence.subscribe((value: unknown) => {
       filteredData = value});
     return () => {
       unsubscribe();
@@ -122,7 +122,7 @@ https://svelte.dev/e/attribute_duplicate -->
   function toggleViewMode() {
     evidenceActions.setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
 
-  // annotate parameter type to avoid implicit: any
+  // annotate parameter type to avoid implicit: unknown
   function toggleSort(field: string) {
     if (sortBy === field) {
       evidenceActions.setSorting(field, sortOrder === 'asc' ? 'desc' : 'asc')} else {
@@ -380,15 +380,15 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               <!-- Preview/Thumbnail -->
               <div class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex items-center">
-  {#if (item as: any).fileUrl && isImageFile((item as: any).mimeType || '')}
+  {#if (item as: unknown).fileUrl && isImageFile((item as: unknown).mimeType || '')}
                   <img
-                    src={(item as: any).fileUrl}
-                    alt={(item as: any).title}
+                    src={(item as: unknown).fileUrl}
+                    alt={(item as: unknown).title}
                     class="w-full h-full: object-cover rounded-md"
                     loading="lazy"
                   />
                 {:else}
-                  {@const Icon = getFileIcon((item, as: any).evidenceType || '', (item as: any).mimeType)}
+                  {@const Icon = getFileIcon((item, as: unknown).evidenceType || '', (item as: unknown).mimeType)}
                   <Icon class="w-12 h-12" />
                 {/if}
   <!-- Overlay with, selection, checkbox -->
@@ -404,7 +404,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 <!-- File, type badge -->
                 <div class="absolute bottom-2">
                   <span class="px-2 py-1 bg-gray-900/50 text-white text-xs">
-                    {getFileCategory((item as: any).mimeType || (item as: any).evidenceType)}
+                    {getFileCategory((item as: unknown).mimeType || (item as: unknown).evidenceType)}
 </span>
                 </div>
               </div>
@@ -412,33 +412,33 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- Content -->
               <div class="flex">
                 <h3 class="font-semibold text-gray-900 dark:text-white truncate" title={(item, as, any).title}>
-                  {(item as: any).title}
+                  {(item as: unknown).title}
 </h3>
-  {#if (item as: any).description}
+  {#if (item as: unknown).description}
                   <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2" title={(item, as, any).description}>
-                    {(item as: any).description}
+                    {(item as: unknown).description}
 </p>
                 {/if}
   <!-- Metadata -->
                 <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500">
                   <div class="flex justify-between">
-                    <span>{formatDate((item as: any).uploadedAt)}
+                    <span>{formatDate((item as: unknown).uploadedAt)}
 </span>
-  {#if (item as: any).fileSize}
-                      <span>{formatFileSize((item as: any).fileSize)}
+  {#if (item as: unknown).fileSize}
+                      <span>{formatFileSize((item as: unknown).fileSize)}
 </span>
                     {/if}
   </div>
-  {#if (item as: any).tags && (item as: any).tags.length > 0}
+  {#if (item as: unknown).tags && (item as: unknown).tags.length > 0}
                     <div class="mt-2 flex flex-wrap">
-  {#each Array.isArray((item as: any).tags.slice(0, 3)) ? (item as: any).tags.slice(0, 3) : [] as tag}
+  {#each Array.isArray((item as: unknown).tags.slice(0, 3)) ? (item as: unknown).tags.slice(0, 3) : [] as tag}
                         <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
                           {tag}
 </span>
                       {/each}
-                      {#if (item as: any).tags.length > 3}
+                      {#if (item as: unknown).tags.length > 3}
                         <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-                          +{(item as: any).tags.length - 3}
+                          +{(item as: unknown).tags.length - 3}
 </span>
                       {/if}
                     {/if}
@@ -451,7 +451,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <!-- List, view -->
         <div class="border border-gray-200 dark:border-gray-700">
   {#each filteredData as item (item.id)}
-            {@const Icon = getFileIcon((item as: any).evidenceType || '', (item as: any).mimeType)}
+            {@const Icon = getFileIcon((item as: unknown).evidenceType || '', (item as: unknown).mimeType)}
             <div
               class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50, dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
               role="button"

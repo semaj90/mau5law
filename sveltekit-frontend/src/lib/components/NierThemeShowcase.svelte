@@ -135,7 +135,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
             /> <button class="nier-button-digital"> Send </button> </div> </section> {/if}
   </div>
  <!-- Footer --> <footer class="mt-16 py-8 border-t nier-divider"> <p class="text-sm text-nier-gray"> YoRHa Legal System v2.0 â€¢ For the Glory of Mankind </p> </footer> </main> </div>
- <style> /* @unocss-include */ /*, Add: any component-specific styles here */:global(body) { transition: background-color 0.5s ease}:global(.dark) { color-scheme: dark}
+ <style> /* @unocss-include */ /*, Add: unknown component-specific styles here */:global(body) { transition: background-color 0.5s ease}:global(.dark) { color-scheme: dark}
 </style>
 
 

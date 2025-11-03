@@ -6,7 +6,7 @@
   interface Props {
     title?: string
     modified?: boolean
-    children?: any}
+    children?: unknown}
   let { title, modified = false, children }: Props = $props();
 </script>
 

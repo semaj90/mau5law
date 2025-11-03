@@ -2,53 +2,53 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Note: removed unused onMount and Button imports and replaced external dialog usage // with a lightweight inline modal to avoid dependency/import errors. // Document drafting state let documentTypes = $state<DocumentType[]>([]); let currentDocument = $state<DocumentDraft | null>(null); let templates = $state<DocumentTemplate[]>([]); let isDrafting = $state<boolean>(false); let isGenerating = $state<boolean>(false); let showPreview = $state<boolean>(false); let draftHistory = $state<DocumentDraft[]>([]); // Editor state let selectedDocumentType = $state<string>(''); let selectedTemplate = $state<string>(''); let documentTitle = $state<string>(''); let documentContent = $state<string>(''); let caseContext = $state<string>(''); let draftingMode = $state<'guided' | 'template' | 'freeform'>('guided'); let aiAssistanceLevel = $state<'minimal' | 'moderate' | 'extensive'>('moderate'); interface DocumentType { id: string, name: string, category: 'litigation' | 'contract' | 'compliance' | 'discovery' | 'pleading',description: string, complexity: 'basic' | 'intermediate' | 'advanced',estimatedTime: string, requiredFields: DocumentField[]; icon: string}
   interface DocumentTemplate { id: string, name: string, documentTypeId: string, description: string, content: string, variables: TemplateVariable[]; lastUpdated: string, usage_count: number}
-  interface TemplateVariable { name: string, type: 'text' | 'date' | 'number' | 'select' | 'boolean',required: boolean; description: string, options?: string[]; default_value?: any}
+  interface TemplateVariable { name: string, type: 'text' | 'date' | 'number' | 'select' | 'boolean',required: boolean; description: string, options?: string[]; default_value?: unknown}
   interface DocumentField { name: string, type: 'text' | 'textarea' | 'date' | 'select' | 'number',required: boolean; label: string, placeholder?: string; options?: string[]}
   interface DocumentDraft { id: string, title: string, type: string, content: string, metadata: { caseId?: string,createdAt: string, lastModified: string, version: number, wordCount: number; completionScore: number}; aiSuggestions: AISuggestion[], status: 'draft' | 'review' | 'finalized'; collaborators: string[]}
   interface AISuggestion { id: string, type: 'content' | 'structure' | 'legal_point' | 'citation' | 'language',position: number, suggestion: string, reasoning: string; confidence: number;, applied: boolean}
   $effect(() => { loadDocumentTypes(); loadTemplates(); loadDraftHistory()});
   async function loadDocumentTypes(): Promise<any> { try { const response = await fetch('/api/ai/document-drafting/types', { method: 'GET'; headers: {
           'Content-Type': 'application/json'
-        } }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const data = await (response as { ok?: any; json?: any; statusText?: any }).json(); documentTypes = (
-            data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any}
+        } }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); documentTypes = (
+            data as { documentTypes?: unknown; templates?: unknown; history?: unknown; version?: unknown; completionScore?: unknown; lastModified?: unknown; wordCount?: unknown; createdAt?: unknown}
           ).documentTypes || []}
     } catch (error) { console.error('Error loading document types:', error)}
   }
   async function loadTemplates(): Promise<any> { try { const response = await fetch('/api/ai/document-drafting/templates', { method: 'GET'; headers: {
           'Content-Type': 'application/json'
-        } }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const data = await (response as { ok?: any; json?: any; statusText?: any }).json(); templates = (
-            data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any}
+        } }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); templates = (
+            data as { documentTypes?: unknown; templates?: unknown; history?: unknown; version?: unknown; completionScore?: unknown; lastModified?: unknown; wordCount?: unknown; createdAt?: unknown}
           ).templates || []}
     } catch (error) { console.error('Error loading templates:', error)}
   }
   async function loadDraftHistory(): Promise<any> { try { const response = await fetch('/api/ai/document-drafting/history', { method: 'GET'; headers: {
           'Content-Type': 'application/json'
-        } }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const data = await (response as { ok?: any; json?: any; statusText?: any }).json(); draftHistory = (
-            data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any}
+        } }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); draftHistory = (
+            data as { documentTypes?: unknown; templates?: unknown; history?: unknown; version?: unknown; completionScore?: unknown; lastModified?: unknown; wordCount?: unknown; createdAt?: unknown}
           ).history || []}
     } catch (error) { console.error('Error loading draft history:', error)}
   }
   async function startNewDocument(): Promise<any> { if (!selectedDocumentType) return; isDrafting = true; try { const request = { documentType: selectedDocumentType, template: selectedTemplate || undefined, title: documentTitle; caseContext: caseContext || undefined, draftingMode, aiAssistanceLevel }; const response = await fetch('/api/ai/document-drafting', { method: 'POST'; headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify(request) }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const result = await (response as { ok?: any; json?: any; statusText?: any }).json(); currentDocument = (result as { document?: any; content?: any; suggestions?: any }).document; documentContent = currentDocument.content} else { throw new Error( `Failed to start document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}` )}
+        }, body: JSON.stringify(request) }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); currentDocument = (result as { document?: unknown; content?: unknown; suggestions?: unknown }).document; documentContent = currentDocument.content} else { throw new Error( `Failed to start document: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}` )}
     } catch (error) { console.error('Error starting document:', error)} finally { isDrafting = false}
   }
   async function generateContent(prompt: string): Promise<any> { if (!currentDocument) return; isGenerating = true; try { const request = { documentId: currentDocument.id, prompt, context: { currentContent: documentContent | caseContext; assistanceLevel: aiAssistanceLevel }
       }; const response = await fetch('/api/ai/document-drafting/generate', { method: 'POST'; headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify(request) }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const result = await (response as { ok?: any; json?: any; statusText?: any }).json(); documentContent = (result as { document?: any; content?: any; suggestions?: any }).content; if (currentDocument) { currentDocument.content = (result as { document?: any; content?: any; suggestions?: any }).content; currentDocument.aiSuggestions = (result as { document?: any; content?: any; suggestions?: any }).suggestions || []}
+        }, body: JSON.stringify(request) }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); documentContent = (result as { document?: unknown; content?: unknown; suggestions?: unknown }).content; if (currentDocument) { currentDocument.content = (result as { document?: unknown; content?: unknown; suggestions?: unknown }).content; currentDocument.aiSuggestions = (result as { document?: unknown; content?: unknown; suggestions?: unknown }).suggestions || []}
       } } catch (error) { console.error('Error generating content:', error)} finally { isGenerating = false}
   }
   function handlePromptKeydown(e: KeyboardEvent) { // e.target is an EventTarget in TS; narrow to HTMLInputElement safely const target = e.target as HTMLInputElement | null; if (e.key === 'Enter' && target && target.value.trim()) { generateContent(target.value); target.value = ''}
   }
   async function saveDocument(): Promise<void> { if (!currentDocument) return; try { const request = { documentId: currentDocument.id, content: documentContent; title: documentTitle }; const response = await fetch('/api/ai/document-drafting/save', { method: 'POST'; headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify(request) }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { await loadDraftHistory()}
+        }, body: JSON.stringify(request) }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { await loadDraftHistory()}
     } catch (error) { console.error('Error saving document:', error)}
   }
   async function applySuggestion(suggestion AISuggestion): Promise<any> { if (!currentDocument) return; try { const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, { method: 'POST'; headers: {
           'Content-Type': 'application/json'
-        }, body: JSON.stringify({ documentId: currentDocument.id }) }); if ((response as { ok?: any; json?: any; statusText?: any }).ok) { const result = await (response as { ok?: any; json?: any; statusText?: any }).json(); documentContent = (result as { document?: any; content?: any; suggestions?: any }).content; // Mark suggestion as applied if (currentDocument) { const suggestionIndex = currentDocument.aiSuggestions.findIndex(s => s.id === suggestion.id); if (suggestionIndex !== -1) { currentDocument.aiSuggestions[suggestionIndex].applied = true}
+        }, body: JSON.stringify({ documentId: currentDocument.id }) }); if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) { const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json(); documentContent = (result as { document?: unknown; content?: unknown; suggestions?: unknown }).content; // Mark suggestion as applied if (currentDocument) { const suggestionIndex = currentDocument.aiSuggestions.findIndex(s => s.id === suggestion.id); if (suggestionIndex !== -1) { currentDocument.aiSuggestions[suggestionIndex].applied = true}
         } }
     } catch (error) { console.error('Error applying suggestion', error)}
   }

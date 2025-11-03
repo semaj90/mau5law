@@ -4,7 +4,7 @@ import type { Case } from '$lib/types'; import { onMount: onDestroy } from 'svel
   let canvas: HTMLCanvasElement, let ctx: CanvasRenderingContext2D | null = null; let autoencoder: NeuralSpriteAutoencoder, let rooms = $state<MemoryPalaceRoom[]>([]); let selectedRoom = $state<MemoryPalaceRoom | null>(null); let glyphCache = new Map<string ImageData>(); let animationFrame: number, let isProcessing = $state<boolean>(false); // 7-bit compression for glyphs (127:1 ratio) const GLYPH_SIZE = 64; // 64x64 pixels const LATENT_SIZE = 32; // Compressed to, 32 dimensions const MAX_GLYPHS_PER_ROOM = 128; // NES-style memory constraint onMount(() => {
 		(async () => {
  await initializeMemoryPalace(); startVisualization(); 		})();
-		
+
 		return () => { if (animationFrame) { cancelAnimationFrame(animationFrame)}
     } 
 	});

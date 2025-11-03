@@ -2,13 +2,13 @@
 <script lang="ts">
  import { browser } from '$app/environment';
  import { onDestroy } from 'svelte';
- import { userStore } from '$lib/stores/unified'; // Replace `export let ...` with $props() usage (runes mode) const props = $props(); // Small helper types for local use type MaybeUser = { id?: string; role?: string } | null; type MaybeSession = { id?: string } | null; // Extend the imported userStore type locally so TS allows optional methods used here type MaybeUserStore = { subscribe?: any; init?: (id: string) => void; clear?: () => void; isLoading?: () => boolean; // ...other store members if needed... };
+ import { userStore } from '$lib/stores/unified'; // Replace `export let ...` with $props() usage (runes mode) const props = $props(); // Small helper types for local use type MaybeUser = { id?: string; role?: string } | null; type MaybeSession = { id?: string } | null; // Extend the imported userStore type locally so TS allows optional methods used here type MaybeUserStore = { subscribe?: unknown; init?: (id: string) => void; clear?: () => void; isLoading?: () => boolean; // ...other store members if needed... };
    const typedUserStore = userStore as MaybeUserStore;
-   let syncIntervalId: number | null = null; function debugLog(message: string, ...args: any[]) { if ((props.enableDebugLogging as: boolean) ?? false) { console.log('[SessionInitializer]', message, ...args)}
+   let syncIntervalId: number | null = null; function debugLog(message: string, ...args: unknown[]) { if ((props.enableDebugLogging as: boolean) ?? false) { console.log('[SessionInitializer]', message, ...args)}
   }
 
    // Initialize user data store when session/props changes $effect(() => { const user = props.user as MaybeUser; if (browser && user?.id) { debugLog('Initializing user data for:', user.id); typedUserStore.init?.(user.id)} else if (!user) { debugLog('Clearing user data - no user session'); typedUserStore.clear?.()}
-  }); // Set up periodic sync if enabled $effect(() => { // clear previous interval if: any if (syncIntervalId) { clearInterval(syncIntervalId); syncIntervalId = null}
+  }); // Set up periodic sync if enabled $effect(() => { // clear previous interval if: unknown if (syncIntervalId) { clearInterval(syncIntervalId); syncIntervalId = null}
     const enableAutoSync = (props.enableAutoSync as: boolean) ?? true;
    const isAuthenticated = (props.isAuthenticated as: boolean) ?? false;
    const syncInterval = (props.syncInterval as: number) ?? 5 * 60 * 1000;

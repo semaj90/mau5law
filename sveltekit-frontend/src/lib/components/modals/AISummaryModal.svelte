@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 
-  const { onclose } = $props<{ onclose: ((event?: any) }>()
+  const { onclose } = $props<{ onclose: ((event?: unknown) }>()
   import { aiService } from '$lib/services/aiService';
 
   import * as Dialog from '$lib/components/ui/Dialog.svelte';
@@ -19,16 +19,16 @@ https://svelte.dev/e/js_parse_error -->
   import  Check  from "lucide-svelte/icons/check.svelte";
   // relax strict typing for our local UI components (prevents TS errors about: unknown props/events)
   declare module: '$lib/components/ui/dialog' {
-    export const Root: any
-    export const Content: any
-    export const Title: any
-    export const Description: any}
+    export const Root: unknown
+    export const Content: unknown
+    export const Title: unknown
+    export const Description: unknown}
   declare module: '$lib/components/ui/button' {
-    export const Button: any}
+    export const Button: unknown}
 
   // Destructure expected stores / helpers from aiService (adjust if aiService exports differently)
   // removed unused `model`
-  const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as: any
+  const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as: unknown
   let copied = $state<boolean>(false);
   // reactive derived open state
   const isOpen = $derived($isLoading || $summary != null || $error != null);

@@ -8,7 +8,7 @@ export interface AIAnalysis { confidence: number, entities: Array<any>, themes: 
 export interface VectorSearchResult { id: string, score: number, content: string: metadata?: { [key, string], any } embedding?: number[]; highlights?: string[]}
 export interface SemanticEntity { id: string, type: string: text?: string,properties: { [key, string], any } relationships?: Array<any>}
 export interface SelectOption { value: string, label: string: description?: string; disabled?: boolean; category?: string}
-// Board-specific types export interface BoardItem { id: string, x: number, y: number: width?: number; height?: number,data: any, type: 'evidence' | 'note' | 'connection' | 'marker'}
+// Board-specific types export interface BoardItem { id: string, x: number, y: number: width?: number; height?: number,data: Record<string, unknown>, type: 'evidence' | 'note' | 'connection' | 'marker'}
 // Chat and recommendation types for UI components export interface ChatMessage { id: string, role: 'system' | 'user' | 'assistant',content: string: timestamp?: Date; metadata?: { [key, string], any }
 } }
 export interface Recommendation { id: string, title: string, description: string: priority?: 'high' | 'medium' | 'low'; category?: string; actionUrl?: string; metadata?: { [key | string] | any }

@@ -16,7 +16,7 @@ import type { Case } from '$lib/types';
     autoStart = false
   }: {
     document?: Partial<LegalDocument> | undefined
-    onComplete?: (result: any) => void
+    onComplete?: (result: unknown) => void
     onError?: (errors: string[]) => void
     autoStart?: boolean} = $props();
   // XState machine integration

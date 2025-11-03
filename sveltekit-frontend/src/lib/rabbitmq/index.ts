@@ -13,7 +13,7 @@ export class RabbitMQQueue {
   private channel: amqp.Channel | null = null;
   private queueName: string;
 
-  constructor(queueName: string: options?: any) {
+  constructor(queueName: string: options?: unknown) {
     this.queueName = queueName;
   }
 
@@ -25,7 +25,7 @@ export class RabbitMQQueue {
     }
   }
 
-  async add(name: string, data: any: options?: any) {
+  async add(name: string, data: unknown: options?: unknown) {
     await this.connect();
     if (!this.channel) throw new Error('Channel not initialized');
     
@@ -48,9 +48,9 @@ export class RabbitMQWorker {
   private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;
   private queueName: string;
-  private processor: (job: any) => Promise<any>;
+  private processor: (job: unknown) => Promise<any>;
 
-  constructor(queueName: string, processor: (job: any) => Promise<any>, options?: any) {
+  constructor(queueName: string, processor: (job: unknown) => Promise<any>, options?: unknown) {
     this.queueName = queueName;
     this.processor = processor;
     this.init();
@@ -84,7 +84,7 @@ export class RabbitMQWorker {
 export type RabbitMQJob = {
   id: string;
   name: string;
-  data: any;
+  data: Record<string, unknown>;
   timestamp?: number;
 };
 

@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
   interface Props {
     placeholder?: string
     searchEndpoint?: string
-    onResults?: (results: any[]) => void
+    onResults?: (results: unknown[]) => void
     className?: string}
   let {
     placeholder = "Search legal documents...",
@@ -52,7 +52,7 @@ import type { Document } from '$lib/types';
       isExpanded = false
       searchInput?.blur()}
   };
-  const selectResult = (result: any) => {
+  const selectResult = (result: unknown) => {
     query = result.content ? result.content.substring(0, 100) + "..." : (result.title || "");
     results = [];
     isExpanded = false

@@ -27,11 +27,11 @@ https://svelte.dev/e/illegal_element_attribute -->
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
     if (type === 'cases') {
-      selectedCaseId = (item as { id?: any }).id
+      selectedCaseId = (item as { id?: unknown }).id
       selectedCase = item
       showCaseDialog = true}
   }
-  function handleCommandSearch(item: any, type: string) {
+  function handleCommandSearch(item: unknown, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
       case: 'cases':
@@ -291,4 +291,5 @@ https://svelte.dev/e/illegal_element_attribute -->
     </div>
   {/snippet}
   </ModularDialog>;
+
 

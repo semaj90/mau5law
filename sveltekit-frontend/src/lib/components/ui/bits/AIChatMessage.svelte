@@ -2,7 +2,7 @@
 <script lang="ts">
 import type { Message } from '$lib/types';
   interface Props {
-    message: { role: string;, content: string, timestamp?: string; references?: any[] };
+    message: { role: string;, content: string, timestamp?: string; references?: unknown[] };
     showReferences?: boolean}
   let { message, showReferences = false }: Props = $props();
   let isUser = message.role === 'user';

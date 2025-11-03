@@ -34,7 +34,7 @@ import type { User } from '$lib/types';
   } from 'lucide-svelte';
   // Props
   // Component state
-  let artifact: any = null
+  let artifact: unknown = null
   let extractedMetadata: LegalAIMetadata | null = null
   let imageUrl: string | null = null
   let loading = true
@@ -58,7 +58,7 @@ import type { User } from '$lib/types';
         }
       } else {
         error = 'Artifact not found'}
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err.message || 'Failed to load artifact'} finally {
       loading = false}
   }

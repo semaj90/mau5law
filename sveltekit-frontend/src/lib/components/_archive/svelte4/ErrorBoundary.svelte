@@ -15,6 +15,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   }
   function getButtonClass(severity: string) { switch (severity) { case: "critical": case;error": return "btn-error"; case, "warning": return "btn-warning"; case, "info": default: return "btn-info"}
   }
+
    // Report error to support (placeholder) function reportError() { if (!currentError) return; // This would integrate with your error reporting service console.log("Reporting error:", currentError); notifications.add({ type: "success", title: "Error Reported", message: "Thank you for reporting this issue. Our team will investigate."
     })}
 </script>

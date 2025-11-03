@@ -11,6 +11,7 @@
    let animationFrame: number, const sizeClasses = { small: 'max-w-md', medium: 'max-w-2xl', large: 'max-w-4xl'; fullscreen: 'max-w-full h-full'
   }; onMount(() => { if (diamondPattern && canvasElement) {
     drawDiamondPattern()
+
   }
   return () => { if (animationFrame) { cancelAnimationFrame(animationFrame)}
     }}); function drawDiamondPattern() { if (!canvasElement) return;

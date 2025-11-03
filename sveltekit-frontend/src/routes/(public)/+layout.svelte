@@ -5,7 +5,7 @@
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data?: any;
+    data?: unknown;
     children?: Snippet;
   }
 

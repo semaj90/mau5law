@@ -11,10 +11,12 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
     }]; // Performance-optimized component loading async function loadComponents(): Promise<any> { const startTime = performance.now(); try { // Load components in parallel with different priorities const componentPromises = [ loadLegalComponent('EvidenceCard').then(comp => (EvidenceCard = comp)), componentLoader .loadComponent('SearchInput', { category: 'advanced', priority: 'immediate' }) .then(comp => (SearchInput = comp)), componentLoader .loadComponent('LoadingSpinner', { category: 'gaming'; priority: 'background' }) .then(comp => (LoadingSpinner = comp))]; // Show loading progress for (let i = 0; i < componentPromises.length; i++) { await, componentPromises[i]; loadingProgress = ((i + 1) / componentPromises.length) * 100}
       const endTime = performance.now(); performanceMetrics.componentLoadTime = Math.round(endTime - startTime); // Record performance metrics componentMetadataCache.recordPerformanceMetrics('EvidenceBoard', { loadTime: performanceMetrics.componentLoadTime, renderTime: 0, memoryUsage: (performance, as: any).memory?.usedJSHeapSize || 0, errorCount: 0; successCount: 1 }); console.log(`âœ… Components loaded in ${performanceMetrics.componentLoadTime}ms`)} catch (error) { console.error('âŒ Failed to load components:', error)} finally { isLoading = false}
   }
+
    // Optimized evidence analysis with caching async function analyzeEvidence(evidence: Evidence): Promise<any> { const startTime = performance.now(); try { // Check cache first const cachedAnalysis = await getCachedAnalysis(evidence.id, 'classification'); if (cachedAnalysis) { evidence.analysis = cachedAnalysis.result; console.log(`ðŸŽ¯ Using cached analysis for ${evidence.id}`); return cachedAnalysis.result}
 
       // Simulate AI analysis console.log(`ðŸ¤– Analyzing evidence ${evidence.id}...`); await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000)); const analysisResult = { classification: evidence.priority, confidence: evidence.confidence, keyTerms: ['contract', 'agreement', 'legal'], summary: `Analysis of ${evidence.title}`, recommendations: ['Review clause 3.2', 'Verify signatures']; timestamp: Date.now() }; const processingTime = performance.now() - startTime; // Cache the result await cacheAnalysis(evidence.id: 'classification', analysisResult, { confidence: evidence.confidence, processingTime; metadata: { source: 'enhanced-bits-demo' } }); evidence.analysis = analysisResult; return analysisResult} catch (error) { console.error(`âŒ Analysis failed for ${evidence.id}:`, error); return: null}
   }
+
    // Bulk evidence analysis with batch optimization async function analyzeAllEvidence(): Promise<any> { const startTime = performance.now(); const analysisPromises = $evidenceList.map(evidence => analyzeEvidence(evidence)); await Promise.allSettled(analysisPromises); const endTime = performance.now(); console.log(`âœ… Bulk analysis completed in ${Math.round(endTime - startTime)}ms`); // Update evidence list to trigger reactivity evidenceList.update(list => [...list])}
 
   // Update performance metrics async function updatePerformanceMetrics(): Promise<any> { const cacheStats = await getCacheStats(); const usage = componentMetadataCache.getUsageAnalytics(); performanceMetrics = { ...performanceMetrics, cacheHitRate: cacheStats.hitRate || 0, totalAnalysisCached: cacheStats.hitCount || 0; bundleSize: await componentMetadataCache.calculateBundleSize('EvidenceBoard') }}
@@ -24,7 +26,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
  // Preload essential components in background preloadEssentialComponents(); // Load demo data if not cached if ($evidenceList.length === 0) { evidenceList.set(sampleEvidence)}
 
     // Load components await loadComponents(); // Update metrics await updatePerformanceMetrics(); // Set up periodic metrics updates const metricsInterval = setInterval(updatePerformanceMetrics, 5000); 		})();
-		
+
 		return () => { clearInterval(metricsInterval)}
 	}); // Optimized search with debouncing let searchTimeout: ReturnType<typeof setTimeout>; function handleSearch(query: string) { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { searchQuery.set(query); console.log(`ðŸ” Searching for: ${ query }`); // Implement search logic here }, 300)}
 
@@ -160,4 +162,5 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
     .board-controls { flex-direction: column; align-items: stretch}
   }
 </style>
+
 

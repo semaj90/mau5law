@@ -7,7 +7,7 @@
     title?: string;
     subtitle?: string;
     centered?: boolean;
-    children?: any;
+    children?: unknown;
   }
   let { title, subtitle, centered = true, children }: Props = $props();
 </script>

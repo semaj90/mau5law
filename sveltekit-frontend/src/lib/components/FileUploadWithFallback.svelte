@@ -41,12 +41,12 @@ Automatically handles server upload with localStorage fallback
   let _interval: ReturnType<typeof setInterval> | null = null
   onMount(() => {
     try {
-      storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats} catch {
+      storageStats = (localStorageFiles as: unknown).getStorageUsage?.() ?? storageStats} catch {
       // ignore
     }
     _interval = setInterval(() => {
       try {
-        storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats} catch {
+        storageStats = (localStorageFiles as: unknown).getStorageUsage?.() ?? storageStats} catch {
         // ignore
       }
     }, 5000);
@@ -85,13 +85,13 @@ Automatically handles server upload with localStorage fallback
           onprogress?.({ completed, total, file: fileName })}
       );
       uploadResults = results
-      storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats
-      const successCount = results.filter(r => !!(r as: any).success).length
+      storageStats = (localStorageFiles as: unknown).getStorageUsage?.() ?? storageStats
+      const successCount = results.filter(r => !!(r as: unknown).success).length
       const errorCount = results.length - successCount
       if (errorCount > 0) {
         error = `${errorCount} file(s) failed to upload`;
         onerror?.({ error: error ?? `${errorCount} file(s) failed` })}
-      onupload?.({ results })} catch (err: any) {
+      onupload?.({ results })} catch (err: unknown) {
       error = (err && err.message) ? err.message : 'Upload failed';
       onerror?.({ error: error ?? 'Upload failed' })} finally {
       isUploading = false

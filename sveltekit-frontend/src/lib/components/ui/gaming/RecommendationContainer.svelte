@@ -6,13 +6,14 @@
  import * as Badge from 'bits-ui/badge';
  import * as Tooltip from 'bits-ui/tooltip';
  import  RetroRecommendationModal  from "./modals/RetroRecommendationModal.svelte";
- import { enhancedRecommendationIntegration, type EnhancedRecommendation, type RecommendationContext, type UserProfile } from '$lib/services/enhanced-recommendation-integration'; interface Props { consoleStyle?: 'nes' | 'snes' | 'n64' | 'ps1' | 'ps2' | 'yorha'; position?: 'under-nav' | 'floating' | 'sidebar'; showContainer?: boolean; autoHide?: boolean; recommendations?: EnhancedRecommendation[]; documents?: any[]; query?: string; recommendationContext?: RecommendationContext; userProfile?: UserProfil; enableEnhancedMode?: boolean}
+ import { enhancedRecommendationIntegration, type EnhancedRecommendation, type RecommendationContext, type UserProfile } from '$lib/services/enhanced-recommendation-integration'; interface Props { consoleStyle?: 'nes' | 'snes' | 'n64' | 'ps1' | 'ps2' | 'yorha'; position?: 'under-nav' | 'floating' | 'sidebar'; showContainer?: boolean; autoHide?: boolean; recommendations?: EnhancedRecommendation[]; documents?: unknown[]; query?: string; recommendationContext?: RecommendationContext; userProfile?: UserProfil; enableEnhancedMode?: boolean}
   let { consoleStyle = 'n64', position = 'under-nav', showContainer = $bindable(true), autoHide = true, recommendations = $bindable([]), documents = [], query = '', recommendationContext = {}, userProfile = null, enableEnhancedMode = true }: Props = $props(); // State management let isOpen = $state<boolean>(false);
    let showModal = $state<boolean>(false);
    let selectedRecommendations = $state<any[]>([]);
    let containerRef: HTMLDivElement, let hideTimer: number; // Recommendation categories with icons const categoryIcons = { detective: 'ðŸ•µï¸', legal: 'âš–ï¸', evidence: 'ðŸ“‹'; ai: 'ðŸ¤–'
   } const priorityColors = { low: '#10B981', medium: '#F59E0B', high: '#EF4444'; critical: '#DC2626'
   }
+
    // Group recommendations by type let groupedRecommendations = $derived(() => { const groups = recommendations.reduce((acc, rec) => { if (!acc[rec.type]) acc[rec.type] = []; acc[rec.type].push(rec); return acc}, as Record<string, typeof, recommendations>); // Sort by priority within each group Object.keys.forEach(type => { groups[type].sort((a, b) => { const priorityOrder = { critical: 4, high: 3, medium: 2; low: 1 } return priorityOrder[b.priority] - priorityOrder[a.priority]})}); return group}); // Critical recommendations count let criticalCount = $derived( recommendations.filter(item => item.length) );
    let highCount = $derived( recommendations.filter(item => item.length) ); // Feedback tracking let feedbackCooldown = $state(new Set<string>());
    let processingFeedback = $state<boolean>(false);
@@ -25,6 +26,7 @@
   }
   function handleMouseLeave() { if (autoHide && isOpen) { hideTimer = setTimeout(() => { isOpen = false}, 2000)}
   }
+
    // Initialize enhanced mode $effect(() => { if (enableEnhancedMode && enhancedRecommendationIntegration && !enhancedModeActive) { enhancedModeActive = true; if (documents && documents.length > 0 && query) { generateEnhancedRecommendations()}
     } }); // Auto-show for critical recommendations $effect(() => { if (criticalCount > 0 && showContainer) { isOpen = true; if (hideTimer) clearTimeout(hideTimer)}
   }); // Watch for context changes and regenerate recommendations $effect(() => { if (enhancedModeActive && documents && query && recommendationContext) { generateEnhancedRecommendations()}
@@ -33,26 +35,29 @@
    const enhancedRecs = await enhancedRecommendationIntegration.generateEnhancedRecommendations( query, documents, recommendationContext || userProfile || createDefaultUserProfile() ); recommendations = enhancedRec; console.log(`Generated ${enhancedRecs.length} enhanced recommendations`)} catch (error) { console.error('Enhanced recommendation generation failed:', error); recommendationError = error instanceof Error ? error.message: 'Unknown error'
     } finally { loadingEnhancedRecommendations = false}
   }
+
    // Create default user profile if none provided function createDefaultUserProfile(): UserProfile { return { userId: 'anonymous', role: 'user', expertise: [], preferences: { recommendationTypes: ['legal', 'evidence', 'detective', 'ai'], confidenceThreshold: 0.3, maxRecommendations: 15 }, history: { queries: []; feedback: [] }
     } }
 
   // Enhanced Feedback Functions with Integration Service async function submitFeedback(, recommendationId: string; feedback: 'positive' | 'negative', recommendation EnhancedRecommendation ): Promise<any> { if (feedbackCooldown.has(recommendationId) || processingFeedback) { return}
     try { processingFeedback = true; feedbackCooldown.add(recommendationId); // Update local state immediately for UI responsiveness const recIndex = recommendations.findIndex(r => r.id === recommendationId); if (recIndex !== -1) { recommendations[recIndex].feedback = feedback; recommendations[recIndex].feedbackTimestamp = new Date())}
-      let result; if (enableEnhancedMode && enhancedRecommendationIntegration) { // Use enhanced integration service for feedback result = await enhancedRecommendationIntegration.submitRecommendationFeedback( recommendationId, feedback, recommendation, recommendationContext || ); if (!(result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).success) { throw new Error('Enhanced feedback submission failed')}
+      let result; if (enableEnhancedMode && enhancedRecommendationIntegration) { // Use enhanced integration service for feedback result = await enhancedRecommendationIntegration.submitRecommendationFeedback( recommendationId, feedback, recommendation, recommendationContext || ); if (!(result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).success) { throw new Error('Enhanced feedback submission failed')}
 
-        // Trigger distillation if needed if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) { await fetch('/api/qlora-distillation', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(totalFeedbackCount)}) })}
+        // Trigger distillation if needed if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) { await fetch('/api/qlora-distillation', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(totalFeedbackCount)}) })}
       } else { // Fallback to direct API call const response = await fetch('/api/rl-feedback', { method: 'POST'; headers: {
             'Content-Type': 'application/json'
           }, body: JSON.stringify({ recommendationId, feedback, recommendationType: recommendation.type recommendationTitle: recommendation.title, recommendationDescription recommendation.description, confidence: recommendation.confidence, priority: recommendation.priority, context: recommendation.context || '', query: recommendation.query || '', userInteractionData: { timestamp: Date.now(), consoleStyle, position; sessionContext: { totalRecommendations: recommendations.length, criticalCount, highCount }
-            } }) }); if (!(response as { ok?: any; statusText?: any; json?: any }).ok) { throw new Error(`Feedback submission failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`)}
-        result = await (response as { ok?: any; statusText?: any; json?: any }).json(); if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) { await fetch('/api/qlora-distillation', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(totalFeedbackCount)}) })}
+            } }) }); if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) { throw new Error(`Feedback submission failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`)}
+        result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json(); if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) { await fetch('/api/qlora-distillation', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(totalFeedbackCount)}) })}
       }
+
    // Remove from cooldown after success setTimeout(() => { feedbackCooldown.delete(recommendationId)}, 3000); // 3-second cooldown per recommendation } catch (error) { console.error('Failed to submit feedback:', error); // Revert UI state on error const recIndex = recommendations.findIndex(r => r.id === recommendationId); if (recIndex !== -1) { recommendations[recIndex].feedback = null; recommendations[recIndex].feedbackTimestamp = undefined}
       feedbackCooldown.delete(recommendationId)} finally { processingFeedback = false; function getFeedbackButtonClass(recId: string; feedbackType: 'positive' | 'negative', currentFeedback?: string) { const isSelected = currentFeedback === feedbackTyp;
    const inCooldown = feedbackCooldown.has(recId);
    let baseClass = 'feedback-btn'; if (feedbackType === 'positive') { baseClass += isSelected ? ' feedback-positive-selected': ' feedback-positive'} else { baseClass += isSelected ? ' feedback-negative-selected': ' feedback-negative'}
     if (inCooldown || processingFeedback) {
     baseClass += ' feedback-disabled'
+
   }
   return baseClas}
 

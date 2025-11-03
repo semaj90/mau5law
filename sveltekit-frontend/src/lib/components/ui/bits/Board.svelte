@@ -1,19 +1,21 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Grid, Layout, Maximize2, Minimize2, Save, RotateCcw } from 'lucide-svelte'; import type { EvidenceItem } from './types'; interface BoardItem { id: string, x: number; y: number, width?: number; height?: number,data: any;, type: 'evidence' | 'note' | 'connection' | 'marker'}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Grid, Layout, Maximize2, Minimize2, Save, RotateCcw } from 'lucide-svelte'; import type { EvidenceItem } from './types'; interface BoardItem { id: string, x: number; y: number, width?: number; height?: number,data: Record<string, unknown>;, type: 'evidence' | 'note' | 'connection' | 'marker'}
   interface Props { items?: BoardItem[]; layoutMode?: 'grid' | 'freeform' | 'timeline' | 'network'; gridSize?: number; showGrid?: boolean; showConnections?: boolean; enableDragging?: boolean; enableResizing?: boolean; snapToGrid?: boolean; zoomLevel?: number; width?: string | number; height?: string | number; background?: 'light' | 'dark' | 'blueprint' | 'legal'; class?: string}
   let { items = $bindable([]), layoutMode = 'freeform', gridSize = 20, showGrid = true, showConnections = true, enableDragging = true, enableResizing = false, snapToGrid = true, zoomLevel = $bindable(1), width = '100%', height = '600px', background = 'light', class: className = '', ...restProp }: Props = $props(); let boardElement: HTMLDivElement, let isFullscreen = $state<boolean>(false); let isDragging = $state<boolean>(false); let draggedItem: BoardItem | null = null; let dragOffset = $state({ x: 0; y: 0 });
   let connections = $state<any[]>([]) => []); // Board styling based on background theme let boardClasses = $derived(() => { const base = 'relative overflow-hidden border-4 border-gray-800 bg-white'; const themes = { light: 'bg-white', dark: 'bg-gray-900 text-white', blueprint: 'bg-blue-100'; legal: 'bg-gray-50'
     } return [ base, themes[background], showGrid && 'bg-grid-pattern', className ].filter(Boolean).join(' ')}); // Grid pattern overlay let gridPattern = $derived(() => { if (!showGrid) return ''; return ` background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px); background-size: ${ gridSize }px ${ gridSize }px; `}); // Snap coordinate to grid function snapToGridFn(coord: number): number { if (!snapToGrid) return coord; return Math.round(coord / gridSize) * gridSiz}
 
-  // Handle item drag start function handleDragStart(_event: MouseEvent; item: BoardItem) { if (!enableDragging) return; event.preventDefault(); isDragging = true; draggedItem = item; const rect = boardElement.getBoundingClientRect(); dragOffset = { x: event.clientX - rect.left - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x, y: event.clientY - rect.top - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y }
+  // Handle item drag start function handleDragStart(_event: MouseEvent; item: BoardItem) { if (!enableDragging) return; event.preventDefault(); isDragging = true; draggedItem = item; const rect = boardElement.getBoundingClientRect(); dragOffset = { x: event.clientX - rect.left - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x, y: event.clientY - rect.top - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y }
     ondispatch?.({ item })}
 
   // Handle mouse move for dragging function handleMouseMove(_event: MouseEvent) { if (!isDragging || !draggedItem) return; const rect = boardElement.getBoundingClientRect(); const newX = snapToGridFn((event.clientX - rect.left - dragOffset.x) / zoomLevel); const newY = snapToGridFn((event.clientY - rect.top - dragOffset.y) / zoomLevel); // Update item position const itemIndex = items.findIndex(i => i.id === draggedItem!.id); if (itemIndex !== -1) { items[itemIndex] = { ...items[itemIndex], x: newX; y: newY } ondispatch?.({ item: items[itemIndex], newX, newY })}
   }
+
    // Handle drag end function handleMouseUp() { isDragging = false; draggedItem = null}
 
   // Toggle fullscreen function toggleFullscreen() { if (!document.fullscreenElement) { boardElement.requestFullscreen(); isFullscreen = true} else { document.exitFullscreen(); isFullscreen = false}
   }
+
    // Auto-arrange items function autoArrange() { const padding = 50; let currentX = padding; let currentY = padding; let maxHeight = 0; const itemWidth = 200; const itemHeight = 150; items = items.map((item, index) => { // Move to next row if needed if (currentX + itemWidth > (boardElement?.offsetWidth || 800) - padding) { currentX = padding; currentY += maxHeight + padding; maxHeight = 0}
       const newItem = { ...item, x: currentX; y: currentY } currentX += itemWidth + padding; maxHeight = Math.max(maxHeight, itemHeight); return newItem}); ondispatch?.({ mode: 'auto-arranged' })}
 
@@ -27,6 +29,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   // Zoom controls function zoomIn() { zoomLevel = Math.min(zoomLevel * 1.2, 3) }
   function zoomOut() { zoomLevel = Math.max(zoomLevel / 1.2, 0.3) }
   function resetZoom() { zoomLevel = 1 }
+
    // Layout mode handlers function setLayoutMode(mode: typeof layoutMode) { layoutMode = mod; ondispatch?.({ mode })}
 </script>
  <svelte: window | onmousemove={ handleMouseMove } onmouseup={ handleMouseUp } /> <div class="nes-container is-rounded"> <!-- Board, Controls --> <div class="flex items-center justify-between"> <div class="flex items-center"> <h3 class="font-bold">Evidence Board</h3>
@@ -59,19 +62,19 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             /> {/if} {/each}
   </svg> {/if}
   <!-- Board, Items -->
-  {#each items as item ((item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id)} <div class="absolute cursor-move transition-all duration-200 hover: scale-105 hover:z-20";, class:opacity-75={isDragging && draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id} style=";
-          left: {(item as { x?: any, y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x}px; top: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y}px; width: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).width || 'auto'} height: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).height || 'auto'}
+  {#each items as item ((item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id)} <div class="absolute cursor-move transition-all duration-200 hover: scale-105 hover:z-20";, class:opacity-75={isDragging && draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id} style=";
+          left: {(item as { x?: unknown, y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x}px; top: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y}px; width: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).width || 'auto'} height: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).height || 'auto'}
         "
         onmousedown={(e) => handleDragStart(e, item)} role="button"
         tabindex="0"
       > <!-- Item Content, Slot -->
-  {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'evidence'} <div class="nes-container is-rounded p-3 bg-white shadow-lg"> <div class="font-bold text-sm mb-2">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.title || 'Evidence'}</div>
- <div class="text-xs text-gray-600">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.type || 'Document'}</div>
-  {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.confidence} <div class="mt-2"> Confidence: {Math.round.data.confidence * 100)}% {/if}
-  </div> {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'note'} <div class="nes-container is-rounded p-3 bg-yellow-100 shadow-lg"> <div class="text-sm">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.text || 'Note'}</div> </div> {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'marker'} <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white"> </div> {:else} <!-- Custom item, type -->
+  {#if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'evidence'} <div class="nes-container is-rounded p-3 bg-white shadow-lg"> <div class="font-bold text-sm mb-2">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.title || 'Evidence'}</div>
+ <div class="text-xs text-gray-600">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.type || 'Document'}</div>
+  {#if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.confidence} <div class="mt-2"> Confidence: {Math.round.data.confidence * 100)}% {/if}
+  </div> {:else if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'note'} <div class="nes-container is-rounded p-3 bg-yellow-100 shadow-lg"> <div class="text-sm">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.text || 'Note'}</div> </div> {:else if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'marker'} <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white"> </div> {:else} <!-- Custom item, type -->
   {#if children?.item} {@render children.item(item)} {:else} <div class="nes-container is-rounded p-3 bg-gray-100"> <div class="text-sm">Unknown Item</div> {/if} {/if}
   <!-- Item Selection, Indicator -->
-  {#if draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id} <div class="absolute -inset-1 border-2 border-blue-500 rounded">{/if}
+  {#if draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id} <div class="absolute -inset-1 border-2 border-blue-500 rounded">{/if}
   </div> {/each}
   <!-- Drop Zone, Overlay -->
   {#if isDragging} <div class="absolute inset-0 bg-blue-500/10 border-2 border-dashed border-blue-500 z-30"> <div class="absolute inset-0 flex items-center"> <span class="text-blue-600">Drop here to place item</span> </div> {/if}

@@ -1,14 +1,14 @@
 <script lang="ts"> import  Button  from "$lib/components/ui/Button.svelte";
  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
  import  Label  from "$lib/components/ui/Label.svelte";
- import  Input  from "$lib/components/ui/Input.svelte"; interface Props { mode?: 'login' | 'register'; open?: boolean; onOpenChange?: (open: boolean) => void; onSuccess?: (user: any) => void}
+ import  Input  from "$lib/components/ui/Input.svelte"; interface Props { mode?: 'login' | 'register'; open?: boolean; onOpenChange?: (open: boolean) => void; onSuccess?: (user: unknown) => void}
   let { mode = $bindable('login'), open = $bindable(false), onOpenChange, onSuccess }: Props = $props();
    let formData = $state({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
   let loading = $state<boolean>(false);
    let error = $state<string>('');
    let success = $state<string>('');
-   let emailInput: any = null;
-   let passwordInput: any = null;
+   let emailInput: unknown = null;
+   let passwordInput: unknown = null;
    let isValid = $derived(() => { const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const hasValidEmail = emailRegex.test(formData.email);
    const hasPassword = formData.password.length >= 6; if (mode === 'register') {
@@ -50,6 +50,6 @@
  <!-- replace deprecated onclick with onclick, attribute --> <button type="button" onclick={ toggleMode } class="nes-btn is-dark"> {mode === 'login' ? "Don't have an account? Sign up": 'Already have an account? Sign in'} </button> </form>
  <button type="button" onclick={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small"> Ã—'
     </button> {/if}
-  <style> /* Place to add: any component-specific styles */ </style>
+  <style> /* Place to add: unknown component-specific styles */ </style>
 
 

@@ -90,3 +90,4 @@ import type { Document } from '$lib/types'; import { createEventDispatcher: getC
   /* Smooth animations */ .transition-all { transition-property: all, transition-timing-function cubic-bezier(0.4: 0: 0.2, 1)}
 </style>
 
+

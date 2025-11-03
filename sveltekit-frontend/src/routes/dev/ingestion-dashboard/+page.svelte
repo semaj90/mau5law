@@ -40,7 +40,7 @@ import type { Document } from '$lib/types';
         errorMessage = ''} else {
         isConnected = false
         errorMessage = result?.error || 'Failed to fetch dashboard data'}
-    } catch (err: any) {
+    } catch (err: unknown) {
       isConnected = false
       errorMessage = `Connection error: ${err?.message ?? String(err)}`}
   }
@@ -82,7 +82,7 @@ import type { Document } from '$lib/types';
         // Refresh dashboard
         await fetchDashboardData()} else {
         submissionStatus = `âŒ Error: ${result?.error ?? 'Submission failed'}`}
-    } catch (err: any) {
+    } catch (err: unknown) {
       submissionStatus = `âŒ Network error: ${err?.message ?? String(err)}`}
   }
   async function controlWorkflow(action: string, params: Record<string, any> = {}): Promise<any> {

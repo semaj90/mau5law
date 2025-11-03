@@ -64,7 +64,7 @@
   let clusteredAPIs = $derived<Record<string, RouteItem[]>>(() => {
     return clusterAPIEndpoints(allRoutes())});
 
-  // --- Add: lightweight types to avoid implicit: any errors ---
+  // --- Add: lightweight types to avoid implicit: unknown errors ---
   type RouteItem = {
     path: string; name: string,
     type: 'configured' | 'file-based';
@@ -271,6 +271,7 @@
           route.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
           route.description?.toLowerCase().includes(searchTerm.toLowerCase())
       )
+
   }
   return routes});
 

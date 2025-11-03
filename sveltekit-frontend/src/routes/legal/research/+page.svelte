@@ -55,13 +55,13 @@ import type { Document } from '$lib/types';
       documentType?: string
       dateRange?: string
       precedentialValue?: string
-      [k: string]: any};
+      [k: string]: unknown};
     timestamp: Date, mode: string};
 
   type ResearchSession = {
     id: string | null
     startTime: Date, queries: ResearchQuery[];
-   , findings: any[]};
+   , findings: unknown[]};
   // --- END ADDED ---
 
   let searchQuery = $state<string>('');
@@ -135,8 +135,8 @@ import type { Document } from '$lib/types';
       };
       // Guarded call to nesGPUBridge if available
       try {
-        if (nesGPUBridge && typeof (nesGPUBridge, as: any).storeCHRROMPattern === 'function') {
-          await (nesGPUBridge as: any).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery })}
+        if (nesGPUBridge && typeof (nesGPUBridge, as: unknown).storeCHRROMPattern === 'function') {
+          await (nesGPUBridge as: unknown).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery })}
       } catch (e) {
         console.warn('nesGPUBridge.storeCHRROMPattern failed or unavailable', e)}
       const response = await fetch('/api/legal/research/search', {
@@ -285,7 +285,7 @@ import type { Document } from '$lib/types';
       dateRange: '',
       precedentialValue: ''
     }}
-  function formatDate(dateString: any) {
+  function formatDate(dateString: unknown) {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -481,44 +481,44 @@ import type { Document } from '$lib/types';
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-blue-600">
-                      <a href={(result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
+                      <a href={(result, as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).url}>{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).title}</a>
                     </h3>
-                    <p class="text-sm text-gray-600">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
+                    <p class="text-sm text-gray-600">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citation}</p>
                   </div>
                   <div class="flex items-center space-x-2">
                     <span
-                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium, " + getRelevanceColor(((result as: any).relevanceScore ?? 0))}
+                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium, " + getRelevanceColor(((result as: unknown).relevanceScore ?? 0))}
                     >
-                      {Math.round(((result as: any).relevanceScore ?? 0) * 100)}% match
+                      {Math.round(((result as: unknown).relevanceScore ?? 0) * 100)}% match
                     </span>
                     <button
                       onclick={() => saveCitation(result)}
                       class="p-1 text-gray-400 transition-colors hover:text-yellow-500"
-                      class:text-yellow-500={(result, as: any).isBookmarked}
+                      class:text-yellow-500={(result, as: unknown).isBookmarked}
                     >
                       <Bookmark class="h-4" />
                     </button>
                   </div>
                 </div>
-                <p class="text-gray-700 text-sm mb-3">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
+                <p class="text-gray-700 text-sm mb-3">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).summary}</p>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <div class="flex items-center">
                       <Gavel class="h-4 w-4" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).court}
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).court}
                     </div>
                     <div class="flex items-center">
                       <Calendar class="h-4 w-4" />
-                      {formatDate((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).dateDecided)}
+                      {formatDate((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).dateDecided)}
                     </div>
                     <div class="flex items-center">
                       <Link class="h-4 w-4" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citedBy} citations
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citedBy} citations
                     </div>
                   </div>
                   <div class="flex items-center">
-                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium, " + getPrecedentialColor((result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
+                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium, " + getPrecedentialColor((result, as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}>
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
                     </span>
                     <button
                       onclick={() => openCitationDialog(result)}
@@ -530,10 +530,10 @@ import type { Document } from '$lib/types';
                   </div>
                 </div>
                 <!-- Key, Topics -->
-                {#if (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics?.length > 0}
+                {#if (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics?.length > 0}
                   <div class="mt-3 pt-3 border-t">
                     <div class="flex flex-wrap">
-                      {#each (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics.slice(0, 5) as topic}
+                      {#each (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics.slice(0, 5) as topic}
                         <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100">
                           {topic}
                         </span>
@@ -730,4 +730,5 @@ import type { Document } from '$lib/types';
     </div>
   {/if}
 </HeadlessDialog>
+
 

@@ -1,7 +1,7 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI, App --> <script lang="ts"> import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
  import * as Dialog from './index';
  import X from 'lucide-svelte';
- import { cn } from '$lib/utils'; interface Props { open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'; showClose?: boolean; onOpenChange?: (open: boolean) => void; class?: string; children?: any; trigger?: any; footer?: any}
+ import { cn } from '$lib/utils'; interface Props { open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'; showClose?: boolean; onOpenChange?: (open: boolean) => void; class?: string; children?: unknown; trigger?: unknown; footer?: unknown}
   let { open = $bindable(false), title = '', description = '', size = 'md', showClose = true, onOpenChange, class: className = '', children, trigger, footer}: Props = $props();
    const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl', full: 'max-w-[95vw] max-h-[95vh]'
   }

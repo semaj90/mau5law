@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: any
+    data?: unknown
     children?: Snippet}
 
   // avoid unused `data` warning
@@ -219,4 +219,5 @@
 
   .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool)}
 </style>
+
 

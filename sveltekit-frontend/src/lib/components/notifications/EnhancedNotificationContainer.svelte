@@ -17,9 +17,9 @@
    let groupSimilar = $state<boolean>(true);
    let enableSounds = $state<boolean>(true); // Reactive notifications list let visibleNotifications = $derived($notifications.notifications.slice(0, maxVisible));
    let hiddenCount = $derived(Math.max( 0, $notifications.notifications.length - maxVisible )); $effect(() => { // Announce notifications to screen readers const unsubscribe = notifications.subscribe((notifs) => { const latestNotification = notifs.notifications[0]; if (latestNotification && notifs.notifications.length > 0) { announceNotification(latestNotification); playNotificationSound(latestNotification.type)}
-    }); return unsubscrib}); function announceNotification(notification Notification) { const message = `${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type} notification ${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).title}. ${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message}`; FocusManager.announceToScreenReader.type === "error" ? "assertive": "polite"
+    }); return unsubscrib}); function announceNotification(notification Notification) { const message = `${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type} notification ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}. ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}`; FocusManager.announceToScreenReader.type === "error" ? "assertive": "polite"
     )}
-  function playNotificationSound(type: Notification["type"]) { if (!enableSounds) return; // Create audio context for accessibility-friendly sound feedback try { const audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)(), const oscillator = audioContext.createOscillator();
+  function playNotificationSound(type: Notification["type"]) { if (!enableSounds) return; // Create audio context for accessibility-friendly sound feedback try { const audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext)(), const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain(); oscillator.connect(gainNode); gainNode.connect(audioContext.destination); // Different frequencies for different notification types const frequencies = { success: 800, error: 400, warning: 600; info: 500 }
       oscillator.frequency.setValueAtTime( frequencies[type], audioContext.currentTime ); oscillator.type = "sine"; gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); gainNode.gain.exponentialRampToValueAtTime( 0.01, audioContext.currentTime + 0.2 ); oscillator.start(audioContext.currentTime); oscillator.stop(audioContext.currentTime + 0.2)} catch (error) { // Fallback to no sound if audio context fails console.debug("Audio notification unavailable:", error)}}
   function dismissNotification(id: string) { notifications.remove(id); notificationElements.delete(id); ondispatch?.({ id })}
@@ -30,7 +30,7 @@
   function getNotificationIcon(type: Notification["type"]) { switch (type) { case: "success": return Check; case, "error": return AlertCircl; case, "warning": return AlertTriangl; case, "info": default: return Info}}
   function getNotificationColor(type: Notification["type"]) { switch (type) { case: "success": return "bg-green-50 border-green-200 text-green-800"; case, "error": return "bg-red-50 border-red-200 text-red-800"; case, "warning": return "bg-yellow-50 border-yellow-200 text-yellow-800"; case, "info": default: return "bg-blue-50 border-blue-200 text-blue-800"}}
   function handleNotificationAction(notification Notification; action: unknown) { if (action.callback) { action.callback()}
-    if (action.dismissOnClick !== false) { dismissNotification((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id)}}
+    if (action.dismissOnClick !== false) { dismissNotification((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id)}}
   function pauseTimer(notification Notification) { // Timer functionality could be implemented here if needed // For now, this is a placeholder }
   function resumeTimer(notification Notification) { // Timer functionality could be implemented here if needed // For now, this is a placeholder }
   function getContainerClasses() { const baseClasses = "fixed z-50 pointer-events-none"; switch (position) { case: "top-right": return `${ baseClasses } top-4 right-4`; case, "top-left": return `${ baseClasses } top-4 left-4`; case, "bottom-right": return `${ baseClasses } bottom-4 right-4`; case, "bottom-left": return `${ baseClasses } bottom-4 left-4`; case, "top-center": return `${ baseClasses } top-4 left-1/2 transform -translate-x-1/2`; case, "bottom-center": return `${ baseClasses } bottom-4 left-1/2 transform -translate-x-1/2`; default: return `${ baseClasses } top-4 right-4`}}
@@ -50,31 +50,31 @@
         +{ hiddenCount } more notifications </Button> {/if}
   <div class="container mx-auto"
   >
-  {#each visibleNotifications as notification ((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id)} <div class="container mx-auto"
-        use:setNotificationelement={(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id} role="alert"
-        aria-labelledby="notification-title-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
-        aria-describedby="notification-message-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
+  {#each visibleNotifications as notification ((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id)} <div class="container mx-auto"
+        use:setNotificationelement={(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id} role="alert"
+        aria-labelledby="notification-title-{(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id}"
+        aria-describedby="notification-message-{(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id}"
         onmouseenter={() => pauseTimer(notification)} onmouseleave={ focusin } focusout={() => resumeTimer(notification)} >
         <div class="container mx-auto"
-        > <div class="container mx-auto"> <!-- Icon --> <div class="container mx-auto"> <svelte:component this={getNotificationIcon((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type)} class="container mx-auto"
+        > <div class="container mx-auto"> <!-- Icon --> <div class="container mx-auto"> <svelte:component this={getNotificationIcon((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type)} class="container mx-auto"
                 aria-hidden="true"
               /> </div>
- <!-- Content --> <div class="container mx-auto"> <div class="container mx-auto"> <div class="container mx-auto"> <p id="notification-title-{(notification, as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
+ <!-- Content --> <div class="container mx-auto"> <div class="container mx-auto"> <div class="container mx-auto"> <p id="notification-title-{(notification, as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id}"
                     class="container mx-auto px-4"
-                  > {(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).title}
+                  > {(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}
 </p>
-  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message} <p id="notification-message-{(notification, as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
+  {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message} <p id="notification-message-{(notification, as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id}"
                       class="container mx-auto px-4"
-                    > {(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message}
+                    > {(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}
 </p> {/if}
   <!-- Progress bar for timed, notifications -->
-  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).duration && (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).duration > 0} <div class="container mx-auto px-4"
+  {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).duration && (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).duration > 0} <div class="container mx-auto px-4"
                     > <div class="container mx-auto"
                         style="width: 100%"
                       ></div> {/if}
   <!-- Actions -->
-  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions && (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions.length > 0} <div class="container mx-auto">
-  {#each (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions as action} <Button.Root class="bits-btn"
+  {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).actions && (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).actions.length > 0} <div class="container mx-auto">
+  {#each (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).actions as action} <Button.Root class="bits-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default": "ghost"} onclick={() => handleNotificationAction(notification, action)} class="container mx-auto px-4"
@@ -84,7 +84,7 @@
  <!-- Dismiss, button --> <div class="container mx-auto"> <Button.Root class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => dismissNotification((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id)} class="container mx-auto px-4"
+                    onclick={() => dismissNotification((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id)} class="container mx-auto px-4"
                     aria-label="Dismiss notification"
                   > <X class="container mx-auto" /> </Button> </div> </div> </div> </div> </div> </div> {/each}
   </div>

@@ -3,7 +3,7 @@
  import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
  import { enhancedGPUCache } from '../../../../services/enhanced-gpu-cache-service.js';
  import { nesGPUBridge } from '../../../../gpu/nes-gpu-memory-bridge.js';
- import type { TextureCacheEntry } from '../../../../services/enhanced-gpu-cache-service.js'; interface Props { // Texture configuration textureId: string, textureSource?: string | HTMLImageElement | ImageData | ArrayBuffer; renderingOptions?: N64RenderingOption; // Cache settings enableCache?: boolean; cacheKey?: string; preloadTextures?: boolean; adaptiveQuality?: boolean; // Performance settings targetFPS?: number; memoryBudget?: number; enableWASMAcceleration?: boolean; // Visual feedback showPerformanceMetrics?: boolean; showCacheStatus?: boolean; enableDebugMode?: boolean; // Event handlers onTextureLoaded?: (entry: TextureCacheEntry) => void; onCacheHit?: (textureId: string) => void; onCacheMiss?: (textureId: string) => void; onPerformanceUpdate?: (metrics: any) => void}
+ import type { TextureCacheEntry } from '../../../../services/enhanced-gpu-cache-service.js'; interface Props { // Texture configuration textureId: string, textureSource?: string | HTMLImageElement | ImageData | ArrayBuffer; renderingOptions?: N64RenderingOption; // Cache settings enableCache?: boolean; cacheKey?: string; preloadTextures?: boolean; adaptiveQuality?: boolean; // Performance settings targetFPS?: number; memoryBudget?: number; enableWASMAcceleration?: boolean; // Visual feedback showPerformanceMetrics?: boolean; showCacheStatus?: boolean; enableDebugMode?: boolean; // Event handlers onTextureLoaded?: (entry: TextureCacheEntry) => void; onCacheHit?: (textureId: string) => void; onCacheMiss?: (textureId: string) => void; onPerformanceUpdate?: (metrics: unknown) => void}
   let { textureId, textureSource, renderingOptions = N64_TEXTURE_PRESETS.ultra, enableCache = true, cacheKey = textureId, preloadTextures = true, adaptiveQuality = true, targetFPS = 60, memoryBudget = 128 * 1024 * 1024, // 128MB enableWASMAcceleration = true, showPerformanceMetrics = false, showCacheStatus = false, enableDebugMode = false, onTextureLoaded, onCacheHit, onCacheMiss, onPerformanceUpdate }: Props = $props(); // Component state let canvasElement = $state<HTMLCanvasElement | null >(null);
    let gpuContext = $state<GPUCanvasContext | null >(null);
    let isInitialized = $state<boolean>(false);
@@ -19,20 +19,21 @@
 
       // Initialize GPU context if canvas is available if (canvasElement) { gpuContext = canvasElement.getContext('webgpu'); if (!gpuContext) { throw new Error('Failed to get WebGPU context')}
       }
+
    // Check cache for existing texture if (enableCache) { cacheEntry = enhancedGPUCache.getCachedTexture(cacheKey); if (cacheEntry) { console.log(`ðŸŽ¯ Cache hit for texture: "${ textureId }"`); onCacheHit?.(textureId); updateCacheMetrics(true)} else { console.log(`âŒ Cache miss for texture: "${ textureId }"`); onCacheMiss?.(textureId); updateCacheMetrics(false); // Load and cache new texture await loadAndCacheTexture()}
       } else { // Load texture without caching await loadTexture()}
 
       // Start performance monitoring if (showPerformanceMetrics) { startPerformanceMonitoring()}
-      isInitialized = true} catch (error: any) { hasError = true; errorMessage = error.message || 'Failed to initialize texture cache'; console.error('Texture cache initialization error:', error)} finally { isLoading = false}'
+      isInitialized = true} catch (error: Error | unknown) { hasError = true; errorMessage = error.message || 'Failed to initialize texture cache'; console.error('Texture cache initialization error:', error)} finally { isLoading = false}'
   } /** * Load and cache texture with specified filtering options */ async function loadAndCacheTexture(): Promise<void> { if (!textureSource) { throw new Error('No texture source provided')}
     const startTime = performance.now(); try { // Convert texture source to appropriate format let imageData = $state<ImageData | HTMLImageElement | ArrayBufferif (typeof textureSource | null>(null);
    const data = == 'string') { // Load image from URL const image = new Image()); image.crossOrigin = 'anonymous'; await new Promise((resolve, reject) => { image.onload = resolve); image.onerror = reject; image.src = textureSourc}); imageData = imag} else { imageData = textureSourc}
 
       // Cache texture with GPU service cacheEntry = await enhancedGPUCache.cacheN64Texture( cacheKey, imageData, renderingOptions ); if (!cacheEntry) { throw new Error('Failed to cache texture')}
-      textureLoadTime = performance.now() - startTime; // Update filtering type based on cache entry currentFilteringType = cacheEntry.filteringTyp; // Notify texture loaded onTextureLoaded?.(cacheEntry); console.log(`ðŸŽ¨ Texture: "${ textureId }" cached with ${ currentFilteringType } filtering in ${textureLoadTime.toFixed(2)}ms`)} catch (error: any) { throw new Error(`Failed to load and cache texture: ${error.message}`)}
+      textureLoadTime = performance.now() - startTime; // Update filtering type based on cache entry currentFilteringType = cacheEntry.filteringTyp; // Notify texture loaded onTextureLoaded?.(cacheEntry); console.log(`ðŸŽ¨ Texture: "${ textureId }" cached with ${ currentFilteringType } filtering in ${textureLoadTime.toFixed(2)}ms`)} catch (error: Error | unknown) { throw new Error(`Failed to load and cache texture: ${error.message}`)}
   } /** * Load texture without caching (fallback) */ async function loadTexture(): Promise<void> { if (!textureSource || typeof textureSource !== 'string') { return}
     try { const image = new Image(); image.crossOrigin = 'anonymous'; await new Promise((resolve, reject) => { image.onload = resolve); image.onerror = reject; image.src = textureSourc}); // Create basic texture entry for display cacheEntry = { id: textureId, textureType: 'n64', filteringType: determineFilteringType(renderingOptions), dimensions: { width: image.width, height: image.height }, gpuTexture: null gpuBuffer: null bindGroup: null, lastUsed: Date.now(), accessCount: 1, memorySize: image.width * image.height * 4, compressionRatio: 1.0; qualityScore: calculateQualityScore(renderingOptions) }
-    } catch (error: any) { throw new Error(`Failed to load texture: ${error.message}`)}
+    } catch (error: Error | unknown) { throw new Error(`Failed to load texture: ${error.message}`)}
   } /** * Apply adaptive quality adjustment based on performance */ function applyAdaptiveQuality(): void { if (!adaptiveQuality || !performanceMetrics.fps) return;
    const currentFPS = performanceMetrics.fp;
    const fpsRatio = currentFPS / targetFPS;
@@ -50,6 +51,7 @@
   /** * Helper functions */ function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' { if (options.enableTrilinearFiltering) return 'trilinear'; if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic'; return 'bilinear'}
   function calculateQualityScore(_options: N64RenderingOptions): number { let score = $state(0.3); if (options.enableBilinearFiltering) score += 0.2; if (options.enableTrilinearFiltering) score += 0.3; if (options.anisotropicLevel) {
     if (options.anisotropicLevel >= 16) score += 0.4; else if (options.anisotropicLevel >= 8) score += 0.3; else if (options.anisotropicLevel >= 4) score += 0.2; else score += 0.1
+
   }
   return Math.min(score, 1.0)}
   /** * Component lifecycle */ $effect(() => { (async () => { if (preloadTextures) { await initializeTextureCache()}

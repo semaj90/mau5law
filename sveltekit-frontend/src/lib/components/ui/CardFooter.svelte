@@ -3,7 +3,7 @@
   interface Props {
     class?: string;
   }
-  let { class: className = '', childre }: Props & { children?: any } = $props();
+  let { class: className = '', childre }: Props & { children?: unknown } = $props();
   
   let classes = $derived(className);
 </script>

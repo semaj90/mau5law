@@ -7,7 +7,7 @@ import type { Document } from '$lib/types';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data?: any
+    data?: unknown
     children?: Snippet}
 
   // avoid unused: 'data' warning by renaming to `_data`
@@ -322,4 +322,5 @@ import type { Document } from '$lib/types';
   .ai-content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #00ffcc, #00ccaa);
     box-shadow: 0, 0 12px rgba(0, 255, 204, 0.7)}
 </style>
+
 

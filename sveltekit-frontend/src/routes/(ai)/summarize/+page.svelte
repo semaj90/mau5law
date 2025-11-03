@@ -104,8 +104,7 @@ import type { Document } from '$lib/types';
 </script>
 
 <!-- render the resolved, template, component -->
-<svelte:component
-  this={EssentialRouteComponent}
+<EssentialRouteComponent
   pageTitle="Document Summarization"
   description="AI-powered legal document analysis, and, summarization"
   showBackButton={true}
@@ -259,7 +258,7 @@ import type { Document } from '$lib/types';
       </div>
     </div>
   {/snippet}
-</svelte:component>
+</EssentialRouteComponent>
 
 <style>
 	/* Custom styles for this page */
@@ -301,4 +300,5 @@ import type { Document } from '$lib/types';
 	.animate-spin {
 		animation: spin 1s linear infinite}
 </style>
+
 

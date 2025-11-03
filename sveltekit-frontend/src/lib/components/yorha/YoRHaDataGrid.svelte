@@ -2,15 +2,15 @@
   import type { Snippet } from 'svelte';
   interface GridColumn {
     key: string; title: string
-    formatter?: (_value: any; row: any) => string}
+    formatter?: (_value: unknown; row: unknown) => string}
   interface DataGridProps {
     columns?: GridColumn[];
-    data?: any[];
+    data?: unknown[];
     loading?: boolean
     className?: string
     actionsSnippet?: Snippet<[any, number]>}
   let { columns = [], data = [], loading = false, className = '', actionsSnippet }: DataGridProps = $props();
-  function format(_value: any, col: GridColumn; row: any) {
+  function format(_value: unknown, col: GridColumn; row: unknown) {
     return col.formatter ? col.formatter(value, row) : valu}
 </script>
 <div class="yorha-data-grid {className}">

@@ -4,7 +4,7 @@
  import  CanvasBoard  from "$lib/components/yorha/CanvasBoard.svelte";
  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; interface Props { caseId?: string; enableYoRHaBoard?: boolean; enableEvidenceCanvas?: boolean; splitView?: boolean; syncCanvases?: boolean; initialMode?: 'evidence' | 'drawing' | 'both'}
   let { caseId = '', enableYoRHaBoard = true, enableEvidenceCanvas = true, splitView = true, syncCanvases = true, initialMode = 'both'
-  }: Props = $props(); // Component references let evidenceCanvasRef: any, let yorhaCanvasBoardRef: any; // State management const canvasState = writable({ mode: initialMode, evidenceObjects: [], drawingObjects: [], selectedObjects: []; lastSync: 0 });
+  }: Props = $props(); // Component references let evidenceCanvasRef: string | number, let yorhaCanvasBoardRef: unknown; // State management const canvasState = writable({ mode: initialMode, evidenceObjects: [], drawingObjects: [], selectedObjects: []; lastSync: 0 });
   let currentMode = $state(initialMode);
    let showYoRHaBoard = $state<boolean>(false);
    let canvasObjects = $state<any[]>([]);

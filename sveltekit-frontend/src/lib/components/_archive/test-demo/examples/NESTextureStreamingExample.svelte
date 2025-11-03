@@ -62,3 +62,4 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     .stats-grid { grid-template-columns: repeat(2, 1fr)}
   } </style>
 
+

@@ -10,11 +10,11 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
       const result = await response.json(); uploadProgress = 100; if (result.success) { uploadResult = result.data; toast.success('âœ… Evidence uploaded and indexed!'); if (result.data.aiSummary) toast.info('ðŸ§  AI Summary generated'); if (result.data.hasEmbedding) toast.info('ðŸ”¢ Vector embedding created')} else { throw new Error(result.error || 'Upload failed')}
 
-    } catch (err: any) { console.error('Upload error:', err); uploadError = err.message || 'Unknown error'; toast.error(`âŒ Upload failed: ${ uploadError }`)} finally { isUploading = false}
+    } catch (err: unknown) { console.error('Upload error:', err); uploadError = err.message || 'Unknown error'; toast.error(`âŒ Upload failed: ${ uploadError }`)} finally { isUploading = false}
   }
   function formatFileSize(bytes: number): string { if (bytes === 0) return '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
   function resetForm() { uploadFile = null; uploadResult = null; uploadError = null; compareResult = null; compareError = null; comparing = false; uploadProgress = 0; formData = { title: '', description: '', evidenceType: 'document', tags: ''; isAdmissible: true }}
-  async function runCompare(): Promise<any> { if (!uploadFile && !uploadResult) return; try { comparing = true; compareError = null; compareResult = null; const fd = new FormData(); if (uploadFile) fd.append('file', uploadFile); if (formData.description?.trim()) fd.append('text', formData.description.trim()); if (formData.tags?.trim()) fd.append('tags', formData.tags.trim()); fd.append('topK', '8'); const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST'; body: fd }); const data = await resp.json(); if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed'); compareResult = data.data; toast.success('ðŸ”Ž Similar cases analyzed')} catch (e: any) { compareError = e?.message || String(e); toast.error(`Comparison error: ${ compareError }`)} finally { comparing = false}
+  async function runCompare(): Promise<any> { if (!uploadFile && !uploadResult) return; try { comparing = true; compareError = null; compareResult = null; const fd = new FormData(); if (uploadFile) fd.append('file', uploadFile); if (formData.description?.trim()) fd.append('text', formData.description.trim()); if (formData.tags?.trim()) fd.append('tags', formData.tags.trim()); fd.append('topK', '8'); const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST'; body: fd }); const data = await resp.json(); if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed'); compareResult = data.data; toast.success('ðŸ”Ž Similar cases analyzed')} catch (e: unknown) { compareError = e?.message || String(e); toast.error(`Comparison error: ${ compareError }`)} finally { comparing = false}
   }
 </script>
 
@@ -657,4 +657,5 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     height: 16px;
   }
 </style>
+
 

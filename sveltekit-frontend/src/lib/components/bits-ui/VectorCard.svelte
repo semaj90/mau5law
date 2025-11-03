@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Document } from '$lib/types';
   
-  const { r } = $props<{ r: any }>();
+  const { r } = $props<{ r: unknown }>();
 </script>
 
 <div class="vector-card">

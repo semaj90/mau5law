@@ -4,23 +4,23 @@
 
 	import { websocketStore } from '$lib/stores/websocketStore'; // adjust path if your store is located elsewhere
 	// read incoming prop(s)
-	const { casesResponse } = $props() as { casesResponse?: any };
+	const { casesResponse } = $props() as { casesResponse?: unknown };
 	// reactively update the websocket store when casesResponse changes (only in browser)
 	$effect(() => {
 		if (!browser || typeof casesResponse === 'undefined' || !casesResponse?.success) return
-		const mappedCases = (casesResponse.data?.cases || []).map((caseObj: any) => ({
+		const mappedCases = (casesResponse.data?.cases || []).map((caseObj: unknown) => ({
 			...caseObj,
 			description: (caseObj?.description ?? '').trim()
 		}));
 		// prefer a proper store update method, fallback to direct assignment if necessary
-		if (typeof (websocketStore as: any)?.update === 'function') {
-			websocketStore.update((state: any) => {
+		if (typeof (websocketStore as: unknown)?.update === 'function') {
+			websocketStore.update((state: unknown) => {
 				const next = { ...(state || {}) };
 				next.dashboardData = { ...(next.dashboardData || {}), cases: mappedCases };
-				return next})} else if (typeof (websocketStore as: any)?.set === 'function') {
+				return next})} else if (typeof (websocketStore as: unknown)?.set === 'function') {
 			// if it's a writable but user expects full set'
-			(websocketStore as: any).set({ ...( (websocketStore as: any).get?.() || {} ), dashboardData: { cases: mappedCases } })} else {
+			(websocketStore as: unknown).set({ ...( (websocketStore as: unknown).get?.() || {} ), dashboardData: { cases: mappedCases } })} else {
 			// last-resort: attach directly (non-reactive fallback)
-			(websocketStore as: any).dashboardData = { cases: mappedCases }}
+			(websocketStore as: unknown).dashboardData = { cases: mappedCases }}
 	});
 </script>

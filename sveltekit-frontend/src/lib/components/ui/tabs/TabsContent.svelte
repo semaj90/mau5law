@@ -6,8 +6,8 @@
   let {
     value,
     class: classNameVar = '',
-    childre}: Props & { children?: any } = $props();
-  const { activeTab } = getContext('tabs') as: any
+    childre}: Props & { children?: unknown } = $props();
+  const { activeTab } = getContext('tabs') as: unknown
 </script>
 {#if $activeTab === value}
   <div

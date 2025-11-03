@@ -18,9 +18,9 @@ import type { Document } from '$lib/types';
   let isUploading: boolean = false
   let uploadProgress: number = 0
   let error: string | null = null
-  let analysisResult: any = null
+  let analysisResult: unknown = null
   // Feedback integration refs
-  let feedbackIntegration: any = null
+  let feedbackIntegration: unknown = null
   let currentInteractionId: string | null = null
   let uploadStartTime: number = 0
   async function handleUpload(): Promise<any> {

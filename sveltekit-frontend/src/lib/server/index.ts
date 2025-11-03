@@ -2,13 +2,14 @@
 export interface MultimodalEmbedding {
   text?: number[];
   image?: number[];
-  audio?: number[],metadata: {
-    source
-    string
-    extractedText?: string
-    frameCount?: number
-    audioLength?: number
-    processingTime: number}}
-export * from '../services/rabbitmq-service';
-
-
+  audio?: number[];
+  metadata: {
+    source;
+    string;
+    extractedText?: string;
+    frameCount?: number;
+    audioLength?: number;
+    processingTime: number;
+  };
+}
+export * from "../services/rabbitmq-service";

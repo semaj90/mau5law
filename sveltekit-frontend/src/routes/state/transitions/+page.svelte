@@ -113,7 +113,7 @@ import type { Case } from '$lib/types';
   function formatDuration(ms: number) {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`}
-  function getTransitionColor(transition: any) {
+  function getTransitionColor(transition: unknown) {
     const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0
     const age = Date.now() - ts
     if (age < 30000) return 'border-green-200, bg-green-50';
@@ -168,7 +168,7 @@ import type { Case } from '$lib/types';
     {:else if transitions.length === 0}
       <div class="empty-state">
         <h2>ðŸŽ¯ No Transitions Recorded</h2>
-        <p>This state machine hasn't recorded: any transitions yet.</p>'
+        <p>This state machine hasn't recorded: unknown transitions yet.</p>'
       </div>
     {:else}
       <div class="transitions-timeline">

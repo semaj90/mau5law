@@ -32,12 +32,12 @@ import type { Case } from '$lib/types';
       driverLicense?: string
       passport?: string
       biometrics?: {
-        fingerprints?: any[];
+        fingerprints?: unknown[];
         dnaProfile?: boolean
         facialRecognition?: boolean}};
     currentStatus?: keyof typeof statusConfig
     riskAssessment?: { riskLevel?: keyof typeof riskConfig; flightRisk?: boolean; violentHistory?: boolean };
-    warrants?: any[];
+    warrants?: unknown[];
     criminalHistory?: CriminalRecord[];
     notes?: string}
 
@@ -87,9 +87,9 @@ import type { Case } from '$lib/types';
   let age: number | undefined
   $effect(() => {
     age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined})
-  let activeWarrants: any[] = [];
+  let activeWarrants: unknown[] = [];
   $effect(() => {
-    activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active')})
+    activeWarrants = (profile?.warrants ?? []).filter((w: unknown) => w?.status === 'active')})
   let recentRecords: CriminalRecord[] = [];
   $effect(() => {
     recentRecords = (profile?.criminalHistory ?? [])

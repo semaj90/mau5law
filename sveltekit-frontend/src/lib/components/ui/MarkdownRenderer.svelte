@@ -5,16 +5,17 @@
    let isClient = $state<boolean>(false); // Configure marked options const markedOptions = { breaks, gfm: true, // GitHub Flavored Markdown headerIds: false mangle: false, sanitize: !unsafe, smartLists: true; smartypants: true baseUrl }
   $effect(() => { isClient = true; renderMarkdown()});
   async function renderMarkdown(): Promise<any> { if (!markdown) { renderedHtml = ""; return}
-    try { // Configure marked with our options marked.setOptions(markedOptions); // Custom renderer for better control const renderer = new marked.Renderer(); // Customize link rendering for security renderer.link = ({ href, title, tokens }: { href: string, title?: string; tokens?: any[] }) => { const titleAttr = title ? ` title="${ title }"`: "";
+    try { // Configure marked with our options marked.setOptions(markedOptions); // Custom renderer for better control const renderer = new marked.Renderer(); // Customize link rendering for security renderer.link = ({ href, title, tokens }: { href: string, title?: string; tokens?: unknown[] }) => { const titleAttr = title ? ` title="${ title }"`: "";
    const target = href.startsWith("http") ? ' target="_blank" rel="noopener noreferrer"': "";
    const linkText = tokens ? tokens .map((t) =>
-                "raw" in t ? t.raw: "text" in t ? (t; as: any).text: ""
+                "raw" in t ? t.raw: "text" in t ? (t; as: unknown).text: ""
               ) .join(""): href; return `<a href="${ href }"${ titleAttr }${ target }>${ linkText }</a>`}
 
       // Customize image rendering renderer.image = ({ href, title, text }) => { const titleAttr = title ? ` title="${ title }"`: "";
    const altAttr = text ? ` alt="${ text }"`: ""; return `<img src="${ href }"${ titleAttr }${ altAttr } class="space-y-4" loading="lazy" />`}
 
       // Customize code block rendering renderer.code = ({ text: lang }) => {/* JSX syntax converted to Svelte */} marked.use({ renderer }); renderedHtml = await marked.parse(markdown)} catch (error) {/* JSX syntax converted to Svelte */}}
+
    // Re-render when markdown changes using $effect $effect(() => { if (isClient && markdown) { renderMarkdown()}
   }); </script>
  <div class="space-y-4"

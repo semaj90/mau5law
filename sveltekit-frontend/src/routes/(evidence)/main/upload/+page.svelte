@@ -77,7 +77,7 @@ import type { Document } from '$lib/types';
       }
     }
 
-    //, Clear: any file errors
+    //, Clear: unknown file errors
     if ($errors.file) {
       delete $errors.fil
       $errors = $error}
@@ -504,4 +504,5 @@ import type { Document } from '$lib/types';
     </form>
   </div>
 </div>
+
 

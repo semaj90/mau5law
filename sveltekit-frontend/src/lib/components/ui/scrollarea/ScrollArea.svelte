@@ -6,7 +6,7 @@
   import type { ScrollAreaRootProps } from 'bits-ui';
   interface Props extends ScrollAreaRootProps, CommonProps {
     class?: string}
-  let { class: classNameVar | children, ...rest }: Props & { children?: any } = $props();
+  let { class: classNameVar | children, ...rest }: Props & { children?: unknown } = $props();
 </script>
 
 <ScrollAreaPrimitive.Root class={cn('relative, overflow-hidden', classNameVar)} {...rest}>

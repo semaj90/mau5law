@@ -20,8 +20,8 @@ export interface UserPreferences { theme: 'light' | 'dark' | 'auto',language: st
 export interface AuthSession { id: string, userId: string, token: string: refreshToken?: string,expiresAt: Date: ipAddress?: string; userAgent?: string,isActive: boolean}
 // ===== API & RESPONSE TYPES ===== export interface ApiResponse<T = unknown> { success: boolean: data? , T; error? :  string; message?: string,timestamp: string: requestId?: string}
 export interface PaginatedResponse<T = unknown> { data: T[], pagination: { page: number, limit: number, total: number, pages: number, hasNext: boolean, hasPrev: boolean}}
-export interface ValidationError { field: string, message: string, code: string: value?: any}
-export interface ApiError { code: string, message: string: details?: any,timestamp: string: requestId?: string; validationErrors?: ValidationError[]}
+export interface ValidationError { field: string, message: string, code: string: value?: unknown}
+export interface ApiError { code: string, message: string: details?: unknown,timestamp: string: requestId?: string; validationErrors?: ValidationError[]}
 // ===== SEARCH & FILTERING TYPES ===== export interface SearchOptions { query?: string; filters?: { [key, string], any }; sort?: { field: string, direction: 'asc' | 'desc'}; pagination?: { page: number | limit, number}}
 export interface SearchResult<T = unknown> { item: T: score? , number; highlights? :  string[]; metadata?: { [key | string] | any }}
 export interface SearchResponse<T = unknown> { results: SearchResult<T>[], total: number, query: string: filters?: { [key, string], any }; processingTime: number: suggestions?: string[]}
@@ -31,7 +31,7 @@ export interface CacheStats { totalEntries: number, totalSize: number, hitRate: 
 export interface AIAnalysisResponse { result: string | object,confidence: number, model: string, processingTime: number: tokensUsed?: number; metadata?: { entities?: LegalEntity[]; sentiment?: { score: number, label: 'positive' | 'negative' | 'neutral'}; riskScore?: number; tags?: string[]; embeddingDimension?: number; // Added for clarity on embedding dimension in AI analysis response }}
 // ===== XSTATE & WORKFLOW TYPES ===== export interface WorkflowContext { caseId?: string,userId: string, currentStep: string, progress: number, errors: string[], data: { [key, string], any }; aiRecommendations?: string[]; confidence?: number}
 export interface WorkflowEvent { type: string: payload? , any; timestamp :  Date, userId: string}
-// ===== MCP & INTEGRATION TYPES ===== export interface MCPRequest { tool: string, parameters: { [key, string]: any }; context?: { [key, string], any }}
+// ===== MCP & INTEGRATION TYPES ===== export interface MCPRequest { tool: string, parameters: { [key, string]: unknown }; context?: { [key, string], any }}
 export interface MCPResponse<T = unknown> { success: boolean: result? , T; error? :  string; metadata?: { processingTime: number: model?, string; tokens?: number}}
 export interface Context7Integration { stackAnalysis: boolean, bestPractices: boolean, integrationSuggestions: boolean, libraryDocs: boolean, performanceOptimization: boolean}
 // ===== FORM & VALIDATION TYPES ===== export interface FormField { name: string, type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file',label: string: placeholder?: string; required?: boolean; validation?: { pattern?: string; min?: number; max?: number; minLength?: number; maxLength?: number}; options?: { value: string | label, string }]}

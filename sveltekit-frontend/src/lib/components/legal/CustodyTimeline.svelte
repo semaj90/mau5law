@@ -5,7 +5,7 @@ Displays the chronological chain of custody events with detailed audit trail
 <script lang="ts">
 import type { User } from '$lib/types';
   interface Props {
-    events: any[],
+    events: unknown[],
     signature?: string
     currentStage?: string}
 
@@ -51,7 +51,7 @@ import type { User } from '$lib/types';
     if (!timestamp) return '-';
     const d = timestamp instanceof Date ? timestamp : new Date(timestamp);
     return isNaN(d.getTime()) ? '-' : d.toLocaleString()}
-  function getEventDetails(evt: any) {
+  function getEventDetails(evt: unknown) {
     const details = evt?.details ?? {};
     switch (evt?.eventType) {
       case: 'intake':

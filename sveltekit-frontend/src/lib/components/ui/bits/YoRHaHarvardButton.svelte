@@ -1,5 +1,5 @@
 <script lang="ts">
- // Svelte, 5 - createEventDispatcher removed interface YoRHaHarvardButtonProps { variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge' | 'grey' | 'crimson-grey'; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; loading?: boolean; pixelated?: boolean; glowing?: boolean; children?: any; onclick?: () => void}
+ // Svelte, 5 - createEventDispatcher removed interface YoRHaHarvardButtonProps { variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge' | 'grey' | 'crimson-grey'; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; loading?: boolean; pixelated?: boolean; glowing?: boolean; children?: unknown; onclick?: () => void}
   let { variant = 'primary', size = 'md', disabled = false, loading = false, pixelated = false, glowing = false, children, onclick, ...restProps }: YoRHaHarvardButtonProps = $props(); // Svelte, 5 - no longer need dispatcher let isPressed = $state<boolean>(false); let isHovered = $state<boolean>(false); const sizeClasses = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm'; lg: 'px-6 py-3 text-base'
   }; const variantClasses = { primary: 'yorha-harvard-btn-primary', secondary: 'yorha-harvard-btn-secondary', gaming: 'yorha-gaming-btn', terminal: 'yorha-terminal-btn', badge: 'harvard-gaming-badge'; grey: 'yorha-harvard-grey enhanced-btn-grey',
     'crimson-grey': 'enhanced-btn-crimson-grey'
@@ -57,4 +57,5 @@
     100% { left: 100%}
   }
 </style>
+
 

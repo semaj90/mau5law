@@ -106,9 +106,9 @@ import type { Document } from '$lib/types';
     const { patterns, conflicts } = (event as CustomEvent).detail
     console.log('ðŸ•µï¸ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
-      addChatMessage('assistant', `âš ï¸ Potential conflicts detected: ${conflicts.map((c: any) => c.description).join(', ')}`, 'analysis')}
+      addChatMessage('assistant', `âš ï¸ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis')}
     if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `ðŸ” Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis')}
+      addChatMessage('assistant', `ðŸ” Patterns identified: ${patterns.map((p: unknown) => p.type).join(', ')}`, 'analysis')}
   }
 
   // AI Chat functionality

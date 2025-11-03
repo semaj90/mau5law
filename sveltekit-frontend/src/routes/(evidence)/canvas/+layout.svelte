@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
-  // Add: any layout-specific state or logic here
+  // Add: unknown layout-specific state or logic here
   let mounted = $state<boolean>(false);
   if (browser) {
     mounted = true;

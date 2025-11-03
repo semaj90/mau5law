@@ -42,7 +42,7 @@
   }
   function handleDragEvent(detail: { x: number;, y: number }) { posX = detail.x; posY = detail.y; dispatch('move', { id: poi.id, x: posX; y: posY })}
 
-  // ensure nodeElement exists for external integrations if needed onMount(() => { // placeholder if: any setup is needed later }); </script>
+  // ensure nodeElement exists for external integrations if needed onMount(() => { // placeholder if: unknown setup is needed later }); </script>
  <ContextMenu.Root> <ContextMenu.Trigger asChild={ false }> <div bind:this={ nodeElement } class="container mx-auto"
       style="left: { posX }px;, top: { posY }px; z-index: 10;", use:draggable={{ onDrag: (x: number; y: number) => handleDragEvent({ x: y }) }} oncontextmenu={ handleContextMenu } role="menu"
       tabindex={ 0 } aria-label="POI context menu"

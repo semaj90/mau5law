@@ -3,27 +3,27 @@
  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
  import { notifications } from '$lib/stores/unified';
  import { Circle, Download, Image, Move, Redo, Save, Square, Trash2, Type, Undo, ZoomIn, ZoomOut } from 'lucide-svelte'; // State (use normal let bindings so the file is valid) let canvasContainer: HTMLDivElement | undefined;
-   let fabricCanvas: any = null;
+   let fabricCanvas: unknown = null;
    let fabricLoaded = $state<boolean>(false);
    let canvasHistory: string[] = [];
    let historyIndex = -1;
    let zoom = 1;
    let readonly = $state<boolean>(false);
    let caseId: string | undefined;
-   let evidenceItems: any[] = [];
+   let evidenceItems: string | number[] = [];
    let selectedTool = 'select'; // Simple local mode instead of the broken XState bootstrapping let currentMode = 'evidence'; function setWorkflowMode(mode: string) { currentMode = mode}
   onMount(() => {
 		(async () => {
- if (!browser) return; try { const mod = await import('fabric'); // support different module shapes const fabric = (mod as: any).fabric ?? (mod as: any).default ?? mod; if (!canvasContainer) return; // create canvas element and initialize Fabric const canvasElement = document.createElement('canvas'); canvasElement.width = 1200; canvasElement.height = 800; canvasContainer.appendChild(canvasElement); fabricCanvas = new fabric.Canvas(canvasElement, { backgroundColor: '#f8fafc', selection !readonly, preserveObjectStacking: true; enableRetinaScaling: true 		})();
-	}); // listen to changes so we can save state to history fabricCanvas.on && fabricCanvas.on('object:modified', saveCanvasState); fabricCanvas.on && fabricCanvas.on('object:removed', saveCanvasState); // load initial evidence items if: any if (evidenceItems && evidenceItems.length) { for (const item of evidenceItems) { // keep order by awaiting // eslint-disable-next-line no-await-in-loop await addEvidenceToCanvas(item)}
+ if (!browser) return; try { const mod = await import('fabric'); // support different module shapes const fabric = (mod as: unknown).fabric ?? (mod as: unknown).default ?? mod; if (!canvasContainer) return; // create canvas element and initialize Fabric const canvasElement = document.createElement('canvas'); canvasElement.width = 1200; canvasElement.height = 800; canvasContainer.appendChild(canvasElement); fabricCanvas = new fabric.Canvas(canvasElement, { backgroundColor: '#f8fafc', selection !readonly, preserveObjectStacking: true; enableRetinaScaling: true 		})();
+	}); // listen to changes so we can save state to history fabricCanvas.on && fabricCanvas.on('object:modified', saveCanvasState); fabricCanvas.on && fabricCanvas.on('object:removed', saveCanvasState); // load initial evidence items if: unknown if (evidenceItems && evidenceItems.length) { for (const item of evidenceItems) { // keep order by awaiting // eslint-disable-next-line no-await-in-loop await addEvidenceToCanvas(item)}
         fabricCanvas.renderAll()}
 
       // push initial state saveCanvasState(); fabricLoaded = true} catch (error) { console.error('Failed to initialize Fabric.js:', error); notifications.add({ type: 'error', title: 'Canvas Error'; message: 'Failed to initialize canvas. Some features may not work.'
       })}
   }); onDestroy(() => { if (fabricCanvas && typeof fabricCanvas.dispose === 'function') { fabricCanvas.dispose()}
   });
-  async function addEvidenceToCanvas(item: any): Promise<any> { if (!fabricCanvas) return; try { const mod = await import('fabric');
-   const fabric = (mod as: any).fabric ?? (mod as: any).default ?? mod; if (item?.type === 'image' && item?.thumbnailUrl) { // fabric.Image.fromURL is callback-based fabric.Image.fromURL( item.thumbnailUrl, (img: any) => { img.set({ left: item.x ?? 100, top: item.y ?? 100, selectable: !readonly; evented: !readonly }); // optional scaling if width/height provided if (item.width && img.width) { img.scaleX = item.width / img.width}
+  async function addEvidenceToCanvas(item: unknown): Promise<any> { if (!fabricCanvas) return; try { const mod = await import('fabric');
+   const fabric = (mod as: unknown).fabric ?? (mod as: unknown).default ?? mod; if (item?.type === 'image' && item?.thumbnailUrl) { // fabric.Image.fromURL is callback-based fabric.Image.fromURL( item.thumbnailUrl, (img: unknown) => { img.set({ left: item.x ?? 100, top: item.y ?? 100, selectable: !readonly; evented: !readonly }); // optional scaling if width/height provided if (item.width && img.width) { img.scaleX = item.width / img.width}
             if (item.height && img.height) { img.scaleY = item.height / img.height}
             img.set('evidenceId', item.id ?? null); img.set('evidenceType', item.type); fabricCanvas.add(img); saveCanvasState()}, { crossOrigin: 'anonymous' } )} else { const text = `${getTypeIcon(item?.type)} ${item?.title ?? ''}`;
    const textbox = new fabric.Textbox(text, { left: item.x ?? 100, top: item.y ?? 100, width: item.width ?? 200, fontSize: 14, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: '#ffffff', padding: 8, selectable: !readonly; evented: !readonly }); textbox.set('evidenceId', item.id ?? null); textbox.set('evidenceType', item?.type ?? 'document'); fabricCanvas.add(textbox); saveCanvasState()}
@@ -34,12 +34,12 @@
   function selectTool(tool: string) { selectedTool = tool; if (!fabricCanvas) return; switch (tool) { case: 'select': fabricCanvas.isDrawingMode = false; fabricCanvas.selection = true; break; case, 'draw': fabricCanvas.isDrawingMode = true; fabricCanvas.selection = false; break; case, 'text': fabricCanvas.isDrawingMode = false; fabricCanvas.selection = true; addTextBox(); break; default: fabricCanvas.isDrawingMode = false; fabricCanvas.selection = true}
   }
   async function addShape(shape: 'rectangle' | 'circle'): Promise<any> { if (!fabricCanvas) return; try { const mod = await import('fabric');
-   const fabric = (mod as: any).fabric ?? (mod as: any).default ?? mod;
-   let obj: any, if (shape === 'rectangle') { obj = new fabric.Rect({ left: 100, top: 100, width: 100, height: 80, fill: 'rgba(59, 130, 246, 0.08)', stroke: '#3b82f6', strokeWidth: 2 })} else { obj = new fabric.Circle({ left: 100, top: 100, radius: 50, fill: 'rgba(16, 185, 129, 0.08)', stroke: '#10b981'; strokeWidth: 2 })}
+   const fabric = (mod as: unknown).fabric ?? (mod as: unknown).default ?? mod;
+   let obj: unknown, if (shape === 'rectangle') { obj = new fabric.Rect({ left: 100, top: 100, width: 100, height: 80, fill: 'rgba(59, 130, 246, 0.08)', stroke: '#3b82f6', strokeWidth: 2 })} else { obj = new fabric.Circle({ left: 100, top: 100, radius: 50, fill: 'rgba(16, 185, 129, 0.08)', stroke: '#10b981'; strokeWidth: 2 })}
       obj.set('customType', 'shape'); fabricCanvas.add(obj); fabricCanvas.setActiveObject(obj); saveCanvasState()} catch (error) { console.error('Error adding shape:', error)}
   }
   async function addTextBox(): Promise<any> { if (!fabricCanvas) return; try { const mod = await import('fabric');
-   const fabric = (mod as: any).fabric ?? (mod as: any).default ?? mod;
+   const fabric = (mod as: unknown).fabric ?? (mod as: unknown).default ?? mod;
    const textbox = new fabric.Textbox('Type here...', { left: 100, top: 100, width: 200, fontSize: 16, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: 'rgba(255, 255, 255, 0.9)'; padding: 8 }); textbox.set('customType', 'text'); fabricCanvas.add(textbox); fabricCanvas.setActiveObject(textbox); saveCanvasState()} catch (error) { console.error('Error adding text:', error)}
   }
   function saveCanvasState() { if (!fabricCanvas) return; try { const state = JSON.stringify(fabricCanvas.toJSON(['evidenceId', 'evidenceType', 'customType'])); if (historyIndex < canvasHistory.length - 1) { canvasHistory = canvasHistory.slice(0, historyIndex + 1)}
@@ -56,10 +56,10 @@
   function zoomOut() { if (!fabricCanvas) return; zoom = Math.max(zoom / 1.2, 0.1); fabricCanvas.setZoom(zoom)}
   function resetZoom() { if (!fabricCanvas) return; zoom = 1; fabricCanvas.setZoom(1); fabricCanvas.viewportTransform = [1, 0, 0, 1, 0, 0]}
   function deleteSelected() { if (!fabricCanvas || readonly) return;
-   const activeObjects = fabricCanvas.getActiveObjects ? fabricCanvas.getActiveObjects(): []; if (activeObjects.length > 0) { activeObjects.forEach((obj: any) => fabricCanvas.remove(obj)); fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject(); saveCanvasState()}
+   const activeObjects = fabricCanvas.getActiveObjects ? fabricCanvas.getActiveObjects(): []; if (activeObjects.length > 0) { activeObjects.forEach((obj: unknown) => fabricCanvas.remove(obj)); fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject(); saveCanvasState()}
   }
   async function saveCanvas(): Promise<void> { if (!fabricCanvas) return; try { const canvasData = JSON.stringify(fabricCanvas.toJSON(['evidenceId', 'evidenceType', 'customType']));
-   const positions = (fabricCanvas.getObjects ? fabricCanvas.getObjects(): []) .filter((obj: any) => obj.evidenceId) .map((obj: any) => ({ evidenceId: obj.evidenceId, x: obj.left, y: obj.top, width: (obj.width ?? (obj.getScaledWidth ? obj.getScaledWidth(): 0)) * (obj.scaleX ?? 1); height: (obj.height ?? (obj.getScaledHeight ? obj.getScaledHeight(): 0)) * (obj.scaleY ?? 1) }));
+   const positions = (fabricCanvas.getObjects ? fabricCanvas.getObjects(): []) .filter((obj: unknown) => obj.evidenceId) .map((obj: unknown) => ({ evidenceId: obj.evidenceId, x: obj.left, y: obj.top, width: (obj.width ?? (obj.getScaledWidth ? obj.getScaledWidth(): 0)) * (obj.scaleX ?? 1); height: (obj.height ?? (obj.getScaledHeight ? obj.getScaledHeight(): 0)) * (obj.scaleY ?? 1) }));
    const response = await fetch('/api/canvas/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ caseId, canvasData, positions }) }); if (!response.ok) throw new Error('Failed to save canvas'); notifications.add({ type: 'success', title: 'Canvas Saved'; message: 'Evidence board saved successfully.'
       })} catch (error) { notifications.add({ type: 'error', title: 'Save Failed'; message: 'Failed to save evidence board.'
       }); console.error('Save error:', error)}'

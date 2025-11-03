@@ -22,7 +22,7 @@ export interface SynthesisOptions {
   cacheEnabled?: boolean
   autoEncode?: boolean
   trainOnFeedback?: boolean
-  [key: string]: any}
+  [key: string]: unknown}
 // Stub mocks for development/testing:
 // --- Phase 10: Context7 Semantic Search, Logging, Agent Integration Types ---
 // Semantic search audit result structure (for /api/audit/semantic and UI)
@@ -73,7 +73,7 @@ export interface Context7SearchResult {
   sourceType: 'code' | 'documentation' | 'legal_doc' | 'evidence';
   filePath?: string
   lineNumber?: number
-  context: { [key: string]: any }}
+  context: { [key: string]: unknown }}
 interface SemanticSearchResult {
   content?: string
   text?: string
@@ -99,7 +99,7 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
         caseId: options.caseId,
         query: options.query,
         timestamp: new Date().toISOString(),
-        ...result.metadata}}))} catch (error: any) {
+        ...result.metadata}}))} catch (error: Error | unknown) {
     console.error('Context7 semantic search failed: ', error);
     return [ {
         content: `Search failed: ${error}`,
@@ -142,7 +142,7 @@ export class Context7AgentOrchestrator {
         status: 'ok',
         message: `Agent completed ${trigger.action} for ${trigger.todoId}`,
         agentTriggered: true});
-      return completedTrigger} catch (error: any) {
+      return completedTrigger} catch (error: Error | unknown) {
       const failedTrigger: AgentTrigger = { ...trigger, status: 'done', result: `Error: ${error}` };
       this.triggers.set(trigger.todoId, failedTrigger);
       this.logAuditEntry({
@@ -185,7 +185,7 @@ ${autoFixResult.fixes.svelte5.length > 0 ? `Svelte 5 fixes: ${autoFixResult.fixe
 ${autoFixResult.fixes.typeScript.length > 0 ? `TypeScript fixes: ${autoFixResult.fixes.typeScript.length}` : ``}
 Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
         return `Auto-Fix: Complete, No issues found. Codebase follows best practices.`}
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       // Fallback to orchestrator only
       const options: OrchestrationOptions = {
         useMemory: true,
@@ -210,7 +210,7 @@ Orchestrator Analysis: ${orchestratorResult.selfPrompt}`} else {
             totalIssues: 0,
             area: area || 'general'},
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
-          recommendations: ['Auto-fix module not available - manual review recommended']}} catch (error: any) {
+          recommendations: ['Auto-fix module not available - manual review recommended']}} catch (error: Error | unknown) {
         console.error('Error in auto-fix simulation: ', error);
         result = {
           summary: {
@@ -231,7 +231,7 @@ Detailed Results: ${Object.entries(result.fixes)
         .filter(Boolean)
         .join('\n')}
 Recommendations: ${result.recommendations.join('\n')}
-Config Improvements: ${result.configImprovements?.join('\n') || 'None'}`} catch (error: any) {
+Config Improvements: ${result.configImprovements?.join('\n') || 'None'}`} catch (error: Error | unknown) {
       return `Auto-Fix Failed for ${todoId}: ${error}`}
   }
   private async performAnalysis(todoId: string): Promise<string> {
@@ -318,7 +318,7 @@ export class Context7SemanticAuditor {
               res.agentTriggered = true}
           })}
       }
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       results.push({
         step: `semantic_audit_${component}`,
         status: 'error',
@@ -348,7 +348,7 @@ export class Context7SemanticAuditor {
         if (Math.random() > 0.7) {
           // 30% chance of finding issues
           issues.push(`${area} best practices need review for ${component}`)}
-      } catch (error: any) {
+      } catch (error: Error | unknown) {
         issues.push(`Failed to check ${area} best practices: ${error}`)}
     }
     return { issues }}
@@ -371,7 +371,7 @@ export class Context7SemanticAuditor {
           suggestedFix: 'Configure semantic search indexing and API endpoints',
           todoId: `semantic_${component}_${Date.now()}`,
           agentTriggered: false}}
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       return {
         step: `semantic_integration_${component}`,
         status: 'error',

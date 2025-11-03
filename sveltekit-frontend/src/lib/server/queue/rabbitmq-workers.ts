@@ -1,3 +1,2 @@
-﻿const rabbitWorkers: any = {};
-export default rabbitWorkers
-
+﻿const rabbitWorkers: unknown = {};
+export default rabbitWorkers;

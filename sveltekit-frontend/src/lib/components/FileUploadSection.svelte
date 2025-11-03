@@ -27,16 +27,16 @@ https://svelte.dev/e/js_parse_error -->
   const { maxFiles } = $props<{ maxFiles: number }>()
   const { multiple } = $props<{ multiple: boolean }>()
   const { onupload } = $props<{ onupload: ((data: { files: File[] }>() tags: string[] }) => void) | undefined
-  const { onfilesChanged } = $props<{ onfilesChanged: ((files: any[]) }>()
+  const { onfilesChanged } = $props<{ onfilesChanged: ((files: unknown[]) }>()
   const { onerror } = $props<{ onerror: ((error: string) }>()
 
   // Local state
   let uploadFiles: UploadFile[] = [];
 
   let fileUploadContainer: HTMLElement | null = null
-  let aiSystem: any = null
+  let aiSystem: unknown = null
   let docStatus: string | null = null
-  let docs: any = null
+  let docs: unknown = null
   let availableTags: string[] = [];
 
   let summaryType: 'key_points' | 'narrative' | 'prosecutorial' = 'narrative';
@@ -67,11 +67,11 @@ https://svelte.dev/e/js_parse_error -->
 
     // Attach DOM event listeners to avoid Svelte type errors from onupload /, onremove
     if (fileUploadContainer) {
-      // use: any for incoming event detail to avoid strict typing issues
-      fileUploadContainer.addEventListener('upload', (e: any) => {
+      // use: unknown for incoming event detail to avoid strict typing issues
+      fileUploadContainer.addEventListener('upload', (e: unknown) => {
         try { handleFileUpload(e?.detail)} catch (err) { /* swallow */ }
       });
-      fileUploadContainer.addEventListener('remove', (e: any) => {
+      fileUploadContainer.addEventListener('remove', (e: unknown) => {
         try { handleFileRemove(e?.detail)} catch (err) { /* swallow */ }
       })}
   });
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const evidence = (loki?.evidence?.getAll && loki.evidence.getAll()) || [];
 
-      const allTags = evidence.flatMap((e: any) => e.tags || []);
+      const allTags = evidence.flatMap((e: unknown) => e.tags || []);
       availableTags = [...new Set(allTags as: string[])].sort()} catch (error) {
       console.error('Failed to load available tags:', error)}
   }
@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
     uploadFiles = files
     const legacyUploads: LegacyFileUpload[] = files.map(f => ({ id: f.id,
       file: f.file,
-      preview: (f, as: any).preview,
+      preview: (f, as: unknown).preview,
       tags: [],
       progress: f.progress ?? 0,
       status:
@@ -134,13 +134,13 @@ https://svelte.dev/e/js_parse_error -->
         f.status === 'uploading' ? 'uploading' :
         f.status === 'completed' ? 'success' :
         'error',
-      error: (f, as: any).error,
+      error: (f, as: unknown).error,
       hash: undefined
     }));
     onfilesChanged?.(legacyUploads)}
   async function handleFileUpload(file: UploadFile): Promise<void> {
     try {
-      (file as: any).status = 'uploading';
+      (file as: unknown).status = 'uploading';
       file.progress = 0
       uploadFiles = [...uploadFiles];
 
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
           uploadFiles = [...uploadFiles]}
       }, 100);
 
-      await processDocumentWorkflow(workflow as: any),
+      await processDocumentWorkflow(workflow as: unknown),
 
       if (aiSystem) {
         try {
@@ -182,24 +182,24 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       clearInterval(progressInterval);
-      (file as: any).status = 'completed';
+      (file as: unknown).status = 'completed';
       file.progress = 100
       uploadFiles = [...uploadFiles];
       docStatus = 'Upload and analysis complete.'} catch (error) {
-      (file as: any).status = 'error';
-      (file as: any).error = error instanceof Error ? error.message : String(error),
+      (file as: unknown).status = 'error';
+      (file as: unknown).error = error instanceof Error ? error.message : String(error),
       uploadFiles = [...uploadFiles];
-      docStatus = 'Error: ' + ((file, as: any).error ?? 'Upload failed');
-      onerror?.((file as: any).error ?? 'Upload failed')}
+      docStatus = 'Error: ' + ((file, as: unknown).error ?? 'Upload failed');
+      onerror?.((file as: unknown).error ?? 'Upload failed')}
   }
-  function handleFileRemove(detail: any) {
+  function handleFileRemove(detail: unknown) {
     // detail might be fileId or: object depending on FileUpload implementation
     const fileId = typeof detail === 'string' ? detail : detail?.id
     if (!fileId) return
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
 
     const successfulFiles = uploadFiles
-      .filter(f => f.status === 'completed' || (f as: any).status === 'success')
+      .filter(f => f.status === 'completed' || (f as: unknown).status === 'success')
       .map(f => f.file);
     if (successfulFiles.length > 0) {
       onupload?.({ files: successfulFiles, tags: [] })}

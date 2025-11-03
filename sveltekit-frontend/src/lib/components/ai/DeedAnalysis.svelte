@@ -5,7 +5,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     isLoading = true; error = null; try { const response = await fetch('/api/semantic-search', { method: 'POST', headers: {
           'Content-Type': 'application/json'
         }, body: JSON.stringify({ query: q, limit: 5, threshold: 0.3 }) }); if (!response.ok) { const text = await response.text().catch(() => response.statusText); throw new Error(text || `HTTP ${response.status}`)}
-      const data = await response.json().catch(() => ({})); if (data && data.success && Array.isArray(data.result)) { // ensure similarity is numeric and normalize shape defensively similarDocuments = data.result.map((r: any) => ({ ...r, similarity: typeof r.similarity === 'number' ? r.similarity: Number(r.similarity) || 0 }))} else { error = data?.error ?? 'Search failed'; similarDocuments = []}
+      const data = await response.json().catch(() => ({})); if (data && data.success && Array.isArray(data.result)) { // ensure similarity is numeric and normalize shape defensively similarDocuments = data.result.map((r: unknown) => ({ ...r, similarity: typeof r.similarity === 'number' ? r.similarity: Number(r.similarity) || 0 }))} else { error = data?.error ?? 'Search failed'; similarDocuments = []}
     } catch (err) { error = err instanceof Error ? err.message: 'Search failed'; similarDocuments = []} finally { isLoading = false}
   }
 

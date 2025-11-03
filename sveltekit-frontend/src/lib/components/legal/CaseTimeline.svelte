@@ -12,15 +12,15 @@ import type { Case } from '$lib/types';
     documents?: string[];
     location?: string
     priority?: 'low' | 'medium' | 'high' | 'critical';
-    metadata?: { [key: string]: any }}
+    metadata?: { [key: string]: unknown }}
 </script>
 
 <script lang="ts">
   // Replace problematic named imports with a default import and destructure.
   // This avoids the TS error when certain named exports are not present in the typings.
   import LucideDefault from 'lucide-svelte';
-  // cast to: any to satisfy typings and extract icons
-  const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as: any),
+  // cast to: unknown to satisfy typings and extract icons
+  const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as: unknown),
   import { cn } from '$lib/utils';
   // Use explicit Svelte props
   const { caseId } = $props<{ caseId: string }>()

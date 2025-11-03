@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   
-  const { onclick } = $props<{ onclick: ((...args: any[]) }>()
+  const { onclick } = $props<{ onclick: ((...args: unknown[]) }>()
   const { disabled } = $props<{ disabled: boolean }>()
   const { variant } = $props<{ variant: string | undefined }>()
   const { size } = $props<{ size: string | undefined }>()

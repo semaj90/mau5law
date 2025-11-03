@@ -17,7 +17,7 @@
    let systemHealth = $derived($systemHealthStore || { health: 'unknown', errors: [], cacheHits: 0, lastSync: null });
   let cacheStats = $derived($cacheStatsStore || { hits: 0, misses: 0, evictions: 0, syncOperations: 0, lastSync: null });
   let cacheHealth = $derived($cacheHealthStore || { health: 'unknown', hitRate: 0 });
-  let streamingConnected = $derived($streamingStore?.isStreaming || false); // ====================================================================== // INITIALIZATION // ====================================================================== $effect(() => { (async () => { try { // Initialize enhanced Loki database await enhancedLoki.init(); // Initialize state machines machines = await initializeEnhancedMachines(); // Subscribe to real-time updates (safe checks) if (machines?.streamingActor?.subscribe) { machines.streamingActor.subscribe((state: any) => { const queueLength = state?.context?.messageQueue?.length ?? 0; if (queueLength > realTimeUpdates.length) { realTimeUpdates = [...(state.context.messageQueue || [])]}
+  let streamingConnected = $derived($streamingStore?.isStreaming || false); // ====================================================================== // INITIALIZATION // ====================================================================== $effect(() => { (async () => { try { // Initialize enhanced Loki database await enhancedLoki.init(); // Initialize state machines machines = await initializeEnhancedMachines(); // Subscribe to real-time updates (safe checks) if (machines?.streamingActor?.subscribe) { machines.streamingActor.subscribe((state: unknown) => { const queueLength = state?.context?.messageQueue?.length ?? 0; if (queueLength > realTimeUpdates.length) { realTimeUpdates = [...(state.context.messageQueue || [])]}
           })}
         console.log('Enhanced Legal AI system initialized successfully')} catch (error) { console.error('Failed to initialize enhanced system:', error)}
     })()}); onDestroy(() => { if (machines) { machines.evidenceActor?.stop(); machines.streamingActor?.stop()}
@@ -25,7 +25,7 @@
    const evidence = { id: `evidence-${Date.now()}`, updatedAt: new Date(), title: 'Custom Evidence', summary: evidenceText.trim.substring(0, 100) + '...', description evidenceText.trim(), location: '', tags: [], aiSummary: '', aiTags: [], caseId: selectedCaseId, criminalId: '', evidenceType: 'document', fileType: 'text', subType: 'custom', fileUrl: null, fileName: 'custom-evidence.txt', fileSize: evidenceText.length, mimeType: 'text/plain', hash: null, chainOfCustody: [], collectedAt: new Date(), collectedBy: '', labAnalysis: , aiAnalysis: , isAdmissible: false, confidentialityLevel: 'internal', canvasPosition , uploadedBy: null, uploadedAt: new Date(), content: evidenceText.trim(), type: 'custom', confidence: 0, relationships: [] }
 
     // Add to state machine for processing machines.evidenceActor.send({ type: 'ADD_EVIDENCE', evidenc}); // Cache in Loki await enhancedLoki.evidence.add(evidence); evidenceText = ''; processingActive = true}
-  async function addDemoEvidence(demoEvidence: any): Promise<any> { if (!machines?.evidenceActor) return; machines.evidenceActor.send({ type: 'ADD_EVIDENCE', evidence: demoEvidence}); await enhancedLoki.evidence.add(demoEvidence); processingActive = true}
+  async function addDemoEvidence(demoEvidence: string | number): Promise<any> { if (!machines?.evidenceActor) return; machines.evidenceActor.send({ type: 'ADD_EVIDENCE', evidence: demoEvidence}); await enhancedLoki.evidence.add(demoEvidence); processingActive = true}
   function checkSystemHealth() { if (machines?.evidenceActor) { machines.evidenceActor.send({ type: 'HEALTH_CHECK' })}
   }
   function syncCache() { if (machines?.evidenceActor) { machines.evidenceActor.send({ type: 'SYNC_CACHE' })}
@@ -81,16 +81,16 @@
   <!-- Processing, Results --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">Processing Results ({processingResults.length})</h3> </div>
  <div class="yorha-panel-content">
   {#if processingResults.length === 0} <p class="text-gray-500 text-center">No results yet</p> {:else} <div class="space-y-3 max-h-64">
-  {#each Array.isArray(processingResults.slice(-5)) ? processingResults.slice(-5): [] as result} <div class="border rounded-lg"> <div class="flex items-center justify-between"> <Badge class="{(result"> {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status}
+  {#each Array.isArray(processingResults.slice(-5)) ? processingResults.slice(-5): [] as result} <div class="border rounded-lg"> <div class="flex items-center justify-between"> <Badge class="{(result"> {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).status}
 </Badge>
- <span class="text-xs"> {formatTimestamp((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).timestamp)}
+ <span class="text-xs"> {formatTimestamp((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).timestamp)}
 </span> </div>
- <p class="text-sm">Evidence: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).evidenceId}
+ <p class="text-sm">Evidence: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).evidenceId}
 </p>
- <p class="text-sm">Type: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).type}
+ <p class="text-sm">Type: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).type}
 </p>
- <p class="text-sm">Confidence: {((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).confidence * 100).toFixed(1)}%</p>
- <p class="text-sm">Time: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).processingTime}ms</p> </div> {/each} {/if}
+ <p class="text-sm">Confidence: {((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).confidence * 100).toFixed(1)}%</p>
+ <p class="text-sm">Time: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).processingTime}ms</p> </div> {/each} {/if}
   </div> </div>
  <!-- AI, Recommendations --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">AI Recommendations ({aiRecommendations.length})</h3> </div>
  <div class="yorha-panel-content">

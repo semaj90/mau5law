@@ -1,4 +1,4 @@
-<!-- WebGPU Tensor Processing Component for SvelteKit, 2 --> <!-- Real-time GPU acceleration for legal document, processing --> <!-- Integrates with QUIC streaming and attention, tracking --> <script lang="ts"> // Svelte, 5 runes are auto-imported // Props let { documentData = [], enableWebGPU = true, enableAttentionTracking = true, streamingEnabled = true, class: className = ''}: { documentData?: any[]; enableWebGPU?: boolean; enableAttentionTracking?: boolean; streamingEnabled?: boolean; class?: string} = $props(); // WebGPU interfaces and types interface WebGPUContext { device: GPUDevice | null,adapter: GPUAdapter | null,canvas: HTMLCanvasElement | null,context: GPUCanvasContext | null,isSupported: boolean; isInitialized: boolean}
+<!-- WebGPU Tensor Processing Component for SvelteKit, 2 --> <!-- Real-time GPU acceleration for legal document, processing --> <!-- Integrates with QUIC streaming and attention, tracking --> <script lang="ts"> // Svelte, 5 runes are auto-imported // Props let { documentData = [], enableWebGPU = true, enableAttentionTracking = true, streamingEnabled = true, class: className = ''}: { documentData?: unknown[]; enableWebGPU?: boolean; enableAttentionTracking?: boolean; streamingEnabled?: boolean; class?: string} = $props(); // WebGPU interfaces and types interface WebGPUContext { device: GPUDevice | null,adapter: GPUAdapter | null,canvas: HTMLCanvasElement | null,context: GPUCanvasContext | null,isSupported: boolean; isInitialized: boolean}
   	interface TensorOperation { id: string, type: 'embedding' | 'attention' | 'som_update' | 'interpolation',input: Float32Array, output?: Float32Array,shape: number[]; metadata: { documentId?: string; chunkIndex?: number,timestamp: number}
   		status: 'pending' | 'processing' | 'completed' | 'error'; duration?: number}
   	interface AttentionHeatmap { scores: Float32Array, positions: { x: number; y: number }[]; timestamp: number, activeRegions: { start: number, end: number; weight: number }[]}
@@ -55,7 +55,7 @@
       console.log(`âœ… GPU operation ${operation.type} completed in ${operation.duration?.toFixed(2)}ms`)} catch (error) { operation.status = 'error'; console.error(`âŒ GPU operation ${operation.type} failed:`, error); throw error}
   	}
 
-   // Queue tensor operation function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: any = {}) { const operation: TensorOperation = { id: `op_${++operationId}`, type input, shape, metadata: { ...(metadata, as: object), timestamp: performance.now() }; status: 'pending'
+   // Queue tensor operation function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {}) { const operation: TensorOperation = { id: `op_${++operationId}`, type input, shape, metadata: { ...(metadata, as: object), timestamp: performance.now() }; status: 'pending'
   		}; tensorOperations.push(operation); processingQueue.push(operation); // Process immediately if WebGPU is ready if (isWebGPUReady) {
     processNextOperation()
 
@@ -73,7 +73,7 @@
 
   	// Normalize attention scores (CPU fallback) function normalizeAttention(scores: Float32Array): Float32Array { const max = Math.max(...scores); const expScores = scores.map(x => Math.exp(x - max)); const sum = expScores.reduce((a, b) => a + b, 0); return expScores.map(x => x / sum)}
 
-  	// Process document data function processDocumentData(data: any[]) { if (!data || data.length === 0) return; data.forEach((doc: any | index) => { // Generate mock embeddings for demonstration const embedding = new Float32Array(384).map(() => Math.random() * 2 - 1); queueOperation('embedding', embedding, [1, 384], { documentId: doc.id || `doc_${ index }`; chunkIndex: index }); // Generate attention scores if text is available if (doc.content) { const attentionInput = new Float32Array(doc.content.length).map(() => Math.random()); queueOperation('attention', attentionInput, [1, doc.content.length], { documentId: doc.id || `doc_${ index }`; type: 'content_attention'
+  	// Process document data function processDocumentData(data: unknown[]) { if (!data || data.length === 0) return; data.forEach((doc: unknown | index) => { // Generate mock embeddings for demonstration const embedding = new Float32Array(384).map(() => Math.random() * 2 - 1); queueOperation('embedding', embedding, [1, 384], { documentId: doc.id || `doc_${ index }`; chunkIndex: index }); // Generate attention scores if text is available if (doc.content) { const attentionInput = new Float32Array(doc.content.length).map(() => Math.random()); queueOperation('attention', attentionInput, [1, doc.content.length], { documentId: doc.id || `doc_${ index }`; type: 'content_attention'
         })}
     })}
 

@@ -145,4 +145,5 @@ if (APPLY) {
   console.log(`   Run with --dry-run for detailed preview`);
 }
 
-console.log(${"=".repeat(70)}\n`);
+console.log("=".repeat(70));
+

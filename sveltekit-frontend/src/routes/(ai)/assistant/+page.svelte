@@ -13,6 +13,7 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
   }
   function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
   }
+
    // Quick legal queries const quickQueries = [
     'Analyze this contract for potential issues',
     'What are the key precedents for this case type?',

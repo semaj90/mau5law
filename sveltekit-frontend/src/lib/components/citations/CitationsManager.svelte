@@ -22,16 +22,16 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   	}
   function hideAddCitationForm() { showAddForm = false}
   async function saveCitation(): Promise<void> { if (!newCitation.title.trim() || !newCitation.authors.trim()) { const citation = { ...newCitation, id: `citation-${Date.now()}`, dateAdded: new Date(), caseId: caseId }; try { console.log('ðŸ’¾ Saving citation', citation.title); // Save to server (stubbed) const response = await fetch('/api/legal/citations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(citation) }); if (response.ok) { citations = [...citations, citation]; updateCategoryCounts(); filterCitations(); hideAddCitationForm(); console.log('âœ… Citation saved successfully')} else { console.warn('Save returned non-OK response', response.status)}
-		} catch (error) { console.error('âŒ Failed to save citation', error); function viewCitationDetails(citation: any) { selectedCitation = citation; showDetailModal = true}
+		} catch (error) { console.error('âŒ Failed to save citation', error); function viewCitationDetails(citation: unknown) { selectedCitation = citation; showDetailModal = true}
   	}
-  function viewCitationDetails(citation: any) { selectedCitation = citatio; showDetailModal = true; async function deleteCitation(citationId: string): Promise<void> { if (!confirm('Are you sure you want to delete this citation?')) { return}
+  function viewCitationDetails(citation: unknown) { selectedCitation = citatio; showDetailModal = true; async function deleteCitation(citationId: string): Promise<void> { if (!confirm('Are you sure you want to delete this citation?')) { return}
 		try { const response = await fetch(`/api/legal/citations/${ citationId }`, { method: 'DELETE'
 			}); if (response.ok) { citations = citations.filter(c => c.id !== citationId); updateCategoryCounts(); filterCitations(); console.log('âœ… Citation deleted successfully')} else { console.warn('Delete returned non-OK response', response.status)}
 		} catch (error) { console.error('âŒ Failed to delete citation', error)}
 	} }
   		} catch (error) { console.error('âŒ Failed to delete citation', error)}
   	}
-  function formatCitation(citation: any): string { // Generate proper legal citation format switch (citation.category) { case: 'cases': return `${citation.title}, ${citation.source} (${citation.year})`; case, 'statutes': async function exportCitations(): Promise<any> { console.log('ðŸ“„ Exporting citations...'); const exportData = filteredCitations.map(citation => ({ formattedCitation formatCitation(citation), ...citation })); // Create downloadable file const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
+  function formatCitation(citation: unknown): string { // Generate proper legal citation format switch (citation.category) { case: 'cases': return `${citation.title}, ${citation.source} (${citation.year})`; case, 'statutes': async function exportCitations(): Promise<any> { console.log('ðŸ“„ Exporting citations...'); const exportData = filteredCitations.map(citation => ({ formattedCitation formatCitation(citation), ...citation })); // Create downloadable file const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
 		}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `citations-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`; a.click(); URL.revokeObjectURL(url)}
   		const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `citations-${caseId || 'export'}-${new Date().toISOString.split('T')[0]}.json`; a.click(); URL.revokeObjectURL(url)}
 </script>

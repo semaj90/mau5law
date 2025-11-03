@@ -2,7 +2,7 @@
 
   // Svelte, 5 runes are auto-imported
   // Export prop callbacks for Svelte consumers (provide safe defaults)
-  let { onaccept = (_?: any) => {}, ondismiss = (_?: any) => {}, onquickResponse = (_?: any) => {} } = $props();
+  let { onaccept = (_?: unknown) => {}, ondismiss = (_?: unknown) => {}, onquickResponse = (_?: unknown) => {} } = $props();
   // Use native buttons here to avoid strict typed component event typings
   import { aiPersonality } from '$lib/stores/unified";'"
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
@@ -25,7 +25,7 @@
   // Derive a safe display name from the store without relying on a specific ChatContext shape
   let displayName: string = 'Assistant';
 
-  const displayName = $derived((($aiPersonality, as: any)?.name ?? ($aiPersonality as: any)?.displayName ?? 'Assistant'));
+  const displayName = $derived((($aiPersonality, as: unknown)?.name ?? ($aiPersonality as: unknown)?.displayName ?? 'Assistant'));
   function handleAccept() {
     onaccept?.()}
   function handleDismiss() {

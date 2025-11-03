@@ -19,8 +19,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Handle escape key to close function handleKeydown(event: KeyboardEvent) { if (event.key === 'Escape') { open = false}
   }
+
    // Handle backdrop click function handleBackdropClick(e: MouseEvent) { if ((e.target as EventTarget) === (e.currentTarget as EventTarget)) { open = false}
   }
+
    // Global shortcut listener (Shift + ? toggles panel) onMount(() => { if (!browser) return; function handleGlobalShortcut(e: KeyboardEvent) { if (e.shiftKey && e.key === '?') { e.preventDefault(); open = !open}
     } document.addEventListener('keydown', handleGlobalShortcut); return () => document.removeEventListener('keydown', handleGlobalShortcut)}); // add a ref for the dialog so we can focus it when opened let dialogEl = $state<HTMLElement | null>(null); // When the panel opens, focus the dialog to satisfy a11y and ensure keydown events are received. $effect(() => { if (open && dialogEl) { // Use a microtask to ensure DOM is updated before focusing Promise.resolve().then(() => dialogEl?.focus())}
   }); </script>

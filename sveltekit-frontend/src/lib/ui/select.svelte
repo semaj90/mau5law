@@ -11,7 +11,7 @@
     SelectViewport
   } from 'bits-ui';
 
-  const { value } = $props<{ value: any }>()
+  const { value } = $props<{ value: unknown }>()
   const { placeholder } = $props<{ placeholder: string }>()
   const { options } = $props<{ options: { value: string }>() label: string }[] = [];
   // pass-through rest props are spread into the root component via {...rest}

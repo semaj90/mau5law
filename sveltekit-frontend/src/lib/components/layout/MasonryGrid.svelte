@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import Masonry from 'masonry-layout';
   interface Props {
-    items: any[],
+    items: unknown[],
     columnWidth?: number
     gutter?: number
     itemSelector?: string
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
 
   let container: HTMLElement
-  let masonry: any
+  let masonry: unknown
   let isInitialized = $state<boolean>(false);
   // Masonry configuration
   let masonryOptions = $derived({
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
   finalize={handleDndFinalize}
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
-  {#each items as item, index ((item as { id?: any; drag?: any; newly?: any }).id)}
+  {#each items as item, index ((item as { id?: unknown; drag?: unknown; newly?: unknown }).id)}
 <div
   bind:this={container}
   class={`${containerClass} masonry-grid`}

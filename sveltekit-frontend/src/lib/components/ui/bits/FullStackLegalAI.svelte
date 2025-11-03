@@ -13,7 +13,7 @@ interface RAGResult { content: string, score: number, metadata: { document_id: s
 
 interface PerformanceMetrics { total_time_ms: number, vector_search_ms: number, rl_ranking_ms: number, gpu_acceleration_used: boolean, service_count: number}
 
-// Props interface Props { placeholder?: string; maxResults?: number; legalDomain?: string; enableRealTimeUpdates?: boolean; showPerformanceMetrics?: boolean; onsearch?: (data: { query: string;, results: RAGResult[];, performance: PerformanceMetrics | null;, timestamp: number }) => void; // allow common HTML/global attributes forwarded to component usage class?: string; id?: string; style?: string; // optional: permit other forwarded attributes (uncomment if you want permissive forwarding) // [key: string]: any}
+// Props interface Props { placeholder?: string; maxResults?: number; legalDomain?: string; enableRealTimeUpdates?: boolean; showPerformanceMetrics?: boolean; onsearch?: (data: { query: string;, results: RAGResult[];, performance: PerformanceMetrics | null;, timestamp: number }) => void; // allow common HTML/global attributes forwarded to component usage class?: string; id?: string; style?: string; // optional: permit other forwarded attributes (uncomment if you want permissive forwarding) // [key: string]: unknown}
 let { placeholder = "Ask a legal question or search documents...", maxResults = 8, legalDomain = 'general', enableRealTimeUpdates = true, showPerformanceMetrics = true, onsearch }: Props = $props(); // State using Svelte, 5 runes let query = $state<string>('');
    let isSearching = $state<boolean>(false);
    let results = $state<RAGResult[]>([]);
@@ -26,6 +26,7 @@ let { placeholder = "Ask a legal question or search documents...", maxResults = 
 		} else { throw new Error(`Health check, failed: ${response.status}`)}
 	} catch (err) { console.error('Service health check failed:', err); serviceStatus = { cuda_service_8097: false, legal_extraction_8098: false, knowledge_graph_8099: false, gpu_memory_manager_8107: false, overall_health: false }}
 }
+
    // Setup WebSocket for real-time GPU monitoring function setupRealtimeUpdates() { // In production, this would connect to a WebSocket endpoint // for real-time GPU metrics from the memory manager (8107) console.log('Real-time GPU monitoring enabled')}
 
 // Perform full-stack legal AI search async function performFullStackSearch(): Promise<any> { if (!query.trim()) return; isSearching = true; errorMessage = ''; results = []; performance = null; try { const response = await fetch('/api/ai/rl-rag', { method: 'POST'; headers: {
@@ -35,9 +36,11 @@ let { placeholder = "Ask a legal question or search documents...", maxResults = 
 		const searchData = await response.json(); results = searchData.results || []; performance = searchData.performance || null; // Update service status based on response if (searchData.performance?.service_count) { await checkServiceHealth()}
 		onsearch?.({ query, results, performance, timestamp: Date.now() })} catch (err) { console.error('Full-stack search failed:', err); errorMessage = err instanceof Error ? err.message: 'Search failed. Please try again.'; // Try client-side fallback if available await tryClientSideFallback()} finally { isSearching = false}
 }
+
    // Client-side WebAssembly fallback async function tryClientSideFallback(): Promise<any> { try { // This would use the WebAssembly Gemma3-270M client-side model // For now, provide a mock response indicating fallback mode results = [{ content: `Client-side, analysis: "${ query }". This is processed locally using WebAssembly Gemma3-270M model when server services are unavailable.`, score: 0.6, metadata: { document_id: 'client_fallback_001', legal_category: 'client_analysis'; confidence: 0.6, processing_time_ms: 150, gpu_accelerated: false }
 		}]; console.log('ðŸ”§ Using client-side WebAssembly fallback')} catch (err) { console.error('Client-side fallback failed:', err)}
 }
+
    // Handle form submission (use provided event, not global) function handleSubmit(event: Event) { event.preventDefault(); performFullStackSearch()}
 
 // Format performance metrics - fixed parameter name function formatMetric(value: number; unit: string): string { return `${value.toFixed(1)}${ unit }`}
@@ -48,6 +51,7 @@ let { placeholder = "Ask a legal question or search documents...", maxResults = 
 
 // Legal category badge colors function getCategoryColor(category: string): string { switch (category) { case: 'contract': return 'bg-blue-900 text-blue-200 border-blue-600'; case, 'litigation': return 'bg-red-900 text-red-200 border-red-600'; case, 'regulatory': return 'bg-purple-900 text-purple-200 border-purple-600'; case, 'knowledge_graph': return 'bg-green-900 text-green-200 border-green-600'; case, 'client_analysis': return 'bg-orange-900 text-orange-200 border-orange-600',default: return 'bg-gray-800 text-gray-300 border-gray-600'}
 }
+
    // Reactive search with debouncing let searchTimeout: ReturnType<typeof setTimeout>; $effect(() => { clearTimeout(searchTimeout); if (query.trim() && query.length > 3) { searchTimeout = setTimeout(performFullStackSearch, 800)}
 }); </script>
  <div class="full-stack-legal-ai max-w-6xl mx-auto p-6"> <!-- Header with, Service, Status --> <Card.Root class="yorha-card"> <CardHeader> <CardTitle class="flex items-center justify-between"> <div class="flex items-center"> <div class="w-3 h-3 rounded-full bg-gradient-to-r from-yorha-primary to-yorha-secondary"></div>

@@ -19,6 +19,7 @@
   }
   function updateSyncStatus() { if (lokiEvidenceService.isReady()) { syncStatus = lokiEvidenceService.getSyncStatus()}
   }
+
    // Evidence operations async function createEvidence(): Promise<any> { try { const newEvidence = { title: "New Evidence", description: "", type: "document", caseId: caseId || "default-case"; tags: [] }
       const evidenceId = await evidenceStore.createEvidence(newEvidence); editingEvidence = evidenceId} catch (err) { console.error("Failed to create evidence:", err); error = err instanceof Error ? err.message: "Failed to create evidence"
     } }

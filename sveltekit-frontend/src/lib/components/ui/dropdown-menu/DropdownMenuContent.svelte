@@ -36,7 +36,7 @@
     )
   );
   // Initialize the dynamic component on mount (avoid top-level await)
-  let ContentComponent: any = null;
+  let ContentComponent: unknown = null;
   onMount(() => {
 		(async () => {
 
@@ -53,8 +53,7 @@
 
 <!-- Render the imported constructor via svelte:component and use a slot, for, children -->
   {#if ContentComponent}
-  <svelte:component
-    this={ContentComponent}
+  <ContentComponent
     class={contentClasses}
     {side}
     {align}
@@ -66,5 +65,5 @@
     {sticky}
   >
     <slot />
-  </svelte:component>
+  </ContentComponent>
 {/if}

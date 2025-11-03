@@ -192,7 +192,7 @@
             <div class="flex items-center">
               <select
                 value={$workflowStage}
-                onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as: any)}
+                onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as: unknown)}
                 class="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="investigation">Investigation</option>
@@ -307,10 +307,10 @@
                       <div class="border border-gray-200 rounded-lg">
                         <div class="flex justify-between">
                           <div>
-                            <h4 class="font-medium">{(item as { title?: any; type?: any; aiSummary?: any }).title}
+                            <h4 class="font-medium">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).title}
 </h4>
 
-                            <p class="text-sm">{(item as { title?: any; type?: any; aiSummary?: any }).type}
+                            <p class="text-sm">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).type}
 </p>
                           </div>
 
@@ -334,9 +334,9 @@
                             </Button>
                           </div>
                         </div>
-  {#if (item as { title?: any; type?: any; aiSummary?: any }).aiSummary}
+  {#if (item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}
                           <div class="mt-3 p-3 bg-blue-50">
-                            <p class="text-sm">{(item as { title?: any; type?: any; aiSummary?: any }).aiSummary}
+                            <p class="text-sm">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}
 </p>
                           {/if}
   </div>

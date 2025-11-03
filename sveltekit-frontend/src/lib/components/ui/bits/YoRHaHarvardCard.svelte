@@ -1,4 +1,4 @@
-<script lang="ts"> interface YoRHaHarvardCardProps { variant?: 'default' | 'gaming' | 'terminal' | 'legal' | 'academic' | 'grey' | 'crimson-grey'; title?: string; subtitle?: string; glowing?: boolean; scanLines?: boolean; bordered?: boolean; children?: any; onclick?: () => void}
+<script lang="ts"> interface YoRHaHarvardCardProps { variant?: 'default' | 'gaming' | 'terminal' | 'legal' | 'academic' | 'grey' | 'crimson-grey'; title?: string; subtitle?: string; glowing?: boolean; scanLines?: boolean; bordered?: boolean; children?: unknown; onclick?: () => void}
   let { variant = 'default', title, subtitle, glowing = false, scanLines = false, bordered = false, children, onclick, ...restProps }: YoRHaHarvardCardProps = $props(); let cardClasses = $derived( [
       'yorha-harvard-card', `yorha-harvard-card--${ variant }`, glowing && 'harvard-glow', scanLines && 'gaming-scan-lines', bordered && 'gaming-border', onclick && 'interactive']
       .filter(Boolean) .join(' ') ); </script>

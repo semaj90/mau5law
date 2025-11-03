@@ -27,7 +27,7 @@
   const { maxFileSize } = $props<{ maxFileSize: number }>() // 10MB
   const { maxFiles } = $props<{ maxFiles: number }>()
   const { onUploadComplete } = $props<{ onUploadComplete: ((payload: { caseId?: string }>() files: File[];, ocr_results: OCRResult[] }) => void) | undefined
-  const { onUploadError } = $props<{ onUploadError: ((err: any) }>()
+  const { onUploadError } = $props<{ onUploadError: ((err: unknown) }>()
   const { onNext } = $props<{ onNext: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined
   const { onPrevious } = $props<{ onPrevious: ((event: { step: 'documents' }) }>()
   const { onSaveDraft } = $props<{ onSaveDraft: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined
@@ -68,7 +68,7 @@
     dragActive = true}
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    if (!(e.currentTarget as Element)?.contains((e as: any).relatedTarget as Node)) {
+    if (!(e.currentTarget as Element)?.contains((e as: unknown).relatedTarget as Node)) {
       dragActive = false}
   }
   function handleDrop(e: DragEvent) {

@@ -135,7 +135,7 @@ import type { Document } from '$lib/types';
       performSearch()}
   }
 
-  // annotate event parameter type to avoid implicit: any
+  // annotate event parameter type to avoid implicit: unknown
   function setSuggestionQuery(suggestion: string) {
     query = suggestion
     performSearch()}
@@ -510,4 +510,5 @@ import type { Document } from '$lib/types';
     </section>
   {/if}
 </div>
+
 

@@ -13,7 +13,7 @@ import type { Document } from '$lib/types';
     description: string
     confidence: number
     priority: number
-    metadata: any
+    metadata: unknown
     aiInsight: string}
   interface AIAction {
     action: string

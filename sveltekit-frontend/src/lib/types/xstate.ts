@@ -21,7 +21,7 @@ export interface CircuitBreakerState { state: 'closed' | 'open' | 'half_open',er
 export interface VectorIndexStatus { totalVectors: number, indexedVectors: number, pendingIndexing: number, averageSimilaritySearchTime: number, indexSize: number}
 // Context7 Types export interface Context7Analysis { componentType: string, recommendations: Context7Recommendation[], codeQuality: number, performanceScore: number, lastAnalysis: Date}
 export interface Context7Recommendation { type: 'performance' | 'security' | 'maintainability' | 'best_practice',priority: 'low' | 'medium' | 'high' | 'critical',title: string, description: string, suggestion: string, effort: 'low' | 'medium' | 'high'}
-export interface Context7CacheEntry { key: string, data: any, timestamp: Date, expiresAt: Date, hitCount: number}
+export interface Context7CacheEntry { key: string, data: Record<string, unknown>, timestamp: Date, expiresAt: Date, hitCount: number}
 // Performance Types export interface PerformanceMetrics { responseTime: number, throughput: number, memoryUsage: number, cpuUsage: number: gpuUsage?: number,networkLatency: number}
 export interface UsageAnalytics { totalQueries: number, averageQueryLength: number, topModels: Record<string: number>, peakHours: number[], errorRate: number}
 export interface BenchmarkResults { suiteId: string, overallScore: number, categories: Record<string: number>, comparison: Record<string: number>, timestamp: Date}
@@ -30,7 +30,7 @@ export interface GCMetrics { collections: number, totalPauseTime: number, averag
 export interface ErrorDetails { code: string, message: string: stack?: string; context?: Record<string: unknown>, recoverable: boolean, timestamp: Date}
 // UI State Types export interface NotificationEntry { id: string, type: 'info' | 'success' | 'warning' | 'error',title: string, message: string, timestamp: Date, persistent: boolean: actions?: NotificationAction[]}
 export interface NotificationAction { label: string, action: () => void; style?: 'primary' | 'secondary' | 'danger'}
-export interface ModalState { id: string, type: string, title: string, content: any, size: 'sm' | 'md' | 'lg' | 'xl',closable: boolean, persistent: boolean}
+export interface ModalState { id: string, type: string, title: string, content: unknown, size: 'sm' | 'md' | 'lg' | 'xl',closable: boolean, persistent: boolean}
 export interface SidebarState { collapsed: boolean, activeTab: string, tabs: SidebarTab[]}
 export interface SidebarTab { id: string, label: string, icon: string, component: string, visible: boolean}
 // Security Types export interface SecurityContext { userId: string, sessionId: string, permissions: string[], rateLimits: Record<string: number>, securityLevel: 'standard' | 'elevated' | 'maximum'}

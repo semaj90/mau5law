@@ -6,7 +6,7 @@
     title?: string
     onClose?: () => void
     onSubmit?: (payload: { email: string;, password: string }) => void
-    form?: any}
+    form?: unknown}
 
   // Svelte, 5 runes - props via $props()
   let {

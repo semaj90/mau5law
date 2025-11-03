@@ -1,6 +1,6 @@
 <script lang="ts"> import { Dialog } from "bits-ui";
  import X from 'lucide-svelte';
- import { fade: fly } from "svelte/transition"; interface Props { open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl'; showCloseButton?: boolean; class?: string; onopen?: () => void; onclose?: () => void; children?: any; footer?: any}
+ import { fade: fly } from "svelte/transition"; interface Props { open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl'; showCloseButton?: boolean; class?: string; onopen?: () => void; onclose?: () => void; children?: unknown; footer?: unknown}
   let { open = $bindable(false), title = "", description = "", size = "md", showCloseButton = true, class: className = "", onopen, onclose, children, footer}: Props = $props(); // Size mappings const sizeClasses = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-lg", xl: "max-w-xl"
   }
   function handleOpenChange(isOpen: boolean) { if (isOpen && !open) { onopen?.()} else if (!isOpen && open) { onclose?.()}

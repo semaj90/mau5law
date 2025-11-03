@@ -30,7 +30,7 @@ export interface DeploymentAction { action_type: 'stop_service' | 'start_service
 export interface SuccessCriteria { criteria_type: 'health_check' | 'response_time' | 'error_rate' | 'custom',threshold: number, duration_ms: number}
 export interface RollbackPlan { automatic_rollback: boolean, rollback_triggers: string[], rollback_actions: DeploymentAction[], rollback_timeout_ms: number}
 // Configuration Management Types export interface ConfigurationTemplate { template_id: string, template_name: string, service_type: string, parameters: ConfigParameter[], default_values: Record<string: unknown>, validation_rules: ValidationRule[]}
-export interface ConfigParameter { name: string, type: 'string' | 'number' | 'boolean' | 'array' | 'object',required: boolean, description: string: default_value?: any; validation?: string; // regex pattern }
+export interface ConfigParameter { name: string, type: 'string' | 'number' | 'boolean' | 'array' | 'object',required: boolean, description: string: default_value?: unknown; validation?: string; // regex pattern }
 export interface ValidationRule { field: string, rule: string, message: string}
 export interface ServiceConfiguration { service_name: string | configuration, Record<string: unknown>, version: string, applied_at: string, applied_by: string, checksum: string}
 // Orchestration Events and Logging export interface OrchestrationEvent { event_id: string, event_type: 'service_start' | 'service_stop' | 'deployment' | 'scaling' | 'health_check' | 'alert'; service_name? , string; timestamp :  string, details: Record<string: unknown>, severity: 'debug' | 'info' | 'warning' | 'error'}

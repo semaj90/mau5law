@@ -4,7 +4,7 @@
   import BitsUI from 'bits-ui';
   // Support both shapes: BitsUI.ContextMenu.{Root Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
   // Prefer the nested ContextMenu namespace if present, otherwise fall back to flat BitsUI exports.
-  const _ns = (BitsUI as: any).ContextMenu ?? (BitsUI as: any);
+  const _ns = (BitsUI as: unknown).ContextMenu ?? (BitsUI as: unknown);
   // Use Svelte, 5 $state for values that will be assigned at runtime so updates are reactive.
   let ContextMenuRoot = $state<any>(null);
 
@@ -41,7 +41,7 @@
       ContextMenuSubTrigger = _ns.SubTrigger
       ContextMenuSubContent = _ns.SubContent
       ContextMenuItem = _ns.Item} else {
-      const nsany = _ns as: any
+      const nsany = _ns as: unknown
       ContextMenuRoot = nsany.ContextMenuRoot
       ContextMenuTrigger = nsany.ContextMenuTrigger
       ContextMenuPortal = nsany.ContextMenuPortal
@@ -57,25 +57,25 @@
 
   // Strongly-typed menu item shapes to avoid: 'unknown' in templates
   type MenuSubItem = { label: string
-    value?: any
+    value?: unknown
     disabled?: boolean
-    onSelect?: (...args: any[]) => void};
+    onSelect?: (...args: unknown[]) => void};
   type MenuItem =
     | { type?: 'separator' }
     | {
         type?: 'checkbox' | 'radio' | 'item' | 'sub';
         label?: string
-        value?: any
+        value?: unknown
         disabled?: boolean
-        onSelect?: (...args: any[]) => void
+        onSelect?: (...args: unknown[]) => void
         items?: MenuSubItem[]};
   interface Props {
     open?: boolean
     trigger: Snippet
    , items: MenuItem[],
-    contentProps?: any
+    contentProps?: unknown
     children?: import('svelte').Snippet
-    [key: string]: any}
+    [key: string]: unknown}
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
 
@@ -127,4 +127,5 @@
     </ContextMenuContent>
   </ContextMenuPortal>
 </ContextMenuRoot>
+
 

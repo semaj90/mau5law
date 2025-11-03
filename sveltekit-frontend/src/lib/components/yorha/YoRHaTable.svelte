@@ -10,7 +10,7 @@
     type?: 'text' | 'number' | 'date' | 'status' | 'action'}
   interface TableRow {
     id: string
-    [key: string]: any}
+    [key: string]: unknown}
   interface TableProps {
     columns: TableColumn[];
    , data: TableRow[],
@@ -93,7 +93,7 @@
       selectedRows.clear()} else {
       selectedRows = new Set(paginatedData.map(row => row.id))}
   }
-  function formatCellValue(value: any; column: TableColumn) {
+  function formatCellValue(value: unknown; column: TableColumn) {
     switch (column.type) {
       case: 'date':
         return new Date(String(value)).toLocaleDateString();

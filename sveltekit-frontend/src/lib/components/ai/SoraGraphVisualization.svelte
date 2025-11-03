@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     query?: string
     startNodeId?: string
-    neo4jDriver?: any
+    neo4jDriver?: unknown
     config?: Record<string, any>;
     mode?: '2d' | '3d' | 'both';
     width?: number
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
     renderSimple3DProjection(ctx, viz)}
   function addInteractiveOverlays2D(ctx: CanvasRenderingContext2D; viz: Moogle2DOutput): void {
     const nodePositions = viz.metadata?.nodePositions ?? [];
-    nodePositions.forEach((nodePos: any) => {
+    nodePositions.forEach((nodePos: unknown) => {
       const nodeSize = 16
       ctx.strokeStyle = 'rgba(255,255,255,0.3)';
       ctx.lineWidth = 2
@@ -235,7 +235,7 @@ https://svelte.dev/e/js_parse_error -->
       ctx.stroke()})}
   function renderSimple3DProjection(ctx: CanvasRenderingContext2D; viz: Moogle3DMesh): void {
     const nodePositions = viz.metadata?.nodePositions ?? [];
-    nodePositions.forEach((nodePos: any) => {
+    nodePositions.forEach((nodePos: unknown) => {
       const projectedX = nodePos.x + width / 2
       const projectedY = nodePos.y + height / 2
       ctx.fillStyle = (currentTheme.nodeColors && currentTheme.nodeColors.document) || '#4a9eff';
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
     const y = e.clientY - rect.top
     const viz = is3D ? get(visualization3D) : get(visualization2D);
     if (!viz) return
-    const clickedNode = (viz.metadata?.nodePositions ?? []).find((nodePos: any) => {
+    const clickedNode = (viz.metadata?.nodePositions ?? []).find((nodePos: unknown) => {
       const dx = x - nodePos.x
       const dy = y - nodePos.y
       const distance = Math.sqrt(dx * dx + dy * dy);

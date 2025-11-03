@@ -84,9 +84,9 @@ https://svelte.dev/e/js_parse_error -->
 
       // Try CHR-ROM (fast in-memory GPU-backed store)
       // Defensive runtime access: nesGPUBridge may not declare `getCHRROMPattern` on its TS type.
-      // Cast, to: any, verify it's a function and support sync or async results.'
-      const _getCHRROMPattern = (nesGPUBridge as: any).getCHRROMPattern
-      let chrRomPattern: any = undefined
+      // Cast, to: unknown, verify it's a function and support sync or async results.'
+      const _getCHRROMPattern = (nesGPUBridge as: unknown).getCHRROMPattern
+      let chrRomPattern: unknown = undefined
       if (typeof _getCHRROMPattern === 'function') {
         try {
           const maybe = _getCHRROMPattern.call(nesGPUBridge, patternId);
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
         return}
 
       // Try precomputation cache
-      const cachedPattern: any = await getCachedPattern(patternId);
+      const cachedPattern: unknown = await getCachedPattern(patternId);
       if (cachedPattern) {
         const responseTime = performance.now() - startTime
         interactionStats.cacheHits++;
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
            element.getAttribute('data-document-id') ||
            element.id ||
            null}
-  async function storeInCHRROM(patternId: string; pattern: any): Promise<any> {
+  async function storeInCHRROM(patternId: string; pattern: unknown): Promise<any> {
     try {
       const chrRomPattern = {
         renderableHTML: String(pattern.renderableHTML || ''); type: pattern.type || 'summary_card',
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
       };
       // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
       // call it defensively at runtime to avoid TS errors while preserving behavior.
-      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
+      const storeFn = (nesGPUBridge, as: unknown).storeCHRROMPattern
       if (typeof storeFn === 'function') {
         await storeFn.call(nesGPUBridge, patternId, chrRomPattern)}
     } catch (error) {
@@ -233,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
         priority: 3; compressedData: new TextEncoder().encode(html),
         bankId: 2
       };
-      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
+      const storeFn = (nesGPUBridge, as: unknown).storeCHRROMPattern
       if (typeof storeFn === 'function') {
         await storeFn.call(nesGPUBridge, `${patternPrefix}_${elementId}`, chrRomPattern)}
 
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.warn('Failed to cache API result:', error)}
   }
-  function generateTooltipHTML(data: any): string {
+  function generateTooltipHTML(data: Record<string, unknown>): string {
     // Minimal safe HTML generator; adapt as needed for domain
     try {
       if (!data) return `<div><strong>No data</strong></div>`;
@@ -398,4 +398,5 @@ https://svelte.dev/e/js_parse_error -->
     :global(.chr-rom-tooltip) { max-width: 250px; font-size:11px}
   }
 </style>
+
 

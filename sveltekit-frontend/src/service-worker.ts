@@ -17,7 +17,7 @@ interface CacheWarmingTask {
   id: string;
   type: "legal_document" | "vector_similarity" | "search_results" | "som_embeddings";
   priority: number;
-  payload: any;
+  payload: unknown;
   retries: number;
 }
 const warmingQueue: CacheWarmingTask[] = [];
@@ -560,7 +560,7 @@ console.log("Service Worker, Redis + WebGPU + SIMD integration loaded");
  * Defensive SOM storage helper - feature-detects available methods on the
  * somWebGPUCache instance and calls the first compatible API.
  */
-async function safeSomStore(key: string, data: any): Promise<void> {
+async function safeSomStore(key: string, data: unknown): Promise<void> {
   // Short-circuit if SOM not ready
   if (!somCacheReady) return;
   const s = somWebGPUCache as any;

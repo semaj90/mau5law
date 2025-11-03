@@ -1,7 +1,7 @@
 <!-- Local Image Generation Component Supports Stable Diffusion WebUI, ComfyUI, and Ollama integration Production-ready with native Windows, support --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
  import { imageGenerationService, imageGenerationStore, // removed problematic `type` imports to avoid TS namespace errors when importing from .js } from '$lib/services/local-image-generation-service.js'; // minimal local types to avoid external namespace errors interface ImageGenerationRequest { prompt: string, negativePrompt?: string; width?: number; height?: number; steps?: number; cfgScale?: number; seed?: number; style?: string; provider?: string}
 
-interface ImageGenerationResult { id?: string,prompt: string;, imageUrl: string, provider?: string; parameters?: Record<string, any>; metadata?: { seed?: number; size?: { width: number;, height: number }; [k: string]: any }; timestamp?: number | string | Date; processingTime?: number}
+interface ImageGenerationResult { id?: string,prompt: string;, imageUrl: string, provider?: string; parameters?: Record<string, any>; metadata?: { seed?: number; size?: { width: number;, height: number }; [k: string]: unknown }; timestamp?: number | string | Date; processingTime?: number}
 
 interface Props { caseId?: string; onImageGenerated?: (result: ImageGenerationResult) => void; initialPrompt?: string; compact?: boolean}
   let { caseId = '', onImageGenerated = (result: ImageGenerationResult) => {}, // fixed default initialPrompt = '', compact = false }: Props = $props(); // Component state let prompt = $state(initialPrompt);
@@ -25,7 +25,7 @@ interface Props { caseId?: string; onImageGenerated?: (result: ImageGenerationRe
   function useImageAsEvidence(result: ImageGenerationResult) { if (caseId && onImageGenerated) { const evidence = { id: `generated_${result.id}`, title: `AI, Generated: ${result.prompt?.substring(0, 50) ?? 'generated image'}...`, description `Generated image from prompt: ${result.prompt}`, evidenceType: 'image', fileUrl: result.imageUrl, metadata: { aiGenerated: true, provider: result.provider, parameters: result.parameters, generatedAt: result.timestamp }; tags: ['ai-generated', result.provider ?? 'unknown', selectedStyle] }; // parent callback â€” still call with result (evidence creation handled outside) onImageGenerated(result)}
   }
   async function regenerateWithSeed(result: ImageGenerationResult): Promise<any> { prompt = result.prompt; if (result.metadata?.seed !== undefined && result.metadata.seed !== -1) { seed = result.metadata.seed} else { seed = -1}
-    selectedStyle = (result.parameters?.style as: any) || 'realistic'; width = result.metadata?.size?.width ?? width; height = result.metadata?.size?.height ?? height; await generateImage()}
+    selectedStyle = (result.parameters?.style as: unknown) || 'realistic'; width = result.metadata?.size?.width ?? width; height = result.metadata?.size?.height ?? height; await generateImage()}
   async function copyPrompt(text: string): Promise<any> { try { await navigator.clipboard.writeText(text); // optional: small feedback can be added } catch (err) { console.error('Failed to copy prompt', err)}
   }
 
@@ -116,14 +116,14 @@ interface Props { caseId?: string; onImageGenerated?: (result: ImageGenerationRe
           ðŸ—‘ï¸ Clear </button> {/if}
   </div>
   {#if showHistory} <div class="history-grid">
-  {#each Array.isArray(generationHistory) ? generationHistory: [] as result} <div class="history-item nes-container"> <img src={( result, as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any}
-              ).imageUrl} alt={( result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any}
+  {#each Array.isArray(generationHistory) ? generationHistory: [] as result} <div class="history-item nes-container"> <img src={( result, as { id?: unknown; prompt?: unknown; imageUrl?: unknown; provider?: unknown; parameters?: unknown; timestamp?: unknown; metadata?: unknown}
+              ).imageUrl} alt={( result as { id?: unknown; prompt?: unknown; imageUrl?: unknown; provider?: unknown; parameters?: unknown; timestamp?: unknown; metadata?: unknown}
               ).prompt} class="history-thumbnail"
-              onclick={() => (selectedImage = result)} /> <div class="history-info"> <p class="history-prompt"> {( result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any}
+              onclick={() => (selectedImage = result)} /> <div class="history-info"> <p class="history-prompt"> {( result as { id?: unknown; prompt?: unknown; imageUrl?: unknown; provider?: unknown; parameters?: unknown; timestamp?: unknown; metadata?: unknown}
                 ).prompt.substring(0, 50)}... </p>
- <p class="history-meta"> {( result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any}
+ <p class="history-meta"> {( result as { id?: unknown; prompt?: unknown; imageUrl?: unknown; provider?: unknown; parameters?: unknown; timestamp?: unknown; metadata?: unknown}
                 ).provider} â€¢ {new Date( (
-                    result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any}
+                    result as { id?: unknown; prompt?: unknown; imageUrl?: unknown; provider?: unknown; parameters?: unknown; timestamp?: unknown; metadata?: unknown}
                   ).timestamp ).toLocaleTimeString()} </p> </div> </div> {/each} {/if}
   </div>
  <!-- Selected Image, Modal -->

@@ -196,12 +196,11 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.metadataIntact)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.metadataIntact)}`}
             />
-            <svelte:component
-              this={BadgeComponent}
+            <BadgeComponent
               variant={verificationResults.metadataIntact ? 'success' : 'destructive'}
             >
               {verificationResults.metadataIntact ? 'Pass' : 'Fail'}
-            </svelte:component>
+            </BadgeComponent>
           </div>
         </div>
 
@@ -214,12 +213,11 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.timestampValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.timestampValid)}`}
             />
-            <svelte:component
-              this={BadgeComponent}
+            <BadgeComponent
               variant={verificationResults.timestampValid ? 'success' : 'destructive'}
             >
               {verificationResults.timestampValid ? 'Pass' : 'Fail'}
-            </svelte:component>
+            </BadgeComponent>
           </div>
         </div>
 
@@ -232,12 +230,11 @@ Displays detailed integrity verification results with AI analysis
               this={getVerificationIcon(verificationResults.digitalSignatureValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.digitalSignatureValid)}`}
             />
-            <svelte:component
-              this={BadgeComponent}
+            <BadgeComponent
               variant={verificationResults.digitalSignatureValid ? 'success' : 'destructive'}
             >
               {verificationResults.digitalSignatureValid ? 'Pass' : 'Fail'}
-            </svelte:component>
+            </BadgeComponent>
           </div>
         </div>
 
@@ -250,12 +247,11 @@ Displays detailed integrity verification results with AI analysis
               {Math.round((verificationResults.aiAnalysisScore ?? 0) * 100)}%
             </div>
 
-            <svelte:component
-              this={BadgeComponent}
+            <BadgeComponent
               variant={(verificationResults.aiAnalysisScore ?? 0) > 0.7 ? 'success' : 'warning'}
             >
               {(verificationResults.aiAnalysisScore ?? 0) > 0.7 ? 'Good' : 'Review'}
-            </svelte:component>
+            </BadgeComponent>
           </div>
         </div>
       </div>

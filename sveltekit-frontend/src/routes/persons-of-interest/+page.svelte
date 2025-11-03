@@ -34,6 +34,7 @@
         })); if (transformedPersons.length > 0) { persons = transformedPersons; selectedPerson = transformedPersons[0]}
       } } catch (error) { console.error('Failed to load persons from API:', error); // Keep using demo data as fallback }
   }
+
    // Load on component mount using $effect $effect(() => { loadPersonsFromAPI()});
 </script>
 
@@ -782,4 +783,5 @@
     background: rgba(16, 185, 129, 0.04);
   } /* ...existing styles... */
 </style>
+
 

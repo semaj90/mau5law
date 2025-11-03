@@ -52,7 +52,7 @@ import type { Document } from '$lib/types';
     onLODChange
   }: DocumentLODViewerProps = $props();
   // Svelte, 5 state management
-  let canvasElement: HTMLCanvasElement = $state(undefined; as: any),
+  let canvasElement: HTMLCanvasElement = $state(undefined; as: unknown),
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state<boolean>(false);
@@ -300,6 +300,7 @@ if (!browser || !enableWebGPU) return
   function estimateRenderTime(): number {
     // Estimate render time based on LOD level (N64-style performance)
     const baseTimes = { 0: 16.7, 1: 12.5, 2: 8.3, 3: 4.2 }
+
    // ms
     return baseTimes[currentLOD as keyof typeof baseTimes] || 16.7}
 

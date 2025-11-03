@@ -6,8 +6,8 @@
     emptyMessage?: string;
     loadingMessage?: string;
     skeleton?: 'card' | 'list' | 'table' | 'dashboard' | 'custom';
-    children?: any;
-    fallback?: any;
+    children?: unknown;
+    fallback?: unknown;
   }
   let {
     loading = false,

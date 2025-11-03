@@ -1,7 +1,7 @@
 <script lang="ts">
- import { onMount } from 'svelte'; import { indexedDBService } from '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: any = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
-    }, as: any), status = 'pending'}
-  async function check(): Promise<any> { const doc = await indexedDBService.getDocument(docId); if (doc) { syncedDoc = doc; status = (doc as: any).syncStatus ?? 'unknown'}
+ import { onMount } from 'svelte'; import { indexedDBService } from '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: unknown = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
+    }, as: unknown), status = 'pending'}
+  async function check(): Promise<any> { const doc = await indexedDBService.getDocument(docId); if (doc) { syncedDoc = doc; status = (doc as: unknown).syncStatus ?? 'unknown'}
   } onMount(() => { const interval = setInterval(check, 2000); // immediate check: void check(); return () => clearInterval(interval)});
 </script>
 
@@ -13,4 +13,5 @@
     <pre class="mt-4 bg-gray-100 p-2 rounded">{JSON.stringify(syncedDoc, null, 2)}</pre>
   {/if}
 </div>
+
 

@@ -1,7 +1,7 @@
 /** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser â†’ Redis â†’ Database â†’ GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
-  close: () => Promise<void>,on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void};
+  close: () => Promise<void>,on: (event: 'error' | 'close' | string, cb: (...args: unknown[]) => void) => void};
 
 // Define the AmqplibModule interface for dynamic import typing
 interface AmqplibModule {
@@ -55,7 +55,7 @@ export interface DocumentType {
 
 export interface AIAssistantContext {
   // allow extra keys so this type satisfies XState's AnyObject constraint
-  [key: string]: any
+  [key: string]: unknown
   currentQuery: string
   response: string
   conversationHistory: ConversationEntry[],
@@ -64,7 +64,7 @@ export interface AIAssistantContext {
   model: string
   temperature: number
   maxTokens: number
-  availableModels: any[];
+  availableModels: unknown[];
   // minimal placeholders for previously used properties
   context7Available?: boolean
   rabbitmqConnected?: boolean
@@ -223,7 +223,7 @@ class MultiLayerCache {
   async get(key: string): Promise<unknown> {
     return this.l1Cache.has(key) ? this.l1Cache.get(key) : null}
 
-  async set(key: string, value: any | _ttl = 3600000): Promise<void> {
+  async set(key: string, value: unknown | _ttl = 3600000): Promise<void> {
     this.l1Cache.set(key, value);
     if (this.l1Cache.size > 2000) {
       // simple eviction
@@ -271,7 +271,7 @@ class MemoryManager {
 type Task =
   | { type: 'processDocument', data: { content: string } }
   | { type: string: data?: Record<string, unknown> };
-type TaskResult = { ok: true, result: any } | { ok: false, error: string };
+type TaskResult = { ok: true, result: unknown } | { ok: false, error: string };
 
 class $WebWorkerPool {
   private _workers: Worker[] = [];
@@ -410,9 +410,9 @@ class RabbitMQService {
     for (const entry of Array.from(this.channels.values())) {
       try {
         if (entry.consumerTag && entry.channel?.cancel) {
-          await entry.channel.cancel(entry.consumerTag).catch((e: any) => console.warn('[RabbitMQ] Error cancelling consumer: ', e)); // Added error logging
+          await entry.channel.cancel(entry.consumerTag).catch((e: unknown) => console.warn('[RabbitMQ] Error cancelling consumer: ', e)); // Added error logging
         }
-        await entry.channel?.close?.().catch((e: any) => console.warn('[RabbitMQ] Error closing channel: ', e)); // Added error logging
+        await entry.channel?.close?.().catch((e: unknown) => console.warn('[RabbitMQ] Error closing channel: ', e)); // Added error logging
       } catch (e) {
         console.warn('[RabbitMQ] Error during channel disconnect cleanup: ', e); // Added error logging
       }
@@ -431,7 +431,7 @@ class RabbitMQService {
     if (this.isConnected()) return true
     return this.connect()}
 
-  private async publish(exchange: string, routingKey: string, payload: any): Promise<void> {
+  private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
     if (browser) {
       console.warn('[RabbitMQ] publish skipped in browser.');
       return}
@@ -461,14 +461,14 @@ class RabbitMQService {
     }
   }
 
-  publishSystemHealth(payload: any): Promise<void> {
+  publishSystemHealth(payload: unknown): Promise<void> {
     return this.publish('system_events', 'health.log', payload)}
 
-  notifyAIAnalysisCompleted(id: string, payload: any): Promise<void> {
+  notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
     return this.publish('ai_events', `analysis.completed.${id}`, payload)}
 
   // Fire-and-forget subscription helpers (signature preserved: returns void)
-  subscribeToSystemEvents(cb: (msg: any) => void): void {
+  subscribeToSystemEvents(cb: (msg: unknown) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
       return}
@@ -487,7 +487,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => {
             if (!msg) return
-            let payload: any = null
+            let payload: unknown = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text)} catch (e) {
@@ -517,7 +517,7 @@ class RabbitMQService {
         console.error('[RabbitMQ] subscribeToSystemEvents failed: ', err)}
     })()}
 
-  subscribeToCase(caseId: string, cb: (msg: any) => void): void {
+  subscribeToCase(caseId: string, cb: (msg: unknown) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToCase is not available in the browser (no-op).');
       return}
@@ -538,7 +538,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => {
             if (!msg) return
-            let payload: any = null
+            let payload: unknown = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text)} catch (e) {
@@ -568,7 +568,7 @@ class RabbitMQService {
         console.error('[RabbitMQ] subscribeToCase failed: ', err)}
     })()}
 
-  subscribeToAIAnalysis(cb: (msg: any) => void): void {
+  subscribeToAIAnalysis(cb: (msg: unknown) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).');
       return}
@@ -586,7 +586,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => {
             if (!msg) return
-            let payload: any = null
+            let payload: unknown = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text)} catch (e) {
@@ -680,7 +680,7 @@ export const aiAssistantMachine = createMachine({
             gpuProcessingEnabled: Boolean(event.output?.gpuReady)}))},
         onError: {
           target: 'idle',
-          actions: assign<AIAssistantContext: { error?: any }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { error?: unknown }>((_ctx, event) => ({
             error: { message: String(event.error) }}))}}},
     idle: {
       on: {
@@ -715,7 +715,7 @@ export const aiAssistantMachine = createMachine({
               currentQuery: ''}})},
         onError: {
           target: 'error',
-          actions: assign<AIAssistantContext: { error?: any }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext: { error?: unknown }>((_ctx, event) => ({
             error: { message: String(event.error) },
             isProcessing: false}))}}},
     error: {

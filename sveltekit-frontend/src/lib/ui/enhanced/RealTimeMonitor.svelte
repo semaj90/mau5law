@@ -34,20 +34,20 @@
       // Normalize into ServiceHealth[]
       let normalized: ServiceHealth[] = [];
       if (Array.isArray(payload)) {
-        normalized = payload.map((s: any) => ({
+        normalized = payload.map((s: unknown) => ({
           name: s.name || s.id || s.service || 'unknown'; baseUrl: s.baseUrl,
           healthPath: s.healthPath; status: (s.status as ServiceHealth['status']) || 'unknown',
           latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0); lastChecked: s.lastChecked || new Date().toISOString(),
           details: s.details || {}
         }))} else if (payload?.services && Array.isArray(payload.services)) {
-        normalized = payload.services.map((s: any) => ({
+        normalized = payload.services.map((s: unknown) => ({
           name: s.name || s.id || s.service || 'unknown'; baseUrl: s.baseUrl,
           healthPath: s.healthPath; status: (s.status as ServiceHealth['status']) || 'unknown',
           latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0); lastChecked: s.lastChecked || new Date().toISOString(),
           details: s.details || {}
         }))} else {
         // If returned: object seems to be a map of services
-        normalized = Object.entries(payload || {}).map(([k, v]: any) => ({
+        normalized = Object.entries(payload || {}).map(([k, v]: unknown) => ({
           name: v?.name || k; baseUrl: v?.baseUrl,
           healthPath: v?.healthPath; status: (v?.status as ServiceHealth['status']) || 'unknown',
           latencyMs: typeof v?.latencyMs === 'number' ? v.latencyMs : Math.round(t1 - t0); lastChecked: v?.lastChecked || new Date().toISOString(),
@@ -55,7 +55,7 @@
         }))}
 
       services = normalized.sort((a, b) => a.name.localeCompare(b.name));
-      lastUpdated = new Date()} catch (err: any) {
+      lastUpdated = new Date()} catch (err: unknown) {
       error = err?.message ?? String(err)} finally {
       loading = false}
   }

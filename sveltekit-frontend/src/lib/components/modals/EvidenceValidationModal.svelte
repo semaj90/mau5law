@@ -1,5 +1,5 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, unique, https: //svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- @migration-task Error while migrating Svelte code: Identifier: 'aiEvent' has already, been, declared, https://svelte.dev/e/js_parse_error --> <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { open?: boolean; evidence?: any; aiEvent?: any; onvalidated?: (event?: any) => void}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { open?: boolean; evidence?: unknown; aiEvent?: unknown; onvalidated?: (event?: unknown) => void}
   let { open = false, evidence = null, aiEvent = null, onvalidated }: Props = $props(); import  Button  from "$lib/components/ui/enhanced-bits.svelte"; import  Dialog  from "$lib/components/ui/MeltDialog.svelte"; import { AlertTriangle, CheckCircle, Edit3, Save, Tag, XCircle } from "lucide-svelte"; import type { Evidence } from '$lib/stores/unified'; let validationChoice = $state<"approve" | "reject" | null >(null); let feedback = $state<string >(""); let corrections = $state({ summary: "", tags: [], as: string[], evidenceType: "", analysis: ""
   });
   let isSubmitting = $state<boolean>(false); let showCorrections = $state<boolean>(false); // Initialize corrections with current AI analysis $effect(() => { if (evidence && open) { corrections = { summary: evidence.aiSummary || "", tags: evidence.aiTags || [], evidenceType: evidence.evidenceType || "", analysis: evidence.aiAnalysis?.analysis || ""
@@ -9,7 +9,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   function removeTag(tagToRemove: string) { corrections.tags = corrections.tags.filter((tag) => tag !== tagToRemove)}
   async function submitValidation(): Promise<any> { if (!evidence || !validationChoice) return; isSubmitting = true; try { const payload = { evidenceId: evidence.id, eventId: aiEvent?.id || null, valid: validationChoice === "approve", feedback: feedback.trim() || null, corrections: validationChoice === "reject" ?, corrections: null}
-      const response = await fetch("/api/evidence/validate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); const result = await (response as { json?: any }).json(); if ((result as { success?: any; error?: any }).success) { onvalidated?.(); // Reset form validationChoice = null; feedback = ""; showCorrections = false; open = false} else { console.error(error); alert("Failed to submit validation. Please try again.")}
+      const response = await fetch("/api/evidence/validate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); const result = await (response as { json?: unknown }).json(); if ((result as { success?: unknown; error?: unknown }).success) { onvalidated?.(); // Reset form validationChoice = null; feedback = ""; showCorrections = false; open = false} else { console.error(error); alert("Failed to submit validation. Please try again.")}
     } catch (error) { console.error("Validation submission error:", error); alert("
         "Failed to submit validation. Please check your connection and try again."
       )} finally { isSubmitting = false}
@@ -56,7 +56,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
  <!-- Feedback, Section -->
   {#if validationChoice} <div class="space-y-4"> <div> <label for="feedback" class="space-y-4"> Additional Feedback (Optional) </label>
  <textarea id="feedback"
-                  bind:value={ feedback } placeholder="Add: any additional comments or context..."
+                  bind:value={ feedback } placeholder="Add: unknown additional comments or context..."
                   class="space-y-4"
                   rows={ 4 } ></textarea> </div> {/if}
   <!-- Corrections, Section -->

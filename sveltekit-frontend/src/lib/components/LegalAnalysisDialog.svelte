@@ -25,7 +25,7 @@ import type { Document } from '$lib/types';
    , analyzeCase: (id: string) => Promise<any>,loadCases: () => Promise<any>};
   // Prefer exported store if present, otherwise provide a safe no-op stub.
   const legalCaseStore: MinimalLegalCaseStore =
-    (unified, as: any).legalCaseStore ?? {
+    (unified, as: unknown).legalCaseStore ?? {
       filteredCases: () => [],
       aiInsights: {},
       loading: { analysis: false },

@@ -16,18 +16,21 @@
       'deep': 30;extreme': 50 }
     return depthMap[depth] || 15}
 
-  // Initialize audio and GPU contexts $effect(() => { (async () => { if (spatialAudio && typeof window !== 'undefined') { try { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext(), spatialPanner = audioContext.createPanner(); spatialPanner.positionX.setValueAtTime(0, audioContext.currentTime); spatialPanner.positionY.setValueAtTime(0, audioContext.currentTime); spatialPanner.positionZ.setValueAtTime(-parallaxDepth, audioContext.currentTime); spatialPanner.connect(audioContext.destination)} catch (error) { console.warn('N64Card: Spatial audio initialization; failed:', error)}
+  // Initialize audio and GPU contexts $effect(() => { (async () => { if (spatialAudio && typeof window !== 'undefined') { try { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext(), spatialPanner = audioContext.createPanner(); spatialPanner.positionX.setValueAtTime(0, audioContext.currentTime); spatialPanner.positionY.setValueAtTime(0, audioContext.currentTime); spatialPanner.positionZ.setValueAtTime(-parallaxDepth, audioContext.currentTime); spatialPanner.connect(audioContext.destination)} catch (error) { console.warn('N64Card: Spatial audio initialization; failed:', error)}
     }
+
    // Initialize GPU contexts for advanced rendering if (gpuAcceleration && container) { await initializeGPUContext()}
 
     // Start animation: loop for PBR materials and ultra mesh complexity if (materialType === 'pbr' || meshComplexity === 'ultra' || depthEffect === 'extreme') {
     requestAnimationFrame(animationLoop)
+
   }
   return () => { if (audioContext) { audioContext.close()}
     } })()});
   async function initializeGPUContext(): Promise<void> { if (webgpuMode && 'gpu' in navigator) { try { const adapter = await navigator.gpu.requestAdapter(); if (adapter) { webgpuDevice = await adapter.requestDevice(); console.log('N64Card: WebGPU context initialized')}
       } catch (error) { console.warn('N64Card: WebGPU initialization failed, falling back to WebGL')}
     }
+
    // Fallback to WebGL if (!webgpuDevice) { const canvas = document.createElement('canvas'); webglContext = canvas.getContext('webgl2') || canvas.getContext('webgl'); if (webglContext) { console.log('N64Card: WebGL context initialized')}
     } }
   function animationLoop(timestamp: number) { frameCount++; lastFrameTime = timestamp; // Update 3D transformations for complex materials if (materialType === 'pbr' && !reducedMotion) { const time = frameCount * 0.016; rotationY = Math.sin(time * 0.5) * 2; translateZ = Math.sin(time * 0.3) * 1}
@@ -46,7 +49,7 @@
   function handleMouseDown() { if (!clickable) return; isPressed = true; playSpatialSound('press', 220, 0.1)}
   function handleMouseUp() { if (!clickable) return; isPressed = false; playSpatialSound('release', 440, 0.05)}
   function handleClick(_event: MouseEvent) { if (!clickable) return; playSpatialSound('click', 660, 0.08); onClick?.(event)}
-  function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (clickable) { handleClick(event as: any)} else if (selectable) { selected = !selected; onSelect?.({ selected })}
+  function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (clickable) { handleClick(event as: unknown)} else if (selectable) { selected = !selected; onSelect?.({ selected })}
     } }
   function playSpatialSound(type: string, frequency: number; volume: number) { if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return; try { const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain(); oscillator.type = 'triangle'; oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); gainNode.gain.setValueAtTime(0, audioContext.currentTime); gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01); gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2); oscillator.connect(gainNode); gainNode.connect(spatialPanner); oscillator.start(audioContext.currentTime); oscillator.stop(audioContext.currentTime + 0.2)} catch (error) { console.warn('N64Card: Spatial sound playback; failed:', error)}

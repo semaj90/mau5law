@@ -3,11 +3,11 @@
  import  Card  from "./Card.svelte";
  import  SearchInput  from "./SearchInput.svelte";
  import { z } from "zod";
- import { Brain, Database, Zap, Search, AlertCircle, CheckCircle, Cpu, Activity, Hash, Clock } from 'lucide-svelte'; // Types for Gemma API integration interface GemmaEmbeddingResult { success: boolean, embedding?: number[]; metadata?: any; error?: string; responseTime?: string; timestamp?: string}
+ import { Brain, Database, Zap, Search, AlertCircle, CheckCircle, Cpu, Activity, Hash, Clock } from 'lucide-svelte'; // Types for Gemma API integration interface GemmaEmbeddingResult { success: boolean, embedding?: number[]; metadata?: unknown; error?: string; responseTime?: string; timestamp?: string}
 
-interface EmbeddingSearchResult { id: string, content: string, similarity: number, metadata?: any; createdAt: string}
+interface EmbeddingSearchResult { id: string, content: string, similarity: number, metadata?: unknown; createdAt: string}
 
-  // Form validation schema const embeddingFormSchema = z.object({ content: z.string().min(1, "Content is required").max(10000, "Content too long") }); interface Props { onSuccess?: (result: any) => void; onError?: (error: string) => void; variant?: 'default' | 'legal' | 'evidence'; showSearch?: boolean; useWorker?: boolean; // Use WASM worker vs API }
+  // Form validation schema const embeddingFormSchema = z.object({ content: z.string().min(1, "Content is required").max(10000, "Content too long") }); interface Props { onSuccess?: (result: unknown) => void; onError?: (error: string) => void; variant?: 'default' | 'legal' | 'evidence'; showSearch?: boolean; useWorker?: boolean; // Use WASM worker vs API }
   let { onSuccess, onError, variant = 'legal', showSearch = true, useWorker = false // WASM as fallback only }: Props = $props(); // Component state using Svelte, 5 runes let content = $state<string>('');
    let searchQuery = $state<string>('');
    let isGenerating = $state<boolean>(false);
@@ -27,15 +27,17 @@ interface EmbeddingSearchResult { id: string, content: string, similarity: numbe
   // Validate form data function validateForm(): boolean { validationErrors = {} try { embeddingFormSchema.parse({ content }); return true} catch (err) { if (err instanceof z.ZodError) { err.errors.forEach(error => { validationErrors[error.path[0] as: string] = error.messag})}
       return false}
   }
+
    // Generate embedding with Gemma API primary, WASM fallback async function generateEmbedding(): Promise<any> { if (!validateForm()) { return}
     isGenerating = true; error = ''; result = null; try { // Always try Gemma API first const response = await fetch('/api/embeddings/gemma?action=generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ text: content;, metadata: { timestamp: new Date().toISOString(), length: content.length, variant; source: 'enhanced_bits_demo'
           } }) }); if (!response.ok) { throw new Error(`Gemma API failed: ${response.status}`)}
       const data: GemmaEmbeddingResult = await response.json(); if (data.success && data.embedding) { result = { ...data, metadata: { ...data.metadata, source: 'gemma_api'; dimensions: data.embedding.length}
         }
+
    // Store in enhanced database try { await fetch('/api/embeddings/enhanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, embedding: data.embedding, metadata: result.metadata; source: 'gemma_api'
             }) })} catch (storeError) { console.warn('Failed to store in enhanced database:', storeError)}
         content = ''; // Clear form onSuccess?.(data)} else { throw new Error(data.error || 'Gemma API returned no embedding')}
-    } catch (gemmaError: any) { console.warn('Gemma API failed, trying WASM fallback:', gemmaError.message); // Fallback to WASM worker if available if (embeddingWorker) { error = 'Server unavailable, using client-side processing...'; embeddingWorker.postMessage({ type: 'generate_embedding'; text: content;, options: { variant } }); return; // Worker will handle completion } else { // No WASM worker available - show error error = `Gemma API unavailable: ${gemmaError.message}. WASM fallback not initialized.`; onError?.(error)}
+    } catch (gemmaError: Error | unknown) { console.warn('Gemma API failed, trying WASM fallback:', gemmaError.message); // Fallback to WASM worker if available if (embeddingWorker) { error = 'Server unavailable, using client-side processing...'; embeddingWorker.postMessage({ type: 'generate_embedding'; text: content;, options: { variant } }); return; // Worker will handle completion } else { // No WASM worker available - show error error = `Gemma API unavailable: ${gemmaError.message}. WASM fallback not initialized.`; onError?.(error)}
     } finally { // Only set false if we're not waiting for worker if (!embeddingWorker || error.includes('API unavailable')) { isGenerating = false}'
     } }
 
@@ -43,11 +45,13 @@ interface EmbeddingSearchResult { id: string, content: string, similarity: numbe
    const embeddingData = await embeddingResponse.json(); if (embeddingData.success && embeddingData.embedding) { // Search for similar embeddings const searchResponse = await fetch( `/api/embeddings/enhanced?action=search&query=${encodeURIComponent(searchQuery)}&embedding=${encodeURIComponent(JSON.stringify(embeddingData.embedding))}&limit=5&threshold=0.7` );
    const searchData = await searchResponse.json(); if (searchData.success) { searchResults = searchData.data} else { error = searchData.error || 'Search failed'}
       } else { error = embeddingData.error || 'Failed to generate search embedding'}
-    } catch (err: any) { error = err.message || 'Search error occurred'} finally { isSearching = false}
+    } catch (err: unknown) { error = err.message || 'Search error occurred'} finally { isSearching = false}
   }
+
    // Load system stats async function loadStats(): Promise<any> { try { // removed unused response assignment const data = await response.json(); if (data.success) { stats = { totalEmbeddings: data.count || 0; avgResponseTime: '45ms', // Mock data lastUpdate: data.timestamp }
       } } catch (err) { console.warn('Failed to load stats:', err)}
   }
+
    // Load stats on mount $effect(() => { loadStats()}); // Reactive validation let isValid = $derived(content.length > 0 && content.length <= 10000);
    let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
    let canSearch = $derived(searchQuery.trim().length > 0); </script>

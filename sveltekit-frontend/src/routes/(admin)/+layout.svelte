@@ -4,7 +4,7 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: { any; data: { user?: any } } = $props();
+  let { children, data }: { any; data: { user?: unknown } } = $props();
 
   // Admin-focused console theme (amber on black for admin work)
   const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list

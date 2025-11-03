@@ -1,5 +1,5 @@
 <script lang="ts"> import { createEventDispatcher } from 'svelte';
- import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte"; interface EnhancedModalProps { open?: boolean; title?: string; variant?: 'default' | 'gradient' | 'diamond' | 'gaming' | 'legal'; size?: 'sm' | 'md' | 'lg' | 'xl'; children?: any; onClose?: () => void}
+ import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte"; interface EnhancedModalProps { open?: boolean; title?: string; variant?: 'default' | 'gradient' | 'diamond' | 'gaming' | 'legal'; size?: 'sm' | 'md' | 'lg' | 'xl'; children?: unknown; onClose?: () => void}
   let { open = false, title = 'Modal Title', variant = 'default', size = 'md', children, onClose, ...restProps }: EnhancedModalProps = $props();
    const dispatch = createEventDispatcher();
    const sizeClasses = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl'; xl: 'max-w-4xl'

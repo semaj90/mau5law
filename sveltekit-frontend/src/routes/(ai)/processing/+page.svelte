@@ -181,7 +181,7 @@
     ];
   }
   async function submitProcessingJob(event: Event): Promise<any> {
-    // typed event to avoid implicit: any
+    // typed event to avoid implicit: unknown
     event.preventDefault();
 
     if (!newJobForm.documentId.trim()) {
@@ -646,4 +646,5 @@
     </div>
   </div>
 {/if}
+
 

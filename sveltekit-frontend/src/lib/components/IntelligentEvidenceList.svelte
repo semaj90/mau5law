@@ -25,7 +25,7 @@
       return}
 
     // device capability: if WebGPU is available, prefer canvas rendering
-    if (typeof navigator !== 'undefined' && (navigator as: any).gpu) {
+    if (typeof navigator !== 'undefined' && (navigator as: unknown).gpu) {
       useCanvas = true
       return}
     useCanvas = false});

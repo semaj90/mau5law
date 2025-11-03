@@ -75,3 +75,4 @@
   .theme-dark { --border-color: #374151; --accent-color: #60a5fa; --accent-bg: #1e3a8a; --accent-text: #dbeaf; --sidebar-bg: #1f2937; --content-bg: #111827}
 </style>
 
+

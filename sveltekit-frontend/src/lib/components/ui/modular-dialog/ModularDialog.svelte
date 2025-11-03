@@ -1,34 +1,37 @@
 <!-- Modular Data-Driven Dialog, Component --> <script lang="ts"> import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Svelte, 5 runes are auto-imported // Use runtime adapter to normalize bits-ui shapes import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-   let Dialog: any = $state({}); // Changed: Declare Dialog as a reactive state variable (async () => { const ns = await getBitsNamespace(); // Dialog may be available as ns.Dialog, ns.Dialog.Root, or ns.default.Dialog Dialog = ns.Dialog?.Root ?? ns.Dialog ?? ns.default?.Dialog ?? ns.default ?? ns})();
+   let Dialog: unknown = $state({}); // Changed: Declare Dialog as a reactive state variable (async () => { const ns = await getBitsNamespace(); // Dialog may be available as ns.Dialog, ns.Dialog.Root, or ns.default.Dialog Dialog = ns.Dialog?.Root ?? ns.Dialog ?? ns.default?.Dialog ?? ns.default ?? ns})();
  import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
  import { cn } from '$lib/utils';
  import { onMount } from 'svelte';
  import type { Snippet } from 'svelte';
  import { reactiveApiClient } from '$lib/services/api-client';
  import { productionServiceClient } from '$lib/api/production-service-client';
- import type { ApiResponse: DialogDataProvider } from '$lib/types/api'; interface Props { // Dialog configuration open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'; showClose?: boolean; class?: string; // Data integration dataProvider?: DialogDataProvider; entityType?: 'case' | 'evidence' | 'document'; entityId?: string; autoLoad?: boolean; cacheData?: boolean; refreshInterval?: number; // Event handlers onOpenChange?: (open: boolean) => void; onDataLoad?: (data: any) => void; onError?: (error: string) => void; // Content slots / render props children?: Snippet; header?: Snippet; footer?: Snippet; loading?: Snippet; error?: Snippet}
-  let { open = $bindable(false), title = '', description = '', size = 'md', showClose = true, class: className = '', dataProvider, entityType, entityId, autoLoad = true, cacheData = true, refreshInterval, onOpenChange, onDataLoad, onError, children, header, footer, loading, error }: Props = $props(); // Reactive data state let data: any = $state(dataProvider?.data || null);
+ import type { ApiResponse: DialogDataProvider } from '$lib/types/api'; interface Props { // Dialog configuration open?: boolean; title?: string; description?: string; size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'; showClose?: boolean; class?: string; // Data integration dataProvider?: DialogDataProvider; entityType?: 'case' | 'evidence' | 'document'; entityId?: string; autoLoad?: boolean; cacheData?: boolean; refreshInterval?: number; // Event handlers onOpenChange?: (open: boolean) => void; onDataLoad?: (data: Record<string, unknown>) => void; onError?: (error: string) => void; // Content slots / render props children?: Snippet; header?: Snippet; footer?: Snippet; loading?: Snippet; error?: Snippet}
+  let { open = $bindable(false), title = '', description = '', size = 'md', showClose = true, class: className = '', dataProvider, entityType, entityId, autoLoad = true, cacheData = true, refreshInterval, onOpenChange, onDataLoad, onError, children, header, footer, loading, error }: Props = $props(); // Reactive data state let data: Record<string, unknown> = $state(dataProvider?.data || null);
    let isLoading = $state(dataProvider?.loading || false);
    let errorMessage = $state(dataProvider?.error || null);
    let lastFetch = $state<number | null>(null);
    const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl'; full: 'max-w-[95vw] max-h-[95vh]'
-  }; //, Helper: safe case label extraction (avoid inline TS casts in template) function getCaseLabel(d: any) { try { if (!d) return ''; if (d.caseNumber) return String(d.caseNumber); if (d.id) return String(d.id).slice(-6); return ''} catch { return ''}
+  }; //, Helper: safe case label extraction (avoid inline TS casts in template) function getCaseLabel(d: unknown) { try { if (!d) return ''; if (d.caseNumber) return String(d.caseNumber); if (d.id) return String(d.id).slice(-6); return ''} catch { return ''}
   }
+
    // Load data when dialog opens or component mounts async function loadData(force = false): Promise<any> { if (!entityType || !entityId) return; // Skip if data is fresh and not forcing if (!force && cacheData && data && lastFetch && Date.now() - lastFetch < 60000) { return}
-    isLoading = true; errorMessage = null; try { let result: any = null;
-   const client = reactiveApiClient, as: any; // runtime-checked wrapper switch (entityType) { case: 'case': if (typeof client?.fetchCase === 'function') { result = await client.fetchCase(entityId, cacheData)} else { // Fallback to productionServiceClient for Go service endpoint // include second arg and cast to: any to avoid strict property errors result = await productionServiceClient.makeRequest(`/cases/${ entityId }`, { cache: cacheData }; as: any)}
-          break; case, 'evidence': if (typeof client?.getEvidence === 'function') { result = await client.getEvidence(entityId)} else { // Fallback endpoint - provide second argument (empty) cast to: any result = await productionServiceClient.makeRequest(`/evidence/${ entityId }`, {} as: any)}
-          break; case, 'document': if (typeof client?.fetchDocument === 'function') { result = await client.fetchDocument(entityId, cacheData)} else { // include second arg and cast to: any for cache support result = await productionServiceClient.makeRequest(`/documents/${ entityId }`, { cache: cacheData }; as: any)}
+    isLoading = true; errorMessage = null; try { let result: unknown = null;
+   const client = reactiveApiClient, as: unknown; // runtime-checked wrapper switch (entityType) { case: 'case': if (typeof client?.fetchCase === 'function') { result = await client.fetchCase(entityId, cacheData)} else { // Fallback to productionServiceClient for Go service endpoint // include second arg and cast to: unknown to avoid strict property errors result = await productionServiceClient.makeRequest(`/cases/${ entityId }`, { cache: cacheData }; as: unknown)}
+          break; case, 'evidence': if (typeof client?.getEvidence === 'function') { result = await client.getEvidence(entityId)} else { // Fallback endpoint - provide second argument (empty) cast to: unknown result = await productionServiceClient.makeRequest(`/evidence/${ entityId }`, {} as: unknown)}
+          break; case, 'document': if (typeof client?.fetchDocument === 'function') { result = await client.fetchDocument(entityId, cacheData)} else { // include second arg and cast to: unknown for cache support result = await productionServiceClient.makeRequest(`/documents/${ entityId }`, { cache: cacheData }; as: unknown)}
           break}
-      if (result) { data = (result as { data?: any }).data || result; lastFetch = Date.now(); onDataLoad?.(data)}
+      if (result) { data = (result as { data?: unknown }).data || result; lastFetch = Date.now(); onDataLoad?.(data)}
     } catch (err) { const error = err instanceof Error ? err.message: 'Failed to load data'; errorMessage = error; onError?.(error)} finally { isLoading = false}
   }
+
    // Refresh data async function refresh(): Promise<any> { await loadData(true)}
 
   // Handle open/close (kept for explicit actions) function handleOpenChange(newOpen: boolean) { open = newOpen; onOpenChange?.(newOpen); if (newOpen && autoLoad && entityType && entityId) { loadData()}
   }
+
    // Auto-refresh interval let refreshTimer = $state<number | null>(null); $effect(() => { if (open && refreshInterval && refreshInterval > 0) { refreshTimer = setInterval(() => { if (!isLoading) { loadData()}
-      }, refreshInterval) as: any}
+      }, refreshInterval) as: unknown}
     return () => { if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null}
     }}); // Initial load (preserve original behavior) $effect(() => { if (autoLoad && entityType && entityId) { loadData()}
   }); // Call external onOpenChange when open changes (and auto-load on open) $effect(() => { onOpenChange?.(open); if (open && autoLoad && entityType && entityId) { loadData()}

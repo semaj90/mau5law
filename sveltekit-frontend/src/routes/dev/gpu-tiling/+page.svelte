@@ -6,16 +6,16 @@ https://svelte.dev/e/js_parse_error -->
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true
   let gpuTile = true
-  let result: any = null
+  let result: unknown = null
   let ocrBusy = $state<boolean>(false);
   let runBusy = $state<boolean>(false);
-  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: any).gpu
+  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: unknown).gpu
   async function run(): Promise<any> {
     runBusy = true
     result = null
     try {
       const r = await embedText(text, { simdParse, gpuTile });
-      result = r} catch (e: any) {
+      result = r} catch (e: unknown) {
       result = { error: e?.message || String(e) }} finally {
       runBusy = false}
   }
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
       const resp = await fetch('/api/ocr', { method: 'POST', body: form });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
-      text = data?.text || ''} catch (e: any) {
+      text = data?.text || ''} catch (e: unknown) {
       alert(e?.message || String(e))} finally {
       ocrBusy = false}
   }
@@ -93,4 +93,5 @@ https://svelte.dev/e/js_parse_error -->
    ; gap: 0.75rem
     align-items: center}
 </style>
+
 

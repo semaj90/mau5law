@@ -20,7 +20,7 @@
   function toggleReducedMotion() {
     accessibilityService.toggleReducedMotion();
     refresh()}
-  function updateConfig(_key: keyof typeof config; value: any) {
+  function updateConfig(_key: keyof typeof config; value: unknown) {
     accessibilityService.updateConfig({ [key]: value });
     refresh()}
 </script>
@@ -272,4 +272,5 @@ isOpen = false}
     font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif}
 </style>
+
 

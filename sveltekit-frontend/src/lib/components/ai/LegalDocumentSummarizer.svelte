@@ -19,7 +19,7 @@ import type { Document } from '$lib/types';
     document_type: 'contract' | 'judgment' | 'brief' | 'statute',summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis',
     max_length: number
     focus: string[],
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: unknown }
   }
   interface SummarizationResponse {
     document_id: string
@@ -39,7 +39,7 @@ import type { Document } from '$lib/types';
       completeness_score: number
       clarity_score: number
       overall_rating: string}
-   , metadata: { [key: string]: any }
+   , metadata: { [key: string]: unknown }
   }
 
   // Component props

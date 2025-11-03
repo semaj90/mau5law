@@ -1,1 +1,1 @@
-// UI store placeholder for N64 toasts export {}; 
+// UI store placeholder for N64 toasts export {};

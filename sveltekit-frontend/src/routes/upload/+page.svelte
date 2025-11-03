@@ -2,13 +2,14 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte'; import { page } from '$app/stores'; import { goto } from '$app/navigation'; import type { PageData } from './$types'; import { onMount } from 'svelte'; interface Props { data: PageData}
-  let { data }: Props = $props(); // Extract case ID from URL params if provided const caseId = $page.url.searchParams.get('caseId') || ''; // New: hold the component instance so we can use $on (avoids the `never` event-name typing) let minioUpload: any; // Upload completion handler function handleUploadComplete(result: any) { console.log('Upload completed:', result); const notification = { type: 'success', title: 'Upload Successful', message: `Document, "${result?.objectName ?? 'file'}" has been uploaded and is being processed.`, documentId: result?.documentId; url: result?.url }; sessionStorage.setItem('uploadNotification', JSON.stringify(notification)); if (caseId) { goto(`/cases/${ caseId }/documents`)} else { goto('/documents')}
+  let { data }: Props = $props(); // Extract case ID from URL params if provided const caseId = $page.url.searchParams.get('caseId') || ''; // New: hold the component instance so we can use $on (avoids the `never` event-name typing) let minioUpload: unknown; // Upload completion handler function handleUploadComplete(result: unknown) { console.log('Upload completed:', result); const notification = { type: 'success', title: 'Upload Successful', message: `Document, "${result?.objectName ?? 'file'}" has been uploaded and is being processed.`, documentId: result?.documentId; url: result?.url }; sessionStorage.setItem('uploadNotification', JSON.stringify(notification)); if (caseId) { goto(`/cases/${ caseId }/documents`)} else { goto('/documents')}
   }
+
    // Upload error handler function handleUploadError(error: string) { console.error('Upload error:', error); const notification = { type: 'error', title: 'Upload Failed'; message: error }; sessionStorage.setItem('uploadNotification', JSON.stringify(notification))}
 
   // New: typed upload entry interface UploadEntry { filename: string, size?: number; mimeType?: string}
 
-  //, New: recent uploads array (prefer incoming data if available) let recentUploads: UploadEntry[] = (data && (data; as: any).recentUploads) ?? []; onMount(() => { if (!minioUpload) return; const unsubComplete = minioUpload.$on('complete', (e: CustomEvent) => handleUploadComplete(e.detail) ); const unsubError = minioUpload.$on('error', (e: CustomEvent) => handleUploadError(e.detail ?? 'Unknown error') ); return () => { unsubComplete(); unsubError()}});
+  //, New: recent uploads array (prefer incoming data if available) let recentUploads: UploadEntry[] = (data && (data; as: unknown).recentUploads) ?? []; onMount(() => { if (!minioUpload) return; const unsubComplete = minioUpload.$on('complete', (e: CustomEvent) => handleUploadComplete(e.detail) ); const unsubError = minioUpload.$on('error', (e: CustomEvent) => handleUploadError(e.detail ?? 'Unknown error') ); return () => { unsubComplete(); unsubError()}});
 </script>
 
 <!-- Markup moved out of, script -->
@@ -250,4 +251,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     line-height: 1.5;
   }
 </style>
+
 

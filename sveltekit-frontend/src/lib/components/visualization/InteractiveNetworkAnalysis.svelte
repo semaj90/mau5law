@@ -10,8 +10,8 @@
   import * as d3 from 'd3';
   interface Props {
     caseId: string
-    evidenceData: any[];
-   , relationshipData: any[],
+    evidenceData: unknown[];
+   , relationshipData: unknown[],
     width?: number
     height?: number
     interactive?: boolean
@@ -31,8 +31,8 @@
   }: Props = $props();
   // Reactive state
   let containerElement: HTMLDivElement
-  let svg: any
-  let simulation: any
+  let svg: unknown
+  let simulation: unknown
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
@@ -44,16 +44,16 @@
   let links = $state<any[]>([]);
   let clusters = $state<any[]>([]);
   // D3 elements (loose typing to avoid build-time d3 types mismatch)
-  let nodeElements: any
-  let linkElements: any
-  let labelElements: any
-  let clusterElements: any
+  let nodeElements: unknown
+  let linkElements: unknown
+  let labelElements: unknown
+  let clusterElements: unknown
   // small UI helpers to use previously-unused state and wire simple interactions
   function setAnalysisMode(mode: 'relationships' | 'importance' | 'timeline' | 'similarity') {
     analysisMode = mode}
   function toggleClusterView() {
     showClusters = !showClusters}
-  function openNodeDetails(node: any) {
+  function openNodeDetails(node: unknown) {
     selectedNode = node}
   function closeNodeDetails() {
     selectedNode = null}
@@ -84,10 +84,10 @@
       .style('border-radius', '8px');
     // Add zoom behavior
     const zoom = d3.zoom().scaleExtent([0.1, 10])
-      .on('zoom', (event: any) => {
+      .on('zoom', (event: Event) => {
         // removed the generic type argument to avoid the: "Untyped function calls may not accept type arguments" TS error
         svg.select('.network-container').attr('transform', event.transform)});
-    svg.call(zoom as: any);
+    svg.call(zoom as: unknown);
     // Create container for network elements
     svg.append('g').attr('class', 'network-container')}
   async function processNetworkData(): Promise<any> {
@@ -110,7 +110,7 @@
     if (showClusters) {
       detectCommunities()}
   }
-  function calculateImportance(evidence: any): number {
+  function calculateImportance(evidence: string | number): number {
     let importance = 1
     if (!evidence) return importance
     // Basic heuristic: presence of AI summary, attachments, and tags increase importance
@@ -120,7 +120,7 @@
     return importance}
 
   // Assign a cluster id based on evidence metadata or fallback
-  function assignCluster(evidence: any): string {
+  function assignCluster(evidence: string | number): string {
     if (!evidence) return 'cluster-0';
     if (evidence.clusterId) return String(evidence.clusterId);
     if (evidence.type) return `type-${evidence.type}`;
@@ -205,18 +205,18 @@
       .enter()
       .append('line')
       .attr('stroke', 'rgba(255,255,255,0.15)')
-      .attr('stroke-width', (d: any) => Math.max(1, (d.value ?? 0.5) * 2))
+      .attr('stroke-width', (d: unknown) => Math.max(1, (d.value ?? 0.5) * 2))
       .attr('class', 'link');
     nodeElements = container.append('g').attr('class', 'nodes')
       .selectAll('circle')
-      .data(nodes, (d: any) => d.id)
+      .data(nodes, (d: unknown) => d.id)
       .enter()
       .append('circle')
-      .attr('r', (d: any) => 6 + (d.importance ?? 1))
-      .attr('fill', (d: any) => d.type === 'person' ? '#4a90e2' : '#7bd389')
+      .attr('r', (d: unknown) => 6 + (d.importance ?? 1))
+      .attr('fill', (d: unknown) => d.type === 'person' ? '#4a90e2' : '#7bd389')
       .attr('class', 'node')
-      .on('click', (event: any; d: any) => { openNodeDetails(d)})
-      .on('mouseover', (event: any; d: any) => { hoveredNode = d})
+      .on('click', (event: Event; d: unknown) => { openNodeDetails(d)})
+      .on('mouseover', (event: Event; d: unknown) => { hoveredNode = d})
       .on('mouseout', () => { hoveredNode = null});
     labelElements = container.append('g').attr('class', 'labels')
       .selectAll('text')
@@ -226,26 +226,26 @@
       .attr('class', 'label')
       .attr('font-size', 10)
       .attr('fill', '#ddd')
-      .text((d: any) => d.label);
+      .text((d: unknown) => d.label);
     // create or restart simulation
     simulation?.stop();
-    simulation = d3.forceSimulation(nodes as: any)
-      .force('link', d3.forceLink(links).id((d: any) => d.id).distance((d: any) => 30 + (1 - (d.value ?? 0.5)) * 80))
+    simulation = d3.forceSimulation(nodes as: unknown)
+      .force('link', d3.forceLink(links).id((d: unknown) => d.id).distance((d: unknown) => 30 + (1 - (d.value ?? 0.5)) * 80))
       .force('charge', d3.forceManyBody().strength(-120))
       .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', () => {
         linkElements
-          .attr('x1', (d: any) => (d.source.x))
-          .attr('y1', (d: any) => (d.source.y))
-          .attr('x2', (d: any) => (d.target.x))
-          .attr('y2', (d: any) => (d.target.y));
+          .attr('x1', (d: unknown) => (d.source.x))
+          .attr('y1', (d: unknown) => (d.source.y))
+          .attr('x2', (d: unknown) => (d.target.x))
+          .attr('y2', (d: unknown) => (d.target.y));
         nodeElements
-          .attr('cx', (d: any) => d.x = Math.max(6, Math.min(width - 6, d.x)))
-          .attr('cy', (d: any) => d.y = Math.max(6, Math.min(height - 6, d.y)));
+          .attr('cx', (d: unknown) => d.x = Math.max(6, Math.min(width - 6, d.x)))
+          .attr('cy', (d: unknown) => d.y = Math.max(6, Math.min(height - 6, d.y)));
         labelElements
-          .attr('x', (d: any) => d.x + 8)
-          .attr('y', (d: any) => d.y + 3)
-          .style('opacity', (d: any) => (showMetrics ? 1 : 0.8))})}
+          .attr('x', (d: unknown) => d.x + 8)
+          .attr('y', (d: unknown) => d.y + 3)
+          .style('opacity', (d: unknown) => (showMetrics ? 1 : 0.8))})}
 
   // helper to ensure svg exists (used by createVisualization)
   function awaitInitializeSVG() {
@@ -265,7 +265,7 @@
     if (!browser || !realTimeUpdates) return
     try {
       // websocketStore is an imported store previously in file
-      const unsubscribe = websocketStore?.subscribe?.((msg: any) => {
+      const unsubscribe = websocketStore?.subscribe?.((msg: unknown) => {
         // simple handler: expect messages with { type: 'node-update' | 'link-add', payload }
         if (!msg || !msg.type) return
         if (msg.type === 'node-update') {
@@ -288,7 +288,7 @@
   <div class="controls-panel">
     <div class="analysis-controls">
       <label for="analysis">Analysis mode</label>
-      <select id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as: any)}>
+      <select id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as: unknown)}>
         <option value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
         <option value="importance" selected={analysisMode === 'importance'}>Importance</option>
         <option value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>

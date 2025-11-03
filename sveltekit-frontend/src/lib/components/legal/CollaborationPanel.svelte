@@ -95,7 +95,7 @@ interface CollaborationSession {
     return () => {
       // restore original handler if present
       wsConnection.onmessage = originalOnMessage ?? null}});
-  function handleWebSocketMessage(data: any) {
+  function handleWebSocketMessage(data: Record<string, unknown>) {
     switch (data?.type) {
       case: 'chat-message':
         if (collaborationSession) {

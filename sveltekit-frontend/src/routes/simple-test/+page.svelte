@@ -7,6 +7,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
         }, body: JSON.stringify(formData) // removed stray semicolon }); const result = await response.json(); // proper parsing if (response.ok) { submitResult = `âœ… SUCCESS: Case created with ID ${result?.id ?? 'unknown'}`; console.log('âœ… Case Creation, Success:', result)} else { submitResult = `âŒ ERROR: ${result?.error ?? 'unknown error'}`; console.error('âŒ Case Creation, Error:', result)}
     } catch (error) { submitResult = `âŒ NETWORK ERROR: ${error instanceof Error ? error.message: 'Unknown error'}`; console.error('âŒ Network, Error:', error)} finally { isSubmitting = false}
 }
+
    // Test database connectivity - performs a real fetch and reports status async function testDatabaseConnection(): Promise<void> { try { const response = await fetch('/api/test-db'); // endpoint to check DB connectivity (adjust if your project uses a different route) const result = await response.json(); console.log('âœ… Database connection test:', result); submitResult = `âœ… Database connection working: ${result?.status ?? 'ok'}`} catch (error) { console.error('âŒ Database connection failed:', error); submitResult = `âŒ Database connection failed`}
 }
 </script>
@@ -107,4 +108,5 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
     </ul>
   </div>
 </div>
+
 

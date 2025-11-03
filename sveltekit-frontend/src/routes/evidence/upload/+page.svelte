@@ -244,3 +244,4 @@ import type { Document } from '$lib/types'; import { goto } from '$app/navigatio
   }
 </style>
 
+

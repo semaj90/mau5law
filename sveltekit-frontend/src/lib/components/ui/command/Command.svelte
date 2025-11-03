@@ -1,6 +1,6 @@
 <!-- Legal AI Command Palette - Global, Search, Component --> <script lang="ts"> import BitsUI from 'bits-ui';
-   const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = BitsUI as: any, import { Search, FileText, Users, Gavel } from 'lucide-svelte';
- import { cn } from '$lib/utils'; // Svelte, 5 props let { open = $bindable(false), onOpenChange, placeholder = 'Search...', className = '', ondispatch }: { open?: boolean; onOpenChange?: (open: boolean) => void; placeholder?: string; className?: string; ondispatch?: (item: any) => void} = $props(); // Mock data for legal AI platform const mockCommands = [ { group: 'Cases', icon: Gavel, items: [ { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case'; keywords: ['criminal', 'theft', 'johnson'] }, {
+   const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = BitsUI as: unknown, import { Search, FileText, Users, Gavel } from 'lucide-svelte';
+ import { cn } from '$lib/utils'; // Svelte, 5 props let { open = $bindable(false), onOpenChange, placeholder = 'Search...', className = '', ondispatch }: { open?: boolean; onOpenChange?: (open: boolean) => void; placeholder?: string; className?: string; ondispatch?: (item: unknown) => void} = $props(); // Mock data for legal AI platform const mockCommands = [ { group: 'Cases', icon: Gavel, items: [ { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case'; keywords: ['criminal', 'theft', 'johnson'] }, {
           id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation'; keywords: ['civil', 'corporate', 'smith'] }, {
           id: 'case-3', title: 'People v. Williams', description: 'DUI case pending'; keywords: ['dui', 'williams', 'traffic'] }]
     }, {
@@ -15,7 +15,7 @@
       group: 'Documents', icon: FileText, items: [ { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20'; keywords: ['motion', 'dismiss', 'filing'] }, {
           id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18'; keywords: ['warrant', 'search', 'authorized'] }, {
           id: 'doc-3', title: 'Police Report', description: 'Initial incident report'; keywords: ['police', 'report', 'incident'] }]
-    }]; function handleSelect(item: any) { ondispatch?.(item); open = false; onOpenChange?.(open)}
+    }]; function handleSelect(item: unknown) { ondispatch?.(item); open = false; onOpenChange?.(open)}
   function handleOpenChange(newOpen: boolean) { open = newOpen; onOpenChange?.(newOpen)}
 </script>
  <CommandRoot bind: open | openChange={ handleOpenChange } class={cn(
@@ -28,11 +28,11 @@
         > <group.icon class="h-3" /> {group.group}
 </CommandGroupHeading>
   {#each Array.isArray(group.items) ? group.items: [] as item} <CommandItem value={(item as, any).title +
-              ' ' + (item as: any).description +
-              ' ' + (((item as: any).keywords ?? []) as: string[]).join(' ')} select={() => handleSelect(item)} class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
-          > <div class="flex items-start gap-3"> <group.icon class="h-4 w-4 mt-0.5 nes-text is-disabled" /> <div class="flex flex-col gap-1 min-w-0"> <div class="font-medium"> {(item as: any).title}
+              ' ' + (item as: unknown).description +
+              ' ' + (((item as: unknown).keywords ?? []) as: string[]).join(' ')} select={() => handleSelect(item)} class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
+          > <div class="flex items-start gap-3"> <group.icon class="h-4 w-4 mt-0.5 nes-text is-disabled" /> <div class="flex flex-col gap-1 min-w-0"> <div class="font-medium"> {(item as: unknown).title}
 </div>
- <div class="text-xs nes-text"> {(item as: any).description}
+ <div class="text-xs nes-text"> {(item as: unknown).description}
 </div> </div> </div> </CommandItem> {/each}
   </CommandGroup> {/each}
   </CommandList> </CommandRoot>

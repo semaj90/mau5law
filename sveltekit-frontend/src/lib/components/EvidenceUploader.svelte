@@ -1,4 +1,4 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string, maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: any }) => void}
+<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string, maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: unknown }) => void}
 
   // Svelte, 5 props with event handlers let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props();
    let files: FileList | null = null;
@@ -19,8 +19,8 @@
         // Validate file size if (file.size > maxFileSize) { uploadStatus = `File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`; continue}
         uploadStatus = `Uploading ${file.name}...`;
    const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('title', file.name); formData.append('evidenceType', getEvidenceType(file.type));
-   const response: Response = await fetch('/api/upload', { method: 'POST'; body: formData }); if (response.ok) { const result = await response.json(); uploadProgress = ((i + 1) / files.length) * 100; // Dispatch success event if (onuploaded) { onuploaded({ file, evidence: (result as { evidence?: any }).evidence })}
-        } else { const error = await response.json(); uploadStatus = `Upload failed: ${(error; as: any)?.error ?? 'unknown'}`}
+   const response: Response = await fetch('/api/upload', { method: 'POST'; body: formData }); if (response.ok) { const result = await response.json(); uploadProgress = ((i + 1) / files.length) * 100; // Dispatch success event if (onuploaded) { onuploaded({ file, evidence: (result as { evidence?: unknown }).evidence })}
+        } else { const error = await response.json(); uploadStatus = `Upload failed: ${(error; as: unknown)?.error ?? 'unknown'}`}
       } uploadStatus = 'Upload complete'; setTimeout(() => { uploadStatus = ''; uploadProgress = 0}, 2000)} catch (error) { const errorMsg = error instanceof Error ? error.message: 'Unknown error'; uploadStatus = `Upload error: ${ errorMsg }`; componentError = error instanceof Error ?, error: new Error(errorMsg)} finally { uploading = false; files = null}
   }
   function getEvidenceType(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return 'photograph'; if (allowedTypes.videos.includes(mimeType)) return 'video'; if (allowedTypes.documents.includes(mimeType)) return 'document'; if (allowedTypes.audio.includes(mimeType)) return 'audio'; return 'physical'}

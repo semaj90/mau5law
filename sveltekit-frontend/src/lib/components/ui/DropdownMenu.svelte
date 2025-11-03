@@ -14,9 +14,9 @@
   // typed item shape to avoid: 'unknown' issues
   type DropdownItem = {
     separator?: boolean
-    value?: any
+    value?: unknown
     disabled?: boolean
-    onClick?: (value?: any) => void
+    onClick?: (value?: unknown) => void
     label?: string | typeof SvelteComponent
     href?: string; // added optional href
   };

@@ -14,11 +14,11 @@
       caseId?: string;
       documentType?: string;
       priority?: string;
-      [key: string]: any; // Allow other metadata properties
+      [key: string]: unknown; // Allow other metadata properties
     };
     embedding?: number[]; // Assuming embedding is an array of numbers
     vectorMagnitude?: number;
-    [key: string]: any; // Allow other top-level properties
+    [key: string]: unknown; // Allow other top-level properties
   }
 
   let searchResults = $state<VectorResult[]>([]); // Use VectorResult type
@@ -56,7 +56,7 @@
   };
 
   // Utility function for score formatting
-  function getScorePercent(score: any): string {
+  function getScorePercent(score: unknown): string {
     const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
     return (n * 100).toFixed(1);
   }

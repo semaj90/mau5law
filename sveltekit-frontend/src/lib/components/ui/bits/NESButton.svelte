@@ -1,4 +1,4 @@
-<script lang="ts"> import { createEventDispatcher } from 'svelte'; interface NESButtonProps { variant?: 'primary' | 'success' | 'warning' | 'danger' | 'default'; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; loading?: boolean; rounded?: boolean; pressed?: boolean; children?: any; onclick?: () => void}
+<script lang="ts"> import { createEventDispatcher } from 'svelte'; interface NESButtonProps { variant?: 'primary' | 'success' | 'warning' | 'danger' | 'default'; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; loading?: boolean; rounded?: boolean; pressed?: boolean; children?: unknown; onclick?: () => void}
   let { variant = 'default', size = 'md', disabled = false, loading = false, rounded = false, pressed = false, children, onclick, ...restProps }: NESButtonProps = $props();
    const dispatch = createEventDispatcher();
    let buttonElement: HTMLButtonElement, let isPressed = $state(pressed);
@@ -9,6 +9,7 @@
   function handleClick() { if (disabled || loading) return; // Visual press effect isPressed = true; setTimeout(() => { isPressed = false}, 150); dispatch('click'); onclick?.()}
   function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleClick()}
   }
+
    // Sound effect (optional, can be enabled via prop) function playClickSound() { // Optional: Add NES-style click sound // const audio = new Audio('/sounds/nes-click.wav') // audio.volume = 0.3 // audio.play().catch(() => {}) }
 </script>
  <button bind:this={ buttonElement } class="nes-btn {variantClasses[variant]} {sizeClasses[size]}"

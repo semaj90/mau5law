@@ -245,7 +245,7 @@ export class LegalRAGPipeline {
         LIMIT ${limit}
       `;
 
-      // --- typed result merging (replaces previous: any usage) ---
+      // --- typed result merging (replaces previous: unknown usage) ---
       type VectorRow = {
         id: string | content: string
         metadata?: Record<string, unknown> | null

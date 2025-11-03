@@ -1,12 +1,12 @@
 <!-- NES 8-Bit Button Component Authentic NES.css styling with bits-ui compatibility Features: - Hardware-accurate NES color palette - Pixel-perfect rendering - Press animations - Sound effects (optional) - Accessibility support -->
 <script lang="ts">
  // Svelte, 5 runes are auto-imported import { Button, as BitsButton } from 'bits-ui';
-   let BitsButtonAny: any = BitsButton;
+   let BitsButtonAny: unknown = BitsButton;
  import type { GamingComponentProps } from '../types/gaming-types.js';
- import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Button specific props type?: 'button' | 'submit' | 'reset'; form?: string; formaction?: string; formenctype?: string; formmethod?: 'get' | 'post'; formnovalidate?: boolean; formtarget?: string; name?: string; value?: string; // Event callbacks onClick?: (() => void) | (() => Promise<void>); onHover?: () => void; onFocus?: () => void; // NES-specific styling nesVariant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-disabled'; pressDepth?: number; enableSound?: boolean; soundVolume?: number; // Content children?: any; class?: string}
+ import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Button specific props type?: 'button' | 'submit' | 'reset'; form?: string; formaction?: string; formenctype?: string; formmethod?: 'get' | 'post'; formnovalidate?: boolean; formtarget?: string; name?: string; value?: string; // Event callbacks onClick?: (() => void) | (() => Promise<void>); onHover?: () => void; onFocus?: () => void; // NES-specific styling nesVariant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-disabled'; pressDepth?: number; enableSound?: boolean; soundVolume?: number; // Content children?: unknown; class?: string}
   let { variant = 'primary', size = 'md', disabled = false, loading = false, type = 'button', form, formaction, formenctype, formmethod, formnovalidate, formtarget, name, value, nesVariant = 'is-primary', pressDepth = 2, enableSound = false, soundVolume = 0.3, children, class: className = '', onClick, onHover, onFocus }: Props = $props(); // Reactive state let isPressed = $state<boolean>(false);
    let audioContext = $state<AudioContext | null>(null);
-   let buttonElement = $state<HTMLButtonElement | null>(null); // Play simple NES-like button sound const playButtonSound = async () => { if (!enableSound) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)()}
+   let buttonElement = $state<HTMLButtonElement | null>(null); // Play simple NES-like button sound const playButtonSound = async () => { if (!enableSound) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext)()}
       const ctx = audioContext!;
    const oscillator = ctx.createOscillator();
    const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.type = 'square';
@@ -16,7 +16,7 @@
    const handleHover = () => { if (disabled) return; onHover?.()};
    const handleFocus = () => { if (disabled) return; onFocus?.()}; // Normalize variant (accept, "is-primary" or: "primary") function normalizeVariant(v: string) { return v?.startsWith('is-') ? v.replace(/^is-/, ''): v}
   const getVariantColor = (v: string, nesV?: string) => { const key = normalizeVariant(v || nesV || 'primary');
-   const colorMap = { primary: NES_COLOR_PALETTE.blue, secondary: (NES_COLOR_PALETTE, as: any).darkGray ?? NES_COLOR_PALETTE.blue, success: NES_COLOR_PALETTE.green, warning: NES_COLOR_PALETTE.yellow, error: NES_COLOR_PALETTE.red; info: NES_COLOR_PALETTE.blue } as const; return (colorMap, as: any)[key] ?? NES_COLOR_PALETTE.blue};
+   const colorMap = { primary: NES_COLOR_PALETTE.blue, secondary: (NES_COLOR_PALETTE, as: unknown).darkGray ?? NES_COLOR_PALETTE.blue, success: NES_COLOR_PALETTE.green, warning: NES_COLOR_PALETTE.yellow, error: NES_COLOR_PALETTE.red; info: NES_COLOR_PALETTE.blue } as const; return (colorMap, as: unknown)[key] ?? NES_COLOR_PALETTE.blue};
    const getSizeStyles = (s: string) => { const normalized = (s || 'md').toLowerCase();
    const mapKey = normalized === 'sm' || normalized === 'small'
         ? 'small': normalized === 'lg' || normalized === 'large'

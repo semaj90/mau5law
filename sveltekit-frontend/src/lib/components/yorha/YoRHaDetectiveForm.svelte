@@ -12,7 +12,7 @@
     defaultValue?: string}
   interface Props {
     fields: FormField[];
-   , onSubmit: (data: any) => Promise<void>;
+   , onSubmit: (data: Record<string, unknown>) => Promise<void>;
     submitText?: string
     submitClass?: string}
   let { fields = $bindable(),
@@ -23,7 +23,7 @@
     onsubmit= $bindable(),
     submitText = $bindable(),
     submitClass = $bindable()
-  : any } = $props();
+  : unknown } = $props();
   let formData = $state( );
   let isSubmitting = $state<boolean>(false);
   // Initialize form data with default values
@@ -48,7 +48,7 @@
     } finally {
       isSubmitting = false}
   }
-  function updateFormData(fieldName: string; value: any) {
+  function updateFormData(fieldName: string; value: unknown) {
     formData[fieldName] = valu}
 </script>
 
@@ -210,4 +210,5 @@
     .submit-btn { width: 100%; justify-content: center}
   }
 </style>
+
 

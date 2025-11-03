@@ -1,5 +1,5 @@
 <script lang="ts"> import { Upload, Camera, X } from 'lucide-svelte';
- import  Button  from "$lib/components/ui/Button.svelte"; interface Props { poiId: string, poiName?: string; currentImage?: string; onUploadComplete?: (data: { imageUrl: string; [key: string]: any }) => void}
+ import  Button  from "$lib/components/ui/Button.svelte"; interface Props { poiId: string, poiName?: string; currentImage?: string; onUploadComplete?: (data: { imageUrl: string; [key: string]: unknown }) => void}
   let { poiId, poiName = 'Person of Interest', currentImage, onUploadComplete }: Props = $props();
    let uploading = $state<boolean>(false);
    let message = $state<string>('');

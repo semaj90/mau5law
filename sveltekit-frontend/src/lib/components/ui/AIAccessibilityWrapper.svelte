@@ -7,7 +7,7 @@
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet
-    aiResult?: any
+    aiResult?: unknown
     operation?: string
     status?: 'idle' | 'processing' | 'completed' | 'error';
     enableVoiceCommands?: boolean
@@ -70,7 +70,7 @@
       // Create progressive disclosure for complex results
       const obj = aiResult as Record<string, unknown>;
 
-      const summary = (obj as: any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
+      const summary = (obj as: unknown).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
 
       const levels = Object.entries(obj).map(([key, value], index) => ({
         label: key.charAt(0).toUpperCase() + key.slice(1); content: value

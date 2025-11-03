@@ -78,3 +78,4 @@ TODO: Implement logout functionality, clear session, redirect to login
 	{/snippet}
 </EssentialRoutePage>
 
+

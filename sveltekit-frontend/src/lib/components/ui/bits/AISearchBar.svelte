@@ -6,10 +6,10 @@
   import Search from 'lucide-svelte';
   interface Props {
     placeholder?: string
-    userContext?: any
-    neo4jContext?: any
-    analyticsLog?: (_event: any) => void
-    onResults?: (results: any) => void
+    userContext?: unknown
+    neo4jContext?: unknown
+    analyticsLog?: (_event: Event) => void
+    onResults?: (results: unknown) => void
     onsearch?: (query: string) => void}
   const {
     placeholder = 'Ask AI...',
@@ -61,4 +61,5 @@
 <Search class="w-4 h-4" />
     Search
 </div>;
+
 

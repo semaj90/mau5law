@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
  import { componentLoader } from '$lib/utils/dynamic-imports';
- import  AILoadingIndicator  from "./AILoadingIndicator.svelte"; interface Props { loader: () => Promise<any>; key: string, fallback?: string; errorFallback?: string; props?: { [key: string]: any }}
+ import  AILoadingIndicator  from "./AILoadingIndicator.svelte"; interface Props { loader: () => Promise<any>; key: string, fallback?: string; errorFallback?: string; props?: { [key: string]: unknown }}
   let {
     loader,
     key,

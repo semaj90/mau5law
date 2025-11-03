@@ -18,6 +18,7 @@ interface Props { open: boolean}
    let activeTimer = $state<{ itemId: string;, startTime: number } | null>(null); // Filtered work results let filteredWork = $derived(() => { let filtered = workHistory; if (statusFilter !== 'all') { filtered = filtered.filter(work => work.status === statusFilter)}
     if (typeFilter !== 'all') {
     filtered = filtered.filter(work => work.type === typeFilter)
+
   }
   return filtered.sort((a, b) => { // Primary sort: last worked time const timeDiff = new Date(b.lastWorked).getTime() - new Date(a.lastWorked).getTime(); if (timeDiff !== 0) return timeDiff; // Secondary sort: priority return b.priority - a.priority})}); // Stats derived from work data let workStats = $derived(() => { const totalTime = workHistory.reduce((sum, w) => sum + w.timeSpent, 0);
    const inProgress = workHistory.filter(w => w.status === 'in-progress').length;

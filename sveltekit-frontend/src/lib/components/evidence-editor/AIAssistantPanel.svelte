@@ -1,12 +1,12 @@
 <script lang="ts"> import  Badge  from "$lib/components/ui/badge.svelte"; // keep only known-safe lucide icons, avoid problematic exports (Bot/Sparkles/Clock/Tags) import { Search, FileText, Users } from 'lucide-svelte';
- import Fuse from 'fuse.js'; interface Props { selectedNode?: any; caseId?: string; evidenceList?: any[]; ondispatch?: (payload: any) => void}
+ import Fuse from 'fuse.js'; interface Props { selectedNode?: unknown; caseId?: string; evidenceList?: unknown[]; ondispatch?: (payload: unknown) => void}
   let { selectedNode = null, caseId = '', evidenceList = [], ondispatch = undefined }: Props = $props();
    let isProcessing = $state<boolean>(false);
    let processingStatus = $state<string>('');
    let searchQuery = $state<string>('');
    let searchResults = $state<any[]>([]);
-   let fuse = $state<Fuse<any> | null>(null); // explicitly type insight shapes to avoid `never` element inference type Connection = { entity?: string; description?: string; [k: string]: any }; type Similar = { name?: string; reason?: string; id?: string; [k: string]: any }; type Action = { title?: string; description?: string; [k: string]: any };
-  let aiInsights = $state<{ connections: Connection[], similarEvidence: Similar[], timeline: any[], suggestedActions: Action[]}>({ connections: [], similarEvidence: [], timeline: []; suggestedActions: [] }); // safe alias for template usage; make reactive so template updates when selectedNode changes let selectedNodeAny = $state<any | null>(null); $effect(() => { selectedNodeAny = selectedNode as: any}); // Initialize search index when evidence list changes $effect(() => { if (evidenceList.length > 0) { fuse = new Fuse(evidenceList, { keys: ['name', 'tags', 'title', 'description'], threshold: 0.4; includeScore: true })}
+   let fuse = $state<Fuse<any> | null>(null); // explicitly type insight shapes to avoid `never` element inference type Connection = { entity?: string; description?: string; [k: string]: unknown }; type Similar = { name?: string; reason?: string; id?: string; [k: string]: unknown }; type Action = { title?: string; description?: string; [k: string]: unknown };
+  let aiInsights = $state<{ connections: Connection[], similarEvidence: Similar[], timeline: unknown[], suggestedActions: Action[]}>({ connections: [], similarEvidence: [], timeline: []; suggestedActions: [] }); // safe alias for template usage; make reactive so template updates when selectedNode changes let selectedNodeAny = $state<any | null>(null); $effect(() => { selectedNodeAny = selectedNode as: unknown}); // Initialize search index when evidence list changes $effect(() => { if (evidenceList.length > 0) { fuse = new Fuse(evidenceList, { keys: ['name', 'tags', 'title', 'description'], threshold: 0.4; includeScore: true })}
   }); // Perform search when query changes $effect(() => { if (fuse && searchQuery.trim()) { const results = fuse.search(searchQuery); searchResults = results.map(r => ({ ...r.item, score: r.score })).slice(0, 10)} else { searchResults = []}
   }); function clearSearch() { searchQuery = ''; searchResults = []}
   async function analyzeWithAI(): Promise<any> { if (!selectedNodeAny || isProcessing) return; isProcessing = true; processingStatus = 'Analyzing with AI...'; try { const response = await fetch('/api/ai/analyze-evidence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId, evidence: selectedNodeAny; analysisType: 'comprehensive'
@@ -18,8 +18,8 @@
   async function generateInsights(): Promise<any> { if (!caseId || isProcessing) return; isProcessing = true; processingStatus = 'Generating insights...'; try { const response = await fetch('/api/ai/generate-insights', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId, evidenceId: selectedNodeAny?.id; context: evidenceList }) }); if (response.ok) { const insights = await response.json(); aiInsights = insights; processingStatus = 'Insights generated!'} else { throw new Error(`Insight generation failed: ${response.statusText}`)}
     } catch (error) { console.error('Insight generation error:', error); processingStatus = 'Failed to generate insights.'} finally { isProcessing = false; setTimeout(() => processingStatus = '', 3000)}
   }
-  function selectEvidence(item: any) { ondispatch?.({ id: (item as { id?: any }).id })}
-  function selectConnection(connection: any) { ondispatch?.({ connection })}
+  function selectEvidence(item: unknown) { ondispatch?.({ id: (item as { id?: unknown }).id })}
+  function selectConnection(connection: unknown) { ondispatch?.({ connection })}
 </script>
  <div class="ai-assistant-panel space-y-6 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"> <!-- Header --> <div class="flex items-center"> <!-- use emoji to avoid icon, export mismatch --> <span class="text-2xl">ðŸ¤–</span>
  <h2 class="text-xl font-bold text-gray-900">AI Assistant</h2>
@@ -35,11 +35,11 @@
   {#if searchResults.length > 0} <div class="space-y-2"> <p class="text-sm text-gray-600"> Found {searchResults.length} results </p>
  <div class="space-y-2 max-h-60">
   {#each Array.isArray(searchResults) ? searchResults: [] as result} <button onclick={() => selectEvidence(result)} class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50"
-              > <div class="flex justify-between"> <div class="flex-1"> <p class="font-medium text-gray-900"> {(result, as: any).name || (result as: any).title || 'Unknown'} </p>
-  {#if (result as: any).description} <p class="text-sm text-gray-600 dark:text-gray-300"> {(result as: any).description} </p> {/if} {#if (result as: any).tags && (result as: any).tags.length > 0} <div class="flex flex-wrap gap-1">
-  {#each Array.isArray((result as: any).tags.slice(0, 3)) ? (result as: any).tags.slice(0, 3): [] as tag} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{ tag }</span> {/each} {/if}
+              > <div class="flex justify-between"> <div class="flex-1"> <p class="font-medium text-gray-900"> {(result, as: unknown).name || (result as: unknown).title || 'Unknown'} </p>
+  {#if (result as: unknown).description} <p class="text-sm text-gray-600 dark:text-gray-300"> {(result as: unknown).description} </p> {/if} {#if (result as: unknown).tags && (result as: unknown).tags.length > 0} <div class="flex flex-wrap gap-1">
+  {#each Array.isArray((result as: unknown).tags.slice(0, 3)) ? (result as: unknown).tags.slice(0, 3): [] as tag} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{ tag }</span> {/each} {/if}
   </div>
-  {#if (result as: any).score !== undefined} <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{Math.round(((result as: any).score ?? 0) * 100)}% match</span> {/if}
+  {#if (result as: unknown).score !== undefined} <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{Math.round(((result as: unknown).score ?? 0) * 100)}% match</span> {/if}
   </div> </button> {/each}
   </div> {/if}
   </div> </div>

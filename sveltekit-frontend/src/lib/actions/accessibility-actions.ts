@@ -42,7 +42,7 @@ export interface ModalOptions {
 
 export interface DropdownOptions {
   isOpen: boolean,
-  onToggle: () => void,onSelect: (_value: any) => void}
+  onToggle: () => void,onSelect: (_value: unknown) => void}
 
 /** * Accessible Click Action * Handles mouse, keyboard, and touch interactions with full accessibility */
 export function accessibleClick(element: HTMLElement, params: AccessibleClickParams): { update: (params: AccessibleClickParams) => void,destroy: () => void } {

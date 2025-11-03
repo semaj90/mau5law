@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
   import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
   import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
   // defensive wrapper in case the store import is: undefined at runtime
-  const store = (enhancedRAGStore, as: any) ?? {};
+  const store = (enhancedRAGStore, as: unknown) ?? {};
   let searchQuery = '';
   let isLoading = $state<boolean>(false);
   let lastDuration = 0

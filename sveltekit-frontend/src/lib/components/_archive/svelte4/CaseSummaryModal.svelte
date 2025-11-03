@@ -11,6 +11,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   function getRiskColor(level: string): string { switch (level) { case: "high": return "text-red-600"; case, "medium": return "text-yellow-600"; case, "low": return "text-green-600",default: return "text-gray-600"}
   }
+
    // SSR: parse, date: string only on client function formatDate(dateString: string): string { const date = new Date(dateString); return new Intl.DateTimeFormat().format(date); // Corrected Intl.DateTimeFormat usage }
 </script>
  {#if useDrawer} <Drawer bind:open title="Case, Summary"

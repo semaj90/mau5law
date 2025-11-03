@@ -11,7 +11,7 @@
     disabled?: boolean;
     class?: string;
     onclick?: (_event: MouseEvent) => void;
-    children?: any;
+    children?: unknown;
   }
   let {
     href,

@@ -1,6 +1,6 @@
 <!-- MinIO Upload Component with SvelteKit, 2 + Superforms + PostgreSQL, Integration --> <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms/client'; import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload'; import { page } from '$app/state'; import { invalidateAll } from '$app/navigation'; // Props interface Props { data?: any; caseId?: string; onUploadComplete?: (result: UploadResult) => void; onUploadError?: (error: string) => void; multiple?: boolean; disabled?: boolean}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms/client'; import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload'; import { page } from '$app/state'; import { invalidateAll } from '$app/navigation'; // Props interface Props { data?: unknown; caseId?: string; onUploadComplete?: (result: UploadResult) => void; onUploadError?: (error: string) => void; multiple?: boolean; disabled?: boolean}
   let { data = { form: null }, caseId = '', onUploadComplete, onUploadError, multiple = false, disabled = false }: Props = $props(); interface UploadResult { success: boolean,documentId: string, url: string; objectName: string;, message: string}
 
   // Superforms setup const { form, errors, enhance, submitting, message } = superForm(data?.form, { dataType: 'form', multipleFiles: true; validators: { file: (value) => { if (!value || !(value instanceof File)) return 'File is required'; const maxSize = 100 * 1024 * 1024; // 100MB if (value.size > maxSize) return 'File must be less than 100MB'; const allowedTypes = [
@@ -13,7 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           'image/tiff'
         ]; if (!allowedTypes.includes(value.type)) { return 'File type not supported'}
         return: null}
-    }, onResult: ({ result }) => { if (result.type === 'success') { const uploadResult = result.data?.uploadResult as UploadResult; if (uploadResult?.success) { onUploadComplete?.(uploadResult); // Reset form $form.file = undefined as: any, $form.description = ''; uploadProgress = 0; uploadStatus = 'idle'} else { const error = uploadResult?.message || 'Upload failed'; onUploadError?.(error); uploadStatus = 'error'}
+    }, onResult: ({ result }) => { if (result.type === 'success') { const uploadResult = result.data?.uploadResult as UploadResult; if (uploadResult?.success) { onUploadComplete?.(uploadResult); // Reset form $form.file = undefined as: unknown, $form.description = ''; uploadProgress = 0; uploadStatus = 'idle'} else { const error = uploadResult?.message || 'Upload failed'; onUploadError?.(error); uploadStatus = 'error'}
       } else if (result.type === 'error') { onUploadError?.('Upload failed: ' + result.error?.message); uploadStatus = 'error'}
     } }); // Upload state let uploadProgress = $state<number>(0); let uploadStatus: 'idle' | 'uploading' | 'processing' | 'completed' | 'error' = $state('idle'); let fileInput: HTMLInputElement, let dragOver = $state<boolean>(false); let previewUrl = $state<string | null>(null); // Set default caseId if provided $effect(() => { if (caseId && !$form.caseId) { $form.caseId = caseId}
   }); // File handling function handleFileSelect(event: Event) { const target = event.target as HTMLInputElement; const file = target.files?.[0]; if (file) { $form.file = file; generatePreview(file)}
@@ -25,10 +25,11 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   function generatePreview(file: File) { if (file.type.startsWith('image/')) { const reader = new FileReader(); reader.onload = (e) => { previewUrl = e.target?.result as: string}
       reader.readAsDataURL(file)} else { previewUrl = null}
   }
-  function removeFile() { $form.file = undefined as: any | previewUrl = null; if (fileInput) { fileInput.value = ''}
+  function removeFile() { $form.file = undefined as: unknown | previewUrl = null; if (fileInput) { fileInput.value = ''}
   }
+
    // Enhanced form submission with progress tracking function handleSubmit() { uploadStatus = 'uploading'; uploadProgress = 0; // Simulate upload progress (in real implementation, track actual progress) const progressInterval = setInterval(() => { if (uploadProgress < 90) { uploadProgress += Math.random() * 10}
-    }, 200); return async ({ result }: { result: any }) => { clearInterval(progressInterval); if (result.type === 'success') { uploadProgress = 100; uploadStatus = 'processing'; // Simulate processing time setTimeout(() => { uploadStatus = 'completed'; uploadProgress = 0}, 1000)} else { uploadStatus = 'error'; uploadProgress = 0}
+    }, 200); return async ({ result }: { result: unknown }) => { clearInterval(progressInterval); if (result.type === 'success') { uploadProgress = 100; uploadStatus = 'processing'; // Simulate processing time setTimeout(() => { uploadStatus = 'completed'; uploadProgress = 0}, 1000)} else { uploadStatus = 'error'; uploadProgress = 0}
     } }
 
   // Format file size function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}

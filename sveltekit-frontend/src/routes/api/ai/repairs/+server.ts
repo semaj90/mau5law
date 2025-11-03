@@ -1,17 +1,17 @@
 // src/routes/api/ai/repairs/+server.ts
 /**
  * AI Repairs API Endpoint
- * 
+ *
  * Fetches AI-generated repair suggestions from Qdrant and provides them
  * to the dashboard for display and approval.
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { QdrantClient } from '@qdrant/js-client-rest';
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
+import { QdrantClient } from "@qdrant/js-client-rest";
 
-const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
-const COLLECTION_NAME = 'ai_repair_suggestions';
+const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
+const COLLECTION_NAME = "ai_repair_suggestions";
 
 interface RepairSuggestion {
   id: string;
@@ -21,7 +21,7 @@ interface RepairSuggestion {
   error_message: string;
   suggested_fix: string;
   confidence: number;
-  status: 'pending' | 'applied' | 'rejected';
+  status: "pending" | "applied" | "rejected";
   created_at: string;
 }
 
@@ -29,32 +29,32 @@ interface RepairSuggestion {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const qdrant = new QdrantClient({ url: QDRANT_URL });
-    
+
     // Parse query parameters
-    const status = url.searchParams.get('status') || 'pending';
-    const limit = parseInt(url.searchParams.get('limit') || '50', 10);
-    const minConfidence = parseFloat(url.searchParams.get('min_confidence') || '0.5');
-    
+    const status = url.searchParams.get("status") || "pending";
+    const limit = parseInt(url.searchParams.get("limit") || "50", 10);
+    const minConfidence = parseFloat(url.searchParams.get("min_confidence") || "0.5");
+
     // Query Qdrant for repair suggestions
     const searchResult = await qdrant.scroll(COLLECTION_NAME, {
       limit,
       filter: {
         must: [
           {
-            key: 'status',
-            match: { value: status }
+            key: "status",
+            match: { value: status },
           },
           {
-            key: 'confidence',
-            range: { gte: minConfidence }
-          }
-        ]
+            key: "confidence",
+            range: { gte: minConfidence },
+          },
+        ],
       },
       with_payload: true,
-      with_vector: false
+      with_vector: false,
     });
-    
-    const repairs: RepairSuggestion[] = searchResult.points.map((point: any) => ({
+
+    const repairs: RepairSuggestion[] = searchResult.points.map((point: unknown) => ({
       id: point.id,
       file: point.payload.file,
       line: point.payload.line,
@@ -63,22 +63,18 @@ export const GET: RequestHandler = async ({ url }) => {
       suggested_fix: point.payload.suggested_fix,
       confidence: point.payload.confidence,
       status: point.payload.status,
-      created_at: point.payload.created_at
+      created_at: point.payload.created_at,
     }));
-    
+
     return json({
       repairs,
       total: repairs.length,
       status,
-      min_confidence: minConfidence
+      min_confidence: minConfidence,
     });
-    
   } catch (error) {
-    console.error('Failed to fetch repair suggestions:', error);
-    return json(
-      { error: 'Failed to fetch repair suggestions' },
-      { status: 500 }
-    );
+    console.error("Failed to fetch repair suggestions:", error);
+    return json({ error: "Failed to fetch repair suggestions" }, { status: 500 });
   }
 };
 
@@ -86,69 +82,55 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { id, status, applied_diff } = await request.json();
-    
-    if (!['applied', 'rejected'].includes(status)) {
-      return json(
-        { error: 'Invalid status. Must be "applied" or "rejected"' },
-        { status: 400 }
-      );
+
+    if (!["applied", "rejected"].includes(status)) {
+      return json({ error: 'Invalid status. Must be "applied" or "rejected"' }, { status: 400 });
     }
-    
+
     const qdrant = new QdrantClient({ url: QDRANT_URL });
-    
+
     // Update the point payload
     await qdrant.setPayload(COLLECTION_NAME, {
       points: [id],
       payload: {
         status,
         updated_at: new Date().toISOString(),
-        ...(applied_diff && { applied_diff })
-      }
+        ...(applied_diff && { applied_diff }),
+      },
     });
-    
+
     return json({
       success: true,
       id,
-      status
+      status,
     });
-    
   } catch (error) {
-    console.error('Failed to update repair status:', error);
-    return json(
-      { error: 'Failed to update repair status' },
-      { status: 500 }
-    );
+    console.error("Failed to update repair status:", error);
+    return json({ error: "Failed to update repair status" }, { status: 500 });
   }
 };
 
 // DELETE: Remove repair suggestion
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const id = url.searchParams.get('id');
-    
+    const id = url.searchParams.get("id");
+
     if (!id) {
-      return json(
-        { error: 'Missing id parameter' },
-        { status: 400 }
-      );
+      return json({ error: "Missing id parameter" }, { status: 400 });
     }
-    
+
     const qdrant = new QdrantClient({ url: QDRANT_URL });
-    
+
     await qdrant.delete(COLLECTION_NAME, {
-      points: [id]
+      points: [id],
     });
-    
+
     return json({
       success: true,
-      id
+      id,
     });
-    
   } catch (error) {
-    console.error('Failed to delete repair suggestion:', error);
-    return json(
-      { error: 'Failed to delete repair suggestion' },
-      { status: 500 }
-    );
+    console.error("Failed to delete repair suggestion:", error);
+    return json({ error: "Failed to delete repair suggestion" }, { status: 500 });
   }
 };

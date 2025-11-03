@@ -26,8 +26,8 @@ import type { Case } from '$lib/types';
 
       // subscribe to the reports store to keep local list in sync
       // normalize incoming items (ReportDraft) into a safe Report[] shape
-      reportsUnsub = reportsStore.subscribe((r: any) => {
-        reportList = (r ?? []).map((it: any) => ({
+      reportsUnsub = reportsStore.subscribe((r: unknown) => {
+        reportList = (r ?? []).map((it: unknown) => ({
           id: String(it?.id ?? ''), // ensure id is: string
          , title: it?.title ?? '',
           summary: it?.summary ?? '',
@@ -219,4 +219,5 @@ import type { Case } from '$lib/types';
     </div>
   {/if}
 </div>
+
 

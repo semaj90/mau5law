@@ -79,9 +79,9 @@ import type { Document } from '$lib/types';
     serverFetchTime = performance.now() - serverStartTime
     console.log(`ðŸš€ Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
     console.log(`ðŸ“Š Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
-    // Build a safe cache entry (cast to: any to avoid strict schema mismatch here)
-    const doc = (data && (data.document ?? data)) as: any
-    const cacheEntry: any = { id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
+    // Build a safe cache entry (cast to: unknown to avoid strict schema mismatch here)
+    const doc = (data && (data.document ?? data)) as: unknown
+    const cacheEntry: unknown = { id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
       documentId: docId,
       title: doc.title ?? '',
       content: doc.content ?? '',
@@ -110,8 +110,8 @@ import type { Document } from '$lib/types';
     isLoading.set(false)}
 
   // Display document details (unified function for cache and server data)
-  function displayDocumentDetails(data: any) {
-    const obj = data as: any
+  function displayDocumentDetails(data: Record<string, unknown>) {
+    const obj = data as: unknown
     const doc = obj.document ?? obj
     const metadata = obj.metadata ?? obj
     documentData.set({ id: doc.id ?? doc.documentId ?? null,

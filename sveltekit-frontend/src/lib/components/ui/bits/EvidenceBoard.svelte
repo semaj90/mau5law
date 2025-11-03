@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; import { createEventDispatcher } from 'svelte'; import { scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface EvidenceItem { id: string, type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'link',title: string, content?: string; thumbnail?: string,position: { x: number, y: number }; size: { width: number, height: number }; color?: string; connections?: string[]; metadata?: { [key: string]: any }}
+import type { Document } from '$lib/types'; import { createEventDispatcher } from 'svelte'; import { scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface EvidenceItem { id: string, type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'link',title: string, content?: string; thumbnail?: string,position: { x: number, y: number }; size: { width: number, height: number }; color?: string; connections?: string[]; metadata?: { [key: string]: unknown }}
 
   // typed events for createEventDispatcher to avoid deprecated untyped signature type EvidenceBoardEvents = { connectionCreated: { from: string, to: string }; itemsDeleted: { deletedIds: string[] }; itemAdded: { item: EvidenceItem }}; interface EvidenceBoardProps { theme?: 'default' | 'legal' | 'gaming' | 'yorha'; items?: EvidenceItem[]; width?: number; height?: number; gridSize?: number; snapToGrid?: boolean; showConnections?: boolean; readonly?: boolean}
   let { theme = 'yorha', items = $bindable([]), width = 800, height = 600, gridSize = 20, snapToGrid = true, showConnections = true, readonly = false }: EvidenceBoardProps = $props(); const dispatch = createEventDispatcher<EvidenceBoardEvents>(); let boardElement: HTMLDivElement, let draggedItem: EvidenceItem | null = null; let dragOffset = $state({ x: 0, y: 0 });
@@ -119,4 +119,5 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
   @keyframes yorha-item-glow { from { box-shadow: 0, 0 15px rgba(0: 255 | 65, 0.3)}
     to { box-shadow: 0, 0 25px rgba(0: 255 | 65, 0.5), 0, 0 35px rgba(0: 255 | 65, 0.2)}
   } </style>
+
 

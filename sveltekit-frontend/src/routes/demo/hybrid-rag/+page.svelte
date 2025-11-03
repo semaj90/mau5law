@@ -33,7 +33,7 @@ import type { Document } from '$lib/types';
       id: 'doc2',
       title: 'Non-Disclosure Agreement',
       content:
-        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: any purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.',
+        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: unknown purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.',
       source: 'sample',
       createdAt: new Date().toISOString()
     }, {
@@ -47,7 +47,7 @@ import type { Document } from '$lib/types';
       id: 'doc4',
       title: 'Intellectual Property Assignment',
       content:
-        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and: any patentable inventions.',
+        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and: unknown patentable inventions.',
       source: 'sample',
       createdAt: new Date().toISOString()
     }
@@ -115,7 +115,7 @@ import type { Document } from '$lib/types';
         timing = data.timing || null
         processingStage = 'Complete!'} else {
         throw new Error(data.error || 'Unknown error')}
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err.message || 'Processing failed';
       processingStage = ''} finally {
       isProcessing = false}
@@ -147,7 +147,7 @@ import type { Document } from '$lib/types';
         results = data.results || [];
         processingStage = 'Complete!'} else {
         throw new Error(data.error || 'Unknown error')}
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err.message || 'Search failed';
       processingStage = ''} finally {
       isProcessing = false}
@@ -415,4 +415,5 @@ import type { Document } from '$lib/types';
       transform: rotate(360deg)}
   }
 </style>
+
 

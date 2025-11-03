@@ -48,7 +48,7 @@ import type { Case } from '$lib/types';
     evidenceInsights?: Array<{ id: string, label: string, summary: string }>}
 
   // relax icon typing to avoid issues when module is declared as untyped
-  const sections: Array<{ id: SectionId, label: string, description: string;, icon: any }> = [ {
+  const sections: Array<{ id: SectionId, label: string, description: string;, icon: unknown }> = [ {
       id: 'command-center',
       label: 'Command Center',
       description: 'Real-time system telemetry for YoRHa subsystems.',
@@ -82,17 +82,17 @@ import type { Case } from '$lib/types';
   ];
 
   // dynamic loader for YoRHaModal to handle modules that export named or default
-  let YoRHaModalComponent: any = null
+  let YoRHaModalComponent: unknown = null
   onMount(() => {
 		(async () => {
 
     try {
-      // cast import to: unknown, then: any so TypeScript won't complain about missing properties'
+      // cast import to: unknown, then: unknown so TypeScript won't complain about missing properties'
       const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as: unknown
-      const modAny = mod, as: any
+      const modAny = mod, as: unknown
       // prefer default, then common named variants, then fallback to the module itself
       const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny
-      YoRHaModalComponent = LoadedComponent as: any} catch (e) {
+      YoRHaModalComponent = LoadedComponent as: unknown} catch (e) {
       console.warn('Failed to load YoRHaModal component', e)}
   		})();
 	});

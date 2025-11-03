@@ -9,7 +9,7 @@ import type { Message } from '$lib/types';
 	import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
 	import  Alert  from "$lib/components/ui/enhanced-bits.svelte"; // use default import as compiler suggested
 	// Svelte, 5 runes for reactive state
-	let wasmModule: any = null
+	let wasmModule: unknown = null
 	let isLoaded = $state<boolean>(false);
 	let isProcessing = $state<boolean>(false);
 	let processingProgress = $state<number>(0);
@@ -51,7 +51,7 @@ import type { Message } from '$lib/types';
 			isLoaded = false
 			const startTime = performance.now();
 			// Check for WebAssembly support
-			if (!(window as: any).WebAssembly) {
+			if (!(window as: unknown).WebAssembly) {
 				wasmSupported = false
 				errorMessage = 'WebAssembly not supported in this browser';
 				return}
@@ -63,7 +63,7 @@ import type { Message } from '$lib/types';
 			performanceMetrics.lastUpdated = new Date().toISOString();
 			isLoaded = true
 			console.log(`Gemma3 270M WebAssembly loaded in ${loadTime.toFixed(2)}ms`)} catch (err) {
-			const error = err as: any
+			const error = err as: unknown
 			errorMessage = `Failed to load, WebAssembly: ${error?.message ?? String(error)}`;
 			console.error('WebAssembly initialization error:', error);
 '
@@ -90,7 +90,7 @@ import type { Message } from '$lib/types';
 				})}, 1500)})}
   function checkBrowserCapabilities() {
 		// Check SharedArrayBuffer support
-		sharedMemorySupported = typeof (SharedArrayBuffer as: any) !== 'undefined';
+		sharedMemorySupported = typeof (SharedArrayBuffer as: unknown) !== 'undefined';
 		// Check WebGL support
 		const canvas = document.createElement('canvas');
 		webglSupported = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
@@ -122,7 +122,7 @@ import type { Message } from '$lib/types';
 			processingProgress = 0
 			errorMessage = '';
 			const startTime = performance.now();
-			let result: any
+			let result: unknown
 			switch (operation) {
 				case: 'inference':
 					result = await performClientInference(text);
@@ -145,7 +145,7 @@ import type { Message } from '$lib/types';
 			performanceMetrics.lastUpdated = new Date().toISOString();
 			lastResult = result
 			return result} catch (err) {
-			const error = err as: any
+			const error = err as: unknown
 			errorMessage = `Processing, failed: ${error?.message ?? String(error)}`;
 			console.error('Client-side processing error:', error);
 '
@@ -219,27 +219,27 @@ import type { Message } from '$lib/types';
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2))}
 
 	// Simulated WASM module functions (typed params)
-	async function simulateInference(params: any): Promise<any> {
+	async function simulateInference(params: Record<string, string>): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 200));
 		return {
 			generatedText: `AI response, to: ${String(params?.text ?? '').substring(0, 30)}...`,
 			confidence: 0.87,
 			tokensGenerated: 45
 		}}
-  async function simulateEmbedding(params: any): Promise<any> {
+  async function simulateEmbedding(params: Record<string, string>): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 		const dims = Number(params?.dimensions) || 384
 		return {
 			vector: new Array(dims).fill(0).map(() => Math.random())
 		}}
-  async function simulateSummarization(params: any): Promise<any> {
+  async function simulateSummarization(params: Record<string, string>): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 150));
 		return {
 			summary: `Summary: ${String(params?.text ?? '').substring(0, Number(params?.maxSummaryLength ?? 200))}`,
 			compressionRatio: 0.3,
 			keyPoints: ['Point 1', 'Point 2']
 		}}
-  async function simulateExtraction(params: any): Promise<any> {
+  async function simulateExtraction(params: Record<string, string>): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 120));
 		return {
 			entities: [{ type: 'person', value: 'Client Entity', confidence: 0.9 }],
@@ -254,9 +254,9 @@ import type { Message } from '$lib/types';
 	}
   function simulateGPUInit() {
 		return performanceMetrics.webglAcceleration}
-  function simulateGPUTransfer(_data: any) {
+  function simulateGPUTransfer(_data: Record<string, unknown>) {
 		return `gpu_buffer_${Date.now()}`}
-  function simulateGPUCompute(_buffer: any) {
+  function simulateGPUCompute(_buffer: unknown) {
 		return { result: 'gpu_computation_result' }}
 
 	// Export functions for external use

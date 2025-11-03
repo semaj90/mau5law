@@ -9,11 +9,11 @@
 
 interface CanvasState { id?: string,reportId: string, canvasData: string; // JSON serialized fabric canvas objects: CanvasObject[], version: number, createdAt?: Date; updatedAt?: Date}
 
-interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidence',data: any, position: { x: number, y: number }; size: { width: number;, height: number }; metadata?: Record<string, any>}
+interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidence',data: Record<string, unknown>, position: { x: number, y: number }; size: { width: number;, height: number }; metadata?: Record<string, any>}
 
-  // Props let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: { reportId?: string; evidence?: EvidenceItem[]; citationPoints?: any[]; onSave?: (state: CanvasState) => void; width?: number; height?: number; readOnly?: boolean; enableAutoTag?: boolean; enableCollaboration?: boolean} = $props(); // XState machine fallback (writable) - ensure `value` is updated for UI checks // Avoid naming collision with Svelte, 5 $state rune by calling this xstate type XStateContext = { reportId: string, canvasState: CanvasState | null,selectedObjects: any[], history: string[]; // store serialized canvas JSON snapshots historyIndex: number}; type XStateValue = { value: string;, context: XStateContext};
+  // Props let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: { reportId?: string; evidence?: EvidenceItem[]; citationPoints?: unknown[]; onSave?: (state: CanvasState) => void; width?: number; height?: number; readOnly?: boolean; enableAutoTag?: boolean; enableCollaboration?: boolean} = $props(); // XState machine fallback (writable) - ensure `value` is updated for UI checks // Avoid naming collision with Svelte, 5 $state rune by calling this xstate type XStateContext = { reportId: string, canvasState: CanvasState | null,selectedObjects: unknown[], history: string[]; // store serialized canvas JSON snapshots historyIndex: number}; type XStateValue = { value: string;, context: XStateContext};
    const xstate = writable<XStateValue>({ value: 'idle', context: { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }
-  }); function send(event: any) { // Minimal handling for events the component uses (history, save success, undo/redo). xstate.update((ss) => { const ctx: XStateContext = ss.context || { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }; switch (event.type) { case: 'ADD_TO_HISTORY': { ctx.history = ctx.history || []; ctx.history.push(event.state); ctx.historyIndex = ctx.history.length - 1; break}
+  }); function send(event: Event) { // Minimal handling for events the component uses (history, save success, undo/redo). xstate.update((ss) => { const ctx: XStateContext = ss.context || { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }; switch (event.type) { case: 'ADD_TO_HISTORY': { ctx.history = ctx.history || []; ctx.history.push(event.state); ctx.historyIndex = ctx.history.length - 1; break}
         case, 'UNDO': { ctx.historyIndex = Math.max(0, (ctx.historyIndex ?? 0) - 1); break}
         case, 'REDO': { ctx.historyIndex = Math.min((ctx.history?.length ?? 1) - 1, (ctx.historyIndex ?? 0) + 1); break}
         case, 'SAVE_SUCCESS': { ctx.canvasState = event.state; break}
@@ -22,7 +22,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
       ss.context = ctx; return ss})}
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available. const _lokiMap = new Map<string any>();
-   const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) }; // Svelte, 5 runes - avoid direct fabric type references to prevent TS namespace errors let canvas = $state<any | null>(null);
+   const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: unknown) => _lokiMap.set(k, v) }; // Svelte, 5 runes - avoid direct fabric type references to prevent TS namespace errors let canvas = $state<any | null>(null);
    let canvasElement: HTMLCanvasElement, let selectedObject = $state<any | null>(null);
    let zoomLevel = $state<number>(1);
    let gridEnabled = $state<boolean>(true);
@@ -35,7 +35,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
    let drawingMode = $state<boolean>(false); // Dialog states let showEvidenceDialog = $state<boolean>(false);
    let showTaggingDialog = $state<boolean>(false);
    let showShareDialog = $state<boolean>(false); // Auto-tagging state let isAutoTagging = $state<boolean>(false);
-   let suggestedTags = $state<string[]>([]); // Centralized Ollama endpoint helper + model constants // Prefer VITE_OLLAMA_URL (set in dev/prod env), fallback to docker service hostname. // Use import.meta.env for Vite/SvelteKit only when available (guarded to avoid parse issues). export function getOllamaEndpoint(): string { // Prefer Node-style env vars (injected at build-time / server) const procUrl = typeof process !== 'undefined' && (process as: any)?.env ? (process as: any).env.VITE_OLLAMA_URL || (process as: any).env.OLLAMA_URL: undefined; // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues. let viteUrl: string | undefined; try { // access import.meta.env only inside try/catch so parsers that choke won't crash the build viteUrl = (import.meta, as: any)?.env?.VITE_OLLAMA_URL} catch { viteUrl = undefined}'
+   let suggestedTags = $state<string[]>([]); // Centralized Ollama endpoint helper + model constants // Prefer VITE_OLLAMA_URL (set in dev/prod env), fallback to docker service hostname. // Use import.meta.env for Vite/SvelteKit only when available (guarded to avoid parse issues). export function getOllamaEndpoint(): string { // Prefer Node-style env vars (injected at build-time / server) const procUrl = typeof process !== 'undefined' && (process as: unknown)?.env ? (process as: unknown).env.VITE_OLLAMA_URL || (process as: unknown).env.OLLAMA_URL: undefined; // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues. let viteUrl: string | undefined; try { // access import.meta.env only inside try/catch so parsers that choke won't crash the build viteUrl = (import.meta, as: unknown)?.env?.VITE_OLLAMA_URL} catch { viteUrl = undefined}'
 
     // Final fallback uses Docker service hostname (per project conventions) return procUrl || viteUrl || 'http://ollama:11434'}
 
@@ -53,18 +53,18 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function setupCanvasEvents(): void { if (!canvas) return; // Selection events - FIXED: use Fabric's colon-separated event names canvas.on('selection:created', handleSelection); canvas.on('selection:updated', handleSelection); canvas.on('selection:cleared', () => { selectedObject = null; send({ type: 'DESELECT' })}); // Object modification events canvas.on('object:modified', handleObjectModified); canvas.on('object:added', handleObjectAdded); canvas.on('object:removed', handleObjectRemoved); // Mouse events for drawing canvas.on('mouse:down', handleMouseDown); canvas.on('mouse:move', handleMouseMove); canvas.on('mouse:up', handleMouseUp)}'
 
-  function handleSelection(e: any): void { selectedObject = e?.selected?.[0] || null; send({ type: 'SELECT_OBJECT', object: selectedObject }); // Trigger auto-tagging if enabled if (enableAutoTag && selectedObject) { void autoTagObject(selectedObject)}
+  function handleSelection(e: unknown): void { selectedObject = e?.selected?.[0] || null; send({ type: 'SELECT_OBJECT', object: selectedObject }); // Trigger auto-tagging if enabled if (enableAutoTag && selectedObject) { void autoTagObject(selectedObject)}
   }
-  function handleObjectModified(e: any): void { isDirty = true; addToHistory(); // Cache in Loki saveToLokiCache()}
-  function handleObjectAdded(e: any): void { isDirty = true; addToHistory(); // Broadcast via RabbitMQ if collaboration enabled if (enableCollaboration && e.target) { void broadcastChange('object:added', e.target)}
+  function handleObjectModified(e: unknown): void { isDirty = true; addToHistory(); // Cache in Loki saveToLokiCache()}
+  function handleObjectAdded(e: unknown): void { isDirty = true; addToHistory(); // Broadcast via RabbitMQ if collaboration enabled if (enableCollaboration && e.target) { void broadcastChange('object:added', e.target)}
   }
-  function handleObjectRemoved(e: any): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
+  function handleObjectRemoved(e: unknown): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
   }
 
-   // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: any parameter function handleMouseDown(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
+   // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: unknown parameter function handleMouseDown(_e: unknown): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
   }
-  function handleMouseMove(_e: any): void { // Handle panning, drawing, etc. }
-  function handleMouseUp(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
+  function handleMouseMove(_e: unknown): void { // Handle panning, drawing, etc. }
+  function handleMouseUp(_e: unknown): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
   }
 
    // Load canvas state from database async function loadCanvasState(): Promise<void> { if (!reportId) return; try { isLoading = true;
@@ -82,12 +82,12 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
         // Cache in Loki saveToLokiCache(); // Show success toast showToast('Canvas saved successfully', 'success')} else { throw new Error('Save failed')}
     } catch (err) { console.error('Failed to save canvas state:', err); error = 'Failed to save canvas'; send({ type: 'SAVE_ERROR', error: err }); showToast('Failed to save canvas', 'error')} finally { isLoading = false}
   }
-  function extractCanvasObjects(): CanvasObject[] { if (!canvas) return []; return canvas.getObjects().map((obj: any) => ({ id: obj.id || crypto.randomUUID(), type: obj.type === 'image' ? 'image': obj.type === 'text' ? 'text': 'shape', data: obj.toJSON(), position: { x: obj.left || 0, y: obj.top || 0 }, size: { width: obj.width || 0, height: obj.height || 0 }, metadata: obj.metadata || {} }))}
+  function extractCanvasObjects(): CanvasObject[] { if (!canvas) return []; return canvas.getObjects().map((obj: unknown) => ({ id: obj.id || crypto.randomUUID(), type: obj.type === 'image' ? 'image': obj.type === 'text' ? 'text': 'shape', data: obj.toJSON(), position: { x: obj.left || 0, y: obj.top || 0 }, size: { width: obj.width || 0, height: obj.height || 0 }, metadata: obj.metadata || {} }))}
 
-  // Qdrant auto-tagging async function autoTagObject(obj: any): Promise<void> { if (!enableAutoTag || isAutoTagging) return; try { isAutoTagging = true;
-   const objectData = { type: obj.type content: (obj, as: any).text || (obj as: any).src || '', metadata: (obj, as: any).metadata || {} }; // Generate tags using Qdrant semantic search const tags = await qdrantClient.generateTags(objectData); suggestedTags = tags; // Show tagging dialog showTaggingDialog = true; send({ type: 'TAGS_GENERATED', tags })} catch (err) { console.error('Auto-tagging failed:', err)} finally { isAutoTagging = false}
+  // Qdrant auto-tagging async function autoTagObject(obj: unknown): Promise<void> { if (!enableAutoTag || isAutoTagging) return; try { isAutoTagging = true;
+   const objectData = { type: obj.type content: (obj, as: unknown).text || (obj as: unknown).src || '', metadata: (obj, as: unknown).metadata || {} }; // Generate tags using Qdrant semantic search const tags = await qdrantClient.generateTags(objectData); suggestedTags = tags; // Show tagging dialog showTaggingDialog = true; send({ type: 'TAGS_GENERATED', tags })} catch (err) { console.error('Auto-tagging failed:', err)} finally { isAutoTagging = false}
   }
-  function applyTags(tags: string[]): void { if (!selectedObject) return; (selectedObject as: any).metadata = { ...(selectedObject as: any).metadata, tags }; canvas?.renderAll(); isDirty = true; showTaggingDialog = false}
+  function applyTags(tags: string[]): void { if (!selectedObject) return; (selectedObject as: unknown).metadata = { ...(selectedObject as: unknown).metadata, tags }; canvas?.renderAll(); isDirty = true; showTaggingDialog = false}
 
   // Loki.js caching function saveToLokiCache(): void { if (!canvas || !reportId) return;
    const cacheData = { reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() }; lokiCanvasCache.set(`canvas_${ reportId }`, cacheData)}
@@ -97,9 +97,9 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
 
    // RabbitMQ collaboration async function setupCollaboration(): Promise<void> { try { await rabbitMQClient.connect(); // Subscribe to canvas updates await rabbitMQClient.subscribe(`canvas.${ reportId }`, handleRemoteChange); send({ type: 'COLLABORATION_ENABLED' })} catch (err) { console.error('Failed to setup collaboration', err)}
   }
-  async function broadcastChange(type: string, object: any): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
+  async function broadcastChange(type: string, object: unknown): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
   }
-  function handleRemoteChange(message: any): void { // Handle incoming changes from other users console.log('Remote change received:', message); // TODO: Apply remote changes to canvas }
+  function handleRemoteChange(message: unknown): void { // Handle incoming changes from other users console.log('Remote change received:', message); // TODO: Apply remote changes to canvas }
 
   // History management function addToHistory(): void { if (!canvas) return;
    const stateStr = JSON.stringify(canvas.toJSON()); send({ type: 'ADD_TO_HISTORY', state: stateStr })}
@@ -124,8 +124,8 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   function toggleGrid(): void { gridEnabled = !gridEnabled; // TODO: Show/hide grid }
   function toggleSnapToGrid(): void { snapToGrid = !snapToGrid}
 
-  // Add evidence to canvas function addEvidence(item: EvidenceItem): void { if (!canvas) return; if (item.fileUrl && item.evidenceType === 'photo') { // fabric typings may not expose Image on the import; cast to: any to avoid TS errors in this environment (fabric, as: any).Image.fromURL(item.fileUrl, (img: any) => { img.set({ left: 100, top: 100, scaleX: 0.5, scaleY: 0.5, ...(item.canvasPosition || {}) }); (img as: any).evidenceId = item.id; (img as: any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] }; canvas?.add(img); canvas?.renderAll(); isDirty = true})} else { // Add as text annotation const text = new fabric.Text(item.title, { left: 100, top: 100, fontSize: 16, fill: '#333'
-      }); (text as: any).evidenceId = item.id; (text as: any).metadata = { description: item.description, evidenceType: item.evidenceType }; canvas.add(text); canvas.renderAll(); isDirty = true}
+  // Add evidence to canvas function addEvidence(item: EvidenceItem): void { if (!canvas) return; if (item.fileUrl && item.evidenceType === 'photo') { // fabric typings may not expose Image on the import; cast to: unknown to avoid TS errors in this environment (fabric, as: unknown).Image.fromURL(item.fileUrl, (img: unknown) => { img.set({ left: 100, top: 100, scaleX: 0.5, scaleY: 0.5, ...(item.canvasPosition || {}) }); (img as: unknown).evidenceId = item.id; (img as: unknown).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] }; canvas?.add(img); canvas?.renderAll(); isDirty = true})} else { // Add as text annotation const text = new fabric.Text(item.title, { left: 100, top: 100, fontSize: 16, fill: '#333'
+      }); (text as: unknown).evidenceId = item.id; (text as: unknown).metadata = { description: item.description, evidenceType: item.evidenceType }; canvas.add(text); canvas.renderAll(); isDirty = true}
   }
   function deleteSelected(): void { if (!canvas || !selectedObject) return; canvas.remove(selectedObject); selectedObject = null; isDirty = true}
   function lockSelected(): void { if (!selectedObject) return; selectedObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true }); canvas?.renderAll()}
@@ -276,11 +276,11 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
 
 interface CanvasState { id?: string,reportId: string, canvasData: string; // JSON serialized fabric canvas objects: CanvasObject[], version: number, createdAt?: Date; updatedAt?: Date}
 
-interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidence',data: any, position: { x: number, y: number }; size: { width: number;, height: number }; metadata?: Record<string, any>}
+interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidence',data: Record<string, unknown>, position: { x: number, y: number }; size: { width: number;, height: number }; metadata?: Record<string, any>}
 
-  // Props let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: { reportId?: string; evidence?: EvidenceItem[]; citationPoints?: any[]; onSave?: (state: CanvasState) => void; width?: number; height?: number; readOnly?: boolean; enableAutoTag?: boolean; enableCollaboration?: boolean} = $props(); // XState machine fallback (writable) - ensure `value` is updated for UI checks // Avoid naming collision with Svelte, 5 $state rune by calling this xstate type XStateContext = { reportId: string, canvasState: CanvasState | null,selectedObjects: any[], history: string[]; // store serialized canvas JSON snapshots historyIndex: number}; type XStateValue = { value: string;, context: XStateContext};
+  // Props let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: { reportId?: string; evidence?: EvidenceItem[]; citationPoints?: unknown[]; onSave?: (state: CanvasState) => void; width?: number; height?: number; readOnly?: boolean; enableAutoTag?: boolean; enableCollaboration?: boolean} = $props(); // XState machine fallback (writable) - ensure `value` is updated for UI checks // Avoid naming collision with Svelte, 5 $state rune by calling this xstate type XStateContext = { reportId: string, canvasState: CanvasState | null,selectedObjects: unknown[], history: string[]; // store serialized canvas JSON snapshots historyIndex: number}; type XStateValue = { value: string;, context: XStateContext};
    const xstate = writable<XStateValue>({ value: 'idle', context: { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }
-  }); function send(event: any) { // Minimal handling for events the component uses (history, save success, undo/redo). xstate.update((ss) => { const ctx: XStateContext = ss.context || { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }; switch (event.type) { case: 'ADD_TO_HISTORY': { ctx.history = ctx.history || []; ctx.history.push(event.state); ctx.historyIndex = ctx.history.length - 1; break}
+  }); function send(event: Event) { // Minimal handling for events the component uses (history, save success, undo/redo). xstate.update((ss) => { const ctx: XStateContext = ss.context || { reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 }; switch (event.type) { case: 'ADD_TO_HISTORY': { ctx.history = ctx.history || []; ctx.history.push(event.state); ctx.historyIndex = ctx.history.length - 1; break}
         case, 'UNDO': { ctx.historyIndex = Math.max(0, (ctx.historyIndex ?? 0) - 1); break}
         case, 'REDO': { ctx.historyIndex = Math.min((ctx.history?.length ?? 1) - 1, (ctx.historyIndex ?? 0) + 1); break}
         case, 'SAVE_SUCCESS': { ctx.canvasState = event.state; break}
@@ -289,7 +289,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
       ss.context = ctx; return ss})}
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available. const _lokiMap = new Map<string any>();
-   const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) }; // Svelte, 5 runes - avoid direct fabric type references to prevent TS namespace errors let canvas = $state<any | null>(null);
+   const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: unknown) => _lokiMap.set(k, v) }; // Svelte, 5 runes - avoid direct fabric type references to prevent TS namespace errors let canvas = $state<any | null>(null);
    let canvasElement: HTMLCanvasElement, let selectedObject = $state<any | null>(null);
    let zoomLevel = $state<number>(1);
    let gridEnabled = $state<boolean>(true);
@@ -302,7 +302,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
    let drawingMode = $state<boolean>(false); // Dialog states let showEvidenceDialog = $state<boolean>(false);
    let showTaggingDialog = $state<boolean>(false);
    let showShareDialog = $state<boolean>(false); // Auto-tagging state let isAutoTagging = $state<boolean>(false);
-   let suggestedTags = $state<string[]>([]); // Centralized Ollama endpoint helper + model constants // Prefer VITE_OLLAMA_URL (set in dev/prod env), fallback to docker service hostname. // Use import.meta.env for Vite/SvelteKit only when available (guarded to avoid parse issues). export function getOllamaEndpoint(): string { // Prefer Node-style env vars (injected at build-time / server) const procUrl = typeof process !== 'undefined' && (process as: any)?.env ? (process as: any).env.VITE_OLLAMA_URL || (process as: any).env.OLLAMA_URL: undefined; // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues. let viteUrl: string | undefined; try { // access import.meta.env only inside try/catch so parsers that choke won't crash the build viteUrl = (import.meta, as: any)?.env?.VITE_OLLAMA_URL} catch { viteUrl = undefined}'
+   let suggestedTags = $state<string[]>([]); // Centralized Ollama endpoint helper + model constants // Prefer VITE_OLLAMA_URL (set in dev/prod env), fallback to docker service hostname. // Use import.meta.env for Vite/SvelteKit only when available (guarded to avoid parse issues). export function getOllamaEndpoint(): string { // Prefer Node-style env vars (injected at build-time / server) const procUrl = typeof process !== 'undefined' && (process as: unknown)?.env ? (process as: unknown).env.VITE_OLLAMA_URL || (process as: unknown).env.OLLAMA_URL: undefined; // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues. let viteUrl: string | undefined; try { // access import.meta.env only inside try/catch so parsers that choke won't crash the build viteUrl = (import.meta, as: unknown)?.env?.VITE_OLLAMA_URL} catch { viteUrl = undefined}'
 
     // Final fallback uses Docker service hostname (per project conventions) return procUrl || viteUrl || 'http://ollama:11434'}
 
@@ -320,18 +320,18 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function setupCanvasEvents(): void { if (!canvas) return; // Selection events - FIXED: use Fabric's colon-separated event names canvas.on('selection:created', handleSelection); canvas.on('selection:updated', handleSelection); canvas.on('selection:cleared', () => { selectedObject = null; send({ type: 'DESELECT' })}); // Object modification events canvas.on('object:modified', handleObjectModified); canvas.on('object:added', handleObjectAdded); canvas.on('object:removed', handleObjectRemoved); // Mouse events for drawing canvas.on('mouse:down', handleMouseDown); canvas.on('mouse:move', handleMouseMove); canvas.on('mouse:up', handleMouseUp)}'
 
-  function handleSelection(e: any): void { selectedObject = e?.selected?.[0] || null; send({ type: 'SELECT_OBJECT', object: selectedObject }); // Trigger auto-tagging if enabled if (enableAutoTag && selectedObject) { void autoTagObject(selectedObject)}
+  function handleSelection(e: unknown): void { selectedObject = e?.selected?.[0] || null; send({ type: 'SELECT_OBJECT', object: selectedObject }); // Trigger auto-tagging if enabled if (enableAutoTag && selectedObject) { void autoTagObject(selectedObject)}
   }
-  function handleObjectModified(e: any): void { isDirty = true; addToHistory(); // Cache in Loki saveToLokiCache()}
-  function handleObjectAdded(e: any): void { isDirty = true; addToHistory(); // Broadcast via RabbitMQ if collaboration enabled if (enableCollaboration && e.target) { void broadcastChange('object:added', e.target)}
+  function handleObjectModified(e: unknown): void { isDirty = true; addToHistory(); // Cache in Loki saveToLokiCache()}
+  function handleObjectAdded(e: unknown): void { isDirty = true; addToHistory(); // Broadcast via RabbitMQ if collaboration enabled if (enableCollaboration && e.target) { void broadcastChange('object:added', e.target)}
   }
-  function handleObjectRemoved(e: any): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
+  function handleObjectRemoved(e: unknown): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
   }
 
-   // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: any parameter function handleMouseDown(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
+   // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: unknown parameter function handleMouseDown(_e: unknown): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
   }
-  function handleMouseMove(_e: any): void { // Handle panning, drawing, etc. }
-  function handleMouseUp(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
+  function handleMouseMove(_e: unknown): void { // Handle panning, drawing, etc. }
+  function handleMouseUp(_e: unknown): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
   }
 
    // Load canvas state from database async function loadCanvasState(): Promise<void> { if (!reportId) return; try { isLoading = true;
@@ -349,12 +349,12 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
         // Cache in Loki saveToLokiCache(); // Show success toast showToast('Canvas saved successfully', 'success')} else { throw new Error('Save failed')}
     } catch (err) { console.error('Failed to save canvas state:', err); error = 'Failed to save canvas'; send({ type: 'SAVE_ERROR', error: err }); showToast('Failed to save canvas', 'error')} finally { isLoading = false}
   }
-  function extractCanvasObjects(): CanvasObject[] { if (!canvas) return []; return canvas.getObjects().map((obj: any) => ({ id: obj.id || crypto.randomUUID(), type: obj.type === 'image' ? 'image': obj.type === 'text' ? 'text': 'shape', data: obj.toJSON(), position: { x: obj.left || 0, y: obj.top || 0 }, size: { width: obj.width || 0, height: obj.height || 0 }, metadata: obj.metadata || {} }))}
+  function extractCanvasObjects(): CanvasObject[] { if (!canvas) return []; return canvas.getObjects().map((obj: unknown) => ({ id: obj.id || crypto.randomUUID(), type: obj.type === 'image' ? 'image': obj.type === 'text' ? 'text': 'shape', data: obj.toJSON(), position: { x: obj.left || 0, y: obj.top || 0 }, size: { width: obj.width || 0, height: obj.height || 0 }, metadata: obj.metadata || {} }))}
 
-  // Qdrant auto-tagging async function autoTagObject(obj: any): Promise<void> { if (!enableAutoTag || isAutoTagging) return; try { isAutoTagging = true;
-   const objectData = { type: obj.type content: (obj, as: any).text || (obj as: any).src || '', metadata: (obj, as: any).metadata || {} }; // Generate tags using Qdrant semantic search const tags = await qdrantClient.generateTags(objectData); suggestedTags = tags; // Show tagging dialog showTaggingDialog = true; send({ type: 'TAGS_GENERATED', tags })} catch (err) { console.error('Auto-tagging failed:', err)} finally { isAutoTagging = false}
+  // Qdrant auto-tagging async function autoTagObject(obj: unknown): Promise<void> { if (!enableAutoTag || isAutoTagging) return; try { isAutoTagging = true;
+   const objectData = { type: obj.type content: (obj, as: unknown).text || (obj as: unknown).src || '', metadata: (obj, as: unknown).metadata || {} }; // Generate tags using Qdrant semantic search const tags = await qdrantClient.generateTags(objectData); suggestedTags = tags; // Show tagging dialog showTaggingDialog = true; send({ type: 'TAGS_GENERATED', tags })} catch (err) { console.error('Auto-tagging failed:', err)} finally { isAutoTagging = false}
   }
-  function applyTags(tags: string[]): void { if (!selectedObject) return; (selectedObject as: any).metadata = { ...(selectedObject as: any).metadata, tags }; canvas?.renderAll(); isDirty = true; showTaggingDialog = false}
+  function applyTags(tags: string[]): void { if (!selectedObject) return; (selectedObject as: unknown).metadata = { ...(selectedObject as: unknown).metadata, tags }; canvas?.renderAll(); isDirty = true; showTaggingDialog = false}
 
   // Loki.js caching function saveToLokiCache(): void { if (!canvas || !reportId) return;
    const cacheData = { reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() }; lokiCanvasCache.set(`canvas_${ reportId }`, cacheData)}
@@ -364,9 +364,9 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
 
    // RabbitMQ collaboration async function setupCollaboration(): Promise<void> { try { await rabbitMQClient.connect(); // Subscribe to canvas updates await rabbitMQClient.subscribe(`canvas.${ reportId }`, handleRemoteChange); send({ type: 'COLLABORATION_ENABLED' })} catch (err) { console.error('Failed to setup collaboration', err)}
   }
-  async function broadcastChange(type: string, object: any): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
+  async function broadcastChange(type: string, object: unknown): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
   }
-  function handleRemoteChange(message: any): void { // Handle incoming changes from other users console.log('Remote change received:', message); // TODO: Apply remote changes to canvas }
+  function handleRemoteChange(message: unknown): void { // Handle incoming changes from other users console.log('Remote change received:', message); // TODO: Apply remote changes to canvas }
 
   // History management function addToHistory(): void { if (!canvas) return;
    const stateStr = JSON.stringify(canvas.toJSON()); send({ type: 'ADD_TO_HISTORY', state: stateStr })}
@@ -391,8 +391,8 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   function toggleGrid(): void { gridEnabled = !gridEnabled; // TODO: Show/hide grid }
   function toggleSnapToGrid(): void { snapToGrid = !snapToGrid}
 
-  // Add evidence to canvas function addEvidence(item: EvidenceItem): void { if (!canvas) return; if (item.fileUrl && item.evidenceType === 'photo') { // fabric typings may not expose Image on the import; cast to: any to avoid TS errors in this environment (fabric, as: any).Image.fromURL(item.fileUrl, (img: any) => { img.set({ left: 100, top: 100, scaleX: 0.5, scaleY: 0.5, ...(item.canvasPosition || {}) }); (img as: any).evidenceId = item.id; (img as: any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] }; canvas?.add(img); canvas?.renderAll(); isDirty = true})} else { // Add as text annotation const text = new fabric.Text(item.title, { left: 100, top: 100, fontSize: 16, fill: '#333'
-      }); (text as: any).evidenceId = item.id; (text as: any).metadata = { description: item.description, evidenceType: item.evidenceType }; canvas.add(text); canvas.renderAll(); isDirty = true}
+  // Add evidence to canvas function addEvidence(item: EvidenceItem): void { if (!canvas) return; if (item.fileUrl && item.evidenceType === 'photo') { // fabric typings may not expose Image on the import; cast to: unknown to avoid TS errors in this environment (fabric, as: unknown).Image.fromURL(item.fileUrl, (img: unknown) => { img.set({ left: 100, top: 100, scaleX: 0.5, scaleY: 0.5, ...(item.canvasPosition || {}) }); (img as: unknown).evidenceId = item.id; (img as: unknown).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] }; canvas?.add(img); canvas?.renderAll(); isDirty = true})} else { // Add as text annotation const text = new fabric.Text(item.title, { left: 100, top: 100, fontSize: 16, fill: '#333'
+      }); (text as: unknown).evidenceId = item.id; (text as: unknown).metadata = { description: item.description, evidenceType: item.evidenceType }; canvas.add(text); canvas.renderAll(); isDirty = true}
   }
   function deleteSelected(): void { if (!canvas || !selectedObject) return; canvas.remove(selectedObject); selectedObject = null; isDirty = true}
   function lockSelected(): void { if (!selectedObject) return; selectedObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true }); canvas?.renderAll()}

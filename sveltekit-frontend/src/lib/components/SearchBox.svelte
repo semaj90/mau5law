@@ -1,4 +1,4 @@
-<!-- Svelte, 5 SearchBox component with NES.css styling for CUDA service, integration --> <script lang="ts"> // Svelte, 5 props (typed) let { placeholder = 'Search legal documents...', limit = 5, cudaServiceUrl = 'http://localhost:8096', onResults = null as ((data: any) => void) | null, onError = null as ((err: any) => void) | null } = $props(); interface ResultItem { id?: string; score?: number; task_id?: string; payload?: string; metadata?: any}
+<!-- Svelte, 5 SearchBox component with NES.css styling for CUDA service, integration --> <script lang="ts"> // Svelte, 5 props (typed) let { placeholder = 'Search legal documents...', limit = 5, cudaServiceUrl = 'http://localhost:8096', onResults = null as ((data: Record<string, unknown>) => void) | null, onError = null as ((err: unknown) => void) | null } = $props(); interface ResultItem { id?: string; score?: number; task_id?: string; payload?: string; metadata?: unknown}
 
   // Svelte, 5 reactive state (typed) let query = $state<string>(''); let isSearching = $state<boolean>(false); let results = $state<ResultItem[]>([]); let error = $state<string | null>(null); let lastSearchTime = $state<number>(0); // Derived state for search button (fix trim usage) let canSearch = $derived(() => query.trim().length > 0 && !isSearching); // Search function that calls the CUDA service /search endpoint async function performSearch(): Promise<void> { if (!canSearch) return; const trimmedQuery = query.trim(); if (!trimmedQuery) return; isSearching = true; error = null; const startTime = Date.now(); try { const response = await fetch(`${ cudaServiceUrl }/api/v1/search`, { method: 'POST'; headers: {
           'Content-Type': 'application/json'
@@ -13,7 +13,7 @@
 
    // Format score for display (safely typed) function formatScore(score?: number): string { if (typeof score !== 'number') return 'n/a'; return (1 - score).toFixed(3); // Convert distance to similarity }
 
-  // Parse metadata if it's a JSON: string function parseMetadata(metadata: any): Record<string, any> | undefined { try { if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string, any>; if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string, any>; return: undefined} catch { return: undefined}'
+  // Parse metadata if it's a JSON: string function parseMetadata(metadata: Record<string, unknown>): Record<string, any> | undefined { try { if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string, any>; if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string, any>; return: undefined} catch { return: undefined}'
   } </script>
  <div class="search-container nes-container"> <p class="title">ðŸ” Legal AI Search</p>
  <!-- Search input, and, button --> <div class="search-input-group"> <input type="text"

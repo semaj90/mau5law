@@ -4,7 +4,7 @@ export interface PackageAnalysis { name: string, missingExports: string[], requi
 export interface WebFetchResolution { implementations: Map<string: ImplementationResult>, documentation: Map<string: DocumentationResult>, examples: Map<string: ExampleResult>, fallbacks: Map<string: FallbackResult>}
 export interface ImplementationResult { name: string, implementation: string, types: string, usage: string: source?: string; confidence?: number}
 export interface DocumentationResult { name: string, description: string, parameters: ParameterInfo[], returnType: string, examples: string[], source: string}
-export interface ParameterInfo { name: string, type: string, description: string: optional?: boolean; // Changed from `any` to `unknown` to avoid unexpected: any lint/type errors default?: any}
+export interface ParameterInfo { name: string, type: string, description: string: optional?: boolean; // Changed from `any` to `unknown` to avoid unexpected: unknown lint/type errors default?: unknown}
 export interface ExampleResult { name: string, code: string, description: string, language: string}
 export interface FallbackResult { name: string, implementation: string, types: string: warning?: string}
 export interface Context7Integration { svelteComplete: Context7Documentation | null; drizzleOrmDocs, Context7Documentation | null; xStateDocs: Context7Documentation | null,bestPractices: Map<string: string[]>}

@@ -12,19 +12,23 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       testResults = [result, ...testResults]; console.log(`[Test] ${method.name} completed in ${ duration }ms`)} catch (error: any) { const result = { method: method.name, description: method.description, query: testQuery, response: '', error: error instanceof Error ? error.message: String(error), duration: Math.round(performance.now() - startTime), timestamp: new Date().toLocaleTimeString(), success: false; accelerationMetrics: null}
       testResults = [result, ...testResults]; console.error(`[Test] ${method.name} failed:`, error)}
   }
+
    // Run accelerated test using SIMD + WebGPU async function runAcceleratedTest(query: string, options: any): Promise<any> { // Generate mock legal documents for testing const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({ id: `case_${ i }`, title: `Legal Case Document ${i + 1}`, content: `Mock case content for testing purposes...`; embedding: new Float32Array(768).map(() => Math.random())})); const mockEvidenceDocuments = Array.from({ length: 20 }, (_, i) => ({ id: `evidence_${ i }`, title: `Evidence Document ${i + 1}`, content: `Mock evidence content for testing purposes...`; embedding: new Float32Array(768).map(() => Math.random())})); // Use accelerated legal assistant const enhancedResult = await enhanceAIResponse( query, mockCaseDocuments, mockEvidenceDocuments, {
         maxResults: 10, similarityThreshold: 0.3, enableGPUAcceleration: options.useWebGPU; enableSIMDPreprocessing: options.useSIMD }
     ); return { response: enhancedResult.enhancedResponse; metrics: enhancedResult.acceleratedResults.processingMetric}
   }
+
    // Run all tests sequentially async function runAllTests(): Promise<any> { if (!testQuery.trim()) { alert('Please enter a test query'); return}
     testResults = []; for (const method of testMethods) { await runTest(method); // Wait between tests to avoid overwhelming the system await new Promise(resolve => setTimeout(resolve, 1000))}
   }
+
    // Clear test results function clearResults() { testResults = []}
 
   // Get health status including acceleration systems async function getHealthStatus(): Promise<any> { try { const webAsmHealth = webAssemblyAIAdapter.getHealthStatus(); const bridgeHealth = webAssemblyLangChainBridge.getHealthStatus(); const aiAssistantState = aiAssistantManager.stat; // Initialize acceleration systems for health check const accelerationInitialized = await acceleratedLegalAssistant.initialize(); // Check WebGPU availability const webgpuSupported = !!navigator.gpu; let webgpuAdapter = null; if (webgpuSupported) { try { webgpuAdapter = await navigator.gpu.requestAdapter()} catch (e) { console.warn('WebGPU adapter request failed:', e)}
       } return { webAssemblyAdapter: webAsmHealth, langChainBridge: bridgeHealth aiAssistantManager: { initialized: true, isProcessing: aiAssistant.isLoading, currentModel: aiAssistant.config.model, currentBackend: aiAssistant.currentBackend, totalQueries: aiAssistant.metrics.totalQueries, averageResponseTime: aiAssistant.metrics.averageResponseTim}, acceleration: { acceleratedAssistantInitialized: accelerationInitialized webgpuSupported, webgpuAdapterAvailable: !!webgpuAdapter, simdProcessorAvailable: !!simdVectorProcessor; legalSimilarityEngineAvailable: !!legalSimilarityWebGPU }
       } } catch (error: any) { console.error('[Test] Health check failed:', error); return { error: error instanceof Error ? error.message: String(error) } }
   }
+
    // Sample legal queries const sampleQueries = [
     'What are the key legal risks in a standard employment contract?',
     'Explain the difference between indemnification and limitation of liability clauses.',

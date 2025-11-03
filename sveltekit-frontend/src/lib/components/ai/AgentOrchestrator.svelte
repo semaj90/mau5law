@@ -155,15 +155,15 @@
 </p> </div> </div> {/each}
   </div> </div> {/if} {#if selectedProvider === 'crewai' && executionResults.length > 0} <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Users class="h-5" /> CrewAI Execution Results ({executionResults.length} tasks) </h3> </div>
  <div class="yorha-panel-content"> <div class="space-y-3">
-  {#each Array.isArray(executionResults) ? executionResults: [] as result} <div class="border rounded-lg"> <div class="flex items-center justify-between"> <div class="flex items-center"> <span class="font-medium">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).taskId}
+  {#each Array.isArray(executionResults) ? executionResults: [] as result} <div class="border rounded-lg"> <div class="flex items-center justify-between"> <div class="flex items-center"> <span class="font-medium">{(result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).taskId}
 </span>
- <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).agentId}
+ <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{(result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).agentId}
 </span> </div>
  <div class="flex items-center">
-  {#if (result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).status === 'completed'} <CheckCircle class="h-4 w-4" /> {:else if (result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).status === 'failed'} <AlertCircle class="h-4 w-4" /> {:else} <Clock class="h-4 w-4" /> {/if}
-  <span class="text-xs"> {formatDuration((result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).executionTime)}
+  {#if (result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).status === 'completed'} <CheckCircle class="h-4 w-4" /> {:else if (result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).status === 'failed'} <AlertCircle class="h-4 w-4" /> {:else} <Clock class="h-4 w-4" /> {/if}
+  <span class="text-xs"> {formatDuration((result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).executionTime)}
 </span> </div> </div>
- <p class="text-sm text-gray-700">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).output}
+ <p class="text-sm text-gray-700">{(result as { taskId?: unknown; agentId?: unknown; status?: unknown; executionTime?: unknown; output?: unknown }).output}
 </p> </div> {/each}
   </div> </div> {/if}
   <!-- Workflow, Templates -->

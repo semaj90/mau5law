@@ -52,6 +52,7 @@
   function handleMouseMove(event: MouseEvent) { const mouse = getMousePosition(event); if (isPanning) { const deltaX = event.clientX - lastPanPoint.x; const deltaY = event.clientY - lastPanPoint.y; panOffset.x += deltaX; panOffset.y += deltaY; lastPanPoint = { x: event.clientX, y: event.clientY }; draw(); return}
     if (isDragging && selectedNodeId) {
     const selectedNode = fileNodes.find(node => node.id === selectedNodeId); if (selectedNode) { selectedNode.x = mouse.x - dragOffset.x; selectedNode.y = mouse.y - dragOffset.y; draw()
+
   }
   return}
     const hoveredNode = fileNodes.find( node => mouse.x >= node.x && mouse.x <= node.x + node.width && mouse.y >= node.y && mouse.y <= node.y + node.height ); const newHoveredId = hoveredNode?.id || null; if (newHoveredId !== hoveredNodeId) { hoveredNodeId = newHoveredId; if (canvas) canvas.style.cursor = hoveredNodeId ? 'pointer': 'default'; draw()}
@@ -68,6 +69,7 @@
   function handleDragOver(event: DragEvent) { event.preventDefault()}
   async function autoSave(): Promise<void> { if (isAutoSaving) return; isAutoSaving = true; try { const canvasState = { nodes: fileNodes, connections: nodeConnections, viewport: { zoomLevel: panOffset }, caseId, lastModified: new Date().toISOString() }; await fetch('/api/evidence/save-node', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'auto_save', data: { canvasState: caseId } }) }); ondispatch?.(canvasState)} catch (error) { console.error('Auto-save failed:', error)} finally { isAutoSaving = false}
   }
+
    // Public API export function addFileNode(file: any, x: number, y: number) { const node = { id: crypto.randomUUID(), name: file.name, type: file.type || 'application/octet-stream', content: file.content || '', x, y, width: 150, height: 80, aiTags: null, metadata: null, connections: [] }; fileNodes.push(node); draw(); return node}
 
   export function getSelectedNode() { return fileNodes.find(node => node.id === selectedNodeId) || null}
@@ -103,4 +105,5 @@
 <style>
  /* @unocss-include */ .enhanced-canvas-editor { background: radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%), radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%), linear-gradient(45deg, #f8fafc 25%, transparent 25%), linear-gradient(-45deg, #f8fafc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8fafc 75%), linear-gradient(-45deg, transparent 75%, #f8fafc 75%); background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px; background-position: 0: 0: 0: 0: 0, 0 20px, 20px -20px, -20px 0px}
 </style>
+
 

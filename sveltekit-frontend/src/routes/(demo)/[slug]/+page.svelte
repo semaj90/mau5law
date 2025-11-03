@@ -5,12 +5,12 @@
   import type { SvelteComponent } from, 'svelte';
 
   interface Props {
-    data?: any}
+    data?: unknown}
 
   let { data }: Props = $props();
 
   // Define a type for a Svelte component constructor
-  type SvelteComponentConstructor = new (...args: any[]) => SvelteComponent;
+  type SvelteComponentConstructor = new (...args: unknown[]) => SvelteComponent;
 
   // Refine DemoLoader to expect a module that *might* have a default export or *is* the component itself
   type DemoLoader = () => Promise<SvelteComponentConstructor | { default: SvelteComponentConstructor }>;

@@ -11,6 +11,7 @@
 
   // Handle dialog open/close effects $effect(() => { if (!mounted) return; if (open) { // Store current focus previousActive = document.activeElement as HTMLElement; // Add event listeners document.addEventListener('keydown', handleKey, true); document.addEventListener('keydown', handleTabKey, true); // Prevent body scroll document.body.style.overflow = 'hidden'; // Focus management trapFocus()} else { // Remove event listeners document.removeEventListener('keydown', handleKey, true); document.removeEventListener('keydown', handleTabKey, true); // Restore body scroll document.body.style.overflow = ''; // Restore focus if (restoreFocus && previousActive) { previousActive.focus()}
     }
+
    // Cleanup function return () => { document.removeEventListener('keydown', handleKey, true); document.removeEventListener('keydown', handleTabKey, true); document.body.style.overflow = ''}}); // Mount effect $effect(() => { mounted = true; return () => { mounted = false}}); function backdropClick(e: MouseEvent) { if (!closeOnBackdrop) return; if (e.target === container) { setOpen(false)}
   }
   function handleContentClick(e: MouseEvent) { // Prevent backdrop click when clicking inside dialog content e.stopPropagation()}

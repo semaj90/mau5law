@@ -12,7 +12,7 @@
   let serverName = 'context7';
   let useFunctions = true;
   let loading = false;
-  let result: any = null;
+  let result: unknown = null;
   let error: string | null = null;
   let servers: RegistryServer[] = [];
 
@@ -25,7 +25,7 @@
       if (!servers.find(s => s.name === serverName) && servers.length > 0) {
         serverName = servers[0].name;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err?.message ?? String(err);
     }
   }
@@ -44,7 +44,7 @@
         throw new Error(data?.error ?? 'Request failed');
       }
       result = data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err?.message ?? String(err);
     } finally {
       loading = false;
@@ -188,4 +188,5 @@
     </div>
   {/if}
 </section>
+
 

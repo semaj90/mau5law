@@ -51,7 +51,7 @@
 							actions: 'appendMessages'
 						},
 						onError: { target: 'error',
-							actions: assign({ error: (_, ev: any) => ev.data?.message ?? String(ev.data) })
+							actions: assign({ error: (_, ev: unknown) => ev.data?.message ?? String(ev.data) })
 						}
 					}
 				},
@@ -61,8 +61,8 @@
 			}
 		}, {
 			actions: {
-				setModel: assign({ model: (_, e: any) => e.model }),
-				appendMessages: assign((ctx, e: any) => {
+				setModel: assign({ model: (_, e: unknown) => e.model }),
+				appendMessages: assign((ctx, e: unknown) => {
 					return {
 						messages: [...ctx.messages, e.data.userMessage, e.data.aiResponse],
 						error: null
@@ -70,7 +70,7 @@
 			},
 			services: {
 				// Safe, stub: replace with real API integration (Ollama / server)
-				sendMessage: async ({ context: event }: any) => {
+				sendMessage: async ({ context: event }: unknown) => {
 					const userMsg: ChatMessage = { id: crypto.randomUUID(),
 						role: 'user',
 						content: (event && event.message) || messageInput || '',
@@ -94,15 +94,15 @@
 	// autoscroll when messages change
 	$effect.pre(() => {
 		// read messages to track them
-		(chatState as: any).context?.messages
+		(chatState as: unknown).context?.messages
 		if (chatContainer) {
 			tick().then(() => {
 				if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight})}
 	});
 
 	onMount(() => {
-		// ensure machine is connected or: any startup logic
-		send({ type: 'CONNECT' }, as: any)});
+		// ensure machine is connected or: unknown startup logic
+		send({ type: 'CONNECT' }, as: unknown)});
 	onDestroy(() => {
 		// cleanup if needed
 	});
@@ -110,7 +110,7 @@
 	function handleSend() {
 		const trimmed = (messageInput ?? '').toString().trim();
 		if (!trimmed) return
-		send({ type: 'SEND', message: trimmed }, as: any),
+		send({ type: 'SEND', message: trimmed }, as: unknown),
 		messageInput = ''}
   function onKeyDown(e: KeyboardEvent) {
 		if (e.key === 'Enter' && !e.shiftKey) {
@@ -126,9 +126,9 @@
 		<div class="flex items-center">
 			<div class="w-3 h-3 rounded-full bg-green-500"></div>
 			<h2 class="text-xl font-semibold">Legal AI Assistant</h2>
-			{#if (chatState as: any).context?.confidence}
+			{#if (chatState as: unknown).context?.confidence}
 				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">
-					Confidence: {Math.round(((chatState, as: any).context.confidence ?? 0) * 100)}%
+					Confidence: {Math.round(((chatState, as: unknown).context.confidence ?? 0) * 100)}%
 				</span>
 			{/if}
 		</div>
@@ -151,13 +151,13 @@
 		class="messages-container flex-1 min-h-[12rem] max-h-[24rem] overflow-y-auto p-4 bg-white rounded-lg border shadow-sm"
 		bind:this={chatContainer}
 	>
-		{#if (chatState, as: any).context?.messages?.length === 0}
+		{#if (chatState, as: unknown).context?.messages?.length === 0}
 			<div class="p-6 text-center">
 				<h3 class="text-lg font-medium text-gray-900">Welcome to Legal AI</h3>
 				<p class="text-gray-500">Ask about legal documents, contracts, or cases.</p>
 			</div>
 		{:else}
-			{#each (chatState as: any).context.messages as message (message.id)}
+			{#each (chatState as: unknown).context.messages as message (message.id)}
 				<div class={cn('message-item, mb-4, flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
 					<div
 						class={cn(

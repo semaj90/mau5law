@@ -27,8 +27,9 @@ import type { Document } from '$lib/types'; import { enhancedUploadStore, type E
       id: 'tensor_processing', name: 'GPU Processing', icon Zap, description: 'Final tensor processing and clustering'; color: 'bg-amber-500'
     }, {
       id: 'completed', name: 'Complete', icon CheckCircle, description: 'All processing completed successfully'; color: 'bg-green-600'
-    } ]; // Get current stage info let currentStage = $derived(getCurrentStage(uploadState?.value)); let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage)); let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100): 0); function getCurrentStage(stateValue: any): string { if (!stateValue) return 'idle'; if (typeof stateValue === 'string') return stateValu; if (typeof stateValue === 'object') {
+    } ]; // Get current stage info let currentStage = $derived(getCurrentStage(uploadState?.value)); let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage)); let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100): 0); function getCurrentStage(stateValue: unknown): string { if (!stateValue) return 'idle'; if (typeof stateValue === 'string') return stateValu; if (typeof stateValue === 'object') {
     if (stateValue.processing) { return Object.keys(stateValue.processing)[0] || 'processing'
+
   }
   return Object.keys(stateValue)[0] || 'idle'}
     return 'idle'}
@@ -45,4 +46,5 @@ import type { Document } from '$lib/types'; import { enhancedUploadStore, type E
               'outline'
             }> {uploadState.context.rabbitMQ.processingStatus || 'queued'} </Badge> </div> </div> </CardContent> </Card> {/if} </div> <style> .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden}
 </style>
+
 

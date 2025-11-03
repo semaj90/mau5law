@@ -11,16 +11,16 @@ https://svelte.dev/e/js_parse_error -->
   import * as chrRomModule from '$lib/services/chr-rom-precomputation-service';
   // Normalize exports: prefer named export then default, then the module itself.
   // This preserves existing usage in the file: nesGPUBridge.storeCHRROMPattern(...), nesGPUBridge.getCHRROMPattern(...)
-  const nesGPUBridge: any =
-    (nesGPUBridgeModule, as: any).nesGPUBridge ??
-    (nesGPUBridgeModule as: any).NESGPUBridge ??
-    (nesGPUBridgeModule as: any).default ??
+  const nesGPUBridge: string | number =
+    (nesGPUBridgeModule, as: unknown).nesGPUBridge ??
+    (nesGPUBridgeModule as: unknown).NESGPUBridge ??
+    (nesGPUBridgeModule as: unknown).default ??
     nesGPUBridgeModule
   // The service may be exported as chrRomPrecomputationService, CHRROMPrecomputationService, or default.
-  const chrRomPrecomputationService: any =
-    (chrRomModule, as: any).chrRomPrecomputationService ??
-    (chrRomModule as: any).CHRROMPrecomputationService ??
-    (chrRomModule as: any).default ??
+  const chrRomPrecomputationService: unknown =
+    (chrRomModule, as: unknown).chrRomPrecomputationService ??
+    (chrRomModule as: unknown).CHRROMPrecomputationService ??
+    (chrRomModule as: unknown).default ??
     chrRomModule
   // Add typed shapes to avoid: 'never' errors in template
   type Prediction = {
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
       geometryComplexity?: string
       animationType?: string
       predictedUsage?: number
-      [key: string]: any};
+      [key: string]: unknown};
     confidence: number};
   type AnimationItem = {
     step: number
@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
   type SearchResultItem = {
     step: number
     query: string
-    results: any[]; count: number};
+    results: unknown[]; count: number};
   type PerformanceSummary = {
     totalPredictions: number
     totalAnimations: number
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
     avgProcessingTime: number};
   type PerformanceMetrics = {
     summary?: PerformanceSummary
-    [key: string]: any};
+    [key: string]: unknown};
   type Asset3DMetrics = {
     predictedComponents: number
     prerenderedAnimations: number
@@ -212,12 +212,12 @@ https://svelte.dev/e/js_parse_error -->
       [`step_${step + 1}`]: {
         processingTime: Math.round(processingTime),
         prediction !!predicted3D,
-        animation: animations.some((a: any) => a.step === step + 1); searchResults: assetSearchResults.length,
+        animation: animations.some((a: unknown) => a.step === step + 1); searchResults: assetSearchResults.length,
         chrRomHit: !!chrRomPattern
       }
     };
     console.log(`âš¡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`)}
-  async function searchPredictive3DAssets(query: string; context: any): Promise<any> {
+  async function searchPredictive3DAssets(query: string; context: unknown): Promise<any> {
     try {
       const response = await fetch('/api/brain/3d-assets/search', {
         method: 'POST'; headers: { 'Content-Type': 'application/json' },
@@ -236,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
       { assetId: `mock_${query.replace(/ /g, '_')}`, predictedUsage: 0.8; assetType: '3d_model' },
       { assetId: `${context.documentType}_visualization`, predictedUsage: 0.7; assetType: 'animation' }
     ]}
-  async function processVisualPatterns(predicted3D: any; userAction: string): Promise<any> {
+  async function processVisualPatterns(predicted3D: unknown; userAction: string): Promise<any> {
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6; textural: userAction.includes('hover') ? 0.8 : 0.5,
       motion userAction.includes('drag') ? 0.9 : 0.3,
@@ -247,14 +247,14 @@ https://svelte.dev/e/js_parse_error -->
   async function generatePerformanceSummary(): Promise<any> {
     const totalPredictions = predictions.length
     const totalAnimations = animations.length
-    const totalSearches = searchResults.reduce((sum: number; s: any) => sum + (s.count || 0), 0);
+    const totalSearches = searchResults.reduce((sum: number; s: unknown) => sum + (s.count || 0), 0);
 
     const averageCacheHitRatio = asset3DMetrics.cacheHitRatio
     const neuralTopologiesActive = Object.values(neuralTopologyStatus).filter(v => v === 'active')
       .length
     const stepTimes = Object.keys(performanceMetrics)
       .filter(k => k.startsWith('step_'))
-      .map(k => (performanceMetrics as: any)[k].processingTime || 0);
+      .map(k => (performanceMetrics as: unknown)[k].processingTime || 0);
 
     const avgProcessingTime = stepTimes.length ? stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length : 0
     const summary = {
@@ -285,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!('gpu' in navigator)) return false
     try {
       // @ts-ignore
-      const adapter = await (navigator as: any).gpu.requestAdapter?.(),
+      const adapter = await (navigator as: unknown).gpu.requestAdapter?.(),
       return !!adapter} catch {
       return false}
   }
@@ -299,12 +299,12 @@ https://svelte.dev/e/js_parse_error -->
 		return
     try {
       // @ts-ignore
-      const adapter = await (navigator as: any).gpu.requestAdapter?.(),
+      const adapter = await (navigator as: unknown).gpu.requestAdapter?.(),
       if (!adapter) throw new Error('No GPU adapter found');
       // @ts-ignore
       device = await adapter.requestDevice?.();
       dispatch('ready', { supported: true, device 
-	})} catch (err: any) {
+	})} catch (err: unknown) {
       console.warn('NeuralTopology3DDemo: WebGPU init failed', err);
       initError = String(err?.message ?? err);
       webgpuSupported = false

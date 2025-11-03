@@ -3,10 +3,10 @@
   let { enableGPUAcceleration = true, enableAIRecommendations = true, enableIdleProcessing = true, theme = 'yorha', maxConcurrentStreams = 100, progressAnimationSpeed = 1.0 }: Props = $props(); // --- Component State (Svelte, 5 runes) --- let canvasRef: HTMLCanvasElement | null = null;
    let gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;
    let vertexBuffer: WebGLBuffer | null = null;
-   let shaderProgram: WebGLProgram | null = null; // --- Service integrations (placeholders for degraded mode) --- let vllmIntegration: any = null;
-   let simdParser: any = null;
-   let neo4jEngine: any = null;
-   let idleDetectionService: any = null;
+   let shaderProgram: WebGLProgram | null = null; // --- Service integrations (placeholders for degraded mode) --- let vllmIntegration: unknown = null;
+   let simdParser: unknown = null;
+   let neo4jEngine: unknown = null;
+   let idleDetectionService: string | number = null;
    let isInitialized = $state<boolean>(false);
    let isProcessing = $state<boolean>(false);
    let currentProgress = $state<number>(0);

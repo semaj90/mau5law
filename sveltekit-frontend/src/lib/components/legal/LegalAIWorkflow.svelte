@@ -67,7 +67,7 @@
                     recommendationRequest.query_embedding = analysisResult.embedding}
                 recommendations = await legalAIClient.getRecommendations(recommendationRequest);
                 currentStep = 'complete'}
-            ondispatch?.({ analysisResult: recommendations })} catch (err: any) {
+            ondispatch?.({ analysisResult: recommendations })} catch (err: unknown) {
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err)} finally {
             isProcessing = false}

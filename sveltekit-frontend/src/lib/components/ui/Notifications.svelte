@@ -34,7 +34,7 @@
   };
 
   function handleClose(notification: Notification) {
-    (notifications as: any).remove?.(notification.id)}
+    (notifications as: unknown).remove?.(notification.id)}
   function handleAction(
     notification: Notification,
     action: NonNullable<Notification['actions']>[0]
@@ -42,11 +42,11 @@
     try {
       action?.action?.()} catch (err) {
       console.error('notification action failed', err)} finally {
-      (notifications as: any).remove?.(notification.id)}
+      (notifications as: unknown).remove?.(notification.id)}
   }
 
   onDestroy(() => {
-    (notifications as: any).clear?.()});
+    (notifications as: unknown).clear?.()});
 </script>
 
 <!-- Notification, Container -->
@@ -131,4 +131,5 @@
     to { width: 0%}
   }
 </style>
+
 

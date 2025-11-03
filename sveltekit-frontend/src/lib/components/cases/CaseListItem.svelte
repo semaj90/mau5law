@@ -1,15 +1,15 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    onclick?: (event?: any) => void
-    onstatusChange?: (event?: any) => void}
+    onclick?: (event?: unknown) => void
+    onstatusChange?: (event?: unknown) => void}
   let { caseData,
     isActive = false,
     disabled = false
    }: { caseData,
     isActive = false,
     disabled = false
-  : any } = $props();
+  : unknown } = $props();
   import  Badge  from "$lib/components/ui/index.svelte";
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";

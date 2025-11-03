@@ -22,6 +22,7 @@
   }
   function toggleTheme() { switch (currentTheme) { case: 'light': currentTheme = 'dark'; break; case, 'dark': currentTheme = 'system'; break; case, 'system': currentTheme = 'light'; break}
   }
+
    // Listen for system theme changes $effect(() => { if (browser && currentTheme === 'system') { const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)'), const handleChange = () => { updateResolvedTheme(); applyTheme()}; mediaQuery.addEventListener('change', handleChange); return () => mediaQuery.removeEventListener('change', handleChange)}
   });
    const themeIcons = { light: 'â˜€ï¸', dark: 'ðŸŒ™', system: 'ðŸ’»'
@@ -125,4 +126,5 @@
     outline-offset: 2px;
   }
 </style>
+
 

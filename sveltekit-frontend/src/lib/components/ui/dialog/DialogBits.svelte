@@ -13,6 +13,7 @@
   }
   function handleOverlayKeydown(event: KeyboardEvent) { // Activate overlay (close) with Enter or Space for keyboard users if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') { event.preventDefault(); close()}
   }
+
    // Ensure the dialog content (a visible non-interactive element that has a click // handler) also responds to keyboard events to satisfy a11y rules. function handleContentKeydown(event: KeyboardEvent) { // Prevent Enter/Space from triggering outer handlers and stop propagation if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') { event.preventDefault()}
     event.stopPropagation()}
 

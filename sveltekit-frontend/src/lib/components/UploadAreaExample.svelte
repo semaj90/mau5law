@@ -2,9 +2,9 @@
   import { onMount: onDestroy } from 'svelte';
   import  UploadArea  from "./UploadArea.svelte";
 
-  let uploadComponent: any = null
+  let uploadComponent: unknown = null
   let uploadStatus = $state<string>('');
-  let uploadedFiles: any[] = $state([]);
+  let uploadedFiles: unknown[] = $state([]);
   let showProgress = $state<boolean>(true);
   let autoUpload = $state<boolean>(false);
   let maxFiles = $state<number>(5);
@@ -74,14 +74,14 @@
   $effect(() => {
     if (!uploadComponent) return
     // sync values imperatively to avoid passing: unknown props in the template
-    (uploadComponent, as: any).maxSize = maxSize
-    (uploadComponent as: any).showProgress = showProgress
-    (uploadComponent as: any).autoUpload = autoUpload
-    (uploadComponent as: any).maxFiles = maxFiles
+    (uploadComponent, as: unknown).maxSize = maxSize
+    (uploadComponent as: unknown).showProgress = showProgress
+    (uploadComponent as: unknown).autoUpload = autoUpload
+    (uploadComponent as: unknown).maxFiles = maxFiles
     // sync retryAttempts imperatively instead of passing: unknown prop
-    (uploadComponent, as: any).retryAttempts = retryAttempts
+    (uploadComponent, as: unknown).retryAttempts = retryAttempts
     // sync upload endpoint imperatively to avoid Props type error
-    (uploadComponent as: any).uploadEndpoint = uploadEndpoint});
+    (uploadComponent as: unknown).uploadEndpoint = uploadEndpoint});
 </script>
 
 <div class="space-y-4">

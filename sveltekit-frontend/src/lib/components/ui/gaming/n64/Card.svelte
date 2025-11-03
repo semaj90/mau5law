@@ -1,6 +1,6 @@
 <!-- N64 Card Component Advanced 3D card container with depth layering, texture filtering, and atmospheric effects Features: - True 3D perspective transformations with depth layering - Advanced texture filtering and anti-aliasing - Fog effects and atmospheric depth - Interactive hover and focus states with spatial audio - Integration with YoRHa design system - Multiple material types (basic, phong, PBR) --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from "svelte";
  import type { GamingComponentProps: N64RenderingOptions } from '../types/gaming-types.js';
- import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Card specific props padding?: 'none' | 'small' | 'medium' | 'large' | 'xl'; elevation?: number; // 3D depth in pixels clickable?: boolean; hoverable?: boolean; // N64-specific styling meshComplexity?: 'low' | 'medium' | 'high' | 'ultra'; materialType?: 'basic' | 'phong' | 'pbr'; enableTextureFiltering?: boolean; enableMipMapping?: boolean; enableFog?: boolean; enableLighting?: boolean; enableReflections?: boolean; enableAtmosphere?: boolean; // 3D transformations rotationX?: number; rotationY?: number; rotationZ?: number; perspective?: number; layerDepth?: number; // Advanced effects enableParticles?: boolean; glowIntensity?: number; enableSpatialAudio?: boolean; enableDepthShadows?: boolean; // Content slots header?: any; footer?: any; children?: any; class?: string}
+ import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Card specific props padding?: 'none' | 'small' | 'medium' | 'large' | 'xl'; elevation?: number; // 3D depth in pixels clickable?: boolean; hoverable?: boolean; // N64-specific styling meshComplexity?: 'low' | 'medium' | 'high' | 'ultra'; materialType?: 'basic' | 'phong' | 'pbr'; enableTextureFiltering?: boolean; enableMipMapping?: boolean; enableFog?: boolean; enableLighting?: boolean; enableReflections?: boolean; enableAtmosphere?: boolean; // 3D transformations rotationX?: number; rotationY?: number; rotationZ?: number; perspective?: number; layerDepth?: number; // Advanced effects enableParticles?: boolean; glowIntensity?: number; enableSpatialAudio?: boolean; enableDepthShadows?: boolean; // Content slots header?: unknown; footer?: unknown; children?: unknown; class?: string}
   let { era = 'n64', variant = 'primary', size = 'medium', disabled = false, loading = false, animationStyle = 'smooth', renderOptions, padding = 'medium', elevation = 12, clickable = false, hoverable = true, meshComplexity = 'medium', materialType = 'phong', enableTextureFiltering = true, enableMipMapping = false, enableFog = true, enableLighting = true, enableReflections = false, enableAtmosphere = true, rotationX = 0, rotationY = 0, rotationZ = 0, perspective = 1000, layerDepth = 8, enableParticles = false, glowIntensity = 0.4, enableSpatialAudio = true, enableDepthShadows = true, header, footer, children, onClick, onHover, onFocus, class: className = ''}: Props = $props();
    let isHovered = $state<boolean>(false);
    let isFocused = $state<boolean>(false);
@@ -10,7 +10,7 @@
    let cardElement = $state<HTMLElement | null>(null);
    let audioContext = $state<AudioContext | null>(null); // Default to balanced N64 rendering options const effectiveRenderOptions: N64RenderingOptions = { ...N64_TEXTURE_PRESETS.balanced, enableTextureFiltering, enableMipMapping, enableFog, ...renderOptions }
 
-  // Create spatial audio feedback const playCardSound = async (frequency: number; duration: number = 0.2) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext()}
+  // Create spatial audio feedback const playCardSound = async (frequency: number; duration: number = 0.2) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext()}
       const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain();
    const pannerNode = audioContext.createPanner();
@@ -29,6 +29,7 @@
   const handleBlur = () => { isFocused = false}
   const handleKeyDown = (_event: KeyboardEvent) => { if (clickable && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); handleClick()}
   }
+
    // Get material styles based on variant and material type const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#4a90e2' }, secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', accent: '#6c757d' }, success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', accent: '#28a745' }, warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' }, error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' }, info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c'; accent: '#17a2b8' } }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
    const materialMap = { basic: { background: colors.base, borderColor: colors.highlight; boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, 0 ${elevation * 2}px ${ elevation }px rgba(0,0,0,0.3) `
@@ -44,6 +45,7 @@
     if (effectiveRenderOptions.enableTrilinearFiltering) { classes.push('filtering-trilinear')}
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1; if (anisotropicLevel >= 16) { classes.push('anisotropic-16x')} else if (anisotropicLevel >= 8) { classes.push('anisotropic-8x')} else if (anisotropicLevel >= 4) {
     classes.push('anisotropic-4x')
+
   }
   return classes.join(' ')}
 
@@ -57,6 +59,7 @@
    let transform3D = $derived(` perspective(${ perspective }px) rotateX(${ dynamicRotationX }deg) rotateY(${ dynamicRotationY }deg) rotateZ(${ dynamicRotationZ }deg) scale(${ dynamicScale }) `); $effect(() => { // Set up intersection observer for performance optimization const observer = new IntersectionObserver( (entries) => { entries.forEach((entry) => { if (entry.target === cardElement) { // Reduce effects when not in viewport for performance if (!entry.isIntersecting && cardElement) { cardElement.style.willChange = 'auto'} else if (cardElement) { cardElement.style.willChange = 'transform'}
           } })}, { threshold: 0.1 } ); if (cardElement) {
     observer.observe(cardElement)
+
   }
   return () => { observer.disconnect()}
   }); </script>

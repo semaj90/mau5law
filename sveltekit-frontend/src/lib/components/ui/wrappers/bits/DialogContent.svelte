@@ -9,11 +9,11 @@
 		(async () => {
 
     if (overrides && overrides.Dialog) {
-      DialogContent = (overrides.Dialog as: any).Content ?? null
+      DialogContent = (overrides.Dialog as: unknown).Content ?? null
       return}
     try {
       const mod = await import('bits-ui');
-      const dialog = (mod as: any).Dialog ?? (mod as: any).default?.Dialog
+      const dialog = (mod as: unknown).Dialog ?? (mod as: unknown).default?.Dialog
       DialogContent = dialog?.Content ?? null} catch {
       DialogContent = null}
   		})();

@@ -26,6 +26,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   function getSystemHealthColor(status: string) { switch (status) { case: 'healthy': return 'text-success'; case, 'warning': return 'text-warning'; case, 'error': return 'text-error',default: return 'text-base-content'}
   }
+
    // Reactive effect (runes mode): run filterEvents whenever severity/type selections change $effect(() => { if (selectedSeverity || selectedType) { filterEvents()}
   }); </script>
  <div class="container mx-auto"> <!-- Header --> <div class="container mx-auto"> <div> <h2 class="container mx-auto"> <Shield class="container mx-auto" /> Security Monitoring </h2>

@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
- // Svelte, 5 runes are auto-imported import { page } from '$app/stores'; let { data, form }: { data, form: any } = $props(); let isAutoLoggingIn = $state<boolean>(false); // Check for registration success message let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true'); // Auto-fill demo user credentials function autoLoginDemo() { console.log('ðŸ”§ Auto-fill demo credentials clicked'); const emailInput = document.getElementById('email') as HTMLInputElement; const passwordInput = document.getElementById('password') as HTMLInputElement; if (!emailInput || !passwordInput) { console.error('âŒ Could not find email or password inputs'); return}
+ // Svelte, 5 runes are auto-imported import { page } from '$app/stores'; let { data, form }: { data, form: unknown } = $props(); let isAutoLoggingIn = $state<boolean>(false); // Check for registration success message let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true'); // Auto-fill demo user credentials function autoLoginDemo() { console.log('ðŸ”§ Auto-fill demo credentials clicked'); const emailInput = document.getElementById('email') as HTMLInputElement; const passwordInput = document.getElementById('password') as HTMLInputElement; if (!emailInput || !passwordInput) { console.error('âŒ Could not find email or password inputs'); return}
     emailInput.value = 'demo@legalai.gov'; passwordInput.value = 'demo123456'; // Trigger input events to ensure Svelte recognizes the changes emailInput.dispatchEvent(new Event('input', { bubbles: true })); passwordInput.dispatchEvent(new Event('input', { bubbles: true })); console.log('âœ… Demo credentials filled')}
 
   // Event handlers for buttons function handleQuickLogin() { console.log('ðŸ”§ Quick login handler called'); quickDemoLogin()}
@@ -9,7 +9,7 @@
 
   // Auto-login with demo user (skip form submission) async function quickDemoLogin(): Promise<any> { console.log('âš¡ Quick demo login clicked'); isAutoLoggingIn = true; try { console.log('ðŸ“¡ Calling auto-login endpoint...'); const response = await fetch('/auth/login/auto', { method: 'POST', headers: {
           'Content-Type': 'application/json'
-        } }); const result = await (response as { json?: any }).json(); console.log('ðŸ“¨ Auto-login response:', result); if ((result as { success?: any; redirectTo?: any; error?: any }).success) { console.log('âœ… Auto-login successful, redirecting...'); // Redirect to dashboard window.location.href = (result as { success?: any; redirectTo?: any; error?: any }).redirectTo || '/dashboard'} else { // Fall back to auto-fill if auto-login fails console.warn.error); autoLoginDemo()}
+        } }); const result = await (response as { json?: unknown }).json(); console.log('ðŸ“¨ Auto-login response:', result); if ((result as { success?: unknown; redirectTo?: unknown; error?: unknown }).success) { console.log('âœ… Auto-login successful, redirecting...'); // Redirect to dashboard window.location.href = (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).redirectTo || '/dashboard'} else { // Fall back to auto-fill if auto-login fails console.warn.error); autoLoginDemo()}
     } catch (error) { console.error('âŒ Quick demo login failed:', error); // Fall back to auto-fill autoLoginDemo()} finally { isAutoLoggingIn = false}
   }
 </script>
@@ -172,4 +172,5 @@
   .focus\:outline-none:focus { outline: none}
   .focus\:border-yellow-400:focus { border-color: #fbbf24}
 </style>
+
 

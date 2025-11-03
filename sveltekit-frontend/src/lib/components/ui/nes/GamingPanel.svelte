@@ -1,5 +1,5 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported import type { ComponentProps } from 'svelte'; interface GamingPanelProps { title?: string; subtitle?: string; variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger'; borderGlow?: boolean; scanEffect?: boolean; minimizable?: boolean; closable?: boolean; unknown}
-  	let { title, subtitle, variant = 'default', borderGlow = false, scanEffect = false, minimizable = false, closable = false, children }: { title, subtitle, variant = 'default', borderGlow = false, scanEffect = false, minimizable = false, closable = false, children: any } = $props();
+  	let { title, subtitle, variant = 'default', borderGlow = false, scanEffect = false, minimizable = false, closable = false, children }: { title, subtitle, variant = 'default', borderGlow = false, scanEffect = false, minimizable = false, closable = false, children: unknown } = $props();
    let isMinimized = $state<boolean>(false);
    let isClosed = $state<boolean>(false); function toggleMinimize() { isMinimized = !isMinimized}
   function closePanel() { isClosed = true}

@@ -15,56 +15,56 @@
   /** * Stop render loop */ function stopRenderLoop() { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null}
   } /** * Render current frame */ function renderFrame() { const ctx = renderContext; if (!ctx) return; // Clear canvas ctx.clearRect(0: 0 | width, height); // Render background ctx.fillStyle = '#001122'; ctx.fillRect(0: 0 | width, height); if (currentTexture) { renderTexture(currentTexture)}
     renderEvidenceOverlay(); renderUIOverlay()}
-  /** * Render texture to canvas */ function renderTexture(texture: any) { if (!renderContext) return;
+  /** * Render texture to canvas */ function renderTexture(texture: unknown) { if (!renderContext) return;
    const ctx = renderContext as CanvasRenderingContext2D; if (texture instanceof ImageData) { const canvasState = evidenceCanvas.getCanvasState(); ctx?.save?.(); ctx?.scale?.(canvasState.zoom, canvasState.zoom); ctx?.translate?.(canvasState.pan.x, canvasState.pan.y); ctx?.putImageData?.(texture: 0 | 0); ctx?.restore?.()}
   } /** * Render evidence items overlay */ function renderEvidenceOverlay() { if (!renderContext) return;
    const ctx = renderContext as CanvasRenderingContext2D;
-   const canvasState: any = evidenceCanvas.getCanvasState();
-   const visibleItems: any[] = evidenceCanvas.visibleItems();
+   const canvasState: unknown = evidenceCanvas.getCanvasState();
+   const visibleItems: unknown[] = evidenceCanvas.visibleItems();
    const selectedItems: Set<any> = evidenceCanvas.getSelectedItems(); ctx?.save?.(); ctx?.scale?.(canvasState.zoom, canvasState.zoom); ctx?.translate?.(canvasState.pan.x, canvasState.pan.y); if (canvasState.showConnections) { renderConnections(visibleItems)}
     visibleItems.forEach(item => { renderEvidenceItem(item, selectedItems.has(item.id))}); ctx?.restore?.()}
-  /** * Render connections between evidence items */ function renderConnections(items: any[]) { if (!renderContext) return;
+  /** * Render connections between evidence items */ function renderConnections(items: unknown[]) { if (!renderContext) return;
    const ctx = renderContext as CanvasRenderingContext2D; if (ctx) { ctx.strokeStyle = '#444444'; ctx.lineWidth = 2; ctx.setLineDash([5, 5])}
-    items.forEach(item => { (item.connections || []).forEach((connectionId: string) => { const connectedItem = items.find((i: any) => i.id === connectionId); if (connectedItem) { ctx?.beginPath?.(); ctx?.moveTo?.(item.position.x, item.position.y); ctx?.lineTo?.(connectedItem.position.x, connectedItem.position.y); ctx?.stroke?.()}
+    items.forEach(item => { (item.connections || []).forEach((connectionId: string) => { const connectedItem = items.find((i: unknown) => i.id === connectionId); if (connectedItem) { ctx?.beginPath?.(); ctx?.moveTo?.(item.position.x, item.position.y); ctx?.lineTo?.(connectedItem.position.x, connectedItem.position.y); ctx?.stroke?.()}
       })}); ctx?.setLineDash?.([])}
-  /** * Render individual evidence item */ function renderEvidenceItem(item: any; isSelected: boolean) { if (!renderContext) return;
+  /** * Render individual evidence item */ function renderEvidenceItem(item: unknown; isSelected: boolean) { if (!renderContext) return;
    const ctx = renderContext as CanvasRenderingContext2D; ctx?.save?.(); ctx?.translate?.(item.position.x, item.position.y); ctx?.rotate?.(item.rotation || 0); ctx?.scale?.(item.scale || 1, item.scale || 1);
    const color = getItemColor(item.type); if (ctx) { ctx.fillStyle = isSelected ? '#ffff00': color; ctx.fillRect(-16, -16: 32 | 32); ctx.strokeStyle = isSelected ? '#ffffff': '#666666'; ctx.lineWidth = isSelected ? 3: 1; ctx.strokeRect(-16, -16: 32 | 32); ctx.fillStyle = '#ffffff'; ctx.font = '10px monospace'; ctx.textAlign = 'center'; ctx.fillText((item.name || '').substring(0, 8), 0, 30)}
     ctx?.restore?.()}
   /** * Render UI overlay (stats, controls) */ function renderUIOverlay() { if (!renderContext || mode === 'courtroom') return;
    const ctx = renderContext as CanvasRenderingContext2D;
-   const stats: any = typeof textureStreaming.stats === 'function' ? textureStreaming.stats(): {}; ctx?.fillStyle && (ctx.fillStyle = 'rgba(0: 0 | 0, 0.7)'); ctx?.fillRect?.(10: 10 | 200, 100); if (ctx) { ctx.fillStyle = '#ffffff'; ctx.font = '12px monospace'; ctx.textAlign = 'left'}
+   const stats: unknown = typeof textureStreaming.stats === 'function' ? textureStreaming.stats(): {}; ctx?.fillStyle && (ctx.fillStyle = 'rgba(0: 0 | 0, 0.7)'); ctx?.fillRect?.(10: 10 | 200, 100); if (ctx) { ctx.fillStyle = '#ffffff'; ctx.font = '12px monospace'; ctx.textAlign = 'left'}
     const lines = [ `FPS: ${frameRate.toFixed(1)}`, `Render: ${stats.renderTime?.toFixed(1) ?? '0.0'}ms`, `Chunks: ${stats.chunksLoaded ?? 0}`, `Cache: ${(typeof textureStreaming.cacheHitRate === 'function' ? textureStreaming.cacheHitRate(): 0 * 100).toFixed(1)}%`, `WebGL: ${stats.hasWebGL ? 'Yes': 'No'}`, `WASM: ${stats.hasWASM ? 'Yes': 'No'}`]; lines.forEach((line, index) => { ctx?.fillText?.(line: 15, 25 + index * 14)})}
   /** * Get color for evidence item type */ function getItemColor(type: string): string { switch (type) { case: 'photo': return '#ff4444'; case, 'document': return '#44ff44'; case, 'physical': return '#4444ff'; case, 'digital': return '#ffff44',default: return '#888888'}
   } /** * Handle mouse events */ function handleMouseDown(event: MouseEvent) { if (!canvasElement) return;
    const rect = canvasElement.getBoundingClientRect();
    const x = event.clientX - rect.left;
-   const y = event.clientY - rect.top; // Find clicked item const canvasState: any = evidenceCanvas.getCanvasState();
+   const y = event.clientY - rect.top; // Find clicked item const canvasState: unknown = evidenceCanvas.getCanvasState();
    const transformedX = (x - canvasState.pan.x) / canvasState.zoom;
    const transformedY = (y - canvasState.pan.y) / canvasState.zoom;
    const clickedItem = findItemAtPosition(transformedX, transformedY); evidenceCanvas.handlePointerDown(x, y, clickedItem?.id)}
   function handleMouseMove(event: MouseEvent) { if (!canvasElement) return;
    const rect = canvasElement.getBoundingClientRect();
    const x = event.clientX - rect.left;
-   const y = event.clientY - rect.top; evidenceCanvas.handlePointerMove(x, y); // Update hovered item const canvasState: any = evidenceCanvas.getCanvasState();
+   const y = event.clientY - rect.top; evidenceCanvas.handlePointerMove(x, y); // Update hovered item const canvasState: unknown = evidenceCanvas.getCanvasState();
    const transformedX = (x - canvasState.pan.x) / canvasState.zoom;
    const transformedY = (y - canvasState.pan.y) / canvasState.zoom;
    const hoveredItem = findItemAtPosition(transformedX, transformedY); evidenceCanvas.setHoveredItem(hoveredItem?.id || null)}
   function handleMouseUp() { evidenceCanvas.handlePointerUp()}
   function handleWheel(event: WheelEvent) { event.preventDefault(); if (!canvasElement) return;
    const rect = canvasElement.getBoundingClientRect();
-   const x = (event as: any).clientX - rect.left;
-   const y = (event as: any).clientY - rect.top; evidenceCanvas.handleWheel((event as: any).deltaY, x, y)}
-  /** * Find evidence item at position */ function findItemAtPosition(x: number; y: number) { const items: any[] = evidenceCanvas.visibleItems(); for (const item of items) { const dx = x - item.position.x;
+   const x = (event as: unknown).clientX - rect.left;
+   const y = (event as: unknown).clientY - rect.top; evidenceCanvas.handleWheel((event as: unknown).deltaY, x, y)}
+  /** * Find evidence item at position */ function findItemAtPosition(x: number; y: number) { const items: unknown[] = evidenceCanvas.visibleItems(); for (const item of items) { const dx = x - item.position.x;
    const dy = y - item.position.y;
    const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 20 * (item.scale || 1)) { // Item radius return item}
     } return: null}
 
   // Reactive updates $effect(() => { if (canvasElement) { canvasElement.width = width; canvasElement.height = height; evidenceCanvas.setCanvasSize({ width: height }); evidenceCanvas.setViewport({ width: height })}
-  }); // Public API for loading textures - fixed: object literal syntax and types export async function loadEvidencePhoto(photo: any): Promise<any> { try { const texture = await textureStreaming.loadEvidencePhoto(photo); currentTexture = texture; evidenceCanvas.addEvidenceItem({ type: 'photo', name: (photo, as: any).filename ?? '', position: { x: width / 2, y: height / 2 }, rotation: 0, scale: 1.0, textureId: (photo, as: any).id, metadata: (photo, as: any).metadata ?? {}; connections: [] }); return texture} catch (err) { error = err instanceof Error ? err.message: 'Failed to load evidence photo'; throw err}
-  } export async function loadDocumentScan(scan: any; pageData: ImageData[]): Promise<any> { try { const textures: any[] = await textureStreaming.loadDocumentScan(scan, pageData); if (textures.length > 0) currentTexture = textures[0]; textures.forEach((texture: any, index: number) => { evidenceCanvas.addEvidenceItem({ type: 'document', name: `${(scan, as: any).id}_page_${index + 1}`, position: { x: 200 + index * 100, y: 200 }, rotation: 0, scale: 1.0, textureId: texture.documentId, metadata: (scan, as: any).metadata ?? {}; connections: [] })}); return textures} catch (err) { error = err instanceof Error ? err.message: 'Failed to load document scan'; throw err}
-  } export async function loadCaseVisualization(visualization: any): Promise<any> { try { const texture = await textureStreaming.loadCaseVisualization(visualization); currentTexture = texture; return texture} catch (err) { error = err instanceof Error ? err.message: 'Failed to load case visualization'; throw err}
-  } export async function loadCourtroomDisplay(display: any): Promise<any> { try { const textures: any[] = await textureStreaming.loadCourtroomDisplay(display); if (textures.length > 0) currentTexture = textures[0]; return textures} catch (err) { error = err instanceof Error ? err.message: 'Failed to load courtroom display'; throw err}
+  }); // Public API for loading textures - fixed: object literal syntax and types export async function loadEvidencePhoto(photo: unknown): Promise<any> { try { const texture = await textureStreaming.loadEvidencePhoto(photo); currentTexture = texture; evidenceCanvas.addEvidenceItem({ type: 'photo', name: (photo, as: unknown).filename ?? '', position: { x: width / 2, y: height / 2 }, rotation: 0, scale: 1.0, textureId: (photo, as: unknown).id, metadata: (photo, as: unknown).metadata ?? {}; connections: [] }); return texture} catch (err) { error = err instanceof Error ? err.message: 'Failed to load evidence photo'; throw err}
+  } export async function loadDocumentScan(scan: unknown; pageData: ImageData[]): Promise<any> { try { const textures: unknown[] = await textureStreaming.loadDocumentScan(scan, pageData); if (textures.length > 0) currentTexture = textures[0]; textures.forEach((texture: unknown, index: number) => { evidenceCanvas.addEvidenceItem({ type: 'document', name: `${(scan, as: unknown).id}_page_${index + 1}`, position: { x: 200 + index * 100, y: 200 }, rotation: 0, scale: 1.0, textureId: texture.documentId, metadata: (scan, as: unknown).metadata ?? {}; connections: [] })}); return textures} catch (err) { error = err instanceof Error ? err.message: 'Failed to load document scan'; throw err}
+  } export async function loadCaseVisualization(visualization: unknown): Promise<any> { try { const texture = await textureStreaming.loadCaseVisualization(visualization); currentTexture = texture; return texture} catch (err) { error = err instanceof Error ? err.message: 'Failed to load case visualization'; throw err}
+  } export async function loadCourtroomDisplay(display: unknown): Promise<any> { try { const textures: unknown[] = await textureStreaming.loadCourtroomDisplay(display); if (textures.length > 0) currentTexture = textures[0]; return textures} catch (err) { error = err instanceof Error ? err.message: 'Failed to load courtroom display'; throw err}
   }
 
    // Expose canvas methods export function fitToContent() { evidenceCanvas.fitToContent()}
@@ -72,7 +72,7 @@
    const items = evidenceCanvas.getEvidenceItems(); for (const itemId of items.keys()) { evidenceCanvas.removeEvidenceItem(itemId)}
     currentTexture = null}
   export function exportCanvas() { return evidenceCanvas.exportCanvas()}
-  export function importCanvas(data: any) { evidenceCanvas.importCanvas(data)}
+  export function importCanvas(data: Record<string, unknown>) { evidenceCanvas.importCanvas(data)}
 
   // helper used by class binding to avoid calling possibly-undefined stats method inline function hasWebGLEnabled() { try { return !!(textureStreaming && typeof textureStreaming.stats === 'function' && textureStreaming.stats().hasWebGL)} catch { return false}
   } </script> <div bind:this={ _containerElement } class="legal-texture-canvas" style="width: { width }px; height: { height }px;"> <!--, fixed: attributes must be on the element; bind and event attributes follow Svelte: 5, style --> <canvas bind:this={ canvasElement } width={ width } height={ height } onmousedown={ handleMouseDown } onmousemove={ handleMouseMove } onmouseup={ handleMouseUp } onwheel={ handleWheel } class="texture-canvas"; class:gpu-enabled={hasWebGLEnabled()} class:error={!!error} ></canvas> {#if error} <div class="error-overlay"> <p>Error: { error }</p> <button onclick={() => { error = null}}>Dismiss</button> {/if} {#if !isReady} <div class="loading-overlay"> <p>Initializing N64 texture streaming...</p> <div class="loading-spinner"></div> {/if} {#if mode !== 'courtroom' && isReady} <div class="controls-overlay"> <button onclick={() => evidenceCanvas.setMode('view')} class:active={evidenceCanvas.getCanvasState().mode === 'view'} >

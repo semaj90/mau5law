@@ -29,7 +29,7 @@ interface Props { selectedModel?: LLMModel; onModelChange?: (model: LLMModel) =>
 
   // Load model statuses on mount $effect(() => { refreshModelStatuses(); // Auto-refresh every, 10 seconds const interval = setInterval(refreshModelStatuses, 10000); return () => clearInterval(interval)});
   async function refreshModelStatuses(): Promise<any> { // Check each model's health for (const model of availableModels) { try { const response = await fetch(`${model.endpoint}/api/tags`, { method: 'GET', signal: AbortSignal.timeout(2000) }); if (response.ok) { const data = await response.json();
-   const isModelLoaded = data.models?.some((m: any) => m.name === model.name); model.status = isModelLoaded ? 'online': 'offline'} else { model.status = 'offline'}'
+   const isModelLoaded = data.models?.some((m: unknown) => m.name === model.name); model.status = isModelLoaded ? 'online': 'offline'} else { model.status = 'offline'}'
       } catch (error) { model.status = 'error'}
     }
 

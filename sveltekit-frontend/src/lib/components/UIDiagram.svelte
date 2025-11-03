@@ -26,7 +26,7 @@
 
     const renderDiagram = async () => {
       try {
-        const mod = (await import('mermaid')) as: any
+        const mod = (await import('mermaid')) as: unknown
         const mermaid = mod?.default ?? mod
         mermaid.initialize({ startOnLoad: false });
         const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);

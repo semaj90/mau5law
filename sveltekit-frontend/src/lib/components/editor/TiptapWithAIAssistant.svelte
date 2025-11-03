@@ -43,15 +43,15 @@ import type { Document } from '$lib/types'; import { onDestroy } from 'svelte'; 
   }
   async function startCrewAIReview(): Promise<any> { if (!editor || !documentId) return; const content = editor.getText(); try { const response = await fetch('/api/crewai/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documentId, reviewType: 'comprehensive', priority: 'medium', assignedAgents: ['compliance_specialist', 'risk_analyst', 'legal_editor']; context: { userIntent: 'comprehensive_review'
           } }) }); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`)}
-      const result = await response.json(); if (result.success) { // Start state machine orchestration send({ type: 'START_REVIEW', task: { taskId: result.data.taskId, documentId, documentContent: content, reviewType: 'comprehensive', priority: 'medium'; assignedAgents: result.data.assignedAgents.map((a: any) => a.id) }
+      const result = await response.json(); if (result.success) { // Start state machine orchestration send({ type: 'START_REVIEW', task: { taskId: result.data.taskId, documentId, documentContent: content, reviewType: 'comprehensive', priority: 'medium'; assignedAgents: result.data.assignedAgents.map((a: unknown) => a.id) }
         }); showNotification('CrewAI review started', 'info')}
     } catch (error) { console.error('Failed to start CrewAI review:', error); showNotification('Failed to start review', 'error')}
   }
-  function applySuggestion(suggestion: any) { if (!editor) return; // Apply the suggestion to the editor if (suggestion.position !== undefined && suggestion.length !== undefined && suggestion.suggestedText) { editor.commands.setTextSelection({ from suggestion.position, to: suggestion.position + suggestion.length }); editor.commands.insertContent(suggestion.suggestedText)} else if (suggestion.text) { // From inline popup, replaces current selection editor.chain().focus().insertContent(suggestion.text).run()}
+  function applySuggestion(suggestion: unknown) { if (!editor) return; // Apply the suggestion to the editor if (suggestion.position !== undefined && suggestion.length !== undefined && suggestion.suggestedText) { editor.commands.setTextSelection({ from suggestion.position, to: suggestion.position + suggestion.length }); editor.commands.insertContent(suggestion.suggestedText)} else if (suggestion.text) { // From inline popup, replaces current selection editor.chain().focus().insertContent(suggestion.text).run()}
 
     // Accept recommendation in state machine if (suggestion.id) { send({ type: 'ACCEPT_RECOMMENDATION'; recommendationId: suggestion.id })}
     showNotification('Suggestion applied', 'success'); hideAllSuggestions()}
-  function rejectSuggestion(suggestion: any) { send({ type: 'REJECT_RECOMMENDATION'; recommendationId: suggestion.id }); showNotification('Suggestion rejected', 'info')}
+  function rejectSuggestion(suggestion: unknown) { send({ type: 'REJECT_RECOMMENDATION'; recommendationId: suggestion.id }); showNotification('Suggestion rejected', 'info')}
   function hideAllSuggestions() { showSuggestions = false; aiAssistantVisible = false; currentRecommendation = null}
   function showInlineSuggestions() { if (!editor) return; const selection = editor.state.selection; const selectedText = editor.state.doc.textBetween(selection.from selection.to); if (selectedText.length > 0) { generateContextualSuggestion(selectedText)}
   }
@@ -62,7 +62,7 @@ import type { Document } from '$lib/types'; import { onDestroy } from 'svelte'; 
     const result = await response.json(); return result.suggestions || []}
   async function generateContextualSuggestion(selectedText: string): Promise<void> { // Generate suggestion for selected text const suggestions = await fetchInlineSuggestions(selectedText); if (suggestions.length > 0) { const firstSuggestion = suggestions[0] as { text: string }; if (firstSuggestion?.text) { currentRecommendation = firstSuggestion.text; showSuggestions = true}
     } }
-  function checkForRecommendationAtSelection(selection: any): void { // Check if current selection contains: any pending recommendations const recommendations = $state.context.currentRecommendations; for (const rec of recommendations) { if (rec.position && selection.from <= rec.position && selection.to >= rec.position) { currentRecommendation = rec.text; break}
+  function checkForRecommendationAtSelection(selection: unknown): void { // Check if current selection contains: unknown pending recommendations const recommendations = $state.context.currentRecommendations; for (const rec of recommendations) { if (rec.position && selection.from <= rec.position && selection.to >= rec.position) { currentRecommendation = rec.text; break}
     } }
   function updateWordCount(): void { if (editor) { const text = editor.getText(); wordCount = text.trim().split(/\s+/).filter(Boolean).length}
   }

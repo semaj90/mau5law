@@ -3,7 +3,7 @@
   interface Props {
     value?: string
     onValueChange?: (_value: string) => void
-    children?: any}
+    children?: unknown}
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();
 </script>
 

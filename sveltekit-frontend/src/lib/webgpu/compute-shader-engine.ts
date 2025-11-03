@@ -1,7 +1,7 @@
 /**
  * WebGPU Compute Shader Engine
  * High-performance GPU compute for vector operations, embeddings, and AI inference
- * 
+ *
  * Consolidates:
  * - compute-service.ts (existing)
  * - gpu-ranking-matrices.ts (existing)
@@ -24,17 +24,17 @@ export class ComputeShaderEngine {
     try {
       // Check WebGPU support
       if (!navigator.gpu) {
-        console.warn('WebGPU not supported in this browser');
+        console.warn("WebGPU not supported in this browser");
         return false;
       }
 
       // Request adapter
       this.adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: "high-performance",
       });
 
       if (!this.adapter) {
-        console.warn('No WebGPU adapter found');
+        console.warn("No WebGPU adapter found");
         return false;
       }
 
@@ -45,17 +45,17 @@ export class ComputeShaderEngine {
           maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize,
           maxBufferSize: this.adapter.limits.maxBufferSize,
           maxComputeWorkgroupSizeX: 256,
-          maxComputeWorkgroupSizeY: 256
-        }
+          maxComputeWorkgroupSizeY: 256,
+        },
       });
 
       this.computeQueue = this.device.queue;
       this.initialized = true;
 
-      console.log('✅ WebGPU Compute Shader Engine initialized');
+      console.log("✅ WebGPU Compute Shader Engine initialized");
       return true;
     } catch (error) {
-      console.error('Failed to initialize WebGPU:', error);
+      console.error("Failed to initialize WebGPU:", error);
       return false;
     }
   }
@@ -63,12 +63,9 @@ export class ComputeShaderEngine {
   /**
    * Compute cosine similarity between two vectors using GPU
    */
-  async computeCosineSimilarity(
-    vectorA: Float32Array,
-    vectorB: Float32Array
-  ): Promise<number> {
+  async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
     if (!this.device || !this.computeQueue) {
-      throw new Error('WebGPU not initialized');
+      throw new Error("WebGPU not initialized");
     }
 
     const dimension = vectorA.length;
@@ -97,28 +94,28 @@ export class ComputeShaderEngine {
           result[idx * 3 + 1] = magA;
           result[idx * 3 + 2] = magB;
         }
-      `
+      `,
     });
 
     // Create buffers
     const bufferA = this.device.createBuffer({
       size: vectorA.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     const bufferB = this.device.createBuffer({
       size: vectorB.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     const resultBuffer = this.device.createBuffer({
       size: dimension * 3 * 4, // 3 values per dimension
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     const readBuffer = this.device.createBuffer({
       size: dimension * 3 * 4,
-      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
     });
 
     // Upload data
@@ -128,10 +125,10 @@ export class ComputeShaderEngine {
     // Create bind group layout
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
-      ]
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: "read-only-storage" } },
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: "read-only-storage" } },
+        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: "storage" } },
+      ],
     });
 
     // Create bind group
@@ -140,14 +137,14 @@ export class ComputeShaderEngine {
       entries: [
         { binding: 0, resource: { buffer: bufferA } },
         { binding: 1, resource: { buffer: bufferB } },
-        { binding: 2, resource: { buffer: resultBuffer } }
-      ]
+        { binding: 2, resource: { buffer: resultBuffer } },
+      ],
     });
 
     // Create pipeline
     const pipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: shaderModule, entryPoint: 'computeSimilarity' }
+      compute: { module: shaderModule, entryPoint: "computeSimilarity" },
     });
 
     // Execute compute shader
@@ -222,7 +219,7 @@ export class ComputeShaderEngine {
     colsB: number
   ): Promise<Float32Array> {
     if (!this.device || !this.computeQueue) {
-      throw new Error('WebGPU not initialized');
+      throw new Error("WebGPU not initialized");
     }
 
     // Shader for matrix multiplication
@@ -246,7 +243,7 @@ export class ComputeShaderEngine {
 
           result[row * ${colsB} + col] = sum;
         }
-      `
+      `,
     });
 
     // Create buffers and execute (similar pattern to cosine similarity)
@@ -294,7 +291,7 @@ export async function computeSimilarity(
     const engine = await getComputeShaderEngine();
     return await engine.computeCosineSimilarity(vectorA, vectorB);
   } catch (error) {
-    console.warn('GPU compute failed, falling back to CPU:', error);
+    console.warn("GPU compute failed, falling back to CPU:", error);
     // CPU fallback
     let dotProduct = 0;
     let magA = 0;

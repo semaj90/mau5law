@@ -1,6 +1,6 @@
 ﻿<script lang="ts"> import { getContext } from "svelte";
  import { writable } from "svelte/store";
- import type { SelectContext } from "./types"; interface Props { class?: string; placeholder?: any; children?: any}
+ import type { SelectContext } from "./types"; interface Props { class?: string; placeholder?: unknown; children?: unknown}
   let { children, placeholder, class: class_ = ""
   }: Props = $props();
    const context = getContext<SelectContext>("select") || ({ selected: writable(null), open: writable(false), onSelect: () => {}, onToggle: () => {} } as SelectContext);

@@ -50,8 +50,8 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   <form method="POST"
       action="?/register"
       use:enhance={({ formData: cancel }) => { if (!validateForm()) { cancel(); return}
-        isLoading = true; errorMessage = ''; successMessage = ''; return async ({ result }) => { isLoading = false; if ((result as { type?: any; data?: any }).type === 'success') { successMessage = 'Registration successful! Redirecting to dashboard...'; setTimeout(() => { goto('/dashboard')}, 2000)} else if ((result as { type?: any; data?: any }).type === 'failure') { errorMessage = (result as { type?: any; data?: any }).data?.form?.errors?.email?.[0] ||
-              'Registration failed. Please try again.'} else if ((result as { type?: any; data?: any }).type === 'error') { errorMessage = 'An error occurred during registration. Please try again.'}
+        isLoading = true; errorMessage = ''; successMessage = ''; return async ({ result }) => { isLoading = false; if ((result as { type?: unknown; data?: unknown }).type === 'success') { successMessage = 'Registration successful! Redirecting to dashboard...'; setTimeout(() => { goto('/dashboard')}, 2000)} else if ((result as { type?: unknown; data?: unknown }).type === 'failure') { errorMessage = (result as { type?: unknown; data?: unknown }).data?.form?.errors?.email?.[0] ||
+              'Registration failed. Please try again.'} else if ((result as { type?: unknown; data?: unknown }).type === 'error') { errorMessage = 'An error occurred during registration. Please try again.'}
         }}} class="space-y-4"
     > <input type="hidden" name="redirectTo" value={ redirectTo } /> <!-- Personal, Information --> <div class="grid grid-cols-1 md:grid-cols-2"> <!-- First, Name --> <div> <Label>First Name</Label>
  <Input id="firstName"

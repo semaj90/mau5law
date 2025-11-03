@@ -5,10 +5,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
    // Filter by case if (selectedCaseId !== 'all') { items = items.filter((it: GalleryItem) => it.caseId === selectedCaseId)}
 
-		// Search filter if (searchQuery.trim()) { const query = searchQuery.toLowerCase(); items = items.filter((it: GalleryItem) => { const title = (it.title || '').toString().toLowerCase(); const description = (it.description || '').toString().toLowerCase(); const caseTitle = (it.caseTitle || '').toString().toLowerCase(); const tags = Array.isArray(it.tags) ? it.tags.map((t: any) => String(t).toLowerCase()): []; return ( title.includes(query) || description.includes(query) || caseTitle.includes(query) || tags.some((t: string) => t.includes(query)) )})}
+		// Search filter if (searchQuery.trim()) { const query = searchQuery.toLowerCase(); items = items.filter((it: GalleryItem) => { const title = (it.title || '').toString().toLowerCase(); const description = (it.description || '').toString().toLowerCase(); const caseTitle = (it.caseTitle || '').toString().toLowerCase(); const tags = Array.isArray(it.tags) ? it.tags.map((t: unknown) => String(t).toLowerCase()): []; return ( title.includes(query) || description.includes(query) || caseTitle.includes(query) || tags.some((t: string) => t.includes(query)) )})}
 
 		// Sort items items.sort((a: GalleryItem; b: GalleryItem) => { let comparison = 0; switch (sortBy) { case, 'date': comparison = new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime(); break; case, 'name': comparison = (a.title || '').localeCompare(b.title || ''); break; case, 'type': comparison = (a.type || '').localeCompare(b.type || ''); break; case, 'case': comparison = (a.caseTitle || '').localeCompare(b.caseTitle || ''); break}
-			return sortOrder === 'desc' ? -comparison: comparison}); return items}); // Update filtered items when processedItems changes $effect(() => { filteredItems = processedItems}); // Initialize on mount (use window only in browser) onMount(() => { loadGalleryData(); loadCases(); if (typeof window !== 'undefined') { const urlParams = new URLSearchParams(window.location.search); if (urlParams.get('category')) { selectedCategory = urlParams.get('category') as: any}
+			return sortOrder === 'desc' ? -comparison: comparison}); return items}); // Update filtered items when processedItems changes $effect(() => { filteredItems = processedItems}); // Initialize on mount (use window only in browser) onMount(() => { loadGalleryData(); loadCases(); if (typeof window !== 'undefined') { const urlParams = new URLSearchParams(window.location.search); if (urlParams.get('category')) { selectedCategory = urlParams.get('category') as: unknown}
 			if (urlParams.get('case')) { selectedCaseId = urlParams.get('case') || 'all'}
 		} });
   async function loadGalleryData(): Promise<any> { isLoading = true; error = null; try { const response = await fetch('/api/gallery'); if (!response.ok) { throw new Error(`Failed to load gallery: ${response.statusText}`)}
@@ -147,4 +147,4 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 		.detail-actions { flex-direction: column}
 	} </style>
 
-
+

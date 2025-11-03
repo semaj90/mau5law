@@ -28,6 +28,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     } return result}
   /** * Format: number for display */ function formatNumber(num: number; decimals: number = 2): string { if (num >= 1000) {
     return (num / 1000).toFixed(1) + 'K'
+
   }
   return num.toFixed(decimals)}
   /** * Get status color based on performance */ function getSpeedupColor(speedup: number): string { if (speedup > 10) return 'text-green-600'; if (speedup > 5) return 'text-blue-600'; if (speedup > 2) return 'text-yellow-600'; return 'text-red-600'}
@@ -65,4 +66,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   input[type='range']: :-moz-range-thumb { background: #3b82f6, border: none, border-radius: 50%; cursor: pointer; height: 20px; width: 20px}
   @media (max-width: 768px) { .demo-controls, .results-grid, .applications { grid-template-columns: 1fr}
   } </style>
+
 

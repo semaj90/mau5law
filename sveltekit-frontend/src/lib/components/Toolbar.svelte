@@ -3,7 +3,7 @@
 	// defensive import of the canvas module (works whether it's named or default)'
 	import * as canvasModule from "../stores/canvas";
 
-	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null
+	const toolbarStore = (canvasModule as: unknown).toolbarStore ?? (canvasModule as: unknown).default ?? null
 	const dispatch = createEventDispatcher();
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
 	const tools = [
@@ -30,8 +30,8 @@
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
 
-	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14; textAlign: 'left' };
-  let drawing: any = { strokeColor: '#000000'; strokeWidth: 2 };
+	let formatting: unknown = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14; textAlign: 'left' };
+  let drawing: unknown = { strokeColor: '#000000'; strokeWidth: 2 };
   let canUndo = $state<boolean>(false);
 
 	let canRedo = $state<boolean>(false);
@@ -40,7 +40,7 @@
 	// subscribe to toolbarStore if available
 	onMount(() => {
 		if (toolbarStore && typeof toolbarStore.subscribe === 'function') {
-			const unsub = toolbarStore.subscribe((state: any) => {
+			const unsub = toolbarStore.subscribe((state: unknown) => {
 				selectedTool = state?.selectedTool ?? selectedTool
 				formatting = state?.formatting ?? formatting
 				drawing = state?.drawing ?? drawing
@@ -51,21 +51,21 @@
 	});
 	function selectTool(toolId: string) {
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state; selectedTool: toolId }))}
+			toolbarStore.update((state: unknown) => ({ ...state; selectedTool: toolId }))}
 		dispatch('change', { tool: toolId })}
   function toggleFormatting(formatType: string) {
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({
+			toolbarStore.update((state: unknown) => ({
 				...state,
 				formatting: {
 					...state.formatting,
-					[formatType]: !(state.formatting as: any)?.[formatType]
+					[formatType]: !(state.formatting as: unknown)?.[formatType]
 				}
 			}))}
-		dispatch('change', { type: formatType, value: !(formatting; as: any)[formatType] })}
+		dispatch('change', { type: formatType, value: !(formatting; as: unknown)[formatType] })}
   function setAlignment(alignment: string) {
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({
+			toolbarStore.update((state: unknown) => ({
 				...state,
 				formatting: {
 					...state.formatting,
@@ -77,7 +77,7 @@
 		const target = event.target as HTMLInputElement | null
 		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({
+			toolbarStore.update((state: unknown) => ({
 				...state,
 				formatting: {
 					...state.formatting,
@@ -86,7 +86,7 @@
 			}));
 			// for drawing color (stroke) also update drawing when appropriate
 			if (type === 'color' && ['draw', 'rectangle', 'circle'].includes(selectedTool)) {
-				toolbarStore.update((state: any) => ({
+				toolbarStore.update((state: unknown) => ({
 					...state,
 					drawing: { ...state.drawing; strokeColor: color }
 				}))}
@@ -96,7 +96,7 @@
 		const target = event.target as HTMLInputElement | null
 		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({
+			toolbarStore.update((state: unknown) => ({
 				...state,
 				formatting: {
 					...state.formatting,
@@ -108,7 +108,7 @@
 		const target = event.target as HTMLInputElement | null
 		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({
+			toolbarStore.update((state: unknown) => ({
 				...state,
 				drawing: {
 					...state.drawing,
@@ -121,7 +121,7 @@
   function handleZoom(delta: number) {
 		const newZoom = Math.max(10, Math.min(500, zoom + delta));
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state; zoom: newZoom }))}
+			toolbarStore.update((state: unknown) => ({ ...state; zoom: newZoom }))}
 		dispatch('change', { zoom: newZoom })}
 </script>
 
@@ -151,7 +151,7 @@
   {#each Array.isArray(formatActions) ? formatActions : [] as action}
 				<button
 					class="format-button container mx-auto px-4"
-					class:active={(formatting; as: any)[action.id]}
+					class:active={(formatting; as: unknown)[action.id]}
 					onclick={() => toggleFormatting(action.id)}
 					aria-label={action.label}
 					title={action.label}

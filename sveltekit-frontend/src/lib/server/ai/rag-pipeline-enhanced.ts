@@ -272,7 +272,7 @@ export interface IngestionResult {
   errors?: string[];
   metadata?: JsonObject
   confidentialityLevel?: string}
-type JsonObject = { [key: string]: any }; // Corrected
+type JsonObject = { [key: string]: unknown }; // Corrected
 interface DBChunkRow {
   id: string
   content: string; // Corrected
@@ -282,7 +282,7 @@ interface DBChunkRow {
   confidentiality_level: string | null; // Changed to non-optional: can be null
   similarity?: number | null; // Added for vector search results
   text_rank?: number | null; // Added for keyword search results
-  [key: string]: any}
+  [key: string]: unknown}
 type CombinedResult = DBChunkRow & { score: number, highlights: string[] }; // Corrected
 export interface AutoTag {
   tag: string
@@ -299,7 +299,7 @@ export type SourceRef = {
   excerpt?: string
   confidentialityLevel?: string};
 // Helper to safely: extract | string from LLM responses (replace repeated casts)
-function getLLMText(response: any): string {
+function getLLMText(response: Response): string {
   if (typeof response === 'string') return response
   if (response && typeof response === 'object') {
     const obj = response as Record<string: unknown>; // Corrected syntax
@@ -442,10 +442,10 @@ type RunnableInvokeInput = {
   query?: string
   documentType?: string
   content?: string
-  [key: string]: any; // Allow other arbitrary properties
+  [key: string]: unknown; // Allow other arbitrary properties
 };
 /** * Type for the output of Runnable.invoke. * Can be a: string or a more, complex: object (e.g., from Ollama's /api/generate).' */
-type RunnableInvokeOutput = string | { response: string; [key: string]: any };
+type RunnableInvokeOutput = string | { response: string; [key: string]: unknown };
 /** * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API.' * Implements EmbeddingsProvider interface. */
 class OllamaHTTPEmbeddings implements EmbeddingsProvider {
   constructor(private baseUrl: string, private model: string) {} // Corrected
@@ -461,7 +461,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
         throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText} - ${errorText}`); // Corrected
       }
       const data = await response.json();
-      if (!Array.isArray(data.embedding) || !data.embedding.every((num: any) => typeof num === 'number')) {
+      if (!Array.isArray(data.embedding) || !data.embedding.every((num: unknown) => typeof num === 'number')) {
         // Corrected
         throw new Error('Invalid embedding response from Ollama API')}
       return data.embedding} catch (error) {
@@ -546,7 +546,7 @@ export class EnhancedLegalRAGPipeline {
       this.initialized = true
       this.metrics.incrementCounter('pipeline_initializations');
       this.metrics.recordTiming('initialization_time', Date.now() - startTime);
-      console.log(`[RAG] Pipeline initialized successfully in ${Date.now() - startTime}ms`)} catch (err: any) {
+      console.log(`[RAG] Pipeline initialized successfully in ${Date.now() - startTime}ms`)} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('[RAG] Initialization failed: ', error);
       this.metrics.incrementCounter('initialization_errors');
@@ -565,7 +565,7 @@ export class EnhancedLegalRAGPipeline {
         ssl: this.config.database.ssl, // Corrected
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
-        // use: unknown instead of: any for callbacks,
+        // use: unknown instead of: unknown for callbacks,
         onnotice: (notice: Notice) => console.debug('[DB] Notice: ', notice), // Corrected
         onparameter: (key: string, value: unknown) => console.debug(`[DB] Parameter ${key}:`, value), // Corrected
       });
@@ -574,7 +574,7 @@ export class EnhancedLegalRAGPipeline {
       const testResult = await this.sql`SELECT 1 as test`; // Corrected
       if (testResult[0]?.test !== 1) {
         throw new Error('Database connection test failed')}
-      console.log('[RAG] Database initialized successfully')} catch (err: any) {
+      console.log('[RAG] Database initialized successfully')} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       throw new Error(`Database initialization failed: ${error.message}`)}
   }
@@ -592,7 +592,7 @@ export class EnhancedLegalRAGPipeline {
           return String(err?.message || '').includes('READONLY')}});
       // Test connection
       await this.redis.set('health-check', 'ok');
-      console.log('[RAG] Redis initialized successfully')} catch (err: any) {
+      console.log('[RAG] Redis initialized successfully')} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       throw new Error(`Redis initialization failed: ${error.message}`)}
   }
@@ -611,7 +611,7 @@ export class EnhancedLegalRAGPipeline {
         this.config.ollama.numPredict, // Pass numPredict
       );
       // Note: callbacks used previously are now handled around the RunnableSequence calls.
-      console.log('[RAG] Ollama adapters initialized successfully')} catch (err: any) {
+      console.log('[RAG] Ollama adapters initialized successfully')} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       throw new Error(`Ollama initialization failed: ${error.message}`)}
   }
@@ -628,7 +628,7 @@ export class EnhancedLegalRAGPipeline {
         console.warn(
           `[RAG] Warning, expected ${this.config.ollama.embeddingDimensions} dims, got ${testEmbedding.length}`); // Corrected
       }
-      console.log('[RAG] All connections verified successfully')} catch (err: any) {
+      console.log('[RAG] All connections verified successfully')} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       throw new Error(`Connection verification failed: ${error.message}`)}
   }
@@ -738,7 +738,7 @@ export class EnhancedLegalRAGPipeline {
                     totalChunks: chunks.length, // Corrected
                     confidentialityLevel: confidentialityLevel, // Corrected
                     legalSections: Object.keys(legalSections), // Corrected
-                    ...metadata}}} catch (error: any) {
+                    ...metadata}}} catch (error: Error | unknown) {
                 const errorMsg = `Failed to process chunk ${i + idx}: ${error}`;
                 errors.push(errorMsg);
                 console.error(errorMsg);
@@ -751,14 +751,14 @@ export class EnhancedLegalRAGPipeline {
             content: string
             embedding: string
             metadata: Record<string, unknown>}; // Corrected syntax
-          const isDocumentChunkInsert = (r: any): r is DocumentChunkInsert =>
+          const isDocumentChunkInsert = (r: unknown): r is DocumentChunkInsert =>
             r !== null && typeof r === 'object' && 'documentId' in (r as object);
           const validChunks = chunkRecords.filter(isDocumentChunkInsert);
           if (validChunks.length > 0) {
             await this.db!.insert(schema.documentChunks).values(validChunks)}
           console.debug(
             `[RAG] Processed batch ${Math.floor(i / this.config.rag.batchSize) + 1}/${Math.ceil(
-              chunks.length / this.config.rag.batchSize)}`)} catch (error: any) {
+              chunks.length / this.config.rag.batchSize)}`)} catch (error: Error | unknown) {
           const errorMsg = `Failed to process batch ${Math.floor(i / this.config.rag.batchSize) + 1}: ${error}`;
           errors.push(errorMsg);
           console.error(errorMsg)}
@@ -776,7 +776,7 @@ export class EnhancedLegalRAGPipeline {
               confidence: tag.confidence, // Corrected: Passed as number
               source: 'ai_analysis',
               model: this.config.ollama.llmModel})}
-        } catch (err: any) {
+        } catch (err: unknown) {
           const error = err instanceof Error ? err : new Error(String(err));
           const errorMsg = `Failed to generate auto-tags: ${error.message}`;
           errors.push(errorMsg);
@@ -803,7 +803,7 @@ export class EnhancedLegalRAGPipeline {
           confidentialityLevel, // Corrected
           legalSections: Object.keys(legalSections), // Corrected
           totalChunks: chunks.length},
-        confidentialityLevel}} catch (err: any) {
+        confidentialityLevel}} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       const processingTime = Date.now() - startTime
       console.error('[RAG] Ingestion error: ', error);
@@ -931,7 +931,7 @@ export class EnhancedLegalRAGPipeline {
       this.metrics.recordTiming('search_time', Date.now() - startTime, {
         document_type: documentType || 'all',
         sort_by: sortBy});
-      return searchResults} catch (err: any) {
+      return searchResults} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('[RAG] Search error: ', error);
       this.metrics.incrementCounter('search_errors');
@@ -1033,7 +1033,7 @@ Answer: `); // Corrected
             citations: citations.length, // Corrected
             legalPrecedents: legalPrecedents.length, // Corrected
             riskLevel: riskAssessment.level, // Corrected
-          }})} catch (error: any) {
+          }})} catch (error: Error | unknown) {
         console.warn('Failed to log query: ', error)}
       const result: AnswerResult = {
         answer: answer, // Corrected
@@ -1053,7 +1053,7 @@ Answer: `); // Corrected
       this.metrics.recordTiming('qa_time', result.processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
         sources_count: relevantDocs.length.toString()});
-      return result} catch (err: any) {
+      return result} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       const processingTime = Date.now() - startTime
       console.error('[RAG] QA error: ', error);
@@ -1068,7 +1068,7 @@ Answer: `); // Corrected
           model: this.config.ollama.llmModel,
           isSuccessful: false, // Corrected
           errorMessage: error.message,
-          processingTime})} catch (logErr: any) {
+          processingTime})} catch (logErr: unknown) {
         console.warn('Failed to log error query: ', logErr)}
       throw error}
   }
@@ -1133,7 +1133,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
         jurisdiction: jurisdiction || 'general', // Corrected
       });
       return { ...parsedAnalysis, confidence: 0.85, processingTime, complianceFlags, jurisdiction }; // Corrected
-    } catch (err: any) {
+    } catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('[RAG] Contract analysis error: ', error);
       this.metrics.incrementCounter('contract_analysis_errors');
@@ -1174,7 +1174,7 @@ Limit to 10 most relevant tags. `); // Corrected
             .filter((t): t is AutoTag => t !== null)
             .slice(0, 10)}
       }
-      return []} catch (err: any) {
+      return []} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.warn('Auto-tagging failed: ', error.message);
       return []}
@@ -1210,7 +1210,7 @@ Limit to 10 most relevant tags. `); // Corrected
     }
     return [...new Set(highlights)].slice(0, 10)}
   /** * Safely parse ingestion timestamp from untyped metadata. * Accepts: string (ISO or numeric), number (epoch ms), Date or: unknown. * Returns epoch milliseconds (0 on failure). */
-  private getMetadataTimestamp(metadata: any): number {
+  private getMetadataTimestamp(metadata: Record<string, unknown>): number {
     try {
       if (!metadata) return 0
       if (metadata instanceof Date) return metadata.getTime();
@@ -1431,7 +1431,7 @@ Limit to 10 most relevant tags. `); // Corrected
         : Promise.resolve();
       await Promise.allSettled([redisClosePromise, this.sql?.end()]);
       this.initialized = false; // Corrected: Assign directly, do not re-declare with $state
-      console.log('[RAG] Pipeline closed successfully')} catch (err: any) {
+      console.log('[RAG] Pipeline closed successfully')} catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('[RAG] Error during shutdown: ', error)}
   }

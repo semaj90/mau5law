@@ -12,11 +12,11 @@ import type { Document } from '$lib/types';
   // Use a namespace import and resolve the actual export at runtime.
   // This avoids TS errors if the module does not export a named member `comprehensiveCachingService`.
   import * as comprehensiveCachingModule from '$lib/services/comprehensive-caching-service';
-  const comprehensiveCachingService: { set: (key: string, value: any, ttlSeconds?: number) => Promise<void>} = (comprehensiveCachingModule as: any)?.comprehensiveCachingService
-   ?? (comprehensiveCachingModule as: any)?.default
+  const comprehensiveCachingService: { set: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>} = (comprehensiveCachingModule as: unknown)?.comprehensiveCachingService
+   ?? (comprehensiveCachingModule as: unknown)?.default
    ?? {
     // Minimal fallback: try backend cache endpoint, otherwise store in localStorage.
-    async set(key: string, value: any, ttlSeconds?: number) {
+    async set(key: string, value: unknown, ttlSeconds?: number) {
       // prefer backend cache API if available
       try {
         if (typeof fetch !== 'undefined') {
@@ -38,7 +38,7 @@ import type { Document } from '$lib/types';
   };
 
   // Props (exported for Svelte)
-  const { onUploadComplete } = $props<{ onUploadComplete: (doc: any) }>()
+  const { onUploadComplete } = $props<{ onUploadComplete: (doc: unknown) }>()
   const { accept } = $props<{ accept: string }>()
   const { maxSize } = $props<{ maxSize: number }>() // 100MB
   const { enableOCR } = $props<{ enableOCR: boolean }>()
@@ -54,8 +54,8 @@ import type { Document } from '$lib/types';
   let uploadStates: Map<string any> = new Map();
   let isDragOver = $state<boolean>(false);
   let fileInput: HTMLInputElement | undefined
-  let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
-  let uploadMachine: any = null
+  let systemStatus: unknown = { services: {}, performance: {}, queues: {}, storage: {} };
+  let uploadMachine: unknown = null
   // Minimal XState machine (syntax-correct)
   const fileUploadMachine = createMachine({
     id: 'fileUpload',
@@ -99,10 +99,10 @@ import type { Document } from '$lib/types';
       // Cast fetch results to `any` before property access to satisfy TypeScript checks.
       const ragStatus = (await fetch('/api/v1/cluster/rag-status')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as: any
+        .catch(() => ({}))) as: unknown
       const systemHealth = (await fetch('/api/v1/cluster/health')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as: any
+        .catch(() => ({}))) as: unknown
       // Fetch WebGPU support in parallel
       const [webgpuSupported] = await Promise.all([
         enableWebGPU ? checkWebGPUSupport() : Promise.resolve(false)
@@ -131,7 +131,7 @@ import type { Document } from '$lib/types';
       // @ts-ignore navigator.gpu may be not in types
       if (!('gpu' in navigator)) return false
       // @ts-ignore
-      const adapter = await (navigator as: any).gpu.requestAdapter(),
+      const adapter = await (navigator as: unknown).gpu.requestAdapter(),
       return !!adapter} catch {
       return false}
   }
@@ -277,7 +277,7 @@ import type { Document } from '$lib/types';
       uploadStates.set(fileId, state);
       uploadStates = new Map(uploadStates)}
   }
-  function updateResult(fileId: string, key: string, value: any) {
+  function updateResult(fileId: string, key: string, value: unknown) {
     const state = uploadStates.get(fileId);
     if (state) {
       state.results[key] = value
@@ -312,7 +312,7 @@ import type { Document } from '$lib/types';
         console.warn(`${protocol.toUpperCase()} upload failed, trying next protocol:`, err)}
     }
     throw new Error('All upload protocols failed')}
-  async function createDocumentRecord(file: File, storageResult: any, fileId: string): Promise<any> {
+  async function createDocumentRecord(file: File, storageResult: unknown, fileId: string): Promise<any> {
     const documentData = {
       id: crypto.randomUUID(),
       fileName: file.name,
@@ -367,7 +367,7 @@ import type { Document } from '$lib/types';
     });
     if (!response.ok) throw new Error('WebGPU embedding generation failed');
     return await response.json()}
-  async function storeInQdrant(embeddingResult: any, documentRecord: any, fileId: string): Promise<any> {
+  async function storeInQdrant(embeddingResult: unknown, documentRecord: unknown, fileId: string): Promise<any> {
     const vectorData = {
       id: documentRecord.id,
       vector: embeddingResult.embedding,
@@ -395,11 +395,11 @@ import type { Document } from '$lib/types';
     if (!response.ok) throw new Error('Auto-tagging failed');
     const result = await response.json();
     return result.tags || []}
-  async function cacheProcessedDocument(documentRecord: any, fileId: string): Promise<void> {
+  async function cacheProcessedDocument(documentRecord: unknown, fileId: string): Promise<void> {
     const cacheKey = `document:${documentRecord.id}`;
     const cacheData = { ...documentRecord, processedAt: new Date().toISOString(), fileId };
     await comprehensiveCachingService.set(cacheKey, cacheData, 3600)}
-  async function publishUploadEvent(documentRecord: any, fileId: string): Promise<void> {
+  async function publishUploadEvent(documentRecord: unknown, fileId: string): Promise<void> {
     const event = {
       type: 'document.uploaded',
       documentId: documentRecord.id,

@@ -10,20 +10,20 @@ import type { Document } from '$lib/types';
   import type { OCRResult } from '$lib/services/ocr-processor';
 
   // explicit props (Svelte, 5 safe, TypeScript-friendly)
-  const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
-  const { formDataProp } = $props<{ formDataProp: | { extracted_entities: any[] }>()
+  const { ondispatch } = $props<{ ondispatch: ((payload: unknown) }>()
+  const { formDataProp } = $props<{ formDataProp: | { extracted_entities: unknown[] }>()
         key_facts: string[],
         legal_issues: string[],
-        precedents: any[]}
+        precedents: unknown[]}
     | undefined
   const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
 
   // local state derived from props with safe defaults
   let formData = formDataProp ?? {
-    extracted_entities: [], as: any[],
+    extracted_entities: [], as: unknown[],
     key_facts: [], as: string[],
     legal_issues: [], as: string[],
-    precedents: [] as: any[]
+    precedents: [] as: unknown[]
   };
   let ocrResults: OCRResult[] = ocrResultsProp ?? [];
 
@@ -80,9 +80,9 @@ import type { Document } from '$lib/types';
       isAnalyzing = false}
   }
   async function extractEntitiesFromText(): Promise<any[]> {
-    const entities: any[] = [];
+    const entities: unknown[] = [];
     for (const result of ocrResults) {
-      const text = String((result as { text?: any }).text || '');
+      const text = String((result as { text?: unknown }).text || '');
       // Mock entity extraction
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
@@ -107,7 +107,7 @@ import type { Document } from '$lib/types';
   async function identifyKeyFacts(): Promise<string[]> {
     const facts: string[] = [];
     for (const result of ocrResults) {
-      const text = String((result as { text?: any }).text || '');
+      const text = String((result as { text?: unknown }).text || '');
       const sentences = text.split(/(?<=[.?!])\s+/).filter((s) => s.trim().length > 20);
       const factIndicators = [
         'defendant', 'plaintiff', 'contract', 'breach', 'damages', 'evidence',
@@ -124,7 +124,7 @@ import type { Document } from '$lib/types';
   async function analyzeLegalIssues(): Promise<string[]> {
     const issues: string[] = [];
     const combinedText = ocrResults
-      .map((r) => String((r as { text?: any }).text || ''))
+      .map((r) => String((r as { text?: unknown }).text || ''))
       .join(' ')
       .toLowerCase();
     const issuePatterns = [

@@ -33,8 +33,8 @@
 		fillRate: 0; frameTime: 0,
 		lastFrameTime: 0
 	});
-  let vertices: any[] = [];
-	let faces: any[] = [];
+  let vertices: unknown[] = [];
+	let faces: unknown[] = [];
 	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop()});
@@ -686,4 +686,5 @@
 			grid-template-columns: 1fr}
 	}
 </style>
+
 

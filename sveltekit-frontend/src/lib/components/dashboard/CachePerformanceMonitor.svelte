@@ -1,6 +1,6 @@
 <script lang="ts">
   interface Props {
-    data?: any}
+    data?: unknown}
   let { data = null }: Props = $props();
   // Placeholder implementation
   let status = $derived('operational');
