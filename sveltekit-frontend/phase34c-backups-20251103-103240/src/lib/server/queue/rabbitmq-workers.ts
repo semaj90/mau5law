@@ -1,3 +1,0 @@
-﻿const rabbitWorkers: any = {};
-export default rabbitWorkers
-
