@@ -4,7 +4,7 @@
 	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
-	const aiStore = (CanvasStore as: any).aiStore ?? (CanvasStore as: any).default ?? writable({
+	const aiStore = (CanvasStore as any).aiStore ?? (CanvasStore as any).default ?? writable({
 		dialogOpen: false,
 		isGenerating: false,
 		lastRequest: null
@@ -71,11 +71,11 @@
 		right: 2rem;
 		width: 64px;
 		height: 64px;
-	, background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%);
+		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%);
 		border: none;
 		border-radius: 50%;
 		cursor: pointer;
-	, display: flex;
+		display: flex;
 		align-items: center;
 		justify-content: center;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -106,7 +106,7 @@
 		left: -50%;
 		width: 200%;
 		height: 200%;
-	, background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+		background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		pointer-events: none;
@@ -141,11 +141,11 @@
 			bottom: 1.5rem;
 			right: 1.5rem;
 			width: 56px;
-		, height: 56px;
+			height: 56px;
 		}
 		.fab-icon :global(svg) {
 			width: 20px;
-		, height: 20px;
+			height: 20px;
 		}
 	}
 </style>
